@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LiveRoom</string>
+    <string name="toast_login_success">Logged in</string>
+    <string name="toast_login_fail">Login failed [%d]%s</string>
+    <string name="working">Running</string>
+    <string name="enter_room">Enter Room</string>
+    <string name="tv_please_input_room_number">Enter a Room ID</string>
+    <string name="create_live_room">Create Room</string>
+    <string name="room_number">Room Id</string>
+</resources>
