@@ -1,5 +1,17 @@
 # 视频互动直播
 
+
+## 效果演示
+
+<table>
+<tr>
+<td><img width="260" src="liveroom_beauty.gif"/></td>
+<td><img width="260" src="liveroom_join.gif"/></td>
+<td><img width="260" src="liveroom_msg.gif"/></td>
+<td><img width="260" src="liveroom_pk.gif"/></td>
+</tr>
+</table>
+
 ## 应用地址
 
 ### iOS
