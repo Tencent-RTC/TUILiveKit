@@ -61,6 +61,10 @@
     return [_audienceTableView isAlreadyInAudienceList:model];
 }
 
+- (void)setRoomId:(NSString *)roomId {
+    [_topView setRoomId:roomId];
+}
+
 - (void)initAudienceList:(NSArray *)audienceList {
     CGFloat audience_width = self.width - 25 - _topView.right;
     _audienceTableView = [[TCAudienceListTableView alloc] initWithFrame:CGRectMake(_topView.right + 10 +audience_width / 2 - IMAGE_SIZE / 2 ,_topView.center.y -  audience_width / 2, _topView.height, audience_width) style:UITableViewStyleGrouped liveInfo:_liveInfo];
@@ -89,7 +93,7 @@
     
     //topview,展示主播头像，在线人数及点赞
     int statusBarHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
-    _topView = [[TCShowLiveTopView alloc] initWithFrame:CGRectMake(5, statusBarHeight + 5, 110, 35) isHost:NO hostNickName:_liveInfo.ownerName
+    _topView = [[TCShowLiveTopView alloc] initWithFrame:CGRectMake(5, statusBarHeight + 5, 140, 35) isHost:NO hostNickName:_liveInfo.ownerName
                                           audienceCount:0 likeCount:0 hostFaceUrl:_liveInfo.coverUrl];
     
     [self addSubview:_topView];

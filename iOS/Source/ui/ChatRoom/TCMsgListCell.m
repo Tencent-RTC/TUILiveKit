@@ -96,7 +96,7 @@ static NSInteger           _index = 0;
     UIImageView          *_hostImage;        // 主播头像
     UIImageView          *_durationImage;    // 直播时长
     UILabel              *_durationLabel;
-    UILabel              *_audienceLabel;    // 在线观众数
+    UILabel              *_roomIdLabel;      // 房间号
     
     NSTimer              *_timer;
     NSInteger            _startTime;
@@ -133,7 +133,11 @@ static NSInteger           _index = 0;
     _audienceCount = viewerCount;
     _totalViewerCount = viewerCount;
     _likeCount = likeCount;
-    [_audienceLabel setText:[NSString stringWithFormat:@"%ld", _audienceCount]];
+//    [_audienceLabel setText:[NSString stringWithFormat:@"%ld", _audienceCount]];
+}
+
+- (void)setRoomId:(NSString *)roomId {
+    [_roomIdLabel setText:[NSString stringWithFormat:@"%@%@", LiveRoomLocalize(@"Demo.TRTC.LiveRoom.roomId"),roomId]];
 }
 
 - (void)initUI {
@@ -162,11 +166,13 @@ static NSInteger           _index = 0;
     [self addSubview:_durationLabel];
     
     
-    _audienceLabel = [[UILabel alloc] init];
-    [_audienceLabel setText:[NSString stringWithFormat:@"%ld", _audienceCount]];
-    _audienceLabel.font = [UIFont boldSystemFontOfSize:10];
-    _audienceLabel.textColor = [UIColor whiteColor];
-    [self addSubview:_audienceLabel];
+    _roomIdLabel = [[UILabel alloc] init];
+//    [_roomIdLabel setText:[NSString stringWithFormat:@"%ld", _audienceCount]];
+    _roomIdLabel.text = LiveRoomLocalize(@"Demo.TRTC.LiveRoom.roomId");
+    _roomIdLabel.font = [UIFont boldSystemFontOfSize:10];
+    _roomIdLabel.textColor = [UIColor whiteColor];
+    _roomIdLabel.adjustsFontSizeToFitWidth = true;
+    [self addSubview:_roomIdLabel];
     
     
     // relayout
@@ -184,13 +190,18 @@ static NSInteger           _index = 0;
         [_durationLabel layoutToRightOf:_durationImage margin:2.5];
     }
     else {
-        [_durationLabel sizeWith:CGSizeMake(48, 10)];
+        [_durationLabel sizeWith:CGSizeMake(110, 10)];
         [_durationLabel alignParentTopWithMargin:5];
-        [_durationLabel layoutToRightOf:_hostImage margin:10];
+        if (_durationImage) {
+            [_durationLabel layoutToRightOf:_durationImage margin:2.5];
+        } else {
+            [_durationLabel layoutToRightOf:_hostImage margin:5];
+        }
     }
 
-    [_audienceLabel sameWith:_durationLabel];
-    [_audienceLabel alignParentBottomWithMargin:5];
+    [_roomIdLabel sizeWith:CGSizeMake(110, 10)];
+    [_roomIdLabel alignParentBottomWithMargin:5];
+    [_roomIdLabel layoutToRightOf:_hostImage margin:5];
 }
 
 - (void)headTap:(UITapGestureRecognizer*)tap {
@@ -255,14 +266,14 @@ static NSInteger           _index = 0;
 - (void)onUserEnterLiveRoom {
     _audienceCount ++;
     _totalViewerCount ++;
-    [_audienceLabel setText:[NSString stringWithFormat:@"%ld", _audienceCount]];
+//    [_audienceLabel setText:[NSString stringWithFormat:@"%ld", _audienceCount]];
 }
 
 - (void)onUserExitLiveRoom {
     if (_audienceCount > 0) {
         _audienceCount --;
     }
-    [_audienceLabel setText:[NSString stringWithFormat:@"%ld", _audienceCount]];
+//    [_audienceLabel setText:[NSString stringWithFormat:@"%ld", _audienceCount]];
 }
 
 - (void)onUserSendLikeMessage {

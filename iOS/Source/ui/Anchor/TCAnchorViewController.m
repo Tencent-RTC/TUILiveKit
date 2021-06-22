@@ -1159,6 +1159,7 @@
     [[TUILiveRoomProfileManager sharedManager] createRoomWithRoomID:roomId success:^{
         __strong __typeof(weakSelf) self = weakSelf;
         [self liveRoomCreate:roomName roomID:roomID callback:^(int code, NSString * _Nullable message) {
+            [self.logicView.topView setRoomId:[NSString stringWithFormat:@"%d",roomID]];
             if (callback) {
                 callback(code, message);
             }

@@ -133,13 +133,13 @@
     
     //topview,展示主播头像，在线人数及点赞
     int statusBarHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
-    _topView = [[TCShowLiveTopView alloc] initWithFrame:CGRectMake(5, statusBarHeight + 5, 110, 35) isHost:YES hostNickName:_liveInfo.ownerName
+    _topView = [[TCShowLiveTopView alloc] initWithFrame:CGRectMake(5, statusBarHeight + 5, 140, 35) isHost:YES hostNickName:_liveInfo.ownerName
                                           audienceCount:_liveInfo.memberCount likeCount:0 hostFaceUrl:_liveInfo.streamUrl];
     [self addSubview:_topView];
     [_topView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(_closeBtn);
         make.leading.equalTo(self).offset(20);
-        make.width.mas_equalTo(110);
+        make.width.mas_equalTo(140);
         make.height.mas_equalTo(35);
     }];
     __weak __typeof(self) weakSelf = self;

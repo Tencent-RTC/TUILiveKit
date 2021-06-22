@@ -106,9 +106,10 @@ extension AppDelegate: TUILiveRoomProfileManagerDelegate {
     }
     
     func liveRoomCreateRoom(roomId: String, success: @escaping () -> Void, failed: @escaping (Int32, String) -> Void) {
-        alert(roomId: roomId) {
-            success()
-        }
+        success()
+//        alert(roomId: roomId) {
+//            success()
+//        }
     }
 }
 

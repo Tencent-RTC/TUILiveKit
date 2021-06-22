@@ -199,6 +199,7 @@ TRTCLiveRoomDelegate>
         _logicView = [[TCAudienceToolbarView alloc] initWithFrame:frame liveInfo:self.liveInfo withLinkMic: YES];
         _logicView.delegate = self;
         _logicView.liveRoom = _liveRoom;
+        [_logicView setRoomId:_liveInfo.roomId];
         [self.view addSubview:_logicView];
         
         if (_btnLinkMic == nil) {

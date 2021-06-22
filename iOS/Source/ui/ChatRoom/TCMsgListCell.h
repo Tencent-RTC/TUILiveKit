@@ -32,6 +32,7 @@ typedef void (^TCLiveTopClick)(void);
 - (instancetype)initWithFrame:(CGRect)frame isHost:(BOOL)isHost hostNickName:(NSString *)hostNickName audienceCount:(NSInteger)audienceCount likeCount:(NSInteger)likeCount hostFaceUrl:(NSString *)hostFaceUrl;
 
 - (void)setViewerCount:(int)viewerCount likeCount:(int)likeCount;
+- (void)setRoomId:(NSString *)roomId;
 
 - (void)startLive;
 - (void)pauseLive;

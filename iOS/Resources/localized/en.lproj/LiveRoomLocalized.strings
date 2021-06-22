@@ -162,6 +162,7 @@
 "Demo.TRTC.LiveRoom.micauthorityfailed" = "Failed to get mic permission. Please go to Privacy > Microphone to grant the permission.";
 "Demo.TRTC.LiveRoom.cameraauthorityfailed" = "Failed to get camera permission. Please go to Privacy > Camera to grant the permission.";
 "Demo.TRTC.LiveRoom.notsupporthardencodeandstartmicconnectfailed" = "Failed to start co-anchoring as hardware encoding is not supported.";
+"Demo.TRTC.LiveRoom.roomId" = "RoomId:";
 "LoginNetwork.AppUtils.warmprompt" = "Note";
 "LoginNetwork.AppUtils.tomeettheregulatory" = "In accordance with relevant regulations, the app forbids pornographic, abusive, violent, terrorist, and politically sensitive content. All audio/video calls and live streams are recorded and archived.";
 "LoginNetwork.AppUtils.determine" = "OK";

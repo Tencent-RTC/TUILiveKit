@@ -55,4 +55,6 @@
 
 - (void)handleIMMessage:(IMUserAble*)info msgText:(NSString*)msgText;
 
+- (void)setRoomId:(NSString *)roomId;
+
 @end
