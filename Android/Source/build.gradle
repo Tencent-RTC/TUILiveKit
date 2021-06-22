@@ -31,8 +31,6 @@ dependencies {
     compile project(':Login')
     compile project(':Debug')
     compile project(':Beauty')
-    compile project(':audioeffectsettingkit')
-
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.blankj:utilcode:1.25.9'
     compile 'de.hdodenhof:circleimageview:3.1.0'

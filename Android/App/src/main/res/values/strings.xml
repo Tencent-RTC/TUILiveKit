@@ -8,4 +8,5 @@
     <string name="tv_please_input_room_number">请输入房间号</string>
     <string name="create_live_room">创建房间</string>
     <string name="room_number">房间号</string>
+    <string name="room_not_exist">当前房间不存在</string>
 </resources>

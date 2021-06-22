@@ -94,4 +94,13 @@
     <string name="trtcliveroom_bg_music_sad_cinematic_piano">Sad Cinematic Piano</string>
     <string name="trtcliveroom_bg_music_wonder_world">Wonder World</string>
     <string name="trtcliveroom_room_id">RoomId:%s</string>
+    <string name="trtcliveroom_no_effect">No effect</string>
+    <string name="trtcliveroom_audio_change_type_child">Naughty boy</string>
+    <string name="trtcliveroom_audio_change_type_luoli">Little girl</string>
+    <string name="trtcliveroom_audio_change_type_dashu">Middle-aged man</string>
+    <string name="trtcliveroom_audio_change_type_kongling">Ethereal voice</string>
+    <string name="trtcliveroom_audio_reverb_type_ktv">Karaoke room</string>
+    <string name="trtcliveroom_audio_reverb_type_lowdeep">Deep</string>
+    <string name="trtcliveroom_audio_reverb_type_heavymetal">Metallic</string>
+    <string name="trtcliveroom_audio_reverb_type_hongliang">Resonant</string>
 </resources>

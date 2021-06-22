@@ -114,7 +114,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:text="@string/create_live_room"
-        android:textColor="@color/audio_white"
+        android:textColor="@color/color_white"
         android:textSize="18sp"
         android:drawableLeft="@drawable/add_room"
         android:drawablePadding="5dp"

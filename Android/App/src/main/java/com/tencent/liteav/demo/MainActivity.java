@@ -9,11 +9,14 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.ToastUtils;
+import com.tencent.imsdk.v2.V2TIMGroupInfoResult;
 import com.tencent.liteav.debug.GenerateTestUserSig;
 import com.tencent.liteav.liveroom.model.TRTCLiveRoom;
 import com.tencent.liteav.liveroom.model.TRTCLiveRoomCallback;
@@ -24,7 +27,6 @@ import com.tencent.liteav.liveroom.ui.common.utils.TCConstants;
 import com.tencent.liteav.login.model.ProfileManager;
 import com.tencent.liteav.login.model.RoomManager;
 import com.tencent.liteav.login.model.UserModel;
-
 
 import java.util.Collections;
 import java.util.List;
@@ -137,7 +139,33 @@ public class MainActivity extends Activity {
      * 进入房间
      * @param roomIdStr
      */
-    private void enterRoom(String roomIdStr) {
+    private void enterRoom(final String roomIdStr) {
+        ProfileManager.getInstance().getGroupInfo(roomIdStr, new ProfileManager.GetGroupInfoCallback() {
+            @Override
+            public void onSuccess(V2TIMGroupInfoResult result) {
+                if (isRoomExist(result)) {
+                    realEnterRoom(roomIdStr);
+                } else {
+                    ToastUtils.showLong(R.string.room_not_exist);
+                }
+            }
+
+            @Override
+            public void onFailed(int code, String msg) {
+                ToastUtils.showLong(msg);
+            }
+        });
+    }
+
+    private boolean isRoomExist(V2TIMGroupInfoResult result) {
+        if (result == null) {
+            Log.e(TAG, "room not exist result is null");
+            return false;
+        }
+        return result.getResultCode() == 0;
+    }
+
+    private void realEnterRoom(String roomIdStr) {
         int roomId;
         try {
             roomId = Integer.parseInt(roomIdStr);

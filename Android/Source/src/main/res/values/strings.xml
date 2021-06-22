@@ -95,4 +95,13 @@
     <string name="trtcliveroom_bg_music_sad_cinematic_piano">忧郁</string>
     <string name="trtcliveroom_bg_music_wonder_world">神奇世界</string>
     <string name="trtcliveroom_room_id">房间号:%s</string>
+    <string name="trtcliveroom_no_effect">无效果</string>
+    <string name="trtcliveroom_audio_change_type_child">熊孩子</string>
+    <string name="trtcliveroom_audio_change_type_luoli">萝莉</string>
+    <string name="trtcliveroom_audio_change_type_dashu">大叔</string>
+    <string name="trtcliveroom_audio_change_type_kongling">空灵</string>
+    <string name="trtcliveroom_audio_reverb_type_ktv">KTV</string>
+    <string name="trtcliveroom_audio_reverb_type_lowdeep">低沉</string>
+    <string name="trtcliveroom_audio_reverb_type_heavymetal">金属声</string>
+    <string name="trtcliveroom_audio_reverb_type_hongliang">洪亮</string>
 </resources>
