@@ -76,7 +76,7 @@ TUILiveRoom
 
 <img src="https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/tuiliveroom_enter_room_ios.png" width="320"/>
 
-<font color=red>请注意，房间号在用户 A 房间创建完成后的系统弹框中获取，如下图示：</font>
+<font color=red>请注意，房间号在用户 A 的房间顶部查看，如下图示：</font>
 
 <img src="https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/tuiliveroom_roomid_ios.png" width="320"/>
 
