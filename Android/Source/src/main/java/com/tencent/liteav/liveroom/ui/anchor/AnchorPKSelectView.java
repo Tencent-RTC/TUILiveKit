@@ -1,6 +1,7 @@
 package com.tencent.liteav.liveroom.ui.anchor;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -53,6 +54,7 @@ public class AnchorPKSelectView extends RelativeLayout {
 
     private void initView(Context context) {
         mContext = context;
+        setBackgroundColor(Color.TRANSPARENT);
         inflate(context, R.layout.trtcliveroom_view_pk_select, this);
         mPusherListRv = (RecyclerView) findViewById(R.id.rv_anchor_list);
         mRoomInfos = new ArrayList<>();

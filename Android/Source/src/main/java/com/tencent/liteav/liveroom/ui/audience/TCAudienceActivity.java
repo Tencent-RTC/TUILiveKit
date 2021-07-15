@@ -2,6 +2,7 @@ package com.tencent.liteav.liveroom.ui.audience;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -15,6 +16,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -55,6 +57,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import master.flame.danmaku.controller.IDanmakuView;
 
@@ -102,10 +106,11 @@ public class TCAudienceActivity extends AppCompatActivity implements View.OnClic
     private Toast                       mToastNotice;
     private Timer                       mNoticeTimer;
     private TCChatMsgListAdapter        mChatMsgListAdapter;    // mListIMMessage的适配器
-    private TCUserAvatarListAdapter     mUserAvatarListAdapter; // mUserAvatarList的适配器
     private TRTCLiveRoom                mLiveRoom;              // MLVB 组件
     private TCLikeFrequencyControl      mLikeFrequencyControl;  //点赞频率的控制类
     private ArrayList<TCChatEntity>     mArrayListChatEntity = new ArrayList<>();   // 消息列表集合
+
+    private final ConcurrentMap<String, TRTCLiveRoomDef.TRTCLiveUserInfo> mUserInfoMap = new ConcurrentHashMap<>(); // 观众集合
 
     private boolean     mShowLog;
     private long        mLastLinkMicTime;            // 上次发起连麦的时间，用于频率控制
@@ -245,7 +250,7 @@ public class TCAudienceActivity extends AppCompatActivity implements View.OnClic
 
         @Override
         public void onKickoutJoinAnchor() {
-            ToastUtils.showLong(R.string.trtcliveroom_warning_kick_out_by_anchor);
+            makeToast(getResources().getString(R.string.trtcliveroom_warning_kick_out_by_anchor), Toast.LENGTH_LONG).show();
             stopLinkMic();
         }
 
@@ -281,6 +286,25 @@ public class TCAudienceActivity extends AppCompatActivity implements View.OnClic
     };
 
     /**
+     * 观众进房通知的Toast（绿色条形通知）
+     * @param message
+     */
+    private final Toast makeToast(String message, int duration){
+        final Toast toast = new Toast(this);
+        TextView textView = new TextView(this);
+        textView.setBackgroundColor(getResources().getColor(R.color.trtcliveroom_color_bg_toast_green));
+        textView.setTextColor(Color.WHITE);
+        textView.setGravity(Gravity.CENTER_VERTICAL|Gravity.LEFT);
+        textView.setTextSize(16);
+        textView.setPadding(30, 40, 30, 40);
+        textView.setText(message);
+        toast.setView(textView);
+        toast.setDuration(duration);
+        toast.setGravity(Gravity.FILL_HORIZONTAL|Gravity.BOTTOM, 0, 200);
+        return toast;
+    }
+
+    /**
      * 显示错误并且退出直播
      *
      * @param errorCode
@@ -312,6 +336,7 @@ public class TCAudienceActivity extends AppCompatActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(R.style.TRTCLiveRoomBeautyTheme);
+        ProfileManager.getInstance().getUserModel().userType = UserModel.UserType.LIVE_ROOM;
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -359,14 +384,6 @@ public class TCAudienceActivity extends AppCompatActivity implements View.OnClic
         mTextAnchorName.setText(TCUtils.getLimitString(mAnchorNickname, 10));
 
         findViewById(R.id.iv_anchor_record_ball).setVisibility(View.GONE);
-
-        mRecyclerUserAvatar = (RecyclerView) findViewById(R.id.rv_audience_avatar);
-        mRecyclerUserAvatar.setVisibility(View.VISIBLE);
-        mUserAvatarListAdapter = new TCUserAvatarListAdapter(this, mAnchorId);
-        mRecyclerUserAvatar.setAdapter(mUserAvatarListAdapter);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mRecyclerUserAvatar.setLayoutManager(linearLayoutManager);
 
         mInputTextMsgDialog = new InputTextMsgDialog(this, R.style.TRTCLiveRoomInputDialog);
         mInputTextMsgDialog.setmOnTextSendListener(this);
@@ -480,6 +497,7 @@ public class TCAudienceActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        ProfileManager.getInstance().getUserModel().userType = UserModel.UserType.NONE;
         mLiveRoom.showVideoDebugLog(false);
         mHandler.removeCallbacks(mGetAudienceRunnable);
         mHandler.removeCallbacks(mShowAnchorLeave);
@@ -527,7 +545,7 @@ public class TCAudienceActivity extends AppCompatActivity implements View.OnClic
                     public void onCallback(int code, String msg, List<TRTCLiveRoomDef.TRTCLiveUserInfo> list) {
                         if (code == 0) {
                             for (TRTCLiveRoomDef.TRTCLiveUserInfo info : list) {
-                                mUserAvatarListAdapter.addItem(info);
+                                mUserInfoMap.putIfAbsent(info.userId, info);
                             }
                             mCurrentAudienceCount += list.size();
                         } else {
@@ -577,13 +595,13 @@ public class TCAudienceActivity extends AppCompatActivity implements View.OnClic
                 if (code == 0) {
                     // 接受请求
                     hideNoticeToast();
-                    ToastUtils.showShort(getString(R.string.trtcliveroom_anchor_accept_link_mic));
+                    makeToast(getString(R.string.trtcliveroom_anchor_accept_link_mic), Toast.LENGTH_SHORT).show();
                     joinPusher();
                     return;
                 }
                 if (code == -1) {
                     // 拒绝请求
-                    ToastUtils.showShort(msg);
+                    makeToast(msg, Toast.LENGTH_SHORT).show();
                 } else {
                     //出现错误
                     ToastUtils.showShort(getString(R.string.trtcliveroom_error_request_link_mic, msg));
@@ -655,11 +673,11 @@ public class TCAudienceActivity extends AppCompatActivity implements View.OnClic
      * @param userInfo
      */
     public void handleAudienceJoinMsg(TRTCLiveRoomDef.TRTCLiveUserInfo userInfo) {
-        //更新头像列表 返回false表明已存在相同用户，将不会更新数据
-        if (!mUserAvatarListAdapter.addItem(userInfo)) {
+        // 更新列表
+        if (mUserInfoMap.containsKey(userInfo.userId) || TextUtils.equals(mSelfUserId, userInfo.userId)) {
             return;
         }
-
+        mUserInfoMap.put(userInfo.userId, userInfo);
         mCurrentAudienceCount++;
         //左下角显示用户加入消息
         TCChatEntity entity = new TCChatEntity();
@@ -684,8 +702,7 @@ public class TCAudienceActivity extends AppCompatActivity implements View.OnClic
         } else {
             Log.d(TAG, "接受多次退出请求，目前人数为负数");
         }
-
-        mUserAvatarListAdapter.removeItem(userInfo.userId);
+        mUserInfoMap.remove(userInfo.userId);
 
         TCChatEntity entity = new TCChatEntity();
         entity.setSenderName(getString(R.string.trtcliveroom_notification));
@@ -877,14 +894,12 @@ public class TCAudienceActivity extends AppCompatActivity implements View.OnClic
 
     private void showNoticeToast(String text) {
         if (mToastNotice == null) {
-            mToastNotice = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG);
+            mToastNotice = makeToast(text, Toast.LENGTH_LONG);
         }
 
         if (mNoticeTimer == null) {
             mNoticeTimer = new Timer();
         }
-
-        mToastNotice.setText(text);
         mNoticeTimer.schedule(new TimerTask() {
             @Override
             public void run() {

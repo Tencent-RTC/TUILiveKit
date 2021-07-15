@@ -1657,13 +1657,43 @@ public class TRTCLiveRoomImpl extends TRTCLiveRoom implements ITXTRTCLiveRoomDel
         return TXTRTCLiveRoom.getInstance().getTXBeautyManager();
     }
 
+    @Override
+    public void setVideoResolution(final int resolution) {
+        runOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                TXTRTCLiveRoom.getInstance().setVideoResolution(resolution);
+            }
+        });
+    }
+
+    @Override
+    public void setVideoFps(final int fps) {
+        runOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                TXTRTCLiveRoom.getInstance().setVideoFps(fps);
+            }
+        });
+    }
+
+    @Override
+    public void setVideoBitrate(final int bitrate) {
+        runOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                TXTRTCLiveRoom.getInstance().setVideoBitrate(bitrate);
+            }
+        });
+    }
+
     /**
      * 标志用户是否已经进入视频互动
      * @param updateType true：进入视频互动；false：退出视频互动
      */
     private void setLiveRoomType(boolean updateType) {
         if(updateType) {
-            ProfileManager.getInstance().getUserModel().userType = UserModel.UserType.LIVINGROOMTYPE;
+            ProfileManager.getInstance().getUserModel().userType = UserModel.UserType.LIVE_ROOM;
         } else {
             ProfileManager.getInstance().getUserModel().userType = UserModel.UserType.NONE;
         }

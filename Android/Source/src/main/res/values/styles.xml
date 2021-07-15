@@ -33,9 +33,16 @@
     <style name="TRTCLiveRoomLinkMic">
         <item name="android:layout_width">120dp</item>
         <item name="android:layout_height">180dp</item>
-        <item name="android:layout_marginEnd">8dp</item>
-        <item name="android:layout_marginRight">8dp</item>
         <item name="android:layout_marginBottom">5dp</item>
     </style>
     <!--BeautyPanelStyleEnd-->
+
+    <style name="BaseFragmentDialogTheme" parent="@android:style/Theme.Holo.Dialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+        <item name="android:windowBackground">@color/trtcliveroom_color_bg_dialog_black</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
+
 </resources>

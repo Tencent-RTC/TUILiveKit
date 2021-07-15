@@ -27,7 +27,7 @@
     <color name="trtcliveroom_color_bg_detail_live">#FF13233F</color>
     <color name="trtcliveroom_color_text_hint">#FF6B82A8</color>
     <color name="trtcliveroom_color_text_blue">#FF0062E3</color>
-    <color name="trtcliveroom_color_shadow">#FF36455C</color>
+    <color name="trtcliveroom_color_shadow">#EEEEEE</color>
     <color name="trtcliveroom_color_bg_select_pk">#FF13233F</color>
     <color name="trtcliveroom_color_bg_dialog">#CCFCFCFC</color>
     <color name="trtcliveroom_color_line">#979797</color>
@@ -37,4 +37,5 @@
     <color name="trtcliveroom_color_bg_dialog_black">#66000000</color>
     <color name="trtcliveroom_color_dark_black">#666666</color>
     <color name="trtcliveroom_color_light_black">#999999</color>
+    <color name="trtcliveroom_color_bg_toast_green">#FF29CC85</color>
 </resources>

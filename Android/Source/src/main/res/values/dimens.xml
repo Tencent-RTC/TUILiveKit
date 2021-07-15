@@ -10,6 +10,7 @@
     <dimen name="trtcliveroom_heart_anim_length">100.0dp</dimen>
     <dimen name="trtcliveroom_heart_anim_length_rand">350.0dp</dimen>
     <dimen name="trtcliveroom_space_select_pk_rv">20dp</dimen>
+    <dimen name="trtcliveroom_item_title_size">16sp</dimen>
 
     <integer name="trtcliveroom_heart_anim_duration">1000</integer>
     <integer name="trtcliveroom_heart_anim_bezier_factor">6</integer>

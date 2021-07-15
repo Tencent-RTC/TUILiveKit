@@ -62,7 +62,8 @@ public abstract class TCBaseAnchorActivity extends Activity implements TRTCLiveR
     protected static final String LIVE_TOTAL_TIME      = "live_total_time";       // KEY，表示本场直播的时长
     protected static final String ANCHOR_HEART_COUNT   = "anchor_heart_count";    // KEY，表示本场主播收到赞的数量
     protected static final String TOTAL_AUDIENCE_COUNT = "total_audience_count";  // KEY，表示本场观众的总人数
-    public static final int       ERROR_ROOM_ID_EXIT = -1301;
+    public    static final int    ERROR_ROOM_ID_EXIT   = -1301;
+    private   static final int    MAX_LEN              = 30;
 
     protected String        mCoverPicUrl;              // 直播封面图
     protected String        mSelfAvatar;               // 个人头像地址
@@ -186,21 +187,25 @@ public abstract class TCBaseAnchorActivity extends Activity implements TRTCLiveR
                     ToastUtils.showLong(getText(R.string.trtcliveroom_warning_room_name_empty));
                     return;
                 }
+                if (roomName.getBytes().length > MAX_LEN) {
+                    ToastUtils.showLong(getText(R.string.trtcliveroom_warning_room_name_too_long));
+                    return;
+                }
                 InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(mEditLiveRoomName.getWindowToken(), 0);
                 mRoomName = roomName;
                 createRoom();
             }
         });
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mImageLiveRoomCover.setOutlineProvider(new ViewOutlineProvider() {
-                @Override
-                public void getOutline(View view, Outline outline) {
-                    outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), 30);
-                }
-            });
-            mImageLiveRoomCover.setClipToOutline(true);
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            mImageLiveRoomCover.setOutlineProvider(new ViewOutlineProvider() {
+//                @Override
+//                public void getOutline(View view, Outline outline) {
+//                    outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), Math.min(view.getWidth(), view.getHeight())/2);
+//                }
+//            });
+//            mImageLiveRoomCover.setClipToOutline(true);
+//        }
         TCUtils.showPicWithUrl(this, mImageLiveRoomCover, mSelfAvatar, R.drawable.trtcliveroom_bg_cover);
         mTextLiveRoomName.setText(mSelfName);
     }

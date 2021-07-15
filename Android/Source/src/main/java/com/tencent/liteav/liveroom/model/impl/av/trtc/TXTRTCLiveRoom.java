@@ -43,6 +43,8 @@ public class TXTRTCLiveRoom extends TRTCCloudListener implements ITRTCTXLiveRoom
     private Map<String, Runnable>   mPlayTimeoutRunnable;
     private Handler                 mMainHandler;
 
+    private final TRTCCloudDef.TRTCVideoEncParam  mVideoEncParam = new TRTCCloudDef.TRTCVideoEncParam();
+
     public static synchronized TXTRTCLiveRoom getInstance() {
         if (sInstance == null) {
             sInstance = new TXTRTCLiveRoom();
@@ -58,6 +60,8 @@ public class TXTRTCLiveRoom extends TRTCCloudListener implements ITRTCTXLiveRoom
         mPlayCallbackMap = new HashMap<>();
         mPlayTimeoutRunnable = new HashMap<>();
         mMainHandler = new Handler(Looper.getMainLooper());
+        mVideoEncParam.enableAdjustRes = true;
+        mVideoEncParam.videoResolutionMode = TRTCCloudDef.TRTC_VIDEO_RESOLUTION_MODE_PORTRAIT;
     }
 
     @Override
@@ -536,5 +540,26 @@ public class TXTRTCLiveRoom extends TRTCCloudListener implements ITRTCTXLiveRoom
     @Override
     public void setAudioQuality(int quality) {
         mTRTCCloud.setAudioQuality(quality);
+    }
+
+    @Override
+    public void setVideoResolution(int resolution) {
+        mVideoEncParam.videoResolution = resolution;
+        mTRTCCloud.setVideoEncoderParam(mVideoEncParam);
+        TRTCLogger.i(TAG, "setVideoResolution:"+resolution);
+    }
+
+    @Override
+    public void setVideoFps(int fps) {
+        mVideoEncParam.videoFps = fps;
+        mTRTCCloud.setVideoEncoderParam(mVideoEncParam);
+        TRTCLogger.i(TAG, "setVideoFps:"+fps);
+    }
+
+    @Override
+    public void setVideoBitrate(int bitrate) {
+        mVideoEncParam.videoBitrate = bitrate;
+        mTRTCCloud.setVideoEncoderParam(mVideoEncParam);
+        TRTCLogger.i(TAG, "setVideoBitrate:"+bitrate);
     }
 }

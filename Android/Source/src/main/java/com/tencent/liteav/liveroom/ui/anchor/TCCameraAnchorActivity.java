@@ -1,12 +1,16 @@
 package com.tencent.liteav.liveroom.ui.anchor;
 
 import android.animation.ObjectAnimator;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.constraint.ConstraintSet;
 import android.support.constraint.Guideline;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.blankj.utilcode.constant.PermissionConstants;
 import com.blankj.utilcode.util.PermissionUtils;
@@ -27,15 +32,19 @@ import com.tencent.liteav.liveroom.model.TRTCLiveRoomDef;
 import com.tencent.liteav.liveroom.ui.common.adapter.TCUserAvatarListAdapter;
 import com.tencent.liteav.liveroom.ui.common.utils.TCUtils;
 import com.tencent.liteav.liveroom.ui.widget.AudioEffectPanel;
+import com.tencent.liteav.liveroom.ui.widget.feature.FeatureSettingDialog;
 import com.tencent.liteav.liveroom.ui.widget.video.TCVideoView;
 import com.tencent.liteav.liveroom.ui.widget.video.TCVideoViewMgr;
 import com.tencent.liteav.login.model.ProfileManager;
+import com.tencent.liteav.login.model.UserModel;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.tencent.trtc.TRTCCloudDef;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Module:   TCBaseAnchorActivity
@@ -48,7 +57,6 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
 
     private TXCloudVideoView        mTXCloudVideoView;      // 主播本地预览的View
     private TXCloudVideoView        mVideoViewPKAnchor;     // PK主播的视频显示View
-    private RecyclerView            mRecyclerUserAvatar;    // 显示观众头像的列表控件
     private ImageView               mImagesAnchorHead;      // 显示房间主播头像
     private ImageView               mImageRecordBall;       // 表明正在录制的红点球
     private TextView                mTextBroadcastTime;     // 显示已经开播的时间
@@ -59,23 +67,27 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
     private AnchorPKSelectView      mViewPKAnchorList;      // 显示可PK主播的列表
     private AudioEffectPanel        mPanelAudioControl;     // 音效控制面板
     private BeautyPanel             mPanelBeautyControl;    // 美颜设置的控制类
+    private FeatureSettingDialog    mFeatureSettingDialog;  // 更多设置（分辨率、帧率、码率）
     private RelativeLayout          mPKContainer;
     private RadioButton             mRbNormalQuality;
     private RadioButton             mRbMusicQuality;
     private ImageView               mImagePKLayer;
     private Button                  mButtonExit;            // 结束直播&退出PK
     private ObjectAnimator          mAnimatorRecordBall;    // 显示录制状态红点的闪烁动画
-    private TCUserAvatarListAdapter mUserAvatarListAdapter; // mUserAvatarList的适配器
     private TCVideoViewMgr          mVideoViewMgr;          // 主播视频列表的View
 
     private boolean                 mShowLog;               // 表示是否显示Log面板
     private List<String>            mAnchorUserIdList  = new ArrayList<>();
     private int                     mCurrentStatus    = TRTCLiveRoomDef.ROOM_STATUS_NONE;
 
+    private final ConcurrentMap<String, TRTCLiveRoomDef.TRTCLiveUserInfo> mUserInfoMap = new ConcurrentHashMap<>();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.TRTCLiveRoomBeautyTheme);
         super.onCreate(savedInstanceState);
+        ProfileManager.getInstance().getUserModel().userType = UserModel.UserType.LIVE_ROOM;
         mPanelBeautyControl.setBeautyManager(mLiveRoom.getBeautyManager());
         startPreview();
     }
@@ -93,13 +105,6 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
 
         mPKContainer = (RelativeLayout) findViewById(R.id.pk_container);
         mImagePKLayer = (ImageView) findViewById(R.id.iv_pk_layer);
-
-        mRecyclerUserAvatar = (RecyclerView) findViewById(R.id.rv_audience_avatar);
-        mUserAvatarListAdapter = new TCUserAvatarListAdapter(this, mSelfUserId);
-        mRecyclerUserAvatar.setAdapter(mUserAvatarListAdapter);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mRecyclerUserAvatar.setLayoutManager(linearLayoutManager);
 
         mTextBroadcastTime = (TextView) findViewById(R.id.tv_anchor_broadcasting_time);
         mTextBroadcastTime.setText(String.format(Locale.US, "%s", "00:00:00"));
@@ -168,6 +173,9 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
             }
         });
 
+        mFeatureSettingDialog = new FeatureSettingDialog(this);
+        mFeatureSettingDialog.setTRTCLiveRoom(mLiveRoom);
+
         // 监听踢出的回调
         List<TCVideoView> videoViews = new ArrayList<>();
         videoViews.add((TCVideoView) findViewById(R.id.video_view_link_mic_1));
@@ -218,6 +226,29 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
     }
 
     /**
+     * PK通知的Toast（红色Toast通知）
+     * @param message
+     */
+    private final Toast makeToast(String message, int duration){
+        final Toast toast = new Toast(this);
+        TextView textView = new TextView(this);
+        textView.setBackgroundColor(Color.RED);
+        textView.setTextColor(Color.WHITE);
+        textView.setGravity(Gravity.CENTER);
+        textView.setTextSize(16);
+        textView.setPadding(5, 5, 5, 5);
+        textView.setText(message);
+        GradientDrawable drawable = new GradientDrawable();
+        drawable.setColor(0xFFFA585E);
+        drawable.setCornerRadius(10);
+        textView.setBackground(drawable);
+        toast.setView(textView);
+        toast.setDuration(duration);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        return toast;
+    }
+
+    /**
      * 加载主播头像
      *
      * @param view   view
@@ -230,6 +261,7 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        ProfileManager.getInstance().getUserModel().userType = UserModel.UserType.NONE;
         mLiveRoom.showVideoDebugLog(false);
         if (mMainHandler != null) {
             mMainHandler.removeCallbacksAndMessages(null);
@@ -380,7 +412,6 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
                 && mCurrentStatus != TRTCLiveRoomDef.ROOM_STATUS_PK) {
             // 上一个状态是PK，需要将界面中的元素恢复
             mImagePKLayer.setVisibility(View.GONE);
-            mButtonExit.setText(R.string.trtcliveroom_btn_stop_live);
             TCVideoView videoView = mVideoViewMgr.getPKUserView();
             mVideoViewPKAnchor = videoView.getPlayerVideo();
             if (mPKContainer.getChildCount() != 0) {
@@ -392,7 +423,6 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
         } else if (mCurrentStatus == TRTCLiveRoomDef.ROOM_STATUS_PK) {
             // 本次状态是PK，需要将一个PK的view挪到右上角
             mImagePKLayer.setVisibility(View.VISIBLE);
-            mButtonExit.setText(R.string.trtcliveroom_btn_stop_pk);
             TCVideoView videoView = mVideoViewMgr.getPKUserView();
             videoView.showKickoutBtn(false);
             mVideoViewPKAnchor = videoView.getPlayerVideo();
@@ -499,15 +529,19 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
      */
     @Override
     protected void handleMemberJoinMsg(TRTCLiveRoomDef.TRTCLiveUserInfo userInfo) {
-        //更新头像列表 返回false表明已存在相同用户，将不会更新数据
-        if (mUserAvatarListAdapter.addItem(userInfo))
+        //更新列表
+        if (!mUserInfoMap.containsKey(userInfo.userId) && !TextUtils.equals(mSelfUserId, userInfo.userId)) {
+            mUserInfoMap.put(userInfo.userId, userInfo);
             super.handleMemberJoinMsg(userInfo);
+        }
     }
 
     @Override
     protected void handleMemberQuitMsg(TRTCLiveRoomDef.TRTCLiveUserInfo userInfo) {
-        mUserAvatarListAdapter.removeItem(userInfo.userId);
-        super.handleMemberQuitMsg(userInfo);
+        if (mUserInfoMap.containsKey(userInfo.userId)) {
+            mUserInfoMap.remove(userInfo.userId);
+            super.handleMemberQuitMsg(userInfo);
+        }
     }
 
 
@@ -568,7 +602,6 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
             }
             if (mCurrentStatus == TRTCLiveRoomDef.ROOM_STATUS_PK) {
                 stopPK();
-                mButtonExit.setText(R.string.trtcliveroom_btn_stop_live);
                 return;
             }
             showExitInfoDialog(getString(R.string.trtcliveroom_warning_anchor_exit_room), false);
@@ -606,6 +639,8 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
                 mPanelBeautyControl.hide();
                 mViewPKAnchorList.setVisibility(View.GONE);
             }
+        } else if (id == R.id.btn_more_settings) {
+            showMoreSettings();
         } else if (id == R.id.btn_switch_cam_before_live) {
             if (mLiveRoom != null) {
                 mLiveRoom.switchCamera();
@@ -619,6 +654,12 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
             }
         } else {
             super.onClick(v);
+        }
+    }
+
+    private void showMoreSettings() {
+        if (mFeatureSettingDialog != null && !mFeatureSettingDialog.isShowing()) {
+            mFeatureSettingDialog.show();
         }
     }
 

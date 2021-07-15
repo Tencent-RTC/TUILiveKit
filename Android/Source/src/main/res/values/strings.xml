@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="trtcliveroom_dialog_input_text_hint">开启弹幕互动吧</string>
-    <string name="trtcliveroom_live_end_tips">直播结束啦!</string>
+    <string name="trtcliveroom_live_end_tips">视频互动结束啦!</string>
     <string name="trtcliveroom_live_time_tips">直播时长</string>
     <string name="trtcliveroom_live_members_tips">观看人数</string>
     <string name="trtcliveroom_live_admires_tips">获赞数量</string>
@@ -11,6 +11,8 @@
     <string name="trtcliveroom_cancle">取消</string>
     <string name="trtcliveroom_accept">接受</string>
     <string name="trtcliveroom_refuse">拒绝</string>
+    <string name="trtcliveroom_user_ok">我确定</string>
+    <string name="trtcliveroom_user_wait">再等等</string>
     <string name="trtcliveroom_error">错误</string>
     <string name="trtcliveroom_notification">通知</string>
     <string name="trtcliveroom_send">发送</string>
@@ -26,6 +28,7 @@
     <string name="trtcliveroom_craete_room">新建直播间</string>
     <string name="trtcliveroom_msg_room_name_edit">请输入直播间名称</string>
     <string name="trtcliveroom_warning_room_name_empty">直播间名称不能为空</string>
+    <string name="trtcliveroom_warning_room_name_too_long">直播间名称过长</string>
     <string name="trtcliveroom_warning_not_empty">输入不能为空!</string>
     <string name="trtcliveroom_tap_current_user">当前点击用户: %1$s</string>
     <string name="trtcliveroom_warning_room_disband">房间已解散</string>
@@ -48,7 +51,7 @@
     <string name="trtcliveroom_message_send_fail">消息发生失败[%1$d]:%2$s</string>
     <string name="trtcliveroom_text_room_name">房间名称</string>
     <string name="trtcliveroom_text_anchor_name">主播</string>
-    <string name="trtcliveroom_warning_anchor_exit_room">当前正在直播，是否退出直播？</string>
+    <string name="trtcliveroom_warning_anchor_exit_room">视频互动进行中，确定离开吗？</string>
     <string name="trtcliveroom_error_create_live_room">创建直播房间失败,Error:%1$s</string>
     <string name="trtcliveroom_warning_linking_mic">您已经在连麦/PK中了</string>
     <string name="trtcliveroom_tips_accept_link_mic">用户接受%1$s</string>
@@ -66,12 +69,12 @@
     <string name="trtcliveroom_title_pk_request">PK 邀请</string>
     <string name="trtcliveroom_btn_start_live">开始直播</string>
     <string name="trtcliveroom_btn_stop_live">停止直播</string>
-    <string name="trtcliveroom_text_voice_quality">直播音质</string>
+    <string name="trtcliveroom_text_voice_quality">音质</string>
     <string name="trtcliveroom_hint_live_room_name">标题有趣能吸引人气</string>
     <string name="trtcliveroom_voice_quality_standard">标准</string>
     <string name="trtcliveroom_voice_quality_muisic">音乐</string>
     <string name="trtcliveroom_request_network_fail">请求网络失败 %1$s</string>
-    <string name="trtcliveroom_audience_members">%1$d人在看</string>
+    <string name="trtcliveroom_audience_members">%1$d人正在观看</string>
     <string name="trtcliveroom_btn_stop_pk">结束PK</string>
     <string name="trtcliveroom_toast_error_create_live_room">创建房间失败[%1$d]:%2$s</string>
     <string name="trtcliveroom_btn_invite">邀请</string>
@@ -104,4 +107,9 @@
     <string name="trtcliveroom_audio_reverb_type_lowdeep">低沉</string>
     <string name="trtcliveroom_audio_reverb_type_heavymetal">金属声</string>
     <string name="trtcliveroom_audio_reverb_type_hongliang">洪亮</string>
+    <string name="trtcliveroom_tv_enable_audio">开启音频</string>
+    <string name="trtcliveroom_title_bitrate">码率</string>
+    <string name="trtcliveroom_title_resolution">分辨率</string>
+    <string name="trtcliveroom_title_frame_rate">帧率</string>
+    <string name="trtcliveroom_title_video">视频设置</string>
 </resources>

@@ -411,4 +411,31 @@ public abstract class TRTCLiveRoom {
      */
     public abstract void showVideoDebugLog(boolean isShow);
 
+    //////////////////////////////////////////////////////////
+    //
+    //                  视频相关接口
+    //
+    //////////////////////////////////////////////////////////
+
+    /**
+     * 设置分辨率
+     *
+     * @param resolution 详细设置见 TRTCCloudDef.TRTC_VIDEO_RESOLUTION_xx
+     */
+    public abstract void setVideoResolution(int resolution);
+
+    /**
+     * 设置帧率
+     *
+     * @param fps
+     */
+    public abstract void setVideoFps(int fps);
+
+    /**
+     * 设置码率
+     *
+     * @param bitrate 码率
+     */
+    public abstract void setVideoBitrate(int bitrate);
+
 }

@@ -57,4 +57,11 @@ public interface ITRTCTXLiveRoom {
     TXAudioEffectManager getAudioEffectManager();
 
     void setAudioQuality(int quality);
+
+    void setVideoResolution(int resolution);
+
+    void setVideoFps(int fps);
+
+    void setVideoBitrate(int bitrate);
+
 }

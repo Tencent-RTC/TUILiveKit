@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
@@ -138,26 +139,11 @@ public class TCChatMsgListAdapter extends BaseAdapter implements AbsListView.OnS
         }
 
         TCChatEntity item = mList.get(position);
-
-        //        if (mCreateAnimator && mBLiveAnimator) {
-        //            playViewAnimator(convertView, position, item);
-        //        }
-        spanString = new SpannableString(item.getSenderName() + "：" + item.getContent());
-
-        // UI需求：Demo移除字体和颜色的计算
-        /* if (item.getType() != TCConstants.TEXT_TYPE) {
-            // 设置名称为粗体
-            StyleSpan boldStyle = new StyleSpan(Typeface.BOLD_ITALIC);
-            spanString.setSpan(boldStyle, 0, item.getSenderName().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            holder.sendContext.setTextColor(mContext.getResources().getColor(R.color.trtcliveroom_color_send_name1));
-        } else {
-            // 根据名称计算颜色
-            spanString.setSpan(new ForegroundColorSpan(calcNameColor(item.getSenderName())),
-                    0, item.getSenderName().length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-<<<<<<< HEAD
-            holder.sendContext.setTextColor(mContext.getResources().getColor(R.color.white));
-        }*/
-        holder.sendContext.setText(spanString);
+        String result = item.getSenderName() + "：" + item.getContent();
+        SpannableStringBuilder builder = new SpannableStringBuilder(result);
+        ForegroundColorSpan redSpan = new ForegroundColorSpan(calcNameColor(item.getSenderName()));
+        builder.setSpan(redSpan, 0, item.getSenderName().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        holder.sendContext.setText(builder);
         // 设置控件实际宽度以便计算列表项实际高度
         //holder.sendContext.fixViewWidth(mListView.getWidth());
         return convertView;

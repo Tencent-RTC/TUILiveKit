@@ -11,6 +11,8 @@
     <string name="trtcliveroom_cancle">Cancel</string>
     <string name="trtcliveroom_accept">Accept</string>
     <string name="trtcliveroom_refuse">Decline</string>
+    <string name="trtcliveroom_user_ok">Ok</string>
+    <string name="trtcliveroom_user_wait">Wait</string>
     <string name="trtcliveroom_error">Error</string>
     <string name="trtcliveroom_notification">Notification</string>
     <string name="trtcliveroom_send">Send</string>
@@ -26,6 +28,7 @@
     <string name="trtcliveroom_craete_room">New living room</string>
     <string name="trtcliveroom_msg_room_name_edit">Enter a room name</string>
     <string name="trtcliveroom_warning_room_name_empty">Room name cannot be empty</string>
+    <string name="trtcliveroom_warning_room_name_too_long">Room name is too long</string>
     <string name="trtcliveroom_warning_not_empty">Can not be empty.</string>
     <string name="trtcliveroom_tap_current_user">Current user: %1$s</string>
     <string name="trtcliveroom_warning_room_disband">Room closed</string>
@@ -103,4 +106,8 @@
     <string name="trtcliveroom_audio_reverb_type_lowdeep">Deep</string>
     <string name="trtcliveroom_audio_reverb_type_heavymetal">Metallic</string>
     <string name="trtcliveroom_audio_reverb_type_hongliang">Resonant</string>
+    <string name="trtcliveroom_tv_enable_audio">Enable Audio</string>
+    <string name="trtcliveroom_title_bitrate">Bitrate</string>
+    <string name="trtcliveroom_title_resolution">Resolution</string>
+    <string name="trtcliveroom_title_frame_rate">Frame Rate</string>
 </resources>
