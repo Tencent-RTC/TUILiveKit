@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 
+import com.google.gson.Gson;
 import com.tencent.imsdk.v2.V2TIMCallback;
 import com.tencent.imsdk.v2.V2TIMGroupChangeInfo;
 import com.tencent.imsdk.v2.V2TIMGroupInfo;
@@ -19,6 +20,7 @@ import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMMessage;
 import com.tencent.imsdk.v2.V2TIMSDKConfig;
 import com.tencent.imsdk.v2.V2TIMSDKListener;
+import com.tencent.imsdk.v2.V2TIMSignalingListener;
 import com.tencent.imsdk.v2.V2TIMSimpleMsgListener;
 import com.tencent.imsdk.v2.V2TIMUserFullInfo;
 import com.tencent.imsdk.v2.V2TIMUserInfo;
@@ -39,10 +41,12 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class TXRoomService implements ITXRoomService {
     private static final String TAG = "TXRoomService";
@@ -73,8 +77,13 @@ public class TXRoomService implements ITXRoomService {
     private TXRoomInfo                mTXRoomInfo;
     private LiveRoomSimpleMsgListener mSimpleListener;
     private LiveRoomGroupListener     mGroupListener;
+    private V2TIMSignalingListener    mSignalingListener;
     private Pair<String, TXCallback>  mLinkMicReqPair;
     private Pair<String, TXCallback>  mPKReqPair;
+    private final Map<String, String> mPKUserIdMap = new HashMap<>();            // PK接收方记录一个map  一个userId对应一个requestID
+    private final Map<String, String> mJoinAnchorUserIdMap = new HashMap<>();    // 连麦接收方记录一个map  一个userId对应一个requestID
+
+    private final Map<String, TXUserInfo>    mAudienceInfoMap = new HashMap<>();
 
     /// 房间内部状态，消息发送流程
     /// 1. 观众主动请求，观众状态变更 STATUS_REQUEST，并且等待 SEND_MSG_TIMEOUT 超时
@@ -84,9 +93,6 @@ public class TXRoomService implements ITXRoomService {
     /// 5. 观众收到对应的上麦消息，恢复 STATUS_NONE
     private int mInternalStatus = STATUS_NONE;
 
-    private Handler                mTimeoutHandler;
-    private Pair<String, Runnable> mTimeoutRunnablePair;
-
     public static synchronized TXRoomService getInstance() {
         if (sInstance == null) {
             sInstance = new TXRoomService();
@@ -95,15 +101,14 @@ public class TXRoomService implements ITXRoomService {
     }
 
     private TXRoomService() {
-        mTimeoutRunnablePair = new Pair<>(null, null);
         mAnchorList = new ArrayList<>();
         mMySelfIMInfo = new IMAnchorInfo();
         mOwnerIMInfo = new IMAnchorInfo();
         mRoomId = "";
         mCurrentRoomStatus = TRTCLiveRoomDef.ROOM_STATUS_NONE;
-        mTimeoutHandler = new Handler(Looper.getMainLooper());
         mSimpleListener = new LiveRoomSimpleMsgListener();
         mGroupListener = new LiveRoomGroupListener();
+        mSignalingListener = new LiveV2TIMSignalingListener();
     }
 
     @Override
@@ -113,7 +118,7 @@ public class TXRoomService implements ITXRoomService {
     }
 
     public void destroy() {
-        mTimeoutHandler.removeCallbacksAndMessages(null);
+        V2TIMManager.getSignalingManager().removeSignalingListener(mSignalingListener);
     }
 
     @Override
@@ -313,6 +318,7 @@ public class TXRoomService implements ITXRoomService {
                 cleanStatus();
                 V2TIMManager.getInstance().addSimpleMsgListener(mSimpleListener);
                 V2TIMManager.getInstance().setGroupListener(mGroupListener);
+                V2TIMManager.getSignalingManager().addSignalingListener(mSignalingListener);
                 TRTCLogger.d(TAG, "createGroup setGroupListener roomId: " + roomId + " mGroupListener: " + mGroupListener.hashCode());
 
                 mIsEnterRoom = true;
@@ -394,7 +400,7 @@ public class TXRoomService implements ITXRoomService {
                                     TRTCLogger.d(TAG, "destroyRoom remove GroupListener roomId: " + mRoomId + " mGroupListener: " + mGroupListener.hashCode());
                                     V2TIMManager.getInstance().removeSimpleMsgListener(mSimpleListener);
                                     V2TIMManager.getInstance().setGroupListener(null);
-
+                                    V2TIMManager.getSignalingManager().removeSignalingListener(mSignalingListener);
                                     cleanStatus();
 
                                     TRTCLogger.i(TAG, "destroy room success.");
@@ -460,7 +466,7 @@ public class TXRoomService implements ITXRoomService {
                                     cleanStatus();
                                     V2TIMManager.getInstance().addSimpleMsgListener(mSimpleListener);
                                     V2TIMManager.getInstance().setGroupListener(mGroupListener);
-
+                                    V2TIMManager.getSignalingManager().addSignalingListener(mSignalingListener);
                                     TRTCLogger.i(TAG, "enter room success. roomId: " + roomId) ;
                                     mRoomId = roomId;
                                     mIsEnterRoom = true;
@@ -634,9 +640,6 @@ public class TXRoomService implements ITXRoomService {
         // 有主播真的进来了
         TRTCLogger.i(TAG, "handleAnchorEnter roomStatus " + mInternalStatus + " " + userId + " pk " + mPKingIMAnchorInfo);
         if (mInternalStatus == STATUS_WAITING_ANCHOR) {
-            if (mTimeoutRunnablePair.second != null) {
-                mTimeoutHandler.removeCallbacks(mTimeoutRunnablePair.second);
-            }
             changeRoomStatus(STATUS_NONE);
             // 状态为PK
             if (mPKingIMAnchorInfo != null && userId.equals(mPKingIMAnchorInfo.userId)) {
@@ -777,7 +780,7 @@ public class TXRoomService implements ITXRoomService {
     }
 
     @Override
-    public void requestJoinAnchor(String reason, final TXCallback callback) {
+    public void requestJoinAnchor(String reason, int timeout, final TXCallback callback) {
         if (!isEnterRoom()) {
             TRTCLogger.e(TAG, "request join anchor fail, not enter room yet.");
             if (callback != null) {
@@ -808,20 +811,12 @@ public class TXRoomService implements ITXRoomService {
             return;
         }
         if (!TextUtils.isEmpty(mOwnerIMInfo.userId)) {
-            mLinkMicReqPair = new Pair<>(mOwnerIMInfo.userId, callback);
 
-            sendC2CMessage(mOwnerIMInfo.userId, IMProtocol.getJoinReqJsonStr(reason), null);
             changeRoomStatus(STATUS_REQUEST);
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    TRTCLogger.e(TAG, "request join anchor fail timeout");
-                    changeRoomStatus(STATUS_NONE);
-                    callback.onCallback(CODE_TIMEOUT, "主播超时未处理");
-                }
-            };
-            mTimeoutRunnablePair = new Pair<>(mOwnerIMInfo.userId, runnable);
-            mTimeoutHandler.postDelayed(runnable, SEND_MSG_TIMEOUT);
+            String json = createSignallingData(IMProtocol.SignallingDefine.CMD_REQUESTJOINANCHOR);
+            TRTCLogger.i(TAG, "send " + mOwnerIMInfo.userId + " json:" + json);
+            String inviteID = V2TIMManager.getSignalingManager().invite(mOwnerIMInfo.userId, json, true, null, timeout, null);
+            mLinkMicReqPair = new Pair<>(inviteID, callback);
         } else {
             TRTCLogger.e(TAG, "request join anchor fail, can't find host anchor user id.");
             if (callback != null) {
@@ -841,33 +836,27 @@ public class TXRoomService implements ITXRoomService {
             TRTCLogger.e(TAG, "response join anchor fail, roomStatus " + mInternalStatus);
             return;
         }
+        String inviteID = mJoinAnchorUserIdMap.remove(userId);
+        if (TextUtils.isEmpty(inviteID)) {
+            TRTCLogger.e(TAG, "inviteID is empty:" + userId);
+            return;
+        }
         if (isOwner()) {
-            if (mTimeoutRunnablePair.second != null) {
-                mTimeoutHandler.removeCallbacks(mTimeoutRunnablePair.second);
-            }
+            String json = createSignallingData(IMProtocol.SignallingDefine.CMD_REQUESTJOINANCHOR);
             if (agree) {
                 changeRoomStatus(STATUS_WAITING_ANCHOR);
-                Runnable runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        TRTCLogger.e(TAG, "check link mic timeout ");
-                        changeRoomStatus(STATUS_NONE);
-                    }
-                };
-                mTimeoutRunnablePair = new Pair<>(userId, runnable);
-                mTimeoutHandler.postDelayed(mTimeoutRunnablePair.second, WAIT_ANCHOR_ENTER_TIMEOUT);
-
+                V2TIMManager.getSignalingManager().accept(inviteID, json, null);
             } else {
                 changeRoomStatus(STATUS_NONE);
+                V2TIMManager.getSignalingManager().reject(inviteID, json, null);
             }
-            sendC2CMessage(userId, IMProtocol.getJoinRspJsonStr(agree, reason), null);
         } else {
             TRTCLogger.e(TAG, "send join anchor fail, not the room owner, room id:" + mRoomId + " my id:" + mMySelfIMInfo.userId);
         }
     }
 
     @Override
-    public void kickoutJoinAnchor(String userId, TXCallback callback) {
+    public void kickoutJoinAnchor(String userId, final TXCallback callback) {
         if (!isEnterRoom()) {
             TRTCLogger.e(TAG, "kickout join anchor fail, not enter room yet.");
             if (callback != null) {
@@ -883,8 +872,8 @@ public class TXRoomService implements ITXRoomService {
                 }
                 return;
             }
-
-            sendC2CMessage(userId, IMProtocol.getKickOutJoinJsonStr(), null);
+            String json = createSignallingData(IMProtocol.SignallingDefine.CMD_KICKOUTJOINANCHOR);
+            V2TIMManager.getSignalingManager().invite(userId, json, true, null, 0, null);
         } else {
             TRTCLogger.e(TAG, "kick out anchor fail, not the room owner, room id:" + mRoomId + " my id:" + mMySelfIMInfo.userId);
             if (callback != null) {
@@ -894,7 +883,7 @@ public class TXRoomService implements ITXRoomService {
     }
 
     @Override
-    public void requestRoomPK(String roomId, final String userId, final TXCallback callback) {
+    public void requestRoomPK(String roomId, final String userId, int timeout, final TXCallback callback) {
         if (!isEnterRoom()) {
             TRTCLogger.e(TAG, "request room pk fail, not enter room yet.");
             if (callback != null) {
@@ -930,28 +919,11 @@ public class TXRoomService implements ITXRoomService {
             mPKingRoomId = roomId;
             mPKingIMAnchorInfo = new IMAnchorInfo();
             mPKingIMAnchorInfo.userId = userId;
-            mPKReqPair = new Pair<>(userId, callback);
-            sendC2CMessage(userId, IMProtocol.getPKReqJsonStr(mRoomId, mMySelfIMInfo.userId), null);
+            String json = createSignallingData(IMProtocol.SignallingDefine.CMD_REQUESTROOMPK);
+            String inviteID = V2TIMManager.getSignalingManager().invite(userId, json, true, null, timeout, null);
+            mPKReqPair = new Pair<>(inviteID, callback);
             // 将房间状态置为请求pk中
             changeRoomStatus(STATUS_REQUEST);
-            if (mTimeoutRunnablePair.second != null) {
-                mTimeoutHandler.removeCallbacks(mTimeoutRunnablePair.second);
-            }
-            // 超时未处理
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    TRTCLogger.e(TAG, "requestRoomPK timeout");
-                    if (isOwner()) {
-                        if (callback != null) {
-                            callback.onCallback(CODE_TIMEOUT, "主播超时未处理");
-                        }
-                        changeRoomStatus(STATUS_NONE);
-                    }
-                }
-            };
-            mTimeoutRunnablePair = new Pair<>(userId, runnable);
-            mTimeoutHandler.postDelayed(runnable, SEND_MSG_TIMEOUT);
         } else {
             TRTCLogger.e(TAG, "request room pk fail, not the owner of current room, room id:" + mRoomId);
             if (callback != null) {
@@ -971,27 +943,22 @@ public class TXRoomService implements ITXRoomService {
             TRTCLogger.e(TAG, "response room pk fail, roomStatus is " + mInternalStatus);
             return;
         }
+        String inviteID = mPKUserIdMap.remove(userId);
+        if (TextUtils.isEmpty(inviteID)) {
+            TRTCLogger.e(TAG, "inviteID is empty:" + userId);
+            return;
+        }
         if (isOwner()) {
-            if (mTimeoutRunnablePair.second != null) {
-                mTimeoutHandler.removeCallbacks(mTimeoutRunnablePair.second);
-            }
+            String json = createSignallingData(IMProtocol.SignallingDefine.CMD_REQUESTROOMPK);
             if (agree) {
                 changeRoomStatus(STATUS_WAITING_ANCHOR);
-                //增加超时监测，如果PK主播没过来，就清空状态
-                mTimeoutHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (isOwner() && mCurrentRoomStatus != TRTCLiveRoomDef.ROOM_STATUS_PK) {
-                            clearPkStatus();
-                        }
-                    }
-                }, WAIT_ANCHOR_ENTER_TIMEOUT);
+                V2TIMManager.getSignalingManager().accept(inviteID, json,  null);
             } else {
                 mPKingIMAnchorInfo = null;
                 mPKingRoomId = null;
                 changeRoomStatus(STATUS_NONE);
+                V2TIMManager.getSignalingManager().reject(inviteID, json,  null);
             }
-            sendC2CMessage(userId, IMProtocol.getPKRspJsonStr(agree, reason, mMySelfIMInfo.streamId), null);
         } else {
             TRTCLogger.e(TAG, "response room pk fail, not the owner of this room, room id:" + mRoomId);
         }
@@ -1004,9 +971,6 @@ public class TXRoomService implements ITXRoomService {
         changeRoomStatus(STATUS_NONE);
         mPKingIMAnchorInfo = null;
         mPKingRoomId = null;
-        if (mTimeoutRunnablePair.second != null) {
-            mTimeoutHandler.removeCallbacks(mTimeoutRunnablePair.second);
-        }
         updateRoomType(TRTCLiveRoomDef.ROOM_STATUS_SINGLE);
         final ITXRoomServiceDelegate delegate = mDelegate;
         if (delegate != null) {
@@ -1017,29 +981,27 @@ public class TXRoomService implements ITXRoomService {
     private void changeRoomStatus(int status) {
         TRTCLogger.e(TAG, "changeRoomStatus " + status);
         mInternalStatus = status;
-        if (mInternalStatus == STATUS_NONE) {
-            // 一旦重新将状态置回, 清空超时逻辑
-            mTimeoutHandler.removeCallbacksAndMessages(null);
-        }
     }
 
-    private void rejectRoomPk(String userId, String msg) {
+    private void rejectRoomPk(String inviteID) {
         if (!isEnterRoom()) {
             TRTCLogger.e(TAG, "response room pk fail, not enter room yet.");
             return;
         }
         if (isOwner()) {
-            sendC2CMessage(userId, IMProtocol.getPKRspJsonStr(false, msg, mMySelfIMInfo.streamId), null);
+            String json = createSignallingData(IMProtocol.SignallingDefine.CMD_REQUESTROOMPK);
+            V2TIMManager.getSignalingManager().reject(inviteID, json,  null);
         }
     }
 
-    private void rejectLinkMic(String userId, String msg) {
+    private void rejectLinkMic(String inviteID) {
         if (!isEnterRoom()) {
             TRTCLogger.e(TAG, "response room pk fail, not enter room yet.");
             return;
         }
         if (isOwner()) {
-            sendC2CMessage(userId, IMProtocol.getJoinRspJsonStr(false, msg), null);
+            String json = createSignallingData(IMProtocol.SignallingDefine.CMD_REQUESTJOINANCHOR);
+            V2TIMManager.getSignalingManager().reject(inviteID, json,  null);
         }
     }
 
@@ -1072,11 +1034,9 @@ public class TXRoomService implements ITXRoomService {
             if (pkingAnchorInfo != null && !TextUtils.isEmpty(pkingAnchorInfo.userId) && !TextUtils.isEmpty(pkingRoomId)) {
                 mPKingIMAnchorInfo = null;
                 mPKingRoomId = null;
-                if (mTimeoutRunnablePair.second != null) {
-                    mTimeoutHandler.removeCallbacks(mTimeoutRunnablePair.second);
-                }
                 updateRoomType(TRTCLiveRoomDef.ROOM_STATUS_SINGLE);
-                sendC2CMessage(pkingAnchorInfo.userId, IMProtocol.getQuitPKJsonStr(), null);
+                String json = createSignallingData(IMProtocol.SignallingDefine.CMD_QUITROOMPK);
+                V2TIMManager.getSignalingManager().invite(pkingAnchorInfo.userId, json, true, null, 0, null);
             } else {
                 TRTCLogger.e(TAG, "quit room pk fail, not in pking, pk room id:" + pkingRoomId + " pk user:" + pkingAnchorInfo);
                 if (callback != null) {
@@ -1156,7 +1116,11 @@ public class TXRoomService implements ITXRoomService {
         mLinkMicReqPair = new Pair<>(null, null);
 
         mInternalStatus = STATUS_NONE;
-        mTimeoutHandler.removeCallbacksAndMessages(null);
+
+        mJoinAnchorUserIdMap.clear();
+        mPKUserIdMap.clear();
+
+        mAudienceInfoMap.clear();
     }
 
     private void updateRoomType(int type) {
@@ -1193,7 +1157,7 @@ public class TXRoomService implements ITXRoomService {
                     v2TIMGroupInfo.setFaceUrl(v2TIMGroupInfoResult.getGroupInfo().getFaceUrl());
                     v2TIMGroupInfo.setGroupType(v2TIMGroupInfoResult.getGroupInfo().getGroupType());
                     v2TIMGroupInfo.setIntroduction(IMProtocol.getGroupInfoJsonStr(mCurrentRoomStatus, new ArrayList<>(mAnchorList)));
-
+                    TRTCLogger.i(TAG, String.format("updateHostAnchorInfo, GroupName=%s, Introduction=%s", v2TIMGroupInfo.getGroupName(), v2TIMGroupInfo.getIntroduction()));
                     V2TIMManager.getGroupManager().setGroupInfo(v2TIMGroupInfo, new V2TIMCallback() {
                         @Override
                         public void onError(int code, String desc) {
@@ -1236,31 +1200,6 @@ public class TXRoomService implements ITXRoomService {
         });
     }
 
-
-    private void sendC2CMessage(String userId, String data, final TXCallback callback) {
-        if (!isEnterRoom()) {
-            return;
-        }
-
-        V2TIMManager.getInstance().sendC2CCustomMessage(data.getBytes(), userId,  new V2TIMValueCallback<V2TIMMessage>() {
-            @Override
-            public void onError(int i, String s) {
-                TRTCLogger.e(TAG, "send c2c msg fail, code:" + i + " msg:" + s);
-                if (callback != null) {
-                    callback.onCallback(i, s);
-                }
-            }
-
-            @Override
-            public void onSuccess(V2TIMMessage v2TIMMessage) {
-                TRTCLogger.i(TAG, "send c2c msg success.");
-                if (callback != null) {
-                    callback.onCallback(0, "send c2c msg success.");
-                }
-            }
-        });
-    }
-
     private void onRecvC2COrGroupCustomMessage(final TXUserInfo txUserInfo, byte[] customData) {
         final ITXRoomServiceDelegate delegate = mDelegate;
         String customStr = new String(customData);
@@ -1282,76 +1221,11 @@ public class TXRoomService implements ITXRoomService {
                         break;
                     case IMProtocol.Define.CODE_REQUEST_JOIN_ANCHOR:
                         // 收到请求连麦的消息：
-                        if (mCurrentRoomStatus == TRTCLiveRoomDef.ROOM_STATUS_PK) {
-                            TRTCLogger.e(TAG, "recv join anchor mCurrentRoomStatus " + mCurrentRoomStatus);
-                            rejectLinkMic(txUserInfo.userId, "主播正在PK中");
-                            return;
-                        }
-                        if (mInternalStatus != STATUS_NONE) {
-                            TRTCLogger.e(TAG, "recv join anchor status " + mInternalStatus);
-                            rejectLinkMic(txUserInfo.userId, "主播正在处理其他消息");
-                            return;
-                        }
-                        changeRoomStatus(STATUS_RECEIVED);
-                        if (mTimeoutRunnablePair.second != null) {
-                            mTimeoutHandler.removeCallbacks(mTimeoutRunnablePair.second);
-                        }
-                        Runnable runnable = new Runnable() {
-                            @Override
-                            public void run() {
-                                TRTCLogger.e(TAG, "request join anchor timeout:" + mCurrentRoomStatus);
-                                rejectLinkMic(txUserInfo.userId, "主播超时未响应");
-                                changeRoomStatus(STATUS_NONE);
-                            }
-                        };
-                        mTimeoutRunnablePair = new Pair<>(txUserInfo.userId, runnable);
-                        mTimeoutHandler.postDelayed(runnable, HANDLE_MSG_TIMEOUT);
-                        String reqReason = IMProtocol.parseJoinReqReason(jsonObject);
-                        if (delegate != null) {
-                            delegate.onRoomRequestJoinAnchor(txUserInfo, reqReason, HANDLE_MSG_TIMEOUT);
-                        }
                         break;
                     case IMProtocol.Define.CODE_RESPONSE_JOIN_ANCHOR:
-                        if (mInternalStatus != STATUS_REQUEST) {
-                            TRTCLogger.e(TAG, "recv link mic response status " + mInternalStatus);
-                            return;
-                        }
-                        // 收到连麦回包的消息：
-                        Pair<Boolean, String> joinRspPair = IMProtocol.parseJoinRspResult(jsonObject);
-                        if (joinRspPair != null) {
-                            boolean agree = joinRspPair.first;
-                            String rspReason = joinRspPair.second;
-                            Pair<String, TXCallback> linkMicPair = mLinkMicReqPair;
-                            if (linkMicPair != null) {
-                                String ownerId = linkMicPair.first;
-                                TXCallback callback = linkMicPair.second;
-                                if (!TextUtils.isEmpty(ownerId) && callback != null) {
-                                    if (ownerId.equals(txUserInfo.userId)) {
-                                        mLinkMicReqPair = null;
-                                        // 连麦的时候主播已经在线了，所以不需要等待主播上线，直接将状态置为STATUS_NONE
-                                        changeRoomStatus(STATUS_NONE);
-                                        if (mTimeoutRunnablePair.second != null) {
-                                            mTimeoutHandler.removeCallbacks(mTimeoutRunnablePair.second);
-                                        }
-                                        callback.onCallback(agree ? 0 : -1, agree ? "anchor agree to link mic" : rspReason);
-                                    } else {
-                                        TRTCLogger.e(TAG, "recv join rsp, but link mic owner id:" + ownerId + " recv im id:" + txUserInfo.userId);
-                                    }
-                                } else {
-                                    TRTCLogger.e(TAG, "recv join rsp, but link mic pair params is invalid, ownerId:" + ownerId + " callback:" + callback);
-                                }
-                            } else {
-                                TRTCLogger.e(TAG, "recv join rsp, but link mic pair is null.");
-                            }
-                        } else {
-                            TRTCLogger.e(TAG, "recv join rsp, but parse pair is null, maybe something error.");
-                        }
                         break;
                     case IMProtocol.Define.CODE_KICK_OUT_JOIN_ANCHOR:
                         // 收到被踢出的消息：
-                        if (delegate != null) {
-                            delegate.onRoomKickoutJoinAnchor();
-                        }
                         break;
                     case IMProtocol.Define.CODE_NOTIFY_JOIN_ANCHOR_STREAM:
                         // 收到连麦者流id更新的消息：
@@ -1359,121 +1233,11 @@ public class TXRoomService implements ITXRoomService {
                         break;
                     case IMProtocol.Define.CODE_REQUEST_ROOM_PK:
                         // 收到请求跨房PK的消息：
-                        // 首先检查状态，如果状态不对，立即回复拒绝
-                        if (mCurrentRoomStatus == TRTCLiveRoomDef.ROOM_STATUS_LINK_MIC) {
-                            TRTCLogger.e(TAG, "received pk msg, but mCurrentRoomStatus is" + mCurrentRoomStatus);
-                            rejectRoomPk(txUserInfo.userId, "主播正在连麦中");
-                            return;
-                        }
-                        if (mCurrentRoomStatus == TRTCLiveRoomDef.ROOM_STATUS_PK) {
-                            TRTCLogger.e(TAG, "received pk msg, but mCurrentRoomStatus is" + mCurrentRoomStatus);
-                            rejectRoomPk(txUserInfo.userId, "主播正在PK中");
-                            return;
-                        }
-                        if (mInternalStatus != STATUS_NONE) {
-                            TRTCLogger.e(TAG, "received pk msg, but roomStatus is" + mInternalStatus);
-                            rejectRoomPk(txUserInfo.userId, "主播正在处理其他消息");
-                            return;
-                        }
-                        Pair<String, String> pkReqPair = IMProtocol.parsePKReq(jsonObject);
-                        if (pkReqPair != null) {
-                            String fromRoomId = pkReqPair.first;
-                            String fromStreamId = pkReqPair.second;
-
-
-                            if (!TextUtils.isEmpty(fromRoomId) && !TextUtils.isEmpty(fromStreamId)) {
-                                mPKingRoomId = fromRoomId;
-                                mPKingIMAnchorInfo = new IMAnchorInfo();
-                                mPKingIMAnchorInfo.name = txUserInfo.userName;
-                                mPKingIMAnchorInfo.streamId = fromStreamId;
-                                mPKingIMAnchorInfo.userId = txUserInfo.userId;
-                                // 改变房间状态
-                                changeRoomStatus(STATUS_RECEIVED);
-                                // 同时增加超时处理
-                                if (mTimeoutRunnablePair.second != null) {
-                                    mTimeoutHandler.removeCallbacks(mTimeoutRunnablePair.second);
-                                }
-                                Runnable runnable1 = new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        TRTCLogger.e(TAG, "received pk msg handle timeout");
-                                        if (isOwner()) {
-                                            rejectRoomPk(mPKingIMAnchorInfo.userId, "主播超时未响应");
-                                            mPKingRoomId = null;
-                                            mPKingIMAnchorInfo = null;
-                                            changeRoomStatus(STATUS_NONE);
-                                        }
-                                    }
-                                };
-                                mTimeoutRunnablePair = new Pair<>(txUserInfo.userId, runnable1);
-                                mTimeoutHandler.postDelayed(runnable1, HANDLE_MSG_TIMEOUT);
-                                if (delegate != null) {
-                                    // 回调到上层
-                                    delegate.onRoomRequestRoomPK(txUserInfo, HANDLE_MSG_TIMEOUT);
-                                }
-                            } else {
-                                TRTCLogger.e(TAG, "recv pk req, room id:" + fromRoomId + " or stream id:" + fromStreamId + " is invalid.");
-                            }
-                        } else {
-                            TRTCLogger.e(TAG, "recv pk req, but parse pair is null, maybe something error.");
-                        }
                         break;
                     case IMProtocol.Define.CODE_RESPONSE_PK:
-                        if (mInternalStatus != STATUS_REQUEST) {
-                            TRTCLogger.e(TAG, "recv pk response status " + mInternalStatus);
-                            return;
-                        }
                         // 收到跨房PK响应消息：
-                        Pair<Boolean, Pair<String, String>> pkRspPair = IMProtocol.parsePKRsp(jsonObject);
-                        if (pkRspPair != null) {
-                            //accept、reason、streamId
-                            boolean agree = pkRspPair.first;
-                            String reason = pkRspPair.second.first;
-                            String streamId = pkRspPair.second.second;
-
-                            Pair<String, TXCallback> pkPair = mPKReqPair;
-                            if (pkPair != null) {
-                                String userId = pkPair.first;
-                                TXCallback callback = pkPair.second;
-                                if (!TextUtils.isEmpty(userId)) {
-                                    if (txUserInfo.userId.equals(userId)) {
-                                        mPKReqPair = null;
-                                        if (agree) {
-                                            changeRoomStatus(STATUS_WAITING_ANCHOR);
-                                            mPKingIMAnchorInfo.streamId = streamId;
-                                            if (delegate != null) {
-                                                delegate.onRoomResponseRoomPK(mPKingRoomId, streamId, txUserInfo);
-                                            }
-                                        } else {
-                                            mPKingRoomId = null;
-                                            mPKingIMAnchorInfo = null;
-                                            changeRoomStatus(STATUS_NONE);
-                                        }
-                                        //收到回应，需要清除超时回调
-                                        if (mTimeoutRunnablePair != null) {
-                                            mTimeoutHandler.removeCallbacks(mTimeoutRunnablePair.second);
-                                        }
-                                        if (callback != null) {
-                                            callback.onCallback(agree ? 0 : -1, agree ? "agree to pk" : reason);
-                                        }
-                                    } else {
-                                        TRTCLogger.e(TAG, "recv pk rsp, but pk id:" + userId + " im id:" + txUserInfo.userId);
-                                    }
-                                } else {
-                                    TRTCLogger.e(TAG, "recv pk rsp, but pk pair params is invalid.");
-                                }
-                            } else {
-                                TRTCLogger.e(TAG, "recv pk rsp, but pk pair is null.");
-                            }
-                        } else {
-                            TRTCLogger.e(TAG, "recv pk rsp, but parse pair is null, maybe something error.");
-                        }
                         break;
                     case IMProtocol.Define.CODE_QUIT_ROOM_PK:
-                        if (mPKingIMAnchorInfo != null && !txUserInfo.userId.equals(mPKingIMAnchorInfo.userId)) {
-                            return;
-                        }
-                        clearPkStatus();
                         break;
                     case IMProtocol.Define.CODE_ROOM_CUSTOM_MSG:
                         Pair<String, String> cusPair = IMProtocol.parseCusMsg(jsonObject);
@@ -1603,6 +1367,7 @@ public class TXRoomService implements ITXRoomService {
                 Log.d(TAG, "onMemberEnter userName: " + userInfo.userName);
                 userInfo.userId = timUserProfile.getUserID();
                 userInfo.avatarURL = timUserProfile.getFaceUrl();
+                mAudienceInfoMap.put(userInfo.userId, userInfo);
                 if ( TextUtils.isEmpty(userInfo.userId) || userInfo.userId.equals(mMySelfIMInfo.userId)) {
                     return;
                 }
@@ -1623,6 +1388,8 @@ public class TXRoomService implements ITXRoomService {
             Log.d(TAG, "onMemberLeave userName: " + userInfo.userName);
             userInfo.userId = member.getUserID();
             userInfo.avatarURL = member.getFaceUrl();
+            mAudienceInfoMap.remove(userInfo.userId);
+            changeRoomStatus(STATUS_NONE);
             if ( TextUtils.isEmpty(userInfo.userId) || userInfo.userId.equals(mMySelfIMInfo.userId)) {
                 return;
             }
@@ -1654,6 +1421,268 @@ public class TXRoomService implements ITXRoomService {
         public void onGroupInfoChanged(String groupID, List<V2TIMGroupChangeInfo> changeInfos) {
             super.onGroupInfoChanged(groupID, changeInfos);
         }
+    }
+
+    private final String createSignallingData(String cmdType) {
+        SignallingData signallingData = new SignallingData();
+        signallingData.setVersion(IMProtocol.SignallingDefine.VALUE_VERSION);
+        signallingData.setBusinessID(IMProtocol.SignallingDefine.VALUE_BUSINESS_ID);
+        signallingData.setPlatform(IMProtocol.SignallingDefine.VALUE_PLATFORM);
+        SignallingData.DataInfo dataInfo = new SignallingData.DataInfo();
+        signallingData.setData(dataInfo);
+        dataInfo.setCmd(cmdType);
+        dataInfo.setRoomID(mRoomId);
+        String json = new Gson().toJson(signallingData);
+        TRTCLogger.i(TAG, "createSignallingData:"+json);
+        return json;
+    }
+
+    /**
+     * 信令监听器
+     */
+    private final class LiveV2TIMSignalingListener extends V2TIMSignalingListener {
+
+        @Override
+        public void onReceiveNewInvitation(final String inviteID, final String inviter, String groupID, List<String> inviteeList, String data) {
+            TRTCLogger.i(TAG, String.format("onReceiveNewInvitation enter, inviteID=%s, inviter=%s, groupID=%s, inviteeList=%s, data=%s", inviteID, inviter, groupID, inviteeList, data));
+            SignallingData signallingData = IMProtocol.convert2SignallingData(data);
+            if (!IMProtocol.SignallingDefine.VALUE_BUSINESS_ID.equals(signallingData.getBusinessID())) {
+                return;
+            }
+            final String cmd = signallingData.getData().getCmd();
+            if (IMProtocol.SignallingDefine.CMD_REQUESTJOINANCHOR.equals(cmd)) {
+                if (mCurrentRoomStatus == TRTCLiveRoomDef.ROOM_STATUS_PK) {
+                    TRTCLogger.e(TAG, "recv join anchor mCurrentRoomStatus " + mCurrentRoomStatus);
+                    // 主播正在PK中
+                    rejectLinkMic(inviteID);
+                    return;
+                }
+                if (mInternalStatus != STATUS_NONE) {
+                    TRTCLogger.e(TAG, "recv join anchor status " + mInternalStatus);
+                    // 主播正在处理其他消息
+                    if (mJoinAnchorUserIdMap.containsKey(inviter)) {
+                        // 处理同一用户的最新请求，更新inviteID
+                        mJoinAnchorUserIdMap.put(inviter, inviteID);
+                    } else {
+                        rejectLinkMic(inviteID);
+                    }
+                    return;
+                }
+                changeRoomStatus(STATUS_RECEIVED);
+                mJoinAnchorUserIdMap.put(inviter, inviteID);
+                String reqReason = "";
+                if (mDelegate != null) {
+                    TXUserInfo userInfo = mAudienceInfoMap.get(inviter);
+                    if (null != userInfo) {
+                        mDelegate.onRoomRequestJoinAnchor(userInfo, reqReason, HANDLE_MSG_TIMEOUT);
+                    }
+                }
+            } else if (IMProtocol.SignallingDefine.CMD_KICKOUTJOINANCHOR.equals(cmd)) {
+                if (null != mDelegate) {
+                    mDelegate.onRoomKickoutJoinAnchor();
+                }
+            } else if (IMProtocol.SignallingDefine.CMD_REQUESTROOMPK.equals(cmd)) {
+                if (mCurrentRoomStatus == TRTCLiveRoomDef.ROOM_STATUS_LINK_MIC) {
+                    TRTCLogger.e(TAG, "received pk msg, but mCurrentRoomStatus is" + mCurrentRoomStatus);
+                    // 主播正在连麦中
+                    rejectRoomPk(inviteID);
+                    return;
+                }
+                if (mCurrentRoomStatus == TRTCLiveRoomDef.ROOM_STATUS_PK) {
+                    TRTCLogger.e(TAG, "received pk msg, but mCurrentRoomStatus is" + mCurrentRoomStatus);
+                    // 主播正在PK中
+                    rejectRoomPk(inviteID);
+                    return;
+                }
+                if (mInternalStatus != STATUS_NONE) {
+                    TRTCLogger.e(TAG, "received pk msg, but roomStatus is" + mInternalStatus);
+                    // 主播正在处理其他消息
+                    rejectRoomPk(inviteID);
+                    return;
+                }
+                mPKingRoomId = String.valueOf(signallingData.getData().getRoomID());
+                mPKingIMAnchorInfo = new IMAnchorInfo();
+                mPKUserIdMap.put(inviter, inviteID);
+                changeRoomStatus(STATUS_RECEIVED);
+                if (mDelegate != null) {
+                    V2TIMManager.getInstance().getUsersInfo(Collections.singletonList(inviter), new V2TIMValueCallback<List<V2TIMUserFullInfo>>() {
+                        @Override
+                        public void onError(int i, String s) {
+
+                        }
+
+                        @Override
+                        public void onSuccess(List<V2TIMUserFullInfo> v2TIMUserFullInfos) {
+                            TXUserInfo userInfo = new TXUserInfo();
+                            userInfo.userId = inviter;
+                            userInfo.userName = v2TIMUserFullInfos.get(0).getNickName();
+                            mPKingIMAnchorInfo.name = userInfo.userName;
+                            mPKingIMAnchorInfo.userId = userInfo.userId;
+                            mDelegate.onRoomRequestRoomPK(userInfo, HANDLE_MSG_TIMEOUT);
+                        }
+                    });
+                }
+            } else if (IMProtocol.SignallingDefine.CMD_QUITROOMPK.equals(cmd)) {
+                if (mPKingIMAnchorInfo != null && !inviter.equals(mPKingIMAnchorInfo.userId)) {
+                    return;
+                }
+                clearPkStatus();
+            }
+        }
+
+        @Override
+        public void onInviteeAccepted(String inviteID, String invitee, String data) {
+            TRTCLogger.i(TAG, String.format("onInviteeAccepted enter, inviteID=%s, invitee=%s, data=%s", inviteID, invitee, data));
+            SignallingData signallingData = IMProtocol.convert2SignallingData(data);
+            if (!IMProtocol.SignallingDefine.VALUE_BUSINESS_ID.equals(signallingData.getBusinessID())) {
+                return;
+            }
+            final String cmd = signallingData.getData().getCmd();
+            if (IMProtocol.SignallingDefine.CMD_REQUESTJOINANCHOR.equals(cmd)) {
+                onLinkMicResponseResult(inviteID, true);
+            } else if (IMProtocol.SignallingDefine.CMD_REQUESTROOMPK.equals(cmd)) {
+                onPkResponseResult(inviteID, invitee, true);
+            }
+        }
+
+        @Override
+        public void onInviteeRejected(final String inviteID, final String invitee, String data) {
+            TRTCLogger.i(TAG, String.format("onInviteeRejected enter, inviteID=%s, invitee=%s, data=%s", inviteID, invitee, data));
+            SignallingData signallingData = IMProtocol.convert2SignallingData(data);
+            if (!IMProtocol.SignallingDefine.VALUE_BUSINESS_ID.equals(signallingData.getBusinessID())) {
+                return;
+            }
+            final String cmd = signallingData.getData().getCmd();
+            if (IMProtocol.SignallingDefine.CMD_REQUESTJOINANCHOR.equals(cmd)) {
+                onLinkMicResponseResult(inviteID, false);
+            } else if (IMProtocol.SignallingDefine.CMD_REQUESTROOMPK.equals(cmd)) {
+                onPkResponseResult(inviteID, invitee, false);
+            }
+        }
+
+        private void onLinkMicResponseResult(String inviteID, boolean agree) {
+            Pair<String, TXCallback> linkMicPair = mLinkMicReqPair;
+            if (linkMicPair != null) {
+                String inviteID0 = linkMicPair.first;
+                TXCallback callback = linkMicPair.second;
+                if (!TextUtils.isEmpty(inviteID0) && callback != null) {
+                    if (inviteID0.equals(inviteID)) {
+                        mLinkMicReqPair = null;
+                        // 连麦的时候主播已经在线了，所以不需要等待主播上线，直接将状态置为STATUS_NONE
+                        changeRoomStatus(STATUS_NONE);
+                        callback.onCallback(agree ? 0 : -1, agree ? "anchor agree to link mic" : "anchor reject to link mic");
+                    } else {
+                        TRTCLogger.e(TAG, "recv join rsp, but link mic inviteID:" + inviteID0 + " recv inviteID:" + inviteID);
+                    }
+                } else {
+                    TRTCLogger.e(TAG, "recv join rsp, but link mic pair params is invalid, inviteID:" + inviteID0 + " callback:" + callback);
+                }
+            } else {
+                TRTCLogger.e(TAG, "recv join rsp, but link mic pair is null.");
+            }
+        }
+
+        private void onPkResponseResult(final String inviteID, final String userId, boolean agree) {
+            Pair<String, TXCallback> pkPair = mPKReqPair;
+            if (pkPair != null) {
+                String inviteID0 = pkPair.first;
+                TXCallback callback = pkPair.second;
+                if (!TextUtils.isEmpty(inviteID0)) {
+                    if (inviteID0.equals(inviteID)) {
+                        mPKReqPair = null;
+                        if (agree) {
+                            changeRoomStatus(STATUS_WAITING_ANCHOR);
+                            if (mDelegate != null) {
+                                V2TIMManager.getInstance().getUsersInfo(Collections.singletonList(userId), new V2TIMValueCallback<List<V2TIMUserFullInfo>>() {
+                                    @Override
+                                    public void onError(int i, String s) {
+
+                                    }
+
+                                    @Override
+                                    public void onSuccess(List<V2TIMUserFullInfo> v2TIMUserFullInfos) {
+                                        TXUserInfo userInfo = new TXUserInfo();
+                                        userInfo.userId = userId;
+                                        userInfo.userName = v2TIMUserFullInfos.get(0).getNickName();
+                                        mDelegate.onRoomResponseRoomPK(mPKingRoomId, userInfo);
+                                    }
+                                });
+                            }
+                        } else {
+                            mPKingRoomId = null;
+                            mPKingIMAnchorInfo = null;
+                            changeRoomStatus(STATUS_NONE);
+                        }
+                        if (callback != null) {
+                            callback.onCallback(agree ? 0 : -1, agree ? "agree to pk" : "reject to pk");
+                        }
+                    } else {
+                        TRTCLogger.e(TAG, "recv pk rsp, but pk inviteID:" + inviteID0 + " im inviteID:" + inviteID);
+                    }
+                } else {
+                    TRTCLogger.e(TAG, "recv pk rsp, but pk pair params is invalid.");
+                }
+            } else {
+                TRTCLogger.e(TAG, "recv pk rsp, but pk pair is null.");
+            }
+        }
+
+        @Override
+        public void onInvitationCancelled(String inviteID, String inviter, String data) {
+
+        }
+
+        @Override
+        public void onInvitationTimeout(String inviteID, List<String> inviteeList) {
+            TRTCLogger.i(TAG, String.format("onInvitationTimeout enter, inviteID=%s, inviteeList=%s", inviteID, inviteeList));
+            changeRoomStatus(STATUS_NONE);
+            if (mLinkMicReqPair != null && inviteID.equals(mLinkMicReqPair.first)) {
+                // 走到这里表示观众端申请连麦超时了
+                TXCallback callback = mLinkMicReqPair.second;
+                if (callback != null) {
+                    callback.onCallback(CODE_TIMEOUT, "request join anchor timeout!");
+                }
+                return;
+            }
+            if (mPKReqPair != null && inviteID.equals(mPKReqPair.first)) {
+                // 走到这里表示主播端主动申请pk超时了
+                mPKingRoomId = null;
+                mPKingIMAnchorInfo = null;
+                TXCallback callback = mPKReqPair.second;
+                if (callback != null) {
+                    callback.onCallback(CODE_TIMEOUT, "request join anchor timeout!");
+                }
+                return;
+            }
+            if (mJoinAnchorUserIdMap.containsValue(inviteID)) {
+                // 走到这里说明某个观众连麦超时了
+                String userId = getKey(mJoinAnchorUserIdMap, inviteID);
+                mJoinAnchorUserIdMap.remove(userId);
+                if (mDelegate != null) {
+                    mDelegate.onAudienceRequestJoinAnchorTimeout(userId);
+                }
+                return;
+            }
+            if (mPKUserIdMap.containsValue(inviteID)) {
+                // 走到这里说明某个主播申请PK超时了
+                String userId = getKey(mPKUserIdMap, inviteID);
+                mPKUserIdMap.remove(userId);
+                if (mDelegate != null) {
+                    mDelegate.onAnchorRequestRoomPKTimeout(userId);
+                }
+                return;
+            }
+        }
+    }
+
+    private static String getKey(Map map, String requestId) {
+        Set<Map.Entry<String, String>> sets = map.entrySet();
+        for (Map.Entry<String, String> item : sets) {
+            if (requestId.equals(item.getValue())) {
+                return item.getKey();
+            }
+        }
+        return "";
     }
 
 

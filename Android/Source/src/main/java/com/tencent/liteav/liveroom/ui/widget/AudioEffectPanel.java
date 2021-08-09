@@ -264,7 +264,10 @@ public class AudioEffectPanel extends BottomSheetDialog {
         // 选变声
         mChangerRVAdapter = new RecyclerViewAdapter(mContext, mChangerItemEntityList, new OnItemClickListener() {
             @Override
-            public void onItemClick(int position) {
+            public void onItemClick(final int position) {
+                if (position == mVoiceChangerPosition) {
+                    return;
+                }
                 int type = mChangerItemEntityList.get(position).mType;
                 Log.d(TAG, "select changer type " + type);
                 if (mAudioEffectManager != null) {
@@ -285,7 +288,10 @@ public class AudioEffectPanel extends BottomSheetDialog {
         // 选混响
         mReverbRVAdapter = new RecyclerViewAdapter(mContext, mReverbItemEntityList, new OnItemClickListener() {
             @Override
-            public void onItemClick(int position) {
+            public void onItemClick(final int position) {
+                if (position == mVoiceReverbPosition) {
+                    return;
+                }
                 int type = mReverbItemEntityList.get(position).mType;
                 Log.d(TAG, "select reverb type " + type);
                 if (mAudioEffectManager != null) {

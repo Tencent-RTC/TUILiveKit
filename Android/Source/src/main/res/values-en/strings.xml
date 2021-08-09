@@ -54,8 +54,8 @@
     <string name="trtcliveroom_warning_anchor_exit_room">Are you sure you want to exit the live stream?</string>
     <string name="trtcliveroom_error_create_live_room">Failed to create the room. Error:%1$s</string>
     <string name="trtcliveroom_warning_linking_mic">You are co-anchoring/competing</string>
-    <string name="trtcliveroom_tips_accept_link_mic">Accept %1$s</string>
-    <string name="trtcliveroom_tips_refuse_link_mic">Decline %1$s</string>
+    <string name="trtcliveroom_tips_accept_link_mic">User %1$s Accept Invitation</string>
+    <string name="trtcliveroom_tips_refuse_link_mic">User %1$s Decline Invitation</string>
     <string name="trtcliveroom_request_pk">%1$s requested to compete</string>
     <string name="trtcliveroom_anchor_refuse_pk_request">The anchor declined your request to compete.</string>
     <string name="trtcliveroom_anchor_handling_other_link">The anchor is handling another co-anchoring request. Please wait.</string>
@@ -110,4 +110,7 @@
     <string name="trtcliveroom_title_bitrate">Bitrate</string>
     <string name="trtcliveroom_title_resolution">Resolution</string>
     <string name="trtcliveroom_title_frame_rate">Frame Rate</string>
+    <string name="trtcliveroom_first_enter_room_tips">In accordance with relevant regulations, the app forbids pornographic, abusive, violent, terrorist, and politically sensitive content. All audio/video calls and live streams are recorded and archived.</string>
+    <string name="trtcliveroom_title_video">Video Settings</string>
+    <string name="trtcliveroom_link_mic_anchor_timeout">The anchor Timeout Response</string>
 </resources>

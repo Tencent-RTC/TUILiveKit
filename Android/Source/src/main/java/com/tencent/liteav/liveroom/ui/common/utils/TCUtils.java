@@ -26,10 +26,9 @@ import android.text.TextUtils;
 import android.util.TypedValue;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Picasso;
+import com.tencent.liteav.basic.ImageLoader;
 import com.tencent.liteav.liveroom.R;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -348,11 +347,7 @@ public class TCUtils {
             return;
         }
         try {
-            if (TextUtils.isEmpty(url)) {
-                view.setImageResource(defResId);
-            } else {
-                Picasso.get().load(url).placeholder(R.drawable.trtcliveroom_bg_cover).error(R.drawable.trtcliveroom_bg_cover).into(view);
-            }
+            ImageLoader.loadImage(context, view, url, R.drawable.trtcliveroom_bg_cover);
         } catch (Exception e) {
             e.printStackTrace();
         }

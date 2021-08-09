@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.blankj.utilcode.util.CollectionUtils;
 import com.blankj.utilcode.util.ToastUtils;
-import com.squareup.picasso.Picasso;
+import com.tencent.liteav.basic.ImageLoader;
 import com.tencent.liteav.liveroom.R;
 import com.tencent.liteav.liveroom.model.LiveRoomManager;
 import com.tencent.liteav.liveroom.model.TRTCLiveRoom;
@@ -176,7 +176,7 @@ public class AnchorPKSelectView extends RelativeLayout {
                 mImageAvatar = (ImageView) itemView.findViewById(R.id.iv_avatar);
             }
 
-            public void bind(final TRTCLiveRoomDef.TRTCLiveRoomInfo model,
+            public void bind(Context context, final TRTCLiveRoomDef.TRTCLiveRoomInfo model,
                              final OnItemClickListener listener) {
                 if (model == null) {
                     return;
@@ -190,10 +190,7 @@ public class AnchorPKSelectView extends RelativeLayout {
                     mUserNameTv.setText(model.ownerName);
                 }
 
-                if (!TextUtils.isEmpty(model.coverUrl)) {
-                    Picasso.get().load(model.coverUrl).placeholder(R.drawable.trtcliveroom_bg_cover).into(mImageAvatar);
-                }
-
+                ImageLoader.loadImage(context, mImageAvatar, model.coverUrl, R.drawable.trtcliveroom_bg_cover);
                 mButtonInvite.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -216,7 +213,7 @@ public class AnchorPKSelectView extends RelativeLayout {
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             TRTCLiveRoomDef.TRTCLiveRoomInfo item = list.get(position);
-            holder.bind(item, onItemClickListener);
+            holder.bind(context, item, onItemClickListener);
         }
 
 

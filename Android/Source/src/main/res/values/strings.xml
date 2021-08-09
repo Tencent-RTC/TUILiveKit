@@ -54,8 +54,8 @@
     <string name="trtcliveroom_warning_anchor_exit_room">视频互动进行中，确定离开吗？</string>
     <string name="trtcliveroom_error_create_live_room">创建直播房间失败,Error:%1$s</string>
     <string name="trtcliveroom_warning_linking_mic">您已经在连麦/PK中了</string>
-    <string name="trtcliveroom_tips_accept_link_mic">用户接受%1$s</string>
-    <string name="trtcliveroom_tips_refuse_link_mic">用户拒绝%1$s</string>
+    <string name="trtcliveroom_tips_accept_link_mic">用户 %1$s 接受邀请</string>
+    <string name="trtcliveroom_tips_refuse_link_mic">用户 %1$s 拒绝邀请</string>
     <string name="trtcliveroom_request_pk">%1$s向您发起PK请求</string>
     <string name="trtcliveroom_anchor_refuse_pk_request">主播拒绝了您的PK请求</string>
     <string name="trtcliveroom_anchor_handling_other_link">请稍后，主播正在处理其它人的连麦请求</string>
@@ -76,7 +76,6 @@
     <string name="trtcliveroom_request_network_fail">请求网络失败 %1$s</string>
     <string name="trtcliveroom_audience_members">%1$d人正在观看</string>
     <string name="trtcliveroom_btn_stop_pk">结束PK</string>
-    <string name="trtcliveroom_toast_error_create_live_room">创建房间失败[%1$d]:%2$s</string>
     <string name="trtcliveroom_btn_invite">邀请</string>
     <string name="trtcliveroom_create_room_limit">您当前使用的云通讯账号未开通音视频聊天室功能，创建聊天室数量超过限额，请前往腾讯云官网开通【IM音视频聊天室】，地址：https://cloud.tencent.com/document/product/269/11673</string>
     <string name="trtcliveroom_create_or_join_group_limit">单个用户可创建和加入的群组数量超过了限制，请购买相关套餐,价格地址：https://cloud.tencent.com/document/product/269/11673</string>
@@ -112,4 +111,6 @@
     <string name="trtcliveroom_title_resolution">分辨率</string>
     <string name="trtcliveroom_title_frame_rate">帧率</string>
     <string name="trtcliveroom_title_video">视频设置</string>
+    <string name="trtcliveroom_first_enter_room_tips">配合相关部门监管要求，本APP音视频通话及直播过程均有全程录制存档，严禁色情、辱骂、暴恐、涉政等违规内容。</string>
+    <string name="trtcliveroom_link_mic_anchor_timeout">连麦请求超时，主播端没有做出任何回应</string>
 </resources>

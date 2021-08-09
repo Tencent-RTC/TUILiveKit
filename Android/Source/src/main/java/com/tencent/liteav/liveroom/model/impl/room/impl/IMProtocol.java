@@ -3,20 +3,24 @@ package com.tencent.liteav.liveroom.model.impl.room.impl;
 import android.text.TextUtils;
 import android.util.Pair;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.tencent.liteav.liveroom.model.impl.room.impl.IMProtocol.Define.VALUE_PROTOCOL_VERSION;
 
 public class IMProtocol {
 
     public static class Define {
-        public static final String KEY_VERSION = "version";
-        public static final String KEY_ACTION = "action";
+        public static final String KEY_VERSION            = "version";
+        public static final String KEY_ACTION             = "action";
         public static final String VALUE_PROTOCOL_VERSION = "1.0.0";
 
 
@@ -36,101 +40,24 @@ public class IMProtocol {
         public static final int CODE_UPDATE_GROUP_INFO         = 400;
     }
 
-    public static String getJoinReqJsonStr(String reason) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put(Define.KEY_VERSION, VALUE_PROTOCOL_VERSION);
-            jsonObject.put(Define.KEY_ACTION, Define.CODE_REQUEST_JOIN_ANCHOR);
-            jsonObject.put("reason", reason);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return jsonObject.toString();
-    }
+    public static class SignallingDefine {
+        public static String  KEY_VERSION        = "version";
+        public static String  KEY_BUSINESS_ID    = "businessID";
+        public static String  KEY_DATA           = "data";
+        public static String  KEY_ROOM_ID        = "roomId";
+        public static String  KEY_CMD            = "cmd";
 
-    public static String parseJoinReqReason(JSONObject jsonStr) {
-        String reason = jsonStr.optString("reason");
-        return reason;
-    }
+        public static final int    VALUE_VERSION     = 1;
+        public static final String VALUE_BUSINESS_ID = "Live";      //直播场景
+        public static final String VALUE_PLATFORM    = "Android";   //当前平台
 
-    public static String getJoinRspJsonStr(boolean agree, String reason) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put(Define.KEY_VERSION, VALUE_PROTOCOL_VERSION);
-            jsonObject.put(Define.KEY_ACTION, Define.CODE_RESPONSE_JOIN_ANCHOR);
-            jsonObject.put("accept", agree ? 1 : 0);
-            jsonObject.put("reason", reason);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return jsonObject.toString();
-    }
-
-    /**
-     * 返回值：accept、reason
-     *
-     * @param jsonObject
-     * @return
-     */
-    public static Pair<Boolean, String> parseJoinRspResult(JSONObject jsonObject) {
-        try {
-            boolean agree = (jsonObject.getInt("accept") == 1);
-            String reason = jsonObject.optString("reason");
-            return new Pair<>(agree, reason);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static String getKickOutJoinJsonStr() {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put(Define.KEY_VERSION, VALUE_PROTOCOL_VERSION);
-            jsonObject.put(Define.KEY_ACTION, Define.CODE_KICK_OUT_JOIN_ANCHOR);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return jsonObject.toString();
-    }
-
-
-    public static String getPKReqJsonStr(String myRoomId, String myStreamId) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put(Define.KEY_VERSION, VALUE_PROTOCOL_VERSION);
-            jsonObject.put(Define.KEY_ACTION, Define.CODE_REQUEST_ROOM_PK);
-            jsonObject.put("from_room_id", myRoomId);
-            jsonObject.put("from_stream_id", myStreamId);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return jsonObject.toString();
-    }
-
-    /**
-     * 解析PK请求，返回值：from_room_id、from_stream_id
-     * @param jsonObject
-     * @return
-     */
-    public static Pair<String, String> parsePKReq(JSONObject jsonObject) {
-        String roomId = jsonObject.optString("from_room_id");
-        String streamId = jsonObject.optString("from_stream_id");
-        return new Pair<>(roomId, streamId);
-    }
-
-    public static String getPKRspJsonStr(boolean agree, String reason, String myStreamId) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put(Define.KEY_VERSION, VALUE_PROTOCOL_VERSION);
-            jsonObject.put(Define.KEY_ACTION, Define.CODE_RESPONSE_PK);
-            jsonObject.put("accept", agree ? 1 : 0);
-            jsonObject.put("reason", reason);
-            jsonObject.put("stream_id", myStreamId);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return jsonObject.toString();
+        /**
+         * 信令cmd类型
+         */
+        public static final String CMD_REQUESTJOINANCHOR = "requestJoinAnchor";
+        public static final String CMD_KICKOUTJOINANCHOR = "kickoutJoinAnchor";
+        public static final String CMD_REQUESTROOMPK     = "requestRoomPK";
+        public static final String CMD_QUITROOMPK        = "quitRoomPK";
     }
 
     /**
@@ -148,17 +75,6 @@ public class IMProtocol {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public static String getQuitPKJsonStr() {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put(Define.KEY_VERSION, VALUE_PROTOCOL_VERSION);
-            jsonObject.put(Define.KEY_ACTION, Define.CODE_QUIT_ROOM_PK);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return jsonObject.toString();
     }
 
     public static String getRoomTextMsgHeadJsonStr() {
@@ -189,18 +105,6 @@ public class IMProtocol {
         String cmd = jsonObject.optString("command");
         String message = jsonObject.optString("message");
         return new Pair<>(cmd, message);
-    }
-
-    public static String getNotifyStreamJsonStr(String streamId) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put(Define.KEY_VERSION, VALUE_PROTOCOL_VERSION);
-            jsonObject.put(Define.KEY_ACTION, Define.CODE_NOTIFY_JOIN_ANCHOR_STREAM);
-            jsonObject.put("stream_id", streamId);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return jsonObject.toString();
     }
 
     public static String getUpdateGroupInfoJsonStr(int type, List<IMAnchorInfo> list) {
@@ -265,4 +169,60 @@ public class IMProtocol {
         }
         return null;
     }
+
+    public static SignallingData convert2SignallingData(String json) {
+        SignallingData signallingData = new SignallingData();
+        Map<String, Object> extraMap;
+        try {
+            extraMap = new Gson().fromJson(json, Map.class);
+            if (extraMap == null) {
+                return signallingData;
+            }
+            if (extraMap.containsKey(SignallingDefine.KEY_VERSION)) {
+                Object version = extraMap.get(SignallingDefine.KEY_VERSION);
+                if (version instanceof Double) {
+                    signallingData.setVersion(((Double) version).intValue());
+                }
+            }
+
+            if (extraMap.containsKey(SignallingDefine.KEY_BUSINESS_ID)) {
+                Object businessId = extraMap.get(SignallingDefine.KEY_BUSINESS_ID);
+                if (businessId instanceof String) {
+                    signallingData.setBusinessID((String) businessId);
+                }
+            }
+
+            if (extraMap.containsKey(SignallingDefine.KEY_DATA)) {
+                Object dataMapObj = extraMap.get(SignallingDefine.KEY_DATA);
+                if (dataMapObj != null && dataMapObj instanceof Map) {
+                    Map<String, Object> dataMap = (Map<String, Object>) dataMapObj;
+                    SignallingData.DataInfo dataInfo = convert2DataInfo(dataMap);
+                    signallingData.setData(dataInfo);
+                }
+            }
+        } catch (JsonSyntaxException e) {
+        }
+        return signallingData;
+    }
+
+    private static SignallingData.DataInfo convert2DataInfo(Map<String, Object> dataMap) {
+        SignallingData.DataInfo dataInfo = new SignallingData.DataInfo();
+        try {
+            if (dataMap.containsKey(SignallingDefine.KEY_CMD)) {
+                Object cmd = dataMap.get(SignallingDefine.KEY_CMD);
+                if (cmd instanceof String) {
+                    dataInfo.setCmd((String)cmd);
+                }
+            }
+            if (dataMap.containsKey(SignallingDefine.KEY_ROOM_ID)) {
+                Object roomId = dataMap.get(SignallingDefine.KEY_ROOM_ID);
+                if (roomId instanceof String) {
+                    dataInfo.setRoomID((String) roomId);
+                }
+            }
+        } catch (JsonSyntaxException e) {
+        }
+        return dataInfo;
+    }
+
 }

@@ -18,7 +18,7 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 
-import com.squareup.picasso.Picasso;
+import com.tencent.liteav.basic.ImageLoader;
 import com.tencent.liteav.liveroom.R;
 import com.tencent.liteav.liveroom.ui.common.utils.TCUtils;
 
@@ -313,7 +313,7 @@ public class TCDanmuMgr {
         Bitmap                 headBitmap = null;
         if (!TextUtils.isEmpty(headUrl)) {
             try {
-                headBitmap = Picasso.get().load(headUrl).centerCrop().resize(mBitmapWidth, mBitmapHeight).get();
+                headBitmap = ImageLoader.getImage(mContext, headUrl, mBitmapWidth, mBitmapHeight);
             } catch (Exception e) {
                 e.printStackTrace();
             }

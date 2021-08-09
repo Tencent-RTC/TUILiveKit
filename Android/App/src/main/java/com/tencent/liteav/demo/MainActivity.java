@@ -17,16 +17,16 @@ import android.widget.TextView;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.tencent.imsdk.v2.V2TIMGroupInfoResult;
+import com.tencent.liteav.basic.UserModel;
+import com.tencent.liteav.basic.UserModelManager;
 import com.tencent.liteav.debug.GenerateTestUserSig;
+import com.tencent.liteav.liveroom.model.LiveRoomManager;
 import com.tencent.liteav.liveroom.model.TRTCLiveRoom;
 import com.tencent.liteav.liveroom.model.TRTCLiveRoomCallback;
 import com.tencent.liteav.liveroom.model.TRTCLiveRoomDef;
 import com.tencent.liteav.liveroom.ui.anchor.TCCameraAnchorActivity;
 import com.tencent.liteav.liveroom.ui.audience.TCAudienceActivity;
 import com.tencent.liteav.liveroom.ui.common.utils.TCConstants;
-import com.tencent.liteav.login.model.ProfileManager;
-import com.tencent.liteav.login.model.RoomManager;
-import com.tencent.liteav.login.model.UserModel;
 
 import java.util.Collections;
 import java.util.List;
@@ -71,15 +71,14 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         initView();
         initData();
-        RoomManager.getInstance().initSdkAppId(GenerateTestUserSig.SDKAPPID);
     }
 
     private void initData() {
         mRoomIdEt.addTextChangedListener(mEditTextWatcher);
-        mSelfUserId = ProfileManager.getInstance().getUserModel().userId;
+        mSelfUserId = UserModelManager.getInstance().getUserModel().userId;
         isUseCDNPlay = SPUtils.getInstance().getBoolean(TCConstants.USE_CDN_PLAY, false);
 
-        final UserModel userModel = ProfileManager.getInstance().getUserModel();
+        final UserModel userModel = UserModelManager.getInstance().getUserModel();
         mTRTCLiveRoom = TRTCLiveRoom.sharedInstance(this);
         mTRTCLiveRoom.login(GenerateTestUserSig.SDKAPPID, userModel.userId, userModel.userSig, new TRTCLiveRoomDef.TRTCLiveRoomConfig(isUseCDNPlay, "http://3891.liveplay.myqcloud.com/live"), new TRTCLiveRoomCallback.ActionCallback() {
             @Override
@@ -140,7 +139,7 @@ public class MainActivity extends Activity {
      * @param roomIdStr
      */
     private void enterRoom(final String roomIdStr) {
-        ProfileManager.getInstance().getGroupInfo(roomIdStr, new ProfileManager.GetGroupInfoCallback() {
+        LiveRoomManager.getInstance().getGroupInfo(roomIdStr, new LiveRoomManager.GetGroupInfoCallback() {
             @Override
             public void onSuccess(V2TIMGroupInfoResult result) {
                 if (isRoomExist(result)) {

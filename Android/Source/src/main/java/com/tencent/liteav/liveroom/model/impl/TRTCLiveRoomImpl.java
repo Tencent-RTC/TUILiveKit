@@ -1,12 +1,13 @@
 package com.tencent.liteav.liveroom.model.impl;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 
 import com.tencent.liteav.audio.TXAudioEffectManager;
+import com.tencent.liteav.basic.UserModel;
+import com.tencent.liteav.basic.UserModelManager;
 import com.tencent.liteav.beauty.TXBeautyManager;
 import com.tencent.liteav.liveroom.model.TRTCLiveRoom;
 import com.tencent.liteav.liveroom.model.TRTCLiveRoomCallback;
@@ -24,8 +25,6 @@ import com.tencent.liteav.liveroom.model.impl.base.TXUserInfo;
 import com.tencent.liteav.liveroom.model.impl.base.TXUserListCallback;
 import com.tencent.liteav.liveroom.model.impl.room.ITXRoomServiceDelegate;
 import com.tencent.liteav.liveroom.model.impl.room.impl.TXRoomService;
-import com.tencent.liteav.login.model.ProfileManager;
-import com.tencent.liteav.login.model.UserModel;
 import com.tencent.liteav.trtc.impl.TRTCCloudImpl;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.tencent.trtc.TRTCCloudDef;
@@ -1254,10 +1253,11 @@ public class TRTCLiveRoomImpl extends TRTCLiveRoom implements ITXTRTCLiveRoomDel
      * |- false: 回调失败
      * 观众主动发起连麦，等待15s的超时，如果超时回调-2
      * @param reason
+     * @param timeout 超时时间，单位：秒
      * @param callback
      */
     @Override
-    public void requestJoinAnchor(final String reason, final TRTCLiveRoomCallback.ActionCallback callback) {
+    public void requestJoinAnchor(final String reason, final int timeout, final TRTCLiveRoomCallback.ActionCallback callback) {
         runOnMainThread(new Runnable() {
             @Override
             public void run() {
@@ -1276,7 +1276,7 @@ public class TRTCLiveRoomImpl extends TRTCLiveRoom implements ITXTRTCLiveRoomDel
                 if (TXRoomService.getInstance().isLogin()) {
                     TRTCLogger.i(TAG, "start join anchor.");
                     mJoinAnchorCallbackHolder.setRealCallback(callback);
-                    TXRoomService.getInstance().requestJoinAnchor(reason, mJoinAnchorCallbackHolder);
+                    TXRoomService.getInstance().requestJoinAnchor(reason, timeout, mJoinAnchorCallbackHolder);
                 } else {
                     TRTCLogger.e(TAG, "request join anchor fail, not login yet.");
                     runOnDelegateThread(new Runnable() {
@@ -1374,14 +1374,15 @@ public class TRTCLiveRoomImpl extends TRTCLiveRoom implements ITXTRTCLiveRoomDel
      * 主动发起PK，等待15s的超时，如果超时回调-2
      * @param roomId
      * @param userId
+     * @param timeout 超时时间，单位：秒
      * @param callback
      */
     @Override
-    public void requestRoomPK(int roomId, String userId, final TRTCLiveRoomCallback.ActionCallback callback) {
+    public void requestRoomPK(int roomId, String userId, final int timeout, final TRTCLiveRoomCallback.ActionCallback callback) {
         if (TXRoomService.getInstance().isLogin()) {
             TRTCLogger.i(TAG, "request room pk.");
             mRequestPKHolder.setRealCallback(callback);
-            TXRoomService.getInstance().requestRoomPK(String.valueOf(roomId), userId, mRequestPKHolder);
+            TXRoomService.getInstance().requestRoomPK(String.valueOf(roomId), userId, timeout, mRequestPKHolder);
         } else {
             TRTCLogger.e(TAG, "request room pk fail. not login yet.");
             runOnDelegateThread(new Runnable() {
@@ -1693,9 +1694,9 @@ public class TRTCLiveRoomImpl extends TRTCLiveRoom implements ITXTRTCLiveRoomDel
      */
     private void setLiveRoomType(boolean updateType) {
         if(updateType) {
-            ProfileManager.getInstance().getUserModel().userType = UserModel.UserType.LIVE_ROOM;
+            UserModelManager.getInstance().getUserModel().userType = UserModel.UserType.LIVE_ROOM;
         } else {
-            ProfileManager.getInstance().getUserModel().userType = UserModel.UserType.NONE;
+            UserModelManager.getInstance().getUserModel().userType = UserModel.UserType.NONE;
         }
     }
     private void enterTRTCRoomInner(final String roomId, final String userId, final String userSign, final int role, final TRTCLiveRoomCallback.ActionCallback callback) {
@@ -2073,12 +2074,12 @@ public class TRTCLiveRoomImpl extends TRTCLiveRoom implements ITXTRTCLiveRoomDel
     }
 
     @Override
-    public void onRoomResponseRoomPK(final String roomId, final String streamId, final TXUserInfo userInfo) {
+    public void onRoomResponseRoomPK(final String roomId, final TXUserInfo userInfo) {
         runOnMainThread(new Runnable() {
             @Override
             public void run() {
                 mRequestPKHolder.setRealCallback(null);
-                TRTCLogger.i(TAG, "recv pk repsonse, room id:" + roomId + " stream id:" + streamId + " info:" + userInfo.toString());
+                TRTCLogger.i(TAG, "recv pk repsonse, room id:" + roomId + " info:" + userInfo.toString());
                 // do pk
                 // 如果收到 PK 的回包，那么则发起 PK
                 if (mCurrentRole == Role.TRTC_ANCHOR || mTargetRole == Role.TRTC_ANCHOR) {
@@ -2146,6 +2147,32 @@ public class TRTCLiveRoomImpl extends TRTCLiveRoom implements ITXTRTCLiveRoomDel
                     info.userName = userInfo.userName;
                     info.userAvatar = userInfo.avatarURL;
                     delegate.onRecvRoomCustomMsg(cmd, message, info);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onAudienceRequestJoinAnchorTimeout(final String userId) {
+        runOnDelegateThread(new Runnable() {
+            @Override
+            public void run() {
+                TRTCLiveRoomDelegate delegate = mDelegate;
+                if (delegate != null) {
+                    delegate.onAudienceRequestJoinAnchorTimeout(userId);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onAnchorRequestRoomPKTimeout(final String userId) {
+        runOnDelegateThread(new Runnable() {
+            @Override
+            public void run() {
+                TRTCLiveRoomDelegate delegate = mDelegate;
+                if (delegate != null) {
+                    delegate.onAnchorRequestRoomPKTimeout(userId);
                 }
             }
         });

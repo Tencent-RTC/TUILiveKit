@@ -104,4 +104,16 @@ public interface TRTCLiveRoomDelegate {
      */
     void onRecvRoomCustomMsg(String cmd, String message, TRTCLiveRoomDef.TRTCLiveUserInfo userInfo);
 
+    /**
+     * 连麦回应超时
+     * @param userId
+     */
+    void onAudienceRequestJoinAnchorTimeout(String userId);
+
+    /**
+     * PK回应超时
+     * @param userId
+     */
+    void onAnchorRequestRoomPKTimeout(String userId);
+
 }

@@ -26,11 +26,16 @@ public interface ITXRoomServiceDelegate {
 
     void onRoomRequestRoomPK(TXUserInfo userInfo, int timeout);
 
-    void onRoomResponseRoomPK(String roomId, String streamId, TXUserInfo userInfo);
+    void onRoomResponseRoomPK(String roomId, TXUserInfo userInfo);
 
     void onRoomQuitRoomPk();
 
     void onRoomRecvRoomTextMsg(String roomId, String message, TXUserInfo userInfo);
 
     void onRoomRecvRoomCustomMsg(String roomId, String cmd, String message, TXUserInfo userInfo);
+
+    void onAudienceRequestJoinAnchorTimeout(String userId);
+
+    void onAnchorRequestRoomPKTimeout(String userId);
+
 }

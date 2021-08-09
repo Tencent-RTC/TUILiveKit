@@ -1,13 +1,12 @@
 package com.tencent.liteav.liveroom.ui.anchor;
 
 import android.animation.ObjectAnimator;
+import android.app.AlertDialog;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.constraint.ConstraintSet;
 import android.support.constraint.Guideline;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -23,26 +22,27 @@ import android.widget.Toast;
 import com.blankj.utilcode.constant.PermissionConstants;
 import com.blankj.utilcode.util.PermissionUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.tencent.liteav.basic.UserModel;
+import com.tencent.liteav.basic.UserModelManager;
 import com.tencent.liteav.demo.beauty.model.ItemInfo;
 import com.tencent.liteav.demo.beauty.model.TabInfo;
 import com.tencent.liteav.demo.beauty.view.BeautyPanel;
 import com.tencent.liteav.liveroom.R;
 import com.tencent.liteav.liveroom.model.TRTCLiveRoomCallback;
 import com.tencent.liteav.liveroom.model.TRTCLiveRoomDef;
-import com.tencent.liteav.liveroom.ui.common.adapter.TCUserAvatarListAdapter;
 import com.tencent.liteav.liveroom.ui.common.utils.TCUtils;
 import com.tencent.liteav.liveroom.ui.widget.AudioEffectPanel;
 import com.tencent.liteav.liveroom.ui.widget.feature.FeatureSettingDialog;
 import com.tencent.liteav.liveroom.ui.widget.video.TCVideoView;
 import com.tencent.liteav.liveroom.ui.widget.video.TCVideoViewMgr;
-import com.tencent.liteav.login.model.ProfileManager;
-import com.tencent.liteav.login.model.UserModel;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.tencent.trtc.TRTCCloudDef;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -78,16 +78,21 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
 
     private boolean                 mShowLog;               // 表示是否显示Log面板
     private List<String>            mAnchorUserIdList  = new ArrayList<>();
-    private int                     mCurrentStatus    = TRTCLiveRoomDef.ROOM_STATUS_NONE;
+    private int                     mCurrentStatus     = TRTCLiveRoomDef.ROOM_STATUS_NONE;
+
+    private final Map<String, ConfirmDialogFragment> mLinkMicConfirmDialogFragmentMap = new HashMap<>();  // 连麦确认弹框
+    private ConfirmDialogFragment                    mPKConfirmDialogFragment;                            // PK确认弹框
 
     private final ConcurrentMap<String, TRTCLiveRoomDef.TRTCLiveUserInfo> mUserInfoMap = new ConcurrentHashMap<>();
 
+    private static final int REQUESTROOMPK_TIMEOUT = 15; // 发起PK超时时间
+    private static final int LINK_MIC_MEMBER_MAX   = 3;  // 上麦成员数最大值
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.TRTCLiveRoomBeautyTheme);
         super.onCreate(savedInstanceState);
-        ProfileManager.getInstance().getUserModel().userType = UserModel.UserType.LIVE_ROOM;
+        UserModelManager.getInstance().getUserModel().userType = UserModel.UserType.LIVE_ROOM;
         mPanelBeautyControl.setBeautyManager(mLiveRoom.getBeautyManager());
         startPreview();
     }
@@ -202,7 +207,7 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
                 // 发起PK请求
                 mViewPKAnchorList.setVisibility(View.GONE);
                 mGroupLiveAfter.setVisibility(View.VISIBLE);
-                mLiveRoom.requestRoomPK(roomInfo.roomId, roomInfo.ownerId, new TRTCLiveRoomCallback.ActionCallback() {
+                mLiveRoom.requestRoomPK(roomInfo.roomId, roomInfo.ownerId, REQUESTROOMPK_TIMEOUT, new TRTCLiveRoomCallback.ActionCallback() {
                     @Override
                     public void onCallback(int code, String msg) {
                         if (code == 0) {
@@ -226,29 +231,6 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
     }
 
     /**
-     * PK通知的Toast（红色Toast通知）
-     * @param message
-     */
-    private final Toast makeToast(String message, int duration){
-        final Toast toast = new Toast(this);
-        TextView textView = new TextView(this);
-        textView.setBackgroundColor(Color.RED);
-        textView.setTextColor(Color.WHITE);
-        textView.setGravity(Gravity.CENTER);
-        textView.setTextSize(16);
-        textView.setPadding(5, 5, 5, 5);
-        textView.setText(message);
-        GradientDrawable drawable = new GradientDrawable();
-        drawable.setColor(0xFFFA585E);
-        drawable.setCornerRadius(10);
-        textView.setBackground(drawable);
-        toast.setView(textView);
-        toast.setDuration(duration);
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        return toast;
-    }
-
-    /**
      * 加载主播头像
      *
      * @param view   view
@@ -261,7 +243,7 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ProfileManager.getInstance().getUserModel().userType = UserModel.UserType.NONE;
+        UserModelManager.getInstance().getUserModel().userType = UserModel.UserType.NONE;
         mLiveRoom.showVideoDebugLog(false);
         if (mMainHandler != null) {
             mMainHandler.removeCallbacksAndMessages(null);
@@ -312,7 +294,7 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
 
     @Override
     protected void onCreateRoomSuccess() {
-        ProfileManager.getInstance().checkNeedShowSecurityTips(TCCameraAnchorActivity.this);
+        checkNeedShowSecurityTips();
         startRecordAnimation();
         int audioQuality = TRTCCloudDef.TRTC_AUDIO_QUALITY_DEFAULT;
         if (mRbNormalQuality.isChecked()) {
@@ -357,6 +339,17 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
         mPanelBeautyControl.clear();
         mLiveRoom.stopCameraPreview();
         super.finishRoom();
+    }
+
+    // 首次TRTC打开摄像头提示"Demo特别配置了无限期云端存储"
+    private void checkNeedShowSecurityTips() {
+        if (UserModelManager.getInstance().needShowSecurityTips()) {
+            AlertDialog.Builder normalDialog = new AlertDialog.Builder(this);
+            normalDialog.setMessage(getResources().getString(R.string.trtcliveroom_first_enter_room_tips));
+            normalDialog.setCancelable(false);
+            normalDialog.setPositiveButton(getResources().getString(R.string.trtcliveroom_ok), null);
+            normalDialog.show();
+        }
     }
 
     private void setAnchorViewFull(boolean isFull) {
@@ -441,6 +434,7 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
     @Override
     public void onRequestRoomPK(final TRTCLiveRoomDef.TRTCLiveUserInfo userInfo, final int timeout) {
         final ConfirmDialogFragment dialogFragment = new ConfirmDialogFragment();
+        mPKConfirmDialogFragment = dialogFragment;
         dialogFragment.setCancelable(false);
         dialogFragment.setMessage(getString(R.string.trtcliveroom_request_pk, userInfo.userName));
         if (dialogFragment.isAdded()) {
@@ -468,12 +462,6 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
             @Override
             public void run() {
                 dialogFragment.show(getFragmentManager(), "ConfirmDialogFragment");
-                mMainHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        dialogFragment.dismiss();
-                    }
-                }, timeout);
             }
         });
     }
@@ -484,8 +472,27 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
     }
 
     @Override
+    public void onAudienceExit(final TRTCLiveRoomDef.TRTCLiveUserInfo userInfo) {
+        super.onAudienceExit(userInfo);
+        mMainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                ConfirmDialogFragment fragment = mLinkMicConfirmDialogFragmentMap.remove(userInfo.userId);
+                if (null != fragment) {
+                    fragment.dismiss();
+                }
+            }
+        });
+    }
+
+    @Override
     public void onRequestJoinAnchor(final TRTCLiveRoomDef.TRTCLiveUserInfo userInfo, String reason, final int timeout) {
+        if (mAnchorUserIdList.size() >= LINK_MIC_MEMBER_MAX) {
+            mLiveRoom.responseJoinAnchor(userInfo.userId, false, "");
+            return;
+        }
         final ConfirmDialogFragment dialogFragment = new ConfirmDialogFragment();
+        mLinkMicConfirmDialogFragmentMap.put(userInfo.userId, dialogFragment);
         dialogFragment.setCancelable(false);
         dialogFragment.setMessage(getString(R.string.trtcliveroom_request_link_mic, userInfo.userName));
         if (dialogFragment.isAdded()) {
@@ -513,16 +520,35 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
             @Override
             public void run() {
                 dialogFragment.show(getFragmentManager(), "ConfirmDialogFragment");
-                mMainHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        dialogFragment.dismiss();
-                    }
-                }, timeout);
             }
         });
     }
 
+    @Override
+    public void onAudienceRequestJoinAnchorTimeout(final String userId) {
+        mMainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                ConfirmDialogFragment fragment = mLinkMicConfirmDialogFragmentMap.remove(userId);
+                if (null != fragment) {
+                    fragment.dismiss();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onAnchorRequestRoomPKTimeout(String userId) {
+        mMainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (null != mPKConfirmDialogFragment) {
+                    mPKConfirmDialogFragment.dismiss();
+                    mPKConfirmDialogFragment = null;
+                }
+            }
+        });
+    }
 
     /**
      * 成员进退房事件信息处理

@@ -11,7 +11,6 @@ import android.support.constraint.ConstraintSet;
 import android.support.constraint.Guideline;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -30,6 +29,8 @@ import android.widget.Toast;
 import com.blankj.utilcode.constant.PermissionConstants;
 import com.blankj.utilcode.util.PermissionUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.tencent.liteav.basic.UserModel;
+import com.tencent.liteav.basic.UserModelManager;
 import com.tencent.liteav.demo.beauty.view.BeautyPanel;
 import com.tencent.liteav.demo.beauty.BeautyParams;
 import com.tencent.liteav.liveroom.R;
@@ -37,7 +38,6 @@ import com.tencent.liteav.liveroom.model.TRTCLiveRoom;
 import com.tencent.liteav.liveroom.model.TRTCLiveRoomCallback;
 import com.tencent.liteav.liveroom.model.TRTCLiveRoomDef;
 import com.tencent.liteav.liveroom.model.TRTCLiveRoomDelegate;
-import com.tencent.liteav.liveroom.ui.common.adapter.TCUserAvatarListAdapter;
 import com.tencent.liteav.liveroom.ui.common.msg.TCChatEntity;
 import com.tencent.liteav.liveroom.ui.common.msg.TCChatMsgListAdapter;
 import com.tencent.liteav.liveroom.ui.common.utils.TCConstants;
@@ -47,14 +47,11 @@ import com.tencent.liteav.liveroom.ui.widget.danmaku.TCDanmuMgr;
 import com.tencent.liteav.liveroom.ui.widget.like.TCHeartLayout;
 import com.tencent.liteav.liveroom.ui.widget.video.TCVideoView;
 import com.tencent.liteav.liveroom.ui.widget.video.TCVideoViewMgr;
-import com.tencent.liteav.login.model.ProfileManager;
-import com.tencent.liteav.login.model.UserModel;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
@@ -78,6 +75,10 @@ public class TCAudienceActivity extends AppCompatActivity implements View.OnClic
     private static final String TAG               = TCAudienceActivity.class.getSimpleName();
 
     private static final long   LINK_MIC_INTERVAL = 3 * 1000;    //连麦间隔控制
+    private static final int    LINK_MIC_TIMEOUT  = 15;          // 连麦超时时间
+
+    private static final int CODE_ERROR                = -1;
+    private static final int CODE_TIMEOUT              = -2;
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
@@ -283,6 +284,16 @@ public class TCAudienceActivity extends AppCompatActivity implements View.OnClic
                     break;
             }
         }
+
+        @Override
+        public void onAudienceRequestJoinAnchorTimeout(String userId) {
+
+        }
+
+        @Override
+        public void onAnchorRequestRoomPKTimeout(String userId) {
+
+        }
     };
 
     /**
@@ -336,7 +347,7 @@ public class TCAudienceActivity extends AppCompatActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(R.style.TRTCLiveRoomBeautyTheme);
-        ProfileManager.getInstance().getUserModel().userType = UserModel.UserType.LIVE_ROOM;
+        UserModelManager.getInstance().getUserModel().userType = UserModel.UserType.LIVE_ROOM;
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -353,7 +364,7 @@ public class TCAudienceActivity extends AppCompatActivity implements View.OnClic
         mCoverUrl = intent.getStringExtra(TCConstants.COVER_PIC);
         mAnchorAvatarURL = intent.getStringExtra(TCConstants.PUSHER_AVATAR);
 
-        UserModel userModel = ProfileManager.getInstance().getUserModel();
+        UserModel userModel = UserModelManager.getInstance().getUserModel();
         mSelfNickname = userModel.userName;
         mSelfUserId = userModel.userId;
         mSelfAvatar = userModel.userAvatar;
@@ -497,7 +508,7 @@ public class TCAudienceActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ProfileManager.getInstance().getUserModel().userType = UserModel.UserType.NONE;
+        UserModelManager.getInstance().getUserModel().userType = UserModel.UserType.NONE;
         mLiveRoom.showVideoDebugLog(false);
         mHandler.removeCallbacks(mGetAudienceRunnable);
         mHandler.removeCallbacks(mShowAnchorLeave);
@@ -589,7 +600,7 @@ public class TCAudienceActivity extends AppCompatActivity implements View.OnClic
         mButtonLinkMic.setEnabled(false);
         mButtonLinkMic.setBackgroundResource(R.drawable.trtcliveroom_linkmic_off);
         showNoticeToast(getString(R.string.trtcliveroom_wait_anchor_accept));
-        mLiveRoom.requestJoinAnchor(getString(R.string.trtcliveroom_request_link_mic_anchor, mSelfUserId), new TRTCLiveRoomCallback.ActionCallback() {
+        mLiveRoom.requestJoinAnchor(getString(R.string.trtcliveroom_request_link_mic_anchor, mSelfUserId), LINK_MIC_TIMEOUT, new TRTCLiveRoomCallback.ActionCallback() {
             @Override
             public void onCallback(int code, String msg) {
                 if (code == 0) {
@@ -599,9 +610,12 @@ public class TCAudienceActivity extends AppCompatActivity implements View.OnClic
                     joinPusher();
                     return;
                 }
-                if (code == -1) {
+                if (code == CODE_ERROR) {
                     // 拒绝请求
-                    makeToast(msg, Toast.LENGTH_SHORT).show();
+                    makeToast(getString(R.string.trtcliveroom_anchor_refuse_link_request), Toast.LENGTH_SHORT).show();
+                } else if (code == CODE_TIMEOUT) {
+                    // 超时处理
+                    ToastUtils.showShort(getString(R.string.trtcliveroom_link_mic_anchor_timeout));
                 } else {
                     //出现错误
                     ToastUtils.showShort(getString(R.string.trtcliveroom_error_request_link_mic, msg));

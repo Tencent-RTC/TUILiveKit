@@ -252,11 +252,12 @@ public abstract class TRTCLiveRoom {
      * 9. 【观众】如果直播间里已经有其他观众正在跟主播进行连麦，那么新加入的这位连麦观众也会收到 onAnchorEnter() 通知，用于展示（startPlay）其他连麦者的视频画面。
      *
      * @param reason 连麦原因
+     * @param timeout 超时时间，单位：秒
      * @param callback 请求连麦的回调
      *
      * @see {@link TRTCLiveRoomDelegate#onRequestJoinAnchor}
      */
-    public abstract void requestJoinAnchor(String reason, TRTCLiveRoomCallback.ActionCallback callback);
+    public abstract void requestJoinAnchor(String reason, int timeout, TRTCLiveRoomCallback.ActionCallback callback);
 
     /**
      * 主播处理连麦请求
@@ -299,11 +300,12 @@ public abstract class TRTCLiveRoom {
      *
      * @param roomId 被邀约房间 ID
      * @param userId 被邀约主播 ID
+     * @param timeout 超时时间，单位：秒
      * @param callback 请求跨房 PK 的结果回调
      *
      * @see {@link TRTCLiveRoomDelegate#onRequestRoomPK}
      */
-    public abstract void requestRoomPK(int roomId, String userId, TRTCLiveRoomCallback.ActionCallback callback);
+    public abstract void requestRoomPK(int roomId, String userId, int timeout, TRTCLiveRoomCallback.ActionCallback callback);
 
     /**
      * 响应跨房 PK 请求

@@ -2,8 +2,6 @@ package com.tencent.liteav.liveroom.ui.anchor;
 
 import android.app.Activity;
 import android.content.DialogInterface;
-import android.graphics.Outline;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -15,7 +13,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
-import android.view.ViewOutlineProvider;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -27,6 +24,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.blankj.utilcode.util.ToastUtils;
+import com.tencent.liteav.basic.UserModel;
+import com.tencent.liteav.basic.UserModelManager;
 import com.tencent.liteav.liveroom.R;
 import com.tencent.liteav.liveroom.model.LiveRoomManager;
 import com.tencent.liteav.liveroom.model.TRTCLiveRoom;
@@ -40,8 +39,6 @@ import com.tencent.liteav.liveroom.ui.common.utils.TCUtils;
 import com.tencent.liteav.liveroom.ui.widget.InputTextMsgDialog;
 import com.tencent.liteav.liveroom.ui.widget.danmaku.TCDanmuMgr;
 import com.tencent.liteav.liveroom.ui.widget.like.TCHeartLayout;
-import com.tencent.liteav.login.model.ProfileManager;
-import com.tencent.liteav.login.model.UserModel;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -119,7 +116,7 @@ public abstract class TCBaseAnchorActivity extends Activity implements TRTCLiveR
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(getLayoutId());
 
-        UserModel userModel = ProfileManager.getInstance().getUserModel();
+        UserModel userModel = UserModelManager.getInstance().getUserModel();
         mSelfUserId = userModel.userId;
         mSelfName = userModel.userName;
         mSelfAvatar = userModel.userAvatar;
@@ -791,5 +788,15 @@ public abstract class TCBaseAnchorActivity extends Activity implements TRTCLiveR
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onAudienceRequestJoinAnchorTimeout(String userId) {
+
+    }
+
+    @Override
+    public void onAnchorRequestRoomPKTimeout(String userId) {
+
     }
 }

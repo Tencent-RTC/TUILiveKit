@@ -5,10 +5,8 @@
 ```
 TUILiveRoom
 ├─ App          // 主面板，各种场景入口
-├─ Basic        // 基础库
 ├─ Beauty       // 美颜面板，包含美颜，滤镜，动效等效果
 ├─ Debug        // 调试相关
-├─ Login        // 登录相关
 └─ Source       // 互动直播业务逻辑
 ```
 

@@ -39,13 +39,13 @@ public interface ITXRoomService {
 
     void sendRoomCustomMsg(String cmd, String message, TXCallback callback);
 
-    void requestJoinAnchor(String reason, TXCallback callback);
+    void requestJoinAnchor(String reason, int timeout, TXCallback callback);
 
     void responseJoinAnchor(String userId, boolean agree, String reason);
 
     void kickoutJoinAnchor(String userId, TXCallback callback);
 
-    void requestRoomPK(String roomId, String userId, TXCallback callback);
+    void requestRoomPK(String roomId, String userId, int timeout, TXCallback callback);
 
     void responseRoomPK(String userId, boolean agree, String reason);
 
