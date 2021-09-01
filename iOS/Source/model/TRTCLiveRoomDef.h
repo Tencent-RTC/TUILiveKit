@@ -11,6 +11,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+extern NSString * const Signal_Business_ID;
+extern NSString * const Signal_Business_Live;
+extern NSString * const Signal_Platform ;
+extern NSString * const Signal_Platform_OS;
+
+
 typedef NS_ENUM(NSUInteger, TRTCLiveRoomLiveStatus) {
     TRTCLiveRoomLiveStatusNone = 0,
     TRTCLiveRoomLiveStatusSingle = 1, //单人房间

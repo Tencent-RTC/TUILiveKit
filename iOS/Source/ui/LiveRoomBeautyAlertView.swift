@@ -10,11 +10,9 @@ import Foundation
 import TXAppBasic
 import TCBeautyKit
 
-// MARK: Beauty
 public class LiveRoomBeautyIntensityView: UIView {
     
     public var onSliderValueChanged: ((_ value: Float)->())?
-    
     public lazy var titleLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.font = UIFont(name: "PingFangSC-Medium", size: 16)
@@ -24,12 +22,10 @@ public class LiveRoomBeautyIntensityView: UIView {
         label.text = .strengthText
         return label
     }()
-    
     public lazy var slider: UISlider = {
         let slider = UISlider(frame: .zero)
         return slider
     }()
-    
     public lazy var detailLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.font = UIFont(name: "PingFangSC-Medium", size: 16)
@@ -38,17 +34,15 @@ public class LiveRoomBeautyIntensityView: UIView {
         label.minimumScaleFactor = 0.5
         return label
     }()
-    
     public override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .clear
     }
-    
     public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
     private var isViewReady = false
+    
     public override func didMoveToWindow() {
         super.didMoveToWindow()
         guard !isViewReady else {
@@ -113,29 +107,25 @@ public class LiveRoomBeautyIntensityView: UIView {
         detailLabel.text = String(Int(roundf(value)))
     }
     
-    
 }
 
 @objcMembers
+
 public class LiveRoomBeautyAlertView: LiveRoomAlertContentView {
     
     public let viewModel: TCBeautyViewModel
-    
     public init(frame: CGRect = .zero, viewModel: TCBeautyViewModel) {
         self.viewModel = viewModel
         super.init(frame: frame)
         titleLabel.text = .titleText
     }
-    
     public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
     public lazy var intensityView: LiveRoomBeautyIntensityView = {
         let view = LiveRoomBeautyIntensityView(frame: .zero)
         return view
     }()
-    
     public lazy var beautyCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: 52, height: 75)
@@ -151,7 +141,6 @@ public class LiveRoomBeautyAlertView: LiveRoomAlertContentView {
         collectionView.dataSource = self
         return collectionView
     }()
-    
     public lazy var beautyTypeCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: 32, height: 28)
@@ -598,6 +587,124 @@ public class LiveRoomAlertContentView: UIView {
     }
 }
 
+// MARK: Resolution
+class TRTCLiveRoomResolutionAlert: LiveRoomAlertContentView {
+    
+    var dataSource: [TRTCLiveRoomBitrateTable] = []
+    var selectIndex = 3
+    
+    var didSelectItem: ((_ index: Int)->())?
+    
+    lazy var tableView: UITableView = {
+        let tableView = UITableView(frame: .zero, style: .plain)
+        tableView.separatorStyle = .none
+        tableView.backgroundColor = .clear
+        return tableView
+    }()
+    
+    override init(frame: CGRect = .zero) {
+        super.init(frame: frame)
+        titleLabel.text = .resolutionTitleText
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func constructViewHierarchy() {
+        super.constructViewHierarchy()
+        contentView.addSubview(tableView)
+    }
+    
+    override func activateConstraints() {
+        super.activateConstraints()
+        tableView.snp.makeConstraints { (make) in
+            make.top.equalTo(titleLabel.snp.bottom).offset(20)
+            make.leading.trailing.bottom.equalToSuperview()
+            make.height.equalTo(248)
+        }
+    }
+    
+    override func bindInteraction() {
+        super.bindInteraction()
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.register(TRTCMeetingResolutionTableViewCell.self, forCellReuseIdentifier: "TRTCMeetingResolutionTableViewCell")
+    }
+}
+
+extension TRTCLiveRoomResolutionAlert: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return dataSource.count
+    }
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "TRTCMeetingResolutionTableViewCell", for: indexPath)
+        if let scell = cell as? TRTCMeetingResolutionTableViewCell {
+            let model = dataSource[indexPath.row]
+            scell.titleLabel.text = model.resolutionName
+            scell.isSelected = indexPath.row == selectIndex
+        }
+        return cell
+    }
+}
+extension TRTCLiveRoomResolutionAlert: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        selectIndex = indexPath.row
+        tableView.reloadSections(IndexSet(integer: 0), with: .none)
+        if let action = didSelectItem {
+            action(selectIndex)
+        }
+    }
+}
+
+class TRTCMeetingResolutionTableViewCell: UITableViewCell {
+    
+    lazy var titleLabel: UILabel = {
+        let label = UILabel(frame: .zero)
+        label.font = UIFont(name: "PingFangSC-Medium", size: 16)
+        label.textColor = UIColor(hex: "666666")
+        return label
+    }()
+    
+    lazy var checkboxImageView: UIImageView = {
+        let imageView = UIImageView(image: norImage)
+        return imageView
+    }()
+    
+    let selImage = UIImage.init(named: "checkbox_sel", in: LiveRoomBundle(), compatibleWith: nil)
+    let norImage = UIImage.init(named: "checkbox_nor", in: LiveRoomBundle(), compatibleWith: nil)
+    
+    override var isSelected: Bool {
+        didSet {
+            checkboxImageView.image = isSelected ? selImage : norImage
+        }
+    }
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        backgroundColor = .clear
+        selectionStyle = .none
+        
+        contentView.addSubview(titleLabel)
+        titleLabel.snp.makeConstraints { (make) in
+            make.centerY.equalToSuperview()
+            make.leading.equalToSuperview().offset(20)
+        }
+        
+        contentView.addSubview(checkboxImageView)
+        checkboxImageView.snp.makeConstraints { (make) in
+            make.centerY.equalToSuperview()
+            make.trailing.equalToSuperview().offset(-20)
+            make.size.equalTo(CGSize(width: 24, height: 24))
+        }
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 extension String {
     public func width(fromFont: UIFont) -> CGFloat {
         if count == 0 {
@@ -612,5 +719,5 @@ extension String {
 fileprivate extension String {
     static let titleText = TCBeautyLocalize("TC.BeautySettingPanel.Setup")
     static let strengthText = TCBeautyLocalize("TC.BeautySettingPanel.Strength")
-    static let resolutionTitleText = TCBeautyLocalize("Demo.TRTC.Meeting.resolution")
+    static let resolutionTitleText = LiveRoomLocalize("Demo.TRTC.LiveRoom.resolution")
 }

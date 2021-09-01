@@ -69,8 +69,19 @@ NS_SWIFT_NAME(trtcLiveRoom(_:onAudienceExit:));
 - (void)trtcLiveRoom:(TRTCLiveRoom *)trtcLiveRoom
  onRequestJoinAnchor:(TRTCLiveUserInfo *)user
              reason:(NSString * _Nullable)reason
-             timeout:(double)timeout
-NS_SWIFT_NAME(trtcLiveRoom(_:onRequestJoinAnchor:reason:timeout:));
+NS_SWIFT_NAME(trtcLiveRoom(_:onRequestJoinAnchor:reason:));
+
+/// 主播端收到观众的取消连麦申请回调
+- (void)trtcLiveRoom:(TRTCLiveRoom *)trtcLiveRoom
+  onCancelJoinAnchor:(TRTCLiveUserInfo *)user
+              reason:(NSString *)reason
+NS_SWIFT_NAME(trtcLiveRoom(_:onCancelJoinAnchor:reason:));
+
+/// 观众请求上麦超时
+/// @param userID 超时观众ID
+- (void)trtcLiveRoom:(TRTCLiveRoom *)trtcLiveRoom
+audienceRequestJoinAnchorTimeout:(NSString *)userID
+NS_SWIFT_NAME(trtcLiveRoom(_:audienceRequestJoinAnchorTimeout:));
 
 /// 观众收到主播发来的下麦通知
 - (void)trtcLiveRoomOnKickoutJoinAnchor:(TRTCLiveRoom *)liveRoom
@@ -79,8 +90,18 @@ NS_SWIFT_NAME(trtcLiveRoomOnKickoutJoinAnchor(_:));
 /// 主播收到其他主播的跨房PK申请
 - (void)trtcLiveRoom:(TRTCLiveRoom *)trtcLiveRoom
      onRequestRoomPK:(TRTCLiveUserInfo *)user
-             timeout:(double)timeout
-NS_SWIFT_NAME(trtcLiveRoom(_:onRequestRoomPK:timeout:));
+NS_SWIFT_NAME(trtcLiveRoom(_:onRequestRoomPK:));
+
+/// 其他主播申请PK房间超时
+/// @param userID 超时主播ID
+- (void)trtcLiveRoom:(TRTCLiveRoom *)trtcLiveRoom
+anchorRequestRoomPKTimeout:(NSString *)userID
+NS_SWIFT_NAME(trtcLiveRoom(_:anchorRequestJoinAnchorTimeout:));
+
+/// 主播端收到其他主播的取消跨房PK申请
+- (void)trtcLiveRoom:(TRTCLiveRoom *)trtcLiveRoom
+     onCancelRoomPK:(TRTCLiveUserInfo *)user
+NS_SWIFT_NAME(trtcLiveRoom(_:onCancelRoomPK:));
 
 /// 主播收到PK中对方主播结束PK的通知
 - (void)trtcLiveRoomOnQuitRoomPK:(TRTCLiveRoom *)liveRoom

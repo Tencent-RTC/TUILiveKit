@@ -14,7 +14,7 @@ import Kingfisher
 @objcMembers
 public class AnchorPKCell: UITableViewCell {
     public lazy var coverImg: UIImageView = {
-       let img = UIImageView()
+        let img = UIImageView()
         img.layer.cornerRadius = 20
         img.layer.masksToBounds = true
         return img
@@ -89,7 +89,7 @@ public class AnchorPKCell: UITableViewCell {
 
 @objcMembers
 public class AnchorPKPanel: UIView, UITableViewDelegate,
-                           UITableViewDataSource {
+                            UITableViewDataSource {
     public weak var liveRoom: TRTCLiveRoom? = nil
     public var isLoading: Bool = false
     public var roomInfos: [TRTCLiveRoomInfo] = []
@@ -179,16 +179,20 @@ public class AnchorPKPanel: UIView, UITableViewDelegate,
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "AnchorPKCell") as! AnchorPKCell
-        if (indexPath.row < roomInfos.count) {
-            let room = roomInfos[indexPath.row]
-            cell.config(model: room)
-        } else {
-            cell.config(model: TRTCLiveRoomInfo.init(roomId: "", roomName: "",
-                                                     coverUrl: "", ownerId: "",
-                                                     ownerName: "", streamUrl: "",
-                                                     memberCount: 0, roomStatus: .none))
+        let cell = tableView.dequeueReusableCell(withIdentifier: "AnchorPKCell",for: indexPath)
+        if let pkcell = cell as?AnchorPKCell {
+            if indexPath.row < roomInfos.count {
+                let room = roomInfos[indexPath.row]
+                pkcell.config(model: room)
+            } else {
+                pkcell.config(model: TRTCLiveRoomInfo.init(roomId: "", roomName: "",
+                                                           coverUrl: "", ownerId: "",
+                                                           ownerName: "", streamUrl: "",
+                                                           memberCount: 0, roomStatus: .none))
+            }
         }
+        
+        
         return cell
     }
     
@@ -199,7 +203,7 @@ public class AnchorPKPanel: UIView, UITableViewDelegate,
     //MARK: - delegate
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
-        if (indexPath.row < roomInfos.count) {
+        if indexPath.row < roomInfos.count {
             if let pk = pkWithRoom {
                 let room = roomInfos[indexPath.row]
                 pk(room)
@@ -234,8 +238,6 @@ public class AnchorPKPanel: UIView, UITableViewDelegate,
         if let hidden = shouldHidden {
             hidden()
         }
-        //将PK按钮还原
-        NotificationCenter.default.post(name: NSNotification.Name("ChangePKToStopNotificationKey"), object: nil)
     }
     
     public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

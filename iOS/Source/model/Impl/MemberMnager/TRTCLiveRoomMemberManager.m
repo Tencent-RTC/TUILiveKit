@@ -38,8 +38,8 @@
     NSMutableArray *result = [[NSMutableArray alloc] initWithCapacity:2];
     [self.allMembers enumerateObjectsUsingBlock:^(TRTCLiveUserInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         TRTCLiveUserInfo *userInfo = self.anchors[obj.userId];
-        if (userInfo) {
-            [result addObject:userInfo];
+        if (!userInfo) {
+            [result addObject:obj];
         }
     }];
     return result;
@@ -249,6 +249,7 @@
         }
         if (user) {
             user.streamId = streamId;
+            user.isOwner = YES;
             self.anchors[userId] = user;
             if ([self canDelegateResponseMethod:@selector(memberManager:onUserEnter:isAnchor:)]) {
                 [self.delegate memberManager:self onUserEnter:user isAnchor:YES];

@@ -228,17 +228,17 @@ public class TRTCLiveRoomSoundEffectViewModel: NSObject {
             LiveRoomLocalize("ASKit.MenuItem.Metallic"),
             LiveRoomLocalize("ASKit.MenuItem.Deep"),
             LiveRoomLocalize("ASKit.MenuItem.Resonant"),
-            ]
+        ]
         let iconNameArray = [
             "originState_nor",
-            "Reverb_KTV_nor",
+            "Reverb_Karaoke_nor",
             "Reverb_jinshu_nor",
             "Reverb_dichen_nor",
             "Reverb_hongliang_nor",
         ]
         let iconSelectedNameArray = [
             "originState_sel",
-            "Reverb_KTV_sel",
+            "Reverb_Karaoke_sel",
             "Reverb_jinshu_sel",
             "Reverb_dichen_sel",
             "Reverb_hongliang_sel",
@@ -276,7 +276,7 @@ public class TRTCLiveRoomSoundEffectViewModel: NSObject {
              LiveRoomLocalize("ASKit.MenuItem.Little girl"),
              LiveRoomLocalize("ASKit.MenuItem.Middle-aged man"),
              LiveRoomLocalize("ASKit.MenuItem.Ethereal voice"),
-             ]
+            ]
         
         let iconNameArray = [
             "originState_nor",
@@ -292,7 +292,7 @@ public class TRTCLiveRoomSoundEffectViewModel: NSObject {
             "voiceChange_loli_sel",
             "voiceChange_dashu_sel",
             "voiceChange_kongling_sel",
-            ]
+        ]
         
         for index in 0..<titleArray.count {
             let title = titleArray[index]

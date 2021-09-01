@@ -8,6 +8,11 @@
 
 #import "TRTCLiveRoomDef.h"
 
+NSString * const Signal_Business_ID = @"businessID";
+NSString * const Signal_Business_Live = @"Live";
+NSString * const Signal_Platform = @"platform";
+NSString * const Signal_Platform_OS = @"iOS";
+
 @implementation TRTCCreateRoomParam
 
 - (instancetype)initWithRoomName:(NSString *)roomName coverUrl:(NSString *)coverUrl{
@@ -71,6 +76,10 @@
         self.isOwner = profile.role == V2TIM_GROUP_MEMBER_ROLE_SUPER;
     }
     return self;
+}
+
+-(NSString *)description {
+    return [NSString stringWithFormat:@"ID: %@, Name: %@", self.userId, self.userName];
 }
 
 @end

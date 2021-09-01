@@ -227,11 +227,22 @@ NS_SWIFT_NAME(stopPlay(userID:callback:));
 /// 观众端请求连麦
 /// - Parameters:
 ///   - reason: 连麦请求原因。
+///   - timeout: 超时时间
 ///   - responseCallback: 请求连麦的回调。
 /// - Note: 观众发起请求后，主播端会收到`onRequestJoinAnchor`回调
 - (void)requestJoinAnchor:(NSString *)reason
+                  timeout:(int)timeout
          responseCallback:(ResponseCallback _Nullable)responseCallback
-NS_SWIFT_NAME(requestJoinAnchor(reason:responseCallback:));
+NS_SWIFT_NAME(requestJoinAnchor(reason:timeout:responseCallback:));
+
+/// 观众端取消请求连麦
+/// - Parameters:
+///   - reason: 连麦请求原因。
+///   - responseCallback: 请求连麦的回调。
+/// - Note: 观众取消请求后，主播端会收到`onCancelRequestJoinAnchor`回调
+- (void)cancelRequestJoinAnchor:(NSString *)reason
+         responseCallback:(Callback _Nullable)responseCallback
+NS_SWIFT_NAME(cancelJoinAnchor(reason:responseCallback:));
 
 /// 主播回复观众连麦请求
 /// - Parameters:
@@ -277,13 +288,14 @@ NS_SWIFT_NAME(kickoutJoinAnchor(userID:callback:));
 /// - Parameters:
 ///   - roomID: 被邀约房间 ID。
 ///   - userID: 被邀约主播 ID。
+///   - timeout: 超时时间
 ///   - responseCallback: 请求跨房 PK 的结果回调。
 /// - Note: 发起请求后，对方主播会收到 `onRequestRoomPK` 回调
 - (void)requestRoomPKWithRoomID:(UInt32)roomID
                          userID:(NSString *)userID
+                        timeout:(int)timeout
                responseCallback:(ResponseCallback _Nullable)responseCallback
-NS_SWIFT_NAME(requestRoomPK(roomID:userID:responseCallback:));
-
+NS_SWIFT_NAME(requestRoomPK(roomID:userID:timeout:responseCallback:));
 /// 响应跨房 PK 请求
 /// 主播响应其他房间主播的 PK 请求。
 /// - Parameters:
@@ -295,6 +307,17 @@ NS_SWIFT_NAME(requestRoomPK(roomID:userID:responseCallback:));
                            agree:(BOOL)agree
                           reason:(NSString *)reason
 NS_SWIFT_NAME(responseRoomPK(userID:agree:reason:));
+
+/// 主播取消跨房PK的请求
+/// - Parameters:
+///   - roomID: 被邀约房间 ID。
+///   - userID: 被邀约主播 ID。
+///   - responseCallback: 请求跨房 PK 的结果回调。
+/// - Note: 发起请求后，对方主播会收到 `onCancelRequestRoomPK` 回调
+- (void)cancelRequestRoomPKWithRoomID:(UInt32)roomID
+                        userID:(NSString *)userID
+              responseCallback:(Callback _Nullable)responseCallback
+NS_SWIFT_NAME(cancelRoomPK(roomID:userID:responseCallback:));
 
 /// 主播退出跨房 PK
 /// - Parameter callback: 退出跨房 PK 的结果回调
@@ -338,6 +361,27 @@ NS_SWIFT_NAME(muteAllRemoteAudio(_:));
 /// - Parameter quality 音频质量
 - (void)setAudioQuality:(NSInteger)quality
 NS_SWIFT_NAME(setAudioiQuality(_:));
+
+/// 设置分辨率
+/// - resolution 视频分辨率
+- (void)setVideoResolution:(TRTCVideoResolution)resolution
+NS_SWIFT_NAME(setVideo(resolution:));
+
+/// 设置帧率
+/// - fps 帧率数
+- (void)setVideoFps:(int)fps
+NS_SWIFT_NAME(setVideo(fps:));
+
+/// 设置码率
+/// - bitrate 码率，单位：kbps
+- (void)setVideoBitrate:(int)bitrate
+NS_SWIFT_NAME(setVideo(bitrate:));
+
+/// 设置本地画面镜像预览模式
+/// - type 本地视频预览镜像类型
+- (void)setLocalViewMirror:(TRTCLocalVideoMirrorType)type
+NS_SWIFT_NAME(setLocalViewMirror(type:));
+
 
 #pragma mark - 获取音效管理对象
 

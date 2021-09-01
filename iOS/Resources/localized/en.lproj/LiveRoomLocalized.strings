@@ -8,6 +8,8 @@
 
 "Demo.TRTC.LiveRoom.cancel" = "Cancel";
 "Demo.TRTC.LiveRoom.confirm" = "OK";
+"Demo.TRTC.LiveRoom.subCancel" = "Cancel";
+"Demo.TRTC.LiveRoom.subConfirm" = "OK";
 "Demo.TRTC.LiveRoom.opponentanchorendpd" = "The other anchor ended the competition.";
 "Demo.TRTC.LiveRoom.invite" = "Invite";
 "Demo.TRTC.LiveRoom.invitepk" = "Invite to Compete";
@@ -56,6 +58,8 @@
 "Demo.TRTC.LiveRoom.notenterroom" = "You haven’t entered a room.";
 "Demo.TRTC.LiveRoom.ismicconnectednow" = "You are already co-anchoring.";
 "Demo.TRTC.LiveRoom.anchorisinpk" = "The anchor is in a competition.";
+"Demo.TRTC.LiveRoom.endPK" = "Agree to end the PK";
+
 "Demo.TRTC.LiveRoom.userwaitingresponseformicconnect" = "The user has requested to co-anchor and is waiting for reply.";
 "Demo.TRTC.LiveRoom.smtwrongandretry" = "Error. Please try again later.";
 "Demo.TRTC.LiveRoom.anchornotresponsethereq" = "The anchor did not respond to the co-anchoring request.";
@@ -66,6 +70,8 @@
 "Demo.TRTC.LiveRoom.anchorisinpk" = "The anchor is in a competition.";
 "Demo.TRTC.LiveRoom.useriswaitingforpkrep" = "The user has requested to compete and is waiting for reply.";
 "Demo.TRTC.LiveRoom.smtwrongandretry" = "Error. Please try again later.";
+"Demo.TRTC.LiveRoom.ownerId" = "Error. ownerId is nil.";
+
 "Demo.TRTC.LiveRoom.anchornotresponsepkbetweenroom" = "The anchor did not respond to the cross-room competition request.";
 "Demo.TRTC.LiveRoom.isnotpkstate" = "You are not in a competition currently.";
 "Demo.TRTC.LiveRoom.receiveothermessage" = "Received other messages";
@@ -166,3 +172,11 @@
 "LoginNetwork.AppUtils.warmprompt" = "Note";
 "LoginNetwork.AppUtils.tomeettheregulatory" = "In accordance with relevant regulations, the app forbids pornographic, abusive, violent, terrorist, and politically sensitive content. All audio/video calls and live streams are recorded and archived.";
 "LoginNetwork.AppUtils.determine" = "OK";
+
+"Demo.TRTC.LiveRoom.resolution" = "Resolution";
+"Demo.TRTC.LiveRoom.framerate" = "Frame Rate";
+"Demo.TRTC.LiveRoom.bitrate" = "Bitrate";
+"Demo.TRTC.LiveRoom.localmirror" = "Local Mirror";
+"Demo.TRTC.LiveRoom.resolutionselected" = "Resolution selected";
+"Demo.TRTC.LiveRoom.framerateselected" = "Frame rate selected";
+"Demo.TRTC.LiveRoom.video" = "Video";
