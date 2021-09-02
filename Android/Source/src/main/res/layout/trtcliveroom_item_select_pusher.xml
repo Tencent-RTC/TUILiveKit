@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cl_pk_select"
@@ -52,4 +52,4 @@
         app:layout_constraintBottom_toBottomOf="@+id/cl_pk_select"
         app:layout_constraintRight_toRightOf="@+id/cl_pk_select"
         app:layout_constraintTop_toTopOf="@+id/cl_pk_select" />
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

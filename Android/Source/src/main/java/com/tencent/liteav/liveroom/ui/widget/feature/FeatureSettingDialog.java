@@ -2,9 +2,9 @@ package com.tencent.liteav.liveroom.ui.widget.feature;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
-import android.support.design.widget.BottomSheetDialog;
+import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;

@@ -5,10 +5,10 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
-import android.support.constraint.Group;
-import android.support.v7.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.constraintlayout.widget.Group;
+import androidx.appcompat.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
@@ -642,7 +642,7 @@ public abstract class TCBaseAnchorActivity extends Activity implements TRTCLiveR
      */
     protected void showErrorAndQuit(int errorCode, String errorMsg) {
         if (mErrorDialog == null) {
-            android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this, R.style.TRTCLiveRoomDialogTheme)
+            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this, R.style.TRTCLiveRoomDialogTheme)
                     .setTitle(R.string.trtcliveroom_error)
                     .setMessage(errorMsg)
                     .setNegativeButton(R.string.trtcliveroom_ok, new DialogInterface.OnClickListener() {

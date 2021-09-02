@@ -29,7 +29,7 @@
         android:textColor="@color/trtcliveroom_color_main_text"
         android:textSize="16sp" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_anchor_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -1,7 +1,7 @@
 package com.tencent.liteav.liveroom.ui.widget;
 
 import android.graphics.Rect;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 public class SpaceDecoration extends RecyclerView.ItemDecoration {
