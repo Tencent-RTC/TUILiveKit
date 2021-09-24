@@ -92,7 +92,7 @@
     <string name="trtcliveroom_music_volume">音乐音量</string>
     <string name="trtcliveroom_mic_volume">人声音量</string>
     <string name="trtcliveroom_changer">变声</string>
-    <string name="trtcliveroom_reverb">混响效果</string>
+    <string name="trtcliveroom_reverb">混响</string>
     <string name="trtcliveroom_bg_music_positive_happy">欢快</string>
     <string name="trtcliveroom_bg_music_sad_cinematic_piano">忧郁</string>
     <string name="trtcliveroom_bg_music_wonder_world">神奇世界</string>

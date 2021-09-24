@@ -83,7 +83,7 @@
     <string name="trtcliveroom_create_room_default">%s\'s room</string>
     <string name="trtcliveroom_bgm_title">Background music</string>
     <string name="trtcliveroom_back">Back</string>
-    <string name="trtcliveroom_sound_effects">Audio Effect</string>
+    <string name="trtcliveroom_sound_effects">Sound effect settings</string>
     <string name="trtcliveroom_sound_audition">Music Preview</string>
     <string name="trtcliveroom_put_on_your_headphones">Use earphones for better experience</string>
     <string name="trtcliveroom_copyright_sounds">Music Library ©</string>
