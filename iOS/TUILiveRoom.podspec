@@ -17,7 +17,7 @@ Pod::Spec.new do |spec|
 
   spec.dependency 'TCBeautyKit'
   spec.dependency 'TXAppBasic'
-  spec.dependency 'TXIMSDK_Plus_iOS'
+  spec.dependency 'TXIMSDK_Plus_iOS', '~> 5.7.1435'
   
 #  Swift第三方库
   spec.dependency 'Alamofire'

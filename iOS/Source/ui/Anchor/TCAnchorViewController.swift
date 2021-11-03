@@ -634,6 +634,11 @@ public class TCAnchorViewController: UIViewController, UITextFieldDelegate,TRTCL
         musicQualityButton.width = 16 + width
         musicQualityButton.center = audioQualityLabel.center
         musicQualityButton.left = standardQualityButton.right + 20
+        
+        if musicQualityButton.right > (createTopPanel.width - 20) {
+            musicQualityButton.right = createTopPanel.width - 20
+            standardQualityButton.right = musicQualityButton.left - 20
+        }
     }
     
     @objc func onAudioQualityButtonClicked(_ sender: UIButton?) {
