@@ -1,0 +1,50 @@
+{
+  "basic": {
+    "Please configure your SDKAPPID": "Please configure your SDKAPPID/SECRETKEY.",
+    "Please configure your playerDomain": "Please configure your playerDomain."
+  },
+  "common": {
+    "Last": "Last",
+    "Next": "Next",
+    "Sure": "Sure",
+    "Cancel": "Cancel",
+    "Save": "Save",
+    "Yes": "Yes"
+  },
+  "device": {
+    "Mic": "Mic",
+    "Speaker": "Speaker",
+    "Camera": "Camera",
+    "Select a mic": "Select a mic",
+    "Select a speaker": "Select a speaker",
+    "Select a camera": "Select a camera"
+  },
+  "beauty": {
+    "Beauty": "Beauty",
+    "Skin Brightening": "Skin Brightening",
+    "Rosy Skin": "Rosy Skin"
+  },
+  "tim": {
+    "Failed to initialize streaming group": "Failed to initialize streaming group. Refresh and try again.",
+    "Refresh and try again": "Refresh and try again.",
+    "Failed to create streaming group": "Failed to create streaming group.",
+    "Failed to dismiss streaming group": "Failed to dismiss streaming group.",
+    "Currently forbidden to send messages": "Currently forbidden to send messages",
+    "Failed to send message": "Failed to send message"
+  },
+  "rtc": {
+    "A user with the same name entered": "A user with the same name entered.",
+    "Entered room successfully": "Entered room successfully.",
+    "Failed to enter room": "Failed to enter room.",
+    "Stream publishing successful": "Stream publishing successful.",
+    "Failed to publish stream": "Failed to publish stream.",
+    "Stream publishing stopped": "Stream publishing stopped.",
+    "Failed to stop publishing stream": "Failed to stop publishing stream.",
+    "Try again later": "Try again later.",
+    "Failed to leave room": "Failed to leave room.",
+    "Published stream to CDN successfully": "Published stream to CDN successfully.",
+    "Stopped publishing stream to CDN": "Stopped publishing stream to CDN.",
+    "Screen sharing failed.": "Screen sharing failed.",
+    "Ensure that your browser has access to the screen": "Ensure that your browser has access to the screen."
+  }
+}

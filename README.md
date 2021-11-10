@@ -24,15 +24,15 @@
 
 ## Demo 体验
 
-| iOS                                                          | Android                                                      |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
-| ![](https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/app_download_ios.png) | ![](https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/app_download_android.png) |
+| iOS                                                          | Android                                                      | Web                                                          |
+| :----------------------------------------------------------- | :----------------------------------------------------------- | ------------------------------------------------------------ |
+| ![img](https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/app_download_ios.png) | ![img](https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/app_download_android.png) | [推流体验 Demo](https://web.sdk.qcloud.com/component/tuiliveroom/tuipusher/pusher.html)<br><br><br><br>[拉流体验 Demo](https://web.sdk.qcloud.com/component/tuiliveroom/tuiplayer/player.html) |
 
 ## 文档资源
 
-| iOS                                                          | Android                                                      |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
-| [视频互动直播（iOS）](https://cloud.tencent.com/document/product/647/43181)| [视频互动直播（Android）](https://cloud.tencent.com/document/product/647/43182)|
+| iOS                                                          | Android                                                      | Web                            |
+| :----------------------------------------------------------- | :----------------------------------------------------------- | ------------------------------ |
+| [视频互动直播（iOS）](https://cloud.tencent.com/document/product/647/43181) | [视频互动直播（Android）](https://cloud.tencent.com/document/product/647/43182) | [WebRTC 互动直播（快速集成）](https://cloud.tencent.com/document/product/647/63830) |
 ## 其他
 
 ### 交流&反馈
@@ -55,4 +55,3 @@
 | Web | [下载](https://web.sdk.qcloud.com/trtc/webrtc/download/webrtc_latest.zip)| [DOC](https://cloud.tencent.com/document/product/647/16863) |[API](https://cloud.tencent.com/document/product/647/17249) |
 | Electron | [下载](https://web.sdk.qcloud.com/trtc/electron/download/TXLiteAVSDK_TRTC_Electron_latest.zip) | [DOC](https://cloud.tencent.com/document/product/647/38549) |[API](https://cloud.tencent.com/document/product/647/38551) |
 | 微信小程序 | [下载](https://web.sdk.qcloud.com/trtc/miniapp/download/trtc-room.zip) | [DOC](https://cloud.tencent.com/document/product/647/32183) |[API](https://cloud.tencent.com/document/product/647/17018) |
-
