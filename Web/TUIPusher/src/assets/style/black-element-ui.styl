@@ -1,0 +1,97 @@
+/*
+ * @Description: 这里是修改element-ui组件为深色系
+ * @Date: 2021-11-02 20:01:08
+ * @LastEditTime: 2021-11-08 17:13:26
+ */
+.dialog-style
+  color $fontColor !important
+  .el-dialog__header
+    background-color $dialogColor
+    padding 16px 20px 14px
+  .el-dialog__headerbtn .el-dialog__close
+    color $fontColor
+  .el-dialog__title
+    color $fontColor
+  .el-dialog__body
+    background-color $dialogColor
+    color $fontColor
+  .el-dialog__footer
+    background-color $dialogColor
+
+.dialog-style-title
+  text-align left
+  color $fontColor !important
+  .el-dialog__header
+    background-color $dialogTitleColor
+    padding 16px 20px 14px
+    font-weight bold
+    font-size 16px
+  .el-dialog__headerbtn .el-dialog__close
+    color $fontColor
+  .el-dialog__title
+    color $fontColor
+  .el-dialog__body
+    background-color $dialogColor
+    color $fontColor
+  .el-dialog__footer
+    background-color $dialogColor
+
+.tabs-style
+  .el-tabs__item
+    color $fontColor
+  .el-tabs__nav-wrap::after
+    background-color $lineColor
+
+// input
+.el-input__suffix
+  color #888888
+.el-input .el-input__inner
+  background-color $inputColor
+  border 1px solid $inputColor
+  color #888888
+  font-wight medium
+.el-input.is-disabled .el-input__inner
+  background-color #909399
+  border-color #909399
+  color #c0c4cc
+.el-input-number__decrease
+.el-input-number__increase
+  background-color $inputColor
+  border-left 1px solid $lineColor !important
+.el-input-number__increase
+  border-bottom 1px solid $lineColor !important
+.el-input-number .el-input__inner
+  text-align left
+
+// 下拉列表
+.el-select-dropdown
+  border-color $themeColor
+  background-color $inputColor
+  .el-select-dropdown__item
+    color #888888
+  .el-select-dropdown__item.selected
+    color $highLightColor
+  .el-select-dropdown__item.hover
+    background-color $backgroundColor
+
+.popper__arrow::after
+.popper__arrow
+  border-bottom-color $backgroundColor !important
+
+.input-style
+  background-color $inputColor
+  border 1px solid $inputColor
+
+.slider-style
+  .el-slider__runway
+    height 4px
+    background-color #6D727D
+  .el-slider__button-wrapper
+    top -16px
+  .el-slider__bar
+    height 4px
+  .el-slider__button
+    border #979797 1px solid
+
+.el-checkbox
+  color $fontColor
