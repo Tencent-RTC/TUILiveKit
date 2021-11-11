@@ -4,7 +4,7 @@
 
 ```
 TUILiveRoom
-├─ App          // 主面板，各种场景入口
+├─ App          // 主面板，场景入口
 ├─ Beauty       // 美颜面板，包含美颜，滤镜，动效等效果
 ├─ Debug        // 调试相关
 └─ Source       // 互动直播业务逻辑
@@ -40,12 +40,17 @@ TUILiveRoom
 >!本文提到的生成 UserSig 的方案是在客户端代码中配置 SECRETKEY，该方法中 SECRETKEY 很容易被反编译逆向破解，一旦您的密钥泄露，攻击者就可以盗用您的腾讯云流量，因此**该方法仅适合本地跑通工程和功能调试**。
 >正确的 UserSig 签发方式是将 UserSig 的计算代码集成到您的服务端，并提供面向 App 的接口，在需要 UserSig 时由您的 App 向业务服务器发起请求获取动态 UserSig。更多详情请参见 [服务端生成 UserSig](https://cloud.tencent.com/document/product/647/17275#Server)。
 
+### 开通移动直播服务
+1. [开通直播服务并绑定域名](https://console.cloud.tencent.com/live/livestat) 如果还没开通，点击申请开通，之后在域名管理中配置推流域名和拉流域名
+2. [获取SDK的测试License](https://console.cloud.tencent.com/live/license) 
+3. [配置推拉流域名](https://console.cloud.tencent.com/live/domainmanage)
+
 ### 集成 SDK
 
-您可以选择使用 JCenter 自动加载的方式，或者手动下载 aar 再将其导入到您当前的工程项目中，工程默认采用方法一配置。
+您可以选择使用 maven 自动加载的方式，或者手动下载 aar 再将其导入到您当前的工程项目中，工程默认采用方法一配置。
 
 #### 方法一：自动加载（aar）
-实时音视频（TRTC） SDK 已经发布到 JCenter 库，您可以通过配置 gradle 自动下载更新。
+实时音视频（TRTC） SDK 已经发布到 maven 库，您可以通过配置 gradle 自动下载更新。
 只需要用 Android Studio 打开需要集成 SDK 的工程，然后通过简单的三个步骤修改 App/build.gradle 文件，就可以完成 SDK 集成：
 
 1. 在 dependencies 中添加 SDK 的依赖。
@@ -79,7 +84,7 @@ defaultConfig {
 
 
 #### 方法二：手动下载（aar）
-如果您的网络连接 JCenter 有问题，您也可以手动下载 SDK 集成到工程里：
+如果您的网络连接 maven 有问题，您也可以手动下载 SDK 集成到工程里：
 
 1. 下载最新版本 [实时音视频 SDK](https://liteav.sdk.qcloud.com/download/latest/TXLiteAVSDK_TRTC_Android_latest.zip)。
 2. 将下载到的 aar 文件拷贝到工程的 **App/libs** 目录下。
