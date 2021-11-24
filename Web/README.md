@@ -89,7 +89,7 @@ TUIPusher & TUIPlayer 实现的快直播和标准直播依托于腾讯云的云�
 > - 本文使用生成 UserSig 的方式，是在客户端根据您填入的 sdkAppId 及 secretKey 生成 userSig，该方式的 secretKey 很容易被反编译逆向破解，一旦您的密钥泄露，攻击者就可以盗用您的腾讯云流量，因此**该方法仅适合本地跑通 TUIPusher & TUIPlayer 进行功能调试**。
 >- 正确的 UserSig 签发方式是将 UserSig 的计算代码集成到您的服务端，并提供面向 App 的接口，在需要 UserSig 时由您的应用向业务服务器发起请求获取动态 UserSig。更多详情请参见 [服务端生成 UserSig](https://cloud.tencent.com/document/product/647/17275#Server)。
 - 参考 `TUIPusher/src/pusher.vue` 及 `TUIPlayer/src/player.vue` 文件，将用户信息、直播间信息、SDKAppId 及 UserSig 等账号信息提交到 vuex 的 store 进行全局存储，您就可以跑通推拉流两个客户端的所有功能。详细业务流程参见下图：
-![](https://qcloudimg.tencent-cloud.cn/raw/dee6676ff3beeaffb327b9e43569e4ef.png)
+![](https://qcloudimg.tencent-cloud.cn/raw/d2cafd2e0f029908859f7498e9d92297.png)
 
 ## 注意事项
 ###  平台支持
@@ -130,4 +130,6 @@ TUIPusher & TUIPlayer 依赖以下端口进行数据传输，请将其加入防�
 - 域名：qcloud.rtc.qq.com
 
 ## 结语
-TUIPusher 和 TUIPlayer 组件在持续优化中，未来将推出互动连麦，弹幕等功能。您的支持和反馈是我们不断进步的动力，如有需求或疑问请及时反馈。
+TUIPusher 和 TUIPlayer 组件在持续优化中，未来将推出互动连麦，弹幕等功能。您的支持和反馈是我们不断进步的动力，欢迎加入QQ群（群号：592465424）进行技术交流和问题反馈。
+
+![image-20210622142449407](https://main.qcloudimg.com/raw/1ea3ab1ff36d37c889f4140499585a4a.png)
