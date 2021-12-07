@@ -119,12 +119,11 @@ extension LiveRoomMainViewController: LiveRoomMainRootViewDelegate {
                 guard let ownerInfoArray = infoDic["list"] as? [[String : String]], let ownerInfo = ownerInfoArray.first else { return }
                 guard let ownerName = ownerInfo["name"], let ownerId = ownerInfo["userId"] else { return }
                 let liveRoomInfo = TRTCLiveRoomInfo.init(roomId: roomId, roomName: groupInfo.info.groupName, coverUrl: TUILiveRoomProfileManager.sharedManager().avatar, ownerId: ownerId, ownerName: ownerName, streamUrl: nil, memberCount: 0, roomStatus: .single)
-                if let vc = TCAudienceViewController(play: liveRoomInfo, videoIsReady: {
+                let vc = TCAudienceViewController(playInfo: liveRoomInfo, videoIsReady: {
                     
-                }) {
-                    vc.liveRoom = self.liveRoom
-                    self.navigationController?.pushViewController(vc, animated: true)
-                }
+                })
+                vc.liveRoom = self.liveRoom
+                self.navigationController?.pushViewController(vc, animated: true)
             } else {
                 DispatchQueue.main.async {
                     let alertVC = UIAlertController.init(title: .promptText, message: .roomdoesnotexistText, preferredStyle: .alert)
@@ -139,10 +138,10 @@ extension LiveRoomMainViewController: LiveRoomMainRootViewDelegate {
         }
     }
     
-    func createRoom() {
-        guard let vc = TCAnchorViewController() else {return}
-        vc.liveRoom = liveRoom
-        navigationController?.pushViewController(vc, animated: true)
+    @objc func createRoom() {
+            let vc = TCAnchorViewController()
+            vc.liveRoom = liveRoom
+            navigationController?.pushViewController(vc, animated: true)
     }
     
 }

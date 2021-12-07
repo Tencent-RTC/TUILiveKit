@@ -8,8 +8,8 @@
 
 "Demo.TRTC.LiveRoom.cancel" = "取消";
 "Demo.TRTC.LiveRoom.confirm" = "确定";
-"Demo.TRTC.LiveRoom.subCancel" = "再等等";
-"Demo.TRTC.LiveRoom.subConfirm" = "我确定";
+"Demo.TRTC.LiveRoom.subCancel" = "取消";
+"Demo.TRTC.LiveRoom.subConfirm" = "确定";
 "Demo.TRTC.LiveRoom.opponentanchorendpd" = "对方主播已结束PK";
 "Demo.TRTC.LiveRoom.invite" = "邀请";
 "Demo.TRTC.LiveRoom.invitepk" = "PK邀请";
@@ -32,7 +32,7 @@
 "ASKit.MainMenu.Title" = "音效设置";
 "ASKit.MainMenu.VoiceChangeTitle" = "变声";
 "ASKit.MainMenu.Reverberation" = "混响";
-"ASKit.MusicSelectMenu.Title" = "背景音乐";
+"ASKit.MusicSelectMenu.Title" = "音乐试听";
 "Demo.TRTC.VoiceRoom.useearphones" = "请带上耳机获得更好体验";
 "Demo.TRTC.VoiceRoom.copyrights" = "版权曲库©";
 "ASKit.MainMenu.SelectMusic" = "选择歌曲";
@@ -139,8 +139,8 @@
 "Demo.TRTC.LiveRoom.micconnectionrefusedandinpk" = "连麦请求拒绝，正在进行PK操作";
 "Demo.TRTC.LiveRoom.prompt" = "提示";
 "Demo.TRTC.LiveRoom.xxinitiateamicconnectionreq" = "xxx向您发起连麦请求";
-"Demo.TRTC.LiveRoom.accept" = "接受";
-"Demo.TRTC.LiveRoom.refuse" = "拒绝";
+"Demo.TRTC.LiveRoom.accept" = "确定";
+"Demo.TRTC.LiveRoom.refuse" = "取消";
 "Demo.TRTC.LiveRoom.refusemicconnectionreq" = "主播拒绝了您的连麦请求";
 "Demo.TRTC.LiveRoom.xxmicconnectiontimeout" = "xxx连麦超时";
 "Demo.TRTC.LiveRoom.dealmicconnectionreqtimeout" = "处理连麦请求超时";

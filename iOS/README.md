@@ -4,13 +4,13 @@
 	
 ```
 TUILiveRoom
-├─ App			// 视频互动直播主页UI代码以及用到的图片及国际化字符串资源文件夹
-├─ Debug		// 工程调试运行所需的关键业务代码文件夹
-├─ Login		// 登录UI及业务逻辑代码文件夹
-├─ Resources		// 视频互动直播功能所需的图片、国际化字符串资源文件夹
-├─ Source	        // 视频互动直播核心业务逻辑代码文件夹
-├─ TCBeautyKit  	// 美颜功能核心组件
-└─ TXAppBasic		// 工程依赖的基础组件
+├─ App              // 视频互动直播主页UI代码以及用到的图片及国际化字符串资源文件夹
+├─ Debug            // 工程调试运行所需的关键业务代码文件夹
+├─ LoginMock        // 登录UI及业务逻辑代码文件夹
+├─ Resources        // 视频互动直播功能所需的图片、国际化字符串资源文件夹
+├─ Source           // 视频互动直播核心业务逻辑代码文件夹
+├─ TCBeautyKit      // 美颜功能核心组件
+└─ TXAppBasic       // 工程依赖的基础组件
 ```
 	
 ## 环境准备
@@ -48,6 +48,10 @@ TUILiveRoom
 >!本文提到的生成 UserSig 的方案是在客户端代码中配置 SECRETKEY，该方法中 SECRETKEY 很容易被反编译逆向破解，一旦您的密钥泄露，攻击者就可以盗用您的腾讯云流量，因此**该方法仅适合本地跑通工程和功能调试**。
 >正确的 UserSig 签发方式是将 UserSig 的计算代码集成到您的服务端，并提供面向 App 的接口，在需要 UserSig 时由您的 App 向业务服务器发起请求获取动态 UserSig。更多详情请参见 [服务端生成 UserSig](https://cloud.tencent.com/document/product/647/17275#Server)。
 
+### 开通移动直播服务
+1. [开通直播服务并绑定域名](https://console.cloud.tencent.com/live/livestat) 如果还没开通，点击申请开通，之后在域名管理中配置推流域名和拉流域名
+2. [获取SDK的测试License](https://console.cloud.tencent.com/live/license)
+3. [配置推拉流域名](https://console.cloud.tencent.com/live/domainmanage)
 
 ### 运行 App
 
