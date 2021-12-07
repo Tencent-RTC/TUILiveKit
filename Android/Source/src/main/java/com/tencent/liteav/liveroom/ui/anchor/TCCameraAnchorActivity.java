@@ -3,8 +3,10 @@ package com.tencent.liteav.liveroom.ui.anchor;
 import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.os.Bundle;
+
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.constraintlayout.widget.Guideline;
+
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -51,33 +53,34 @@ import java.util.concurrent.ConcurrentMap;
 public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View.OnClickListener {
     private static final String TAG = TCCameraAnchorActivity.class.getSimpleName();
 
-    private TXCloudVideoView        mTXCloudVideoView;      // 主播本地预览的View
-    private TXCloudVideoView        mVideoViewPKAnchor;     // PK主播的视频显示View
-    private ImageView               mImagesAnchorHead;      // 显示房间主播头像
-    private ImageView               mImageRecordBall;       // 表明正在录制的红点球
-    private TextView                mTextBroadcastTime;     // 显示已经开播的时间
-    private TextView                mTextRoomId;            // 显示当前房间号
-    private Button                  mButtonPK;              // 发起PK请求的按钮
-    private Guideline               mGuideLineVertical;     // ConstraintLayout的垂直参考线
-    private Guideline               mGuideLineHorizontal;   // ConstraintLayout的水平参考线
-    private AnchorPKSelectView      mViewPKAnchorList;      // 显示可PK主播的列表
-    private AudioEffectPanel        mPanelAudioControl;     // 音效控制面板
-    private BeautyPanel             mPanelBeautyControl;    // 美颜设置的控制类
-    private FeatureSettingDialog    mFeatureSettingDialog;  // 更多设置（分辨率、帧率、码率）
-    private RelativeLayout          mPKContainer;
-    private RadioButton             mRbNormalQuality;
-    private RadioButton             mRbMusicQuality;
-    private ImageView               mImagePKLayer;
-    private Button                  mButtonExit;            // 结束直播&退出PK
-    private ObjectAnimator          mAnimatorRecordBall;    // 显示录制状态红点的闪烁动画
-    private TCVideoViewMgr          mVideoViewMgr;          // 主播视频列表的View
-
-    private boolean                 mShowLog;               // 表示是否显示Log面板
-    private List<String>            mAnchorUserIdList  = new ArrayList<>();
-    private int                     mCurrentStatus     = TRTCLiveRoomDef.ROOM_STATUS_NONE;
+    private TXCloudVideoView     mTXCloudVideoView;      // 主播本地预览的View
+    private TXCloudVideoView     mVideoViewPKAnchor;     // PK主播的视频显示View
+    private ImageView            mImagesAnchorHead;      // 显示房间主播头像
+    private ImageView            mImageRecordBall;       // 表明正在录制的红点球
+    private TextView             mTextBroadcastTime;     // 显示已经开播的时间
+    private TextView             mTextRoomId;            // 显示当前房间号
+    private Button               mButtonPK;              // 发起PK请求的按钮
+    private Guideline            mGuideLineVertical;     // ConstraintLayout的垂直参考线
+    private Guideline            mGuideLineHorizontal;   // ConstraintLayout的水平参考线
+    private AnchorPKSelectView   mViewPKAnchorList;      // 显示可PK主播的列表
+    private AudioEffectPanel     mPanelAudioControl;     // 音效控制面板
+    private BeautyPanel          mPanelBeautyControl;    // 美颜设置的控制类
+    private FeatureSettingDialog mFeatureSettingDialog;  // 更多设置（分辨率、帧率、码率）
+    private RelativeLayout       mPKContainer;
+    private RadioButton          mRbNormalQuality;
+    private RadioButton          mRbMusicQuality;
+    private ImageView            mImagePKLayer;
+    private Button               mButtonExit;            // 结束直播&退出PK
+    private ObjectAnimator       mAnimatorRecordBall;    // 显示录制状态红点的闪烁动画
+    private TCVideoViewMgr       mVideoViewMgr;          // 主播视频列表的View
+    
+    private boolean      mShowLog;               // 表示是否显示Log面板
+    private boolean      mIsPaused         = false;
+    private List<String> mAnchorUserIdList = new ArrayList<>();
+    private int          mCurrentStatus    = TRTCLiveRoomDef.ROOM_STATUS_NONE;
 
     private final Map<String, ConfirmDialogFragment> mLinkMicConfirmDialogFragmentMap = new HashMap<>();  // 连麦确认弹框
-    private ConfirmDialogFragment                    mPKConfirmDialogFragment;                            // PK确认弹框
+    private       ConfirmDialogFragment              mPKConfirmDialogFragment;                            // PK确认弹框
 
     private final ConcurrentMap<String, TRTCLiveRoomDef.TRTCLiveUserInfo> mUserInfoMap = new ConcurrentHashMap<>();
 
@@ -111,7 +114,7 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
         mTextBroadcastTime.setText(String.format(Locale.US, "%s", "00:00:00"));
         mImageRecordBall = (ImageView) findViewById(R.id.iv_anchor_record_ball);
 
-        mButtonExit =  (Button) findViewById(R.id.btn_close);
+        mButtonExit = (Button) findViewById(R.id.btn_close);
         mImagesAnchorHead = (ImageView) findViewById(R.id.iv_anchor_head);
         showHeadIcon(mImagesAnchorHead, mSelfAvatar);
 
@@ -140,7 +143,7 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
             @Override
             public void onDismiss() {
                 // 如果没有进房,关闭美颜后,显示开启直播界面的布局;如果已经进房了,关闭后显示直播界面的布局
-                if(!mIsEnterRoom){
+                if (!mIsEnterRoom) {
                     mGroupLiveBefore.setVisibility(View.VISIBLE);
                 } else {
                     mGroupLiveAfter.setVisibility(View.VISIBLE);
@@ -339,7 +342,7 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
 
     // 首次TRTC打开摄像头提示"Demo特别配置了无限期云端存储"
     private void checkNeedShowSecurityTips() {
-        if (UserModelManager.getInstance().needShowSecurityTips()) {
+        if (UserModelManager.getInstance().needShowSecurityTips() && !isFinishing()) {
             AlertDialog.Builder normalDialog = new AlertDialog.Builder(this);
             normalDialog.setMessage(getResources().getString(R.string.trtcliveroom_first_enter_room_tips));
             normalDialog.setCancelable(false);
@@ -362,7 +365,7 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
             set.clone(mRootView);
             set.connect(mTXCloudVideoView.getId(), ConstraintSet.TOP, mPKContainer.getId(), ConstraintSet.TOP);
             set.connect(mTXCloudVideoView.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START);
-            set.connect(mTXCloudVideoView.getId(), ConstraintSet.BOTTOM,  mPKContainer.getId(), ConstraintSet.BOTTOM);
+            set.connect(mTXCloudVideoView.getId(), ConstraintSet.BOTTOM, mPKContainer.getId(), ConstraintSet.BOTTOM);
             set.connect(mTXCloudVideoView.getId(), ConstraintSet.END, mGuideLineVertical.getId(), ConstraintSet.END);
             set.applyTo(mRootView);
         }
@@ -457,7 +460,9 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
         mMainHandler.post(new Runnable() {
             @Override
             public void run() {
-                dialogFragment.show(getFragmentManager(), "ConfirmDialogFragment");
+                if (!mIsPaused) {
+                    dialogFragment.show(getFragmentManager(), "ConfirmDialogFragment");
+                }
             }
         });
     }
@@ -515,7 +520,9 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
         mMainHandler.post(new Runnable() {
             @Override
             public void run() {
-                dialogFragment.show(getFragmentManager(), "ConfirmDialogFragment");
+                if (!mIsPaused) {
+                    dialogFragment.show(getFragmentManager(), "ConfirmDialogFragment");
+                }
             }
         });
     }
@@ -526,8 +533,8 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
             @Override
             public void run() {
                 ConfirmDialogFragment fragment = mLinkMicConfirmDialogFragmentMap.remove(userId);
-                if (null != fragment) {
-                    fragment.dismiss();
+                if (null != fragment && null != fragment.getDialog()) {
+                    fragment.dismissAllowingStateLoss();
                 }
             }
         });
@@ -538,8 +545,8 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
         mMainHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (null != mPKConfirmDialogFragment) {
-                    mPKConfirmDialogFragment.dismiss();
+                if (null != mPKConfirmDialogFragment && null != mPKConfirmDialogFragment.getDialog()) {
+                    mPKConfirmDialogFragment.dismissAllowingStateLoss();
                     mPKConfirmDialogFragment = null;
                 }
             }
@@ -707,5 +714,17 @@ public class TCCameraAnchorActivity extends TCBaseAnchorActivity implements View
         }
 
         mVideoViewMgr.showLog(mShowLog);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mIsPaused = false;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mIsPaused = true;
     }
 }

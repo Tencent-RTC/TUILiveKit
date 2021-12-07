@@ -1,8 +1,6 @@
 package com.tencent.liteav.liveroom.model.impl.room.impl;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
@@ -19,7 +17,6 @@ import com.tencent.imsdk.v2.V2TIMGroupMemberInfoResult;
 import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMMessage;
 import com.tencent.imsdk.v2.V2TIMSDKConfig;
-import com.tencent.imsdk.v2.V2TIMSDKListener;
 import com.tencent.imsdk.v2.V2TIMSignalingListener;
 import com.tencent.imsdk.v2.V2TIMSimpleMsgListener;
 import com.tencent.imsdk.v2.V2TIMUserFullInfo;
@@ -93,6 +90,8 @@ public class TXRoomService implements ITXRoomService {
     /// 5. 观众收到对应的上麦消息，恢复 STATUS_NONE
     private int mInternalStatus = STATUS_NONE;
 
+    private String mCoverUrl; //封面
+
     public static synchronized TXRoomService getInstance() {
         if (sInstance == null) {
             sInstance = new TXRoomService();
@@ -132,21 +131,7 @@ public class TXRoomService implements ITXRoomService {
         if (!mIsInitIMSDK) {
             V2TIMSDKConfig config = new V2TIMSDKConfig();
             config.setLogLevel(V2TIMSDKConfig.V2TIM_LOG_DEBUG);
-            mIsInitIMSDK = V2TIMManager.getInstance().initSDK(mContext, sdkAppId, config, new V2TIMSDKListener() {
-                @Override
-                public void onConnecting() {
-                }
-
-                @Override
-                public void onConnectSuccess() {
-                }
-
-                @Override
-                public void onConnectFailed(int code, String error) {
-                    TRTCLogger.e(TAG, "init im sdk error.");
-                }
-            });
-
+            mIsInitIMSDK = V2TIMManager.getInstance().initSDK(mContext, sdkAppId, config);
             if (!mIsInitIMSDK) {
                 if (callback != null) {
                     callback.onCallback(CODE_ERROR, "init im sdk error.");
@@ -156,21 +141,14 @@ public class TXRoomService implements ITXRoomService {
         }
 
         // 登陆到 IM
-        String loginedUserId = V2TIMManager.getInstance().getLoginUser();
-        if (loginedUserId != null && loginedUserId.equals(userId)) {
+        String loggedUserId = V2TIMManager.getInstance().getLoginUser();
+        if (loggedUserId != null && loggedUserId.equals(userId)) {
             // 已经登录过了
             mIsLogin = true;
             mMySelfIMInfo.userId = userId;
             TRTCLogger.i(TAG, "login im success.");
             if (callback != null) {
                 callback.onCallback(0, "login im success.");
-            }
-            return;
-        }
-        if (isLogin()) {
-            TRTCLogger.e(TAG, "start login fail, you have been login, can't login twice.");
-            if (callback != null) {
-                callback.onCallback(CODE_ERROR, "start login fail, you have been login, can't login twice.");
             }
             return;
         }
@@ -211,7 +189,8 @@ public class TXRoomService implements ITXRoomService {
             }
             return;
         }
-
+        mIsLogin = false;
+        mMySelfIMInfo.clean();
         V2TIMManager.getInstance().logout(new V2TIMCallback() {
             @Override
             public void onError(int i, String s) {
@@ -223,8 +202,6 @@ public class TXRoomService implements ITXRoomService {
 
             @Override
             public void onSuccess() {
-                mIsLogin = false;
-                mMySelfIMInfo.clean();
                 TRTCLogger.i(TAG, "logout im success.");
                 if (callback != null) {
                     callback.onCallback(0, "login im success.");
@@ -342,6 +319,7 @@ public class TXRoomService implements ITXRoomService {
                 // 主播自己更新到主播列表中
                 mAnchorList.add(mMySelfIMInfo);
                 // 更新群资料以及发送广播
+                mCoverUrl = coverUrl;
                 updateHostAnchorInfo();
                 TRTCLogger.i(TAG, "create room success.");
                 if (callback != null) {
@@ -467,7 +445,7 @@ public class TXRoomService implements ITXRoomService {
                                     V2TIMManager.getInstance().addSimpleMsgListener(mSimpleListener);
                                     V2TIMManager.getInstance().setGroupListener(mGroupListener);
                                     V2TIMManager.getSignalingManager().addSignalingListener(mSignalingListener);
-                                    TRTCLogger.i(TAG, "enter room success. roomId: " + roomId) ;
+                                    TRTCLogger.i(TAG, "enter room success. roomId: " + roomId);
                                     mRoomId = roomId;
                                     mIsEnterRoom = true;
 
@@ -1154,18 +1132,22 @@ public class TXRoomService implements ITXRoomService {
                     V2TIMGroupInfo v2TIMGroupInfo = new V2TIMGroupInfo();
                     v2TIMGroupInfo.setGroupID(v2TIMGroupInfoResult.getGroupInfo().getGroupID());
                     v2TIMGroupInfo.setGroupName(v2TIMGroupInfoResult.getGroupInfo().getGroupName());
-                    v2TIMGroupInfo.setFaceUrl(v2TIMGroupInfoResult.getGroupInfo().getFaceUrl());
+                    if (TextUtils.isEmpty(mCoverUrl)) {
+                        mCoverUrl = v2TIMGroupInfoResult.getGroupInfo().getFaceUrl();
+                    }
+                    v2TIMGroupInfo.setFaceUrl(mCoverUrl);
                     v2TIMGroupInfo.setGroupType(v2TIMGroupInfoResult.getGroupInfo().getGroupType());
                     v2TIMGroupInfo.setIntroduction(IMProtocol.getGroupInfoJsonStr(mCurrentRoomStatus, new ArrayList<>(mAnchorList)));
                     TRTCLogger.i(TAG, String.format("updateHostAnchorInfo, GroupName=%s, Introduction=%s", v2TIMGroupInfo.getGroupName(), v2TIMGroupInfo.getIntroduction()));
                     V2TIMManager.getGroupManager().setGroupInfo(v2TIMGroupInfo, new V2TIMCallback() {
                         @Override
                         public void onError(int code, String desc) {
-                            TRTCLogger.e(TAG, "updateHostAnchorInfo room owner update anchor list into group introduction fail, code: " + code + " msg:" + desc);
+                            TRTCLogger.e(TAG, "updateHostAnchorInfo fail, code: " + code + " msg:" + desc);
                         }
+
                         @Override
                         public void onSuccess() {
-                            TRTCLogger.i(TAG, "room owner update anchor list into group introduction success");
+                            TRTCLogger.i(TAG, "updateHostAnchorInfo success");
                         }
                     });
                 }
@@ -1368,7 +1350,7 @@ public class TXRoomService implements ITXRoomService {
                 userInfo.userId = timUserProfile.getUserID();
                 userInfo.avatarURL = timUserProfile.getFaceUrl();
                 mAudienceInfoMap.put(userInfo.userId, userInfo);
-                if ( TextUtils.isEmpty(userInfo.userId) || userInfo.userId.equals(mMySelfIMInfo.userId)) {
+                if (TextUtils.isEmpty(userInfo.userId) || userInfo.userId.equals(mMySelfIMInfo.userId)) {
                     return;
                 }
                 if (mDelegate != null) {
@@ -1390,7 +1372,7 @@ public class TXRoomService implements ITXRoomService {
             userInfo.avatarURL = member.getFaceUrl();
             mAudienceInfoMap.remove(userInfo.userId);
             changeRoomStatus(STATUS_NONE);
-            if ( TextUtils.isEmpty(userInfo.userId) || userInfo.userId.equals(mMySelfIMInfo.userId)) {
+            if (TextUtils.isEmpty(userInfo.userId) || userInfo.userId.equals(mMySelfIMInfo.userId)) {
                 return;
             }
             if (mDelegate != null) {
@@ -1433,7 +1415,7 @@ public class TXRoomService implements ITXRoomService {
         dataInfo.setCmd(cmdType);
         dataInfo.setRoomID(mRoomId);
         String json = new Gson().toJson(signallingData);
-        TRTCLogger.i(TAG, "createSignallingData:"+json);
+        TRTCLogger.i(TAG, "createSignallingData:" + json);
         return json;
     }
 
@@ -1684,6 +1666,4 @@ public class TXRoomService implements ITXRoomService {
         }
         return "";
     }
-
-
 }

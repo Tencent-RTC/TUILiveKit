@@ -660,7 +660,9 @@ public abstract class TCBaseAnchorActivity extends Activity implements TRTCLiveR
         if (mErrorDialog.isShowing()) {
             mErrorDialog.dismiss();
         }
-        mErrorDialog.show();
+        if (!isFinishing()) {
+            mErrorDialog.show();
+        }
     }
 
     /**

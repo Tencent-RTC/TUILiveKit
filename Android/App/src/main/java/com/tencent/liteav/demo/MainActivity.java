@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -35,14 +37,14 @@ public class MainActivity extends Activity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private TRTCLiveRoom            mTRTCLiveRoom;
+    private TRTCLiveRoom mTRTCLiveRoom;
 
-    private Toolbar                 mToolbar;
-    private EditText                mRoomIdEt;
-    private TextView                mEnterRoomTv;
+    private Toolbar  mToolbar;
+    private EditText mRoomIdEt;
+    private TextView mEnterRoomTv;
 
-    private String                  mSelfUserId;                         //表示当前登录用户的UserID
-    private boolean                 isUseCDNPlay = false;                //用来表示当前是否CDN模式（区别于TRTC模式）
+    private String  mSelfUserId;                         //表示当前登录用户的UserID
+    private boolean isUseCDNPlay = false;                //用来表示当前是否CDN模式（区别于TRTC模式）
 
     private final TextWatcher mEditTextWatcher = new TextWatcher() {
         @Override
@@ -136,6 +138,7 @@ public class MainActivity extends Activity {
 
     /**
      * 进入房间
+     *
      * @param roomIdStr
      */
     private void enterRoom(final String roomIdStr) {
