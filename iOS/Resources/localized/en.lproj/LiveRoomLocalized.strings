@@ -32,7 +32,7 @@
 "ASKit.MainMenu.Title" = "Sound effect settings";
 "ASKit.MainMenu.VoiceChangeTitle" = "Voice changing";
 "ASKit.MainMenu.Reverberation" = "Reverb";
-"ASKit.MusicSelectMenu.Title" = "Background music";
+"ASKit.MusicSelectMenu.Title" = "Music";
 "Demo.TRTC.VoiceRoom.useearphones" = "Use earphones for better experience";
 "Demo.TRTC.VoiceRoom.copyrights" = "Music Library ©";
 "ASKit.MainMenu.SelectMusic" = "Select song";
@@ -113,7 +113,7 @@
 "Demo.TRTC.LiveRoom.vocalvolume" = "Voice Volume";
 "Demo.TRTC.LiveRoom.accompanimentfastforward" = "Fast Forward Music";
 "Demo.TRTC.LiveRoom.endpk" = "End Competition";
-"Demo.TRTC.LiveRoom.interactioninprogress" = "Are you sure you want to exit the live stream?";
+"Demo.TRTC.LiveRoom.interactioninprogress" = "The room will close after you leave. Leave?";
 "Demo.TRTC.LiveRoom.joininteraction" = "joined the live stream";
 "Demo.TRTC.LiveRoom.exitinteraction" = "exited the live stream";
 "Demo.TRTC.LiveRoom.clicklike" = "gave a like";
@@ -141,8 +141,8 @@
 "Demo.TRTC.LiveRoom.micconnectionrefusedandinpk" = "Your request to co-anchor was declined as the anchor is in a competition.";
 "Demo.TRTC.LiveRoom.prompt" = "Information";
 "Demo.TRTC.LiveRoom.xxinitiateamicconnectionreq" = "xxx requested to co-anchor";
-"Demo.TRTC.LiveRoom.accept" = "Accept";
-"Demo.TRTC.LiveRoom.refuse" = "Decline";
+"Demo.TRTC.LiveRoom.accept" = "Confirm";
+"Demo.TRTC.LiveRoom.refuse" = "Cancel";
 "Demo.TRTC.LiveRoom.refusemicconnectionreq" = "The anchor declined your request to co-anchor.";
 "Demo.TRTC.LiveRoom.xxmicconnectiontimeout" = "Co-anchoring by xxx timed out.";
 "Demo.TRTC.LiveRoom.dealmicconnectionreqtimeout" = "Co-anchoring request handling timed out.";

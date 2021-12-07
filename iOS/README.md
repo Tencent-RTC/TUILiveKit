@@ -4,13 +4,13 @@
 	
 ```
 TUILiveRoom
-├─ App			// 视频互动直播主页UI代码以及用到的图片及国际化字符串资源文件夹
-├─ Debug		// 工程调试运行所需的关键业务代码文件夹
-├─ Login		// 登录UI及业务逻辑代码文件夹
-├─ Resources		// 视频互动直播功能所需的图片、国际化字符串资源文件夹
-├─ Source	        // 视频互动直播核心业务逻辑代码文件夹
-├─ TCBeautyKit  	// 美颜功能核心组件
-└─ TXAppBasic		// 工程依赖的基础组件
+├─ App              // 视频互动直播主页UI代码以及用到的图片及国际化字符串资源文件夹
+├─ Debug            // 工程调试运行所需的关键业务代码文件夹
+├─ LoginMock        // 登录UI及业务逻辑代码文件夹
+├─ Resources        // 视频互动直播功能所需的图片、国际化字符串资源文件夹
+├─ Source           // 视频互动直播核心业务逻辑代码文件夹
+├─ TCBeautyKit      // 美颜功能核心组件
+└─ TXAppBasic       // 工程依赖的基础组件
 ```
 	
 ## 环境准备
@@ -50,9 +50,9 @@ TUILiveRoom
 
 ### 开通移动直播服务
 1. [开通直播服务并绑定域名](https://console.cloud.tencent.com/live/livestat) 如果还没开通，点击申请开通，之后在域名管理中配置推流域名和拉流域名
-2. [获取SDK的测试License](https://console.cloud.tencent.com/live/license) 
+2. [获取SDK的测试License](https://console.cloud.tencent.com/live/license)
 3. [配置推拉流域名](https://console.cloud.tencent.com/live/domainmanage)
-   
+
 ### 运行 App
 
 使用 Xcode（11.0及以上的版本）打开源码工程 `TUILiveRoom/TUILiveRoomApp.xcworkspace`，单击【运行】即可开始调试本 App。

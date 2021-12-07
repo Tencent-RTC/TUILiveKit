@@ -119,7 +119,6 @@ extension LiveRoomMainViewController: LiveRoomMainRootViewDelegate {
                 guard let ownerInfoArray = infoDic["list"] as? [[String : String]], let ownerInfo = ownerInfoArray.first else { return }
                 guard let ownerName = ownerInfo["name"], let ownerId = ownerInfo["userId"] else { return }
                 let liveRoomInfo = TRTCLiveRoomInfo.init(roomId: roomId, roomName: groupInfo.info.groupName, coverUrl: TUILiveRoomProfileManager.sharedManager().avatar, ownerId: ownerId, ownerName: ownerName, streamUrl: nil, memberCount: 0, roomStatus: .single)
-                
                 let vc = TCAudienceViewController(playInfo: liveRoomInfo, videoIsReady: {
                     
                 })
@@ -140,9 +139,9 @@ extension LiveRoomMainViewController: LiveRoomMainRootViewDelegate {
     }
     
     @objc func createRoom() {
-        let vc = TCAnchorViewController()
-        vc.liveRoom = liveRoom
-        navigationController?.pushViewController(vc, animated: true)
+            let vc = TCAnchorViewController()
+            vc.liveRoom = liveRoom
+            navigationController?.pushViewController(vc, animated: true)
     }
     
 }
