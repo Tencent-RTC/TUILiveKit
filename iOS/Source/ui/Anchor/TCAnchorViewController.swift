@@ -634,6 +634,11 @@ public class TCAnchorViewController: UIViewController, UITextFieldDelegate,TRTCL
         musicQualityButton.width = 16 + width
         musicQualityButton.center = audioQualityLabel.center
         musicQualityButton.left = standardQualityButton.right + 20
+        
+        if musicQualityButton.right > (createTopPanel.width - 20) {
+            musicQualityButton.right = createTopPanel.width - 20
+            standardQualityButton.right = musicQualityButton.left - 20
+        }
     }
     
     @objc func onAudioQualityButtonClicked(_ sender: UIButton?) {
@@ -690,8 +695,10 @@ public class TCAnchorViewController: UIViewController, UITextFieldDelegate,TRTCL
         let roomParam = TRTCCreateRoomParam(roomName: roomName, coverUrl: TUILiveRoomProfileManager.sharedManager().avatar)
         liveRoom?.createRoom(roomID: roomID, roomParam: roomParam, callback: { [weak self] code, message in
             guard let self = self else { return }
-            let roomInfo = TRTCLiveRoomInfo.init(roomId: String(roomID), roomName: roomName, coverUrl: TUILiveRoomProfileManager.sharedManager().avatar, ownerId: V2TIMManager.sharedInstance().getLoginUser().count == 0 ? "" : V2TIMManager.sharedInstance().getLoginUser(), ownerName: TUILiveRoomProfileManager.sharedManager().name, streamUrl: TUILiveRoomProfileManager.sharedManager().avatar, memberCount: 0, roomStatus: TRTCLiveRoomLiveStatus.single)
-            self.setLive(roomInfo)
+            if code == 0 {
+                let roomInfo = TRTCLiveRoomInfo.init(roomId: String(roomID), roomName: roomName, coverUrl: TUILiveRoomProfileManager.sharedManager().avatar, ownerId: V2TIMManager.sharedInstance().getLoginUser().count == 0 ? "" : V2TIMManager.sharedInstance().getLoginUser(), ownerName: TUILiveRoomProfileManager.sharedManager().name, streamUrl: TUILiveRoomProfileManager.sharedManager().avatar, memberCount: 0, roomStatus: TRTCLiveRoomLiveStatus.single)
+                self.setLive(roomInfo)
+            }
             callback(Int(code),message)
         })
     }

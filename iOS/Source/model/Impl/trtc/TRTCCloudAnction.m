@@ -148,7 +148,17 @@ static int trtcLivePlayTimeOut = 5;
     params.userId = self.userId;
     params.roomId = [roomID intValue];
     params.role = role;
+    [self setFramework:5];
     [[TRTCCloud sharedInstance] enterRoom:params appScene:TRTCAppSceneLIVE];
+}
+
+- (void)setFramework:(int)framework {
+    NSDictionary *jsonDic = @{@"api": @"setFramework",
+                              @"params":@{@"framework": @(framework)}};
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDic options:NSJSONWritingPrettyPrinted error:nil];
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    TRTCLog(@"jsonString = %@",jsonString);
+    [[TRTCCloud sharedInstance] callExperimentalAPI: jsonString];
 }
 
 - (void)switchRole:(TRTCRoleType)role {

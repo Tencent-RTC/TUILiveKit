@@ -2,7 +2,7 @@ Pod::Spec.new do |spec|
   spec.name         = 'TUILiveRoom'
   spec.version      = '1.0.0'
   spec.platform     = :ios
-  spec.ios.deployment_target = '11.0'
+  spec.ios.deployment_target = '12.0'
   spec.license      = { :type => 'Proprietary',
       :text => <<-LICENSE
         copyright 2017 tencent Ltd. All rights reserved.
@@ -17,7 +17,7 @@ Pod::Spec.new do |spec|
 
   spec.dependency 'TCBeautyKit'
   spec.dependency 'TXAppBasic'
-  spec.dependency 'TXIMSDK_Plus_iOS'
+  spec.dependency 'TXIMSDK_Plus_iOS', '~> 5.7.1435'
   
 #  Swift第三方库
   spec.dependency 'Alamofire'
