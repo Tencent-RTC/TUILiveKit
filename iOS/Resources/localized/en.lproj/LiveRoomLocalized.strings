@@ -93,14 +93,14 @@
 "Demo.TRTC.LiveRoom.sonorous" = "Resonant";
 "Demo.TRTC.LiveRoom.metal" = "Metallic";
 "Demo.TRTC.LiveRoom.magnetic" = "Husky";
-"Demo.TRTC.LiveRoom.badboy" = "Child";
+"Demo.TRTC.LiveRoom.child" = "Child";
 "Demo.TRTC.LiveRoom.loli" = "Little girl";
 "Demo.TRTC.LiveRoom.uncle" = "Middle-aged man";
 "Demo.TRTC.LiveRoom.heavymetal" = "Heavy metal";
 "Demo.TRTC.LiveRoom.catarrh" = "Nasal";
 "Demo.TRTC.LiveRoom.foreigner" = "Punk";
 "Demo.TRTC.LiveRoom.sleepybeast" = "Trapped beast";
-"Demo.TRTC.LiveRoom.fattydead" = "Otaku";
+"Demo.TRTC.LiveRoom.Otaku" = "Otaku";
 "Demo.TRTC.LiveRoom.strongcurrent" = "Electronic";
 "Demo.TRTC.LiveRoom.heavymachinery" = "Robot";
 "Demo.TRTC.LiveRoom.ethereal" = "Ethereal";

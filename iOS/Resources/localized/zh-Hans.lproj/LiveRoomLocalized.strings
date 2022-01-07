@@ -91,14 +91,14 @@
 "Demo.TRTC.LiveRoom.sonorous" = "洪亮";
 "Demo.TRTC.LiveRoom.metal" = "金属";
 "Demo.TRTC.LiveRoom.magnetic" = "磁性";
-"Demo.TRTC.LiveRoom.badboy" = "熊孩子";
+"Demo.TRTC.LiveRoom.child" = "熊孩子";
 "Demo.TRTC.LiveRoom.loli" = "萝莉";
 "Demo.TRTC.LiveRoom.uncle" = "大叔";
 "Demo.TRTC.LiveRoom.heavymetal" = "重金属";
 "Demo.TRTC.LiveRoom.catarrh" = "感冒";
 "Demo.TRTC.LiveRoom.foreigner" = "外国人";
 "Demo.TRTC.LiveRoom.sleepybeast" = "困兽";
-"Demo.TRTC.LiveRoom.fattydead" = "死肥仔";
+"Demo.TRTC.LiveRoom.Otaku" = "肥仔";
 "Demo.TRTC.LiveRoom.strongcurrent" = "强电流";
 "Demo.TRTC.LiveRoom.heavymachinery" = "重机械";
 "Demo.TRTC.LiveRoom.ethereal" = "空灵";

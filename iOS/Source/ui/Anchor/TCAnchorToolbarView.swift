@@ -209,7 +209,20 @@ class TCAnchorToolbarView: UIView, UITextFieldDelegate, UIGestureRecognizerDeleg
         return audioEffectViewArry
     }()
     lazy  private var audioEffectArry2: [String] = {
-        var audioEffectArry2 =  [LiveRoomLocalize("Demo.TRTC.LiveRoom.originalsound"),     LiveRoomLocalize("Demo.TRTC.LiveRoom.badboy"), LiveRoomLocalize("Demo.TRTC.LiveRoom.loli"), LiveRoomLocalize("Demo.TRTC.LiveRoom.uncle"), LiveRoomLocalize("Demo.TRTC.LiveRoom.heavymetal"), LiveRoomLocalize("Demo.TRTC.LiveRoom.catarrh"), LiveRoomLocalize("Demo.TRTC.LiveRoom.foreigner"), LiveRoomLocalize("Demo.TRTC.LiveRoom.sleepybeast"), LiveRoomLocalize("Demo.TRTC.LiveRoom.fattydead"), LiveRoomLocalize("Demo.TRTC.LiveRoom.strongcurrent"), LiveRoomLocalize("Demo.TRTC.LiveRoom.heavymachinery"), LiveRoomLocalize("Demo.TRTC.LiveRoom.ethereal")]
+        var audioEffectArry2 = [
+            LiveRoomLocalize("Demo.TRTC.LiveRoom.originalsound"),
+            LiveRoomLocalize("Demo.TRTC.LiveRoom.child"),
+            LiveRoomLocalize("Demo.TRTC.LiveRoom.loli"),
+            LiveRoomLocalize("Demo.TRTC.LiveRoom.uncle"),
+            LiveRoomLocalize("Demo.TRTC.LiveRoom.heavymetal"),
+            LiveRoomLocalize("Demo.TRTC.LiveRoom.catarrh"),
+            LiveRoomLocalize("Demo.TRTC.LiveRoom.foreigner"),
+            LiveRoomLocalize("Demo.TRTC.LiveRoom.sleepybeast"),
+            LiveRoomLocalize("Demo.TRTC.LiveRoom.Otaku"),
+            LiveRoomLocalize("Demo.TRTC.LiveRoom.strongcurrent"),
+            LiveRoomLocalize("Demo.TRTC.LiveRoom.heavymachinery"),
+            LiveRoomLocalize("Demo.TRTC.LiveRoom.ethereal"),
+        ]
         return audioEffectArry2
     }()// 变声
     lazy var audioEffectViewArry2: [UIButton]  = {
