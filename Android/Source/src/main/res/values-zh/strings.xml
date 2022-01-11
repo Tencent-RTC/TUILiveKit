@@ -11,8 +11,8 @@
     <string name="trtcliveroom_cancle">取消</string>
     <string name="trtcliveroom_accept">接受</string>
     <string name="trtcliveroom_refuse">拒绝</string>
-    <string name="trtcliveroom_user_ok">我确定</string>
-    <string name="trtcliveroom_user_wait">再等等</string>
+    <string name="trtcliveroom_user_ok">确定</string>
+    <string name="trtcliveroom_user_wait">取消</string>
     <string name="trtcliveroom_error">错误</string>
     <string name="trtcliveroom_notification">通知</string>
     <string name="trtcliveroom_send">发送</string>
@@ -51,7 +51,7 @@
     <string name="trtcliveroom_message_send_fail">消息发生失败[%1$d]:%2$s</string>
     <string name="trtcliveroom_text_room_name">房间名称</string>
     <string name="trtcliveroom_text_anchor_name">主播</string>
-    <string name="trtcliveroom_warning_anchor_exit_room">视频互动进行中，确定离开吗？</string>
+    <string name="trtcliveroom_warning_anchor_exit_room">离开会解散房间，确定离开吗？</string>
     <string name="trtcliveroom_error_create_live_room">创建直播房间失败,Error:%1$s</string>
     <string name="trtcliveroom_warning_linking_mic">您已经在连麦/PK中了</string>
     <string name="trtcliveroom_tips_accept_link_mic">用户 %1$s 接受邀请</string>

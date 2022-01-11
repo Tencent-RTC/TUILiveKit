@@ -12,7 +12,7 @@
     <string name="trtcliveroom_accept">Accept</string>
     <string name="trtcliveroom_refuse">Decline</string>
     <string name="trtcliveroom_user_ok">Ok</string>
-    <string name="trtcliveroom_user_wait">Wait</string>
+    <string name="trtcliveroom_user_wait">Cancel</string>
     <string name="trtcliveroom_error">Error</string>
     <string name="trtcliveroom_notification">Notification</string>
     <string name="trtcliveroom_send">Send</string>
@@ -51,7 +51,7 @@
     <string name="trtcliveroom_message_send_fail">Failed to send [%1$d]:%2$s</string>
     <string name="trtcliveroom_text_room_name">Room name</string>
     <string name="trtcliveroom_text_anchor_name">Anchor</string>
-    <string name="trtcliveroom_warning_anchor_exit_room">Are you sure you want to exit the live stream?</string>
+    <string name="trtcliveroom_warning_anchor_exit_room">The room will close after you leave. Leave?</string>
     <string name="trtcliveroom_error_create_live_room">Failed to create the room. Error:%1$s</string>
     <string name="trtcliveroom_warning_linking_mic">You are co-anchoring/competing</string>
     <string name="trtcliveroom_tips_accept_link_mic">User %1$s Accept Invitation</string>
@@ -84,10 +84,10 @@
     <string name="trtcliveroom_bgm_title">Background music</string>
     <string name="trtcliveroom_back">Back</string>
     <string name="trtcliveroom_sound_effects">Sound effect settings</string>
-    <string name="trtcliveroom_sound_audition">Music Preview</string>
+    <string name="trtcliveroom_sound_audition">Music</string>
     <string name="trtcliveroom_put_on_your_headphones">Use earphones for better experience</string>
     <string name="trtcliveroom_copyright_sounds">Music Library ©</string>
-    <string name="trtcliveroom_sounds_adjustment">Pitch</string>
+    <string name="trtcliveroom_sounds_adjustment">Music tone</string>
     <string name="trtcliveroom_select_song">Select song</string>
     <string name="trtcliveroom_music_volume">Music volume</string>
     <string name="trtcliveroom_mic_volume">Voice volume</string>
