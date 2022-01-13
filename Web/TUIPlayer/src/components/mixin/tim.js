@@ -136,7 +136,6 @@ export default {
     },
     // 监听到文本消息
     async handleMessageTip(message) {
-      console.log('lixin-debug handleMessageTip', message);
       this.messageList.push({
         nick: message.nick || message.from,
         content: message.payload.text,

@@ -45,6 +45,14 @@ export default {
     userId() {
       return this.userInfo.userId;
     },
+    userData() {
+      return {
+        sdkAppId: this.sdkAppId,
+        userSig: this.userSig,
+        userId: this.userId,
+        roomId: this.roomId,
+      };
+    },
     rotateClass() {
       return this.isSetMirror ? 'rotateY-180' : 'rotateY-0';
     },
@@ -80,6 +88,15 @@ export default {
     },
   },
   watch: {
+    userData: {
+      immediate: true,
+      async handler(val) {
+        if (val.sdkAppId && val.userSig && val.userId && val.roomId) {
+          await this.initClient();
+          await this.handleJoin();
+        }
+      },
+    },
     liveStage(val, oldVal) {
       if (val === LIVE_STAGE.ONGOING && oldVal === LIVE_STAGE.NOT_STARTED) {
         this.doStartLive();
@@ -294,8 +311,6 @@ export default {
       cameraId: cameraList[0].deviceId,
       microphoneId: microphoneList[0].deviceId,
     });
-    await this.initClient();
-    await this.handleJoin();
   },
   beforeDestroy() {
     this.destroyLocalStream();

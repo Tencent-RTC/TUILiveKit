@@ -1,7 +1,7 @@
 <!--
  * @Description: 页面header
  * @Date: 2021-10-31 15:59:54
- * @LastEditTime: 2021-11-09 15:53:52
+ * @LastEditTime: 2022-01-11 17:04:26
 -->
 <template lang="pug">
   div.player-title-container
@@ -10,7 +10,7 @@
       div.player-title
         span {{ roomName }}
     div.right-container
-      comp-language
+      comp-language(pageName="player")
       comp-exit
       comp-user-info
 </template>

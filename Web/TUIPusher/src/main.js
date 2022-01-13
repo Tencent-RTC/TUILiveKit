@@ -26,6 +26,8 @@ import {
   Radio,
 } from 'element-ui';
 
+document.title = i18n.t('title.pusher');
+
 /**
  *  重写ElementUI的Message
  */

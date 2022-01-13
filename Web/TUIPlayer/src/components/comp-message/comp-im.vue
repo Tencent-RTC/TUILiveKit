@@ -79,11 +79,26 @@ export default {
       liveStage: 'liveStage',
       userInfo: 'userInfo',
     }),
+    userData() {
+      return {
+        sdkAppId: this.sdkAppId,
+        userSig: this.userSig,
+        userId: this.userInfo.userId,
+      };
+    },
     isLiveEnded() {
       return this.liveStage === LIVE_STAGE.ENDED;
     },
   },
   watch: {
+    userData: {
+      immediate: true,
+      handler(val) {
+        if (val.sdkAppId && val.userSig && val.userId) {
+          this.initTim();
+        }
+      },
+    },
     // 发出一条新消息，自动到最底部
     messageList() {
       console.log('messageList change');
@@ -119,9 +134,6 @@ export default {
       this.inputMsg += item;
       this.$refs.input.focus();
     },
-  },
-  created() {
-    this.initTim();
   },
 };
 </script>

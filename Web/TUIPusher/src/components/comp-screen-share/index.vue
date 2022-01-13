@@ -95,9 +95,11 @@ export default {
       this.localStream && this.localStream.stop();
     },
     async replaceScreenShare() {
+      const currentVideoTrack = this.localStream.getVideoTrack();
       const stream = await this.createStream();
       const videoTrack = stream.getVideoTrack();
       this.localStream.replaceTrack(videoTrack);
+      currentVideoTrack.stop();
     },
     async stopScreenShare() {
       await this.handleLeave();

@@ -1,4 +1,9 @@
 {
+  "title": {
+    "login": "TUIPusher - 登录页",
+    "create-room": "TUIPusher - 创建直播间页",
+    "pusher": "TUIPusher - 直播页"
+  },
   "basic": {
     "Please configure your SDKAPPID": "请先配置好您的账号信息： SDKAPPID 及 SECRETKEY"
   },

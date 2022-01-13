@@ -1,7 +1,7 @@
 <!--
  * @Description: 中英文切换图标
  * @Date: 2021-10-27 16:53:52
- * @LastEditTime: 2021-11-09 15:53:35
+ * @LastEditTime: 2022-01-11 16:48:40
 -->
 <template lang="pug">
 div.language-container
@@ -12,6 +12,11 @@ div.language-container
 <script>
 export default {
   name: 'compLanguage',
+  props: {
+    pageName: {
+      type: String,
+    },
+  },
   data() {
     return {
 
@@ -28,6 +33,9 @@ export default {
           this.$i18n.locale = 'en';
           localStorage.setItem('trtc-tuiPlayer-language', 'en');
           break;
+      }
+      if (this.pageName) {
+        document.title = this.$i18n.t(`title.${this.pageName}`);
       }
     },
   },

@@ -1,32 +1,19 @@
 <!--
  * @Description: player组件
  * @Date: 2021-10-31 16:33:32
- * @LastEditTime: 2021-11-09 15:57:04
+ * @LastEditTime: 2021-12-21 15:03:51
 -->
 <template lang="pug">
-div#player-rtc-container.player-rtc-container(
-  @mouseenter="handleMouseEnter"
-  @mouseleave="handleMouseLeave"
-  @mousemove="handleMouseMove"
-)
+div#player-rtc-container.player-rtc-container
   comp-stream-player.stream-player(ref="streamPlayer")
-  comp-stream-control.stream-control(:class="showStreamControl ? 'show' : 'hide'")
+  comp-stream-control.stream-control
 </template>
 
 <script>
 import compStreamPlayer from './stream-player';
 import compStreamControl from './stream-control';
-import { LINE_TYPE } from '@/constants/room';
 export default {
   name: 'compPlayer',
-  data() {
-    return {
-      showStreamControl: false,
-      timer: null,
-      previousTime: 0,
-      LINE_TYPE,
-    };
-  },
   components: {
     compStreamPlayer,
     compStreamControl,
@@ -34,26 +21,6 @@ export default {
   methods: {
     handleExit() {
       this.$refs.streamPlayer.handleExit();
-    },
-    handleMouseEnter() {
-      this.showStreamControl = true;
-      clearTimeout(this.timer);
-      this.timer = setTimeout(this.hideStreamControl, 6000);
-    },
-    handleMouseLeave() {
-      this.hideStreamControl();
-    },
-    handleMouseMove() {
-      const now = Date.now();
-      if (now - this.previousTime > 500) {
-        this.showStreamControl = true;
-        clearTimeout(this.timer);
-        this.timer = setTimeout(this.hideStreamControl, 6000);
-        this.previousTime = now;
-      }
-    },
-    hideStreamControl() {
-      this.showStreamControl = false;
     },
   },
 };
@@ -71,10 +38,7 @@ export default {
     overflow hidden
   .stream-control
     width 100%
-    height 50px
-    transition transform 0.2s ease-out
-    &.show
-      transform translateY(0)
-    &.hide
-      transform translateY(50px)
+    height 100%
+    position absolute
+    top 0
 </style>

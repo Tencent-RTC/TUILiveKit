@@ -1,7 +1,7 @@
 <!--
  * @Description: 超低延时播放
  * @Date: 2021-11-04 11:02:45
- * @LastEditTime: 2021-11-09 15:56:33
+ * @LastEditTime: 2022-01-17 21:04:19
 -->
 <template lang="pug">
   div.rtc-stream
@@ -40,8 +40,25 @@ export default {
     anchorShareUserId() {
       return `share_${this.anchorUserId}`;
     },
+    userData() {
+      return {
+        sdkAppId: this.sdkAppId,
+        userSig: this.userSig,
+        userId: this.userId,
+        roomId: this.roomId,
+      };
+    },
   },
   watch: {
+    userData: {
+      immediate: true,
+      async handler(val) {
+        if (val.sdkAppId && val.userSig && val.userId && val.roomId) {
+          await this.initClient();
+          await this.handleJoin('audience');
+        }
+      },
+    },
     playState(val) {
       if (val === PLAY_STATE.PLAYING) {
         this.playAnchorStream();
@@ -94,10 +111,6 @@ export default {
         }
       }
     },
-  },
-  async mounted() {
-    await this.initClient();
-    await this.handleJoin('audience');
   },
   async beforeDestroy() {
     await this.handleLeave();

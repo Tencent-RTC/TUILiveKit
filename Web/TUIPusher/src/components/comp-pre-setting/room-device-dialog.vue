@@ -55,6 +55,8 @@ export default {
     ...mapState({
       roomName: 'roomName',
       isVideoMuted: 'isVideoMuted',
+      isOpenBeauty: 'isOpenBeauty',
+      isRecordLive: 'isRecordLive',
     }),
   },
   watch: {

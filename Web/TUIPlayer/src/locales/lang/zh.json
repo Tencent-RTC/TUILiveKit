@@ -1,4 +1,9 @@
 {
+  "title": {
+    "login": "TUIPlayer - 登录页",
+    "live-list": "TUIPlayer - 直播间列表页",
+    "player": "TUIPlayer - 观看端"
+  },
   "basic": {
     "Please configure your SDKAPPID": "请先配置好您的账号信息： SDKAPPID 及 SECRETKEY",
     "Please configure your playerDomain": "请先配置好您的拉流域名！"
