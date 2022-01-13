@@ -1,20 +1,20 @@
 <!--
  * @Description: header区域
  * @Date: 2021-11-03 10:40:21
- * @LastEditTime: 2021-11-09 15:46:02
+ * @LastEditTime: 2022-01-11 17:03:05
 -->
 <template lang="pug">
   div.pusher-title-container
     div.logo-container
       img.logo(:src="logoImg")
-      span.title {{ $t('Tencent Real-Time Communication (TRTC)') }}
+      span.title {{ $t('Tencent Interactive Live Streaming') }}
       div.room-id(v-if="roomId")
         span {{`( ${$t('roomId')}:${roomId}` }}
         span.copy-icon(@click="copyRoomId")
           svg-icon.copy-icon(icon-name="copy")
         span )
     div.right-container
-      comp-language.language-layout
+      comp-language.language-layout(pageName="pusher")
       comp-exit.exit-layout(v-if="roomId")
       comp-user-info
 </template>
@@ -89,12 +89,12 @@ export default {
 <i18n>
 {
 	"en": {
-		"Tencent Real-Time Communication (TRTC)": "Tencent Real-Time Communication (TRTC)",
+		"Tencent Interactive Live Streaming": "Tencent Interactive Live Streaming",
     "roomId": "roomId",
     "RoomId copied successfully": "RoomId copied successfully"
 	},
 	"zh": {
-		"Tencent Real-Time Communication (TRTC)": "腾讯云实时音视频TRTC",
+		"Tencent Interactive Live Streaming": "腾讯云互动直播",
     "roomId": "房间号",
     "RoomId copied successfully": "房间ID复制成功！"
 	}

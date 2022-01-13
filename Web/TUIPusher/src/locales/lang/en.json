@@ -1,4 +1,9 @@
 {
+  "title": {
+    "login": "TUIPusher - Login Page",
+    "create-room": "TUIPusher - Create Live Room Page",
+    "pusher": "TUIPusher - Pusher Page"
+  },
   "basic": {
     "Please configure your SDKAPPID": "Please configure your SDKAPPID/SECRETKEY."
   },

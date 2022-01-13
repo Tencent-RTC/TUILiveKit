@@ -1,7 +1,7 @@
 <!--
  * @Description: 快直播播放
  * @Date: 2021-11-04 11:02:45
- * @LastEditTime: 2021-11-09 18:33:31
+ * @LastEditTime: 2021-12-16 21:01:40
 -->
 <template lang="pug">
   div.leb-stream
@@ -13,6 +13,9 @@
 import {
   UPDATE_PLAY_STATE,
 } from '@/constants/mutation-types';
+import {
+  PLAY_STATE,
+} from '@/constants/room';
 import { mapState } from 'vuex';
 export default {
   name: 'compLebStream',
@@ -25,7 +28,17 @@ export default {
     ...mapState({
       playerDomain: 'playerDomain',
       roomId: 'roomId',
+      playState: 'playState',
     }),
+  },
+  watch: {
+    playState(val) {
+      if (val === PLAY_STATE.PLAYING) {
+        this.player && this.player.play();
+      } else if (val === PLAY_STATE.PAUSED) {
+        this.player && this.player.pause();
+      }
+    },
   },
   methods: {
     initPlayer() {

@@ -83,14 +83,30 @@ export default {
     ...mapState({
       liveStage: 'liveStage',
       userInfo: 'userInfo',
+      userId: state => state.userInfo.userId,
       sdkAppId: state => state.appInfo.sdkAppId,
       userSig: state => state.appInfo.userSig,
     }),
     isLiveEnded() {
       return this.liveStage === LIVE_STAGE.ENDED;
     },
+    userData() {
+      return {
+        sdkAppId: this.sdkAppId,
+        userSig: this.userSig,
+        userId: this.userId,
+      };
+    },
   },
   watch: {
+    userData: {
+      immediate: true,
+      handler(val) {
+        if (val.sdkAppId && val.userSig && val.userId) {
+          this.initTim();
+        }
+      },
+    },
     // 发出一条新消息，自动到最底部
     messageList() {
       console.log('messageList change');
@@ -147,7 +163,6 @@ export default {
     },
   },
   mounted() {
-    this.initTim();
     this.$eventBus.$on('tim:setGroupMemberMuteTime', this.setGroupMemberMuteTime);
   },
   beforeDestroy() {

@@ -69,7 +69,7 @@ export default {
         microphoneId,
         mirror: mirror !== false,
       });
-      this.videoProfile && this.setVideoProfile(this.videoProfile);
+      this.videoProfile && localStream.setVideoProfile(this.videoProfile);
       await localStream.initialize();
       return localStream;
     },

@@ -1,4 +1,9 @@
 {
+  "title": {
+    "login": "TUIPlayer - Login Page",
+    "live-list": "TUIPlayer - Live List Page",
+    "player": "TUIPlayer - Player Page"
+  },
   "basic": {
     "Please configure your SDKAPPID": "Please configure your SDKAPPID/SECRETKEY.",
     "Please configure your playerDomain": "Please configure your playerDomain."
