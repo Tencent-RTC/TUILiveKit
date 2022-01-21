@@ -26,7 +26,7 @@
 
 | iOS                                                          | Android                                                      | Web                                                          |
 | :----------------------------------------------------------- | :----------------------------------------------------------- | ------------------------------------------------------------ |
-| ![img](https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/app_download_ios.png) | ![img](https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/app_download_android.png) | [推流体验 Demo](https://web.sdk.qcloud.com/component/tuiliveroom/tuipusher/pusher.html)<br><br><br><br>[拉流体验 Demo](https://web.sdk.qcloud.com/component/tuiliveroom/tuiplayer/player.html) |
+| ![img](https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/app_download_ios.png) | ![img](https://main.qcloudimg.com/raw/8a603ced0a61983018c794df842f7029.png) | [推流体验 Demo](https://web.sdk.qcloud.com/component/tuiliveroom/tuipusher/pusher.html)<br><br><br><br>[拉流体验 Demo](https://web.sdk.qcloud.com/component/tuiliveroom/tuiplayer/player.html) |
 
 ## 文档资源
 
