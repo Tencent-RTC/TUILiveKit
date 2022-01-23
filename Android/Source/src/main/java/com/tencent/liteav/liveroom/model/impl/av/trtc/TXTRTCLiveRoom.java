@@ -23,8 +23,9 @@ import java.util.List;
 import java.util.Map;
 
 public class TXTRTCLiveRoom extends TRTCCloudListener implements ITRTCTXLiveRoom {
-    private static final String TAG           = "TXTRTCLiveRoom";
-    private static final long   PLAY_TIME_OUT = 5000;
+    private static final String TAG                    = "TXTRTCLiveRoom";
+    private static final long   PLAY_TIME_OUT          = 5000;
+    private static final int    KTC_COMPONENT_LIVEROOM = 4;
 
     private static TXTRTCLiveRoom sInstance;
 
@@ -96,12 +97,13 @@ public class TXTRTCLiveRoom extends TRTCCloudListener implements ITRTCTXLiveRoom
         internalEnterRoom();
     }
 
-    private void setFramework(int framework) {
+    private void setFramework() {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("api", "setFramework");
             JSONObject params = new JSONObject();
-            params.put("framework", framework);
+            params.put("framework", 1);
+            params.put("component", KTC_COMPONENT_LIVEROOM);
             jsonObject.put("params", params);
             mTRTCCloud.callExperimentalAPI(jsonObject.toString());
         } catch (JSONException e) {
@@ -114,7 +116,7 @@ public class TXTRTCLiveRoom extends TRTCCloudListener implements ITRTCTXLiveRoom
         if (mTRTCParams == null) {
             return;
         }
-        setFramework(5);
+        setFramework();
         mTRTCCloud.setListener(this);
         mTRTCCloud.enterRoom(mTRTCParams, TRTCCloudDef.TRTC_APP_SCENE_LIVE);
     }
