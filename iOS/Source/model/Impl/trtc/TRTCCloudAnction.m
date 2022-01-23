@@ -14,6 +14,8 @@
 #import <MJExtension/MJExtension.h>
 
 static int trtcLivePlayTimeOut = 5;
+static const int TC_COMPONENT_LIVEROOM = 4;
+static const int TC_TRTC_FRAMEWORK     = 1;
 
 @interface PlayInfo : NSObject
 
@@ -148,13 +150,14 @@ static int trtcLivePlayTimeOut = 5;
     params.userId = self.userId;
     params.roomId = [roomID intValue];
     params.role = role;
-    [self setFramework:5];
+    [self setFramework];
     [[TRTCCloud sharedInstance] enterRoom:params appScene:TRTCAppSceneLIVE];
 }
 
-- (void)setFramework:(int)framework {
+- (void)setFramework {
     NSDictionary *jsonDic = @{@"api": @"setFramework",
-                              @"params":@{@"framework": @(framework)}};
+                              @"params":@{@"framework": @(TC_TRTC_FRAMEWORK),
+                                          @"component": @(TC_COMPONENT_LIVEROOM)}};
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDic options:NSJSONWritingPrettyPrinted error:nil];
     NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
     TRTCLog(@"jsonString = %@",jsonString);
