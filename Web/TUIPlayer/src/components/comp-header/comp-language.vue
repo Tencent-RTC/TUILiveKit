@@ -1,7 +1,7 @@
 <!--
  * @Description: 中英文切换图标
  * @Date: 2021-10-27 16:53:52
- * @LastEditTime: 2022-01-11 16:48:40
+ * @LastEditTime: 2022-01-26 17:14:03
 -->
 <template lang="pug">
 div.language-container
@@ -43,8 +43,9 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.language
-  cursor pointer
-  &:hover
-    color $highLightColor
+@media (hover: hover)
+  .language
+    cursor pointer
+    &:hover
+      color $highLightColor
 </style>

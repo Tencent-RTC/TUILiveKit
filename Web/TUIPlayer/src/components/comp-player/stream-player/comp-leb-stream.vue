@@ -1,26 +1,26 @@
 <!--
  * @Description: 快直播播放
  * @Date: 2021-11-04 11:02:45
- * @LastEditTime: 2021-12-16 21:01:40
+ * @LastEditTime: 2022-02-18 21:10:22
 -->
 <template lang="pug">
   div.leb-stream
-    div#leb-video-container.stream(v-show="isPlaying")
-    div.loading(v-show="!isPlaying")
+    video#leb-video-container.stream(playsinline webkit-playsinline)
+    div.loading(v-show="showLoading")
 </template>
 
 <script>
 import {
-  UPDATE_PLAY_STATE,
-} from '@/constants/mutation-types';
-import {
   PLAY_STATE,
 } from '@/constants/room';
+import { UPDATE_PLAY_STATE } from '@/constants/mutation-types';
+import { isAndroid, isMicroMessenger } from '@/utils/utils';
 import { mapState } from 'vuex';
 export default {
   name: 'compLebStream',
   data() {
     return {
+      player: null,
       isPlaying: false,
     };
   },
@@ -30,6 +30,9 @@ export default {
       roomId: 'roomId',
       playState: 'playState',
     }),
+    showLoading() {
+      return this.playState === PLAY_STATE.PLAYING && !this.isPlaying;
+    },
   },
   watch: {
     playState(val) {
@@ -43,31 +46,34 @@ export default {
   methods: {
     initPlayer() {
       // eslint-disable-next-line no-undef
-      this.player = new TcPlayer('leb-video-container', {
-        webrtc: `webrtc://${this.playerDomain}/live/${this.roomId}`,
-        autoplay: true,
-        poster: '',
-        width: '100%',
-        height: '100%',
-        controls: 'none',
-        listener: this.playerListener.bind(this),
+      this.player = TCPlayer('leb-video-container', {
+        controls: false,
+        autoplay: this.playState === PLAY_STATE.PLAYING,
       });
+      this.player.src(`webrtc://${this.playerDomain}/live/${this.roomId}`);
+      this.playerListener();
     },
-    playerListener(event) {
-      if (event.type === 'error') {
+    playerListener() {
+      this.player.on('error', () => {
         this.isPlaying = false;
-        this.player.destroy();
+        this.player.dispose();
         setTimeout(() => {
           this.initPlayer();
         }, 1000);
-      }
-      if (event.type === 'playing') {
+      });
+      this.player.on('playing', () => {
         this.isPlaying = true;
-      }
+      });
     },
     destroyPlayer() {
-      this.player.destroy();
+      this.player && this.player.dispose();
     },
+  },
+  created() {
+    // Andriod 微信中 TCPlayer 自动播放会失败，需要手动点击播放
+    if (isAndroid && isMicroMessenger) {
+      this.$store.commit(UPDATE_PLAY_STATE, 'paused');
+    }
   },
   mounted() {
     if (this.playerDomain === '') {
@@ -75,7 +81,6 @@ export default {
       return;
     }
     this.initPlayer();
-    this.$store.commit(UPDATE_PLAY_STATE, 'playing');
   },
   beforeDestroy() {
     this.destroyPlayer();
@@ -90,8 +95,6 @@ export default {
   .stream
     width 100%
     height 100%
-    >>> .vcp-bigplay
-      display none
   .loading
       position absolute
       top 0

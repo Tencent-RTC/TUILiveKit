@@ -1,7 +1,7 @@
 <!--
- * @Description: 页面header
+ * @Description: PC 端页面header
  * @Date: 2021-10-31 15:59:54
- * @LastEditTime: 2022-01-11 17:04:26
+ * @LastEditTime: 2022-01-26 15:34:57
 -->
 <template lang="pug">
   div.player-title-container
@@ -60,8 +60,7 @@ export default {
     display flex
     align-items center
     .logo
-      width 32px
-      height 32px
+      height 20px
       margin-right 10px
     .player-title
       font-weight medium

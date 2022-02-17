@@ -20,7 +20,7 @@ export function goToPage(pathname, queryObj = {}) {
   const queryString = Object.keys(queryObj)
     .reduce((prev, key) => [prev, `${key}=${queryObj[key]}`].join('&'), '')
     .slice(1);
-  location.href = `${location.origin}${pathSting}${queryString ? `?${queryString}` : ''}`;
+  location.replace(`${location.origin}${pathSting}${queryString ? `?${queryString}` : ''}`);
 }
 
 /**

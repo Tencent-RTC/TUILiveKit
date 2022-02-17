@@ -51,5 +51,8 @@
     "Stopped publishing stream to CDN": "成功停止推流到CDN",
     "Screen sharing failed": "屏幕分享失败，",
     "Ensure that your browser has access to the screen": "请确保系统允许当前浏览器获取屏幕内容"
+  },
+  "layout": {
+    "Suggest adding to home screen": "建议点击浏览器\"分享\"按钮，将页面添加到主屏幕, 从主屏幕打开页面进入到全屏模式体验沉浸式观看。"
   }
 }

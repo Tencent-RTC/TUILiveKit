@@ -1,24 +1,26 @@
 <!--
  * @Description: 用户个人信息
  * @Date: 2021-10-28 20:13:33
- * @LastEditTime: 2021-11-09 15:53:42
+ * @LastEditTime: 2022-02-11 17:41:17
 -->
 <template lang="pug">
   div.user-info-container(
-    @mouseenter="showControlTab = true"
-    @mouseleave="showControlTab = false"
+    @mouseenter="toggleShowControlTab"
+    @mouseleave="toggleShowControlTab"
+    @click="toggleShowControlTab"
   )
     div.self-info
       div.avatar
         img(:src="userInfo.userAvatar || avatar")
-      span.user-name {{userName}}
-      div.user-id
-        span {{ `( ${userInfo.userId}` }}
-        span.copy-icon(@click="copyUserId")
-          svg-icon.copy-icon(icon-name="copy")
-        span )
+      div.user-info(v-if="showUserInfo")
+        span.user-name {{userName}}
+        div.user-id
+          span {{ `( ${userInfo.userId}` }}
+          span.copy-icon(@click="copyUserId")
+            svg-icon.copy-icon(icon-name="copy")
+          span )
     div.panel-fill(v-show="showControlTab")
-    div.control-tab(v-show="showControlTab")
+    div.control-tab(v-show="hasLogged && showControlTab")
       div.control-item(@click="handleLogout") {{ $t('Log Out') }}
 </template>
 
@@ -27,6 +29,12 @@ import avatar from 'assets/img/avatar.png';
 import { mapState } from 'vuex';
 export default {
   name: 'compUserInfo',
+  props: {
+    showUserInfo: {
+      type: Boolean,
+      default: true,
+    },
+  },
   data() {
     return {
       avatar,
@@ -36,12 +44,16 @@ export default {
   computed: {
     ...mapState({
       userInfo: 'userInfo',
+      userSig: 'userSig',
     }),
     userName() {
       if (this.userInfo.userName) {
         return this.userInfo.userName;
       }
       return this.$t('user') + this.userInfo.userId;
+    },
+    hasLogged() {
+      return this.userInfo.userId && this.userSig;
     },
   },
   methods: {
@@ -52,6 +64,9 @@ export default {
     handleLogout() {
       this.$eventBus.$emit('logout');
     },
+    toggleShowControlTab() {
+      this.showControlTab = !this.showControlTab;
+    },
   },
 };
 </script>
@@ -59,7 +74,8 @@ export default {
 <style lang="stylus" scoped>
 .user-info-container
   position relative
-  z-index 1000
+  cursor pointer
+  z-index 10
   .self-info
     display flex
     align-items center
@@ -72,19 +88,21 @@ export default {
       img
         width 100%
         height 100%
-    .user-name
-      margin-left 14px
-      font-size 18px
-      font-size 18px
-      max-width 140px
-      overflow hidden
-      text-overflow ellipsis
-      white-space nowrap
-    .user-id
+    .user-info
       display flex
-      align-items center
-      .copy-icon
-        cursor pointer
+      .user-name
+        margin-left 14px
+        font-size 18px
+        font-size 18px
+        max-width 140px
+        overflow hidden
+        text-overflow ellipsis
+        white-space nowrap
+      .user-id
+        display flex
+        align-items center
+        .copy-icon
+          cursor pointer
   .panel-fill
     height 20px
     position absolute

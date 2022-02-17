@@ -1,7 +1,7 @@
 /*
  * @Description: vuex-mutations
  * @Date: 2021-11-04 11:02:45
- * @LastEditTime: 2021-11-08 20:00:48
+ * @LastEditTime: 2022-02-15 18:06:33
  */
 import * as mutationTypes from 'constants/mutation-types';
 
@@ -93,5 +93,13 @@ export default {
   // 更新上行网络等级
   [mutationTypes.UPDATE_UPLINK_NETWORK_LEVEL](state, value) {
     state.uplinkQualityLevel = value;
+  },
+  // 更新横竖屏
+  [mutationTypes.UPDATE_LAYOUT](state, value) {
+    state.layout = value;
+  },
+  // 设置当前浏览器是否支持 webRTC
+  [mutationTypes.SET_IS_SUPPORT_WEBRTC](state, value) {
+    state.isSupportWebRTC = value;
   },
 };
