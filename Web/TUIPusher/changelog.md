@@ -1,8 +1,16 @@
 <!--
  * @Description: TUIPusher 变更记录
  * @Date: 2021-12-21 17:14:18
- * @LastEditTime: 2022-01-19 15:36:35
+ * @LastEditTime: 2022-02-17 17:46:01
 -->
+
+## 2022.02.17
+
+**Updated**
+
+- 直播间名称更新到直播群群组信息。
+- 完善调用 TRTC.createStream 及调用 TRTC.createClient 的参数，方便客户调整。
+
 ## 2022.01.17
 
 **Fixed**

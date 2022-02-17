@@ -25,6 +25,7 @@ export default {
         userId: this.userId,
         userSig: this.userSig,
         mode: 'live',
+        autoSubscribe: false,
         useStringRoomId: false,
         frameWorkType: 33,
       };

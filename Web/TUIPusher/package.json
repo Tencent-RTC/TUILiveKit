@@ -10,7 +10,7 @@
     "lint:fix": "vue-cli-service lint"
   },
   "dependencies": {
-    "axios": "^0.21.4",
+    "axios": "^0.25.0",
     "core-js": "^3.6.5",
     "element-ui": "^2.15.3",
     "html2canvas": "^1.2.2",
@@ -18,7 +18,7 @@
     "js-cookie": "^3.0.1",
     "qrcode.vue": "^1.7.0",
     "rtc-beauty-plugin": "^0.1.0",
-    "tim-js-sdk": "^2.13.1",
+    "tim-js-sdk": "^2.16.1",
     "tim-upload-plugin": "^1.0.3",
     "trtc-js-sdk": "^4.11.12",
     "vue": "^2.6.11",

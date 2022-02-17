@@ -1,25 +1,35 @@
 /*
  * @Description: 这里是 TUIPusher 应用的基础信息配置
  * @Date: 2021-10-26 10:50:48
- * @LastEditTime: 2021-11-02 20:59:11
+ * @LastEditTime: 2022-02-17 17:35:54
  */
 
 /**
- * 腾讯云 SDKAppId，需要替换为您自己账号下的 SDKAppId。
+ * Tencent Cloud SDKAppId, which should be replaced with user's SDKAppId.
+ * Enter Tencent Cloud TRTC [Console] (https://console.cloud.tencent.com/trtc ) to create an application,
+ * and you will see the SDKAppId.
+ * It is a unique identifier used by Tencent Cloud to identify users.
  *
+ * 腾讯云 SDKAppId，需要替换为您自己账号下的 SDKAppId。
  * 进入腾讯云实时音视频[控制台](https://console.cloud.tencent.com/rav ) 创建应用，即可看到 SDKAppId，
  * 它是腾讯云用于区分客户的唯一标识。
  */
 export const sdkAppId = 0;
-/**
- * 签名过期时间，建议不要设置的过短
- * <p>
- * 时间单位：秒
- * 默认时间：7 x 24 x 60 x 60 = 604800 = 7 天
- */
-export const expireTime = 604800;
 
 /**
+ * Encryption key for calculating signature, which can be obtained in the following steps:
+ *
+ * Step1. Enter Tencent Cloud TRTC [Console](https://console.cloud.tencent.com/rav ),
+ * and create an application if you don't have one.
+ * Step2. Click your application to find "Quick Start".
+ * Step3. Click "View Secret Key" to see the encryption key for calculating UserSig,
+ * and copy it to the following variable.
+ *
+ * Notes: this method is only applicable for debugging Demo. Before official launch,
+ * please migrate the UserSig calculation code and key to your backend server to avoid
+ * unauthorized traffic use caused by the leakage of encryption key.
+ * Document: https://intl.cloud.tencent.com/document/product/647/35166#Server
+ *
  * 计算签名用的加密密钥，获取步骤如下：
  *
  * step1. 进入腾讯云实时音视频[控制台](https://console.cloud.tencent.com/rav )，如果还没有应用就创建一个，
@@ -32,8 +42,20 @@ export const expireTime = 604800;
 export const secretKey = '';
 
 /**
- * 设置房间信息
+ * Signature expiration time, which should not be too short
+ * Time unit: second
+ * Default time: 7 * 24 * 60 * 60 = 604800 = 7days
  *
+ * 签名过期时间，建议不要设置的过短
+ * 时间单位：秒
+ * 默认时间：7 x 24 x 60 x 60 = 604800 = 7 天
+ */
+export const expireTime = 604800;
+
+/**
+ * Set room information
+ *
+ * 设置房间信息
  */
 export const roomInfo = {
   // 房间id
@@ -43,8 +65,11 @@ export const roomInfo = {
 };
 
 /**
- * 设置推流端用户信息
+ * Set user information on the push side
+ * Note: The web side screen sharing stream and audio/video stream are two Clients,
+ * the screen sharing stream user id is `share_${userId}`
  *
+ * 设置推流端用户信息
  * 注意：web端屏幕分享流和音视频流为两个Client, 屏幕分享流用户id为`share_${userId}`
  */
 export const anchorUserInfo = {

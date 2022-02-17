@@ -16,6 +16,8 @@ export default {
         userId: this.shareUserId,
         userSig: this.shareUserSig,
         autoSubscribe: false,
+        useStringRoomId: false,
+        frameWorkType: 33,
       });
       this.handleClientEvents();
       return this.shareClient;
@@ -23,7 +25,7 @@ export default {
 
     async createStream() {
       const localStream = TRTC.createStream({
-        audio: false,
+        screenAudio: false,
         screen: true,
         userId: this.shareUserId,
       });
