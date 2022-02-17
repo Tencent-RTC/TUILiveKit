@@ -17,6 +17,7 @@ export default {
     ...mapState({
       userInfo: 'userInfo',
       roomId: 'roomId',
+      roomName: 'roomName',
       liveStage: 'liveStage',
     }),
     groupID() {
@@ -78,11 +79,9 @@ export default {
       try {
         await this.tim.createGroup({
           type: TIM.TYPES.GRP_AVCHATROOM,
-          // todo: name不传
-          name: 'avchatroom',
+          name: this.roomName,
           groupID: this.groupID,
         });
-        // 创建成功
       } catch (imError) {
         console.error('createGroup error:', imError);
         this.$message.error(i18n.t('tim.Failed to create streaming group')); // 创建群组失败的相关信息
@@ -100,9 +99,15 @@ export default {
     // 判断群组是否存在
     async searchGroup() {
       try {
-        // 存在的情况
+        // 判断群组是否存在
         await this.tim.searchGroupByID(this.groupID);
-        this.joinGroup();// 加入群组
+        // 修改群名称
+        await this.tim.updateGroupProfile({
+          groupID: this.groupID,
+          name: this.roomName,
+        });
+        // 加入群组
+        this.joinGroup();
         // 处理localStorage中存储的muteUserId数据
         const muteUserIdStorage = JSON.parse(localStorage.getItem(this.muteUserIdKey));
         if (muteUserIdStorage) {
