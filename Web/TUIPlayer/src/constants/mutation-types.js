@@ -1,5 +1,7 @@
-/**
- * mutation-types
+/*
+ * @Description: mutation-types
+ * @Date: 2021-11-04 11:02:45
+ * @LastEditTime: 2022-02-15 18:07:46
  */
 // 设置sdkAppId
 export const SET_SDK_APP_ID = 'SET_SDK_APP_ID';
@@ -47,4 +49,7 @@ export const UPDATE_AUDIO_STATE = 'UPDATE_AUDIO_STATE';
 export const UPDATE_AUDIO_LEVEL = 'UPDATE_AUDIO_LEVEL';
 // 更新上行网络质量登记
 export const UPDATE_UPLINK_NETWORK_LEVEL = 'UPDATE_UPLINK_NETWORK_LEVEL';
-
+// 更新横竖屏状态
+export const UPDATE_LAYOUT = 'UPDATE_LAYOUT';
+// 设置当前浏览器是否支持 WebRTC
+export const SET_IS_SUPPORT_WEBRTC = 'SET_IS_SUPPORT_WEBRTC';

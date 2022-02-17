@@ -1,10 +1,10 @@
 <!--
  * @Description: 播放器组件
  * @Date: 2021-10-31 16:52:52
- * @LastEditTime: 2021-11-09 15:56:52
+ * @LastEditTime: 2022-01-17 16:56:02
 -->
 <template lang="pug">
-div.rtc-stream-container
+div
   rtc-stream(ref="rtcStream" v-if="lineType === LINE_TYPE.RTC")
   leb-stream(ref="lebStream" v-if="lineType === LINE_TYPE.LEB")
   cdn-stream(ref="cdnStream" v-if="lineType === LINE_TYPE.CDN")
@@ -55,21 +55,4 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.palyer-rtc-container
-  width 100%
-  height 100%
-  position relative
-  overflow hidden
-  .rtc-stream-container
-    width 100%
-    height 100%
-    overflow hidden
-  .stream-control
-    width 100%
-    height 50px
-    transition transform 0.2s ease-out
-    &.show
-      transform translateY(0)
-    &.hide
-      transform translateY(50px)
 </style>

@@ -23,6 +23,9 @@ export function setFullScreen(element) {
  * exitFullscreen();
  */
 export function exitFullScreen() {
+  if (!document.fullscreenElement) {
+    return;
+  }
   if (document.exitFullscreen) {
     document.exitFullscreen();
   } else if (document.msExitFullscreen) {
@@ -70,4 +73,26 @@ export function debounce(fn, delay) {
     }
     timer = setTimeout(fn, delay);
   };
+}
+
+/**
+ * 当前浏览器是否为移动端浏览器
+ */
+export function isMobile() {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
+/**
+ * 判断当前是否为 Android 机器
+ */
+export const isAndroid = /Android/i.test(navigator.userAgent);
+export const isMicroMessenger = /MicroMessenger/i.test(navigator.userAgent);
+export const isIosSafari = /iPhone/i.test(navigator.userAgent) && /Safari/i.test(navigator.userAgent);
+
+/**
+ * 判断当前移动端浏览器是否为竖屏状态
+ * @returns Boolean
+ */
+export function isVerticalScreen() {
+  return window.orientation === 180 || window.orientation === 0;
 }

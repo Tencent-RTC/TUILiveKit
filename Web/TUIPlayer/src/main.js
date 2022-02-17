@@ -6,6 +6,7 @@ import eventBus from 'utils/_eventBus';
 import store from '@/store';
 import '@/assets/icons';
 import i18n from '@/locales/i18n';
+import { isMobile } from '@/utils/utils';
 import {
   Button,
   Select,
@@ -72,6 +73,8 @@ Vue.prototype.$alert = MessageBox.alert;
 Vue.prototype.$message = new DonMessage();
 
 Vue.prototype.$eventBus = eventBus;
+
+Vue.prototype.$isMobile = isMobile();
 
 Vue.config.productionTip = false;
 

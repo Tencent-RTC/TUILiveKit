@@ -24,3 +24,10 @@ export const LINE_TYPE = {
   // cdn播放
   CDN: 'cdn',
 };
+
+export const LAYOUT = {
+  // 横屏展示
+  HORIZONTAL: 'horizontal',
+  // 竖屏展示
+  VERTICAL: 'vertical',
+};

@@ -1,7 +1,7 @@
 <!--
  * @Description: 退出直播间
  * @Date: 2021-10-28 11:07:40
- * @LastEditTime: 2021-11-09 15:53:27
+ * @LastEditTime: 2022-01-26 18:23:24
 -->
 <template lang="pug">
 div.exit-container
@@ -44,10 +44,11 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.exit
-  cursor pointer
-  &:hover
-    color $highLightColor
+@media (hover: hover)
+  .exit
+    cursor pointer
+    &:hover
+      color $highLightColor
 </style>
 
 <i18n>

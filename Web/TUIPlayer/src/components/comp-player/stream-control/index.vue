@@ -1,7 +1,7 @@
 <!--
  * @Description: 播放器控制组件
  * @Date: 2021-10-31 16:34:20
- * @LastEditTime: 2021-12-17 14:27:43
+ * @LastEditTime: 2022-01-21 16:29:07
 -->
 <template lang="pug">
   div.stream-control-container(

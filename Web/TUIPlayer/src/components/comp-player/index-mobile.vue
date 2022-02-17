@@ -1,28 +1,37 @@
 <!--
- * @Description: PC 端 player 组件
+ * @Description: 移动端 player 组件
  * @Date: 2021-10-31 16:33:32
- * @LastEditTime: 2022-01-26 15:35:37
+ * @LastEditTime: 2022-02-15 15:40:18
 -->
 <template lang="pug">
 div#player-rtc-container.player-rtc-container
   //- 流播放区域
   comp-stream-player.stream-player(ref="streamPlayer")
-  //- 操作控制区域
-  comp-stream-control.stream-control
+  div.control-container(@click="handlePause")
+    //- 播放按钮
+    comp-play(@click.native="handlePlay")
 </template>
 
 <script>
 import compStreamPlayer from './stream-player';
-import compStreamControl from './stream-control';
+import compPlay from './stream-control/comp-play';
+import { UPDATE_PLAY_STATE } from '@/constants/mutation-types';
 export default {
   name: 'compPlayer',
   components: {
     compStreamPlayer,
-    compStreamControl,
+    compPlay,
   },
   methods: {
     handleExit() {
       this.$refs.streamPlayer.handleExit();
+    },
+    handlePlay(event) {
+      event.stopPropagation();
+      this.$store.commit(UPDATE_PLAY_STATE, 'playing');
+    },
+    handlePause() {
+      this.$store.commit(UPDATE_PLAY_STATE, 'paused');
     },
   },
 };
@@ -38,9 +47,12 @@ export default {
     width 100%
     height 100%
     overflow hidden
-  .stream-control
+  .control-container
     width 100%
     height 100%
+    overflow hidden
     position absolute
     top 0
+    left 0
+    transform translateZ(100px)
 </style>

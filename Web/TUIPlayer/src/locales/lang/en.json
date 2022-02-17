@@ -51,5 +51,8 @@
     "Stopped publishing stream to CDN": "Stopped publishing stream to CDN.",
     "Screen sharing failed.": "Screen sharing failed.",
     "Ensure that your browser has access to the screen": "Ensure that your browser has access to the screen."
+  },
+  "layout": {
+    "Suggest adding to home screen": "It is recommended to add the page to your home screen by clicking the \"Share\" button of your browser, and open the page from your home screen to full-screen mode for an immersive viewing experience."
   }
 }
