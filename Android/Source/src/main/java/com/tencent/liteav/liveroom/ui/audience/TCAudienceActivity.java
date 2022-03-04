@@ -6,12 +6,14 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.constraintlayout.widget.Guideline;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
@@ -72,64 +74,64 @@ import master.flame.danmaku.controller.IDanmakuView;
  * 3. 房间消息、弹幕、点赞处理
  **/
 public class TCAudienceActivity extends AppCompatActivity implements View.OnClickListener, InputTextMsgDialog.OnTextSendListener {
-    private static final String TAG               = TCAudienceActivity.class.getSimpleName();
+    private static final String TAG = TCAudienceActivity.class.getSimpleName();
 
-    private static final long   LINK_MIC_INTERVAL = 3 * 1000;    //连麦间隔控制
-    private static final int    LINK_MIC_TIMEOUT  = 15;          // 连麦超时时间
+    private static final long LINK_MIC_INTERVAL = 3 * 1000;    //连麦间隔控制
+    private static final int  LINK_MIC_TIMEOUT  = 15;          // 连麦超时时间
 
-    private static final int CODE_ERROR                = -1;
-    private static final int CODE_TIMEOUT              = -2;
+    private static final int CODE_ERROR   = -1;
+    private static final int CODE_TIMEOUT = -2;
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
-    private ConstraintLayout            mRootView;              // 当前Windows的Root View
-    private TXCloudVideoView            mVideoViewAnchor;       // 显示大主播视频的View
-    private TXCloudVideoView            mVideoViewPKAnchor;     // 显示PK主播视频的View
-    private Guideline                   mGuideLineVertical;     // ConstraintLayout的垂直参考线
-    private Guideline                   mGuideLineHorizontal;   // ConstraintLayout的水平参考线
-    private TextView                    mTextAnchorLeave;       // 主播不在线时的提示文本
-    private ImageView                   mImageBackground;       // 主播不在线时的背景显示
-    private InputTextMsgDialog          mInputTextMsgDialog;    // 消息输入框
-    private ListView                    mListIMMessage;         // 显示所有消息的列表控件
-    private TCHeartLayout               mHeartLayout;           // 点赞后心形显示心形图案的布局&控制类
-    private Button                      mButtonLinkMic;         // 连麦按钮
-    private Button                      mButtonSwitchCamera;    // 切换摄像头按钮
-    private ImageView                   mImageAnchorAvatar;     // 显示房间主播头像
-    private TextView                    mTextAnchorName;        // 显示房间主播昵称
-    private TextView                    mTextRoomId;            // 显示当前房间号
-    private RecyclerView                mRecyclerUserAvatar;    // 显示观众头像的列表控件
-    private AlertDialog                 mDialogError;           // 错误提示的Dialog
-    private IDanmakuView                mDanmuView;             // 负责弹幕的显示
-    private TCDanmuMgr                  mDanmuMgr;              // 弹幕的管理类
-    private TCVideoViewMgr              mVideoViewMgr;          // 连麦时观众的视频窗口管理类
-    private BeautyPanel                 mBeautyControl;         // 美颜的控制面板
-    private RelativeLayout              mPKContainer;
-    private Toast                       mToastNotice;
-    private Timer                       mNoticeTimer;
-    private TCChatMsgListAdapter        mChatMsgListAdapter;    // mListIMMessage的适配器
-    private TRTCLiveRoom                mLiveRoom;              // MLVB 组件
-    private TCLikeFrequencyControl      mLikeFrequencyControl;  //点赞频率的控制类
-    private ArrayList<TCChatEntity>     mArrayListChatEntity = new ArrayList<>();   // 消息列表集合
+    private ConstraintLayout        mRootView;              // 当前Windows的Root View
+    private TXCloudVideoView        mVideoViewAnchor;       // 显示大主播视频的View
+    private TXCloudVideoView        mVideoViewPKAnchor;     // 显示PK主播视频的View
+    private Guideline               mGuideLineVertical;     // ConstraintLayout的垂直参考线
+    private Guideline               mGuideLineHorizontal;   // ConstraintLayout的水平参考线
+    private TextView                mTextAnchorLeave;       // 主播不在线时的提示文本
+    private ImageView               mImageBackground;       // 主播不在线时的背景显示
+    private InputTextMsgDialog      mInputTextMsgDialog;    // 消息输入框
+    private ListView                mListIMMessage;         // 显示所有消息的列表控件
+    private TCHeartLayout           mHeartLayout;           // 点赞后心形显示心形图案的布局&控制类
+    private Button                  mButtonLinkMic;         // 连麦按钮
+    private Button                  mButtonSwitchCamera;    // 切换摄像头按钮
+    private ImageView               mImageAnchorAvatar;     // 显示房间主播头像
+    private TextView                mTextAnchorName;        // 显示房间主播昵称
+    private TextView                mTextRoomId;            // 显示当前房间号
+    private RecyclerView            mRecyclerUserAvatar;    // 显示观众头像的列表控件
+    private AlertDialog             mDialogError;           // 错误提示的Dialog
+    private IDanmakuView            mDanmuView;             // 负责弹幕的显示
+    private TCDanmuMgr              mDanmuMgr;              // 弹幕的管理类
+    private TCVideoViewMgr          mVideoViewMgr;          // 连麦时观众的视频窗口管理类
+    private BeautyPanel             mBeautyControl;         // 美颜的控制面板
+    private RelativeLayout          mPKContainer;
+    private Toast                   mToastNotice;
+    private Timer                   mNoticeTimer;
+    private TCChatMsgListAdapter    mChatMsgListAdapter;    // mListIMMessage的适配器
+    private TRTCLiveRoom            mLiveRoom;              // MLVB 组件
+    private TCLikeFrequencyControl  mLikeFrequencyControl;  //点赞频率的控制类
+    private ArrayList<TCChatEntity> mArrayListChatEntity = new ArrayList<>();   // 消息列表集合
 
     private final ConcurrentMap<String, TRTCLiveRoomDef.TRTCLiveUserInfo> mUserInfoMap = new ConcurrentHashMap<>(); // 观众集合
 
-    private boolean     mShowLog;
-    private long        mLastLinkMicTime;            // 上次发起连麦的时间，用于频率控制
-    private long        mCurrentAudienceCount;       // 当前观众数量
-    private boolean     isEnterRoom      = false;    // 表示当前是否已经进房成功
-    private boolean     isUseCDNPlay     = false;    // 表示当前是否是CDN模式
-    private boolean     mIsAnchorEnter   = false;    // 表示主播是否已经进房
-    private boolean     mIsBeingLinkMic  = false;    // 表示当前是否在连麦状态
-    private int         mRoomId          = 0;
-    private int         mCurrentStatus = TRTCLiveRoomDef.ROOM_STATUS_NONE;
-    private String      mAnchorAvatarURL;            // 主播头像连接地址
-    private String      mAnchorNickname;             // 主播昵称
-    private String      mAnchorId;                   // 主播id
-    private String      mSelfUserId      = "";       // 我的id
-    private String      mSelfNickname    = "";       // 我的昵称
-    private String      mSelfAvatar      = "";       // 我的头像
-    private String      mCoverUrl        = "";       // 房间的背景图的URL
-    private Runnable    mGetAudienceRunnable;
+    private boolean  mShowLog;
+    private long     mLastLinkMicTime;            // 上次发起连麦的时间，用于频率控制
+    private long     mCurrentAudienceCount;       // 当前观众数量
+    private boolean  isEnterRoom     = false;    // 表示当前是否已经进房成功
+    private boolean  isUseCDNPlay    = false;    // 表示当前是否是CDN模式
+    private boolean  mIsAnchorEnter  = false;    // 表示主播是否已经进房
+    private boolean  mIsBeingLinkMic = false;    // 表示当前是否在连麦状态
+    private int      mRoomId         = 0;
+    private int      mCurrentStatus  = TRTCLiveRoomDef.ROOM_STATUS_NONE;
+    private String   mAnchorAvatarURL;            // 主播头像连接地址
+    private String   mAnchorNickname;             // 主播昵称
+    private String   mAnchorId;                   // 主播id
+    private String   mSelfUserId     = "";       // 我的id
+    private String   mSelfNickname   = "";       // 我的昵称
+    private String   mSelfAvatar     = "";       // 我的头像
+    private String   mCoverUrl       = "";       // 房间的背景图的URL
+    private Runnable mGetAudienceRunnable;
 
     //如果一定时间内主播没出现
     private Runnable mShowAnchorLeave = new Runnable() {
@@ -298,20 +300,21 @@ public class TCAudienceActivity extends AppCompatActivity implements View.OnClic
 
     /**
      * 观众进房通知的Toast（绿色条形通知）
+     *
      * @param message
      */
-    private final Toast makeToast(String message, int duration){
+    private final Toast makeToast(String message, int duration) {
         final Toast toast = new Toast(this);
         TextView textView = new TextView(this);
         textView.setBackgroundColor(getResources().getColor(R.color.trtcliveroom_color_bg_toast_green));
         textView.setTextColor(Color.WHITE);
-        textView.setGravity(Gravity.CENTER_VERTICAL|Gravity.LEFT);
+        textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
         textView.setTextSize(16);
         textView.setPadding(30, 40, 30, 40);
         textView.setText(message);
         toast.setView(textView);
         toast.setDuration(duration);
-        toast.setGravity(Gravity.FILL_HORIZONTAL|Gravity.BOTTOM, 0, 200);
+        toast.setGravity(Gravity.FILL_HORIZONTAL | Gravity.BOTTOM, 0, 200);
         return toast;
     }
 
@@ -322,6 +325,9 @@ public class TCAudienceActivity extends AppCompatActivity implements View.OnClic
      * @param errorMsg
      */
     protected void showErrorAndQuit(int errorCode, String errorMsg) {
+        if (isFinishing()) {
+            return;
+        }
         if (mDialogError == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.TRTCLiveRoomDialogTheme)
                     .setTitle(R.string.trtcliveroom_error)
@@ -845,9 +851,9 @@ public class TCAudienceActivity extends AppCompatActivity implements View.OnClic
      * 发消息弹出框
      */
     private void showInputMsgDialog() {
-        WindowManager              windowManager = getWindowManager();
-        Display                    display       = windowManager.getDefaultDisplay();
-        WindowManager.LayoutParams lp            = mInputTextMsgDialog.getWindow().getAttributes();
+        WindowManager windowManager = getWindowManager();
+        Display display = windowManager.getDefaultDisplay();
+        WindowManager.LayoutParams lp = mInputTextMsgDialog.getWindow().getAttributes();
 
         lp.width = (display.getWidth()); //设置宽度
         mInputTextMsgDialog.getWindow().setAttributes(lp);
