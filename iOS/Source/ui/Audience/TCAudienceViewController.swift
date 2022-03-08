@@ -571,6 +571,7 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
                 statusInfoView.stopPlay()
                 liveRoom?.stopPlay(userID: (statusInfoView.userID)!, callback: { code, error in })
                 statusInfoView.emptyPlayInfo()
+                statusInfoView.userID = nil
             } else {
                 stopLocalPreview()
                 
