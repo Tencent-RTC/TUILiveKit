@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tencent.liteav.liveroom.R;
-import com.tencent.rtmp.TXLog;
+import com.tencent.liteav.liveroom.model.impl.base.TRTCLogger;
 
 import java.util.List;
 
@@ -87,7 +87,7 @@ public class SelectionSettingItem extends BaseSettingItem {
             mTitle = (TextView) itemView.findViewById(R.id.tv_title);
             mSelectText = (TextView) itemView.findViewById(R.id.tv_select);
             if (mItemText == null) {
-                TXLog.e(TAG, "item text get null here");
+                TRTCLogger.e(TAG, "item text get null here");
                 return;
             }
             mTitle.setText(mItemText.title);

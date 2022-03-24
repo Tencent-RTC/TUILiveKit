@@ -25,7 +25,7 @@ import com.tencent.liteav.liveroom.model.impl.base.TXUserInfo;
 import com.tencent.liteav.liveroom.model.impl.base.TXUserListCallback;
 import com.tencent.liteav.liveroom.model.impl.room.ITXRoomServiceDelegate;
 import com.tencent.liteav.liveroom.model.impl.room.impl.TXRoomService;
-import com.tencent.liteav.trtc.impl.TRTCCloudImpl;
+import com.tencent.trtc.TRTCCloud;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.tencent.trtc.TRTCCloudDef;
 
@@ -166,7 +166,7 @@ public class TRTCLiveRoomImpl extends TRTCLiveRoom implements ITXTRTCLiveRoomDel
 
     private void destroy() {
         TXRoomService.getInstance().destroy();
-        TRTCCloudImpl.destroySharedInstance();
+        TRTCCloud.destroySharedInstance();
     }
 
     private void runOnMainThread(Runnable runnable) {

@@ -7,7 +7,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.tencent.liteav.liveroom.R;
-import com.tencent.rtmp.TXLog;
+import com.tencent.liteav.liveroom.model.impl.base.TRTCLogger;
 
 /**
  * 带seekbar的item
@@ -87,7 +87,7 @@ public class SeekBarSettingItem extends BaseSettingItem {
             mItemSb = (SeekBar) itemView.findViewById(R.id.sb_item);
             mTipsTv = (TextView) itemView.findViewById(R.id.tv_tips);
             if (mItemText == null) {
-                TXLog.e(TAG, "item text get null here");
+                TRTCLogger.e(TAG, "item text get null here");
                 return;
             }
             mTitle.setText(mItemText.title);
