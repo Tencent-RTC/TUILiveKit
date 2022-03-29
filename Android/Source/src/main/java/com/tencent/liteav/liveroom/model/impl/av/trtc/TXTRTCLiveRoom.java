@@ -56,8 +56,8 @@ public class TXTRTCLiveRoom extends TRTCCloudListener implements ITRTCTXLiveRoom
 
     @Override
     public void init(Context context) {
-        TRTCLogger.i(TAG, "init context:" + context);
         mTRTCCloud = TRTCCloud.sharedInstance(context);
+        TRTCLogger.i(TAG, "init context:" + context);
         mTXBeautyManager = mTRTCCloud.getBeautyManager();
         mPlayCallbackMap = new HashMap<>();
         mPlayTimeoutRunnable = new HashMap<>();
