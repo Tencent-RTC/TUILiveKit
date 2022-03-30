@@ -1,59 +1,8 @@
-## 前言
+# TUIPlayer 快速跑通
 
-TUIPlayer 是结合腾讯云实时音视频SDK(TRTC) 及腾讯云即时通讯SDK(IM) 开发的包含UI的直播拉流场景化解决方案。TUIPlayer 包含了超低延时拉流，快直播拉流，标准直播拉流三种拉流方式，并集成即时通讯服务建立群聊。 
+本文档主要介绍如何跑通 Web TUIPlayer 组件，快速接入 Web 推流场景，更详细的 TUIPlayer 组件介绍，请点击腾讯云官网文档： [**Web 直播互动组件** ](https://cloud.tencent.com/document/product/647/63830)...
 
-TUIPlayer 致力于帮助您快速搭建自己的直播推流业务，助力业务扩张。为了您更加快速的体验 TUIPlayer 的功能，我们结合用户管理系统和房间管理系统提供了 [TUIPlayer Demo](https://web.sdk.qcloud.com/component/tuiliveroom/tuiplayer/player.html)。
-
-<img width="1280" src="../liveroom_player.gif"/>
-
-## 功能介绍
-
-+ 支持同时播放音视频流和屏幕分享流
-
-+ 支持超低延时直播（300ms 延时）, 快直播（1000ms 以内延时）以及标准直播（支持超高并发观看）三种拉流线路
-
-+ 支持在线聊天室，和在线观众进行聊天互动
-
-+ 兼容桌面浏览器及移动端浏览器，支持移动端浏览器横屏观看
-
-> !   
-> 部分浏览器不支持 WebRTC，只能使用标准直播线路观看，如需体验其他线路，请尝试更换浏览器。
-
-## 接入准备
-
-请参考：[Web互动直播极速集成（含UI）](https://cloud.tencent.com/document/product/647/63830)
-
-
-## 安装及运行
-
-1. 安装依赖
-
-   ```bash
-   npm install
-   ```
-
-2. 配置文件
-
-   在 [实时音视频控制台](https://console.cloud.tencent.com/trtc)获取 SDKAPPID 和 SECRETKEY 并填写到 `TUIPlayer/src/config/basic-info-config.js` 中；
-
-3. 开发环境运行
-
-   ```bash
-   npm run serve
-   ```
-
-4. 打包
-
-   ```bash
-   npm run build
-   ```
-
-5. eslint检查及自动修复
-
-   ```bash
-   npm run lint
-   ```
-## 目录说明
+## 目录结构
 
 ```
 .
@@ -100,6 +49,36 @@ TUIPlayer 致力于帮助您快速搭建自己的直播推流业务，助力业�
 │       └── utils.js
 └── vue.config.js
 ```
+
+## 运行示例
+
+1. 安装依赖
+
+   ```bash
+   npm install
+   ```
+
+2. 配置文件
+
+   在 [实时音视频控制台](https://console.cloud.tencent.com/trtc)获取 SDKAPPID 和 SECRETKEY 并填写到 `TUIPlayer/src/config/basic-info-config.js` 中；
+
+3. 开发环境运行
+
+   ```bash
+   npm run serve
+   ```
+
+4. 打包
+
+   ```bash
+   npm run build
+   ```
+
+5. eslint检查及自动修复
+
+   ```bash
+   npm run lint
+   ```
 
 ## 开发说明
 
