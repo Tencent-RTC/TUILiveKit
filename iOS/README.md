@@ -1,165 +1,84 @@
-本文档主要介绍如何快速集成实时音视频（TRTC）SDK，运行 TRTC 场景化解决方案，实现视频互动直播。
-	
+# TUILiveRoom iOS 示例工程快速跑通
+本文档主要介绍如何快速跑通TUILiveRoom示例工程，体验高质量语音互动，更详细的TUILiveRoom组件接入流程，请点击腾讯云官网文档： [**TUILiveRoom 组件 iOS 接入说明** ](https://cloud.tencent.com/document/product/647/43181)...
+
 ## 目录结构
-	
+    
 ```
 TUILiveRoom
 ├─ App              // 视频互动直播主页UI代码以及用到的图片及国际化字符串资源文件夹
 ├─ Debug            // 工程调试运行所需的关键业务代码文件夹
-├─ LoginMock        // 登录UI及业务逻辑代码文件夹
+├─ Login            // 登录UI及业务逻辑代码文件夹
 ├─ Resources        // 视频互动直播功能所需的图片、国际化字符串资源文件夹
 ├─ Source           // 视频互动直播核心业务逻辑代码文件夹
 ├─ TCBeautyKit      // 美颜功能核心组件
 └─ TXAppBasic       // 工程依赖的基础组件
 ```
-	
+    
 ## 环境准备
+
 - Xcode 11.0及以上版本
 - 最低支持系统：iOS 13.0
 - 请确保您的项目已设置有效的开发者签名
-	
+    
 ## 运行示例
-	
-### 前提条件
-- 您已 [注册腾讯云](https://cloud.tencent.com/document/product/378/17985) 账号，并完成 [实名认证](https://cloud.tencent.com/document/product/378/3629)。
-	
-### 申请 SDKAPPID 和 SECRETKEY
-1. 登录实时音视频控制台，选择【开发辅助】>【[快速跑通Demo](https://console.cloud.tencent.com/trtc/quickstart)】。
-2. 单击【立即开始】，输入您的应用名称，例如`TestTRTC`，单击【创建应用】。
-<img src="https://main.qcloudimg.com/raw/169391f6711857dca6ed8cfce7b391bd.png" width="650" height="295"/>
-3. 创建应用完成后，单击【我已下载，下一步】，可以查看 SDKAppID 和密钥信息。
 
-### 集成SDK
-1. 工程默认集成的是`TXLiteAVSDK_TRTC`精简版SDK，您可通过【[官网链接](https://cloud.tencent.com/document/product/647/32689)】了解此版本SDK的具体功能。
+### 第一步：创建TRTC的应用
+1. 一键进入腾讯云实时音视频控制台的[应用管理](https://console.cloud.tencent.com/trtc/app)界面，选择创建应用，输入应用名称，例如 `TUIKitDemo` ，单击 **创建**；
+2. 点击对应应用条目后**应用信息**，具体位置如下下图所示：
+    <img src="https://qcloudimg.tencent-cloud.cn/raw/62f58d310dde3de2d765e9a460b8676a.png" width="900">
+3. 进入应用信息后，按下图操作，记录SDKAppID和密钥：
+    <img src="https://qcloudimg.tencent-cloud.cn/raw/bea06852e22a33c77cb41d287cac25db.png" width="900">
+>! 本功能同时使用了腾讯云 [实时音视频 TRTC](https://cloud.tencent.com/document/product/647/16788) 和 [即时通信 IM](https://cloud.tencent.com/document/product/269) 两个基础 PaaS 服务，开通实时音视频后会同步开通即时通信 IM 服务。 即时通信 IM 属于增值服务，详细计费规则请参见 [即时通信 IM 价格说明](https://cloud.tencent.com/document/product/269/11673)。
+
+### 第二步：下载源码，配置工程
+
+1. 克隆或者直接下载此仓库源码，**欢迎 Star**，感谢~~
 2. SDK集成方式默认使用`Cocoapods`，工程目录下`Podfile`文件内已帮您添加了SDK的依赖`pod 'TXLiteAVSDK_TRTC'`，您只需要打开终端进入到工程目录下执行`pod install`，SDK就会自动集成。
 
-### 配置工程文件
-1. 使用Xcode(11.0及以上)打开源码工程`TUILiveRoomApp.xcworkspace`。
-2. 工程内找到`TUILiveRoom/Debug/GenerateTestUserSig.swift`文件 。
-3. 设置`GenerateTestUserSig.swift`文件中的相关参数：
+```
+pod install
+```
+>?遇到`CocoaPods could not find compatible versions for pod "TXIMSDK_Plus_iOS"`版本不一致，执行 `pod update TXIMSDK_Plus_iOS` 即可。
+3. 使用Xcode(11.0及以上)打开源码工程`TUIVoiceRoomApp.xcworkspace`，工程内找到`TUIVoiceRoom/Debug/GenerateTestUserSig.swift`文件 。
+4. 设置`GenerateTestUserSig.swift`文件中的相关参数：
 <ul>
 <li>SDKAPPID：默认为 0 ，请设置为实际申请的SDKAPPID。</li>
 <li>SECRETKEY：默认为空字符串，请设置为实际申请的SECRETKEY。</li>
 </ul>
 <img src="https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/sdkappid_secretkey_ios.png" width="650" height="295"/>
-4. 返回实时音视频控制台，单击【粘贴完成，下一步】。
-5. 单击【关闭指引，进入控制台管理应用】。
 
->!本文提到的生成 UserSig 的方案是在客户端代码中配置 SECRETKEY，该方法中 SECRETKEY 很容易被反编译逆向破解，一旦您的密钥泄露，攻击者就可以盗用您的腾讯云流量，因此**该方法仅适合本地跑通工程和功能调试**。
->正确的 UserSig 签发方式是将 UserSig 的计算代码集成到您的服务端，并提供面向 App 的接口，在需要 UserSig 时由您的 App 向业务服务器发起请求获取动态 UserSig。更多详情请参见 [服务端生成 UserSig](https://cloud.tencent.com/document/product/647/17275#Server)。
 
-### 开通移动直播服务
-1. [开通直播服务并绑定域名](https://console.cloud.tencent.com/live/livestat) 如果还没开通，点击申请开通，之后在域名管理中配置推流域名和拉流域名
-2. [获取SDK的测试License](https://console.cloud.tencent.com/live/license)
-3. [配置推拉流域名](https://console.cloud.tencent.com/live/domainmanage)
+### 第三步：编译运行
 
-### 运行 App
+使用 Xcode（11.0及以上的版本）打开源码工程 `TUIVoiceRoom/TUIVoiceRoomApp.xcworkspace`，单击【运行】即可开始调试本 App。
 
-使用 Xcode（11.0及以上的版本）打开源码工程 `TUILiveRoom/TUILiveRoomApp.xcworkspace`，单击【运行】即可开始调试本 App。
 
-### 体验应用（**体验应用至少需要两台设备**）
-#### 用户 A
+### 第四步：示例体验
 
-步骤1、输入用户名(<font color=red>请确保用户名唯一性，不能与其他用户重复</font>)，如下图示：
+Tips：TUIVoiceRoom 使用体验，至少需要两台设备，如果用户A/B分别代表两台不同的设备：
 
-<img src="https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/user_a_ios.png" width="320"/>
 
-步骤2、点击创建房间，如下图示：
+**设备 A（userId：111）**
+- 步骤1：在欢迎页，输入用户名(请确保用户名唯一性，不能与其他用户重复)，比如111；
+- 步骤2、点击创建房间；
+- 步骤3、输入房间主题，点击开始直播；
+- 步骤4、创建成功后，就进到了视频直播的主界面，此时记录一下房间号；
 
-<img src="https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/tuiliveroom_create_room_ios.png" width="320"/>
+| 步骤1 | 步骤2 | 步骤3 | 步骤4|
+|---------|---------|---------|---------|
+| <img src="https://qcloudimg.tencent-cloud.cn/raw/24a76a18049eda3bdb6414493d43e286.png" width="250"> | <img src="https://qcloudimg.tencent-cloud.cn/raw/8f9290c8dfc3eaa44f3c0a82e776c497.png" width="250"> | <img src="https://qcloudimg.tencent-cloud.cn/raw/4ac45382e20f72a87b72104404eee2da.png" width="250"> |<img src="https://qcloudimg.tencent-cloud.cn/raw/01c73737f0af40fe17c70e1107a9f720.jpeg" width="250"> |
 
-步骤3、输入房间名称，点击开始直播；
+**设备 B（userId：222）**
+- 步骤1：输入用户名(请确保用户名唯一性，不能与其他用户重复)，比如222；
+- 步骤2、输入用户 A 创建的房间号（设备A第4步记录的房间号），点击加入房间；
 
-#### 用户 B
+| 步骤1 | 步骤2 | 
+|---------|---------|
+| <img src="https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/user_b_ios.png" width="320"/> | <img src="https://qcloudimg.tencent-cloud.cn/raw/fe39e76723f304de52b9d677a8cebf97.png" width="320"/> | 
 
-步骤1、输入用户名(<font color=red>请确保用户名唯一性，不能与其他用户重复</font>)，如下图示：
-
-<img src="https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/user_b_ios.png" width="320"/>
-
-步骤2、输入用户 A 创建的房间号，点击进入房间，如下图示：
-
-<img src="https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/tuiliveroom_enter_room_ios.png" width="320"/>
-
-<font color=red>请注意，房间号在用户 A 房间创建完成后的系统弹框中获取，如下图示：</font>
-
-<img src="https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/tuiliveroom_roomid_ios.png" width="320"/>
-
-### 接入指南
-#### 房间状态监听&PK列表接入
-房间状态可使用```TRTCLiveRoom```进行监听，如下：
-
-```
-//////////////////////////////////////////////////////////
-//
-//                  房间管理相关
-//
-//////////////////////////////////////////////////////////
-
-/// 创建房间（主播调用），若房间不存在，系统将自动创建一个新房间。
-/// 主播开播的正常调用流程是：
-/// 1.【主播】调用 startCameraPreview() 打开摄像头预览，此时可以调整美颜参数。
-/// 2.【主播】调用 createRoom() 创建直播间，房间创建成功与否会通过 callback 通知给主播。
-/// 3.【主播】调用 startPublish() 开始推流。
-/// - Parameters:
-///   - roomID: 房间标识，需要由您分配并进行统一管理。多个 roomid 可以汇总成一个直播间列表，腾讯云暂不提供直播间列表的管理服务，请自行管理您的直播间列表。
-///   - roomParam: TRTCCreateRoomParam | 房间信息，用于房间描述的信息，例如房间名称，封面信息等。如果房间列表和房间信息都由您自行管理，可忽略该参数。
-///   - callback:  进入房间的结果回调，成功时 code 为0。
-/// - Note:
-///   - 主播开始直播的时候调用，可重复创建自己已创建过的房间。
-- (void)createRoomWithRoomID:(UInt32)roomID
-                   roomParam:(TRTCCreateRoomParam *)roomParam
-                    callback:(Callback _Nullable)callback
-NS_SWIFT_NAME(createRoom(roomID:roomParam:callback:));
-
-/// 销毁房间（主播调用）
-/// 主播在创建房间后，可以调用这个函数来销毁房间。
-/// - Parameter callback: 销毁房间的结果回调，成功时 code 为0。
-/// - Note:
-///   - 主播在创建房间后，可以调用该函数来销毁房间。
-- (void)destroyRoom:(Callback _Nullable)callback
-NS_SWIFT_NAME(destroyRoom(callback:));
-
-/// 获取房间列表的详细信息
-/// 其中的信息是主播在创建 createRoom() 时通过 roomInfo 设置进来的，如果房间列表和房间信息都由您自行管理，可忽略该函数。
-/// - Parameter roomIDs: 房间号列表
-/// - Parameter callback: 房间详细信息回调
-- (void)getRoomInfosWithRoomIDs:(NSArray<NSNumber *> *)roomIDs
-                       callback:(RoomInfoCallback _Nullable)callback
-NS_SWIFT_NAME(getRoomInfos(roomIDs:callback:));
-```
-
-采用 Callback 方式进行回调是为了方便用户接入，例如获取房间列表可能需要进行异步操作，采用 Callback 方式将更加灵活。
-
-## 常见问题
-#### 1. 查看密钥时只能获取公钥和私钥信息，该如何获取密钥？
-TRTC SDK 6.6 版本（2019年08月）开始启用新的签名算法 HMAC-SHA256。在此之前已创建的应用，需要先升级签名算法才能获取新的加密密钥。如不升级，您也可以继续使用 [老版本算法 ECDSA-SHA256](https://cloud.tencent.com/document/product/647/17275#.E8.80.81.E7.89.88.E6.9C.AC.E7.AE.97.E6.B3.95)，如已升级，您按需切换为新旧算法。
-
-升级/切换操作：
-
- 1. 登录 [实时音视频控制台](https://console.cloud.tencent.com/trtc)。
- 2. 在左侧导航栏选择【应用管理】，单击目标应用所在行的【应用信息】。
- 3. 选择【快速上手】页签，单击【第二步 获取签发UserSig的密钥】区域的【点此升级】、【非对称式加密】或【HMAC-SHA256】。
-  
-  - 升级：
-   
-   ![](https://main.qcloudimg.com/raw/69bd0957c99e6a6764368d7f13c6a257.png)
-   
-  - 切换回老版本算法 ECDSA-SHA256：
-  
-   ![](https://main.qcloudimg.com/raw/f89c00f4a98f3493ecc1fe89bea02230.png)
-   
-  - 切换为新版本算法 HMAC-SHA256：
-  
-   ![](https://main.qcloudimg.com/raw/b0412153935704abc9e286868ad8a916.png)
-   
-
-#### 2. 两台手机同时运行工程，为什么看不到彼此的画面？
-请确保两台手机在运行工程时使用的是不同的 UserID，TRTC 不支持同一个 UserID （除非 SDKAppID 不同）在两个终端同时使用。
-<img src="https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/login_userid_ios.png" width="320"/>
-
-#### 3. 防火墙有什么限制？
-由于 SDK 使用 UDP 协议进行音视频传输，所以在对 UDP 有拦截的办公网络下无法使用。如遇到类似问题，请参考 [应对公司防火墙限制](https://cloud.tencent.com/document/product/647/34399) 排查并解决。
+- [TUI 场景化解决方案常见问题](https://cloud.tencent.com/developer/article/1952880)
+- 欢迎加入 QQ 群：592465424，进行技术交流和反馈~
 
 
 
-	
+    
