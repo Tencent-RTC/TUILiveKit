@@ -25,8 +25,8 @@ import com.tencent.liteav.liveroom.model.impl.base.TXUserInfo;
 import com.tencent.liteav.liveroom.model.impl.base.TXUserListCallback;
 import com.tencent.liteav.liveroom.model.impl.room.ITXRoomServiceDelegate;
 import com.tencent.liteav.liveroom.model.impl.room.impl.TXRoomService;
-import com.tencent.trtc.TRTCCloud;
 import com.tencent.rtmp.ui.TXCloudVideoView;
+import com.tencent.trtc.TRTCCloud;
 import com.tencent.trtc.TRTCCloudDef;
 
 import java.lang.ref.WeakReference;
