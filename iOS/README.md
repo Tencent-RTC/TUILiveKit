@@ -39,7 +39,7 @@ TUILiveRoom
 pod install
 ```
 >?遇到`CocoaPods could not find compatible versions for pod "TXIMSDK_Plus_iOS"`版本不一致，执行 `pod update TXIMSDK_Plus_iOS` 即可。
-3. 使用Xcode(11.0及以上)打开源码工程`TUIVoiceRoomApp.xcworkspace`，工程内找到`TUIVoiceRoom/Debug/GenerateTestUserSig.swift`文件 。
+3. 使用Xcode(11.0及以上)打开源码工程`TUILiveRoomApp.xcworkspace`，工程内找到`TUILiveRoom/Debug/GenerateTestUserSig.swift`文件 。
 4. 设置`GenerateTestUserSig.swift`文件中的相关参数：
 <ul>
 <li>SDKAPPID：默认为 0 ，请设置为实际申请的SDKAPPID。</li>
@@ -50,12 +50,12 @@ pod install
 
 ### 第三步：编译运行
 
-使用 Xcode（11.0及以上的版本）打开源码工程 `TUIVoiceRoom/TUIVoiceRoomApp.xcworkspace`，单击【运行】即可开始调试本 App。
+使用 Xcode（11.0及以上的版本）打开源码工程 `TUILiveRoom/TUILiveRoomApp.xcworkspace`，单击【运行】即可开始调试本 App。
 
 
 ### 第四步：示例体验
 
-Tips：TUIVoiceRoom 使用体验，至少需要两台设备，如果用户A/B分别代表两台不同的设备：
+Tips：TUILiveRoom 使用体验，至少需要两台设备，如果用户A/B分别代表两台不同的设备：
 
 
 **设备 A（userId：111）**
@@ -76,9 +76,6 @@ Tips：TUIVoiceRoom 使用体验，至少需要两台设备，如果用户A/B分
 |---------|---------|
 | <img src="https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/user_b_ios.png" width="320"/> | <img src="https://qcloudimg.tencent-cloud.cn/raw/fe39e76723f304de52b9d677a8cebf97.png" width="320"/> | 
 
+## 常见问题
 - [TUI 场景化解决方案常见问题](https://cloud.tencent.com/developer/article/1952880)
 - 欢迎加入 QQ 群：592465424，进行技术交流和反馈~
-
-
-
-    
