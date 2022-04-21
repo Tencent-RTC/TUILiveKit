@@ -1,5 +1,7 @@
 # TUIPusher & TUIPlayer 快速跑通
 
+简体中文 | [English](./README.en.md)
+
 本文档主要介绍如何跑通 Web TUIPusher & TUIPlayer，快速接入 Web 推拉流场景，更详细的 TUIPusher & TUIPlayer 组件介绍，请点击腾讯云官网文档： [**Web 直播互动组件** ](https://cloud.tencent.com/document/product/647/63830)...
 
 ## 接入方式
