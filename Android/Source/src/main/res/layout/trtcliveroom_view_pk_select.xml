@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/trtcliveroom_bg_bottom_dialog"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/trtcliveroom_bg_bottom_dialog">
 
     <TextView
         android:id="@+id/tv_pusher_tag"
@@ -29,11 +29,21 @@
         android:textColor="@color/trtcliveroom_color_main_text"
         android:textSize="16sp" />
 
+    <include
+        android:id="@+id/layout_invite_pk_by_id"
+        layout="@layout/trtcliveroom_enter_room_by_id"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_below="@id/tv_pusher_tag"
+        android:visibility="gone" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_anchor_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/tv_pusher_tag"
+        android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
-        android:layout_marginRight="20dp" />
+        android:layout_marginRight="20dp"
+        android:visibility="gone" />
 </RelativeLayout>

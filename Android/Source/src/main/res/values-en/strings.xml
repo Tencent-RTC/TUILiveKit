@@ -113,4 +113,7 @@
     <string name="trtcliveroom_first_enter_room_tips">In accordance with relevant regulations, the app forbids pornographic, abusive, violent, terrorist, and politically sensitive content. All audio/video calls and live streams are recorded and archived.</string>
     <string name="trtcliveroom_title_video">Video Settings</string>
     <string name="trtcliveroom_link_mic_anchor_timeout">The anchor Timeout Response</string>
+    <string name="trtcliveroom_pk_room_id">Room Id:</string>
+    <string name="trtcliveroom_input_room_id_hint">Enter a room id</string>
+    <string name="trtcliveroom_invite_pk">Invite PK</string>
 </resources>
