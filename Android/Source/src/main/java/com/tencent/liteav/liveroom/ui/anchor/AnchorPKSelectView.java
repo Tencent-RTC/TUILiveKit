@@ -1,16 +1,23 @@
 package com.tencent.liteav.liveroom.ui.anchor;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -34,9 +41,29 @@ public class AnchorPKSelectView extends RelativeLayout {
     private List<TRTCLiveRoomDef.TRTCLiveRoomInfo> mRoomInfos;
     private RoomListAdapter                        mRoomListAdapter;
     private onPKSelectedCallback                   mOnPKSelectedCallback;
+    private ConstraintLayout                       mLayoutInvitePkById;
     private TextView                               mPusherTagTv;
     private TextView                               mTextCancel;
     private int                                    mSelfRoomId;
+    private EditText                               mEditRoomId;
+    private TextView                               mTextEnterRoom;
+
+    private final TextWatcher mEditTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            mTextEnterRoom.setEnabled(!TextUtils.isEmpty(mEditRoomId.getText().toString()));
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 
     public AnchorPKSelectView(Context context) {
         this(context, null);
@@ -57,6 +84,10 @@ public class AnchorPKSelectView extends RelativeLayout {
         setBackgroundColor(Color.TRANSPARENT);
         inflate(context, R.layout.trtcliveroom_view_pk_select, this);
         mPusherListRv = (RecyclerView) findViewById(R.id.rv_anchor_list);
+        mLayoutInvitePkById = findViewById(R.id.layout_invite_pk_by_id);
+        mEditRoomId = findViewById(R.id.et_input_room_id);
+        mTextEnterRoom = findViewById(R.id.tv_enter_room_by_id);
+        mEditRoomId.addTextChangedListener(mEditTextWatcher);
         mRoomInfos = new ArrayList<>();
         mRoomListAdapter = new RoomListAdapter(mContext, mRoomInfos, new RoomListAdapter.OnItemClickListener() {
             @Override
@@ -82,6 +113,40 @@ public class AnchorPKSelectView extends RelativeLayout {
                 mOnPKSelectedCallback.onCancel();
             }
         });
+        if (LiveRoomManager.getInstance().isAddCallBack()) {
+            mPusherListRv.setVisibility(VISIBLE);
+            mLayoutInvitePkById.setVisibility(GONE);
+        } else {
+            mPusherTagTv.setText(getResources().getString(R.string.trtcliveroom_title_pk_request));
+            mPusherListRv.setVisibility(GONE);
+            mLayoutInvitePkById.setVisibility(VISIBLE);
+        }
+        mTextEnterRoom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<Integer> list = new ArrayList<>();
+                list.add(Integer.valueOf(mEditRoomId.getText().toString().trim()));
+                TRTCLiveRoom.sharedInstance(mContext).getRoomInfos(list, new TRTCLiveRoomCallback.RoomInfoCallback() {
+                    @Override
+                    public void onCallback(int code, String msg, List<TRTCLiveRoomDef.TRTCLiveRoomInfo> list) {
+                        if (getContext() == null || ((Activity) getContext()).isFinishing()) {
+                            return;
+                        }
+                        if (code == 0) {
+                            if (list == null || list.size() == 0) {
+                                ToastUtils.showShort(msg);
+                            } else if (list.get(0).roomId == mSelfRoomId || TextUtils.isEmpty(list.get(0).ownerId)) {
+                                ToastUtils.showShort(msg);
+                            } else {
+                                mOnPKSelectedCallback.onSelected(list.get(0));
+                            }
+                        } else {
+                            ToastUtils.showShort(msg);
+                        }
+                    }
+                });
+            }
+        });
     }
 
     public void setSelfRoomId(int roomId) {
@@ -93,7 +158,6 @@ public class AnchorPKSelectView extends RelativeLayout {
     }
 
     public void refreshView() {
-        mPusherTagTv.setText(getResources().getString(R.string.trtcliveroom_loading));
         LiveRoomManager.getInstance().getRoomIdList(new LiveRoomManager.GetCallback() {
             @Override
             public void onSuccess(List<Integer> list) {
@@ -141,6 +205,7 @@ public class AnchorPKSelectView extends RelativeLayout {
         void onCancel();
     }
 
+
     public static class RoomListAdapter extends
             RecyclerView.Adapter<RoomListAdapter.ViewHolder> {
 
@@ -159,9 +224,9 @@ public class AnchorPKSelectView extends RelativeLayout {
 
 
         static class ViewHolder extends RecyclerView.ViewHolder {
-            private TextView mUserNameTv;
-            private TextView mRoomNameTv;
-            private Button   mButtonInvite;
+            private TextView  mUserNameTv;
+            private TextView  mRoomNameTv;
+            private Button    mButtonInvite;
             private ImageView mImageAvatar;
 
             ViewHolder(View itemView) {
@@ -202,7 +267,7 @@ public class AnchorPKSelectView extends RelativeLayout {
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            Context        context  = parent.getContext();
+            Context context = parent.getContext();
             LayoutInflater inflater = LayoutInflater.from(context);
 
             View view = inflater.inflate(R.layout.trtcliveroom_item_select_pusher, parent, false);

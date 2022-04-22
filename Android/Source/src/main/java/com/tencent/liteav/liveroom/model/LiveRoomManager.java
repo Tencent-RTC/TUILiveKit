@@ -70,6 +70,10 @@ public class LiveRoomManager {
         void onError(int code, String message);
     }
 
+    public boolean isAddCallBack() {
+        return mRoomCallback != null;
+    }
+
     public void getGroupInfo(final String roomId, final GetGroupInfoCallback callback) {
         List<String> roomIdList = new ArrayList<>();
         roomIdList.add(roomId);
