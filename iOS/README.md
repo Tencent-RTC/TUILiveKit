@@ -7,13 +7,15 @@ _中文 | [English](README.en.md)_
     
 ```
 TUILiveRoom
-├─ App              // 视频互动直播主页UI代码以及用到的图片及国际化字符串资源文件夹
-├─ Debug            // 工程调试运行所需的关键业务代码文件夹
-├─ Login            // 登录UI及业务逻辑代码文件夹
-├─ Resources        // 视频互动直播功能所需的图片、国际化字符串资源文件夹
-├─ Source           // 视频互动直播核心业务逻辑代码文件夹
-├─ TCBeautyKit      // 美颜功能核心组件
-└─ TXAppBasic       // 工程依赖的基础组件
+├─ Example                   // 工程模块，主要提供 TUILiveRoom 的测试页面
+├─ Resources                 // 视频互动直播功能所需的图片、国际化字符串资源文件夹
+├─ Source                    // 视频互动直播核心业务逻辑代码文件夹
+├─ TUIBeauty                 // 美颜功能核心组件
+├─ TUIGift                   // 点赞功能核心组件
+├─ TUIAudioEffect            // 音效管理功能核心组件
+├─ TUIBarrage                // 弹幕功能核心组件
+├─ TXAppBasic                // 工程依赖的基础组件
+└─ TUILiveRoom.podspec      // TUILiveRoom 组件 pod 接入文件
 ```
     
 ## 环境准备
@@ -35,24 +37,26 @@ TUILiveRoom
 ### 第二步：下载源码，配置工程
 
 1. 克隆或者直接下载此仓库源码，**欢迎 Star**，感谢~~
-2. SDK集成方式默认使用`Cocoapods`，工程目录下`Podfile`文件内已帮您添加了SDK的依赖`pod 'TXLiteAVSDK_TRTC'`，您只需要打开终端进入到工程目录下执行`pod install`，SDK就会自动集成。
+2. SDK集成方式默认使用`Cocoapods`，工程目录下`Example/Podfile`文件内已帮您添加了SDK的依赖`pod 'TXLiteAVSDK_TRTC'`，您只需要打开终端进入到工程目录下执行`pod install`，SDK就会自动集成。
 
 ```
 pod install
 ```
 >?遇到`CocoaPods could not find compatible versions for pod "TXIMSDK_Plus_iOS"`版本不一致，执行 `pod update TXIMSDK_Plus_iOS` 即可。
-3. 使用Xcode(11.0及以上)打开源码工程`TUILiveRoomApp.xcworkspace`，工程内找到`TUILiveRoom/Debug/GenerateTestUserSig.swift`文件 。
+3. 使用Xcode(11.0及以上)打开源码工程`Example/TUILiveRoomApp.xcworkspace`，工程内找到`Example/Debug/GenerateTestUserSig.swift`文件 。
 4. 设置`GenerateTestUserSig.swift`文件中的相关参数：
 <ul>
 <li>SDKAPPID：默认为 0 ，请设置为实际申请的SDKAPPID。</li>
 <li>SECRETKEY：默认为空字符串，请设置为实际申请的SECRETKEY。</li>
+<li>XMagicLicenseURL【可选】：默认为空字符串，美颜特效License申请请前往: <a href="https://cloud.tencent.com/document/product/616/65878">腾讯特效 License</a>。</li>
+<li>XMagicLicenseKey  【可选】：默认为空字符串，美颜特效License申请请前往: <a href="https://cloud.tencent.com/document/product/616/65878">腾讯特效 License</a>。</li>
 </ul>
 <img src="https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/sdkappid_secretkey_ios.png" width="650" height="295"/>
 
 
 ### 第三步：编译运行
 
-使用 Xcode（11.0及以上的版本）打开源码工程 `TUILiveRoom/TUILiveRoomApp.xcworkspace`，单击【运行】即可开始调试本 App。
+使用 Xcode（11.0及以上的版本）打开源码工程 `Example/TUILiveRoomApp.xcworkspace`，单击【运行】即可开始调试本 App。
 
 
 ### 第四步：示例体验

@@ -41,6 +41,20 @@ NSString * const Signal_Platform_OS = @"iOS";
 
 @implementation TRTCLiveRoomInfo
 
+- (instancetype)init {
+    if (self = [super init]) {
+        self.roomId = @"";
+        self.roomName = @"";
+        self.coverUrl = @"";
+        self.ownerId = @"";
+        self.ownerName = @"";
+        self.streamUrl = @"";
+        self.memberCount = 0;
+        self.roomStatus = TRTCLiveRoomLiveStatusNone;
+    }
+    return self;
+}
+
 - (instancetype)initWithRoomId:(NSString *)roomId
                       roomName:(NSString *)roomName
                       coverUrl:(NSString *)coverUrl

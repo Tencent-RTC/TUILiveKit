@@ -3,14 +3,13 @@
 //  TUILiveRoom
 //
 //  Created by origin 李 on 2021/6/25.
-//
+//  Copyright © 2022 Tencent. All rights reserved.
 
 import Foundation
-public typealias videoIsReadyBlock = () -> Void
+import TUICore
 
 public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TCAudienceToolbarDelegate {
     public var liveInfo: TRTCLiveRoomInfo?
-    public var videoIsReady: videoIsReadyBlock?
     public var onPlayError: (() -> Void)?
     public var logicView: TCAudienceToolbarView?
     public var liveRoom: TRTCLiveRoom?
@@ -28,19 +27,24 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
     private var isInVC = false
     private var rotate = false
     private var isErrorAlert = false
-    //是否已经弹出了错误提示框，用于保证在同时收到多个错误通知时，只弹一个错误提示框
     //link mic
     private var isBeingLinkMic = false
     private var isWaitingResponse = false
     private var btnCamera: UIButton = UIButton(type: .custom)
     private var btnLinkMic: UIButton = UIButton(type: .custom)
     private var isStop = false
-    private var statusInfoViewArray: [TCStatusInfoComponet] //小画面播放列表
+    private var statusInfoViewArray: [TCStatusInfoComponet]
     private var noOwnerTip: UILabel?
     private var errorCode = 0
     private var errorMsg: String?
     private var beginTime: UInt64 = 0
     private var endTime: UInt64 = 0
+    
+    private var barrageInputView: UIView? = nil
+    private var barrageView: UIView? = nil
+    private var giftView: UIView? = nil
+    private var giftPanelView: UIView? = nil
+    
     lazy var waitingNotice: UITextView = {
         let waitingNotice = UITextView()
         waitingNotice.isEditable = false
@@ -53,9 +57,8 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
     }()
     
     
-    public init(playInfo info: TRTCLiveRoomInfo?, videoIsReady: @escaping videoIsReadyBlock) {
-        liveInfo = info
-        self.videoIsReady = videoIsReady
+    public init(roomInfo: TRTCLiveRoomInfo?) {
+        liveInfo = roomInfo
         videoPause = false
         videoFinished = true
         isInVC = false
@@ -104,7 +107,7 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
     public override func viewDidLoad() {
         super.viewDidLoad()
         LiveRoomToastManager.sharedManager().setupToast()
-        //加载背景图
+        // load bg view
         let backImage = UIImage(named: "avatar0_100", in: LiveRoomBundle(), compatibleWith: nil)
         var clipImage: UIImage? = nil
         if let backImage = backImage {
@@ -129,20 +132,23 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
         noOwnerTip!.text = LiveRoomLocalize("Demo.TRTC.LiveRoom.anchornotonline")
         view.addSubview(noOwnerTip!)
         noOwnerTip!.isHidden = true
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 3, execute: { [weak self] in
-            guard let `self` = self else { return }
-            
-            if !self.isOwnerEnter {
-                self.noOwnerTip!.isHidden = false
-            }
-        })
-        //视频画面父view
+
+        // video view
         videoParentView .frame = view.frame
         videoParentView.tag = FULL_SCREEN_PLAY_VIDEO_VIEW
         view.addSubview(videoParentView)
         videoParentView.isHidden = true
         initLogicView()
         beginTime = UInt64(Date().timeIntervalSince1970)
+        TUILogin.add(self)
+        
+        activeTUIWidget()
+        // Enter Room
+        enterRoom()
+    }
+    
+    deinit {
+        TUILogin.remove(self)
     }
     // MARK:  -TCAudienceToolbarDelegate
     func closeVC(_ popViewController: Bool) {
@@ -150,12 +156,27 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
         stopLinkMic()
         closeVC(withRefresh: false, popViewController: popViewController)
         hideWaitingNotice()
+        TUILiveRoom.sharedInstance.isEnterRoom = false
     }
     
     func clickLog() {
         log_switch = !log_switch
         liveRoom?.showVideoDebugLog(log_switch)
     }
+    
+    func clickChat() {
+        guard let barrageInputView = self.barrageInputView else {
+            return
+        }
+        view.bringSubviewToFront(barrageInputView)
+        barrageInputView.isHidden = false
+    }
+    
+    func clickLike() {
+        guard let groupId = liveInfo?.roomId else { return }
+        TUICore.callService(TUICore_TUIGiftService, method: TUICore_TUIGiftService_SendLikeMethod, param: ["groupId": groupId])
+    }
+    
     func onSeek(_ slider: UISlider?) {
         //    [self.liveRoom seek:_sliderValue];
         trackingTouchTS = Int64(Date().timeIntervalSince1970 * 1000)
@@ -177,9 +198,13 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
         closeVC(false)
         if !isErrorAlert {
             isErrorAlert = true
-            weak var weakSelf = self
-            showAlert(withTitle: LiveRoomLocalize("Demo.TRTC.LiveRoom.endedinteractive"), sureAction: {
-                weakSelf?.navigationController?.popViewController(animated: true)
+            showAlert(withTitle: LiveRoomLocalize("Demo.TRTC.LiveRoom.endedinteractive"), sureAction: { [weak self] in
+                guard let self = self else { return }
+                if let isRoot = self.navigationController?.viewControllers.first?.isEqual(self), isRoot {
+                    self.dismiss(animated: true)
+                } else {
+                    self.navigationController?.popViewController(animated: true)
+                }
             })
         }
     }
@@ -232,7 +257,7 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
             let icon_center_interval = CGFloat(logicView!.width - 2 * startSpace - CGFloat(icon_size))/CGFloat(icon_count - 1)
             
             let icon_center_y = CGFloat(logicView?.height ?? 0.0 - CGFloat(icon_size / 2)) - startSpace
-            //Button: 发起连麦
+            
             btnLinkMic.center = CGPoint(x: logicView?.closeBtn.center.x ?? 0.0 - icon_center_interval, y: icon_center_y)
             btnLinkMic.setImage(UIImage(named: "linkmic_on", in: LiveRoomBundle(), compatibleWith: nil), for: .normal)
             btnLinkMic.addTarget(self, action: #selector(clickBtnLinkMic(_:)), for: .touchUpInside)
@@ -250,11 +275,11 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
             btnCamera.addTarget(self, action: #selector(clickBtnCamera(_:)), for: .touchUpInside)
             btnCamera.isHidden = true
             logicView!.addSubview(btnCamera)
-            //初始化连麦播放小窗口
+            
             initStatusInfoView(0)
             initStatusInfoView(1)
             initStatusInfoView(2)
-            //logicView不能被连麦小窗口挡住
+            
             logicView!.removeFromSuperview()
             view.addSubview(logicView!)
             
@@ -272,6 +297,21 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
         statusInfoView.linkFrame = CGRect(x:x , y: Int(y), width: VIDEO_VIEW_WIDTH, height: VIDEO_VIEW_HEIGHT)
         view.addSubview(statusInfoView.videoView!)
         statusInfoViewArray.append(statusInfoView)
+    }
+    
+    private func enterRoom() {
+        guard let roomIdStr = liveInfo?.roomId, let roomId = UInt32(roomIdStr) else {
+            setIsOwnerEnter(false)
+            return
+        }
+        liveRoom?.enterRoom(roomID: roomId) { [weak self] (code, msg) in
+            guard let self = self else { return }
+            if code == 0 {
+                self.setIsOwnerEnter(true)
+            } else {
+                self.setIsOwnerEnter(false)
+            }
+        }
     }
     
     func startPlay() -> Bool {
@@ -334,43 +374,25 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
         guard let liveInfo = liveInfo else {
             return
         }
-        liveRoom.enterRoom(roomID: UInt32(liveInfo.roomId)!, callback: { [weak self] code, error in
-                            guard let `self` = self else { return }
-                            if code == 0 {
-                                var isGetList = false
-                                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(0.5 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: { [self] in
-                                    //获取成员列表f
-                                    liveRoom.getAudienceList(callback: { [weak self] code, error, users in
-                                        guard let `self` = self else { return }
-                                        isGetList = code == 0
-                                        self.logicView?.initAudienceList(users)
-                                    })
-                                })
-                                
-                                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(1 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: { [self] in
-                                    if isGetList {
-                                        return
-                                    }
-                                    //获取成员列表f
-                                    liveRoom.getAudienceList(callback: { [weak self] code, error, users in
-                                        isGetList = code == 0
-                                        guard let `self` = self else { return }
-                                        self.logicView?.initAudienceList(users)
-                                    })
-                                })
-                            } else {
-                                if error != nil {
-                                    self.makeToast(error )
-                                } else {
-                                    self.makeToast(LiveRoomLocalize("Demo.TRTC.LiveRoom.enterroomfailed"))
-                                }
-                                
-                                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(1.5 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: { [self] in
-                                    //退房
-                                    self.closeVC(withRefresh: true, popViewController: true)
-                                })
-                            }}
-        )
+        var isGetList = false
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(0.5 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: { [self] in
+            liveRoom.getAudienceList(callback: { [weak self] code, error, users in
+                guard let `self` = self else { return }
+                isGetList = code == 0
+                self.logicView?.initAudienceList(users)
+            })
+        })
+        
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(1 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: { [self] in
+            if isGetList {
+                return
+            }
+            liveRoom.getAudienceList(callback: { [weak self] code, error, users in
+                isGetList = code == 0
+                guard let `self` = self else { return }
+                self.logicView?.initAudienceList(users)
+            })
+        })
     }
     
     func makeToast(_ message: String?) {
@@ -395,12 +417,16 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
             })
         }
         if popViewController {
-            navigationController?.popViewController(animated: true)
+            if let isRoot = navigationController?.viewControllers.first?.isEqual(self), isRoot {
+                dismiss(animated: true)
+            } else {
+                navigationController?.popViewController(animated: true)
+            }
         }
+        TUILiveRoom.sharedInstance.isEnterRoom = false
     }
     
     func stopLinkMic() {
-        // 关闭所有的播放器
         for statusInfoView in statusInfoViewArray {
             statusInfoView.stopLoading()
             statusInfoView.stopPlay()
@@ -417,7 +443,6 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
             liveRoom?.stopPublish(callback: { code, error in
                 
             })
-            //关闭本地摄像头，停止推流
             for statusInfoView in statusInfoViewArray {
                 if statusInfoView.userID == TUILiveRoomProfileManager.sharedManager().userId {
                     liveRoom?.stopCameraPreview()
@@ -647,7 +672,6 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
     }
     
     func switchPKMode() {
-        //查找存在的视频流
         for statusInfoView in statusInfoViewArray {
             if statusInfoView.userID != nil {
                 statusInfoView.videoView!.frame = CGRect(x: view.frame.size.width / 2, y: 0, width: view.frame.size.width / 2, height: view.frame.size.height / 2)
@@ -747,7 +771,6 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
     
     @objc func clickBtnLinkMic(_ button: UIButton?) {
         if isBeingLinkMic == false {
-            //检查麦克风权限
             let statusAudio: AVAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: .audio)
             if statusAudio == .denied {
                 TCUtil.toastTip(LiveRoomLocalize("Demo.TRTC.LiveRoom.micauthorityfailed"), parentView: view)
@@ -799,7 +822,12 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
                 self.btnCamera.isHidden = false
                 for statusInfoView in self.statusInfoViewArray {
                     if statusInfoView.userID == nil || statusInfoView.userID?.count == 0 {
-                        self.alertUserTips(self)
+#if RTCube_APPSTORE
+                        let selector = NSSelectorFromString("showAlertUserLiveTips")
+                        if self.responds(to: selector) {
+                            self.perform(selector)
+                        }
+#endif
                         statusInfoView.userID = TUILiveRoomProfileManager.sharedManager().userId
                         self.liveRoom?.startCameraPreview(frontCamera: true, view: statusInfoView.videoView ?? UIView(), callback: { code, error in
                             
@@ -829,5 +857,102 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
     
     public func trtcLiveRoomOnKickoutJoinAnchor(_ liveRoom: TRTCLiveRoom) {
         onKickoutJoinAnchor()
+    }
+}
+
+
+// MARK: - Load Widget
+extension TCAudienceViewController {
+    
+    private func activeTUIWidget() {
+        if barrageView == nil && loadBarrageWidget() {
+            view.addSubview(barrageView!)
+            view.addSubview(barrageInputView!)
+            barrageInputView?.snp.makeConstraints { make in
+                make.edges.equalToSuperview()
+            }
+            barrageView?.snp.makeConstraints { make in
+                make.leading.equalTo(20)
+                make.top.equalTo(SCREEN_HEIGHT - 300 - 120)
+                make.height.equalTo(300)
+                make.width.equalTo(SCREEN_WIDTH - 20*2)
+            }
+        }
+        if giftView == nil && loadGiftWidget() {
+            view.addSubview(giftView!)
+            giftView?.snp.makeConstraints({ make in
+                make.edges.equalToSuperview()
+            })
+            giftView?.isHidden = false
+        }
+    }
+    
+    private func loadBarrageWidget() -> Bool {
+        guard let liveInfo = liveInfo else {
+            return false
+        }
+        let inputViewInfo = TUICore.getExtensionInfo(TUICore_TUIBarrageExtension_GetTUIBarrageSendView,
+                                                     param: ["frame": UIScreen.main.bounds,
+                                                             "groupId": liveInfo.roomId])
+        guard let inputView = inputViewInfo[TUICore_TUIBarrageExtension_GetTUIBarrageSendView] as? UIView else {
+            return false
+        }
+        self.barrageInputView = inputView;
+
+        let barrageViewInfo = TUICore.getExtensionInfo(TUICore_TUIBarrageExtension_TUIBarrageDisplayView,
+                                                       param: ["frame": UIScreen.main.bounds,
+                                                               "groupId": liveInfo.roomId])
+        guard let barrageView = barrageViewInfo[TUICore_TUIBarrageExtension_TUIBarrageDisplayView] as? UIView else {
+            return false
+        }
+        self.barrageView = barrageView
+        return true
+    }
+    
+    private func loadGiftWidget() -> Bool {
+        guard let liveInfo = liveInfo else {
+            return false
+        }
+        let giftPlayInfo = TUICore.getExtensionInfo(TUICore_TUIGiftExtension_GetTUIGiftPlayView,
+                                                    param: [
+                                                        "frame": UIScreen.main.bounds,
+                                                        "groupId": liveInfo.roomId])
+        guard let giftView = giftPlayInfo[TUICore_TUIGiftExtension_GetTUIGiftPlayView] as? UIView else {
+            return false
+        }
+        let giftPanelInfo = TUICore.getExtensionInfo(TUICore_TUIGiftExtension_GetTUIGiftListPanel,
+                                                           param: [
+                                                               "frame": UIScreen.main.bounds,
+                                                               "groupId": liveInfo.roomId])
+        guard let giftPanelView = giftPanelInfo[TUICore_TUIGiftExtension_GetTUIGiftListPanel] as? UIView else {
+            return false
+        }
+        self.giftPanelView = giftPanelView
+        self.giftView = giftView
+        return true
+    }
+
+}
+
+// MARK: - TUILoginListener
+extension TCAudienceViewController: TUILoginListener {
+    public func onConnecting() {
+        
+    }
+    
+    public func onConnectSuccess() {
+        
+    }
+    
+    public func onConnectFailed(_ code: Int32, err: String!) {
+        
+    }
+    
+    public func onKickedOffline() {
+        closeVC(withRefresh: true, popViewController: true)
+    }
+    
+    public func onUserSigExpired() {
+        
     }
 }

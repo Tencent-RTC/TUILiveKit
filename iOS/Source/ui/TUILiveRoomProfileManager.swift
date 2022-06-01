@@ -3,7 +3,7 @@
 //  TUILiveRoom
 //
 //  Created by adams on 2021/5/27.
-//
+//  Copyright © 2022 Tencent. All rights reserved.
 
 import Foundation
 
@@ -40,17 +40,23 @@ public class TUILiveRoomProfileManager: NSObject {
     public func getRoomList(success: @escaping (_ roomIDs:[String])->Void, failed: @escaping (_ code: Int32,  _ error: String)-> Void) {
         if let delegate = delegate {
             delegate.liveRoomGetRoomList(success: success, failed: failed)
+        } else {
+            success([])
         }
     }
     
     public func destroyRoom(roomID: String, success: @escaping ()->Void, failed: @escaping (_ code: Int32,  _ error: String)-> Void) {
         if let delegate = delegate {
             delegate.liveRoomDestroyRoom(roomId: roomID, success: success, failed: failed)
+        } else {
+            success()
         }
     }
     public func createRoom(roomID: String, success: @escaping ()->Void, failed: @escaping (_ code: Int32,  _ error: String)-> Void) {
         if let delegate = delegate {
             delegate.liveRoomCreateRoom(roomId: roomID, success: success, failed: failed)
+        } else {
+            success()
         }
     }
 }

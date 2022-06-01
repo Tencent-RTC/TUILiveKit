@@ -3,10 +3,10 @@
 //  TUILiveRoom
 //
 //  Created by origin 李 on 2021/6/22.
-//
+//  Copyright © 2022 Tencent. All rights reserved.
 
 import Foundation
-///  消息列表
+///  TCMsgListTableView
 class TCMsgListTableView: UITableView{
     var msgArray: [TCMsgModel] = []
     var beginScroll: Bool
@@ -100,7 +100,7 @@ class TCMsgListTableView: UITableView{
     }
 }
 
-//MARK: -UITableViewDelegate
+//MARK: - UITableViewDelegate
 extension TCMsgListTableView: UITableViewDelegate{
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat{
         if msgArray.count > indexPath.row{
@@ -123,7 +123,7 @@ extension TCMsgListTableView: UITableViewDelegate{
     }
 }
 
-//MARK: -UITableViewDataSource
+//MARK: - UITableViewDataSource
 extension TCMsgListTableView: UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return msgArray.count;
@@ -164,7 +164,7 @@ protocol TCAudienceListDelegate: NSObjectProtocol {
     func onFetchGroupMemberList(_ errCode: Int, memberCount: Int)
 }
 
-//mark: -观众列表
+//MARK: - Audience List
 class TCAudienceListTableView: UITableView{
     weak var audienceListDelegate: TCAudienceListDelegate?
     private var liveInfo: TRTCLiveRoomInfo?
@@ -218,7 +218,7 @@ class TCAudienceListTableView: UITableView{
     }
 }
 
-//MARK: -UITableViewDelegate
+//MARK: - UITableViewDelegate
 extension TCAudienceListTableView: UITableViewDelegate{
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat{
         return CGFloat(IMAGE_SIZE + IMAGE_SPACE);
@@ -233,7 +233,7 @@ extension TCAudienceListTableView: UITableViewDelegate{
     }
 }
 
-//MARK: -UITableViewDataSource
+//MARK: - UITableViewDataSource
 extension TCAudienceListTableView: UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dataArray.count

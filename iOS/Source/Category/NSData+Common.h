@@ -3,7 +3,7 @@
 //  CommonLibrary
 //
 //  Created by Alexi on 13-11-6.
-//  Copyright (c) 2013年 ywchen. All rights reserved.
+//  Copyright © 2022 Tencent. All rights reserved.
 //
 #import <Foundation/Foundation.h>
 

@@ -3,7 +3,7 @@
 //  
 //
 //  Created by Eddy Borja on 4/10/13.
-//  Copyright (c) 2013 Mainloop LLC. All rights reserved.
+//  Copyright © 2022 Tencent. All rights reserved.
 //
  
  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -171,6 +171,11 @@
         chosenColor += numberOfLightColors;
     }
     
+    return [self flatColorWithChosenColor:chosenColor];
+}
+
+
++ (UIColor *)flatColorWithChosenColor:(u_int32_t)chosenColor {
     UIColor *color = [UIColor clearColor];
     switch (chosenColor) {
         case 0:
@@ -238,10 +243,8 @@
             NSAssert(0, @"Unrecognized color selected as random color");
             break;
     }
-    
     return color;
 }
-
 
 
 @end

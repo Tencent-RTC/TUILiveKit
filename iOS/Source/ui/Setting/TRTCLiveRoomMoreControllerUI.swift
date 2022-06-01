@@ -3,7 +3,7 @@
 //  TRTCScenesDemo
 //
 //  Created by J J on 2020/5/14.
-//  Copyright © 2020 xcoderliu. All rights reserved.
+//  Copyright © 2022 Tencent. All rights reserved.
 //
 
 import UIKit
@@ -14,7 +14,6 @@ final class TRTCLiveRoomMoreControllerUI: TRTCLiveRoomMoreViewController {
     let screenHeight = UIScreen.main.bounds.size.height
     let screenWidth = UIScreen.main.bounds.size.width
     
-    //当前选中分页的视图下标
     var selectIndex = 0
     
     lazy var segView:CenterSegmentView = {

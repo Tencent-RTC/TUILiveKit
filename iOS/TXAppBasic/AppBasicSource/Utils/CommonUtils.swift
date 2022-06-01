@@ -3,7 +3,7 @@
 //  trtcScenesDemo
 //
 //  Created by xcoderliu on 12/19/19.
-//  Copyright © 2019 xcoderliu. All rights reserved.
+//  Copyright © 2022 Tencent. All rights reserved.
 //
 
 import Foundation

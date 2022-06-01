@@ -3,7 +3,7 @@
 //  TUILiveRoom
 //
 //  Created by origin 李 on 2021/7/15.
-//
+//  Copyright © 2022 Tencent. All rights reserved.
 
 import Foundation
 import Accelerate
@@ -24,7 +24,6 @@ class TCUtil: NSObject {
         return httpsURL
     }
     
-    /// 高斯模糊
     class func gsImage(_ image: UIImage, withGsNumber blurAmount: CGFloat) -> UIImage? {
         guard let ciImage = CIImage(image: image) else { return nil }
         guard let blurFilter = CIFilter(name: "CIGaussianBlur") else {

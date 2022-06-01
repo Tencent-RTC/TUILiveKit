@@ -3,7 +3,7 @@
 //  TRTCVoiceRoomOCDemo
 //
 //  Created by abyyxwang on 2020/7/7.
-//  Copyright © 2020 tencent. All rights reserved.
+//  Copyright © 2020 Tencent. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -19,15 +19,15 @@ extern NSString * const Signal_Platform_OS;
 
 typedef NS_ENUM(NSUInteger, TRTCLiveRoomLiveStatus) {
     TRTCLiveRoomLiveStatusNone = 0,
-    TRTCLiveRoomLiveStatusSingle = 1, //单人房间
-    TRTCLiveRoomLiveStatusLinkMic = 2, //连麦
-    TRTCLiveRoomLiveStatusRoomPK = 3, //PK
+    TRTCLiveRoomLiveStatusSingle = 1,  // Single-person room
+    TRTCLiveRoomLiveStatusLinkMic = 2, // Co-anchoring
+    TRTCLiveRoomLiveStatusRoomPK = 3,  // Cross-room communication
 };
 
 @interface TRTCCreateRoomParam : NSObject
-/// 【字段含义】房间名称
+/// **Field description:** Room name
 @property(nonatomic, strong)NSString *roomName;
-/// 【字段含义】房间封面图
+/// **Field description:** Room cover image
 @property(nonatomic, strong)NSString *coverUrl;
 
 -(instancetype)initWithRoomName:(NSString *)roomName
@@ -37,10 +37,10 @@ typedef NS_ENUM(NSUInteger, TRTCLiveRoomLiveStatus) {
 
 
 @interface TRTCLiveRoomConfig : NSObject
-/// 【字段含义】观众端使用CDN播放
-/// 【特殊说明】true: 默认进房使用CDN播放 false: 使用低延时播放
+/// **Field description:** The audience member uses CDN for playback
+/// **Note:** Valid values: true: CDN will be used for playback by default after room entry; false: Low-latency playback will be used
 @property (nonatomic, assign) BOOL useCDNFirst;
-/// 【字段含义】CDN播放的域名地址
+/// **Field description:** CDN playback domain address
 @property(nonatomic, strong, nullable) NSString *cdnPlayDomain;
 
 -(instancetype)initWithUseCDNFirst:(BOOL)userCDNFirst
@@ -49,21 +49,21 @@ typedef NS_ENUM(NSUInteger, TRTCLiveRoomLiveStatus) {
 @end
 
 @interface TRTCLiveRoomInfo : NSObject
-/// 【字段含义】房间唯一标识
+/// **Field description:** Unique room ID
 @property(nonatomic, strong)NSString *roomId;
-/// 【字段含义】房间名称
+/// **Field description:** Room name
 @property(nonatomic, strong)NSString *roomName;
-/// 【字段含义】房间封面图
+/// **Field description:** Room cover image
 @property(nonatomic, strong)NSString *coverUrl;
-/// 【字段含义】房主id
+/// **Field description:** Room owner ID
 @property(nonatomic, strong)NSString *ownerId;
-/// 【字段含义】房主昵称
+/// **Field description:** Room owner nickname
 @property(nonatomic, strong)NSString *ownerName;
-/// 【字段含义】cdn模式下的播放流地址
+/// **Field description:** Playback stream address in CDN mode
 @property(nonatomic, strong, nullable)NSString *streamUrl;
-/// 【字段含义】房间人数
+/// **Field description:** Number of users in the room
 @property (nonatomic, assign) NSInteger memberCount;
-/// 【字段含义】房间状态 /单人/连麦/PK
+/// **Field description:** Room status (single-person, co-anchoring, or cross-room communication)
 @property (nonatomic, assign) TRTCLiveRoomLiveStatus roomStatus;
 
 - (instancetype)initWithRoomId:(NSString *)roomId
@@ -78,20 +78,18 @@ typedef NS_ENUM(NSUInteger, TRTCLiveRoomLiveStatus) {
 @end
 
 @interface TRTCLiveUserInfo : NSObject
-/// 【字段含义】用户唯一标识
+/// **Field description:** Unique user ID
 @property (nonatomic, copy) NSString *userId;
-/// 【字段含义】用户昵称
+/// **Field description:** Username
 @property (nonatomic, copy) NSString *userName;
-/// 【字段含义】用户头像
+/// **Field description:** User profile photo
 @property (nonatomic, copy) NSString *avatarURL;
-/// 【字段含义】cdn模式下的播放流id
+/// **Field description:** Playback stream ID in CDN mode
 @property (nonatomic, copy, nullable) NSString *streamId;
-/// 【字段含义】是否是主播
+/// **Field description:** Whether the current user is the anchor
 @property (nonatomic, assign) BOOL isOwner;
 
 - (instancetype)initWithProfile:(V2TIMGroupMemberFullInfo *)profile;
-
-
 
 @end
 

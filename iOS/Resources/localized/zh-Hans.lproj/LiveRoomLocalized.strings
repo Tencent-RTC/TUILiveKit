@@ -3,7 +3,7 @@
  TRTCChatSalon
 
   Created by adams on 2021/5/13.
-  
+  Copyright © 2022 Tencent. All rights reserved.
 */
 
 "Demo.TRTC.LiveRoom.cancel" = "取消";
@@ -178,3 +178,8 @@
 "Demo.TRTC.LiveRoom.resolutionselected" = "分辨率选择完毕";
 "Demo.TRTC.LiveRoom.framerateselected" = "帧率选择完毕";
 "Demo.TRTC.LiveRoom.video" = "视频";
+
+"Demo.TRTC.LiveRoom.alreadyin" = "你已经在房间了";
+"Demo.TRTC.LiveRoom.roomId.error" = "请输入正确房间号";
+"Demo.TRTC.LiveRoom.notlogin" = "请登录";
+"Demo.TRTC.LiveRoom.roomNumber" = " 房间号  ";

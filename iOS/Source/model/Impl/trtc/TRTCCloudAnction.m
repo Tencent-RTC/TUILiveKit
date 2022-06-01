@@ -99,7 +99,7 @@ static const int TC_TRTC_FRAMEWORK     = 1;
 @property (nonatomic, assign) int sdkAppId;
 @property (nonatomic, copy) NSString *userSig;
 
-@property (nonatomic, assign) BOOL isEnterRoom; // 是否进房标记，避免重复进房
+@property (nonatomic, assign) BOOL isEnterRoom;
 
 @end
 
@@ -178,13 +178,11 @@ static const int TC_TRTC_FRAMEWORK     = 1;
 - (void)setupVideoParam:(BOOL)isOwner {
     TRTCVideoEncParam *videoParam = [[TRTCVideoEncParam alloc] init];
     if (isOwner) {
-        // 大主播
         videoParam.videoResolution = TRTCVideoResolution_1280_720;
         videoParam.videoBitrate = 1800;
         videoParam.videoFps = 15;
         videoParam.enableAdjustRes = YES;
     } else {
-        // 小主播
         videoParam.videoResolution = TRTCVideoResolution_480_270;
         videoParam.videoBitrate = 400;
         videoParam.videoFps = 15;

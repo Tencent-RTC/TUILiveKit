@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "linkmic_off.png",
+      "filename" : "exit_linkmic.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "linkmic_off@2x.png",
+      "filename" : "exit_linkmic@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "linkmic_off@3x.png",
+      "filename" : "exit_linkmic@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

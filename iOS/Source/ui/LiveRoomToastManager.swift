@@ -3,7 +3,7 @@
 //  TUILiveRoom
 //
 //  Created by adams on 2021/5/26.
-//
+//  Copyright © 2022 Tencent. All rights reserved.
 
 import UIKit
 import Toast_Swift
