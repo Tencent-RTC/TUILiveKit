@@ -20,7 +20,7 @@ typedef NS_ENUM(NSUInteger, ConvType) {
 
 NSString * const Signal_RequestJoinAnchor = @"requestJoinAnchor";
 NSString * const Signal_RequestRoomPK = @"requestRoomPK";
-NSString * const Signal_KickoutJoinAnchor = @"kickoutJoinAnchor";//踢下去
+NSString * const Signal_KickoutJoinAnchor = @"kickoutJoinAnchor";
 NSString * const Signal_QuitRoomPK = @"quitRoomPK";
 NSString * const Signal_CancelJoinAnchor = @"cancelJoinAnchor";
 
@@ -41,13 +41,12 @@ NSString * const Signal_CancelJoinAnchor = @"cancelJoinAnchor";
 
 @implementation TRTCLiveRoomIMAction
 
-// FIXME: - 无用参数移除
 + (BOOL)setupSDKWithSDKAppID:(int)sdkAppId userSig:(NSString *)userSig messageLister:(id<V2TIMAdvancedMsgListener,V2TIMGroupListener>)listener {
-    BOOL reslut = [[V2TIMManager sharedInstance] initSDK:sdkAppId config:nil listener:nil];
+    BOOL reslut = [[V2TIMManager sharedInstance] initSDK:sdkAppId config:nil];
     if (reslut) {
-        [[V2TIMManager sharedInstance] removeAdvancedMsgListener:listener]; //  添加前先移除，避免重复初始化导致收到重复消息
+        [[V2TIMManager sharedInstance] removeAdvancedMsgListener:listener];
         [[V2TIMManager sharedInstance] addAdvancedMsgListener:listener];
-        [[V2TIMManager sharedInstance] setGroupListener:listener];
+        [[V2TIMManager sharedInstance] addGroupListener:listener];
     }
     return reslut;
 }
@@ -117,7 +116,6 @@ NSString * const Signal_CancelJoinAnchor = @"cancelJoinAnchor";
         [[V2TIMManager sharedInstance] setGroupInfo:info succ:nil fail:nil];
     } fail:^(int code, NSString *desc) {
         if (code == ERR_SVR_GROUP_GROUPID_IN_USED_FOR_SUPER) {
-            // 房间是自己创建的
             [[V2TIMManager sharedInstance] joinGroup:roomID msg:nil succ:^{
                 [TRTCLiveRoomIMAction getAllMembersWithRoomID:roomID success:^(NSArray<TRTCLiveUserInfo *> * _Nonnull members) {
                     if (success) {
@@ -230,9 +228,9 @@ NSString * const Signal_CancelJoinAnchor = @"cancelJoinAnchor";
                     roomInfo = [[TRTCLiveRoomInfo alloc] initWithRoomId:info.groupID
                                                                roomName:info.groupName
                                                                coverUrl:info.faceURL
-                                                                ownerId:owner[@"userId"] ?: @""
-                                                              ownerName:owner[@"name"] ?: @""
-                                                               streamUrl:owner[@"streamId"]
+                                                                ownerId:info.owner
+                                                              ownerName:(owner[@"name"] ?: @"")
+                                                              streamUrl:(owner[@"streamId"] ?: @"")
                                                             memberCount:info.memberCount
                                                              roomStatus:[type intValue]];
                 }
@@ -334,7 +332,7 @@ NSString * const Signal_CancelJoinAnchor = @"cancelJoinAnchor";
     }];
 }
 
-#pragma mark - private method
+#pragma mark - Private method
 + (void)sendMessage:(NSDictionary<NSString *, id> *)data convType:(ConversationParams *)params callback:(LRIMCallback _Nullable)callback {
     NSError *error;
     NSData* jsonData = [NSJSONSerialization dataWithJSONObject:data options:NSJSONWritingFragmentsAllowed error:&error];
@@ -397,7 +395,7 @@ NSString * const Signal_CancelJoinAnchor = @"cancelJoinAnchor";
     }
 }
 
-#pragma mark - 信令消息业务层
+#pragma mark - Signaling Channel
 + (NSDictionary *)covertCmdMessage:(NSDictionary *)data {
     return @{
         @"version" : @(1),
@@ -415,16 +413,14 @@ NSString * const Signal_CancelJoinAnchor = @"cancelJoinAnchor";
     NSError *error;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:[self covertCmdMessage:data] options:NSJSONWritingPrettyPrinted error:&error];
     if (!jsonData) {
-        callback(-1, @"json数据有误");
+        callback(-1, @"json error");
         return nil;
     } else {
         NSString *content = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
         return [TRTCLiveRoomIMAction sendInvitationWithUserId:userID timeout:timeout content:content callback:callback];
     }
 }
-/**
- *  取消连麦
- */
+
 + (void)cancelRequestJoinAnchorWithRequestID:(NSString *)requestID reason:(NSString *)reason callback:(LRIMCallback)callback {
     NSDictionary *data = @{
         @"cmd": Signal_RequestJoinAnchor,
@@ -434,16 +430,14 @@ NSString * const Signal_CancelJoinAnchor = @"cancelJoinAnchor";
     NSError *error;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:[self covertCmdMessage:data] options:NSJSONWritingPrettyPrinted error:&error];
     if (!jsonData) {
-        callback(-1, @"json数据有误");
+        callback(-1, @"json error");
         return;
     } else {
         NSString *content = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
         [TRTCLiveRoomIMAction cancelInvitation:requestID data:content callback:callback];
     }
 }
-/**
- *  主播响应连麦处理
- */
+
 + (void)respondJoinAnchorWithRequestID:(NSString *)requestID agreed:(BOOL)agreed reason:(NSString *)reason callback:(LRIMCallback _Nullable)callback {
     NSDictionary *data = @{
         @"cmd": Signal_RequestJoinAnchor,
@@ -452,15 +446,13 @@ NSString * const Signal_CancelJoinAnchor = @"cancelJoinAnchor";
     NSError *error;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:[self covertCmdMessage:data] options:NSJSONWritingPrettyPrinted error:&error];
     if (!jsonData) {
-        callback(-1, @"json数据有误");
+        callback(-1, @"json error");
     } else {
         NSString *content = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
         [self respondSignallingMessage:requestID agree:agreed content:content callback:callback];
     }
 }
-/**
- * 被主播踢出房间
- */
+
 + (NSString *)kickoutJoinAnchorWithUserID:(NSString *)userID callback:(LRIMCallback _Nullable)callback {
     NSDictionary *data = @{
         @"cmd": Signal_KickoutJoinAnchor,
@@ -468,16 +460,14 @@ NSString * const Signal_CancelJoinAnchor = @"cancelJoinAnchor";
     NSError *error;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:[self covertCmdMessage:data] options:NSJSONWritingPrettyPrinted error:&error];
     if (!jsonData) {
-        callback(-1, @"json数据有误");
+        callback(-1, @"json error");
         return nil;
     } else {
         NSString *content = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
         return [TRTCLiveRoomIMAction sendInvitationWithUserId:userID timeout:0 content:content callback:callback];
     }
 }
-/**
- *  踢出连麦观众回调
- */
+
 + (void)respondKickoutJoinAnchor:(NSString *)inviteID agree:(BOOL)agree message:(NSString *)message {
     NSDictionary *data = @{
         @"cmd": Signal_KickoutJoinAnchor,
@@ -491,29 +481,24 @@ NSString * const Signal_CancelJoinAnchor = @"cancelJoinAnchor";
         [TRTCLiveRoomIMAction respondSignallingMessage:inviteID agree:YES content:content callback:nil];
     }
 }
-/**
- *  主播向其他主播请求PK
- */
+
 + (NSString *)requestRoomPKWithUserID:(NSString *)userID timeout:(int)timeout fromRoomID:(NSString *)fromRoomID fromStreamID:(NSString *)fromStreamID callback:(LRIMCallback _Nullable)callback {
     NSDictionary *data = @{
         @"cmd":Signal_RequestRoomPK,
         @"roomId": fromRoomID,
         @"streamId": fromStreamID
-
     };
     NSError *error;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:[self covertCmdMessage:data] options:NSJSONWritingPrettyPrinted error:&error];
     if (!jsonData) {
-        callback(-1, @"json数据有误");
+        callback(-1, @"json error");
         return nil;
     } else {
         NSString *content = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
         return [TRTCLiveRoomIMAction sendInvitationWithUserId:userID timeout:timeout content:content callback:callback];
     }
 }
-/**
- *  主播取消PK请求
- */
+
 + (void)cancelRequestRoomPKWithRequestID:(NSString *)requestID reason:(NSString *)reason callback:(LRIMCallback)callback {
     NSDictionary *data = @{
         @"cmd": Signal_RequestRoomPK,
@@ -521,16 +506,14 @@ NSString * const Signal_CancelJoinAnchor = @"cancelJoinAnchor";
     NSError *error;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:[self covertCmdMessage:data] options:NSJSONWritingPrettyPrinted error:&error];
     if (!jsonData) {
-        callback(-1, @"json数据有误");
+        callback(-1, @"json error");
         return;
     } else {
         NSString *content = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
         return [TRTCLiveRoomIMAction cancelInvitation:requestID data:content callback:callback];
     }
 }
-/**
- *  PK请求结果回调
- */
+
 + (void)responseRoomPKWithRequestID:(NSString *)requestID agreed:(BOOL)agreed reason:(NSString * _Nullable)reason streamID:(NSString *)streamID callback:(LRIMCallback _Nullable)callback {
     NSDictionary *data = @{
         @"cmd": Signal_RequestRoomPK,
@@ -539,15 +522,13 @@ NSString * const Signal_CancelJoinAnchor = @"cancelJoinAnchor";
     NSError *error;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:[self covertCmdMessage:data] options:NSJSONWritingPrettyPrinted error:&error];
     if (!jsonData) {
-        callback(-1, @"json数据有误");
+        callback(-1, @"json error");
     } else {
         NSString *content = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
         [self respondSignallingMessage:requestID agree:agreed content:content callback:callback];
     }
 }
-/**
- *  退出PK请求
- */
+
 + (NSString *)quitRoomPKWithUserID:(NSString *)userID callback:(LRIMCallback _Nullable)callback {
     NSDictionary *data = @{
         @"cmd":Signal_QuitRoomPK,
@@ -555,7 +536,7 @@ NSString * const Signal_CancelJoinAnchor = @"cancelJoinAnchor";
     NSError *error;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:[self covertCmdMessage:data] options:NSJSONWritingPrettyPrinted error:&error];
     if (!jsonData) {
-        callback(-1, @"json数据有误");
+        callback(-1, @"json error");
         return nil;
     } else {
         NSString *content = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
@@ -563,9 +544,6 @@ NSString * const Signal_CancelJoinAnchor = @"cancelJoinAnchor";
     }
 }
 
-/**
- *  退出PK请求回调
- */
 + (void)respondQuitRoomPK:(NSString *)inviteID agree:(BOOL)agree message:(NSString *)message {
     NSDictionary *data = @{
         @"action": Signal_QuitRoomPK,
@@ -581,7 +559,7 @@ NSString * const Signal_CancelJoinAnchor = @"cancelJoinAnchor";
     }
 }
 
-#pragma mark - 信令消息发送
+#pragma mark - Signaling Message Sending
 + (NSString *)sendInvitationWithUserId:(NSString *)userId timeout:(int)timeout content:(NSString *)content callback:(LRIMCallback _Nullable)callback {
     return [[V2TIMManager sharedInstance] invite:userId data:content onlineUserOnly:YES offlinePushInfo:nil timeout:timeout succ:^{
         if (callback) {

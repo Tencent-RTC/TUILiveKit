@@ -19,7 +19,7 @@
 
 @implementation TRTCLiveRoomMemberManager
 
-#pragma mark - 属性懒加载
+#pragma mark - Getter
 - (NSMutableArray<TRTCLiveUserInfo *> *)allMembers {
     if (!_allMembers) {
         _allMembers = [[NSMutableArray alloc] initWithCapacity:2];
@@ -122,7 +122,6 @@
 }
 
 - (void)confirmPKAnchor:(NSString *)userId {
-    // FIXME: 逻辑有问题
     if (self.pkAnchor) {
         self.anchors[self.pkAnchor.userId] = self.pkAnchor;
         if ([self canDelegateResponseMethod:@selector(memberManager:onUserEnter:isAnchor:)]) {
@@ -151,7 +150,7 @@
     if (toAnchor) {
         user.streamId = streamId;
         if (!self.anchors[user.userId]) {
-            // FIXME: 这里用户连麦麦，会切换身份。目前需求，用户上麦，不会回调房间成员变化信息（实际确实发生了变化），如果需要反馈，打开此处代码。
+            // FIXME: Here the user connects to Link-mic and will switch identities. At present, the user will not call back the room member change information (actually there is a change). If you need feedback, open the code here.
 //            if ([self canDelegateResponseMethod:@selector(memberManager:onUserLeave:isAnchor:)]) {
 //                [self.delegate memberManager:self onUserLeave:user isAnchor:NO];
 //            }
@@ -213,7 +212,6 @@
         audience.userName = name;
         audience.avatarURL =avatar;
     }
-    // TODO: 是不是给一个群成员资料便跟的通知（Swift代码copy）
 }
 
 - (void)updateAnchorsWithGroupinfo:(NSDictionary<NSString *,id> *)groupInfo {
@@ -317,7 +315,6 @@
     }
     [self.anchors enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, TRTCLiveUserInfo * _Nonnull obj, BOOL * _Nonnull stop) {
         if ([newAnchorIds containsObject:key]) {
-            // FIXME: 检查这里的实现是否和Swift的表达一致
             if ([self.allMembers containsObject:obj]) {
                 [self changeToAudience:obj];
             } else {

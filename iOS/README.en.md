@@ -7,13 +7,15 @@ This document describes how to quickly run the TUILiveRoom demo project to try o
     
 ```
 TUILiveRoom
-├─ App              // Interactive video live streaming homepage UI code and used images and internationalization string resources
-├─ Debug            // Key business code required for project debugging and running
-├─ Login            // Login UI and business logic code
-├─ Resources            // Images and internationalization string resources required by the interactive video live streaming feature
-├─ Source               // Core business logic code of interactive video live streaming
-├─ TCBeautyKit      // Core beauty filter component
-└─ TXAppBasic       // Dependent basic components of the project
+├─ Example                // Project module, which provides the TUILiveRoom testing page
+├─ Resources              // Images and internationalization string resources required by the interactive video live streaming feature
+├─ Source                 // Core business logic code of interactive video live streaming
+├─ TUIBeauty              // Core beauty filter component
+├─ TUIGift                // Core Gift component
+├─ TUIAudioEffect         // Core Audio Effect component
+├─ TUIBarrage             // Core Barrage component
+├─ TXAppBasic             // Dependent basic components of the project
+└─ TUILiveRoom.podspec    // CocoaPods podspec file of the TUILiveRoom component
 ```
     
 ## Environment Requirements
@@ -35,24 +37,26 @@ TUILiveRoom
 ### Step 2. Download the source code and configure the project
 
 1. Clone or directly download the source code in the repository. **Feel free to star our project if you like it.**
-2. The SDK is integrated by using `Cocoapods` by default. `pod 'TXLiteAVSDK_TRTC'` depended on by the SDK has been added to the `Podfile` file in the project directory. You only need to open Terminal, enter the project directory, and run `pod install`, and the SDK will be automatically integrated.
+2. The SDK is integrated by using `CocoaPods` by default. `pod 'TXLiteAVSDK_TRTC'` depended on by the SDK has been added to the `Example/Podfile` file in the project directory. You only need to open Terminal, enter the project directory, and run `pod install`, and the SDK will be automatically integrated.
 
 ```
 pod install
 ```
 >?If the error message `CocoaPods could not find compatible versions for pod "TXIMSDK_Plus_iOS"` is reported for version inconsistence, run `pod update TXIMSDK_Plus_iOS`.
-3. Open the demo project `TUILiveRoomApp.xcworkspace` with Xcode 11.0 or later and find the `TUILiveRoom/Debug/GenerateTestUserSig.swift` file in the project.
+3. Open the demo project `Example/TUILiveRoomApp.xcworkspace` with Xcode 11.0 or later and find the `Example/Debug/GenerateTestUserSig.swift` file in the project.
 4. Set parameters in `GenerateTestUserSig.swift`:
 <ul>
 <li>SDKAPPID: 0 by default. Replace it with your actual `SDKAPPID`.</li>
 <li>SECRETKEY: An empty string by default. Replace it with your actual `SECRETKEY`.</li>
+<li>XMagicLicenseURL【Optional】: An empty string by default. Please vist: <a href="https://cloud.tencent.com/document/product/616/65878">XMagic License</a>。</li>
+<li>XMagicLicenseKey  【Optional】: An empty string by default. Please vist: <a href="https://cloud.tencent.com/document/product/616/65878">XMagic License</a>。</li>
 </ul>
 <img src="https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/sdkappid_secretkey_ios.png" width="650" height="295"/>
 
 
 ### Step 3. Compile and run the application
 
-Open the source code project `TUILiveRoom/TUILiveRoomApp.xcworkspace` with Xcode (version 11.0 or above) and click **Run**.
+Open the source code project `Example/TUILiveRoomApp.xcworkspace` with Xcode (version 11.0 or above) and click **Run**.
 
 
 ### Step 4. Try out the demo

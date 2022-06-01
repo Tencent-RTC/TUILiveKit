@@ -3,7 +3,7 @@
 //  TRTCScene
 //
 //  Created by adams on 2021/4/8.
-//
+//  Copyright © 2022 Tencent. All rights reserved.
 
 import Foundation
 

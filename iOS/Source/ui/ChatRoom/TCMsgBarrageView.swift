@@ -3,16 +3,13 @@
 //  TUILiveRoom
 //
 //  Created by origin 李 on 2021/6/22.
-//
+//  Copyright © 2022 Tencent. All rights reserved.
 
 import Foundation
 
-/**
- *  TCMsgBulletView 类说明：
- *  当前类主要是展示用户发送的弹幕消息，里面可以自定义弹幕的效果
- */
+/// TCMsgBarrageView
 class TCMsgBarrageView: UIView {
-    ///  记录当前TCMsgBulletView最后一个弹幕View，通过弹幕View frame 判断下一个弹幕消息显示在哪个TCMsgBulletView
+    
     lazy var lastAnimateView: UIView = {
         return UIView()
     }()
@@ -81,9 +78,6 @@ class TCMsgBarrageView: UIView {
         removeAllSubViews()
     }
     
-    ///  给弹幕view 发送msgModel消息
-    ///
-    ///  - Parameter msgModel: 弹幕消息
     func bulletNewMsg(_ msgModel: TCMsgModel?) {
         if let msgModel = msgModel {
             msgModelArray.insert(msgModel, at: 0)

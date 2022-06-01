@@ -3,7 +3,7 @@
 //  TUILiveRoom
 //
 //  Created by origin 李 on 2021/6/21.
-//
+//  Copyright © 2022 Tencent. All rights reserved.
 
 import Foundation
 import UIKit
@@ -12,8 +12,7 @@ import Kingfisher
 let _arryColor = [UIColor.green, UIColor.red, UIColor.blue]
 var _index = 0
 typealias TCLiveTopClick = () -> Void
-///  TCMsgListCell 类说明：
-///  用户消息列表cell，用于展示消息信息
+///  TCMsgListCell
 class TCMsgListCell: UITableViewCell {
     lazy var msgView: UIView = {
         let msgView = UIView(frame: CGRect.zero)
@@ -36,14 +35,13 @@ class TCMsgListCell: UITableViewCell {
     public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    ///  刷新cell内容信息
+    
     func refresh(with msgModel: TCMsgModel?) {
         msgLabel.attributedText = msgModel?.msgAttribText
         msgLabel.width = CGFloat(MSG_TABLEVIEW_WIDTH - 20)
         msgLabel.sizeToFit()
     }
     
-    ///  通过msgModel 获取消息列表每行的内容信息，通过返回的AttributedString计算cell的高度
     class func getAttributedString(from msgModel: TCMsgModel) -> NSAttributedString? {
         let attribute = NSMutableAttributedString()
         if msgModel.msgType == .normal || msgModel.msgType == .danmaMsg  {
@@ -70,22 +68,22 @@ class TCMsgListCell: UITableViewCell {
 
 public class TCShowLiveTopView: UIView {
     var clickHead: TCLiveTopClick?
-    private var hostImage: UIImageView // 主播头像
-    private var durationImage: UIImageView? // 直播时长
+    private var hostImage: UIImageView
+    private var durationImage: UIImageView?
     private var durationLabel: UILabel
-    private var roomIdLabel: UILabel //房间号
+    private var roomIdLabel: UILabel
     
-    private var audienceLabel: UILabel // 在线观众数
+    private var audienceLabel: UILabel
     private var timer: Timer?
     private var startTime = 0
-    private var liveDuration = 0 // 直播时长
-    private var audienceCount = 0 // 在线观众数
-    private var likeCount = 0 // 点赞数
-    private var totalViewerCount = 0 // 总共观看人数
-    private var isHost = false // 是否是主播
-    private var hostNickName: String // 主播昵称
-    private var hostFaceUrl: String // 头像地址
-    init(frame: CGRect, isHost: Bool, hostNickName: String, audienceCount: Int, likeCount: Int, hostFaceUrl: String) {
+    private var liveDuration = 0
+    private var audienceCount = 0
+    private var likeCount = 0
+    private var totalViewerCount = 0
+    private var isHost = false
+    private var roomName: String
+    private var hostFaceUrl: String
+    init(frame: CGRect, isHost: Bool, roomName: String, audienceCount: Int, likeCount: Int, hostFaceUrl: String) {
         hostImage = UIImageView()
         durationLabel = UILabel()
         audienceLabel = UILabel()
@@ -95,7 +93,7 @@ public class TCShowLiveTopView: UIView {
         self.likeCount = likeCount
         liveDuration = 0
         self.isHost = isHost
-        self.hostNickName = hostNickName
+        self.roomName = roomName
         self.hostFaceUrl = hostFaceUrl
         super.init(frame: frame)
         backgroundColor = UIColor.white.withAlphaComponent(0.2)
@@ -125,7 +123,7 @@ public class TCShowLiveTopView: UIView {
             
             durationLabel.text = "00:00:00"
         } else {
-            durationLabel.text = hostNickName
+            durationLabel.text = roomName
         }
         durationLabel.font = UIFont.boldSystemFont(ofSize: 10)
         durationLabel.textColor = UIColor.white
@@ -272,7 +270,7 @@ class TCAudienceListCell: UITableViewCell {
         audienceimageView.layer.cornerRadius = audienceimageView.size.width / 2
         audienceimageView.clipsToBounds = true
     }
-    ///  通过msgModel刷新观众信息
+    
     func refresh(withModel msgModel: TRTCLiveUserInfo) {
         audienceimageView.kf.setImage(with:  URL(string: TCUtil.transImageURL2HttpsURL(msgModel.avatarURL) ?? ""), placeholder: UIImage(named: "face", in: LiveRoomBundle(), compatibleWith: nil), options: nil, progressBlock: nil, completionHandler: nil)
     }

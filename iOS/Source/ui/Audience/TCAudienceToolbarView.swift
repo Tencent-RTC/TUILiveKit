@@ -3,7 +3,7 @@
 //  TUILiveRoom
 //
 //  Created by origin 李 on 2021/6/23.
-//
+//  Copyright © 2022 Tencent. All rights reserved.
 
 import Foundation
 protocol TCAudienceToolbarDelegate: NSObjectProtocol {
@@ -11,13 +11,15 @@ protocol TCAudienceToolbarDelegate: NSObjectProtocol {
     func clickScreen(_ position: CGPoint)
     func clickPlayVod()
     func clickLog()
+    func clickLike()
+    func clickChat()
     func onSeek(_ slider: UISlider?)
     func onSeekBegin(_ slider: UISlider?)
     func onDrag(_ slider: UISlider?)
     func onRecvGroupDeleteMsg()
 }
 
-///  播放模块逻辑view，里面展示了消息列表，弹幕动画，观众列表等UI，其中与SDK的逻辑交互需要交给主控制器处理
+/// TCAudienceToolbarView
 public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldDelegate ,UIAlertViewDelegate{
     weak var delegate: TCAudienceToolbarDelegate?
     weak var liveRoom: TRTCLiveRoom?
@@ -27,32 +29,34 @@ public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldD
     var playBtn: UIButton = UIButton(type: .custom)
     var closeBtn: UIButton = UIButton(type: .custom)
     var btnChat: UIButton = UIButton(type: .custom)
+    lazy var reportBtn: UIButton  = {
+        let btn = UIButton(type: .custom)
+        btn.setBackgroundImage(UIImage(named: "livevideo_report", in: LiveRoomBundle(), compatibleWith: nil), for: .normal)
+        btn.imageView?.contentMode = .scaleAspectFill
+        return btn
+    }()
     var cover: UIView = UIButton(type: .custom)
     var statusView: UITextView?
     var logViewEvt: UITextView?
     var audienceTableView: TCAudienceListTableView?
-    var msgTableView: TCMsgListTableView?
-    var bulletViewOne: TCMsgBarrageView?
-    var bulletViewTwo: TCMsgBarrageView?
     var liveInfo: TRTCLiveRoomInfo?
     var likeBtn: UIButton = UIButton(type: .custom)
-    var msgInputView: UIView = UIView()
-    var msgInputFeild: UITextField = UITextField()
     var touchBeginLocation = CGPoint.zero
     var bulletBtnIsOn = false
     var viewsHidden = false
     
     lazy var topView: TCShowLiveTopView  = {
-        return TCShowLiveTopView.init(frame: CGRect(x: 5, y: Int(StatusBarHeight) + 5, width: 180, height: 48), isHost: false, hostNickName: liveInfo?.ownerName ?? "", audienceCount: 0, likeCount: 0, hostFaceUrl: liveInfo?.coverUrl ?? "")
-    }()
-    lazy var frequeControl :TCFrequeControl = {
-        return TCFrequeControl(counts: 10, andSeconds: 1)
+        return TCShowLiveTopView(frame: CGRect(x: 5, y: Int(StatusBarHeight) + 5, width: 180, height: 48),
+                                 isHost: false,
+                                 roomName: (liveInfo?.roomName ?? ""),
+                                 audienceCount: 0,
+                                 likeCount: 0,
+                                 hostFaceUrl: (liveInfo?.coverUrl ?? ""))
     }()
     
     init(frame: CGRect, live liveInfo: TRTCLiveRoomInfo?, withLinkMic linkmic: Bool) {
         super.init(frame: frame)
         self.liveInfo = liveInfo
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardFrameDidChange(_:)), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
         let tap = UITapGestureRecognizer(target: self, action: #selector(clickScreenTap(_:)))
         addGestureRecognizer(tap)
         initUI(linkmic)
@@ -129,7 +133,7 @@ public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldD
             delegate.clickLog()
         }
         let iconSize = CGFloat(BOTTOM_BTN_ICON_WIDTH)
-        let startSpace: CGFloat = 15
+        let startSpace: CGFloat = 10
         let iconCenterY = CGFloat(height - iconSize / 2) - startSpace
         
         let iconCount: CGFloat = linkmic == true ? 7 : 6
@@ -146,7 +150,7 @@ public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldD
             make.right.equalTo(self).offset(-iconCenterInterval * 0.7)
             make.width.height.equalTo(iconSize)
         }
-        //点赞
+
         likeBtn.frame = CGRect(x: 0, y: 0, width: iconSize, height: iconSize)
         likeBtn.setImage(UIImage(named: "like_hover", in: LiveRoomBundle(), compatibleWith: nil), for: .normal)
         likeBtn.addTarget(self, action: #selector(clickLike(_:)), for: .touchUpInside)
@@ -156,78 +160,15 @@ public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldD
             make.centerX.equalTo(closeBtn).offset(-iconCenterInterval * 1.2)
             make.width.height.equalTo(iconSize)
         })
-        //弹幕
-        msgTableView = TCMsgListTableView(frame: CGRect(x: 15, y: Int(btnChat.top) - MSG_TABLEVIEW_HEIGHT - MSG_TABLEVIEW_BOTTOM_SPACE, width: MSG_TABLEVIEW_WIDTH, height: MSG_TABLEVIEW_HEIGHT), style: .grouped)
-        guard let msgTableView = msgTableView else { return }
-        addSubview(msgTableView)
-        //弹幕
-        msgTableView.snp.makeConstraints({ make in
-            make.width.equalTo(MSG_TABLEVIEW_WIDTH)
-            make.height.equalTo(MSG_TABLEVIEW_HEIGHT)
-            make.leading.equalTo(self).offset(15)
-            make.bottom.equalTo(btnChat.top).offset(-MSG_TABLEVIEW_BOTTOM_SPACE-35)
-            
+#if RTCube_APPSTORE
+        addSubview(reportBtn)
+        reportBtn.snp.makeConstraints({ make in
+            make.centerY.equalTo(btnChat.snp.centerY)
+            make.centerX.equalTo(btnChat).offset(iconCenterInterval * 1.2)
+            make.width.height.equalTo(iconSize)
         })
-        
-        bulletViewOne = TCMsgBarrageView(frame: CGRect(x: 0, y: Int(msgTableView.top) - MSG_UI_SPACE - MSG_BULLETVIEW_HEIGHT, width: Int(SCREEN_WIDTH), height: MSG_BULLETVIEW_HEIGHT))
-        guard let bulletViewOne = bulletViewOne else { return }
-        insertSubview(bulletViewOne, belowSubview: closeBtn)
-        bulletViewOne.snp.makeConstraints({ make in
-            make.leading.equalTo(self)
-            make.bottom.equalTo(msgTableView.top).offset(-MSG_UI_SPACE)
-            make.width.equalTo(SCREEN_WIDTH)
-            make.height.equalTo(MSG_BULLETVIEW_HEIGHT)
-        })
-        bulletViewTwo = TCMsgBarrageView(frame: CGRect(x: 0, y: bulletViewOne.top - CGFloat( MSG_BULLETVIEW_HEIGHT), width: SCREEN_WIDTH, height: CGFloat(MSG_BULLETVIEW_HEIGHT)))
-        guard let bulletViewTwo = bulletViewTwo else { return }
-        insertSubview(bulletViewTwo, belowSubview: closeBtn)
-        bulletViewTwo.snp.makeConstraints({ make in
-            make.leading.equalTo(self)
-            make.bottom.equalTo(msgTableView.top)
-            make.width.equalTo(SCREEN_WIDTH)
-            make.height.equalTo(MSG_BULLETVIEW_HEIGHT)
-        })
-        
-        //输入框
-        let InputViewFrame = CGRect(x: 0, y: height, width: width, height: CGFloat(MSG_TEXT_SEND_VIEW_HEIGHT))
-        msgInputView.frame = InputViewFrame
-        msgInputView.backgroundColor = UIColor.clear
-        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: msgInputView.width, height: msgInputView.height))
-        imageView.image = UIImage(named: "input_comment", in: LiveRoomBundle(), compatibleWith: nil)
-        
-        let bulletBtn = UIButton(type: .custom)
-        bulletBtn.frame = CGRect(x: 10, y: (Int(msgInputView.height) - MSG_TEXT_SEND_FEILD_HEIGHT) / 2, width: MSG_TEXT_SEND_BULLET_BTN_WIDTH, height: MSG_TEXT_SEND_FEILD_HEIGHT)
-        bulletBtn.setImage(UIImage(named: "Switch_OFF", in: LiveRoomBundle(), compatibleWith: nil), for: .normal)
-        bulletBtn.setImage(UIImage(named: "Switch_ON", in: LiveRoomBundle(), compatibleWith: nil), for: .selected)
-        bulletBtn.addTarget(self, action: #selector(clickBullet(_:)), for: .touchUpInside)
-        
-        let sendBtn = UIButton(type: .custom)
-        sendBtn.frame = CGRect(x: Int(width) - 15 - MSG_TEXT_SEND_BTN_WIDTH, y: (Int(msgInputView.height) - MSG_TEXT_SEND_FEILD_HEIGHT) / 2, width: MSG_TEXT_SEND_BTN_WIDTH, height: MSG_TEXT_SEND_FEILD_HEIGHT)
-        sendBtn.setTitle(LiveRoomLocalize("Demo.TRTC.LiveRoom.send"), for: .normal)
-        sendBtn.titleLabel?.font = UIFont.systemFont(ofSize: 16)
-        sendBtn.setTitleColor(UIColor(hex: "0x0ACCAC"), for: .normal)
-        sendBtn.backgroundColor = UIColor.clear
-        sendBtn.addTarget(self, action: #selector(clickSend), for: .touchUpInside)
-        
-        let msgInputFeildLine1 = UIImageView(image: UIImage(named: "vertical_line", in: LiveRoomBundle(), compatibleWith: nil))
-        msgInputFeildLine1.frame = CGRect(x: bulletBtn.right + 10, y: sendBtn.y, width: 1, height: CGFloat(MSG_TEXT_SEND_FEILD_HEIGHT))
-        let msgInputFeildLine2 = UIImageView(image: UIImage(named: "vertical_line", in: LiveRoomBundle(), compatibleWith: nil))
-        msgInputFeild.frame = CGRect(x: msgInputFeildLine1.right + 100, y: sendBtn.y, width: msgInputFeildLine2.left - msgInputFeildLine1.right - 20, height: CGFloat(MSG_TEXT_SEND_FEILD_HEIGHT))
-        msgInputFeild.backgroundColor = UIColor.clear
-        msgInputFeild.returnKeyType = .send
-        msgInputFeild.placeholder = LiveRoomLocalize("Demo.TRTC.LiveRoom.saysomething")
-        msgInputFeild.delegate = self
-        msgInputFeild.textColor = UIColor.black
-        msgInputFeild.font = UIFont.systemFont(ofSize: 14)
-        msgInputView.addSubview(msgInputFeildLine1)
-        msgInputView.addSubview(msgInputFeildLine2)
-        msgInputView.addSubview(imageView)
-        msgInputView.addSubview(msgInputFeild)
-        msgInputView.addSubview(bulletBtn)
-        msgInputView.addSubview(sendBtn)
-        
-        msgInputView.isHidden = true
-        addSubview(msgInputView)
+        reportBtn.addTarget(self, action: #selector(clickReport), for: .touchUpInside)
+#endif
         //LOG UI
         cover.frame = CGRect(x: 10.0, y: 55 + 2 * iconSize, width: width - 20, height: height - 110 - 3 * iconSize)
         cover.backgroundColor = UIColor.white
@@ -265,117 +206,19 @@ public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldD
         return (rect?.origin.x ?? 0.0) + (rect?.size.width ?? 0.0)
     }
     
-    func bulletMsg(_ msgModel: TCMsgModel?) {
-        msgTableView?.bulletNewMsg(msgModel)
-        if msgModel?.msgType == .danmaMsg {
-            if getLocation(bulletViewOne!) >= getLocation(bulletViewTwo!) {
-                bulletViewTwo?.top = CGFloat(Int(msgTableView!.top) - MSG_UI_SPACE )
-                bulletViewTwo?.bulletNewMsg(msgModel)
-            } else {
-                bulletViewOne?.top = CGFloat(Int(msgTableView!.top) - MSG_UI_SPACE - MSG_BULLETVIEW_HEIGHT)
-                bulletViewOne?.bulletNewMsg(msgModel)
-            }
-        }
-        if msgModel?.msgType == .memberEnterRoom || msgModel?.msgType == .memberQuitRoom {
-            audienceTableView?.refreshAudienceList(msgModel)
-        }
-    }
-    
-    @objc func clickBullet(_ btn: UIButton?) {
-        bulletBtnIsOn = !bulletBtnIsOn
-        btn?.isSelected = bulletBtnIsOn
-    }
     
     @objc func clickChat(_ button: UIButton?) {
-        self.msgInputFeild.becomeFirstResponder()
-    }
-    
-    @objc func clickSend() {
-        
-        _ = textFieldShouldReturn(msgInputFeild )
+        delegate?.clickChat()
     }
     
     @objc func clickLike(_ button: UIButton) {
-        liveRoom?.sendRoomCustomMsg(cmd: "4", message: "", callback: { code, error in
-        })
-        topView.onUserSendLikeMessage()
-        showLikeHeartStart(button.frame)
+        delegate?.clickLike()
     }
     
-    func showLikeHeart() {
-        showLikeHeartStart(likeBtn.frame)
-    }
-    
-    func showLikeHeartStart(_ frame: CGRect) {
-        guard frequeControl.canTrigger() else {
-            return
-        }
-        if viewsHidden {
-            return
-        }
-    }
-    // MARK: UITextFieldDelegate
-    public func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        msgInputFeild.text = ""
-        return true
-    }
-    
-    public func textFieldDidEndEditing(_ textField: UITextField) {
-        msgInputFeild.text = textField.text
-    }
-    
-    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        let textMsg = textField.text?.trimmingCharacters(in: CharacterSet.whitespaces)
-        if textMsg?.count ?? 0 <= 0 {
-            textField.text = ""
-            HUDHelper.alert(msg: LiveRoomLocalize("Demo.TRTC.LiveRoom.messagecantbeempty"))
-            return true
-        }
-        var msgModel = TCMsgModel()
-        msgModel.userName = LiveRoomLocalize("Demo.TRTC.LiveRoom.me")
-        msgModel.userMsg = textMsg
-        msgModel.userHeadImageUrl = TUILiveRoomProfileManager.sharedManager().avatar
-        if bulletBtnIsOn {
-            msgModel.msgType = .danmaMsg
-            let cmd :String = "5"//弹幕
-            guard let liveRoom = liveRoom else { return true }
-            liveRoom.sendRoomCustomMsg(cmd: cmd, message: textMsg ?? "", callback: { code, error in
-                
-            })
-        } else {
-            msgModel.msgType = .normal
-            liveRoom?.sendRoomTextMsg(message: textMsg ?? "", callback: { code, error in })
-        }
-        bulletMsg(msgModel)
-        msgInputFeild.resignFirstResponder()
-        return true
-    }
-    
-    @objc func keyboardFrameDidChange(_ notice: Notification?) {
-        let userInfo = notice?.userInfo
-        let endFrameValue = userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue
-        let endFrame = endFrameValue?.cgRectValue
-        let shouldHidden = (endFrame?.minY ?? 0.0) >= UIScreen.main.bounds.size.height
-        if !shouldHidden {
-            msgInputView.isHidden = false
-        }
-        guard var endFrametem = endFrame else {
-            return
-        }
-        endFrametem = msgInputView.superview!.convert(endFrametem, from: nil)
-        UIView.animate(withDuration: 0.25) {
-            [weak self] in
-            guard let `self` = self else { return }
-            if endFrametem.origin.y >= self.height {
-                self.msgInputView.y = endFrametem.origin.y
-            } else {
-                self.msgInputView.y = endFrametem.origin.y - self.msgInputView.height
-                
-            }
-        } completion: { finish in
-            if shouldHidden {
-                self.msgInputView.isHidden = true
-            }
+    @objc func clickReport() {
+        let selector = NSSelectorFromString("showReportAlertWithRoomId:")
+        if responds(to: selector) {
+            perform(selector, with: liveInfo?.roomId ?? "")
         }
     }
     
@@ -388,14 +231,11 @@ public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldD
         guard let delegate = delegate else {
             return
         }
-        bulletViewOne?.stopAnimation()
-        bulletViewTwo?.stopAnimation()
         NotificationCenter.default.removeObserver(self)
         delegate.closeVC(true)
     }
     
     @objc func clickScreenTap(_ gestureRecognizer: UITapGestureRecognizer?) {
-        msgInputFeild.resignFirstResponder()
         guard let delegate = delegate else {
             return
         }
@@ -444,14 +284,6 @@ public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldD
             return
         }
         switch info.cmdType {
-        case .normal:
-            var msgModel = TCMsgModel()
-            msgModel.userName = info.imUserName
-            msgModel.userMsg = msgText
-            msgModel.userHeadImageUrl = info.imUserIconUrl
-            msgModel.msgType = .normal
-            bulletMsg(msgModel)
-            break
         case .memberEnterRoom:
             var msgModel = TCMsgModel()
             msgModel.userId = info.imUserId
@@ -459,11 +291,9 @@ public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldD
             msgModel.userMsg = LiveRoomLocalize("Demo.TRTC.LiveRoom.joininteraction")
             msgModel.userHeadImageUrl = info.imUserIconUrl
             msgModel.msgType = .memberEnterRoom
-            //收到新增观众消息，判断只有没在观众列表中，数量才需要增加1
             if !isAlready(inAudienceList: msgModel) {
                 topView.onUserEnterLiveRoom()
             }
-            bulletMsg(msgModel)
             break
         case .memberQuitRoom:
             var msgModel = TCMsgModel()
@@ -472,9 +302,7 @@ public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldD
             msgModel.userMsg = LiveRoomLocalize("Demo.TRTC.LiveRoom.exitinteraction")
             msgModel.userHeadImageUrl = info.imUserIconUrl
             msgModel.msgType = .memberQuitRoom
-            bulletMsg(msgModel)
             topView.onUserExitLiveRoom()
-            
             break
         case .praise:
             var msgModel = TCMsgModel()
@@ -482,8 +310,6 @@ public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldD
             msgModel.userMsg = LiveRoomLocalize("Demo.TRTC.LiveRoom.clicklike")
             msgModel.userHeadImageUrl = info.imUserIconUrl
             msgModel.msgType = .praise
-            bulletMsg(msgModel)
-            showLikeHeart()
             topView.onUserSendLikeMessage()
             break
         case .danmaMsg:
@@ -492,16 +318,12 @@ public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldD
             msgModel.userMsg = msgText
             msgModel.userHeadImageUrl = info.imUserIconUrl
             msgModel.msgType = .danmaMsg
-            
-            bulletMsg(msgModel)
-            
             break
         default:
             break
         }
     }
     
-    // MARK: - 滑动隐藏界面UI
     func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
         let touch = event.allTouches?.first
         touchBeginLocation = (touch?.location(in: self))!

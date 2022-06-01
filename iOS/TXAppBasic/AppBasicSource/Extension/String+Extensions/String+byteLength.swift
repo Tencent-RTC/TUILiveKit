@@ -3,7 +3,7 @@
 //  Alamofire
 //
 //  Created by gg on 2021/8/3.
-//
+//  Copyright © 2022 Tencent. All rights reserved.
 
 import Foundation
 

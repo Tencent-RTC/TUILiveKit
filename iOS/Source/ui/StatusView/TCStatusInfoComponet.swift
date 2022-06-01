@@ -3,7 +3,7 @@
 //  TUILiveRoom
 //
 //  Created by origin 李 on 2021/6/21.
-//
+//  Copyright © 2022 Tencent. All rights reserved.
 
 import Foundation
 import UIKit

@@ -3,7 +3,7 @@
 //  TRTCVoiceRoomOCDemo
 //
 //  Created by abyyxwang on 2020/7/7.
-//  Copyright © 2020 tencent. All rights reserved.
+//  Copyright © 2020 Tencent. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -19,29 +19,29 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, weak)id<TRTCLiveRoomDelegate> delegate;
 
-/// 初始化TRTCLiveRoom单例
+/// Initializes the `TRTCLiveRoom` singleton
 + (instancetype)shareInstance;
 
 - (instancetype)init NS_UNAVAILABLE;
 + (instancetype)new NS_UNAVAILABLE;
 
-#pragma mark - 登录登出相关
+#pragma mark - login and logout APIs
 
 //////////////////////////////////////////////////////////
 //
-//                  登录登出相关
+//                  Login and logout APIs
 //
 //////////////////////////////////////////////////////////
 
-/// 登录到组件系统
-/// - Parameters:
-///   - sdkAppID: 您可以在实时音视频控制台 > 【[应用管理](https://console.cloud.tencent.com/trtc/app)】> 应用信息中查看 SDKAppID。
-///   - userID: 当前用户的 ID，字符串类型，只允许包含英文字母（a-z 和 A-Z）、数字（0-9）、连词符（-）和下划线（\_）。
-///   - userSig:  腾讯云设计的一种安全保护签名，获取方式请参考 [如何计算 UserSig](https://cloud.tencent.com/document/product/647/17275)。
-///   - config: 全局配置信息，请在登录时初始化，登录之后不可变更。useCDNFirst 属性：用于设置观众观看方式。true 表示普通观众通过 CDN 观看，计费便宜但延时较高。false 表示普通观众通过低延时观看，计费价格介于 CDN 和连麦之间，但延迟可控制在1s以内。
-///   - callback: 登录回调，成功时 code 为0。
-/// - Note:
-///   - userSig 建议设定 7 天，能够有效规避 usersign 过期导致的 IM 收发消息失败、TRTC 连麦失败等情况
+/// Log in to the component.
+///
+/// @param sdkAppID You can view `SDKAppID` in **[Application Management](https://console.cloud.tencent.com/trtc/app)** > **Application Info** of the TRTC console.
+/// @param userID ID of the current user, which is a string that can contain only letters (a-z and A-Z), digits (0-9), hyphens (-), and underscores (\_)
+/// @param userSig Tencent Cloud's proprietary security protection signature. For more information on how to get it, see [UserSig](https://cloud.tencent.com/document/product/647/17275).
+/// @param config Global configuration information. Initialize it during login as it cannot be modified after login. `useCDNFirst`: Specifies the way audience watch live streams. Valid values: YES: Audience members watch live streams over CDNs, which is cost-efficient but has high latency; NO: Audience members watch live streams in the low latency mode, the cost of which is between that of CDN live streaming and co-anchoring, but the latency is within one second.
+/// @param callback Callback for login. The return code is `0` if login is successful.
+///
+/// @note:  We recommend setting the validity period of `userSig` to 7 days to avoid cases where message sending/receiving and co-anchoring fail due to expired `userSig`.
 - (void)loginWithSdkAppID:(int)sdkAppID
                   userID:(NSString *)userID
                  userSig:(NSString *)userSig
@@ -49,397 +49,403 @@ NS_ASSUME_NONNULL_BEGIN
                 callback:(Callback _Nullable)callback
 NS_SWIFT_NAME(login(sdkAppID:userID:userSig:config:callback:));
 
-// 退出登录
-/// - Parameter callback:  登出回调，成功时 code 为0
+/// Log out
+/// @param callback  Callback for logout. The code is `0` if logout is successful.
 - (void)logout:(Callback _Nullable)callback
 NS_SWIFT_NAME(logout(_:));
 
-/// 设置用户信息，您设置的用户信息会被存储于腾讯云 IM 云服务中。
-/// - Parameters:
-///   - name: 用户昵称
-///   - avatarURL: 用户头像地址
-///   - callback: 个人信息设置回调，成功时 code 为0
+/// Set user profiles. The information will be stored in Tencent Cloud IM.
+///
+/// @param name Username
+/// @param avatarURL Profile picture URL
+/// @param callback Callback for setting user profiles. The code is `0` if the operation is successful.
 - (void)setSelfProfileWithName:(NSString *)name
                      avatarURL:(NSString * _Nullable)avatarURL
                       callback:(Callback _Nullable)callback
 NS_SWIFT_NAME(setSelfProfile(name:avatarURL:callback:));
 
-#pragma mark - 房间管理相关
+#pragma mark - room management APIs
 //////////////////////////////////////////////////////////
 //
-//                  房间管理相关
+//                  Room management
 //
 //////////////////////////////////////////////////////////
 
-/// 创建房间（主播调用），若房间不存在，系统将自动创建一个新房间。
-/// 主播开播的正常调用流程是：
-/// 1.【主播】调用 startCameraPreview() 打开摄像头预览，此时可以调整美颜参数。
-/// 2.【主播】调用 createRoom() 创建直播间，房间创建成功与否会通过 callback 通知给主播。
-/// 3.【主播】调用 startPublish() 开始推流。
-/// - Parameters:
-///   - roomID: 房间标识，需要由您分配并进行统一管理。多个 roomid 可以汇总成一个直播间列表，腾讯云暂不提供直播间列表的管理服务，请自行管理您的直播间列表。
-///   - roomParam: TRTCCreateRoomParam | 房间信息，用于房间描述的信息，例如房间名称，封面信息等。如果房间列表和房间信息都由您自行管理，可忽略该参数。
-///   - callback:  进入房间的结果回调，成功时 code 为0。
-/// - Note:
-///   - 主播开始直播的时候调用，可重复创建自己已创建过的房间。
+/// Create a room (called by anchor). If the room does not exist, the system will create the room automatically.
+/// The process of creating a room and starting live streaming as an anchor is as follows:
+/// 1. A user calls `startCameraPreview()` to enable camera preview and set beauty filters.
+/// 2. The user calls `createRoom()` to create a room, the result of which is returned via a callback.
+/// 3. The user calls `starPublish()` to push streams.
+///
+/// @param roomID The ID of the room. You need to assign and manage the IDs in a centralized manner. Multiple `roomID` values can be aggregated into a live room list. Currently, Tencent Cloud does not provide list management services. You need to manage your own room list.
+/// @param roomParam Room information, such as room name and cover information. If both the room list and room information are managed by yourself, you can ignore this parameter.
+/// @param callback Callback for room entry. The code is `0` if room entry is successful.
+///
+/// @note This API is called by an anchor to start live streaming. An anchor can create a room he or she created before.
 - (void)createRoomWithRoomID:(UInt32)roomID
                    roomParam:(TRTCCreateRoomParam *)roomParam
                     callback:(Callback _Nullable)callback
 NS_SWIFT_NAME(createRoom(roomID:roomParam:callback:));
 
-/// 销毁房间（主播调用）
-/// 主播在创建房间后，可以调用这个函数来销毁房间。
-/// - Parameter callback: 销毁房间的结果回调，成功时 code 为0。
-/// - Note:
-///   - 主播在创建房间后，可以调用该函数来销毁房间。
+/// Terminate a room (called by anchor)
+/// After creating a room, an anchor can call this API to terminate it.
+/// @param callback Callback for room termination. The code is `0` if the operation is successful.
+///
+/// @note After creating a room, an anchor can call this API to terminate it
 - (void)destroyRoom:(Callback _Nullable)callback
 NS_SWIFT_NAME(destroyRoom(callback:));
 
-/// 进入房间（观众调用）
-/// 观众观看直播的正常调用流程是：
-/// 1.【观众】向您的服务端获取最新的直播间列表，其中有多个直播间的 roomid 和房间信息。
-/// 2.【观众】观众选择一个直播间以后，调用 enterRoom() 进入该房间。
-/// 3.【观众】如果您的服务器所管理的房间列表中包含每一个房间的主播 userId，则可以直接在 enterRoom() 成功后调用 startPlay(userId) 即可播放主播的画面。
-/// 如果您管理的房间列表只有 roomid 也没有关系，观众在 enterRoom() 成功后很快会收到来自 TRTCLiveRoomDelegate 中的 onAnchorEnter(userId) 回调。
-/// 此时使用回调中的 userId 调用 startPlay(userId) 即可播放主播的画面。
-/// - Parameters:
-///   - roomID: 房间标识。
-///   - callback: 进入房间的结果回调，成功时 code 为0。
-/// - Note:
-///   - 观众进入直播房间的时候调用
-///   - 主播不可调用这个接口进入自己已创建的房间，而要用createRoom
+/// Enter a room (called by audience)
+/// The process of entering a room and starting playback as an audience member is as follows:
+/// 1. A user gets the latest room list from your server. The list may contain the `roomID` and other information of multiple rooms.
+/// 2. The user selects a room and calls `enterRoom()` to enter the room.
+/// 3. If the room list managed by your server contains the `userId` of the anchor of each room, audience members can call `startPlay(userId)` to play back the anchor's video after entering the room (`enterRoom()`).
+/// If the room list contains `roomid` only, an audience member will receive the `onAnchorEnter(userId)` callback from `TRTCLiveRoomDelegate` upon room entry (`enterRoom()`).
+/// The audience member can then call `startPlay(userId)` with the `userId` obtained from the callback to play back the anchor's video.
+///
+/// @param roomID ROOM ID
+/// @param callback Callback for room entry. The code is `0` if room entry is successful.
+///
+/// @note
+///   This API is called by a user to enter a room.
+///   An anchor cannot use this API to enter a room he or she created, but must use createRoom instead.
 - (void)enterRoomWithRoomID:(UInt32)roomID
                    callback:(Callback _Nullable)callback
 NS_SWIFT_NAME(enterRoom(roomID:callback:));
 
-/// 退出房间（观众调用）
-/// - Parameter callback: 退出房间的结果回调，成功时 code 为0。
-/// - Note:
-///   - 观众离开直播房间的时候调用
-///   - 主播不可调用这个接口离开房间
+/// Leave a room (called by audience)
+/// @param callback Callback for room exit. The code is `0` if the operation is successful.
+///
+/// @note
+///   This API is called by an audience member to leave a room.
+///   An anchor cannot use this API to leave a room.
 
 - (void)exitRoom:(Callback _Nullable)callback
 NS_SWIFT_NAME(exitRoom(callback:));
 
-/// 获取房间列表的详细信息
-/// 其中的信息是主播在创建 createRoom() 时通过 roomInfo 设置进来的，如果房间列表和房间信息都由您自行管理，可忽略该函数。
-/// - Parameter roomIDs: 房间号列表
-/// - Parameter callback: 房间详细信息回调
-- (void)getRoomInfosWithRoomIDs:(NSArray<NSNumber *> *)roomIDs
+/// Get room details
+/// The information is provided by anchors via the `roomInfo` parameter when they call `createRoom()`. You don’t need this API if both the room list and room information are managed by yourself.
+/// @param roomIDs The list of room IDs.
+/// @param callback Callback of room details.
+- (void)getRoomInfosWithRoomIDs:(NSArray<NSString *> *)roomIDs
                        callback:(RoomInfoCallback _Nullable)callback
 NS_SWIFT_NAME(getRoomInfos(roomIDs:callback:));
 
-/// 获取房间内所有的主播列表，enterRoom() 成功后调用才有效。
-/// - Parameter callback: 用户详细信息回调
+/// Get the anchors and co-anchoring users in a room. This API takes effect only if it is called after `enterRoom()`.
+/// @param callback Callback of user details.
 - (void)getAnchorList:(UserListCallback _Nullable)callback
 NS_SWIFT_NAME(getAnchorList(callback:));
 
-/// 获取房间内所有的观众信息，enterRoom() 成功后调用才有效。
-/// - Parameter callback: 用户详细信息回调
+/// Get the information of all audience members in a room. This API takes effect only if it is called after `enterRoom()`.
+/// @param callback Callback of user details.
 - (void)getAudienceList:(UserListCallback _Nullable)callback
 NS_SWIFT_NAME(getAudienceList(callback:));
 
-#pragma mark - 推拉流相关
+#pragma mark - stream pull/push APIs
 //////////////////////////////////////////////////////////
 //
-//                  推拉流相关
+//                  Stream pull/push APIs
 //
 //////////////////////////////////////////////////////////
 
-/// 开启本地视频的预览画面
-/// - Parameters:
-///   - frontCamera: true：前置摄像头；false：后置摄像头。
-///   - view: 承载视频画面的控件。
-///   - callback: 操作回调。
+/// Enable local video preview
+///
+/// @param frontCamera `YES`: Front camera; `NO`: Rear camera
+/// @param view The control that loads video images.
+/// @param callback Callback for the operation.
 - (void)startCameraPreviewWithFrontCamera:(BOOL)frontCamera
                                      view:(UIView *)view
                                  callback:(Callback _Nullable)callback
 NS_SWIFT_NAME(startCameraPreview(frontCamera:view:callback:));
 
-/// 停止本地视频采集及预览
+/// Stop local video capturing and preview
 - (void)stopCameraPreview;
 
-/// 开始直播（推流），适用于如下两种场景：
-/// 1. 主播开播的时候调用
-/// 2. 观众开始连麦时调用
-/// - Parameters:
-///   - streamID: 用于绑定直播 CDN 的 streamId，如果您希望您的观众通过直播 CDN 进行观看，需要指定当前主播的直播 streamId。
-///   - callback: 操作回调
+/// Start live streaming (push streams). This API can be called in the following scenarios:
+/// 1. An anchor starts live streaming.
+/// 2. An audience member user starts co-anchoring.
+///
+/// @param streamID The `streamID` used to bind live streaming CDNs. You need to set it to the `streamID` of the anchor if you want audience to play the anchor’s stream via CDNs.
+/// @param callback Callback for the operation
 - (void)startPublishWithStreamID:(NSString *)streamID
                         callback:(Callback _Nullable)callback
 NS_SWIFT_NAME(startPublish(streamID:callback:));
 
-/// 停止直播（推流），适用于如下两种场景：
-/// 1. 主播结束直播时调用
-/// 2. 观众结束连麦时调用
-/// - Parameter callback: 操作回调。
+/// Stop live streaming (pushing streams). This API can be called in the following scenarios:
+/// 1. An anchor ends live streaming.
+/// 2. An audience member ends co-anchoring.
+/// @param callback Callback for the operation.
 - (void)stopPublish:(Callback _Nullable)callback
 NS_SWIFT_NAME(stopPublish(callback:));
 
-/// 播放远端视频画面，可以在普通观看和连麦场景中调用
-/// 【普通观看场景】
-/// 1. 如果您的服务器所管理的房间列表中包含每一个房间的主播 userId，则可以直接在 enterRoom() 成功后调用 startPlay(userId) 即可播放主播的画面。
-/// 2. 如果您管理的房间列表只有 roomid 也没有关系，观众在 enterRoom() 成功后很快会收到来自 TRTCLiveRoomDelegate 中的 onAnchorEnter(userId) 回调。
-/// 此时使用回调中的 userId 调用 startPlay(userId) 即可播放主播的画面。
-/// 【直播连麦场景】
-/// 发起连麦后，主播会收到来自 TRTCLiveRoomDelegate 中的 onAnchorEnter(userId) 回调，此时使用回调中的 userId 调用 startPlay(userId) 即可播放连麦画面。
-/// - Parameters:
-///   - userID: 需要观看的用户 ID。
-///   - view: 承载视频画面的 view 控件。
-///   - callback: 操作回调。
+/// Play a remote video. This API can be called in common playback and co-anchoring scenarios.
+/// Common playback scenario
+/// 1. If the room list managed by your server contains the `userId` of the anchor of each room, audience members can call `startPlay(userId)` to play back the anchor's video after entering the room (`enterRoom()`).
+/// 2. If the room list contains `roomid` only, audience members will receive the `onAnchorEnter(userId)` callback from `TRTCLiveRoomDelegate` upon room entry (`enterRoom()`).
+/// The audience member can then call `startPlay(userId)` with the `userId` obtained from the callback to play back the anchor's video.
+/// Co-anchoring scenario
+/// After co-anchoring is initiated, the anchor will receive the `onAnchorEnter(userId)` callback from `TRTCLiveRoomDelegate` and can call `startPlay(userId)` with the `userId` returned by the callback to play back the co-anchoring video.
+///
+/// @param userID The ID of the user whose video is to be played.
+/// @param view The control that loads video images.
+/// @param callback Callback for the operation.
 - (void)startPlayWithUserID:(NSString *)userID
                        view:(UIView *)view
                    callback:(Callback _Nullable)callback
 NS_SWIFT_NAME(startPlay(userID:view:callback:));
 
-/// 停止渲染远端视频画面
-/// - Parameters:
-///   - userID: 对方的用户信息。
-///   - callback: 操作回调。
-/// - Note:
-///   - 在 onAnchorExit 回调时，调用这个接口
+/// Stop rendering a remote video
+///
+/// @param userID The ID of the remote user.
+/// @param callback Callback for the operation.
+///
+/// @note Call this API after receiving the `onAnchorExit` callback.
 - (void)stopPlayWithUserID:(NSString *)userID
                   callback:(Callback _Nullable)callback
 NS_SWIFT_NAME(stopPlay(userID:callback:));
 
-#pragma mark - 观众连麦相关
+#pragma mark - co-anchoring APIs
 //////////////////////////////////////////////////////////
 //
-//                  观众连麦相关
+//                  Co-anchoring APIs
 //
 //////////////////////////////////////////////////////////
 
 /**
-    * 观众请求连麦
+    * Sends a co-anchoring request (called by audience)
     *
-    * 主播和观众的连麦流程可以简单描述为如下几个步骤：
-    * 1. 【观众】调用 requestJoinAnchor() 向主播发起连麦请求。
-    * 2. 【主播】会收到 TRTCLiveRoomDelegate onRequestJoinAnchor 的回调通知。
-    * 3. 【主播】调用 responseJoinAnchor() 确定是否接受观众的连麦请求。
-    * 4. 【观众】会收到 responseCallback  回调通知，可以得知请求是否被同意。
-    * 5. 【观众】如果请求被同意，则调用 startCameraPreview() 开启本地摄像头。
-    * 6. 【观众】然后调用 startPublish() 正式进入推流状态。
-    * 7. 【主播】一旦观众进入连麦状态，主播就会收到 TRTCLiveRoomDelegate onAnchorEnter 通知。
-    * 8. 【主播】主播调用 startPlay() 就可以看到连麦观众的视频画面。
-    * 9. 【观众】如果直播间里已经有其他观众正在跟主播进行连麦，那么新加入的这位连麦观众也会收到 onAnchorEnter() 通知，调用 startPlay() 播放其他连麦者的视频画面。
+    * The process for co-anchoring between the anchor and an audience member is as follows:
+    * 1. An **audience member** calls `requestJoinAnchor()` to send a co-anchoring request to the anchor.
+    * 2. The **anchor** receives the `onRequestJoinAnchor` callback notification from `TRTCLiveRoomDelegate`.
+    * 3. The **anchor** calls `responseJoinAnchor()` to accept or reject the co-anchoring request.
+    * 4. The **audience member** receives the `responseCallback` callback, which indicates whether the request is accepted.
+    * 5. If the request is accepted, the **audience member** calls `startCameraPreview()` to enable local camera preview.
+    * 6. The **audience member** calls `startPublish()` to push streams.
+    * 7. Once the audience member starts co-anchoring, the **anchor** will receive the `onAnchorEnter` callback from `TRTCLiveRoomDelegate`.
+    * 8. The **anchor** calls `startPlay()` to play back the co-anchoring user's video.
+    * 9. If there are other audience members co-anchoring with the anchor in the room, the new co-anchoring audience member will receive the `onAnchorEnter()` callback and can call `startPlay` to play other co-anchoring users' videos.
 * */
    
-/// 观众端请求连麦
-/// - Parameters:
-///   - reason: 连麦请求原因。
-///   - timeout: 超时时间
-///   - responseCallback: 请求连麦的回调。
-/// - Note: 观众发起请求后，主播端会收到`onRequestJoinAnchor`回调
+/// Send a co-anchoring request
+///
+/// @param reason Reason for co-anchoring
+/// @param timeout Timeout period
+/// @param responseCallback Callback of the response
+///
+/// @note After an audience member sends a co-anchoring request, the anchor will receive the `onRequestJoinAnchor` callback.
 - (void)requestJoinAnchor:(NSString *)reason
                   timeout:(int)timeout
          responseCallback:(ResponseCallback _Nullable)responseCallback
 NS_SWIFT_NAME(requestJoinAnchor(reason:timeout:responseCallback:));
 
-/// 观众端取消请求连麦
-/// - Parameters:
-///   - reason: 连麦请求原因。
-///   - responseCallback: 请求连麦的回调。
-/// - Note: 观众取消请求后，主播端会收到`onCancelRequestJoinAnchor`回调
+/// Cancels a co-anchoring request (called by audience)
+///
+/// @param reason Reason for co-anchoring
+/// @param responseCallback Callback of the response
+/// @note After an audience member cancels the co-anchoring request, the anchor will receive the `onCancelRequestJoinAnchor` callback.
 - (void)cancelRequestJoinAnchor:(NSString *)reason
          responseCallback:(Callback _Nullable)responseCallback
 NS_SWIFT_NAME(cancelJoinAnchor(reason:responseCallback:));
 
-/// 主播回复观众连麦请求
-/// - Parameters:
-///   - user: 观众 ID。
-///   - agree: true：同意；false：拒绝。
-///   - reason: 同意/拒绝连麦的原因描述。
-/// - Note: 主播回复后，观众端会收到`requestJoinAnchor`传入的`responseCallback`回调
+/// Respond to a co-anchoring request
+///
+/// @param userID User ID.
+/// @param agree `YES`: Accept; `NO`: Reject
+/// @param reason Reason for accepting/rejecting the request
+/// @note After the anchor responds to the request, the audience will receive the `responseCallback` passed in to `requestJoinAnchor`.
 - (void)responseJoinAnchor:(NSString *)userID
                      agree:(BOOL)agree
                     reason:(NSString *)reason
 NS_SWIFT_NAME(responseJoinAnchor(userID:agree:reason:));
 
-/// 主播踢除连麦观众
-/// - Parameters:
-///   - userID: 连麦观众 ID。
-///   - callback: 操作回调。
-/// - Note: 主播调用此接口踢除连麦观众后，被踢连麦观众会收到 trtcLiveRoomOnKickoutJoinAnchor() 回调通知
+/// Remove a user from co-anchoring
+///
+/// @param userID ID of the user to remove from co-anchoring
+/// @param callback Callback for the operation
+/// @note After the anchor calls this API to remove a user from co-anchoring, the user will receive the `trtcLiveRoomOnKickoutJoinAnchor()` callback.
 - (void)kickoutJoinAnchor:(NSString *)userID
                  callback:(Callback _Nullable)callback
 NS_SWIFT_NAME(kickoutJoinAnchor(userID:callback:));
 
-#pragma mark - 主播 PK 相关
+#pragma mark - anchor cross-room communication APIs
 
 //////////////////////////////////////////////////////////
 //
-//                  主播 PK 相关
+//                  Anchor cross-room communication APIs
 //
 //////////////////////////////////////////////////////////
 
 /**
-    * 请求跨房 PK
+    * Requests cross-room communication
     *
-    * 主播和主播之间可以跨房间 PK，两个正在直播中的主播 A 和 B，他们之间的跨房 PK 流程如下：
-    * 1. 【主播 A】调用 requestRoomPK() 向主播 B 发起连麦请求。
-    * 2. 【主播 B】会收到 TRTCLiveRoomDelegate onRequestRoomPK 回调通知。
-    * 3. 【主播 B】调用 responseRoomPK() 确定是否接受主播 A 的 PK 请求。
-    * 4. 【主播 B】如果接受了主播 A 的要求，等待 TRTCLiveRoomDelegate onAnchorEnter 通知，然后调用 startPlay() 来显示主播 A 的视频画面。
-    * 5. 【主播 A】会收到 responseCallback 回调通知，可以得知请求是否被同意。
-    * 6. 【主播 A】如果请求被同意，等待 TRTCLiveRoomDelegate onAnchorEnter 通知，然后调用 startPlay() 来显示主播 B 的视频画面
+    * Two anchors in different rooms can communicate with each other. The process is as follows:
+    * 1. **Anchor A** calls `requestRoomPK()` to send a co-anchoring request to anchor B.
+    * 2. **Anchor B** receives the `onRequestRoomPK` callback from `TRTCLiveRoomDelegate`.
+    * 3. **Anchor B** calls `responseRoomPK()` to respond to the communication request.
+    * 4. After accepting the request, **anchor B** waits for the `onAnchorEnter` callback from `TRTCLiveRoomDelegate` and calls `startPlay()` to play back anchor A's video.
+    * 5. **Anchor A** receives the `responseCallback` callback, which indicates whether the request is accepted.
+    * 6. If the request is accepted, **anchor A** waits for the `onAnchorEnter` callback from `TRTCLiveRoomDelegate` and calls `startPlay()` to play back anchor B's video.
     */
 
-/// 主播请求跨房 PK
-/// - Parameters:
-///   - roomID: 被邀约房间 ID。
-///   - userID: 被邀约主播 ID。
-///   - timeout: 超时时间
-///   - responseCallback: 请求跨房 PK 的结果回调。
-/// - Note: 发起请求后，对方主播会收到 `onRequestRoomPK` 回调
+/// Request cross-room communication
+///
+/// @param roomID Room ID of the anchor to invite
+/// @param userID User ID of the anchor to invite
+/// @param timeout Timeout period
+/// @param responseCallback Callback of the response
+/// @note After a cross-room communication request is sent, the invited anchor will receive the `onRequestRoomPK` callback.
 - (void)requestRoomPKWithRoomID:(UInt32)roomID
                          userID:(NSString *)userID
                         timeout:(int)timeout
                responseCallback:(ResponseCallback _Nullable)responseCallback
 NS_SWIFT_NAME(requestRoomPK(roomID:userID:timeout:responseCallback:));
-/// 响应跨房 PK 请求
-/// 主播响应其他房间主播的 PK 请求。
-/// - Parameters:
-///   - user: 发起 PK 请求的主播 ID
-///   - agree: true：同意；false：拒绝
-///   - reason: 同意/拒绝 PK 的原因描述
-/// - Note: 主播回复后，对方主播会收到 `requestRoomPK` 传入的 `responseCallback` 回调
+/// Respond to a cross-room communication request
+/// Respond to a communication request from another anchor
+///
+/// @param userID User ID of the request sending anchor
+/// @param agree `YES`: Accept; `NO`: Reject
+/// @param reason Reason for accepting/rejecting the request
+///
+/// @note After the anchor responds to the request, the anchor sending the request will receive the `responseCallback` passed in to `requestRoomPK`.
 - (void)responseRoomPKWithUserID:(NSString *)userID
                            agree:(BOOL)agree
                           reason:(NSString *)reason
 NS_SWIFT_NAME(responseRoomPK(userID:agree:reason:));
 
-/// 主播取消跨房PK的请求
-/// - Parameters:
-///   - roomID: 被邀约房间 ID。
-///   - userID: 被邀约主播 ID。
-///   - responseCallback: 请求跨房 PK 的结果回调。
-/// - Note: 发起请求后，对方主播会收到 `onCancelRequestRoomPK` 回调
+/// Cancels the request for cross-room communication
+///
+/// @param roomID Room ID of the anchor to invite
+/// @param userID User ID of the anchor to invite
+/// @param responseCallback Callback of the response
+///
+/// @note After a cross-room communication request is sent, the invited anchor will receive the `onCancelRequestRoomPK` callback.
 - (void)cancelRequestRoomPKWithRoomID:(UInt32)roomID
                         userID:(NSString *)userID
               responseCallback:(Callback _Nullable)responseCallback
 NS_SWIFT_NAME(cancelRoomPK(roomID:userID:responseCallback:));
 
-/// 主播退出跨房 PK
-/// - Parameter callback: 退出跨房 PK 的结果回调
-/// - Note: 当两个主播中的任何一个退出跨房 PK 状态后，另一个主播会收到 `trtcLiveRoomOnQuitRoomPK` 回调通知。
+/// End cross-room communication
+/// @param callback Callback for ending cross-room communication
+///
+/// @note If either anchor ends cross-room communication, the other anchor will receive the `trtcLiveRoomOnQuitRoomPK` callback.
 - (void)quitRoomPK:(Callback _Nullable)callback
 NS_SWIFT_NAME(quitRoomPK(callback:));
 
-#pragma mark - 音视频控制相关
+#pragma mark - Audio/Video control APIs
 //////////////////////////////////////////////////////////
 //
-//                  音视频控制相关
+//                  Audio/Video control APIs
 //
 //////////////////////////////////////////////////////////
 
-/// 切换前后摄像头
+/// Switch between the front and rear cameras
 - (void)switchCamera;
 
-/// 设置是否镜像展示
-/// - Parameter isMirror: 开启/关闭镜像。
+/// Specify whether to mirror video
+/// @param isMirror Enable/Disable mirroring
 - (void)setMirror:(BOOL)isMirror
 NS_SWIFT_NAME(setMirror(_:));
 
-/// 静音本地音频。
-/// - Parameter isMuted: true：开启静音；false：关闭静音。
+/// Mute or unmute the local user
+/// @param isMuted `YES`: Mute; `NO`: Unmute
 - (void)muteLocalAudio:(BOOL)isMuted
 NS_SWIFT_NAME(muteLocalAudio(_:));
 
-/// 静音远端音频
-/// - Parameters:
-///   - userID: 远端的用户ID。
-///   - isMuted: true：开启静音；false：关闭静音。
+/// Mute or unmute a remote user
+///
+/// @param userID: ID of the remote user
+/// @param isMuted `YES`: Mute; `NO`: Unmute
 - (void)muteRemoteAudioWithUserID:(NSString *)userID isMuted:(BOOL)isMuted
 NS_SWIFT_NAME(muteRemoteAudio(userID:isMuted:));
 
-/// 静音所有远端音频
-/// - Parameter isMuted: true：开启静音；false：关闭静音。
+/// Mute or unmute all remote users
+/// @param isMuted `YES`: Mute; `NO`: Unmute
 - (void)muteAllRemoteAudio:(BOOL)isMuted
 NS_SWIFT_NAME(muteAllRemoteAudio(_:));
 
-/// 设置音频质量，支持的值为1 2 3，代表低中高
-/// - Parameter quality 音频质量
+/// Set audio quality. Valid values: `1` (low), `2` (average), `3` (high)
+/// @param quality Audio quality
 - (void)setAudioQuality:(NSInteger)quality
 NS_SWIFT_NAME(setAudioiQuality(_:));
 
-/// 设置分辨率
-/// - resolution 视频分辨率
+/// Sets the resolution
+/// @param resolution Video resolution
 - (void)setVideoResolution:(TRTCVideoResolution)resolution
 NS_SWIFT_NAME(setVideo(resolution:));
 
-/// 设置帧率
-/// - fps 帧率数
+/// Sets the frame rate
+/// @param fps Frame rate in FPS
 - (void)setVideoFps:(int)fps
 NS_SWIFT_NAME(setVideo(fps:));
 
-/// 设置码率
-/// - bitrate 码率，单位：kbps
+/// Sets the bitrate
+/// @param bitrate Bitrate in Kbps
 - (void)setVideoBitrate:(int)bitrate
 NS_SWIFT_NAME(setVideo(bitrate:));
 
-/// 设置本地画面镜像预览模式
-/// - type 本地视频预览镜像类型
+/// Sets the mirror mode for the local preview
+/// @param type Mirror type for local video preview
 - (void)setLocalViewMirror:(TRTCLocalVideoMirrorType)type
 NS_SWIFT_NAME(setLocalViewMirror(type:));
 
 
-#pragma mark - 获取音效管理对象
+#pragma mark - Gets the audio effect management object
 
-/// 获取音效管理对象
+/// Get the audio effect management object
 - (TXAudioEffectManager *)getAudioEffectManager;
 
-#pragma mark - 美颜滤镜相关
+#pragma mark - Beauty filter APIs
 //////////////////////////////////////////////////////////
 //
-//                  美颜滤镜相关
+//                  Beauty filter APIs
 //
 //////////////////////////////////////////////////////////
 
-/* 获取美颜管理对象 TXBeautyManager
+/* Get the beauty filter management object TXBeautyManager
 *
-* 通过美颜管理，您可以使用以下功能：
-* - 设置"美颜风格"、“美白”、“红润”、“大眼”、“瘦脸”、“V脸”、“下巴”、“短脸”、“小鼻”、“亮眼”、“白牙”、“祛眼袋”、“祛皱纹”、“祛法令纹”等美容效果。
-* - 调整“发际线”、“眼间距”、“眼角”、“嘴形”、“鼻翼”、“鼻子位置”、“嘴唇厚度”、“脸型”
-* - 设置人脸挂件（素材）等动态效果
-* - 添加美妆
-* - 进行手势识别
+* You can do the following using TXBeautyManager:
+* - Set the beauty filter style and apply effects including skin brightening, rosy skin, eye enlarging, face slimming, chin slimming, chin lengthening/shortening, face shortening, nose narrowing, eye brightening, teeth whitening, eye bag removal, wrinkle removal, and smile line removal.
+* - Adjust the hairline, eye spacing, eye corners, lip shape, nose wings, nose position, lip thickness, and face shape.
+* - Apply animated effects such as face widgets (materials).
+* - Add makeup effects.
+* - Recognize gestures.
 */
 - (TXBeautyManager *)getBeautyManager;
 
-//MARK: - 弹幕聊天相关
+//MARK: - on-screen commenting APIs
 
 //////////////////////////////////////////////////////////
 //
-//                  弹幕聊天相关
+//                  On-screen commenting APIs
 //
 //////////////////////////////////////////////////////////
 
-/// 发送文本消息，房间内所有成员都可见
-/// - Parameters:
-///   - message: 文本消息。
-///   - callback: 发送回调。
+/// Send a chat message that can be seen by all users in a room
+///
+/// @param message Chat message
+/// @param callback Callback for message sending
 - (void)sendRoomTextMsg:(NSString *)message callback:(Callback _Nullable)callback
 NS_SWIFT_NAME(sendRoomTextMsg(message:callback:));
 
-/// 发送自定义消息
-/// - Parameters:
-///   - command: 命令字，由开发者自定义，主要用于区分不同消息类型
-///   - message: 本文消息。
-///   - callback: 发送回调。
+/// Send a custom message
+///
+/// @param command custom command word used to distinguish between different message types
+/// @param message Chat message
+/// @param callback Callback for message sending
 - (void)sendRoomCustomMsgWithCommand:(NSString *)cmd message:(NSString *)message callback:(Callback _Nullable)callback
 NS_SWIFT_NAME(sendRoomCustomMsg(cmd:message:callback:));
 
-#pragma mark - 调试相关
-//MARK: - 调试相关
+#pragma mark - debugging APIs
+//MARK: - debugging APIs
 
 //////////////////////////////////////////////////////////
 //
-//                  调试相关
+//                  Debugging APIs
 //
 //////////////////////////////////////////////////////////
 
-/// 是否在界面中展示debug信息
-/// - Parameter isShow: 开启/关闭 Debug 信息显示。
+/// Specify whether to display debugging information on the UI
+/// @param isShow Show/Hide debugging information
 - (void)showVideoDebugLog:(BOOL)isShow
 NS_SWIFT_NAME(showVideoDebugLog(_:));
 

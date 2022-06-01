@@ -3,7 +3,7 @@
 //  Pods
 //
 //  Created by abyyxwang on 2021/5/6.
-//
+//  Copyright © 2022 Tencent. All rights reserved.
 
 #import <Foundation/Foundation.h>
 
