@@ -7,6 +7,7 @@ android {
     defaultConfig {
         minSdkVersion 17
         targetSdkVersion 26
+        buildConfigField("boolean", "RTCube_APPSTORE", "${RTCube_AppStore}")
     }
 
     buildTypes {
