@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="tuiaudioeffect_white">#FFFFFF</color>
+    <color name="tuiaudioeffect_white_alpha">#66FFFFFF</color>
+    <color name="tuiaudioeffect_black">#000000</color>
+    <color name="tuiaudioeffect_color_blue">#006EFF</color>
+    <color name="tuiaudioeffect_dark_black">#666666</color>
+    <color name="tuiaudioeffect_color_bg_dialog">@android:color/transparent</color>
+    <color name="tuiaudioeffect_color_bg_grey">#FFECF1F8</color>
+</resources>

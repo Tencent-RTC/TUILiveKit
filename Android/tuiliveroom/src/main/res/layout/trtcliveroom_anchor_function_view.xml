@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true">
+
+    <include
+        android:id="@+id/layout_live_pusher_info"
+        layout="@layout/trtcliveroom_include_live_pusher_info"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_close"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="15dp"
+        android:background="@drawable/trtcliveroom_exit_room"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_switch_camera"
+        android:layout_width="@dimen/trtcliveroom_btn_size"
+        android:layout_height="@dimen/trtcliveroom_btn_size"
+        android:layout_marginBottom="19dp"
+        android:background="@drawable/trtcliveroom_icon_switch_camera"
+        app:layout_constraintEnd_toStartOf="@+id/btn_request_pk"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/fl_barrage_anchor"
+        app:layout_constraintTop_toTopOf="@+id/btn_request_pk" />
+
+    <RelativeLayout
+        android:id="@+id/fl_barrage_anchor"
+        android:layout_width="@dimen/trtcliveroom_btn_size"
+        android:layout_height="@dimen/trtcliveroom_btn_size"
+        android:layout_marginBottom="19dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_switch_camera"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btn_switch_camera" />
+
+    <Button
+        android:id="@+id/btn_request_pk"
+        android:layout_width="@dimen/trtcliveroom_btn_size"
+        android:layout_height="@dimen/trtcliveroom_btn_size"
+        android:layout_marginBottom="19dp"
+        android:background="@drawable/trtcliveroom_pk_start"
+        app:layout_constraintEnd_toStartOf="@+id/fl_beauty"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btn_switch_camera"
+        app:layout_constraintTop_toTopOf="@+id/fl_beauty" />
+
+
+    <RelativeLayout
+        android:id="@+id/fl_beauty"
+        android:layout_width="@dimen/trtcliveroom_btn_size"
+        android:layout_height="@dimen/trtcliveroom_btn_size"
+        android:layout_marginBottom="19dp"
+        app:layout_constraintEnd_toStartOf="@+id/fl_audio_effect"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btn_request_pk"
+        app:layout_constraintTop_toTopOf="@+id/fl_audio_effect" />
+
+    <RelativeLayout
+        android:id="@+id/fl_audio_effect"
+        android:layout_width="@dimen/trtcliveroom_btn_size"
+        android:layout_height="@dimen/trtcliveroom_btn_size"
+        android:layout_marginBottom="19dp"
+        app:layout_constraintEnd_toStartOf="@+id/btn_more_settings"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/fl_beauty"
+        app:layout_constraintTop_toTopOf="@+id/btn_more_settings" />
+
+    <Button
+        android:id="@+id/btn_more_settings"
+        android:layout_width="@dimen/trtcliveroom_btn_size"
+        android:layout_height="@dimen/trtcliveroom_btn_size"
+        android:layout_marginBottom="19dp"
+        android:background="@drawable/trtcliveroom_ic_more"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@id/fl_audio_effect" />
+
+    <RelativeLayout
+        android:id="@+id/fl_barrage_show"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/fl_barrage_anchor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/gl_horizontal_function" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_horizontal_function"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <RelativeLayout
+        android:id="@+id/fl_like_show"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        app:layout_constraintBottom_toTopOf="@id/btn_more_settings"
+        app:layout_constraintEnd_toEndOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/btn_switch_cam_before_live"
+        android:layout_width="@dimen/trtcliveroom_btn_size"
+        android:layout_height="@dimen/trtcliveroom_btn_size"
+        android:background="@drawable/trtcliveroom_icon_switch_camera"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_start_room"
+        app:layout_constraintEnd_toStartOf="@+id/btn_start_room"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btn_start_room" />
+
+    <Button
+        android:id="@+id/btn_start_room"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="25dp"
+        android:background="@drawable/trtcliveroom_bg_start_live_button_border"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:text="@string/trtcliveroom_btn_start_live"
+        android:textColor="@color/trtcliveroom_color_white"
+        android:textSize="@dimen/trtcliveroom_text_size_large"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/fl_beauty_before_live"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btn_switch_cam_before_live" />
+
+    <RelativeLayout
+        android:id="@+id/fl_beauty_before_live"
+        android:layout_width="@dimen/trtcliveroom_btn_size"
+        android:layout_height="@dimen/trtcliveroom_btn_size"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_start_room"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btn_start_room"
+        app:layout_constraintTop_toTopOf="@+id/btn_start_room" />
+
+    <Button
+        android:id="@+id/btn_close_before_live"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="15dp"
+        android:background="@drawable/trtcliveroom_btn_close"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

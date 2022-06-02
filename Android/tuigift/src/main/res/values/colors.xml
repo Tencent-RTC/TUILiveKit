@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="tuigift_white">#ffffff</color>
+    <color name="tuigift_gift_dark_orange">#FF8C00</color>
+    <color name="tuigift_color_bg_main_show">#80000000</color>
+    <color name="tuigift_color_bg_dialog">#66000000</color>
+    <color name="tuigift_color_bg_grey">#FFECF1F8</color>
+</resources>

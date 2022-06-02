@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="tuigift_text_size_large">18sp</dimen>
+    <dimen name="tuigift_text_size_middle">14sp</dimen>
+    <dimen name="tuigift_small_image_size">30dp</dimen>
+    <dimen name="tuigift_small_image_left_margin">20dp</dimen>
+    <dimen name="tuigift_large_image_left_margin">10dp</dimen>
+    <dimen name="tuigift_btn_size">52dp</dimen>
+    <dimen name="tuigift_heart_anim_bezier_x_rand">50.0dp</dimen>
+    <dimen name="tuigift_heart_anim_length">100.0dp</dimen>
+    <dimen name="tuigift_heart_anim_length_rand">350.0dp</dimen>
+    <dimen name="tuigift_space_select_pk_rv">20dp</dimen>
+    <dimen name="tuigift_item_title_size">16sp</dimen>
+
+    <integer name="tuigift_heart_anim_duration">1000</integer>
+    <integer name="tuigift_heart_anim_bezier_factor">6</integer>
+</resources>

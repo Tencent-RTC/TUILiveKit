@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="tuiaudioeffect_bgm_title">Background music</string>
+    <string name="tuiaudioeffect_panel_close">Close</string>
+    <string name="tuiaudioeffect_panel_select_song">Select song</string>
+
+    <string name="tuiaudioeffect_bg_music_positive_happy">Happy</string>
+    <string name="tuiaudioeffect_bg_music_sad_cinematic_piano">Sad Cinematic Piano</string>
+    <string name="tuiaudioeffect_bg_music_wonder_world">Wonder World</string>
+
+    <string name="tuiaudioeffect_title">Audio Effect Settings</string>
+
+    <string name="tuiaudioeffect_panel_music_volume">Music volume level</string>
+    <string name="tuiaudioeffect_panel_mic_volume">Voice volume level</string>
+    <string name="tuiaudioeffect_panel_music_pitch">Music tone</string>
+    <string name="tuiaudioeffect_panel_changer">Voice changing</string>
+    <string name="tuiaudioeffect_panel_reverb">Reverb</string>
+
+    <string name="tuiaudioeffect_changetype_original">Original</string>
+    <string name="tuiaudioeffect_changetype_child">Naughty boy</string>
+    <string name="tuiaudioeffect_changetype_luoli">Little girl</string>
+    <string name="tuiaudioeffect_changetype_dashu">Middle-aged man</string>
+    <string name="tuiaudioeffect_changetype_metal">Heavy metal</string>
+    <string name="tuiaudioeffect_changetype_sick">Being cold</string>
+    <string name="tuiaudioeffect_changetype_foreign">Non-native speaker</string>
+    <string name="tuiaudioeffect_changetype_kunsou">Furious animal</string>
+    <string name="tuiaudioeffect_changetype_feizai">Fat otaku</string>
+    <string name="tuiaudioeffect_changetype_dianliu">Strong electric current</string>
+    <string name="tuiaudioeffect_changetype_machine">Robot</string>
+    <string name="tuiaudioeffect_changetype_kongling">Ethereal voice</string>
+
+    <string name="tuiaudioeffect_reverbtype_origin">No effect</string>
+    <string name="tuiaudioeffect_reverbtype_ktv">Karaoke room</string>
+    <string name="tuiaudioeffect_reverbtype_room">Small room</string>
+    <string name="tuiaudioeffect_reverbtype_meeting">Big hall</string>
+    <string name="tuiaudioeffect_reverbtype_lowdeep">Deep</string>
+    <string name="tuiaudioeffect_reverbtype_hongliang">Resonant</string>
+    <string name="tuiaudioeffect_reverbtype_heavymetal">Metallic</string>
+    <string name="tuiaudioeffect_reverbtype_cixing">Husky</string>
+
+    <string name="tuiaudioeffect_back">Back</string>
+    <string name="tuiaudioeffect_sound_effects">Sound effect settings</string>
+    <string name="tuiaudioeffect_ear_monitor">Ear Monitor</string>
+    <string name="tuiaudioeffect_put_on_your_headphones">Use earphones for better experience</string>
+    <string name="tuiaudioeffect_copyright_sounds">Music Library ©</string>
+</resources>

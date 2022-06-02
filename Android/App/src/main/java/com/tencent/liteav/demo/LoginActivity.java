@@ -15,7 +15,7 @@ import android.widget.EditText;
 import com.tencent.liteav.basic.AvatarConstant;
 import com.tencent.liteav.basic.UserModel;
 import com.tencent.liteav.basic.UserModelManager;
-import com.tencent.liteav.debug.GenerateTestUserSig;
+import com.tencent.liteav.debug.GenerateGlobalConfig;
 
 import java.util.Random;
 
@@ -66,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
         int index = new Random().nextInt(AvatarConstant.USER_AVATAR_ARRAY.length);
         String coverUrl = AvatarConstant.USER_AVATAR_ARRAY[index];
         userModel.userAvatar = coverUrl;
-        userModel.userSig = GenerateTestUserSig.genTestUserSig(userId);
+        userModel.userSig = GenerateGlobalConfig.genTestUserSig(userId);
         final UserModelManager manager = UserModelManager.getInstance();
         manager.setUserModel(userModel);
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);

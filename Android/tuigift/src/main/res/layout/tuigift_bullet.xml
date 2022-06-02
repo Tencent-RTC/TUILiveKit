@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/gift_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/tuigift_bg_gift_show">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_send_user_icon"
+            android:layout_width="39dp"
+            android:layout_height="39dp"
+            android:layout_centerVertical="true"
+            android:layout_margin="3dp"
+            android:scaleType="centerCrop" />
+
+        <RelativeLayout
+            android:id="@+id/gift_text_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/iv_send_user_icon">
+
+            <TextView
+                android:id="@+id/tv_send_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/tuigift_white"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tv_gift_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_send_user_name"
+                android:layout_alignStart="@id/tv_send_user_name"
+                android:layout_marginTop="4dp"
+                android:ellipsize="end"
+                android:maxWidth="80dp"
+                android:maxLines="1"
+                android:textColor="@color/tuigift_white"
+                android:textSize="11sp" />
+        </RelativeLayout>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_gift_icon"
+            android:layout_width="39dp"
+            android:layout_height="39dp"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/gift_text_group" />
+    </RelativeLayout>
+
+</FrameLayout>

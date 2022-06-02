@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:background="@drawable/trtcliveroom_bg_create_room"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingBottom="15dp"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/img_live_room_cover"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/trtcliveroom_bg_cover"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_live_room_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:text="@string/trtcliveroom_text_room_name"
+        android:textColor="@color/trtcliveroom_color_white"
+        android:textSize="@dimen/trtcliveroom_text_size_large"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/img_live_room_cover"
+        app:layout_constraintTop_toTopOf="@+id/img_live_room_cover" />
+
+    <EditText
+        android:id="@+id/et_live_room_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp"
+        android:background="@null"
+        android:hint="@string/trtcliveroom_hint_live_room_name"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textCursorDrawable="@drawable/trtcliveroom_bg_edittext"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/img_live_room_cover"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/img_live_room_cover" />
+
+    <View
+        android:id="@+id/view_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/trtcliveroom_color_line"
+        app:layout_constraintTop_toBottomOf="@+id/img_live_room_cover" />
+
+    <TextView
+        android:id="@+id/tv_live_room_quality_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/trtcliveroom_text_voice_quality"
+        android:textColor="@color/trtcliveroom_color_white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_divider" />
+
+    <RadioGroup
+        android:id="@+id/radio_group_audio_quality"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="20dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_live_room_quality_tag"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_live_room_quality_tag">
+
+        <RadioButton
+            android:id="@+id/rb_live_room_quality_normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/trtcliveroom_bg_live_room_rb_quality"
+            android:button="@null"
+            android:gravity="center"
+            android:text="@string/trtcliveroom_voice_quality_standard"
+            android:textColor="@drawable/trtcliveroom_bg_live_room_rb_quality_tv"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_live_room_quality_tag"
+            app:layout_constraintStart_toEndOf="@+id/tv_live_room_quality_tag"
+            app:layout_constraintTop_toTopOf="@+id/tv_live_room_quality_tag" />
+
+        <RadioButton
+            android:id="@+id/rb_live_room_quality_music"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/trtcliveroom_bg_live_room_rb_quality"
+            android:button="@null"
+            android:checked="true"
+            android:gravity="center"
+            android:text="@string/trtcliveroom_voice_quality_muisic"
+            android:textColor="@drawable/trtcliveroom_bg_live_room_rb_quality_tv"
+            android:textSize="14sp" />
+    </RadioGroup>
+</androidx.constraintlayout.widget.ConstraintLayout>
