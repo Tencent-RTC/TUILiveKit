@@ -309,6 +309,7 @@ public class TCAnchorViewController: UIViewController {
         initRoomPreview()
         // active widget
         activeTUIWidget()
+        TUILogin.add(self)
     }
 
     func initRoomPreview() {
@@ -565,11 +566,12 @@ public class TCAnchorViewController: UIViewController {
         liveRoom.stopPublish(callback: { code, error in
             
         })
+        TUILiveRoomProfileManager.sharedManager().destroyRoom(roomID: roomID, success: {
+        }, failed: { code, error in
+            print("\(code),\(error)")
+        })
         liveRoom.destroyRoom(callback: { code, error in
-            TUILiveRoomProfileManager.sharedManager().destroyRoom(roomID: roomID, success: {
-            }, failed: { code, error in
-                print("\(code),\(error)")
-            })
+            
         })
         liveRoom.showVideoDebugLog(false)
         UIApplication.shared.isIdleTimerDisabled = false
