@@ -17,11 +17,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.tencent.liteav.basic.log.TXCLog;
+import com.tencent.liteav.debug.BuildConfig;
 import com.tencent.liteav.liveroom.R;
 import com.tencent.liteav.liveroom.model.TRTCLiveRoom;
 import com.tencent.liteav.liveroom.ui.common.utils.TCUtils;
 import com.tencent.qcloud.tuicore.TUICore;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,6 +41,8 @@ public class AudienceFunctionView extends FrameLayout {
     private RelativeLayout mLayoutBarrage;
     private RelativeLayout mLayoutLikeShow;
     private RelativeLayout mLayoutBarrageShow;
+    private String         mRoomId;
+    private String         mOwnerId;
 
     private OnCloseListener mListener;
 
@@ -84,6 +88,15 @@ public class AudienceFunctionView extends FrameLayout {
                 mListener.onClose();
             }
         });
+
+        View btnReport = findViewById(R.id.btn_report);
+        btnReport.setVisibility(BuildConfig.RTCube_APPSTORE ? View.VISIBLE : View.GONE);
+        btnReport.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showReportDialog();
+            }
+        });
     }
 
     public void setListener(OnCloseListener listener) {
@@ -97,13 +110,25 @@ public class AudienceFunctionView extends FrameLayout {
         mTextRoomId.setText(String.format(getContext().getString(R.string.trtcliveroom_room_id), roomId));
     }
 
-    public void setRoomId(String groupId) {
+    public void setRoomId(String groupId, String ownerId) {
+        mRoomId = groupId;
+        mOwnerId = ownerId;
         initExtensionView(groupId);
     }
 
     public void initExtensionView(String groupId) {
         initBarrage(groupId);
         initLike(groupId);
+    }
+
+    private void showReportDialog() {
+        try {
+            Class clz = Class.forName("com.tencent.liteav.demo.report.ReportDialog");
+            Method method = clz.getDeclaredMethod("showReportDialog", Context.class, String.class, String.class);
+            method.invoke(null, getContext(), mRoomId, mOwnerId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void initBarrage(String groupId) {
