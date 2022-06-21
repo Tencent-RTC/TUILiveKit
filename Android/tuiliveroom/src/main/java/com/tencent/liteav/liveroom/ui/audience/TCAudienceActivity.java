@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -28,7 +27,6 @@ import androidx.constraintlayout.widget.Guideline;
 import com.blankj.utilcode.util.ToastUtils;
 import com.tencent.liteav.basic.UserModel;
 import com.tencent.liteav.basic.UserModelManager;
-import com.tencent.liteav.debug.BuildConfig;
 import com.tencent.liteav.liveroom.R;
 import com.tencent.liteav.liveroom.model.TRTCLiveRoom;
 import com.tencent.liteav.liveroom.model.TRTCLiveRoomCallback;
@@ -56,7 +54,7 @@ import java.util.concurrent.ConcurrentMap;
  * <p>
  * Function: Audience watch UI
  **/
-public class TCAudienceActivity extends AppCompatActivity implements View.OnClickListener {
+public class TCAudienceActivity extends AppCompatActivity {
     private static final String TAG = TCAudienceActivity.class.getSimpleName();
 
     private static final long LINK_MIC_INTERVAL = 3 * 1000;
@@ -342,7 +340,7 @@ public class TCAudienceActivity extends AppCompatActivity implements View.OnClic
 
     private void initView() {
         mFunctionView = findViewById(R.id.audience_function_view);
-        mFunctionView.setRoomId(mRoomId + "");
+        mFunctionView.setRoomId(mRoomId + "", mAnchorId);
         mFunctionView.setListener(new AudienceFunctionView.OnCloseListener() {
             @Override
             public void onClose() {
@@ -387,8 +385,6 @@ public class TCAudienceActivity extends AppCompatActivity implements View.OnClic
         mPKContainer = (RelativeLayout) findViewById(R.id.pk_container);
         mRootView = (ConstraintLayout) findViewById(R.id.root);
         mTextAnchorLeave = (TextView) findViewById(R.id.tv_anchor_leave);
-        View btnReport = findViewById(R.id.btn_report);
-        btnReport.setVisibility(BuildConfig.RTCube_APPSTORE ? View.VISIBLE : View.GONE);
     }
 
     private void setAnchorViewFull(boolean isFull) {
@@ -594,15 +590,6 @@ public class TCAudienceActivity extends AppCompatActivity implements View.OnClic
     }
 
 
-    @Override
-    public void onClick(View v) {
-        int id = v.getId();
-        if (id == R.id.btn_report) {
-            showReportDialog();
-        }
-    }
-
-
     private void showNoticeToast(String text) {
         if (mToastNotice == null) {
             mToastNotice = makeToast(text, Toast.LENGTH_LONG);
@@ -629,17 +616,6 @@ public class TCAudienceActivity extends AppCompatActivity implements View.OnClic
             mNoticeTimer = null;
         }
     }
-
-    private void showReportDialog() {
-        try {
-            Class clz = Class.forName("com.tencent.liteav.demo.report.ReportDialog");
-            Method method = clz.getDeclaredMethod("showReportDialog", Context.class, String.class);
-            method.invoke(null, this, String.valueOf(mRoomId));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 
     private TUILoginListener mTUILoginListener = new TUILoginListener() {
         @Override

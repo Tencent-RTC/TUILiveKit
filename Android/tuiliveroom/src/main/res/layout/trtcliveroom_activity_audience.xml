@@ -98,19 +98,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
-    <Button
-        android:id="@+id/btn_report"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="55dp"
-        android:background="@drawable/trtcliveroom_ic_report_room"
-        android:onClick="onClick"
-        android:scaleType="centerCrop"
-        android:visibility="gone"
-        app:layout_constraintRight_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <View
         android:id="@+id/tool_bar_view"
         android:layout_width="wrap_content"
