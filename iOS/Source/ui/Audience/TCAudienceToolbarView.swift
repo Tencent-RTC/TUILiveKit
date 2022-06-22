@@ -216,9 +216,10 @@ public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldD
     }
     
     @objc func clickReport() {
-        let selector = NSSelectorFromString("showReportAlertWithRoomId:")
+        let selector = NSSelectorFromString("showReportAlertWithRoomId:ownerId:")
         if responds(to: selector) {
-            perform(selector, with: liveInfo?.roomId ?? "")
+            guard let liveInfo = liveInfo else { return }
+            perform(selector, with: liveInfo.roomId, with: liveInfo.ownerId)
         }
     }
     
