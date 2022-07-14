@@ -372,6 +372,12 @@ static double trtcLiveCheckStatusTimeOut = 3;
             return;
         }
         [self.memberManager setmembers:members groupInfo:customInfo];
+        for (TRTCLiveUserInfo *info in members) {
+            if ([info.userId isEqualToString:roomInfo.ownerId]) {
+                [self.memberManager setOwner:info];
+                break;
+            }
+        }
         self.curRoomInfo = roomInfo;
         self.status = roomInfo != nil ? roomInfo.roomStatus : TRTCLiveRoomLiveStatusSingle;
         if (callback) {
