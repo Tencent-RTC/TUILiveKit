@@ -1,5 +1,7 @@
 package com.tencent.liteav.liveroom.model.impl.av.trtc;
 
+import static com.tencent.liteav.TXLiteAVCode.ERR_TRTC_USER_SIG_CHECK_FAILED;
+
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
@@ -520,7 +522,8 @@ public class TXTRTCLiveRoom extends TRTCCloudListener implements ITRTCTXLiveRoom
                 mEnterRoomCallback = null;
             } else {
                 mIsInRoom = false;
-                mEnterRoomCallback.onCallback((int) l, "enter room fail");
+                mEnterRoomCallback.onCallback((int) l, l == ERR_TRTC_USER_SIG_CHECK_FAILED
+                        ? "userSig invalid, please login again" : "enter room fail");
                 mEnterRoomCallback = null;
             }
         }
