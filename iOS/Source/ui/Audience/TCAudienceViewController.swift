@@ -309,6 +309,7 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
             if code == 0 {
                 self.setIsOwnerEnter(true)
             } else {
+                self.makeToast(msg ?? "enter room error")
                 self.setIsOwnerEnter(false)
             }
         }

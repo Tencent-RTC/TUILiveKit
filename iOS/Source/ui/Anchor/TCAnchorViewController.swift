@@ -530,7 +530,7 @@ public class TCAnchorViewController: UIViewController {
         liveRoom?.createRoom(roomID: roomID, roomParam: roomParam, callback: { [weak self] code, message in
             guard let self = self else { return }
             if code == 0 {
-                let roomInfo = TRTCLiveRoomInfo(roomId: String(roomID), roomName: roomName, coverUrl: self.liveInfo.coverUrl, ownerId: TUILogin.getUserID(), ownerName: (TUILogin.getNickName() ?? ""), streamUrl: TUILogin.getUserID(), memberCount: 0, roomStatus: .single)
+                let roomInfo = TRTCLiveRoomInfo(roomId: String(roomID), roomName: roomName, coverUrl: self.liveInfo.coverUrl, ownerId: TUILogin.getUserID(), ownerName: TUILogin.getNickName(), streamUrl: TUILogin.getUserID(), memberCount: 0, roomStatus: .single)
                 self.setLive(roomInfo)
             }
             callback(Int(code),message)

@@ -372,12 +372,6 @@ static double trtcLiveCheckStatusTimeOut = 3;
             return;
         }
         [self.memberManager setmembers:members groupInfo:customInfo];
-        for (TRTCLiveUserInfo *info in members) {
-            if ([info.userId isEqualToString:roomInfo.ownerId]) {
-                [self.memberManager setOwner:info];
-                break;
-            }
-        }
         self.curRoomInfo = roomInfo;
         self.status = roomInfo != nil ? roomInfo.roomStatus : TRTCLiveRoomLiveStatusSingle;
         if (callback) {
@@ -946,10 +940,18 @@ static double trtcLiveCheckStatusTimeOut = 3;
 
 - (void)onEnterRoom:(NSInteger)result {
     [self logApi:@"onEnterRoom", nil];
-    if (self.enterRoomCallback) {
-        self.enterRoomCallback(0, @"success");
-        self.enterRoomCallback = nil;
+    TRTCLog(@"on enter trtc room. result:%ld", (long)result);
+    if (result > 0) {
+        if (self.enterRoomCallback) {
+            self.enterRoomCallback(0, @"enter trtc room success.");
+        }
+    } else {
+        NSString *errorMsg = (result == ERR_TRTC_USER_SIG_CHECK_FAILED ? @"userSig invalid, please login again.":@"enter trtc room fail.");
+        if (self.enterRoomCallback) {
+            self.enterRoomCallback((int)result, errorMsg);
+        }
     }
+    self.enterRoomCallback = nil;
 }
 
 - (void)onRemoteUserEnterRoom:(NSString *)userId {
