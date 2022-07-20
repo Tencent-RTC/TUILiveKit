@@ -28,9 +28,9 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.constraintlayout.widget.Guideline;
 
 import com.blankj.utilcode.util.ToastUtils;
+import com.tencent.liteav.basic.RTCubeUtils;
 import com.tencent.liteav.basic.UserModel;
 import com.tencent.liteav.basic.UserModelManager;
-import com.tencent.liteav.debug.BuildConfig;
 import com.tencent.liteav.liveroom.R;
 import com.tencent.liteav.liveroom.model.LiveRoomManager;
 import com.tencent.liteav.liveroom.model.TRTCLiveRoom;
@@ -157,7 +157,7 @@ public class TCCameraAnchorActivity extends Activity implements TRTCLiveRoomDele
     private void initView() {
         mRootView = (ConstraintLayout) findViewById(R.id.root);
         mEditLiveRoomName = (EditText) findViewById(R.id.et_live_room_name);
-        mEditLiveRoomName.setFocusableInTouchMode(!BuildConfig.RTCube_APPSTORE);
+        mEditLiveRoomName.setFocusableInTouchMode(!RTCubeUtils.isRTCubeApp(this));
         mPreFunctionView = findViewById(R.id.anchor_pre_function);
         mPreView = findViewById(R.id.anchor_preview);
         mFunctionView = findViewById(R.id.anchor_function_view);
@@ -756,8 +756,8 @@ public class TCCameraAnchorActivity extends Activity implements TRTCLiveRoomDele
     public void onQuitRoomPK() {
         mFunctionView.setButtonPKState(AnchorFunctionView.PKState.PK);
         ToastUtils.showShort(R.string.trtcliveroom_tips_quit_pk);
-        if (mPKConfirmDialogFragment != null) {
-            mPKConfirmDialogFragment.dismiss();
+        if (mPKConfirmDialogFragment != null && mPKConfirmDialogFragment.isAdded()) {
+            mPKConfirmDialogFragment.dismissAllowingStateLoss();
         }
     }
 
@@ -768,8 +768,8 @@ public class TCCameraAnchorActivity extends Activity implements TRTCLiveRoomDele
     @Override
     public void onCancelRoomPK() {
         mFunctionView.setButtonPKState(AnchorFunctionView.PKState.PK);
-        if (mPKConfirmDialogFragment != null) {
-            mPKConfirmDialogFragment.dismiss();
+        if (mPKConfirmDialogFragment != null && mPKConfirmDialogFragment.isAdded()) {
+            mPKConfirmDialogFragment.dismissAllowingStateLoss();
         }
     }
 
@@ -779,8 +779,8 @@ public class TCCameraAnchorActivity extends Activity implements TRTCLiveRoomDele
             @Override
             public void run() {
                 ConfirmDialogFragment fragment = mLinkMicConfirmDialogFragmentMap.remove(userInfo.userId);
-                if (null != fragment) {
-                    fragment.dismiss();
+                if (null != fragment && fragment.isAdded()) {
+                    fragment.dismissAllowingStateLoss();
                 }
             }
         });

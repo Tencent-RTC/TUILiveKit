@@ -14,9 +14,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.tencent.liteav.basic.RTCubeUtils;
 import com.tencent.liteav.basic.UserModel;
 import com.tencent.liteav.basic.UserModelManager;
-import com.tencent.liteav.debug.BuildConfig;
 import com.tencent.liteav.liveroom.R;
 import com.tencent.liteav.liveroom.model.TRTCLiveRoom;
 import com.tencent.liteav.liveroom.ui.common.utils.TCUtils;
@@ -62,7 +62,7 @@ public class AnchorPreView extends FrameLayout {
         mAnchorAvatar = userModel.userAvatar;
         mAnchorCoverUrl = userModel.userAvatar;
 
-        mEditRoomName.setFocusableInTouchMode(!BuildConfig.RTCube_APPSTORE);
+        mEditRoomName.setFocusableInTouchMode(!RTCubeUtils.isRTCubeApp(getContext()));
         if (!TextUtils.isEmpty(mAnchorName)) {
             mEditRoomName.setText(getContext().getString(R.string.trtcliveroom_create_room_default, mAnchorName));
         }

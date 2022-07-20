@@ -16,8 +16,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.tencent.liteav.basic.RTCubeUtils;
 import com.tencent.liteav.basic.log.TXCLog;
-import com.tencent.liteav.debug.BuildConfig;
 import com.tencent.liteav.liveroom.R;
 import com.tencent.liteav.liveroom.model.TRTCLiveRoom;
 import com.tencent.liteav.liveroom.ui.common.utils.TCUtils;
@@ -90,7 +90,7 @@ public class AudienceFunctionView extends FrameLayout {
         });
 
         View btnReport = findViewById(R.id.btn_report);
-        btnReport.setVisibility(BuildConfig.RTCube_APPSTORE ? View.VISIBLE : View.GONE);
+        btnReport.setVisibility(RTCubeUtils.isRTCubeApp(getContext()) ? View.VISIBLE : View.GONE);
         btnReport.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
