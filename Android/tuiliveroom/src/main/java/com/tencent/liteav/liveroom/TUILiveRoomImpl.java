@@ -96,7 +96,7 @@ public class TUILiveRoomImpl extends TUILiveRoom {
                     final UserModelManager manager = UserModelManager.getInstance();
                     manager.setUserModel(userModel);
                     Intent intent = new Intent(mContext, TCCameraAnchorActivity.class);
-                    intent.setFlags(FLAG_ACTIVIT5Y_NEW_TASK);
+                    intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
                     mContext.startActivity(intent);
                 } else {
                     TRTCLogger.e(TAG, msg);
@@ -193,12 +193,13 @@ public class TUILiveRoomImpl extends TUILiveRoom {
         intent.putExtra(TCConstants.GROUP_ID, roomId);
         intent.putExtra(TCConstants.PUSHER_ID, anchorId);
         intent.putExtra(TCConstants.PUSHER_NAME, anchorName);
+        intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
         mContext.startActivity(intent);
     }
 
     private void liveVideoLogin(final TRTCLiveRoomCallback.ActionCallback callback) {
         TRTCLiveRoomDef.TRTCLiveRoomConfig config = new TRTCLiveRoomDef.TRTCLiveRoomConfig(false,
-                "http://3891.liveplay.myqcloud.com/live");
+                "");
         mLiveRoom.login(TUILogin.getSdkAppId(), TUILogin.getUserId(),
                 TUILogin.getUserSig(), config, new TRTCLiveRoomCallback.ActionCallback() {
                     @Override

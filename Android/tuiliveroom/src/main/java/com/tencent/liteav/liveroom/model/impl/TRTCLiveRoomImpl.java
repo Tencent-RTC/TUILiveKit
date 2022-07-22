@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.tencent.liteav.audio.TXAudioEffectManager;
 import com.tencent.liteav.basic.UserModel;
@@ -1451,6 +1452,7 @@ public class TRTCLiveRoomImpl extends TRTCLiveRoom implements ITXTRTCLiveRoomDel
     }
 
     private boolean isTRTCMode() {
+        TRTCLogger.i(TAG, "isTRTCMode mCurrentRole：" + mCurrentRole + " mTargetRole: " + mTargetRole);
         return mCurrentRole == Role.TRTC_ANCHOR || mCurrentRole == Role.TRTC_AUDIENCE
                 || mTargetRole == Role.TRTC_ANCHOR || mTargetRole == Role.TRTC_AUDIENCE;
     }
