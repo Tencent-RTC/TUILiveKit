@@ -194,7 +194,7 @@ public class TUILiveRoomImpl extends TUILiveRoom {
 
     private void liveVideoLogin(final TRTCLiveRoomCallback.ActionCallback callback) {
         TRTCLiveRoomDef.TRTCLiveRoomConfig config = new TRTCLiveRoomDef.TRTCLiveRoomConfig(false,
-                "http://3891.liveplay.myqcloud.com/live");
+                "");
         mLiveRoom.login(TUILogin.getSdkAppId(), TUILogin.getUserId(),
                 TUILogin.getUserSig(), config, new TRTCLiveRoomCallback.ActionCallback() {
                     @Override
