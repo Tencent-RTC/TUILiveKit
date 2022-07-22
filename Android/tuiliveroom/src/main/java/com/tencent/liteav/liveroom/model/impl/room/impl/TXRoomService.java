@@ -1257,30 +1257,9 @@ public class TXRoomService implements ITXRoomService {
                 for (IMAnchorInfo info : anchorEnterList) {
                     delegate.onRoomAnchorEnter(info.streamId);
                 }
-                List<IMAnchorInfo> oldAnchorList = new ArrayList<>(copyList);
-                List<IMAnchorInfo> newAnchorList = new ArrayList<>(roomPair.second);
-                for (IMAnchorInfo oldInfo : oldAnchorList) {
-                    updateRoomStream(newAnchorList, oldInfo, delegate);
-                }
             }
         }
     }
-
-    private void updateRoomStream(List<IMAnchorInfo> newAnchorList, IMAnchorInfo oldInfo,
-                                  ITXRoomServiceDelegate delegate) {
-        for (IMAnchorInfo newInfo : newAnchorList) {
-            if (oldInfo.equals(newInfo)) {
-                if (TextUtils.isEmpty(oldInfo.streamId)
-                        && !TextUtils.isEmpty(newInfo.streamId)) {
-                    delegate.onRoomStreamAvailable(newInfo.userId);
-                } else if (!TextUtils.isEmpty(oldInfo.streamId)
-                        && TextUtils.isEmpty(newInfo.streamId)) {
-                    delegate.onRoomStreamUnavailable(newInfo.userId);
-                }
-            }
-        }
-    }
-
 
     private class LiveRoomSimpleMsgListener extends V2TIMSimpleMsgListener {
 
@@ -1442,9 +1421,6 @@ public class TXRoomService implements ITXRoomService {
                     delegate.onRoomInfoChange(mTXRoomInfo);
                     for (IMAnchorInfo info : pair.second) {
                         delegate.onRoomAnchorEnter(info.userId);
-                        if (!TextUtils.isEmpty(info.streamId)) {
-                            delegate.onRoomStreamAvailable(info.userId);
-                        }
                     }
                 }
             }
