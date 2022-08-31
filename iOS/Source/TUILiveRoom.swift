@@ -178,9 +178,9 @@ fileprivate extension TUILiveRoom {
 
 // MARK: - internationalization string
 fileprivate extension String {
-    static let alreadyInRoom = LiveRoomLocalize("Demo.TRTC.LiveRoom.alreadyin")
-    static let noLoginToast = LiveRoomLocalize("Demo.TRTC.LiveRoom.notlogin")
-    static let roomNameEmptyToast = LiveRoomLocalize("Demo.TRTC.LiveRoom.roomnamecantbeempty")
-    static let roomIdErrorToast = LiveRoomLocalize("Demo.TRTC.LiveRoom.roomId.error")
-    static let enterRoomErrorText = LiveRoomLocalize("Demo.TRTC.LiveRoom.enterroomfailed")
+    static let alreadyInRoom = liveRoomLocalize("Demo.TRTC.LiveRoom.alreadyin")
+    static let noLoginToast = liveRoomLocalize("Demo.TRTC.LiveRoom.notlogin")
+    static let roomNameEmptyToast = liveRoomLocalize("Demo.TRTC.LiveRoom.roomnamecantbeempty")
+    static let roomIdErrorToast = liveRoomLocalize("Demo.TRTC.LiveRoom.roomId.error")
+    static let enterRoomErrorText = liveRoomLocalize("Demo.TRTC.LiveRoom.enterroomfailed")
 }

@@ -32,7 +32,9 @@
     paragraphStyle.alignment = alignment;
     
     NSDictionary* attributes = @{NSFontAttributeName:font, NSParagraphStyleAttributeName:paragraphStyle};
-    contentSize = [self boundingRectWithSize:size options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:attributes context:nil].size;
+    contentSize = [self boundingRectWithSize:size
+     options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
+     attributes:attributes context:nil].size;
     contentSize = CGSizeMake((int)contentSize.width + 1, (int)contentSize.height + 1);
     return contentSize;
 }

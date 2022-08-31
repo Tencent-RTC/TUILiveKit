@@ -38,9 +38,9 @@ class TCUtil: NSObject {
     }
     
     class func scale(_ image: UIImage, scaleTo size: CGSize) -> UIImage? {
-        UIGraphicsBeginImageContextWithOptions(size,false,UIScreen.main.scale);
-        image.draw(in: CGRectMake_Auto(0, 0, size.width, size.height))
-        let reSizeImage:UIImage = UIGraphicsGetImageFromCurrentImageContext() ?? UIImage();
+        UIGraphicsBeginImageContextWithOptions(size,false,UIScreen.main.scale)
+        image.draw(in: cgRectMake_Auto(0, 0, size.width, size.height))
+        let reSizeImage:UIImage = UIGraphicsGetImageFromCurrentImageContext() ?? UIImage()
         return reSizeImage
     }
     
@@ -53,8 +53,10 @@ class TCUtil: NSObject {
         newRect.origin.y *= image.scale
         newRect.size.width *= image.scale
         newRect.size.height *= image.scale
-        let cgimage = image.cgImage?.cropping(to: newRect)
-        let resultImage = UIImage(cgImage: cgimage!, scale: image.scale, orientation: image.imageOrientation)
+        guard let cgImage = image.cgImage?.cropping(to: newRect) else {
+            return nil
+        }
+        let resultImage = UIImage(cgImage: cgImage, scale: image.scale, orientation: image.imageOrientation)
         return resultImage
     }
     

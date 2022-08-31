@@ -39,7 +39,9 @@ class LiveRoomMainRootView: UIView {
         textField.leftViewMode = .always
         
         let attributeString = NSMutableAttributedString.init(string: .enterRoomNumberText)
-        attributeString.addAttributes([.foregroundColor : UIColor.gray, .font : UIFont.systemFont(ofSize: 15)], range: NSRange.init(location: 0, length: attributeString.length))
+        attributeString.addAttributes([.foregroundColor : UIColor.gray, .font :
+         UIFont.systemFont(ofSize: 15)], range: NSRange.init(location: 0, length:
+         attributeString.length))
         textField.attributedPlaceholder = attributeString
         textField.addTarget(self, action: #selector(roomNumberTextFieldValueChange(sender:)), for: .editingChanged)
         textField.keyboardType = .numberPad

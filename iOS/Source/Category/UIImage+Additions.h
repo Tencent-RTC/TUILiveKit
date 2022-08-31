@@ -34,19 +34,19 @@ typedef struct __UICornerInset
 
 UIKIT_EXTERN const UICornerInset UICornerInsetZero;
 
-UIKIT_STATIC_INLINE UICornerInset UICornerInsetMake(CGFloat topLeft, CGFloat topRight, CGFloat bottomLeft, CGFloat bottomRight)
+UIKIT_STATIC_INLINE UICornerInset uiCornerInsetMake(CGFloat topLeft, CGFloat topRight, CGFloat bottomLeft, CGFloat bottomRight)
 {
     UICornerInset cornerInset = {topLeft, topRight, bottomLeft, bottomRight};
     return cornerInset;
 }
 
-UIKIT_STATIC_INLINE UICornerInset UICornerInsetMakeWithRadius(CGFloat radius)
+UIKIT_STATIC_INLINE UICornerInset uiCornerInsetMakeWithRadius(CGFloat radius)
 {
     UICornerInset cornerInset = {radius, radius, radius, radius};
     return cornerInset;
 }
 
-UIKIT_STATIC_INLINE BOOL UICornerInsetEqualToCornerInset(UICornerInset cornerInset1, UICornerInset cornerInset2)
+UIKIT_STATIC_INLINE BOOL uiCornerInsetEqualToCornerInset(UICornerInset cornerInset1, UICornerInset cornerInset2)
 {
     return
     cornerInset1.topLeft == cornerInset2.topLeft &&
@@ -55,7 +55,7 @@ UIKIT_STATIC_INLINE BOOL UICornerInsetEqualToCornerInset(UICornerInset cornerIns
     cornerInset1.bottomRight == cornerInset2.bottomRight;
 }
 
-FOUNDATION_EXTERN NSString* NSStringFromUICornerInset(UICornerInset cornerInset);
+FOUNDATION_EXTERN NSString* stringFromUICornerInset(UICornerInset cornerInset);
 
 typedef enum __UIImageTintedStyle
 {
@@ -142,6 +142,6 @@ typedef enum __UIImageGradientDirection
 @interface NSValue (UICornerInset)
 
 + (NSValue*)valueWithUICornerInset:(UICornerInset)cornerInset;
-- (UICornerInset)UICornerInsetValue;
+- (UICornerInset)uicornerInsetValue;
 
 @end

@@ -44,6 +44,6 @@ final class TRTCLiveRoomMoreControllerUI: TRTCLiveRoomMoreViewController {
 
 /// MARK: - internationalization string
 fileprivate extension String {
-    static let videoText = LiveRoomLocalize("Demo.TRTC.LiveRoom.video")
+    static let videoText = liveRoomLocalize("Demo.TRTC.LiveRoom.video")
    
 }

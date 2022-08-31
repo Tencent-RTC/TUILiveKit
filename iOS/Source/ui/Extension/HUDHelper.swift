@@ -7,6 +7,7 @@
 
 import Foundation
 import Toast_Swift
+import SwiftUI
 
 class HUDHelper: NSObject {
     private var syncHUD: NSObject?
@@ -20,7 +21,9 @@ class HUDHelper: NSObject {
     }
     
     class func alertTitle(title: String, message msg: String, cancel: String) {
-        UIApplication.shared.windows.first?.rootViewController?.view .makeToast(msg, point: (UIApplication.shared.windows.first!.rootViewController!.view!.center) , title: title, image: nil, completion: { didTap in
+        guard let window = UIApplication.shared.windows.first else { return }
+        guard let rootViewController = window.rootViewController else { return }
+        UIApplication.shared.windows.first?.rootViewController?.view .makeToast(msg, point: (rootViewController.view.center) , title: title, image: nil, completion: { didTap in
             
         })
     }

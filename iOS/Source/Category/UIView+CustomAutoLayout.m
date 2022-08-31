@@ -612,7 +612,8 @@
 }
 
 // views里面的View都是按UI的指定顺序放好的
-- (UIView *)alignViews:(NSArray *)array isSubView:(BOOL)isSub padding:(CGFloat)padding margin:(CGFloat)margin horizontal:(BOOL)ishorizontal inRect:(CGRect)rect
+- (UIView *)alignViews:(NSArray *)array isSubView:(BOOL)isSub padding:(CGFloat)padding
+ margin:(CGFloat)margin horizontal:(BOOL)ishorizontal inRect:(CGRect)rect
 {
     BOOL isSameParent = YES;
     if (!isSub)

@@ -104,7 +104,8 @@ NSString * const Signal_CancelJoinAnchor = @"cancelJoinAnchor";
     }];
 }
 
-+ (void)createRoomWithRoomID:(NSString *)roomID roomParam:(TRTCCreateRoomParam *)roomParam success:(LREnterRoomCallback)success error:(LRIMCallback)errorCallback {
++ (void)createRoomWithRoomID:(NSString *)roomID roomParam:(TRTCCreateRoomParam *)roomParam
+ success:(LREnterRoomCallback)success error:(LRIMCallback)errorCallback {
     [[V2TIMManager sharedInstance] createGroup:@"AVChatRoom" groupID:roomID groupName:roomParam.roomName succ:^(NSString *groupID) {
         if (success) {
             success(@[], @{}, nil);
@@ -212,7 +213,7 @@ NSString * const Signal_CancelJoinAnchor = @"cancelJoinAnchor";
 + (void)getRoomInfoWithRoomIds:(NSArray<NSString *> *)roomIds success:(LRRoomInfosCallback)success error:(LRIMCallback)error {
     [[V2TIMManager sharedInstance] getGroupsInfo:roomIds succ:^(NSArray<V2TIMGroupInfoResult *> *groupResultList) {
         if (!groupResultList) {
-            error(-1, LiveRoomLocalize(@"Demo.TRTC.LiveRoom.cannotgetroominfo"));
+            error(-1, liveRoomLocalize(@"Demo.TRTC.LiveRoom.cannotgetroominfo"));
             return;
         }
         NSMutableArray<TRTCLiveRoomInfo *> *roomInfos = [[NSMutableArray alloc] initWithCapacity:2];
@@ -244,13 +245,14 @@ NSString * const Signal_CancelJoinAnchor = @"cancelJoinAnchor";
         }
     } fail:^(int code, NSString *desc) {
         if (error) {
-            error(code, desc ?: LiveRoomLocalize(@"Demo.TRTC.LiveRoom.getroominfofailed"));
+            error(code, desc ?: liveRoomLocalize(@"Demo.TRTC.LiveRoom.getroominfofailed"));
         }
     }];
 }
 
 + (void)getAllMembersWithRoomID:(NSString *)roomID success:(LRMemberCallback)success error:(LRIMCallback)error {
-    [[V2TIMManager sharedInstance] getGroupMemberList:roomID filter:V2TIM_GROUP_MEMBER_FILTER_ALL nextSeq:0 succ:^(uint64_t nextSeq, NSArray<V2TIMGroupMemberFullInfo *> *memberList) {
+    [[V2TIMManager sharedInstance] getGroupMemberList:roomID filter:V2TIM_GROUP_MEMBER_FILTER_ALL
+     nextSeq:0 succ:^(uint64_t nextSeq, NSArray<V2TIMGroupMemberFullInfo *> *memberList) {
         if (success) {
             NSMutableArray *infos = [[NSMutableArray alloc] initWithCapacity:2];
             if (memberList) {
@@ -273,7 +275,7 @@ NSString * const Signal_CancelJoinAnchor = @"cancelJoinAnchor";
     NSDictionary *data = @{
         @"action": @(TRTCLiveRoomIMActionTypeNotifyJoinAnchorStream),
         @"stream_id": streamID,
-        @"version": trtcLiveRoomProtocolVersion,
+        @"version": gTrtcLiveRoomProtocolVersion,
     };
     ConversationParams *params = [[ConversationParams alloc] init];
     params.type = ConvTypeUser;
@@ -284,7 +286,7 @@ NSString * const Signal_CancelJoinAnchor = @"cancelJoinAnchor";
 + (void)sendRoomTextMsgWithRoomID:(NSString *)roomID message:(NSString *)message callback:(LRIMCallback)callback {
     NSDictionary *data = @{
         @"action": @(TRTCLiveRoomIMActionTypeRoomTextMsg),
-        @"version": trtcLiveRoomProtocolVersion,
+        @"version": gTrtcLiveRoomProtocolVersion,
     };
     ConversationParams *params = [[ConversationParams alloc] init];
     params.type = ConvTypeGroup;
@@ -299,7 +301,7 @@ NSString * const Signal_CancelJoinAnchor = @"cancelJoinAnchor";
         @"action": @(TRTCLiveRoomIMActionTypeRoomCustomMsg),
         @"command": command,
         @"message": message,
-        @"version": trtcLiveRoomProtocolVersion,
+        @"version": gTrtcLiveRoomProtocolVersion,
     };
     ConversationParams *params = [[ConversationParams alloc] init];
     params.type = ConvTypeGroup;
@@ -311,7 +313,7 @@ NSString * const Signal_CancelJoinAnchor = @"cancelJoinAnchor";
 
 + (void)updateGroupInfoWithRoomID:(NSString *)roomID groupInfo:(NSDictionary<NSString *,id> *)groupInfo callback:(LRIMCallback)callback {
     NSMutableDictionary *data = [groupInfo mutableCopy];
-    data[@"version"] = trtcLiveRoomProtocolVersion;
+    data[@"version"] = gTrtcLiveRoomProtocolVersion;
     NSString *groupInfoString = [data mj_JSONString];
     TRTCLog(@" updateGroupInfo:%@, size:%lu", groupInfoString, (unsigned long)groupInfoString.length);
     V2TIMGroupInfo *info = [[V2TIMGroupInfo alloc] init];
@@ -405,7 +407,8 @@ NSString * const Signal_CancelJoinAnchor = @"cancelJoinAnchor";
     };
 }
 
-+ (NSString * _Nullable)requestJoinAnchorWithUserID:(NSString *)userID timeout:(int)timeout reason:(NSString *)reason callback:(LRIMCallback _Nullable)callback {
++ (NSString * _Nullable)requestJoinAnchorWithUserID:(NSString *)userID timeout:(int)timeout
+ reason:(NSString *)reason callback:(LRIMCallback _Nullable)callback {
     NSDictionary *data = @{
         @"cmd" : Signal_RequestJoinAnchor,
         @"message" : reason ? : @"",
@@ -482,7 +485,9 @@ NSString * const Signal_CancelJoinAnchor = @"cancelJoinAnchor";
     }
 }
 
-+ (NSString *)requestRoomPKWithUserID:(NSString *)userID timeout:(int)timeout fromRoomID:(NSString *)fromRoomID fromStreamID:(NSString *)fromStreamID callback:(LRIMCallback _Nullable)callback {
++ (NSString *)requestRoomPKWithUserID:(NSString *)userID timeout:(int)timeout
+ fromRoomID:(NSString *)fromRoomID fromStreamID:(NSString *)fromStreamID callback:(LRIMCallback
+ _Nullable)callback {
     NSDictionary *data = @{
         @"cmd":Signal_RequestRoomPK,
         @"roomId": fromRoomID,
@@ -514,7 +519,8 @@ NSString * const Signal_CancelJoinAnchor = @"cancelJoinAnchor";
     }
 }
 
-+ (void)responseRoomPKWithRequestID:(NSString *)requestID agreed:(BOOL)agreed reason:(NSString * _Nullable)reason streamID:(NSString *)streamID callback:(LRIMCallback _Nullable)callback {
++ (void)responseRoomPKWithRequestID:(NSString *)requestID agreed:(BOOL)agreed reason:(NSString *
+ _Nullable)reason streamID:(NSString *)streamID callback:(LRIMCallback _Nullable)callback {
     NSDictionary *data = @{
         @"cmd": Signal_RequestRoomPK,
         @"stream_id":streamID,

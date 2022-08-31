@@ -12,7 +12,8 @@
 
 #ifdef DEBUG
 
-#define IsArgInvalid(curView, brotherView) NSAssert((self.superview == brotherView.superview) && !(CGRectEqualToRect(brotherView.frame, CGRectZero)), @"UIView (CustomAutoLayout)参数出错")
+#define IsArgInvalid(curView, brotherView) NSAssert((self.superview == brotherView.superview)&&\
+!(CGRectEqualToRect(brotherView.frame, CGRectZero)), @"UIView (CustomAutoLayout)参数出错")
 #define IsSuperViewInvalid(curView) NSAssert((self.superview != nil), @"UIView (CustomAutoLayout)父控件没有设置参数出错")
 
 #else
@@ -152,7 +153,8 @@
 
 
 
-- (UIView *)alignViews:(NSArray *)array isSubView:(BOOL)isSub padding:(CGFloat)padding margin:(CGFloat)margin horizontal:(BOOL)ishorizontal inRect:(CGRect)rect;
+- (UIView *)alignViews:(NSArray *)array isSubView:(BOOL)isSub padding:(CGFloat)padding margin:(CGFloat)margin
+ horizontal:(BOOL)ishorizontal inRect:(CGRect)rect;
 // views里面的View都是按UI的指定顺序放好的
 - (UIView *)alignSubviews:(NSArray *)views horizontallyWithPadding:(CGFloat)padding margin:(CGFloat)margin inRect:(CGRect)rect;
 - (UIView *)alignSubviews:(NSArray *)views verticallyWithPadding:(CGFloat)padding margin:(CGFloat)margin inRect:(CGRect)rect;

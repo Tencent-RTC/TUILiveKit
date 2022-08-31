@@ -47,7 +47,7 @@ class TCMsgBarrageView: UIView {
         let userMsgLabel = UILabel(frame: CGRect(x: userNameLabel.left, y: userNameLabel.bottom, width: 0, height: height - userNameLabel.height))
         userMsgLabel.backgroundColor = UIColor.clear
         let backImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 0, height: height))
-        let image = UIImage(named: "Barrage", in: LiveRoomBundle(), compatibleWith: nil)
+        let image = UIImage(named: "Barrage", in: liveRoomBundle(), compatibleWith: nil)
         let newImage = image?.resizableImage(withCapInsets: UIEdgeInsets(top: 24, left: 35, bottom: 5, right: 10), resizingMode: .stretch)
         backImageView.image = newImage
         view.insertSubview(backImageView, at: 0)
@@ -60,13 +60,15 @@ class TCMsgBarrageView: UIView {
     
     func startAnimation() {
         if  msgModelArray.count > 0{
-            let msgModel = msgModelArray.last
-            if unUsedAnimateViewArray.count > 0 {
-                let view = unUsedAnimateViewArray.last
-                animate(view!, msg: msgModel!)
-            } else {
-                let view = creatAnimateView()
-                animate(view, msg: msgModel!)
+            if let msgModel = msgModelArray.last {
+                if unUsedAnimateViewArray.count > 0 {
+                    if let view = unUsedAnimateViewArray.last {
+                        animate(view, msg: msgModel)
+                    }
+                } else {
+                    let view = creatAnimateView()
+                    animate(view, msg: msgModel)
+                }
             }
             msgModelArray.removeLast()
         }
@@ -84,42 +86,48 @@ class TCMsgBarrageView: UIView {
         }
     }
     func animate(_ aView: UIView, msg msgModel: TCMsgModel) {
-        let newView = resetViewFrame(aView, msg: msgModel)
+        guard let newView = resetViewFrame(aView, msg: msgModel) else { return }
         
-        let duration0: Float = Float(SCREEN_WIDTH) + Float(MSG_ANIMATE_VIEW_SPACE) + Float(newView?.width ?? 0)
+        let duration0: Float = Float(SCREEN_WIDTH) + Float(MSG_ANIMATE_VIEW_SPACE) + Float(newView.width ?? 0)
         let duration1: Float = Float(2 * SCREEN_WIDTH)
         let duration: Float =  Float(MSG_ANIMATE_DURANTION) * duration0 / duration1
-        let duration2  = Float(newView?.width ?? 0) + Float(MSG_ANIMATE_VIEW_SPACE)
-        let duration3 = Float(SCREEN_WIDTH) + Float(newView?.width ?? 0) + Float(MSG_ANIMATE_VIEW_SPACE)
+        let duration2  = Float(newView.width ?? 0) + Float(MSG_ANIMATE_VIEW_SPACE)
+        let duration3 = Float(SCREEN_WIDTH) + Float(newView.width ?? 0) + Float(MSG_ANIMATE_VIEW_SPACE)
         nextAnimateViewStartTime = CGFloat(duration * (duration2 / duration3))
-        lastAnimateView = newView ?? UIView();
+        lastAnimateView = newView ?? UIView()
         
         UIView.animate(withDuration: TimeInterval(duration), delay: 0, options: .curveLinear, animations: {
-            let frame = newView?.frame
-            newView?.frame = CGRect(x: -frame!.size.width, y: 0, width: frame!.size.width, height: frame!.size.height)
+            let frame = newView.frame
+            newView.frame = CGRect(x: -frame.size.width, y: 0, width: frame.size.width, height: frame.size.height)
         }) { [weak self] finished in
             guard let `self` = self else { return }
-            newView?.frame = CGRect(x: SCREEN_WIDTH + CGFloat(MSG_ANIMATE_VIEW_SPACE), y: 0, width: 0, height: self.height)
-            self.unUsedAnimateViewArray.insert(newView!, at: 0)
+            newView.frame = CGRect(x: SCREEN_WIDTH + CGFloat(MSG_ANIMATE_VIEW_SPACE), y: 0, width: 0, height: self.height)
+            self.unUsedAnimateViewArray.insert(newView, at: 0)
         }
     }
     
     func resetViewFrame(_ aView: UIView?, msg msgModel: TCMsgModel?) -> UIView? {
         guard let aView = aView else { return nil }
         let userName = getAttributedUserName(from: msgModel)
-        let nameRect = userName?.boundingRect(with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: 14), options: .usesLineFragmentOrigin, context: nil)
+        let nameRect = userName?.boundingRect(with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: 14), options:
+         .usesLineFragmentOrigin, context: nil)
         
         let userMsg = getAttributedUserMsg(from: msgModel)
-        let msgRect = userMsg?.boundingRect(with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: height - 14), options: .usesLineFragmentOrigin, context: nil)
+        let msgRect = userMsg?.boundingRect(with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: height - 14), options:
+         .usesLineFragmentOrigin, context: nil)
         let viewArray = aView.subviews
         if viewArray.count >= 4 {
             let headImageView:UIImageView = viewArray[1] as? UIImageView ?? UIImageView()
             if let userHeadImageUrl = msgModel?.userHeadImageUrl {
-                headImageView.kf.setImage(with:  URL(string: TCUtil.transImageURL2HttpsURL(userHeadImageUrl) ?? ""), placeholder: UIImage(named: "default_user", in: LiveRoomBundle(), compatibleWith: nil), options: nil, progressBlock: nil, completionHandler: nil)
+                headImageView.kf.setImage(with:  URL(string: TCUtil.transImageURL2HttpsURL(userHeadImageUrl) ?? ""), placeholder:
+                 UIImage(named: "default_user", in: liveRoomBundle(), compatibleWith: nil), options: nil, progressBlock: nil,
+                 completionHandler: nil)
             }
             let userNamelabel:UILabel = viewArray[2] as? UILabel ?? UILabel()
             userNamelabel.attributedText = userName
-            userNamelabel.width = (nameRect?.size.width)!
+            if let nameRect = nameRect {
+                userNamelabel.width = nameRect.size.width
+            }
             
             let userMsgLabel:UILabel = viewArray[3] as? UILabel ?? UILabel()
             userMsgLabel.attributedText = userMsg

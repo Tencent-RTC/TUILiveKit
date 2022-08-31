@@ -117,7 +117,8 @@ public class AnchorPKPanel: UIView, UITableViewDelegate,
         textField.leftViewMode = .always
         
         let attributeString = NSMutableAttributedString.init(string: .roomNumberText)
-        attributeString.addAttributes([.foregroundColor : UIColor.gray, .font : UIFont.systemFont(ofSize: 15)], range: NSRange.init(location: 0, length: attributeString.length))
+        attributeString.addAttributes([.foregroundColor : UIColor.gray, .font : UIFont.systemFont(ofSize:
+         15)], range: NSRange.init(location: 0, length: attributeString.length))
         textField.attributedPlaceholder = attributeString
         textField.keyboardType = .numberPad
         textField.textColor = .black
@@ -137,7 +138,8 @@ public class AnchorPKPanel: UIView, UITableViewDelegate,
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardFrameChange(noti:)), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardFrameChange(noti:)),
+         name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -396,11 +398,11 @@ extension AnchorPKPanel {
 
 // MARK: - internationalization string
 fileprivate extension String {
-    static let inviteText = LiveRoomLocalize("Demo.TRTC.LiveRoom.invite")
-    static let invitePKText = LiveRoomLocalize("Demo.TRTC.LiveRoom.invitepk")
-    static let loadingText = LiveRoomLocalize("Demo.TRTC.LiveRoom.loading")
-    static let noAnchorText = LiveRoomLocalize("Demo.TRTC.LiveRoom.noanchor")
-    static let cancelText = LiveRoomLocalize("Demo.TRTC.LiveRoom.cancel")
-    static let roomNumberText = LiveRoomLocalize("Demo.TRTC.LiveRoom.roomNumber")
+    static let inviteText = liveRoomLocalize("Demo.TRTC.LiveRoom.invite")
+    static let invitePKText = liveRoomLocalize("Demo.TRTC.LiveRoom.invitepk")
+    static let loadingText = liveRoomLocalize("Demo.TRTC.LiveRoom.loading")
+    static let noAnchorText = liveRoomLocalize("Demo.TRTC.LiveRoom.noanchor")
+    static let cancelText = liveRoomLocalize("Demo.TRTC.LiveRoom.cancel")
+    static let roomNumberText = liveRoomLocalize("Demo.TRTC.LiveRoom.roomNumber")
 
 }

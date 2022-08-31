@@ -22,7 +22,7 @@ class TCStatusInfoView: NSObject{
         loadingBackground.backgroundColor = UIColor.black
         loadingBackground.alpha = 0.5
         loadingBackground.snp.remakeConstraints({ make in
-            make.edges.equalToSuperview();
+            make.edges.equalToSuperview()
         })
         return loadingBackground
     }()
@@ -54,8 +54,8 @@ class TCStatusInfoView: NSObject{
         }
         let rect = view.frame
         loadingBackground = UIView(frame: CGRect(x: 0, y: 0, width: rect.width , height: rect.height ))
-        view.addSubview(loadingBackground);
-        view.addSubview(loadingImageView);
+        view.addSubview(loadingBackground)
+        view.addSubview(loadingImageView)
         
     }
     

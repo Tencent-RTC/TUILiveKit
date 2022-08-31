@@ -141,8 +141,9 @@ class GenerateTestUserSig {
         let pointer = cHMAC.withUnsafeMutableBufferPointer { (unsafeBufferPointer) in
             return unsafeBufferPointer
         }
-        CCHmac(CCHmacAlgorithm(kCCHmacAlgSHA256), cKey!, cKeyLen, cData, cDataLen, pointer.baseAddress)
-        let data = Data.init(bytes: pointer.baseAddress!, count: cHMAC.count)
+        guard let cKey = cKey, let baseAddress = pointer.baseAddress else { return }
+        CCHmac(CCHmacAlgorithm(kCCHmacAlgSHA256), cKey, cKeyLen, cData, cDataLen, pointer.baseAddress)
+        let data = Data.init(bytes: baseAddress, count: cHMAC.count)
         return data.base64EncodedString(options: [])
     }
     

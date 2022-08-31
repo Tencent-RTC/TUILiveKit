@@ -31,7 +31,7 @@ public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldD
     var btnChat: UIButton = UIButton(type: .custom)
     lazy var reportBtn: UIButton  = {
         let btn = UIButton(type: .custom)
-        btn.setBackgroundImage(UIImage(named: "livevideo_report", in: LiveRoomBundle(), compatibleWith: nil), for: .normal)
+        btn.setBackgroundImage(UIImage(named: "livevideo_report", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
         btn.imageView?.contentMode = .scaleAspectFill
         return btn
     }()
@@ -121,7 +121,7 @@ public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldD
     }
     
     func initUI(_ linkmic: Bool) -> Void {
-        closeBtn.setBackgroundImage(UIImage(named: "live_exit", in: LiveRoomBundle(), compatibleWith: nil), for: .normal)
+        closeBtn.setBackgroundImage(UIImage(named: "live_exit", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
         closeBtn.addTarget(self, action: #selector(closeVC), for: .touchUpInside)
         addSubview(closeBtn)
         addSubview(topView)
@@ -142,7 +142,7 @@ public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldD
         
         btnChat.center = CGPoint(x: firstIconCenterX + iconSize / 2.0, y: iconCenterY)
         btnChat.bounds = CGRect(x: 0, y: 0, width: iconSize, height: iconSize)
-        btnChat.setBackgroundImage(UIImage(named: "comment", in: LiveRoomBundle(), compatibleWith: nil), for: .normal)
+        btnChat.setBackgroundImage(UIImage(named: "comment", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
         btnChat.addTarget(self, action: #selector(clickChat(_:)), for: .touchUpInside)
         addSubview(btnChat)
         closeBtn.snp.makeConstraints {  make in
@@ -152,7 +152,7 @@ public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldD
         }
 
         likeBtn.frame = CGRect(x: 0, y: 0, width: iconSize, height: iconSize)
-        likeBtn.setImage(UIImage(named: "like_hover", in: LiveRoomBundle(), compatibleWith: nil), for: .normal)
+        likeBtn.setImage(UIImage(named: "like_hover", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
         likeBtn.addTarget(self, action: #selector(clickLike(_:)), for: .touchUpInside)
         addSubview(likeBtn)
         likeBtn.snp.makeConstraints({ make in
@@ -188,7 +188,8 @@ public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldD
         statusView.isHidden = true
         addSubview(statusView)
         
-        logViewEvt = UITextView(frame: CGRect(x: 10.0, y: 55 + 2 * iconSize + CGFloat(logheadH), width: width - 20, height: height - 110 - 3 * iconSize - CGFloat(logheadH)))
+        logViewEvt = UITextView(frame: CGRect(x: 10.0, y: 55 + 2 * iconSize + CGFloat(logheadH), width:
+         width - 20, height: height - 110 - 3 * iconSize - CGFloat(logheadH)))
         guard let logViewEvt = logViewEvt else {
             return
         }
@@ -240,8 +241,9 @@ public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldD
         guard let delegate = delegate else {
             return
         }
-        let position = gestureRecognizer?.location(in: self)
-        delegate.clickScreen(position!)
+        if let position = gestureRecognizer?.location(in: self) {
+            delegate.clickScreen(position)
+        }
     }
     
     @objc func clickPlayVod() {
@@ -289,7 +291,7 @@ public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldD
             var msgModel = TCMsgModel()
             msgModel.userId = info.imUserId
             msgModel.userName = info.imUserName
-            msgModel.userMsg = LiveRoomLocalize("Demo.TRTC.LiveRoom.joininteraction")
+            msgModel.userMsg = liveRoomLocalize("Demo.TRTC.LiveRoom.joininteraction")
             msgModel.userHeadImageUrl = info.imUserIconUrl
             msgModel.msgType = .memberEnterRoom
             if !isAlready(inAudienceList: msgModel) {
@@ -300,7 +302,7 @@ public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldD
             var msgModel = TCMsgModel()
             msgModel.userId = info.imUserId
             msgModel.userName = info.imUserName
-            msgModel.userMsg = LiveRoomLocalize("Demo.TRTC.LiveRoom.exitinteraction")
+            msgModel.userMsg = liveRoomLocalize("Demo.TRTC.LiveRoom.exitinteraction")
             msgModel.userHeadImageUrl = info.imUserIconUrl
             msgModel.msgType = .memberQuitRoom
             topView.onUserExitLiveRoom()
@@ -308,7 +310,7 @@ public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldD
         case .praise:
             var msgModel = TCMsgModel()
             msgModel.userName = info.imUserName
-            msgModel.userMsg = LiveRoomLocalize("Demo.TRTC.LiveRoom.clicklike")
+            msgModel.userMsg = liveRoomLocalize("Demo.TRTC.LiveRoom.clicklike")
             msgModel.userHeadImageUrl = info.imUserIconUrl
             msgModel.msgType = .praise
             topView.onUserSendLikeMessage()

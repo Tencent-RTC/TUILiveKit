@@ -77,8 +77,6 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
         statusInfoViewArray = [TCStatusInfoComponet]()
         super.init(nibName: nil, bundle: nil)
         liveRoom?.delegate = self
-        //    NotificationCenter.default.addObserver(self, selector: #selector(onAppWillResignActive(_:)), name: UIApplication.willResignActiveNotification, object: nil)
-        //    NotificationCenter.default.addObserver(self, selector: #selector(onAppDidBecomeActive(_:)), name: UIApplication.didBecomeActiveNotification, object: nil)
         
     }
     
@@ -108,7 +106,7 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
         super.viewDidLoad()
         LiveRoomToastManager.sharedManager().setupToast()
         // load bg view
-        let backImage = UIImage(named: "avatar0_100", in: LiveRoomBundle(), compatibleWith: nil)
+        let backImage = UIImage(named: "avatar0_100", in: liveRoomBundle(), compatibleWith: nil)
         var clipImage: UIImage? = nil
         if let backImage = backImage {
             let backImageNewHeight = view.height
@@ -116,7 +114,9 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
             
             if let gsImage = TCUtil.gsImage(backImage, withGsNumber: 10) {
                 if let scaleImage = TCUtil.scale(gsImage, scaleTo: CGSize(width: backImageNewWidth, height: backImageNewHeight)) {
-                    clipImage = TCUtil.clipImage(scaleImage, in: CGRect(x: (backImageNewWidth - view.width) / 2, y: (backImageNewHeight - view.height) / 2, width: view.width, height: view.height))
+                    clipImage = TCUtil.clipImage(scaleImage, in: CGRect(x: (backImageNewWidth -
+                     view.width) / 2, y: (backImageNewHeight - view.height) / 2, width: view.width,
+                     height: view.height))
                 }
             }
         }
@@ -126,12 +126,13 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
         backgroundImageView.backgroundColor = UIColor.appBackGround
         view.addSubview(backgroundImageView)
         noOwnerTip = UILabel(frame: CGRect(x: 0, y: view.bounds.size.height / 2 - 40, width: view.bounds.size.width, height: 30))
-        noOwnerTip!.backgroundColor = UIColor.clear
-        noOwnerTip!.textColor = UIColor.white
-        noOwnerTip!.textAlignment = .center
-        noOwnerTip!.text = LiveRoomLocalize("Demo.TRTC.LiveRoom.anchornotonline")
-        view.addSubview(noOwnerTip!)
-        noOwnerTip!.isHidden = true
+        guard let noOwnerTip = noOwnerTip else { return }
+        noOwnerTip.backgroundColor = UIColor.clear
+        noOwnerTip.textColor = UIColor.white
+        noOwnerTip.textAlignment = .center
+        noOwnerTip.text = liveRoomLocalize("Demo.TRTC.LiveRoom.anchornotonline")
+        noOwnerTip.isHidden = true
+        view.addSubview(noOwnerTip)
 
         // video view
         videoParentView .frame = view.frame
@@ -198,7 +199,7 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
         closeVC(false)
         if !isErrorAlert {
             isErrorAlert = true
-            showAlert(withTitle: LiveRoomLocalize("Demo.TRTC.LiveRoom.endedinteractive"), sureAction: { [weak self] in
+            showAlert(withTitle: liveRoomLocalize("Demo.TRTC.LiveRoom.endedinteractive"), sureAction: { [weak self] in
                 guard let self = self else { return }
                 if let isRoot = self.navigationController?.viewControllers.first?.isEqual(self), isRoot {
                     self.dismiss(animated: true)
@@ -211,22 +212,23 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
     
     func clickPlayVod() {
         if !videoFinished {
-            if (playType == TX_Enum_PlayType.PLAY_TYPE_VOD_FLV) || (playType == TX_Enum_PlayType.PLAY_TYPE_VOD_HLS) || (playType == TX_Enum_PlayType.PLAY_TYPE_VOD_MP4) {
+            if (playType == TX_Enum_PlayType.PLAY_TYPE_VOD_FLV) || (playType ==
+             TX_Enum_PlayType.PLAY_TYPE_VOD_HLS) || (playType == TX_Enum_PlayType.PLAY_TYPE_VOD_MP4) {
                 if videoPause {
                     assert(false, "")
                     //                [self.liveRoom resume];
-                    logicView?.playBtn.setImage(UIImage(named: "pause", in: LiveRoomBundle(), compatibleWith: nil), for: .normal)
+                    logicView?.playBtn.setImage(UIImage(named: "pause", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
                     UIApplication.shared.isIdleTimerDisabled = true
                 } else {
                     assert(false, "")
                     //                [self.liveRoom pause];
-                    logicView?.playBtn.setImage(UIImage(named: "start", in: LiveRoomBundle(), compatibleWith: nil), for: .normal)
+                    logicView?.playBtn.setImage(UIImage(named: "start", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
                     UIApplication.shared.isIdleTimerDisabled = false
                 }
                 videoPause = !videoPause
             } else {
                 _ = startRtmp()
-                logicView?.playBtn.setImage(UIImage(named: "pause", in: LiveRoomBundle(), compatibleWith: nil), for: .normal)
+                logicView?.playBtn.setImage(UIImage(named: "pause", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
                 UIApplication.shared.isIdleTimerDisabled = true
             }
         }
@@ -246,42 +248,43 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
             var frame = view.frame
             frame.size.height -= bottom
             logicView = TCAudienceToolbarView(frame: frame, live: liveInfo, withLinkMic: true)
-            logicView!.delegate = self
-            logicView!.liveRoom = liveRoom
-            logicView?.setRoomId(liveInfo?.roomId)
-            view.addSubview(logicView!)
+            guard let logicView = logicView else { return }
+            logicView.delegate = self
+            logicView.liveRoom = liveRoom
+            logicView.setRoomId(liveInfo?.roomId)
+            view.addSubview(logicView)
             let icon_size = BOTTOM_BTN_ICON_WIDTH
             let startSpace: CGFloat = 15
             let icon_count: CGFloat = 7
             
-            let icon_center_interval = CGFloat(logicView!.width - 2 * startSpace - CGFloat(icon_size))/CGFloat(icon_count - 1)
+            let icon_center_interval = CGFloat(logicView.width - 2 * startSpace - CGFloat(icon_size))/CGFloat(icon_count - 1)
             
-            let icon_center_y = CGFloat(logicView?.height ?? 0.0 - CGFloat(icon_size / 2)) - startSpace
+            let icon_center_y = CGFloat(logicView.height ?? 0.0 - CGFloat(icon_size / 2)) - startSpace
             
-            btnLinkMic.center = CGPoint(x: logicView?.closeBtn.center.x ?? 0.0 - icon_center_interval, y: icon_center_y)
-            btnLinkMic.setImage(UIImage(named: "linkmic_on", in: LiveRoomBundle(), compatibleWith: nil), for: .normal)
+            btnLinkMic.center = CGPoint(x: logicView.closeBtn.center.x ?? 0.0 - icon_center_interval, y: icon_center_y)
+            btnLinkMic.setImage(UIImage(named: "linkmic_on", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
             btnLinkMic.addTarget(self, action: #selector(clickBtnLinkMic(_:)), for: .touchUpInside)
-            logicView!.addSubview(btnLinkMic)
+            logicView.addSubview(btnLinkMic)
             btnLinkMic.snp.makeConstraints({ make in
                 make.width.height.equalTo(icon_size)
-                make.centerX.equalTo(logicView!.closeBtn).offset(-icon_center_interval * 2.5)
-                make.centerY.equalTo(logicView!.closeBtn )
+                make.centerX.equalTo(logicView.closeBtn).offset(-icon_center_interval * 2.5)
+                make.centerY.equalTo(logicView.closeBtn )
             })
             let rectBtnLinkMic = btnLinkMic.frame
             btnCamera = UIButton(type: .custom)
             btnCamera.center = CGPoint(x: btnLinkMic.center.x - icon_center_interval, y: icon_center_y)
             btnCamera.bounds = CGRect(x: 0, y: 0, width: rectBtnLinkMic.width, height: rectBtnLinkMic.height)
-            btnCamera.setImage(UIImage(named: "camera", in: LiveRoomBundle(), compatibleWith: nil), for: .normal)
+            btnCamera.setImage(UIImage(named: "camera", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
             btnCamera.addTarget(self, action: #selector(clickBtnCamera(_:)), for: .touchUpInside)
             btnCamera.isHidden = true
-            logicView!.addSubview(btnCamera)
+            logicView.addSubview(btnCamera)
             
             initStatusInfoView(0)
             initStatusInfoView(1)
             initStatusInfoView(2)
             
-            logicView!.removeFromSuperview()
-            view.addSubview(logicView!)
+            logicView.removeFromSuperview()
+            view.addSubview(logicView)
             
         }
     }
@@ -291,11 +294,14 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
         let statusInfoView = TCStatusInfoComponet()
         let y = CGFloat(SafeAreaTopHeight) + CGFloat(VIDEO_VIEW_HEIGHT * index) + 68
         
-        let videoView = UIView(frame: CGRect(x: Int(CGFloat(Int(CGFloat(Int(width) - VIDEO_VIEW_WIDTH - VIDEO_VIEW_MARGIN_RIGHT)))), y: Int(y) , width: VIDEO_VIEW_WIDTH, height: VIDEO_VIEW_HEIGHT))
+        let videoView = UIView(frame: CGRect(x: Int(CGFloat(Int(CGFloat(Int(width) - VIDEO_VIEW_WIDTH -
+         VIDEO_VIEW_MARGIN_RIGHT)))), y: Int(y) , width: VIDEO_VIEW_WIDTH, height: VIDEO_VIEW_HEIGHT))
         statusInfoView.setVideoView(videoView)
         let x = Int(width) - VIDEO_VIEW_WIDTH - VIDEO_VIEW_MARGIN_RIGHT
         statusInfoView.linkFrame = CGRect(x:x , y: Int(y), width: VIDEO_VIEW_WIDTH, height: VIDEO_VIEW_HEIGHT)
-        view.addSubview(statusInfoView.videoView!)
+        if let videoView = statusInfoView.videoView {
+            view.addSubview(videoView)
+        }
         statusInfoViewArray.append(statusInfoView)
     }
     
@@ -332,8 +338,8 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
             return
         }
         liveRoom?.showVideoDebugLog(false)
-        if liveRoom != nil {
-            liveRoom!.exitRoom(callback: { code, error in
+        if liveRoom != nil, let liveRoom = liveRoom{
+            liveRoom.exitRoom(callback: { code, error in
                 print(String(format: "exitRoom: errCode[%ld] errMsg[%@]", code, error ?? ""))
             })
         }
@@ -346,7 +352,7 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
             guard let `self` = self else { return }
             if errCode != 0 {
                 if self.isInVC {
-                    self.showAlert(withTitle: LiveRoomLocalize("Demo.TRTC.LiveRoom.anchorcloseinteractionroom"), sureAction: {
+                    self.showAlert(withTitle: liveRoomLocalize("Demo.TRTC.LiveRoom.anchorcloseinteractionroom"), sureAction: {
                         self.closeVC(withRefresh: true, popViewController: true)
                     })
                 } else {
@@ -359,7 +365,7 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
     
     func showAlert(withTitle title: String?, sureAction callback: @escaping () -> Void) {
         let alertController = UIAlertController(title: title, message: nil, preferredStyle: .alert)
-        let sureAction = UIAlertAction(title: LiveRoomLocalize("Demo.TRTC.LiveRoom.confirm"), style: .default, handler: {  action in
+        let sureAction = UIAlertAction(title: liveRoomLocalize("Demo.TRTC.LiveRoom.confirm"), style: .default, handler: {  action in
             callback()
         })
         alertController.addAction(sureAction)
@@ -384,7 +390,8 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
             })
         })
         
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(1 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: { [self] in
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(1 *
+         Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: { [self] in
             if isGetList {
                 return
             }
@@ -453,7 +460,7 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
                     break
                 }
             }
-            btnLinkMic.setImage(UIImage(named: "linkmic_on", in: LiveRoomBundle(), compatibleWith: nil), for: .normal)
+            btnLinkMic.setImage(UIImage(named: "linkmic_on", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
             btnLinkMic.isEnabled = true
             btnCamera.isHidden = true
             
@@ -465,10 +472,10 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
     @objc func onWaitLinkMicResponseTimeOut() {
         if isWaitingResponse == true {
             isWaitingResponse = false
-            btnLinkMic.setImage(UIImage(named: "linkmic_on", in: LiveRoomBundle(), compatibleWith: nil), for: .normal)
+            btnLinkMic.setImage(UIImage(named: "linkmic_on", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
             btnLinkMic.isEnabled = true
             hideWaitingNotice()
-            TCUtil.toastTip(LiveRoomLocalize("Demo.TRTC.LiveRoom.micconnecttimeoutandanchornoresponse"), parentView: view)
+            TCUtil.toastTip(liveRoomLocalize("Demo.TRTC.LiveRoom.micconnecttimeoutandanchornoresponse"), parentView: view)
         }
     }
     
@@ -510,14 +517,14 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
         DispatchQueue.main.async(execute: { [weak self] in
             guard let `self` = self else { return }
             print("onRoomDestroy, roomID:\(roomID ?? "")")
-            self.showAlert(withTitle: LiveRoomLocalize("Demo.TRTC.LiveRoom.anchorcloseinteraction"), sureAction: {
+            self.showAlert(withTitle: liveRoomLocalize("Demo.TRTC.LiveRoom.anchorcloseinteraction"), sureAction: {
                 self.closeVC(withRefresh: true, popViewController: true)
             })
         })
     }
     
     func onKickoutJoinAnchor() {
-        TCUtil.toastTip(LiveRoomLocalize("Demo.TRTC.LiveRoom.sorryforkicked"), parentView: view)
+        TCUtil.toastTip(liveRoomLocalize("Demo.TRTC.LiveRoom.sorryforkicked"), parentView: view)
         stopLocalPreview()
     }
     
@@ -637,7 +644,7 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
             return false
         }
         if !(playUrl.hasPrefix("http:") || playUrl.hasPrefix("https:") || playUrl.hasPrefix("rtmp:") ) {
-            TCUtil.toastTip(LiveRoomLocalize("Demo.TRTC.LiveRoom.addressillegalandsupportrfhm"), parentView: view)
+            TCUtil.toastTip(liveRoomLocalize("Demo.TRTC.LiveRoom.addressillegalandsupportrfhm"), parentView: view)
             return false
         }
         if isLivePlay {
@@ -646,7 +653,7 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
             } else if (playUrl.hasPrefix("https:") || playUrl.hasPrefix("http:") ) && ((playUrl as NSString?)?.range(of: ".flv").length ?? 0) > 0 {
                 playType = TX_Enum_PlayType.PLAY_TYPE_LIVE_FLV
             } else {
-                TCUtil.toastTip(LiveRoomLocalize("Demo.TRTC.LiveRoom.addressillegalandsupportrf"), parentView: view)
+                TCUtil.toastTip(liveRoomLocalize("Demo.TRTC.LiveRoom.addressillegalandsupportrf"), parentView: view)
                 return false
             }
         } else {
@@ -660,12 +667,12 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
                 } else if playUrl.range(of: ".mp4") != nil {
                     playType = TX_Enum_PlayType.PLAY_TYPE_VOD_MP4
                 } else {
-                    TCUtil.toastTip(LiveRoomLocalize("Demo.TRTC.LiveRoom.addressillegalandsupportfhm"), parentView: view)
+                    TCUtil.toastTip(liveRoomLocalize("Demo.TRTC.LiveRoom.addressillegalandsupportfhm"), parentView: view)
                     return false
                 }
                 
             } else {
-                TCUtil.toastTip(LiveRoomLocalize("Demo.TRTC.LiveRoom.addressillegalandsupportfhm"), parentView: view)
+                TCUtil.toastTip(liveRoomLocalize("Demo.TRTC.LiveRoom.addressillegalandsupportfhm"), parentView: view)
                 return false
             }
         }
@@ -675,7 +682,11 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
     func switchPKMode() {
         for statusInfoView in statusInfoViewArray {
             if statusInfoView.userID != nil {
-                statusInfoView.videoView!.frame = CGRect(x: view.frame.size.width / 2, y: 0, width: view.frame.size.width / 2, height: view.frame.size.height / 2)
+                guard let videoView = statusInfoView.videoView else {
+                    continue
+                }
+                videoView.frame = CGRect(x: view.frame.size.width / 2, y: 0, width:
+                 view.frame.size.width / 2, height: view.frame.size.height / 2)
                 break
             }
         }
@@ -684,7 +695,10 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
     func linkFrameRestore() {
         for statusInfoView in statusInfoViewArray {
             if statusInfoView.userID != nil {
-                statusInfoView.videoView!.frame = statusInfoView.linkFrame
+                guard let videoView = statusInfoView.videoView else {
+                    continue
+                }
+                videoView.frame = statusInfoView.linkFrame
             }
         }
     }
@@ -738,7 +752,7 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
         info.imUserName = user.userName
         info.imUserIconUrl = user.avatarURL
         info.cmdType = TCMsgModelType.memberQuitRoom
-        logicView!.handleIMMessage(info, msgText: "")
+        logicView?.handleIMMessage(info, msgText: "")
     }
     
     public func trtcLiveRoom(_ trtcLiveRoom: TRTCLiveRoom, onRoomInfoChange info: TRTCLiveRoomInfo) {
@@ -774,18 +788,18 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
         if isBeingLinkMic == false {
             let statusAudio: AVAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: .audio)
             if statusAudio == .denied {
-                TCUtil.toastTip(LiveRoomLocalize("Demo.TRTC.LiveRoom.micauthorityfailed"), parentView: view)
+                TCUtil.toastTip(liveRoomLocalize("Demo.TRTC.LiveRoom.micauthorityfailed"), parentView: view)
                 return
             }
             let statusVideo: AVAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
             if statusVideo == .denied {
-                TCUtil.toastTip(LiveRoomLocalize("Demo.TRTC.LiveRoom.cameraauthorityfailed"), parentView: view)
+                TCUtil.toastTip(liveRoomLocalize("Demo.TRTC.LiveRoom.cameraauthorityfailed"), parentView: view)
                 return
             }
             let version = UIDevice.current.systemVersion
             let versionflag = version.compare("8.0.0", options: NSString.CompareOptions.numeric)
             if versionflag == .orderedAscending{
-                TCUtil.toastTip(LiveRoomLocalize("Demo.TRTC.LiveRoom.notsupporthardencodeandstartmicconnectfailed"), parentView: view)
+                TCUtil.toastTip(liveRoomLocalize("Demo.TRTC.LiveRoom.notsupporthardencodeandstartmicconnectfailed"), parentView: view)
                 return
             }
             
@@ -803,9 +817,9 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
         
         NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(onWaitLinkMicResponseTimeOut), object: nil)
         perform(#selector(onWaitLinkMicResponseTimeOut), with: nil, afterDelay: 20)
-        btnLinkMic.setImage(UIImage(named: "linkmic_off", in: LiveRoomBundle(), compatibleWith: nil), for: .normal)
+        btnLinkMic.setImage(UIImage(named: "linkmic_off", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
         btnLinkMic.isEnabled = false
-        showWaitingNotice(LiveRoomLocalize("Demo.TRTC.LiveRoom.waitforanchoraccept"))
+        showWaitingNotice(liveRoomLocalize("Demo.TRTC.LiveRoom.waitforanchoraccept"))
         self.liveRoom?.requestJoinAnchor(reason: "", timeout: trtcLiveSendMsgTimeOut, responseCallback: { [weak self] agreed, reason in
             guard let `self` = self else { return }
             if self.isWaitingResponse == false || !self.isInVC {
@@ -816,8 +830,8 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
             self.hideWaitingNotice()
             if agreed {
                 self.isBeingLinkMic = true
-                self.btnLinkMic.setImage(UIImage(named: "linkmic_off", in: LiveRoomBundle(), compatibleWith: nil), for: .normal)
-                TCUtil.toastTip(LiveRoomLocalize("Demo.TRTC.LiveRoom.anchoracceptreqandbegan"), parentView: self.view)
+                self.btnLinkMic.setImage(UIImage(named: "linkmic_off", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
+                TCUtil.toastTip(liveRoomLocalize("Demo.TRTC.LiveRoom.anchoracceptreqandbegan"), parentView: self.view)
                 
                 //推流允许前后切换摄像头
                 self.btnCamera.isHidden = false
@@ -846,11 +860,11 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
             } else {
                 self.isBeingLinkMic = false
                 self.isWaitingResponse = false
-                self.btnLinkMic.setImage(UIImage(named: "linkmic_on", in: LiveRoomBundle(), compatibleWith: nil), for: .normal)
+                self.btnLinkMic.setImage(UIImage(named: "linkmic_on", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
                 if reason?.count ?? 0 > 0 {
                     TCUtil.toastTip(reason, parentView: self.view)
                 } else {
-                    TCUtil.toastTip(LiveRoomLocalize("Demo.TRTC.LiveRoom.refusemicconnectionreq"), parentView: self.view)
+                    TCUtil.toastTip(liveRoomLocalize("Demo.TRTC.LiveRoom.refusemicconnectionreq"), parentView: self.view)
                 }
             }
         })
@@ -866,25 +880,25 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
 extension TCAudienceViewController {
     
     private func activeTUIWidget() {
-        if barrageView == nil && loadBarrageWidget() {
-            view.addSubview(barrageView!)
-            view.addSubview(barrageInputView!)
-            barrageInputView?.snp.makeConstraints { make in
+        if barrageView == nil && loadBarrageWidget(), let barrageView = barrageView, let barrageInputView = barrageInputView {
+            view.addSubview(barrageView)
+            view.addSubview(barrageInputView)
+            barrageInputView.snp.makeConstraints { make in
                 make.edges.equalToSuperview()
             }
-            barrageView?.snp.makeConstraints { make in
+            barrageView.snp.makeConstraints { make in
                 make.leading.equalTo(20)
                 make.top.equalTo(SCREEN_HEIGHT - 300 - 120)
                 make.height.equalTo(300)
                 make.width.equalTo(SCREEN_WIDTH - 20*2)
             }
         }
-        if giftView == nil && loadGiftWidget() {
-            view.addSubview(giftView!)
-            giftView?.snp.makeConstraints({ make in
+        if giftView == nil && loadGiftWidget(), let giftView = giftView {
+            view.addSubview(giftView)
+            giftView.snp.makeConstraints({ make in
                 make.edges.equalToSuperview()
             })
-            giftView?.isHidden = false
+            giftView.isHidden = false
         }
     }
     
@@ -898,7 +912,7 @@ extension TCAudienceViewController {
         guard let inputView = inputViewInfo[TUICore_TUIBarrageExtension_GetTUIBarrageSendView] as? UIView else {
             return false
         }
-        self.barrageInputView = inputView;
+        self.barrageInputView = inputView
 
         let barrageViewInfo = TUICore.getExtensionInfo(TUICore_TUIBarrageExtension_TUIBarrageDisplayView,
                                                        param: ["frame": UIScreen.main.bounds,

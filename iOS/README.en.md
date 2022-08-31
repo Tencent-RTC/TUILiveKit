@@ -82,9 +82,6 @@ Note: You need to prepare at least two devices to try out TUILiveRoom. Here, use
 |---------|---------|
 | <img src="https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/user_b_ios.png" width="320"/> | <img src="https://qcloudimg.tencent-cloud.cn/raw/fe39e76723f304de52b9d677a8cebf97.png" width="320"/> | 
 
-## Have any questions?
-Welcome to join our Telegram Group to communicate with our professional engineers! We are more than happy to hear from you~
-Click to join: https://t.me/+EPk6TMZEZMM5OGY1
-Or scan the QR code
-
-<img src="https://qcloudimg.tencent-cloud.cn/raw/9c67ed5746575e256b81ce5a60216c5a.jpg" width="320"/>
+## FAQs
+- [FAQs About TUI Scenario-Specific Solution](https://cloud.tencent.com/developer/article/1952880)
+- If you have any questions or feedback, feel free to [contact us](https://intl.cloud.tencent.com/contact-us).
