@@ -11,7 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-static NSString *trtcLiveRoomProtocolVersion = @"1.0.0";
+static NSString *gTrtcLiveRoomProtocolVersion = @"1.0.0";
 
 typedef NS_ENUM(NSUInteger, TRTCLiveRoomIMActionType) {
     TRTCLiveRoomIMActionTypeUnknown = 0,
@@ -44,7 +44,8 @@ extern NSString * const Signal_RespondQuitRoomPK;
 @class TRTCLiveRoomInfo;
 @class TRTCCreateRoomParam;
 typedef void(^LRIMCallback)(int code, NSString* message);
-typedef void(^LREnterRoomCallback)(NSArray<TRTCLiveUserInfo *> *members, NSDictionary<NSString *, id> * customInfo, TRTCLiveRoomInfo * _Nullable roomInfo);
+typedef void(^LREnterRoomCallback)(NSArray<TRTCLiveUserInfo *> *members, NSDictionary<NSString *,
+ id> * customInfo, TRTCLiveRoomInfo * _Nullable roomInfo);
 typedef void(^LRMemberCallback)(NSArray<TRTCLiveUserInfo *> *members);
 typedef void(^LRRoomInfosCallback)(NSArray<TRTCLiveRoomInfo *> *roomInfos);
 
@@ -60,7 +61,8 @@ typedef void(^LRRoomInfosCallback)(NSArray<TRTCLiveRoomInfo *> *roomInfos);
 
 + (void)setProfileWithName:(NSString *)name avatar:(NSString *)avatar callback:(LRIMCallback  _Nullable)callback;
 
-+ (void)createRoomWithRoomID:(NSString *)roomID roomParam:(TRTCCreateRoomParam *)roomParam success:(LREnterRoomCallback _Nullable)success error:(LRIMCallback _Nullable)errorCallback;
++ (void)createRoomWithRoomID:(NSString *)roomID roomParam:(TRTCCreateRoomParam *)roomParam
+ success:(LREnterRoomCallback _Nullable)success error:(LRIMCallback _Nullable)errorCallback;
 
 + (void)destroyRoomWithRoomID:(NSString *)roomID callback:(LRIMCallback _Nullable)callback;
 
@@ -77,13 +79,15 @@ typedef void(^LRRoomInfosCallback)(NSArray<TRTCLiveRoomInfo *> *roomInfos);
 
 + (void)sendRoomTextMsgWithRoomID:(NSString *)roomID message:(NSString *)message callback:(LRIMCallback _Nullable)callback;
 
-+ (void)sendRoomCustomMsgWithRoomID:(NSString *)roomID command:(NSString *)command message:(NSString *)message callback:(LRIMCallback _Nullable)callback;
++ (void)sendRoomCustomMsgWithRoomID:(NSString *)roomID command:(NSString *)command
+ message:(NSString *)message callback:(LRIMCallback _Nullable)callback;
 
 + (void)updateGroupInfoWithRoomID:(NSString *)roomID groupInfo:(NSDictionary<NSString *, id> *)groupInfo callback:(LRIMCallback _Nullable)callback;
 
 
 #pragma mark - Signaling Channel
-+ (NSString * _Nullable)requestJoinAnchorWithUserID:(NSString *)userID timeout:(int)timeout reason:(NSString *)reason callback:(LRIMCallback _Nullable)callback;
++ (NSString * _Nullable)requestJoinAnchorWithUserID:(NSString *)userID timeout:(int)timeout
+ reason:(NSString *)reason callback:(LRIMCallback _Nullable)callback;
 
 + (void)cancelRequestJoinAnchorWithRequestID:(NSString *)requestID reason:(NSString *)reason callback:(LRIMCallback)callback;
 
@@ -93,11 +97,14 @@ typedef void(^LRRoomInfosCallback)(NSArray<TRTCLiveRoomInfo *> *roomInfos);
 
 + (void)respondKickoutJoinAnchor:(NSString *)inviteID agree:(BOOL)agree message:(NSString *)message;
 
-+ (NSString *)requestRoomPKWithUserID:(NSString *)userID timeout:(int)timeout fromRoomID:(NSString *)fromRoomID fromStreamID:(NSString *)fromStreamID callback:(LRIMCallback _Nullable)callback;
++ (NSString *)requestRoomPKWithUserID:(NSString *)userID timeout:(int)timeout
+ fromRoomID:(NSString *)fromRoomID fromStreamID:(NSString *)fromStreamID callback:(LRIMCallback
+ _Nullable)callback;
 
 + (void)cancelRequestRoomPKWithRequestID:(NSString *)requestID reason:(NSString *)reason callback:(LRIMCallback)callback;
 
-+ (void)responseRoomPKWithRequestID:(NSString *)requestID agreed:(BOOL)agreed reason:(NSString * _Nullable)reason streamID:(NSString *)streamID callback:(LRIMCallback _Nullable)callback;
++ (void)responseRoomPKWithRequestID:(NSString *)requestID agreed:(BOOL)agreed reason:(NSString *
+ _Nullable)reason streamID:(NSString *)streamID callback:(LRIMCallback _Nullable)callback;
 
 + (NSString *)quitRoomPKWithUserID:(NSString *)userID callback:(LRIMCallback _Nullable)callback;
 

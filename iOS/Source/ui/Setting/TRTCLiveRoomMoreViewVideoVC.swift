@@ -46,7 +46,7 @@ class TRTCLiveRoomMoreViewVideoVC: UIViewController, UIPickerViewDelegate, UIPic
     }()
 
     lazy var resolutionImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "live_back", in: LiveRoomBundle(), compatibleWith: nil))
+        let imageView = UIImageView(image: UIImage(named: "live_back", in: liveRoomBundle(), compatibleWith: nil))
         imageView.transform = CGAffineTransform(rotationAngle: CGFloat(Double.pi))
         imageView.frame = CGRect(x: ScreenWidth - 20 - 16, y: 30 + (25 - 16) / 2, width: 16, height: 16)
         return imageView
@@ -62,7 +62,7 @@ class TRTCLiveRoomMoreViewVideoVC: UIViewController, UIPickerViewDelegate, UIPic
     }()
 
     lazy var frameImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "live_back", in: LiveRoomBundle(), compatibleWith: nil))
+        let imageView = UIImageView(image: UIImage(named: "live_back", in: liveRoomBundle(), compatibleWith: nil))
         imageView.transform = CGAffineTransform(rotationAngle: CGFloat(Double.pi))
         imageView.frame = CGRect(x: ScreenWidth - 20 - 16, y: 80 + (25 - 16) / 2, width: 16, height: 16)
         return imageView
@@ -157,7 +157,7 @@ class TRTCLiveRoomMoreViewVideoVC: UIViewController, UIPickerViewDelegate, UIPic
         ]
 
         let alert = TRTCLiveRoomResolutionAlert()
-        alert.titleLabel.text = LiveRoomLocalize("Demo.TRTC.LiveRoom.framerate")
+        alert.titleLabel.text = liveRoomLocalize("Demo.TRTC.LiveRoom.framerate")
         alert.dataSource = dataSource
         alert.selectIndex = frameIndex
         window.addSubview(alert)
@@ -297,10 +297,10 @@ class TRTCLiveRoomMoreViewVideoVC: UIViewController, UIPickerViewDelegate, UIPic
 // MARK: - internationalization string
 
 fileprivate extension String {
-    static let resolutionText = LiveRoomLocalize("Demo.TRTC.LiveRoom.resolution")
-    static let framerateText = LiveRoomLocalize("Demo.TRTC.LiveRoom.framerate")
-    static let bitrateText = LiveRoomLocalize("Demo.TRTC.LiveRoom.bitrate")
-    static let localmirrorText = LiveRoomLocalize("Demo.TRTC.LiveRoom.localmirror")
-    static let resolutionSelectedText = LiveRoomLocalize("Demo.TRTC.LiveRoom.resolutionselected")
-    static let framerateSelectedText = LiveRoomLocalize("Demo.TRTC.LiveRoom.framerateselected")
+    static let resolutionText = liveRoomLocalize("Demo.TRTC.LiveRoom.resolution")
+    static let framerateText = liveRoomLocalize("Demo.TRTC.LiveRoom.framerate")
+    static let bitrateText = liveRoomLocalize("Demo.TRTC.LiveRoom.bitrate")
+    static let localmirrorText = liveRoomLocalize("Demo.TRTC.LiveRoom.localmirror")
+    static let resolutionSelectedText = liveRoomLocalize("Demo.TRTC.LiveRoom.resolutionselected")
+    static let framerateSelectedText = liveRoomLocalize("Demo.TRTC.LiveRoom.framerateselected")
 }

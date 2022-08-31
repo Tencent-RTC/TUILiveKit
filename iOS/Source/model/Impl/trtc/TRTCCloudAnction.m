@@ -13,7 +13,7 @@
 #import "LiveRoomLocalized.h"
 #import <MJExtension/MJExtension.h>
 
-static int trtcLivePlayTimeOut = 5;
+static int gTrtcLivePlayTimeOut = 5;
 static const int TC_COMPONENT_LIVEROOM = 4;
 static const int TC_TRTC_FRAMEWORK     = 1;
 
@@ -69,13 +69,13 @@ static const int TC_TRTC_FRAMEWORK     = 1;
     return self;
 }
 
-- (void)onPlayEvent:(int)EvtID withParam:(NSDictionary *)param {
-    if (EvtID == PLAY_EVT_RCV_FIRST_I_FRAME) {
+- (void)onPlayEvent:(int)evtID withParam:(NSDictionary *)param {
+    if (evtID == PLAY_EVT_RCV_FIRST_I_FRAME) {
         if (self.action) {
             [self.action playCallBackWithUserId:self.streamId code:0 message:@""];
             self.action = nil;
         }
-    } else if (EvtID < 0) {
+    } else if (evtID < 0) {
         if (self.action) {
             [self.action playCallBackWithUserId:self.streamId code:-1 message:@""];
             self.action = nil;
@@ -214,11 +214,12 @@ static const int TC_TRTC_FRAMEWORK     = 1;
     [[TRTCCloud sharedInstance] stopPublishCDNStream];
 }
 
-- (void)startPlay:(NSString *)userId streamID:(NSString *)streamID view:(UIView *)view usesCDN:(BOOL)usesCDN roomId:(NSString *)roomId callback:(Callback)callback {
+- (void)startPlay:(NSString *)userId streamID:(NSString *)streamID view:(UIView *)view
+ usesCDN:(BOOL)usesCDN roomId:(NSString *)roomId callback:(Callback)callback {
     PlayInfo *info = self.userPlayInfo[userId];
     if (info) {
         if (callback) {
-            callback(-1, LiveRoomLocalize(@"Demo.TRTC.LiveRoom.donotreplaypls"));
+            callback(-1, liveRoomLocalize(@"Demo.TRTC.LiveRoom.donotreplaypls"));
         }
         return;
     }
@@ -236,13 +237,13 @@ static const int TC_TRTC_FRAMEWORK     = 1;
         [[TRTCCloud sharedInstance] startRemoteView:userId view:view];
         NSString* blockUUID = [self.curroomUUID mutableCopy];
         @weakify(self)
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(trtcLivePlayTimeOut * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(gTrtcLivePlayTimeOut * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             @strongify(self)
             if (!self) {
                 return;
             }
             if ([self.curroomUUID isEqualToString:blockUUID]) {
-                [self playCallBackWithUserId:userId code:-1 message:LiveRoomLocalize(@"Demo.TRTC.LiveRoom.timeouttonotplay")];
+                [self playCallBackWithUserId:userId code:-1 message:liveRoomLocalize(@"Demo.TRTC.LiveRoom.timeouttonotplay")];
             }
         });
     }
@@ -260,11 +261,11 @@ static const int TC_TRTC_FRAMEWORK     = 1;
     PlayInfo* playInfo = self.userPlayInfo[userId];
     if (usesCDN) {
         if (playInfo.streamId) {
-            [self playCallBackWithUserId:playInfo.streamId code:-1 message:LiveRoomLocalize(@"Demo.TRTC.LiveRoom.stopplaying")];
+            [self playCallBackWithUserId:playInfo.streamId code:-1 message:liveRoomLocalize(@"Demo.TRTC.LiveRoom.stopplaying")];
         }
         [self stopCdnPlay:playInfo.cdnPlayer];
     } else {
-        [self playCallBackWithUserId:userId code:-1 message:LiveRoomLocalize(@"Demo.TRTC.LiveRoom.stopplaying")];
+        [self playCallBackWithUserId:userId code:-1 message:liveRoomLocalize(@"Demo.TRTC.LiveRoom.stopplaying")];
         [[TRTCCloud sharedInstance] stopRemoteView:userId];
     }
     [self.userPlayInfo removeObjectForKey:userId];
@@ -385,7 +386,7 @@ static const int TC_TRTC_FRAMEWORK     = 1;
     cdnPlayer.delegate = trtcCDNDelegate;
     int result = [cdnPlayer startPlay:streamUrl type:PLAY_TYPE_LIVE_FLV];
     if (result != 0) {
-        [self playCallBackWithUserId:streamId code:result message:LiveRoomLocalize(@"Demo.TRTC.LiveRoom.playingfailed")];
+        [self playCallBackWithUserId:streamId code:result message:liveRoomLocalize(@"Demo.TRTC.LiveRoom.playingfailed")];
     }
 }
 

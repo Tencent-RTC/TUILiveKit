@@ -218,7 +218,7 @@
     NSArray *anchorList = groupInfo[@"list"];
     if (!anchorList) {
 #if DEBUG
-        NSAssert(NO, LiveRoomLocalize(@"Demo.TRTC.LiveRoom.anchorlistisnull"));
+        NSAssert(NO, liveRoomLocalize(@"Demo.TRTC.LiveRoom.anchorlistisnull"));
 #endif
         return;
     }

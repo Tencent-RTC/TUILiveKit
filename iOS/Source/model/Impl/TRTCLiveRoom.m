@@ -372,6 +372,12 @@ static double trtcLiveCheckStatusTimeOut = 3;
             return;
         }
         [self.memberManager setmembers:members groupInfo:customInfo];
+        for (TRTCLiveUserInfo *info in members) {
+            if ([info.userId isEqualToString:roomInfo.ownerId]) {
+                [self.memberManager setOwner:info];
+                break;
+            }
+        }
         self.curRoomInfo = roomInfo;
         self.status = roomInfo != nil ? roomInfo.roomStatus : TRTCLiveRoomLiveStatusSingle;
         if (callback) {
@@ -395,7 +401,7 @@ static double trtcLiveCheckStatusTimeOut = 3;
             return;
         }
         if ([uuid isEqualToString:self.trtcAction.curroomUUID] && self.enterRoomCallback) {
-            self.enterRoomCallback(-1, LiveRoomLocalize(@"Demo.TRTC.LiveRoom.enterroomtimeout"));
+            self.enterRoomCallback(-1, liveRoomLocalize(@"Demo.TRTC.LiveRoom.enterroomtimeout"));
             self.enterRoomCallback = nil;
         }
     });
@@ -411,7 +417,7 @@ static double trtcLiveCheckStatusTimeOut = 3;
     }
     if (self.isOwner) {
         if (callback) {
-            callback(-1, LiveRoomLocalize(@"Demo.TRTC.LiveRoom.onlyordinarymembercanexit"));
+            callback(-1, liveRoomLocalize(@"Demo.TRTC.LiveRoom.onlyordinarymembercanexit"));
         }
         return;
     }
@@ -454,7 +460,7 @@ static double trtcLiveCheckStatusTimeOut = 3;
     NSString *roomId = [self checkRoomJoined:nil];
     if (!roomId) {
         if (callback) {
-            callback(-1, LiveRoomLocalize(@"Demo.TRTC.LiveRoom.notenterroom"), self.memberManager.audience);
+            callback(-1, liveRoomLocalize(@"Demo.TRTC.LiveRoom.notenterroom"), self.memberManager.audience);
         }
         return;
     }
@@ -557,7 +563,7 @@ static double trtcLiveCheckStatusTimeOut = 3;
         [self.trtcAction startPlay:anchor.userId streamID:anchor.streamId view:view usesCDN:self.shouldPlayCdn roomId:nil callback:callback];
     } else {
         if (callback) {
-            callback(-1, LiveRoomLocalize(@"Demo.TRTC.LiveRoom.notfoundanchor"));
+            callback(-1, liveRoomLocalize(@"Demo.TRTC.LiveRoom.notfoundanchor"));
         }
     }
 }
@@ -579,28 +585,28 @@ static double trtcLiveCheckStatusTimeOut = 3;
     }
     TRTCLiveUserInfo *me = [self checkUserLogIned:nil];
     if (!me) {
-        responseCallback(NO, LiveRoomLocalize(@"Demo.TRTC.LiveRoom.notlogin"));
+        responseCallback(NO, liveRoomLocalize(@"Demo.TRTC.LiveRoom.notlogin"));
         return;
     }
     NSString *roomID = [self checkRoomJoined:nil];
     if (!roomID) {
-        responseCallback(NO, LiveRoomLocalize(@"Demo.TRTC.LiveRoom.notenterroom"));
+        responseCallback(NO, liveRoomLocalize(@"Demo.TRTC.LiveRoom.notenterroom"));
         return;
     }
     if (self.isAnchor) {
-        responseCallback(NO, LiveRoomLocalize(@"Demo.TRTC.LiveRoom.ismicconnectednow"));
+        responseCallback(NO, liveRoomLocalize(@"Demo.TRTC.LiveRoom.ismicconnectednow"));
         return;
     }
     if (self.status == TRTCLiveRoomLiveStatusRoomPK || self.pkAnchorInfo.userId) {
-        responseCallback(NO, LiveRoomLocalize(@"Demo.TRTC.LiveRoom.anchorisinpk"));
+        responseCallback(NO, liveRoomLocalize(@"Demo.TRTC.LiveRoom.anchorisinpk"));
         return;
     }
     if (self.joinAnchorInfo.userId) {
-        responseCallback(NO, LiveRoomLocalize(@"Demo.TRTC.LiveRoom.userwaitingresponseformicconnect"));
+        responseCallback(NO, liveRoomLocalize(@"Demo.TRTC.LiveRoom.userwaitingresponseformicconnect"));
         return;
     }
     if (self.status == TRTCLiveRoomLiveStatusNone) {
-        responseCallback(NO, LiveRoomLocalize(@"Demo.TRTC.LiveRoom.smtwrongandretry"));
+        responseCallback(NO, liveRoomLocalize(@"Demo.TRTC.LiveRoom.smtwrongandretry"));
         return;
     }
     
@@ -701,7 +707,7 @@ static double trtcLiveCheckStatusTimeOut = 3;
     }
     if (!self.memberManager.anchors[userID]) {
         if (callback) {
-            callback(-1, LiveRoomLocalize(@"Demo.TRTC.LiveRoom.usernotmicconnect"));
+            callback(-1, liveRoomLocalize(@"Demo.TRTC.LiveRoom.usernotmicconnect"));
         }
         return;
     }
@@ -715,33 +721,33 @@ static double trtcLiveCheckStatusTimeOut = 3;
     }
     TRTCLiveUserInfo *me = [self checkUserLogIned:nil];
     if (!me) {
-        responseCallback(NO, LiveRoomLocalize(@"Demo.TRTC.LiveRoom.notlogin"));
+        responseCallback(NO, liveRoomLocalize(@"Demo.TRTC.LiveRoom.notlogin"));
         return;
     }
     NSString *myRoomId = [self checkRoomJoined:nil];
     if (!myRoomId) {
-        responseCallback(NO, LiveRoomLocalize(@"Demo.TRTC.LiveRoom.notenterroom"));
+        responseCallback(NO, liveRoomLocalize(@"Demo.TRTC.LiveRoom.notenterroom"));
         return;
     }
     NSString* streamId = [self checkIsPublishing:nil];
     if (!streamId) {
-        responseCallback(NO, LiveRoomLocalize(@"Demo.TRTC.LiveRoom.onlypushstreamcanoperate"));
+        responseCallback(NO, liveRoomLocalize(@"Demo.TRTC.LiveRoom.onlypushstreamcanoperate"));
         return;
     }
     if (self.status == TRTCLiveRoomLiveStatusLinkMic || self.joinAnchorInfo.userId) {
-        responseCallback(NO, LiveRoomLocalize(@"Demo.TRTC.LiveRoom.anchorisconnectingandunablepk"));
+        responseCallback(NO, liveRoomLocalize(@"Demo.TRTC.LiveRoom.anchorisconnectingandunablepk"));
         return;
     }
     if (self.status == TRTCLiveRoomLiveStatusRoomPK) {
-        responseCallback(NO, LiveRoomLocalize(@"Demo.TRTC.LiveRoom.anchorisinpk"));
+        responseCallback(NO, liveRoomLocalize(@"Demo.TRTC.LiveRoom.anchorisinpk"));
         return;
     }
     if (self.pkAnchorInfo.userId) {
-        responseCallback(NO, LiveRoomLocalize(@"Demo.TRTC.LiveRoom.useriswaitingforpkrep"));
+        responseCallback(NO, liveRoomLocalize(@"Demo.TRTC.LiveRoom.useriswaitingforpkrep"));
         return;
     }
     if (self.status == TRTCLiveRoomLiveStatusNone) {
-        responseCallback(NO, LiveRoomLocalize(@"Demo.TRTC.LiveRoom.smtwrongandretry"));
+        responseCallback(NO, liveRoomLocalize(@"Demo.TRTC.LiveRoom.smtwrongandretry"));
         return;
     }
     NSString *roomIDStr = [NSString stringWithFormat:@"%u", (unsigned int)roomID];
@@ -806,7 +812,7 @@ static double trtcLiveCheckStatusTimeOut = 3;
 }
 
 - (void)responseQuitRoomPK:(NSString *)requestID {
-    [TRTCLiveRoomIMAction respondQuitRoomPK:requestID agree:YES message:LiveRoomLocalize(@"Demo.TRTC.LiveRoom.endPK")];
+    [TRTCLiveRoomIMAction respondQuitRoomPK:requestID agree:YES message:liveRoomLocalize(@"Demo.TRTC.LiveRoom.endPK")];
 }
 
 - (void)quitRoomPK:(Callback)callback {
@@ -826,7 +832,7 @@ static double trtcLiveCheckStatusTimeOut = 3;
         [TRTCLiveRoomIMAction quitRoomPKWithUserID:self.memberManager.pkAnchor.userId callback:callback];
     } else {
         if (callback) {
-            callback(-1, LiveRoomLocalize(@"Demo.TRTC.LiveRoom.isnotpkstate"));
+            callback(-1, liveRoomLocalize(@"Demo.TRTC.LiveRoom.isnotpkstate"));
         }
     }
 }
@@ -1359,7 +1365,7 @@ static double trtcLiveCheckStatusTimeOut = 3;
         return nil;
     }
     NSString *versionString = [dic objectForKey:@"version"];
-    if (![versionString isEqualToString:trtcLiveRoomProtocolVersion]) {
+    if (![versionString isEqualToString:gTrtcLiveRoomProtocolVersion]) {
         NSLog(@"Message version numbers do not match");
     }
     return dic;
@@ -1378,7 +1384,7 @@ static double trtcLiveCheckStatusTimeOut = 3;
         NSNumber* action = json[@"action"] ?: @(0);
         id version = json[@"version"] ?: @"";
         BOOL isString = [version isKindOfClass:[NSString class]];
-        if (isString && ![version isEqualToString:trtcLiveRoomProtocolVersion]) {
+        if (isString && ![version isEqualToString:gTrtcLiveRoomProtocolVersion]) {
             
         }
         [self handleActionMessage:[action intValue] elem:elem message:msg json:json];
@@ -1454,7 +1460,7 @@ static double trtcLiveCheckStatusTimeOut = 3;
         }
             break;
         case TRTCLiveRoomIMActionTypeUnknown:
-            NSLog(@"%@", LiveRoomLocalize(@"Demo.TRTC.LiveRoom.receiveothermessage"));
+            NSLog(@"%@", liveRoomLocalize(@"Demo.TRTC.LiveRoom.receiveothermessage"));
             break;
         default:
             TRTCLog(@"!!!!!!!! unknow message type");
@@ -1544,7 +1550,7 @@ static double trtcLiveCheckStatusTimeOut = 3;
 
 - (void)handleJoinAnchorRequestFromUser:(TRTCLiveUserInfo *)user reason:(NSString *)reason {
     if (self.status == TRTCLiveRoomLiveStatusRoomPK || self.pkAnchorInfo.userId != nil) {
-        [self responseJoinAnchor:user.userId agree:NO reason:LiveRoomLocalize(@"Demo.TRTC.LiveRoom.anchorispkbetweenroom")];
+        [self responseJoinAnchor:user.userId agree:NO reason:liveRoomLocalize(@"Demo.TRTC.LiveRoom.anchorispkbetweenroom")];
         return;
     }
     if ([self canDelegateResponseMethod:@selector(trtcLiveRoom:onRequestJoinAnchor:reason:)]) {
@@ -1589,11 +1595,11 @@ static double trtcLiveCheckStatusTimeOut = 3;
 
 - (void)handleRoomPKRequestFromUser:(TRTCLiveUserInfo *)user roomId:(NSString *)roomId streamId:(NSString *)streamId {
     if (self.status == TRTCLiveRoomLiveStatusLinkMic || self.onJoinAnchorDic.count > 0) {
-        [self responseRoomPKWithUserID:user.userId agree:NO reason:LiveRoomLocalize(@"Demo.TRTC.LiveRoom.anchorismicconnecting")];
+        [self responseRoomPKWithUserID:user.userId agree:NO reason:liveRoomLocalize(@"Demo.TRTC.LiveRoom.anchorismicconnecting")];
         return;
     }
     if ((self.pkAnchorInfo.userId != nil && ![self.pkAnchorInfo.roomId isEqualToString:roomId]) || self.status == TRTCLiveRoomLiveStatusRoomPK) {
-        [self responseRoomPKWithUserID:user.userId agree:NO reason:LiveRoomLocalize(@"Demo.TRTC.LiveRoom.anchorispking")];
+        [self responseRoomPKWithUserID:user.userId agree:NO reason:liveRoomLocalize(@"Demo.TRTC.LiveRoom.anchorispking")];
         return;
     }
     if ([self.pkAnchorInfo.userId isEqualToString:user.userId]) {
@@ -1675,7 +1681,7 @@ static double trtcLiveCheckStatusTimeOut = 3;
 - (TRTCLiveUserInfo *)checkUserLogIned:(Callback)callback {
     if (!self.me) {
         if (callback) {
-            callback(-1, LiveRoomLocalize(@"Demo.TRTC.LiveRoom.notlogin"));
+            callback(-1, liveRoomLocalize(@"Demo.TRTC.LiveRoom.notlogin"));
         }
         return nil;
     }
@@ -1685,7 +1691,7 @@ static double trtcLiveCheckStatusTimeOut = 3;
 - (NSString *)checkRoomJoined:(Callback)callback {
     if ([self.roomID length] == 0) {
         if (callback) {
-            callback(-1, LiveRoomLocalize(@"Demo.TRTC.LiveRoom.hasnotenterroom"));
+            callback(-1, liveRoomLocalize(@"Demo.TRTC.LiveRoom.hasnotenterroom"));
         }
         return nil;
     }
@@ -1695,7 +1701,7 @@ static double trtcLiveCheckStatusTimeOut = 3;
 - (BOOL)checkRoomUnjoined:(Callback)callback {
     if ([self.roomID length] > 0) {
         if (callback) {
-            callback(-1, LiveRoomLocalize(@"Demo.TRTC.LiveRoom.isinroomnow"));
+            callback(-1, liveRoomLocalize(@"Demo.TRTC.LiveRoom.isinroomnow"));
         }
         return NO;
     }
@@ -1705,7 +1711,7 @@ static double trtcLiveCheckStatusTimeOut = 3;
 - (BOOL)checkIsOwner:(Callback)callback {
     if (!self.isOwner) {
         if (callback) {
-            callback(-1, LiveRoomLocalize(@"Demo.TRTC.LiveRoom.onlyanchorcanoperation"));
+            callback(-1, liveRoomLocalize(@"Demo.TRTC.LiveRoom.onlyanchorcanoperation"));
         }
         return NO;
     }
@@ -1715,7 +1721,7 @@ static double trtcLiveCheckStatusTimeOut = 3;
 - (NSString *)checkIsPublishing:(Callback)callback {
     if (!self.me.streamId) {
         if (callback) {
-             callback(-1, LiveRoomLocalize(@"Demo.TRTC.LiveRoom.onlypushstreamcanoperate"));
+             callback(-1, liveRoomLocalize(@"Demo.TRTC.LiveRoom.onlypushstreamcanoperate"));
         }
         return nil;
     }

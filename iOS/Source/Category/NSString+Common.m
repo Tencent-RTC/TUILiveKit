@@ -19,7 +19,7 @@
 #define HANZI_COUNT 20902
 
 
-static char firstLetterArray[HANZI_COUNT] =
+static char gFirstLetterArray[HANZI_COUNT] =
 "ydkqsxnwzssxjbymgcczqpssqbycdscdqldylybssjgyqzjjfgcclzznwdwzjljpfyynnjjtmynzwzhflzppqhgccyynmjqyxxgd"
 "nnsnsjnjnsnnmlnrxyfsngnnnnqzggllyjlnyzssecykyyhqwjssggyxyqyjtwktjhychmnxjtlhjyqbyxdldwrrjnwysrldzjpc"
 "bzjjbrcfslnczstzfxxchtrqggddlyccssymmrjcyqzpwwjjyfcrwfdfzqpyddwyxkyjawjffxjbcftzyhhycyswccyxsclcxxwz"
@@ -236,7 +236,7 @@ char pinyinFirstLetter(unsigned short hanzi)
 	int index = hanzi - HANZI_START;
 	if (index >= 0 && index < HANZI_COUNT)
 	{
-		return firstLetterArray[index];
+		return gFirstLetterArray[index];
 	}
 	else
 	{
@@ -323,7 +323,8 @@ char pinyinFirstLetter(unsigned short hanzi)
 
 - (NSString *)stringByUrlEncoding
 {
-	NSString *url = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL,  (CFStringRef)self,  NULL,  (CFStringRef)@"!*'();:@&=+$,/?%#[]",  kCFStringEncodingUTF8));
+	NSString *url = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL,
+ (CFStringRef)self,  NULL,  (CFStringRef)@"!*'();:@&=+$,/?%#[]",  kCFStringEncodingUTF8));
 
     return url;
 }
@@ -336,10 +337,10 @@ char pinyinFirstLetter(unsigned short hanzi)
 
 - (BOOL)startsWith:(NSString *)str
 {
-	return [self startsWith:str Options:NSCaseInsensitiveSearch];
+	return [self startsWith:str options:NSCaseInsensitiveSearch];
 }
 
-- (BOOL)startsWith:(NSString *)str Options:(NSStringCompareOptions)compareOptions
+- (BOOL)startsWith:(NSString *)str options:(NSStringCompareOptions)compareOptions
 {
 	return (str != nil) && ([str length] > 0) && ([self length] >= [str length])
 	&& ([self rangeOfString:str options:compareOptions].location == 0);
@@ -347,10 +348,10 @@ char pinyinFirstLetter(unsigned short hanzi)
 
 - (BOOL)endsWith:(NSString *)str
 {
-	return [self endsWith:str Options:NSCaseInsensitiveSearch];
+	return [self endsWith:str options:NSCaseInsensitiveSearch];
 }
 
-- (BOOL)endsWith:(NSString *)str Options:(NSStringCompareOptions)compareOptions
+- (BOOL)endsWith:(NSString *)str options:(NSStringCompareOptions)compareOptions
 {
 	return (str != nil) && ([str length] > 0) && ([self length] >= [str length])
 	&& ([self rangeOfString:str options:(compareOptions | NSBackwardsSearch)].location == ([self length] - [str length]));
@@ -358,12 +359,13 @@ char pinyinFirstLetter(unsigned short hanzi)
 
 - (BOOL)containsString:(NSString *)str
 {
-	return [self containsString:str Options:NSCaseInsensitiveSearch];
+	return [self containsString:str options:NSCaseInsensitiveSearch];
 }
 
-- (BOOL)containsString:(NSString *)str Options:(NSStringCompareOptions)compareOptions
+- (BOOL)containsString:(NSString *)str options:(NSStringCompareOptions)compareOptions
 {
-	return (str != nil) && ([str length] > 0) && ([self length] >= [str length]) && ([self rangeOfString:str options:compareOptions].location != NSNotFound);
+	return (str != nil) && ([str length] > 0) && ([self length] >= [str length]) && ([self
+ rangeOfString:str options:compareOptions].location != NSNotFound);
 }
 
 - (BOOL)equalsString:(NSString *)str
@@ -614,7 +616,9 @@ char pinyinFirstLetter(unsigned short hanzi)
 {
     __block BOOL returnValue = NO;
     
-    [self enumerateSubstringsInRange:NSMakeRange(0, [self length]) options:NSStringEnumerationByComposedCharacterSequences usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
+    [self enumerateSubstringsInRange:NSMakeRange(0, [self length])
+ options:NSStringEnumerationByComposedCharacterSequences usingBlock:^(NSString *substring,
+ NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
         const unichar hs = [substring characterAtIndex:0];
         if (0xd800 <= hs && hs <= 0xdbff) {
             if (substring.length > 1) {

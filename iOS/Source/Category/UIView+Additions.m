@@ -1,5 +1,6 @@
 //
 //  UIViewAdditions.m
+//  Copyright © 2021 Tencent. All rights reserved.
 //
 
 #import "UIView+Additions.h"
@@ -45,7 +46,9 @@
 
 - (void)tx_observeKeyboardOnChange:(void(^)(CGFloat keyboardTop, CGFloat height))changeHandler {
     __weak __typeof(self) wSelf = self;
-    [[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardWillChangeFrameNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+    [[NSNotificationCenter defaultCenter]
+      addObserverForName:UIKeyboardWillChangeFrameNotification object:nil queue:nil
+      usingBlock:^(NSNotification * _Nonnull note) {
         CGRect endFrame = [note.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
         double animDuration = [note.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
         changeHandler(endFrame.origin.y, endFrame.size.height);

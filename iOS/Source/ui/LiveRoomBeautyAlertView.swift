@@ -200,8 +200,8 @@ class TRTCMeetingResolutionTableViewCell: UITableViewCell {
         return imageView
     }()
     
-    let selImage = UIImage.init(named: "checkbox_sel", in: LiveRoomBundle(), compatibleWith: nil)
-    let norImage = UIImage.init(named: "checkbox_nor", in: LiveRoomBundle(), compatibleWith: nil)
+    let selImage = UIImage.init(named: "checkbox_sel", in: liveRoomBundle(), compatibleWith: nil)
+    let norImage = UIImage.init(named: "checkbox_nor", in: liveRoomBundle(), compatibleWith: nil)
     
     override var isSelected: Bool {
         didSet {
@@ -240,13 +240,15 @@ extension String {
             return 0
         }
         let str = self as NSString
-        return str.boundingRect(with: CGSize(width: 0, height: fromFont.lineHeight), options: [.usesLineFragmentOrigin, .usesFontLeading, .usesDeviceMetrics], attributes: [NSAttributedString.Key.font : fromFont], context: nil).width
+        return str.boundingRect(with: CGSize(width: 0, height: fromFont.lineHeight), options:
+         [.usesLineFragmentOrigin, .usesFontLeading, .usesDeviceMetrics], attributes:
+         [NSAttributedString.Key.font : fromFont], context: nil).width
     }
 }
 
 /// MARK: - internationalization string
 fileprivate extension String {
-    static let titleText = LiveRoomLocalize("TC.BeautySettingPanel.Setup")
-    static let strengthText = LiveRoomLocalize("TC.BeautySettingPanel.Strength")
-    static let resolutionTitleText = LiveRoomLocalize("Demo.TRTC.LiveRoom.resolution")
+    static let titleText = liveRoomLocalize("TC.BeautySettingPanel.Setup")
+    static let strengthText = liveRoomLocalize("TC.BeautySettingPanel.Strength")
+    static let resolutionTitleText = liveRoomLocalize("Demo.TRTC.LiveRoom.resolution")
 }

@@ -83,7 +83,10 @@ public class TCAnchorViewController: UIViewController {
     }
     
     func quitPK() {
-        liveRoom!.quitRoomPK(callback: { code, error in
+        guard  let liveRoom = liveRoom else {
+            return
+        }
+        liveRoom.quitRoomPK(callback: { code, error in
             
         })
         UIView.animate(withDuration: 0.1, animations: { [ weak self] in
@@ -131,10 +134,12 @@ public class TCAnchorViewController: UIViewController {
     
     /**
      * Notes:
-     * 1. `sessionID` is the basis for stream mixing, and streams with the same `sessionID` values will be mixed into one video stream on the backend stream mixing server; Therefore, `sessionID` must be globally unique.
+     * 1. `sessionID` is the basis for stream mixing, and streams with the same `sessionID` values will be mixed into one video stream on
+        the backend stream mixing server; Therefore, `sessionID` must be globally unique.
      * 2. The live streaming code channel ID is unique. Therefore, it is best practice to use a live streaming code as `sessionID`.
         NSString* strSessionID = [TCLinkMicModel getStreamIDByStreamUrl:self.rtmpUrl];
-     * 3. The live streaming code is a string, and the stream mixing server currently supports `sessionID` values containing only 64 digits. Generate a `sessionID` as follows:
+     * 3. The live streaming code is a string, and the stream mixing server currently supports `sessionID` values containing only 64 digits.
+        Generate a `sessionID` as follows:
      */
     func getLinkMicSessionID() -> String {
        
@@ -229,14 +234,17 @@ public class TCAnchorViewController: UIViewController {
         let width = view.size.width
         let statusInfoView = TCStatusInfoComponet()
         let y = Int(SafeAreaTopHeight + 68) + Int( VIDEO_VIEW_HEIGHT  + VIDEO_VIEW_MARGIN_SPACE) * index
-        let videoView = UIView(frame: CGRect(x: Int(CGFloat(Int(CGFloat(Int(width) - VIDEO_VIEW_WIDTH - VIDEO_VIEW_MARGIN_RIGHT)))), y:y, width: VIDEO_VIEW_WIDTH, height: VIDEO_VIEW_HEIGHT))
+        let videoView = UIView(frame: CGRect(x: Int(CGFloat(Int(CGFloat(Int(width) - VIDEO_VIEW_WIDTH -
+         VIDEO_VIEW_MARGIN_RIGHT)))), y:y, width: VIDEO_VIEW_WIDTH, height: VIDEO_VIEW_HEIGHT))
         statusInfoView.setVideoView(videoView)
         let x = Int(width) - VIDEO_VIEW_WIDTH - VIDEO_VIEW_MARGIN_RIGHT
         statusInfoView.linkFrame = CGRect(x:x , y: y, width: VIDEO_VIEW_WIDTH, height: VIDEO_VIEW_HEIGHT)
-        view.addSubview(statusInfoView.videoView!)
+        if let videoView = statusInfoView.videoView {
+            view.addSubview(videoView)
+        }
         statusInfoView.pending = false
-        if statusInfoViewArray != nil {
-            statusInfoViewArray!.append(statusInfoView)
+        if statusInfoViewArray != nil, var statusInfoViewArray = statusInfoViewArray{
+            statusInfoViewArray.append(statusInfoView)
         }
         beginTime = UInt64(Date().timeIntervalSince1970)
     }
@@ -258,10 +266,14 @@ public class TCAnchorViewController: UIViewController {
         isStop = false
         notification.notificationLabelBackgroundColor = UIColor.red
         notification.notificationLabelTextColor = UIColor.white
-        NotificationCenter.default.addObserver(self, selector: #selector(onAppDidEnterBackGround(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onAppWillEnterForeground(_:)), name: UIApplication.willEnterForegroundNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onAppWillResignActive(_:)), name: UIApplication.willResignActiveNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onAppDidBecomeActive(_:)), name: UIApplication.didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onAppDidEnterBackGround(_:)),
+         name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onAppWillEnterForeground(_:)),
+         name: UIApplication.willEnterForegroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onAppWillResignActive(_:)), name:
+         UIApplication.willResignActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onAppDidBecomeActive(_:)), name:
+         UIApplication.didBecomeActiveNotification, object: nil)
     }
     
     public override func viewDidLoad() {
@@ -269,7 +281,8 @@ public class TCAnchorViewController: UIViewController {
         logicView = TCAnchorToolbarView(frame: view.frame)
         LiveRoomToastManager.sharedManager().setupToast()
         //加载背景图
-        let colors = [UIColor(red: 19.0 / 255.0, green: 41.0 / 255.0, blue: 75.0 / 255.0, alpha: 1).cgColor, UIColor(red: 5.0 / 255.0, green: 12.0 / 255.0, blue: 23.0 / 255.0, alpha: 1).cgColor]
+        let colors = [UIColor(red: 19.0 / 255.0, green: 41.0 / 255.0, blue: 75.0 / 255.0, alpha:
+         1).cgColor, UIColor(red: 5.0 / 255.0, green: 12.0 / 255.0, blue: 23.0 / 255.0, alpha: 1).cgColor]
         let gradientLayer = CAGradientLayer()
         gradientLayer.colors = colors
         gradientLayer.startPoint = CGPoint(x: 0, y: 0)
@@ -283,11 +296,12 @@ public class TCAnchorViewController: UIViewController {
         initStatusInfoView(0)
         initStatusInfoView(1)
         initStatusInfoView(2)
-        logicView!.frame = view.frame
-        logicView!.delegate = self
-        logicView!.anchorViewController = self
-        logicView!.setLiveRoom(liveRoom)
-        view.addSubview(logicView!)
+        guard let logicView = logicView else { return }
+        logicView.frame = view.frame
+        logicView.delegate = self
+        logicView.anchorViewController = self
+        logicView.setLiveRoom(liveRoom)
+        view.addSubview(logicView)
 
         let width = view.size.width
         var index = 0
@@ -295,17 +309,19 @@ public class TCAnchorViewController: UIViewController {
         for statusInfoView in statusInfoViewArray {
             let x = width - CGFloat(BOTTOM_BTN_ICON_WIDTH) / 2.0 - CGFloat(VIDEO_VIEW_MARGIN_RIGHT)
             let y = CGFloat(SafeAreaTopHeight) + CGFloat(VIDEO_VIEW_HEIGHT * index) + 68
-            statusInfoView.btnKickout = UIButton(frame: CGRect(x:x , y:y, width: CGFloat(BOTTOM_BTN_ICON_WIDTH) / 2.0, height: CGFloat(BOTTOM_BTN_ICON_WIDTH) / 2.0))
-            statusInfoView.btnKickout!.addTarget(self, action: #selector(clickBtnKickout(_:)), for: .touchUpInside)
-            statusInfoView.btnKickout!.setImage(UIImage(named: "kickout", in: LiveRoomBundle(), compatibleWith: nil), for: .normal)
-            statusInfoView.btnKickout!.isHidden = true
+            statusInfoView.btnKickout = UIButton(frame: CGRect(x:x , y:y, width:
+             CGFloat(BOTTOM_BTN_ICON_WIDTH) / 2.0, height: CGFloat(BOTTOM_BTN_ICON_WIDTH) / 2.0))
+            guard let btnKickout = statusInfoView.btnKickout else { return }
+            btnKickout.addTarget(self, action: #selector(clickBtnKickout(_:)), for: .touchUpInside)
+            btnKickout.setImage(UIImage(named: "kickout", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
+            btnKickout.isHidden = true
             if let logicView = self.logicView {
-                logicView.insertSubview(statusInfoView.btnKickout!, belowSubview: logicView.btnMusic)
+                logicView.insertSubview(btnKickout, belowSubview: logicView.btnMusic)
             }
             index += 1
         }
         startPreview()
-        logicView?.triggeValue()
+        logicView.triggeValue()
         initRoomPreview()
         // active widget
         activeTUIWidget()
@@ -315,7 +331,7 @@ public class TCAnchorViewController: UIViewController {
     func initRoomPreview() {
         publishBtn.backgroundColor = UIColor.appTint
         publishBtn.layer.cornerRadius = 25
-        publishBtn.setTitle(LiveRoomLocalize("Demo.TRTC.LiveRoom.start"), for: .normal)
+        publishBtn.setTitle(liveRoomLocalize("Demo.TRTC.LiveRoom.start"), for: .normal)
         publishBtn.titleLabel?.font = UIFont.systemFont(ofSize: 22)
         view.addSubview(publishBtn)
         publishBtn.width = 160
@@ -325,7 +341,7 @@ public class TCAnchorViewController: UIViewController {
         publishBtn.bottom = view.height - CGFloat(bottom)
         publishBtn.addTarget(self, action: #selector(startPublishVC), for: .touchUpInside)
         
-        cameraBtn.setImage(UIImage(named: "live_camera", in: LiveRoomBundle(), compatibleWith: nil), for: .normal)
+        cameraBtn.setImage(UIImage(named: "live_camera", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
         view.addSubview(cameraBtn)
         cameraBtn.snp.makeConstraints({ make in
             make.centerY.equalTo(publishBtn)
@@ -334,7 +350,7 @@ public class TCAnchorViewController: UIViewController {
         })
         cameraBtn.addTarget(self, action: #selector(clickCamera(_:)), for: .touchUpInside)
         
-        beautyBtn.setImage(UIImage(named: "live_beauty", in: LiveRoomBundle(), compatibleWith: nil), for: .normal)
+        beautyBtn.setImage(UIImage(named: "live_beauty", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
         view.addSubview(beautyBtn)
         beautyBtn.snp.makeConstraints({ make in
             make.centerY.equalTo(publishBtn)
@@ -343,7 +359,7 @@ public class TCAnchorViewController: UIViewController {
         })
         beautyBtn.addTarget(self, action: #selector(clickBeauty(_:)), for: .touchUpInside)
         
-        closeBtn.setImage(UIImage(named: "close", in: LiveRoomBundle(), compatibleWith: nil), for: .normal)
+        closeBtn.setImage(UIImage(named: "close", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
         view.addSubview(closeBtn)
         closeBtn.snp.makeConstraints({ make in
             make.top.equalTo(Int(SafeAreaTopHeight) + 20)
@@ -400,13 +416,13 @@ public class TCAnchorViewController: UIViewController {
         roomName.textColor = UIColor.white
         roomName.returnKeyType = .done
         roomName.font = UIFont.boldSystemFont(ofSize: 14)
-        roomName.attributedPlaceholder = NSAttributedString(string: LiveRoomLocalize("Demo.TRTC.LiveRoom.titlefuncanattractpopularity"), attributes: [
+        roomName.attributedPlaceholder = NSAttributedString(string: liveRoomLocalize("Demo.TRTC.LiveRoom.titlefuncanattractpopularity"), attributes: [
             NSAttributedString.Key.foregroundColor: UIColor(white: 0.8, alpha: 1)
         ])
         var defaultName = liveInfo.roomName
         if defaultName.isEmpty {
             let uName = TUILogin.getNickName() ?? ""
-            defaultName = LocalizeReplaceXX(LiveRoomLocalize("Demo.TRTC.VoiceRoom.xxxsroom"), uName)
+            defaultName = localizeReplaceXX(liveRoomLocalize("Demo.TRTC.VoiceRoom.xxxsroom"), uName)
         }
         if defaultName.count > 15 {
             defaultName = (defaultName as NSString).substring(to: 15)
@@ -419,7 +435,7 @@ public class TCAnchorViewController: UIViewController {
         roomName.top = userName.bottom+4
         roomName.delegate = self
         let audioQualityLabel = UILabel()
-        audioQualityLabel.text = LiveRoomLocalize("Demo.TRTC.LiveRoom.soundquality")
+        audioQualityLabel.text = liveRoomLocalize("Demo.TRTC.LiveRoom.soundquality")
         audioQualityLabel.font = UIFont.systemFont(ofSize: 16)
         audioQualityLabel.textColor = UIColor.white
         audioQualityLabel.textAlignment = .center
@@ -428,7 +444,7 @@ public class TCAnchorViewController: UIViewController {
         audioQualityLabel.left = userAvatar.left
         audioQualityLabel.sizeToFit()
         standardQualityButton.backgroundColor = audioQualityDefaultColor()
-        standardQualityButton.setTitle(LiveRoomLocalize("Demo.TRTC.LiveRoom.standard"), for: .normal)
+        standardQualityButton.setTitle(liveRoomLocalize("Demo.TRTC.LiveRoom.standard"), for: .normal)
         standardQualityButton.setTitleColor(UIColor.black, for: .normal)
         standardQualityButton.setTitleColor(UIColor.white, for: .selected)
         standardQualityButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
@@ -445,7 +461,7 @@ public class TCAnchorViewController: UIViewController {
         standardQualityButton.center = audioQualityLabel.center
         standardQualityButton.left = audioQualityLabel.right + 90
         musicQualityButton.backgroundColor = audioQualitySelectedColor()
-        musicQualityButton.setTitle(LiveRoomLocalize("Demo.TRTC.LiveRoom.music"), for: .normal)
+        musicQualityButton.setTitle(liveRoomLocalize("Demo.TRTC.LiveRoom.music"), for: .normal)
         musicQualityButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
         musicQualityButton.setTitleColor(UIColor.black, for: .normal)
         musicQualityButton.setTitleColor(UIColor.white, for: .selected)
@@ -530,7 +546,14 @@ public class TCAnchorViewController: UIViewController {
         liveRoom?.createRoom(roomID: roomID, roomParam: roomParam, callback: { [weak self] code, message in
             guard let self = self else { return }
             if code == 0 {
-                let roomInfo = TRTCLiveRoomInfo(roomId: String(roomID), roomName: roomName, coverUrl: self.liveInfo.coverUrl, ownerId: TUILogin.getUserID(), ownerName: TUILogin.getNickName(), streamUrl: TUILogin.getUserID(), memberCount: 0, roomStatus: .single)
+                let roomInfo = TRTCLiveRoomInfo(roomId: String(roomID),
+                                                roomName: roomName,
+                                                coverUrl: self.liveInfo.coverUrl,
+                                                ownerId: TUILogin.getUserID(),
+                                                ownerName: (TUILogin.getNickName() ?? ""),
+                                                streamUrl: TUILogin.getUserID(),
+                                                memberCount: 0,
+                                                roomStatus: .single)
                 self.setLive(roomInfo)
             }
             callback(Int(code),message)
@@ -583,7 +606,7 @@ public class TCAnchorViewController: UIViewController {
             roomName.resignFirstResponder()
         }
         if roomName.text?.count == 0 {
-            LiveRoomToastManager.sharedManager().makeToast(view: view, message: LiveRoomLocalize("Demo.TRTC.LiveRoom.roomnamecantbeempty"))
+            LiveRoomToastManager.sharedManager().makeToast(view: view, message: liveRoomLocalize("Demo.TRTC.LiveRoom.roomnamecantbeempty"))
             return
         }
         guard let roomId = UInt32(liveInfo.roomId) else {
@@ -603,7 +626,7 @@ public class TCAnchorViewController: UIViewController {
                 self.liveRoom!.startPublish(streamID: streamID) { code, error in
                 }
             } else {
-                let mess = message?.count ?? 0>0 ? message : LiveRoomLocalize("Demo.TRTC.LiveRoom.createroomfailed")
+                let mess = message?.count ?? 0>0 ? message : liveRoomLocalize("Demo.TRTC.LiveRoom.createroomfailed")
                 LiveRoomToastManager.sharedManager().makeToast(view: self.view, message: mess ?? "")
                 DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5, execute: { [weak self] in
                     guard let `self` = self else { return }
@@ -637,8 +660,8 @@ public class TCAnchorViewController: UIViewController {
                             if code == 0 {
                                 statusInfoView.btnKickout?.isHidden = isPKMode
                             } else {
-                                if !isPKMode {
-                                    self.liveRoom?.kickoutJoinAnchor(userID: userID!, callback: { code, error in
+                                if !isPKMode, let userID = userID {
+                                    self.liveRoom?.kickoutJoinAnchor(userID: userID, callback: { code, error in
                                         
                                     })
                                     self.onAnchorExit(userID)
@@ -646,7 +669,7 @@ public class TCAnchorViewController: UIViewController {
                             }
                         })
                     }
-                    break;
+                    break
                 }
             }
         }
@@ -654,7 +677,7 @@ public class TCAnchorViewController: UIViewController {
     
     @objc func handleTimeOutRequest(_ sender: Any?) {
         userIdRequest = ""
-        TCUtil.toastTip(LiveRoomLocalize("Demo.TRTC.LiveRoom.dealmicconnectionreqtimeout"), parentView: view)
+        TCUtil.toastTip(liveRoomLocalize("Demo.TRTC.LiveRoom.dealmicconnectionreqtimeout"), parentView: view)
     }
     
     @objc func onLinkMicTimeOut(_ userID: String?) {
@@ -668,7 +691,7 @@ public class TCAnchorViewController: UIViewController {
                     setLinkMemeber .remove(at: setLinkMemeber.firstIndex(of: userID)!)
                     statusInfoView.stopPlay()
                     statusInfoView.emptyPlayInfo()
-                    TCUtil.toastTip(LocalizeReplaceXX(LiveRoomLocalize("Demo.TRTC.LiveRoom.xxmicconnectiontimeout"), userID), parentView: view)
+                    TCUtil.toastTip(localizeReplaceXX(liveRoomLocalize("Demo.TRTC.LiveRoom.xxmicconnectiontimeout"), userID), parentView: view)
                 }
             }
         }
@@ -677,16 +700,19 @@ public class TCAnchorViewController: UIViewController {
     // MARK:- LinkMic Func
     func onRequestJoinAnchor(_ user: TRTCLiveUserInfo, reason: String) {
         if setLinkMemeber.count >= MAX_LINKMIC_MEMBER_SUPPORT {
-            TCUtil.toastTip(LiveRoomLocalize("Demo.TRTC.LiveRoom.micconnectionrefusedandanchorpeopleexceedsmaxlimit"), parentView: view)
-            liveRoom?.responseJoinAnchor(userID: user.userId, agree: false, reason: LiveRoomLocalize("Demo.TRTC.LiveRoom.anchorpeopleexceedsmaxlimit"))
+            TCUtil.toastTip(liveRoomLocalize("Demo.TRTC.LiveRoom.micconnectionrefusedandanchorpeopleexceedsmaxlimit"), parentView: view)
+            liveRoom?.responseJoinAnchor(userID: user.userId, agree: false, reason:
+             liveRoomLocalize("Demo.TRTC.LiveRoom.anchorpeopleexceedsmaxlimit"))
         } else if userIdRequest.count > 0 {
             if userIdRequest != user.userId {
-                TCUtil.toastTip(LiveRoomLocalize("Demo.TRTC.LiveRoom.micconnectionrefusedandanchordealotherreq"), parentView: view)
-                liveRoom?.responseJoinAnchor(userID: user.userId, agree: false, reason: LiveRoomLocalize("Demo.TRTC.LiveRoom.waitforhandleotherreq"))
+                TCUtil.toastTip(liveRoomLocalize("Demo.TRTC.LiveRoom.micconnectionrefusedandanchordealotherreq"), parentView: view)
+                liveRoom?.responseJoinAnchor(userID: user.userId, agree: false, reason:
+                 liveRoomLocalize("Demo.TRTC.LiveRoom.waitforhandleotherreq"))
             }
         } else if curPkRoom != nil {
-            TCUtil.toastTip(LiveRoomLocalize("Demo.TRTC.LiveRoom.micconnectionrefusedandinpk"), parentView: view)
-            liveRoom?.responseJoinAnchor(userID: user.userId, agree: false, reason: LiveRoomLocalize("Demo.TRTC.LiveRoom.micconnectionrefusedandinpk"))
+            TCUtil.toastTip(liveRoomLocalize("Demo.TRTC.LiveRoom.micconnectionrefusedandinpk"), parentView: view)
+            liveRoom?.responseJoinAnchor(userID: user.userId, agree: false, reason:
+             liveRoomLocalize("Demo.TRTC.LiveRoom.micconnectionrefusedandinpk"))
         } else {
             let statusInfoView = getStatusInfoView(from: user.userId)
             if let statusInfoView = statusInfoView {
@@ -702,14 +728,17 @@ public class TCAnchorViewController: UIViewController {
             userIdRequest = user.userId
             curRequest = user
             
-            let alert = UIAlertController(title: LiveRoomLocalize("Demo.TRTC.LiveRoom.prompt"), message: LocalizeReplaceXX(LiveRoomLocalize("Demo.TRTC.LiveRoom.xxinitiateamicconnectionreq"), user.userName), preferredStyle: .alert)
-            let cancel = UIAlertAction(title: LiveRoomLocalize("Demo.TRTC.LiveRoom.refuse"), style: .cancel, handler: { [weak self] action in
+            let alert = UIAlertController(title: liveRoomLocalize("Demo.TRTC.LiveRoom.prompt"), message:
+             localizeReplaceXX(liveRoomLocalize("Demo.TRTC.LiveRoom.xxinitiateamicconnectionreq"),
+             user.userName), preferredStyle: .alert)
+            let cancel = UIAlertAction(title: liveRoomLocalize("Demo.TRTC.LiveRoom.refuse"), style: .cancel, handler: { [weak self] action in
                 guard let `self` = self else { return }
                 self.userIdRequest = ""
-                self.liveRoom?.responseJoinAnchor(userID: self.curRequest.userId, agree: false, reason: LiveRoomLocalize("Demo.TRTC.LiveRoom.refusemicconnectionreq"))
+                self.liveRoom?.responseJoinAnchor(userID: self.curRequest.userId, agree: false, reason:
+                 liveRoomLocalize("Demo.TRTC.LiveRoom.refusemicconnectionreq"))
             })
             
-            let other = UIAlertAction(title: LiveRoomLocalize("Demo.TRTC.LiveRoom.accept"), style: .default, handler: { [weak self] action in
+            let other = UIAlertAction(title: liveRoomLocalize("Demo.TRTC.LiveRoom.accept"), style: .default, handler: { [weak self] action in
                 guard let `self` = self else { return }
                 if self.userIdRequest.count <= 0 {
                     return
@@ -753,15 +782,19 @@ public class TCAnchorViewController: UIViewController {
             }
             for statusInfoView in statusInfoViewArray {
                 if statusInfoView.userID == nil || statusInfoView.userID?.count == 0 {
-                    statusInfoView.videoView?.frame = CGRect(x: view.frame.size.width / 2, y: 0, width: view.frame.size.width / 2, height: view.frame.size.height / 2)
+                    statusInfoView.videoView?.frame = CGRect(x: view.frame.size.width / 2, y: 0, width:
+                     view.frame.size.width / 2, height: view.frame.size.height / 2)
                     statusInfoView.pending = true
                     statusInfoView.userID = curPkRoom?.ownerId
                     statusInfoView.stopLoading()
-                    break;
+                    break
                 }
             }
         } else {
-            info!.videoView?.frame = CGRect(x: view.frame.size.width / 2, y: 0, width: view.frame.size.width / 2, height: view.frame.size.height / 2)
+            guard let info = info else {
+                return
+            }
+            info.videoView?.frame = CGRect(x: view.frame.size.width / 2, y: 0, width: view.frame.size.width / 2, height: view.frame.size.height / 2)
         }
     }
     
@@ -769,16 +802,17 @@ public class TCAnchorViewController: UIViewController {
         curPkRoom = TRTCLiveRoomInfo()
         curPkRoom?.ownerId = user.userId
         curPkRoom?.ownerName = user.userName
-        let alert = UIAlertController(title: LocalizeReplaceXX(LiveRoomLocalize("Demo.TRTC.LiveRoom.xxinitiatepk"), user.userName), message: nil, preferredStyle: .alert)
-        let reject = UIAlertAction(title: LiveRoomLocalize("Demo.TRTC.LiveRoom.refuse"), style: UIAlertAction.Style.cancel ) {[weak self] action in
+        let alert = UIAlertController(title: localizeReplaceXX(liveRoomLocalize("Demo.TRTC.LiveRoom.xxinitiatepk"), user.userName),
+             message: nil, preferredStyle: .alert)
+        let reject = UIAlertAction(title: liveRoomLocalize("Demo.TRTC.LiveRoom.refuse"), style: UIAlertAction.Style.cancel ) {[weak self] action in
             guard let `self` = self else { return }
             
             self.linkFrameRestore()
-            self.liveRoom?.responseRoomPK(userID: user.userId, agree: false, reason: LiveRoomLocalize("Demo.TRTC.LiveRoom.anchorrefuse"))
+            self.liveRoom?.responseRoomPK(userID: user.userId, agree: false, reason: liveRoomLocalize("Demo.TRTC.LiveRoom.anchorrefuse"))
             
         }
         
-        let ok = UIAlertAction(title: LiveRoomLocalize("Demo.TRTC.LiveRoom.accept"), style: UIAlertAction.Style.default ) { [weak self] action in
+        let ok = UIAlertAction(title: liveRoomLocalize("Demo.TRTC.LiveRoom.accept"), style: UIAlertAction.Style.default ) { [weak self] action in
             guard let `self` = self else { return }
             
             self.liveRoom?.responseRoomPK(userID: user.userId, agree: true, reason: "")
@@ -793,7 +827,7 @@ public class TCAnchorViewController: UIViewController {
     
     @objc func pkAlertCheck(_ alert: UIAlertController?) {
         alert?.dismiss(animated: true)
-        TCUtil.toastTip(LocalizeReplaceXX(LiveRoomLocalize("Demo.TRTC.LiveRoom.dealxxpktimeout"), curPkRoom?.ownerName ?? ""), parentView: view)
+        TCUtil.toastTip(localizeReplaceXX(liveRoomLocalize("Demo.TRTC.LiveRoom.dealxxpktimeout"), curPkRoom?.ownerName ?? ""), parentView: view)
         linkFrameRestore()
     }
     
@@ -935,7 +969,7 @@ extension TCAnchorViewController: TRTCLiveRoomDelegate {
     
     public func trtcLiveRoom(_ trtcLiveRoom: TRTCLiveRoom, onRequestRoomPK user: TRTCLiveUserInfo) {
         if userIdRequest.count > 0 {
-            self.liveRoom?.responseRoomPK(userID: user.userId, agree: false, reason: LiveRoomLocalize("Demo.TRTC.LiveRoom.anchorismicconnecting"))
+            self.liveRoom?.responseRoomPK(userID: user.userId, agree: false, reason: liveRoomLocalize("Demo.TRTC.LiveRoom.anchorismicconnecting"))
         } else {
             onRequestRoomPK(user)
         }
@@ -944,14 +978,14 @@ extension TCAnchorViewController: TRTCLiveRoomDelegate {
     public func trtcLiveRoom(_ trtcLiveRoom: TRTCLiveRoom, onCancelRoomPK user: TRTCLiveUserInfo) {
         pkalert?.dismiss(animated: true)
         self.setCurPkRoom(nil)
-        TCUtil.toastTip(LiveRoomLocalize("Demo.TRTC.LiveRoom.opponentanchorendpd"), parentView: view)
+        TCUtil.toastTip(liveRoomLocalize("Demo.TRTC.LiveRoom.opponentanchorendpd"), parentView: view)
         linkFrameRestore()
     }
     
     public func trtcLiveRoomOnQuitRoomPK(_ liveRoom: TRTCLiveRoom) {
         pkalert?.dismiss(animated: true)
         self.setCurPkRoom(nil)
-        TCUtil.toastTip(LiveRoomLocalize("Demo.TRTC.LiveRoom.opponentanchorendpd"), parentView: view)
+        TCUtil.toastTip(liveRoomLocalize("Demo.TRTC.LiveRoom.opponentanchorendpd"), parentView: view)
         linkFrameRestore()
     }
     
@@ -961,7 +995,8 @@ extension TCAnchorViewController: TRTCLiveRoomDelegate {
         info.imUserName = user.userName
         info.imUserIconUrl = user.avatarURL
         info.cmdType = TCMsgModelType.memberQuitRoom
-        logicView!.handleIMMessage(info, msgText: "")
+        guard let logicView = logicView else { return }
+        logicView.handleIMMessage(info, msgText: "")
         if user.userId == self.userIdRequest{
             self.userIdRequest = ""
         }
@@ -1000,32 +1035,32 @@ extension TCAnchorViewController: TRTCVideoFrameDelegate {
 extension TCAnchorViewController {
     
     private func activeTUIWidget() {
-        if barrageView == nil && loadBarrageWidget() {
-            view.addSubview(barrageView!)
-            view.addSubview(barrageInputView!)
-            barrageInputView?.snp.makeConstraints { make in
+        if barrageView == nil && loadBarrageWidget(), let barrageView = barrageView, let barrageInputView = barrageInputView {
+            view.addSubview(barrageView)
+            view.addSubview(barrageInputView)
+            barrageInputView.snp.makeConstraints { make in
                 make.edges.equalToSuperview()
             }
-            barrageView?.snp.makeConstraints { make in
+            barrageView.snp.makeConstraints { make in
                 make.leading.equalTo(20)
                 make.top.equalTo(SCREEN_HEIGHT - 300 - 120)
                 make.height.equalTo(300)
                 make.width.equalTo(SCREEN_WIDTH - 20*2)
             }
         }
-        if giftView == nil && loadGiftWidget() {
-            view.addSubview(giftView!)
-            giftView?.isHidden = false
+        if giftView == nil && loadGiftWidget(), let giftView = giftView {
+            view.addSubview(giftView)
+            giftView.isHidden = false
         }
-        if audioEffectView == nil && loadAudioEffectWidget() {
-            view.addSubview(audioEffectView!)
-            audioEffectView?.snp.makeConstraints({ make in
+        if audioEffectView == nil && loadAudioEffectWidget(), let audioEffectView = audioEffectView {
+            view.addSubview(audioEffectView)
+            audioEffectView.snp.makeConstraints({ make in
                 make.edges.equalToSuperview()
             })
         }
-        if beautyView == nil && loadBeautyWidget(){
-            view.addSubview(beautyView!)
-            beautyView?.snp.makeConstraints({ make in
+        if beautyView == nil && loadBeautyWidget(), let beautyView = beautyView {
+            view.addSubview(beautyView)
+            beautyView.snp.makeConstraints({ make in
                 make.edges.equalToSuperview()
             })
         }
@@ -1035,9 +1070,8 @@ extension TCAnchorViewController {
         guard let audioEffectManager = liveRoom?.getAudioEffectManager() else {
             return false
         }
-        let audioEffectViewInfo = TUICore.getExtensionInfo(TUICore_TUIAudioEffectViewExtension_AudioEffectView,
-                                                           param: [
-                                                            TUICore_TUIAudioEffectViewExtension_AudioEffectView_AudioEffectManager: audioEffectManager])
+        let audioEffectViewInfo = TUICore.getExtensionInfo(TUICore_TUIAudioEffectViewExtension_AudioEffectView,param:
+             [TUICore_TUIAudioEffectViewExtension_AudioEffectView_AudioEffectManager: audioEffectManager])
         guard let audioEffectView = audioEffectViewInfo[TUICore_TUIAudioEffectViewExtension_AudioEffectView_View] as? UIView else {
             return false
         }
@@ -1052,7 +1086,7 @@ extension TCAnchorViewController {
         guard let inputView = inputViewInfo[TUICore_TUIBarrageExtension_GetTUIBarrageSendView] as? UIView else {
             return false
         }
-        self.barrageInputView = inputView;
+        self.barrageInputView = inputView
         
         let barrageViewInfo = TUICore.getExtensionInfo(TUICore_TUIBarrageExtension_TUIBarrageDisplayView,
                                                        param: ["frame": UIScreen.main.bounds,
@@ -1151,7 +1185,8 @@ extension TCAnchorViewController: TCAnchorToolbarDelegate {
     
     @objc func clickCamera(_ button: UIButton?) {
         camera_switch = !camera_switch
-        liveRoom!.switchCamera()
+        guard let liveRoom = liveRoom else { return }
+        liveRoom.switchCamera()
     }
     
     @objc func clickBeauty(_ button: UIButton?) {
@@ -1201,7 +1236,7 @@ extension TCAnchorViewController: TCAnchorToolbarDelegate {
     
     func pk(withRoom room: TRTCLiveRoomInfo?) {
         if setLinkMemeber.count > 0 {
-            TCUtil.toastTip(LiveRoomLocalize("Demo.TRTC.LiveRoom.micconnectingandwaitforpk"), parentView: view)
+            TCUtil.toastTip(liveRoomLocalize("Demo.TRTC.LiveRoom.micconnectingandwaitforpk"), parentView: view)
             return
         }
         guard let room = room else { return }
@@ -1209,13 +1244,13 @@ extension TCAnchorViewController: TCAnchorToolbarDelegate {
         liveRoom?.requestRoomPK(roomID: UInt32(room.roomId) ?? 0, userID: room.ownerId, timeout: trtcLiveSendMsgTimeOut) {[weak self] accept, error in
             guard let self = self else { return }
             if accept {
-                TCUtil.toastTip(LocalizeReplaceXX(LiveRoomLocalize("Demo.TRTC.LiveRoom.xxacceptpkreq"), room.ownerName), parentView: self.view)
+                TCUtil.toastTip(localizeReplaceXX(liveRoomLocalize("Demo.TRTC.LiveRoom.xxacceptpkreq"), room.ownerName), parentView: self.view)
                 self.logicView?.btnPK.isSelected = true
             } else {
                 if error?.count ?? 0 > 0 {
                     TCUtil.toastTip(error, parentView: self.view)
                 } else {
-                    TCUtil.toastTip(LocalizeReplaceXX(LiveRoomLocalize("Demo.TRTC.LiveRoom.xxrefusepkreq"), room.ownerName), parentView: self.view)
+                    TCUtil.toastTip(localizeReplaceXX(liveRoomLocalize("Demo.TRTC.LiveRoom.xxrefusepkreq"), room.ownerName), parentView: self.view)
                 }
                 let status = self.roomStatus
                 self.logicView?.btnPK.isSelected = false

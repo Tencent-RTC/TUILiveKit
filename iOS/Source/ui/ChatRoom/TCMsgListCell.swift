@@ -50,17 +50,21 @@ class TCMsgListCell: UITableViewCell {
             let userMsg = NSMutableAttributedString(string: msgModel.userMsg ?? "")
             attribute.append(NSMutableAttributedString(string: "："))
             attribute.append(userMsg)
-            attribute.addAttribute(.font, value: UIFont.systemFont(ofSize: CGFloat(MSG_TABLEVIEW_LABEL_FONT)), range: NSRange(location: 0, length: attribute.length))
-            _index = _index % _arryColor.count;
+            attribute.addAttribute(.font, value: UIFont.systemFont(ofSize: CGFloat(MSG_TABLEVIEW_LABEL_FONT)), range: NSRange(location:
+             0, length: attribute.length))
+            _index = _index % _arryColor.count
             attribute.addAttribute(.foregroundColor, value: UIColor.white, range: NSRange(location: 0, length: attribute.length))
             attribute.addAttribute(.foregroundColor, value: _arryColor[_index], range: NSRange(location: 0, length: userName.length))
             _index += 1
             
         } else {
-            let msgShow = NSMutableAttributedString(string: "\(LiveRoomLocalize("Demo.TRTC.LiveRoom.notice")) \(msgModel.userName ?? "")\(msgModel.userMsg ?? "")")
+            let msgShow = NSMutableAttributedString(string: "\(liveRoomLocalize("Demo.TRTC.LiveRoom.notice"))" +
+             "\(msgModel.userName ?? "")\(msgModel.userMsg ?? "")")
             attribute.append(msgShow)
-            attribute.addAttribute(.font, value: UIFont.systemFont(ofSize: CGFloat(MSG_TABLEVIEW_LABEL_FONT)), range: NSRange(location: 0, length: attribute.length))
-            attribute.addAttribute(.foregroundColor, value: UIColor(red: 241 / 255.0, green: 43 / 255.0, blue: 91 / 255.0, alpha: 1), range: NSRange(location: 0, length: msgShow.length))
+            attribute.addAttribute(.font, value: UIFont.systemFont(ofSize: CGFloat(MSG_TABLEVIEW_LABEL_FONT)), range: NSRange(location:
+             0, length: attribute.length))
+            attribute.addAttribute(.foregroundColor, value: UIColor(red: 241 / 255.0, green: 43 / 255.0, blue: 91 / 255.0, alpha: 1),
+             range: NSRange(location: 0, length: msgShow.length))
         }
         return attribute
     }
@@ -109,8 +113,9 @@ public class TCShowLiveTopView: UIView {
     func initUI() {
         hostImage.layer.cornerRadius = 16
         hostImage.layer.masksToBounds = true
-        let url = URL(string: TCUtil.transImageURL2HttpsURL(hostFaceUrl) ?? "");
-        hostImage.kf.setImage(with: url, placeholder: UIImage(named: "default_user", in: LiveRoomBundle(), compatibleWith: nil), options: nil, progressBlock: nil, completionHandler: nil)
+        let url = URL(string: TCUtil.transImageURL2HttpsURL(hostFaceUrl) ?? "")
+        hostImage.kf.setImage(with: url, placeholder: UIImage(named: "default_user", in: liveRoomBundle(), compatibleWith: nil), options:
+         nil, progressBlock: nil, completionHandler: nil)
         hostImage.isUserInteractionEnabled = true
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(headTap(_:)))
         addSubview(hostImage)
@@ -118,8 +123,8 @@ public class TCShowLiveTopView: UIView {
        
         if isHost {
             durationImage = UIImageView()
-            durationImage!.image = UIImage(named: "dot", in: LiveRoomBundle(), compatibleWith: nil)
-            addSubview(durationImage!)
+            durationImage?.image = UIImage(named: "dot", in: liveRoomBundle(), compatibleWith: nil)
+            addSubview(durationImage ?? UIImageView())
             
             durationLabel.text = "00:00:00"
         } else {
@@ -135,7 +140,7 @@ public class TCShowLiveTopView: UIView {
         hostImage.size(with: CGSize(width: 32, height: 32))
         hostImage.center = CGPoint(x:16 , y:self.height/2)
         hostImage.left = 8
-        roomIdLabel.text = LiveRoomLocalize("Demo.TRTC.LiveRoom.roomId")
+        roomIdLabel.text = liveRoomLocalize("Demo.TRTC.LiveRoom.roomId")
         roomIdLabel.font = UIFont.boldSystemFont(ofSize: 10)
         roomIdLabel.textColor = UIColor.white
         roomIdLabel.adjustsFontSizeToFitWidth = true
@@ -247,7 +252,7 @@ public class TCShowLiveTopView: UIView {
     
     func setRoomId(_ roomId: String?) {
         
-        roomIdLabel.text = LiveRoomLocalize("Demo.TRTC.LiveRoom.roomId").appending(roomId ?? "")
+        roomIdLabel.text = liveRoomLocalize("Demo.TRTC.LiveRoom.roomId").appending(roomId ?? "")
     }
     
 }
@@ -272,7 +277,7 @@ class TCAudienceListCell: UITableViewCell {
     }
     
     func refresh(withModel msgModel: TRTCLiveUserInfo) {
-        audienceimageView.kf.setImage(with:  URL(string: TCUtil.transImageURL2HttpsURL(msgModel.avatarURL) ?? ""), placeholder: UIImage(named: "face", in: LiveRoomBundle(), compatibleWith: nil), options: nil, progressBlock: nil, completionHandler: nil)
+        audienceimageView.kf.setImage(with:  URL(string: TCUtil.transImageURL2HttpsURL(msgModel.avatarURL) ?? ""), placeholder: UIImage(named: "face", in: liveRoomBundle(), compatibleWith: nil), options: nil, progressBlock: nil, completionHandler: nil)
     }
 }
 

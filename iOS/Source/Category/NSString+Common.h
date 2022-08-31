@@ -53,18 +53,18 @@ char pinyinFirstLetter(unsigned short hanzi);
 //以给定字符串开始,忽略大小写
 - (BOOL)startsWith:(NSString *)str;
 //以指定条件判断字符串是否以给定字符串开始
-- (BOOL)startsWith:(NSString *)str Options:(NSStringCompareOptions)compareOptions;
+- (BOOL)startsWith:(NSString *)str options:(NSStringCompareOptions)compareOptions;
 
 
 //以给定字符串结束，忽略大小写
 - (BOOL)endsWith:(NSString *)str;
 //以指定条件判断字符串是否以给定字符串结尾
-- (BOOL)endsWith:(NSString *)str Options:(NSStringCompareOptions)compareOptions;
+- (BOOL)endsWith:(NSString *)str options:(NSStringCompareOptions)compareOptions;
 
 //包含给定的字符串, 忽略大小写
 - (BOOL)containsString:(NSString *)str;
 //以指定条件判断是否包含给定的字符串
-- (BOOL)containsString:(NSString *)str Options:(NSStringCompareOptions)compareOptions;
+- (BOOL)containsString:(NSString *)str options:(NSStringCompareOptions)compareOptions;
 
 //判断字符串是否相同，忽略大小写
 - (BOOL)equalsString:(NSString *)str;

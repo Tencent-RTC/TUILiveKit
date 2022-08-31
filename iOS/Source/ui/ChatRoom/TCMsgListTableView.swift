@@ -41,7 +41,8 @@ class TCMsgListTableView: UITableView{
     }
     
     func calCellHeight(_ attribText: NSAttributedString?) -> CGFloat {
-        let rect = attribText?.boundingRect(with: CGSize(width: width - 20, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, context: nil)
+        let rect = attribText?.boundingRect(with: CGSize(width: width - 20, height: CGFloat.greatestFiniteMagnitude), options:
+         .usesLineFragmentOrigin, context: nil)
         let cellHeight = (rect?.size.height ?? 0.0) + 10
         return cellHeight
     }
@@ -86,7 +87,8 @@ class TCMsgListTableView: UITableView{
     func calculateCellHeight(_ indexPath: IndexPath) -> CGFloat {
         let msgModel = msgArray[indexPath.row]
         let msg = TCMsgListCell.getAttributedString(from: msgModel)
-        let rect = msg?.boundingRect(with: CGSize(width: width - 20, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, context: nil)
+        let rect = msg?.boundingRect(with: CGSize(width: width - 20, height: CGFloat.greatestFiniteMagnitude), options:
+         .usesLineFragmentOrigin, context: nil)
         let cellHeight = (rect?.size.height ?? 0.0) + 10
         return cellHeight
     }
@@ -105,7 +107,7 @@ extension TCMsgListTableView: UITableViewDelegate{
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat{
         if msgArray.count > indexPath.row{
             let msgModel = msgArray[indexPath.row]
-            return msgModel.msgHeight;
+            return msgModel.msgHeight
         }
         return 20
     }
@@ -126,7 +128,7 @@ extension TCMsgListTableView: UITableViewDelegate{
 //MARK: - UITableViewDataSource
 extension TCMsgListTableView: UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return msgArray.count;
+        return msgArray.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -170,7 +172,7 @@ class TCAudienceListTableView: UITableView{
     private var liveInfo: TRTCLiveRoomInfo?
     private var dataArray: [TRTCLiveUserInfo]
     init(frame: CGRect, style: UITableView.Style, live _liveInfo: TRTCLiveRoomInfo) {
-        liveInfo = _liveInfo;
+        liveInfo = _liveInfo
         dataArray = [TRTCLiveUserInfo]()
         super.init(frame: frame, style: style)
         separatorStyle = .none
@@ -210,7 +212,9 @@ class TCAudienceListTableView: UITableView{
         }
         if model.msgType == .memberEnterRoom {
             let infoData = TRTCLiveUserInfo()
-            infoData.userId = model.userId!
+            if let userId = model.userId {
+                infoData.userId = userId
+            }
             infoData.avatarURL = model.userHeadImageUrl ?? ""
             dataArray.insert(infoData, at: 0)
         }
@@ -221,7 +225,7 @@ class TCAudienceListTableView: UITableView{
 //MARK: - UITableViewDelegate
 extension TCAudienceListTableView: UITableViewDelegate{
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat{
-        return CGFloat(IMAGE_SIZE + IMAGE_SPACE);
+        return CGFloat(IMAGE_SIZE + IMAGE_SPACE)
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat{

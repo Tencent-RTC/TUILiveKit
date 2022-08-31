@@ -9,7 +9,7 @@ import Foundation
 
 let SCREEN_WIDTH = UIScreen.main.bounds.size.width
 let SCREEN_HEIGHT = UIScreen.main.bounds.size.height
-let StatusBarHeight = UIApplication.shared.statusBarFrame.height;
+let StatusBarHeight = UIApplication.shared.statusBarFrame.height
 
 let MSG_TABLEVIEW_WIDTH = 200
 let MSG_TABLEVIEW_HEIGHT = 240

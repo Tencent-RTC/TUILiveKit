@@ -28,7 +28,7 @@ class TCStatusInfoComponet: NSObject{
     lazy var loadingImageView: UIImageView = {
         var array = [UIImage]()
         for i in 0...14 {
-            if let image = UIImage(named: "loading_image\(i).png", in: LiveRoomBundle(), compatibleWith: nil) {
+            if let image = UIImage(named: "loading_image\(i).png", in: liveRoomBundle(), compatibleWith: nil) {
                 array.append(image)
             }
         }
@@ -51,10 +51,10 @@ class TCStatusInfoComponet: NSObject{
         }
         let rect = view.frame
         loadingBackground.frame = CGRect(x: 0, y: 0, width: rect.width , height: rect.height)
-        view.addSubview(loadingBackground);
-        view.addSubview(loadingImageView);
+        view.addSubview(loadingBackground)
+        view.addSubview(loadingImageView)
         loadingBackground.snp.remakeConstraints({ make in
-            make.edges.equalToSuperview();
+            make.edges.equalToSuperview()
         })
         loadingImageView.snp.makeConstraints({ make in
             make.width.height.equalTo(50)

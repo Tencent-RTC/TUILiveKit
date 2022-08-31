@@ -1,13 +1,14 @@
 //
 //  UIViewAdditions.h
+//  Copyright © 2021 Tencent. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
-#define kScaleX [UIScreen mainScreen].bounds.size.width / 375
-#define kScaleY [UIScreen mainScreen].bounds.size.height / 667
+#define KScaleX [UIScreen mainScreen].bounds.size.width / 375
+#define KScaleY [UIScreen mainScreen].bounds.size.height / 667
 
-CG_INLINE CGRect CGRectMake_Auto(CGFloat x, CGFloat y, CGFloat width, CGFloat height)
+CG_INLINE CGRect cgRectMake_Auto(CGFloat x, CGFloat y, CGFloat width, CGFloat height)
 {
     const CGFloat xScale = [UIScreen mainScreen].bounds.size.width / 375;
     const CGFloat yScale = [UIScreen mainScreen].bounds.size.height / 667;

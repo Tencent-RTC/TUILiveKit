@@ -60,7 +60,7 @@ class TCPushShowResultView: UIView {
         titleLabel.textAlignment = .center
         titleLabel.font = UIFont.boldSystemFont(ofSize: 15)
         titleLabel.textColor = UIColor.black
-        titleLabel.text = LiveRoomLocalize("Demo.TRTC.LiveRoom.interactionitsover")
+        titleLabel.text = liveRoomLocalize("Demo.TRTC.LiveRoom.interactionitsover")
         addSubview(titleLabel)
         durationLabel.textAlignment = .center
         durationLabel.font = UIFont.boldSystemFont(ofSize: 15)
@@ -70,33 +70,34 @@ class TCPushShowResultView: UIView {
         durationTipLabel.textAlignment = .center
         durationTipLabel.font = UIFont.boldSystemFont(ofSize: 12)
         durationTipLabel.textColor = UIColor.gray
-        durationTipLabel.text = LiveRoomLocalize("Demo.TRTC.LiveRoom.interactionduration")
+        durationTipLabel.text = liveRoomLocalize("Demo.TRTC.LiveRoom.interactionduration")
         addSubview(durationTipLabel)
         viewerCountLabel.textAlignment = .center
         viewerCountLabel.font = UIFont.boldSystemFont(ofSize: 12)
         viewerCountLabel.textColor = UIColor.black
-        viewerCountLabel.text = String(format: "%ld", resultData!.getTotalViewerCount())
+        guard let resultData = resultData else { return }
+        viewerCountLabel.text = String(format: "%ld", resultData.getTotalViewerCount())
         addSubview(viewerCountLabel)
         viewerCountTipLabel.textAlignment = .center
         viewerCountTipLabel.font = UIFont.boldSystemFont(ofSize: 12)
         viewerCountTipLabel.textColor = UIColor.gray
-        viewerCountTipLabel.text = LiveRoomLocalize("Demo.TRTC.LiveRoom.viewers")
+        viewerCountTipLabel.text = liveRoomLocalize("Demo.TRTC.LiveRoom.viewers")
         addSubview(viewerCountTipLabel)
         praiseLabel.textAlignment = .center
         praiseLabel.font = UIFont.boldSystemFont(ofSize: 12)
         praiseLabel.textColor = UIColor.black
-        praiseLabel.text = String(format: "%ld\n", resultData!.getLikeCount())
+        praiseLabel.text = String(format: "%ld\n", resultData.getLikeCount())
         addSubview(praiseLabel)
         praiseTipLabel.textAlignment = .center
         praiseTipLabel.font = UIFont.boldSystemFont(ofSize: 12)
         praiseTipLabel.textColor = UIColor.gray
-        praiseTipLabel.text = LiveRoomLocalize("Demo.TRTC.LiveRoom.numberoflikes")
+        praiseTipLabel.text = liveRoomLocalize("Demo.TRTC.LiveRoom.numberoflikes")
         addSubview(praiseTipLabel)
         line.backgroundColor = UIColor(hex: "EEEEEE")
         addSubview(line)
         backBtn.backgroundColor = UIColor.clear
         backBtn.titleLabel?.font = UIFont.systemFont(ofSize: 16)
-        backBtn.setTitle(LiveRoomLocalize("Demo.TRTC.LiveRoom.back"), for: .normal)
+        backBtn.setTitle(liveRoomLocalize("Demo.TRTC.LiveRoom.back"), for: .normal)
         backBtn.setTitleColor(UIColor.flatBlue(), for: .normal)
         addSubview(backBtn)
         relayout()
@@ -245,7 +246,7 @@ class TCAnchorToolbarView: UIView, UITextFieldDelegate, UIGestureRecognizerDeleg
         let icon_size = BOTTOM_BTN_ICON_WIDTH
         let margin = (UIScreen.main.bounds.size.width - CGFloat(icon_size * 6)) / 7
         
-        btnChat.setBackgroundImage(UIImage(named: "comment", in: LiveRoomBundle(), compatibleWith: nil), for: .normal)
+        btnChat.setBackgroundImage(UIImage(named: "comment", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
         btnChat.addTarget(self, action: #selector(clickChat(_:)), for: .touchUpInside)
         addSubview(btnChat)
         btnChat.snp.makeConstraints({ make in
@@ -258,7 +259,7 @@ class TCAnchorToolbarView: UIView, UITextFieldDelegate, UIGestureRecognizerDeleg
             make.size.equalTo(CGSize(width: icon_size, height: icon_size))
         })
         
-        btnCamera.setImage(UIImage(named: "live_camera", in: LiveRoomBundle(), compatibleWith: nil), for: .normal)
+        btnCamera.setImage(UIImage(named: "live_camera", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
         btnCamera.addTarget(self, action: #selector(clickCamera(_:)), for: .touchUpInside)
         addSubview(btnCamera)
         btnCamera.snp.makeConstraints({ make in
@@ -266,8 +267,8 @@ class TCAnchorToolbarView: UIView, UITextFieldDelegate, UIGestureRecognizerDeleg
             make.size.centerY.equalTo(btnChat)
         })
         
-        btnPK.setImage(UIImage(named: "live_pk_start", in: LiveRoomBundle(), compatibleWith: nil), for: .normal)
-        btnPK.setImage(UIImage(named: "live_pk_end", in: LiveRoomBundle(), compatibleWith: nil), for: .selected)
+        btnPK.setImage(UIImage(named: "live_pk_start", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
+        btnPK.setImage(UIImage(named: "live_pk_end", in: liveRoomBundle(), compatibleWith: nil), for: .selected)
         btnPK.addTarget(self, action: #selector(clickPK(_:)), for: .touchUpInside)
         addSubview(btnPK)
         btnPK.snp.makeConstraints({ make in
@@ -275,7 +276,7 @@ class TCAnchorToolbarView: UIView, UITextFieldDelegate, UIGestureRecognizerDeleg
             make.size.centerY.equalTo(btnChat)
         })
         
-        btnBeauty.setImage(UIImage(named: "live_beauty", in: LiveRoomBundle(), compatibleWith: nil), for: .normal)
+        btnBeauty.setImage(UIImage(named: "live_beauty", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
         btnBeauty.addTarget(self, action: #selector(clickBeauty(_:)), for: .touchUpInside)
         addSubview(btnBeauty)
         btnBeauty.snp.makeConstraints({ make in
@@ -283,7 +284,7 @@ class TCAnchorToolbarView: UIView, UITextFieldDelegate, UIGestureRecognizerDeleg
             make.size.centerY.equalTo(btnChat)
         })
 
-        btnMusic.setImage(UIImage(named: "music_icon", in: LiveRoomBundle(), compatibleWith: nil), for: .normal)
+        btnMusic.setImage(UIImage(named: "music_icon", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
         btnMusic.addTarget(self, action: #selector(clickMusic(_:)), for: .touchUpInside)
         addSubview(btnMusic)
         btnMusic.snp.makeConstraints({ make in
@@ -291,7 +292,7 @@ class TCAnchorToolbarView: UIView, UITextFieldDelegate, UIGestureRecognizerDeleg
             make.size.centerY.equalTo(btnChat)
         })
         
-        setting.setImage(UIImage(named: "live_more", in: LiveRoomBundle(), compatibleWith: nil), for: .normal)
+        setting.setImage(UIImage(named: "live_more", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
         setting.addTarget(self, action: #selector(clickSetting(_:)), for: .touchUpInside)
         addSubview(setting)
         setting.snp.makeConstraints({ make in
@@ -300,7 +301,7 @@ class TCAnchorToolbarView: UIView, UITextFieldDelegate, UIGestureRecognizerDeleg
         })
 
         //pk view
-        pkView = UIImageView(image: UIImage(named: "PK", in: LiveRoomBundle(), compatibleWith: nil))
+        pkView = UIImageView(image: UIImage(named: "PK", in: liveRoomBundle(), compatibleWith: nil))
         pkView!.frame = CGRect(
             x: UIScreen.main.bounds.size.width / 2.0 - 25,
             y: UIScreen.main.bounds.size.height / 2.0 - 25,
@@ -309,15 +310,15 @@ class TCAnchorToolbarView: UIView, UITextFieldDelegate, UIGestureRecognizerDeleg
         pkView!.isHidden = true
         addSubview(pkView!)
 
-        closeBtn.setImage(UIImage(named: "live_exit", in: LiveRoomBundle(), compatibleWith: nil), for: .normal)
+        closeBtn.setImage(UIImage(named: "live_exit", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
         closeBtn.backgroundColor = UIColor.clear
         closeBtn.addTarget(self, action: #selector(closeVC), for: .touchUpInside)
         addSubview(closeBtn)
         bringSubviewToFront(closeBtn)
         closeBtn.snp.makeConstraints { make in
-            make.trailing.equalTo(self).offset(-20);
-            make.width.equalTo(52);
-            make.height.equalTo(52);
+            make.trailing.equalTo(self).offset(-20)
+            make.width.equalTo(52)
+            make.height.equalTo(52)
             if #available(iOS 11.0, *) {
                 make.top.equalTo(self).offset(60)
             } else {
@@ -415,10 +416,10 @@ class TCAnchorToolbarView: UIView, UITextFieldDelegate, UIGestureRecognizerDeleg
     
     // MARK: TCAnchorToolbarDelegate
     @objc func closeVC() {
-        closeAlert = UIAlertController(title: nil, message: LiveRoomLocalize("Demo.TRTC.LiveRoom.interactioninprogress"), preferredStyle: .alert)
-        let cancelAction = UIAlertAction(title: LiveRoomLocalize("Demo.TRTC.LiveRoom.subCancel"), style: .cancel, handler: { action in
+        closeAlert = UIAlertController(title: nil, message: liveRoomLocalize("Demo.TRTC.LiveRoom.interactioninprogress"), preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: liveRoomLocalize("Demo.TRTC.LiveRoom.subCancel"), style: .cancel, handler: { action in
         })
-        let otherAction = UIAlertAction(title: LiveRoomLocalize("Demo.TRTC.LiveRoom.subConfirm"), style: .default, handler: { [weak self] action in
+        let otherAction = UIAlertAction(title: liveRoomLocalize("Demo.TRTC.LiveRoom.subConfirm"), style: .default, handler: { [weak self] action in
             guard let self = self else { return }
             guard let delegate = self.delegate else{
                 return
@@ -497,7 +498,7 @@ class TCAnchorToolbarView: UIView, UITextFieldDelegate, UIGestureRecognizerDeleg
             var msgModel = TCMsgModel()
             msgModel.userId = info.imUserId
             msgModel.userName = info.imUserName
-            msgModel.userMsg = LiveRoomLocalize("Demo.TRTC.LiveRoom.joininteraction")
+            msgModel.userMsg = liveRoomLocalize("Demo.TRTC.LiveRoom.joininteraction")
             msgModel.userHeadImageUrl = info.imUserIconUrl
             msgModel.msgType = .memberEnterRoom
             if !isAlready(inAudienceList: msgModel) {
@@ -508,7 +509,7 @@ class TCAnchorToolbarView: UIView, UITextFieldDelegate, UIGestureRecognizerDeleg
             var msgModel = TCMsgModel()
             msgModel.userId = info.imUserId
             msgModel.userName = info.imUserName
-            msgModel.userMsg = LiveRoomLocalize("Demo.TRTC.LiveRoom.exitinteraction")
+            msgModel.userMsg = liveRoomLocalize("Demo.TRTC.LiveRoom.exitinteraction")
             msgModel.userHeadImageUrl = info.imUserIconUrl
             msgModel.msgType = .memberQuitRoom
             topView.onUserExitLiveRoom()
@@ -516,7 +517,7 @@ class TCAnchorToolbarView: UIView, UITextFieldDelegate, UIGestureRecognizerDeleg
         case .praise:
             var msgModel = TCMsgModel()
             msgModel.userName = info.imUserName
-            msgModel.userMsg = LiveRoomLocalize("Demo.TRTC.LiveRoom.clicklike")
+            msgModel.userMsg = liveRoomLocalize("Demo.TRTC.LiveRoom.clicklike")
             msgModel.userHeadImageUrl = info.imUserIconUrl
             msgModel.msgType = .praise
             topView.onUserSendLikeMessage()
@@ -547,8 +548,10 @@ class TCAnchorToolbarView: UIView, UITextFieldDelegate, UIGestureRecognizerDeleg
     }
     
     func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
-        let touch = event.allTouches!.first
-        touchBeginLocation = touch!.location(in: self)
+        guard let allTouches = event.allTouches else { return }
+        let touch = allTouches.first
+        guard let touch = touch else { return }
+        touchBeginLocation = touch.location(in: self)
         if !vPKPanel.isHidden {
             vPKPanel.isHidden = true
             closeBtn.isHidden = false

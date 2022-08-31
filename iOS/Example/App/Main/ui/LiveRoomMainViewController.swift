@@ -76,7 +76,9 @@ extension LiveRoomMainViewController {
 
 extension LiveRoomMainViewController {
     @objc func backBtnClick() {
-        let alertVC = UIAlertController.init(title: TRTCLiveRoomLocalize("App.PortalViewController.areyousureloginout"), message: nil, preferredStyle: .alert)
+        let alertVC = UIAlertController.init(title:
+         TRTCLiveRoomLocalize("App.PortalViewController.areyousureloginout"), message: nil,
+         preferredStyle: .alert)
         let cancelAction = UIAlertAction.init(title: TRTCLiveRoomLocalize("App.PortalViewController.cancel"), style: .cancel, handler: nil)
         let sureAction = UIAlertAction.init(title: TRTCLiveRoomLocalize("App.PortalViewController.determine"), style: .default) { (action) in
             ProfileManager.shared.removeLoginCache()

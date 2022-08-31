@@ -39,7 +39,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)stopPublish;
 
-- (void)startPlay:(NSString *)userId streamID:(NSString *)streamID view:(UIView *)view usesCDN:(BOOL)usesCDN roomId:(NSString * _Nullable)roomId callback:(Callback _Nullable)callback;
+- (void)startPlay:(NSString *)userId streamID:(NSString *)streamID view:(UIView *)view
+ usesCDN:(BOOL)usesCDN roomId:(NSString * _Nullable)roomId callback:(Callback _Nullable)callback;
 
 - (void)startTRTCPlay:(NSString *)userId;
 
