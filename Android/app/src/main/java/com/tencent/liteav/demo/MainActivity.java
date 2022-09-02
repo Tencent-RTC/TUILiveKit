@@ -20,7 +20,7 @@ import com.tencent.liteav.basic.AvatarConstant;
 import com.tencent.liteav.basic.IntentUtils;
 
 import com.tencent.liteav.basic.UserModelManager;
-import com.tencent.liteav.debug.GenerateGlobalConfig;
+import com.tencent.liteav.debug.GenerateTestUserSig;
 import com.tencent.liteav.liveroom.TUILiveRoom;
 import com.tencent.liteav.liveroom.ui.common.utils.TCConstants;
 import com.tencent.qcloud.tuicore.TUILogin;
@@ -81,8 +81,8 @@ public class MainActivity extends Activity {
         if (TextUtils.isEmpty(userId)) {
             Toast.makeText(this, getString(R.string.toast_login_success), Toast.LENGTH_SHORT).show();
         }
-        TUILogin.login(this, GenerateGlobalConfig.SDKAPPID, userId,
-                GenerateGlobalConfig.genTestUserSig(userId), new TUICallback() {
+        TUILogin.login(this, GenerateTestUserSig.SDKAPPID, userId,
+                GenerateTestUserSig.genTestUserSig(userId), new TUICallback() {
                     @Override
                     public void onSuccess() {
 

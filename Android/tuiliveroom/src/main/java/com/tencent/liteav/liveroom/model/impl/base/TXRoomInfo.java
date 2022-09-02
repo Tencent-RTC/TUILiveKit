@@ -13,16 +13,16 @@ public class TXRoomInfo {
 
     @Override
     public String toString() {
-        return "TXRoomInfo{" +
-                "roomId='" + roomId + '\'' +
-                ", roomName='" + roomName + '\'' +
-                ", ownerId='" + ownerId + '\'' +
-                ", ownerName='" + ownerName + '\'' +
-                ", streamUrl='" + streamUrl + '\'' +
-                ", coverUrl='" + coverUrl + '\'' +
-                ", memberCount=" + memberCount +
-                ", ownerAvatar='" + ownerAvatar + '\'' +
-                ", roomStatus=" + roomStatus +
-                '}';
+        return "TXRoomInfo{"
+                + "roomId='" + roomId + '\''
+                + ", roomName='" + roomName + '\''
+                + ", ownerId='" + ownerId + '\''
+                + ", ownerName='" + ownerName + '\''
+                + ", streamUrl='" + streamUrl + '\''
+                + ", coverUrl='" + coverUrl + '\''
+                + ", memberCount=" + memberCount
+                + ", ownerAvatar='" + ownerAvatar + '\''
+                + ", roomStatus=" + roomStatus
+                + '}';
     }
 }

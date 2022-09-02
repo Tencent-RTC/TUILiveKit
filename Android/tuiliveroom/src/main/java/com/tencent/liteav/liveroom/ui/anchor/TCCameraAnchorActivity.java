@@ -2,8 +2,8 @@ package com.tencent.liteav.liveroom.ui.anchor;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.tencent.liteav.debug.GenerateGlobalConfig.XMAGIC_LICENSE_KEY;
-import static com.tencent.liteav.debug.GenerateGlobalConfig.XMAGIC_LICENSE_URL;
+import static com.tencent.liteav.debug.GenerateTestUserSig.XMAGIC_LICENSE_KEY;
+import static com.tencent.liteav.debug.GenerateTestUserSig.XMAGIC_LICENSE_URL;
 
 import android.app.Activity;
 import android.content.Context;
