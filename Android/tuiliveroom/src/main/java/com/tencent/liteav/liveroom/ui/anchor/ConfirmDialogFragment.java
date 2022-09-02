@@ -15,9 +15,9 @@ public class ConfirmDialogFragment extends DialogFragment {
     private PositiveClickListener mPositiveClickListener;
     private NegativeClickListener mNegativeClickListener;
 
-    private String                mMessageText;
-    private String                mPositiveText;
-    private String                mNegativeText;
+    private String mMessageText;
+    private String mPositiveText;
+    private String mNegativeText;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -30,15 +30,15 @@ public class ConfirmDialogFragment extends DialogFragment {
         return dialog;
     }
 
-    private void initTextMessage(Dialog dialog){
+    private void initTextMessage(Dialog dialog) {
         TextView textMessage = (TextView) dialog.findViewById(R.id.tv_message);
         textMessage.setText(mMessageText);
     }
 
-    private void initButtonPositive(Dialog dialog){
+    private void initButtonPositive(Dialog dialog) {
         Button buttonPositive = (Button) dialog.findViewById(R.id.btn_positive);
 
-        if (mPositiveClickListener == null){
+        if (mPositiveClickListener == null) {
             buttonPositive.setVisibility(View.GONE);
             return;
         }
@@ -48,15 +48,15 @@ public class ConfirmDialogFragment extends DialogFragment {
         buttonPositive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    mPositiveClickListener.onClick();
+                mPositiveClickListener.onClick();
             }
         });
     }
 
-    private void initButtonNegative(Dialog dialog){
+    private void initButtonNegative(Dialog dialog) {
         Button buttonNegative = (Button) dialog.findViewById(R.id.btn_negative);
 
-        if (mNegativeClickListener == null){
+        if (mNegativeClickListener == null) {
             buttonNegative.setVisibility(View.GONE);
             return;
         }
@@ -71,15 +71,15 @@ public class ConfirmDialogFragment extends DialogFragment {
         });
     }
 
-    public void setMessage(String message){
+    public void setMessage(String message) {
         mMessageText = message;
     }
 
-    public void setPositiveText(String text){
+    public void setPositiveText(String text) {
         mPositiveText = text;
     }
 
-    public void setNegativeText(String text){
+    public void setNegativeText(String text) {
         mNegativeText = text;
     }
 

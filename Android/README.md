@@ -38,8 +38,8 @@ TUILiveRoom
 ### 第二步：下载源码，配置工程
 
 1. 使用 Android Studio（3.5及以上的版本）打开源码工程`TUILiveRoom `。
-2. 找到并打开`TUILiveRoom/Android/debug/src/main/java/com/tencent/liteav/debug/GenerateGlobalConfig.java`文件。
-3. 设置`GenerateGlobalConfig.java`文件中的相关参数：
+2. 找到并打开`TUILiveRoom/Android/debug/src/main/java/com/tencent/liteav/debug/GenerateTestUserSig.java`文件。
+3. 设置`GenerateTestUserSig.java`文件中的相关参数：
 
 <ul>
 <li>SDKAPPID：默认为 0 ，请设置为实际申请的SDKAPPID。</li>

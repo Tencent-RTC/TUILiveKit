@@ -153,11 +153,12 @@ public class AnchorFunctionView extends FrameLayout implements View.OnClickListe
                     break;
                 case CANCEL:
                     mPKState = PKState.PK;
+                    TRTCLiveRoom.sharedInstance(getContext()).cancelRequestRoomPK(mRoomId, null);
                     setButtonPKState(mPKState);
                     break;
                 case STOP:
                     mPKState = PKState.PK;
-                    TRTCLiveRoom.sharedInstance(getContext()).cancelRequestRoomPK(mRoomId, null);
+                    TRTCLiveRoom.sharedInstance(getContext()).quitRoomPK(null);
                     setButtonPKState(mPKState);
                     break;
                 default:

@@ -7,10 +7,10 @@ public class TXUserInfo {
 
     @Override
     public String toString() {
-        return "TXUserInfo{" +
-                "userId='" + userId + '\'' +
-                ", userName='" + userName + '\'' +
-                ", avatarURL='" + avatarURL + '\'' +
-                '}';
+        return "TXUserInfo{"
+                + "userId='" + userId + '\''
+                + ", userName='" + userName + '\''
+                + ", avatarURL='" + avatarURL + '\''
+                + '}';
     }
 }

@@ -38,8 +38,8 @@ TUILiveRoom
 ### Step 2. Download the source code and configure the project
 
 1. Open the demo project `TUILiveRoom` with Android Studio (3.5 or above).
-2. Find and open the `TUILiveRoom/Android/debug/src/main/java/com/tencent/liteav/debug/GenerateGlobalConfig.java`file.
-3. Set parameters in `GenerateGlobalConfig.java` as follows:
+2. Find and open the `TUILiveRoom/Android/debug/src/main/java/com/tencent/liteav/debug/GenerateTestUserSig.java`file.
+3. Set parameters in `GenerateTestUserSig.java` as follows:
 
 <ul>
 <li>SDKAPPID: 0 by default. Replace it with your actual `SDKAPPID`.</li>
@@ -75,9 +75,7 @@ You can open the source code project `TUILiveRoom/Android` in Android Studio 3.5
 |---------|---------|
 | <img src="https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/user_b_ios.png" width="320"/> | <img src="https://qcloudimg.tencent-cloud.cn/raw/fe39e76723f304de52b9d677a8cebf97.png" width="320"/> | 
 
-## Have any questions?
-Welcome to join our Telegram Group to communicate with our professional engineers! We are more than happy to hear from you~
-Click to join: https://t.me/+EPk6TMZEZMM5OGY1
-Or scan the QR code
+## FAQs
 
-<img src="https://qcloudimg.tencent-cloud.cn/raw/9c67ed5746575e256b81ce5a60216c5a.jpg" width="320"/>
+- [FAQs About TUI Scenario-Specific Solution](https://cloud.tencent.com/developer/article/1952880)
+- [Contact us](https://intl.cloud.tencent.com/contact-us)
