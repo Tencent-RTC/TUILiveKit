@@ -1,7 +1,7 @@
 # Quick Run of TUILiveRoom Demo for iOS
 _[中文](README.md) | English_
 
-This document describes how to quickly run the TUILiveRoom demo project to try out high-quality audio interaction. For more information on the TUILiveRoom component connection process, see **[Integrating TUILiveRoom (iOS)](https://cloud.tencent.com/document/product/647/43181)**.
+This document describes how to quickly run the TUILiveRoom demo project to try out high-quality audio interaction. For more information on the TUILiveRoom component connection process, see **[Integrating TUILiveRoom (iOS)](https://www.tencentcloud.com/document/product/647/36060)**.
 
 ## Directory Structure
     
@@ -32,7 +32,7 @@ TUILiveRoom
     <img src="https://qcloudimg.tencent-cloud.cn/raw/62f58d310dde3de2d765e9a460b8676a.png" width="900">
 3. On the application information page, note the `SDKAppID` and key as shown below:
     <img src="https://qcloudimg.tencent-cloud.cn/raw/bea06852e22a33c77cb41d287cac25db.png" width="900">
->! This feature uses two basic PaaS services of Tencent Cloud: [TRTC](https://cloud.tencent.com/document/product/647/16788) and [IM](https://cloud.tencent.com/document/product/269). When you activate TRTC, IM will be activated automatically. IM is a value-added service. See [Pricing](https://cloud.tencent.com/document/product/269/11673) for its billing details.
+>! This feature uses two basic PaaS services of Tencent Cloud: [TRTC](https://www.tencentcloud.com/document/product/647/35078) and [IM](https://www.tencentcloud.com/document/product/1047/33513). When you activate TRTC, IM will be activated automatically. IM is a value-added service.
 
 ### Step 2. Download the source code and configure the project
 
@@ -70,17 +70,9 @@ Note: You need to prepare at least two devices to try out TUILiveRoom. Here, use
 - Step 3: Enter a room subject and click **Start**.
 - Step 4: After successful creation, you will enter the main UI of video live streaming. Note down the room number at this time.
 
-| Step 1 | Step 2 | Step 3 | Step 4 |
-|---------|---------|---------|---------|
-| <img src="https://qcloudimg.tencent-cloud.cn/raw/24a76a18049eda3bdb6414493d43e286.png" width="250"> | <img src="https://qcloudimg.tencent-cloud.cn/raw/8f9290c8dfc3eaa44f3c0a82e776c497.png" width="250"> | <img src="https://qcloudimg.tencent-cloud.cn/raw/4ac45382e20f72a87b72104404eee2da.png" width="250"> |<img src="https://qcloudimg.tencent-cloud.cn/raw/01c73737f0af40fe17c70e1107a9f720.jpeg" width="250"> |
-
 **Device B (userId: 222)**
 - Step 1: Enter the username (which must be unique), such as `222`.
 - Step 2: Click **Enter Room** and enter the ID of the room created by user A (the room ID that you noted down in step 4 on device A).
-
-| Step 1 | Step 2 | 
-|---------|---------|
-| <img src="https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/user_b_ios.png" width="320"/> | <img src="https://qcloudimg.tencent-cloud.cn/raw/fe39e76723f304de52b9d677a8cebf97.png" width="320"/> | 
 
 ## Have any questions?
 Welcome to join our Telegram Group to communicate with our professional engineers! We are more than happy to hear from you~
