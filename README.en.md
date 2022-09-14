@@ -14,21 +14,15 @@ _[中文](README.md) | English_
 - [Chorus - TUIChorus](https://github.com/tencentyun/TUIChorus/)
 
 ## Demonstration
-
-<table>
-<tr>
-<td><img width="260" src="liveroom_beauty.gif"/></td>
-<td><img width="260" src="liveroom_join.gif"/></td>
-<td><img width="260" src="liveroom_msg.gif"/></td>
-<td><img width="260" src="liveroom_pk.gif"/></td>
-</tr>
-</table>
+<img src="https://qcloudimg.tencent-cloud.cn/raw/aad043161a28a8bbb0513c1f2a4e63e1.png" width="640">
 
 ## Demos
+You can directly scan the QR codes to try out the component.
 
 | iOS                                                          | Android                                                      | Web                                                          |
 | :----------------------------------------------------------- | :----------------------------------------------------------- | ------------------------------------------------------------ |
-| ![img](https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/app_download_ios.png) | ![img](https://main.qcloudimg.com/raw/8a603ced0a61983018c794df842f7029.png) | [Push Demo](https://web.sdk.qcloud.com/component/tuiliveroom/tuipusher/pusher.html)<br><br><br><br>[Pull Demo](https://web.sdk.qcloud.com/component/tuiliveroom/tuiplayer/player.html) |
+| <img style="width:150px;" src="https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/app_download_ios.png" data-nonescope="true"> | <img style="width:150px;" src="https://main.qcloudimg.com/raw/8a603ced0a61983018c794df842f7029.png" data-nonescope="true"> | [Push Demo](https://web.sdk.qcloud.com/component/tuiliveroom/tuipusher/pusher.html)<br><br><br><br>[Pull Demo](https://web.sdk.qcloud.com/component/tuiliveroom/tuiplayer/player.html) |
+
 
 ## Documentation
 
