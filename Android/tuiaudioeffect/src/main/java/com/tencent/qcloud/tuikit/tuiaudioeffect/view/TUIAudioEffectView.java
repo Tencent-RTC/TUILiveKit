@@ -1,5 +1,8 @@
 package com.tencent.qcloud.tuikit.tuiaudioeffect.view;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -38,9 +41,6 @@ import com.tencent.qcloud.tuikit.tuiaudioeffect.view.internal.VoiceVolumeView;
 
 import java.util.List;
 import java.util.Locale;
-
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
 
 /**
  * 音效面板 Dialog
@@ -216,10 +216,11 @@ public class TUIAudioEffectView extends Dialog {
 
     private void initData() {
         final List<VoiceItemEntity> changerItemEntityList = mPresenter.getVoiceChangeData();
-        VoiceRecyclerView.RecyclerViewAdapter changerAdapter = new VoiceRecyclerView.RecyclerViewAdapter(changerItemEntityList, new VoiceRecyclerView.OnItemClickListener() {
+        VoiceRecyclerView.RecyclerViewAdapter changerAdapter = new VoiceRecyclerView.RecyclerViewAdapter(
+                changerItemEntityList, new VoiceRecyclerView.OnItemClickListener() {
             @Override
-            public void onItemClick(int position) {
-                int type = ((VoiceRecyclerView.RecyclerViewAdapter) mViewVoiceChange.getAdapter()).getItem(position).mType;
+            public void onItemClick(int pos) {
+                int type = ((VoiceRecyclerView.RecyclerViewAdapter) mViewVoiceChange.getAdapter()).getItem(pos).mType;
                 Log.d(TAG, "select changer type " + type);
                 if (mPresenter != null) {
                     mPresenter.setVoiceChangerType(type);
@@ -230,10 +231,11 @@ public class TUIAudioEffectView extends Dialog {
         mViewVoiceChange.setAdapter(changerAdapter);
 
         final List<VoiceItemEntity> reverbItemEntityList = mPresenter.getVoiceReverbData();
-        VoiceRecyclerView.RecyclerViewAdapter reverbAdapter = new VoiceRecyclerView.RecyclerViewAdapter(reverbItemEntityList, new VoiceRecyclerView.OnItemClickListener() {
+        VoiceRecyclerView.RecyclerViewAdapter reverbAdapter = new VoiceRecyclerView.RecyclerViewAdapter(
+                reverbItemEntityList, new VoiceRecyclerView.OnItemClickListener() {
             @Override
-            public void onItemClick(int position) {
-                int type = ((VoiceRecyclerView.RecyclerViewAdapter) mViewVoiceReverb.getAdapter()).getItem(position).mType;
+            public void onItemClick(int pos) {
+                int type = ((VoiceRecyclerView.RecyclerViewAdapter) mViewVoiceReverb.getAdapter()).getItem(pos).mType;
                 Log.d(TAG, "select reverb type " + type);
                 if (mPresenter != null) {
                     mPresenter.setVoiceReverbType(type);
@@ -243,11 +245,12 @@ public class TUIAudioEffectView extends Dialog {
         reverbAdapter.setSelectPosition(0);
         mViewVoiceReverb.setAdapter(reverbAdapter);
 
-        final List<com.tencent.qcloud.tuikit.tuiaudioeffect.model.BGMItemEntity> songItemEntityList = mPresenter.getSongData();
-        MusicSelectView.RecyclerViewAdapter songAdapter = new MusicSelectView.RecyclerViewAdapter(songItemEntityList, new MusicSelectView.OnItemClickListener() {
+        final List<BGMItemEntity> songItemEntityList = mPresenter.getSongData();
+        MusicSelectView.RecyclerViewAdapter songAdapter = new MusicSelectView.RecyclerViewAdapter(
+                songItemEntityList, new MusicSelectView.OnItemClickListener() {
             @Override
-            public void onItemClick(int position) {
-                handleBGM(position, ((MusicSelectView.RecyclerViewAdapter) mViewMusicSelect.getAdapter()).getItem(position));
+            public void onItemClick(int pos) {
+                handleBGM(pos, ((MusicSelectView.RecyclerViewAdapter) mViewMusicSelect.getAdapter()).getItem(pos));
             }
         });
         mViewMusicSelect.setAdapter(songAdapter);
@@ -298,7 +301,8 @@ public class TUIAudioEffectView extends Dialog {
             @Override
             public void run() {
                 // 此处调用sdk接口，所以略微耗时。post一下再执行可以避免UI卡顿。
-                mTextTotalTime.setText("/" + AudioEffectUtils.formattedTime(mPresenter.getMusicDurationInMS(model.mPath) / 1000) + "");
+                String hint = AudioEffectUtils.formattedTime(mPresenter.getMusicDurationInMS(model.mPath) / 1000);
+                mTextTotalTime.setText("/" + hint + "");
                 mPresenter.startPlayMusic(position, model.mPath, true);
             }
         });
@@ -332,10 +336,7 @@ public class TUIAudioEffectView extends Dialog {
     public boolean isZh(Context context) {
         Locale locale = context.getResources().getConfiguration().locale;
         String language = locale.getLanguage();
-        if (language.endsWith("zh"))
-            return true;
-        else
-            return false;
+        return language.endsWith("zh");
     }
 
     public void setPanelBackgroundColor(int color) {

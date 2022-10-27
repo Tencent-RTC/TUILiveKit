@@ -96,10 +96,8 @@ public class TUIGiftBulletFrameLayout extends FrameLayout implements Handler.Cal
 
     @Override
     public boolean handleMessage(Message msg) {
-        switch (msg.what) {
-            case MSG_START_ANIMATION:
-                startAnimationForMsg();
-                break;
+        if (msg.what == MSG_START_ANIMATION) {
+            startAnimationForMsg();
         }
         return true;
     }
@@ -125,7 +123,8 @@ public class TUIGiftBulletFrameLayout extends FrameLayout implements Handler.Cal
             return;
         }
         this.setVisibility(View.VISIBLE);
-        TUIImageLoader.loadImage(mContext, mImageSendUserIcon, mGiftModel.extInfo.get(TUIGiftConstants.KEY_USER_AVATAR), R.drawable.tuigift_ic_head);
+        TUIImageLoader.loadImage(mContext, mImageSendUserIcon, mGiftModel.extInfo.get(TUIGiftConstants.KEY_USER_AVATAR),
+                R.drawable.tuigift_ic_head);
         TUIImageLoader.loadImage(mContext, mImageGiftIcon, mGiftModel.normalImageUrl, R.drawable.tuigift_ic_head);
     }
 

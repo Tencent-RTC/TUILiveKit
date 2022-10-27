@@ -8,10 +8,10 @@ import android.widget.LinearLayout;
 
 import androidx.viewpager.widget.ViewPager;
 
-import com.tencent.qcloud.tuikit.tuigift.view.adapter.TUIGiftViewPagerAdapter;
 import com.tencent.qcloud.tuikit.tuigift.model.TUIGiftModel;
 import com.tencent.qcloud.tuikit.tuigift.presenter.TUIGiftCallBack;
 import com.tencent.qcloud.tuikit.tuigift.presenter.TUIGiftPresenter;
+import com.tencent.qcloud.tuikit.tuigift.view.adapter.TUIGiftViewPagerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +20,12 @@ import java.util.List;
  * 礼物面板内的viewpager
  */
 public class TUIGiftListPanelView extends ViewPager implements ITUIGiftListPanelView {
-    private static final String TAG = "TUIGiftPanelView";
+    private static final String TAG     = "TUIGiftPanelView";
+    private static final int    COLUMNS = 5;
+    private static final int    ROWS    = 1;
 
     private TUIGiftViewPagerManager mGiftViewManager;
     private TUIGiftViewPagerAdapter mGiftViewPagerAdapter;
-    private int                     COLUMNS = 5;
-    private int                     ROWS    = 1;
     private List<View>              mGiftViewList;
     private List<TUIGiftModel>      mGiftModelSource;
     private TUIGiftListener         mListener;

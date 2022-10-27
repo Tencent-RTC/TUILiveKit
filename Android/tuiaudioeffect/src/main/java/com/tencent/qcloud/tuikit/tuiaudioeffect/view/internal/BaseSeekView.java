@@ -55,7 +55,7 @@ public class BaseSeekView extends LinearLayout {
         mSeekBar.setOnSeekBarChangeListener(listener);
     }
 
-    public static abstract class AbsOnSeekBarChangeListener implements SeekBar.OnSeekBarChangeListener {
+    public abstract static class AbsOnSeekBarChangeListener implements SeekBar.OnSeekBarChangeListener {
         @Override
         public abstract void onProgressChanged(SeekBar seekBar, int i, boolean b);
 

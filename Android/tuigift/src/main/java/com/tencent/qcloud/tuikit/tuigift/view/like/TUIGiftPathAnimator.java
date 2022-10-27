@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.tencent.qcloud.tuikit.tuigift.view.like;
 
 import android.graphics.Matrix;
@@ -32,18 +33,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Module:   TUIGiftPathAnimator
- *
  * Function: 飘心路径动画器
- *
  */
 public class TUIGiftPathAnimator extends TUIGiftAbstractPathAnimator {
-    private final static int MAX_PATH_COUNTS = 10;      //最多生成的路径数目
+    private static final int MAX_PATH_COUNTS = 10;      //最多生成的路径数目
 
-    private Handler                 mHandler;
-    private int                     mCurrentPathCounts = 0;     //已经生成的路径数目
-    private HashMap<Integer, Path>  mPathVec = null;            //已经生成的路径缓存
-    private final Random            mRandom;                    //随机数
-    private final AtomicInteger     mCounter = new AtomicInteger(0);
+    private       Handler                mHandler;
+    private       int                    mCurrentPathCounts = 0;     //已经生成的路径数目
+    private       HashMap<Integer, Path> mPathVec           = null;            //已经生成的路径缓存
+    private final Random                 mRandom;                    //随机数
+    private final AtomicInteger          mCounter           = new AtomicInteger(0);
 
     public TUIGiftPathAnimator(Config config) {
         super(config);
@@ -61,7 +60,7 @@ public class TUIGiftPathAnimator extends TUIGiftAbstractPathAnimator {
 
         //如果已经生成的路径数目超过最大设定，就从路径缓存中随机取一个路径用于绘制，否则新生成一个
         if (mCurrentPathCounts > MAX_PATH_COUNTS) {
-            path = mPathVec.get(Math.abs(mRandom.nextInt()%MAX_PATH_COUNTS) + 1);
+            path = mPathVec.get(Math.abs(mRandom.nextInt() % MAX_PATH_COUNTS) + 1);
         } else {
             path = createPath(mCounter, parent, 2);
             mPathVec.put(mCurrentPathCounts, path);
@@ -97,9 +96,9 @@ public class TUIGiftPathAnimator extends TUIGiftAbstractPathAnimator {
 
     static class FloatAnimation extends Animation {
         private PathMeasure mPm;
-        private View mView;
-        private float mDistance;
-        private float mRotation;
+        private View        mView;
+        private float       mDistance;
+        private float       mRotation;
 
         public FloatAnimation(Path path, float rotation, View parent, View child) {
             mPm = new PathMeasure(path, false);

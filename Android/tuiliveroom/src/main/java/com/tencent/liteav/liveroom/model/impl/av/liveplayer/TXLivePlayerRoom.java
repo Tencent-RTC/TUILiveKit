@@ -80,7 +80,7 @@ public class TXLivePlayerRoom implements ITXLivePlayerRoom {
         mLivePlayerMap.put(playURL, player);
 
         player.setPlayerView(view);
-        int result = player.startPlay(playURL, TXLivePlayer.PLAY_TYPE_LIVE_FLV);
+        int result = player.startLivePlay(playURL, TXLivePlayer.PLAY_TYPE_LIVE_FLV);
         if (result != 0) {
             if (callback != null) {
                 callback.onCallback(result, "play fail, errCode:" + result);

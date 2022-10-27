@@ -3,7 +3,6 @@ package com.tencent.qcloud.tuikit.tuigift.view;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.tencent.qcloud.tuikit.tuigift.R;
@@ -64,14 +63,16 @@ public class TUIGiftListPanelPlugView extends BottomSheetDialog {
             @Override
             public void onSendGiftSuccess(int code, String msg, TUIGiftModel giftModel) {
                 if (TUIGiftExtension.map.get(mGroupId + TUIGiftExtension.KEY_TYPE_PLAY) != null) {
-                    ((TUIGiftPlayView) TUIGiftExtension.map.get(mGroupId + TUIGiftExtension.KEY_TYPE_PLAY).get()).receiveGift(giftModel);
+                    ((TUIGiftPlayView) TUIGiftExtension.map.get(mGroupId + TUIGiftExtension.KEY_TYPE_PLAY).get())
+                            .receiveGift(giftModel);
                 }
             }
 
             @Override
             public void onSendLikeSuccess(int code, String msg) {
                 if (TUIGiftExtension.map.get(mGroupId + TUIGiftExtension.KEY_TYPE_PLAY) != null) {
-                    ((TUIGiftPlayView) TUIGiftExtension.map.get(mGroupId + TUIGiftExtension.KEY_TYPE_PLAY).get()).receiveLike();
+                    ((TUIGiftPlayView) TUIGiftExtension.map.get(mGroupId + TUIGiftExtension.KEY_TYPE_PLAY).get())
+                            .receiveLike();
                 }
             }
 

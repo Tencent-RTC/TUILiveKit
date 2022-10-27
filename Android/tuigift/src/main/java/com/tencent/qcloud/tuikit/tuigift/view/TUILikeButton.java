@@ -7,9 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.tencent.qcloud.tuikit.tuigift.R;
 import com.tencent.qcloud.tuikit.tuigift.core.TUIGiftExtension;
 
@@ -46,8 +43,10 @@ public class TUILikeButton extends FrameLayout {
             @Override
             public void onClick(View v) {
                 if (TUIGiftExtension.map.get(mGroupId + TUIGiftExtension.KEY_TYPE_PLUG) != null) {
-                    ((TUIGiftListPanelPlugView) TUIGiftExtension.map.get(mGroupId + TUIGiftExtension.KEY_TYPE_PLUG).get()).setListener();
-                    ((TUIGiftListPanelView) TUIGiftExtension.map.get(mGroupId + TUIGiftExtension.KEY_TYPE_PANEL).get()).sendLike();
+                    ((TUIGiftListPanelPlugView) TUIGiftExtension.map
+                            .get(mGroupId + TUIGiftExtension.KEY_TYPE_PLUG).get()).setListener();
+                    ((TUIGiftListPanelView) TUIGiftExtension.map
+                            .get(mGroupId + TUIGiftExtension.KEY_TYPE_PANEL).get()).sendLike();
                 }
             }
         });

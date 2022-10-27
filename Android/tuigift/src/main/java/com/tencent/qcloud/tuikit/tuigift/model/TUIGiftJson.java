@@ -134,33 +134,33 @@ public class TUIGiftJson {
 
             @Override
             public String toString() {
-                return "ExtInfo{" +
-                        "userID='" + userID + '\'' +
-                        ", avatarUrl='" + avatarUrl + '\'' +
-                        ", nickName='" + nickName + '\'' +
-                        '}';
+                return "ExtInfo{"
+                        + "userID=" + userID
+                        + ", avatarUrl=" + avatarUrl
+                        + ", nickName=" + nickName
+                        + '}';
             }
         }
 
         @Override
         public String toString() {
-            return "Data{" +
-                    "extInfo=" + extInfo.toString() +
-                    ", giftId='" + giftId + '\'' +
-                    ", imageUrl='" + imageUrl + '\'' +
-                    ", lottieUrl='" + lottieUrl + '\'' +
-                    ", message='" + message + '\'' +
-                    '}';
+            return "Data{"
+                    + "extInfo=" + extInfo
+                    + ", giftId=" + giftId
+                    + ", imageUrl=" + imageUrl
+                    + ", lottieUrl=" + lottieUrl
+                    + ", message=" + message
+                    + '}';
         }
     }
 
     @Override
     public String toString() {
-        return "TUIGiftJson{" +
-                "data=" + data.toString() +
-                ", platform='" + platform + '\'' +
-                ", version='" + version + '\'' +
-                ", businessID='" + businessID + '\'' +
-                '}';
+        return "TUIGiftJson{"
+                + "data=" + data
+                + ", platform=" + platform
+                + ", version=" + version
+                + ", businessID=" + businessID
+                + '}';
     }
 }

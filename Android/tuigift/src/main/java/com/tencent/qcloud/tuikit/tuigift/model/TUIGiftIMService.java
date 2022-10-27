@@ -4,14 +4,14 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.tencent.qcloud.tuicore.TUILogin;
-import com.tencent.qcloud.tuikit.tuigift.presenter.TUIGiftCallBack;
-import com.tencent.qcloud.tuikit.tuigift.presenter.TUIGiftPresenter;
 import com.tencent.imsdk.v2.V2TIMGroupMemberInfo;
 import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMMessage;
 import com.tencent.imsdk.v2.V2TIMSimpleMsgListener;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
+import com.tencent.qcloud.tuicore.TUILogin;
+import com.tencent.qcloud.tuikit.tuigift.presenter.TUIGiftCallBack;
+import com.tencent.qcloud.tuikit.tuigift.presenter.TUIGiftPresenter;
 
 import java.util.HashMap;
 
@@ -51,7 +51,8 @@ public class TUIGiftIMService {
     private class RecvGiftMsgListener extends V2TIMSimpleMsgListener {
 
         @Override
-        public void onRecvGroupCustomMessage(String msgID, String groupID, V2TIMGroupMemberInfo sender, byte[] customData) {
+        public void onRecvGroupCustomMessage(String msgID, String groupID, V2TIMGroupMemberInfo sender,
+                                             byte[] customData) {
             if (groupID == null || !groupID.equals(mGroupId)) {
                 return;
             }
@@ -92,7 +93,7 @@ public class TUIGiftIMService {
                     if (mPresenter != null) {
                         mPresenter.recvGroupGiftMessage(mGroupId, model);
                     }
-                }else if (TUIGiftConstants.VALUE_BUSINESS_ID_LIKE.equals(json.getBusinessID())){
+                } else if (TUIGiftConstants.VALUE_BUSINESS_ID_LIKE.equals(json.getBusinessID())) {
                     //礼物信息
                     TUIGiftJson.Data data = json.getData();
                     //扩展信息
@@ -124,46 +125,48 @@ public class TUIGiftIMService {
     public void sendGroupGiftMessage(TUIGiftModel giftModel, final TUIGiftCallBack.ActionCallBack callback) {
         String data = getCusGiftMsgJsonStr(giftModel);
         Log.i(TAG, "send data: " + data.toString());
-        V2TIMManager.getInstance().sendGroupCustomMessage(data.getBytes(), mGroupId, V2TIMMessage.V2TIM_PRIORITY_NORMAL, new V2TIMValueCallback<V2TIMMessage>() {
-            @Override
-            public void onError(int i, String s) {
-                if (callback != null) {
-                    callback.onCallback(i, s);
-                }
-            }
+        V2TIMManager.getInstance().sendGroupCustomMessage(data.getBytes(), mGroupId,
+                V2TIMMessage.V2TIM_PRIORITY_NORMAL, new V2TIMValueCallback<V2TIMMessage>() {
+                    @Override
+                    public void onError(int i, String s) {
+                        if (callback != null) {
+                            callback.onCallback(i, s);
+                        }
+                    }
 
-            @Override
-            public void onSuccess(V2TIMMessage v2TIMMessage) {
-                if (callback != null) {
-                    callback.onCallback(0, "send group message success.");
-                }
-            }
-        });
+                    @Override
+                    public void onSuccess(V2TIMMessage v2TIMMessage) {
+                        if (callback != null) {
+                            callback.onCallback(0, "send group message success.");
+                        }
+                    }
+                });
     }
 
     /**
      * 发送礼物信息
      *
-     * @param callback  发送结果回调
+     * @param callback 发送结果回调
      */
     public void sendGroupLikeMessage(final TUIGiftCallBack.ActionCallBack callback) {
         String data = getCusLikeMsgJsonStr();
         Log.i(TAG, "send like: " + data);
-        V2TIMManager.getInstance().sendGroupCustomMessage(data.getBytes(), mGroupId, V2TIMMessage.V2TIM_PRIORITY_NORMAL, new V2TIMValueCallback<V2TIMMessage>() {
-            @Override
-            public void onError(int i, String s) {
-                if (callback != null) {
-                    callback.onCallback(i, s);
-                }
-            }
+        V2TIMManager.getInstance().sendGroupCustomMessage(data.getBytes(), mGroupId,
+                V2TIMMessage.V2TIM_PRIORITY_NORMAL, new V2TIMValueCallback<V2TIMMessage>() {
+                    @Override
+                    public void onError(int i, String s) {
+                        if (callback != null) {
+                            callback.onCallback(i, s);
+                        }
+                    }
 
-            @Override
-            public void onSuccess(V2TIMMessage v2TIMMessage) {
-                if (callback != null) {
-                    callback.onCallback(0, "send group message success.");
-                }
-            }
-        });
+                    @Override
+                    public void onSuccess(V2TIMMessage v2TIMMessage) {
+                        if (callback != null) {
+                            callback.onCallback(0, "send group message success.");
+                        }
+                    }
+                });
     }
 
     /**
@@ -208,13 +211,13 @@ public class TUIGiftIMService {
         sendJson.setPlatform(TUIGiftConstants.VALUE_PLATFORM);
         sendJson.setVersion(TUIGiftConstants.VALUE_VERSION);
 
-        TUIGiftJson.Data data = new TUIGiftJson.Data();
         //扩展信息
         TUIGiftJson.Data.ExtInfo extInfo = new TUIGiftJson.Data.ExtInfo();
         extInfo.setUserID(TUILogin.getUserId());
         extInfo.setNickName(TUILogin.getNickName());
         extInfo.setAvatarUrl(TUILogin.getFaceUrl());
 
+        TUIGiftJson.Data data = new TUIGiftJson.Data();
         data.setExtInfo(extInfo);
         sendJson.setData(data);
 

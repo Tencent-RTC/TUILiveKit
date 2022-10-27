@@ -2,7 +2,6 @@ package com.tencent.qcloud.tuikit.tuigift.presenter;
 
 import android.annotation.TargetApi;
 import android.os.Build;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.tencent.qcloud.tuikit.tuigift.model.TUIGiftBean;
@@ -24,7 +23,7 @@ public class TUIGiftListQueryImpl extends TUIGiftListQuery implements TUIHttpGet
     private static final int    CORE_POOL_SIZE = 5;
     private static final String GIFT_DATA_URL  = "https://liteav.sdk.qcloud.com/app/res/picture/live/gift/gift_data.json";
 
-    private GiftBeanThreadPool      mGiftBeanThreadPool;
+    private GiftBeanThreadPool                      mGiftBeanThreadPool;
     private TUIGiftCallBack.OnGiftListQueryCallback mOnGiftListQueryCallback;
 
     @Override
@@ -59,8 +58,8 @@ public class TUIGiftListQueryImpl extends TUIGiftListQuery implements TUIHttpGet
             return;
         }
         Gson gson = new Gson();
-        TUIGiftBean TUIGiftBean = gson.fromJson(response, TUIGiftBean.class);
-        final List<TUIGiftModel> giftDataList = transformGiftInfoList(TUIGiftBean);
+        TUIGiftBean tuiGiftBean = gson.fromJson(response, TUIGiftBean.class);
+        final List<TUIGiftModel> giftDataList = transformGiftInfoList(tuiGiftBean);
         if (giftDataList != null) {
             if (mOnGiftListQueryCallback != null) {
                 mOnGiftListQueryCallback.onGiftListQuerySuccess(giftDataList);
@@ -68,11 +67,11 @@ public class TUIGiftListQueryImpl extends TUIGiftListQuery implements TUIHttpGet
         }
     }
 
-    private List<TUIGiftModel> transformGiftInfoList(TUIGiftBean TUIGiftBean) {
-        if (TUIGiftBean == null) {
+    private List<TUIGiftModel> transformGiftInfoList(TUIGiftBean tuiGiftBean) {
+        if (tuiGiftBean == null) {
             return null;
         }
-        List<TUIGiftBean.GiftListBean> giftBeanList = TUIGiftBean.getGiftList();
+        List<TUIGiftBean.GiftListBean> giftBeanList = tuiGiftBean.getGiftList();
         if (giftBeanList == null) {
             return null;
         }
