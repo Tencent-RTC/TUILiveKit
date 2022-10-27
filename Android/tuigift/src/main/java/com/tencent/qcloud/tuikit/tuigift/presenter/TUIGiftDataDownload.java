@@ -12,8 +12,8 @@ public class TUIGiftDataDownload {
 
     private TUIGiftListQuery mTUIGiftListQuery;
 
-    public void setGiftListQuery(TUIGiftListQuery TUIGiftListQuery) {
-        mTUIGiftListQuery = TUIGiftListQuery;
+    public void setGiftListQuery(TUIGiftListQuery tuiGiftListQuery) {
+        mTUIGiftListQuery = tuiGiftListQuery;
         queryGiftInfoList(null);
     }
 

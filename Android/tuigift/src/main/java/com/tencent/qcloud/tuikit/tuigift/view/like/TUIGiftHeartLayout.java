@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.tencent.qcloud.tuikit.tuigift.view.like;
 
 import android.content.Context;
@@ -25,8 +26,6 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.RelativeLayout;
 
-
-import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuikit.tuigift.R;
 
 import java.util.Random;
@@ -35,7 +34,7 @@ import java.util.Random;
  * Module:   TUIGiftHeartLayout
  * <p>
  * Function: 飘心动画界面布局类
- * <p>
+ * </p>
  * 通过动画控制每个心形界面的显示
  * TUIGiftPathAnimator 控制显示路径
  * TUIGiftHeartView 单个心形界面
@@ -85,10 +84,12 @@ public class TUIGiftHeartLayout extends RelativeLayout {
             mPointx -= 10;
         } else if (mPointx >= -mInitX && mPointx <= 0) {
             mPointx += 10;
-        } else mPointx = mInitX;
+        } else {
+            mPointx = mInitX;
+        }
 
-        mAnimator = new TUIGiftPathAnimator(
-                TUIGiftAbstractPathAnimator.Config.fromTypeArray(a, mInitX, mTextHeight, mPointx, mBitmapWidth, mBitmapHeight));
+        mAnimator = new TUIGiftPathAnimator(TUIGiftAbstractPathAnimator.Config.fromTypeArray(a, mInitX, mTextHeight,
+                mPointx, mBitmapWidth, mBitmapHeight));
         a.recycle();
     }
 
@@ -108,7 +109,10 @@ public class TUIGiftHeartLayout extends RelativeLayout {
         }
     }
 
-    private static int[]            drawableIds = new int[]{R.drawable.tuigift_heart0, R.drawable.tuigift_heart1, R.drawable.tuigift_heart2, R.drawable.tuigift_heart3, R.drawable.tuigift_heart4, R.drawable.tuigift_heart5, R.drawable.tuigift_heart6, R.drawable.tuigift_heart7, R.drawable.tuigift_heart8,};
+    private static int[]            drawableIds = new int[]{
+            R.drawable.tuigift_heart0, R.drawable.tuigift_heart1, R.drawable.tuigift_heart2, R.drawable.tuigift_heart3,
+            R.drawable.tuigift_heart4, R.drawable.tuigift_heart5, R.drawable.tuigift_heart6, R.drawable.tuigift_heart7,
+            R.drawable.tuigift_heart8,};
     private        Random           mRandom     = new Random();
     private static Drawable[]       sDrawables;
     private        Bitmap[]         mHearts;

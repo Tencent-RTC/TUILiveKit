@@ -35,13 +35,13 @@ public class TUIGiftModel {
 
     @Override
     public String toString() {
-        return "TUIGiftModel{" +
-                "giftId='" + giftId + '\'' +
-                ", normalImageUrl='" + normalImageUrl + '\'' +
-                ", selectedImageUrl='" + selectedImageUrl + '\'' +
-                ", animationUrl='" + animationUrl + '\'' +
-                ", giveDesc='" + giveDesc + '\'' +
-                ", extInfo=" + extInfo +
-                '}';
+        return "TUIGiftModel{"
+                + "giftId=" + giftId
+                + ", normalImageUrl=" + normalImageUrl
+                + ", selectedImageUrl=" + selectedImageUrl
+                + ", animationUrl=" + animationUrl
+                + ", giveDesc=" + giveDesc
+                + ", extInfo=" + extInfo
+                + '}';
     }
 }

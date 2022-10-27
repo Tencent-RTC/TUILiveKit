@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.tencent.qcloud.tuikit.tuigift.view.like;
 
 import android.content.res.Resources;
@@ -21,7 +22,6 @@ import android.graphics.Path;
 import android.view.View;
 import android.view.ViewGroup;
 
-
 import com.tencent.qcloud.tuikit.tuigift.R;
 
 import java.util.Random;
@@ -29,12 +29,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Module:   TUIGiftAbstractPathAnimator
- * <p>
  * Function: 心心飘扬的动画基类
  */
 public abstract class TUIGiftAbstractPathAnimator {
-    private   final   Random mRandom;
-    protected final   Config mConfig;
+    private final   Random mRandom;
+    protected final Config mConfig;
 
     public TUIGiftAbstractPathAnimator(Config config) {
         mConfig = config;
@@ -46,15 +45,15 @@ public abstract class TUIGiftAbstractPathAnimator {
     }
 
     public Path createPath(AtomicInteger counter, View view, int factor) {
-        Random r  = mRandom;
-        int    x  = r.nextInt(mConfig.xRand);
-        int    x2 = r.nextInt(mConfig.xRand);
-        int    y  = view.getHeight() - mConfig.initY;
-        int    y2 = counter.intValue() * 15 + mConfig.animLength * factor + r.nextInt(mConfig.animLengthRand);
+        Random r = mRandom;
+        int x = r.nextInt(mConfig.xRand);
+        int x2 = r.nextInt(mConfig.xRand);
+        final int y = view.getHeight() - mConfig.initY;
+        int y2 = counter.intValue() * 15 + mConfig.animLength * factor + r.nextInt(mConfig.animLengthRand);
         factor = y2 / mConfig.bezierFactor;
         x = mConfig.xPointFactor + x;
         x2 = mConfig.xPointFactor + x2;
-        int y3 = y - y2;
+        final int y3 = y - y2;
         y2 = y - y2 / 2;
         Path p = new Path();
         p.moveTo(mConfig.initX, y);
@@ -78,9 +77,10 @@ public abstract class TUIGiftAbstractPathAnimator {
         public int heartHeight;
         public int animDuration;
 
-        static public Config fromTypeArray(TypedArray typedArray, float x, float y, int pointx, int heartWidth, int heartHeight) {
-            Config    config = new Config();
-            Resources res    = typedArray.getResources();
+        public static Config fromTypeArray(TypedArray typedArray, float x, float y, int pointX,
+                                           int heartWidth, int heartHeight) {
+            Config config = new Config();
+            Resources res = typedArray.getResources();
             config.initX = (int) typedArray.getDimension(R.styleable.TUIGiftHeartLayout_initX,
                     x);
             config.initY = (int) typedArray.getDimension(R.styleable.TUIGiftHeartLayout_initY,
@@ -93,7 +93,7 @@ public abstract class TUIGiftAbstractPathAnimator {
                     res.getDimensionPixelOffset(R.dimen.tuigift_heart_anim_length_rand));
             config.bezierFactor = typedArray.getInteger(R.styleable.TUIGiftHeartLayout_bezierFactor,
                     res.getInteger(R.integer.tuigift_heart_anim_bezier_factor));
-            config.xPointFactor = pointx;
+            config.xPointFactor = pointX;
             config.heartWidth = heartWidth;
             config.heartHeight = heartHeight;
             config.animDuration = typedArray.getInteger(R.styleable.TUIGiftHeartLayout_anim_duration,

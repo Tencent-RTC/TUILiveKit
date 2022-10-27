@@ -39,7 +39,8 @@ public class TUIImageLoader {
         loadImage(context, imageView, url, errorResId, radius);
     }
 
-    public static void loadImage(Context context, ImageView imageView, String url, @DrawableRes int errorResId, int radius) {
+    public static void loadImage(Context context, ImageView imageView, String url, @DrawableRes int errorResId,
+                                 int radius) {
         if (TextUtils.isEmpty(url)) {
             if (imageView != null && errorResId != 0) {
                 imageView.setImageResource(errorResId);
@@ -68,7 +69,9 @@ public class TUIImageLoader {
         }
 
         private static Bitmap roundCrop(BitmapPool pool, Bitmap source) {
-            if (source == null) return null;
+            if (source == null) {
+                return null;
+            }
 
             Bitmap result = pool.get(source.getWidth(), source.getHeight(), Bitmap.Config.ARGB_8888);
             if (result == null) {

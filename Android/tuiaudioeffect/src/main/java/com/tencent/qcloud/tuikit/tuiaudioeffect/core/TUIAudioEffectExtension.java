@@ -13,8 +13,9 @@ import java.util.Map;
 
 /**
  * TUIAudioEffect扩展插件，插件返给调用者一个插件视图 TUIAudioEffectButton{@link TUIAudioEffectButton}
- *
- * <p>调用者执行 TUICore.getExtensionInfo{@link com.tencent.qcloud.tuicore.TUICore#getExtensionInfo(String, Map)}来获取 TUIAudioEffectButton
+ * <p>
+ * 调用者执行 TUICore.getExtensionInfo{@link com.tencent.qcloud.tuicore.TUICore#getExtensionInfo(String, Map)}来获取
+ * TUIAudioEffectButton
  * eg：
  * Map<String, Object> param = new HashMap<>();
  * param.put(AudioEffectUtils.KEY_CONTEXT, context);
@@ -34,11 +35,11 @@ public class TUIAudioEffectExtension implements ITUIExtension {
             return Collections.EMPTY_MAP;
         }
         Context context = (Context) param.get(AudioEffectUtils.KEY_CONTEXT);
-        TXAudioEffectManager audioEffectManager = (TXAudioEffectManager) param.get(AudioEffectUtils.KEY_AUDIOEFFECTMANAGER);
-        if (null == context || null == audioEffectManager) {
+        TXAudioEffectManager effectManager = (TXAudioEffectManager) param.get(AudioEffectUtils.KEY_AUDIOEFFECTMANAGER);
+        if (null == context || null == effectManager) {
             return Collections.EMPTY_MAP;
         }
-        TUIAudioEffectButton extension = new TUIAudioEffectButton(context, audioEffectManager);
+        TUIAudioEffectButton extension = new TUIAudioEffectButton(context, effectManager);
         Map<String, Object> map = new HashMap<>();
         map.put(AudioEffectUtils.KEY_AUDIOEFFECTEXTENSION, extension);
         return map;

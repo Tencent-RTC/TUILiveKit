@@ -41,7 +41,8 @@ public class AudioEffectUtils {
 
 
     public static TXAudioEffectManager.TXVoiceReverbType translateReverbType(int type) {
-        TXAudioEffectManager.TXVoiceReverbType reverbType = TXAudioEffectManager.TXVoiceReverbType.TXLiveVoiceReverbType_0;
+        TXAudioEffectManager.TXVoiceReverbType reverbType =
+                TXAudioEffectManager.TXVoiceReverbType.TXLiveVoiceReverbType_0;
         switch (type) {
             case AUDIO_REVERB_TYPE_0:
                 reverbType = TXAudioEffectManager.TXVoiceReverbType.TXLiveVoiceReverbType_0;
@@ -67,12 +68,15 @@ public class AudioEffectUtils {
             case AUDIO_REVERB_TYPE_7:
                 reverbType = TXAudioEffectManager.TXVoiceReverbType.TXLiveVoiceReverbType_7;
                 break;
+            default:
+                break;
         }
         return reverbType;
     }
 
     public static TXAudioEffectManager.TXVoiceChangerType translateChangerType(int type) {
-        TXAudioEffectManager.TXVoiceChangerType changerType = TXAudioEffectManager.TXVoiceChangerType.TXLiveVoiceChangerType_0;
+        TXAudioEffectManager.TXVoiceChangerType changerType =
+                TXAudioEffectManager.TXVoiceChangerType.TXLiveVoiceChangerType_0;
         switch (type) {
             case AUDIO_VOICECHANGER_TYPE_0:
                 changerType = TXAudioEffectManager.TXVoiceChangerType.TXLiveVoiceChangerType_0;
@@ -110,34 +114,38 @@ public class AudioEffectUtils {
             case AUDIO_VOICECHANGER_TYPE_11:
                 changerType = TXAudioEffectManager.TXVoiceChangerType.TXLiveVoiceChangerType_11;
                 break;
+            default:
+                break;
         }
         return changerType;
     }
 
     public static String formattedTime(long second) {
-        String hs, ms, ss, formatTime;
-
-        long h, m, s;
-        h = second / 3600;
-        m = (second % 3600) / 60;
-        s = (second % 3600) % 60;
+        String hs;
+        long h = second / 3600;
         if (h < 10) {
             hs = "0" + h;
         } else {
             hs = "" + h;
         }
 
+        String ms;
+        long m = (second % 3600) / 60;
         if (m < 10) {
             ms = "0" + m;
         } else {
             ms = "" + m;
         }
 
+        String ss;
+        long s = (second % 3600) % 60;
         if (s < 10) {
             ss = "0" + s;
         } else {
             ss = "" + s;
         }
+
+        String formatTime;
         if (h > 0) {
             formatTime = hs + ":" + ms + ":" + ss;
         } else {

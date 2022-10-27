@@ -55,8 +55,12 @@ public class TUIHttpGetRequest implements Runnable {
             mHttpListener.onFailed(e.getMessage());
         } finally {
             try {
-                if (inputStream != null) inputStream.close();
-                if (br != null) br.close();
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+                if (br != null) {
+                    br.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

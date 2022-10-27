@@ -14,7 +14,7 @@ import com.tencent.qcloud.tuikit.tuiaudioeffect.util.AudioEffectUtils;
 
 /**
  * TUIAudioEffect组件初始化并注册到TUICore。
- * <p>在 Manifest 文件中以 ContentProvider 的形式注册，App启动时会自动执行。
+ * 在 Manifest 文件中以 ContentProvider 的形式注册，App启动时会自动执行。
  */
 public final class TUIAudioEffectProvider extends ContentProvider {
 
@@ -27,7 +27,8 @@ public final class TUIAudioEffectProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
+    public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection,
+                        @Nullable String[] selectionArgs, @Nullable String sortOrder) {
         return null;
     }
 
@@ -49,7 +50,8 @@ public final class TUIAudioEffectProvider extends ContentProvider {
     }
 
     @Override
-    public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
+    public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection,
+                      @Nullable String[] selectionArgs) {
         return 0;
     }
 }

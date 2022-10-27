@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.tencent.qcloud.tuikit.tuigift.view.like;
 
 import android.content.Context;
@@ -31,18 +32,16 @@ import com.tencent.qcloud.tuikit.tuigift.R;
 
 /**
  * Module:   TUIGiftHeartView
- * <p>
  * Function: 飘心动画心形界面类
- * <p>
  * 一个TCHeartView代表一个心形，由heart.png组成
  */
 public class TUIGiftHeartView extends AppCompatImageView {
 
-    private static final Paint sPaint   = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+    private static final Paint  sPaint  = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
     private static final Canvas sCanvas = new Canvas();
 
-    private static Bitmap       sHeart;
-    private static Bitmap       sHeartBorder;
+    private static Bitmap sHeart;
+    private static Bitmap sHeartBorder;
 
     private int mHeartResId       = R.drawable.tuigift_heart0;
     private int mHeartBorderResId = R.drawable.tuigift_heart1;
@@ -87,9 +86,9 @@ public class TUIGiftHeartView extends AppCompatImageView {
         if (sHeartBorder == null) {
             sHeartBorder = BitmapFactory.decodeResource(getResources(), mHeartBorderResId);
         }
-        Bitmap heart       = sHeart;
+
         Bitmap heartBorder = sHeartBorder;
-        Bitmap bm          = createBitmapSafely(heartBorder.getWidth(), heartBorder.getHeight());
+        Bitmap bm = createBitmapSafely(heartBorder.getWidth(), heartBorder.getHeight());
         if (bm == null) {
             return null;
         }
@@ -98,6 +97,8 @@ public class TUIGiftHeartView extends AppCompatImageView {
         Paint p = sPaint;
         canvas.drawBitmap(heartBorder, 0, 0, p);
         p.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP));
+
+        Bitmap heart = sHeart;
         float dx = (heartBorder.getWidth() - heart.getWidth()) / 2f;
         float dy = (heartBorder.getHeight() - heart.getHeight()) / 2f;
         canvas.drawBitmap(heart, dx, dy, p);

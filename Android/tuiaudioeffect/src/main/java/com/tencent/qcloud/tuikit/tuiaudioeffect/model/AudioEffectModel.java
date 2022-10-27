@@ -26,31 +26,58 @@ public class AudioEffectModel implements IAudioEffectModel {
     @Override
     public List<VoiceItemEntity> getVoiceReverbData() {
         List<VoiceItemEntity> list = new ArrayList<>();
-        list.add(new VoiceItemEntity(mContext.getResources().getString(R.string.tuiaudioeffect_reverbtype_origin), R.drawable.tuiaudioeffect_no_select_normal, R.drawable.tuiaudioeffect_no_select_hover, AudioEffectUtils.AUDIO_REVERB_TYPE_0));
-        list.add(new VoiceItemEntity(mContext.getResources().getString(R.string.tuiaudioeffect_reverbtype_ktv), R.drawable.tuiaudioeffect_reverbtype_ktv_normal, R.drawable.tuiaudioeffect_reverbtype_ktv_hover, AudioEffectUtils.AUDIO_REVERB_TYPE_1));
-        list.add(new VoiceItemEntity(mContext.getResources().getString(R.string.tuiaudioeffect_reverbtype_lowdeep), R.drawable.tuiaudioeffect_reverbtype_lowdeep_normal, R.drawable.tuiaudioeffect_reverbtype_lowdeep_hover, AudioEffectUtils.AUDIO_REVERB_TYPE_4));
-        list.add(new VoiceItemEntity(mContext.getResources().getString(R.string.tuiaudioeffect_reverbtype_hongliang), R.drawable.tuiaudioeffect_reverbtype_heavymetal_normal, R.drawable.tuiaudioeffect_reverbtype_heavymetal_hover, AudioEffectUtils.AUDIO_REVERB_TYPE_5));
-        list.add(new VoiceItemEntity(mContext.getResources().getString(R.string.tuiaudioeffect_reverbtype_heavymetal), R.drawable.tuiaudioeffect_reverbtype_hongliang_normal, R.drawable.tuiaudioeffect_reverbtype_hongliang_hover, AudioEffectUtils.AUDIO_REVERB_TYPE_6));
+        list.add(new VoiceItemEntity(mContext.getResources().getString(R.string.tuiaudioeffect_reverbtype_origin),
+                R.drawable.tuiaudioeffect_no_select_normal, R.drawable.tuiaudioeffect_no_select_hover,
+                AudioEffectUtils.AUDIO_REVERB_TYPE_0));
+        list.add(new VoiceItemEntity(mContext.getResources().getString(R.string.tuiaudioeffect_reverbtype_ktv),
+                R.drawable.tuiaudioeffect_reverbtype_ktv_normal, R.drawable.tuiaudioeffect_reverbtype_ktv_hover,
+                AudioEffectUtils.AUDIO_REVERB_TYPE_1));
+        list.add(new VoiceItemEntity(mContext.getResources().getString(R.string.tuiaudioeffect_reverbtype_lowdeep),
+                R.drawable.tuiaudioeffect_reverbtype_lowdeep_normal, R.drawable.tuiaudioeffect_reverbtype_lowdeep_hover,
+                AudioEffectUtils.AUDIO_REVERB_TYPE_4));
+        list.add(new VoiceItemEntity(mContext.getResources().getString(R.string.tuiaudioeffect_reverbtype_hongliang),
+                R.drawable.tuiaudioeffect_reverbtype_heavymetal_normal,
+                R.drawable.tuiaudioeffect_reverbtype_heavymetal_hover,
+                AudioEffectUtils.AUDIO_REVERB_TYPE_5));
+        list.add(new VoiceItemEntity(mContext.getResources().getString(R.string.tuiaudioeffect_reverbtype_heavymetal),
+                R.drawable.tuiaudioeffect_reverbtype_hongliang_normal,
+                R.drawable.tuiaudioeffect_reverbtype_hongliang_hover,
+                AudioEffectUtils.AUDIO_REVERB_TYPE_6));
         return list;
     }
 
     @Override
     public List<VoiceItemEntity> getVoiceChangeData() {
         List<VoiceItemEntity> list = new ArrayList<>();
-        list.add(new VoiceItemEntity(mContext.getResources().getString(R.string.tuiaudioeffect_changetype_original), R.drawable.tuiaudioeffect_no_select_normal, R.drawable.tuiaudioeffect_no_select_hover, AudioEffectUtils.AUDIO_VOICECHANGER_TYPE_0));
-        list.add(new VoiceItemEntity(mContext.getResources().getString(R.string.tuiaudioeffect_changetype_child), R.drawable.tuiaudioeffect_changetype_child_normal, R.drawable.tuiaudioeffect_changetype_child_hover, AudioEffectUtils.AUDIO_VOICECHANGER_TYPE_1));
-        list.add(new VoiceItemEntity(mContext.getResources().getString(R.string.tuiaudioeffect_changetype_luoli), R.drawable.tuiaudioeffect_changetype_luoli_normal, R.drawable.tuiaudioeffect_changetype_luoli_hover, AudioEffectUtils.AUDIO_VOICECHANGER_TYPE_2));
-        list.add(new VoiceItemEntity(mContext.getResources().getString(R.string.tuiaudioeffect_changetype_dashu), R.drawable.tuiaudioeffect_changetype_dashu_normal, R.drawable.tuiaudioeffect_changetype_dashu_hover, AudioEffectUtils.AUDIO_VOICECHANGER_TYPE_3));
-        list.add(new VoiceItemEntity(mContext.getResources().getString(R.string.tuiaudioeffect_changetype_kongling), R.drawable.tuiaudioeffect_reverbtype_kongling_normal, R.drawable.tuiaudioeffect_reverbtype_kongling_hover, AudioEffectUtils.AUDIO_VOICECHANGER_TYPE_11));
+        list.add(new VoiceItemEntity(mContext.getResources().getString(R.string.tuiaudioeffect_changetype_original),
+                R.drawable.tuiaudioeffect_no_select_normal, R.drawable.tuiaudioeffect_no_select_hover,
+                AudioEffectUtils.AUDIO_VOICECHANGER_TYPE_0));
+        list.add(new VoiceItemEntity(mContext.getResources().getString(R.string.tuiaudioeffect_changetype_child),
+                R.drawable.tuiaudioeffect_changetype_child_normal, R.drawable.tuiaudioeffect_changetype_child_hover,
+                AudioEffectUtils.AUDIO_VOICECHANGER_TYPE_1));
+        list.add(new VoiceItemEntity(mContext.getResources().getString(R.string.tuiaudioeffect_changetype_luoli),
+                R.drawable.tuiaudioeffect_changetype_luoli_normal, R.drawable.tuiaudioeffect_changetype_luoli_hover,
+                AudioEffectUtils.AUDIO_VOICECHANGER_TYPE_2));
+        list.add(new VoiceItemEntity(mContext.getResources().getString(R.string.tuiaudioeffect_changetype_dashu),
+                R.drawable.tuiaudioeffect_changetype_dashu_normal, R.drawable.tuiaudioeffect_changetype_dashu_hover,
+                AudioEffectUtils.AUDIO_VOICECHANGER_TYPE_3));
+        list.add(new VoiceItemEntity(mContext.getResources().getString(R.string.tuiaudioeffect_changetype_kongling),
+                R.drawable.tuiaudioeffect_reverbtype_kongling_normal,
+                R.drawable.tuiaudioeffect_reverbtype_kongling_hover,
+                AudioEffectUtils.AUDIO_VOICECHANGER_TYPE_11));
         return list;
     }
 
     @Override
     public List<BGMItemEntity> getSongData() {
         List<BGMItemEntity> list = new ArrayList<>();
-        list.add(new BGMItemEntity(mContext.getResources().getString(R.string.tuiaudioeffect_bg_music_positive_happy), AudioEffectUtils.ONLINE_BGM_FIRST));
-        list.add(new BGMItemEntity(mContext.getResources().getString(R.string.tuiaudioeffect_bg_music_sad_cinematic_piano), AudioEffectUtils.ONLINE_BGM_SECOND));
-        list.add(new BGMItemEntity(mContext.getResources().getString(R.string.tuiaudioeffect_bg_music_wonder_world), AudioEffectUtils.ONLINE_BGM_THIRD));
+        list.add(new BGMItemEntity(mContext.getResources().getString(R.string.tuiaudioeffect_bg_music_positive_happy),
+                AudioEffectUtils.ONLINE_BGM_FIRST));
+        list.add(new BGMItemEntity(mContext.getResources().getString(
+                R.string.tuiaudioeffect_bg_music_sad_cinematic_piano),
+                AudioEffectUtils.ONLINE_BGM_SECOND));
+        list.add(new BGMItemEntity(mContext.getResources().getString(R.string.tuiaudioeffect_bg_music_wonder_world),
+                AudioEffectUtils.ONLINE_BGM_THIRD));
         return list;
     }
 

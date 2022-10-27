@@ -26,14 +26,15 @@ public class TUIGiftViewPagerManager {
     /**
      * 礼物面板每一页的数据
      *
-     * @param context         context
-     * @param pageIndex       第几页
-     * @param TUIGiftInfoList 礼物集合
-     * @param columns         列数
-     * @param rows            行数
-     * @return                礼物播放RecycleView
+     * @param context       context
+     * @param pageIndex     第几页
+     * @param tuiGiftModels 礼物集合
+     * @param columns       列数
+     * @param rows          行数
+     * @return 礼物播放RecycleView
      */
-    public View viewPagerItem(final Context context, final int pageIndex, List<TUIGiftModel> TUIGiftInfoList, int columns, int rows) {
+    public View viewPagerItem(final Context context, final int pageIndex, List<TUIGiftModel> tuiGiftModels,
+                              int columns, int rows) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View layout = inflater.inflate(R.layout.tuigift_layout_gift_panel, null);
         RecyclerView recyclerView = (RecyclerView) layout.findViewById(R.id.chart_face_gv);
@@ -42,9 +43,8 @@ public class TUIGiftViewPagerManager {
         List<TUIGiftModel> subList = new ArrayList<>();
         int maxPageItems = columns * rows;
         int startIndex = pageIndex * maxPageItems;
-        int endIndex = maxPageItems * (pageIndex + 1) > TUIGiftInfoList.size() ?
-                TUIGiftInfoList.size() : maxPageItems * (pageIndex + 1);
-        subList.addAll(TUIGiftInfoList.subList(startIndex, endIndex));
+        int endIndex = Math.min(maxPageItems * (pageIndex + 1), tuiGiftModels.size());
+        subList.addAll(tuiGiftModels.subList(startIndex, endIndex));
         final TUIGiftPanelAdapter mGvAdapter = new TUIGiftPanelAdapter(pageIndex, subList, context);
         recyclerView.setAdapter(mGvAdapter);
         mGvAdapter.setOnItemClickListener(new TUIGiftPanelAdapter.OnItemClickListener() {
