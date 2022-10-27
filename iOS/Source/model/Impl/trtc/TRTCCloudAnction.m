@@ -384,7 +384,7 @@ static const int TC_TRTC_FRAMEWORK     = 1;
     TRTCCloudCdnDelegate *trtcCDNDelegate = [[TRTCCloudCdnDelegate alloc] initWithStreamId:streamId];
     trtcCDNDelegate.action = self;
     cdnPlayer.delegate = trtcCDNDelegate;
-    int result = [cdnPlayer startPlay:streamUrl type:PLAY_TYPE_LIVE_FLV];
+    int result = [cdnPlayer startLivePlay:streamUrl type:PLAY_TYPE_LIVE_FLV];
     if (result != 0) {
         [self playCallBackWithUserId:streamId code:result message:liveRoomLocalize(@"Demo.TRTC.LiveRoom.playingfailed")];
     }
