@@ -1749,6 +1749,7 @@ public class TRTCLiveRoomImpl extends TRTCLiveRoom implements ITXTRTCLiveRoomDel
         runOnDelegateThread(new Runnable() {
             @Override
             public void run() {
+                stopPublish(null);
                 TRTCLiveRoomDelegate delegate = mDelegate;
                 if (delegate != null) {
                     delegate.onKickoutJoinAnchor();
