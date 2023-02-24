@@ -2,6 +2,7 @@ package com.tencent.qcloud.tuikit.tuiaudioeffect.model;
 
 import com.tencent.liteav.audio.TXAudioEffectManager;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -115,12 +116,13 @@ public interface IAudioEffectModel {
     void resumePlayMusic(int id);
 
     /**
-     * 获取景音乐文件的总时长（单位：毫秒）
+     * 获取景音乐文件的总时长（单位：毫秒），当音乐为网络音乐时，该接口可能耗时较久，故异步执行，通过 callback 返回结果，
+     * callback 将切回 UI 线程中执行。
      *
      * @param path 音乐文件路径，如果 path 为空，那么返回当前正在播放的 music 时长。
-     * @return 成功返回时长，失败返回-1
+     * @param callback 返回结果的回调。
      */
-    long getMusicDurationInMS(String path);
+    void getMusicDurationInMS(String path, AudioEffectModel.GetMusicDurationCallback callback);
 
     /**
      * 设置背景音乐的播放进度回调接口

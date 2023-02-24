@@ -27,6 +27,8 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:1.0.0"
     implementation "com.google.android.material:material:1.0.0"
     implementation "de.hdodenhof:circleimageview:3.1.0"
-    api rootProject.ext.liteavSdk
-    api 'com.tencent.liteav.tuikit:tuicore:latest.release'
+    
+    def projects = this.rootProject.getAllprojects().stream().map { project -> project.name }.collect()
+    api projects.contains("tuicore") ? project(':tuicore') : "com.tencent.liteav.tuikit:tuicore:latest.release"
+    api rootProject.getProperties().containsKey("liteavSdk") ? rootProject.ext.liteavSdk : "com.tencent.liteav:LiteAVSDK_TRTC:latest.release"
 }

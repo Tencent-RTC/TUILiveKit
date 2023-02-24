@@ -23,22 +23,21 @@ public class PermissionHelper {
         String reason = null;
         String reasonTitle = null;
         String deniedAlert = null;
-        ApplicationInfo applicationInfo = context.getApplicationContext().getApplicationInfo();
-        Resources resources = context.getResources();
-        String appName = resources.getString(applicationInfo.labelRes);
+        ApplicationInfo applicationInfo = context.getApplicationInfo();
+        String appName = context.getPackageManager().getApplicationLabel(applicationInfo).toString();
         switch (type) {
             case PERMISSION_MICROPHONE: {
                 permission = PermissionRequester.PermissionConstants.MICROPHONE;
-                reasonTitle = resources.getString(R.string.trtcliveroom_permission_mic_reason_title, appName);
-                reason = resources.getString(R.string.trtcliveroom_permission_mic_reason);
-                deniedAlert = resources.getString(R.string.trtcliveroom_tips_start_audio);
+                reasonTitle = context.getString(R.string.trtcliveroom_permission_mic_reason_title, appName);
+                reason = context.getString(R.string.trtcliveroom_permission_mic_reason);
+                deniedAlert = context.getString(R.string.trtcliveroom_tips_start_audio);
                 break;
             }
             case PERMISSION_CAMERA: {
                 permission = PermissionRequester.PermissionConstants.CAMERA;
-                reasonTitle = resources.getString(R.string.trtcliveroom_permission_camera_reason_title, appName);
-                reason = resources.getString(R.string.trtcliveroom_permission_camera_reason);
-                deniedAlert = resources.getString(R.string.trtcliveroom_tips_start_camera);
+                reasonTitle = context.getString(R.string.trtcliveroom_permission_camera_reason_title, appName);
+                reason = context.getString(R.string.trtcliveroom_permission_camera_reason);
+                deniedAlert = context.getString(R.string.trtcliveroom_tips_start_camera);
                 break;
             }
             default:
