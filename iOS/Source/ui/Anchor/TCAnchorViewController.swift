@@ -243,9 +243,7 @@ public class TCAnchorViewController: UIViewController {
             view.addSubview(videoView)
         }
         statusInfoView.pending = false
-        if statusInfoViewArray != nil, var statusInfoViewArray = statusInfoViewArray{
-            statusInfoViewArray.append(statusInfoView)
-        }
+        statusInfoViewArray?.append(statusInfoView)
         beginTime = UInt64(Date().timeIntervalSince1970)
     }
     

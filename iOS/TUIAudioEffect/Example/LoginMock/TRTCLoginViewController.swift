@@ -103,7 +103,7 @@ class TRTCLoginViewController: UIViewController {
     }
     
     func showRegisterVC() {
-        let vc = TRTCRegisterViewController.init()
+        let vc = TRTCRegisterViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
     

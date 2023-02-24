@@ -8,6 +8,7 @@
 
 import UIKit
 import Kingfisher
+import TXAppBasic
 
 class TRTCRegisterRootView: UIView {
     
@@ -51,9 +52,9 @@ class TRTCRegisterRootView: UIView {
         btn.setTitleColor(.white, for: .normal)
         btn.setTitle(.registText, for: .normal)
         btn.adjustsImageWhenHighlighted = false
-        btn.setBackgroundImage(UIColor(hex: "006EFF").trans2Image(), for: .normal)
+        btn.setBackgroundImage(UIColor(hex: "006EFF")?.trans2Image(), for: .normal)
         btn.titleLabel?.font = UIFont(name: "PingFangSC-Medium", size: 18)
-        btn.layer.shadowColor = UIColor(hex: "006EFF").cgColor
+        btn.layer.shadowColor = UIColor(hex: "006EFF")?.cgColor
         btn.layer.shadowOffset = CGSize(width: 0, height: 6)
         btn.layer.shadowRadius = 16
         btn.layer.shadowOpacity = 0.4

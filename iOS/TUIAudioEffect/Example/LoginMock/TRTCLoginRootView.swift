@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import TXAppBasic
 
 extension UIColor {
     public convenience init(red: Int, green: Int, blue: Int, alpha: CGFloat = 1.0) {
@@ -76,7 +77,7 @@ extension UIColor {
 }
 
 public extension UIColor {
-    public static let themeTintColor = UIColor.init(0x5E6FA3)
+    public static let themeTintColor = UIColor(0x5E6FA3)
 }
 
 class TRTCLoginRootView: UIView {
@@ -129,9 +130,9 @@ class TRTCLoginRootView: UIView {
         btn.setTitleColor(.white, for: .normal)
         btn.setTitle(.loginText, for: .normal)
         btn.adjustsImageWhenHighlighted = false
-        btn.setBackgroundImage(UIColor(hex: "006EFF").trans2Image(), for: .normal)
+        btn.setBackgroundImage(UIColor(hex: "006EFF")?.trans2Image(), for: .normal)
         btn.titleLabel?.font = UIFont(name: "PingFangSC-Medium", size: 18)
-        btn.layer.shadowColor = UIColor(hex: "006EFF").cgColor ?? UIColor.blue.cgColor
+        btn.layer.shadowColor = UIColor(hex: "006EFF")?.cgColor ?? UIColor.blue.cgColor
         btn.layer.shadowOffset = CGSize(width: 0, height: 6)
         btn.layer.shadowRadius = 16
         btn.layer.shadowOpacity = 0.4
@@ -278,7 +279,7 @@ class TRTCLoginRootView: UIView {
     }
     
     @objc func getVerifyCodeBtnClick() {
-       
+        
     }
 }
 
@@ -311,8 +312,8 @@ extension TRTCLoginRootView: UITextFieldDelegate {
             maxCount = 6
         }
         guard let textFieldText = textField.text,
-            let rangeOfTextToReplace = Range(range, in: textFieldText) else {
-                return false
+              let rangeOfTextToReplace = Range(range, in: textFieldText) else {
+            return false
         }
         let substringToReplace = textFieldText[rangeOfTextToReplace]
         let count = textFieldText.count - substringToReplace.count + string.count

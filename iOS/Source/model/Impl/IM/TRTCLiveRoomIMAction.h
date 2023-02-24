@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <ImSDK_Plus/ImSDK_Plus.h>
+@import ImSDK_Plus;
 
 NS_ASSUME_NONNULL_BEGIN
 
