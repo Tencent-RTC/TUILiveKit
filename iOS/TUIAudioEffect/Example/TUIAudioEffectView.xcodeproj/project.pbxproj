@@ -273,8 +273,11 @@
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
 				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
 				"${BUILT_PRODUCTS_DIR}/TUICore/TUICore.framework",
+				"${BUILT_PRODUCTS_DIR}/TXAppBasic/TXAppBasic.framework",
 				"${PODS_ROOT}/TXIMSDK_Plus_iOS/ImSDK_Plus.framework",
 				"${BUILT_PRODUCTS_DIR}/Toast-Swift/Toast_Swift.framework",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/TXSoundTouch/TXSoundTouch.framework/TXSoundTouch",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/TXFFmpeg/TXFFmpeg.framework/TXFFmpeg",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -285,8 +288,11 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TUICore.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TXAppBasic.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ImSDK_Plus.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Toast_Swift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TXSoundTouch.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TXFFmpeg.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

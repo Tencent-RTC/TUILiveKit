@@ -27,6 +27,6 @@
 #define TUIAudioEffectBundle          TUIAudioEffectBundle()
 #define TUIAEImageNamed(imageName) [UIImage imageNamed:imageName inBundle:TUIAudioEffectBundle compatibleWithTraitCollection:nil]
 
-#define TUIAEMakeColorHexString(hexString) [UIColor colorWithHex:hexString]
+#define TUIAEMakeColorHexString(hexString) [UIColor tui_colorWithHex:hexString]
 
 #endif /* TUIAudioEffectDefine_h */
