@@ -96,10 +96,11 @@ public class TCAnchorViewController: UIViewController {
     }
     
     func onAnchorExit(_ userID: String?) {
-        if userID == liveInfo.ownerId {
+        guard let userId = userID else { return }
+        if userId == liveInfo.ownerId {
             return
         }
-        let statusInfoView = getStatusInfoView(from: userID)
+        let statusInfoView = getStatusInfoView(from: userId)
         if let statusInfoView = statusInfoView {
             statusInfoView.stopLoading()
             statusInfoView.stopPlay()
@@ -108,6 +109,8 @@ public class TCAnchorViewController: UIViewController {
             })
             statusInfoView.emptyPlayInfo()
         }
+        // 清理连麦信息
+        setLinkMemeber.remove(userId)
     }
     
     func getStatusInfoView(from userID: String?) -> TCStatusInfoComponet? {
