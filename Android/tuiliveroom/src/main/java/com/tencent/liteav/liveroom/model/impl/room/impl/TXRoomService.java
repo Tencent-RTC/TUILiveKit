@@ -281,42 +281,57 @@ public class TXRoomService implements ITXRoomService {
 
             @Override
             public void onSuccess(String s) {
-                V2TIMManager.getInstance().addSimpleMsgListener(mSimpleListener);
-                V2TIMManager.getInstance().addGroupListener(mGroupListener);
-                V2TIMManager.getSignalingManager().addSignalingListener(mSignalingListener);
-                TRTCLogger.i(TAG, "createGroup setGroupListener roomId: " + roomId + " mGroupListener: "
-                        + mGroupListener.hashCode());
+                imManager.joinGroup(roomId, "", new V2TIMCallback() {
+                    @Override
+                    public void onSuccess() {
+                        V2TIMManager.getInstance().addSimpleMsgListener(mSimpleListener);
+                        V2TIMManager.getInstance().addGroupListener(mGroupListener);
+                        V2TIMManager.getSignalingManager().addSignalingListener(mSignalingListener);
+                        TRTCLogger.i(TAG, "createGroup setGroupListener roomId: " + roomId + " mGroupListener: "
+                                + mGroupListener.hashCode());
 
-                mIsEnterRoom = true;
-                mCurrentRoomStatus = TRTCLiveRoomDef.ROOM_STATUS_SINGLE;
+                        mIsEnterRoom = true;
+                        mCurrentRoomStatus = TRTCLiveRoomDef.ROOM_STATUS_SINGLE;
 
-                mRoomId = roomId;
+                        mRoomId = roomId;
 
-                mOwnerIMInfo.userId = mMySelfIMInfo.userId;
-                mOwnerIMInfo.streamId = mMySelfIMInfo.streamId;
-                mOwnerIMInfo.name = mMySelfIMInfo.name;
-                // 组装 RoomInfo 抛给上层
-                mTXRoomInfo.roomStatus = mCurrentRoomStatus;
-                mTXRoomInfo.roomId = roomId;
-                mTXRoomInfo.roomName = roomName;
-                mTXRoomInfo.ownerId = mMySelfIMInfo.userId;
-                mTXRoomInfo.coverUrl = coverUrl;
-                mTXRoomInfo.ownerName = mMySelfIMInfo.name;
-                mTXRoomInfo.streamUrl = mMySelfIMInfo.streamId;
-                mTXRoomInfo.memberCount = 1;
+                        mOwnerIMInfo.userId = mMySelfIMInfo.userId;
+                        mOwnerIMInfo.streamId = mMySelfIMInfo.streamId;
+                        mOwnerIMInfo.name = mMySelfIMInfo.name;
+                        // 组装 RoomInfo 抛给上层
+                        mTXRoomInfo.roomStatus = mCurrentRoomStatus;
+                        mTXRoomInfo.roomId = roomId;
+                        mTXRoomInfo.roomName = roomName;
+                        mTXRoomInfo.ownerId = mMySelfIMInfo.userId;
+                        mTXRoomInfo.coverUrl = coverUrl;
+                        mTXRoomInfo.ownerName = mMySelfIMInfo.name;
+                        mTXRoomInfo.streamUrl = mMySelfIMInfo.streamId;
+                        mTXRoomInfo.memberCount = 1;
 
-                // The anchor updates themselves to the anchor list
-                mAnchorList.add(mMySelfIMInfo);
-                // Update the group profile and send a broadcast message
-                mCoverUrl = coverUrl;
-                updateHostAnchorInfo();
-                TRTCLogger.i(TAG, "create room success.");
-                if (callback != null) {
-                    callback.onCallback(0, "create room success.");
-                }
-                if (mDelegate != null) {
-                    mDelegate.onRoomInfoChange(mTXRoomInfo);
-                }
+                        // The anchor updates themselves to the anchor list
+                        mAnchorList.add(mMySelfIMInfo);
+                        // Update the group profile and send a broadcast message
+                        mCoverUrl = coverUrl;
+                        updateHostAnchorInfo();
+                        TRTCLogger.i(TAG, "create room success.");
+                        if (callback != null) {
+                            callback.onCallback(0, "create room success.");
+                        }
+                        if (mDelegate != null) {
+                            mDelegate.onRoomInfoChange(mTXRoomInfo);
+                        }
+                    }
+
+                    @Override
+                    public void onError(int i, String s) {
+                        if (i == 10013) {
+                            onSuccess();
+                        } else if (callback != null) {
+                            callback.onCallback(i, s);
+                        }
+                    }
+                });
+
             }
         });
     }

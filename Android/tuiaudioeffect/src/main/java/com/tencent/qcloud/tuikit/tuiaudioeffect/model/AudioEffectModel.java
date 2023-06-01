@@ -3,9 +3,11 @@ package com.tencent.qcloud.tuikit.tuiaudioeffect.model;
 import android.content.Context;
 
 import com.tencent.liteav.audio.TXAudioEffectManager;
+import com.tencent.qcloud.tuicore.util.BackgroundTasks;
 import com.tencent.qcloud.tuikit.tuiaudioeffect.R;
 import com.tencent.qcloud.tuikit.tuiaudioeffect.util.AudioEffectUtils;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -156,11 +158,27 @@ public class AudioEffectModel implements IAudioEffectModel {
     }
 
     @Override
-    public long getMusicDurationInMS(String path) {
-        if (null != mAudioEffectManager) {
-            return mAudioEffectManager.getMusicDurationInMS(path);
+    public void getMusicDurationInMS(String path, GetMusicDurationCallback callback) {
+        final TXAudioEffectManager audioEffectManager = mAudioEffectManager;
+        if (audioEffectManager == null) {
+            return;
         }
-        return 0;
+        final WeakReference<GetMusicDurationCallback> callbackWeakReference = new WeakReference<>(callback);
+        new Thread(() -> {
+            long duration = audioEffectManager.getMusicDurationInMS(path);
+            BackgroundTasks.getInstance().runOnUiThread(() -> {
+                GetMusicDurationCallback durationCallback = callbackWeakReference.get();
+                if (durationCallback == null) {
+                    return;
+                }
+                if (duration < 0) {
+                    int errorCode = (int) duration;
+                    durationCallback.onError(path, errorCode);
+                } else {
+                    durationCallback.onSuccess(path, duration);
+                }
+            });
+        }).start();
     }
 
     @Override
@@ -181,5 +199,11 @@ public class AudioEffectModel implements IAudioEffectModel {
     @Override
     public boolean isEnableVoiceEarMonitor() {
         return mIsEnableVoiceEarMonitor;
+    }
+
+    public interface GetMusicDurationCallback {
+        void onSuccess(String path, long duration);
+
+        void onError(String path, int errorCode);
     }
 }

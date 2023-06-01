@@ -1,15 +1,17 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-
+    ext.kotlin_version = '1.5.31'
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.4'
+        classpath 'com.android.tools.build:gradle:4.2.1'
 
 
+
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
@@ -29,5 +31,6 @@ task clean(type: Delete) {
 
 ext {
     liteavSdk = "com.tencent.liteav:LiteAVSDK_TRTC:latest.release"
-    imSdk = "com.tencent.imsdk:imsdk-plus:latest.release"
+    roomEngineSdk = "com.tencent.liteav.tuikit:tuiroomengine:latest.release"
+    imSdk = "com.tencent.imsdk:imsdk-plus:7.2.4123"
 }

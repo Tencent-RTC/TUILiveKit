@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -28,6 +29,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SwitchCompat;
 
 import com.tencent.qcloud.tuikit.tuiaudioeffect.R;
+import com.tencent.qcloud.tuikit.tuiaudioeffect.model.AudioEffectModel;
 import com.tencent.qcloud.tuikit.tuiaudioeffect.model.BGMItemEntity;
 import com.tencent.qcloud.tuikit.tuiaudioeffect.model.VoiceItemEntity;
 import com.tencent.qcloud.tuikit.tuiaudioeffect.presenter.IAudioEffectPresenter;
@@ -39,6 +41,7 @@ import com.tencent.qcloud.tuikit.tuiaudioeffect.view.internal.VoicePitchView;
 import com.tencent.qcloud.tuikit.tuiaudioeffect.view.internal.VoiceRecyclerView;
 import com.tencent.qcloud.tuikit.tuiaudioeffect.view.internal.VoiceVolumeView;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Locale;
 
@@ -80,7 +83,8 @@ public class TUIAudioEffectView extends Dialog {
 
     private boolean mRefreshedScrollView = false; // 是否刷新过ScrollView
 
-    private IAudioEffectPresenter mPresenter;
+    private IAudioEffectPresenter                     mPresenter;
+    private AudioEffectModel.GetMusicDurationCallback mGetMusicDurationCallback;
 
     private final Handler mHandler = new Handler(Looper.getMainLooper());
 
@@ -297,15 +301,22 @@ public class TUIAudioEffectView extends Dialog {
         mPresenter.setMusicPlayoutVolume(position, mViewMusicVolume.getVolume());
         mPresenter.setMusicPublishVolume(position, mViewMusicVolume.getVolume());
         mPresenter.setMusicObserver(mBGMId, new BGMListener());
-        mHandler.post(new Runnable() {
+        mPresenter.startPlayMusic(position, model.mPath, true);
+        mGetMusicDurationCallback = new AudioEffectModel.GetMusicDurationCallback() {
             @Override
-            public void run() {
-                // 此处调用sdk接口，所以略微耗时。post一下再执行可以避免UI卡顿。
-                String hint = AudioEffectUtils.formattedTime(mPresenter.getMusicDurationInMS(model.mPath) / 1000);
-                mTextTotalTime.setText("/" + hint + "");
-                mPresenter.startPlayMusic(position, model.mPath, true);
+            public void onSuccess(String path, long duration) {
+                if (!TextUtils.isEmpty(path) && path.equals(model.mPath)) {
+                    String hint = AudioEffectUtils.formattedTime(duration / 1000);
+                    mTextTotalTime.setText("/" + hint + "");
+                }
             }
-        });
+
+            @Override
+            public void onError(String path, int errorCode) {
+                Log.e(TAG, "mGetMusicDurationCallback onError errorCode=" + errorCode + " path=" + path);
+            }
+        };
+        mPresenter.getMusicDurationInMS(model.mPath, mGetMusicDurationCallback);
         mIsPlaying = true;
         mIsPause = false;
 
