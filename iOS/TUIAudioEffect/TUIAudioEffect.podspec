@@ -37,7 +37,6 @@ Pod::Spec.new do |spec|
     live.xcconfig = { 'HEADER_SEARCH_PATHS' => '${SRCROOT}/../SDK/TXLiteAVSDK_Live.framework/Headers/'}
     live.ios.framework = ['AVFoundation', 'Accelerate', 'AssetsLibrary']
     live.library = 'c++', 'resolv', 'sqlite3'
-    
     live.source_files = 'Source/Localized/**/*.{h,m,mm}', 'Source/TUIExtension/**/*.{h,m,mm}', 'Source/Model/**/*.{h,m,mm,c}', 'Source/View/**/*.{h,m,mm}', 'Source/Presenter/**/*.{h,m,mm}', 'Source/TUIAudioEffectViewKit_Live/*.{h,m,mm}'
     live.resource_bundles = {
       'TUIAudioEffectKitBundle' => ['Resource/Localized/**/*.strings', 'Resource/*.xcassets']
@@ -49,7 +48,6 @@ Pod::Spec.new do |spec|
     trtc.xcconfig = { 'HEADER_SEARCH_PATHS' => '${SRCROOT}/../SDK/TXLiteAVSDK_TRTC.framework/Headers/'}
     trtc.ios.framework = ['AVFoundation', 'Accelerate', 'AssetsLibrary']
     trtc.library = 'c++', 'resolv', 'sqlite3'
-    
     trtc.source_files = 'Source/Localized/**/*.{h,m,mm}', 'Source/TUIExtension/**/*.{h,m,mm}', 'Source/Model/**/*.{h,m,mm,c}', 'Source/View/**/*.{h,m,mm}', 'Source/Presenter/**/*.{h,m,mm}', 'Source/TUIAudioEffectViewKit_TRTC/*.{h,m,mm}'
     trtc.resource_bundles = {
       'TUIAudioEffectKitBundle' => ['Resource/Localized/**/*.strings', 'Resource/*.xcassets']
@@ -61,7 +59,6 @@ Pod::Spec.new do |spec|
     professional.xcconfig = { 'HEADER_SEARCH_PATHS' => '${SRCROOT}/../SDK/TXLiteAVSDK_Professional.framework/Headers/'}
     professional.ios.framework = ['AVFoundation', 'Accelerate', 'AssetsLibrary']
     professional.library = 'c++', 'resolv', 'sqlite3'
-    
     professional.source_files = 'Source/Localized/**/*.{h,m,mm}', 'Source/TUIExtension/**/*.{h,m,mm}', 'Source/Model/**/*.{h,m,mm,c}', 'Source/View/**/*.{h,m,mm}', 'Source/Presenter/**/*.{h,m,mm}', 'Source/TUIAudioEffectViewKit_Professional/*.{h,m,mm}'
     professional.resource_bundles = {
       'TUIAudioEffectKitBundle' => ['Resource/Localized/**/*.strings', 'Resource/*.xcassets']
@@ -73,11 +70,10 @@ Pod::Spec.new do |spec|
     enterprise.xcconfig = { 'HEADER_SEARCH_PATHS' => '${SRCROOT}/../SDK/TXLiteAVSDK_Enterprise.framework/Headers/'}
     enterprise.ios.framework = ['AVFoundation', 'Accelerate', 'AssetsLibrary']
     enterprise.library = 'c++', 'resolv', 'sqlite3'
-    
     enterprise.source_files = 'Source/Localized/**/*.{h,m,mm}', 'Source/TUIExtension/**/*.{h,m,mm}', 'Source/Model/**/*.{h,m,mm,c}', 'Source/View/**/*.{h,m,mm}', 'Source/Presenter/**/*.{h,m,mm}', 'Source/TUIAudioEffectViewKit_Enterprise/*.{h,m,mm}'
     enterprise.resource_bundles = {
       'TUIAudioEffectKitBundle' => ['Resource/Localized/**/*.strings', 'Resource/*.xcassets']
     }
   end
-  
+
 end

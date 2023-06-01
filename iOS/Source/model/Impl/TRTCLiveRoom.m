@@ -334,6 +334,7 @@ static double trtcLiveCheckStatusTimeOut = 3;
         }
     }];
     [self reset];
+    [TRTCCloud destroySharedIntance];
 }
 
 - (void)enterRoomWithRoomID:(UInt32)roomID callback:(Callback)callback {
@@ -423,6 +424,7 @@ static double trtcLiveCheckStatusTimeOut = 3;
     }
     [self reset];
     [TRTCLiveRoomIMAction exitRoomWithRoomID:roomID callback:callback];
+    [TRTCCloud destroySharedIntance];
 }
 
 - (void)getRoomInfosWithRoomIDs:(NSArray<NSString *> *)roomIDs callback:(RoomInfoCallback)callback {

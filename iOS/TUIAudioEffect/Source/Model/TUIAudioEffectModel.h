@@ -6,7 +6,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "TXAudioEffectManager.h"
+
+#import "TUIAudioEffectViewKit.h"
 
 typedef NS_ENUM(NSInteger, TUIAudioEffectType) {
     TUIAudioEffectTypeNone = -1,

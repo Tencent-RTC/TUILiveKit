@@ -10,4 +10,6 @@
 
 @import TXLiteAVSDK_Professional;
 
+#import <TXLiteAVSDK_Professional/TRTCCloud.h>
+
 #endif /* TUIAudioEffectViewKit_h */

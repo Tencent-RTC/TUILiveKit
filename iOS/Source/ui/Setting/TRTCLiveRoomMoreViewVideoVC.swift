@@ -297,10 +297,22 @@ class TRTCLiveRoomMoreViewVideoVC: UIViewController, UIPickerViewDelegate, UIPic
 // MARK: - internationalization string
 
 fileprivate extension String {
-    static let resolutionText = liveRoomLocalize("Demo.TRTC.LiveRoom.resolution")
-    static let framerateText = liveRoomLocalize("Demo.TRTC.LiveRoom.framerate")
-    static let bitrateText = liveRoomLocalize("Demo.TRTC.LiveRoom.bitrate")
-    static let localmirrorText = liveRoomLocalize("Demo.TRTC.LiveRoom.localmirror")
-    static let resolutionSelectedText = liveRoomLocalize("Demo.TRTC.LiveRoom.resolutionselected")
-    static let framerateSelectedText = liveRoomLocalize("Demo.TRTC.LiveRoom.framerateselected")
+    static var resolutionText: String {
+        liveRoomLocalize("Demo.TRTC.LiveRoom.resolution")
+    }
+    static var framerateText: String {
+        liveRoomLocalize("Demo.TRTC.LiveRoom.framerate")
+    }
+    static var bitrateText: String {
+        liveRoomLocalize("Demo.TRTC.LiveRoom.bitrate")
+    }
+    static var localmirrorText: String {
+        liveRoomLocalize("Demo.TRTC.LiveRoom.localmirror")
+    }
+    static var resolutionSelectedText: String {
+        liveRoomLocalize("Demo.TRTC.LiveRoom.resolutionselected")
+    }
+    static var framerateSelectedText: String {
+        liveRoomLocalize("Demo.TRTC.LiveRoom.framerateselected")
+    }
 }
