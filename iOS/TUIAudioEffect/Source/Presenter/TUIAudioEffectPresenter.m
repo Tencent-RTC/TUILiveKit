@@ -7,7 +7,6 @@
 
 #import "TUIAudioEffectPresenter.h"
 #import "TUIAudioEffectDefine.h"
-#import "TXAudioEffectManager.h"
 
 #import "TUIAudioEffectTableCell.h"
 

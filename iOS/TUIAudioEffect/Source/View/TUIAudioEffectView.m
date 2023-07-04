@@ -11,7 +11,6 @@
 
 #import "TUIAudioEffectTableCell.h"
 #import "TUIAudioEffectDefine.h"
-#import "TXAudioEffectManager.h"
 
 @interface TUIAudioEffectView ()<TUIAudioEffectPresenterDelegate>
 
