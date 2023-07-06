@@ -1,10 +1,13 @@
 package com.tencent.liteav.basic;
 
+import android.annotation.SuppressLint;
+import android.app.Application;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.text.TextUtils;
 
+import java.lang.reflect.InvocationTargetException;
 
 public class RTCubeUtils {
     private static final String RTCUBE_PACKAGE_NAME = "com.tencent.trtc";
@@ -19,10 +22,39 @@ public class RTCubeUtils {
             applicationInfo = null;
         }
         String applicationName = (String) packageManager.getApplicationLabel(applicationInfo);
+        if (applicationInfo != null) {
+            applicationName = context.getResources().getString(applicationInfo.labelRes);
+        }
+
         return TextUtils.isEmpty(applicationName) ? "" : applicationName;
     }
 
     public static boolean isRTCubeApp(Context context) {
         return RTCUBE_PACKAGE_NAME.equals(context.getPackageName());
+    }
+
+    public static String getPackageName() {
+        return getApplicationByReflect().getPackageName();
+    }
+
+    public static Application getApplicationByReflect() {
+        try {
+            @SuppressLint("PrivateApi") Class<?> activityThread = Class.forName("android.app.ActivityThread");
+            Object thread = activityThread.getMethod("currentActivityThread").invoke(null);
+            Object app = activityThread.getMethod("getApplication").invoke(thread);
+            if (app == null) {
+                throw new NullPointerException("You should init first.");
+            }
+            return (Application) app;
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        throw new NullPointerException("You should init first.");
     }
 }

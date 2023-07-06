@@ -525,6 +525,9 @@ public class TCAudienceActivity extends AppCompatActivity {
                 LINK_MIC_TIMEOUT, new TRTCLiveRoomCallback.ActionCallback() {
                     @Override
                     public void onCallback(int code, String msg) {
+                        if (isFinishing()) {
+                            return;
+                        }
                         if (code == 0) {
                             hideNoticeToast();
                             makeToast(getString(R.string.trtcliveroom_anchor_accept_link_mic),
