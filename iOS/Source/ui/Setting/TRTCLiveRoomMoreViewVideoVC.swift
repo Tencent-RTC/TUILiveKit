@@ -120,6 +120,17 @@ class TRTCLiveRoomMoreViewVideoVC: UIViewController, UIPickerViewDelegate, UIPic
         return label
     }()
 
+    private func getKeyWindow() -> UIWindow? {
+        var keyWindow: UIWindow?
+        for window in UIApplication.shared.windows {
+            if window.isMember(of: UIWindow.self), window.isKeyWindow {
+                keyWindow = window
+                break
+            }
+        }
+        return keyWindow
+    }
+    
     @objc func bitrateSliderChanged(_ slider: UISlider) {
         updateBitrate(bitrate: Int(slider.value * bitrateTable[bitrateIndex].stepBitrate))
     }
@@ -127,7 +138,7 @@ class TRTCLiveRoomMoreViewVideoVC: UIViewController, UIPickerViewDelegate, UIPic
     var frameIndex = 0
 
     @objc func resolutionDidClick() {
-        guard let window = UIApplication.shared.windows.first else {
+        guard let window = getKeyWindow() else {
             return
         }
         let alert = TRTCLiveRoomResolutionAlert()
@@ -147,7 +158,7 @@ class TRTCLiveRoomMoreViewVideoVC: UIViewController, UIPickerViewDelegate, UIPic
     }
 
     @objc func frameDidClick() {
-        guard let window = UIApplication.shared.windows.first else {
+        guard let window = getKeyWindow() else {
             return
         }
 
@@ -297,10 +308,22 @@ class TRTCLiveRoomMoreViewVideoVC: UIViewController, UIPickerViewDelegate, UIPic
 // MARK: - internationalization string
 
 fileprivate extension String {
-    static let resolutionText = liveRoomLocalize("Demo.TRTC.LiveRoom.resolution")
-    static let framerateText = liveRoomLocalize("Demo.TRTC.LiveRoom.framerate")
-    static let bitrateText = liveRoomLocalize("Demo.TRTC.LiveRoom.bitrate")
-    static let localmirrorText = liveRoomLocalize("Demo.TRTC.LiveRoom.localmirror")
-    static let resolutionSelectedText = liveRoomLocalize("Demo.TRTC.LiveRoom.resolutionselected")
-    static let framerateSelectedText = liveRoomLocalize("Demo.TRTC.LiveRoom.framerateselected")
+    static var resolutionText: String {
+        liveRoomLocalize("Demo.TRTC.LiveRoom.resolution")
+    }
+    static var framerateText: String {
+        liveRoomLocalize("Demo.TRTC.LiveRoom.framerate")
+    }
+    static var bitrateText: String {
+        liveRoomLocalize("Demo.TRTC.LiveRoom.bitrate")
+    }
+    static var localmirrorText: String {
+        liveRoomLocalize("Demo.TRTC.LiveRoom.localmirror")
+    }
+    static var resolutionSelectedText: String {
+        liveRoomLocalize("Demo.TRTC.LiveRoom.resolutionselected")
+    }
+    static var framerateSelectedText: String {
+        liveRoomLocalize("Demo.TRTC.LiveRoom.framerateselected")
+    }
 }

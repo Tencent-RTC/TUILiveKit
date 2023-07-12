@@ -6,6 +6,7 @@
 //  Copyright © 2022 Tencent. All rights reserved.
 
 #import "LiveRoomLocalized.h"
+#import "TUICore/TUIGlobalization.h"
 
 #pragma mark - Base
 NSBundle *liveRoomBundle(void) {
@@ -15,7 +16,9 @@ NSBundle *liveRoomBundle(void) {
 }
 
 NSString *liveRoomLocalizeFromTable(NSString *key, NSString *table) {
-    return [liveRoomBundle() localizedStringForKey:key value:@"" table:table];
+    NSString *bundlePath = [liveRoomBundle() pathForResource:[TUIGlobalization tk_localizableLanguageKey] ?: @"" ofType:@"lproj"];
+    NSBundle *bundle = [NSBundle bundleWithPath:bundlePath];
+    return [bundle localizedStringForKey:key value:@"" table:table];
 }
 
 #pragma mark - Replace String

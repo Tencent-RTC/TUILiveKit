@@ -175,19 +175,28 @@ static const int TC_TRTC_FRAMEWORK     = 1;
     self.curroomUUID = nil;
 }
 
+- (void)enableHEVCEncode:(BOOL)enableHEVC {
+    NSDictionary *jsonDic = @{@"api": @"enableHevcEncode",
+                              @"params":@{@"enable": @(enableHEVC)}};
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDic options:NSJSONWritingPrettyPrinted error:nil];
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    [[TRTCCloud sharedInstance] callExperimentalAPI: jsonString];
+}
+
 - (void)setupVideoParam:(BOOL)isOwner {
     TRTCVideoEncParam *videoParam = [[TRTCVideoEncParam alloc] init];
     if (isOwner) {
-        videoParam.videoResolution = TRTCVideoResolution_1280_720;
-        videoParam.videoBitrate = 1800;
-        videoParam.videoFps = 15;
-        videoParam.enableAdjustRes = YES;
+        videoParam.videoResolution = TRTCVideoResolution_1920_1080;
+        videoParam.videoBitrate = 4000;
+        videoParam.minVideoBitrate = 3200;
+        videoParam.videoFps = 24;
     } else {
         videoParam.videoResolution = TRTCVideoResolution_480_270;
         videoParam.videoBitrate = 400;
-        videoParam.videoFps = 15;
+        videoParam.videoFps = 24;
     }
     [[TRTCCloud sharedInstance] setVideoEncoderParam:videoParam];
+    [self enableHEVCEncode:YES];
 }
 
 - (void)startLocalPreview:(BOOL)frontCamera view:(UIView *)view {
