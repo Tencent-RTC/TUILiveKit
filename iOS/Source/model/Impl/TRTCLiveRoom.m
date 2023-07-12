@@ -194,12 +194,7 @@ static double trtcLiveCheckStatusTimeOut = 3;
 #pragma mark - public method
 - (void)loginWithSdkAppID:(int)sdkAppID userID:(NSString *)userID userSig:(NSString *)userSig config:(TRTCLiveRoomConfig *)config callback:(Callback)callback {
     
-    [[V2TIMManager sharedInstance] removeSignalingListener:self];
-    [[V2TIMManager sharedInstance] removeAdvancedMsgListener:self];
-    [[V2TIMManager sharedInstance] addAdvancedMsgListener:self];
-    [[V2TIMManager sharedInstance] addSignalingListener:self];
-    [[V2TIMManager sharedInstance] addGroupListener:self];
-    
+    [self initIMListener];
     @weakify(self)
     [TUILogin login:sdkAppID userID:userID userSig:userSig succ:^{
         @strongify(self)
@@ -276,6 +271,7 @@ static double trtcLiveCheckStatusTimeOut = 3;
 
 - (void)createRoomWithRoomID:(UInt32)roomID roomParam:(TRTCCreateRoomParam *)roomParam callback:(Callback)callback {
     [TRTCCloud sharedInstance].delegate = self;
+    [self initIMListener];
     TRTCLiveUserInfo *me = [self checkUserLogIned:callback];
     if (!me) {
         return;
@@ -334,10 +330,12 @@ static double trtcLiveCheckStatusTimeOut = 3;
         }
     }];
     [self reset];
+    [TRTCCloud destroySharedIntance];
 }
 
 - (void)enterRoomWithRoomID:(UInt32)roomID callback:(Callback)callback {
     [TRTCCloud sharedInstance].delegate = self;
+    [self initIMListener];
     TRTCLiveUserInfo *me = [self checkUserLogIned:callback];
     if (!me) {
         return;
@@ -423,6 +421,7 @@ static double trtcLiveCheckStatusTimeOut = 3;
     }
     [self reset];
     [TRTCLiveRoomIMAction exitRoomWithRoomID:roomID callback:callback];
+    [TRTCCloud destroySharedIntance];
 }
 
 - (void)getRoomInfosWithRoomIDs:(NSArray<NSString *> *)roomIDs callback:(RoomInfoCallback)callback {
@@ -711,8 +710,14 @@ static double trtcLiveCheckStatusTimeOut = 3;
         }
         return;
     }
-    [TRTCLiveRoomIMAction kickoutJoinAnchorWithUserID:userID callback:callback];
-    [self stopLinkMic:userID];
+    __weak typeof(self) wealSelf = self;
+    [TRTCLiveRoomIMAction kickoutJoinAnchorWithUserID:userID callback:^(int code, NSString * _Nonnull message) {
+        __strong typeof(wealSelf) strongSelf = wealSelf;
+        if (code == 0) {
+            [strongSelf stopLinkMic:userID];
+        }
+    }];
+    
 }
 
 - (void)requestRoomPKWithRoomID:(UInt32)roomID userID:(NSString *)userID timeout:(int)timeout responseCallback:(ResponseCallback)responseCallback {
@@ -1417,7 +1422,7 @@ static double trtcLiveCheckStatusTimeOut = 3;
         if (action != TRTCLiveRoomIMActionTypeRespondRoomPK &&
             action != TRTCLiveRoomIMActionTypeRequestRoomPK &&
             action != TRTCLiveRoomIMActionTypeQuitRoomPK) {
-             [self.memberManager addAudience:liveUser];
+            [self.memberManager addAudience:liveUser];
         }
     }
     
@@ -1619,6 +1624,12 @@ static double trtcLiveCheckStatusTimeOut = 3;
     [[V2TIMManager sharedInstance] removeGroupListener:self];
     [[V2TIMManager sharedInstance] removeSignalingListener:self];
     [[V2TIMManager sharedInstance] removeAdvancedMsgListener:self];
+}
+
+- (void)initIMListener {
+    [[V2TIMManager sharedInstance] addAdvancedMsgListener:self];
+    [[V2TIMManager sharedInstance] addSignalingListener:self];
+    [[V2TIMManager sharedInstance] addGroupListener:self];
 }
 
 - (void)clearPKState {

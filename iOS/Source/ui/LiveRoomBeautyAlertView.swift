@@ -248,7 +248,13 @@ extension String {
 
 /// MARK: - internationalization string
 fileprivate extension String {
-    static let titleText = liveRoomLocalize("TC.BeautySettingPanel.Setup")
-    static let strengthText = liveRoomLocalize("TC.BeautySettingPanel.Strength")
-    static let resolutionTitleText = liveRoomLocalize("Demo.TRTC.LiveRoom.resolution")
+    static var titleText: String {
+        liveRoomLocalize("TC.BeautySettingPanel.Setup")
+    }
+    static var strengthText: String {
+        liveRoomLocalize("TC.BeautySettingPanel.Strength")
+    }
+    static var resolutionTitleText: String {
+        liveRoomLocalize("Demo.TRTC.LiveRoom.resolution")
+    }
 }

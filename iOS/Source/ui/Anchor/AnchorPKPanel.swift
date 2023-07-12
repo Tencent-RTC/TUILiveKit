@@ -398,11 +398,23 @@ extension AnchorPKPanel {
 
 // MARK: - internationalization string
 fileprivate extension String {
-    static let inviteText = liveRoomLocalize("Demo.TRTC.LiveRoom.invite")
-    static let invitePKText = liveRoomLocalize("Demo.TRTC.LiveRoom.invitepk")
-    static let loadingText = liveRoomLocalize("Demo.TRTC.LiveRoom.loading")
-    static let noAnchorText = liveRoomLocalize("Demo.TRTC.LiveRoom.noanchor")
-    static let cancelText = liveRoomLocalize("Demo.TRTC.LiveRoom.cancel")
-    static let roomNumberText = liveRoomLocalize("Demo.TRTC.LiveRoom.roomNumber")
+    static var inviteText: String {
+        liveRoomLocalize("Demo.TRTC.LiveRoom.invite")
+    }
+    static var invitePKText: String {
+        liveRoomLocalize("Demo.TRTC.LiveRoom.invitepk")
+    }
+    static var loadingText: String {
+        liveRoomLocalize("Demo.TRTC.LiveRoom.loading")
+    }
+    static var noAnchorText: String {
+        liveRoomLocalize("Demo.TRTC.LiveRoom.noanchor")
+    }
+    static var cancelText: String {
+        liveRoomLocalize("Demo.TRTC.LiveRoom.cancel")
+    }
+    static var roomNumberText: String {
+        liveRoomLocalize("Demo.TRTC.LiveRoom.roomNumber")
+    }
 
 }

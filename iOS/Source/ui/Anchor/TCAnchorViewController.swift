@@ -96,10 +96,11 @@ public class TCAnchorViewController: UIViewController {
     }
     
     func onAnchorExit(_ userID: String?) {
-        if userID == liveInfo.ownerId {
+        guard let userId = userID else { return }
+        if userId == liveInfo.ownerId {
             return
         }
-        let statusInfoView = getStatusInfoView(from: userID)
+        let statusInfoView = getStatusInfoView(from: userId)
         if let statusInfoView = statusInfoView {
             statusInfoView.stopLoading()
             statusInfoView.stopPlay()
@@ -108,6 +109,8 @@ public class TCAnchorViewController: UIViewController {
             })
             statusInfoView.emptyPlayInfo()
         }
+        // 清理连麦信息
+        setLinkMemeber.remove(userId)
     }
     
     func getStatusInfoView(from userID: String?) -> TCStatusInfoComponet? {
@@ -1068,28 +1071,44 @@ extension TCAnchorViewController {
         guard let audioEffectManager = liveRoom?.getAudioEffectManager() else {
             return false
         }
-        let audioEffectViewInfo = TUICore.getExtensionInfo(TUICore_TUIAudioEffectViewExtension_AudioEffectView,param:
-             [TUICore_TUIAudioEffectViewExtension_AudioEffectView_AudioEffectManager: audioEffectManager])
-        guard let audioEffectView = audioEffectViewInfo[TUICore_TUIAudioEffectViewExtension_AudioEffectView_View] as? UIView else {
+        let audioEffectViewList = TUICore.getExtensionList(TUICore_TUIAudioEffectViewExtension_AudioEffectView,
+                                                           param: [
+                                                            TUICore_TUIAudioEffectViewExtension_AudioEffectView_AudioEffectManager:
+                                                                    audioEffectManager,])
+        
+        if audioEffectViewList.count == 0 {
             return false
+        }
+        guard let audioEffectView = audioEffectViewList[0].data?[TUICore_TUIAudioEffectViewExtension_AudioEffectView_View] as? UIView else {
+              return false
         }
         self.audioEffectView = audioEffectView
         return true
     }
     
     private func loadBarrageWidget() -> Bool {
-        let inputViewInfo = TUICore.getExtensionInfo(TUICore_TUIBarrageExtension_GetTUIBarrageSendView,
-                                                     param: ["frame": UIScreen.main.bounds,
+        let inputViewList = TUICore.getExtensionList(TUICore_TUIBarrageExtension_GetTUIBarrageSendView,
+                                                     param: ["frame": NSCoder.string(for: UIScreen.main.bounds),
                                                              "groupId": liveInfo.roomId])
-        guard let inputView = inputViewInfo[TUICore_TUIBarrageExtension_GetTUIBarrageSendView] as? UIView else {
+        
+        if inputViewList.count == 0 {
+            return false
+        }
+        guard let inputView = inputViewList[0].data?[TUICore_TUIBarrageExtension_GetTUIBarrageSendView] as? UIView else {
             return false
         }
         self.barrageInputView = inputView
         
-        let barrageViewInfo = TUICore.getExtensionInfo(TUICore_TUIBarrageExtension_TUIBarrageDisplayView,
-                                                       param: ["frame": UIScreen.main.bounds,
-                                                               "groupId": liveInfo.roomId])
-        guard let barrageView = barrageViewInfo[TUICore_TUIBarrageExtension_TUIBarrageDisplayView] as? UIView else {
+        let barrageViewFrame = CGRect(x: 20, y: SCREEN_HEIGHT - 300 - 120, width: SCREEN_WIDTH - 20*2, height: 300)
+        let barrageViewList = TUICore.getExtensionList(TUICore_TUIBarrageExtension_TUIBarrageDisplayView,
+                                                       param: ["frame": NSCoder.string(for: barrageViewFrame),
+                                                               "groupId": liveInfo.roomId,
+                                                               "maxHeight": "300",])
+        
+        if barrageViewList.count == 0 {
+            return false
+        }
+        guard let barrageView = barrageViewList[0].data?[TUICore_TUIBarrageExtension_TUIBarrageDisplayView] as? UIView else {
             return false
         }
         self.barrageView = barrageView
@@ -1097,11 +1116,14 @@ extension TCAnchorViewController {
     }
     
     private func loadGiftWidget() -> Bool {
-        let giftPlayInfo = TUICore.getExtensionInfo(TUICore_TUIGiftExtension_GetTUIGiftPlayView,
-                                                    param: [
-                                                        "frame": UIScreen.main.bounds,
-                                                        "groupId": liveInfo.roomId])
-        guard let giftView = giftPlayInfo[TUICore_TUIGiftExtension_GetTUIGiftPlayView] as? UIView else {
+        let giftPlayList = TUICore.getExtensionList(TUICore_TUIGiftExtension_GetTUIGiftPlayView,
+                                                    param: ["frame": NSCoder.string(for: UIScreen.main.bounds),
+                                                            "groupId": liveInfo.roomId])
+        
+        if giftPlayList.count == 0 {
+            return false
+        }
+        guard let giftView = giftPlayList[0].data?[TUICore_TUIGiftExtension_GetTUIGiftPlayView] as? UIView else {
             return false
         }
         self.giftView = giftView
@@ -1119,10 +1141,13 @@ extension TCAnchorViewController {
         guard let beautyManager = liveRoom?.getBeautyManager() else {
             return false
         }
-        let beautyInfo = TUICore.getExtensionInfo(TUICore_TUIBeautyExtension_BeautyView,
-                                                  param: [
-                                                    TUICore_TUIBeautyExtension_BeautyView_BeautyManager: beautyManager])
-        guard let view = beautyInfo[TUICore_TUIBeautyExtension_BeautyView_View] as? UIView else {
+        let beautyList = TUICore.getExtensionList(TUICore_TUIBeautyExtension_BeautyView,
+                                                  param: [TUICore_TUIBeautyExtension_BeautyView_BeautyManager: beautyManager])
+        
+        if beautyList.count == 0 {
+            return false
+        }
+        guard let view = beautyList[0].data?[TUICore_TUIBeautyExtension_BeautyView_View] as? UIView else {
             return false
         }
         beautyView = view

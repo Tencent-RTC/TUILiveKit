@@ -212,8 +212,8 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
     
     func clickPlayVod() {
         if !videoFinished {
-            if (playType == TX_Enum_PlayType.PLAY_TYPE_VOD_FLV) || (playType ==
-             TX_Enum_PlayType.PLAY_TYPE_VOD_HLS) || (playType == TX_Enum_PlayType.PLAY_TYPE_VOD_MP4) {
+            if (playType == TX_Enum_PlayType.PLAY_TYPE_LIVE_FLV) || (playType ==
+             TX_Enum_PlayType.PLAY_TYPE_LIVE_HLS) {
                 if videoPause {
                     assert(false, "")
                     //                [self.liveRoom resume];
@@ -659,13 +659,11 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
         } else {
             if playUrl.hasPrefix("https:") || playUrl.hasPrefix("http:") {
                 if playUrl.range(of: ".flv") != nil {
-                    playType = TX_Enum_PlayType.PLAY_TYPE_VOD_FLV
+                    playType = TX_Enum_PlayType.PLAY_TYPE_LIVE_FLV
                     
                     
                 } else if playUrl.range(of: ".m3u8") != nil {
-                    playType = TX_Enum_PlayType.PLAY_TYPE_VOD_HLS
-                } else if playUrl.range(of: ".mp4") != nil {
-                    playType = TX_Enum_PlayType.PLAY_TYPE_VOD_MP4
+                    playType = TX_Enum_PlayType.PLAY_TYPE_LIVE_HLS
                 } else {
                     TCUtil.toastTip(liveRoomLocalize("Demo.TRTC.LiveRoom.addressillegalandsupportfhm"), parentView: view)
                     return false
@@ -785,6 +783,10 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
     }
     
     @objc func clickBtnLinkMic(_ button: UIButton?) {
+        button?.isUserInteractionEnabled = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            button?.isUserInteractionEnabled = true
+        }
         if isBeingLinkMic == false {
             let statusAudio: AVAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: .audio)
             if statusAudio == .denied {
@@ -906,18 +908,28 @@ extension TCAudienceViewController {
         guard let liveInfo = liveInfo else {
             return false
         }
-        let inputViewInfo = TUICore.getExtensionInfo(TUICore_TUIBarrageExtension_GetTUIBarrageSendView,
-                                                     param: ["frame": UIScreen.main.bounds,
+        let barrageInputList = TUICore.getExtensionList(TUICore_TUIBarrageExtension_GetTUIBarrageSendView,
+                                                     param: ["frame": NSCoder.string(for: UIScreen.main.bounds),
                                                              "groupId": liveInfo.roomId])
-        guard let inputView = inputViewInfo[TUICore_TUIBarrageExtension_GetTUIBarrageSendView] as? UIView else {
+        
+        if barrageInputList.count == 0 {
             return false
         }
-        self.barrageInputView = inputView
+        guard let barrageInputView = barrageInputList[0].data?[TUICore_TUIBarrageExtension_GetTUIBarrageSendView] as? UIView else {
+            return false
+        }
+        self.barrageInputView = barrageInputView
 
-        let barrageViewInfo = TUICore.getExtensionInfo(TUICore_TUIBarrageExtension_TUIBarrageDisplayView,
-                                                       param: ["frame": UIScreen.main.bounds,
-                                                               "groupId": liveInfo.roomId])
-        guard let barrageView = barrageViewInfo[TUICore_TUIBarrageExtension_TUIBarrageDisplayView] as? UIView else {
+        let barrageViewFrame = CGRect(x: 20, y: SCREEN_HEIGHT - 300 - 120, width: SCREEN_WIDTH - 20*2, height: 300)
+        let barrageViewList = TUICore.getExtensionList(TUICore_TUIBarrageExtension_TUIBarrageDisplayView,
+                                                       param: ["frame": NSCoder.string(for: barrageViewFrame),
+                                                               "groupId": liveInfo.roomId,
+                                                               "maxHeight": "300",])
+        
+        if barrageViewList.count == 0 {
+            return false
+        }
+        guard let barrageView = barrageViewList[0].data?[TUICore_TUIBarrageExtension_TUIBarrageDisplayView] as? UIView else {
             return false
         }
         self.barrageView = barrageView
@@ -928,18 +940,26 @@ extension TCAudienceViewController {
         guard let liveInfo = liveInfo else {
             return false
         }
-        let giftPlayInfo = TUICore.getExtensionInfo(TUICore_TUIGiftExtension_GetTUIGiftPlayView,
+        let giftPlayList = TUICore.getExtensionList(TUICore_TUIGiftExtension_GetTUIGiftPlayView,
                                                     param: [
-                                                        "frame": UIScreen.main.bounds,
+                                                        "frame": NSCoder.string(for: UIScreen.main.bounds),
                                                         "groupId": liveInfo.roomId])
-        guard let giftView = giftPlayInfo[TUICore_TUIGiftExtension_GetTUIGiftPlayView] as? UIView else {
+        
+        if giftPlayList.count == 0 {
             return false
         }
-        let giftPanelInfo = TUICore.getExtensionInfo(TUICore_TUIGiftExtension_GetTUIGiftListPanel,
+        guard let giftView = giftPlayList[0].data?[TUICore_TUIGiftExtension_GetTUIGiftPlayView] as? UIView else {
+            return false
+        }
+        let giftPanelList = TUICore.getExtensionList(TUICore_TUIGiftExtension_GetTUIGiftListPanel,
                                                            param: [
-                                                               "frame": UIScreen.main.bounds,
+                                                               "frame": NSCoder.string(for: UIScreen.main.bounds),
                                                                "groupId": liveInfo.roomId])
-        guard let giftPanelView = giftPanelInfo[TUICore_TUIGiftExtension_GetTUIGiftListPanel] as? UIView else {
+        
+        if giftPanelList.count == 0 {
+            return false
+        }
+        guard let giftPanelView = giftPanelList[0].data?[TUICore_TUIGiftExtension_GetTUIGiftListPanel] as? UIView else {
             return false
         }
         self.giftPanelView = giftPanelView
