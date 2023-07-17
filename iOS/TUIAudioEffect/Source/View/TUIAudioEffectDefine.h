@@ -8,15 +8,7 @@
 #ifndef TUIAudioEffectDefine_h
 #define TUIAudioEffectDefine_h
 
-#import <TUICore/TUIDefine.h>
-#import <Masonry/Masonry.h>
-
 #import "AudioEffectLocalized.h"
-
-// Categories
-#import <TUICore/UIColor+TUIHexColor.h>
-#import <TUICore/UIView+TUIUtil.h>
-
 // Theme
 #import "TUILiveThemeConfig.h"
 // Model

@@ -62,9 +62,15 @@
 }
 
 #pragma mark - TUIExtensionProtocol
-- (NSDictionary *)getExtensionInfo:(NSString *)key param:(nullable NSDictionary *)param {
+- (NSArray<TUIExtensionInfo *> *)onGetExtension:(NSString *)key param:(nullable NSDictionary *)param {
+    NSMutableArray<TUIExtensionInfo *> *resultExtensionInfoList = [NSMutableArray array];
     if ([key isEqualToString:TUICore_TUIGiftExtension_GetEnterBtn]) {
-        return @{TUICore_TUIGiftExtension_GetEnterBtn:[TUIGiftExtension getEnterButton]};
+        NSDictionary *info = @{TUICore_TUIGiftExtension_GetEnterBtn:[TUIGiftExtension getEnterButton]};
+        TUIExtensionInfo *resultExtensionInfo = [[TUIExtensionInfo alloc] init];
+        resultExtensionInfo.data = info;
+        [resultExtensionInfoList addObject:resultExtensionInfo];
+
+        return resultExtensionInfoList;
     } else if ([key isEqualToString:TUICore_TUIGiftExtension_GetTUIGiftListPanel]) {
         if ([param isKindOfClass:[NSDictionary class]]) {
             NSString *frameStr = param[@"frame"];
@@ -76,7 +82,13 @@
             if([groupId isKindOfClass:[NSString class]]){
                 TUIGiftListPanelPlugView *plugView = [[TUIGiftListPanelPlugView alloc]initWithFrame:frame groupId:groupId];
                 [TUIGiftExtension setPlugViewByGroupId:plugView groupId:groupId];
-                return @{TUICore_TUIGiftExtension_GetTUIGiftListPanel:plugView};
+                
+                NSDictionary *info = @{TUICore_TUIGiftExtension_GetTUIGiftListPanel:plugView};
+                TUIExtensionInfo *resultExtensionInfo = [[TUIExtensionInfo alloc] init];
+                resultExtensionInfo.data = info;
+                [resultExtensionInfoList addObject:resultExtensionInfo];
+
+                return resultExtensionInfoList;
             }
         }
     } else if ([key isEqualToString:TUICore_TUIGiftExtension_GetTUIGiftPlayView]) {
@@ -90,11 +102,22 @@
             if([groupId isKindOfClass:[NSString class]]){
                 TUIGiftPlayView *playView = [[TUIGiftPlayView alloc]initWithFrame:frame groupId:groupId];
                 [TUIGiftExtension setPlayViewByGroupId:playView groupId:groupId];
-                return @{TUICore_TUIGiftExtension_GetTUIGiftPlayView:playView};
+                
+                NSDictionary *info = @{TUICore_TUIGiftExtension_GetTUIGiftPlayView:playView};
+                TUIExtensionInfo *resultExtensionInfo = [[TUIExtensionInfo alloc] init];
+                resultExtensionInfo.data = info;
+                [resultExtensionInfoList addObject:resultExtensionInfo];
+
+                return resultExtensionInfoList;
             }
         }
     } else if ([key isEqualToString:TUICore_TUIGiftExtension_GetLikeBtn]) {
-        return @{TUICore_TUIGiftExtension_GetLikeBtn:[TUIGiftExtension getLikeButton]};
+        NSDictionary *info = @{TUICore_TUIGiftExtension_GetLikeBtn:[TUIGiftExtension getLikeButton]};
+        TUIExtensionInfo *resultExtensionInfo = [[TUIExtensionInfo alloc] init];
+        resultExtensionInfo.data = info;
+        [resultExtensionInfoList addObject:resultExtensionInfo];
+
+        return resultExtensionInfoList;
     }
     return nil;
 }

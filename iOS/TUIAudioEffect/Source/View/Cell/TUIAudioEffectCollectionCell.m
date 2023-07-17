@@ -7,6 +7,8 @@
 
 #import "TUIAudioEffectCollectionCell.h"
 #import "TUIAudioEffectDefine.h"
+#import <Masonry/Masonry.h>
+#import <TUICore/UIColor+TUIHexColor.h>
 
 @interface TUIAudioEffectCollectionCell ()
 

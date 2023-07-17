@@ -550,7 +550,7 @@ public class TCAnchorViewController: UIViewController {
                 let roomInfo = TRTCLiveRoomInfo(roomId: String(roomID),
                                                 roomName: roomName,
                                                 coverUrl: self.liveInfo.coverUrl,
-                                                ownerId: TUILogin.getUserID(),
+                                                ownerId: TUILogin.getUserID() ?? "",
                                                 ownerName: (TUILogin.getNickName() ?? ""),
                                                 streamUrl: TUILogin.getUserID(),
                                                 memberCount: 0,

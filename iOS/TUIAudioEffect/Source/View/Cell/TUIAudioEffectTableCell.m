@@ -10,6 +10,9 @@
 #import "TUIAudioEffectView.h"
 #import "TUILiveThemeConfig.h"
 #import "TUIAudioEffectCollectionCell.h"
+#import <Masonry/Masonry.h>
+#import <TUICore/UIColor+TUIHexColor.h>
+#import <TUICore/TUIDefine.h>
 
 //** TUIAudioEffectBaseTableCell **//
 @interface TUIAudioEffectBaseTableCell ()

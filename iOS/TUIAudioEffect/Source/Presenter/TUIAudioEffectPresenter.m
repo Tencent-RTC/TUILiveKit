@@ -145,9 +145,12 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             // 更新音量大小设置
             NSInteger value = weakSelf.effectModel.musicVolume;
+            // 更新音乐升降调
+            double musicRiseFallValue = weakSelf.effectModel.musicRiseFallValue;
             int32_t songId = weakSelf.effectModel.selectBGMModel.ID;
             [weakSelf.audioEffectManager setMusicPlayoutVolume:songId volume:value];
             [weakSelf.audioEffectManager setMusicPublishVolume:songId volume:value];
+            [weakSelf.audioEffectManager setMusicPitch:songId pitch:musicRiseFallValue];
         });
     } onProgress:^(NSInteger progressMs, NSInteger durationMs) {
         // 播放进度回调

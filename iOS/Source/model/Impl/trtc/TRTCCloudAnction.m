@@ -244,14 +244,15 @@ static const int TC_TRTC_FRAMEWORK     = 1;
             self.playCallbackMap[userId] = callback;
         }
         [[TRTCCloud sharedInstance] startRemoteView:userId view:view];
-        NSString* blockUUID = [self.curroomUUID mutableCopy];
+        NSString* blockId= [NSString stringWithFormat:@"%ld",(long)((NSInteger)callback)];
         @weakify(self)
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(gTrtcLivePlayTimeOut * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             @strongify(self)
-            if (!self) {
+            if (!self || !userId) {
                 return;
             }
-            if ([self.curroomUUID isEqualToString:blockUUID]) {
+            NSString* goalBlockId= [NSString stringWithFormat:@"%ld",(long)((NSInteger)self.playCallbackMap[userId])];
+            if ([goalBlockId isEqualToString:blockId]) {
                 [self playCallBackWithUserId:userId code:-1 message:liveRoomLocalize(@"Demo.TRTC.LiveRoom.timeouttonotplay")];
             }
         });
