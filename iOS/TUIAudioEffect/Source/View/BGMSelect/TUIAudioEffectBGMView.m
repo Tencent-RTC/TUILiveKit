@@ -8,6 +8,9 @@
 #import "TUIAudioEffectBGMView.h"
 #import "TUIAudioEffectModel.h"
 #import "TUIAudioEffectDefine.h"
+#import <TUICore/TUIDefine.h>
+#import <Masonry/Masonry.h>
+#import <TUICore/UIView+TUIUtil.h>
 
 @interface TUIAudioEffectBGMView ()<UITableViewDelegate, UITableViewDataSource>
 

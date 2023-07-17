@@ -7,6 +7,7 @@
 //
 
 #import "TUIBarrageLocalized.h"
+#import "TUICore/TUIGlobalization.h"
 
 #pragma mark - Base
 NSBundle *TUIBarrageBundle(void) {
@@ -40,10 +41,9 @@ NSString *TUIBarrageLocalizeLanguageKey(void) {
 }
 
 NSString *TUIBarrageLocalizeFromTable(NSString *key, NSString *table) {
-    //从FrameworkTestBundle.bundle中查找资源
-    NSString *bundlePath = [TUIBarrageBundle() pathForResource:TUIBarrageLocalizeLanguageKey() ofType:@"lproj"];
+    NSString *bundlePath = [TUIBarrageBundle() pathForResource:[TUIGlobalization tk_localizableLanguageKey] ?: @"" ofType:@"lproj"];
     NSBundle *bundle = [NSBundle bundleWithPath:bundlePath];
-    return  [bundle localizedStringForKey:key value:@"" table:table];
+    return [bundle localizedStringForKey:key value:@"" table:table];
 }
 
 #pragma mark - Calling

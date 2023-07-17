@@ -41,7 +41,8 @@
 }
 
 #pragma mark - TUIExtensionProtocol
-- (NSDictionary *)getExtensionInfo:(NSString *)key param:(nullable NSDictionary *)param {
+- (NSArray<TUIExtensionInfo *> *)onGetExtension:(NSString *)key param:(nullable NSDictionary *)param {
+    NSMutableArray<TUIExtensionInfo *> *resultExtensionInfoList = [NSMutableArray array];
     if ([key isEqualToString:TUICore_TUIBarrageExtension_GetEnterBtn]) {
         UIImage *image = [UIImage imageNamed:@"barrage_enter_icon" inBundle:TUIBarrageBundle() compatibleWithTraitCollection:nil];
         if ([param isKindOfClass:[NSDictionary class]]) {
@@ -50,7 +51,12 @@
                 image = resId;
             }
         }
-        return @{TUICore_TUIBarrageExtension_GetEnterBtn:[TUIBarrageExtension getEnterButton: image]};
+        NSDictionary *info = @{TUICore_TUIBarrageExtension_GetEnterBtn:[TUIBarrageExtension getEnterButton: image]};
+        TUIExtensionInfo *resultExtensionInfo = [[TUIExtensionInfo alloc] init];
+        resultExtensionInfo.data = info;
+        [resultExtensionInfoList addObject:resultExtensionInfo];
+
+        return resultExtensionInfoList;
     } else if ([key isEqualToString:TUICore_TUIBarrageExtension_GetTUIBarrageSendView]) {
         if ([param isKindOfClass:[NSDictionary class]]) {
             NSString *frameStr = param[@"frame"];
@@ -61,7 +67,11 @@
             }
             if ([groupId isKindOfClass:[NSString class]]) {
                 TUIBarrageSendPlugView *plugView = [[TUIBarrageSendPlugView alloc]initWithFrame:frame groupId:groupId];
-                return @{TUICore_TUIBarrageExtension_GetTUIBarrageSendView:plugView};
+                NSDictionary *info = @{TUICore_TUIBarrageExtension_GetTUIBarrageSendView:plugView};
+                TUIExtensionInfo *resultExtensionInfo = [[TUIExtensionInfo alloc] init];
+                resultExtensionInfo.data = info;
+                [resultExtensionInfoList addObject:resultExtensionInfo];
+                return resultExtensionInfoList;
             }
         }
         
@@ -82,7 +92,11 @@
                 TUIBarrageDisplayView *displayView = [[TUIBarrageDisplayView alloc]initWithFrame:frame maxHeight:maxHeight groupId:groupId];
                 displayView.backgroundColor = [UIColor clearColor];
                 [TUIBarrageExtension setDisplayViewByGroupId:displayView groupId:groupId];
-                return @{TUICore_TUIBarrageExtension_TUIBarrageDisplayView:displayView};
+                NSDictionary *info = @{TUICore_TUIBarrageExtension_TUIBarrageDisplayView:displayView};
+                TUIExtensionInfo *resultExtensionInfo = [[TUIExtensionInfo alloc] init];
+                resultExtensionInfo.data = info;
+                [resultExtensionInfoList addObject:resultExtensionInfo];
+                return resultExtensionInfoList;
             }
         }
     }

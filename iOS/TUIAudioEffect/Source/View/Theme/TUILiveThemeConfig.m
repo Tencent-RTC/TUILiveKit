@@ -7,6 +7,7 @@
 
 #import "TUILiveThemeConfig.h"
 #import "TUIAudioEffectDefine.h"
+#import <TUICore/UIColor+TUIHexColor.h>
 
 @implementation TUILiveThemeConfig
 
