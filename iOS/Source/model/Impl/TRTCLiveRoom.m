@@ -1317,7 +1317,7 @@ static double trtcLiveCheckStatusTimeOut = 3;
 - (void)onInvitationTimeout:(NSString *)inviteID inviteeList:(NSArray<NSString *> *)inviteeList {
     if ([self.requestJoinAnchorID isEqualToString:inviteID]) {
         if (self.requestJoinAnchorCallback) {
-            self.requestJoinAnchorCallback(NO, @"The anchor did not respond to Link-mic request");
+            self.requestJoinAnchorCallback(NO, liveRoomLocalize(@"Demo.TRTC.LiveRoom.anchornotresponsethereq"));
             self.requestJoinAnchorCallback = nil;
             [self clearJoinState];
         }
@@ -1334,7 +1334,7 @@ static double trtcLiveCheckStatusTimeOut = 3;
         }];
     } else if ([self.requestRoomPKDic.allValues containsObject:inviteID]) {
         if (self.requestRoomPKCallback) {
-            self.requestRoomPKCallback(NO, @"The anchor did not respond to PK request");
+            self.requestRoomPKCallback(NO, liveRoomLocalize(@"Demo.TRTC.LiveRoom.anchornotresponsepkbetweenroom"));
             self.requestRoomPKCallback = nil;
             [self clearPKState];
         }
