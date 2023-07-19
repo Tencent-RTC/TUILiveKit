@@ -569,7 +569,7 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
         }
         if bExist == true { return }
         for statusInfoView in statusInfoViewArray {
-            if statusInfoView.userID == nil {
+            if statusInfoView.userID == nil || statusInfoView.userID?.count == 0 {
                 statusInfoView.userID = userID
                 statusInfoView.startLoading()
                 liveRoom!.startPlay(userID: userID, view: statusInfoView.videoView!, callback: {

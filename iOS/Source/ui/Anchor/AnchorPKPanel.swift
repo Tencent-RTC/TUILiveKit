@@ -297,6 +297,7 @@ extension AnchorPKPanel {
 extension AnchorPKPanel {
     @objc
     func keyboardFrameChange(noti : Notification) {
+        guard let superview = superview else{ return }
         guard !isHidden else {
             return
         }
@@ -309,8 +310,7 @@ extension AnchorPKPanel {
         if rect.minY == SCREEN_HEIGHT {
             transform = .identity
         } else {
-            let converted = convert(invitePKBtn.frame, to: superview)
-            transform = CGAffineTransform(translationX: 0, y: -(converted.maxY + 40)+rect.minY)
+            transform = CGAffineTransform(translationX: 0, y: -(superview.height - invitePKBtn.mm_maxY) + rect.minY)
         }
     }
 
