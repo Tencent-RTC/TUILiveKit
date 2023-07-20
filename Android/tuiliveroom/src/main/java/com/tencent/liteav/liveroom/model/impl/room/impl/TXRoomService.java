@@ -60,6 +60,8 @@ public class TXRoomService implements ITXRoomService {
     private static final int STATUS_RECEIVED           = 2;
     private static final int STATUS_WAITING_ANCHOR     = 3;
 
+    private static long NEXT_SEQ = 0;
+
     private static TXRoomService             sInstance;
     private        Context                   mContext;
     private        ITXRoomServiceDelegate    mDelegate;
@@ -281,42 +283,66 @@ public class TXRoomService implements ITXRoomService {
 
             @Override
             public void onSuccess(String s) {
-                V2TIMManager.getInstance().addSimpleMsgListener(mSimpleListener);
-                V2TIMManager.getInstance().addGroupListener(mGroupListener);
-                V2TIMManager.getSignalingManager().addSignalingListener(mSignalingListener);
-                TRTCLogger.i(TAG, "createGroup setGroupListener roomId: " + roomId + " mGroupListener: "
-                        + mGroupListener.hashCode());
+                imManager.joinGroup(roomId, "", new V2TIMCallback() {
+                    @Override
+                    public void onSuccess() {
+                        V2TIMManager.getInstance().addSimpleMsgListener(mSimpleListener);
+                        V2TIMManager.getInstance().addGroupListener(mGroupListener);
+                        V2TIMManager.getSignalingManager().addSignalingListener(mSignalingListener);
+                        TRTCLogger.i(TAG, "createGroup setGroupListener roomId: " + roomId + " mGroupListener: "
+                                + mGroupListener.hashCode());
 
-                mIsEnterRoom = true;
-                mCurrentRoomStatus = TRTCLiveRoomDef.ROOM_STATUS_SINGLE;
+                        mIsEnterRoom = true;
+                        mCurrentRoomStatus = TRTCLiveRoomDef.ROOM_STATUS_SINGLE;
 
-                mRoomId = roomId;
+                        mRoomId = roomId;
+                        getAudienceList(new TXUserListCallback() {
+                            @Override
+                            public void onCallback(int code, String msg, List<TXUserInfo> list) {
+                                if (code == 0) {
+                                    for (TXUserInfo userInfo : list) {
+                                        mAudienceInfoMap.put(userInfo.userId, userInfo);
+                                    }
+                                }
+                            }
+                        });
+                        mOwnerIMInfo.userId = mMySelfIMInfo.userId;
+                        mOwnerIMInfo.streamId = mMySelfIMInfo.streamId;
+                        mOwnerIMInfo.name = mMySelfIMInfo.name;
+                        // 组装 RoomInfo 抛给上层
+                        mTXRoomInfo.roomStatus = mCurrentRoomStatus;
+                        mTXRoomInfo.roomId = roomId;
+                        mTXRoomInfo.roomName = roomName;
+                        mTXRoomInfo.ownerId = mMySelfIMInfo.userId;
+                        mTXRoomInfo.coverUrl = coverUrl;
+                        mTXRoomInfo.ownerName = mMySelfIMInfo.name;
+                        mTXRoomInfo.streamUrl = mMySelfIMInfo.streamId;
+                        mTXRoomInfo.memberCount = 1;
 
-                mOwnerIMInfo.userId = mMySelfIMInfo.userId;
-                mOwnerIMInfo.streamId = mMySelfIMInfo.streamId;
-                mOwnerIMInfo.name = mMySelfIMInfo.name;
-                // 组装 RoomInfo 抛给上层
-                mTXRoomInfo.roomStatus = mCurrentRoomStatus;
-                mTXRoomInfo.roomId = roomId;
-                mTXRoomInfo.roomName = roomName;
-                mTXRoomInfo.ownerId = mMySelfIMInfo.userId;
-                mTXRoomInfo.coverUrl = coverUrl;
-                mTXRoomInfo.ownerName = mMySelfIMInfo.name;
-                mTXRoomInfo.streamUrl = mMySelfIMInfo.streamId;
-                mTXRoomInfo.memberCount = 1;
+                        // The anchor updates themselves to the anchor list
+                        mAnchorList.add(mMySelfIMInfo);
+                        // Update the group profile and send a broadcast message
+                        mCoverUrl = coverUrl;
+                        updateHostAnchorInfo();
+                        TRTCLogger.i(TAG, "create room success.");
+                        if (callback != null) {
+                            callback.onCallback(0, "create room success.");
+                        }
+                        if (mDelegate != null) {
+                            mDelegate.onRoomInfoChange(mTXRoomInfo);
+                        }
+                    }
 
-                // The anchor updates themselves to the anchor list
-                mAnchorList.add(mMySelfIMInfo);
-                // Update the group profile and send a broadcast message
-                mCoverUrl = coverUrl;
-                updateHostAnchorInfo();
-                TRTCLogger.i(TAG, "create room success.");
-                if (callback != null) {
-                    callback.onCallback(0, "create room success.");
-                }
-                if (mDelegate != null) {
-                    mDelegate.onRoomInfoChange(mTXRoomInfo);
-                }
+                    @Override
+                    public void onError(int i, String s) {
+                        if (i == 10013) {
+                            onSuccess();
+                        } else if (callback != null) {
+                            callback.onCallback(i, s);
+                        }
+                    }
+                });
+
             }
         });
     }
@@ -593,14 +619,10 @@ public class TXRoomService implements ITXRoomService {
             }
             return;
         }
-
         V2TIMManager.getGroupManager().getGroupMemberList(mRoomId,
-                V2TIMGroupMemberFullInfo.V2TIM_GROUP_MEMBER_ROLE_MEMBER, 0,
+                V2TIMGroupMemberFullInfo.V2TIM_GROUP_MEMBER_ROLE_MEMBER,
+                NEXT_SEQ,
                 new V2TIMValueCallback<V2TIMGroupMemberInfoResult>() {
-                    @Override
-                    public void onError(int code, String desc) {
-                    }
-
                     @Override
                     public void onSuccess(V2TIMGroupMemberInfoResult v2TIMGroupMemberInfoResult) {
                         List<TXUserInfo> list = new ArrayList<>();
@@ -611,8 +633,20 @@ public class TXRoomService implements ITXRoomService {
                             userInfo.avatarURL = info.getFaceUrl();
                             list.add(userInfo);
                         }
-                        if (callback != null) {
+                        NEXT_SEQ = v2TIMGroupMemberInfoResult.getNextSeq();
+                        if (NEXT_SEQ != 0) {
+                            getAudienceList(callback);
+                        } else if (callback != null) {
                             callback.onCallback(0, "success", list);
+                        }
+                    }
+
+                    @Override
+                    public void onError(int i, String s) {
+                        TRTCLogger.e(TAG, "getGroupMemberList fail, code: " + i + " msg:" + s);
+                        if (callback != null) {
+                            callback.onCallback(CODE_ERROR,
+                                    s, new ArrayList<TXUserInfo>());
                         }
                     }
                 });
