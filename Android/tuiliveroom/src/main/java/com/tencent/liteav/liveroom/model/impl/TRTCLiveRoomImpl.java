@@ -1622,10 +1622,28 @@ public class TRTCLiveRoomImpl extends TRTCLiveRoom implements ITXTRTCLiveRoomDel
 
     @Override
     public void onTRTCStreamAvailable(final String userId) {
+        runOnDelegateThread(new Runnable() {
+            @Override
+            public void run() {
+                TRTCLiveRoomDelegate delegate = mDelegate;
+                if (delegate != null) {
+                    delegate.onUserVideoAvailable(userId, true);
+                }
+            }
+        });
     }
 
     @Override
     public void onTRTCStreamUnavailable(final String userId) {
+        runOnDelegateThread(new Runnable() {
+            @Override
+            public void run() {
+                TRTCLiveRoomDelegate delegate = mDelegate;
+                if (delegate != null) {
+                    delegate.onUserVideoAvailable(userId, false);
+                }
+            }
+        });
     }
 
     @Override

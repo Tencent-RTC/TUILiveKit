@@ -787,6 +787,11 @@ public class TCCameraAnchorActivity extends Activity implements TRTCLiveRoomDele
     }
 
     @Override
+    public void onUserVideoAvailable(String userId, boolean available) {
+
+    }
+
+    @Override
     public void onRequestJoinAnchor(final TRTCLiveRoomDef.TRTCLiveUserInfo userInfo, String reason, final int timeout) {
         if (mAnchorUserIdList.size() >= LINK_MIC_MEMBER_MAX) {
             mLiveRoom.responseJoinAnchor(userInfo.userId, false, "");
