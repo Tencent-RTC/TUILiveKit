@@ -207,6 +207,32 @@ public class TCAudienceActivity extends AppCompatActivity {
         }
 
         @Override
+        public void onUserVideoAvailable(final String userId, boolean available) {
+            if (!userId.equals(mAnchorId)) {
+                return;
+            }
+            if (available) {
+                mTextAnchorLeave.setVisibility(View.GONE);
+                mVideoViewAnchor.setVisibility(View.VISIBLE);
+                mImageBackground.setVisibility(View.GONE);
+                mLiveRoom.startPlay(userId, mVideoViewAnchor, new TRTCLiveRoomCallback.ActionCallback() {
+                    @Override
+                    public void onCallback(int code, String msg) {
+                        if (code != 0) {
+                            onAnchorExit(userId);
+                        }
+                    }
+                });
+            } else {
+                mVideoViewAnchor.setVisibility(View.GONE);
+                mImageBackground.setVisibility(View.VISIBLE);
+                mTextAnchorLeave.setVisibility(View.VISIBLE);
+                mLiveRoom.stopPlay(userId, null);
+            }
+        }
+
+
+        @Override
         public void onRequestJoinAnchor(TRTCLiveRoomDef.TRTCLiveUserInfo userInfo, String reason, int timeout) {
 
         }

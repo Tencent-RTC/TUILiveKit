@@ -53,6 +53,15 @@ public interface TRTCLiveRoomDelegate {
      */
     void onAudienceExit(TRTCLiveRoomDef.TRTCLiveUserInfo userInfo);
 
+
+    /**
+     * an user video stream available or unAvailable
+     *
+     * @param userId    userId
+     * @param available video stream available or unAvailable
+     */
+    void onUserVideoAvailable(String userId, boolean available);
+
     /**
      * The anchor received a co-anchoring request
      *
