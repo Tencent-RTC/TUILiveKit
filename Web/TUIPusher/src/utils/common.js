@@ -17,10 +17,14 @@ export function goToPage(pathname, queryObj = {}) {
     const prefix = path.slice(0, path.lastIndexOf('/'));
     pathSting = `${prefix}/${pathname}.html`;
   }
+  // 跳转页面时默认带上语言参数
+  if (getUrlParam('lang')) {
+    Object.assign(queryObj, { lang: getUrlParam('lang') });
+  }
   const queryString = Object.keys(queryObj)
     .reduce((prev, key) => [prev, `${key}=${queryObj[key]}`].join('&'), '')
     .slice(1);
-  location.href = `${location.origin}${pathSting}${queryString ? `?${queryString}` : ''}`;
+  location.replace(`${location.origin}${pathSting}${queryString ? `?${queryString}` : ''}`);
 }
 
 /**
@@ -28,7 +32,7 @@ export function goToPage(pathname, queryObj = {}) {
  * @returns language
  */
 export function getLanguage() {
-  let language = localStorage.getItem('trtc-tuiPusher-language') || getUrlParam('lang') || navigator.language || 'zh';
+  let language = getUrlParam('lang') || localStorage.getItem('trtc-tuiPusher-language') || navigator.language || 'zh';
   language = language.replace(/_/, '-').toLowerCase();
 
   if (language === 'zh-cn' || language === 'zh') {
