@@ -75,7 +75,7 @@ export default {
         await this.initLocalStream();
         await this.shareClient.join({ roomId: this.roomId });
         this.isJoined = true;
-        this.handlePublish();
+        await this.handlePublish();
       } catch (error) {
         console.log('shareRTC handleJoin error = ', error);
         throw error;
@@ -104,7 +104,7 @@ export default {
       }
       this.destroyLocalStream();
       if (this.isPublished) {
-        this.handleUnPublish();
+        await this.handleUnPublish();
       }
       await this.shareClient.leave();
       this.isJoined = false;
