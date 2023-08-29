@@ -47,7 +47,7 @@
         UIImage *image = [UIImage imageNamed:@"barrage_enter_icon" inBundle:TUIBarrageBundle() compatibleWithTraitCollection:nil];
         if ([param isKindOfClass:[NSDictionary class]]) {
             UIImage *resId = param[@"icon"];
-            if ([resId isKindOfClass:[UIImage class]]) {
+            if (resId && [resId isKindOfClass:[UIImage class]]) {
                 image = resId;
             }
         }
@@ -62,10 +62,10 @@
             NSString *frameStr = param[@"frame"];
             NSString *groupId = param[@"groupId"];
             CGRect frame = CGRectZero;
-            if ([frameStr isKindOfClass:[NSString class]]) {
+            if (frameStr && [frameStr isKindOfClass:[NSString class]]) {
                 frame = CGRectFromString(frameStr);
             }
-            if ([groupId isKindOfClass:[NSString class]]) {
+            if (groupId && [groupId isKindOfClass:[NSString class]]) {
                 TUIBarrageSendPlugView *plugView = [[TUIBarrageSendPlugView alloc]initWithFrame:frame groupId:groupId];
                 NSDictionary *info = @{TUICore_TUIBarrageExtension_GetTUIBarrageSendView:plugView};
                 TUIExtensionInfo *resultExtensionInfo = [[TUIExtensionInfo alloc] init];
@@ -82,13 +82,13 @@
             NSString *maxHeightStr = param[@"maxHeight"];
             CGRect frame = CGRectZero;
             CGFloat maxHeight = 0;
-            if ([frameStr isKindOfClass:[NSString class]]) {
+            if (frameStr && [frameStr isKindOfClass:[NSString class]]) {
                 frame = CGRectFromString(frameStr);
             }
-            if ([maxHeightStr isKindOfClass:[NSString class]]) {
+            if (maxHeightStr && [maxHeightStr isKindOfClass:[NSString class]]) {
                 maxHeight = [maxHeightStr floatValue];
             }
-            if ([groupId isKindOfClass:[NSString class]]) {
+            if (groupId && [groupId isKindOfClass:[NSString class]]) {
                 TUIBarrageDisplayView *displayView = [[TUIBarrageDisplayView alloc]initWithFrame:frame maxHeight:maxHeight groupId:groupId];
                 displayView.backgroundColor = [UIColor clearColor];
                 [TUIBarrageExtension setDisplayViewByGroupId:displayView groupId:groupId];

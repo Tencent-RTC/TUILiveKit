@@ -11,6 +11,7 @@
 
 #import "TUIAudioEffectTableCell.h"
 #import "TUIAudioEffectDefine.h"
+#import "TXAudioEffectManager.h"
 #import <TUICore/TUIDefine.h>
 #import <Masonry/Masonry.h>
 #import <TUICore/UIView+TUIUtil.h>

@@ -77,7 +77,6 @@
         }
         TUIBeautyView *beautyView = [[TUIBeautyView alloc] initWithBeautyManager:beautyManager];
         id beautyService = [TUIBeautyView getBeautyService];
-        
         NSDictionary *info = @{TUICore_TUIBeautyExtension_BeautyView_View: beautyView,
                                TUICore_TUIBeautyExtension_BeautyView_DataProcessDelegate: beautyService};
         TUIExtensionInfo *resultExtensionInfo = [[TUIExtensionInfo alloc] init];

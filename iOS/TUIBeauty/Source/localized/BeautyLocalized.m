@@ -6,7 +6,6 @@
 //
 
 #import "BeautyLocalized.h"
-#import <TUICore/TUIGlobalization.h>
 
 #pragma mark - Base
 
@@ -16,9 +15,7 @@ NSBundle *TUIBeautyBundle(void) {
 }
 
 NSString *TUIBeautyLocalizeFromTable(NSString *key, NSString *table) {
-    NSString *bundlePath = [TUIBeautyBundle() pathForResource:[TUIGlobalization tk_localizableLanguageKey] ?: @"" ofType:@"lproj"];
-    NSBundle *bundle = [NSBundle bundleWithPath:bundlePath];
-    return [bundle localizedStringForKey:key value:@"" table:table];
+    return [TUIBeautyBundle() localizedStringForKey:key value:@"" table:table];
 }
 
 NSString *TUIBeautyLocalizeFromTableAndCommon(NSString *key, NSString *common, NSString *table) {

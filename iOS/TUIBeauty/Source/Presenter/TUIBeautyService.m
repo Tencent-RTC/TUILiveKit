@@ -8,8 +8,7 @@
 #import "TUIBeautyService.h"
 #import "XMagic.h"
 #import "TESign.h"
-#import "TELicenseCheck.h"
-
+#import <YTCommonXMagic/TELicenseCheck.h>
 #import "TUIBeautyDownloader.h"
 #import "TUIBeautyModel.h"
 #import "BeautyLocalized.h"

@@ -6,7 +6,7 @@
 //
 
 #import "AudioEffectLocalized.h"
-#import <TUICore/TUIGlobalization.h>
+
 
 #pragma mark - Base
 
@@ -16,9 +16,7 @@ NSBundle *TUIAudioEffectBundle(void) {
 }
 
 NSString *TUIAudioEffectLocalizeFromTable(NSString *key, NSString *table) {
-    NSString *bundlePath = [TUIAudioEffectBundle() pathForResource:[TUIGlobalization tk_localizableLanguageKey] ?: @"" ofType:@"lproj"];
-    NSBundle *bundle = [NSBundle bundleWithPath:bundlePath];
-    return [bundle localizedStringForKey:key value:@"" table:table];
+    return [TUIAudioEffectBundle() localizedStringForKey:key value:@"" table:table];
 }
 
 NSString *TUIAudioEffectLocalizeFromTableAndCommon(NSString *key, NSString *common, NSString *table) {
