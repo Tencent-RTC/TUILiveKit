@@ -53,7 +53,6 @@ public interface TRTCLiveRoomDelegate {
      */
     void onAudienceExit(TRTCLiveRoomDef.TRTCLiveUserInfo userInfo);
 
-
     /**
      * an user video stream available or unAvailable
      *

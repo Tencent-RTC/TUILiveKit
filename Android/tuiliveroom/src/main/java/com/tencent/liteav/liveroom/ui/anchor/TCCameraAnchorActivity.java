@@ -27,7 +27,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.constraintlayout.widget.Guideline;
 
-import com.blankj.utilcode.util.ToastUtils;
 import com.tencent.liteav.basic.RTCubeUtils;
 import com.tencent.liteav.basic.UserModel;
 import com.tencent.liteav.basic.UserModelManager;
@@ -46,6 +45,7 @@ import com.tencent.qcloud.tuicore.TUIConstants;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.qcloud.tuicore.interfaces.TUILoginListener;
+import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 
 import java.lang.reflect.Method;
@@ -163,7 +163,11 @@ public class TCCameraAnchorActivity extends Activity implements TRTCLiveRoomDele
         mFunctionView = findViewById(R.id.anchor_function_view);
         mFunctionView.setRoomId(mRoomId + "");
         if (!TextUtils.isEmpty(mSelfName)) {
-            mEditLiveRoomName.setText(getString(R.string.trtcliveroom_create_room_default, mSelfName));
+            String showName = getString(R.string.trtcliveroom_create_room_default, mSelfName);
+            if (showName.getBytes().length > MAX_LEN) {
+                showName = showName.substring(0, MAX_LEN);
+            }
+            mEditLiveRoomName.setText(showName);
         }
         mToolbar = findViewById(R.id.tool_bar_view);
         mPreFunctionView.setListener(new AnchorPreFunctionView.OnPreFunctionClickListener() {
@@ -174,11 +178,11 @@ public class TCCameraAnchorActivity extends Activity implements TRTCLiveRoomDele
                 }
                 String roomName = mEditLiveRoomName.getText().toString().trim();
                 if (TextUtils.isEmpty(roomName)) {
-                    ToastUtils.showLong(getText(R.string.trtcliveroom_warning_room_name_empty));
+                    ToastUtil.toastLongMessage(getString(R.string.trtcliveroom_warning_room_name_empty));
                     return;
                 }
                 if (roomName.getBytes().length > MAX_LEN) {
-                    ToastUtils.showLong(getText(R.string.trtcliveroom_warning_room_name_too_long));
+                    ToastUtil.toastLongMessage(getString(R.string.trtcliveroom_warning_room_name_too_long));
                     return;
                 }
                 InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
@@ -343,7 +347,7 @@ public class TCCameraAnchorActivity extends Activity implements TRTCLiveRoomDele
                 if (errorCode == ERROR_ROOM_ID_EXIT) {
                     onSuccess();
                 } else {
-                    ToastUtils.showLong("create room failed[" + errorCode + "]:" + message);
+                    ToastUtil.toastLongMessage("create room failed[" + errorCode + "]:" + message);
                     finish();
                 }
             }
@@ -755,7 +759,7 @@ public class TCCameraAnchorActivity extends Activity implements TRTCLiveRoomDele
     @Override
     public void onQuitRoomPK() {
         mFunctionView.setButtonPKState(AnchorFunctionView.PKState.PK);
-        ToastUtils.showShort(R.string.trtcliveroom_tips_quit_pk);
+        ToastUtil.toastShortMessage(getString(R.string.trtcliveroom_tips_quit_pk));
         if (mPKConfirmDialogFragment != null && mPKConfirmDialogFragment.isAdded()) {
             mPKConfirmDialogFragment.dismissAllowingStateLoss();
         }

@@ -3,11 +3,13 @@ package com.tencent.qcloud.tuikit.tuiaudioeffect.presenter;
 import androidx.annotation.NonNull;
 
 import com.tencent.liteav.audio.TXAudioEffectManager;
+import com.tencent.qcloud.tuikit.tuiaudioeffect.model.AudioEffectModel;
 import com.tencent.qcloud.tuikit.tuiaudioeffect.model.BGMItemEntity;
 import com.tencent.qcloud.tuikit.tuiaudioeffect.model.IAudioEffectModel;
 import com.tencent.qcloud.tuikit.tuiaudioeffect.model.VoiceItemEntity;
 import com.tencent.qcloud.tuikit.tuiaudioeffect.util.AudioEffectUtils;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -94,8 +96,8 @@ public class AudioEffectPresenter implements IAudioEffectPresenter {
     }
 
     @Override
-    public long getMusicDurationInMS(String path) {
-        return mModel.getMusicDurationInMS(path);
+    public void getMusicDurationInMS(String path, AudioEffectModel.GetMusicDurationCallback callback) {
+        mModel.getMusicDurationInMS(path, callback);
     }
 
     @Override

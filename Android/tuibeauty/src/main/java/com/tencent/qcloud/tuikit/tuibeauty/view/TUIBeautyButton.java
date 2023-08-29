@@ -7,6 +7,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.tencent.liteav.beauty.TXBeautyManager;
+import com.tencent.qcloud.tuicore.interfaces.TUIServiceCallback;
 import com.tencent.qcloud.tuikit.tuibeauty.R;
 
 import java.lang.reflect.Method;
@@ -48,8 +49,8 @@ public class TUIBeautyButton extends FrameLayout {
         boolean isAuth = true;
         try {
             Class clz = Class.forName("com.tencent.liteav.privacy.util.RTCubeAppLegalUtils");
-            Method method = clz.getDeclaredMethod("showBeautyAuthDialog", Context.class);
-            isAuth = (Boolean) method.invoke(null, getContext());
+            Method method = clz.getDeclaredMethod("showBeautyAuthDialog", Context.class, TUIServiceCallback.class);
+            isAuth = (Boolean) method.invoke(null, getContext(),null);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

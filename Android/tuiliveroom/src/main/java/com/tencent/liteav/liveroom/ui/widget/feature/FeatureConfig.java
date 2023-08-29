@@ -9,7 +9,7 @@ public class FeatureConfig {
     static final int DEFAULT_FPS     = 15;
 
 
-    private int mVideoResolution = TRTCCloudDef.TRTC_VIDEO_RESOLUTION_640_360;
+    private int mVideoResolution = TRTCCloudDef.TRTC_VIDEO_RESOLUTION_1280_720;
 
     private           int     mVideoFps              = DEFAULT_FPS;
     private           int     mVideoBitrate          = DEFAULT_BITRATE;

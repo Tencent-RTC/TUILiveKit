@@ -13,14 +13,20 @@
         android:layout_marginRight="20dp"
         android:background="@drawable/trtcliveroom_bg_invite_pk_by_id"
         android:orientation="vertical"
-        android:padding="20dp"
+        android:paddingStart="20dp"
+        android:paddingTop="5dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
+            android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
             android:text="@string/trtcliveroom_pk_room_id"
             android:textColor="@color/trtcliveroom_color_main_text"
             android:textSize="16sp"
@@ -31,10 +37,12 @@
 
         <EditText
             android:id="@+id/et_input_room_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:background="@null"
+            android:gravity="center"
             android:hint="@string/trtcliveroom_input_room_id_hint"
             android:imeOptions="actionNext"
             android:inputType="number"
@@ -46,6 +54,7 @@
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

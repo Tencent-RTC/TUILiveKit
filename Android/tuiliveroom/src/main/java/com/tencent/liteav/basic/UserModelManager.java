@@ -2,8 +2,8 @@ package com.tencent.liteav.basic;
 
 import android.util.Log;
 
-import com.blankj.utilcode.util.GsonUtils;
-import com.blankj.utilcode.util.SPUtils;
+import com.google.gson.Gson;
+import com.tencent.qcloud.tuicore.util.SPUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -43,7 +43,7 @@ public class UserModelManager {
     public synchronized void setUserModel(UserModel model) {
         mUserModel = model;
         try {
-            SPUtils.getInstance(PER_DATA).put(PER_USER_MODEL, GsonUtils.toJson(mUserModel));
+            SPUtils.getInstance(PER_DATA).put(PER_USER_MODEL, new Gson().toJson(mUserModel));
         } catch (Exception e) {
             Log.d(TAG, "");
         }
@@ -52,7 +52,7 @@ public class UserModelManager {
     private void loadUserModel() {
         try {
             String json = SPUtils.getInstance(PER_DATA).getString(PER_USER_MODEL);
-            mUserModel = GsonUtils.fromJson(json, UserModel.class);
+            mUserModel = new Gson().fromJson(json, UserModel.class);
         } catch (Exception e) {
             Log.d(TAG, "loadUserModel failed:" + e.getMessage());
         }

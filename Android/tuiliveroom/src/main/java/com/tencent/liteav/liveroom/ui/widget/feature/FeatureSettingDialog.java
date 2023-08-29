@@ -15,12 +15,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
-import com.blankj.utilcode.util.SizeUtils;
 import com.tencent.liteav.liveroom.R;
 import com.tencent.liteav.liveroom.model.TRTCLiveRoom;
 import com.tencent.liteav.liveroom.ui.widget.settingitem.BaseSettingItem;
 import com.tencent.liteav.liveroom.ui.widget.settingitem.SeekBarSettingItem;
 import com.tencent.liteav.liveroom.ui.widget.settingitem.SelectionSettingItem;
+import com.tencent.qcloud.tuicore.util.ScreenUtil;
 import com.tencent.trtc.TRTCCloudDef;
 
 import java.util.ArrayList;
@@ -144,7 +144,7 @@ public final class FeatureSettingDialog extends BottomSheetDialog {
 
         for (BaseSettingItem item : mSettingItemList) {
             View view = item.getView();
-            view.setPadding(0, SizeUtils.dp2px(12), 0, SizeUtils.dp2px(12));
+            view.setPadding(0, ScreenUtil.dip2px(12), 0, ScreenUtil.dip2px(12));
             llContent.addView(view);
         }
 

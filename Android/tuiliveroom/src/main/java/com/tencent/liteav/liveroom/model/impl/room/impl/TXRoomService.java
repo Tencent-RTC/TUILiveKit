@@ -646,7 +646,7 @@ public class TXRoomService implements ITXRoomService {
                         TRTCLogger.e(TAG, "getGroupMemberList fail, code: " + i + " msg:" + s);
                         if (callback != null) {
                             callback.onCallback(CODE_ERROR,
-                                    s, new ArrayList<TXUserInfo>());
+                                    s, new ArrayList<>());
                         }
                     }
                 });

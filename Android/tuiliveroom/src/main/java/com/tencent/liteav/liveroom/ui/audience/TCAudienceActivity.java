@@ -1,6 +1,5 @@
 package com.tencent.liteav.liveroom.ui.audience;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -24,7 +23,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.constraintlayout.widget.Guideline;
 
-import com.blankj.utilcode.util.ToastUtils;
 import com.tencent.liteav.basic.UserModel;
 import com.tencent.liteav.basic.UserModelManager;
 import com.tencent.liteav.liveroom.R;
@@ -39,9 +37,9 @@ import com.tencent.liteav.liveroom.ui.widget.video.TCVideoView;
 import com.tencent.liteav.liveroom.ui.widget.video.TCVideoViewMgr;
 import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.qcloud.tuicore.interfaces.TUILoginListener;
+import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -158,7 +156,7 @@ public class TCAudienceActivity extends AppCompatActivity {
 
         @Override
         public void onRoomDestroy(String roomId) {
-            showErrorAndQuit(0, getString(R.string.trtcliveroom_warning_room_disband));
+            showErrorAndQuit(getString(R.string.trtcliveroom_warning_room_disband));
         }
 
         @Override
@@ -207,7 +205,7 @@ public class TCAudienceActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onUserVideoAvailable(final String userId, boolean available) {
+        public void onUserVideoAvailable(String userId, boolean available) {
             if (!userId.equals(mAnchorId)) {
                 return;
             }
@@ -230,7 +228,6 @@ public class TCAudienceActivity extends AppCompatActivity {
                 mLiveRoom.stopPlay(userId, null);
             }
         }
-
 
         @Override
         public void onRequestJoinAnchor(TRTCLiveRoomDef.TRTCLiveUserInfo userInfo, String reason, int timeout) {
@@ -298,7 +295,7 @@ public class TCAudienceActivity extends AppCompatActivity {
         return toast;
     }
 
-    protected void showErrorAndQuit(int errorCode, String errorMsg) {
+    protected void showErrorAndQuit(String errorMsg) {
         if (isFinishing()) {
             return;
         }
@@ -458,11 +455,11 @@ public class TCAudienceActivity extends AppCompatActivity {
             @Override
             public void onCallback(int code, String msg) {
                 if (code == 0) {
-                    ToastUtils.showShort(R.string.trtcliveroom_tips_enter_room_success);
+                    ToastUtil.toastShortMessage(getString(R.string.trtcliveroom_tips_enter_room_success));
                     isEnterRoom = true;
                     getAudienceList();
                 } else {
-                    ToastUtils.showLong(getString(R.string.trtcliveroom_tips_enter_room_fail, code));
+                    ToastUtil.toastLongMessage(getString(R.string.trtcliveroom_tips_enter_room_fail, code));
                     exitRoom();
                     finish();
                 }
@@ -551,6 +548,9 @@ public class TCAudienceActivity extends AppCompatActivity {
                 LINK_MIC_TIMEOUT, new TRTCLiveRoomCallback.ActionCallback() {
                     @Override
                     public void onCallback(int code, String msg) {
+                        if (isFinishing()) {
+                            return;
+                        }
                         if (code == 0) {
                             hideNoticeToast();
                             makeToast(getString(R.string.trtcliveroom_anchor_accept_link_mic),
@@ -562,9 +562,9 @@ public class TCAudienceActivity extends AppCompatActivity {
                             makeToast(getString(R.string.trtcliveroom_anchor_refuse_link_request),
                                     Toast.LENGTH_SHORT).show();
                         } else if (code == CODE_TIMEOUT) {
-                            ToastUtils.showShort(getString(R.string.trtcliveroom_link_mic_anchor_timeout));
+                            ToastUtil.toastShortMessage(getString(R.string.trtcliveroom_link_mic_anchor_timeout));
                         } else {
-                            ToastUtils.showShort(getString(R.string.trtcliveroom_error_request_link_mic, msg));
+                            ToastUtil.toastShortMessage(getString(R.string.trtcliveroom_error_request_link_mic, msg));
                         }
                         mButtonLinkMic.setEnabled(true);
                         hideNoticeToast();
