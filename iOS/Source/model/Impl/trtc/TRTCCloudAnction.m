@@ -187,7 +187,7 @@ static const int TC_TRTC_FRAMEWORK     = 1;
     TRTCVideoEncParam *videoParam = [[TRTCVideoEncParam alloc] init];
     if (isOwner) {
         videoParam.videoResolution = TRTCVideoResolution_1920_1080;
-        videoParam.videoBitrate = 4000;
+        videoParam.videoBitrate = 3500;
         videoParam.minVideoBitrate = 3200;
         videoParam.videoFps = 24;
     } else {

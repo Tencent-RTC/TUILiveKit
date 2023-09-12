@@ -21,8 +21,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.blankj.utilcode.util.CollectionUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.tencent.liteav.basic.ImageLoader;
 import com.tencent.liteav.liveroom.R;
@@ -161,7 +159,7 @@ public class AnchorPKSelectView extends BottomSheetDialog {
                                 }
                                 mRoomInfos.add(info);
                             }
-                            if (CollectionUtils.isEmpty(mRoomInfos)) {
+                            if (mRoomInfos == null || mRoomInfos.size() == 0) {
                                 mPusherTagTv.setText(getContext().getResources()
                                         .getString(R.string.trtcliveroom_no_anchor_for_pk));
                             } else {
@@ -176,7 +174,7 @@ public class AnchorPKSelectView extends BottomSheetDialog {
 
             @Override
             public void onError(int errorCode, String message) {
-                ToastUtils.showShort(getContext().getResources().getString(R.string.trtcliveroom_get_anchor_list_fail));
+                ToastUtil.toastShortMessage(getContext().getString(R.string.trtcliveroom_get_anchor_list_fail));
             }
         });
     }

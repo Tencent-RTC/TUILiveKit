@@ -10,7 +10,7 @@
 "Demo.TRTC.LiveRoom.confirm" = "确定";
 "Demo.TRTC.LiveRoom.subCancel" = "取消";
 "Demo.TRTC.LiveRoom.subConfirm" = "确定";
-"Demo.TRTC.LiveRoom.opponentanchorendpd" = "对方主播已结束PK";
+"Demo.TRTC.LiveRoom.cancelpk" = "对方主播已取消PK";
 "Demo.TRTC.LiveRoom.invite" = "邀请";
 "Demo.TRTC.LiveRoom.invitepk" = "PK邀请";
 "Demo.TRTC.LiveRoom.loading" = "正在加载...";

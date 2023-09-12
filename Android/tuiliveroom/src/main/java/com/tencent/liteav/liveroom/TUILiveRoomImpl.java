@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.blankj.utilcode.util.ToastUtils;
 import com.tencent.imsdk.v2.V2TIMGroupInfoResult;
 import com.tencent.liteav.basic.UserModel;
 import com.tencent.liteav.basic.UserModelManager;
@@ -18,6 +17,7 @@ import com.tencent.liteav.liveroom.ui.anchor.TCCameraAnchorActivity;
 import com.tencent.liteav.liveroom.ui.audience.TCAudienceActivity;
 import com.tencent.liteav.liveroom.ui.common.utils.TCConstants;
 import com.tencent.qcloud.tuicore.TUILogin;
+import com.tencent.qcloud.tuicore.util.ToastUtil;
 
 import java.util.Collections;
 import java.util.List;
@@ -140,13 +140,13 @@ public class TUILiveRoomImpl extends TUILiveRoom {
                             if (isRoomExist(result)) {
                                 realEnterRoom(roomId);
                             } else {
-                                ToastUtils.showLong(R.string.trtcliveroom_room_not_exist);
+                                ToastUtil.toastLongMessage(mContext.getString(R.string.trtcliveroom_room_not_exist));
                             }
                         }
 
                         @Override
                         public void onFailed(int code, String msg) {
-                            ToastUtils.showLong(msg);
+                            ToastUtil.toastLongMessage(msg);
                         }
                     });
                 } else {

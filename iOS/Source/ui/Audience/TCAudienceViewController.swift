@@ -270,14 +270,19 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
                 make.centerX.equalTo(logicView.closeBtn).offset(-icon_center_interval * 2.5)
                 make.centerY.equalTo(logicView.closeBtn )
             })
-            let rectBtnLinkMic = btnLinkMic.frame
+            
             btnCamera = UIButton(type: .custom)
-            btnCamera.center = CGPoint(x: btnLinkMic.center.x - icon_center_interval, y: icon_center_y)
-            btnCamera.bounds = CGRect(x: 0, y: 0, width: rectBtnLinkMic.width, height: rectBtnLinkMic.height)
-            btnCamera.setImage(UIImage(named: "camera", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
+            logicView.addSubview(btnCamera)
+            btnCamera.setImage(UIImage(named: "live_camera", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
             btnCamera.addTarget(self, action: #selector(clickBtnCamera(_:)), for: .touchUpInside)
             btnCamera.isHidden = true
-            logicView.addSubview(btnCamera)
+            
+            btnCamera.snp.makeConstraints({ make in
+                make.centerY.equalTo(btnLinkMic)
+                make.width.height.equalTo(icon_size)
+                make.right.equalTo(btnLinkMic.snp.left).offset(-12)
+                make.left.equalTo(logicView.reportBtn.snp.right).offset(12)
+            })
             
             initStatusInfoView(0)
             initStatusInfoView(1)

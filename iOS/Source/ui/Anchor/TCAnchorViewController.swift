@@ -979,7 +979,7 @@ extension TCAnchorViewController: TRTCLiveRoomDelegate {
     public func trtcLiveRoom(_ trtcLiveRoom: TRTCLiveRoom, onCancelRoomPK user: TRTCLiveUserInfo) {
         pkalert?.dismiss(animated: true)
         self.setCurPkRoom(nil)
-        TCUtil.toastTip(liveRoomLocalize("Demo.TRTC.LiveRoom.opponentanchorendpd"), parentView: view)
+        TCUtil.toastTip(liveRoomLocalize("Demo.TRTC.LiveRoom.cancelpk"), parentView: view)
         linkFrameRestore()
     }
     

@@ -18,7 +18,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.blankj.utilcode.util.ToastUtils;
 import com.tencent.liteav.audio.TXAudioEffectManager;
 import com.tencent.liteav.beauty.TXBeautyManager;
 import com.tencent.liteav.liveroom.R;
@@ -28,6 +27,7 @@ import com.tencent.liteav.liveroom.model.TRTCLiveRoomDef;
 import com.tencent.liteav.liveroom.ui.common.utils.TCUtils;
 import com.tencent.liteav.liveroom.ui.widget.feature.FeatureSettingDialog;
 import com.tencent.qcloud.tuicore.TUICore;
+import com.tencent.qcloud.tuicore.util.ToastUtil;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -116,13 +116,13 @@ public class AnchorFunctionView extends FrameLayout implements View.OnClickListe
                                 if (code == 0) {
                                     mPKState = PKState.STOP;
                                     setButtonPKState(mPKState);
-                                    ToastUtils.showShort(getContext()
+                                    ToastUtil.toastShortMessage(getContext()
                                             .getString(R.string.trtcliveroom_tips_accept_link_mic,
                                                     roomInfo.ownerName));
                                 } else {
                                     mPKState = PKState.PK;
                                     setButtonPKState(mPKState);
-                                    ToastUtils.showShort(getContext().getString(
+                                    ToastUtil.toastShortMessage(getContext().getString(
                                             R.string.trtcliveroom_tips_refuse_link_mic,
                                             roomInfo.ownerName));
                                 }

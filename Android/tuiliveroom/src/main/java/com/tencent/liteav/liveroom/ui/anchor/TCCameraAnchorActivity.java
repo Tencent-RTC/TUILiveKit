@@ -27,7 +27,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.constraintlayout.widget.Guideline;
 
-import com.blankj.utilcode.util.ToastUtils;
 import com.tencent.liteav.basic.RTCubeUtils;
 import com.tencent.liteav.basic.UserModel;
 import com.tencent.liteav.basic.UserModelManager;
@@ -46,6 +45,7 @@ import com.tencent.qcloud.tuicore.TUIConstants;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.qcloud.tuicore.interfaces.TUILoginListener;
+import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 
 import java.lang.reflect.Method;
@@ -163,7 +163,11 @@ public class TCCameraAnchorActivity extends Activity implements TRTCLiveRoomDele
         mFunctionView = findViewById(R.id.anchor_function_view);
         mFunctionView.setRoomId(mRoomId + "");
         if (!TextUtils.isEmpty(mSelfName)) {
-            mEditLiveRoomName.setText(getString(R.string.trtcliveroom_create_room_default, mSelfName));
+            String showName = getString(R.string.trtcliveroom_create_room_default, mSelfName);
+            if (showName.getBytes().length > MAX_LEN) {
+                showName = showName.substring(0, MAX_LEN);
+            }
+            mEditLiveRoomName.setText(showName);
         }
         mToolbar = findViewById(R.id.tool_bar_view);
         mPreFunctionView.setListener(new AnchorPreFunctionView.OnPreFunctionClickListener() {
@@ -174,11 +178,11 @@ public class TCCameraAnchorActivity extends Activity implements TRTCLiveRoomDele
                 }
                 String roomName = mEditLiveRoomName.getText().toString().trim();
                 if (TextUtils.isEmpty(roomName)) {
-                    ToastUtils.showLong(getText(R.string.trtcliveroom_warning_room_name_empty));
+                    ToastUtil.toastLongMessage(getString(R.string.trtcliveroom_warning_room_name_empty));
                     return;
                 }
                 if (roomName.getBytes().length > MAX_LEN) {
-                    ToastUtils.showLong(getText(R.string.trtcliveroom_warning_room_name_too_long));
+                    ToastUtil.toastLongMessage(getString(R.string.trtcliveroom_warning_room_name_too_long));
                     return;
                 }
                 InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
@@ -263,7 +267,6 @@ public class TCCameraAnchorActivity extends Activity implements TRTCLiveRoomDele
     protected void onDestroy() {
         super.onDestroy();
 
-        stopTimer();
         finishRoom();
         exitRoom();
 
@@ -275,7 +278,6 @@ public class TCCameraAnchorActivity extends Activity implements TRTCLiveRoomDele
         }
         mFunctionView.stopRecordAnimation();
         mVideoViewMgr.recycleVideoView();
-        mVideoViewMgr = null;
     }
 
 
@@ -317,10 +319,10 @@ public class TCCameraAnchorActivity extends Activity implements TRTCLiveRoomDele
                     mPreFunctionView.setVisibility(GONE);
                     mPreView.setVisibility(GONE);
                     mFunctionView.setVisibility(VISIBLE);
+                    mFunctionView.startRecordAnimation();
+                    mTXCloudVideoView.setVisibility(VISIBLE);
                     freshToolView();
-                    startTimer();
-                    onCreateRoomSuccess();
-                    onTRTCRoomCreateSuccess();
+                    requestMicrophonePermission();
 
                 } else {
                     Log.w(TAG, String.format("创建直播间错误, code=%s,error=%s", code, msg));
@@ -331,7 +333,7 @@ public class TCCameraAnchorActivity extends Activity implements TRTCLiveRoomDele
         });
     }
 
-    private void onTRTCRoomCreateSuccess() {
+    private void notifyBusinessServerCreateRoom() {
         LiveRoomManager.getInstance().createRoom(mRoomId, new LiveRoomManager.ActionCallback() {
             @Override
             public void onSuccess() {
@@ -343,7 +345,7 @@ public class TCCameraAnchorActivity extends Activity implements TRTCLiveRoomDele
                 if (errorCode == ERROR_ROOM_ID_EXIT) {
                     onSuccess();
                 } else {
-                    ToastUtils.showLong("create room failed[" + errorCode + "]:" + message);
+                    ToastUtil.toastLongMessage("create room failed[" + errorCode + "]:" + message);
                     finish();
                 }
             }
@@ -425,21 +427,7 @@ public class TCCameraAnchorActivity extends Activity implements TRTCLiveRoomDele
             });
         }
     }
-
-    private void startTimer() {
-        if (mBroadcastTimer == null) {
-            mBroadcastTimer = new Timer(true);
-            mBroadcastTimerTask = new BroadcastTimerTask();
-            mBroadcastTimer.schedule(mBroadcastTimerTask, 1000, 1000);
-        }
-    }
-
-    private void stopTimer() {
-        if (null != mBroadcastTimer) {
-            mBroadcastTimerTask.cancel();
-        }
-    }
-
+    
     @Override
     public void onError(int code, String message) {
 
@@ -520,6 +508,9 @@ public class TCCameraAnchorActivity extends Activity implements TRTCLiveRoomDele
         if (!mIsEnterRoom) {
             return;
         }
+        if (null != mBroadcastTimer) {
+            mBroadcastTimerTask.cancel();
+        }
         LiveRoomManager.getInstance().destroyRoom(mRoomId, new LiveRoomManager.ActionCallback() {
             @Override
             public void onSuccess() {
@@ -552,13 +543,12 @@ public class TCCameraAnchorActivity extends Activity implements TRTCLiveRoomDele
             public void onTimeEnd() {
                 mCountDownView.setVisibility(GONE);
                 startPush();
+                notifyBusinessServerCreateRoom();
             }
         });
     }
 
-    private void onCreateRoomSuccess() {
-        mFunctionView.startRecordAnimation();
-        mTXCloudVideoView.setVisibility(VISIBLE);
+    private void requestMicrophonePermission() {
         PermissionHelper.requestPermission(TCCameraAnchorActivity.this,
                 PermissionHelper.PERMISSION_MICROPHONE,
                 new PermissionHelper.PermissionCallback() {
@@ -587,6 +577,11 @@ public class TCCameraAnchorActivity extends Activity implements TRTCLiveRoomDele
     }
 
     private void startPush() {
+        if (mBroadcastTimer == null) {
+            mBroadcastTimer = new Timer(true);
+            mBroadcastTimerTask = new BroadcastTimerTask();
+            mBroadcastTimer.schedule(mBroadcastTimerTask, 1000, 1000);
+        }
         mLiveRoom.startPublish(mSelfUserId + "_stream", new TRTCLiveRoomCallback.ActionCallback() {
             @Override
             public void onCallback(int code, String msg) {
@@ -755,7 +750,7 @@ public class TCCameraAnchorActivity extends Activity implements TRTCLiveRoomDele
     @Override
     public void onQuitRoomPK() {
         mFunctionView.setButtonPKState(AnchorFunctionView.PKState.PK);
-        ToastUtils.showShort(R.string.trtcliveroom_tips_quit_pk);
+        ToastUtil.toastShortMessage(getString(R.string.trtcliveroom_tips_quit_pk));
         if (mPKConfirmDialogFragment != null && mPKConfirmDialogFragment.isAdded()) {
             mPKConfirmDialogFragment.dismissAllowingStateLoss();
         }
@@ -881,7 +876,7 @@ public class TCCameraAnchorActivity extends Activity implements TRTCLiveRoomDele
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             mErrorDialog.dismiss();
-                            stopTimer();
+
                             exitRoom();
                             finish();
                         }

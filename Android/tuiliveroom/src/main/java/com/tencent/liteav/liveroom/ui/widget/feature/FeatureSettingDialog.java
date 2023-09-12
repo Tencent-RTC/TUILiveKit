@@ -3,6 +3,7 @@ package com.tencent.liteav.liveroom.ui.widget.feature;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.ArrayRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 
@@ -15,12 +16,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
-import com.blankj.utilcode.util.SizeUtils;
 import com.tencent.liteav.liveroom.R;
 import com.tencent.liteav.liveroom.model.TRTCLiveRoom;
 import com.tencent.liteav.liveroom.ui.widget.settingitem.BaseSettingItem;
 import com.tencent.liteav.liveroom.ui.widget.settingitem.SeekBarSettingItem;
 import com.tencent.liteav.liveroom.ui.widget.settingitem.SelectionSettingItem;
+import com.tencent.qcloud.tuicore.util.ScreenUtil;
 import com.tencent.trtc.TRTCCloudDef;
 
 import java.util.ArrayList;
@@ -36,9 +37,8 @@ public final class FeatureSettingDialog extends BottomSheetDialog {
     private SelectionSettingItem  mVideoFpsItem;
     private SeekBarSettingItem    mBitrateItem;
 
-    private ArrayList<TRTCSettingBitrateTable> paramArray;
-    private int                                mAppScene = TRTCCloudDef.TRTC_APP_SCENE_VIDEOCALL;
-    private int                                mCurRes;
+    private ArrayList<TRTCSettingBitrateTable> mParamsArray;
+    private int                                mCurrentResolution;
     private FeatureConfig                      mFeatureConfig;
     private TRTCLiveRoom                       mTRTCLiveRoom;
 
@@ -49,6 +49,7 @@ public final class FeatureSettingDialog extends BottomSheetDialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.trtcliveroom_fragment_common_setting);
         mTRTCLiveRoom = TRTCLiveRoom.sharedInstance(getContext());
         initData();
         initView();
@@ -58,56 +59,56 @@ public final class FeatureSettingDialog extends BottomSheetDialog {
         mTRTCLiveRoom = trtcLiveRoom;
     }
 
-    public final String getString(@StringRes int resId) {
+    public String getString(@StringRes int resId) {
         return getContext().getResources().getString(resId);
     }
 
+    public String[] getStringArray(@ArrayRes int resId) {
+        return getContext().getResources().getStringArray(resId);
+    }
+
     private void initData() {
-        boolean isVideoCall = mAppScene == TRTCCloudDef.TRTC_APP_SCENE_VIDEOCALL;
-        paramArray = new ArrayList<>();
-        paramArray.add(new TRTCSettingBitrateTable(TRTCCloudDef.TRTC_VIDEO_RESOLUTION_320_180,
-                isVideoCall ? 350 : 350, 80, 350, 10));
-        paramArray.add(new TRTCSettingBitrateTable(TRTCCloudDef.TRTC_VIDEO_RESOLUTION_480_270,
-                isVideoCall ? 500 : 750, 200, 1000, 10));
-        paramArray.add(new TRTCSettingBitrateTable(TRTCCloudDef.TRTC_VIDEO_RESOLUTION_640_360,
-                isVideoCall ? 600 : 900, 200, 1000, 10));
-        paramArray.add(new TRTCSettingBitrateTable(TRTCCloudDef.TRTC_VIDEO_RESOLUTION_960_540,
-                isVideoCall ? 900 : 1350, 400, 1600, 50));
-        paramArray.add(new TRTCSettingBitrateTable(TRTCCloudDef.TRTC_VIDEO_RESOLUTION_1280_720,
-                isVideoCall ? 1250 : 1850, 500, 2000, 50));
+        mParamsArray = new ArrayList<>();
+        mParamsArray.add(new TRTCSettingBitrateTable(TRTCCloudDef.TRTC_VIDEO_RESOLUTION_640_360, 900,
+                600, 1200, 10));
+        mParamsArray.add(new TRTCSettingBitrateTable(TRTCCloudDef.TRTC_VIDEO_RESOLUTION_960_540, 1300,
+                1000, 1600, 50));
+        mParamsArray.add(new TRTCSettingBitrateTable(TRTCCloudDef.TRTC_VIDEO_RESOLUTION_1280_720, 1800,
+                1600, 2100, 50));
+        mParamsArray.add(new TRTCSettingBitrateTable(TRTCCloudDef.TRTC_VIDEO_RESOLUTION_1920_1080, 3500,
+                2100, 3800, 50));
+
+        mFeatureConfig = FeatureConfig.getInstance();
     }
 
 
     private void initView() {
+        ;
+        mBitrateItem = new SeekBarSettingItem(getContext(),
+                new BaseSettingItem.ItemText(getString(R.string.trtcliveroom_title_bitrate), ""),
+                new SeekBarSettingItem.Listener() {
+                    @Override
+                    public void onSeekBarChange(int progress, boolean fromUser) {
+                        int bitrate = getBitrate(progress, mCurrentResolution);
+                        mBitrateItem.setTips(bitrate + "kbps");
+                        if (bitrate != mFeatureConfig.getVideoBitrate()) {
+                            mFeatureConfig.setVideoBitrate(bitrate);
+                            mTRTCLiveRoom.setVideoBitrate(bitrate);
+                        }
+                    }
+                }).setProgress(getBitrateProgress(mFeatureConfig.getVideoBitrate(),
+                getResolutionPos(mFeatureConfig.getVideoResolution())));
+        mBitrateItem.setTips(getBitrate(mFeatureConfig.getVideoBitrate(), mCurrentResolution) + "kbps");
 
-        setContentView(R.layout.trtcliveroom_fragment_common_setting);
-
-        LinearLayout llContent = findViewById(R.id.item_content);
-
-        mFeatureConfig = FeatureConfig.getInstance();
-        BaseSettingItem.ItemText itemText = new BaseSettingItem
-                .ItemText(getString(R.string.trtcliveroom_title_bitrate), "");
-        mBitrateItem = new SeekBarSettingItem(getContext(), itemText, new SeekBarSettingItem.Listener() {
-            @Override
-            public void onSeekBarChange(int progress, boolean fromUser) {
-                int bitrate = getBitrate(progress, mCurRes);
-                mBitrateItem.setTips(bitrate + "kbps");
-                if (bitrate != mFeatureConfig.getVideoBitrate()) {
-                    mFeatureConfig.setVideoBitrate(bitrate);
-                    mTRTCLiveRoom.setVideoBitrate(bitrate);
-                }
-            }
-        });
-
-        mCurRes = getResolutionPos(mFeatureConfig.getVideoResolution());
-        itemText = new BaseSettingItem.ItemText(getString(R.string.trtcliveroom_title_resolution), getContext()
-                .getResources().getStringArray(R.array.solution));
-        mResolutionItem = new SelectionSettingItem(getContext(), itemText,
+        mCurrentResolution = getResolutionPos(mFeatureConfig.getVideoResolution());
+        mResolutionItem = new SelectionSettingItem(getContext(),
+                new BaseSettingItem.ItemText(getString(R.string.trtcliveroom_title_resolution),
+                        getStringArray(R.array.solution)),
                 new SelectionSettingItem.Listener() {
                     @Override
                     public void onItemSelected(int position, String text) {
-                        mCurRes = position;
-                        updateSolution(mCurRes);
+                        mCurrentResolution = position;
+                        updateSolution(mCurrentResolution);
                         int resolution = getResolution(position);
                         if (resolution != mFeatureConfig.getVideoResolution()) {
                             mFeatureConfig.setVideoResolution(resolution);
@@ -115,13 +116,11 @@ public final class FeatureSettingDialog extends BottomSheetDialog {
                         }
                     }
                 }
-        ).setSelect(mCurRes);
-        mTRTCLiveRoom.setVideoResolution(getResolution(mCurRes));
-        mSettingItemList.add(mResolutionItem);
+        ).setSelect(getResolutionPos(mFeatureConfig.getVideoResolution()));
 
-        itemText = new BaseSettingItem.ItemText(getString(R.string.trtcliveroom_title_frame_rate), getContext()
-                .getResources().getStringArray(R.array.video_fps));
-        mVideoFpsItem = new SelectionSettingItem(getContext(), itemText,
+        mVideoFpsItem = new SelectionSettingItem(getContext(),
+                new BaseSettingItem.ItemText(getString(R.string.trtcliveroom_title_frame_rate),
+                        getStringArray(R.array.video_fps)),
                 new SelectionSettingItem.Listener() {
                     @Override
                     public void onItemSelected(int position, String text) {
@@ -133,22 +132,19 @@ public final class FeatureSettingDialog extends BottomSheetDialog {
                     }
                 }
         ).setSelect(getFpsPos(mFeatureConfig.getVideoFps()));
-        mTRTCLiveRoom.setVideoFps(getFps(mVideoFpsItem.getSelected()));
-        mSettingItemList.add(mVideoFpsItem);
 
-        updateSolution(mCurRes);
-        mBitrateItem.setProgress(getBitrateProgress(mFeatureConfig.getVideoBitrate(), mCurRes));
-        mBitrateItem.setTips(getBitrate(mFeatureConfig.getVideoBitrate(), mCurRes) + "kbps");
-        mTRTCLiveRoom.setVideoBitrate(getBitrate(mFeatureConfig.getVideoBitrate(), mCurRes));
+        mSettingItemList.add(mResolutionItem);
+        mSettingItemList.add(mVideoFpsItem);
         mSettingItemList.add(mBitrateItem);
 
+        LinearLayout layout = findViewById(R.id.item_content);
         for (BaseSettingItem item : mSettingItemList) {
             View view = item.getView();
-            view.setPadding(0, SizeUtils.dp2px(12), 0, SizeUtils.dp2px(12));
-            llContent.addView(view);
+            view.setPadding(0, ScreenUtil.dip2px(12), 0, ScreenUtil.dip2px(12));
+            layout.addView(view);
         }
 
-        final View bottomSheet = getWindow().getDecorView().findViewById(R.id.design_bottom_sheet);
+        View bottomSheet = getWindow().getDecorView().findViewById(R.id.design_bottom_sheet);
         bottomSheet.setBackgroundResource(R.drawable.trtcliveroom_bg_bottom_dialog);
     }
 
@@ -180,27 +176,28 @@ public final class FeatureSettingDialog extends BottomSheetDialog {
     }
 
     private int getResolutionPos(int resolution) {
-        for (int i = 0; i < paramArray.size(); i++) {
-            if (resolution == (paramArray.get(i).resolution)) {
+        for (int i = 0; i < mParamsArray.size(); i++) {
+            if (resolution == (mParamsArray.get(i).resolution)) {
                 return i;
             }
         }
-        return 4;
+        return 3;
     }
 
     private int getResolution(int pos) {
-        if (pos >= 0 && pos < paramArray.size()) {
-            return paramArray.get(pos).resolution;
+        if (pos >= 0 && pos < mParamsArray.size()) {
+            return mParamsArray.get(pos).resolution;
         }
         return TRTCCloudDef.TRTC_VIDEO_RESOLUTION_640_360;
     }
 
     private int getFpsPos(int fps) {
         switch (fps) {
-            case 15:
-                return 0;
+            case 24:
+                return 2;
             case 20:
                 return 1;
+            case 15:
             default:
                 return 0;
         }
@@ -208,60 +205,54 @@ public final class FeatureSettingDialog extends BottomSheetDialog {
 
     private int getFps(int pos) {
         switch (pos) {
-            case 0:
-                return 15;
+            case 2:
+                return 24;
             case 1:
                 return 20;
+            case 0:
             default:
                 return 15;
         }
     }
 
-    private int getMinBitrate(int pos) {
-        if (pos >= 0 && pos < paramArray.size()) {
-            return paramArray.get(pos).minBitrate;
+    private int getDefBitrate(int pos) {
+        if (pos >= 0 && pos < mParamsArray.size()) {
+            return mParamsArray.get(pos).defaultBitrate;
         }
-        return 300;
+        return 3500;
+    }
+
+    private int getMinBitrate(int pos) {
+        if (pos >= 0 && pos < mParamsArray.size()) {
+            return mParamsArray.get(pos).minBitrate;
+        }
+        return 2100;
     }
 
     private int getMaxBitrate(int pos) {
-        if (pos >= 0 && pos < paramArray.size()) {
-            return paramArray.get(pos).maxBitrate;
+        if (pos >= 0 && pos < mParamsArray.size()) {
+            return mParamsArray.get(pos).maxBitrate;
         }
-        return 1000;
-    }
-
-    private int getDefBitrate(int pos) {
-        if (pos >= 0 && pos < paramArray.size()) {
-            return paramArray.get(pos).defaultBitrate;
-        }
-        return 400;
+        return 3800;
     }
 
     private int getStepBitrate(int pos) {
-        if (pos >= 0 && pos < paramArray.size()) {
-            return paramArray.get(pos).step;
+        if (pos >= 0 && pos < mParamsArray.size()) {
+            return mParamsArray.get(pos).step;
         }
-        return 10;
+        return 24;
     }
 
-    private int getBitrateProgress(int bitrate, int pos) {
-        int minBitrate = getMinBitrate(pos);
-        int stepBitrate = getStepBitrate(pos);
-
-        int progress = (bitrate - minBitrate) / stepBitrate;
-        Log.i(TAG, "getBitrateProgress->progress: " + progress + ", min: "
-                + minBitrate + ", stepBitrate: " + stepBitrate + "/" + bitrate);
-        return progress;
+    private int getBitrateProgress(int bitrate, int resolutionPos) {
+        int minBitrate = getMinBitrate(resolutionPos);
+        int stepBitrate = getStepBitrate(resolutionPos);
+        return (bitrate - minBitrate) / stepBitrate;
     }
 
-    private int getBitrate(int progress, int pos) {
-        int minBitrate = getMinBitrate(pos);
-        int maxBitrate = getMaxBitrate(pos);
-        int stepBitrate = getStepBitrate(pos);
-        int bit = (progress * stepBitrate) + minBitrate;
-        Log.i(TAG, "getBitrate->bit: " + bit + ", min: " + minBitrate + ", max: " + maxBitrate);
-        return bit;
+    private int getBitrate(int progress, int resolutionPos) {
+        int minBitrate = getMinBitrate(resolutionPos);
+        int stepBitrate = getStepBitrate(resolutionPos);
+        return (progress * stepBitrate) + minBitrate;
     }
 
     static class TRTCSettingBitrateTable {
