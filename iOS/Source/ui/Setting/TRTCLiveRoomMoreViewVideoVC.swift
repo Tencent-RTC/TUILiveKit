@@ -86,20 +86,24 @@ class TRTCLiveRoomMoreViewVideoVC: UIViewController, UIPickerViewDelegate, UIPic
         return label
     }()
 
-    let frameArray = ["15", "20"]
+    let frameArray = ["15", "20", "24"]
 
     let bitrateTable = [TRTCLiveRoomBitrateTable](
         arrayLiteral:
-        TRTCLiveRoomBitrateTable(resolutionName: "180 * 320", resolution: TRTCVideoResolution._320_180.rawValue, defaultBitrate: 350, minBitrate: 80, maxBitrate: 350, stepBitrate: 10),
-        TRTCLiveRoomBitrateTable(resolutionName: "270 * 480", resolution: TRTCVideoResolution._480_270.rawValue, defaultBitrate: 500, minBitrate: 200, maxBitrate: 1000, stepBitrate: 10),
-        TRTCLiveRoomBitrateTable(resolutionName: "360 * 640", resolution: TRTCVideoResolution._640_360.rawValue, defaultBitrate: 600, minBitrate: 200, maxBitrate: 1000, stepBitrate: 10),
-        TRTCLiveRoomBitrateTable(resolutionName: "540 * 960", resolution: TRTCVideoResolution._960_540.rawValue, defaultBitrate: 900, minBitrate: 400, maxBitrate: 1600, stepBitrate: 50),
-        TRTCLiveRoomBitrateTable(resolutionName: "720 * 1280", resolution: TRTCVideoResolution._1280_720.rawValue, defaultBitrate: 1750, minBitrate: 500, maxBitrate: 2000, stepBitrate: 50)
+        TRTCLiveRoomBitrateTable(resolutionName: "360 * 640", resolution: TRTCVideoResolution._640_360.rawValue,
+                                 defaultBitrate: 900, minBitrate: 600, maxBitrate: 1200, stepBitrate: 10),
+        TRTCLiveRoomBitrateTable(resolutionName: "540 * 960", resolution: TRTCVideoResolution._960_540.rawValue,
+                                 defaultBitrate: 1300, minBitrate: 1000, maxBitrate: 1600, stepBitrate: 50),
+        TRTCLiveRoomBitrateTable(resolutionName: "720 * 1280", resolution: TRTCVideoResolution._1280_720.rawValue,
+                                 defaultBitrate: 1_800, minBitrate: 1_600, maxBitrate: 2_100, stepBitrate: 50),
+        TRTCLiveRoomBitrateTable(resolutionName: "1080 * 1920", resolution: TRTCVideoResolution._1920_1080.rawValue,
+                                 defaultBitrate: 3_500, minBitrate: 2_100, maxBitrate: 3_800, stepBitrate: 50)
     )
-    var bitrateIndex = 4
+    var bitrateIndex = 3
 
     lazy var bitrateSlider: UISlider = {
-        let slider = UISlider(frame: CGRect(x: UIScreen.main.bounds.size.width / 7.0 * 2.5 - 8, y: 126, width: UIScreen.main.bounds.size.width / 2.0 * 0.8, height: 30))
+        let slider = UISlider(frame: CGRect(x: UIScreen.main.bounds.size.width / 7.0 * 2.5 - 8, y: 126,
+                                            width: UIScreen.main.bounds.size.width / 2.0 * 0.8, height: 30))
 
         let item = bitrateTable[bitrateIndex]
         slider.minimumValue = item.minBitrate / item.stepBitrate
@@ -112,7 +116,8 @@ class TRTCLiveRoomMoreViewVideoVC: UIViewController, UIPickerViewDelegate, UIPic
     }()
 
     lazy var bitrateShowLabel: UILabel = {
-        let label = UILabel(frame: CGRect(x: UIScreen.main.bounds.size.width / 7.0 * 5.5, y: 130, width: 100, height: 20))
+        let label = UILabel(frame: CGRect(x: UIScreen.main.bounds.size.width / 7.0 * 5.5, y: 130,
+                                          width: 100, height: 20))
         label.textAlignment = NSTextAlignment.left
         label.textColor = .black
         label.font = UIFont.systemFont(ofSize: 18)
@@ -135,7 +140,7 @@ class TRTCLiveRoomMoreViewVideoVC: UIViewController, UIPickerViewDelegate, UIPic
         updateBitrate(bitrate: Int(slider.value * bitrateTable[bitrateIndex].stepBitrate))
     }
 
-    var frameIndex = 0
+    var frameIndex = 2
 
     @objc func resolutionDidClick() {
         guard let window = getKeyWindow() else {
@@ -161,10 +166,14 @@ class TRTCLiveRoomMoreViewVideoVC: UIViewController, UIPickerViewDelegate, UIPic
         guard let window = getKeyWindow() else {
             return
         }
-
+        
         let dataSource = [
-            TRTCLiveRoomBitrateTable(resolutionName: "15", resolution: TRTCVideoResolution._320_180.rawValue, defaultBitrate: 350, minBitrate: 80, maxBitrate: 350, stepBitrate: 10),
-            TRTCLiveRoomBitrateTable(resolutionName: "20", resolution: TRTCVideoResolution._480_270.rawValue, defaultBitrate: 500, minBitrate: 200, maxBitrate: 1000, stepBitrate: 10),
+            TRTCLiveRoomBitrateTable(resolutionName: frameArray[0], resolution: 0,
+                                     defaultBitrate: 0, minBitrate: 0, maxBitrate: 0, stepBitrate: 0),
+            TRTCLiveRoomBitrateTable(resolutionName: frameArray[1], resolution: 0,
+                                     defaultBitrate: 0, minBitrate: 0, maxBitrate: 0, stepBitrate: 0),
+            TRTCLiveRoomBitrateTable(resolutionName: frameArray[2], resolution: 0,
+                                     defaultBitrate: 0, minBitrate: 0, maxBitrate: 0, stepBitrate: 0),
         ]
 
         let alert = TRTCLiveRoomResolutionAlert()
@@ -213,7 +222,7 @@ class TRTCLiveRoomMoreViewVideoVC: UIViewController, UIPickerViewDelegate, UIPic
 
         fpsTextField.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(frameDidClick)))
 
-        fpsTextField.text = frameArray[0]
+        fpsTextField.text = frameArray[2]
 
         fpsTextField.backgroundColor = .clear
         fpsTextField.textAlignment = .left

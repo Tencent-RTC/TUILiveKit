@@ -10,7 +10,7 @@
 "Demo.TRTC.LiveRoom.confirm" = "OK";
 "Demo.TRTC.LiveRoom.subCancel" = "Cancel";
 "Demo.TRTC.LiveRoom.subConfirm" = "OK";
-"Demo.TRTC.LiveRoom.opponentanchorendpd" = "The other anchor ended the competition.";
+"Demo.TRTC.LiveRoom.cancelpk" = "The other anchor has cancelled the PK";
 "Demo.TRTC.LiveRoom.invite" = "Invite";
 "Demo.TRTC.LiveRoom.invitepk" = "Invite to Compete";
 "Demo.TRTC.LiveRoom.loading" = "Loading...";

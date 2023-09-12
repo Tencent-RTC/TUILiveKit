@@ -1,6 +1,7 @@
 package com.tencent.liteav.liveroom.ui.widget.settingitem;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -11,8 +12,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.blankj.utilcode.util.SizeUtils;
 import com.tencent.liteav.liveroom.R;
+import com.tencent.qcloud.tuicore.util.ScreenUtil;
 
 import java.util.List;
 
@@ -74,8 +75,8 @@ public class SingleRadioButtonDialog extends BottomSheetDialog {
 
     private RadioButton createRadioButton(String text) {
         RadioButton radioButton = new RadioButton(mContext);
-        radioButton.setPadding(SizeUtils.dp2px(20), SizeUtils.dp2px(12),
-                SizeUtils.dp2px(20), SizeUtils.dp2px(12));
+        radioButton.setPadding(ScreenUtil.dip2px(20), ScreenUtil.dip2px(12),
+                ScreenUtil.dip2px(20), ScreenUtil.dip2px(12));
         radioButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         radioButton.setTextColor(mContext.getResources().getColor(R.color.trtcliveroom_color_second_text));
         radioButton.setText(text);
@@ -88,7 +89,7 @@ public class SingleRadioButtonDialog extends BottomSheetDialog {
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         Drawable drawable = mContext.getResources().getDrawable(R.drawable.trtcliveroom_bg_rb_icon_selector);
-        drawable.setBounds(0, 0, SizeUtils.dp2px(24), SizeUtils.dp2px(24));
+        drawable.setBounds(0, 0, ScreenUtil.dip2px(24), ScreenUtil.dip2px(24));
         rb.setCompoundDrawables(null, null, drawable, null);
         rb.setLayoutParams(layoutParams);
     }

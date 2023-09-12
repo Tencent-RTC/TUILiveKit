@@ -175,9 +175,9 @@ public class TXTRTCLiveRoom extends TRTCCloudListener implements ITRTCTXLiveRoom
         } else if (mOriginRole == TRTCCloudDef.TRTCRoleAnchor) {
             // An audience member can be switched to a secondary anchor. Set the resolution for the secondary anchor
             TRTCCloudDef.TRTCVideoEncParam param = new TRTCCloudDef.TRTCVideoEncParam();
-            param.videoResolution = TRTCCloudDef.TRTC_VIDEO_RESOLUTION_1280_720;
-            param.videoBitrate = 1800;
-            param.videoFps = 15;
+            param.videoResolution = TRTCCloudDef.TRTC_VIDEO_RESOLUTION_1920_1080;
+            param.videoBitrate = 3500;
+            param.videoFps = 24;
             param.enableAdjustRes = true;
             param.videoResolutionMode = TRTCCloudDef.TRTC_VIDEO_RESOLUTION_MODE_PORTRAIT;
             mTRTCCloud.setVideoEncoderParam(param);

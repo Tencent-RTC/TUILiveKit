@@ -140,14 +140,14 @@ public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldD
         let iconCenterInterval = (width - 2 * startSpace - CGFloat(iconSize)) / (iconCount - 1)
         let firstIconCenterX = startSpace + CGFloat(iconSize / 2)
         
-        btnChat.center = CGPoint(x: firstIconCenterX + iconSize / 2.0, y: iconCenterY)
+        btnChat.center = CGPoint(x: firstIconCenterX, y: iconCenterY)
         btnChat.bounds = CGRect(x: 0, y: 0, width: iconSize, height: iconSize)
         btnChat.setBackgroundImage(UIImage(named: "comment", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
         btnChat.addTarget(self, action: #selector(clickChat(_:)), for: .touchUpInside)
         addSubview(btnChat)
         closeBtn.snp.makeConstraints {  make in
             make.centerY.equalTo(btnChat.snp.centerY)
-            make.right.equalTo(self).offset(-iconCenterInterval * 0.7)
+            make.right.equalTo(self).offset(-startSpace)
             make.width.height.equalTo(iconSize)
         }
 

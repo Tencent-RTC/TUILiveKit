@@ -92,9 +92,9 @@ static double trtcLiveCheckStatusTimeOut = 3;
     self = [super init];
     if (self) {
         self.memberManager.delegate = self;
-        self.videoResolution = TRTCVideoResolution_1280_720;
-        self.videoFPS = 15;
-        self.videoBitrate = 1280;
+        self.videoResolution = TRTCVideoResolution_1920_1080;
+        self.videoFPS = 24;
+        self.videoBitrate = 3500;
     }
     return self;
 }
