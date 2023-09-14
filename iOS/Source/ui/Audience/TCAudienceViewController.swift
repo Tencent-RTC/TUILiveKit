@@ -281,7 +281,6 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
                 make.centerY.equalTo(btnLinkMic)
                 make.width.height.equalTo(icon_size)
                 make.right.equalTo(btnLinkMic.snp.left).offset(-12)
-                make.left.equalTo(logicView.reportBtn.snp.right).offset(12)
             })
             
             initStatusInfoView(0)
