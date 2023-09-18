@@ -285,9 +285,6 @@
 
 // 控制音乐升降调
 - (void)audioEffectControlWithModel:(TUIAudioEffectModel *)model musicRiseFallChanged:(double)value {
-    if (!_effectModel.selectBGMModel) {
-        return;
-    }
     LOGD("[TUIAudioEffect] musicRiseFallChanged: %@", @(value));
     [_audioEffectManager setMusicPitch:model.selectBGMModel.ID pitch:value];
     _effectModel.musicRiseFallValue = value;
@@ -295,9 +292,6 @@
 
 // 控制音乐音量
 - (void)audioEffectControlWithModel:(TUIAudioEffectModel *)model musicVolumeChanged:(NSInteger)value {
-    if (!_effectModel.selectBGMModel) {
-        return;
-    }
     LOGD("[TUIAudioEffect] musicVolumeChanged: %@", @(value));
     [_audioEffectManager setMusicPlayoutVolume:_effectModel.selectBGMModel.ID volume:value];
     [_audioEffectManager setMusicPublishVolume:_effectModel.selectBGMModel.ID volume:value];

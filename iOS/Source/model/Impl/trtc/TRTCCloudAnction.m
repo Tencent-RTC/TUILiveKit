@@ -100,7 +100,7 @@ static const int TC_TRTC_FRAMEWORK     = 1;
 @property (nonatomic, copy) NSString *userSig;
 
 @property (nonatomic, assign) BOOL isEnterRoom;
-
+@property (nonatomic, strong) TRTCTranscodingConfig *mixConfig;
 @end
 
 @implementation TRTCCloudAnction
@@ -121,6 +121,22 @@ static const int TC_TRTC_FRAMEWORK     = 1;
 
 - (TXBeautyManager *)beautyManager {
     return [[TRTCCloud sharedInstance] getBeautyManager];
+}
+
+- (TRTCTranscodingConfig *)mixConfig {
+    if (!_mixConfig) {
+        _mixConfig = [[TRTCTranscodingConfig alloc] init];
+        _mixConfig.appId = self.sdkAppId;
+        _mixConfig.videoWidth = 1080;
+        _mixConfig.videoHeight = 1920;
+        _mixConfig.videoBitrate    = 3500;
+        _mixConfig.videoFramerate  = 30;
+        _mixConfig.videoGOP        = 2;
+        _mixConfig.audioSampleRate = 48000;
+        _mixConfig.audioBitrate    = 64;
+        _mixConfig.audioChannels   = 2;
+    }
+    return _mixConfig;
 }
 
 #pragma mark - Public method
@@ -327,7 +343,7 @@ static const int TC_TRTC_FRAMEWORK     = 1;
     [[TRTCCloud sharedInstance] connectOtherRoom:[dic mj_JSONString]];
 }
 
-- (void)updateMixingParams:(BOOL)shouldMix {
+- (void)updateMixingParams:(BOOL)shouldMix isRoomPK:(BOOL)isRoomPK {
     if (!self.userId) {
         return;
     }
@@ -335,41 +351,47 @@ static const int TC_TRTC_FRAMEWORK     = 1;
         [[TRTCCloud sharedInstance] setMixTranscodingConfig:nil];
         return;
     }
-    TRTCTranscodingConfig *config = [[TRTCTranscodingConfig alloc] init];
-    config.appId = self.sdkAppId;
-    config.videoWidth = 544;
-    config.videoHeight = 960;
-    config.videoGOP = 1;
-    config.videoFramerate = 15;
-    config.videoBitrate = 1000;
-    config.audioSampleRate = 48000;
-    config.audioBitrate = 64;
-    config.audioChannels = 1;
+ 
     NSMutableArray *users = [[NSMutableArray alloc] initWithCapacity:2];
     __block int index = 0;
     TRTCMixUser *me = [[TRTCMixUser alloc] init];
     me.userId = self.userId;
     me.zOrder = index;
+    if (isRoomPK) {
+        me.rect = CGRectMake(0, 0, self.mixConfig.videoWidth*0.5, self.mixConfig.videoHeight*0.5);
+    } else {
+        me.rect = CGRectMake(0, 0, self.mixConfig.videoWidth, self.mixConfig.videoHeight);
+    }
+    
+    me.roomID = self.roomId;
     [users addObject:me];
     [self.userPlayInfo enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, PlayInfo * _Nonnull obj, BOOL * _Nonnull stop) {
         index += 1;
         TRTCMixUser *user = [[TRTCMixUser alloc] init];
         user.userId = key;
         user.zOrder = index;
-        user.rect = [self rectWithIndex:index width:160 height:288 padding:10];
+        user.rect = [self mixRect:obj.videoView.frame isRoomPK:isRoomPK index:index];
         user.roomID = obj.roomId;
         [users addObject:user];
     }];
-    config.mixUsers = users;
-    [[TRTCCloud sharedInstance] setMixTranscodingConfig:config];
+    self.mixConfig.mixUsers = users;
+    [[TRTCCloud sharedInstance] setMixTranscodingConfig:self.mixConfig];
 }
 
-- (CGRect)rectWithIndex:(int)index width:(CGFloat)width height:(CGFloat)height padding:(CGFloat)padding {
-    CGFloat subWidth = (width - padding * 2) / 3;
-    CGFloat subHeight = (height - padding * 2) / 3;
-    CGFloat x = (9 - index) % 3 * (subWidth + padding);
-    CGFloat y = (9 - index) % 3 * (subHeight + padding);
-    return CGRectMake(x, y, subWidth, subHeight);
+
+- (CGRect)mixRect:(CGRect)userFrame isRoomPK:(BOOL)isRoomPK index:(int)index {
+    if (isRoomPK) {
+        CGSize size = CGSizeMake(self.mixConfig.videoWidth*0.5, self.mixConfig.videoHeight*0.5);
+        return CGRectMake(size.width*(index%2), size.height*(index/2), size.width, size.height);
+    } else {
+        CGSize mainScreenSize =  UIScreen.mainScreen.bounds.size;
+        CGFloat scaleWidth = self.mixConfig.videoWidth/mainScreenSize.width;
+        CGFloat scaleHeight = self.mixConfig.videoHeight/mainScreenSize.height;
+        return CGRectMake(userFrame.origin.x*scaleWidth,
+                          userFrame.origin.y*scaleHeight,
+                          userFrame.size.width*scaleWidth,
+                          userFrame.size.height*scaleHeight);
+    }
 }
 
 - (NSString *)cdnUrlForUser:(NSString *)userId roomId:(NSString *)roomId {

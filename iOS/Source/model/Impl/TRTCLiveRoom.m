@@ -95,6 +95,10 @@ static double trtcLiveCheckStatusTimeOut = 3;
         self.videoResolution = TRTCVideoResolution_1920_1080;
         self.videoFPS = 24;
         self.videoBitrate = 3500;
+        
+        // 默认混流开启
+        self.mixingPKStream = true;
+        self.mixingLinkMicStream = true;
     }
     return self;
 }
@@ -987,7 +991,7 @@ static double trtcLiveCheckStatusTimeOut = 3;
         if ([self canDelegateResponseMethod:@selector(trtcLiveRoom:onAnchorEnter:)]) {
             [self.delegate trtcLiveRoom:self onAnchorEnter:userId];
         }
-        [self.trtcAction updateMixingParams:self.shouldMixStream];
+        [self.trtcAction updateMixingParams:self.shouldMixStream isRoomPK:self.status == TRTCLiveRoomLiveStatusRoomPK];
     } else {
         if (!self.memberManager.anchors[userId]) {
             [self addTempAnchor:userId];
@@ -1021,7 +1025,7 @@ static double trtcLiveCheckStatusTimeOut = 3;
         [self.delegate trtcLiveRoom:self onAnchorExit:userId];
     }
     if (self.isOwner) {
-        [self.trtcAction updateMixingParams:self.shouldMixStream];
+        [self.trtcAction updateMixingParams:self.shouldMixStream isRoomPK:self.status == TRTCLiveRoomLiveStatusRoomPK];
     }
 }
 

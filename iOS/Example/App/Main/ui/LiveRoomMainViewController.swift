@@ -47,10 +47,16 @@ extension LiveRoomMainViewController {
         titleView.frame = CGRect(origin:CGPoint.zero, size:CGSize(width: width, height: 500))
         self.navigationItem.titleView = titleView
         
+        let recognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPressTitle(longPress:)))
+        recognizer.minimumPressDuration = 2
+        titleView.isUserInteractionEnabled = true
+        titleView.addGestureRecognizer(recognizer)
+        
+        
         let isCdnMode = ((UserDefaults.standard.object(forKey: "liveRoomConfig_useCDNFirst") as? Bool) ?? false)
         let rightCDN = UIBarButtonItem()
         if isCdnMode {
-            rightCDN.title = "CDN模式"
+            rightCDN.title = TRTCLiveRoomLocalize("Demo.TRTC.LiveRoom.cdn")
         } else {
             rightCDN.title = ""
         }
@@ -117,6 +123,31 @@ extension LiveRoomMainViewController: LiveRoomMainRootViewDelegate {
         TUILiveRoom.sharedInstance.createRoom(roomId: roomID, roomName: "test room")
     }
     
+    @objc private func longPressTitle(longPress: UILongPressGestureRecognizer) {
+        if longPress.state == .began {
+            let isCdnMode = ((UserDefaults.standard.object(forKey: "liveRoomConfig_useCDNFirst") as? Bool) ?? false)
+            let newMode = isCdnMode ? "TRTC" : "CDN"
+            let alert = UIAlertController(title: localizeReplaceXX(TRTCLiveRoomLocalize("Demo.TRTC.LiveRoom.switchto"), newMode),
+                                          message: nil, preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: TRTCLiveRoomLocalize("Demo.TRTC.LiveRoom.cancel"), style: .cancel) { (ok) in
+                
+            }
+            let okAction = UIAlertAction(title: TRTCLiveRoomLocalize("Demo.TRTC.LiveRoom.confirm"), style: .default) { (ok) in
+                if isCdnMode { //cdn 切 trtc
+                    UserDefaults.standard.set(false, forKey: "liveRoomConfig_useCDNFirst")
+                    UserDefaults.standard.set(nil, forKey: "liveRoomConfig_cndPlayDomain")
+                } else { //trtc 切 cdn
+                    UserDefaults.standard.set(true, forKey: "liveRoomConfig_useCDNFirst")
+                    //此处设置您的 CDN 推流地址
+                    UserDefaults.standard.set("http://3891.liveplay.myqcloud.com/live", forKey: "liveRoomConfig_cndPlayDomain")
+                }
+                self.view.makeToast("\(newMode)mode \(TRTCLiveRoomLocalize("Demo.TRTC.LiveRoom.restarttotakeeffect"))")
+            }
+            alert.addAction(cancelAction)
+            alert.addAction(okAction)
+            present(alert, animated: true, completion: nil)
+        }
+    }
 }
 
 extension String {

@@ -6,7 +6,7 @@
 //  Copyright © 2022 Tencent. All rights reserved.
 //
 
-import TXAppBasic
+import TUIKitCommon
 import UIKit
 
 class TRTCLiveRoomBitrateTable: NSObject {
@@ -95,9 +95,9 @@ class TRTCLiveRoomMoreViewVideoVC: UIViewController, UIPickerViewDelegate, UIPic
         TRTCLiveRoomBitrateTable(resolutionName: "540 * 960", resolution: TRTCVideoResolution._960_540.rawValue,
                                  defaultBitrate: 1300, minBitrate: 1000, maxBitrate: 1600, stepBitrate: 50),
         TRTCLiveRoomBitrateTable(resolutionName: "720 * 1280", resolution: TRTCVideoResolution._1280_720.rawValue,
-                                 defaultBitrate: 1_800, minBitrate: 1_600, maxBitrate: 2_100, stepBitrate: 50),
+                                 defaultBitrate: 1800, minBitrate: 1600, maxBitrate: 2100, stepBitrate: 50),
         TRTCLiveRoomBitrateTable(resolutionName: "1080 * 1920", resolution: TRTCVideoResolution._1920_1080.rawValue,
-                                 defaultBitrate: 3_500, minBitrate: 2_100, maxBitrate: 3_800, stepBitrate: 50)
+                                 defaultBitrate: 3500, minBitrate: 2100, maxBitrate: 3800, stepBitrate: 50)
     )
     var bitrateIndex = 3
 

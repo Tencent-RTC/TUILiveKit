@@ -74,7 +74,10 @@ public class TUILiveRoom: NSObject {
         }
         let sdkAppID = Int32(TUILogin.getSdkAppID())
         let roomConfig = TRTCLiveRoomConfig()
-        TUILiveRoomProfileManager.sharedManager().setProfileInfo(SDKAPPID: sdkAppID, avatar: (TUILogin.getFaceUrl() ?? ""), userId: userId, name: (TUILogin.getNickName() ?? ""))
+        TUILiveRoomProfileManager.sharedManager().setProfileInfo(SDKAPPID: sdkAppID,
+                                                                 avatar: (TUILogin.getFaceUrl() ?? ""),
+                                                                 userId: userId,
+                                                                 name: (TUILogin.getNickName() ?? ""))
         liveRoom.login(sdkAppID: sdkAppID, userID: userId, userSig: userSig, config: roomConfig) { [weak self] (code, msg) in
             guard let self = self else { return }
             if code == 0 {
@@ -114,7 +117,16 @@ public class TUILiveRoom: NSObject {
         }
         let sdkAppID = Int32(TUILogin.getSdkAppID())
         let roomConfig = TRTCLiveRoomConfig()
-        TUILiveRoomProfileManager.sharedManager().setProfileInfo(SDKAPPID: sdkAppID, avatar: (TUILogin.getFaceUrl() ?? ""), userId: userId, name: (TUILogin.getNickName() ?? ""))
+        let isCdnMode = ((UserDefaults.standard.object(forKey: "liveRoomConfig_useCDNFirst") as? Bool) ?? false)
+        if isCdnMode { //cdn 切 trtc
+            roomConfig.cdnPlayDomain = ((UserDefaults.standard.object(forKey: "liveRoomConfig_cndPlayDomain") as? String) ?? "")
+            roomConfig.useCDNFirst = true
+        }
+        
+        TUILiveRoomProfileManager.sharedManager().setProfileInfo(SDKAPPID: sdkAppID,
+                                                                 avatar: (TUILogin.getFaceUrl() ?? ""),
+                                                                 userId: userId,
+                                                                 name: (TUILogin.getNickName() ?? ""))
         liveRoom.login(sdkAppID: sdkAppID, userID: userId, userSig: userSig, config: roomConfig) { [weak self] (code, msg) in
             guard let self = self else { return }
             if code == 0 {

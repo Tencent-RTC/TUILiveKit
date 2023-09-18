@@ -13,10 +13,13 @@ protocol TCAudienceToolbarDelegate: NSObjectProtocol {
     func clickLog()
     func clickLike()
     func clickChat()
+    func clickLinkMic()
+    func clickCamera()
     func onSeek(_ slider: UISlider?)
     func onSeekBegin(_ slider: UISlider?)
     func onDrag(_ slider: UISlider?)
     func onRecvGroupDeleteMsg()
+    func getGiftButton() -> UIButton?
 }
 
 /// TCAudienceToolbarView
@@ -27,20 +30,67 @@ public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldD
     var playProgress: UISlider = UISlider()
     var playLabel: UILabel = UILabel()
     var playBtn: UIButton = UIButton(type: .custom)
-    var closeBtn: UIButton = UIButton(type: .custom)
-    var btnChat: UIButton = UIButton(type: .custom)
+    //top Btn
+    lazy var closeBtn: UIButton  = {
+        let btn = UIButton(type: .custom)
+        btn.setBackgroundImage(UIImage(named: "live_exit", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
+        btn.imageView?.contentMode = .scaleAspectFill
+        btn.addTarget(self, action: #selector(closeVC), for: .touchUpInside)
+        return btn
+    }()
+    
     lazy var reportBtn: UIButton  = {
         let btn = UIButton(type: .custom)
         btn.setBackgroundImage(UIImage(named: "livevideo_report", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
         btn.imageView?.contentMode = .scaleAspectFill
+        btn.addTarget(self, action: #selector(clickReport), for: .touchUpInside)
         return btn
     }()
+    
+    // bottom Btn
+    lazy var chatBtn: UIButton  = {
+        let btn = UIButton(type: .custom)
+        btn.setBackgroundImage(UIImage(named: "comment", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
+        btn.imageView?.contentMode = .scaleAspectFill
+        btn.addTarget(self, action: #selector(clickChat(_:)), for: .touchUpInside)
+        return btn
+    }()
+    
+    lazy var linkMicBtn: UIButton  = {
+        let btn = UIButton(type: .custom)
+        btn.setBackgroundImage(UIImage(named: "linkmic_on", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
+        btn.imageView?.contentMode = .scaleAspectFill
+        btn.addTarget(self, action: #selector(clickLinkMic(_:)), for: .touchUpInside)
+        return btn
+    }()
+    
+    lazy var cameraBtn: UIButton  = {
+        let btn = UIButton(type: .custom)
+        btn.setBackgroundImage(UIImage(named: "live_camera", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
+        btn.imageView?.contentMode = .scaleAspectFill
+        btn.addTarget(self, action: #selector(clickCamera(_:)), for: .touchUpInside)
+        return btn
+    }()
+    
+    lazy var giftBtn: UIButton?  = {
+        let btn = self.delegate?.getGiftButton()
+        return btn
+    }()
+    
+    lazy var likeBtn: UIButton  = {
+        let btn = UIButton(type: .custom)
+        btn.setBackgroundImage(UIImage(named: "like_hover", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
+        btn.imageView?.contentMode = .scaleAspectFill
+        btn.addTarget(self, action: #selector(clickLike(_:)), for: .touchUpInside)
+        return btn
+    }()
+    
+    
     var cover: UIView = UIButton(type: .custom)
     var statusView: UITextView?
     var logViewEvt: UITextView?
     var audienceTableView: TCAudienceListTableView?
     var liveInfo: TRTCLiveRoomInfo?
-    var likeBtn: UIButton = UIButton(type: .custom)
     var touchBeginLocation = CGPoint.zero
     var bulletBtnIsOn = false
     var viewsHidden = false
@@ -54,8 +104,9 @@ public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldD
                                  hostFaceUrl: (liveInfo?.coverUrl ?? ""))
     }()
     
-    init(frame: CGRect, live liveInfo: TRTCLiveRoomInfo?, withLinkMic linkmic: Bool) {
+    init(frame: CGRect, live liveInfo: TRTCLiveRoomInfo?, withLinkMic linkmic: Bool, delegate: TCAudienceToolbarDelegate?) {
         super.init(frame: frame)
+        self.delegate = delegate
         self.liveInfo = liveInfo
         let tap = UITapGestureRecognizer(target: self, action: #selector(clickScreenTap(_:)))
         addGestureRecognizer(tap)
@@ -94,7 +145,7 @@ public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldD
     }
     
     func initAudienceList(_ audienceList: [TRTCLiveUserInfo]) {
-        let audience_width: CGFloat = width - 25 - topView.right
+        let audience_width: CGFloat = width - 25 - topView.right - 60
         let x = topView.right + 10 + (audience_width/2) - CGFloat((IMAGE_SIZE/2))
         let y = topView.center.y - audience_width/2
         let frame = CGRect(x: x, y: y, width: topView.height, height: audience_width)
@@ -118,12 +169,12 @@ public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldD
             audienceTableView.refreshAudienceList(msgModel)
             topView.onUserEnterLiveRoom()
         }
+#if RTCube_APPSTORE
+        self.bringSubviewToFront(reportBtn)
+#endif
     }
     
     func initUI(_ linkmic: Bool) -> Void {
-        closeBtn.setBackgroundImage(UIImage(named: "live_exit", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
-        closeBtn.addTarget(self, action: #selector(closeVC), for: .touchUpInside)
-        addSubview(closeBtn)
         addSubview(topView)
         topView.clickHead = { [weak self] in
             guard let `self` = self else { return }
@@ -132,43 +183,55 @@ public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldD
             }
             delegate.clickLog()
         }
-        let iconSize = CGFloat(BOTTOM_BTN_ICON_WIDTH)
-        let startSpace: CGFloat = 10
-        let iconCenterY = CGFloat(height - iconSize / 2) - startSpace
         
-        let iconCount: CGFloat = linkmic == true ? 7 : 6
-        let iconCenterInterval = (width - 2 * startSpace - CGFloat(iconSize)) / (iconCount - 1)
+        let iconSize = CGFloat(BOTTOM_BTN_ICON_WIDTH)
+        let startSpace: CGFloat = 12
+        let iconCenterY = CGFloat(height - iconSize / 2) - startSpace
+        var iconCount: CGFloat = linkmic == true ? 5 : 3
+        if giftBtn == nil {
+            iconCount -= 1
+        }
+        let iconCenterInterval = (width - 2 * startSpace - iconCount * CGFloat(iconSize)) / (iconCount - 1)
         let firstIconCenterX = startSpace + CGFloat(iconSize / 2)
         
-        btnChat.center = CGPoint(x: firstIconCenterX, y: iconCenterY)
-        btnChat.bounds = CGRect(x: 0, y: 0, width: iconSize, height: iconSize)
-        btnChat.setBackgroundImage(UIImage(named: "comment", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
-        btnChat.addTarget(self, action: #selector(clickChat(_:)), for: .touchUpInside)
-        addSubview(btnChat)
-        closeBtn.snp.makeConstraints {  make in
-            make.centerY.equalTo(btnChat.snp.centerY)
-            make.right.equalTo(self).offset(-startSpace)
+        chatBtn.center = CGPoint(x: firstIconCenterX, y: iconCenterY)
+        chatBtn.bounds = CGRect(x: 0, y: 0, width: iconSize, height: iconSize)
+        addSubview(chatBtn)
+        
+        likeBtn.frame = CGRect(x: 0, y: 0, width: iconSize, height: iconSize)
+        addSubview(likeBtn)
+        likeBtn.snp.makeConstraints {  make in
+            make.centerY.equalTo(chatBtn.snp.centerY)
+            make.right.equalToSuperview().inset(startSpace)
             make.width.height.equalTo(iconSize)
         }
-
-        likeBtn.frame = CGRect(x: 0, y: 0, width: iconSize, height: iconSize)
-        likeBtn.setImage(UIImage(named: "like_hover", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
-        likeBtn.addTarget(self, action: #selector(clickLike(_:)), for: .touchUpInside)
-        addSubview(likeBtn)
-        likeBtn.snp.makeConstraints({ make in
-            make.centerY.equalTo(closeBtn.snp.centerY)
-            make.centerX.equalTo(closeBtn).offset(-iconCenterInterval * 1.2)
-            make.width.height.equalTo(iconSize)
-        })
-#if RTCube_APPSTORE
-        addSubview(reportBtn)
-        reportBtn.snp.makeConstraints({ make in
-            make.centerY.equalTo(btnChat.snp.centerY)
-            make.centerX.equalTo(btnChat).offset(iconCenterInterval * 1.2)
-            make.width.height.equalTo(iconSize)
-        })
-        reportBtn.addTarget(self, action: #selector(clickReport), for: .touchUpInside)
-#endif
+        var rigtBtn = likeBtn
+        if let giftButton = giftBtn {
+            addSubview(giftButton)
+            giftButton.snp.makeConstraints({ make in
+                make.centerY.equalTo(likeBtn)
+                make.right.equalTo(likeBtn.snp.left).offset(-iconCenterInterval)
+                make.width.height.equalTo(iconSize)
+            })
+            rigtBtn = giftButton
+        }
+        
+        if linkmic {
+            addSubview(linkMicBtn)
+            linkMicBtn.snp.makeConstraints({ make in
+                make.centerY.equalTo(rigtBtn)
+                make.right.equalTo(rigtBtn.snp.left).offset(-iconCenterInterval)
+                make.width.height.equalTo(iconSize)
+            })
+            
+            addSubview(cameraBtn)
+            cameraBtn.snp.makeConstraints({ make in
+                make.centerY.equalTo(linkMicBtn)
+                make.right.equalTo(linkMicBtn.snp.left).offset(-iconCenterInterval)
+                make.width.height.equalTo(iconSize)
+            })
+            rigtBtn = cameraBtn
+        }
         //LOG UI
         cover.frame = CGRect(x: 10.0, y: 55 + 2 * iconSize, width: width - 20, height: height - 110 - 3 * iconSize)
         cover.backgroundColor = UIColor.white
@@ -199,6 +262,25 @@ public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldD
         logViewEvt.isEditable = false
         logViewEvt.isHidden = true
         addSubview(logViewEvt)
+        
+        
+        closeBtn.setBackgroundImage(UIImage(named: "live_exit", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
+        closeBtn.addTarget(self, action: #selector(closeVC), for: .touchUpInside)
+        addSubview(closeBtn)
+        closeBtn.snp.makeConstraints({ make in
+            make.centerY.equalTo(topView)
+            make.right.equalToSuperview().inset(16)
+            make.width.height.equalTo(iconSize)
+        })
+#if RTCube_APPSTORE
+        addSubview(reportBtn)
+        reportBtn.snp.makeConstraints({ make in
+            make.centerY.equalTo(topView)
+            make.right.equalTo(closeBtn.snp.left).offset(-12)
+            make.width.height.equalTo(iconSize)
+        })
+        reportBtn.addTarget(self, action: #selector(clickReport), for: .touchUpInside)
+#endif
     }
     
     func getLocation(_ bulletView: TCMsgBarrageView) -> CGFloat {
@@ -214,6 +296,14 @@ public class TCAudienceToolbarView: UIView, TCAudienceListDelegate, UITextFieldD
     
     @objc func clickLike(_ button: UIButton) {
         delegate?.clickLike()
+    }
+    
+    @objc func clickLinkMic(_ button: UIButton) {
+        delegate?.clickLinkMic()
+    }
+    
+    @objc func clickCamera(_ button: UIButton) {
+        delegate?.clickCamera()
     }
     
     @objc func clickReport() {

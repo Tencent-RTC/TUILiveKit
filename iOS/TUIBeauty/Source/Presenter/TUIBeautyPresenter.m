@@ -59,7 +59,11 @@
                 case TUIBeautyTypeBeauty: {
                     if (item.index <= 4) {
                         self.beautyStyle = item.index < 3 ? item.index : 2;
-                        [item sendAction:@[@(item.currentValue), @(self.beautyStyle), @(self.beautyLevel), @(self.whiteLevel), @(self.ruddyLevel)]];
+                        int beautyLevel = self.beautyLevel;
+                        if (self.beautyStyle == 1) {
+                            beautyLevel = 5;
+                        }
+                        [item sendAction:@[@(item.currentValue), @(self.beautyStyle), @(beautyLevel), @(self.whiteLevel), @(self.ruddyLevel)]];
                     }
                     else {
                         [item sendAction:@[@(0)]];

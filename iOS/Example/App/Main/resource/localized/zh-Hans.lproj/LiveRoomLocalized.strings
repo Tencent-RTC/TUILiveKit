@@ -19,3 +19,8 @@
 "App.PortalViewController.areyousureloginout" = "确定要退出登录吗？";
 "App.PortalViewController.cancel" = "取消";
 "App.PortalViewController.determine" = "确定";
+"Demo.TRTC.LiveRoom.switchto" = "是否需要切换到xxx模式";
+"Demo.TRTC.LiveRoom.cancel" = "取消";
+"Demo.TRTC.LiveRoom.confirm" = "确定";
+"Demo.TRTC.LiveRoom.restarttotakeeffect" = "重启app后生效";
+"Demo.TRTC.LiveRoom.cdn" = "CDN模式";

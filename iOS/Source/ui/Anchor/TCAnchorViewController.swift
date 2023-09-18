@@ -891,10 +891,6 @@ extension TCAnchorViewController: UITextFieldDelegate {
 extension TCAnchorViewController: TRTCLiveRoomDelegate {
 
     public func trtcLiveRoom(_ trtcLiveRoom: TRTCLiveRoom, onRoomInfoChange info: TRTCLiveRoomInfo) {
-        let isCdnMode = UserDefaults.standard.bool(forKey: "liveRoomConfig_useCDNFirst")
-        if isCdnMode {
-            return
-        }
         roomStatus = info.roomStatus
         liveInfo.roomStatus = roomStatus
         switch info.roomStatus {

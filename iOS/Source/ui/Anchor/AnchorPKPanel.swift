@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import TXAppBasic
+import TUIKitCommon
 import SnapKit
 import Kingfisher
 import TUICore

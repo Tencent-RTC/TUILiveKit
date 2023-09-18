@@ -2,10 +2,24 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>UIBackgroundModes</key>
+	<key>CFBundleURLTypes</key>
 	<array>
-		<string>audio</string>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>SensorsData.production</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>sa1124e954</string>
+			</array>
+		</dict>
 	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -25,5 +39,9 @@
 			</array>
 		</dict>
 	</dict>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
 </dict>
 </plist>
