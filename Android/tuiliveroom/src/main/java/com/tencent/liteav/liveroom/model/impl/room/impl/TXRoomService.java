@@ -130,6 +130,7 @@ public class TXRoomService implements ITXRoomService {
         if (TUILogin.isUserLogined()) {
             mIsLogin = true;
             mMySelfIMInfo.userId = userId;
+            mMySelfIMInfo.streamId = userId + "_stream";
             TRTCLogger.i(TAG, "already login.");
             if (callback != null) {
                 callback.onCallback(0, "login im success.");
@@ -155,6 +156,7 @@ public class TXRoomService implements ITXRoomService {
                 TRTCLogger.i(TAG, "login onSuccess");
                 mIsLogin = true;
                 mMySelfIMInfo.userId = userId;
+                mMySelfIMInfo.streamId = userId + "_stream";
                 if (callback != null) {
                     callback.onCallback(0, "login im success.");
                 }
@@ -239,7 +241,7 @@ public class TXRoomService implements ITXRoomService {
     @Override
     public void createRoom(final String roomId, final String roomName,
                            final String coverUrl, final TXCallback callback) {
-        TRTCLogger.e(TAG, "createRoom mIsEnterRoom:" + mIsEnterRoom);
+        TRTCLogger.i(TAG, "createRoom mIsEnterRoom:" + mIsEnterRoom);
         if (isEnterRoom()) {
             TRTCLogger.e(TAG, "you have been in room:" + mRoomId + " can't create another room:" + roomId);
             if (callback != null) {
@@ -646,7 +648,7 @@ public class TXRoomService implements ITXRoomService {
                         TRTCLogger.e(TAG, "getGroupMemberList fail, code: " + i + " msg:" + s);
                         if (callback != null) {
                             callback.onCallback(CODE_ERROR,
-                                    s, new ArrayList<TXUserInfo>());
+                                    s, new ArrayList<>());
                         }
                     }
                 });
@@ -970,7 +972,7 @@ public class TXRoomService implements ITXRoomService {
     }
 
     private void changeRoomStatus(int status) {
-        TRTCLogger.e(TAG, "changeRoomStatus " + status);
+        TRTCLogger.i(TAG, "changeRoomStatus " + status);
         mInternalStatus = status;
     }
 
@@ -1100,7 +1102,6 @@ public class TXRoomService implements ITXRoomService {
 
         mRoomId = "";
         mAnchorList.clear();
-        mMySelfIMInfo.streamId = "";
         mOwnerIMInfo.clean();
 
         mPKingIMAnchorInfo = null;

@@ -48,7 +48,7 @@ public class AnchorFunctionView extends FrameLayout implements View.OnClickListe
     private Button             mBtnMoreSetting;
     private Button             mBtnSwitchCamera;
     private RelativeLayout     mLayoutBarrageShow;
-    private RelativeLayout     mLayoutLikeShow;
+    private RelativeLayout     mLayoutGiftShow;
     private AnchorPKSelectView mViewPKAnchorList;
     private ObjectAnimator     mAnimatorRecordBall;
     private ImageView          mImageRecordBall;
@@ -84,7 +84,7 @@ public class AnchorFunctionView extends FrameLayout implements View.OnClickListe
         mLayoutAudioEffect = mViewRoot.findViewById(R.id.fl_audio_effect);
         mBtnMoreSetting = mViewRoot.findViewById(R.id.btn_more_settings);
         mBtnSwitchCamera = mViewRoot.findViewById(R.id.btn_switch_camera);
-        mLayoutLikeShow = mViewRoot.findViewById(R.id.fl_like_show);
+        mLayoutGiftShow = mViewRoot.findViewById(R.id.fl_gift_show);
         mLayoutBarrageShow = mViewRoot.findViewById(R.id.fl_barrage_show);
         mTextBroadcastTime = mViewRoot.findViewById(R.id.tv_anchor_broadcasting_time);
         mImageRecordBall = mViewRoot.findViewById(R.id.iv_anchor_record_ball);
@@ -339,6 +339,6 @@ public class AnchorFunctionView extends FrameLayout implements View.OnClickListe
     private void setGiftShowView(View view) {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
-        mLayoutLikeShow.addView(view, params);
+        mLayoutGiftShow.addView(view, params);
     }
 }

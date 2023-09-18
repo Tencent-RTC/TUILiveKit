@@ -16,6 +16,7 @@ import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.tencent.trtc.TRTCCloud;
 import com.tencent.trtc.TRTCCloudDef;
+import com.tencent.trtc.TRTCCloudDef.TRTCMixUser;
 import com.tencent.trtc.TRTCCloudListener;
 
 import org.json.JSONException;
@@ -292,146 +293,94 @@ public class TXTRTCLiveRoom extends TRTCCloudListener implements ITRTCTXLiveRoom
 
     @Override
     public void setMixConfig(List<TXTRTCMixUser> list, boolean isPK) {
-        if (list == null) {
-            mTRTCCloud.setMixTranscodingConfig(null);
-        } else {
-            // 背景大画面宽高
-            int videoWidth = 720;
-            int videoHeight = 1280;
-
-            // 小画面宽高
-            int subWidth = 180;
-            int subHeight = 320;
-
-            int offsetX = 5;
-            int offsetY = 50;
-
-            int bitrate = 200;
-
-            int resolution = TRTCCloudDef.TRTC_VIDEO_RESOLUTION_960_540;
-            switch (resolution) {
-                case TRTCCloudDef.TRTC_VIDEO_RESOLUTION_160_160: {
-                    videoWidth = 160;
-                    videoHeight = 160;
-                    subWidth = 32;
-                    subHeight = 48;
-                    offsetY = 10;
-                    bitrate = 200;
-                    break;
-                }
-                case TRTCCloudDef.TRTC_VIDEO_RESOLUTION_320_180: {
-                    videoWidth = 192;
-                    videoHeight = 336;
-                    subWidth = 54;
-                    subHeight = 96;
-                    offsetY = 30;
-                    bitrate = 400;
-                    break;
-                }
-                case TRTCCloudDef.TRTC_VIDEO_RESOLUTION_320_240: {
-                    videoWidth = 240;
-                    videoHeight = 320;
-                    subWidth = 54;
-                    subHeight = 96;
-                    offsetY = 30;
-                    bitrate = 400;
-                    break;
-                }
-                case TRTCCloudDef.TRTC_VIDEO_RESOLUTION_480_480: {
-                    videoWidth = 480;
-                    videoHeight = 480;
-                    subWidth = 72;
-                    subHeight = 128;
-                    bitrate = 600;
-                    break;
-                }
-                case TRTCCloudDef.TRTC_VIDEO_RESOLUTION_640_360: {
-                    videoWidth = 368;
-                    videoHeight = 640;
-                    subWidth = 90;
-                    subHeight = 160;
-                    bitrate = 800;
-                    break;
-                }
-                case TRTCCloudDef.TRTC_VIDEO_RESOLUTION_640_480: {
-                    videoWidth = 480;
-                    videoHeight = 640;
-                    subWidth = 90;
-                    subHeight = 160;
-                    bitrate = 800;
-                    break;
-                }
-                case TRTCCloudDef.TRTC_VIDEO_RESOLUTION_960_540: {
-                    videoWidth = 544;
-                    videoHeight = 960;
-                    subWidth = 160;
-                    subHeight = 288;
-                    bitrate = 1000;
-                    break;
-                }
-                case TRTCCloudDef.TRTC_VIDEO_RESOLUTION_1280_720: {
-                    videoWidth = 720;
-                    videoHeight = 1280;
-                    subWidth = 192;
-                    subHeight = 336;
-                    bitrate = 1500;
-                    break;
-                }
-                default:
-                    break;
-            }
-
-            TRTCCloudDef.TRTCTranscodingConfig config = new TRTCCloudDef.TRTCTranscodingConfig();
-            config.videoWidth = videoWidth;
-            config.videoHeight = videoHeight;
-            config.videoGOP = 1;
-            config.videoFramerate = 15;
-            config.videoBitrate = bitrate;
-            config.audioSampleRate = 48000;
-            config.audioBitrate = 64;
-            config.audioChannels = 1;
-
-            // Set the anchor image position in the mixed image
-            TRTCCloudDef.TRTCMixUser mixUser = new TRTCCloudDef.TRTCMixUser();
-            mixUser.userId = mUserId;
-            mixUser.roomId = String.valueOf(mRoomId);
-            mixUser.zOrder = 1;
-            mixUser.x = 0;
-            mixUser.y = 0;
-            mixUser.width = videoWidth;
-            mixUser.height = videoHeight;
-
-            config.mixUsers = new ArrayList<>();
-            config.mixUsers.add(mixUser);
-
-            // Set the small image positions in the mixed image+
-            int index = 0;
-            for (TXTRTCMixUser txtrtcMixUser : list) {
-                TRTCCloudDef.TRTCMixUser mixUserTemp = new TRTCCloudDef.TRTCMixUser();
-                mixUserTemp.userId = txtrtcMixUser.userId;
-                mixUserTemp.roomId = txtrtcMixUser.roomId == null ? String.valueOf(mRoomId) : txtrtcMixUser.roomId;
-                mixUserTemp.streamType = TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG;
-                mixUserTemp.zOrder = 2 + index;
-                if (index < 3) {
-                    // The first three small images are displayed from bottom to top on the right
-                    mixUserTemp.x = videoWidth - offsetX - subWidth;
-                    mixUserTemp.y = videoHeight - offsetY - index * subHeight - subHeight;
-                    mixUserTemp.width = subWidth;
-                    mixUserTemp.height = subHeight;
-                } else if (index < 6) {
-                    // The last three small images are displayed from bottom to top on the left
-                    mixUserTemp.x = offsetX;
-                    mixUserTemp.y = videoHeight - offsetY - (index - 3) * subHeight - subHeight;
-                    mixUserTemp.width = subWidth;
-                    mixUserTemp.height = subHeight;
-                } else {
-                    // Up to six small images can be added
-                }
-                config.mixUsers.add(mixUserTemp);
-                ++index;
-            }
-            mTRTCCloud.setMixTranscodingConfig(config);
+        if (list == null || list.isEmpty()) {
+            return;
         }
+
+        int videoWidth = 1080;
+        int videoHeight = 1920;
+
+        TRTCCloudDef.TRTCTranscodingConfig config = new TRTCCloudDef.TRTCTranscodingConfig();
+        config.videoWidth = videoWidth;
+        config.videoHeight = videoHeight;
+        config.videoGOP = 1;
+        config.videoFramerate = 24;
+        config.videoBitrate = 3500;
+        config.audioSampleRate = 48000;
+        config.audioBitrate = 64;
+        config.audioChannels = 1;
+
+        String roomIdStr = String.valueOf(mRoomId);
+
+        if (isPK) {
+            setPKMixTranscodingConfig(list, config, roomIdStr, videoWidth, videoHeight);
+        } else {
+            setLinkMixTranscodingConfig(list, config, roomIdStr, videoWidth, videoHeight);
+        }
+    }
+
+    private void setPKMixTranscodingConfig(List<TXTRTCMixUser> list, TRTCCloudDef.TRTCTranscodingConfig config,
+                                           String roomId, int width, int height) {
+        TRTCMixUser ownerUser = createMixUser(mUserId, roomId, 1, 0, 0, width / 2,
+                height / 2);
+        config.mixUsers = new ArrayList<>();
+        config.mixUsers.add(ownerUser);
+
+        TXTRTCMixUser targetUser = list.get(0);
+        TRTCMixUser mixUser = createMixUser(targetUser.userId,
+                TextUtils.isEmpty(targetUser.roomId) ? roomId : targetUser.roomId,
+                2, width / 2, 0, width / 2, height / 2);
+        config.mixUsers.add(mixUser);
+        mTRTCCloud.setMixTranscodingConfig(config);
+    }
+
+
+    private void setLinkMixTranscodingConfig(List<TXTRTCMixUser> list, TRTCCloudDef.TRTCTranscodingConfig config,
+                                             String roomId, int width, int height) {
+        int linkUserWidth = 180;
+        int linkUserHeight = 320;
+
+        int offsetX = 10;
+        int offsetY = 100;
+
+        TRTCMixUser ownerUser = createMixUser(mUserId, roomId, 1, 0, 0, width, height);
+        config.mixUsers = new ArrayList<>();
+        config.mixUsers.add(ownerUser);
+
+        for (int index = 0; index < list.size(); index++) {
+            int zOrder = 2 + index;
+            int x;
+            int y;
+            if (index < 3) {
+                x = width - offsetX - linkUserWidth;
+                y = offsetY + index * linkUserHeight;
+            } else if (index < 6) {
+                x = offsetX;
+                y = offsetY + index * linkUserHeight;
+            } else {
+                break;
+            }
+
+            TXTRTCMixUser user = list.get(index);
+            TRTCMixUser mixUser = createMixUser(user.userId, roomId, zOrder, x, y, linkUserWidth, linkUserHeight);
+            config.mixUsers.add(mixUser);
+        }
+
+        mTRTCCloud.setMixTranscodingConfig(config);
+    }
+
+    private TRTCMixUser createMixUser(String userId, String roomId, int zOrder, int x, int y, int width, int height) {
+        TRTCMixUser mixUser = new TRTCMixUser();
+        mixUser.userId = userId;
+        mixUser.roomId = roomId;
+        mixUser.zOrder = zOrder;
+        mixUser.x = x;
+        mixUser.y = y;
+        mixUser.width = width;
+        mixUser.height = height;
+        mixUser.streamType = TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG;
+
+        return mixUser;
     }
 
     @Override
