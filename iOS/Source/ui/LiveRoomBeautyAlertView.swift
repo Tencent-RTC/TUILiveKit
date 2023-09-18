@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import TXAppBasic
+import TUIKitCommon
 
 // MARK: Base
 public class LiveRoomAlertContentView: UIView {

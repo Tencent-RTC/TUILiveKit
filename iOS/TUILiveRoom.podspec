@@ -11,7 +11,7 @@ Pod::Spec.new do |spec|
   spec.xcconfig     = { 'VALID_ARCHS' => 'armv7 arm64 x86_64' }
   spec.swift_version = '5.0'
 
-  spec.dependency 'TXAppBasic'
+  spec.dependency 'TUIKitCommon'
   spec.dependency 'TUICore'
   spec.dependency 'TUIBeauty'
   spec.dependency 'TUIBarrage'

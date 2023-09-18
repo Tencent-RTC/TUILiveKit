@@ -16,14 +16,16 @@ class UserAgreementViewController: UIViewController {
     
     var topPadding: CGFloat = {
         if #available(iOS 11.0, *) {
-            return UIApplication.shared.keyWindow!.safeAreaInsets.top
+            guard let keyWindow = UIApplication.shared.keyWindow else { return 0 }
+            return keyWindow.safeAreaInsets.top
         }
         return 0
     }()
     
     var bottomPadding: CGFloat = {
         if #available(iOS 11.0, *) {
-            return UIApplication.shared.keyWindow!.safeAreaInsets.top
+            guard let keyWindow = UIApplication.shared.keyWindow else { return 0 }
+            return keyWindow.safeAreaInsets.top
         }
         return 0
     }()

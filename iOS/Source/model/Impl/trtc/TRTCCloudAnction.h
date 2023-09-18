@@ -58,7 +58,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)startRoomPK:(NSString *)roomId userId:(NSString *)userId;
 
-- (void)updateMixingParams:(BOOL)shouldMix;
+- (void)updateMixingParams:(BOOL)shouldMix isRoomPK:(BOOL)isRoomPK;
 
 - (CGRect)rectWithIndex:(int)index width:(CGFloat)width height:(CGFloat)height padding:(CGFloat)padding;
 

@@ -42,6 +42,7 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
     
     private var barrageInputView: UIView? = nil
     private var barrageView: UIView? = nil
+    private var giftButton: UIButton? = nil
     private var giftView: UIView? = nil
     private var giftPanelView: UIView? = nil
     
@@ -152,6 +153,17 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
         TUILogin.remove(self)
     }
     // MARK:  -TCAudienceToolbarDelegate
+    
+    func getGiftButton() -> UIButton? {
+        if giftButton == nil {
+            let giftButtonList = TUICore.getExtensionList(TUICore_TUIGiftExtension_GetEnterBtn,
+                                                          param: [:])
+            giftButton = giftButtonList.first?.data?[TUICore_TUIGiftExtension_GetEnterBtn] as? UIButton
+            giftButton?.addTarget(self, action: #selector(clickGiftButton(_:)), for: .touchUpInside)
+        }
+        return giftButton
+    }
+    
     func closeVC(_ popViewController: Bool) {
         stopLocalPreview()
         stopLinkMic()
@@ -178,9 +190,17 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
         TUICore.callService(TUICore_TUIGiftService, method: TUICore_TUIGiftService_SendLikeMethod, param: ["groupId": groupId])
     }
     
+    func clickLinkMic() {
+        clickBtnLinkMic(btnLinkMic)
+    }
+    
+    func clickCamera() {
+        clickBtnCamera(nil)
+    }
+    
     func onSeek(_ slider: UISlider?) {
         //    [self.liveRoom seek:_sliderValue];
-        trackingTouchTS = Int64(Date().timeIntervalSince1970 * 1000)
+        trackingTouchTS = Int64(Date().timeIntervalSince1970 * 1_000)
         startSeek = false
     }
     
@@ -247,47 +267,16 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
             }
             var frame = view.frame
             frame.size.height -= bottom
-            logicView = TCAudienceToolbarView(frame: frame, live: liveInfo, withLinkMic: true)
+            logicView = TCAudienceToolbarView(frame: frame, live: liveInfo, withLinkMic: true, delegate: self)
             guard let logicView = logicView else { return }
-            logicView.delegate = self
             logicView.liveRoom = liveRoom
             logicView.setRoomId(liveInfo?.roomId)
-            view.addSubview(logicView)
-            let icon_size = BOTTOM_BTN_ICON_WIDTH
-            let startSpace: CGFloat = 15
-            let icon_count: CGFloat = 7
-            
-            let icon_center_interval = CGFloat(logicView.width - 2 * startSpace - CGFloat(icon_size))/CGFloat(icon_count - 1)
-            
-            let icon_center_y = CGFloat(logicView.height ?? 0.0 - CGFloat(icon_size / 2)) - startSpace
-            
-            btnLinkMic.center = CGPoint(x: logicView.closeBtn.center.x ?? 0.0 - icon_center_interval, y: icon_center_y)
-            btnLinkMic.setImage(UIImage(named: "linkmic_on", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
-            btnLinkMic.addTarget(self, action: #selector(clickBtnLinkMic(_:)), for: .touchUpInside)
-            logicView.addSubview(btnLinkMic)
-            btnLinkMic.snp.makeConstraints({ make in
-                make.width.height.equalTo(icon_size)
-                make.centerX.equalTo(logicView.closeBtn).offset(-icon_center_interval * 2.5)
-                make.centerY.equalTo(logicView.closeBtn )
-            })
-            
-            btnCamera = UIButton(type: .custom)
-            logicView.addSubview(btnCamera)
-            btnCamera.setImage(UIImage(named: "live_camera", in: liveRoomBundle(), compatibleWith: nil), for: .normal)
-            btnCamera.addTarget(self, action: #selector(clickBtnCamera(_:)), for: .touchUpInside)
+            btnLinkMic = logicView.linkMicBtn
+            btnCamera = logicView.cameraBtn
             btnCamera.isHidden = true
-            
-            btnCamera.snp.makeConstraints({ make in
-                make.centerY.equalTo(btnLinkMic)
-                make.width.height.equalTo(icon_size)
-                make.right.equalTo(btnLinkMic.snp.left).offset(-12)
-            })
-            
             initStatusInfoView(0)
             initStatusInfoView(1)
             initStatusInfoView(2)
-            
-            logicView.removeFromSuperview()
             view.addSubview(logicView)
             
         }
@@ -786,7 +775,12 @@ public class TCAudienceViewController: UIViewController, TRTCLiveRoomDelegate,TC
         
     }
     
+    @objc func clickGiftButton(_ button: UIButton?) {
+        giftPanelView?.isHidden = false
+    }
+    
     @objc func clickBtnLinkMic(_ button: UIButton?) {
+        
         button?.isUserInteractionEnabled = false
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             button?.isUserInteractionEnabled = true
@@ -899,12 +893,16 @@ extension TCAudienceViewController {
                 make.width.equalTo(SCREEN_WIDTH - 20*2)
             }
         }
-        if giftView == nil && loadGiftWidget(), let giftView = giftView {
+        
+        if giftView == nil && loadGiftWidget(), let giftView = giftView, let giftPanelView = giftPanelView  {
             view.addSubview(giftView)
+            view.addSubview(giftPanelView)
             giftView.snp.makeConstraints({ make in
                 make.edges.equalToSuperview()
             })
-            giftView.isHidden = false
+            giftPanelView.snp.makeConstraints({ make in
+                make.edges.equalToSuperview()
+            })
         }
     }
     
@@ -966,6 +964,7 @@ extension TCAudienceViewController {
         guard let giftPanelView = giftPanelList[0].data?[TUICore_TUIGiftExtension_GetTUIGiftListPanel] as? UIView else {
             return false
         }
+        
         self.giftPanelView = giftPanelView
         self.giftView = giftView
         return true
@@ -983,7 +982,7 @@ extension TCAudienceViewController: TUILoginListener {
         
     }
     
-    public func onConnectFailed(_ code: Int32, err: String!) {
+    public func onConnectFailed(_ code: Int32, err: String?) {
         
     }
     

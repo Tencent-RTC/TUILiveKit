@@ -19,3 +19,8 @@
 "App.PortalViewController.areyousureloginout" = "Are you sure you want to log out?";
 "App.PortalViewController.cancel" = "Cancel";
 "App.PortalViewController.determine" = "Yes";
+"Demo.TRTC.LiveRoom.switchto" = "Do you want to switch to the xxx mode?";
+"Demo.TRTC.LiveRoom.cancel" = "Cancel";
+"Demo.TRTC.LiveRoom.confirm" = "OK";
+"Demo.TRTC.LiveRoom.restarttotakeeffect" = "Restart the app for the setting to take effect.";
+"Demo.TRTC.LiveRoom.cdn" = "CDN mode";

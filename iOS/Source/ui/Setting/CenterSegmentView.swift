@@ -6,7 +6,7 @@
 //  Copyright © 2022 Tencent. All rights reserved.
 //
 
-import TXAppBasic
+import TUIKitCommon
 import UIKit
 
 class CenterSegmentView: UIView {

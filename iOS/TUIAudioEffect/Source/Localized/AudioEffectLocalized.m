@@ -6,7 +6,7 @@
 //
 
 #import "AudioEffectLocalized.h"
-#import <TUICore/TUIGlobalization.h>
+#import "TUICore/TUIGlobalization.h"
 
 #pragma mark - Base
 

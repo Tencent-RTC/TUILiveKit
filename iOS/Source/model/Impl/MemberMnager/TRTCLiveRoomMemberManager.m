@@ -233,8 +233,7 @@
     self.allMembers = [members mutableCopy];
     [anchorList enumerateObjectsUsingBlock:^(NSDictionary *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSString *userId = obj[@"userId"];
-        NSString *name = obj[@"name"];
-        if (!userId || !name) {
+        if (!userId) {
             return;
         }
         NSString *streamId = obj[@"streamId"];
@@ -253,7 +252,8 @@
                 [self.delegate memberManager:self onUserEnter:user isAnchor:YES];
             }
         } else {
-            NSString* avatar = obj[@"avatar"];
+            NSString* avatar = obj[@"avatar"] ? : @"";
+            NSString *name = obj[@"name"]  ? : @"";
             [self syncPKAnchor:userId name:name avatar:avatar streamId:streamId];
         }
     }];
