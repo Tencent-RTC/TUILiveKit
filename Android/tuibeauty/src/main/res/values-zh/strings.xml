@@ -87,5 +87,5 @@
     <string name="tuibeauty_empty_segmentation">分割</string>
     <string name="tuibeauty_segmentation_blur_45">背景模糊-弱</string>
     <string name="tuibeauty_segmentation_blur_75">背景模糊-强</string>
-    <string name="tuibeauty_tips_xmagic_auth_failed">鉴权失败</string>
+    <string name="tuibeauty_tips_xmagic_auth_failed">美颜 SDK 鉴权失败，无法使用高级美颜功能，请购买腾讯特效 SDK</string>
 </resources>

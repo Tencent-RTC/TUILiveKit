@@ -17,14 +17,14 @@
         <LinearLayout
             android:id="@+id/gift_bullet_group"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical" />
 
     </RelativeLayout>
     <com.tencent.qcloud.tuikit.tuigift.view.like.TUIGiftHeartLayout
         android:id="@+id/heart_layout"
         android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_height="200dp"
         android:focusable="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"

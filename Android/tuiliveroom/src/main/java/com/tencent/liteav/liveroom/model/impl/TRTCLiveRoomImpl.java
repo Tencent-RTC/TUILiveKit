@@ -1478,7 +1478,7 @@ public class TRTCLiveRoomImpl extends TRTCLiveRoom implements ITXTRTCLiveRoomDel
                                             + userId + " pk room id:" + roomId);
                                 }
                             } else {
-                                TRTCLogger.e(TAG, "set pk mix config fail, available uer size:s" + mAnchorList.size());
+                                TRTCLogger.e(TAG, "set pk mix config fail, available uer size:" + mAnchorList.size());
                             }
                         } else {
                             for (String userId : mAnchorList) {

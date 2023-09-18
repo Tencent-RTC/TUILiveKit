@@ -37,9 +37,10 @@ public class AudienceFunctionView extends FrameLayout {
     private ImageView      mImageAnchorAvatar;
     private TextView       mTextAnchorName;
     private TextView       mTextRoomId;
+    private RelativeLayout mLayoutGift;
     private RelativeLayout mLayoutLike;
     private RelativeLayout mLayoutBarrage;
-    private RelativeLayout mLayoutLikeShow;
+    private RelativeLayout mLayoutGiftShow;
     private RelativeLayout mLayoutBarrageShow;
     private String         mRoomId;
     private String         mOwnerId;
@@ -68,9 +69,10 @@ public class AudienceFunctionView extends FrameLayout {
     private void initView() {
         mBtnSwitchCam = mViewRoot.findViewById(R.id.audience_btn_switch_cam);
         mBtnClose = mViewRoot.findViewById(R.id.btn_close);
+        mLayoutGift = mViewRoot.findViewById(R.id.rl_gift);
         mLayoutLike = mViewRoot.findViewById(R.id.rl_like);
         mLayoutBarrage = mViewRoot.findViewById(R.id.rl_barrage_audience);
-        mLayoutLikeShow = mViewRoot.findViewById(R.id.rl_like_show_audience);
+        mLayoutGiftShow  = mViewRoot.findViewById(R.id.rl_gift_show);
         mLayoutBarrageShow = mViewRoot.findViewById(R.id.rl_barrage_show_audience);
         mTextAnchorName = mViewRoot.findViewById(R.id.tv_anchor_broadcasting_time);
         mTextRoomId = mViewRoot.findViewById(R.id.tv_room_id);
@@ -164,10 +166,19 @@ public class AudienceFunctionView extends FrameLayout {
         giftParaMap.put("groupId", groupId);
         Map<String, Object> giftRetMap = TUICore.getExtensionInfo(
                 "com.tencent.qcloud.tuikit.tuigift.core.TUIGiftExtension", giftParaMap);
+
         if (giftRetMap != null && giftRetMap.size() > 0) {
+            Object giftSendView = giftRetMap.get("TUIExtensionView");
+            if (giftSendView != null && giftSendView instanceof View) {
+                setGiftView((View) giftSendView);
+                TXCLog.i(TAG, "TUIGift TUIExtensionView getExtensionInfo success");
+            } else {
+                TXCLog.i(TAG, "TUIGift TUIExtensionView getExtensionInfo not find");
+            }
+
             Object giftDisplayView = giftRetMap.get("TUIGiftPlayView");
             if (giftDisplayView != null && giftDisplayView instanceof View) {
-                setLikeShowView((View) giftDisplayView);
+                setGiftShowView((View) giftDisplayView);
                 TXCLog.i(TAG, "TUIGift TUIGiftPlayView getExtensionInfo success");
             } else {
                 TXCLog.i(TAG, "TUIGift TUIGiftPlayView getExtensionInfo not find");
@@ -197,16 +208,22 @@ public class AudienceFunctionView extends FrameLayout {
         mLayoutBarrageShow.addView(view, params);
     }
 
+    public void setGiftView(View view) {
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(mIconWidth, mIconHeight);
+        params.addRule(RelativeLayout.CENTER_IN_PARENT);
+        mLayoutGift.addView(view, params);
+    }
+
     private void setLikeView(View view) {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(mIconWidth, mIconHeight);
         params.addRule(RelativeLayout.CENTER_IN_PARENT);
         mLayoutLike.addView(view, params);
     }
 
-    private void setLikeShowView(View view) {
+    private void setGiftShowView(View view) {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
-        mLayoutLikeShow.addView(view, params);
+        mLayoutGiftShow.addView(view, params);
     }
 
     public interface OnCloseListener {

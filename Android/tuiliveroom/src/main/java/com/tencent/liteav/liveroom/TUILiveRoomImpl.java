@@ -8,6 +8,7 @@ import android.util.Log;
 import com.tencent.imsdk.v2.V2TIMGroupInfoResult;
 import com.tencent.liteav.basic.UserModel;
 import com.tencent.liteav.basic.UserModelManager;
+import com.tencent.liteav.debug.GenerateTestUserSig;
 import com.tencent.liteav.liveroom.model.LiveRoomManager;
 import com.tencent.liteav.liveroom.model.TRTCLiveRoom;
 import com.tencent.liteav.liveroom.model.TRTCLiveRoomCallback;
@@ -32,6 +33,8 @@ public class TUILiveRoomImpl extends TUILiveRoom {
     private TUILiveRoomListener mListener;
 
     private TRTCLiveRoom mLiveRoom;
+
+    private boolean isUseCDNPlay = true;  //用来表示当前是否CDN模式（区别于TRTC模式）
 
     public static TUILiveRoomImpl sharedInstance(Context context) {
         if (sInstance == null) {
@@ -189,12 +192,13 @@ public class TUILiveRoomImpl extends TUILiveRoom {
         intent.putExtra(TCConstants.GROUP_ID, roomId);
         intent.putExtra(TCConstants.PUSHER_ID, anchorId);
         intent.putExtra(TCConstants.PUSHER_NAME, anchorName);
+        intent.putExtra(TCConstants.USE_CDN_PLAY, isUseCDNPlay);
         mContext.startActivity(intent);
     }
 
     private void liveVideoLogin(final TRTCLiveRoomCallback.ActionCallback callback) {
-        TRTCLiveRoomDef.TRTCLiveRoomConfig config = new TRTCLiveRoomDef.TRTCLiveRoomConfig(false,
-                "");
+        TRTCLiveRoomDef.TRTCLiveRoomConfig config = new TRTCLiveRoomDef.TRTCLiveRoomConfig(true,
+                GenerateTestUserSig.PLAY_DOMAIN);
         mLiveRoom.login(TUILogin.getSdkAppId(), TUILogin.getUserId(),
                 TUILogin.getUserSig(), config, new TRTCLiveRoomCallback.ActionCallback() {
                     @Override

@@ -81,10 +81,8 @@ public class TXLivePlayerRoom implements ITXLivePlayerRoom {
 
         player.setPlayerView(view);
         int result = player.startLivePlay(playURL, TXLivePlayer.PLAY_TYPE_LIVE_FLV);
-        if (result != 0) {
-            if (callback != null) {
-                callback.onCallback(result, "play fail, errCode:" + result);
-            }
+        if (callback != null) {
+            callback.onCallback(result, "play result:" + result);
         }
     }
 

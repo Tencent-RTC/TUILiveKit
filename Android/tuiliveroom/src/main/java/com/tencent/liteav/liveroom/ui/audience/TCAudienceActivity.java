@@ -82,13 +82,13 @@ public class TCAudienceActivity extends AppCompatActivity {
     private final ConcurrentMap<String, TRTCLiveRoomDef.TRTCLiveUserInfo> mUserInfoMap =
             new ConcurrentHashMap<>();
 
-    private boolean  mShowLog;
-    private long     mLastLinkMicTime;
-    private long     mCurrentAudienceCount;
-    private boolean  isEnterRoom     = false;
-    private boolean  isUseCDNPlay    = false;
-    private boolean  mIsAnchorEnter  = false;
-    private boolean  mIsBeingLinkMic = false;
+    private boolean mShowLog;
+    private long    mLastLinkMicTime;
+    private long    mCurrentAudienceCount;
+    private boolean mIsEnterRoom            = false;
+    private boolean mIsUseCDNPlay           = false;
+    private boolean mIsAnchorVideoAvailable = false;
+    private boolean mIsBeingLinkMic         = false;
     private int      mRoomId         = 0;
     private int      mCurrentStatus  = TRTCLiveRoomDef.ROOM_STATUS_NONE;
     private String   mAnchorAvatarURL;
@@ -105,8 +105,8 @@ public class TCAudienceActivity extends AppCompatActivity {
         @Override
         public void run() {
             if (mTextAnchorLeave != null) {
-                mTextAnchorLeave.setVisibility(mIsAnchorEnter ? View.GONE : View.VISIBLE);
-                mImageBackground.setVisibility(mIsAnchorEnter ? View.GONE : View.VISIBLE);
+                mTextAnchorLeave.setVisibility(mIsAnchorVideoAvailable ? View.GONE : View.VISIBLE);
+                mImageBackground.setVisibility(mIsAnchorVideoAvailable ? View.GONE : View.VISIBLE);
             }
         }
     };
@@ -129,7 +129,7 @@ public class TCAudienceActivity extends AppCompatActivity {
 
         @Override
         public void onRoomInfoChange(TRTCLiveRoomDef.TRTCLiveRoomInfo roomInfo) {
-            if (isUseCDNPlay) {
+            if (mIsUseCDNPlay) {
                 return;
             }
             final int oldStatus = mCurrentStatus;
@@ -162,7 +162,7 @@ public class TCAudienceActivity extends AppCompatActivity {
         @Override
         public void onAnchorEnter(final String userId) {
             if (userId.equals(mAnchorId)) {
-                mIsAnchorEnter = true;
+                mIsAnchorVideoAvailable = true;
                 mTextAnchorLeave.setVisibility(View.GONE);
                 mVideoViewAnchor.setVisibility(View.VISIBLE);
                 mImageBackground.setVisibility(View.GONE);
@@ -205,7 +205,7 @@ public class TCAudienceActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onUserVideoAvailable(final String userId, boolean available) {
+        public void onUserVideoAvailable(String userId, boolean available) {
             if (!userId.equals(mAnchorId)) {
                 return;
             }
@@ -333,7 +333,7 @@ public class TCAudienceActivity extends AppCompatActivity {
         setContentView(R.layout.trtcliveroom_activity_audience);
 
         Intent intent = getIntent();
-        isUseCDNPlay = intent.getBooleanExtra(TCConstants.USE_CDN_PLAY, false);
+        mIsUseCDNPlay = intent.getBooleanExtra(TCConstants.USE_CDN_PLAY, false);
         mRoomId = intent.getIntExtra(TCConstants.GROUP_ID, 0);
         mAnchorId = intent.getStringExtra(TCConstants.PUSHER_ID);
         mAnchorNickname = intent.getStringExtra(TCConstants.PUSHER_NAME);
@@ -447,15 +447,26 @@ public class TCAudienceActivity extends AppCompatActivity {
     }
 
     private void enterRoom() {
-        if (isEnterRoom) {
+        if (mIsEnterRoom) {
             return;
         }
         mLiveRoom.enterRoom(mRoomId, new TRTCLiveRoomCallback.ActionCallback() {
             @Override
             public void onCallback(int code, String msg) {
+                Log.i(TAG, "enterRoom code: " + code + " msg: " + msg);
                 if (code == 0) {
                     ToastUtil.toastShortMessage(getString(R.string.trtcliveroom_tips_enter_room_success));
-                    isEnterRoom = true;
+                    mIsEnterRoom = true;
+                    if (mIsUseCDNPlay) {
+                        mLiveRoom.startPlay(mAnchorId, mVideoViewAnchor, new TRTCLiveRoomCallback.ActionCallback() {
+                            @Override
+                            public void onCallback(int code, String msg) {
+                                if (code == 0) {
+                                    mIsAnchorVideoAvailable = true;
+                                }
+                            }
+                        });
+                    }
                     getAudienceList();
                 } else {
                     ToastUtil.toastLongMessage(getString(R.string.trtcliveroom_tips_enter_room_fail, code));
@@ -489,9 +500,9 @@ public class TCAudienceActivity extends AppCompatActivity {
     }
 
     private void exitRoom() {
-        if (isEnterRoom && mLiveRoom != null) {
+        if (mIsEnterRoom && mLiveRoom != null) {
             mLiveRoom.exitRoom(null);
-            isEnterRoom = false;
+            mIsEnterRoom = false;
         }
     }
 

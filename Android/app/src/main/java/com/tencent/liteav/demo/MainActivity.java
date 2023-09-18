@@ -26,6 +26,7 @@ import com.tencent.liteav.liveroom.ui.common.utils.TCConstants;
 import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.qcloud.tuicore.interfaces.TUICallback;
 import com.tencent.qcloud.tuicore.interfaces.TUILoginListener;
+import com.tencent.rtmp.TXLiveBase;
 
 import java.util.Random;
 
@@ -63,6 +64,9 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         initData();
         initView();
+
+        TXLiveBase.getInstance().setLicence(getApplicationContext(), GenerateTestUserSig.LICENSEURL,
+                GenerateTestUserSig.LICENSEURLKEY);
     }
 
     private void initData() {

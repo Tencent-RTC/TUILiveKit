@@ -18,10 +18,10 @@
         android:id="@+id/rl_barrage_audience"
         android:layout_width="@dimen/trtcliveroom_btn_size"
         android:layout_height="@dimen/trtcliveroom_btn_size"
+        android:layout_marginLeft="15dp"
         android:layout_marginBottom="10dp"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/audience_btn_switch_cam"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -29,10 +29,10 @@
         android:id="@+id/audience_btn_switch_cam"
         android:layout_width="@dimen/trtcliveroom_btn_size"
         android:layout_height="@dimen/trtcliveroom_btn_size"
+        android:layout_marginLeft="15dp"
         android:background="@drawable/trtcliveroom_icon_switch_camera"
         android:scaleType="centerCrop"
         android:visibility="invisible"
-        app:layout_constraintEnd_toStartOf="@+id/audience_btn_linkmic"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/rl_barrage_audience"
         app:layout_constraintTop_toTopOf="@+id/rl_barrage_audience" />
@@ -41,23 +41,40 @@
         android:id="@+id/audience_btn_linkmic"
         android:layout_width="@dimen/trtcliveroom_btn_size"
         android:layout_height="@dimen/trtcliveroom_btn_size"
+        android:layout_marginRight="15dp"
         android:background="@drawable/trtcliveroom_linkmic_on"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toStartOf="@+id/rl_gift"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintTop_toTopOf="@+id/rl_barrage_audience" />
+
+    <RelativeLayout
+        android:id="@+id/rl_gift"
+        android:layout_width="@dimen/trtcliveroom_btn_size"
+        android:layout_height="@dimen/trtcliveroom_btn_size"
+        android:layout_marginRight="15dp"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toStartOf="@+id/rl_like"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/audience_btn_switch_cam"
-        app:layout_constraintTop_toTopOf="@+id/audience_btn_switch_cam" />
+        app:layout_constraintTop_toTopOf="@id/rl_barrage_audience" />
 
 
     <RelativeLayout
         android:id="@+id/rl_like"
         android:layout_width="@dimen/trtcliveroom_btn_size"
         android:layout_height="@dimen/trtcliveroom_btn_size"
+        android:layout_marginRight="15dp"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@id/audience_btn_linkmic"
-        app:layout_constraintTop_toTopOf="@id/audience_btn_linkmic" />
+        app:layout_constraintTop_toTopOf="@id/rl_barrage_audience" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_audience_function"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
 
     <RelativeLayout
         android:id="@+id/rl_barrage_show_audience"
@@ -71,20 +88,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/gl_audience_function" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/gl_audience_function"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
 
     <RelativeLayout
-        android:id="@+id/rl_like_show_audience"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:focusable="true"
-        app:layout_constraintBottom_toTopOf="@id/rl_like"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:id="@+id/rl_gift_show"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/rl_barrage_audience"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/gl_audience_function" />
 
     <Button
         android:id="@+id/btn_close"
