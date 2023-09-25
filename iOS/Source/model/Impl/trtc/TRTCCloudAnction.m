@@ -236,7 +236,7 @@ static const int TC_TRTC_FRAMEWORK     = 1;
 
 - (void)stopPublish {
     [[TRTCCloud sharedInstance] stopLocalAudio];
-    [[TRTCCloud sharedInstance] stopPublishCDNStream];
+    [[TRTCCloud sharedInstance] stopPublishing];
 }
 
 - (void)startPlay:(NSString *)userId streamID:(NSString *)streamID view:(UIView *)view
