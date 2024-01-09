@@ -543,7 +543,8 @@ public class TCAnchorViewController: UIViewController {
     }
     
     func liveRoomCreate(_ roomName: String, roomID: UInt32, callback: @escaping (_ code: Int, _ message: String?) -> Void) {
-        let roomParam = TRTCCreateRoomParam(roomName: roomName, coverUrl: TUILiveRoomProfileManager.sharedManager().avatar)
+        
+        let roomParam = TRTCCreateRoomParam(roomName: roomName, coverUrl: self.liveInfo.coverUrl)
         liveRoom?.createRoom(roomID: roomID, roomParam: roomParam, callback: { [weak self] code, message in
             guard let self = self else { return }
             if code == 0 {
