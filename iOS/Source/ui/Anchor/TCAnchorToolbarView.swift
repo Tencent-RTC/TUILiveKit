@@ -171,7 +171,7 @@ class TCAnchorToolbarView: UIView, UITextFieldDelegate, UIGestureRecognizerDeleg
             roomName: self.liveInfo?.roomName ?? "",
             audienceCount: self.liveInfo?.memberCount ?? 0,
             likeCount: 0,
-            hostFaceUrl: self.liveInfo?.streamUrl ?? "")
+            hostFaceUrl: self.liveInfo?.coverUrl ?? "")
         return topView
     }()
     lazy private var tap: UITapGestureRecognizer = {
