@@ -162,6 +162,9 @@ static double trtcLiveCheckStatusTimeOut = 3;
 }
 
 - (NSString *)ownerId {
+    if (self.curRoomInfo.ownerId.length > 0) {
+        return  self.curRoomInfo.ownerId;
+    }
     return self.memberManager.ownerId;
 }
 
