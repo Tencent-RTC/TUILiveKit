@@ -1,37 +1,43 @@
-# 视频互动直播
-_简体中文 | [English](README.en.md)_
+_[简体中文](README-zh_CN.md) | English_
 
-## 概述
+# Tencent Cloud · Online Live Streaming Solution
 
-**TUI组件化解决方案**是腾讯云TRTC针对直播、语聊、视频通话等推出的低代码解决方案，依托腾讯在音视频&通信领域的技术积累，帮助开发者快速实现相关业务场景，聚焦核心业务，助力业务起飞！
 
-- [音视频通话-TUICallKit](https://github.com/tencentyun/TUICalling/)
-- [多人音视频房间-TUIRoomKit](https://github.com/tencentyun/TUIRoom/)
-- [视频互动直播-TUILiveRoom](https://github.com/tencentyun/TUILiveRoom/)
-- [语音聊天室-TUIVoiceRoom](https://github.com/tencentyun/TUIVoiceRoom/)
-- [在线 K 歌-TUIKaraoke](https://github.com/tencentyun/TUIKaraoke/)
+<img src="Preview/logo.png" align="left" width=65 height=65>TTUILiveKit is a product suitable for interactive live streaming scenarios such as social entertainment, shopping, fitness, etc. By integrating this product, you can add features like interactive voice and video calls, gifting, room management, etc., to your App in just three steps within 30 minutes.
 
-更多组件化方案，敬请期待，也欢迎加入我们的QQ交流群：770645461，期待一起交流&学习！
+## Product Features
 
-## 效果演示
+<p align="center">
+  <img src="Preview/tuilivekit-zh.png"/>
+</p>
 
-<table>
-<tr>
-<td><img width="260" src="liveroom_beauty.gif"/></td>
-<td><img width="260" src="liveroom_join.gif"/></td>
-<td><img width="260" src="liveroom_msg.gif"/></td>
-<td><img width="260" src="liveroom_pk.gif"/></td>
-</tr>
-</table>
+- **Comprehensive UI Interaction**：We provide an open-source component TUILiveKit with UI, which can save you 90% of development time. You only need to spend 30 minutes to have an online live streaming app similar to TikTok.
+- **Multi-platform Interconnection**：We support Android and iOS platforms. You can use TUILiveKit components from different platforms to support online live streaming services. In the future, we also plan to support Flutter, MacOS, Windows, and other platforms.
+- **Interactive Barrage**：We support custom text, custom emoticons, room information reminders, and other interactive message displays.
+- **Interactive Gifts**：We support custom gift animation display, custom settlement of fees, and other functions.
 
-## Demo 体验
 
-| iOS                                                          | Android                                                      | Web                                                          |
-| :----------------------------------------------------------- | :----------------------------------------------------------- | ------------------------------------------------------------ |
-| <img src= https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/app_download_ios.png width=150> | <img src= https://main.qcloudimg.com/raw/8a603ced0a61983018c794df842f7029.png width=150> | [推流体验 Demo](https://web.sdk.qcloud.com/component/tuiliveroom/tuipusher/pusher.html)<br><br><br><br>[拉流体验 Demo](https://web.sdk.qcloud.com/component/tuiliveroom/tuiplayer/player.html) |
 
-## 文档资源
+## Getting Started
 
-| iOS                                                          | Android                                                      | Web                            |
-| :----------------------------------------------------------- | :----------------------------------------------------------- | ------------------------------ |
-| [视频互动直播（iOS）](https://cloud.tencent.com/document/product/647/43181) | [视频互动直播（Android）](https://cloud.tencent.com/document/product/647/43182) | [WebRTC 互动直播（快速集成）](https://cloud.tencent.com/document/product/647/63830) |
+Here, we take the UI-included integration TUILiveKit as an example, which is also our recommended method of integration. The key steps are as follows:：
+
+- **Step1**：[Activate the service](https://www.tencentcloud.com/document/product/647/60033)，For Developers: Detailed Documentation Here [Overview](https://www.tencentcloud.com/document/product/647/60034) 
+- **Step2**：Integrate TUILiveKit into Your Project: Detailed Integration Process for Each Platform：[iOS](https://www.tencentcloud.com/document/product/647/60036)、 [Android ](https://www.tencentcloud.com/document/product/647/60037)
+- **Step3**：Start Your First Online Live Streaming Experience
+
+
+
+## Quick link
+
+- If You Encounter Difficulties, You Can First Refer To'FAQs' [iOS](https://www.tencentcloud.com/document/product/647/60048)，[Android](https://www.tencentcloud.com/document/product/647/60043)，Here We Have Compiled the Most Common Issues Encountered by Developers, Covering Various Platforms. We Hope This Will Help You Solve Problems Quickly.
+- To Learn About Our Latest Product Features, Please Check the Update Log [iOS](https://www.tencentcloud.com/document/product/647/60047)，[Android](https://www.tencentcloud.com/document/product/647/60042)。Here You Will Find the Latest Functional Features of TUILiveKit, as Well as the Iteration History of Past Versions
+- Complete API Documentation Available in Client-side API： [iOS](https://www.tencentcloud.com/document/product/647/60046)，[Android](https://www.tencentcloud.com/document/product/647/60041)。
+- If you want to learn more about the projects maintained by Tencent Cloud  Media Services Team, you can check our [Product Official Website](https://trtc.io/), [Github Organizations](https://github.com/LiteAVSDK) etc.
+
+
+## Have any questions?
+- Welcome to submit [**issue**](https://github.com/tencentyun/TUILiveRoom/issues),  
+- Welcome to join our Telegram Group to communicate with our professional engineers! We are more than happy to hear from you，Click to join: https://t.me/+EPk6TMZEZMM5OGY1
+Or scan the QR code 
+<img src="Preview/telegram-code.jpg"/>
