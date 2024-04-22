@@ -1,87 +1,60 @@
-# TUILiveRoom iOS 示例工程快速跑通
-_中文 | [English](README.en.md)_
+# Live UIKit for iOS Quickstart
 
-本文档主要介绍如何快速跑通TUILiveRoom示例工程，体验高质量语音互动，更详细的TUILiveRoom组件接入流程，请点击腾讯云官网文档： [**TUILiveRoom 组件 iOS 接入说明** ](https://cloud.tencent.com/document/product/647/43181)...
+_English | [简体中文](README-zh_CN.md)_
 
-## 目录结构
-    
-```
-TUILiveRoom
-├─ Example                   // 工程模块，主要提供 TUILiveRoom 的测试页面
-├─ Resources                 // 视频互动直播功能所需的图片、国际化字符串资源文件夹
-├─ Source                    // 视频互动直播核心业务逻辑代码文件夹
-├─ TUIBeauty                 // 美颜功能核心组件
-├─ TUIGift                   // 点赞功能核心组件
-├─ TUIAudioEffect            // 音效管理功能核心组件
-├─ TUIBarrage                // 弹幕功能核心组件
-├─ TXAppBasic                // 工程依赖的基础组件
-└─ TUILiveRoom.podspec      // TUILiveRoom 组件 pod 接入文件
-```
-    
-## 环境准备
+<img src="https://qcloudimg.tencent-cloud.cn/raw/ec034fc6e4cf42cae579d32f5ab434a1.png" align="left" width=120 height=120>TUILiveKit is an interactive live streaming UI component launched by Tencent Cloud. By integrating this component, you can add interactive live streaming features to your app with just a few lines of code. It supports features such as interactive co-hosting, chat barrage, heartbeats, interactive gifts, and sound effects transformation.
 
-- Xcode 11.0及以上版本
-- 最低支持系统：iOS 13.0
-- 请确保您的项目已设置有效的开发者签名
-    
-## 运行示例
+## Before getting started
 
-### 第一步：创建TRTC的应用
-1. 一键进入腾讯云实时音视频控制台的[应用管理](https://console.cloud.tencent.com/trtc/app)界面，选择创建应用，输入应用名称，例如 `TUIKitDemo` ，单击 **创建**；
-2. 点击对应应用条目后**应用信息**，具体位置如下下图所示：
-    <img src="https://qcloudimg.tencent-cloud.cn/raw/62f58d310dde3de2d765e9a460b8676a.png" width="900">
-3. 进入应用信息后，按下图操作，记录SDKAppID和密钥：
-    <img src="https://qcloudimg.tencent-cloud.cn/raw/bea06852e22a33c77cb41d287cac25db.png" width="900">
->! 本功能同时使用了腾讯云 [实时音视频 TRTC](https://cloud.tencent.com/document/product/647/16788) 和 [即时通信 IM](https://cloud.tencent.com/document/product/269) 两个基础 PaaS 服务，开通实时音视频后会同步开通即时通信 IM 服务。 即时通信 IM 属于增值服务，详细计费规则请参见 [即时通信 IM 价格说明](https://cloud.tencent.com/document/product/269/11673)。
+This section shows you the prerequisites you need for testing Live for iOS example.
 
-### 第二步：下载源码，配置工程
+### Requirements
 
-1. 克隆或者直接下载此仓库源码，**欢迎 Star**，感谢~~
-2. SDK集成方式默认使用`Cocoapods`，工程目录下`Example/Podfile`文件内已帮您添加了SDK的依赖`pod 'TXLiteAVSDK_TRTC'`，您只需要打开终端进入到工程目录下执行`pod install`，SDK就会自动集成。
+- Xcode 13.0 or above
+- Operating system: iOS 13.0 or later
+
+## Getting started
+
+If you would like to try the sample app specifically fit to your usage, you can do so by following the steps below.
+
+### Create an application.
+
+1. Go to the [Application management](https://console.cloud.tencent.com/trtc/app) page in the TRTC console, select **Create Application**, enter an application name such as `TUIKitDemo`, and click **Confirm**.
+2. Click **Application Information** on the right of the application as shown below:
+   <img src="https://qcloudimg.tencent-cloud.cn/raw/62f58d310dde3de2d765e9a460b8676a.png" width="900">
+3. On the application information page, note the `SDKAppID` and key as shown below:
+   <img src="https://qcloudimg.tencent-cloud.cn/raw/bea06852e22a33c77cb41d287cac25db.png" width="900">
+
+> ! This feature uses two basic PaaS services of Tencent Cloud: [TRTC](https://www.tencentcloud.com/document/product/647/35078) and [IM](https://www.tencentcloud.com/document/product/1047/33513). When you activate TRTC, IM will be activated automatically. IM is a value-added service.
+
+### Build and run the example
+
+#### 1. Clone this repository
 
 ```
-pod install
+$ git clone git@github.com:tencentyun/TUILiveKit.git
 ```
->?遇到`CocoaPods could not find compatible versions for pod "TXIMSDK_Plus_iOS"`版本不一致，执行 `pod update TXIMSDK_Plus_iOS` 即可。
-3. 使用Xcode(11.0及以上)打开源码工程`Example/TUILiveRoomApp.xcworkspace`，工程内找到`Example/Debug/GenerateTestUserSig.swift`文件 。
-4. 设置`GenerateTestUserSig.swift`文件中的相关参数：
-<ul>
-<li>SDKAPPID：默认为 0 ，请设置为实际申请的SDKAPPID。</li>
-<li>SECRETKEY：默认为空字符串，请设置为实际申请的SECRETKEY。</li>
-<li>XMagicLicenseURL【可选】：默认为空字符串，美颜特效License申请请前往: <a href="https://cloud.tencent.com/document/product/616/65878">腾讯特效 License</a>。</li>
-<li>XMagicLicenseKey  【可选】：默认为空字符串，美颜特效License申请请前往: <a href="https://cloud.tencent.com/document/product/616/65878">腾讯特效 License</a>。</li>
-</ul>
-<img src="https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/sdkappid_secretkey_ios.png" width="650" height="295"/>
 
+#### 2. Install dependencies
 
-### 第三步：编译运行
+```
+$ cd TUILiveKit/iOS/Example
+$ pod install
+```
 
-使用 Xcode（11.0及以上的版本）打开源码工程 `Example/TUILiveRoomApp.xcworkspace`，单击【运行】即可开始调试本 App。
+#### 3. Specify the SDKAppID and SDKSecretKey
 
+In `GenerateTestUserSig.swift`, you need to configure the application's `SDKAppId` and `SDKSecretKey`.
 
-### 第四步：示例体验
+```
+let SDKAPPID: Int = 0
+let SECRETKEY = ""
+```
 
-Tips：TUILiveRoom 使用体验，至少需要两台设备，如果用户A/B分别代表两台不同的设备：
+#### 4. Build and run the example application on Simulator or iOS devices
 
+## Making your first live
 
-**设备 A（userId：111）**
-- 步骤1：在欢迎页，输入用户名(请确保用户名唯一性，不能与其他用户重复)，比如111；
-- 步骤2、点击创建房间；
-- 步骤3、输入房间主题，点击开始直播；
-- 步骤4、创建成功后，就进到了视频直播的主界面，此时记录一下房间号；
-
-| 步骤1 | 步骤2 | 步骤3 | 步骤4|
-|---------|---------|---------|---------|
-| <img src="https://qcloudimg.tencent-cloud.cn/raw/24a76a18049eda3bdb6414493d43e286.png" width="250"> | <img src="https://qcloudimg.tencent-cloud.cn/raw/8f9290c8dfc3eaa44f3c0a82e776c497.png" width="250"> | <img src="https://qcloudimg.tencent-cloud.cn/raw/4ac45382e20f72a87b72104404eee2da.png" width="250"> |<img src="https://qcloudimg.tencent-cloud.cn/raw/01c73737f0af40fe17c70e1107a9f720.jpeg" width="250"> |
-
-**设备 B（userId：222）**
-- 步骤1：输入用户名(请确保用户名唯一性，不能与其他用户重复)，比如222；
-- 步骤2、输入用户 A 创建的房间号（设备A第4步记录的房间号），点击加入房间；
-
-| 步骤1 | 步骤2 | 
-|---------|---------|
-| <img src="https://liteav.sdk.qcloud.com/doc/res/trtc/picture/zh-cn/user_b_ios.png" width="320"/> | <img src="https://qcloudimg.tencent-cloud.cn/raw/fe39e76723f304de52b9d677a8cebf97.png" width="320"/> | 
-
-## 常见问题
-- [TUI 场景化解决方案常见问题](https://cloud.tencent.com/developer/article/1952880)
-- 欢迎加入 QQ 群：592465424，进行技术交流和反馈~
+1. Use two mobile phones (A and B) to log in to the application using strings as their user IDs. If you log in for the first time, you need to add a user name.
+2. The user on mobile phone A clicks the 'Start Live Streaming' button to initiate a live broadcast (note that you select video live broadcast or voice live broadcast)
+3. The user on mobile phone B enters the user ID of the user on mobile phone A and clicks to 'Join live room' or 'Join voice room' to watch the live broadcast.

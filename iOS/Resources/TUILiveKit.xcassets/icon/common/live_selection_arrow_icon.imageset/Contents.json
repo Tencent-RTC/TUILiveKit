@@ -1,0 +1,15 @@
+{
+  "images" : [
+    {
+      "filename" : "livekit_selection_arrow_icon.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "properties" : {
+    "preserves-vector-representation" : true
+  }
+}

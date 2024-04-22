@@ -1,0 +1,15 @@
+{
+  "images" : [
+    {
+      "filename" : "livekit_beauty_buffing.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "properties" : {
+    "preserves-vector-representation" : true
+  }
+}

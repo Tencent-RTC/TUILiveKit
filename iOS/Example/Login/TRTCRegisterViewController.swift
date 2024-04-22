@@ -12,6 +12,7 @@ import SnapKit
 import UIKit
 import ImSDK_Plus
 import TUICore
+import TUILiveKit
 
 class TRTCRegisterViewController: UIViewController {
     
@@ -20,6 +21,7 @@ class TRTCRegisterViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
         TUICSToastManager.setDefaultPosition(TUICSToastPositionBottom)
         title = .titleText
         view.addSubview(loading)
@@ -53,8 +55,8 @@ class TRTCRegisterViewController: UIViewController {
         self.loading.stopAnimating()
         self.view.makeToast(.registSuccessText)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            //show main vc
-            AppUtils.shared.showMainController()
+            //  todo jump LiveKit
+            TUILiveKit.createInstance().prepareLiveStream()
         }
     }
     
