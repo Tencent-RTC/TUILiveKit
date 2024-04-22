@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="350dp"
+    android:background="@drawable/livekit_dialog_background"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/breuty_panel_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:text="@string/livekit_beauty_panel_title"
+        android:textColor="@color/livekit_design_standard_g7"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_beauty_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="25dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/beauty_ll_seek_bar"/>
+
+    <LinearLayout
+        android:id="@+id/beauty_ll_seek_bar"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_below="@+id/breuty_panel_title"
+        android:orientation="horizontal"
+        android:layout_marginStart="75dp"
+        android:layout_marginEnd="75dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/breuty_panel_title">
+
+        <TextView
+            android:id="@+id/beauty_tv_seek_bar_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            tools:text="强度"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:textColor="@color/livekit_design_standard_flowkit_white"
+            android:textSize="12sp" />
+
+        <SeekBar
+            android:id="@+id/beauty_seek_bar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:indeterminate="false"
+            android:visibility="gone"
+            android:paddingStart="5dp"
+            android:paddingEnd="10dp"
+            android:maxHeight="2dp"
+            android:minHeight="2dp"
+            android:progressDrawable="@drawable/livekit_seekbar_process_drawable"
+            android:thumb="@drawable/livekit_seekbar_process_thumb" />
+
+        <TextView
+            android:id="@+id/beauty_tv_seek_bar_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:visibility="gone"
+            tools:text="6"
+            android:textColor="@color/livekit_design_standard_flowkit_white"
+            android:textSize="12sp" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

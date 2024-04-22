@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
-    <color name="TextColorHint">#BBBBBB</color>
-    <color name="color_main_text">#333333</color>
-    <color name="color_white">#FFFFFFFF</color>
-    <color name="color_black">#FF000000</color>
-    <color name="transparent">#00000000</color>
-    <color name="color_input_normal">#BBBBBB</color>
+    <color name="app_color_black">#FF000000</color>
+    <color name="app_color_white">#FFFFFFFF</color>
+    <color name="app_color_input_normal">#BBBBBB</color>
+    <color name="app_text_color_hint">#BBBBBB</color>
+    <color name="app_color_input_no_match">#FA585E</color>
+    <color name="app_color_main_text">#333333</color>
+    <color name="app_color_page_background">#22262E</color>
+    <color name="app_color_clickable_color">#0676FF</color>
+    <color name="app_color_unclickable_color">#0F000000</color>
+    <color name="app_color_light_blue_gray">#F4F5F9</color>
+    <color name="app_color_light_sky_blue">#D5DFED</color>
+
 </resources>
