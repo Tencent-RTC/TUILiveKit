@@ -3,14 +3,14 @@ package com.trtc.uikit.livekit.example.main;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.trtc.tuikit.common.FullScreenActivity;
 import com.trtc.uikit.livekit.example.R;
 import com.trtc.uikit.livekit.liveroom.TUILiveRoomAudienceFragment;
 
-public class AudienceActivity extends FullScreenActivity {
+public class AudienceActivity extends AppCompatActivity {
     public String mRoomId = "";
 
     @Override

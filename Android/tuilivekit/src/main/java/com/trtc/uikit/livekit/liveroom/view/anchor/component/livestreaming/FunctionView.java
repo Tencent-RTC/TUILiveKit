@@ -90,7 +90,7 @@ public class FunctionView extends LinearLayout {
         settingsButton.setOnClickListener((view) -> {
             if (mSettingsPanelDialog == null) {
                 mSettingsPanelDialog = new PopupDialog(mContext,
-                        com.trtc.tuikit.common.R.style.TUICommonBottomDialogTheme);
+                        R.style.TUICommonBottomDialogTheme);
                 mSettingsPanelDialog.setOnDismissListener((dialogInterface) -> {
                 });
             }

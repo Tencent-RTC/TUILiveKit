@@ -149,7 +149,7 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
 
     private void showBeautyPanel() {
         if (mDialogBeautyList == null) {
-            mDialogBeautyList = new PopupDialog(mContext, com.trtc.tuikit.common.R.style.TUICommonBottomDialogTheme);
+            mDialogBeautyList = new PopupDialog(mContext, R.style.TUICommonBottomDialogTheme);
             mDialogBeautyList.setOnDismissListener((dialogInterface) -> {
             });
         }

@@ -10,7 +10,6 @@ import android.text.TextWatcher;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.trtc.tuikit.common.util.ActivityLauncher;
 import com.trtc.uikit.livekit.common.core.LiveDefine;
 import com.trtc.uikit.livekit.example.BaseActivity;
 import com.trtc.uikit.livekit.example.R;
@@ -82,7 +81,8 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.btn_trtclivekit_link).setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(SettingsConfig.TRTC_LIVE_ROOM_DOCUMENT_URL));
-            ActivityLauncher.startActivity(MainActivity.this, intent);
+            startActivity(intent);
         });
     }
+
 }

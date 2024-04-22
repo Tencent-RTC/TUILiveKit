@@ -72,4 +72,14 @@
     <color name="livekit_gift_two_fifth_black_color">#66000000</color>
     
     <color name="livekit_user_name_black_color">#6622262E</color>
+    <color name="livekit_common_design_bottom_sheet_color">#00000000</color>
+    <color name="livekit_common_color_bg_dialog">#66000000</color>
+    <color name="livekit_common_color_dialog_agree">#1C66E5</color>
+    <color name="livekit_common_color_dialog_cancel">#4F586B</color>
+    <color name="livekit_common_color_dialog_checkbox">#4F586B</color>
+    <color name="livekit_common_color_dialog_content">#4F586B</color>
+    <color name="livekit_common_color_dialog_title">#000000</color>
+    <color name="livekit_common_color_white">#FFFFFF</color>
+
+    <color name="livekit_common_color_confirm_dialog_divider">#FF030303</color>
 </resources>
