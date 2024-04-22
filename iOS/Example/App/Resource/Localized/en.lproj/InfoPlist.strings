@@ -1,0 +1,9 @@
+//
+//  InfoPlist.strings
+//  TUILiveKitApp
+//
+//  Created by WesleyLei on 2023/11/20.
+//  Copyright © 2023 Tencent. All rights reserved.
+//
+CFBundleDisplayName = "TUILiveKit";
+UILaunchStoryboardName = "LaunchScreen_en";

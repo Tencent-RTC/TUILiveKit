@@ -1,18 +1,15 @@
-# Uncomment the next line to define a global platform for your project
-# platform :ios, '9.0'
+use_frameworks!
 
-target 'TUILiveRoomApp' do
-  # Comment the next line if you don't want to use dynamic frameworks
-  use_frameworks!
+platform :ios, '13.0'
 
-  pod 'TUICore', '~> 7.3.4358'
-  pod 'TXLiteAVSDK_TRTC'
-  pod 'TUIKitCommon', :path => "../TUIKitCommon/"
-  pod 'TUIBeauty', :path => "../TUIBeauty/"
-  pod 'TUIBarrage', :path => "../TUIBarrage/"
-  pod 'TUIGift', :path => "../TUIGift/"
-  pod 'TUIAudioEffect', :path => "../TUIAudioEffect/", :subspecs => ["TRTC"]
-  pod 'TUILiveRoom', :path => "../", :subspecs => ["TRTC"]
+target 'TUILiveKitApp' do
+  # UI Library
+  pod 'SnapKit'
+  pod 'Kingfisher'
+  # Tools Library
+  pod 'Alamofire'
+  # Local Library
+  pod 'TUILiveKit', :path => '../'
 end
 
 post_install do |installer|
@@ -24,6 +21,16 @@ post_install do |installer|
       config.build_settings['CODE_SIGNING_ALLOWED'] = "NO"
       config.build_settings['GENERATE_INFOPLIST_FILE'] = "NO"
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+    end
+    shell_script_path = "Pods/Target Support Files/#{target.name}/#{target.name}-frameworks.sh"
+    if File::exist?(shell_script_path)
+          shell_script_input_lines = File.readlines(shell_script_path)
+          shell_script_output_lines = shell_script_input_lines.map { |line| line.sub("source=\"$(readlink \"${source}\")\"", "source=\"$(readlink -f \"${source}\")\"") }
+          File.open(shell_script_path, 'w') do |f|
+            shell_script_output_lines.each do |line|
+              f.write line
+        end
+      end
     end
   end
 end

@@ -9,6 +9,7 @@
 import Foundation
 import WebKit
 import TUICore
+import TUILiveKit
 
 class TRTCLoginViewController: UIViewController {
     
@@ -21,6 +22,7 @@ class TRTCLoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
         navigationController?.navigationBar.barTintColor = .white
         TUICSToastManager.setDefaultPosition(TUICSToastPositionBottom)
         view.addSubview(loading)
@@ -64,13 +66,7 @@ class TRTCLoginViewController: UIViewController {
             }
         }
     }
-    
-    #if DEBUG
-    let SdkBusiId: Int32 = 18_069
-    #else
-    let SdkBusiId: Int32 = 18_070
-    #endif
-    
+
     func loginIM(complete: @escaping (_ success: Bool)->Void) {
         guard let userID = ProfileManager.shared.curUserID() else { return }
         let userSig = ProfileManager.shared.curUserSig()
@@ -92,7 +88,8 @@ class TRTCLoginViewController: UIViewController {
         } else {
             self.view.makeToast(LoginLocalize(key:"V2.Live.LinkMicNew.loginsuccess"))
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                AppUtils.shared.showMainController()
+                //  todo jump LiveKit
+                TUILiveKit.createInstance().prepareLiveStream()
             }
         }
     }

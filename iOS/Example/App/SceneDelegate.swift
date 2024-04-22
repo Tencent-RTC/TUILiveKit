@@ -1,8 +1,8 @@
 //
 //  SceneDelegate.swift
-//  TRTCLiveRoom
+//  TUILiveKitApp
 //
-//  Created by abyyxwang on 2021/5/6.
+//  Created by WesleyLei on 2023/10/11.
 //
 
 import UIKit
@@ -12,16 +12,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
 
 
-    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+    func scene(_ scene: UIScene, 
+               willConnectTo session: UISceneSession,
+               options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
-        self.window = UIWindow.init(windowScene: windowScene)
+        self.window = UIWindow(windowScene: windowScene)
         self.window?.backgroundColor = UIColor.white
         
-        let loginVC = TRTCLoginViewController.init()
-        let nav = UINavigationController.init(rootViewController: loginVC)
+        let loginVC = LoginViewController()
+        let nav = AppNavigationController(rootViewController: loginVC)
         self.window?.rootViewController = nav
         self.window?.makeKeyAndVisible()
     }
@@ -62,6 +64,5 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         return nil
     }
-    
 }
 
