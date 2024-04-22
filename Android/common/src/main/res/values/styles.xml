@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="TUICommonBottomDialoglAnim" parent="Theme.Design.BottomSheetDialog">
+        <item name="android:windowExitAnimation">@anim/tuicommon_popup_dialog_dismiss</item>
+        <item name="android:windowEnterAnimation">@anim/tuicommon_popup_dialog_show</item>
+    </style>
+
+    <style name="TUICommonBottomDialogTheme" parent="Theme.Design.BottomSheetDialog">
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <style name="TUICommonConfirmDialogTheme" parent="@android:style/Theme.Holo.Dialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+        <item name="android:windowBackground">@color/common_color_bg_dialog</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
+</resources>

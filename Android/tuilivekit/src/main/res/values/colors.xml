@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--    B1-主色-->
+    <color name="livekit_design_standard_b1">#1C66E5</color>
+    <!--    B2-->
+    <color name="livekit_design_standard_b2">#00E5E5</color>
+    <!--    C1-->
+    <color name="livekit_design_standard_c1">#00C2A8</color>
+    <!--    C2-->
+    <color name="livekit_design_standard_c2">#6C54E8</color>
+    <!--    C3-->
+    <color name="livekit_design_standard_c3">#FF643D</color>
+    <!--    C4-->
+    <color name="livekit_design_standard_c4">#F23C5B</color>
+    <!--    B1D 主色-->
+    <color name="livekit_design_standard_b1d">#4791FF</color>
+    <!--    B2D-->
+    <color name="livekit_design_standard_b2d">#1AFFC9</color>
+    <!--    G1 背景-->
+    <color name="livekit_design_standard_g1">#0F1014</color>
+    <!--    G2 背景-->
+    <color name="livekit_design_standard_g2">#22262E</color>
+    <!--    G3-->
+    <color name="livekit_design_standard_g3">#4F586B</color>
+    <!--    G3 分割线-->
+    <color name="livekit_design_standard_g3_divider">#804F586B</color>
+    <!--    G4-->
+    <color name="livekit_design_standard_g4">#6B758A</color>
+    <!--    G5-->
+    <color name="livekit_design_standard_g5">#8F9AB2</color>
+    <!--    G6-->
+    <color name="livekit_design_standard_g6">#B2BBD1</color>
+    <!--    G7-->
+    <color name="livekit_design_standard_g7">#D5E0F2</color>
+    <!--    Flowkit/Red-->
+    <color name="livekit_design_standard_flowkit_red">#FC5555</color>
+    <!--    Flowkit/Green-->
+    <color name="livekit_design_standard_flowkit_green">#29CC6A</color>
+    <!--    Flowkit/Blue-->
+    <color name="livekit_design_standard_flowkit_blue">#0099FF</color>
+    <!--    Flowkit/White-->
+    <color name="livekit_design_standard_flowkit_white">#FFFFFF</color>
+    <!--    Flowkit/Purple-->
+    <color name="livekit_design_standard_flowkit_purple">#7B61FF</color>
+    <!--    Flowkit/Charcoal-->
+    <color name="livekit_design_standard_flowkit_charcoal">#222222</color>
+    <!--    transparent 透明-->
+    <color name="livekit_design_standard_transparent">#00000000</color>
+
+    <!--    非交互规范中的颜色-->
+    <color name="livekit_not_standard_gray_60_transparency">#9922262E</color>
+    <color name="livekit_not_standard_white">#D1D9EC</color>
+    <color name="livekit_not_standard_grey">#7C85A6</color>
+    <color name="livekit_not_standard_red">#E5395C</color>
+    <color name="livekit_not_standard_white_20_transparency">#33FFFFFF</color>
+    <color name="livekit_not_standard_blue_30_transparency">#4D4F586B</color>
+    <color name="livekit_not_standard_white_d2">#D2D2D2</color>
+
+    <!--    消息的颜色-->
+    <color name="livekit_barrage_color_msg_1">#3074FD</color>
+    <color name="livekit_barrage_color_msg_2">#3CCFA5</color>
+    <color name="livekit_barrage_color_msg_3">#FF8607</color>
+    <color name="livekit_barrage_color_msg_4">#F7AF97</color>
+    <color name="livekit_barrage_color_msg_5">#FF8BB7</color>
+    <color name="livekit_barrage_color_msg_6">#FC6091</color>
+    <color name="livekit_barrage_color_msg_7">#FCAF41</color>
+    <color name="livekit_barrage_item_back_color">#6622262E</color>
+    <color name="livekit_barrage_level_back_color">#FF1C66E5</color>
+    <color name="livekit_barrage_user_name_color">#FF80BEF6</color>
+
+    <!--    礼物的颜色-->
+    <color name="livekit_gift_two_fifth_black_color">#66000000</color>
+    
+    <color name="livekit_user_name_black_color">#6622262E</color>
+</resources>

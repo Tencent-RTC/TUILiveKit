@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.trtc.uikit.livekit">
+
+    <application>
+        <activity
+            android:name=".liveroom.view.audience.AudienceActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:windowSoftInputMode="adjustNothing"
+            android:exported="false" />
+
+        <provider
+            android:name="com.trtc.uikit.livekit.liveroom.core.ServiceInitializer"
+            android:authorities="${applicationId}.ServiceInitializer"
+            android:enabled="true"
+            android:exported="false" />
+    </application>
+
+</manifest>

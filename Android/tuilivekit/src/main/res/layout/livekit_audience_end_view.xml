@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/livekit_design_standard_g2">
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="@dimen/livekit_top_btn_size"
+        android:layout_height="@dimen/livekit_top_btn_size"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="58dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/livekit_ic_audience_exit"
+        android:importantForAccessibility="no" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="120dp"
+        android:text="@string/livekit_live_has_stop"
+        android:textColor="@color/livekit_design_standard_flowkit_white"
+        android:textSize="20sp"
+        tools:ignore="RelativeOverlap" />
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/iv_head"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_below="@+id/tv_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/livekit_ic_avatar"
+        app:round="40dp" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_head"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/livekit_design_standard_flowkit_white"
+        android:textSize="14sp"
+        tools:ignore="RelativeOverlap" />
+</RelativeLayout>

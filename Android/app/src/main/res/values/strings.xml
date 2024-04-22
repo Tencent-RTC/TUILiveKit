@@ -1,15 +1,29 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">视频互动</string>
-    <string name="toast_login_success">登录成功</string>
-    <string name="toast_login_fail">登录IM失败，所有功能不可用[%d]%s</string>
-    <string name="working">正在运行中</string>
-    <string name="enter_room">进入房间</string>
-    <string name="tv_please_input_room_number">请输入房间号</string>
-    <string name="create_live_room">创建房间</string>
-    <string name="room_number">房间号</string>
-    <string name="room_not_exist">当前房间不存在</string>
-    <string name="user_id">用户名</string>
-    <string name="hint_user_id">请输入登录的userId</string>
-    <string name="btn_login">登录</string>
+    <string name="app_name">TUILiveKit</string>
+    <string name="app_main_title">Tencent \n Real-Time \n Communication</string>
+    <string name="app_user_id">UserId</string>
+    <string name="app_hint_user_id">Enter a userId</string>
+    <string name="app_btn_login">Log In</string>
+    <string name="app_user_id_is_empty">UserId is empty</string>
+    <string name="app_toast_login_fail">Login failed</string>
+    <string name="app_title_register">Register</string>
+    <string name="app_hint_user_name">Enter a username</string>
+    <string name="app_tips_user_name">Chinese characters, letters, numbers and underscores, 2 – 20 words</string>
+    <string name="app_toast_register_success_and_logging_in">Registered successfully</string>
+    <string name="app_toast_failed_to_set">Failed: %s</string>
+
+    <string name="app_custom_name_1">Martijn</string>
+    <string name="app_custom_name_2">irfan</string>
+    <string name="app_custom_name_3">Rosanna</string>
+    <string name="app_custom_name_4">Franklyn</string>
+    <string name="app_custom_name_5">Maren</string>
+
+    <string name="app_stream_number">Stream Id</string>
+    <string name="app_please_input_stream_number">Enter a Stream ID</string>
+    <string name="app_join_live">Join live room</string>
+    <string name="app_start_live_stream">Start Live Streaming</string>
+    <string name="app_toast_login_success">Logged in</string>
+    <string name="app_room_list">Live Room List</string>
+    <string name="app_start_voice_live">Start Voice Live</string>
+    <string name="app_join_voice_room">Join voice room</string>
 </resources>

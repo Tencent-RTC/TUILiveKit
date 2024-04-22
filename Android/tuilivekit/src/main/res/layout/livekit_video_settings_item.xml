@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="56dp"
+    android:layout_height="56dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginStart="10dp"
+    android:layout_gravity="center"
+    android:gravity="center_horizontal"
+    android:id="@+id/rl_settings_item_root"
+    android:background="@drawable/livekit_bg_video_settings_item">
+    
+    <ImageView
+        android:id="@+id/item_image"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/item_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp"
+        android:textSize="12sp"
+        android:textColor="@color/livekit_design_standard_g6"/>
+
+</RelativeLayout>
