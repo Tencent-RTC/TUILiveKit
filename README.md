@@ -3,7 +3,7 @@ _[简体中文](README-zh_CN.md) | English_
 # Tencent Cloud · Online Live Streaming Solution
 
 
-<img src="Preview/logo.png" align="left" width=65 height=65>TTUILiveKit is a product suitable for interactive live streaming scenarios such as social entertainment, shopping, fitness, etc. By integrating this product, you can add features like interactive voice and video calls, gifting, room management, etc., to your App in just three steps within 30 minutes.
+<img src="Preview/logo.png" align="left" width=65 height=65>TUILiveKit is a product suitable for interactive live streaming scenarios such as social entertainment, shopping, fitness, etc. By integrating this product, you can add features like interactive voice and video calls, gifting, room management, etc., to your App in just three steps within 30 minutes.
 
 ## Product Features
 
