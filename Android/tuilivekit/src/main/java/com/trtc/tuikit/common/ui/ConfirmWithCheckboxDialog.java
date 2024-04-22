@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.tencent.qcloud.tuicore.util.ScreenUtil;
-import com.trtc.tuikit.common.R;
+import com.trtc.uikit.livekit.R;
 
 public class ConfirmWithCheckboxDialog extends Dialog {
     private Context                                mContext;
@@ -41,7 +41,7 @@ public class ConfirmWithCheckboxDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.common_confirm_dialog);
+        setContentView(R.layout.livekit_common_confirm_dialog);
         setCancelable(false);
         mDivideLine = findViewById(R.id.vertical_divider);
         initText();

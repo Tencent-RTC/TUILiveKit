@@ -16,7 +16,7 @@ import androidx.annotation.NonNull;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.trtc.tuikit.common.R;
+import com.trtc.uikit.livekit.R;
 
 public class PopupDialog extends BottomSheetDialog {
     private View                      mBaseView;
@@ -38,7 +38,7 @@ public class PopupDialog extends BottomSheetDialog {
         setOnShowListener(new OnShowListener() {
             @Override
             public void onShow(DialogInterface dialogInterface) {
-                mBottomSheet.setBackgroundResource(R.color.common_design_bottom_sheet_color);
+                mBottomSheet.setBackgroundResource(R.color.livekit_common_design_bottom_sheet_color);
             }
         });
     }

@@ -44,8 +44,7 @@ public class FunctionView extends LinearLayout {
     private void initBeautyButton() {
         findViewById(R.id.iv_beauty).setOnClickListener(view -> {
             if (mDialogBeautyList == null) {
-                mDialogBeautyList = new PopupDialog(mContext,
-                        com.trtc.tuikit.common.R.style.TUICommonBottomDialogTheme);
+                mDialogBeautyList = new PopupDialog(mContext, R.style.TUICommonBottomDialogTheme);
                 mDialogBeautyList.setOnDismissListener((dialogInterface) -> {
                 });
             }

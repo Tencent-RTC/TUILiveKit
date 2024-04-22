@@ -12,7 +12,6 @@ import com.tencent.qcloud.tuicore.TUIConstants;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
-import com.trtc.tuikit.common.system.ContextProvider;
 
 import java.util.Map;
 
@@ -34,9 +33,6 @@ public final class ServiceInitializer extends ContentProvider {
     public boolean onCreate() {
         TUICore.registerEvent(TUIConstants.TUILogin.EVENT_LOGIN_STATE_CHANGED,
                 TUIConstants.TUILogin.EVENT_SUB_KEY_USER_LOGIN_SUCCESS, mNotification);
-        if (getContext() != null) {
-            ContextProvider.setApplicationContext(this.getContext().getApplicationContext());
-        }
         return false;
     }
 
