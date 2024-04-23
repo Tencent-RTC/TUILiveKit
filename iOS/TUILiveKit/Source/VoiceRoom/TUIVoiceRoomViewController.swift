@@ -9,6 +9,7 @@ import UIKit
 
 import Combine
 import RTCRoomEngine
+import TUICore
 
 public struct VoiceRoomParams {
     public var name: String = ""
@@ -93,6 +94,7 @@ public class TUIVoiceRoomViewController: UIViewController {
     private func initializeOnViewDidiLoad() {
         initializeRoomState()
         subscribeNavigationState()
+        subscribeToast()
         handle(behavior: behavior)
         subscribeEnterRoomState()
     }
@@ -206,6 +208,24 @@ extension TUIVoiceRoomViewController {
                     default:
                         break
                 }
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func subscribeToast() {
+        store.toastSubject
+            .removeDuplicates()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] toast in
+                guard let self = self else { return }
+                var position = TUICSToastPositionBottom
+                switch toast.position {
+                    case .center:
+                        position = TUICSToastPositionCenter
+                    default:
+                        break
+                }
+                self.view.makeToast(toast.message, duration: toast.duration, position: position)
             }
             .store(in: &cancellables)
     }

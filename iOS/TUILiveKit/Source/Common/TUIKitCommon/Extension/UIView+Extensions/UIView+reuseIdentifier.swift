@@ -7,20 +7,16 @@
 
 import UIKit
 
-// MARK: - UICollectionViewCell 重用标识符
 extension UITableViewCell {
     
-    /// 获取Cell的重用标识符
     public class var cellReuseIdentifier: String {
         return "reuseId_\(self.description())"
     }
     
 }
 
-// MARK: - UICollectionViewCell 重用标识符
 extension UICollectionViewCell {
     
-    /// 获取Cell的重用标识符
     public class var cellReuseIdentifier: String {
         return "reuseId_\(self.description())"
     }

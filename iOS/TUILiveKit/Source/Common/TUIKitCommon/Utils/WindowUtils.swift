@@ -2,7 +2,7 @@
 //  WindowUtils.swift
 //  TUIKitCommon
 //
-//  Created by 于西巍 on 2023/10/16.
+//  Created by krabyu on 2023/10/16.
 //
 
 import Foundation

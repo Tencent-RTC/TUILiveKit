@@ -19,8 +19,6 @@ extension UIColor {
         )
     }
     
-    // 设置颜色值
-    // 通过 十六进制与alpha来设置颜色值  （ 样式：0xff00ff ）
     public convenience init(_ hex: Int, alpha: CGFloat = 1.0) {
         assert(0...0xFFFFFF ~= hex, "The color hex value  must between 0 to 0XFFFFFF")
         let red = (hex & 0xFF0000) >> 16
@@ -63,7 +61,6 @@ extension UIColor {
         self.init(red: red, green: green, blue: blue, alpha: alpha)
     }
     
-    // 颜色转化为图片
     public func trans2Image() -> UIImage {
         let rect = CGRect(x: 0, y: 0, width: 1.0, height: 1.0)
         UIGraphicsBeginImageContext(rect.size)
