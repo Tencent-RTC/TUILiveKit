@@ -54,7 +54,7 @@ public class TUIGiftListView extends BottomSheetDialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View bottomSheet = findViewById(com.google.android.material.R.id.design_bottom_sheet);
-        bottomSheet.setBackgroundResource(R.color.livekit_common_design_bottom_sheet_color);
+        bottomSheet.setBackgroundResource(com.trtc.tuikit.common.R.color.common_design_bottom_sheet_color);
     }
 
     public void setBalance(int balance) {
