@@ -20,10 +20,10 @@ _[简体中文](README-zh_CN.md) | English_
    - SDKSecretKey: Click **Copy SDKSecretKey**.
 
 ### Step 2. Build and run the sample app
-1. Clone thie repository
-   git clone git@github.com:Tencent-RTC/TUILiveKit.git
+1. Clone this repository
+   git clone https://github.com/Tencent-RTC/TUILiveKit.git
 2. Open the demo project `TUILiveKit` with Android Studio (3.5 or above). And find and open the 
-   `TUILiveKit/Android/debug/src/main/java/com/tencent/liteav/debug/GenerateTestUserSig.java`file.
+   `TUILiveKit/Android/debug/src/main/java/com/tencent/qcloud/tuikit/debug/GenerateTestUserSig.java`file.
 3. Set parameters in `GenerateTestUserSig.java` as follows:
    <ul>
    <li>SDKAPPID: 0 by default. Replace it with your actual `SDKAPPID`.</li>

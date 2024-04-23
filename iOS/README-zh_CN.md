@@ -25,7 +25,7 @@ _[English](README.md) | 简体中文_
 #### 1. 下载代码
 
 ```
-$ git clone git@github.com:Tencent-RTC/TUILiveKit.git
+$ git clone https://github.com/Tencent-RTC/TUILiveKit.git
 ```
 
 #### 2. 加载依赖库

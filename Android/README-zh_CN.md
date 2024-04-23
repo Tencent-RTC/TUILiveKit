@@ -20,8 +20,8 @@ _简体中文 | [English](README.md)_
    - SDKSecretKey：点击**复制SDKSecretKey**即可。
 ### 第二步：构建并运行应用程序
 1. 下载源码：
-   git clone git@github.com:Tencent-RTC/TUILiveKit.git
-2. 使用 Android Studio（3.5及以上的版本）打开源码工程`TUILiveKit` 并找到并打开`TUILiveKit/Android/debug/src/main/java/com/tencent/liteav/debug/GenerateTestUserSig.java`文件。
+   git clone https://github.com/Tencent-RTC/TUILiveKit.git
+2. 使用 Android Studio（3.5及以上的版本）打开源码工程`TUILiveKit` 并找到并打开`TUILiveKit/Android/debug/src/main/java/com/tencent/qcloud/tuikit/debug/GenerateTestUserSig.java`文件。
 3. 设置`GenerateTestUserSig.java`文件中的相关参数：
    <ul>
    <li>SDKAPPID：默认为 0 ，请设置为实际申请的SDKAPPID。</li>

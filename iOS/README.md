@@ -29,7 +29,7 @@ If you would like to try the sample app specifically fit to your usage, you can 
 #### 1. Clone this repository
 
 ```
-$ git clone git@github.com:Tencent-RTC/TUILiveKit.git
+$ git clone https://github.com/Tencent-RTC/TUILiveKit.git
 ```
 
 #### 2. Install dependencies

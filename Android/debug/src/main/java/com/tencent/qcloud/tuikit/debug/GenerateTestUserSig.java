@@ -45,7 +45,7 @@ public class GenerateTestUserSig {
      * You can view your `SDKAppId` after creating an application in the [Tencent Cloud IM console](https://console.cloud.tencent.com/avc).
      * SDKAppID uniquely identifies a Tencent Cloud account.
      */
-    public static final int SDKAPPID = PLACEHOLDER;
+    public static final int SDKAPPID = 0;
 
 
     /**
@@ -69,7 +69,7 @@ public class GenerateTestUserSig {
      * to prevent key disclosure and traffic stealing.
      * Documentation: https://cloud.tencent.com/document/product/269/32688#Server
      */
-    private static final String SECRETKEY = "PLACEHOLDER";
+    private static final String SECRETKEY = "";
 
 
     /**
