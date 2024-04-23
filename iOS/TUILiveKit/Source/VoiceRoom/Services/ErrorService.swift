@@ -81,7 +81,7 @@ extension TUIError {
             case .startScreenSharingFailed:
                 return .localized("live.error.startScreenSharingFailed")
             case .roomIdNotExist:
-                return .localized("llive.error.roomId.notExist")
+                return .localized("live.error.roomId.notExist")
             case .operationInvalidBeforeEnterRoom:
                 return .localized("live.error.operation.invalid.beforeEnterRoom")
             case .exitNotSupportedForRoomOwner:

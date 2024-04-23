@@ -99,8 +99,8 @@ class LoginRootView: UIView {
             return
         }
         isViewReady = true
-        constructViewHierarchy() // 视图层级布局
-        activateConstraints() // 生成约束（此时有可能拿不到父视图正确的frame）
+        constructViewHierarchy()
+        activateConstraints()
         bindInteraction()
     }
     

@@ -171,7 +171,6 @@ class VoiceRoomRootView: UIView {
         subscribeTopViewState()
         seatListView.delegate = self
         subscribeSeatState()
-        subscribeToast()
         subscribeCustomEvent()
     }
     
@@ -259,24 +258,6 @@ extension VoiceRoomRootView {
             .assign(to: \SeatListView.seatCount, on: seatListView)
             .store(in: &cancellables)
         
-    }
-    
-    private func subscribeToast() {
-        self.store.toastSubject
-            .removeDuplicates()
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] toast in
-                guard let self = self else { return }
-                var position = TUICSToastPositionBottom
-                switch toast.position {
-                    case .center:
-                        position = TUICSToastPositionCenter
-                    default:
-                        break
-                }
-                self.makeToast(toast.message, duration: toast.duration, position: position)
-            }
-            .store(in: &cancellables)
     }
     
     private func subscribeCustomEvent() {

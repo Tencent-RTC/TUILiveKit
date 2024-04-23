@@ -139,15 +139,12 @@ extension VoiceRoomStore: VoiceRoomStoreProvider {
 
 extension VoiceRoomStore {
     private func handle(error: ErrorService.OperateError) {
-        if error.actions.isEmpty {
-            let toast = ToastInfo(message: error.localizedMessage, position: .bottom, duration: 2.0)
-            toastSubject.send(toast)
-        } else {
-            error.actions.forEach { action in
-                guard let action = action as? IdentifiableAction else { return }
-                if !action.id.contains(ErrorActions.key) {
-                    dispatch(action: action)
-                }
+        let toast = ToastInfo(message: error.localizedMessage, position: .bottom, duration: 2.0)
+        toastSubject.send(toast)
+        error.actions.forEach { action in
+            guard let action = action as? IdentifiableAction else { return }
+            if !action.id.contains(ErrorActions.key) {
+                dispatch(action: action)
             }
         }
     }

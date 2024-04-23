@@ -14,8 +14,7 @@ Pod::Spec.new do |spec|
   spec.xcconfig      = { 'VALID_ARCHS' => 'armv7 arm64 x86_64' }
   spec.swift_version = '5.0'
 
-  spec.source                = { :git => 'https://github.com/tencentyun/TUILiveKit.git',
-:tag => "v#{spec.version}" }
+  spec.source                = { :path => './' }
 
   spec.dependency 'SnapKit'
   spec.dependency 'TUICore'

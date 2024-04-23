@@ -26,7 +26,6 @@ public class Observable<Type> {
         }
     }
     
-    // MARK: - Properties  利用Swift 的didSet 特性把值回调给callback
     public var value: Type {
         didSet {
             removeNilObserverCallbacks()
@@ -39,7 +38,6 @@ public class Observable<Type> {
         callbacks = callbacks.filter { $0.observer != nil }
     }
     
-    // MARK: 回调给callback 实现闭包回调
     private func notifyCallbacks(value: Type, option: ObservableOptions) {
         let callbacksToNotify = callbacks.filter { $0.options.contains(option) }
         callbacksToNotify.forEach { $0.closure(value, option) }
@@ -53,13 +51,6 @@ public class Observable<Type> {
     // MARK: - Managing Observers
     private var callbacks: [Callback] = []
     
-    /// 添加观察者
-    ///
-    /// - Parameters:
-    ///   - observer: 观察者
-    ///   - removeIfExists: 如果观察者存在需要移除
-    ///   - options: 被观察者
-    ///   - closure: 回调
     public func addObserver(
         _ observer: AnyObject,
         removeIfExists: Bool = true,

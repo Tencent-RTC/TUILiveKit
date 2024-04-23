@@ -35,9 +35,6 @@ public let deviceSafeBottomHeight : CGFloat = {
 
 extension CGFloat {
     
-    /// 375设计图中的尺寸
-    ///
-    /// - Returns: 最终结果缩放结果
     public func scale375Width(exceptPad: Bool = true) -> CGFloat {
         if UIDevice.current.userInterfaceIdiom == .pad {
             return exceptPad ? self * 1.5 : self * (screenWidth / 375.00)
@@ -54,9 +51,7 @@ extension CGFloat {
 }
 
 extension Int {
-    /// 375设计图中的尺寸
-    ///
-    /// - Returns: 最终结果缩放结果
+
     public func scale375Width(exceptPad: Bool = true) -> CGFloat {
         return CGFloat(self).scale375Width()
     }

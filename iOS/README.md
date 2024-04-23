@@ -2,7 +2,7 @@
 
 _English | [简体中文](README-zh_CN.md)_
 
-<img src="https://qcloudimg.tencent-cloud.cn/raw/ec034fc6e4cf42cae579d32f5ab434a1.png" align="left" width=120 height=120>TUILiveKit is an interactive live streaming UI component launched by Tencent Cloud. By integrating this component, you can add interactive live streaming features to your app with just a few lines of code. It supports features such as interactive co-hosting, chat barrage, heartbeats, interactive gifts, and sound effects transformation.
+<img src="https://qcloudimg.tencent-cloud.cn/raw/ec034fc6e4cf42cae579d32f5ab434a1.png" align="left" width=65 height=65>TUILiveKit is an interactive live streaming UI component launched by Tencent Cloud. By integrating this component, you can add interactive live streaming features to your app with just a few lines of code. It supports features such as interactive co-hosting, chat barrage, heartbeats, interactive gifts, and sound effects transformation.
 
 ## Before getting started
 
@@ -19,20 +19,17 @@ If you would like to try the sample app specifically fit to your usage, you can 
 
 ### Create an application.
 
-1. Go to the [Application management](https://console.cloud.tencent.com/trtc/app) page in the TRTC console, select **Create Application**, enter an application name such as `TUIKitDemo`, and click **Confirm**.
-2. Click **Application Information** on the right of the application as shown below:
-   <img src="https://qcloudimg.tencent-cloud.cn/raw/62f58d310dde3de2d765e9a460b8676a.png" width="900">
-3. On the application information page, note the `SDKAppID` and key as shown below:
-   <img src="https://qcloudimg.tencent-cloud.cn/raw/bea06852e22a33c77cb41d287cac25db.png" width="900">
-
-> ! This feature uses two basic PaaS services of Tencent Cloud: [TRTC](https://www.tencentcloud.com/document/product/647/35078) and [IM](https://www.tencentcloud.com/document/product/1047/33513). When you activate TRTC, IM will be activated automatically. IM is a value-added service.
+1. Go to the [Application management](https://console.trtc.io/app) page in the TRTC console, select **Create Application**, enter an application name such as `TUIKitDemo`, and click **Confirm**.
+2. Click **Application Information** on the right of the application, note the `SDKAppID` and key:
+   - SDKAppID: A number in parentheses after 'TUIKitDemo'.
+   - SDKSecretKey: Click **Copy SDKSecretKey**.
 
 ### Build and run the example
 
 #### 1. Clone this repository
 
 ```
-$ git clone git@github.com:tencentyun/TUILiveKit.git
+$ git clone git@github.com:Tencent-RTC/TUILiveKit.git
 ```
 
 #### 2. Install dependencies

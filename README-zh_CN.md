@@ -2,7 +2,7 @@ _简体中文 | [English](README.md)_
 
 # 腾讯云 · 在线直播解决方案
 
-<img src="Preview/logo.png" align="left" width=65 height=65>TUILiveKit是一款适用于社交娱乐、购物、健身等互动直播场景的产品，通过集成该产品，仅需三步，30分钟内就可以为您的App添加互动连麦、送礼、房间管理等功能。
+<img src="https://qcloudimg.tencent-cloud.cn/raw/ec034fc6e4cf42cae579d32f5ab434a1.png" align="left" width=65 height=65>TUILiveKit是一款适用于社交娱乐、购物、健身等互动直播场景的产品，通过集成该产品，仅需三步，30分钟内就可以为您的App添加互动连麦、送礼、房间管理等功能。
 
 ## 产品特性
 

@@ -2,7 +2,7 @@
 //  String+addIntervalSpace.swift
 //  RTCubeApp
 //
-//  Created by 唐佳宁 on 2023/8/9.
+//  Created by krabyuon 2023/8/9.
 //  Copyright © 2023 Tencent. All rights reserved.
 //
 

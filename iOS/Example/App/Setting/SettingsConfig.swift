@@ -2,7 +2,7 @@
 //  SettingsConfig.swift
 //  TUILiveKitApp
 //
-//  Created by 于西巍 on 2023/10/18.
+//  Created by krabyu on 2023/10/18.
 //
 
 import Foundation

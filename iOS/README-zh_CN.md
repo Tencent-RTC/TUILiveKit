@@ -2,7 +2,7 @@
 
 _[English](README.md) | 简体中文_
 
-<img src="https://qcloudimg.tencent-cloud.cn/raw/ec034fc6e4cf42cae579d32f5ab434a1.png" align="left" width=120 height=120>TUILiveKit 是腾讯云推出一款互动直播的含 UI 组件，通过集成该组件，您只需要编写几行代码就可以为您的 App 添加互动直播功能，并且支持互动连麦、聊天弹幕、心动点赞、互动礼物以及音效变声等功能。
+<img src="https://qcloudimg.tencent-cloud.cn/raw/ec034fc6e4cf42cae579d32f5ab434a1.png" align="left" width=65 height=65>TUILiveKit 是腾讯云推出一款互动直播的含 UI 组件，通过集成该组件，您只需要编写几行代码就可以为您的 App 添加互动直播功能，并且支持互动连麦、聊天弹幕、心动点赞、互动礼物以及音效变声等功能。
 
 ## 环境准备
 
@@ -15,20 +15,17 @@ _[English](README.md) | 简体中文_
 
 ### 创建应用
 
-1.一键进入腾讯云实时音视频控制台的[应用管理](https://console.cloud.tencent.com/trtc/app)界面，选择创建应用，输入应用名称，例如 `TUIKitDemo`，单击 **创建**；
-2. 点击对应应用条目后**应用信息**，具体位置如下下图所示：
-   <img src="https://qcloudimg.tencent-cloud.cn/raw/62f58d310dde3de2d765e9a460b8676a.png" width="900">
-3. 进入应用信息后，按下图操作，记录SDKAppID和密钥：
-   <img src="https://qcloudimg.tencent-cloud.cn/raw/bea06852e22a33c77cb41d287cac25db.png" width="900">
-
-> ! 本功能同时使用了腾讯云 [实时音视频 TRTC](https://cloud.tencent.com/document/product/647/16788) 和 [即时通信 IM](https://cloud.tencent.com/document/product/269) 两个基础 PaaS 服务，开通实时音视频后会同步开通即时通信 IM 服务。 即时通信 IM 属于增值服务，详细计费规则请参见 [即时通信 IM 价格说明](https://cloud.tencent.com/document/product/269/11673)。
+1. 一键进入腾讯云实时音视频控制台的[应用管理](https://console.trtc.io/app)界面，选择创建应用，输入应用名称，例如 `TUIKitDemo`，单击 **创建**；
+2. 点击对应应用条目后**应用信息**，记录 SDKAppID 和密钥：
+   - SDKAppID：`TUIKitDemo`后括号里的一串数字。
+   - SDKSecretKey：点击**复制SDKSecretKey**即可。
 
 ### 构建并运行示例工程
 
 #### 1. 下载代码
 
 ```
-$ git clone git@github.com:tencentyun/TUILiveKit.git
+$ git clone git@github.com:Tencent-RTC/TUILiveKit.git
 ```
 
 #### 2. 加载依赖库

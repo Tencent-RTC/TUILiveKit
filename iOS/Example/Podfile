@@ -9,7 +9,7 @@ target 'TUILiveKitApp' do
   # Tools Library
   pod 'Alamofire'
   # Local Library
-  pod 'TUILiveKit', :path => '../'
+  pod 'TUILiveKit', :path => '../TUILiveKit'
 end
 
 post_install do |installer|

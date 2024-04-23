@@ -122,7 +122,7 @@ class PopupPanelView: UIView {
 
 public class PopupPanelController: UIViewController {
     private var rootView: PopupPanelView
-    private var transitionAnimator: AlertTransitionAnimator? // 转场控制器
+    private var transitionAnimator: AlertTransitionAnimator?
     init(rootView: PopupPanelView) {
         self.rootView = rootView
         super.init(nibName: nil, bundle: nil)
