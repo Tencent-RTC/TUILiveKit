@@ -6,9 +6,9 @@ _简体中文 | [English](README.md)_
 
 ## 环境准备
 
-- 最低兼容 Android 4.1（SDK API Level 16），建议使用 Android 5.0 （SDK API Level 21）及以上版本
-- Android Studio 3.5及以上版本
-- App 要求 Android 4.1及以上设备
+- Android 5.0（SDK API Level 21）及以上版本。
+- Gradle 4.2.1 及以上的版本。
+- Android 5.0 及以上的手机设备。
 
 ## 运行示例
 
@@ -33,4 +33,3 @@ _简体中文 | [English](README.md)_
 1. 使用两台手机（A、B）用字符串作为自己的用户ID登录应用,如果第一次登录需要添加用户名
 2. 手机A上的用户点击开始直播按钮发起直播（注意选择视频直播或者语音直播）
 3. 手机B上的用户输入手机A上用户的用户ID，点击加入直播或者加入语聊房观看直播
-
