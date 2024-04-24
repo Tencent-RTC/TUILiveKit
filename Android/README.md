@@ -6,9 +6,9 @@ _[简体中文](README-zh_CN.md) | English_
 
 ## Before getting started
 
-- Android 4.1 (SDK API level 16) or above; Android 5.0 (SDK API level 21) or above is recommended.
-- Android Studio 3.5 or above
-- Devices with Android 4.1 or above
+- Android 5.0 (SDK API level 21) or above.
+- Android Studio 4.2.1 or above
+- Devices with Android 5.0 or above
 
 ## Getting started
 
