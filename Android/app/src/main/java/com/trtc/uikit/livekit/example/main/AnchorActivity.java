@@ -19,9 +19,9 @@ public class AnchorActivity extends AppCompatActivity {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        String liveRoomID = TUILogin.getUserId();
+        String liveRoomId = TUILogin.getUserId();
         String voiceRoomId = TUILogin.getUserId();
-        TUILivePreviewFragment anchorFragment = new TUILivePreviewFragment(liveRoomID, voiceRoomId);
+        TUILivePreviewFragment anchorFragment = new TUILivePreviewFragment(liveRoomId, voiceRoomId);
         fragmentTransaction.add(R.id.fl_container, anchorFragment);
         fragmentTransaction.commit();
     }

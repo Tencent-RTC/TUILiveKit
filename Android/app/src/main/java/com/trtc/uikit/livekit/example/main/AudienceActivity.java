@@ -16,7 +16,7 @@ public class AudienceActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.app_activity_audiencet);
+        setContentView(R.layout.app_activity_audience);
         mRoomId = getIntent().getStringExtra("roomId");
 
         FragmentManager fragmentManager = getSupportFragmentManager();
