@@ -29,7 +29,7 @@
     <string name="livekit_accept">同意</string>
     <string name="livekit_reject">拒绝</string>
     <string name="livekit_enable_audience_request_link">允许观众申请连麦</string>
-    <string name="livekit_link_mic_up_title">当前麦位(%d/8)</string>
+    <string name="livekit_link_mic_up_title">当前麦位(%d/%d)</string>
     <string name="livekit_link_mic_down_title">连麦申请(%d)</string>
 
     <string name="livekit_title_link_mic_selector">选择连麦方式</string>

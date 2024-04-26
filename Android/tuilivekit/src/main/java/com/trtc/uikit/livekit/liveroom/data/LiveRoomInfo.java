@@ -37,6 +37,7 @@ public class LiveRoomInfo {
     public RoomConfig                                   roomConfig          = new RoomConfig();
     public CopyOnWriteArraySet<String>                  hasVideoList        = new CopyOnWriteArraySet<>();
     public CopyOnWriteArraySet<String>                  hasAudioList        = new CopyOnWriteArraySet<>();
+    public int                                          maxSeatCount        = 1;
 
     public LiveRoomInfo(String roomId) {
         this.roomId = roomId;

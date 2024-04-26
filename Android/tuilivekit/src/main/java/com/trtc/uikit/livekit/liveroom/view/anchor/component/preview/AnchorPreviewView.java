@@ -94,7 +94,6 @@ public class AnchorPreviewView extends ConstraintLayout {
         roomInfo.roomType = TUIRoomDefine.RoomType.LIVE;
         roomInfo.seatMode = TUIRoomDefine.SeatMode.APPLY_TO_TAKE;
         roomInfo.isSeatEnabled = true;
-        roomInfo.maxSeatCount = 9;
         TUICore.notifyEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_START_LIVE_ROOM, null);
         mRoomEngineService.createRoom(roomInfo, new TUIRoomDefine.ActionCallback() {
             @Override
