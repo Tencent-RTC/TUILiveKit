@@ -11,7 +11,7 @@ import Combine
 
 class ListMenuView: UIView {
     private var isViewReady: Bool = false
-    private var cancellables = Set<AnyCancellable>()
+    private var cancellableSet = Set<AnyCancellable>()
     
     private var height: CGFloat {
         return CGFloat(menus.count * 55)

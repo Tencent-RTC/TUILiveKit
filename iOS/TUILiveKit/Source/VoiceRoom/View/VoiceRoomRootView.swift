@@ -20,14 +20,14 @@ class VoiceRoomRootView: UIView {
     // TopView Status
     lazy var roomName = self.store.select(RoomSelectors.getRoomName)
     lazy var memberCount = self.store.select(RoomSelectors.getMemberCount)
-    lazy var couverUrl = self.store.select(RoomSelectors.getRoomCoverUrl)
+    lazy var coverUrl = self.store.select(RoomSelectors.getRoomCoverUrl)
     lazy var memberAvatars = self.store.select(UserSelectors.getMemberAvatars)
     
     // SeatList Status
     lazy var seatCount = self.store.select(SeatSelectors.getSeatCount)
     
     private var isViewReady: Bool = false
-    private var cancellables = Set<AnyCancellable>()
+    private var cancellableSet = Set<AnyCancellable>()
     private let giftCacheService = GiftCacheService()
     
     private var isOwner: Bool {
@@ -226,37 +226,37 @@ extension VoiceRoomRootView {
                         self.seatListView.isHidden = true
                 }
             }
-            .store(in: &cancellables)
+            .store(in: &cancellableSet)
     }
     
     private func subscribeTopViewState() {
         roomName
             .receive(on: RunLoop.main)
             .assign(to: \TopView.roomName, on: topView)
-            .store(in: &cancellables)
-        couverUrl
+            .store(in: &cancellableSet)
+        coverUrl
             .receive(on: RunLoop.main)
             .sink(receiveValue: { [weak self] url in
                 guard let self = self else { return }
                 self.topView.roomCoverUrl = url
                 self.backgroundImageView.kf.setImage(with: url)
             })
-            .store(in: &cancellables)
+            .store(in: &cancellableSet)
         memberCount
             .receive(on: RunLoop.main)
             .assign(to: \TopView.memberCount, on: topView)
-            .store(in: &cancellables)
+            .store(in: &cancellableSet)
         memberAvatars
             .receive(on: RunLoop.main)
             .assign(to: \TopView.memberAvatars, on: topView)
-            .store(in: &cancellables)
+            .store(in: &cancellableSet)
     }
     
     private func subscribeSeatState() {
         seatCount
             .receive(on: RunLoop.main)
             .assign(to: \SeatListView.seatCount, on: seatListView)
-            .store(in: &cancellables)
+            .store(in: &cancellableSet)
         
     }
     
@@ -271,7 +271,7 @@ extension VoiceRoomRootView {
                     showEndView()
                 }
             }
-            .store(in: &cancellables)
+            .store(in: &cancellableSet)
     }
 }
 
@@ -303,7 +303,7 @@ extension VoiceRoomRootView: SeatListViewDelegate {
             .sink(receiveValue: { [weak seatView] seatInfo in
                 seatView?.seatInfo = seatInfo
             })
-            .store(in: &seatView.cancellables)
+            .store(in: &seatView.cancellableSet)
         let fullSeatPublisher = seatInfoPublisher
             .filter { !$0.userId.isEmpty }
             .map { $0.userId }
@@ -318,7 +318,7 @@ extension VoiceRoomRootView: SeatListViewDelegate {
                     seatView.isAudioMuted = !users.contains(seatInfo.userId)
                 }
             }
-            .store(in: &seatView.cancellables)
+            .store(in: &seatView.cancellableSet)
         let timeInterval :DispatchQueue.SchedulerTimeType.Stride = .seconds(1)
         let userVolumePublisher = store.select(UserSelectors.getSpeakingUsers)
         fullSeatPublisher
@@ -330,7 +330,7 @@ extension VoiceRoomRootView: SeatListViewDelegate {
                     seatView.isSpeaking = users.contains(userId)
                 }
             }
-            .store(in: &seatView.cancellables)
+            .store(in: &seatView.cancellableSet)
     }
     
     func seatListView(_ seatListView: SeatListView, didSelectSeatAt index: Int) {

@@ -8,7 +8,7 @@ _[简体中文](README-zh_CN.md) | English_
 ## Product Features
 
 <p align="center">
-  <img src="Preview/tuilivekit-zh.png"/>
+  <img src="https://github.com/Tencent-RTC/TUILiveKit/blob/main/Preview/tuilivekit.png"/>
 </p>
 
 - **Comprehensive UI Interaction**：We provide an open-source component TUILiveKit with UI, which can save you 90% of development time. You only need to spend 30 minutes to have an online live streaming app similar to TikTok.
@@ -40,4 +40,4 @@ Here, we take the UI-included integration TUILiveKit as an example, which is als
 - Welcome to submit [**issue**](https://github.com/tencentyun/TUILiveRoom/issues),  
 - Welcome to join our Telegram Group to communicate with our professional engineers! We are more than happy to hear from you，Click to join: https://t.me/+EPk6TMZEZMM5OGY1
 Or scan the QR code 
-<img src="Preview/telegram-code.jpg"/>
+<img src="https://github.com/Tencent-RTC/TUILiveKit/blob/main/Preview/telegram-code.jpg"/>

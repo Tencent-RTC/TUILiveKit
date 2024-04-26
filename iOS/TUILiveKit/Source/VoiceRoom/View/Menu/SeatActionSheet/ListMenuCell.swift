@@ -13,7 +13,7 @@ class ListMenuCell: UITableViewCell {
     static let identifier = "ListMenuCell"
     
     private var isViewReady: Bool = false
-    private var cancellables = Set<AnyCancellable>()
+    private var cancellableSet = Set<AnyCancellable>()
 
     @Published var title: String?
     @Published var icon: String = ""
@@ -77,7 +77,7 @@ class ListMenuCell: UITableViewCell {
         $title
             .receive(on: RunLoop.main)
             .assign(to: \UILabel.text, on: menuLabel)
-            .store(in: &cancellables)
+            .store(in: &cancellableSet)
         $icon
             .receive(on: RunLoop.main)
             .sink { [weak self] value in
@@ -87,7 +87,7 @@ class ListMenuCell: UITableViewCell {
                 guard !value.isEmpty else { return }
                 self.iconImageView.image = .liveBundleImage(value)
             }
-            .store(in: &cancellables)
+            .store(in: &cancellableSet)
     }
 }
 

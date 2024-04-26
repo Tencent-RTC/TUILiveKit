@@ -56,6 +56,10 @@ open class Store<State, Environment>: ObservableObject {
         reducers.forEach(register(reducer:))
     }
 
+    deinit {
+        debugPrint("deinit \(type(of: self))")
+    }
+    
     // MARK: - Dispatching
 
     /**

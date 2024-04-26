@@ -17,8 +17,12 @@ class ServiceCenter: NSObject {
     
     @WeakLazyInjected var store: VoiceRoomStoreProvider?
     
+    deinit {
+        debugPrint("deinit \(type(of: self))")
+    }
+    
     private let volumeSubject = CurrentValueSubject<Set<String>, Never>([])
-    private var cancellables: Set<AnyCancellable> = []
+    private var cancellableSet: Set<AnyCancellable> = []
     override init() {
         super.init()
         TUIRoomEngine.sharedInstance().addObserver(self)
@@ -34,7 +38,7 @@ class ServiceCenter: NSObject {
                 guard let store = self?.store else { return }
                 store.dispatch(action: UserActions.onUserVoiceVolumeChanged(payload: speakUsers))
             }
-            .store(in: &cancellables)
+            .store(in: &cancellableSet)
     }
     
 }

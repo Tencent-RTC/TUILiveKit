@@ -16,7 +16,7 @@ public struct VoiceRoomParams {
     public var isMuteMicrophone: Bool = true
     public var isSoundOnSpeaker: Bool = true
     
-    public var seatCount: Int = 8
+    public var seatCount: Int = 0
     public var seatMode: TUISeatMode = .applyToTake
 }
 
@@ -51,7 +51,7 @@ public class TUIVoiceRoomViewController: UIViewController {
     private lazy var rootView: VoiceRoomRootView = {
         return VoiceRoomRootView(frame: UIScreen.main.bounds)
     }()
-    private var cancellables = Set<AnyCancellable>()
+    private var cancellableSet = Set<AnyCancellable>()
     private var popupViewController: UIViewController?
     
     // MARK: - Public function
@@ -122,7 +122,7 @@ public class TUIVoiceRoomViewController: UIViewController {
         roomInfo.name = roomState.name
         roomInfo.isSeatEnabled = true
         roomInfo.seatMode = roomState.seatMode
-        roomInfo.maxSeatCount = 8
+        roomInfo.maxSeatCount = roomState.seatCount
         roomInfo.roomType = .live
         let config = generateActionParamTuple(param: roomInfo, actions: [])
         store.dispatch(action: RoomActions.start(payload: config))
@@ -193,7 +193,7 @@ extension TUIVoiceRoomViewController {
                 guard let self = self else { return }
                 self.handleMenuPresentEvent(menu: menu)
             }
-            .store(in: &cancellables)
+            .store(in: &cancellableSet)
     }
     
     private func subscribeEnterRoomState() {
@@ -209,7 +209,7 @@ extension TUIVoiceRoomViewController {
                         break
                 }
             }
-            .store(in: &cancellables)
+            .store(in: &cancellableSet)
     }
     
     private func subscribeToast() {
@@ -227,7 +227,7 @@ extension TUIVoiceRoomViewController {
                 }
                 self.view.makeToast(toast.message, duration: toast.duration, position: position)
             }
-            .store(in: &cancellables)
+            .store(in: &cancellableSet)
     }
     
     private func didEnterRoom() {

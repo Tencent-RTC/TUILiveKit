@@ -7,7 +7,7 @@ _简体中文 | [English](README.md)_
 ## 产品特性
 
 <p align="center">
-  <img src="Preview/tuilivekit-zh.png"/>
+  <img src="https://github.com/Tencent-RTC/TUILiveKit/blob/main/Preview/tuilivekit-zh.png"/>
 </p>
 
 - **完善的 UI 交互**：我们提供含 UI 的开源组件 TUILiveKit，可以节省您 90% 开发时间，您只需要花费30分钟就可以拥有一款类似抖音的在线直播应用。
