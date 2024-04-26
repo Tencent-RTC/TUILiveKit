@@ -12,7 +12,7 @@ import Combine
 
 class BottomMenuView: UIView {
     private var isViewReady: Bool = false
-    private var cancellables = Set<AnyCancellable>()
+    private var cancellableSet = Set<AnyCancellable>()
     private let buttonSliceIndex: Int = 1
     
     private let maxMenuButtonNumber = 4
@@ -76,7 +76,7 @@ class BottomMenuView: UIView {
                 guard let self = self else { return }
                 self.updateButtons(menus: menus)
             }
-            .store(in: &cancellables)
+            .store(in: &cancellableSet)
     }
     
     private func setupStyle() {
@@ -109,7 +109,7 @@ class BottomMenuView: UIView {
         button.setTitle(item.normalTitle, for: .normal)
         button.setTitle(item.selectTitle, for: .selected)
         button.tag = index + 1_000
-        item.bindStateClosure?(button, &cancellables)
+        item.bindStateClosure?(button, &cancellableSet)
         return button
     }
 }

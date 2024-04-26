@@ -34,7 +34,7 @@ class SeatApplicationListView: UIView {
     lazy var applicationCount = self.store.select(SeatSelectors.getSeatApplicationCount)
     lazy var userMap = self.store.select(SeatSelectors.getApplicationUserMap)
     
-    private var cancellables = Set<AnyCancellable>()
+    private var cancellableSet = Set<AnyCancellable>()
     private var isViewReady: Bool = false
     private let backButton: UIButton = {
         let view = UIButton(type: .system)
@@ -112,7 +112,7 @@ extension SeatApplicationListView {
                 guard let self = self else { return }
                 self.contentTableView.reloadData()
             }
-            .store(in: &cancellables)
+            .store(in: &cancellableSet)
     }
     
     private func setupStyle() {
@@ -160,6 +160,7 @@ extension SeatApplicationListView: UITableViewDataSource {
             }
         } else {
             if let seatApplicationCell = cell as? SeatApplicationCell {
+                seatApplicationCell.selectionStyle = .none
                 bindStateTo(seatApplicationCell: seatApplicationCell, at: indexPath.row)
             }
         }
@@ -191,7 +192,7 @@ extension SeatApplicationListView {
                     cell.userAvatar = user.avatarUrl
                 }
             }
-            .store(in: &seatApplicationCell.cancellables)
+            .store(in: &seatApplicationCell.cancellableSet)
     }
 }
 

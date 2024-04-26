@@ -55,7 +55,8 @@ public class TUILivePreviewFragment extends Fragment implements ITUINotification
         liveRoomTransaction.commit();
 
         LiveDefine.RoomParams params = new LiveDefine.RoomParams();
-        params.maxSeatCount = 8;
+        //The default value is the maximum number of seat supported by the package
+        params.maxSeatCount = 0;
         params.seatMode = TUIRoomDefine.SeatMode.APPLY_TO_TAKE;
         params.roomName = TUILogin.getNickName();
         mTUIVoiceRoomFragment = new TUIVoiceRoomFragment(mVoiceRoomId, LiveDefine.RoomBehavior.PREPARE_CREATE, params);

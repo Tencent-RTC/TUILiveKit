@@ -13,6 +13,10 @@ typealias InternalError = ErrorService.OperateError
 
 class ErrorService {
     
+    deinit {
+        debugPrint("deinit \(type(of: self))")
+    }
+    
     /// OperateError
     /// - property:
     ///     - error: TUIError, RoomEngine throw.

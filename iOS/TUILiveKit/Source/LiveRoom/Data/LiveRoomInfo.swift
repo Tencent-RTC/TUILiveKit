@@ -20,6 +20,7 @@ class LiveRoomInfo {
     let linkingAudienceList: Observable<[UserInfo]> = Observable([])
     let roomConfig: RoomConfig = RoomConfig()
     let userLiveStatus: Observable<UserLiveStatus> = Observable(.none)
+    var maxSeatCount:Int = 0
     var giftIncome:Int = 0
     var giftPeopleMap:[String:String] = [:]
     var createTime:TimeInterval = 0

@@ -144,7 +144,7 @@ extension MenuDataCreator {
             store.dispatch(action: NavigatorActions.navigatorTo(payload: .seatApplication))
         }
         
-        linkMic.bindStateClosure = { button, cancellables in
+        linkMic.bindStateClosure = { button, cancellableSet in
             guard let store = self.store else { return }
             store
                 .select(SeatSelectors.getSeatApplicationCount)
@@ -153,7 +153,7 @@ extension MenuDataCreator {
                     return count == 0
                 }
                 .assign(to: \MenuButton.redDot.isHidden, on: button)
-                .store(in: &cancellables)
+                .store(in: &cancellableSet)
         }
         menus.append(linkMic)
         var music = ButtonMenuInfo(normalIcon: "live_music_icon")
@@ -183,14 +183,14 @@ extension MenuDataCreator {
                 }
             }
         }
-        linkMic.bindStateClosure = { button, cancellables in
+        linkMic.bindStateClosure = { button, cancellableSet in
             guard let store = self.store else { return }
             store
                 .select(SeatSelectors.getMySeatApplicationId)
                 .receive(on: RunLoop.main)
                 .map { !$0.isEmpty }
                 .assign(to: \MenuButton.isSelected, on: button)
-                .store(in: &cancellables)
+                .store(in: &cancellableSet)
             store
                 .select(UserSelectors.isOnSeat)
                 .receive(on: RunLoop.main)
@@ -198,7 +198,7 @@ extension MenuDataCreator {
                     let imageName = isOnSeat ? "live_linked_icon" : "live_connection_icon"
                     button.setImage(.liveBundleImage(imageName), for: .normal)
                 }
-                .store(in: &cancellables)
+                .store(in: &cancellableSet)
         }
         menus.append(linkMic)
         var gift = ButtonMenuInfo(normalIcon: "live_gift_icon", normalTitle: "")

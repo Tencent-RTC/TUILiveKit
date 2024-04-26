@@ -12,6 +12,10 @@ import Combine
 class RoomService {
     private let engine = TUIRoomEngine.sharedInstance()
     
+    deinit {
+        debugPrint("deinit \(type(of: self))")
+    }
+    
     func start(roomInfo: TUIRoomInfo) -> AnyPublisher<TUIRoomInfo, InternalError> {
         return createRoom(info: roomInfo)
             .flatMap({ [weak self] () -> AnyPublisher<TUIRoomInfo, InternalError> in

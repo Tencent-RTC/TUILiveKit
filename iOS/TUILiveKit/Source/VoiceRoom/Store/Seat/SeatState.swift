@@ -9,16 +9,7 @@ import Foundation
 import RTCRoomEngine
 
 struct SeatState: Encodable {
-    var seatList: [SeatInfo] = [
-        SeatInfo(),
-        SeatInfo(),
-        SeatInfo(),
-        SeatInfo(),
-        SeatInfo(),
-        SeatInfo(),
-        SeatInfo(),
-        SeatInfo(),
-    ]
+    var seatList: [SeatInfo] = []
     
     var seatApplications: [SeatApplication] = []
     var seatApplicationUserMap: [String: User] = [:]

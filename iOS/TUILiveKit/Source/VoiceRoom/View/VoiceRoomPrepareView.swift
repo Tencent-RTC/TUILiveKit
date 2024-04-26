@@ -15,7 +15,7 @@ protocol VoiceRoomPrepareViewDelegate: AnyObject {
 class VoiceRoomPrepareView: UIView {
     
     private var isViewReady: Bool = false
-    private var cancellables = Set<AnyCancellable>()
+    private var cancellableSet = Set<AnyCancellable>()
     
     @Injected var store: VoiceRoomStoreProvider
     
@@ -127,7 +127,7 @@ class VoiceRoomPrepareView: UIView {
                 guard let self = self else { return }
                 self.isHidden = state == .inRoom
             }
-            .store(in: &cancellables)
+            .store(in: &cancellableSet)
     }
 }
 
@@ -140,14 +140,14 @@ extension VoiceRoomPrepareView {
                 guard let self = self else { return }
                 self.cardView.roomNameTextField.text = value
             }
-            .store(in: &cancellables)
+            .store(in: &cancellableSet)
         roomCoverUrlPublisher
             .receive(on: RunLoop.main)
             .sink { [weak self] url in
                 guard let self = self else { return }
                 self.cardView.coverButton.kf.setImage(with: url, for: .normal)
             }
-            .store(in: &cancellables)
+            .store(in: &cancellableSet)
         roomCategoryPublisher
             .receive(on: RunLoop.main)
             .sink { [weak self] category in
@@ -155,7 +155,7 @@ extension VoiceRoomPrepareView {
                 let value = String.localizedReplace(.categoryText, replace: category)
                 self.cardView.categoryView.text = value
             }
-            .store(in: &cancellables)
+            .store(in: &cancellableSet)
         roomModePublisher
             .receive(on: RunLoop.main)
             .sink { [weak self] mode in
@@ -163,7 +163,7 @@ extension VoiceRoomPrepareView {
                 let value = String.localizedReplace(.modeText, replace: mode)
                 self.cardView.livingModeView.text = value
             }
-            .store(in: &cancellables)
+            .store(in: &cancellableSet)
     }
 }
 

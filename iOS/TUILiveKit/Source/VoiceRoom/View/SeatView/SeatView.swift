@@ -63,8 +63,8 @@ class SeatView: UIView {
     private var isViewReady: Bool = false
     private var isGetBounds: Bool = false
     
-    var cancellables = Set<AnyCancellable>()
-    private var internalCancellables = Set<AnyCancellable>()
+    var cancellableSet = Set<AnyCancellable>()
+    private var internalcancellableSet = Set<AnyCancellable>()
     
     private var seatInfoStoreValue: StoreValue<OperationState, SeatInfo>?
     private(set) var seatIndex: Int = -1
@@ -175,7 +175,7 @@ class SeatView: UIView {
         nameLabel.text = ""
         speakView.isHidden = true
         muteImageView.isHidden = true
-        cancellables.removeAll()
+        cancellableSet.removeAll()
     }
     
     func bindInteraction() {
@@ -185,17 +185,17 @@ class SeatView: UIView {
                 guard let self = self else { return }
                 self.update(seatInfo: seatInfo)
             }
-            .store(in: &internalCancellables)
+            .store(in: &internalcancellableSet)
         $isSpeaking
             .receive(on: RunLoop.main)
             .map { !$0 }
             .assign(to: \UIView.isHidden, on: speakView)
-            .store(in: &internalCancellables)
+            .store(in: &internalcancellableSet)
         $isAudioMuted
             .receive(on: RunLoop.main)
             .map { !$0 }
             .assign(to: \UIView.isHidden, on: muteImageView)
-            .store(in: &internalCancellables)
+            .store(in: &internalcancellableSet)
     }
     
     private func update(seatInfo: SeatInfo) {

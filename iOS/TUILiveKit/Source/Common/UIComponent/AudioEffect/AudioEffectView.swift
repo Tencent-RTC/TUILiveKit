@@ -14,7 +14,6 @@ class AudioEffectView: UIView {
     var backButtonClickClosure: ((UIButton)->Void)?
     
     private var isViewReady: Bool = false
-    private var cancellables = Set<AnyCancellable>()
     
     private let backButton: UIButton = {
         let view = UIButton(type: .system)

@@ -17,6 +17,7 @@ let roomReducer = Reducer<RoomState>(
         state.ownerId = roomInfo.ownerId
         state.seatMode = roomInfo.seatMode
         state.createTime = roomInfo.createTime
+        state.seatCount = roomInfo.maxSeatCount
         state.enterRoomState = .inRoom
     }),
     ReduceOn(RoomActions.leaveSuccess, reduce: { state, action in

@@ -21,7 +21,7 @@ class SeatListView: UIView {
     @Published var seatCount: Int = 0
     weak var delegate: SeatListViewDelegate?
     
-    private var cancellables = Set<AnyCancellable>()
+    private var cancellableSet = Set<AnyCancellable>()
     let seatCollection: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: 64, height: 90)
@@ -65,7 +65,7 @@ class SeatListView: UIView {
                 guard let self = self else { return }
                 self.seatCollection.reloadData()
             }
-            .store(in: &cancellables)
+            .store(in: &cancellableSet)
     }
     
     deinit {

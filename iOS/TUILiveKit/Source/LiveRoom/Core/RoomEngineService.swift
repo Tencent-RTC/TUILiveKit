@@ -82,9 +82,10 @@ extension RoomEngineService {
 
     func enterRoom(roomId: String, onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
         LiveKitLog.info("\(#file)", "\(#line)", "enterRoom:[roomId:\(roomId)]")
-        roomEngine.enterRoom(roomId, roomType: .live) { [weak self] _ in
+        roomEngine.enterRoom(roomId, roomType: .live) { [weak self] roomInfo in
             LiveKitLog.info("\(#file)", "\(#line)", "enterRoom:onSuccess [roomId:\(roomId)]")
             self?.enterRoomSuccess()
+            self?.liveRoomInfo.maxSeatCount = roomInfo?.maxSeatCount ?? 1
             onSuccess()
         } onError: { code, message in
             LiveKitLog.error("\(#file)", "\(#line)", "enterRoom:[roomId:\(roomId),code:\(code) message:\(message)]")

@@ -9,25 +9,46 @@ import Combine
 
 class VoiceRoomStore {
     
-    var environment = ServiceCenter()
+    var environment: ServiceCenter?
+
     
-    private(set) lazy var operation: Store<OperationState, ServiceCenter> = Store(initialState: OperationState(), environment: self.environment)
+    private(set) lazy var operation: Store<OperationState, ServiceCenter> = {
+        guard let environment = self.environment else {
+            return Store(initialState: OperationState(), environment: ServiceCenter())
+        }
+        return Store(initialState: OperationState(), environment: environment)
+    }()
+
     
     private(set) lazy var navigator: Store<NavigationState, Void> = Store(initialState: NavigationState())
     
     private(set) lazy var viewStore: Store<GlobalViewState, Void> = Store(initialState: GlobalViewState())
-    private var cancellabels: Set<AnyCancellable> = []
+    private var cancellableSet: Set<AnyCancellable> = []
     
     let toastSubject = PassthroughSubject<ToastInfo, Never>()
     let customEventSubject = PassthroughSubject<Action, Never>()
     let errorSubject = PassthroughSubject<ErrorService.OperateError, Never>()
     
     init() {
+        environment = ServiceCenter()
         initializeStore()
         debugPrint("\(type(of: self)) is init.")
     }
     
     deinit {
+        environment = nil
+        
+        operation.unregister(reducer: userReducer)
+        operation.unregister(reducer: roomReducer)
+        operation.unregister(reducer: seatReducer)
+        operation.unregister(reducer: mediaReducer)
+        
+        operation.unregisterEffects(withId: UserEffects.id)
+        operation.unregisterEffects(withId: RoomEffects.id)
+        operation.unregisterEffects(withId: SeatEffects.id)
+        operation.unregisterEffects(withId: MediaEffects.id)
+        operation.unregisterEffects(withId: ErrorEffects.id)
+
         debugPrint("deinit \(type(of: self))")
     }
     
@@ -71,7 +92,7 @@ class VoiceRoomStore {
                 guard let self = self else { return }
                 self.handle(error: error)
             }
-            .store(in: &cancellabels)
+            .store(in: &cancellableSet)
     }
     
     private func initializeNavigationStore() {

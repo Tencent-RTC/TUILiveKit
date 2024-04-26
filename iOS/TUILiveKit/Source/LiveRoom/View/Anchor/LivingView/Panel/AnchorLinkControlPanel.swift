@@ -230,7 +230,7 @@ extension AnchorLinkControlPanel: UITableViewDelegate {
         let label = UILabel(frame: CGRect(x: 24, y: 0, width: headerView.frame.width , height: headerView.frame.height))
         if section == 0 {
             label.text = .localizedReplace(.anchorLinkControlSeatCount,
-                                          replace: "\(linkingAudienceList.count)/\(engineService.liveKitStore.maxSeatCount - 1)")
+                                          replace: "\(linkingAudienceList.count)/\(max(liveRoomInfo.maxSeatCount,1) - 1)")
         } else if section == 1 {
             label.text = .localizedReplace(.anchorLinkControlRequestCount,
                                           replace: "\(applyLinkAudienceList.count)")

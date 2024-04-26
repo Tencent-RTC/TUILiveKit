@@ -166,7 +166,6 @@ extension AnchorView {
         roomInfo.roomType = .conference
         roomInfo.roomId = liveRoomInfo.roomId.value
         roomInfo.name = liveRoomInfo.name.value
-        roomInfo.maxSeatCount = engineService.liveKitStore.maxSeatCount
         roomInfo.seatMode = .applyToTake
         roomInfo.roomType = .live
         roomInfo.isSeatEnabled = true

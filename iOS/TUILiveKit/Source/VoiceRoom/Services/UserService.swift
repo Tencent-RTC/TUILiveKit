@@ -39,8 +39,9 @@ class UserService {
     
     func fetchUserList() -> AnyPublisher<[User], InternalError> {
         return Future<[User], InternalError> { [weak self] promise in
-            guard let self = self, let store = self.store else { return }
-            self.engine.getUserList(nextSequence: 0) { userInfoList, sequence in
+            guard let self = self else { return }
+            self.engine.getUserList(nextSequence: 0) { [weak self] userInfoList, sequence in
+                guard let self = self, let store = self.store else { return }
                 let userList = userInfoList.filter { $0.userId != store.selectCurrent(RoomSelectors.getRoomOwnerId) }.map { userInfo in
                     return User(userInfo: userInfo)
                 }
@@ -55,11 +56,12 @@ class UserService {
     func fetchRoomOwnerInfo() -> AnyPublisher<User, InternalError> {
         return Future<User, InternalError> { [weak self] promise in
             guard let self = self else { return }
-            guard let ownerId = store?.selectCurrent(RoomSelectors.getRoomOwnerId) else {
+            guard let store = self.store else {
                 let error = InternalError(error: TUIError.userNotExist, message: TUIError.userNotExist.description)
                 promise(.failure(error))
                 return
             }
+            let ownerId = store.selectCurrent(RoomSelectors.getRoomOwnerId)
             self.engine.getUserInfo(ownerId) { userInfo in
                 if let user = userInfo {
                     promise(.success(User(userInfo: user)))

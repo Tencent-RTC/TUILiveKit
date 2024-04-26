@@ -22,6 +22,10 @@ class SeatService {
     
     @WeakLazyInjected var store: VoiceRoomStoreProvider?
     
+    deinit {
+        debugPrint("deinit \(type(of: self))")
+    }
+    
     private var engine: TUIRoomEngine {
         return TUIRoomEngine.sharedInstance()
     }

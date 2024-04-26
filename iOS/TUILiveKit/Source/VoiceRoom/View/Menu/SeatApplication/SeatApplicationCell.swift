@@ -10,7 +10,7 @@ import Combine
 
 class SeatApplicationCell: UITableViewCell {
     static let identifier = "SeatApplicationCell"
-    var cancellables = Set<AnyCancellable>()
+    var cancellableSet = Set<AnyCancellable>()
     
     var acceptAction: (() -> Void)?
     var rejectAction: (() -> Void)?

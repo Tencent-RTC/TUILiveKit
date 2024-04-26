@@ -14,6 +14,10 @@ class MediaService {
     private let engine = TUIRoomEngine.sharedInstance()
     private var isMicrophoneOpened: Bool = false
     
+    deinit {
+        debugPrint("deinit \(type(of: self))")
+    }
+    
     func operateMicrophone(isOpened: Bool) -> AnyPublisher<Bool, InternalError> {
         return Future<Bool, InternalError> { [weak self] promise in
             guard let self = self else { return }
