@@ -3,15 +3,15 @@ package com.trtc.uikit.livekit.example.main;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.tencent.qcloud.tuicore.TUILogin;
+import com.trtc.tuikit.common.FullScreenActivity;
 import com.trtc.uikit.livekit.TUILivePreviewFragment;
 import com.trtc.uikit.livekit.example.R;
 
-public class AnchorActivity extends AppCompatActivity {
+public class AnchorActivity extends FullScreenActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

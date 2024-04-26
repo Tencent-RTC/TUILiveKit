@@ -161,7 +161,7 @@ public class AnchorLinkMicPanelAdapter extends RecyclerView.Adapter<RecyclerView
     private void bindMicUpTitleViewHolder(TitleItemViewHolder holder) {
         holder.viewSeparation.setVisibility(View.GONE);
         holder.tvTitle.setText(mContext.getString(R.string.livekit_link_mic_up_title,
-                mLiveRoomInfo.linkingAudienceList.get().size()));
+                mLiveRoomInfo.linkingAudienceList.get().size(), mLiveRoomInfo.maxSeatCount));
     }
 
     @Override

@@ -78,6 +78,7 @@ public class RoomEngineService {
             @Override
             public void onSuccess(TUIRoomDefine.RoomInfo roomInfo) {
                 LiveKitLog.info("RoomEngineService[" + mLiveRoomInfo.roomId + "] enterRoom:[Success]");
+                mLiveRoomInfo.maxSeatCount = roomInfo.maxSeatCount;
                 getSeatList();
                 getAudienceList();
                 if (callback != null) {
