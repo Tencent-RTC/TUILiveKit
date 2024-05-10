@@ -35,8 +35,8 @@ public abstract class BasicView extends FrameLayout {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        addObserver();
         initView();
+        addObserver();
     }
 
     @Override
