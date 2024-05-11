@@ -24,6 +24,7 @@ public class TUILiveDefine {
         NONE,
         PREVIEWING,
         PUSHING,
-        PLAYING
+        PLAYING,
+        DASHBOARD
     }
 }

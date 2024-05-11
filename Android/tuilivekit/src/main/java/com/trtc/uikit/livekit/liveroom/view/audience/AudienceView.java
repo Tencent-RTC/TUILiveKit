@@ -39,7 +39,7 @@ public class AudienceView extends FrameLayout {
     private LiveRoomInfo             mLiveRoomInfo;
     private RoomEngineService        mRoomEngineService;
     private Observer<UserLiveStatus> mAnchorExitRoomObserver = status -> {
-        showAudienceMaskView(status == UserLiveStatus.NONE ? true : false);
+        showAudienceMaskView(status == UserLiveStatus.DASHBOARD ? true : false);
     };
 
     public AudienceView(@NonNull Context context, LiveRoomInfo roomInfo, RoomEngineService service) {

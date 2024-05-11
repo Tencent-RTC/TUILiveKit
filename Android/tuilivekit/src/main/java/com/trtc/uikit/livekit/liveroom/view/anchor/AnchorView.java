@@ -36,7 +36,7 @@ public class AnchorView extends FrameLayout {
         if (status == TUILiveDefine.UserLiveStatus.PUSHING) {
             initAnchorPreviewView();
             initAnchorLivingView();
-        } else if (status == TUILiveDefine.UserLiveStatus.NONE) {
+        } else if (status == TUILiveDefine.UserLiveStatus.DASHBOARD) {
             initLiveEndView();
         }
     };
@@ -102,7 +102,7 @@ public class AnchorView extends FrameLayout {
 
     private void initLiveEndView() {
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-        if (mLiveRoomInfo.userLiveStatus.get() == TUILiveDefine.UserLiveStatus.NONE) {
+        if (mLiveRoomInfo.userLiveStatus.get() == TUILiveDefine.UserLiveStatus.DASHBOARD) {
             mLayoutLiveEndViewContainer.removeAllViews();
             AnchorEndView anchorEndView = new AnchorEndView(mContext, LiveStore.sharedInstance().getLiveController());
             mLayoutLiveEndViewContainer.addView(anchorEndView, layoutParams);

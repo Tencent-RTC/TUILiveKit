@@ -16,6 +16,8 @@ import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.core.LiveController;
 import com.trtc.uikit.livekit.common.core.store.LiveStore;
 import com.trtc.uikit.livekit.common.core.store.state.operation.UserState;
+import com.trtc.uikit.livekit.liveroom.core.LiveKitStore;
+import com.trtc.uikit.livekit.liveroom.core.TUILiveDefine;
 
 @SuppressLint("ViewConstructor")
 public class AudienceEndView extends BasicView {
@@ -70,6 +72,7 @@ public class AudienceEndView extends BasicView {
         }
 
         findViewById(R.id.iv_back).setOnClickListener(view -> {
+            LiveKitStore.sharedInstance().selfRoomInfo.userLiveStatus.set(TUILiveDefine.UserLiveStatus.NONE);
             if (mContext instanceof Activity) {
                 ((Activity) mContext).finish();
             }

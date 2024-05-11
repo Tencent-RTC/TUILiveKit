@@ -194,7 +194,7 @@ public class AnchorLivingView extends FrameLayout implements ITUINotification {
                 .updateLikeNumber(mGiftPlayView.getLikeCount());
         LiveStore.sharedInstance().getLiveController().getRoomController()
                 .updateMessageCount(mBarrageDisplayView.getBarrageCount());
-        mLiveRoomInfo.userLiveStatus.set(TUILiveDefine.UserLiveStatus.NONE);
+        mLiveRoomInfo.userLiveStatus.set(TUILiveDefine.UserLiveStatus.DASHBOARD);
         mRoomEngineService.destroyRoom(new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {

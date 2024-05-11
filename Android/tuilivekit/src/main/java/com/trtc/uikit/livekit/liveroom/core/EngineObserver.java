@@ -47,7 +47,7 @@ public class EngineObserver extends TUIRoomObserver {
     @Override
     public void onRoomDismissed(String roomId) {
         LiveKitLog.info("EngineObserver onRoomDismissed:[roomId:" + roomId + "]");
-        mLiveRoomInfo.userLiveStatus.set(TUILiveDefine.UserLiveStatus.NONE);
+        mLiveRoomInfo.userLiveStatus.set(TUILiveDefine.UserLiveStatus.DASHBOARD);
     }
 
     @Override
