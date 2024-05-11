@@ -269,6 +269,7 @@ public class VideoLinkSettingsPanel extends ConstraintLayout {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         removeObserver();
+        mRoomEngineService.closeLocalCamera();
     }
 
     private void addObserver() {
