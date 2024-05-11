@@ -58,12 +58,12 @@ class AnchorVideoParametersSettingPanel: UIView {
 
     private lazy var videoQualitySelectionModel: DropDownArrowModel = {
         let model = DropDownArrowModel()
-        let str = engineService.liveKitStore.selfInfo.videoInfo.videoQuality.value.getString()
+        let str = engineService.liveRoomInfo.selfInfo.videoInfo.videoQuality.value.getString()
         model.midText.value = str
         model.rightIcon = .liveBundleImage("live_drop_down_arrow")
-        engineService.liveKitStore.selfInfo.videoInfo.videoQuality.addObserver(self) { [weak self] _, _ in
+        engineService.liveRoomInfo.selfInfo.videoInfo.videoQuality.addObserver(self) { [weak self] _, _ in
             guard let self = self else { return }
-            let str = engineService.liveKitStore.selfInfo.videoInfo.videoQuality.value.getString()
+            let str = engineService.liveRoomInfo.selfInfo.videoInfo.videoQuality.value.getString()
             self.videoQualitySelectionModel.midText.value = str
         }
         return model
@@ -171,7 +171,7 @@ extension AnchorVideoParametersSettingPanel {
         actionPanel.clickEventCallBack.addObserver(self) { [weak self] action, _ in
             guard let actionType = action as?  PrepareViewActionEvent else{ return}
             if case let .videoQualityValue(value) = actionType {
-                self?.engineService.liveKitStore.selfInfo.videoInfo.videoQuality.value = value
+                self?.engineService.liveRoomInfo.selfInfo.videoInfo.videoQuality.value = value
                 self?.engineService.updateVideoQuality(quality: value)
             }
         }

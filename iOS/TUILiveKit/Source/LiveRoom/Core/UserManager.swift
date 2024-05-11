@@ -30,8 +30,8 @@ public class UserManager {
             for userFullInfo in userFullInfoList {
                 let user = UserInfo()
                 user.userId = userFullInfo.userID
-                user.avatarUrl.value = userFullInfo.faceURL
-                user.name.value = userFullInfo.nickName
+                user.avatarUrl.value = userFullInfo.faceURL ?? ""
+                user.name.value = userFullInfo.nickName ?? ""
                 list.append(user)
             }
             success(list)

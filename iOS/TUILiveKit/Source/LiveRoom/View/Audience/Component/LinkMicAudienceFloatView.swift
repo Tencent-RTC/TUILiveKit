@@ -176,7 +176,7 @@ extension LinkMicAudienceFloatView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UserImageCell.cellReuseIdentifier,
                                                       for: indexPath) as! UserImageCell
-        cell.userInfo = engineService.liveKitStore.selfInfo
+        cell.userInfo = engineService.liveRoomInfo.selfInfo
         return cell
     }
 }
@@ -213,7 +213,7 @@ extension LinkMicAudienceFloatView {
             guard let self = self else{ return}
             guard let actionType = action as? AudienceViewActionEvent else{ return}
             if actionType == .didCancelRequestLinkClick {
-                self.engineService.cancelRequest(self.engineService.liveKitStore.selfInfo.requestId)
+                self.engineService.cancelRequest(self.engineService.liveRoomInfo.selfInfo.requestId)
             }
         }
     }

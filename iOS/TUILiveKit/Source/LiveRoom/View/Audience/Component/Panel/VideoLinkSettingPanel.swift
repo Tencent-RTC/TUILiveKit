@@ -134,19 +134,20 @@ class VideoLinkSettingPanel: UIView {
     
     func addObserver() {
         VideoLinkSettingPanel.shouldUpdateSelf.addObserver(self) { [weak self] shouldUpdate, _ in
-            guard let self = self else { return }
             if shouldUpdate {
-                engineService.setLocalVideoView(view: previewView)
+                guard let self = self else { return }
+                self.engineService.setLocalVideoView(view: previewView)
             }
         }
     }
     
-    func removeObserver() {
+    func clearSource() {
         VideoLinkSettingPanel.shouldUpdateSelf.removeObserver(self)
+        engineService.closeLocalCamera()
     }
     
     deinit {
-        removeObserver()
+        clearSource()
     }
 }
 

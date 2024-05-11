@@ -16,11 +16,11 @@ extension AudienceView {
     }
 
     private func initData() {
-        engineService.liveKitStore.selfInfo.userId = TUILogin.getUserID() ?? ""
-        engineService.liveKitStore.selfInfo.avatarUrl.value = TUILogin.getFaceUrl() ?? ""
-        engineService.liveKitStore.selfInfo.name.value = TUILogin.getNickName() ?? ""
-        engineService.liveKitStore.selfInfo.role.value = .none
-        engineService.liveKitStore.selfInfo.status.value = UserInteractionStatus.none
+        engineService.liveRoomInfo.selfInfo.userId = TUILogin.getUserID() ?? ""
+        engineService.liveRoomInfo.selfInfo.avatarUrl.value = TUILogin.getFaceUrl() ?? ""
+        engineService.liveRoomInfo.selfInfo.name.value = TUILogin.getNickName() ?? ""
+        engineService.liveRoomInfo.selfInfo.role.value = .none
+        engineService.liveRoomInfo.selfInfo.status.value = UserInteractionStatus.none
     }
 
     private func registerObserver() {
@@ -54,7 +54,7 @@ extension AudienceView {
             engineService.exitRoom(onSuccess: nil, onError: nil)
         }
         
-        EngineManager.removeRoomEngineService(roomId: roomId)
+        engineManager?.removeRoomEngineService(roomId: roomId)
     }
 }
 

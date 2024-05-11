@@ -36,49 +36,21 @@ class AudienceLivingView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private lazy var infoButton: UIControl = {
-        let view = UIControl()
+    private lazy var roomInfoView: RoomInfoView = {
+        let view = RoomInfoView()
         view.mm_h = 32.scale375()
         view.backgroundColor = UIColor.g2.withAlphaComponent(0.4)
         view.layer.cornerRadius = view.mm_h * 0.5
-        view.addTarget(self, action: #selector(infoButtonClick), for: .touchUpInside)
-
-        let imageView = UIImageView()
-        view.addSubview(imageView)
-        imageView.snp.makeConstraints { make in
-            make.size.equalTo(CGSize(width: 24.scale375(), height: 24.scale375()))
-            make.leading.equalToSuperview().inset(4.scale375())
-            make.centerY.equalToSuperview()
-        }
-        imageView.layer.masksToBounds = true
-        imageView.layer.cornerRadius = 24.scale375() * 0.5
-        imageView.kf.setImage(with: URL(string: liveRoomInfo.anchorInfo.value.avatarUrl.value), placeholder: UIImage.placeholderImage)
-        
-        let title = UILabel()
-        view.addSubview(title)
-        title.font = .customFont(ofSize: 14)
-        title.textColor = .g7
-        title.textAlignment = .left
-        title.text = liveRoomInfo.name.value
-        
-        title.snp.makeConstraints { make in
-            make.leading.equalTo(imageView.snp.trailing).offset(8.scale375())
-            make.trailing.equalToSuperview().inset(8.scale375())
-            make.centerY.equalToSuperview()
-            make.height.equalToSuperview()
-        }
-        weak var weakTitle = title
-        weak var weakImageView = imageView
+        view.addTarget(self, action: #selector(roomInfoViewClick), for: .touchUpInside)
+        view.roomName = liveRoomInfo.name.value
+        view.roomCoverUrl = URL(string: liveRoomInfo.anchorInfo.value.avatarUrl.value)
         liveRoomInfo.anchorInfo.addObserver(self) { [weak self] _, _ in
-            guard let self = self else{ return}
-            guard let weakTitle = weakTitle else{ return}
-            guard let weakImageView = weakImageView else{ return}
-            weakImageView.kf.setImage(with: URL(string: self.liveRoomInfo.anchorInfo.value.avatarUrl.value), placeholder: UIImage.placeholderImage)
-            weakTitle.text = self.liveRoomInfo.name.value
+            guard let self = self else{ return }
+            self.roomInfoView.roomName = self.liveRoomInfo.name.value
+            self.roomInfoView.roomCoverUrl = URL(string: self.liveRoomInfo.anchorInfo.value.avatarUrl.value)
         }
         return view
     }()
-    
 
     private lazy var audienceListView: AudienceListView = {
         var view = AudienceListView(engineService: self.engineService)
@@ -184,7 +156,7 @@ class AudienceLivingView: UIView {
 
     func constructViewHierarchy() {
         backgroundColor = .clear
-        addSubview(infoButton)
+        addSubview(roomInfoView)
         addSubview(audienceListView)
         addSubview(leaveImageView)
         addSubview(barrageDisplayView)
@@ -206,17 +178,10 @@ class AudienceLivingView: UIView {
             make.height.equalTo(212.scale375Height())
         }
 
-        infoButton.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(16.scale375Width())
+        roomInfoView.snp.remakeConstraints { make in
             make.top.equalToSuperview().offset(54.scale375Height())
-            make.width.equalTo(155.scale375Width())
-            make.height.equalTo(32.scale375Height())
-        }
-        
-        infoButton.snp.remakeConstraints { make in
-            make.top.equalToSuperview().offset(54.scale375Height())
-            make.height.equalTo(infoButton.frame.height)
-            make.width.greaterThanOrEqualTo(100.scale375())
+            make.height.equalTo(roomInfoView.frame.height)
+            make.width.greaterThanOrEqualTo(80.scale375())
             make.width.lessThanOrEqualTo(375.scale375()*0.5)
             make.leading.equalToSuperview().inset(16.scale375())
         }
@@ -263,7 +228,7 @@ class AudienceLivingView: UIView {
 // MARK: Action
 
 extension AudienceLivingView {
-    @objc func infoButtonClick() {
+    @objc func roomInfoViewClick() {
         PopupPanelController.alertView(RoomInfoViewPanel(engineService: engineService))
     }
 
@@ -365,7 +330,7 @@ extension AudienceLivingView {
             guard let self = self else { return }
             self.engineService.changeSelfStatus(status: .none)
         }
-        engineService.liveKitStore.selfInfo.requestId = request.requestId
+        engineService.liveRoomInfo.selfInfo.requestId = request.requestId
     }
 
     private func audioLinkClick() {
@@ -399,7 +364,7 @@ extension AudienceLivingView {
             guard let self = self else { return }
             self.engineService.changeSelfStatus(status: .none)
         }
-        engineService.liveKitStore.selfInfo.requestId = request.requestId
+        engineService.liveRoomInfo.selfInfo.requestId = request.requestId
     }
 
     private func showCancelLinkMicPanel() {
@@ -437,7 +402,7 @@ extension AudienceLivingView {
     }
 
     private func cancelLinkMicClick() {
-        engineService.cancelRequest(engineService.liveKitStore.selfInfo.requestId)
+        engineService.cancelRequest(engineService.liveRoomInfo.selfInfo.requestId)
     }
 
     private func closeLinkMicClick() {
@@ -449,14 +414,14 @@ extension AudienceLivingView {
     }
 
     private func registerObserver() {
-        engineService.liveKitStore.selfInfo.status.addObserver(self) { [weak self] _, _ in
+        engineService.liveRoomInfo.selfInfo.status.addObserver(self) { [weak self] _, _ in
             guard let self = self else{ return}
-            if self.engineService.liveKitStore.selfInfo.status.value == UserInteractionStatus.none {
+            if self.engineService.liveRoomInfo.selfInfo.status.value == UserInteractionStatus.none {
                 self.onCloseLinkMic()
                 self.onCancelRequestLinkMic()
-            } else if self.engineService.liveKitStore.selfInfo.status.value == UserInteractionStatus.applying {
+            } else if self.engineService.liveRoomInfo.selfInfo.status.value == UserInteractionStatus.applying {
                 self.onRequestLinkMic()
-            } else if self.engineService.liveKitStore.selfInfo.status.value == UserInteractionStatus.linking {
+            } else if self.engineService.liveRoomInfo.selfInfo.status.value == UserInteractionStatus.linking {
                 self.onLinkingMic()
             }
         }

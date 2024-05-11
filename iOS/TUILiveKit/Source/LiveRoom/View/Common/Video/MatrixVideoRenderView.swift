@@ -52,7 +52,7 @@ class MatrixVideoRenderView: UIView {
         liveRoomInfo.linkingAudienceList.addObserver(self) { [weak self] _, _ in
             self?.updateView()
         }
-        engineService.liveKitStore.selfInfo.status.addObserver(self) { [weak self] _, _ in
+        engineService.liveRoomInfo.selfInfo.status.addObserver(self) { [weak self] _, _ in
             self?.updateView()
         }
     }
@@ -100,15 +100,15 @@ extension MatrixVideoRenderView {
     func getRenderUserList() -> [UserInfo] {
         var list: [UserInfo] = Array(liveRoomInfo.linkingAudienceList.value)
         if liveRoomInfo.userLiveStatus.value == .previewing || liveRoomInfo.userLiveStatus.value == .pushing{
-            list = list.filter({ $0.userId != engineService.liveKitStore.selfInfo.userId })
-            list.insert(engineService.liveKitStore.selfInfo, at: 0)
-        } else if engineService.liveKitStore.selfInfo.status.value == .none
-            && engineService.liveKitStore.selfInfo.role.value == .anchor {
-            list = list.filter({ $0.userId != engineService.liveKitStore.selfInfo.userId })
-            list.insert(engineService.liveKitStore.selfInfo, at: 0)
-        } else if engineService.liveKitStore.selfInfo.status.value == .applying {
-            list = list.filter({ $0.userId != engineService.liveKitStore.selfInfo.userId })
-            list.append(engineService.liveKitStore.selfInfo)
+            list = list.filter({ $0.userId != engineService.liveRoomInfo.selfInfo.userId })
+            list.insert(engineService.liveRoomInfo.selfInfo, at: 0)
+        } else if engineService.liveRoomInfo.selfInfo.status.value == .none
+            && engineService.liveRoomInfo.selfInfo.role.value == .anchor {
+            list = list.filter({ $0.userId != engineService.liveRoomInfo.selfInfo.userId })
+            list.insert(engineService.liveRoomInfo.selfInfo, at: 0)
+        } else if engineService.liveRoomInfo.selfInfo.status.value == .applying {
+            list = list.filter({ $0.userId != engineService.liveRoomInfo.selfInfo.userId })
+            list.append(engineService.liveRoomInfo.selfInfo)
         }
         return list
     }

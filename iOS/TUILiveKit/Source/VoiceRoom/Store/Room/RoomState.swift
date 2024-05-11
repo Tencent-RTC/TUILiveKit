@@ -44,7 +44,7 @@ struct RoomState: Codable {
     var ownerId: String = ""
     var name: String = ""
     var seatMode: TUISeatMode = .applyToTake
-    var seatCount: Int = 8
+    var seatCount: Int = 0
     var memberCount: Int = 0
     // custom info.
     var coverURL: String = String.randomBackgroundImageUrl()

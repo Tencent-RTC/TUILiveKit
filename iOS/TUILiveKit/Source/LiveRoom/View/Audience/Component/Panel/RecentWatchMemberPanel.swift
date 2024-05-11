@@ -74,9 +74,9 @@ class RecentWatchMemberPanel: UIView {
 
     private func updateView() {
         listUser = liveRoomInfo.audienceList.value.filter({ $0.userId != self.liveRoomInfo.anchorInfo.value.userId })
-        if engineService.liveKitStore.selfInfo.status.value == .none
-            && engineService.liveKitStore.selfInfo.role.value == .anchor {
-            listUser = listUser.filter({ $0.userId != engineService.liveKitStore.selfInfo.userId })
+        if engineService.liveRoomInfo.selfInfo.status.value == .none
+            && engineService.liveRoomInfo.selfInfo.role.value == .anchor {
+            listUser = listUser.filter({ $0.userId != engineService.liveRoomInfo.selfInfo.userId })
         }
         userListTableView.reloadData()
     }

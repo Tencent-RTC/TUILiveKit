@@ -37,45 +37,18 @@ class AnchorLivingView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private lazy var infoButton: UIControl = {
-        let view = UIControl()
+    private lazy var roomInfoView: RoomInfoView = {
+        let view = RoomInfoView()
         view.mm_h = 32.scale375()
         view.backgroundColor = UIColor.g2.withAlphaComponent(0.4)
         view.layer.cornerRadius = view.mm_h * 0.5
-        view.addTarget(self, action: #selector(infoButtonClick), for: .touchUpInside)
-
-        let imageView = UIImageView()
-        view.addSubview(imageView)
-        imageView.snp.makeConstraints { make in
-            make.size.equalTo(CGSize(width: 24.scale375(), height: 24.scale375()))
-            make.leading.equalToSuperview().inset(4.scale375())
-            make.centerY.equalToSuperview()
-        }
-        imageView.layer.masksToBounds = true
-        imageView.layer.cornerRadius = 24.scale375() * 0.5
-        imageView.kf.setImage(with: URL(string: liveRoomInfo.anchorInfo.value.avatarUrl.value), placeholder: UIImage.placeholderImage)
-        
-        let title = UILabel()
-        view.addSubview(title)
-        title.font = .customFont(ofSize: 14)
-        title.textColor = .g7
-        title.textAlignment = .left
-        title.text = liveRoomInfo.name.value
-        
-        title.snp.makeConstraints { make in
-            make.leading.equalTo(imageView.snp.trailing).offset(8.scale375())
-            make.trailing.equalToSuperview().inset(8.scale375())
-            make.centerY.equalToSuperview()
-            make.height.equalToSuperview()
-        }
-        weak var weakTitle = title
-        weak var weakImageView = imageView
+        view.addTarget(self, action: #selector(roomInfoViewClick), for: .touchUpInside)
+        view.roomName = liveRoomInfo.name.value
+        view.roomCoverUrl = URL(string: liveRoomInfo.anchorInfo.value.avatarUrl.value)
         liveRoomInfo.anchorInfo.addObserver(self) { [weak self] _, _ in
-            guard let self = self else{ return}
-            guard let weakTitle = weakTitle else{ return}
-            guard let weakImageView = weakImageView else{ return}
-            weakImageView.kf.setImage(with: URL(string: self.liveRoomInfo.anchorInfo.value.avatarUrl.value), placeholder: UIImage.placeholderImage)
-            weakTitle.text = self.liveRoomInfo.name.value
+            guard let self = self else{ return }
+            self.roomInfoView.roomName = self.liveRoomInfo.name.value
+            self.roomInfoView.roomCoverUrl = URL(string: self.liveRoomInfo.anchorInfo.value.avatarUrl.value)
         }
         return view
     }()
@@ -134,6 +107,17 @@ class AnchorLivingView: UIView {
         return view
     }()
     
+    private lazy var musicPanelView: MusicPanelView = {
+        let view = MusicPanelView(frame: .zero)
+        view.backButtonClickClosure = { [weak self] _ in
+            guard let self = self else { return }
+            if let vc = WindowUtils.getCurrentWindowViewController() {
+                vc.dismiss(animated: true)
+            }
+        }
+        return view
+    }()
+    
     deinit {
         giftCacheService.clearCacheDirectory()
     }
@@ -148,7 +132,7 @@ extension AnchorLivingView {
         addSubview(giftDisplayView)
         addSubview(closeButton)
         addSubview(audienceListView)
-        addSubview(infoButton)
+        addSubview(roomInfoView)
         addSubview(featureClickPanel)
         addSubview(floatView)
     }
@@ -188,10 +172,10 @@ extension AnchorLivingView {
             make.trailing.equalTo(closeButton.snp.leading).offset(-4.scale375())
         }
 
-        infoButton.snp.remakeConstraints { make in
+        roomInfoView.snp.remakeConstraints { make in
             make.centerY.equalTo(closeButton)
-            make.height.equalTo(infoButton.mm_h)
-            make.width.greaterThanOrEqualTo(100.scale375())
+            make.height.equalTo(roomInfoView.mm_h)
+            make.width.greaterThanOrEqualTo(80.scale375())
             make.width.lessThanOrEqualTo(375.scale375()*0.5)
             make.leading.equalToSuperview().inset((self.isPortrait ? 16 : 45).scale375())
         }
@@ -231,12 +215,13 @@ extension AnchorLivingView {
         PopupPanelController.alertView(actionPanel)
         actionPanel.clickEventCallBack.addObserver(self) { [weak self] action, _ in
             if let actionType = action as? LivingViewActionEvent , actionType == .closeClick {
+                self?.musicPanelView.resetMusicPanelState()
                 self?.liveRoomInfo.userLiveStatus.value = .none
             }
         }
     }
 
-    @objc func infoButtonClick() {
+    @objc func roomInfoViewClick() {
         PopupPanelController.alertView(RoomInfoViewPanel(engineService: engineService))
     }
     
@@ -251,8 +236,19 @@ extension AnchorLivingView {
     }
 
     private func showAnchorMusicPlayPanel() {
-        let view = AnchorMusicPlayPanel(engineService: engineService)
-        PopupPanelController.alertView(view)
+        presentPopup(view: musicPanelView)
+    }
+    
+    private func presentPopup(view: UIView) {
+        if let vc = WindowUtils.getCurrentWindowViewController() {
+            let menuContainerView = MenuContainerView(contentView: view)
+            menuContainerView.blackAreaClickClosure = { [weak self] in
+                guard let self = self else { return }
+                vc.dismiss(animated: true)
+            }
+            let viewController = PopupViewController(contentView: menuContainerView)
+            vc.present(viewController, animated: true)
+        }
     }
 }
 

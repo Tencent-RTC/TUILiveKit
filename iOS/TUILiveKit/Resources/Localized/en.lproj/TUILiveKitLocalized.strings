@@ -95,6 +95,7 @@
 "live.music.melancholy" = "Melancholy";
 "live.music.wonder.world" = "Wonderful World";
 "live.anchor.link.music.play.title" = "Music";
+"live.anchor.link.music.play.error.title" = "Music play error";
 "live.alert.tips.title" = "Warm reminder";
 "live.alert.delete.desc.xxx" = "Are you sure you want to delete \"xxx\"?";
 "live.alert.cancel" = "Cancel";

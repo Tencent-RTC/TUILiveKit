@@ -7,9 +7,9 @@
 
 import RTCRoomEngine
 import Combine
-#if TXLiteAVSDK_TRTC
+#if canImport(TXLiteAVSDK_TRTC)
     import TXLiteAVSDK_TRTC
-#elseif TXLiteAVSDK_Professional
+#elseif canImport(TXLiteAVSDK_Professional)
     import TXLiteAVSDK_Professional
 #endif
 

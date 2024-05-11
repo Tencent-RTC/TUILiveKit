@@ -14,8 +14,9 @@ class UserInfoPool {
         self.roomId = roomId
     }
     
+    @WeakLazyInjected var engineManager:EngineServiceProvider?
     private var engineService: RoomEngineService? {
-        return EngineManager.getRoomEngineService(roomId: roomId)
+        return engineManager?.getRoomEngineService(roomId: roomId)
     }
     
     private var pool: [String: UserInfo] = [:]
@@ -24,7 +25,7 @@ class UserInfoPool {
         guard let userInfo = pool[userId] else {
             var userInfo: UserInfo
             if TUILogin.getUserID() ?? "" == userId , let engineService = engineService {
-                userInfo = engineService.liveKitStore.selfInfo
+                userInfo = engineService.liveRoomInfo.selfInfo
             } else {
                 userInfo = UserInfo()
                 userInfo.userId = userId

@@ -14,11 +14,15 @@ class AnchorView: UIView {
     private var cancellable = Set<AnyCancellable>()
     var startLiveBlock:(()->Void)?
     private var liveRoomInfo:LiveRoomInfo {
-          engineService.liveRoomInfo
+        engineService.liveRoomInfo
     }
     
+    @WeakLazyInjected var engineManager:EngineServiceProvider?
     private var engineService: RoomEngineService {
-        EngineManager.getRoomEngineService(roomId: self.roomId)
+        guard let engineManager = engineManager else {
+            return RoomEngineService(liveRoomInfo: LiveRoomInfo())
+        }
+        return engineManager.getRoomEngineService(roomId: roomId)
     }
     private let roomId : String
     
@@ -49,7 +53,6 @@ class AnchorView: UIView {
     }
     
     func updateRootViewOrientation(isPortrait: Bool) {
-        engineService.liveKitStore.isPortrait.value = isPortrait
         prepareView?.updateRootViewOrientation(isPortrait: isPortrait)
         livingView?.updateRootViewOrientation(isPortrait: isPortrait)
     }
@@ -57,7 +60,7 @@ class AnchorView: UIView {
     deinit {
         engineService.stopLocalPreview()
         engineService.closeLocalMicrophone()
-        EngineManager.removeRoomEngineService(roomId: roomId)
+        engineManager?.removeRoomEngineService(roomId: roomId)
     }
 }
 
@@ -66,13 +69,12 @@ class AnchorView: UIView {
 extension AnchorView {
     
     private func initData() {
-        engineService.liveKitStore.selfInfo.userId = TUILogin.getUserID() ?? ""
-        engineService.liveKitStore.selfInfo.avatarUrl.value = TUILogin.getFaceUrl() ?? ""
-        engineService.liveKitStore.selfInfo.name.value = TUILogin.getNickName() ?? ""
-        engineService.liveKitStore.selfInfo.role.value = .none
-        engineService.liveKitStore.selfInfo.status.value = UserInteractionStatus.none
-        engineService.liveKitStore.isPortrait.value = WindowUtils.isPortrait
-        engineService.liveKitStore.selfInfo.audioInfo.enableVoiceEarMonitor.value = false
+        engineService.liveRoomInfo.selfInfo.userId = TUILogin.getUserID() ?? ""
+        engineService.liveRoomInfo.selfInfo.avatarUrl.value = TUILogin.getFaceUrl() ?? ""
+        engineService.liveRoomInfo.selfInfo.name.value = TUILogin.getNickName() ?? ""
+        engineService.liveRoomInfo.selfInfo.role.value = .none
+        engineService.liveRoomInfo.selfInfo.status.value = UserInteractionStatus.none
+        engineService.liveRoomInfo.selfInfo.audioInfo.enableVoiceEarMonitor.value = false
         liveRoomInfo.interactionType.value = .broadcast
         liveRoomInfo.userLiveStatus.value = .previewing
         liveRoomInfo.name.value = TUILogin.getNickName() ?? ""
@@ -100,11 +102,11 @@ extension AnchorView {
     }
 
     private func registerObserver() {
-        engineService.liveKitStore.$applyLinkAudienceList
+        engineService.liveRoomInfo.$applyLinkAudienceList
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in
                 guard let self = self else{ return}
-                let applyLinkCount = self.engineService.liveKitStore.applyLinkAudienceList.count
+                let applyLinkCount = self.engineService.liveRoomInfo.applyLinkAudienceList.count
                 self.livingView?.showLinkMicFloatView(isPresent: applyLinkCount > 0)
             }.store(in: &cancellable)
         

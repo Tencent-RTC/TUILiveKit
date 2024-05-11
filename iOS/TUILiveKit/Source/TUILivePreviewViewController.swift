@@ -40,7 +40,11 @@ public class TUILivePreviewViewController: UIViewController {
             guard let self = self else { return }
             self.clearTopButton()
         }
-        let voiceLiveController = TUIVoiceRoomViewController(roomId: voiceRoomId, behavior: .prepareCreate, voiceRoomParams: VoiceRoomParams())
+        
+        var roomParams = RoomParams()
+        roomParams.maxSeatCount = 0
+        roomParams.seatMode = .applyToTake
+        let voiceLiveController = TUIVoiceRoomViewController(roomId: voiceRoomId, behavior: .prepareCreate, roomParams: roomParams)
         voiceLiveController.title = .voiceLiveTitle
         voiceLiveController.startLiveClosure = { [weak self] in
             guard let self = self else { return }

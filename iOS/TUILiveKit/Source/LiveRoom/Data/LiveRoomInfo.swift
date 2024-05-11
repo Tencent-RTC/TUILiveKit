@@ -8,6 +8,8 @@
 import Foundation
 
 class LiveRoomInfo {
+    @Published var selfInfo: UserInfo = UserInfo()
+    @Published var applyLinkAudienceList: [UserInfo] = []
     let roomId: Observable<String> = Observable("")
     let name: Observable<String> = Observable("")
     let coverUrl: Observable<String> = Observable("")

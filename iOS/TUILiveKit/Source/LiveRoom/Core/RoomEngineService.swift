@@ -8,21 +8,18 @@
 import Foundation
 import RTCRoomEngine
 import TUICore
-
-#if TXLiteAVSDK_TRTC
+#if canImport(TXLiteAVSDK_TRTC)
     import TXLiteAVSDK_TRTC
-#elseif TXLiteAVSDK_Professional
+#elseif canImport(TXLiteAVSDK_Professional)
     import TXLiteAVSDK_Professional
 #endif
 
 class RoomEngineService {
     private let timeOutNumber: Double = 0
     let liveRoomInfo: LiveRoomInfo
-    let liveKitStore: LiveKitStore
 
-    init(liveRoomInfo: LiveRoomInfo, liveKitStore: LiveKitStore) {
+    init(liveRoomInfo: LiveRoomInfo) {
         self.liveRoomInfo = liveRoomInfo
-        self.liveKitStore = liveKitStore
     }
 
     private(set) lazy var roomEngine: TUIRoomEngine = {
@@ -98,7 +95,9 @@ extension RoomEngineService {
         LiveKitLog.info("\(#file)", "\(#line)", "destroyRoom:[roomId:\(roomId)]")
         roomEngine.destroyRoom { [weak self] in
             LiveKitLog.info("\(#file)", "\(#line)", "destroyRoom:[onSuccess][roomId:\(roomId)]")
-            self?.liveRoomInfo.userLiveStatus.value = .none
+            if self?.liveRoomInfo.userLiveStatus.value != UserLiveStatus.none {
+                self?.liveRoomInfo.userLiveStatus.value = .none
+            }
             onSuccess?()
         } onError: { code, message in
             LiveKitLog.error("\(#file)", "\(#line)", "destroyRoom:[roomId:\(roomId),code:\(code) message:\(message)]")
@@ -111,7 +110,9 @@ extension RoomEngineService {
         LiveKitLog.info("\(#file)", "\(#line)", "exitRoom:[roomId:\(roomId)]")
         roomEngine.exitRoom(syncWaiting: false) { [weak self] in
             LiveKitLog.info("\(#file)", "\(#line)", "exitRoom:[onSuccess][roomId:\(roomId)]")
-            self?.liveRoomInfo.userLiveStatus.value = .none
+            if self?.liveRoomInfo.userLiveStatus.value != UserLiveStatus.none {
+                self?.liveRoomInfo.userLiveStatus.value = .none
+            }
             onSuccess?()
         } onError: { code, message in
             LiveKitLog.error("\(#file)", "\(#line)", "exitRoom:[roomId:\(roomId),code:\(code) message:\(message)]")
@@ -178,7 +179,7 @@ extension RoomEngineService {
             list.append(userInfo)
         }
 
-        if liveRoomInfo.interactionType.value == .link || (liveRoomInfo.anchorInfo.value.userId != liveKitStore.selfInfo.userId) {
+        if liveRoomInfo.interactionType.value == .link || (liveRoomInfo.anchorInfo.value.userId != liveRoomInfo.selfInfo.userId) {
             liveRoomInfo.linkingAudienceList.value = list
         } else {
             liveRoomInfo.linkingAudienceList.value = []
@@ -195,10 +196,10 @@ extension RoomEngineService {
             }
             liveRoomInfo.linkingAudienceList.value = []
 
-            for userInfo in liveKitStore.applyLinkAudienceList {
+            for userInfo in liveRoomInfo.applyLinkAudienceList {
                 responseRemoteRequestUser(userInfo, agree: false)
             }
-            liveKitStore.applyLinkAudienceList = []
+            liveRoomInfo.applyLinkAudienceList = []
             liveRoomInfo.interactionType.value = .broadcast
         }
     }
@@ -268,12 +269,12 @@ extension RoomEngineService {
 extension RoomEngineService {
     func changeSelfRole(role: RoleType) {
         LiveKitLog.info("\(#file)", "\(#line)", "changeSelfRole:[role:\(role)]")
-        liveKitStore.selfInfo.role.value = role
+        liveRoomInfo.selfInfo.role.value = role
     }
 
     func changeSelfStatus(status: UserInteractionStatus) {
         LiveKitLog.info("\(#file)", "\(#line)", "changeSelfStatus:[status:\(status)]")
-        liveKitStore.selfInfo.status.value = status
+        liveRoomInfo.selfInfo.status.value = status
     }
 
     func changeUserLiveStatus(userLiveStatus: UserLiveStatus) {
@@ -290,7 +291,7 @@ extension RoomEngineService {
             guard let self = self else { return }
             self.roomEngine.openLocalMicrophone(.default) {
                 LiveKitLog.info("\(#file)", "\(#line)", "openLocalMicrophone:[onSuccess]")
-                self.liveKitStore.selfInfo.audioInfo.muteAudio.value = false
+                self.liveRoomInfo.selfInfo.audioInfo.muteAudio.value = false
                 onSuccess?()
             } onError: { code, message in
                 LiveKitLog.error("\(#file)", "\(#line)", "openLocalMicrophone:[code:\(code),message:\(message)]")
@@ -318,10 +319,10 @@ extension RoomEngineService {
         let actionBlock = { [weak self] in
             guard let self = self else { return }
 
-            self.roomEngine.openLocalCamera(isFront: liveKitStore.selfInfo.videoInfo.isFrontCamera.value,
-                                            quality: liveKitStore.selfInfo.videoInfo.videoQuality.value) {
+            self.roomEngine.openLocalCamera(isFront: liveRoomInfo.selfInfo.videoInfo.isFrontCamera.value,
+                                            quality: liveRoomInfo.selfInfo.videoInfo.videoQuality.value) {
                 LiveKitLog.info("\(#file)", "\(#line)", "openLocalCamera:[onSuccess]")
-                self.liveKitStore.selfInfo.videoInfo.isCameraOpened.value = true
+                self.liveRoomInfo.selfInfo.videoInfo.isCameraOpened.value = true
                 onSuccess?()
             } onError: { code, message in
                 LiveKitLog.error("\(#file)", "\(#line)", "openLocalCamera:[code:\(code),message:\(message)]")
@@ -339,11 +340,15 @@ extension RoomEngineService {
             }
         }
     }
+    
+    func closeLocalCamera() {
+        roomEngine.closeLocalCamera()
+    }
 
     func switchCamera() {
-        let isFrontCamera = !liveKitStore.selfInfo.videoInfo.isFrontCamera.value
+        let isFrontCamera = !liveRoomInfo.selfInfo.videoInfo.isFrontCamera.value
         LiveKitLog.info("\(#file)", "\(#line)", "switchCamera:[isFrontCamera:\(isFrontCamera)]")
-        liveKitStore.selfInfo.videoInfo.isFrontCamera.value = isFrontCamera
+        liveRoomInfo.selfInfo.videoInfo.isFrontCamera.value = isFrontCamera
         roomEngine.switchCamera(frontCamera: isFrontCamera)
     }
 }
@@ -356,7 +361,7 @@ extension RoomEngineService {
         LiveKitLog.info("\(#file)", "\(#line)", "responseRemoteRequestUser:[\(logContent)]")
         roomEngine.responseRemoteRequest(userInfo.requestId, agree: agree) {
             LiveKitLog.info("\(#file)", "\(#line)", "responseRemoteRequestUser:[onSuccess][\(logContent)]")
-            self.liveKitStore.applyLinkAudienceList = self.liveKitStore.applyLinkAudienceList.filter({ $0.userId != userInfo.userId })
+            self.liveRoomInfo.applyLinkAudienceList = self.liveRoomInfo.applyLinkAudienceList.filter({ $0.userId != userInfo.userId })
         } onError: { code, message in
             LiveKitLog.error("\(#file)", "\(#line)", "responseRemoteRequestUser:[\(logContent),code:\(code),message:\(message)]")
             onError?(code, message)
@@ -382,13 +387,13 @@ extension RoomEngineService {
         LiveKitLog.info("\(#file)", "\(#line)", "initLivingConfig")
         roomEngine.enableGravitySensor(enable: true)
         roomEngine.setVideoResolutionMode(streamType: .cameraStream, resolutionMode: WindowUtils.isPortrait ? .portrait : .landscape)
-        updateAudioQuality(quality: liveKitStore.selfInfo.audioInfo.audioQuality.value)
+        updateAudioQuality(quality: liveRoomInfo.selfInfo.audioInfo.audioQuality.value)
 
-        let beautyInfo = liveKitStore.selfInfo.beautyInfo
+        let beautyInfo = liveRoomInfo.selfInfo.beautyInfo
         setBeautyLevel(beautyInfo.buffingLevel.value)
         setWhitenessLevel(beautyInfo.whitenessLevel.value)
         setRuddyLevel(beautyInfo.ruddyLevel.value)
-        let enable = liveKitStore.selfInfo.videoInfo.isMirror.value
+        let enable = liveRoomInfo.selfInfo.videoInfo.isMirror.value
         let params = TRTCRenderParams()
         params.mirrorType = enable ? .enable : .disable
         trtcCloud.setLocalRenderParams(params)
@@ -450,9 +455,9 @@ extension RoomEngineService {
     }
 
     func switchMirror() {
-        let enable = !liveKitStore.selfInfo.videoInfo.isMirror.value
+        let enable = !liveRoomInfo.selfInfo.videoInfo.isMirror.value
         LiveKitLog.info("\(#file)", "\(#line)", "switchMirror:[enable:\(enable)]")
-        liveKitStore.selfInfo.videoInfo.isMirror.value = enable
+        liveRoomInfo.selfInfo.videoInfo.isMirror.value = enable
         let params = TRTCRenderParams()
         params.mirrorType = enable ? .enable : .disable
         trtcCloud.setLocalRenderParams(params)
@@ -491,61 +496,6 @@ extension RoomEngineService {
         let roomId = liveRoomInfo.roomId.value
         LiveKitLog.info("\(#file)", "\(#line)", "muteAllRemoteAudio:[isMute:\(isMute),roomId:\(roomId)]")
         trtcCloud.muteLocalAudio(isMute)
-    }
-}
-
-// MARK: Audio Effect
-
-extension RoomEngineService {
-    func startPlayMusic(_ musicInfo: MusicInfo) {
-        let param = TXAudioMusicParam()
-        param.publish = true
-        param.loopCount = Int.max
-        param.id = musicInfo.id
-        param.path = musicInfo.path
-        let log = "startPlayMusic:[id:\(param.id),path:\(param.path),publish:\(param.publish),loopCount:\(param.loopCount)]"
-        LiveKitLog.info("\(#file)", "\(#line)", log)
-        trtcCloud.getAudioEffectManager().startPlayMusic(param, onStart: nil, onProgress: nil)
-        trtcCloud.getAudioEffectManager().setAllMusicVolume(liveKitStore.selfInfo.audioInfo.musicVolume.value)
-        trtcCloud.getAudioEffectManager().setMusicPitch(musicInfo.id, pitch: Double(musicInfo.pitch))
-    }
-
-    func stopPlayMusic(_ id: Int32) {
-        LiveKitLog.info("\(#file)", "\(#line)", "stopPlayMusic:[id:\(id)]")
-        trtcCloud.getAudioEffectManager().stopPlayMusic(id)
-    }
-
-    func setMusicVolume(_ volume: Int) {
-        LiveKitLog.info("\(#file)", "\(#line)", "setMusicVolume:[volume:\(volume)]")
-        trtcCloud.getAudioEffectManager().setAllMusicVolume(volume)
-    }
-
-    func setVoiceVolume(_ volume: Int) {
-        LiveKitLog.info("\(#file)", "\(#line)", "setVoiceVolume:[volume:\(volume)]")
-        trtcCloud.getAudioEffectManager().setVoiceEarMonitorVolume(volume)
-        trtcCloud.getAudioEffectManager().setVoiceVolume(volume)
-    }
-
-    func setMusicPitch(_ id: Int32, pitch: Double) {
-        LiveKitLog.info("\(#file)", "\(#line)", "setMusicPitch:[id:\(id),pitch:\(pitch)]")
-        trtcCloud.getAudioEffectManager().setMusicPitch(id, pitch: pitch)
-    }
-
-    func enableVoiceEarMonitor(enable: Bool) {
-        LiveKitLog.info("\(#file)", "\(#line)", "enableVoiceEarMonitor:[enable:\(enable)]")
-        trtcCloud.getAudioEffectManager().enableVoiceEarMonitor(enable)
-    }
-
-    func setVoiceChangerType(_ changerType: TXVoiceChangeType) {
-        LiveKitLog.info("\(#file)", "\(#line)", "setVoiceChangerType:[changerType:\(changerType)]")
-        liveKitStore.selfInfo.audioInfo.changerType.value = changerType
-        trtcCloud.getAudioEffectManager().setVoiceChangerType(changerType)
-    }
-
-    func setVoiceReverbType(_ reverbType: TXVoiceReverbType) {
-        LiveKitLog.info("\(#file)", "\(#line)", "setVoiceReverbType:[reverbType:\(reverbType)]")
-        liveKitStore.selfInfo.audioInfo.reverbType.value = reverbType
-        trtcCloud.getAudioEffectManager().setVoiceReverbType(reverbType)
     }
 }
 

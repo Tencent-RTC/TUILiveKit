@@ -11,12 +11,8 @@ import Combine
 import RTCRoomEngine
 import TUICore
 
-public struct VoiceRoomParams {
-    public var name: String = ""
-    public var isMuteMicrophone: Bool = true
-    public var isSoundOnSpeaker: Bool = true
-    
-    public var seatCount: Int = 0
+public struct RoomParams {
+    public var maxSeatCount: Int = 0 //The default value is the maximum number of seat supported by the package
     public var seatMode: TUISeatMode = .applyToTake
 }
 
@@ -32,7 +28,7 @@ public class TUIVoiceRoomViewController: UIViewController {
     // MARK: - Public property.
     public var roomId: String = ""
     public var behavior: RoomBehavior = .prepareCreate
-    public var voiceRoomParams: VoiceRoomParams?
+    public var roomParams: RoomParams?
     public var startLiveClosure: OnStartClosure?
     
     // MARK: - Internal property.
@@ -55,10 +51,10 @@ public class TUIVoiceRoomViewController: UIViewController {
     private var popupViewController: UIViewController?
     
     // MARK: - Public function
-    public init(roomId: String, behavior: RoomBehavior, voiceRoomParams: VoiceRoomParams? = nil) {
+    public init(roomId: String, behavior: RoomBehavior, roomParams: RoomParams? = nil) {
         self.roomId = roomId
         self.behavior = behavior
-        self.voiceRoomParams = voiceRoomParams
+        self.roomParams = roomParams
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -171,14 +167,10 @@ extension TUIVoiceRoomViewController {
             state.ownerId = currentUserId
         }
         
-        guard let voiceRoomParams = voiceRoomParams else { return }
-        var name = voiceRoomParams.name
-        if name.isEmpty {
-            name = store.selectCurrent(UserSelectors.getSelfInfo).name
-        }
-        state.name = name
-        state.seatMode = voiceRoomParams.seatMode
-        state.seatCount = voiceRoomParams.seatCount
+        guard let roomParams = roomParams else { return }
+        state.name = store.selectCurrent(UserSelectors.getSelfInfo).name
+        state.seatMode = roomParams.seatMode
+        state.seatCount = roomParams.maxSeatCount
         store.dispatch(action: RoomActions.initializeRoomState(payload: state))
     }
 }
@@ -259,18 +251,20 @@ extension TUIVoiceRoomViewController {
             case .seatApplication:
                 let view = SeatApplicationListView(frame: .zero)
                 presentPopup(view: view)
-            case .musicPanel:
+            case .audioEffectPanel:
                 let view = AudioEffectView(frame: .zero)
                 view.backButtonClickClosure = { [weak self] _ in
                     guard let self = self else { return }
                     self.popMenu()
                 }
                 presentPopup(view: view)
+            case .musicListPanel:
+                presentPopup(view: rootView.musicPanelView)
             case .giftList:
                 presentPopup(view: rootView.giftListView)
             case .audienceList:
-            let view = VoiceAudienceListView()
-            presentPopup(view: view)
+                let view = VoiceAudienceListView()
+                presentPopup(view: view)
         }
     }
     
