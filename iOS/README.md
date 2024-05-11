@@ -55,3 +55,39 @@ let SECRETKEY = ""
 1. Use two mobile phones (A and B) to log in to the application using strings as their user IDs. If you log in for the first time, you need to add a user name.
 2. The user on mobile phone A clicks the 'Start Live Streaming' button to initiate a live broadcast (note that you select video live broadcast or voice live broadcast)
 3. The user on mobile phone B enters the user ID of the user on mobile phone A and clicks to 'Join live room' or 'Join voice room' to watch the live broadcast.
+
+## Compiler error?
+1."Sandbox: rsync" is displayed.
+<p align="center">
+  <img src="https://write-document-release-1258344699.cos.ap-guangzhou.tencentcos.cn/100027182214/9d15ab110f6011ef8f3c525400f2c344.png"/>
+</p>
+You can set User Script Sandboxing to "NO" in "Build Settings"
+<p align="center">
+  <img src="https://write-document-release-1258344699.cos.ap-guangzhou.tencentcos.cn/100027182214/9f56b9d80f4811efbab15254000ded98.png"/>
+</p>
+2.If "SDK does not contain", compile error screenshot:
+<p align="center">
+  <img src="https://write-document-release-1258344699.cos.ap-guangzhou.tencentcos.cn/100027182214/ab0bc21d0f4811ef98aa525400493f3c.png"/>
+</p>
+Add the following code to the Podfile:
+
+```
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+    end
+  end
+end
+```
+
+3.If you run the emulator on an M-series computer, "Linker command failed with exit code 1 (use-v to see invocation)" may appear.
+<p align="center">
+  <img src="https://write-document-release-1258344699.cos.ap-guangzhou.tencentcos.cn/100027182214/8a8f1cf50f5f11efbab15254000ded98.png"/>
+</p>
+The xcode configuration needs to be modified. xcode open projects ->Product-> Destination-> Destination Architectures can choose which mode of emulator to open with, and need to select the ending emulator (Rosetta).
+<p align="center">
+  <img src="https://write-document-release-1258344699.cos.ap-guangzhou.tencentcos.cn/100027182214/6066c2f00f6011efbab15254000ded98.png"/>
+</p>
+
+More questions[Please click](https://www.tencentcloud.com/document/product/647/60048?lang=en&pg=)

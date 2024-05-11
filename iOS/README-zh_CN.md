@@ -51,3 +51,42 @@ let SECRETKEY = ""
 1. 使用两台手机（A、B）用字符串作为自己的用户ID登录应用,如果第一次登录需要添加用户名
 2. 手机A上的用户点击开始直播按钮发起直播（注意选择视频直播或者语音直播）
 3. 手机B上的用户输入手机A上用户的用户ID，点击加入直播或者加入语聊房观看直播
+
+## 编译报错？
+1.出现“Sandbox: rsync”，编译报错截图：
+<p align="center">
+  <img src="https://write-document-release-1258344699.cos.ap-guangzhou.tencentcos.cn/100027182214/9d15ab110f6011ef8f3c525400f2c344.png"/>
+</p>
+可以在“Build Settings”中把"User Script Sandboxing"设置为“NO”
+<p align="center">
+  <img src="https://write-document-release-1258344699.cos.ap-guangzhou.tencentcos.cn/100027182214/9f56b9d80f4811efbab15254000ded98.png"/>
+</p>
+
+2.如果出现 SDK does not contain，编译报错截图：
+<p align="center">
+  <img src="https://write-document-release-1258344699.cos.ap-guangzhou.tencentcos.cn/100027182214/ab0bc21d0f4811ef98aa525400493f3c.png"/>
+</p>
+请在Podfile添加如下代码：
+
+```
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+    end
+  end
+end
+```
+
+3.如果在M系列电脑上运行模拟器，可能会出现“Linker command failed with exit code 1 (use -v to see invocation)”，编译报错截图：
+<p align="center">
+  <img src="https://write-document-release-1258344699.cos.ap-guangzhou.tencentcos.cn/100027182214/8a8f1cf50f5f11efbab15254000ded98.png"/>
+</p>
+需要修改xcode配置。xcode打开项目->Product-> Destination-> Destination Architectures 可以选择用哪种模式的模拟器打开，需要选择 （Rosetta）结尾的模拟器。
+<p align="center">
+  <img src="https://write-document-release-1258344699.cos.ap-guangzhou.tencentcos.cn/100027182214/6066c2f00f6011efbab15254000ded98.png"/>
+</p>
+
+更多问题[请点击查看](https://www.tencentcloud.com/zh/document/product/647/60048?lang=zh&pg=)
+
+

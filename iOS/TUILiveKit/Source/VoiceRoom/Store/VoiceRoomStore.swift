@@ -9,17 +9,10 @@ import Combine
 
 class VoiceRoomStore {
     
-    var environment: ServiceCenter?
-
-    
     private(set) lazy var operation: Store<OperationState, ServiceCenter> = {
-        guard let environment = self.environment else {
-            return Store(initialState: OperationState(), environment: ServiceCenter())
-        }
-        return Store(initialState: OperationState(), environment: environment)
+        return Store(initialState: OperationState(), environment: ServiceCenter())
     }()
 
-    
     private(set) lazy var navigator: Store<NavigationState, Void> = Store(initialState: NavigationState())
     
     private(set) lazy var viewStore: Store<GlobalViewState, Void> = Store(initialState: GlobalViewState())
@@ -30,14 +23,11 @@ class VoiceRoomStore {
     let errorSubject = PassthroughSubject<ErrorService.OperateError, Never>()
     
     init() {
-        environment = ServiceCenter()
         initializeStore()
         debugPrint("\(type(of: self)) is init.")
     }
     
     deinit {
-        environment = nil
-        
         operation.unregister(reducer: userReducer)
         operation.unregister(reducer: roomReducer)
         operation.unregister(reducer: seatReducer)

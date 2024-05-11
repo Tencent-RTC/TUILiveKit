@@ -95,6 +95,7 @@
 "live.music.melancholy" = "忧郁";
 "live.music.wonder.world" = "神奇世界";
 "live.anchor.link.music.play.title" = "音乐";
+"live.anchor.link.music.play.error.title" = "音乐播放失败";
 "live.alert.tips.title" = "温馨提示";
 "live.alert.delete.desc.xxx" = "确认要删除\"xxx\"吗？";
 "live.alert.cancel" = "取消";

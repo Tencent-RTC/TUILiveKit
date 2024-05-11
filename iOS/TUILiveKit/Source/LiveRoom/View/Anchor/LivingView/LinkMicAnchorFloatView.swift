@@ -32,12 +32,12 @@ class LinkMicAnchorFloatView: UIView {
         constructViewHierarchy()
         activateConstraints()
         updateView()
-        engineService.liveKitStore.$applyLinkAudienceList
+        engineService.liveRoomInfo.$applyLinkAudienceList
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in
                 guard let self = self else { return }
                 self.updateView()
-                let audienceCount = self.engineService.liveKitStore.applyLinkAudienceList.count
+                let audienceCount = self.engineService.liveRoomInfo.applyLinkAudienceList.count
                 self.tipsLabel.text = .localizedReplace(.applyLinkMicCount, replace: String(audienceCount))
             }.store(in: &cancellable)
     }
@@ -45,7 +45,7 @@ class LinkMicAnchorFloatView: UIView {
     lazy var tipsLabel: UILabel = {
         let label = UILabel()
         label.textColor = .flowKitWhite
-        label.text = .localizedReplace(.applyLinkMicCount, replace: String(self.engineService.liveKitStore.applyLinkAudienceList.count))
+        label.text = .localizedReplace(.applyLinkMicCount, replace: String(self.engineService.liveRoomInfo.applyLinkAudienceList.count))
         label.font = .customFont(ofSize: 14)
         label.textAlignment = .center
         label.adjustsFontSizeToFitWidth = true
@@ -72,7 +72,7 @@ class LinkMicAnchorFloatView: UIView {
 
     private func updateView() {
         collectionView.reloadData()
-        let audienceCount = engineService.liveKitStore.applyLinkAudienceList.count
+        let audienceCount = engineService.liveRoomInfo.applyLinkAudienceList.count
         collectionView.snp.updateConstraints { make in
             switch audienceCount {
             case 1:
@@ -125,14 +125,14 @@ extension LinkMicAnchorFloatView: UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return min(engineService.liveKitStore.applyLinkAudienceList.count, 3)
+        return min(engineService.liveRoomInfo.applyLinkAudienceList.count, 3)
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UserImageCell.cellReuseIdentifier, for: indexPath) as! UserImageCell
         
         if indexPath.row < 2 {
-            cell.userInfo = engineService.liveKitStore.applyLinkAudienceList[indexPath.row]
+            cell.userInfo = engineService.liveRoomInfo.applyLinkAudienceList[indexPath.row]
         } else {
             let userInfo = UserInfo()
             cell.userInfo = userInfo

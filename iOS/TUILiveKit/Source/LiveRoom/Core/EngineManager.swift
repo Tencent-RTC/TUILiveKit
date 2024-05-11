@@ -9,26 +9,29 @@
 import Foundation
 import TUICore
 import RTCRoomEngine
-
-#if TXLiteAVSDK_TRTC
+#if canImport(TXLiteAVSDK_TRTC)
     import TXLiteAVSDK_TRTC
-#elseif TXLiteAVSDK_Professional
+#elseif canImport(TXLiteAVSDK_Professional)
     import TXLiteAVSDK_Professional
 #endif
 
-public class EngineManager {
-    private init() {}
-    private static var mRoomEngineMap:[String:RoomEngineService] = [:]
-    static func getRoomEngineService(roomId:String) -> RoomEngineService {
+protocol EngineServiceProvider {
+    func getRoomEngineService(roomId:String) -> RoomEngineService
+    func removeRoomEngineService(roomId:String)
+}
+
+class EngineManager:EngineServiceProvider {
+    private var mRoomEngineMap:[String:RoomEngineService] = [:]
+    func getRoomEngineService(roomId:String) -> RoomEngineService {
         guard let service = mRoomEngineMap[roomId] else{
-            let service = RoomEngineService(liveRoomInfo: LiveRoomInfo(roomId: roomId),liveKitStore: LiveKitStore())
+            let service = RoomEngineService(liveRoomInfo: LiveRoomInfo(roomId: roomId))
             mRoomEngineMap[roomId] = service
             return service
         }
         return service
     }
     
-    static func removeRoomEngineService(roomId:String) {
+    func removeRoomEngineService(roomId:String) {
         mRoomEngineMap.removeValue(forKey: roomId)
     }
 }

@@ -16,12 +16,16 @@ enum AudienceViewState {
 }
 
 class AudienceView: UIView {
+    @WeakLazyInjected var engineManager:EngineServiceProvider?
     var state: Observable<AudienceViewState> = Observable(.default)
     var isEnteringRoom = false
     var roomId: String
 
     private(set) lazy var engineService: RoomEngineService = {
-        EngineManager.getRoomEngineService(roomId: roomId)
+        guard let engineManager = engineManager else {
+            return RoomEngineService(liveRoomInfo: LiveRoomInfo())
+        }
+        return engineManager.getRoomEngineService(roomId: roomId)
     }()
 
     var liveRoomInfo: LiveRoomInfo {

@@ -48,4 +48,8 @@ class StreamPublisherView: RenderView {
             waitingLinkView.stopAnim()
         }
     }
+    
+    deinit {
+        debugPrint("deinit \(self)")
+    }
 }

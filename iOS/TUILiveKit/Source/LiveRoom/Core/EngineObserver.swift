@@ -7,19 +7,19 @@
 
 import RTCRoomEngine
 import UIKit
-
-#if TXLiteAVSDK_TRTC
+#if canImport(TXLiteAVSDK_TRTC)
     import TXLiteAVSDK_TRTC
-#elseif TXLiteAVSDK_Professional
+#elseif canImport(TXLiteAVSDK_Professional)
     import TXLiteAVSDK_Professional
 #endif
 
 class EngineObserver: NSObject {
     private var liveRoomInfo: LiveRoomInfo
+    @WeakLazyInjected var engineManager:EngineServiceProvider?
     private var engineService: RoomEngineService? {
-        return EngineManager.getRoomEngineService(roomId: liveRoomInfo.roomId.value)
+        return engineManager?.getRoomEngineService(roomId: liveRoomInfo.roomId.value)
     }
-
+    
     init(liveRoomInfo:LiveRoomInfo) {
         self.liveRoomInfo = liveRoomInfo
     }
@@ -28,9 +28,9 @@ class EngineObserver: NSObject {
         guard let engineService = engineService else{ return}
         for seatInfo: TUISeatInfo in leftList {
             guard let userId = seatInfo.userId else { continue }
-            if userId == engineService.liveKitStore.selfInfo.userId {
-                engineService.liveKitStore.selfInfo.role.value = .audience
-                engineService.liveKitStore.selfInfo.status.value = .none
+            if userId == engineService.liveRoomInfo.selfInfo.userId {
+                engineService.liveRoomInfo.selfInfo.role.value = .audience
+                engineService.liveRoomInfo.selfInfo.status.value = .none
                 return
             }
         }
@@ -52,8 +52,8 @@ extension EngineObserver: TUIRoomObserver {
         guard let engineService = engineService else{ return}
         liveRoomInfo.audienceList.value = liveRoomInfo.audienceList.value.filter({ $0.userId != userInfo.userId })
         liveRoomInfo.linkingAudienceList.value = liveRoomInfo.linkingAudienceList.value.filter({ $0.userId != userInfo.userId })
-        engineService.liveKitStore.applyLinkAudienceList =
-        engineService.liveKitStore.applyLinkAudienceList.filter({ $0.userId != userInfo.userId })
+        engineService.liveRoomInfo.applyLinkAudienceList =
+        engineService.liveRoomInfo.applyLinkAudienceList.filter({ $0.userId != userInfo.userId })
         liveRoomInfo.userInfoPool.remove(userInfo.userId)
         LiveKitLog.info("\(#file)","\(#line)","onRemoteUserLeaveRoom:[roomId:\(roomId),userId:\(userInfo.userId)]")
     }
@@ -89,17 +89,17 @@ extension EngineObserver: TUIRoomObserver {
         guard let engineService = engineService else{ return }
         userInfo.requestId = request.requestId
         if request.requestAction == .takeSeat && liveRoomInfo.interactionType.value == .link {
-            var array = engineService.liveKitStore.applyLinkAudienceList.filter({ $0.userId != userInfo.userId })
+            var array = engineService.liveRoomInfo.applyLinkAudienceList.filter({ $0.userId != userInfo.userId })
             array.append(userInfo)
-            engineService.liveKitStore.applyLinkAudienceList = array
+            engineService.liveRoomInfo.applyLinkAudienceList = array
         }
     }
 
     func onRequestCancelled(requestId: String, userId: String) {
         LiveKitLog.info("\(#file)","\(#line)","onRequestCancelled:[requestId:\(requestId),userId:\(userId)]")
         guard let engineService = engineService else{ return }
-        engineService.liveKitStore.applyLinkAudienceList =
-        engineService.liveKitStore.applyLinkAudienceList.filter({ $0.requestId != requestId })
+        engineService.liveRoomInfo.applyLinkAudienceList =
+        engineService.liveRoomInfo.applyLinkAudienceList.filter({ $0.requestId != requestId })
     }
     
     func onRoomUserCountChanged(roomId: String, userCount: Int) {

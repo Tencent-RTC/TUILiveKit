@@ -49,18 +49,15 @@ class TopView: UIView {
     }
     
     weak var delegate: TopViewDelegate?
-    var roomName: String = "" {
-        didSet {
-            roomNameLabel.text = roomName
-        }
-    }
-    var roomCoverUrl: URL? = nil {
-        didSet {
-            if let url = roomCoverUrl {
-                roomCoverImageView.kf.setImage(with: url)
-            }
-        }
-    }
+   
+    let roomInfoView: RoomInfoView = {
+        let view = RoomInfoView()
+        view.mm_h = Int(componentHeight).scale375()
+        view.backgroundColor = UIColor.g2.withAlphaComponent(0.4)
+        view.layer.cornerRadius = view.mm_h * 0.5
+        return view
+    }()
+    
     var memberCount: Int = 0 {
         didSet {
             memberCountLabel.text = "\(memberCount)"
@@ -72,27 +69,6 @@ class TopView: UIView {
         }
     }
     private var isViewReady: Bool = false
-    // private view
-    let leftContainer: UIView = {
-        let view = UIView(frame: .zero)
-        view.backgroundColor = .g2.withAlphaComponent(0.4)
-        view.layer.cornerRadius = containerHeight/2.0
-        return view
-    }()
-    
-    let roomCoverImageView: UIImageView = {
-        let view = UIImageView(frame: .zero)
-        view.layer.cornerRadius = componentHeight/2.0
-        view.layer.masksToBounds = true
-        return view
-    }()
-    
-    let roomNameLabel: UILabel = {
-        let label = UILabel(frame: .zero)
-        label.textColor = .whiteColor
-        return label
-    }()
-    
     let audienceContainer: UIView = {
         let view = UIView(frame: .zero)
         view.backgroundColor = .g2.withAlphaComponent(0.4)
@@ -140,9 +116,7 @@ class TopView: UIView {
     }
     
     private func constructViewHierarchy() {
-        addSubview(leftContainer)
-        leftContainer.addSubview(roomCoverImageView)
-        leftContainer.addSubview(roomNameLabel)
+        addSubview(roomInfoView)
         addSubview(audienceContainer)
         audienceContainer.addSubview(collectionView)
         audienceContainer.addSubview(memberCountLabel)
@@ -150,21 +124,13 @@ class TopView: UIView {
     }
     
     private func activeViewConstraint() {
-        leftContainer.snp.makeConstraints { make in
+        roomInfoView.snp.remakeConstraints { make in
+            make.centerY.equalTo(audienceContainer)
+            make.height.equalTo(roomInfoView.mm_h)
+            make.width.greaterThanOrEqualTo(80.scale375())
+            make.width.lessThanOrEqualTo(375.scale375()*0.5)
+            make.leading.equalToSuperview().inset(16.scale375())
             make.top.bottom.equalToSuperview()
-            make.height.equalTo(containerHeight)
-            make.left.equalToSuperview().offset(16)
-        }
-        roomNameLabel.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.right.equalToSuperview().offset(-12)
-            make.left.equalTo(roomCoverImageView.snp.right).offset(4)
-            make.height.equalTo(componentHeight)
-        }
-        roomCoverImageView.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.height.width.equalTo(componentHeight)
-            make.left.equalToSuperview().offset(4)
         }
         audienceContainer.snp.makeConstraints { make in
             make.centerY.equalToSuperview()

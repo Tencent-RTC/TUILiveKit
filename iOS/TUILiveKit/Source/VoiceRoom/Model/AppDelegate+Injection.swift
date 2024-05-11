@@ -11,6 +11,8 @@ extension Resolver: ResolverRegistering {
     public static func registerAllServices() {
         registerVoiceRoomDependency()
         registerAudioEffectService()
+        registerMusicPanelService()
+        registerEngineManager()
     }
 }
 
@@ -21,5 +23,13 @@ extension Resolver {
         }
         .implements(VoiceRoomStoreProvider.self)
         .scope(.shared)
+    }
+    
+    public static func registerEngineManager() {
+        register {
+            EngineManager()
+        }
+        .implements(EngineServiceProvider.self)
+        .scope(.cached)
     }
 }

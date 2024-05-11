@@ -156,12 +156,18 @@ extension MenuDataCreator {
                 .store(in: &cancellableSet)
         }
         menus.append(linkMic)
-        var music = ButtonMenuInfo(normalIcon: "live_music_icon")
-        music.tapAction = { sender in
+        var audioEffect = ButtonMenuInfo(normalIcon: "live_music_icon")
+        audioEffect.tapAction = { sender in
             guard let store = self.store else { return }
-            store.dispatch(action: NavigatorActions.navigatorTo(payload: .musicPanel))
+            store.dispatch(action: NavigatorActions.navigatorTo(payload: .audioEffectPanel))
         }
-        menus.append(music)
+        menus.append(audioEffect)
+        var musicList = ButtonMenuInfo(normalIcon: "live_music_list")
+        musicList.tapAction = { sender in
+            guard let store = self.store else { return }
+            store.dispatch(action: NavigatorActions.navigatorTo(payload: .musicListPanel))
+        }
+        menus.append(musicList)
         return menus
     }
     

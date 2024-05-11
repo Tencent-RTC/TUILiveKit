@@ -101,6 +101,15 @@ class VoiceRoomRootView: UIView {
         return view
     }()
     
+    lazy var musicPanelView: MusicPanelView = {
+        let view = MusicPanelView(frame: .zero)
+        view.backButtonClickClosure = { [weak self] _ in
+            guard let self = self else { return }
+            self.store.dispatch(action: NavigatorActions.navigatorTo(payload: .main))
+        }
+        return view
+    }()
+    
     override func didMoveToWindow() {
         guard !isViewReady else { return }
         backgroundLayer.frame = bounds
@@ -134,7 +143,7 @@ class VoiceRoomRootView: UIView {
         }
         seatListView.snp.makeConstraints { make in
             make.top.equalTo(topView.snp.bottom).offset(40)
-            make.height.equalTo(200)
+            make.height.equalTo(310)
             make.left.equalToSuperview()
             make.right.equalToSuperview()
         }
@@ -232,13 +241,13 @@ extension VoiceRoomRootView {
     private func subscribeTopViewState() {
         roomName
             .receive(on: RunLoop.main)
-            .assign(to: \TopView.roomName, on: topView)
+            .assign(to: \TopView.roomInfoView.roomName, on: topView)
             .store(in: &cancellableSet)
         coverUrl
             .receive(on: RunLoop.main)
             .sink(receiveValue: { [weak self] url in
                 guard let self = self else { return }
-                self.topView.roomCoverUrl = url
+                self.topView.roomInfoView.roomCoverUrl = url
                 self.backgroundImageView.kf.setImage(with: url)
             })
             .store(in: &cancellableSet)
@@ -280,6 +289,7 @@ extension VoiceRoomRootView: TopViewDelegate {
         switch event {
             case .stop:
                 if store.selectCurrent(UserSelectors.isOwner) {
+                    musicPanelView.resetMusicPanelState()
                     store.dispatch(action: RoomActions.stop())
                 } else {
                     store.dispatch(action: RoomActions.leave())
@@ -319,7 +329,6 @@ extension VoiceRoomRootView: SeatListViewDelegate {
                 }
             }
             .store(in: &seatView.cancellableSet)
-        let timeInterval :DispatchQueue.SchedulerTimeType.Stride = .seconds(1)
         let userVolumePublisher = store.select(UserSelectors.getSpeakingUsers)
         fullSeatPublisher
             .combineLatest(userVolumePublisher)

@@ -25,11 +25,12 @@ struct NavigationState {
     enum Router {
         case exit
         case main
-        case musicPanel
+        case audioEffectPanel
         case seatApplication
         case listMenu(_ menus: [ListMenuInfo])
         case giftList
         case audienceList
+        case musicListPanel
     }
     
     var currentRouter: Router = .main
@@ -41,18 +42,20 @@ extension NavigationState.Router: Equatable {
             case (.exit, .exit),
                 (.main, .main),
                 (.giftList, .giftList),
-                (.musicPanel, .musicPanel),
+                (.audioEffectPanel, .audioEffectPanel),
+                (.musicListPanel, .musicListPanel),
                 (.seatApplication, .seatApplication):
                 return true
             case let (.listMenu(l), .listMenu(r)):
                 return l == r
             case (.exit, _),
                 (.main, _),
-                (.musicPanel, _),
+                (.audioEffectPanel, _),
                 (.giftList, _),
                 (.seatApplication, _),
                 (.listMenu, _),
-                (.audienceList, _):
+                (.audienceList, _),
+                (.musicListPanel,_):
                 return false
         }
     }

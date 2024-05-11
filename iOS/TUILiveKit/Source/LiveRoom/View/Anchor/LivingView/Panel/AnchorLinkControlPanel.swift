@@ -74,7 +74,7 @@ class AnchorLinkControlPanel: UIView {
         tableView.register(UserRequestLinkCell.self, forCellReuseIdentifier: UserRequestLinkCell.cellReuseIdentifier)
         tableView.register(UserLinkCell.self, forCellReuseIdentifier: UserLinkCell.cellReuseIdentifier)
         
-        engineService.liveKitStore.$applyLinkAudienceList
+        engineService.liveRoomInfo.$applyLinkAudienceList
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in
                 guard let self = self else{ return}
@@ -85,7 +85,7 @@ class AnchorLinkControlPanel: UIView {
             self?.updateView()
         }
 
-        engineService.liveKitStore.$selfInfo
+        engineService.liveRoomInfo.$selfInfo
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in
                 guard let self = self else{ return}
@@ -96,13 +96,13 @@ class AnchorLinkControlPanel: UIView {
 
     private func updateView() {
         linkingAudienceList = getLinkingAudienceList()
-        applyLinkAudienceList = Array(engineService.liveKitStore.applyLinkAudienceList)
+        applyLinkAudienceList = Array(engineService.liveRoomInfo.applyLinkAudienceList)
         userListTableView.reloadData()
     }
     
     func getLinkingAudienceList() -> [UserInfo] {
         var list: [UserInfo] = Array(liveRoomInfo.linkingAudienceList.value)
-        list = list.filter({ $0.userId != engineService.liveKitStore.selfInfo.userId })
+        list = list.filter({ $0.userId != engineService.liveRoomInfo.selfInfo.userId })
         return list
     }
 }
