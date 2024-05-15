@@ -69,8 +69,8 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.View
             ConfirmWithCheckboxDialog dialog = new ConfirmWithCheckboxDialog(mContext);
             dialog.setTitle(mContext.getString(R.string.livekit_tips_title));
             dialog.setContent(mContext.getString(R.string.livekit_musuic_delete_tips, currentItem.name));
-            dialog.setNegativeText("取消", negativeView -> dialog.dismiss());
-            dialog.setPositiveText("确认", positiveView -> {
+            dialog.setNegativeText(mContext.getString(R.string.livekit_cancel), negativeView -> dialog.dismiss());
+            dialog.setPositiveText(mContext.getString(R.string.livekit_confirm), positiveView -> {
                 if (currentItem.isPlaying.get()) {
                     mRoomEngineService.stopMusic(currentItem.id);
                     notifyDataSetChanged();
