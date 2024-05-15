@@ -53,6 +53,7 @@ public class SeatController extends Controller {
             @Override
             public void onAccepted(String requestId, String userId) {
                 LiveKitLog.info(TAG + " takeSeat:onAccepted, [requestId:" + requestId + ",userId:" + userId + "]");
+                mUserState.selfInfo.isInSeat.set(true, false);
                 mSeatState.mySeatApplicationId.set("", false);
                 ToastUtils.toast(R.string.livekit_voiceroom_take_seat_success);
             }
@@ -94,6 +95,7 @@ public class SeatController extends Controller {
             @Override
             public void onSuccess() {
                 LiveKitLog.info(TAG + " leaveSeat success");
+                mUserState.selfInfo.isInSeat.set(false, false);
             }
 
             @Override
@@ -231,9 +233,9 @@ public class SeatController extends Controller {
 
     private void updateSelfSeatedState() {
         if (isInSeat()) {
-            mUserState.selfInfo.isInSeat.set(true);
+            mUserState.selfInfo.isInSeat.set(true, false);
         } else {
-            mUserState.selfInfo.isInSeat.set(false);
+            mUserState.selfInfo.isInSeat.set(false, false);
         }
     }
 
@@ -266,7 +268,6 @@ public class SeatController extends Controller {
 
             mSeatState.updateSeatList(seatList);
             LiveKitLog.info(TAG + " onSeatInfoChanged:" + mSeatState.toString());
-            updateSelfSeatedState();
 
             for (TUIRoomDefine.SeatInfo seatInfo : seatedList) {
                 LiveKitLog.info(TAG + " onUserSeated: [user:" + seatInfo.userId + "]");
@@ -301,6 +302,7 @@ public class SeatController extends Controller {
         @Override
         public void onKickedOffSeat(String userId) {
             LiveKitLog.info(TAG + " onKickedOffSeat:" + userId);
+            mUserState.selfInfo.isInSeat.set(false, false);
             ToastUtils.toast(R.string.livekit_voiceroom_kicked_out_of_seat);
         }
     };
