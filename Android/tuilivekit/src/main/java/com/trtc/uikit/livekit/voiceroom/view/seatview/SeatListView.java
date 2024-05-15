@@ -30,7 +30,12 @@ public class SeatListView extends BasicView {
     @Override
     protected void initView() {
         View rootView = LayoutInflater.from(mContext).inflate(R.layout.livekit_voiceroom_seat_list, this, true);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(mContext, 4);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(mContext, 4) {
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
         RecyclerView recycleView = rootView.findViewById(R.id.rv_seat_list);
         recycleView.setLayoutManager(gridLayoutManager);
         mAdapter = new SeatAdapter(mContext, mLiveController);
