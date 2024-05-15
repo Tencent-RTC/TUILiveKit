@@ -10,11 +10,6 @@ import androidx.annotation.Nullable;
 
 import com.trtc.uikit.livekit.R;
 
-
-/**
- * 礼物面板展示按钮
- * 点击此按钮弹出礼物面板
- */
 public class GiftButton extends FrameLayout {
 
     public GiftButton(Context context) {

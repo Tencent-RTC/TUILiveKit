@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="gone"
-            tools:text="强度"
+            tools:text=""
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
             android:textColor="@color/livekit_design_standard_flowkit_white"
