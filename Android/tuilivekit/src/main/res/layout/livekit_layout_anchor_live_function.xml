@@ -1,17 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="36dp"
-    android:layout_gravity="center_horizontal"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-    android:orientation="horizontal">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
+        android:id="@+id/rl_barrage"
         android:layout_width="0dp"
-        android:layout_height="36dp"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
+        android:layout_height="@dimen/livekit_bottom_btn_size"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/rl_link_mic"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_link_mic"
+        android:layout_width="@dimen/livekit_bottom_btn_size"
+        android:layout_height="@dimen/livekit_bottom_btn_size"
+        android:layout_marginEnd="6dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="@+id/rl_barrage"
+        app:layout_constraintStart_toEndOf="@+id/rl_barrage"
+        app:layout_constraintEnd_toStartOf="@+id/rl_settings"
         android:layout_weight="1">
         <Button
             android:id="@+id/btn_link"
@@ -20,12 +33,17 @@
             android:background="@drawable/livekit_ic_link_mic" />
     </RelativeLayout>
 
+
+
     <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="36dp"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
-        android:layout_weight="1">
+        android:id="@+id/rl_settings"
+        android:layout_width="@dimen/livekit_bottom_btn_size"
+        android:layout_height="@dimen/livekit_bottom_btn_size"
+        android:layout_marginEnd="6dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="@+id/rl_barrage"
+        app:layout_constraintStart_toEndOf="@+id/rl_link_mic"
+        app:layout_constraintEnd_toStartOf="@+id/rl_music">
         <Button
             android:id="@+id/btn_settings"
             android:layout_width="36dp"
@@ -33,45 +51,21 @@
             android:background="@drawable/livekit_console_settings" />
     </RelativeLayout>
 
+
+
     <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="36dp"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
-        android:layout_weight="1">
+        android:id="@+id/rl_music"
+        android:layout_width="@dimen/livekit_bottom_btn_size"
+        android:layout_height="@dimen/livekit_bottom_btn_size"
+        android:layout_marginEnd="6dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="@+id/rl_barrage"
+        app:layout_constraintStart_toEndOf="@+id/rl_settings"
+        app:layout_constraintEnd_toEndOf="parent" >
         <Button
             android:id="@+id/btn_music"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:background="@drawable/livekit_console_music" />
+            android:background="@drawable/livekit_music_list" />
     </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="36dp"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
-        android:layout_weight="1"
-        android:visibility="gone">
-        <Button
-            android:id="@+id/btn_pk"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:background="@drawable/livekit_pk" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="36dp"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
-        android:layout_weight="1"
-        android:visibility="gone">
-        <Button
-            android:id="@+id/btn_more"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:background="@drawable/livekit_more" />
-    </RelativeLayout>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
