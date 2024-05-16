@@ -36,3 +36,40 @@ Studio project to be synced, connect to a real device, and click **Run** to try 
 1. Use two mobile phones (A and B) to log in to the application using strings as their user IDs. If you log in for the first time, you need to add a user name.
 2. The user on mobile phone A clicks the 'Start Live Streaming' button to initiate a live broadcast (note that you select video live broadcast or voice live broadcast)
 3. The user on mobile phone B enters the user ID of the user on mobile phone A and clicks to 'Join live room' or 'Join voice room' to watch the live broadcast.
+
+
+## FAQs
+
+Please refer to: [FAQs](https://www.tencentcloud.com/document/product/647/60043?lang=en&pg=)
+
+#### 1.Can TUILiveKit use TRTC without introducing IM SDK?
+```
+No, all the components of TUIKit use Tencent Cloud IM SDK as the basic service for communication,
+such as the core logic of creating room signaling, Lian-mic signaling, etc., all use IM services. 
+If you have purchased other IM products, you can also refer to TUILiveKit logic to adapt.
+```
+
+#### 2."application@allowBackup", Error details:
+```
+Manifest merger failed : Attribute application@allowBackup value=(false) from AndroidManifest.xml:7:9-36
+	is also present at [com.github.yyued:SVGAPlayer-Android:2.6.1] AndroidManifest.xml:12:9-35 value=(true).
+	Suggestion: add 'tools:replace="android:allowBackup"' to <application> element at AndroidManifest.xml:5:5-53:19 to override.
+```
+
+#### 3. Activity need to use a Theme.AppCompat theme, Error details:
+```
+java.lang.RuntimeException: Unable to start activity ComponentInfo{com.trtc.uikit.livekit.example/com.trtc.uikit.livekit.example.login.LoginActivity}: 
+java.lang.IllegalStateException: You need to use a Theme.AppCompat theme (or descendant) with this activity.
+	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3730)
+	at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:3885)
+	at android.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:101)
+	at android.app.servertransaction.TransactionExecutor.executeCallbacks(TransactionExecutor.java:135)
+	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:95)
+	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2332)
+	at android.os.Handler.dispatchMessage(Handler.java:107)
+	at android.os.Looper.loop(Looper.java:230)
+	at android.app.ActivityThread.main(ActivityThread.java:8115)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:526)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1034)
+```
