@@ -6,9 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.uicomponent.barrage.TUIBarrageButton;
 import com.trtc.uikit.livekit.liveroom.core.RoomEngineService;
 import com.trtc.uikit.livekit.liveroom.data.LiveRoomInfo;
 import com.trtc.uikit.livekit.liveroom.view.anchor.component.common.MusicPanel;
@@ -17,23 +19,24 @@ import com.trtc.uikit.livekit.liveroom.view.anchor.component.common.SettingsPane
 @SuppressLint("ViewConstructor")
 public class FunctionView extends LinearLayout {
 
-    private AnchorLinkMicPanel mAnchorLinkMicPanel;
-    private PopupDialog        mAnchorLinkMicDialog;
-    private SettingsPanel      mSettingsPanel;
-    private PopupDialog        mSettingsPanelDialog;
-    private MusicPanel         mMusicPanel;
-    private PopupDialog        mMusicPanelDialog;
-
-    private final Context           mContext;
-    private final LiveRoomInfo      mLiveRoomInfo;
-    private final RoomEngineService mRoomEngineService;
+    private       AnchorLinkMicPanel mAnchorLinkMicPanel;
+    private       PopupDialog        mAnchorLinkMicDialog;
+    private       SettingsPanel      mSettingsPanel;
+    private       PopupDialog        mSettingsPanelDialog;
+    private       MusicPanel         mMusicPanel;
+    private       PopupDialog        mMusicPanelDialog;
+    private       RelativeLayout     mLayoutBarrageSendContainer;
+    private final Context            mContext;
+    private final LiveRoomInfo       mLiveRoomInfo;
+    private final RoomEngineService  mRoomEngineService;
 
     public FunctionView(Context context, LiveRoomInfo roomInfo, RoomEngineService service) {
         super(context);
         mContext = context;
         mLiveRoomInfo = roomInfo;
         mRoomEngineService = service;
-        init();
+
+        initView();
     }
 
     @Override
@@ -56,14 +59,21 @@ public class FunctionView extends LinearLayout {
 
     }
 
-    private void init() {
+    private void initView() {
         View rootView = LayoutInflater.from(mContext).inflate(R.layout.livekit_layout_anchor_live_function, this,
                 true);
+
+        initBarrageSendContainer(rootView);
         initLinkButton(rootView);
         initSettingsButton(rootView);
         initMusicButton(rootView);
-        initPKButton(rootView);
-        initMoreButton(rootView);
+    }
+
+    private void initBarrageSendContainer(View rootView) {
+        mLayoutBarrageSendContainer = rootView.findViewById(R.id.rl_barrage);
+
+        TUIBarrageButton barrageButton = new TUIBarrageButton(mContext, mLiveRoomInfo.roomId);
+        mLayoutBarrageSendContainer.addView(barrageButton);
     }
 
     private void initLinkButton(View rootView) {
@@ -118,21 +128,5 @@ public class FunctionView extends LinearLayout {
             mMusicPanelDialog.show();
         });
     }
-
-    private void initPKButton(View rootView) {
-        Button pkButton = rootView.findViewById(R.id.btn_pk);
-        pkButton.setOnClickListener((view) -> {
-
-        });
-    }
-
-    private void initMoreButton(View rootView) {
-        Button moreButton = rootView.findViewById(R.id.btn_more);
-        moreButton.setOnClickListener((view) -> {
-
-        });
-    }
-
-
 }
 
