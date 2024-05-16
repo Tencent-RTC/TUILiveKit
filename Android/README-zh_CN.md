@@ -10,7 +10,7 @@ _简体中文 | [English](README.md)_
 - Gradle 4.2.1 及以上的版本。
 - Android 5.0 及以上的手机设备。
 
-## 运行示例
+## 跑通示例
 
 ## 第一步：创建应用
 
@@ -33,3 +33,38 @@ _简体中文 | [English](README.md)_
 1. 使用两台手机（A、B）用字符串作为自己的用户ID登录应用,如果第一次登录需要添加用户名
 2. 手机A上的用户点击开始直播按钮发起直播（注意选择视频直播或者语音直播）
 3. 手机B上的用户输入手机A上用户的用户ID，点击加入直播或者加入语聊房观看直播
+
+## 常见问题
+
+请参考：[常见问题](https://www.tencentcloud.com/zh/document/product/647/60043)
+
+#### 1.TUILiveKit 是否可以不引入 IM SDK，只使用 TRTC？
+```
+不可以，TUIKit 全系组件都使用了腾讯云 IM SDK 作为通信的基础服务，例如创建房间信令、连麦信令等核心逻辑都使用 IM服务，
+如果您已经购买有其他 IM 产品，也可以参照  TUILiveKit 逻辑进行适配。
+```
+
+#### 2."application@allowBackup"，错误详情：
+```
+Manifest merger failed : Attribute application@allowBackup value=(false) from AndroidManifest.xml:7:9-36
+	is also present at [com.github.yyued:SVGAPlayer-Android:2.6.1] AndroidManifest.xml:12:9-35 value=(true).
+	Suggestion: add 'tools:replace="android:allowBackup"' to <application> element at AndroidManifest.xml:5:5-53:19 to override.
+```
+
+#### 3.Activity need to use a Theme.AppCompat theme，错误详情：
+```
+java.lang.RuntimeException: Unable to start activity ComponentInfo{com.trtc.uikit.livekit.example/com.trtc.uikit.livekit.example.login.LoginActivity}: 
+java.lang.IllegalStateException: You need to use a Theme.AppCompat theme (or descendant) with this activity.
+	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3730)
+	at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:3885)
+	at android.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:101)
+	at android.app.servertransaction.TransactionExecutor.executeCallbacks(TransactionExecutor.java:135)
+	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:95)
+	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2332)
+	at android.os.Handler.dispatchMessage(Handler.java:107)
+	at android.os.Looper.loop(Looper.java:230)
+	at android.app.ActivityThread.main(ActivityThread.java:8115)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:526)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1034)
+```
