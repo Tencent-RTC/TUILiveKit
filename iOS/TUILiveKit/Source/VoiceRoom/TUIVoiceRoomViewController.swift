@@ -14,6 +14,11 @@ import TUICore
 public struct RoomParams {
     public var maxSeatCount: Int = 0 //The default value is the maximum number of seat supported by the package
     public var seatMode: TUISeatMode = .applyToTake
+    public init(maxSeatCount: Int, seatMode: TUISeatMode) {
+        self.maxSeatCount = maxSeatCount
+        self.seatMode = seatMode
+    }
+    public init() {}
 }
 
 public class TUIVoiceRoomViewController: UIViewController {
