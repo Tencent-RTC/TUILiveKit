@@ -143,7 +143,7 @@ class VoiceRoomRootView: UIView {
         }
         seatListView.snp.makeConstraints { make in
             make.top.equalTo(topView.snp.bottom).offset(40)
-            make.height.equalTo(310)
+            make.height.equalTo(200)
             make.left.equalToSuperview()
             make.right.equalToSuperview()
         }

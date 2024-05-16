@@ -30,6 +30,7 @@ class SeatListView: UIView {
         layout.sectionInset = .init(top: 0, left: 20, bottom: 0, right: 20)
         layout.scrollDirection = .vertical
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.isScrollEnabled = false
         collectionView.register(SeatCollectionCell.self, forCellWithReuseIdentifier: SeatCollectionCell.identifier)
         collectionView.backgroundColor = UIColor.clear
         return collectionView
