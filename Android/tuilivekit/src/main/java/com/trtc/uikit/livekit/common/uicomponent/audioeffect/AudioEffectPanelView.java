@@ -14,20 +14,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.core.LiveController;
 import com.trtc.uikit.livekit.common.core.controller.MediaController;
+import com.trtc.uikit.livekit.common.view.BottomPanelView;
 import com.trtc.uikit.livekit.liveroom.data.AudioInfo;
-import com.trtc.uikit.livekit.common.view.BasicView;
 
 @SuppressLint("ViewConstructor")
-public class AudioEffectView extends BasicView {
+public class AudioEffectPanelView extends BottomPanelView {
 
     private       TextView        mTextMusicVolume;
     private       TextView        mTextEarReturnVolume;
     private       TextView        mTextPeopleVolume;
     private final MediaController mMediaController;
 
-    private OnBackButtonClickListener mOnBackButtonClickListener;
-
-    public AudioEffectView(Context context, LiveController liveController) {
+    public AudioEffectPanelView(Context context, LiveController liveController) {
         super(context, liveController);
         mMediaController = mLiveController.getMediaController();
     }
@@ -38,10 +36,6 @@ public class AudioEffectView extends BasicView {
 
     @Override
     protected void removeObserver() {
-    }
-
-    public void setOnBackButtonClickListener(OnBackButtonClickListener listener) {
-        mOnBackButtonClickListener = listener;
     }
 
     @Override
@@ -63,11 +57,7 @@ public class AudioEffectView extends BasicView {
         ReverbAdapter adapterReverb = new ReverbAdapter(mContext, mLiveController);
         recyclerReverb.setAdapter(adapterReverb);
 
-        findViewById(R.id.iv_back).setOnClickListener((view) -> {
-            if (mOnBackButtonClickListener != null) {
-                mOnBackButtonClickListener.onClick();
-            }
-        });
+        findViewById(R.id.iv_back).setOnClickListener((view) -> onBackButtonClick());
         AudioInfo audioInfo = mMediaState.audioInfo;
 
         mTextEarReturnVolume.setText((String.valueOf(audioInfo.earMonitorVolume.get())));
@@ -134,9 +124,5 @@ public class AudioEffectView extends BasicView {
                 mMediaController.setVoiceVolume(seekBar.getProgress());
             }
         });
-    }
-
-    public interface OnBackButtonClickListener {
-        void onClick();
     }
 }

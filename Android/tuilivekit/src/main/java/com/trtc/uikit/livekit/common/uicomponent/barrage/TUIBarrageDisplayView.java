@@ -99,6 +99,7 @@ public class TUIBarrageDisplayView extends FrameLayout implements IBarrageDispla
         }
         super.onDetachedFromWindow();
         removeObserver();
+        BarrageStore.sharedInstance().mSendBarrage.set(null);
     }
 
     @SuppressLint("NotifyDataSetChanged")

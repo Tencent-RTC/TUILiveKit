@@ -55,9 +55,7 @@ public class BottomMenuView extends BasicView {
         mBarrageButtonContainer = roomView.findViewById(R.id.rl_barrage_button);
         mBadgeView = new BadgeView(mContext);
         setMenuButton(mMenuInfoList);
-        if (mIsAudience) {
-            showAudienceBarrageSendButton();
-        }
+        showAudienceBarrageSendButton();
     }
 
     @Override

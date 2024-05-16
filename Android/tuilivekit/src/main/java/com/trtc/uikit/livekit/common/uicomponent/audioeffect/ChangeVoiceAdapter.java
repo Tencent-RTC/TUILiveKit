@@ -1,6 +1,5 @@
 package com.trtc.uikit.livekit.common.uicomponent.audioeffect;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,21 +57,23 @@ public class ChangeVoiceAdapter extends RecyclerView.Adapter<ChangeVoiceAdapter.
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        holder.textTitle.setText(mData.get(position).title);
-        holder.imageIcon.setImageResource(mData.get(position).icon);
-        if (mData.get(position).type == mMediaState.audioInfo.changerType.get()) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        final ChangeVoiceItem changeVoiceItem = mData.get(position);
+        holder.textTitle.setText(changeVoiceItem.title);
+        holder.imageIcon.setImageResource(changeVoiceItem.icon);
+        if (changeVoiceItem.type == mMediaState.audioInfo.changerType.get()) {
             holder.imageIcon.setBackgroundResource(R.drawable.livekit_settings_item_select_background);
-            mSelectedPosition = position;
+            mSelectedPosition = mData.indexOf(changeVoiceItem);
         } else {
             holder.imageIcon.setBackgroundResource(R.drawable.livekit_settings_item_not_select_background);
         }
-        holder.layoutRoot.setTag(position);
         holder.layoutRoot.setOnClickListener(view -> {
-            int index = (Integer) view.getTag();
-            mLiveController.getMediaController().setVoiceChangerType(mData.get(index).type);
-            notifyItemChanged(index);
-            notifyItemChanged(mSelectedPosition);
+            int index = holder.getBindingAdapterPosition();
+            if (index != RecyclerView.NO_POSITION) {
+                mLiveController.getMediaController().setVoiceChangerType(changeVoiceItem.type);
+                notifyItemChanged(index);
+                notifyItemChanged(mSelectedPosition);
+            }
         });
     }
 

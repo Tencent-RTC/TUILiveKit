@@ -8,7 +8,8 @@ import android.widget.LinearLayout;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.core.store.LiveStore;
-import com.trtc.uikit.livekit.common.uicomponent.audioeffect.AudioEffectPanel;
+import com.trtc.uikit.livekit.common.uicomponent.audioeffect.AudioEffectPanelView;
+import com.trtc.uikit.livekit.common.view.BottomPanel;
 import com.trtc.uikit.livekit.liveroom.core.RoomEngineService;
 import com.trtc.uikit.livekit.liveroom.data.LiveRoomInfo;
 import com.trtc.uikit.livekit.liveroom.view.anchor.component.common.BeautyListPanel;
@@ -19,7 +20,7 @@ public class FunctionView extends LinearLayout {
     private final Context           mContext;
     private final LiveRoomInfo      mLiveRoomInfo;
     private final RoomEngineService mRoomEngineService;
-    private       AudioEffectPanel  mAudioEffectPanel;
+    private       BottomPanel       mAudioEffectPanel;
     private       PopupDialog       mDialogBeautyList;
     private       BeautyListPanel   mBeautyListPanel;
 
@@ -60,7 +61,9 @@ public class FunctionView extends LinearLayout {
     private void initAudioEffectButton() {
         findViewById(R.id.iv_audio_effect).setOnClickListener(view -> {
             if (mAudioEffectPanel == null) {
-                mAudioEffectPanel = new AudioEffectPanel(mContext, LiveStore.sharedInstance().getLiveController());
+                AudioEffectPanelView audioEffectPanel = new AudioEffectPanelView(mContext,
+                        LiveStore.sharedInstance().getLiveController());
+                mAudioEffectPanel = BottomPanel.create(audioEffectPanel);
             }
             mAudioEffectPanel.show();
         });

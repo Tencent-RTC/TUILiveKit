@@ -153,7 +153,6 @@ public class AudienceView extends FrameLayout {
         } else {
             mLayoutAudienceMaskViewContainer.setVisibility(GONE);
         }
-
     }
 
     private void setAnchorInfo(TUIRoomDefine.RoomInfo roomInfo) {

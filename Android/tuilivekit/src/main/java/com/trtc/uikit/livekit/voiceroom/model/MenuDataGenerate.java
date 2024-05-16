@@ -17,13 +17,15 @@ import com.trtc.uikit.livekit.common.core.store.state.operation.RoomState;
 import com.trtc.uikit.livekit.common.core.store.state.operation.SeatState;
 import com.trtc.uikit.livekit.common.core.store.state.operation.UserState;
 import com.trtc.uikit.livekit.common.core.store.state.view.ViewState;
-import com.trtc.uikit.livekit.common.uicomponent.audioeffect.AudioEffectPanel;
+import com.trtc.uikit.livekit.common.uicomponent.audioeffect.AudioEffectPanelView;
+import com.trtc.uikit.livekit.common.view.BottomPanel;
+import com.trtc.uikit.livekit.common.uicomponent.audioeffect.MusicPanelView;
 import com.trtc.uikit.livekit.common.uicomponent.gift.TUIGiftListView;
 import com.trtc.uikit.livekit.common.uicomponent.gift.giftcloudserver.GiftCloudServer;
 import com.trtc.uikit.livekit.common.uicomponent.gift.giftcloudserver.IGiftCloudServer;
 import com.trtc.uikit.livekit.common.uicomponent.gift.model.TUIGift;
 import com.trtc.uikit.livekit.common.uicomponent.gift.model.TUIGiftUser;
-import com.trtc.uikit.livekit.voiceroom.view.panel.seatapplication.SeatApplicationPanel;
+import com.trtc.uikit.livekit.voiceroom.view.panel.seatapplication.SeatApplicationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +43,10 @@ public class MenuDataGenerate {
 
     private       TUIGiftListView  mGiftListView;
     private final IGiftCloudServer mGiftCloudServer = new GiftCloudServer();
+
+    private BottomPanel mSeatApplicationPanel;
+    private BottomPanel mAudioEffectPanel;
+    private BottomPanel mMusicListPanel;
 
     public MenuDataGenerate(Context context, LiveController liveController) {
         mContext = context;
@@ -75,16 +81,32 @@ public class MenuDataGenerate {
         List<BottomMenuInfo> list = new ArrayList<>();
         BottomMenuInfo linkMic = new BottomMenuInfo(ViewState.NavigationState.LINK_MANAGEMENT,
                 R.drawable.livekit_ic_link_mic, () -> {
-            SeatApplicationPanel panel = new SeatApplicationPanel(mContext, mLiveController);
-            panel.show();
+            if (mSeatApplicationPanel == null) {
+                SeatApplicationView panelView = new SeatApplicationView(mContext, mLiveController);
+                mSeatApplicationPanel = BottomPanel.create(panelView);
+            }
+            mSeatApplicationPanel.show();
         });
         list.add(linkMic);
-        BottomMenuInfo music = new BottomMenuInfo(ViewState.NavigationState.MUSIC, R.drawable.livekit_console_music,
+        BottomMenuInfo musicList = new BottomMenuInfo(ViewState.NavigationState.MUSIC, R.drawable.livekit_music_list,
                 () -> {
-                    AudioEffectPanel panel = new AudioEffectPanel(mContext, mLiveController);
-                    panel.show();
+                    if (mMusicListPanel == null) {
+                        MusicPanelView panelView = new MusicPanelView(mContext, mLiveController);
+                        mMusicListPanel = BottomPanel.create(panelView);
+                    }
+                    mMusicListPanel.show();
                 });
-        list.add(music);
+        list.add(musicList);
+        BottomMenuInfo audioEffect = new BottomMenuInfo(ViewState.NavigationState.MUSIC,
+                R.drawable.livekit_console_music,
+                () -> {
+                    if (mAudioEffectPanel == null) {
+                        AudioEffectPanelView panelView = new AudioEffectPanelView(mContext, mLiveController);
+                        mAudioEffectPanel = BottomPanel.create(panelView);
+                    }
+                    mAudioEffectPanel.show();
+                });
+        list.add(audioEffect);
         return list;
     }
 

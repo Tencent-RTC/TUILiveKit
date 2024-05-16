@@ -36,3 +36,22 @@ Studio project to be synced, connect to a real device, and click **Run** to try 
 1. Use two mobile phones (A and B) to log in to the application using strings as their user IDs. If you log in for the first time, you need to add a user name.
 2. The user on mobile phone A clicks the 'Start Live Streaming' button to initiate a live broadcast (note that you select video live broadcast or voice live broadcast)
 3. The user on mobile phone B enters the user ID of the user on mobile phone A and clicks to 'Join live room' or 'Join voice room' to watch the live broadcast.
+
+
+## FAQs
+
+Please refer to: [FAQs](https://www.tencentcloud.com/document/product/647/60043?lang=en&pg=)
+
+#### 1.Can TUILiveKit use TRTC without introducing IM SDK?
+```
+No, all the components of TUIKit use Tencent Cloud IM SDK as the basic service for communication,
+such as the core logic of creating room signaling, Lian-mic signaling, etc., all use IM services. 
+If you have purchased other IM products, you can also refer to TUILiveKit logic to adapt.
+```
+
+#### 2."application@allowBackup", Error details:
+```
+Manifest merger failed : Attribute application@allowBackup value=(false) from AndroidManifest.xml:7:9-36
+	is also present at [com.github.yyued:SVGAPlayer-Android:2.6.1] AndroidManifest.xml:12:9-35 value=(true).
+	Suggestion: add 'tools:replace="android:allowBackup"' to <application> element at AndroidManifest.xml:5:5-53:19 to override.
+```

@@ -22,6 +22,7 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.View
     private final Context         mContext;
     private final MediaController mMediaController;
     private final MediaState      mMediaState;
+    private       int             mSelectedPosition;
 
     public MusicListAdapter(Context context, LiveController liveController) {
         mContext = context;
@@ -33,9 +34,9 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.View
     private void initData() {
         if (mMediaState.musicList.isEmpty()) {
             mMediaState.musicList.add(new MusicInfo(1, mContext.getString(R.string.livekit_music_cheerful),
-                    "https" + "://dldir1.qq.com/hudongzhibo/TUIKit/resource/music/PositiveHappyAdvertising.mp3"));
+                    "https://dldir1.qq.com/hudongzhibo/TUIKit/resource/music/PositiveHappyAdvertising.mp3"));
             mMediaState.musicList.add(new MusicInfo(2, mContext.getString(R.string.livekit_music_melancholy),
-                    "https" + "://dldir1.qq.com/hudongzhibo/TUIKit/resource/music/SadCinematicPiano.mp3"));
+                    "https://dldir1.qq.com/hudongzhibo/TUIKit/resource/music/SadCinematicPiano.mp3"));
             mMediaState.musicList.add(new MusicInfo(3, mContext.getString(R.string.livekit_music_wonder_world),
                     "https://dldir1.qq.com/hudongzhibo/TUIKit/resource/music/WonderWorld.mp3"));
         }
@@ -51,34 +52,37 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.textMusicName.setText(mMediaState.musicList.get(position).name);
-        if (mMediaState.musicList.get(position).isPlaying.get()) {
+        final MusicInfo musicInfo = mMediaState.musicList.get(position);
+        holder.textMusicName.setText(musicInfo.name);
+        if (musicInfo.isPlaying.get()) {
             holder.imageStartStop.setImageResource(R.drawable.livekit_music_pause);
+            mSelectedPosition = mMediaState.musicList.indexOf(musicInfo);
         } else {
             holder.imageStartStop.setImageResource(R.drawable.livekit_music_start);
         }
-
-        holder.imageDelete.setTag(position);
         holder.imageDelete.setOnClickListener(view -> {
-            final int index = (Integer) view.getTag();
-            MusicInfo currentItem = mMediaState.musicList.get(index);
             ConfirmWithCheckboxDialog dialog = new ConfirmWithCheckboxDialog(mContext);
             dialog.setTitle(mContext.getString(R.string.livekit_tips_title));
-            dialog.setContent(mContext.getString(R.string.livekit_musuic_delete_tips, currentItem.name));
+            dialog.setContent(mContext.getString(R.string.livekit_musuic_delete_tips, musicInfo.name));
             dialog.setNegativeText(mContext.getString(R.string.livekit_cancel), negativeView -> dialog.dismiss());
             dialog.setPositiveText(mContext.getString(R.string.livekit_confirm), positiveView -> {
-                mMediaController.deleteMusic(currentItem);
-                notifyItemRemoved(index);
-                dialog.dismiss();
+                int index = holder.getBindingAdapterPosition();
+                if (index != RecyclerView.NO_POSITION) {
+                    mMediaController.deleteMusic(musicInfo);
+                    notifyItemRemoved(index);
+                    dialog.dismiss();
+                }
             });
             dialog.show();
         });
 
-        holder.imageStartStop.setTag(position);
         holder.imageStartStop.setOnClickListener(view -> {
-            int index = (Integer) view.getTag();
-            mMediaController.operatePlayMusic(mMediaState.musicList.get(index));
-            notifyItemChanged(index);
+            int index = holder.getBindingAdapterPosition();
+            if (index != RecyclerView.NO_POSITION) {
+                mMediaController.operatePlayMusic(musicInfo);
+                notifyItemChanged(index);
+                notifyItemChanged(mSelectedPosition);
+            }
         });
     }
 

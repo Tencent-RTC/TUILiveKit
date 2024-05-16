@@ -6,12 +6,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.core.store.LiveStore;
+import com.trtc.uikit.livekit.common.uicomponent.audioeffect.MusicPanelView;
+import com.trtc.uikit.livekit.common.uicomponent.barrage.TUIBarrageButton;
+import com.trtc.uikit.livekit.common.view.BottomPanel;
 import com.trtc.uikit.livekit.liveroom.core.RoomEngineService;
 import com.trtc.uikit.livekit.liveroom.data.LiveRoomInfo;
-import com.trtc.uikit.livekit.liveroom.view.anchor.component.common.MusicPanel;
 import com.trtc.uikit.livekit.liveroom.view.anchor.component.common.SettingsPanel;
 
 @SuppressLint("ViewConstructor")
@@ -21,8 +25,8 @@ public class FunctionView extends LinearLayout {
     private PopupDialog        mAnchorLinkMicDialog;
     private SettingsPanel      mSettingsPanel;
     private PopupDialog        mSettingsPanelDialog;
-    private MusicPanel         mMusicPanel;
-    private PopupDialog        mMusicPanelDialog;
+    private BottomPanel        mMusicPanel;
+    private RelativeLayout     mLayoutBarrageSendContainer;
 
     private final Context           mContext;
     private final LiveRoomInfo      mLiveRoomInfo;
@@ -33,7 +37,8 @@ public class FunctionView extends LinearLayout {
         mContext = context;
         mLiveRoomInfo = roomInfo;
         mRoomEngineService = service;
-        init();
+
+        initView();
     }
 
     @Override
@@ -56,14 +61,21 @@ public class FunctionView extends LinearLayout {
 
     }
 
-    private void init() {
+    private void initView() {
         View rootView = LayoutInflater.from(mContext).inflate(R.layout.livekit_layout_anchor_live_function, this,
                 true);
+
+        initBarrageSendContainer(rootView);
         initLinkButton(rootView);
         initSettingsButton(rootView);
         initMusicButton(rootView);
-        initPKButton(rootView);
-        initMoreButton(rootView);
+    }
+
+    private void initBarrageSendContainer(View rootView) {
+        mLayoutBarrageSendContainer = rootView.findViewById(R.id.rl_barrage);
+
+        TUIBarrageButton barrageButton = new TUIBarrageButton(mContext, mLiveRoomInfo.roomId);
+        mLayoutBarrageSendContainer.addView(barrageButton);
     }
 
     private void initLinkButton(View rootView) {
@@ -105,34 +117,13 @@ public class FunctionView extends LinearLayout {
     private void initMusicButton(View rootView) {
         Button musicButton = rootView.findViewById(R.id.btn_music);
         musicButton.setOnClickListener((view) -> {
-            if (mMusicPanelDialog == null) {
-                mMusicPanelDialog = new PopupDialog(mContext);
-                mMusicPanelDialog.setOnDismissListener((dialogInterface) -> {
-                });
-            }
             if (mMusicPanel == null) {
-                mMusicPanel = new MusicPanel(mContext, mLiveRoomInfo, mRoomEngineService);
+                MusicPanelView panelView = new MusicPanelView(mContext, LiveStore.sharedInstance().getLiveController());
+                mMusicPanel = BottomPanel.create(panelView);
             }
-            mMusicPanelDialog.setView(mMusicPanel);
-            mMusicPanel.refresh();
-            mMusicPanelDialog.show();
+            mMusicPanel.show();
         });
     }
-
-    private void initPKButton(View rootView) {
-        Button pkButton = rootView.findViewById(R.id.btn_pk);
-        pkButton.setOnClickListener((view) -> {
-
-        });
-    }
-
-    private void initMoreButton(View rootView) {
-        Button moreButton = rootView.findViewById(R.id.btn_more);
-        moreButton.setOnClickListener((view) -> {
-
-        });
-    }
-
 
 }
 

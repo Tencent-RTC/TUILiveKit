@@ -14,7 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.core.store.LiveStore;
-import com.trtc.uikit.livekit.common.uicomponent.audioeffect.AudioEffectPanel;
+import com.trtc.uikit.livekit.common.uicomponent.audioeffect.AudioEffectPanelView;
+import com.trtc.uikit.livekit.common.view.BottomPanel;
 import com.trtc.uikit.livekit.liveroom.core.RoomEngineService;
 import com.trtc.uikit.livekit.liveroom.data.LiveRoomInfo;
 import com.trtc.uikit.livekit.liveroom.view.anchor.component.common.videoparams.VideoParamsPanel;
@@ -37,7 +38,7 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
     private              MoreSettingsPanel  mMoreSettingsPanel;
     private              PopupDialog        mDialogVideoParams;
     private              VideoParamsPanel   mVideoParamsPanel;
-    private              AudioEffectPanel   mAudioEffectPanel;
+    private              BottomPanel        mAudioEffectPanel;
     private              PopupDialog        mDialogBeautyList;
     private              BeautyListPanel    mBeautyListPanel;
 
@@ -142,7 +143,9 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
 
     private void showAudioEffectPanel() {
         if (mAudioEffectPanel == null) {
-            mAudioEffectPanel = new AudioEffectPanel(mContext, LiveStore.sharedInstance().getLiveController());
+            AudioEffectPanelView panelView = new AudioEffectPanelView(mContext,
+                    LiveStore.sharedInstance().getLiveController());
+            mAudioEffectPanel = BottomPanel.create(panelView);
         }
         mAudioEffectPanel.show();
     }

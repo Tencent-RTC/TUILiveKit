@@ -33,6 +33,8 @@ public class SeatInfoView extends BasicView {
     private ImageView       mIvMute;
     private ImageView       mIvTalkBorder;
 
+    private SeatActionSheetPanel mSeatActionSheetPanel;
+
     private final MenuDataGenerate mMenuDataGenerate;
 
     private final Observer<LinkedHashSet<String>> hasAudioStreamUserListObserver = this::updateMuteState;
@@ -65,10 +67,13 @@ public class SeatInfoView extends BasicView {
         updateLockState(mSeatInfo.isLocked.get());
         mImgHead.setOnClickListener(view -> {
             List<ListMenuInfo> listMenuInfoList = mMenuDataGenerate.generateOperateSeatMenuInfo(mSeatInfo);
-            if (!listMenuInfoList.isEmpty()) {
-                SeatActionSheetPanel seatActionSheetPanel = new SeatActionSheetPanel(mContext, listMenuInfoList);
-                seatActionSheetPanel.show();
+            if (listMenuInfoList.isEmpty()) {
+                return;
             }
+            if (mSeatActionSheetPanel == null) {
+                mSeatActionSheetPanel = new SeatActionSheetPanel(mContext, listMenuInfoList);
+            }
+            mSeatActionSheetPanel.show();
         });
     }
 
