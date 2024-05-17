@@ -67,11 +67,11 @@ class AnchorLivingView: UIView {
 
     private lazy var featureClickPanel: FeatureClickPanel = {
         var model = FeatureClickPanelModel()
-        model.itemSize = CGSize(width: 36.scale375(), height: 36.scale375())
-        model.itemDiff = CGFloat(57.75).scale375Width()
+        model.itemSize = CGSize(width: 36.scale375Width(), height: 36.scale375Width())
+        model.itemDiff = 6.scale375()
         model.items.append(FeatureItem(image: .liveBundleImage("live_link_icon"), action: LivingViewActionEvent.linkClick))
         model.items.append(FeatureItem(image: .liveBundleImage("live_set_icon"), action: LivingViewActionEvent.setClick))
-        model.items.append(FeatureItem(image: .liveBundleImage("live_music_icon"), action: LivingViewActionEvent.musicClick))
+        model.items.append(FeatureItem(image: .liveBundleImage("live_music_list"), action: LivingViewActionEvent.musicClick))
         var featureClickPanel = FeatureClickPanel(model: model)
         featureClickPanel.clickEventCallBack.addObserver(self) { [weak self] action, _ in
             guard let action = action as? LivingViewActionEvent else{ return}
@@ -118,6 +118,15 @@ class AnchorLivingView: UIView {
         return view
     }()
     
+    private lazy var barrageSendView: TUIBarrageButton = {
+            var view = TUIBarrageButton(roomId: liveRoomInfo.roomId.value)
+            view.layer.borderColor = UIColor.g3.withAlphaComponent(0.3).cgColor
+            view.layer.borderWidth = 0.5
+            view.layer.cornerRadius = 18.scale375Height()
+            view.layer.masksToBounds = true
+            return view
+        }()
+    
     deinit {
         giftCacheService.clearCacheDirectory()
     }
@@ -135,6 +144,7 @@ extension AnchorLivingView {
         addSubview(roomInfoView)
         addSubview(featureClickPanel)
         addSubview(floatView)
+        addSubview(barrageSendView)
     }
 
     func updateRootViewOrientation(isPortrait: Bool) {
@@ -180,15 +190,11 @@ extension AnchorLivingView {
             make.leading.equalToSuperview().inset((self.isPortrait ? 16 : 45).scale375())
         }
 
-        featureClickPanel.snp.remakeConstraints { make in
+        featureClickPanel.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().offset(-16.scale375Width())
             make.height.equalTo(featureClickPanel.mm_h)
             make.width.equalTo(featureClickPanel.mm_w)
-            if self.isPortrait {
-                make.centerX.equalToSuperview()
-            } else {
-                make.trailing.equalToSuperview().inset(CGFloat(75.75).scale375Width())
-            }
-            make.bottom.equalToSuperview().inset(WindowUtils.bottomSafeHeight + 12)
+            make.bottom.equalToSuperview().offset(-34.scale375Height())
         }
         
         floatView.snp.makeConstraints { make in
@@ -197,6 +203,13 @@ extension AnchorLivingView {
             make.width.equalTo(114.scale375())
             make.trailing.equalToSuperview().offset(-8.scale375())
         }
+        
+        barrageSendView.snp.makeConstraints { make in
+                    make.leading.equalToSuperview().offset(16.scale375Width())
+                    make.trailing.equalTo(featureClickPanel.snp.leading).offset(-12.scale375Width())
+                    make.height.equalTo(36.scale375Height())
+                    make.bottom.equalToSuperview().offset(-34.scale375Height())
+                }
     }
 }
 

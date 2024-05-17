@@ -128,9 +128,7 @@ class VoiceRoomRootView: UIView {
         addSubview(seatListView)
         addSubview(bottomMenu)
         addSubview(barrageDisplayView)
-        if !isOwner {
-            addSubview(barrageButton)
-        }
+        addSubview(barrageButton)
     }
     
     private func activeViewConstraint() {
@@ -159,13 +157,11 @@ class VoiceRoomRootView: UIView {
             make.width.equalTo(247.scale375())
             make.height.equalTo(212.scale375Height())
         }
-        if !isOwner {
-            barrageButton.snp.makeConstraints { make in
-                make.leading.equalToSuperview().offset(16)
-                make.centerY.equalTo(bottomMenu.snp.centerY)
-                make.height.equalTo(36)
-                make.trailing.equalTo(bottomMenu.snp.leading).offset(-12)
-            }
+        barrageButton.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(16)
+            make.centerY.equalTo(bottomMenu.snp.centerY)
+            make.height.equalTo(36)
+            make.trailing.equalTo(bottomMenu.snp.leading).offset(-12)
         }
         giftDisplayView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
