@@ -17,7 +17,7 @@ class BottomMenuView: UIView {
     
     private let maxMenuButtonNumber = 4
     private let buttonWidth: CGFloat = 36.0
-    private let buttonSpacing: CGFloat = 30.0
+    private let buttonSpacing: CGFloat = 6.0
     
     @Injected var store: VoiceRoomStoreProvider
     lazy var menus = self.store.select(ViewSelectors.getBottomMenuButtons)
