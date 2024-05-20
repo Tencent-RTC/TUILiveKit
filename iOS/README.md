@@ -29,14 +29,14 @@ If you would like to try the sample app specifically fit to your usage, you can 
 #### 1. Clone this repository
 
 ```
-$ git clone https://github.com/Tencent-RTC/TUILiveKit.git
+git clone https://github.com/Tencent-RTC/TUILiveKit.git
 ```
 
 #### 2. Install dependencies
 
 ```
-$ cd TUILiveKit/iOS/Example
-$ pod install
+cd TUILiveKit/iOS/Example
+pod install
 ```
 
 #### 3. Specify the SDKAppID and SDKSecretKey

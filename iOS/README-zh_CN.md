@@ -25,14 +25,14 @@ _[English](README.md) | 简体中文_
 #### 1. 下载代码
 
 ```
-$ git clone https://github.com/Tencent-RTC/TUILiveKit.git
+git clone https://github.com/Tencent-RTC/TUILiveKit.git
 ```
 
 #### 2. 加载依赖库
 
 ```
-$ cd TUILiveKit/iOS/Example
-$ pod install
+cd TUILiveKit/iOS/Example
+pod install
 ```
 
 #### 3. 配置 SDKAppID 和 SDKSecretKey
