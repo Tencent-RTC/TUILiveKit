@@ -5,6 +5,7 @@
 //  Created by aby on 2024/4/3.
 //
 
+
 enum AudioEffectActions {
     static let key = "AudioEffect.action"
     static let operateEarMonitor = ActionTemplate(id: key.appending(".operateEarMonitor"), payloadType: Bool.self)

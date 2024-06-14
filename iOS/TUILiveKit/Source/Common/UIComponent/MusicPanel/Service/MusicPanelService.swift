@@ -7,9 +7,10 @@
 
 import RTCRoomEngine
 import Combine
-#if TXLiteAVSDK_TRTC
+
+#if canImport(TXLiteAVSDK_TRTC)
     import TXLiteAVSDK_TRTC
-#elseif TXLiteAVSDK_Professional
+#elseif canImport(TXLiteAVSDK_Professional)
     import TXLiteAVSDK_Professional
 #endif
 
@@ -51,7 +52,7 @@ class MusicPanelService {
     }
     
     private let engine = TUIRoomEngine.sharedInstance()
-    private lazy var audioEffectManager: TXAudioEffectManager = self.engine.getAudioEffectManager()
+    private lazy var audioEffectManager: TXAudioEffectManager = self.engine.getTRTCCloud().getAudioEffectManager()
     @WeakLazyInjected var store: MusicPanelStoreProvider?
     
     func startPlayMusic(musicInfo: MusicInfo) -> AnyPublisher<MusicPlayStatus, InternalError> {
@@ -66,7 +67,7 @@ class MusicPanelService {
                 if code == 0 {
                     promise(.success(.playing))
                 } else {
-                    promise(.failure(InternalError(error:.failed, message: .playMusicErrorString)))
+                    promise(.failure(InternalError(error:TUIError.failed, message: .playMusicErrorString)))
                 }
             } onProgress: { _, _ in
                 

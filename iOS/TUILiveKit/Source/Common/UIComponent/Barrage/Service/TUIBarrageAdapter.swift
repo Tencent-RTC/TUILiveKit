@@ -73,20 +73,14 @@ class TUIBarrageAdapter:TUIBarrageService {
     }
 
     override func sendBarrage(_ barrage: TUIBarrage) {
+        LiveKitLog.info("\(#file)", "\(#line)","sendBarrage:[barrage.content::\(barrage.content)]")
         delegate?.willSendBarrage(barrage)
-        do {
-            let barrageWrapper = TUIBarrageWrapper(data: barrage)
-            let encoder = JSONEncoder()
-            let data = try encoder.encode(barrageWrapper)
-            imManager.sendGroupCustomMessage(data, to: roomId, priority: .PRIORITY_NORMAL) { [weak self] in
-                guard let self = self else { return }
-                self.delegate?.didSendBarrage(barrage)
-               TUIBarrageStore.shared.barrage.value = barrage
-            } fail: { code, message in
-                debugPrint("sendGroupCustomMessage failed. code:\(code), message:\(message ?? "")")
-            }
-        } catch {
-            debugPrint("Encoding TUIBarrage failed. error:\(error)")
+        imManager.sendGroupTextMessage(barrage.content, to: roomId, priority: .PRIORITY_NORMAL) { [weak self] in
+            guard let self = self else { return }
+            self.delegate?.didSendBarrage(barrage)
+            TUIBarrageStore.shared.barrage.value = barrage
+        } fail: { error, message in
+            debugPrint("sendGroupTextMessage failed. code:\(error), message:\(message ?? "")")
         }
     }
 
@@ -104,18 +98,8 @@ extension TUIBarrageAdapter: V2TIMSimpleMsgListener {
                         [sender:\(String(describing: info))],
                         [text:\(String(describing: text))]
                         """)
+        if self.roomId != groupID { return }
         constructBarrageFromIMText(groupId: groupID, info: info, text: text)
-    }
-    
-    func onRecvGroupCustomMessage(_ msgID: String!, groupID: String!, sender info: V2TIMGroupMemberInfo!, customData data: Data!) {
-        LiveKitLog.info("\(#file)", "\(#line)",
-                        """
-                        onRecvGroupCustomMessage:[msgID:\(String(describing: msgID))],
-                        [groupID:\(String(describing: groupID))],
-                        [sender:\(String(describing: info))],
-                        [data:\(String(describing: data))]
-                        """)
-        constructBarrageFromIMCustomData(groupId: roomId, customData: data)
     }
 
     private func constructBarrageFromIMText(groupId: String, info: V2TIMGroupMemberInfo!, text: String) {
@@ -126,21 +110,6 @@ extension TUIBarrageAdapter: V2TIMSimpleMsgListener {
         barrage.user.level = "0"
         barrage.content = text
         onReceiveBarrage(barrage)
-    }
-    
-    private func constructBarrageFromIMCustomData(groupId: String, customData data: Data) {
-        if self.roomId == groupId {
-            let decoder = JSONDecoder()
-            do {
-                let barrageWrapper = try decoder.decode(TUIBarrageWrapper.self, from: data)
-                if barrageWrapper.businessID == "TUIBarrage" {
-                    let barrage = barrageWrapper.data
-                    onReceiveBarrage(barrage)
-                }
-            } catch {
-                print("Decoding TUIBarrage failed. error:\(error)")
-            }
-        }
     }
 }
 

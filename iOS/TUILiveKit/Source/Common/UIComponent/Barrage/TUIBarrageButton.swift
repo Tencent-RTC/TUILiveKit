@@ -8,13 +8,8 @@
 import TUICore
 import UIKit
 
-protocol TUIBarrageSendViewDelegate: AnyObject {
-    func willSendBarrage(_ barrage: TUIBarrage)
-}
-
 class TUIBarrageButton: UIView {
-    private let roomId: String
-    private weak var delegate:TUIBarrageSendViewDelegate?
+    private var roomId: String
     private lazy var barrageManager:TUIBarrageManager = {
        TUIBarrageManager.defaultCreate(roomId: roomId, delegate: self)
     }()
@@ -31,15 +26,13 @@ class TUIBarrageButton: UIView {
         return view
     }()
 
-    private let textField: UITextField = {
-        var text = UITextField()
-        text.backgroundColor = .clear
-        text.textColor = .g7
-        text.font = UIFont(name: "PingFangSC-Regular", size: 12)
-        text.text = .chatText
-        text.keyboardType = .default
-        text.isUserInteractionEnabled = false
-        return text
+    private let label: UILabel = {
+        var label = UILabel()
+        label.backgroundColor = .clear
+        label.textColor = .g8
+        label.font = UIFont(name: "PingFangSC-Regular", size: 12)
+        label.text = .chatText
+        return label
     }()
 
     private lazy var clickView: UIView = {
@@ -51,8 +44,9 @@ class TUIBarrageButton: UIView {
         return view
     }()
 
-    init(roomId: String) {
+    init(roomId: String, ownerId: String) {
         self.roomId = roomId
+        TUIBarrageStore.shared.ownerId = ownerId
         super.init(frame: .zero)
         barrageManager.initService()
         backgroundColor = .g2.withAlphaComponent(0.5)
@@ -77,22 +71,22 @@ class TUIBarrageButton: UIView {
 
     private func constructViewHierarchy() {
         addSubview(emojiView)
-        addSubview(textField)
+        addSubview(label)
         addSubview(clickView)
     }
 
     private func activateConstraints() {
         emojiView.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(8.scale375Width())
+            make.trailing.equalToSuperview().offset(-8.scale375())
             make.centerY.equalToSuperview()
-            make.width.equalTo(24.scale375Width())
-            make.height.equalTo(24.scale375Width())
+            make.width.equalTo(20.scale375Width())
+            make.height.equalTo(20.scale375Width())
         }
 
-        textField.snp.makeConstraints { make in
-            make.leading.equalTo(emojiView.snp.trailing).offset(6.scale375Width())
+        label.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(8.scale375())
             make.centerY.equalToSuperview()
-            make.trailing.equalToSuperview()
+            make.trailing.equalTo(emojiView.snp.leading).offset(-6.scale375())
             make.height.equalTo(24.scale375Width())
         }
 
@@ -114,12 +108,22 @@ class TUIBarrageButton: UIView {
         barrageManager.sendBarrage(barrage)
     }
     
+    func setRoomId(roomId: String) {
+        self.roomId = roomId
+        barrageManager = TUIBarrageManager.defaultCreate(roomId: roomId, delegate: self)
+        barrageManager.initService()
+    }
+    
+    func setOwnerId(ownerId: String) {
+        TUIBarrageStore.shared.ownerId = ownerId
+    }
+    
     func setText(text: String) {
-        textField.text = text
+        label.text = text
     }
     
     func setTextColor(color: UIColor) {
-        textField.textColor = color
+        label.textColor = color
     }
     
     func setImage(image: UIImage) {
@@ -127,7 +131,7 @@ class TUIBarrageButton: UIView {
     }
     
     func setTextVisibility(show: Bool) {
-        textField.isHidden = !show
+        label.isHidden = !show
     }
 }
 

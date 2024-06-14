@@ -25,6 +25,7 @@ extension UIColor {
     static let g5 = themColor("#8F9AB2")
     static let g6 = themColor("#B2BBD1")
     static let g7 = themColor("#D5E0F2")
+    static let g8 = themColor("#F2F5FC")
     static let flowKitRed = themColor("#FC5555")
     static let flowKitGreen = themColor("#29CC6A")
     static let flowKitBlue = themColor("#0099FF")
@@ -55,7 +56,9 @@ extension UIColor {
     static let darkNavyColor = themColor("#13294b")
     static let lightGreenColor = themColor("#00d4a5")
     static let orangeColor = themColor("#0FA968")
-
+    static let deepSeaBlueColor = themColor("#0157DF")
+    static let cyanColor = themColor("#25D1D1")
+    
     /// message color
     static let barrageColorMsg1 = themColor("#3074FD")
     static let barrageColorMsg2 = themColor("#3CCFA5")

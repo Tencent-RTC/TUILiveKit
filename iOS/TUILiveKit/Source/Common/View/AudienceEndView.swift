@@ -6,8 +6,10 @@
 //
 
 import UIKit
+import RTCCommon
 
 class AudienceEndView: UIView {
+    private let roomId: String
     private let avatarUrl: String
     private let userName: String
     
@@ -44,7 +46,8 @@ class AudienceEndView: UIView {
         return label
     }()
     
-    init(avatarUrl: String, userName: String) {
+    init(roomId: String, avatarUrl: String, userName: String) {
+        self.roomId = roomId
         self.avatarUrl = avatarUrl
         self.userName = userName
         super.init(frame: .zero)

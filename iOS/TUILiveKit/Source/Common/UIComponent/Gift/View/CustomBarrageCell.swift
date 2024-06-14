@@ -6,13 +6,14 @@
 //
 
 import UIKit
+import SnapKit
 
 class CustomBarrageCell {
     static func getCustomCell(barrage: TUIBarrage) -> UIView {
         let attributedString = getUserNameAttributedString(barrage: barrage)
         attributedString.append(getBarrageContentAttributedString(barrage: barrage))
         let label = UILabel()
-        label.mm_w = 50.scale375()
+        label.mm_h = 30.scale375Height()
         label.attributedText = attributedString
         label.sizeToFit()
         return label

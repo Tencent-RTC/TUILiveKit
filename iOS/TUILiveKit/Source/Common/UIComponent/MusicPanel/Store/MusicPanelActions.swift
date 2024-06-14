@@ -5,6 +5,7 @@
 //  Created by adamsfliu on 2024/4/28.
 //
 
+
 enum MusicPanelActions {
     static let key = "MusicPanel.action"
     static let startPlayMusic = ActionTemplate(id: key.appending(".startPlayMusic"), payloadType: MusicInfo.self)

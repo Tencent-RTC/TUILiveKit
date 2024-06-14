@@ -11,4 +11,5 @@ class TUIBarrageStore {
     static let shared = TUIBarrageStore()
     private init() {}
     var barrage: Observable<TUIBarrage> =  Observable(TUIBarrage())
+    var ownerId: String = ""
 }

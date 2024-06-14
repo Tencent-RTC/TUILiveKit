@@ -32,7 +32,6 @@ public class AlertPanel: UIView {
     }()
 
     private var isViewReady = false
-    private var popupAction: Observable<PopupPanelAction>?
 
     private var titleText: String
     private var messageText: String
@@ -156,25 +155,7 @@ extension AlertPanel {
 
 extension AlertPanel {
     @objc func alertButtonClick() {
-        popupAction?.value = .close
         alertButtonAction?()
     }
 }
 
-extension AlertPanel: PopupPanelSubViewProtocol {
-    public func setAction(_ popupAction: Observable<PopupPanelAction>) {
-        self.popupAction = popupAction
-    }
-
-    public func updateRootViewOrientation(isPortrait: Bool) {
-        activateConstraints()
-    }
-
-    public func isSupportTouchToExit() -> Bool {
-        return false
-    }
-
-    public func isSupportAlertPanel() -> Bool {
-        return true
-    }
-}

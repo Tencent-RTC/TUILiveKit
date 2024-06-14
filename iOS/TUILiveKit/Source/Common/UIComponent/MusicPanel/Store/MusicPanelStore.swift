@@ -5,10 +5,11 @@
 //  Created by adamsfliu on 2024/4/28.
 //
 import Combine
-#if TXLiteAVSDK_TRTC
-import TXLiteAVSDK_TRTC
-#elseif TXLiteAVSDK_Professional
-import TXLiteAVSDK_Professional
+
+#if canImport(TXLiteAVSDK_TRTC)
+    import TXLiteAVSDK_TRTC
+#elseif canImport(TXLiteAVSDK_Professional)
+    import TXLiteAVSDK_Professional
 #endif
 
 class MusicPanelStore {

@@ -19,15 +19,14 @@
 "live.category.music" = "Music";
 "live.category.xxx" = "Live Category:xxx";
 "live.mode.xxx" = "Live Mode:xxx";
-"live.start.living.title" = "Start Live";
+"live.start.living.title" = "Go Live";
 "live.portrait.title" = "Switch to Portrait";
 "live.landscape.title" = "Switch to Landscape";
 "live.landscape.title" = "Switch to Landscape";
 "live.audience.mask.title" = "Broadcast has been ended";
-"live.audience.count.unit.xxx" = "xxx people";
-"live.audience.barrage.placeholder" = "Chat~";
+"live.audience.barrage.placeholder" = "Let`s talk";
 "live.audience.linkType.title" = "Choose Link Mode";
-"live.audience.linkType.tips" = "Choose the link mode, and the anchor will connect after agreeing";
+"live.audience.linkType.tips" = "connect upon host`s approval";
 "live.audience.linkType.videoLinkRequest" = "Apply for video link";
 "live.audience.linkType.audioLinkRequest" = "Apply for audio link";
 "live.audience.videoLinkConfig.title" = "Adjust video link screen";
@@ -48,8 +47,8 @@
 "live.audience.videoLinkConfig.flip" = "Flip";
 "live.audience.wait.link.tips" = "You have submitted a request to join the live stream, please wait for the host to approve.";
 "live.audience.wait.link.mic.desc.xxx" = "Waiting for link xxx";
-"live.audience.link.float.toBePassed" = "To be passed xxx";
-"live.audience.link.float.applyLinkMicCount.xxx" = "Apply for link (xxx)";
+"live.audience.link.float.toBePassed.xxx" = "Waitingxxx";
+"live.audience.link.float.applyLinkMicCount.xxx" = "Requesting(xxx)";
 "live.audience.link.confirm.cancelLinkMicRequest" = "Cancel link request";
 "live.audience.link.confirm.closeLinkMic" = "End link";
 "live.audience.link.confirm.cancel" = "Cancel";
@@ -75,13 +74,13 @@
 "live.anchor.setting.audio.effects" = "Audio Effects";
 "live.anchor.setting.flip" = "Flip";
 "live.anchor.setting.mirror" = "Mirror";
-"live.anchor.setting.video.parameters" = "Video Parameters";
+"live.anchor.setting.video.parameters" = "Video";
 "live.anchor.setting.more.setting" = "More Settings";
 "live.link.success" = "Link Successfully";
 "live.alert.confirm" = "Confirm";
 "live.alert.known" = "I know";
 "live.alert.enterRoom.failed.title" = "Failed to enter room";
-"live.alert.enterRoom.failed.message" = "Failed to enter the room, please try again later. Status information: {xxx}";
+"live.alert.enterRoom.failed.message.xxx" = "Entry failed, please try later. Status Information: {xxx}";
 "live.alert.linkMic.rejected.title" = "Anchor Rejected";
 "live.alert.linkMic.rejected.message" = "The anchor did not approve your request, please try again later";
 "live.alert.linkMic.timeout.title" = "Timeout";
@@ -133,6 +132,7 @@
 "live.barrage.enterButtonTitle" = "Say something";
 "live.barrage.me" = "me";
 "live.barrage.coming" = "enters the room";
+"live.barrage.anchor" = "ANCHOR";
 "live.operation.fail.xxx" = "Operation failed, please try again later. Status information: {xxx}";
 "live.stream.list.title" = "Live Room List";
 "live.giftView.sendGift" = "Send Gift";
@@ -160,10 +160,12 @@
 "live.anchor.live.data" = "Live data";
 "live.anchor.live.data.duration" = "Duration";
 "live.anchor.live.data.gift.income" = "Gift Income";
-"live.anchor.live.data.audience.count" = "Number of viewers";
-"live.anchor.live.data.message.count" = "Number of messages";
-"live.anchor.live.data.gift.people.count" = "Number of gift givers";
-"live.anchor.live.data.like.count" = "Number of likes";
+"live.anchor.live.data.audience.count" = "Total Viewers";
+"live.anchor.live.data.message.count" = "Messages";
+"live.anchor.live.data.gift.people.count" = "Gift givers";
+"live.anchor.live.data.like.count" = "Likes";
+"live.user.follow" = "Follow";
+"live.user.unfollow" = "Unfollow";
 
 // MARK: - Error Toast
 
@@ -193,6 +195,7 @@
 "live.error.operation.notSupported.inCurrentSpeechMode" = "This operation is not supported in the current speaking mode";
 "live.error.roomId.invalid" = "Invalid room ID created, custom ID must be printable ASCII characters (0x20-0x7e), up to 48 bytes";
 "live.error.roomId.occupied" = "Room ID already in use, please choose another room ID";
+"live.error.userNotExist" = "User does not exist";
 "live.error.roomName.invalid" = "Invalid room name, the name can be up to 30 bytes, and the character encoding must be UTF-8 if it contains Chinese";
 "live.error.already.in.OtherRoom" = "The current user is already in another room, you need to leave the room before joining a new one";
 "live.error.userNotEntered" = "User is not in the current room";
@@ -218,3 +221,15 @@
 "live.error.open.screen.share.need.permission.from.admin" = "You need to apply to the room owner or administrator before opening the screen sharing";
 "live.error.send.message.disabled.for.all" = "All users are muted in the current room";
 "live.error.send.message.disabled.for.current" = "You have been muted in the current room";
+"live.error.invalid.userId" = "Invalid userId";
+"live.roomId.xxx" = "Stream Id: xxx";
+"live.fans.count.xxx" = "xxx fans";
+
+"live.room.list.live" = "Live";
+"live.room.list.pullToRefresh" = "Pull to refresh";
+"live.room.list.releaseToRefresh" = "Release to refresh";
+"live.room.list.loading" = "Loading...";
+"live.room.list.loadingMore" = "Loading more";
+"live.room.list.noMoreData" = "There is no more data";
+"live.room.list.startLiveRoom" = "Please start a live room";
+"live.room.list.watching.xxx" = "xxx people are watching";

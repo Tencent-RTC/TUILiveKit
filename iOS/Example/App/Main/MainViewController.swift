@@ -122,26 +122,33 @@ extension MainViewController {
     }
     
     @objc func helpBtnClick() {
-        if let url = URL(string: "https://cloud.tencent.com/document/product/647/35429") {
+        if let url = URL(string: "https://cloud.tencent.com/document/product/647/105441") {
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         }
     }
     
     func joinBtnClick(sender: UIButton, view: MainRootView, roomId: String) {
         let viewController:UIViewController
-        if view.roomSegment.selectedSegmentIndex == 0 {
-            viewController = TUILiveRoomAudienceViewController(roomId: roomId)
-        } else {
-            viewController = TUIVoiceRoomViewController(roomId: roomId, behavior: .join)
+        guard let roomType = LiveIdentityGenerator.shared.getIDType(roomId) else { return }
+        switch roomType {
+            case .live:
+                viewController = TUILiveRoomAudienceViewController(roomId: roomId)
+            case .voice:
+                viewController = TUIVoiceRoomViewController(roomId: roomId, behavior: .join)
         }
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     
     func startBtnClick(sender: UIButton, view: MainRootView) {
-        let liveRoomId = (TUILogin.getUserID() ?? "")
-        let voiceRoomId = (TUILogin.getUserID() ?? "")
+        let liveRoomId = LiveIdentityGenerator.shared.generateId(TUILogin.getUserID() ?? "", .live)
+        let voiceRoomId = LiveIdentityGenerator.shared.generateId(TUILogin.getUserID() ?? "", .voice)
         let viewController = TUILivePreviewViewController(liveRoomId: liveRoomId, voiceRoomId: voiceRoomId)
         self.navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    func liveRoomListBtnClick(sender: UIButton, view: MainRootView) {
+        let roomListViewController = TUIRoomListViewController()
+        self.navigationController?.pushViewController(roomListViewController, animated: true)
     }
 }
 

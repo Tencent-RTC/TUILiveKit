@@ -7,6 +7,7 @@
 
 import Foundation
 
+
 class TUIGift: Codable {
     let giftId: String
     let giftName: String

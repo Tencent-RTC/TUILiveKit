@@ -7,15 +7,18 @@
 
 import TUICore
 import UIKit
+import RTCCommon
 
 class LiveDataModel {
+    let roomId: String
     let liveDuration:Int
     let audienceCount:Int
     let messageCount:Int
     let giftIncome:Int
     let giftPeopleCount:Int
     let likeCount:Int
-    init(liveDuration: Int, audienceCount: Int, messageCount: Int, giftIncome: Int, giftPeopleCount: Int, likeCount: Int) {
+    init(roomId: String, liveDuration: Int, audienceCount: Int, messageCount: Int, giftIncome: Int, giftPeopleCount: Int, likeCount: Int) {
+        self.roomId = roomId
         self.liveDuration = liveDuration
         self.audienceCount = audienceCount
         self.messageCount = messageCount
@@ -26,6 +29,8 @@ class LiveDataModel {
 }
 
 class AnchorEndView: UIView {
+    @Injected var viewStore: LiveRoomViewStore
+    
     private var isViewReady: Bool = false
     override func didMoveToWindow() {
         super.didMoveToWindow()
@@ -45,6 +50,7 @@ class AnchorEndView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -221,9 +227,8 @@ extension AnchorEndView {
 
 extension AnchorEndView {
     @objc func closeButtonClick() {
-        WindowUtils.getCurrentWindowViewController()?.backToPreviousPage()
+       viewStore.navigate(action: .exit)
     }
-    
 }
 
 private extension String {

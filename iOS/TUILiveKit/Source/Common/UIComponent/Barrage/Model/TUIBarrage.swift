@@ -5,6 +5,7 @@
 //  Created by krabyu on 2024/3/19.
 //
 
+
 class TUIBarrage: Codable{
     var user: TUIBarrageUser
     var content: String

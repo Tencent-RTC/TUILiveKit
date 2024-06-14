@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "live_user_followed_icon.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

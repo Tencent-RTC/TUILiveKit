@@ -13,26 +13,7 @@ import RTCRoomEngine
     import TXLiteAVSDK_Professional
 #endif
 
-extension LiveStreamCategory {
-    func getString() -> String {
-        switch self {
-        case .chat:
-            return .localized("live.category.chat")
-        case .living:
-            return .localized("live.category.living")
-        case .beauty:
-            return .localized("live.category.beauty")
-        case .teach:
-            return .localized("live.category.teach")
-        case .shopping:
-            return .localized("live.category.shopping")
-        case .music:
-            return .localized("live.category.music")
-        }
-    }
-}
-
-extension LiveMode {
+extension LiveStreamPrivacyStatus {
     func getString() -> String {
         switch self {
         case .public:
@@ -60,99 +41,6 @@ extension TUIVideoQuality {
     }
 }
 
-extension ChangerTypeEvent {
-    func getString() -> String {
-        switch self {
-        case .withoutChangerClick:
-            return .localized("live.music.changer.none")
-        case .childChangerClick:
-            return .localized("live.music.changer.child")
-        case .girlChangerClick:
-            return .localized("live.music.changer.girl")
-        case .uncleChangerClick:
-            return .localized("live.music.changer.uncle")
-        case .etherealChangerClick:
-            return .localized("live.music.changer.ethereal")
-        }
-    }
-
-    func getImage() -> UIImage? {
-        switch self {
-        case .withoutChangerClick:
-            return .liveBundleImage("live_audio_none")
-        case .childChangerClick:
-            return .liveBundleImage("live_audio_changer_child")
-        case .girlChangerClick:
-            return .liveBundleImage("live_audio_changer_girl")
-        case .uncleChangerClick:
-            return .liveBundleImage("live_audio_changer_uncle")
-        case .etherealChangerClick:
-            return .liveBundleImage("live_audio_changer_ethereal")
-        }
-    }
-
-    func getChangerType() -> TXVoiceChangeType {
-        switch self {
-        case .withoutChangerClick:
-            return ._0
-        case .childChangerClick:
-            return ._1
-        case .girlChangerClick:
-            return ._2
-        case .uncleChangerClick:
-            return ._3
-        case .etherealChangerClick:
-            return ._11
-        }
-    }
-}
-
-extension ReverbTypeEvent {
-    func getString() -> String {
-        switch self {
-        case .withoutReverbClick:
-            return .localized("live.music.reverb.none")
-        case .karaokeReverbClick:
-            return .localized("live.music.reverb.karaoke")
-        case .metalReverbClick:
-            return .localized("live.music.reverb.metal")
-        case .lowReverbClick:
-            return .localized("live.music.reverb.low")
-        case .loudReverbClick:
-            return .localized("live.music.reverb.loud")
-        }
-    }
-
-    func getImage() -> UIImage? {
-        switch self {
-        case .withoutReverbClick:
-            return .liveBundleImage("live_audio_none")
-        case .karaokeReverbClick:
-            return .liveBundleImage("live_audio_reverb_karaoke")
-        case .metalReverbClick:
-            return .liveBundleImage("live_audio_reverb_metal")
-        case .lowReverbClick:
-            return .liveBundleImage("live_audio_reverb_low")
-        case .loudReverbClick:
-            return .liveBundleImage("live_audio_reverb_loud")
-        }
-    }
-
-    func getReverbType() -> TXVoiceReverbType {
-        switch self {
-        case .withoutReverbClick:
-            return ._0
-        case .karaokeReverbClick:
-            return ._1
-        case .metalReverbClick:
-            return ._6
-        case .lowReverbClick:
-            return ._4
-        case .loudReverbClick:
-            return ._5
-        }
-    }
-}
 
 extension BeautyTypeEvent {
     func getString() -> String {

@@ -40,7 +40,6 @@ public class TUILivePreviewViewController: UIViewController {
             guard let self = self else { return }
             self.clearTopButton()
         }
-        
         var roomParams = RoomParams()
         roomParams.maxSeatCount = 0
         roomParams.seatMode = .applyToTake
@@ -143,6 +142,7 @@ extension TUILivePreviewViewController {
         for i in 0 ... listController.count - 1 {
             let controller = listController[i]
             controller.view.isHidden = i != selectIndex
+            enableSubscribeState(controller: controller, enable: controller.view.isHidden == false)
         }
 
         for i in 0 ... listTopButton.count - 1 {
@@ -152,6 +152,12 @@ extension TUILivePreviewViewController {
             if button.isSelected {
                 lineLayer?.frame = CGRect(x: button.frame.minX, y: button.frame.maxY - 2, width: button.frame.width, height: 2)
             }
+        }
+    }
+    
+    private func enableSubscribeState(controller: UIViewController, enable: Bool) {        
+        if let voiceRoomController = controller as? TUIVoiceRoomViewController {
+            enable ? voiceRoomController.subscribeViewState() : voiceRoomController.unSubscribeViewState()
         }
     }
 

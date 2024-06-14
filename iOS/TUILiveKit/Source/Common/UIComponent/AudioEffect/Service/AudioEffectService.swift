@@ -6,6 +6,7 @@
 //
 
 import RTCRoomEngine
+
 import Combine
 #if canImport(TXLiteAVSDK_TRTC)
     import TXLiteAVSDK_TRTC
@@ -67,9 +68,8 @@ class AudioEffectEffects: Effects {
 }
 
 class AudioEffectService {
-    
     private let engine = TUIRoomEngine.sharedInstance()
-    private lazy var audioEffectManager: TXAudioEffectManager = self.engine.getAudioEffectManager()
+    private lazy var audioEffectManager: TXAudioEffectManager = self.engine.getTRTCCloud().getAudioEffectManager()
     
     func updateMusicVolume(_ volume: Int) {
         audioEffectManager.setAllMusicVolume(volume)

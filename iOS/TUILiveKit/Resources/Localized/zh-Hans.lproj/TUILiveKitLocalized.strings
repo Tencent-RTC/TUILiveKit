@@ -24,7 +24,6 @@
 "live.landscape.title" = "切换至横屏";
 "live.landscape.title" = "切换至横屏";
 "live.audience.mask.title" = "直播已结束";
-"live.audience.count.unit.xxx" = "xxx人";
 "live.audience.barrage.placeholder" = "聊聊吧~";
 "live.audience.linkType.title" = "选择连麦方式";
 "live.audience.linkType.tips" = "选择连麦方式，主播同意后接通";
@@ -133,6 +132,7 @@
 "live.barrage.enterButtonTitle" = "说点啥...";
 "live.barrage.me" = "我";
 "live.barrage.coming" = "进入房间";
+"live.barrage.anchor" = "主播";
 "live.operation.fail.xxx" = "操作失败，请稍后尝试。状态信息：{xxx}";
 "live.stream.list.title" = "直播间列表";
 "live.giftView.sendGift" = "发送礼物";
@@ -164,6 +164,8 @@
 "live.anchor.live.data.message.count" = "消息数量";
 "live.anchor.live.data.gift.people.count" = "送礼人数";
 "live.anchor.live.data.like.count" = "点赞数量";
+"live.user.follow" = "关注";
+"live.user.unfollow" = "取消关注";
 
 // MARK: - Error Toast
 "live.error.success" = "操作成功";
@@ -218,3 +220,16 @@
 "live.error.open.screen.share.need.permission.from.admin" = "需要向房主或管理员申请后打开屏幕分享";
 "live.error.send.message.disabled.for.all" = "当前房间已开启全员禁言";
 "live.error.send.message.disabled.for.current" = "当前房间内，您已被禁言";
+"live.error.invalid.userId" = "非法的userId";
+"live.roomId.xxx" = "直播房间ID: xxx";
+"live.fans.count.xxx" = "xxx粉丝";
+
+
+"live.room.list.live" = "直播";
+"live.room.list.pullToRefresh" = "下拉刷新";
+"live.room.list.releaseToRefresh" = "松开刷新";
+"live.room.list.loading" = "正在加载...";
+"live.room.list.loadingMore" = "加载更多";
+"live.room.list.noMoreData" = "没有更多数据了";
+"live.room.list.startLiveRoom" = "请先开启一个直播间";
+"live.room.list.watching.xxx" = "xxx人正在观看";
