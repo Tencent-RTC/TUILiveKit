@@ -123,11 +123,7 @@ public class BarrageMsgListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private int getLevel(TUIBarrage barrage) {
         try {
-            int level = Integer.parseInt(barrage.user.level);
-            if (level > 0) {
-                return level;
-            }
-            return Math.abs(barrage.user.userId.hashCode()) % 120;
+            return Integer.parseInt(barrage.user.level);
         } catch (Exception e) {
             return 0;
         }
