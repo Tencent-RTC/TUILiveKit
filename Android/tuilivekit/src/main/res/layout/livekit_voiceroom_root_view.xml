@@ -30,9 +30,10 @@
 
     <RelativeLayout
         android:id="@+id/rl_barrage"
-        android:layout_width="268dp"
+        android:layout_width="match_parent"
         android:layout_height="212dp"
         android:layout_marginStart="16dp"
+        android:layout_marginEnd="56dp"
         android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toTopOf="@+id/rl_bottom_menu"
         app:layout_constraintStart_toStartOf="parent" />
@@ -42,6 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginTop="112dp"
         android:layout_marginBottom="10dp"
         app:layout_constraintStart_toStartOf="parent"

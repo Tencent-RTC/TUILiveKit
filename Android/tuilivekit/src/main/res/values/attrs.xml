@@ -5,7 +5,6 @@
         <attr name="text" format="string" />
     </declare-styleable>
 
-    <!-- 飘星自定义属性 -->
     <declare-styleable name="LiveKitGiftHeartLayout">
         <attr name="initX" format="dimension" />
         <attr name="initY" format="dimension" />

@@ -11,7 +11,7 @@
 
     <application>
         <activity
-            android:name=".liveroom.view.audience.AudienceActivity"
+            android:name=".common.uicomponent.roomlist.view.ListAudienceActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar"
@@ -19,7 +19,7 @@
             android:exported="false" />
 
         <provider
-            android:name="com.trtc.uikit.livekit.liveroom.core.ServiceInitializer"
+            android:name="com.trtc.uikit.livekit.manager.ServiceInitializer"
             android:authorities="${applicationId}.ServiceInitializer"
             android:enabled="true"
             android:exported="false" />

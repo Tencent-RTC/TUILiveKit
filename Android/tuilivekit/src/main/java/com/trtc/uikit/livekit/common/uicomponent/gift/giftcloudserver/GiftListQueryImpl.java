@@ -2,10 +2,9 @@ package com.trtc.uikit.livekit.common.uicomponent.gift.giftcloudserver;
 
 import com.google.gson.Gson;
 import com.tencent.qcloud.tuicore.TUIThemeManager;
+import com.trtc.uikit.livekit.common.uicomponent.gift.service.TUIHttpGetRequest;
 import com.trtc.uikit.livekit.common.uicomponent.gift.model.GiftBean;
 import com.trtc.uikit.livekit.common.uicomponent.gift.model.TUIGift;
-import com.trtc.uikit.livekit.common.uicomponent.gift.service.TUIHttpGetRequest;
-import com.trtc.uikit.livekit.common.uicomponent.gift.giftcloudserver.IGiftCloudServer.Callback;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,15 +16,15 @@ public class GiftListQueryImpl extends GiftListQuery implements TUIHttpGetReques
     private static final String GIFT_DATA_URL =
             "http://dldir1.qq.com/hudongzhibo/TRTC/TUIKit/Gift/gift_data.json";
 
-    private ThreadPoolExecutor            mExecutor;
-    private Callback<List<TUIGift>>       mOnGiftListQueryCallback;
+    private ThreadPoolExecutor                       mExecutor;
+    private IGiftCloudServer.Callback<List<TUIGift>> mOnGiftListQueryCallback;
 
     public GiftListQueryImpl(ThreadPoolExecutor executor) {
         this.mExecutor = executor;
     }
 
     @Override
-    public void queryGiftInfoList(Callback<List<TUIGift>> callback) {
+    public void queryGiftInfoList(IGiftCloudServer.Callback<List<TUIGift>> callback) {
         mOnGiftListQueryCallback = callback;
         TUIHttpGetRequest request = new TUIHttpGetRequest(GIFT_DATA_URL, this);
         mExecutor.execute(request);

@@ -1,8 +1,5 @@
 package com.trtc.uikit.livekit.common.uicomponent.gift;
 
-import static com.trtc.uikit.livekit.common.uicomponent.gift.service.GiftConstants.KEY_LIKE;
-import static com.trtc.uikit.livekit.common.uicomponent.gift.service.GiftConstants.SUB_KEY_LIKE_SEND;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
@@ -12,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
+import androidx.core.util.Pair;
 
 import com.opensource.svgaplayer.SVGACallback;
 import com.opensource.svgaplayer.SVGAImageView;
@@ -24,6 +22,7 @@ import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.uicomponent.gift.model.TUIGift;
 import com.trtc.uikit.livekit.common.uicomponent.gift.model.TUIGiftUser;
+import com.trtc.uikit.livekit.common.uicomponent.gift.service.GiftConstants;
 import com.trtc.uikit.livekit.common.uicomponent.gift.service.GiftPresenter;
 import com.trtc.uikit.livekit.common.uicomponent.gift.store.GiftSendData;
 import com.trtc.uikit.livekit.common.uicomponent.gift.store.GiftStore;
@@ -42,19 +41,27 @@ public class TUIGiftPlayView extends LinearLayout implements IGiftPlayView {
     private static final String  TAG                       = "TUIGiftPlayView";
     private static final int     MAX_SHOW_GIFT_BULLET_SIZE = 3;
 
-    private final Context                mContext;
-    private LinearLayout                 mGiftBulletGroup;
-    private GiftPresenter                mPresenter;
-    private final String                 mRoomId;
-    private SVGAImageView                mAnimationView;
-    private GiftHeartLayout              mHeartLayout;
-    private final List<TUIGift>          mSentGiftAnimation;
-    private TUIGiftPlayViewListener      mGiftPlayViewListener;
-    private final SVGAParser             mSVGAParser;
-    private int                          mLikeCount = 0;
-    private final ITUINotification       mLikeNotification = (key, subKey, param) -> receiveLike();
-    private final Observer<GiftSendData> mGiftSendDataObserver = giftSendData ->
-            receiveGift(giftSendData.gift, giftSendData.giftCount, giftSendData.sender, giftSendData.receiver);
+    private final Context                 mContext;
+    private       LinearLayout            mGiftBulletGroup;
+    private       GiftPresenter           mPresenter;
+    private final String                  mRoomId;
+    private       SVGAImageView           mAnimationView;
+    private       GiftHeartLayout         mHeartLayout;
+    private final List<TUIGift>           mSentGiftAnimation;
+    private       TUIGiftPlayViewListener mGiftPlayViewListener;
+    private final SVGAParser              mSVGAParser;
+    private int                           mLikeCount = 0;
+    private final ITUINotification                     mLikeNotification     = (key, subKey, param) -> receiveLike();
+    private final Observer<Pair<String, GiftSendData>> mGiftSendDataObserver =
+            new Observer<Pair<String, GiftSendData>>() {
+        @Override
+        public void onChanged(Pair<String, GiftSendData> pair) {
+            if (pair != null && TextUtils.equals(pair.first, mRoomId)) {
+                GiftSendData data = pair.second;
+                receiveGift(data.gift, data.giftCount, data.sender, data.receiver);
+            }
+        }
+    };
 
     public TUIGiftPlayView(Context context, String roomId) {
         super(context);
@@ -98,15 +105,17 @@ public class TUIGiftPlayView extends LinearLayout implements IGiftPlayView {
 
     @Override
     protected void onAttachedToWindow() {
-        TUICore.registerEvent(KEY_LIKE, SUB_KEY_LIKE_SEND, mLikeNotification);
+        TUICore.registerEvent(GiftConstants.KEY_LIKE, GiftConstants.SUB_KEY_LIKE_SEND, mLikeNotification);
+        GiftStore.getInstance().mGiftSendData.set(null);
         GiftStore.getInstance().mGiftSendData.observe(mGiftSendDataObserver);
         super.onAttachedToWindow();
     }
 
     @Override
     protected void onDetachedFromWindow() {
-        TUICore.unRegisterEvent(KEY_LIKE, SUB_KEY_LIKE_SEND, mLikeNotification);
+        TUICore.unRegisterEvent(GiftConstants.KEY_LIKE, GiftConstants.SUB_KEY_LIKE_SEND, mLikeNotification);
         GiftStore.getInstance().mGiftSendData.removeObserver(mGiftSendDataObserver);
+        GiftStore.getInstance().mGiftSendData.set(null);
         mPresenter.destroyPresenter();
         mAnimationView.setCallback(null);
         mAnimationView.stopAnimation();

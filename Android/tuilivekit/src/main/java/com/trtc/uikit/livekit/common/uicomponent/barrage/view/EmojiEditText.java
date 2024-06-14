@@ -24,8 +24,8 @@ import com.trtc.uikit.livekit.common.uicomponent.barrage.service.IEmojiResource;
 
 public class EmojiEditText extends AppCompatEditText implements EmojiLayout.EmojiListener {
 
-    private IEmojiResource mEmojiResource;
-    private final Rect     mEmojiBounds = new Rect();
+    private       IEmojiResource mEmojiResource;
+    private final Rect           mEmojiBounds = new Rect();
 
     public EmojiEditText(Context context) {
         this(context, null);

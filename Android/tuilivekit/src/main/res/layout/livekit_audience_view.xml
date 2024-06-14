@@ -6,13 +6,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
-    tools:context=".liveroom.view.audience.AudienceActivity">
+    tools:context=".view.liveroom.view.audience.AudienceActivity">
 
     <RelativeLayout
         android:id="@+id/rl_audience_video_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/livekit_design_standard_g1" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="142dp"
+        android:background="@drawable/livekit_live_room_living_top_mask"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:background="@drawable/livekit_live_room_living_bottom_mask"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <RelativeLayout
         android:id="@+id/rl_audience_living"

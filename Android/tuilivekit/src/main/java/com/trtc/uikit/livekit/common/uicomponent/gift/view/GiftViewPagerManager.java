@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.common.uicomponent.gift.model.TUIGift;
 import com.trtc.uikit.livekit.common.uicomponent.gift.view.adapter.GiftPanelAdapter;
+import com.trtc.uikit.livekit.common.uicomponent.gift.model.TUIGift;
 
 import java.util.ArrayList;
 import java.util.List;

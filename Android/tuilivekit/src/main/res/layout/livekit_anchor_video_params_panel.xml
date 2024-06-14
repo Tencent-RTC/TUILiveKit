@@ -22,7 +22,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/livekit_anchor_user_count_background"
             android:layout_centerInParent="true"
             android:text="@string/livekit_video_params"
             android:textColor="@color/livekit_design_standard_g7"

@@ -21,9 +21,8 @@
     <string name="app_stream_number">Stream Id</string>
     <string name="app_please_input_stream_number">Enter a Stream ID</string>
     <string name="app_join_live">Join live room</string>
-    <string name="app_start_live_stream">Start Live Streaming</string>
+    <string name="app_start_live_stream">GO LIVE</string>
     <string name="app_toast_login_success">Logged in</string>
     <string name="app_room_list">Live Room List</string>
     <string name="app_start_voice_live">Start Voice Live</string>
-    <string name="app_join_voice_room">Join voice room</string>
 </resources>

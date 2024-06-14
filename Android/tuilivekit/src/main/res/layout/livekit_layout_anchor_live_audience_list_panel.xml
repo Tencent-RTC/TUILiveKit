@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="718dp"
-    android:background="@color/livekit_design_standard_g2"
+    android:background="@drawable/livekit_dialog_background"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -20,7 +20,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/livekit_anchor_user_count_background"
             android:layout_centerInParent="true"
             android:text="@string/livekit_anchor_audience_list_panel_title"
             android:textColor="@color/livekit_design_standard_g7"

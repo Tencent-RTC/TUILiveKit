@@ -25,5 +25,4 @@
     <string name="app_toast_login_success">登录成功</string>
     <string name="app_room_list">直播间列表</string>
     <string name="app_start_voice_live">开始音频直播</string>
-    <string name="app_join_voice_room">加入语聊房</string>
 </resources>

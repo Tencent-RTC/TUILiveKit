@@ -11,20 +11,21 @@ import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import androidx.core.util.Pair;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.uicomponent.barrage.model.TUIBarrage;
 import com.trtc.uikit.livekit.common.uicomponent.barrage.service.BarrageIMService;
 import com.trtc.uikit.livekit.common.uicomponent.barrage.service.BarragePresenter;
 import com.trtc.uikit.livekit.common.uicomponent.barrage.service.IBarrageMessage;
 import com.trtc.uikit.livekit.common.uicomponent.barrage.service.IBarragePresenter;
 import com.trtc.uikit.livekit.common.uicomponent.barrage.store.BarrageStore;
+import com.trtc.uikit.livekit.common.uicomponent.barrage.view.IBarrageDisplayView;
 import com.trtc.uikit.livekit.common.uicomponent.barrage.view.adapter.BarrageMsgListAdapter;
 import com.trtc.uikit.livekit.common.uicomponent.barrage.view.adapter.TUIBarrageDisplayAdapter;
-import com.trtc.uikit.livekit.common.uicomponent.barrage.model.TUIBarrage;
-import com.trtc.uikit.livekit.common.uicomponent.barrage.view.IBarrageDisplayView;
 import com.trtc.uikit.livekit.common.utils.LiveKitLog;
 
 import java.util.ArrayList;
@@ -38,25 +39,34 @@ public class TUIBarrageDisplayView extends FrameLayout implements IBarrageDispla
     private BarrageMsgListAdapter mAdapter;
     private ArrayList<TUIBarrage> mMsgList;
     private int                   mBarrageCount = 0;
+    private String                mRoomId;
+    private String                mOwnerId;
 
-    private final IBarragePresenter    mPresenter;
-    private final Observer<TUIBarrage> mBarrageObserver = this::insertBarrages;
+    private final IBarragePresenter mPresenter;
+    private final Observer<Pair<String, TUIBarrage>> mBarrageObserver = barragePair -> {
+        if (barragePair != null && TextUtils.equals(mRoomId, barragePair.first)) {
+            insertBarrages(barragePair.second);
+        }
+    };
 
-    public TUIBarrageDisplayView(Context context, String roomId) {
+    public TUIBarrageDisplayView(Context context, String roomId, String ownerId) {
         this(context, new BarrageIMService(roomId));
+        mRoomId = roomId;
+        mOwnerId = ownerId;
     }
 
     private TUIBarrageDisplayView(Context context, IBarrageMessage service) {
         super(context);
         mPresenter = new BarragePresenter(context, service);
-        mPresenter.initDisplayView(this);
         initView(context);
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        mPresenter.initDisplayView(this);
         addObserver();
+        BarrageStore.sharedInstance().mSendBarrage.set(null);
     }
 
     private void addObserver() {
@@ -72,7 +82,7 @@ public class TUIBarrageDisplayView extends FrameLayout implements IBarrageDispla
         mTextNotice = findViewById(R.id.tv_notice);
         mRecyclerMsg = findViewById(R.id.rv_msg);
         mMsgList = new ArrayList<>();
-        mAdapter = new BarrageMsgListAdapter(context, mMsgList, null);
+        mAdapter = new BarrageMsgListAdapter(context, mOwnerId, mMsgList, null);
         mRecyclerMsg.setLayoutManager(new LinearLayoutManager(context));
         mRecyclerMsg.setAdapter(mAdapter);
     }
@@ -94,10 +104,8 @@ public class TUIBarrageDisplayView extends FrameLayout implements IBarrageDispla
 
     @Override
     protected void onDetachedFromWindow() {
-        if (mPresenter != null) {
-            mPresenter.destroyPresenter();
-        }
         super.onDetachedFromWindow();
+        mPresenter.destroyPresenter();
         removeObserver();
         BarrageStore.sharedInstance().mSendBarrage.set(null);
     }

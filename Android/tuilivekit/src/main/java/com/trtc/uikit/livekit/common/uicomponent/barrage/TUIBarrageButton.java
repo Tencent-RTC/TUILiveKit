@@ -12,11 +12,11 @@ import com.trtc.uikit.livekit.common.uicomponent.barrage.view.BarrageSendView;
 @SuppressLint("ViewConstructor")
 public class TUIBarrageButton extends FrameLayout {
 
-    private final String    mRoomId;
-    private BarrageSendView mBarrageSendView;
+    private final String          mRoomId;
+    private       BarrageSendView mBarrageSendView;
 
 
-    public TUIBarrageButton(Context context, String roomId) {
+    public TUIBarrageButton(Context context, String roomId, String ownerId) {
         super(context);
         this.mRoomId = roomId;
         initView(context);

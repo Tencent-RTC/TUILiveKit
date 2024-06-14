@@ -5,6 +5,12 @@
     android:versionCode="1"
     android:versionName="1.0">
 
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+    </queries>
     <application
         tools:replace="android:allowBackup"
         android:allowBackup="false"
@@ -39,7 +45,7 @@
 
         <activity android:name=".main.AnchorActivity"/>
         <activity android:name=".main.AudienceActivity"/>
-        <activity android:name=".main.LiveActivity"/>
+        <activity android:name=".main.RoomListActivity"/>
     </application>
 
 </manifest>

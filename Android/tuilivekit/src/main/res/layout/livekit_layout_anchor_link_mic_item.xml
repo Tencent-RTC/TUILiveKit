@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:background="@color/livekit_design_standard_g2"
+    android:gravity="start">
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/iv_head"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="24dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/livekit_ic_avatar"
+        app:round="20dp"/>
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@id/iv_head"
+        android:layout_centerVertical="true"
+        android:maxLines="1"
+        android:maxWidth="100dp"
+        android:ellipsize="end"
+        android:textSize="16sp"
+        android:textColor="@color/livekit_design_standard_g7" />
+
+    <TextView
+        android:id="@+id/tv_level"
+        android:layout_width="35dp"
+        android:layout_height="15dp"
+        android:layout_marginStart="10dp"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@id/tv_name"
+        android:gravity="center"
+        android:text="lv20"
+        android:textSize="12sp"
+        android:textColor="@color/livekit_design_standard_flowkit_white"
+        android:background="@drawable/livekit_audience_list_panel_level_background"/>
+
+    <TextView
+        android:id="@+id/tv_hang_up"
+        android:layout_width="64dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="20dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:gravity="center"
+        android:text="@string/livekit_hang_up"
+        android:textSize="12sp"
+        android:textColor="@color/livekit_not_standard_red"
+        android:background="@drawable/livekit_link_mic_hang_up_background"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginRight="24dp"
+        android:layout_alignStart="@id/tv_name"
+        android:layout_alignParentBottom="true"
+        android:background="@color/livekit_not_standard_blue_30_transparency" />
+</RelativeLayout>

@@ -24,8 +24,20 @@ public class Constants {
     public static final String GIFT_RECEIVER_USERNAME = "gift_receiver_username";
     public static final int    GIFT_VIEW_TYPE_1       = 1;
 
-    public static final String EVENT_KEY_LIVE_KIT             = "EVENT_KEY_LIVE_KIT";
-    public static final String EVENT_SUB_KEY_START_LIVE_ROOM  = "EVENT_SUB_KEY_START_LIVE_ROOM";
-    public static final String EVENT_SUB_KEY_START_VOICE_ROOM = "EVENT_SUB_KEY_START_VOICE_ROOM";
-    public static final String EVENT_SUB_KEY_CLOSE_LIVE_ROOM  = "EVENT_SUB_KEY_CLOSE_LIVE_ROOM";
+    public static final String EVENT_KEY_LIVE_KIT               = "EVENT_KEY_LIVE_KIT";
+    public static final String EVENT_SUB_KEY_START_LIVE_ROOM    = "EVENT_SUB_KEY_START_LIVE_ROOM";
+    public static final String EVENT_SUB_KEY_START_VOICE_ROOM   = "EVENT_SUB_KEY_START_VOICE_ROOM";
+    public static final String EVENT_SUB_KEY_CLOSE_LIVE_ROOM    = "EVENT_SUB_KEY_CLOSE_LIVE_ROOM";
+    public static final String EVENT_SUB_KEY_LINK_STATUS_CHANGE = "EVENT_SUB_KEY_LINK_STATUS_CHANGE";
+    public static final String EVENT_PARAMS_KEY_ENABLE_SLIDE    = "EVENT_PARAMS_KEY_ENABLE_SLIDE";
+
+
+    public static final int DEFAULT_MAX_SEAT_COUNT   = 8;
+    public static final int ROOM_MAX_SHOW_USER_COUNT = 100;
+
+    public static final int DATA_REPORT_COMPONENT_LIVE_ROOM  = 21;
+    public static final int DATA_REPORT_COMPONENT_VOICE_ROOM = 22;
+    public static final int DATA_REPORT_FRAMEWORK            = 1;
+    public static final int DATA_REPORT_LANGUAGE_JAVA        = 1;
+    public static       int DATA_REPORT_COMPONENT            = DATA_REPORT_COMPONENT_LIVE_ROOM;
 }

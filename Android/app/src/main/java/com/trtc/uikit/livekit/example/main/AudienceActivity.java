@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.trtc.tuikit.common.FullScreenActivity;
 import com.trtc.uikit.livekit.example.R;
-import com.trtc.uikit.livekit.liveroom.TUILiveRoomAudienceFragment;
+import com.trtc.uikit.livekit.view.TUILiveAudienceFragment;
 
 public class AudienceActivity extends FullScreenActivity {
     public String mRoomId = "";
@@ -21,7 +21,7 @@ public class AudienceActivity extends FullScreenActivity {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        TUILiveRoomAudienceFragment audienceFragment = new TUILiveRoomAudienceFragment(mRoomId);
+        TUILiveAudienceFragment audienceFragment = new TUILiveAudienceFragment(mRoomId);
         fragmentTransaction.add(R.id.fl_container, audienceFragment);
         fragmentTransaction.commit();
     }

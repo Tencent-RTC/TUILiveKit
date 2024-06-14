@@ -11,7 +11,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.trtc.tuikit.common.util.ActivityLauncher;
-import com.trtc.uikit.livekit.common.core.LiveDefine;
 import com.trtc.uikit.livekit.example.BaseActivity;
 import com.trtc.uikit.livekit.example.R;
 import com.trtc.uikit.livekit.example.settings.SettingsConfig;
@@ -19,7 +18,7 @@ import com.trtc.uikit.livekit.example.settings.SettingsConfig;
 public class MainActivity extends BaseActivity {
     private EditText mEditStreamId;
     private TextView mTextJoinStream;
-    private TextView mTextJoinVoiceRoom;
+    private TextView mTextEnterRoomList;
 
     private final TextWatcher mEditTextWatcher = new TextWatcher() {
         @Override
@@ -31,10 +30,8 @@ public class MainActivity extends BaseActivity {
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             if (!TextUtils.isEmpty(mEditStreamId.getText().toString())) {
                 mTextJoinStream.setEnabled(true);
-                mTextJoinVoiceRoom.setEnabled(true);
             } else {
                 mTextJoinStream.setEnabled(false);
-                mTextJoinVoiceRoom.setEnabled(false);
             }
         }
 
@@ -54,7 +51,7 @@ public class MainActivity extends BaseActivity {
     private void initView() {
         mEditStreamId = findViewById(R.id.et_stream_id);
         mTextJoinStream = findViewById(R.id.tv_join_stream);
-        mTextJoinVoiceRoom = findViewById(R.id.tv_join_voice);
+        mTextEnterRoomList = findViewById(R.id.tv_room_list);
         mEditStreamId.addTextChangedListener(mEditTextWatcher);
 
         findViewById(R.id.tv_join_stream).setOnClickListener(v -> {
@@ -64,13 +61,8 @@ public class MainActivity extends BaseActivity {
             startActivity(intent);
         });
 
-        findViewById(R.id.tv_join_voice).setOnClickListener(v -> {
-            final String roomId = mEditStreamId.getText().toString().trim();
-            Bundle bundle = new Bundle();
-            bundle.putString("roomId", roomId);
-            bundle.putSerializable("roomBehavior", LiveDefine.RoomBehavior.JOIN);
-            Intent intent = new Intent(MainActivity.this, LiveActivity.class);
-            intent.putExtras(bundle);
+        mTextEnterRoomList.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, RoomListActivity.class);
             startActivity(intent);
         });
 

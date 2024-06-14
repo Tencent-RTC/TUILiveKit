@@ -7,23 +7,24 @@
 
     <RelativeLayout
         android:id="@+id/rl_emoticons"
-        android:layout_width="@dimen/livekit_icon_size"
-        android:layout_height="@dimen/livekit_icon_size"
+        android:layout_width="18.33dp"
+        android:layout_height="18.33dp"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="6dp"
-        android:layout_marginBottom="6dp"
-        android:layout_marginStart="8dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="9dp"
+        android:layout_marginBottom="9dp"
+        android:layout_marginEnd="8dp"
         android:background="@drawable/livekit_ic_emoticons" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="36dp"
-        android:layout_marginStart="6dp"
+        android:layout_marginStart="12dp"
         android:text="@string/livekit_barrage_text_hint"
         android:textColor="@color/livekit_design_standard_g7"
         android:textSize="12sp"
         android:gravity="center_vertical"
-        android:layout_toEndOf="@+id/rl_emoticons"/>
+        android:layout_toStartOf="@+id/rl_emoticons"/>
 
 </RelativeLayout>

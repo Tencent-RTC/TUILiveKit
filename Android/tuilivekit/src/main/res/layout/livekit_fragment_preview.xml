@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="54dp"
+        android:layout_marginTop="26dp"
         android:orientation="horizontal">
 
         <com.google.android.material.tabs.TabLayout
@@ -30,6 +30,7 @@
             app:tabIndicatorFullWidth="false"
             app:tabIndicatorHeight="1dp"
             app:tabPaddingTop="5dp"
+            app:tabMode="scrollable"
             app:tabSelectedTextColor="@color/livekit_design_standard_flowkit_white"
             app:tabTextColor="@color/livekit_not_standard_white_d2">
 

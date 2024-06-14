@@ -1,10 +1,12 @@
 package com.trtc.uikit.livekit.common.uicomponent.gift.service;
 
+import androidx.core.util.Pair;
+
 import com.tencent.qcloud.tuicore.TUILogin;
-import com.trtc.uikit.livekit.common.uicomponent.gift.model.TUIGift;
-import com.trtc.uikit.livekit.common.uicomponent.gift.model.TUIGiftUser;
 import com.trtc.uikit.livekit.common.uicomponent.gift.store.GiftSendData;
 import com.trtc.uikit.livekit.common.uicomponent.gift.store.GiftStore;
+import com.trtc.uikit.livekit.common.uicomponent.gift.model.TUIGift;
+import com.trtc.uikit.livekit.common.uicomponent.gift.model.TUIGiftUser;
 import com.trtc.uikit.livekit.common.uicomponent.gift.TUIGiftPlayView;
 
 public class GiftPresenter implements GiftIMService.OnGiftMessageListener, LikeIMService.OnLikeMessageListener {
@@ -12,6 +14,7 @@ public class GiftPresenter implements GiftIMService.OnGiftMessageListener, LikeI
     private TUIGiftPlayView         mPlayView;
     private final GiftIMService     mImService;
     private final LikeIMService     mLikeImService;
+    private final String            mRoomId;
 
 
     public GiftPresenter(String roomId) {
@@ -19,6 +22,7 @@ public class GiftPresenter implements GiftIMService.OnGiftMessageListener, LikeI
         mLikeImService.setListener(this);
         mImService = new GiftIMService(roomId);
         mImService.setListener(this);
+        mRoomId = roomId;
     }
 
     public void initGiftPlayView(TUIGiftPlayView playView) {
@@ -51,7 +55,7 @@ public class GiftPresenter implements GiftIMService.OnGiftMessageListener, LikeI
                 sendData.receiver = receiver;
                 sendData.gift = gift;
                 sendData.giftCount = giftCount;
-                GiftStore.getInstance().mGiftSendData.set(sendData);
+                GiftStore.getInstance().mGiftSendData.set(new Pair<>(mRoomId, sendData));
             }
         });
     }

@@ -1,8 +1,6 @@
 package com.trtc.uikit.livekit.common.uicomponent.gift.view;
 
 import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
-
-import static com.trtc.uikit.livekit.common.uicomponent.gift.service.GiftConstants.MESSAGE_COLOR;
 import static com.trtc.uikit.livekit.common.utils.Constants.GIFT_COUNT;
 import static com.trtc.uikit.livekit.common.utils.Constants.GIFT_ICON_URL;
 import static com.trtc.uikit.livekit.common.utils.Constants.GIFT_NAME;
@@ -36,15 +34,16 @@ import com.tencent.qcloud.tuicore.util.ScreenUtil;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.uicomponent.barrage.model.TUIBarrage;
 import com.trtc.uikit.livekit.common.uicomponent.barrage.view.adapter.TUIBarrageDisplayAdapter;
+import com.trtc.uikit.livekit.common.uicomponent.gift.service.GiftConstants;
 import com.trtc.uikit.livekit.common.utils.LiveKitLog;
 
 import java.security.SecureRandom;
 
 public class GiftBarrageAdapter implements TUIBarrageDisplayAdapter {
 
-    private static final String TAG = "GiftBarrageAdapter";
-    private final Context       mContext;
-    private final Drawable      mDefaultGiftIcon = new ColorDrawable(Color.DKGRAY);
+    private static final String   TAG              = "GiftBarrageAdapter";
+    private final        Context  mContext;
+    private final        Drawable mDefaultGiftIcon = new ColorDrawable(Color.DKGRAY);
 
     public GiftBarrageAdapter(Context context) {
         mContext = context;
@@ -121,7 +120,8 @@ public class GiftBarrageAdapter implements TUIBarrageDisplayAdapter {
             sb.setSpan(receiverSpan, sb.length() - receiver.length(), sb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
             String giftName = String.valueOf(barrage.extInfo.get(GIFT_NAME));
             sb.append(giftName);
-            int giftNameColor = context.getResources().getColor(MESSAGE_COLOR[random.nextInt(MESSAGE_COLOR.length)]);
+            int giftNameColor = context.getResources().getColor(
+                    GiftConstants.MESSAGE_COLOR[random.nextInt(GiftConstants.MESSAGE_COLOR.length)]);
             ForegroundColorSpan giftSpan = new ForegroundColorSpan(giftNameColor);
             sb.setSpan(giftSpan, sb.length() - giftName.length(), sb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
             String url = String.valueOf(barrage.extInfo.get(GIFT_ICON_URL));

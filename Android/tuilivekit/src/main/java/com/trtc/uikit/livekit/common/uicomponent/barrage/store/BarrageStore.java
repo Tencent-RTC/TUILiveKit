@@ -1,14 +1,16 @@
 package com.trtc.uikit.livekit.common.uicomponent.barrage.store;
 
+import androidx.core.util.Pair;
+
 import com.trtc.tuikit.common.livedata.LiveData;
-import com.trtc.uikit.livekit.common.uicomponent.barrage.model.TUIBarrage;
 import com.trtc.uikit.livekit.common.uicomponent.barrage.model.DefaultEmojiResource;
+import com.trtc.uikit.livekit.common.uicomponent.barrage.model.TUIBarrage;
 import com.trtc.uikit.livekit.common.uicomponent.barrage.service.IEmojiResource;
 
 public class BarrageStore {
     private static BarrageStore sInstance;
 
-    public LiveData<TUIBarrage> mSendBarrage = new LiveData<>();
+    public LiveData<Pair<String, TUIBarrage>> mSendBarrage = new LiveData<>();
 
     public final IEmojiResource mEmojiResource;
 

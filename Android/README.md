@@ -34,7 +34,7 @@ Studio project to be synced, connect to a real device, and click **Run** to try 
 
 ### Step 3. Try out the application (**at least two devices required**)
 1. Use two mobile phones (A and B) to log in to the application using strings as their user IDs. If you log in for the first time, you need to add a user name.
-2. The user on mobile phone A clicks the 'Start Live Streaming' button to initiate a live broadcast (note that you select video live broadcast or voice live broadcast)
+2. The user on mobile phone A clicks the 'GO LIVE' button to initiate a live broadcast (note that you select video live broadcast or voice live broadcast)
 3. The user on mobile phone B enters the user ID of the user on mobile phone A and clicks to 'Join live room' or 'Join voice room' to watch the live broadcast.
 
 
