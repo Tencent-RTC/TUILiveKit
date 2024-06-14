@@ -2,33 +2,100 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/item_content"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <FrameLayout
         android:id="@+id/fl_cover_border"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/livekit_cover_selected_background"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/iv_cover"
-            android:layout_width="180dp"
-            android:layout_height="180dp"
-            android:scaleType="centerCrop"/>
-
-        <TextView
-            android:id="@+id/tv_name"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textSize="18sp"
-            android:textColor="@color/white"
-            android:gravity="center" />
+            android:orientation="vertical">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_cover"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                app:shapeAppearance="@style/SemicircleStyle"
+                android:scaleType="centerCrop"/>
+
+            <TextView
+                android:id="@+id/tv_room_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@color/livekit_design_standard_flowkit_white"
+                android:gravity="left"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:textColor="@color/livekit_design_standard_g2"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/livekit_room_list_item_bg"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp">
+
+                <androidx.constraintlayout.utils.widget.ImageFilterView
+                    android:id="@+id/iv_avatar"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:scaleType="centerCrop"
+                    app:round="10dp" />
+
+                <TextView
+                    android:id="@+id/tv_anchor_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="4dp"
+                    android:gravity="center"
+                    android:textColor="@color/livekit_design_standard_g3"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/livekit_room_list_item_live_status"/>
+
+            <TextView
+                android:id="@+id/tv_audience_count_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textColor="@color/livekit_design_standard_flowkit_white"
+                android:textSize="12sp" />
+        </LinearLayout>
+
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -2,19 +2,23 @@ package com.trtc.uikit.livekit.common.uicomponent.barrage.view.adapter;
 
 import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.ImageSpan;
+import android.text.method.LinkMovementMethod;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tencent.qcloud.tuicore.util.ScreenUtil;
@@ -22,25 +26,29 @@ import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.uicomponent.barrage.model.TUIBarrage;
 import com.trtc.uikit.livekit.common.uicomponent.barrage.service.IEmojiResource;
 import com.trtc.uikit.livekit.common.uicomponent.barrage.store.BarrageStore;
-import com.trtc.uikit.livekit.common.uicomponent.barrage.view.util.RoundedImageSpan;
+import com.trtc.uikit.livekit.common.uicomponent.barrage.view.EmojiSpan;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BarrageMsgListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private final Context                mContext;
-    private final List<TUIBarrage>       mMsgEntityList;
-    private final OnItemClickListener    mOnItemClickListener;
-    private final LayoutInflater         mLayoutInflater;
-    private final IEmojiResource         mEmojiResource;
-    private TUIBarrageDisplayAdapter     mCustomAdapter;
+    private final Context                  mContext;
+    private final String                   mOwnerId;
+    private final List<TUIBarrage>         mMsgEntityList;
+    private final OnItemClickListener      mOnItemClickListener;
+    private final LayoutInflater           mLayoutInflater;
+    private final IEmojiResource           mEmojiResource;
+    private final Random                   mRandomLevel = new Random();
+    private       TUIBarrageDisplayAdapter mCustomAdapter;
 
-    public BarrageMsgListAdapter(Context context, List<TUIBarrage> msgEntityList,
+    public BarrageMsgListAdapter(Context context, String ownerId, List<TUIBarrage> msgEntityList,
                                  OnItemClickListener onItemClickListener) {
         this.mContext = context;
+        this.mOwnerId = ownerId;
         this.mMsgEntityList = msgEntityList;
         this.mOnItemClickListener = onItemClickListener;
         this.mEmojiResource = BarrageStore.sharedInstance().mEmojiResource;
@@ -51,8 +59,9 @@ public class BarrageMsgListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         mCustomAdapter = adapter;
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (mCustomAdapter != null && viewType != 0) {
             RecyclerView.ViewHolder holder = mCustomAdapter.onCreateViewHolder(parent, viewType);
             if (holder != null) {
@@ -63,13 +72,33 @@ public class BarrageMsgListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         return new ViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        TUIBarrage item = mMsgEntityList.get(position);
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        TUIBarrage barrage = mMsgEntityList.get(position);
         if (holder instanceof ViewHolder) {
-            ((ViewHolder) holder).bind(item, mOnItemClickListener);
+            final ViewHolder viewHolder = (ViewHolder) holder;
+            int level = getLevel(barrage);
+            viewHolder.imageLevel.setImageResource(getLevelDrawable(level));
+            viewHolder.layoutLevelBackground.setBackgroundResource(getLevelBackground(level));
+            viewHolder.textLevel.setText("" + level);
+            int fontSize = getFontSize(viewHolder.textMsgContent);
+            if (TextUtils.equals(mOwnerId, barrage.user.userId)) {
+                viewHolder.textAnchorFlag.setVisibility(View.VISIBLE);
+                String placeHolder = getSpacesStringByDP(viewHolder.textMsgContent);
+                viewHolder.textMsgContent.setText(viewHolder.getMessageBuilder(barrage, fontSize, placeHolder));
+                viewHolder.textMsgContent.setMovementMethod(LinkMovementMethod.getInstance());
+            } else {
+                viewHolder.textAnchorFlag.setVisibility(View.GONE);
+                viewHolder.textMsgContent.setText(viewHolder.getMessageBuilder(barrage, fontSize, ""));
+            }
+            viewHolder.textMsgAgree.setOnClickListener(v -> {
+                if (mOnItemClickListener != null) {
+                    mOnItemClickListener.onAgreeClick(viewHolder.getLayoutPosition());
+                }
+            });
         } else if (mCustomAdapter != null) {
-            mCustomAdapter.onBindViewHolder(holder, item);
+            mCustomAdapter.onBindViewHolder(holder, barrage);
         }
     }
 
@@ -92,10 +121,69 @@ public class BarrageMsgListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         void onAgreeClick(int position);
     }
 
+    private int getLevel(TUIBarrage barrage) {
+        try {
+            int level = Integer.parseInt(barrage.user.level);
+            if (level > 0) {
+                return level;
+            }
+            return Math.abs(barrage.user.userId.hashCode()) % 120;
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    private int getLevelDrawable(int level) {
+        if (level <= 30) {
+            return R.drawable.live_barrage_level1;
+        } else if (level <= 60) {
+            return R.drawable.live_barrage_level2;
+        } else if (level <= 90) {
+            return R.drawable.live_barrage_level3;
+        } else {
+            return R.drawable.live_barrage_level4;
+        }
+    }
+
+    private int getLevelBackground(int level) {
+        if (level <= 30) {
+            return R.drawable.livekit_barrage_bg_leve1;
+        } else if (level <= 60) {
+            return R.drawable.livekit_barrage_bg_leve2;
+        } else if (level <= 90) {
+            return R.drawable.livekit_barrage_bg_leve3;
+        } else {
+            return R.drawable.livekit_barrage_bg_leve4;
+        }
+    }
+
+    private String getSpacesStringByDP(TextView textView) {
+        float dpWidth42 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 46,
+                textView.getContext().getResources().getDisplayMetrics());
+        Paint paint = textView.getPaint();
+        float spacesWidth = paint.measureText(" ");
+        int spacesCount = (int) (dpWidth42 / spacesWidth) + 1;
+        StringBuilder buildText = new StringBuilder();
+        for (int i = 0; i < spacesCount; i++) {
+            buildText.append(" ");
+        }
+        return buildText.toString();
+    }
+
+    public int getFontSize(TextView textView) {
+        Paint paint = new Paint();
+        paint.setTextSize(textView.getTextSize());
+        Paint.FontMetrics fm = paint.getFontMetrics();
+        return (int) Math.ceil(fm.bottom - fm.top);
+    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView mTvMsgContent;
-        private TextView mBtnMsgAgree;
+        private TextView     textMsgContent;
+        private TextView     textMsgAgree;
+        private TextView     textLevel;
+        private ImageView    imageLevel;
+        private TextView     textAnchorFlag;
+        private LinearLayout layoutLevelBackground;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -103,41 +191,32 @@ public class BarrageMsgListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
 
         private void initView(View itemView) {
-            mTvMsgContent = itemView.findViewById(R.id.tv_msg_content);
-            mBtnMsgAgree = itemView.findViewById(R.id.btn_msg_agree);
+            textMsgContent = itemView.findViewById(R.id.tv_msg_content);
+            textMsgAgree = itemView.findViewById(R.id.btn_msg_agree);
+            textLevel = itemView.findViewById(R.id.tv_level);
+            imageLevel = itemView.findViewById(R.id.iv_level);
+            textAnchorFlag = itemView.findViewById(R.id.tv_anchor_flag);
+            layoutLevelBackground = itemView.findViewById(R.id.ll_level_background);
         }
 
-        public void bind(final TUIBarrage barrage, final OnItemClickListener listener) {
-            String level = TextUtils.isEmpty(barrage.user.level) ? "LV.0" : "LV." + barrage.user.level;
+        public SpannableStringBuilder getMessageBuilder(final TUIBarrage barrage, final int fontSize,
+                                                        final String placeHolder) {
             String userName = TextUtils.isEmpty(barrage.user.userName) ? barrage.user.userId : barrage.user.userName;
             userName = TextUtils.isEmpty(userName) ? "" : userName;
-            String result = level + userName + ": " + barrage.content;
-
+            String result = "";
+            if (TextUtils.isEmpty(placeHolder)) {
+                result = userName + ": " + barrage.content;
+            } else {
+                result = placeHolder + userName + ": " + barrage.content;
+            }
             SpannableStringBuilder builder = new SpannableStringBuilder(result);
-            int userNameColor = mContext.getResources().getColor(R.color.livekit_barrage_user_name_color);
-            ForegroundColorSpan foreSpan = new ForegroundColorSpan(userNameColor);
-            builder.setSpan(foreSpan, level.length(), level.length() + userName.length() + 1, SPAN_EXCLUSIVE_EXCLUSIVE);
-
-            int textSize = (int) mTvMsgContent.getTextSize();
-            int levelBackColor = mContext.getResources().getColor(R.color.livekit_barrage_level_back_color);
-            RoundedImageSpan levelSpan = new RoundedImageSpan(level, textSize,
-                    levelBackColor, textSize, ScreenUtil.dip2px(6));
-            builder.setSpan(levelSpan, 0, level.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-
-            Paint.FontMetrics fontMetrics = mTvMsgContent.getPaint().getFontMetrics();
-            int fontSize = (int) (Math.abs(fontMetrics.ascent) + Math.abs(fontMetrics.descent));
             Rect rect = new Rect(0, 0, fontSize, fontSize);
-            processEmojiSpan(builder, mEmojiResource, rect);
-            mTvMsgContent.setText(builder);
-
-            mBtnMsgAgree.setOnClickListener(v -> {
-                if (listener != null) {
-                    listener.onAgreeClick(getLayoutPosition());
-                }
-            });
+            processEmojiSpan(builder, mEmojiResource, rect, fontSize);
+            return builder;
         }
 
-        private void processEmojiSpan(SpannableStringBuilder sb, IEmojiResource emojiResource, Rect rect) {
+        private void processEmojiSpan(SpannableStringBuilder sb, IEmojiResource emojiResource, Rect rect,
+                                      int fontSize) {
             if (sb == null || emojiResource == null) {
                 return;
             }
@@ -164,7 +243,8 @@ public class BarrageMsgListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     if (emojiDrawable == null) {
                         continue;
                     }
-                    ImageSpan imageSpan = new ImageSpan(emojiDrawable);
+                    emojiDrawable.setBounds(0, 0, fontSize, fontSize);
+                    EmojiSpan imageSpan = new EmojiSpan(emojiDrawable, ScreenUtil.dip2px(0));
                     sb.setSpan(imageSpan, index, index + item.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
             }

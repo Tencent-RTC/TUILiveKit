@@ -25,10 +25,11 @@
 
     <RelativeLayout
         android:id="@+id/rl_audience_list"
-        android:layout_width="74dp"
+        android:layout_width="112dp"
         android:layout_height="24dp"
         android:layout_marginTop="58dp"
-        android:layout_marginEnd="5dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="end"
         app:layout_constraintEnd_toStartOf="@id/iv_close"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -58,9 +59,10 @@
 
     <RelativeLayout
         android:id="@+id/rl_barrage"
-        android:layout_width="268dp"
+        android:layout_width="match_parent"
         android:layout_height="212dp"
         android:layout_marginStart="16dp"
+        android:layout_marginEnd="56dp"
         android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toTopOf="@+id/rl_function"
         app:layout_constraintStart_toStartOf="parent" />

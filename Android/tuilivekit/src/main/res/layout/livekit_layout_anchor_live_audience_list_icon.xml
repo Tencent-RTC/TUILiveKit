@@ -1,26 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ll_root"
-    android:layout_width="74dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
     android:layout_height="24dp"
-    android:background="@drawable/livekit_anchor_user_count_background"
-    android:gravity="center_vertical"
+    android:maxWidth="112dp"
+    android:gravity="end|center_vertical"
+    android:maxHeight="89dp"
     android:orientation="horizontal">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_audience_list"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:maxWidth="80dp"
+        android:layout_gravity="center_vertical|end"
         android:layout_marginStart="2dp"
         android:layout_weight="1"
         android:padding="0dp" />
 
-    <TextView
-        android:id="@+id/tv_audience_count"
+    <LinearLayout
+        android:id="@+id/ll_audience_count"
         android:layout_width="wrap_content"
-        android:layout_height="24dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="4dp"
+        android:background="@drawable/livekit_anchor_user_count_background"
         android:gravity="center_vertical"
-        android:paddingStart="5dp"
-        android:paddingEnd="10dp"
-        android:textColor="@color/livekit_design_standard_g7" />
+        android:orientation="horizontal"
+        android:paddingStart="4dp"
+        android:paddingEnd="2dp"
+        tools:ignore="UseCompoundDrawables,UselessLeaf">
+
+        <TextView
+            android:id="@+id/tv_audience_count"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:textColor="@color/livekit_design_standard_g7"
+            android:textFontWeight="500"
+            android:textSize="10sp"
+            tools:ignore="SmallSp,UnusedAttribute,UseCompatTextViewDrawableXml" />
+
+        <ImageView
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:src="@drawable/livekit_audience_list_count_arrow"
+            tools:ignore="ContentDescription" />
+    </LinearLayout>
+
 </LinearLayout>

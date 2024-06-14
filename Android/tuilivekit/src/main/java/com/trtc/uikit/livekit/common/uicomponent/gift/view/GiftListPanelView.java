@@ -7,10 +7,10 @@ import android.widget.LinearLayout;
 
 import androidx.viewpager.widget.ViewPager;
 
-import com.trtc.uikit.livekit.common.uicomponent.gift.model.TUIGift;
-import com.trtc.uikit.livekit.common.uicomponent.gift.model.TUIGiftUser;
 import com.trtc.uikit.livekit.common.uicomponent.gift.service.GiftPresenter;
 import com.trtc.uikit.livekit.common.uicomponent.gift.view.adapter.GiftViewPagerAdapter;
+import com.trtc.uikit.livekit.common.uicomponent.gift.model.TUIGift;
+import com.trtc.uikit.livekit.common.uicomponent.gift.model.TUIGiftUser;
 import com.trtc.uikit.livekit.common.utils.LiveKitLog;
 
 import java.util.ArrayList;
@@ -24,9 +24,9 @@ public class GiftListPanelView extends ViewPager implements IGiftListPanelView {
 
     private GiftViewPagerManager mGiftViewManager;
     private List<View>           mGiftViewList;
-    private Context              mContext;
-    private GiftPresenter        mPresenter;
-    private OnSendGiftListener   mOnSendGiftListener;
+    private Context            mContext;
+    private GiftPresenter      mPresenter;
+    private OnSendGiftListener mOnSendGiftListener;
 
     public GiftListPanelView(Context context) {
         super(context);

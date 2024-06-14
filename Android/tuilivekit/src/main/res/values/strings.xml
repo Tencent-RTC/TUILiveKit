@@ -3,18 +3,21 @@
     <string name="livekit_app_running">%s is currently live broadcasting</string>
     <string name="livekit_audience_number">%d people</string>
     <string name="livekit_anchor_audience_list_panel_title">Online audience</string>
-    <string name="livekit_barrage_text_hint">Let\'s chat</string>
-    <string name="livekit_start_live">Start Live</string>
+    <string name="livekit_barrage_text_hint">Let\'s talk</string>
+    <string name="livekit_start_live">Go live</string>
     <string name="livekit_switch_landscape">Switch screen</string>
-    <string name="livekit_edit_cover">Edit cover</string>
-    <string name="livekit_stream_categories">Live categories:</string>
+    <string name="livekit_fan_count">Fans</string>
+    <string name="livekit_edit_cover">Edit</string>
+    <string name="livekit_stream_categories">Live type:</string>
     <string name="livekit_stream_privacy_status">Live mode:</string>
     <string name="livekit_stream_categories_default">Daily chat</string>
     <string name="livekit_stream_privacy_status_default">Public</string>
     <string name="livekit_stream_privacy_status_privacy">Privacy</string>
     <string name="livekit_titile_preset_cover">Preset Images</string>
     <string name="livekit_set_as_cover">Set as cover</string>
-
+    <string name="livekit_follow_anchor">Follow</string>
+    <string name="livekit_unfollow_anchor">unfollow</string>
+    <string name="livekit_liveroom_id">Live Room ID:</string>
     <string name="livekit_permission_camera">Camera</string>
     <string name="livekit_permission_microphone">Microphone</string>
     <string name="livekit_permission_bluetooth">Bluetooth</string>
@@ -28,18 +31,19 @@
         real time to detect your facial features.</string>
     <string name="livekit_permission_bluetooth_reason">To ensure that you can connect to Bluetooth function for
         communication during Live, we need to request permission of nearby devices.</string>
-    <string name="livekit_link_mic_manager">Lianmai management</string>
+    <string name="livekit_link_mic_manager">Link Management</string>
     <string name="livekit_hang_up">Hang Up</string>
     <string name="livekit_accept">Accept</string>
     <string name="livekit_reject">Reject</string>
     <string name="livekit_enable_audience_request_link">Allow viewers to apply for continuous microphone</string>
     <string name="livekit_link_mic_up_title">Current wheat position(%d/8)</string>
     <string name="livekit_link_mic_down_title">Apply for continuous wheat(%d)</string>
+    <string name="livekit_link_mic_down_title_popup">Requesting(%d)</string>
 
-    <string name="livekit_title_link_mic_selector">Choose the link mic method</string>
-    <string name="livekit_text_link_mic_selector">Choose the link mic method, and connect after the host agrees.</string>
-    <string name="livekit_text_link_mic_video">Apply for video link mic</string>
-    <string name="livekit_text_link_mic_audio">Apply for voice link mic</string>
+    <string name="livekit_title_link_mic_selector">Choose Link Mode</string>
+    <string name="livekit_text_link_mic_selector">connect upon host\'s approval</string>
+    <string name="livekit_text_link_mic_video">Apply for video link</string>
+    <string name="livekit_text_link_mic_audio">Apply for audio link</string>
     <string name="livekit_text_cancel_link_mic_apply">Cancel application for link mic</string>
     <string name="livekit_text_close_link_mic">End the link mic</string>
     <string name="livekit_toast_live_stream_ended">Live stream has ended</string>
@@ -83,9 +87,10 @@
     <string name="livekit_barrage_agree">Agree</string>
     <string name="livekit_barrage_warning_not_empty">"input can't be empty!"</string>
     <string name="livekit_settings">Settings</string>
-    <string name="livekit_audio_effect">Audio Effect</string>
+    <string name="livekit_audio_effect">Audio</string>
     <string name="livekit_more_settings">More Config</string>
     <string name="livekit_video_params">Video Config</string>
+    <string name="livekit_video_config">Video</string>
     <string name="livekit_link">LINK</string>
     <string name="livekit_pk">Anchor PK</string>
     <string name="livekit_send_gift">Send a Gift</string>
@@ -93,7 +98,7 @@
     <string name="livekit_comment">Comment</string>
     <string name="livekit_hidden_audience_nickname">Hide audience nickname</string>
     <string name="livekit_allow_share">Allow sharing</string>
-    <string name="livekit_waiting_pass">To be passed</string>
+    <string name="livekit_waiting_pass">Waiting</string>
 
     <string name="livekit_gift_give_gift">Give gift</string>
     <string name="livekit_gift_title">Gift</string>
@@ -144,7 +149,7 @@
     <string name="livekit_confirm">Confirm</string>
     <string name="livekit_waiting_link">Waiting Linking</string>
     <string name="livekit_anchor">Anchor</string>
-    <string name="livekit_live_room_list">Live Room List</string>
+    <string name="livekit_live_room_list">Live</string>
     <string name="livekit_live_has_stop">Live broadcast has ended</string>
     <string name="livekit_sent"> sent </string>
     <string name="livekit_entered_room">Entered room</string>
@@ -154,16 +159,20 @@
     <string name="livekit_gift_balance_insufficient">Balance is insufficient</string>
     <string name="livekit_preview_video_live">Live Video</string>
     <string name="livekit_preview_voice_live">Live Voice</string>
+    <string name="livekit_audience_count_in_room">%d people are watching</string>
     <string name="livekit_room_destroy">Broadcast has been ended</string>
+    <string name="livekit_loading">Loading...</string>
+    <string name="livekit_no_more_data">There is no more data</string>
+    <string name="livekit_no_room_tip">Please start a live room</string>
 
     <!-- Common -->
     <string name="livekit_common_this_live_data">Live data</string>
     <string name="livekit_common_live_duration">Duration</string>
     <string name="livekit_common_gift_income">Gift Income</string>
-    <string name="livekit_common_live_people_number">Number of viewers</string>
-    <string name="livekit_common_message_count">Number of messages</string>
-    <string name="livekit_common_send_gift_people_count">Number of gift givers</string>
-    <string name="livekit_common_like_count">Number of likes</string>
+    <string name="livekit_common_live_people_number">Total Viewers</string>
+    <string name="livekit_common_message_count">Messages</string>
+    <string name="livekit_common_send_gift_people_count">Gift givers</string>
+    <string name="livekit_common_like_count">Likes</string>
 
     <!-- VoiceRoom -->
     <string name="livekit_voiceroom_lock">Lock Seat</string>

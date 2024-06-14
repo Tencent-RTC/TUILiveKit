@@ -28,13 +28,13 @@
 
     <RelativeLayout
         android:id="@+id/live_audience_info"
-        android:layout_width="100dp"
-        android:layout_height="@dimen/livekit_top_btn_size"
-        android:layout_marginEnd="4dp"
+        android:layout_width="112dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="4dp"
+        android:gravity="end"
         app:layout_constraintEnd_toStartOf="@+id/btn_close"
-        app:layout_constraintBottom_toBottomOf="@+id/live_anchor_info"
         app:layout_constraintTop_toTopOf="@+id/live_anchor_info"/>
-
 
     <ImageView
         android:id="@+id/btn_close"
@@ -59,9 +59,10 @@
 
     <RelativeLayout
         android:id="@+id/rl_barrage_show_audience"
-        android:layout_width="247dp"
+        android:layout_width="match_parent"
         android:layout_height="212dp"
         android:layout_marginStart="16dp"
+        android:layout_marginEnd="56dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/rl_function"
         app:layout_constraintStart_toStartOf="parent" />

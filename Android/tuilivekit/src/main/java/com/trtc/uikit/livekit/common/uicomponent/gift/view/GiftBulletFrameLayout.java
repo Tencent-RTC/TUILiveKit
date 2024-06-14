@@ -41,9 +41,9 @@ public class GiftBulletFrameLayout extends FrameLayout implements Handler.Callba
     private ImageFilterView mImageGiftIcon;
     private ImageView       mImageSendUserIcon;
     private TextView        mTextSendUserName;
-    private TextView        mTextGiftTitle;
-    private TUIGift         mGift;
-    private TUIGiftUser     mSender;
+    private TextView    mTextGiftTitle;
+    private TUIGift     mGift;
+    private TUIGiftUser mSender;
 
     public GiftBulletFrameLayout(Context context) {
         this(context, null);

@@ -1,13 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <RelativeLayout
         android:id="@+id/rl_anchor_video_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/livekit_design_standard_g1" />
+
+    <RelativeLayout
+        android:id="@+id/rl_anchor_living_top_mask"
+        android:layout_width="match_parent"
+        android:layout_height="142dp"
+        android:background="@drawable/livekit_live_room_living_top_mask"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RelativeLayout
+        android:id="@+id/rl_anchor_living_bottom_mask"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:background="@drawable/livekit_live_room_living_bottom_mask"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <RelativeLayout
+        android:id="@+id/rl_anchor_preview_mask"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:background="@drawable/livekit_live_room_preview_mask"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <RelativeLayout
         android:id="@+id/rl_anchor_preview_view"
@@ -20,7 +44,7 @@
         android:layout_height="match_parent" />
 
     <RelativeLayout
-        android:id="@+id/rl_anchor_living_end"
+        android:id="@+id/rl_anchor_living_dashboard"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

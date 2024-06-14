@@ -1,5 +1,9 @@
 package com.trtc.uikit.livekit.common.uicomponent.gift.giftcloudserver;
 
+import static com.trtc.uikit.livekit.common.uicomponent.gift.giftcloudserver.IGiftCloudServer.Error.BALANCE_INSUFFICIENT;
+import static com.trtc.uikit.livekit.common.uicomponent.gift.giftcloudserver.IGiftCloudServer.Error.NO_ERROR;
+import static com.trtc.uikit.livekit.common.uicomponent.gift.giftcloudserver.IGiftCloudServer.Error.PARAM_ERROR;
+
 import android.annotation.TargetApi;
 import android.os.Build;
 
@@ -13,11 +17,11 @@ import java.util.concurrent.TimeUnit;
 
 public class GiftCloudServer implements IGiftCloudServer {
 
-    private static final int         CORE_POOL_SIZE = 5;
+    private static final int CORE_POOL_SIZE = 5;
 
-    private GiftListQuery            mGiftListQuery;
-    private ThreadPoolExecutor       mExecutor;
-    private int                      mBalance = 500;
+    private GiftListQuery      mGiftListQuery;
+    private ThreadPoolExecutor mExecutor;
+    private int                mBalance = 500;
 
     public GiftCloudServer() {
         mExecutor = getThreadExecutor();
@@ -28,14 +32,14 @@ public class GiftCloudServer implements IGiftCloudServer {
     public void rechargeBalance(Callback<Integer> callback) {
         mBalance += 100;
         if (callback != null) {
-            callback.onResult(Error.NO_ERROR, mBalance);
+            callback.onResult(NO_ERROR, mBalance);
         }
     }
 
     @Override
     public void queryBalance(Callback<Integer> callback) {
         if (callback != null) {
-            callback.onResult(Error.NO_ERROR, mBalance);
+            callback.onResult(NO_ERROR, mBalance);
         }
     }
 
@@ -49,7 +53,7 @@ public class GiftCloudServer implements IGiftCloudServer {
                          Callback<Integer> callback) {
         if (gift == null || giftCount <= 0) {
             if (callback != null) {
-                callback.onResult(Error.PARAM_ERROR, mBalance);
+                callback.onResult(PARAM_ERROR, mBalance);
             }
             return;
         }
@@ -57,11 +61,11 @@ public class GiftCloudServer implements IGiftCloudServer {
         if (newBalance >= 0) {
             mBalance = newBalance;
             if (callback != null) {
-                callback.onResult(Error.NO_ERROR, newBalance);
+                callback.onResult(NO_ERROR, newBalance);
             }
         } else {
             if (callback != null) {
-                callback.onResult(Error.BALANCE_INSUFFICIENT, mBalance);
+                callback.onResult(BALANCE_INSUFFICIENT, mBalance);
             }
         }
     }

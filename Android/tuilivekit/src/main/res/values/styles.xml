@@ -36,4 +36,14 @@
         <item name="cornerSize">12dp</item>
     </style>
 
+    <style name="ClickRoundedImageView">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="SemicircleStyle">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">8dp</item>
+        <item name="cornerSizeTopRight">8dp</item>
+    </style>
 </resources>

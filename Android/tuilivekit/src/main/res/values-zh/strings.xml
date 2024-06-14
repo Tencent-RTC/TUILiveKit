@@ -5,6 +5,8 @@
     <string name="livekit_anchor_audience_list_panel_title">在线观众</string>
     <string name="livekit_barrage_text_hint">聊聊吧~</string>
     <string name="livekit_start_live">开始直播</string>
+    <string name="livekit_liveroom_id">直播房间ID：</string>
+    <string name="livekit_fan_count">粉丝</string>
     <string name="livekit_switch_landscape">切换至横屏</string>
     <string name="livekit_edit_cover">修改封面</string>ng>
     <string name="livekit_stream_categories">直播分类：</string>
@@ -14,7 +16,8 @@
     <string name="livekit_stream_privacy_status_privacy">隐私</string>
     <string name="livekit_titile_preset_cover">系统图库</string>
     <string name="livekit_set_as_cover">设为封面</string>
-
+    <string name="livekit_follow_anchor">关注</string>
+    <string name="livekit_unfollow_anchor">取消关注</string>
     <string name="livekit_permission_camera">相机</string>
     <string name="livekit_permission_microphone">麦克风</string>
     <string name="livekit_permission_bluetooth">蓝牙</string>
@@ -31,7 +34,7 @@
     <string name="livekit_enable_audience_request_link">允许观众申请连麦</string>
     <string name="livekit_link_mic_up_title">当前麦位(%d/%d)</string>
     <string name="livekit_link_mic_down_title">连麦申请(%d)</string>
-
+    <string name="livekit_link_mic_down_title_popup">连麦申请(%d)</string>
     <string name="livekit_title_link_mic_selector">选择连麦方式</string>
     <string name="livekit_text_link_mic_selector">选择连麦方式，主播同意后接通</string>
     <string name="livekit_text_link_mic_video">申请视频连麦</string>
@@ -82,6 +85,7 @@
     <string name="livekit_audio_effect">音效</string>
     <string name="livekit_more_settings">更多设置</string>
     <string name="livekit_video_params">视频参数</string>
+    <string name="livekit_video_config">视频参数</string>
     <string name="livekit_link">连麦</string>
     <string name="livekit_pk">主播PK</string>
     <string name="livekit_send_gift">送礼物</string>
@@ -140,7 +144,7 @@
     <string name="livekit_confirm">确认</string>
     <string name="livekit_waiting_link">等待连麦</string>
     <string name="livekit_anchor">主播</string>
-    <string name="livekit_live_room_list">直播间列表</string>
+    <string name="livekit_live_room_list">直播</string>
     <string name="livekit_live_has_stop">直播已结束</string>
     <string name="livekit_sent">送给</string>
     <string name="livekit_entered_room">进入房间</string>
@@ -151,6 +155,10 @@
     <string name="livekit_preview_video_live">视频直播</string>
     <string name="livekit_preview_voice_live">语音直播</string>
     <string name="livekit_room_destroy">直播已结束</string>
+    <string name="livekit_audience_count_in_room">%d人正在观看</string>
+    <string name="livekit_loading">正在加载...</string>
+    <string name="livekit_no_more_data">没有更多数据了</string>
+    <string name="livekit_no_room_tip">请先开启一个直播间</string>
 
     <!-- Common -->
     <string name="livekit_common_this_live_data">本场直播数据</string>

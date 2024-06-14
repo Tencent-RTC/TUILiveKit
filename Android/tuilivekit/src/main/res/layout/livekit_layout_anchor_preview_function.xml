@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="36dp"
+    android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
     android:orientation="horizontal"
     android:paddingLeft="10dp"
-    android:paddingRight="10dp">
+    android:paddingRight="10dp"
+    tools:ignore="DisableBaselineAlignment">
 
     <RelativeLayout
         android:layout_width="0dp"
-        android:layout_height="36dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_weight="1"
         android:gravity="center_horizontal">
@@ -18,15 +20,23 @@
             android:id="@+id/iv_beauty"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_centerInParent="true"
-            android:background="@drawable/livekit_anchor_preview_function_icon_background"
-            android:padding="6dp"
-            android:src="@drawable/livekit_settings_item_beauty" />
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/livekit_live_preview_function_item_beauty"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_below="@+id/iv_beauty"
+            android:gravity="center_horizontal"
+            android:text="@string/livekit_video_settings_item_beauty"
+            android:textColor="@color/livekit_not_standard_white_e7"
+            android:textSize="12sp" />
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="0dp"
-        android:layout_height="36dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_weight="1"
         android:gravity="center_horizontal">
@@ -35,15 +45,23 @@
             android:id="@+id/iv_audio_effect"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_centerInParent="true"
-            android:background="@drawable/livekit_anchor_preview_function_icon_background"
-            android:padding="6dp"
-            android:src="@drawable/livekit_settings_item_music" />
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/livekit_live_preview_function_item_music"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_below="@+id/iv_audio_effect"
+            android:gravity="center_horizontal"
+            android:text="@string/livekit_audio_effect"
+            android:textColor="@color/livekit_not_standard_white_e7"
+            android:textSize="12sp" />
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="0dp"
-        android:layout_height="36dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_weight="1"
         android:gravity="center_horizontal">
@@ -52,15 +70,23 @@
             android:id="@+id/iv_flip"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_centerInParent="true"
-            android:background="@drawable/livekit_anchor_preview_function_icon_background"
-            android:padding="6dp"
-            android:src="@drawable/livekit_settings_item_flip" />
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/livekit_live_preview_function_item_flip"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_below="@+id/iv_flip"
+            android:gravity="center_horizontal"
+            android:text="@string/livekit_video_settings_item_flip"
+            android:textColor="@color/livekit_not_standard_white_e7"
+            android:textSize="12sp" />
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="0dp"
-        android:layout_height="36dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_weight="1"
         android:gravity="center_horizontal">
@@ -69,10 +95,19 @@
             android:id="@+id/iv_mirror"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_centerInParent="true"
-            android:background="@drawable/livekit_anchor_preview_function_icon_background"
-            android:padding="6dp"
-            android:src="@drawable/livekit_settings_item_mirror" />
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/livekit_live_preview_function_item_mirror"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_below="@+id/iv_mirror"
+            android:gravity="center_horizontal"
+            android:text="@string/livekit_video_settings_item_mirror"
+            android:textColor="@color/livekit_not_standard_white_e7"
+            android:textSize="12sp" />
+
     </RelativeLayout>
 
 </LinearLayout>

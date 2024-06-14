@@ -101,16 +101,15 @@
         app:layout_constraintTop_toBottomOf="@id/cl_stream_number" />
 
     <TextView
-        android:id="@+id/tv_join_voice"
+        android:id="@+id/tv_room_list"
         android:layout_width="match_parent"
         android:layout_height="52dp"
         android:layout_gravity="center_horizontal"
         android:layout_margin="20dp"
         android:layout_marginTop="52dp"
         android:background="@drawable/app_bg_button"
-        android:enabled="false"
         android:gravity="center"
-        android:text="@string/app_join_voice_room"
+        android:text="@string/app_room_list"
         android:textColor="@color/app_color_white"
         android:textSize="18sp"
         app:layout_constraintTop_toBottomOf="@id/tv_join_stream" />

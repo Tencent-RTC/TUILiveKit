@@ -17,8 +17,8 @@ import java.util.List;
 public class TUIGiftListView extends BottomSheetDialog {
     public static final String TAG = "TUIGiftListView";
 
-    private GiftListPanelView mPanelView;
-    private final String      mRoomId;
+    private       GiftListPanelView mPanelView;
+    private final String            mRoomId;
 
     private TextView          mBalanceView;
 

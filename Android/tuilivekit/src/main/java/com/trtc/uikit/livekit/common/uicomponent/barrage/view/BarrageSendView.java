@@ -17,20 +17,22 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import androidx.core.util.Pair;
+
 import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.qcloud.tuicore.util.SPUtils;
 import com.tencent.qcloud.tuicore.util.ScreenUtil;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.common.uicomponent.barrage.TUIBarrageButton.OnSendListener;
-import com.trtc.uikit.livekit.common.uicomponent.barrage.model.TUIBarrage;
 import com.trtc.uikit.livekit.common.uicomponent.barrage.service.BarrageIMService;
 import com.trtc.uikit.livekit.common.uicomponent.barrage.service.BarragePresenter;
 import com.trtc.uikit.livekit.common.uicomponent.barrage.service.IBarrageMessage;
-import com.trtc.uikit.livekit.common.uicomponent.barrage.service.IBarragePresenter;
 import com.trtc.uikit.livekit.common.uicomponent.barrage.service.IEmojiResource;
-import com.trtc.uikit.livekit.common.uicomponent.barrage.store.BarrageStore;
 import com.trtc.uikit.livekit.common.uicomponent.barrage.view.util.OnDecorViewListener;
+import com.trtc.uikit.livekit.common.uicomponent.barrage.TUIBarrageButton.OnSendListener;
+import com.trtc.uikit.livekit.common.uicomponent.barrage.model.TUIBarrage;
+import com.trtc.uikit.livekit.common.uicomponent.barrage.service.IBarragePresenter;
+import com.trtc.uikit.livekit.common.uicomponent.barrage.store.BarrageStore;
 
 public class BarrageSendView extends Dialog implements IBarrageSendView, OnDecorViewListener.OnKeyboardCallback {
     private static final String FILE_NAME = "keyboard.common";
@@ -49,9 +51,11 @@ public class BarrageSendView extends Dialog implements IBarrageSendView, OnDecor
     private int                      mLastScreenOrientation;
     private OnDecorViewListener      mOnGlobalLayoutListener;
     private OnSendListener           mOnSendListener;
+    private  String                  mRoomID;
 
     public BarrageSendView(Context context, String roomId) {
         this(context, new BarrageIMService(roomId));
+        mRoomID = roomId;
     }
 
     private BarrageSendView(Context context, IBarrageMessage service) {
@@ -231,9 +235,7 @@ public class BarrageSendView extends Dialog implements IBarrageSendView, OnDecor
 
     @Override
     public void onDetachedFromWindow() {
-        if (mPresenter != null) {
-            mPresenter.destroyPresenter();
-        }
+        super.onDetachedFromWindow();
         Window window = getWindow();
         if (window != null) {
             final View decorView = window.getDecorView();
@@ -242,7 +244,6 @@ public class BarrageSendView extends Dialog implements IBarrageSendView, OnDecor
                 decorView.getViewTreeObserver().removeOnGlobalLayoutListener(mOnGlobalLayoutListener);
             }
         }
-        super.onDetachedFromWindow();
     }
 
     @Override
@@ -259,7 +260,7 @@ public class BarrageSendView extends Dialog implements IBarrageSendView, OnDecor
                 if (barrage == null || TextUtils.isEmpty(barrage.content)) {
                     return;
                 }
-                BarrageStore.sharedInstance().mSendBarrage.set(barrage);
+                BarrageStore.sharedInstance().mSendBarrage.set(new Pair<>(mRoomID, barrage));
             }
 
             @Override

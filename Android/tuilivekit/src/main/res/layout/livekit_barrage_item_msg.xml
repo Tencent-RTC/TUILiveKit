@@ -1,32 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_marginTop="3dp"
+    android:layout_marginBottom="3dp"
+    android:background="@drawable/livekit_barrage_bg_msg_item"
     android:orientation="horizontal"
+    android:paddingStart="6dp"
     android:paddingTop="4dp"
+    android:paddingEnd="6dp"
     android:paddingBottom="4dp">
+
+    <LinearLayout
+        android:id="@+id/ll_level_background"
+        android:layout_width="wrap_content"
+        android:layout_height="14dp"
+        android:layout_gravity="start|top"
+        android:layout_marginTop="1dp"
+        android:background="@drawable/livekit_barrage_bg_leve1"
+        android:orientation="horizontal"
+        android:paddingStart="6dp"
+        android:paddingEnd="4dp"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:id="@+id/iv_level"
+            android:layout_width="8dp"
+            android:layout_height="9.14dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/live_barrage_level1"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/tv_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="2dp"
+            android:textColor="@color/livekit_design_standard_flowkit_white"
+            android:textFontWeight="400"
+            android:textSize="10sp"
+            tools:ignore="SmallSp,UnusedAttribute"
+            tools:visibility="visible" />
+
+    </LinearLayout>
 
     <FrameLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_gravity="start|top"
+        android:layout_marginStart="4dp"
         android:layout_weight="1">
 
         <TextView
             android:id="@+id/tv_msg_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/livekit_barrage_bg_msg_item"
             android:ellipsize="end"
             android:gravity="center_vertical"
-            android:paddingLeft="8dp"
-            android:paddingTop="6dp"
-            android:paddingRight="8dp"
-            android:paddingBottom="6dp"
+            android:textColor="@color/livekit_barrage_g8"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tv_anchor_flag"
+            android:layout_width="42dp"
+            android:layout_height="14dp"
+            android:layout_marginTop="1dp"
+            android:background="@drawable/livekit_barrage_bg_anchor_flag"
+            android:gravity="center"
+            android:text="@string/livekit_anchor"
+            android:textAllCaps="true"
             android:textColor="@color/livekit_design_standard_flowkit_white"
-            android:textSize="12sp"
-            tools:text="test" />
+            android:textFontWeight="700"
+            android:textSize="8sp"
+            tools:ignore="SmallSp,UnusedAttribute" />
     </FrameLayout>
 
     <TextView
@@ -34,11 +82,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
         android:background="@drawable/livekit_barrage_bg_select_item"
+        android:paddingLeft="16dp"
+        android:paddingTop="4dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="4dp"
         android:text="@string/livekit_barrage_agree"
         android:textColor="@color/livekit_design_standard_flowkit_white"
         android:textSize="14sp"

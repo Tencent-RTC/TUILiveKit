@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/livekit_design_standard_transparent" >
+    android:background="@color/livekit_design_standard_transparent">
 
 
     <ImageView
@@ -12,17 +12,18 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="62dp"
+        android:layout_marginTop="56dp"
         android:layout_marginRight="16dp"
         android:background="@drawable/livekit_return_arrow"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:importantForAccessibility="no" />
 
     <RelativeLayout
         android:id="@+id/rl_room_settings_card_container"
         android:layout_width="343dp"
-        android:layout_height="113dp"
-        android:layout_marginTop="104dp"
+        android:layout_height="112dp"
+        android:layout_marginTop="96dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -30,27 +31,27 @@
     <RelativeLayout
         android:id="@+id/rl_function"
         android:layout_width="match_parent"
-        android:layout_height="36dp"
+        android:layout_height="56dp"
         android:layout_marginLeft="57dp"
         android:layout_marginRight="57dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="30dp"
         app:layout_constraintBottom_toTopOf="@id/btn_start_live"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
     <Button
         android:id="@+id/btn_start_live"
-        android:layout_width="344dp"
-        android:layout_height="52dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginBottom="34dp"
+        android:layout_width="275dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="60dp"
         android:background="@drawable/livekit_round_button_background"
         android:text="@string/livekit_start_live"
         android:textColor="@android:color/white"
         android:textSize="16sp"
+        android:textFontWeight="700"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        tools:ignore="UnusedAttribute" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

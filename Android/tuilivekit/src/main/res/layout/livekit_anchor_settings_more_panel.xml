@@ -23,7 +23,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:background="@drawable/livekit_anchor_user_count_background"
             android:text="@string/livekit_more_settings"
             android:textColor="@color/livekit_design_standard_g7"
             android:textSize="16sp" />
