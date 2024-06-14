@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RTCCommon
 
 protocol TUIBarrageDisplayViewDelegate: AnyObject {
     func barrageDisplayView(_ barrageDisplayView: TUIBarrageDisplayView, createCustomCell barrage: TUIBarrage) -> UIView?
@@ -19,9 +20,9 @@ extension TUIBarrageDisplayViewDelegate {
 
 class TUIBarrageDisplayView: UIView {
     weak var delegate: TUIBarrageDisplayViewDelegate?
-    private let roomId: String
+    private var roomId: String
     private var dataSource: [TUIBarrage] = []
-    private var cellHeight: CGFloat = 0
+    private var cellHeightMap: [Int : CGFloat] = [:]
     private var announcementTitle = ""
     private var announcementContent = ""
     private var barrageCount = 0
@@ -53,12 +54,14 @@ class TUIBarrageDisplayView: UIView {
         view.backgroundColor = .clear
         view.separatorStyle = .none
         view.contentInsetAdjustmentBehavior = .never
+        view.estimatedRowHeight = 30.scale375Height()
         view.register(TUIBarrageCell.self, forCellReuseIdentifier: TUIBarrageCell.cellReuseIdentifier)
         return view
     }()
 
-    init(roomId: String) {
+    init(roomId: String, ownerId: String) {
         self.roomId = roomId
+        TUIBarrageStore.shared.ownerId = ownerId
         super.init(frame: .zero)
         barrageManager.initService()
         initEmotions()
@@ -112,6 +115,16 @@ class TUIBarrageDisplayView: UIView {
         }
     }
 
+    func setRoomId(roomId: String) {
+        self.roomId = roomId
+        barrageManager = TUIBarrageManager.defaultCreate(roomId: roomId, delegate: self)
+        barrageManager.initService()
+    }
+    
+    func setOwnerId(ownerId: String) {
+        TUIBarrageStore.shared.ownerId = ownerId
+    }
+    
     func setAnnouncement(title: String,
                          content: String,
                          titleBackgroundColor: UIColor = .b1,
@@ -174,13 +187,14 @@ extension TUIBarrageDisplayView: UITableViewDataSource {
         let barrage = dataSource[indexPath.row]
         guard let view = delegate?.barrageDisplayView(self, createCustomCell: barrage) else {
             cell.useDefaultCell(barrage: barrage)
-            cellHeight = cell.getCellHeight()
             cell.selectionStyle = .none
+            cellHeightMap[indexPath.row] = cell.getCellHeight()
             return cell
         }
         cell.useCustomCell(view)
-        cellHeight = cell.getCellHeight()
+        cellHeightMap[indexPath.row] = cell.getCellHeight()
         cell.selectionStyle = .none
+        
         return cell
     }
 
@@ -189,7 +203,7 @@ extension TUIBarrageDisplayView: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return cellHeight
+        return cellHeightMap[indexPath.row] ?? 33.scale375Height()
     }
 }
 

@@ -38,16 +38,6 @@ class MainRootView: UIView {
         return textField
     }()
     
-    let roomSegment: UISegmentedControl = {
-        let segment = UISegmentedControl(items: [String.videoLiveText, String.audioLiveText])
-        segment.selectedSegmentTintColor = .systemBlue
-        segment.selectedSegmentIndex = 0
-        segment.backgroundColor = UIColor(0xd8d8d8)
-        segment.setTitleTextAttributes([.foregroundColor: UIColor.white], for: .normal)
-        segment.setTitleTextAttributes([.foregroundColor: UIColor.white], for: .selected)
-        return segment
-    }()
-    
     lazy var joinBtn: UIButton = {
         let btn = UIButton(frame: .zero)
         btn.setTitle(.joinLiveStreamText, for: .normal)
@@ -64,7 +54,18 @@ class MainRootView: UIView {
         btn.setTitle(.startLiveStreamText, for: .normal)
         btn.setTitleColor(.white, for: .normal)
         btn.backgroundColor = .systemBlue
-        btn.layer.cornerRadius = 24
+        btn.layer.cornerRadius = 10
+        btn.titleLabel?.font = UIFont.systemFont(ofSize: 18)
+        btn.titleLabel?.adjustsFontSizeToFitWidth = true
+        return btn
+    }()
+    
+    lazy var liveRoomListBtn: UIButton = {
+        let btn = UIButton()
+        btn.setTitle(.liveRoomListText, for: .normal)
+        btn.setTitleColor(.white, for: .normal)
+        btn.backgroundColor = .systemBlue
+        btn.layer.cornerRadius = 10
         btn.titleLabel?.font = UIFont.systemFont(ofSize: 18)
         btn.titleLabel?.adjustsFontSizeToFitWidth = true
         return btn
@@ -92,8 +93,8 @@ extension MainRootView {
     private func constructViewHierarchy() {
         addSubview(textContainerView)
         textContainerView.addSubview(streamIdTextField)
-        addSubview(roomSegment)
         addSubview(joinBtn)
+        addSubview(liveRoomListBtn)
         addSubview(loading)
         addSubview(startBtn)
     }
@@ -109,17 +110,19 @@ extension MainRootView {
         streamIdTextField.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-        roomSegment.snp.makeConstraints { make in
-            make.top.equalTo(streamIdTextField.snp.bottom).offset(15)
-            make.trailing.equalTo(streamIdTextField.snp.trailing)
-            make.leading.equalTo(streamIdTextField.snp.leading)
-            make.height.equalTo(30)
-        }
+ 
         joinBtn.snp.makeConstraints { make in
             make.leading.equalTo(textContainerView.snp.leading)
             make.trailing.equalTo(textContainerView.snp.trailing)
             make.height.equalTo(textContainerView.snp.height)
-            make.top.equalTo(roomSegment.snp.bottom).offset(40)
+            make.top.equalTo(streamIdTextField.snp.bottom).offset(60)
+        }
+        
+        liveRoomListBtn.snp.makeConstraints { make in
+            make.leading.equalTo(textContainerView.snp.leading)
+            make.trailing.equalTo(textContainerView.snp.trailing)
+            make.height.equalTo(textContainerView.snp.height)
+            make.top.equalTo(joinBtn.snp.bottom).offset(60)
         }
         
         loading.snp.makeConstraints { make in
@@ -128,15 +131,17 @@ extension MainRootView {
         }
         
         startBtn.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
             make.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).offset(-60)
-            make.size.equalTo(CGSize(width: 163, height: 60))
+            make.leading.equalTo(textContainerView.snp.leading)
+            make.trailing.equalTo(textContainerView.snp.trailing)
+            make.height.equalTo(textContainerView.snp.height)
         }
     }
     
     private func bindInteraction() {
         startBtn.addTarget(self, action: #selector(startBtnClick), for:.touchUpInside)
         joinBtn.addTarget(self, action: #selector(joinBtnTouchEvent), for: .touchUpInside)
+        liveRoomListBtn.addTarget(self, action: #selector(liveRoomListBtnClick(sender:)), for: .touchUpInside)
     }
     @objc
     private func startBtnClick(sender: UIButton) {
@@ -146,6 +151,11 @@ extension MainRootView {
     private func joinBtnTouchEvent(sender: UIButton) {
         guard let roomId = streamIdTextField.text else { return }
         rootVC?.joinBtnClick(sender: sender, view: self, roomId: roomId)
+    }
+    
+    @objc
+    private func liveRoomListBtnClick(sender: UIButton) {
+        rootVC?.liveRoomListBtnClick(sender: sender, view: self)
     }
 
     @objc
@@ -176,4 +186,5 @@ private extension String {
     static let enterLiveStreamListText = TUILiveKitAppLocalize("TUILiveKitApp.Main.enterLiveStreamList")
     static let videoLiveText = TUILiveKitAppLocalize("TUILiveKitApp.Main.video")
     static let audioLiveText = TUILiveKitAppLocalize("TUILiveKitApp.Main.audio")
+    static let liveRoomListText = TUILiveKitAppLocalize("TUILiveKitApp.Main.liveRoomList")
 }

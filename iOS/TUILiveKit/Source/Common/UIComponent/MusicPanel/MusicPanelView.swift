@@ -7,25 +7,18 @@
 
 import UIKit
 import Combine
+import RTCCommon
 
 class MusicPanelView: UIView {
     
     @Injected private var menuGenerator: MusicPanelMenuDataGenerator
     @WeakLazyInjected private var store: MusicPanelStoreProvider?
     
-    var backButtonClickClosure: ((UIButton)->Void)?
-    
     private var cancellableSet = Set<AnyCancellable>()
     private lazy var getIsPlaying = self.store?.select(MusicPanelSelectors.getIsPlaying)
     private lazy var getMusicInfoList = self.store?.select(MusicPanelSelectors.getMusicInfoList)
     
     private var isViewReady: Bool = false
-    
-    private let backButton: UIButton = {
-        let view = UIButton(type: .system)
-        view.setBackgroundImage(.liveBundleImage("live_back_icon"), for: .normal)
-        return view
-    }()
     
     private let titleLabel: UILabel = {
         let label = UILabel(frame: .zero)
@@ -74,35 +67,28 @@ class MusicPanelView: UIView {
     }
     
     func constructViewHierarchy() {
-        addSubview(backButton)
         addSubview(titleLabel)
         addSubview(tableView)
     }
     
     func activateConstraints() {
-        backButton.snp.remakeConstraints { make in
-            make.leading.equalToSuperview().inset(20)
-            make.top.equalToSuperview().inset(20)
-            make.height.equalTo(24.scale375())
-            make.width.equalTo(24.scale375())
-        }
         titleLabel.snp.remakeConstraints { make in
-            make.centerY.equalTo(backButton)
+            make.top.equalToSuperview().inset(20.scale375Height())
             make.centerX.equalToSuperview()
             make.height.equalTo(24.scale375())
             make.width.equalTo(titleLabel.mm_w)
         }
         tableView.snp.remakeConstraints { make in
             make.bottom.equalToSuperview()
-            make.trailing.equalToSuperview().offset(-16)
-            make.leading.equalToSuperview().offset(16)
-            make.top.equalTo(titleLabel.snp.bottom).offset(20)
-            make.height.equalTo(height)        }
+            make.trailing.equalToSuperview().offset(-16.scale375())
+            make.leading.equalToSuperview().offset(16.scale375())
+            make.top.equalTo(titleLabel.snp.bottom).offset(20.scale375Height())
+            make.height.equalTo(height)
+        }
     }
     
     func bindInteraction() {
         tableView.dataSource = self
-        backButton.addTarget(self, action: #selector(clickBack(sender:)), for: .touchUpInside)
     }
     
     func subscribeMusicPanelState() {
@@ -124,6 +110,8 @@ class MusicPanelView: UIView {
     
     func setupViewStyle() {
         backgroundColor = .g2
+        layer.cornerRadius = 20
+        layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
     }
     
     func resetMusicPanelState() {
@@ -133,7 +121,7 @@ class MusicPanelView: UIView {
     }
     
     var height: CGFloat {
-        return (self.window?.windowScene?.screen.bounds.height ?? 812)  * 0.65
+        return (self.window?.windowScene?.screen.bounds.height ?? 812)  * 0.35
     }
 }
 
@@ -149,13 +137,6 @@ extension MusicPanelView: UITableViewDataSource {
             musicInfoItemCell.musicInfoItem = item
         }
         return cell
-    }
-}
-
-extension MusicPanelView {
-    @objc
-    func clickBack(sender: UIButton) {
-        self.backButtonClickClosure?(sender)
     }
 }
 

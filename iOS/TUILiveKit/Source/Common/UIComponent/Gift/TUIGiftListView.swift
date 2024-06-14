@@ -15,7 +15,6 @@ protocol TUIGiftListViewDelegate: AnyObject {
 }
 
 class TUIGiftListView: UIView {
-    private var action: Observable<PopupPanelAction>?
     private var giftArray: [TUIGift] = []
     private var groupId: String
     weak var delegate: TUIGiftListViewDelegate?
@@ -104,6 +103,11 @@ class TUIGiftListView: UIView {
     func sendLike() {
         giftListPanelView.sendLike()
     }
+    
+    func setRoomId(roomId: String) {
+        self.groupId = roomId
+        giftListPanelView = TUIGiftPanelView(self, groupId: self.groupId)
+    }
 }
 
 
@@ -113,7 +117,7 @@ extension TUIGiftListView {
     private func constructViewHierarchy() {
         backgroundColor = .g2
         layer.cornerRadius = 16
-        layer.masksToBounds = true
+        layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         addSubview(titleLabel)
         addSubview(giftListPanelView)
         addSubview(balanceLabel)
@@ -136,6 +140,7 @@ extension TUIGiftListView {
         }
         
         rechargeButton.snp.remakeConstraints { make in
+            make.top.equalTo(giftListPanelView.snp.bottom).offset(12)
             make.bottom.trailing.equalToSuperview().offset(-16)
             make.height.equalTo(24)
         }
@@ -144,19 +149,6 @@ extension TUIGiftListView {
             make.bottom.equalTo(rechargeButton.snp.bottom)
             make.trailing.equalTo(rechargeButton.snp.leading).offset(-12)
             make.height.equalTo(24)
-        }
-        guard superview != nil else { return }
-        snp.remakeConstraints { make in
-            if isPortrait {
-                make.width.equalToSuperview()
-                make.height.equalTo(400.scale375Height())
-                make.centerX.equalToSuperview()
-            } else {
-                make.width.equalTo(375)
-                make.height.equalToSuperview()
-                make.trailing.equalToSuperview()
-            }
-            make.bottom.equalToSuperview()
         }
     }
 }
@@ -173,27 +165,13 @@ extension TUIGiftListView: TUIGiftPanelDelegate {
                        giftCount: Int,
                        isSuccess: Bool,
                        message: String) {
-        if isSuccess {
-            action?.value = .close
-        } else {
+        if !isSuccess {
             superview?.makeToast(message)
         }
     }
    
     func onLikeDidSend(_ giftView: TUIGiftPanelView, sender: TUIGiftUser, isSuccess: Bool, message: String) {
         TUIGiftStore.shared.likeData.value = TUILikeData(sender: sender)
-    }
-}
-
-extension TUIGiftListView: PopupPanelSubViewProtocol {
-    public func setAction(_ action: Observable<PopupPanelAction>) {
-        self.action = action
-    }
-
-    public func updateRootViewOrientation(isPortrait: Bool) {
-        self.isPortrait = isPortrait
-        constructViewHierarchy()
-        activateConstraints()
     }
 }
 

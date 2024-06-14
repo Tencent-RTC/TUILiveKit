@@ -7,14 +7,13 @@
 
 import UIKit
 import Combine
+import RTCCommon
 
 class AudioEffectView: UIView {
     
     @Injected private var menuGenerator: AudioEffectMenuDateGenerator
     var backButtonClickClosure: ((UIButton)->Void)?
-    
     private var isViewReady: Bool = false
-    
     private let backButton: UIButton = {
         let view = UIButton(type: .system)
         view.setBackgroundImage(.liveBundleImage("live_back_icon"), for: .normal)
@@ -95,7 +94,8 @@ class AudioEffectView: UIView {
             make.trailing.equalToSuperview().offset(-16)
             make.leading.equalToSuperview().offset(16)
             make.top.equalTo(titleLabel.snp.bottom).offset(20)
-            make.height.equalTo(height)        }
+            make.height.equalTo(height)
+        }
     }
     
     func bindInteraction() {
@@ -109,7 +109,7 @@ class AudioEffectView: UIView {
     }
     
     var height: CGFloat {
-        return (self.window?.windowScene?.screen.bounds.height ?? 812)  * 0.65
+        return (self.window?.windowScene?.screen.bounds.height ?? 812)  * 0.75
     }
 }
 

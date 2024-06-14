@@ -29,3 +29,4 @@
 "TUILiveKitApp.Main.confirm" = "确定";
 "TUILiveKitApp.Main.video" = "视频直播";
 "TUILiveKitApp.Main.audio" = "语音直播";
+"TUILiveKitApp.Main.liveRoomList" = "直播间列表";

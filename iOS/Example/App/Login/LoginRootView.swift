@@ -52,7 +52,6 @@ class LoginRootView: UIView {
         textField.textColor = UIColor(hex: "333333")
         textField.attributedPlaceholder = NSAttributedString(string: "userId")
         textField.delegate = self
-        textField.keyboardType = .phonePad
         return textField
     }()
     weak var currentTextField: UITextField?

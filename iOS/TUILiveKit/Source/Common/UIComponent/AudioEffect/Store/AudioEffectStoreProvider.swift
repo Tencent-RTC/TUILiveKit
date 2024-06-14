@@ -6,13 +6,13 @@
 //
 import Combine
 
+
 class AudioEffectStore {
     typealias AudioChangerDataSource = (title: String, icon: UIImage?, changerType: AudioChangerType)
     typealias AudioReverbDataSource = (title: String, icon: UIImage?, reverbType: AudioReverbType)
     
     let service = AudioEffectService()
     private(set) lazy var store: Store<AudioEffectState, AudioEffectService> = Store(initialState: AudioEffectState(), environment: self.service)
-    
     
     init() {
         initializeStore()
@@ -135,7 +135,7 @@ extension AudioEffectStore: AudioEffectMenuDateGenerator {
         firstSection.append(earMonitor)
         var earMonitorVolume = SliderItem(title: .voiceEarMonitorVolumeText)
         earMonitorVolume.min = 0
-        earMonitorVolume.max = 150
+        earMonitorVolume.max = 100
         earMonitorVolume.currentValue = Float(store.selectCurrent(AudioEffectSelectors.earMonitorVolume))
         earMonitorVolume.valueDidChanged = { [weak self] value in
             guard let self = self else { return }
@@ -160,13 +160,13 @@ extension AudioEffectStore: AudioEffectMenuDateGenerator {
         var secondSection:[SettingItem] = []
         var musicVolume = SliderItem(title: .musicVolumeText)
         musicVolume.min = 0
-        musicVolume.max = 150
+        musicVolume.max = 100
         musicVolume.currentValue = Float(store.selectCurrent(AudioEffectSelectors.musicVolume))
         musicVolume.valueDidChanged = { [weak self] value in
             guard let self = self else { return }
             self.store.dispatch(action: AudioEffectActions.updateMusicVolume(payload: Int(value)))
         }
-        musicVolume.subscribeState = { [weak self] cell, cancellables in
+        musicVolume.subscribeState = { [weak self] cell, cancellableSet in
             guard let self = self else { return }
             self.store.select(AudioEffectSelectors.musicVolume)
                 .receive(on: DispatchQueue.main)
@@ -175,18 +175,18 @@ extension AudioEffectStore: AudioEffectMenuDateGenerator {
                     sliderCell.configSlider.value = Float(value)
                     sliderCell.valueLabel.text = "\(value)"
                 }
-                .store(in: &cancellables)
+                .store(in: &cancellableSet)
         }
         secondSection.append(musicVolume)
         var microphoneVolume = SliderItem(title: .microphoneVolumeText)
         microphoneVolume.min = 0
-        microphoneVolume.max = 150
+        microphoneVolume.max = 100
         microphoneVolume.currentValue = Float(store.selectCurrent(AudioEffectSelectors.microphoneVolume))
         microphoneVolume.valueDidChanged = { [weak self] value in
             guard let self = self else { return }
             self.store.dispatch(action: AudioEffectActions.updateMicrophoneVolume(payload: Int(value)))
         }
-        microphoneVolume.subscribeState = { [weak self] cell, cancellables in
+        microphoneVolume.subscribeState = { [weak self] cell, cancellableSet in
             guard let self = self else { return }
             self.store.select(AudioEffectSelectors.microphoneVolume)
                 .receive(on: DispatchQueue.main)
@@ -195,7 +195,7 @@ extension AudioEffectStore: AudioEffectMenuDateGenerator {
                     sliderCell.configSlider.value = Float(value)
                     sliderCell.valueLabel.text = "\(value)"
                 }
-                .store(in: &cancellables)
+                .store(in: &cancellableSet)
         }
         secondSection.append(microphoneVolume)
         return secondSection

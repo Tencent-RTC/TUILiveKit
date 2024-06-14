@@ -181,6 +181,11 @@ class TUIGiftPlayView: UIView {
     func getLikeCount() -> Int {
         return likeCount
     }
+    
+    func setRoomId(roomId: String) {
+        self.groupId = roomId
+        initPresenter()
+    }
 }
 
 // MARK: Like Animation

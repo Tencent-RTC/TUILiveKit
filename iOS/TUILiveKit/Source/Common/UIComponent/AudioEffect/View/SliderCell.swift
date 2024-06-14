@@ -11,7 +11,7 @@ import Combine
 class SliderCell: UITableViewCell {
     static let identifier = "SliderCell"
     private var item: SliderItem?
-    private var cancallables: Set<AnyCancellable> = []
+    private var cancellableSet: Set<AnyCancellable> = []
     
     var title: String {
         set {
@@ -61,7 +61,7 @@ class SliderCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         self.item = nil
-        cancallables.removeAll()
+        cancellableSet.removeAll()
     }
     
     private func constructViewHierarchy() {
@@ -104,7 +104,7 @@ class SliderCell: UITableViewCell {
         configSlider.maximumValue = sliderItem.max
         configSlider.minimumValue = sliderItem.min
         valueLabel.text = String(format: "%.2f", sliderItem.currentValue)
-        sliderItem.subscribeState?(self, &cancallables)
+        sliderItem.subscribeState?(self, &cancellableSet)
         self.item = sliderItem
     }
 }

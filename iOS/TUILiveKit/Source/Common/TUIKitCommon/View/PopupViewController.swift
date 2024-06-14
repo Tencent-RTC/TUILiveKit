@@ -9,7 +9,6 @@ import SnapKit
 import UIKit
 
 public class PopupViewController: UIViewController {
-    
     private let contentView: UIView
     public init(contentView: UIView) {
         self.contentView = contentView

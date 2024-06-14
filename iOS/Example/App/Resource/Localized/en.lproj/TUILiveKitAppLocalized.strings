@@ -16,7 +16,7 @@
 "TUILiveKitApp.Login.limit20count" = "Chinese characters, letters, numbers and underscores, 2 - 20 words";
 "TUILiveKitApp.Login.registersuccess" = "Registration successful";
 "TUILiveKitApp.Main.videointeraction" = "Interactive Live Video Streaming";
-"TUILiveKitApp.Main.startLiveStream" = "Start Living";
+"TUILiveKitApp.Main.startLiveStream" = "Go Live";
 "TUILiveKitApp.Main.enterLiveStreamList" = "Live Room List";
 "TUILiveKitApp.Main.streamId" = "Stream ID";
 "TUILiveKitApp.Main.joinLiveStream" = "Join Living";
@@ -29,3 +29,5 @@
 "TUILiveKitApp.Main.confirm" = "OK";
 "TUILiveKitApp.Main.video" = "Living";
 "TUILiveKitApp.Main.audio" = "Voice";
+"TUILiveKitApp.Main.liveRoomList" = "Live Room List";
+
