@@ -10,7 +10,7 @@ import Combine
 
 class RecentWatchMemberPanel: UIView {
     @Injected private var store: LiveStore
-    @Injected private var viewStore: LiveRoomViewStore
+    @Injected private var routerStore: RouterStore
     private var cancellableSet = Set<AnyCancellable>()
     private var isPortrait: Bool = {
         return WindowUtils.isPortrait
@@ -122,7 +122,7 @@ extension RecentWatchMemberPanel {
 
 extension RecentWatchMemberPanel {
     @objc func backButtonClick(sender: UIButton) {
-        viewStore.navigate(action: .pop)
+        routerStore.router(action: .dismiss)
     }
 
 }

@@ -16,4 +16,6 @@ class SettingsConfig {
     var userId = ""
     var avatar = ""
     var name = ""
+    var followCount = 0
+    var fansCount = 0
 }

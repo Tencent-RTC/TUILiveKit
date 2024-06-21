@@ -11,7 +11,7 @@ import Combine
 
 class AnchorVideoParametersSettingPanel: UIView {
     @Injected private var store: LiveStore
-    @Injected private var viewStore: LiveRoomViewStore
+    @Injected private var routerStore: RouterStore
     private var cancellableSet = Set<AnyCancellable>()
     weak var rootController: UIViewController?
     init() {
@@ -140,7 +140,7 @@ extension AnchorVideoParametersSettingPanel {
 
 extension AnchorVideoParametersSettingPanel {
     @objc func backButtonClick(sender: UIButton) {
-        viewStore.navigate(action: .pop)
+        routerStore.router(action: .dismiss)
     }
 
     @objc func videoQualityButtonClick() {
@@ -160,7 +160,7 @@ extension AnchorVideoParametersSettingPanel {
             })
             items.append(item)
         }
-        viewStore.navigate(action: .present(.listMenu(items)))
+        routerStore.router(action: .present(.listMenu(items)))
     }
 }
 

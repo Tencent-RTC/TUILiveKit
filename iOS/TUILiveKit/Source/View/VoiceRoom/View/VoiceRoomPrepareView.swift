@@ -15,10 +15,11 @@ protocol VoiceRoomPrepareViewDelegate: AnyObject {
 
 class VoiceRoomPrepareView: RTCBaseView {
     
+    weak var delegate: VoiceRoomPrepareViewDelegate?
     private var cancellableSet = Set<AnyCancellable>()
     
     @Injected var store: LiveStore
-    @Injected var viewStore: VoiceRoomViewStore
+    @Injected var routerStore: RouterStore
     
     private lazy var roomNamePublisher = store.select(RoomSelectors.getRoomName)
     private lazy var roomCoverUrlPublisher = store.select(RoomSelectors.getRoomCoverUrl)
@@ -26,7 +27,20 @@ class VoiceRoomPrepareView: RTCBaseView {
     private lazy var roomModePublisher = store.select(RoomSelectors.getLiveMode)
     private lazy var liveStatusPublisher = store.select(ViewSelectors.getLiveStatus)
     
-    weak var delegate: VoiceRoomPrepareViewDelegate?
+    let backgroundImageView: UIImageView = {
+        let backgroundImageView = UIImageView(frame: .zero)
+        backgroundImageView.contentMode = .scaleAspectFill
+        return backgroundImageView
+    }()
+
+    let backgroundLayer: CALayer = {
+        let layer = CAGradientLayer()
+        layer.colors = [UIColor.darkNavyColor.cgColor, UIColor.pureBlackColor.cgColor]
+        layer.locations = [0.2, 1.0]
+        layer.startPoint = CGPoint(x: 0.4, y: 0)
+        layer.endPoint = CGPoint(x: 0.6, y: 1.0)
+        return layer
+    }()
     
     let effectView: UIVisualEffectView = {
         let blur = UIBlurEffect(style: .light)
@@ -66,6 +80,8 @@ class VoiceRoomPrepareView: RTCBaseView {
     }()
     
     override func constructViewHierarchy() {
+        layer.insertSublayer(backgroundLayer, at: 0)
+        addSubview(backgroundImageView)
         addSubview(effectView)
         addSubview(backButton)
         addSubview(cardView)
@@ -73,6 +89,9 @@ class VoiceRoomPrepareView: RTCBaseView {
     }
     
     override func activateConstraints() {
+        backgroundImageView.snp.makeConstraints { (make) in
+            make.edges.equalToSuperview()
+        }
         effectView.snp.makeConstraints { make in
             make.top.leading.bottom.trailing.equalToSuperview()
         }
@@ -97,32 +116,18 @@ class VoiceRoomPrepareView: RTCBaseView {
     }
     
     override func bindInteraction() {
+        store.dispatch(action: ViewActions.updateLiveStatus(payload: .previewing))
+        store.dispatch(action: UserActions.getSelfInfo())
         backButton.addTarget(self, action: #selector(clickBack(sender:)), for: .touchUpInside)
         startButton.addTarget(self, action: #selector(clickStart(sender:)), for: .touchUpInside)
         cardView.delegate = self
         subscribeCardViewState()
-        subscribeEnterRoomState()
     }
     
     override func setupViewStyle() {
         bottomGradientView.gradient(colors: [.g1.withAlphaComponent(0), .g1,], isVertical: true)
         topGradientView.gradient(colors: [.g1.withAlphaComponent(0.5),
                                           .g1.withAlphaComponent(0),], isVertical: true)
-    }
-    
-    private func subscribeEnterRoomState() {
-        liveStatusPublisher
-            .receive(on: RunLoop.main)
-            .sink {[weak self] status in
-                guard let self = self else { return }
-                switch status {
-                    case .playing, .pushing, .finished:
-                        self.isHidden = true
-                    case .none, .previewing:
-                        self.isHidden = false
-                }
-            }
-            .store(in: &cancellableSet)
     }
 }
 
@@ -136,13 +141,16 @@ extension VoiceRoomPrepareView {
                 self.cardView.roomNameTextField.text = value
             }
             .store(in: &cancellableSet)
+        
         roomCoverUrlPublisher
             .receive(on: RunLoop.main)
             .sink { [weak self] url in
                 guard let self = self else { return }
+                self.backgroundImageView.kf.setImage(with: url)
                 self.cardView.coverButton.kf.setImage(with: url, for: .normal)
             }
             .store(in: &cancellableSet)
+        
         roomCategoryPublisher
             .receive(on: RunLoop.main)
             .sink { [weak self] category in
@@ -151,6 +159,7 @@ extension VoiceRoomPrepareView {
                 self.cardView.categoryView.text = value
             }
             .store(in: &cancellableSet)
+        
         roomModePublisher
             .receive(on: RunLoop.main)
             .sink { [weak self] mode in
@@ -165,28 +174,28 @@ extension VoiceRoomPrepareView {
 extension VoiceRoomPrepareView {
     @objc
     func clickBack(sender: UIButton) {
-        viewStore.dispatch(action: VoiceRoomNavigatorActions.navigatorTo(payload:.exit))
+        routerStore.router(action: .exit)
     }
     
     @objc
     func clickStart(sender: UIButton) {
-        self.delegate?.prepareView(self, didClickStart: sender)
+        delegate?.prepareView(self, didClickStart: sender)
     }
 }
 
 extension VoiceRoomPrepareView: RoomSettingCardViewDelegate {
     func settingCardView(_ view: RoomSettingCardView, didTapCategory sectionView: SelectionView) {
         let menus = VoiceRoomPrepareViewDateHelper().generateCategorySelectionData()
-        viewStore.dispatch(action: VoiceRoomNavigatorActions.navigatorTo(payload: .listMenu(menus)))
+        routerStore.router(action: .present(.listMenu(menus)))
     }
     
     func settingCardView(_ view: RoomSettingCardView, didTapMode sectionView: SelectionView) {
         let menus = VoiceRoomPrepareViewDateHelper().generateModeSelectionData()
-        viewStore.dispatch(action: VoiceRoomNavigatorActions.navigatorTo(payload: .listMenu(menus)))
+        routerStore.router(action: .present(.listMenu(menus)))
     }
     
     func settingCardView(_ view: RoomSettingCardView, didTapSelectedCover button: UIButton) {
-        viewStore.dispatch(action:VoiceRoomNavigatorActions.navigatorTo(payload: .systemImageSelection))
+        routerStore.router(action: .present(.systemImageSelection))
     }
     
     func settingCardView(_ view: RoomSettingCardView, didChangeRoom name: String) {

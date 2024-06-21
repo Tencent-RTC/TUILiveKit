@@ -12,7 +12,7 @@ protocol AnchorPrepareViewDelegate: AnyObject {
 
 class AnchorPrepareView: UIView {
     @WeakLazyInjected var store: LiveStore?
-    @Injected var viewStore: LiveRoomViewStore
+    @Injected var routerStore: RouterStore
     weak var delegate: AnchorPrepareViewDelegate?
     private var isPortrait: Bool = {
         WindowUtils.isPortrait
@@ -83,7 +83,7 @@ class AnchorPrepareView: UIView {
 
     private lazy var startButton: UIButton = {
         let view = UIButton()
-        view.layer.cornerRadius = 20.scale375Height()
+        view.layer.cornerRadius = 10.0
         view.setTitle(.startLivingTitle, for: .normal)
         view.titleLabel?.font = .customFont(ofSize: 16)
         view.addTarget(self, action: #selector(startButtonClick), for: .touchUpInside)
@@ -190,7 +190,7 @@ extension AnchorPrepareView {
         }
 
         startButton.snp.remakeConstraints { make in
-            make.height.equalTo(40.scale375Height())
+            make.height.equalTo(52.scale375())
             make.width.equalTo((isPortrait ? 275 : 101).scale375())
             if self.isPortrait {
                 make.centerX.equalToSuperview()
@@ -202,7 +202,6 @@ extension AnchorPrepareView {
         }
 
         featureClickPanel.snp.remakeConstraints { make in
-            make.height.equalTo(56.scale375Height())
             make.width.equalTo(276.scale375())
             if self.isPortrait {
                 make.centerX.equalToSuperview()
@@ -283,11 +282,11 @@ extension AnchorPrepareView {
     }
 
     private func beautyClick() {
-        viewStore.navigate(action: .present(.beauty(false)))
+        routerStore.router(action: .present(.beauty(false)))
     }
 
     private func audioEffectsClick() {
-        viewStore.navigate(action: .present(.audioEffect))
+        routerStore.router(action: .present(.audioEffect))
     }
 
     private func mirrorClick() {

@@ -50,7 +50,7 @@ class UserImageCell: UICollectionViewCell {
 class LinkMicAudienceFloatView: UIView {
   
     @Injected private var store: LiveStore
-    @Injected private var viewStore: LiveRoomViewStore
+    @Injected private var routerStore: RouterStore
     
     private lazy var linkStatus =  store.select(ViewSelectors.getLinkStatus)
     private var cancellableSet = Set<AnyCancellable>()
@@ -225,7 +225,7 @@ extension LinkMicAudienceFloatView {
             self.store.dispatch(action: SeatActions.cancelApplication(payload: requestId))
         }
         items.append(item)
-        viewStore.navigate(action: .present(.listMenu(items)))
+        routerStore.router(action: RouterAction.present(.listMenu(items)))
     }
 }
 

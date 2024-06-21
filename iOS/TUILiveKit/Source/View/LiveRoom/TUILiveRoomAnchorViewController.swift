@@ -14,27 +14,24 @@ import Combine
 public class TUILiveRoomAnchorViewController: UIViewController {
     // MARK: - private property.
     @Injected private var store: LiveStore
-    @Injected private var viewStore: LiveRoomViewStore
     private var cancellableSet = Set<AnyCancellable>()
-    private var popupViewController: UIViewController?
-    private lazy var liveRouter: LiveRouter = {
-         var liveRouter = LiveRouter(rootViewController: self, rootRoute: .anchor)
-        liveRouter.viewProvider = self
-        return liveRouter
-    }()
-    
+
+    private let roomId: String
     public var startLiveBlock:(()->Void)?
-    
+    private lazy var routerCenter: RouterControlCenter = {
+        let routerCenter = RouterControlCenter(rootViewController: self, rootRoute: .anchor)
+        routerCenter.routerProvider = self
+        return routerCenter
+    }()
     private lazy var anchorView : AnchorView = {
-        let roomId = store.selectCurrent(RoomSelectors.getRoomId)
         let view = AnchorView(roomId: roomId)
         view.startLiveBlock = startLiveBlock
         return view
     }()
     
     public init(roomId:String) {
+        self.roomId = roomId
         super.init(nibName: nil, bundle: nil)
-        self.store.dispatch(action: RoomActions.updateRoomId(payload: roomId))
     }
     
     required init?(coder: NSCoder) {
@@ -45,7 +42,6 @@ public class TUILiveRoomAnchorViewController: UIViewController {
         super.viewDidLoad()
         navigationController?.setNavigationBarHidden(true, animated: true)
         view.backgroundColor = .black
-        initializeRoomState()
         constructViewHierarchy()
         activateConstraints()
         subscribeToast()
@@ -88,17 +84,18 @@ public class TUILiveRoomAnchorViewController: UIViewController {
 }
 
 extension TUILiveRoomAnchorViewController {
-    private func initializeRoomState() {
-        liveRouter.subscribeRouter()
-    }
-    
     func constructViewHierarchy() {
         view.addSubview(anchorView)
     }
+    
     func activateConstraints() {
         anchorView.snp.makeConstraints({ make in
             make.edges.equalToSuperview()
         })
+    }
+    
+    func enableSubscribeRouter(enable: Bool) {
+        enable ? routerCenter.subscribeRouter() : routerCenter.unSubscribeRouter()
     }
     
     private func subscribeToast() {
@@ -121,8 +118,8 @@ extension TUILiveRoomAnchorViewController {
     
 }
 
-extension TUILiveRoomAnchorViewController: RouteViewProvider {
-    func getRouteView(route: LiveRouter.Route) -> UIView? {
+extension TUILiveRoomAnchorViewController: RouterViewProvider {
+    func getRouteView(route: Route) -> UIView? {
         if route == .musicList {
             return anchorView.musicPanelView
         } else {

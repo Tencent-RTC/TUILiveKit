@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 class AnchorSettingPanel: UIView {
-    @Injected private var viewStore: LiveRoomViewStore
+    @Injected private var routerStore: RouterStore
     @Injected private var store: LiveStore
     private var cancellableSet = Set<AnyCancellable>()
     weak var rootController: UIViewController?
@@ -132,8 +132,6 @@ private extension AnchorSettingPanel {
         featureClickPanel.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(32.scale375Height())
             make.centerX.equalToSuperview()
-            make.width.equalTo(featureClickPanel.mm_w)
-            make.height.equalTo(featureClickPanel.mm_h)
         }
     }
 }
@@ -142,11 +140,11 @@ private extension AnchorSettingPanel {
 
 private extension AnchorSettingPanel {
     private func beautyClick() {
-        viewStore.navigate(action: .present(.beauty(false)))
+        routerStore.router(action: .present(.beauty(false)))
     }
 
     private func audioEffectClick() {
-        viewStore.navigate(action: .present(.audioEffect))
+        routerStore.router(action: .present(.audioEffect))
     }
 
     private func mirrorClick() {
@@ -163,36 +161,16 @@ private extension AnchorSettingPanel {
     }
 
     private func videoParametersClick() {
-        viewStore.navigate(action: .present(.videoSetting))
+        routerStore.router(action: .present(.videoSetting))
     }
 }
 
 private extension String {
-    static var settingTitleText: String {
-        localized("live.anchor.setting.title")
-    }
-
-    static var beautyText: String {
-        localized("live.anchor.setting.beauty")
-    }
-
-    static var audioEffectsText: String {
-        localized("live.anchor.setting.audio.effects")
-    }
-
-    static var flipText: String {
-        localized("live.anchor.setting.flip")
-    }
-
-    static var mirrorText: String {
-        localized("live.anchor.setting.mirror")
-    }
-
-    static var videoParametersText: String {
-        localized("live.anchor.setting.video.parameters")
-    }
-
-    static var moreSettingText: String {
-        localized("live.anchor.setting.more.setting")
-    }
+    static let settingTitleText: String = localized("live.anchor.setting.title")
+    static let beautyText: String = localized("live.anchor.setting.beauty")
+    static let audioEffectsText: String = localized("live.anchor.setting.audio.effects")
+    static let flipText: String = localized("live.anchor.setting.flip")
+    static let mirrorText: String = localized("live.anchor.setting.mirror")
+    static let videoParametersText: String = localized("live.anchor.setting.video.parameters")
+    static let moreSettingText: String = localized("live.anchor.setting.more.setting")
 }

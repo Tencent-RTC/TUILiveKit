@@ -25,8 +25,21 @@ class AudienceView: RTCBaseView {
         return view
     }()
     
+    lazy var giftPanelView: TUIGiftListView = {
+        let view = TUIGiftListView(groupId: store.selectCurrent(RoomSelectors.getRoomId))
+        view.delegate = self
+        giftCloudServer.queryGiftInfoList { error, giftList in
+            if error == .noError {
+                view.setGiftList(giftList)
+            }
+        }
+        view.setBalance(500)
+        return view
+    }()
+    
     // MARK: - private property
     private var cancellableSet: Set<AnyCancellable> = []
+    private let giftCloudServer: IGiftCloudServer = GiftCloudServer()
     
     init(roomId: String) {
         self.roomId = roomId
@@ -62,11 +75,36 @@ class AudienceView: RTCBaseView {
     }
     
     override func bindInteraction() {
+        prepareRoomState()
         subscribeRoomState()
+        subscribeCustomEvent()
+    }
+    
+    private func prepareRoomState() {
+        store.dispatch(action: UserActions.getSelfInfo())
+        // prepare room state.
+        let roomId = store.selectCurrent(RoomSelectors.getRoomId)
+        var state = RoomState()
+        state.roomId = roomId
+        store.dispatch(action: RoomActions.initializeRoomState(payload: state))
+        startDisplay()
     }
 }
 
 extension AudienceView {
+    private func subscribeCustomEvent() {
+        store.userActionSubject
+            .receive(on: DispatchQueue.main)
+            .filter({
+                $0.id == UserResponseActions.like.id
+            })
+            .sink { [weak self] _ in
+                guard let self = self else { return }
+                self.giftPanelView.sendLike()
+            }
+            .store(in: &cancellableSet)
+    }
+    
     private func subscribeRoomState() {
         liveStatusPublisher
             .receive(on: RunLoop.main)
@@ -102,25 +140,73 @@ extension AudienceView {
     }
 }
 
+extension AudienceView: RouterViewProvider {
+    func getRouteView(route: Route) -> UIView? {
+        if route == .giftView {
+            return giftPanelView
+        } else {
+            return nil
+        }
+    }
+}
+
+extension AudienceView: TUIGiftListViewDelegate {
+    func onRecharge(giftListView view: TUIGiftListView) {
+        giftCloudServer.rechargeBalance { [weak self] error, balance in
+            guard let self = self else { return }
+            if error == .noError {
+                view.setBalance(balance)
+            } else {
+                let toastInfo = ToastInfo(message: .balanceInsufficientText)
+                store.dispatch(action: ViewActions.toastEvent(payload: toastInfo))
+            }
+        }
+    }
+    
+    func onSendGift(giftListView view: TUIGiftListView, giftModel: TUIGift, giftCount: Int) {
+        let anchorInfo = store.selectCurrent(RoomSelectors.getRoomOwnerInfo)
+        let receiver = TUIGiftUser()
+        receiver.userId = anchorInfo.userId
+        receiver.userName = anchorInfo.name
+        receiver.avatarUrl = anchorInfo.avatarUrl
+        receiver.level = "0"
+        
+        let selfInfo = store.selectCurrent(UserSelectors.getSelfInfo)
+        giftCloudServer.sendGift(sender: selfInfo.userId,
+                                 receiver: receiver.userId,
+                                 giftModel: giftModel,
+                                 giftCount: giftCount) { [weak self] error, balance in
+            guard let self = self else { return }
+            if error == .noError {
+                view.sendGift(giftModel: giftModel, giftCount: giftCount, receiver: receiver)
+                view.setBalance(balance)
+            } else {
+                let toastInfo = ToastInfo(message: .balanceInsufficientText)
+                store.dispatch(action: ViewActions.toastEvent(payload: toastInfo))
+            }
+        }
+    }
+}
+
 extension AudienceView {
      func startDisplay() {
          let param = generateActionParamTuple(param: roomId, actions: [])
          DataReporter.componentType = .liveRoom
          store.dispatch(action: RoomActions.join(payload: param))
-        //        engineService.muteAllRemoteAudio(isMute: true)
     }
     
-    func displayComplete() {
-        //        engineService.muteAllRemoteAudio(isMute: false)
+    func stopDisplay() {
+        
     }
     
     func endDisplay() {
-        //        engineService.muteAllRemoteAudio(isMute: true)
+        
     }
 }
 
-private extension String {
-    static var enterRoomFailedMessageText = {
-        localized("live.alert.enterRoom.failed.message.xxx")
-    }()
+extension String {
+    fileprivate static let enterRoomFailedMessageText = localized("live.alert.enterRoom.failed.message.xxx")
+    
+    fileprivate static let balanceInsufficientText =
+            localized("live.balanceInsufficient")
 }

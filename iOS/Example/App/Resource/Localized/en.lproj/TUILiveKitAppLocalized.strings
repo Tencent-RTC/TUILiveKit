@@ -30,4 +30,11 @@
 "TUILiveKitApp.Main.video" = "Living";
 "TUILiveKitApp.Main.audio" = "Voice";
 "TUILiveKitApp.Main.liveRoomList" = "Live Room List";
-
+"TUILiveKitApp.Main.Live" = "Live";
+"TUILiveKitApp.Main.SelfInfo" = "My Profile";
+"TUILiveKitApp.Main.Me" = "Me";
+"TUILiveKitApp.Main.Likes" = "Likes";
+"TUILiveKitApp.Main.Fans" = "Fans";
+"TUILiveKitApp.Main.Name" = "Name";
+"TUILiveKitApp.Main.Save" = "Save";
+"TUILiveKitApp.Main.Operate.Success" = "Successful operation";

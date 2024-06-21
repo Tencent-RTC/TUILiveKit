@@ -6,7 +6,6 @@
 //
 import RTCRoomEngine
 
-
 let roomReducer = Reducer<RoomState>(
     ReduceOn(RoomActions.join, reduce: { state, action in
         state.roomId = action.payload.param

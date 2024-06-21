@@ -49,7 +49,7 @@ class BottomMenuView: RTCBaseView {
     override func activateConstraints() {
         stackView.snp.makeConstraints { make in
             let maxWidth = buttonWidth * CGFloat(maxMenuButtonNumber) + buttonSpacing * CGFloat(maxMenuButtonNumber - 1)
-            make.top.bottom.equalToSuperview()
+            make.centerY.equalToSuperview()
             make.trailing.equalTo(-16)
             make.width.lessThanOrEqualTo(maxWidth)
             make.leading.equalToSuperview()

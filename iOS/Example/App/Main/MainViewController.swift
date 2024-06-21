@@ -32,12 +32,21 @@ class AppNavigationController: UINavigationController {
 }
 
 class MainViewController: UIViewController {
-    
+    enum ContentType {
+        case liveList
+        case selfInfo
+    }
+    private var currentContentType: ContentType = .liveList
+    private let liveListVC = TUILiveListViewController()
+    private let meVC = MeViewController()
+    private var rootView: MainRootView = MainRootView()
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = .naviTitleText
         navigationController?.navigationBar.barTintColor = .white
-        initNavigationItemTitleView()
+        self.addChild(liveListVC)
+        self.addChild(meVC)
+        updateNavigationView(contentType: currentContentType)
+        setupContentView(contentType: currentContentType)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -47,25 +56,18 @@ class MainViewController: UIViewController {
     
     override func loadView() {
         super.loadView()
-        let rootView = MainRootView()
         rootView.backgroundColor = .white
         rootView.rootVC = self
         view = rootView
     }
 }
 
+// MARK: NavigationView
+
 extension MainViewController {
-    private func initNavigationItemTitleView() {
-        let backBtn = UIButton(type: .custom)
-        backBtn.setImage(UIImage(named: "live_back"), for: .normal)
-        backBtn.addTarget(self, action: #selector(backBtnClick), for: .touchUpInside)
-        backBtn.sizeToFit()
-        let backItem = UIBarButtonItem(customView: backBtn)
-        backItem.tintColor = .black
-        navigationItem.leftBarButtonItem = backItem
-        
+    private func updateNavigationView(contentType: ContentType) {
         let titleView = UILabel()
-        titleView.text = .videoInteractionText
+        titleView.text = contentType == .liveList ? .liveText : .selfInfoText
         titleView.textColor = .black
         titleView.textAlignment = .center
         titleView.font = UIFont.boldSystemFont(ofSize: 17)
@@ -83,30 +85,78 @@ extension MainViewController {
         debugButtonItem.tintColor = .black
         
         
-        let helpBtn = UIButton(type: .custom)
-        helpBtn.setImage(UIImage(named: "help_small"), for: .normal)
-        helpBtn.addTarget(self, action: #selector(helpBtnClick), for: .touchUpInside)
-        helpBtn.sizeToFit()
-        let rightItem = UIBarButtonItem(customView: helpBtn)
-        rightItem.tintColor = .black
-        navigationItem.rightBarButtonItems = [rightItem,debugButtonItem]
+        let rightButton = UIButton()
+        let image = UIImage(named: contentType == .liveList ? "help_small" : "leave_icon")
+        rightButton.setImage(image, for: .normal)
+        rightButton.addTarget(self, action: #selector(rightButtonClick), for: .touchUpInside)
+        rightButton.sizeToFit()
+        let rightButtonItem = UIBarButtonItem(customView: rightButton)
+        rightButtonItem.tintColor = .black
+        navigationItem.rightBarButtonItems = [rightButtonItem, debugButtonItem]
     }
 }
 
+// MARK: Action
+
 extension MainViewController {
+    func liveListButtonClick() {
+        currentContentType = .liveList
+        updateNavigationView(contentType: currentContentType)
+        setupContentView(contentType: currentContentType)
+    }
+    
+    func startButtonClick() {
+        let liveRoomId = LiveIdentityGenerator.shared.generateId(TUILogin.getUserID() ?? "", .live)
+        let voiceRoomId = LiveIdentityGenerator.shared.generateId(TUILogin.getUserID() ?? "", .voice)
+        let viewController = TUILivePreviewViewController(liveRoomId: liveRoomId, voiceRoomId: voiceRoomId)
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    func meButtonClick() {
+        currentContentType = .selfInfo
+        updateNavigationView(contentType: currentContentType)
+        setupContentView(contentType: currentContentType)
+    }
+    
+    private func setupContentView(contentType: ContentType) {
+        rootView.contentView.subviews.forEach { $0.removeFromSuperview() }
+       
+        let vc = contentType == .liveList ? liveListVC : meVC
+        rootView.contentView.addSubview(vc.view)
+        vc.view.snp.remakeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        vc.view.backgroundColor = .clear
+        rootView.liveListButton.isSelected = contentType == .liveList
+        rootView.meButton.isSelected = contentType == .selfInfo
+    }
     
     @objc func debugButtonClick() {
         let debugVC = SandBoxFileBrowserViewController(bathPath: NSHomeDirectory())
         navigationController?.pushViewController(debugVC, animated: true)
     }
     
-    @objc func backBtnClick() {
+    @objc func rightButtonClick() {
+        if currentContentType == .liveList {
+            jumpToDocument()
+        } else if currentContentType == .selfInfo {
+            goBackToLogin()
+        }
+    }
+    
+    private func jumpToDocument() {
+        if let url = URL(string: "https://cloud.tencent.com/document/product/647/105441") {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        }
+    }
+    
+    private func goBackToLogin() {
         let alertVC = UIAlertController(title:
          TUILiveKitAppLocalize("TUILiveKitApp.Main.areyousureloginout"), message: nil,
          preferredStyle: .alert)
         let cancelAction = UIAlertAction(title: TUILiveKitAppLocalize("TUILiveKitApp.Main.cancel"),
                                          style: .cancel, handler: nil)
-        let sureAction = UIAlertAction(title: TUILiveKitAppLocalize("TUILiveKitApp.Main.determine"), 
+        let sureAction = UIAlertAction(title: TUILiveKitAppLocalize("TUILiveKitApp.Main.determine"),
                                        style: .default) { (action) in
             let appDelegate = UIApplication.shared.delegate as? AppDelegate
             appDelegate?.showLoginViewController()
@@ -120,40 +170,11 @@ extension MainViewController {
         alertVC.addAction(sureAction)
         present(alertVC, animated: true, completion: nil)
     }
-    
-    @objc func helpBtnClick() {
-        if let url = URL(string: "https://cloud.tencent.com/document/product/647/105441") {
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
-        }
-    }
-    
-    func joinBtnClick(sender: UIButton, view: MainRootView, roomId: String) {
-        let viewController:UIViewController
-        guard let roomType = LiveIdentityGenerator.shared.getIDType(roomId) else { return }
-        switch roomType {
-            case .live:
-                viewController = TUILiveRoomAudienceViewController(roomId: roomId)
-            case .voice:
-                viewController = TUIVoiceRoomViewController(roomId: roomId, behavior: .join)
-        }
-        self.navigationController?.pushViewController(viewController, animated: true)
-    }
-    
-    func startBtnClick(sender: UIButton, view: MainRootView) {
-        let liveRoomId = LiveIdentityGenerator.shared.generateId(TUILogin.getUserID() ?? "", .live)
-        let voiceRoomId = LiveIdentityGenerator.shared.generateId(TUILogin.getUserID() ?? "", .voice)
-        let viewController = TUILivePreviewViewController(liveRoomId: liveRoomId, voiceRoomId: voiceRoomId)
-        self.navigationController?.pushViewController(viewController, animated: true)
-    }
-    
-    func liveRoomListBtnClick(sender: UIButton, view: MainRootView) {
-        let roomListViewController = TUIRoomListViewController()
-        self.navigationController?.pushViewController(roomListViewController, animated: true)
-    }
 }
 
-extension String {
-    static let naviTitleText = TUILiveKitAppLocalize("TUILiveKitApp.Main.videointeraction")
-    static let videoInteractionText = TUILiveKitAppLocalize("TUILiveKitApp.Main.videointeraction")
-    static let streamdoesnotexistText = TUILiveKitAppLocalize("TUILiveKitApp.Main.streamdoesnotexist")
+// MARK: Localized String
+
+private extension String {
+    static let liveText = TUILiveKitAppLocalize("TUILiveKitApp.Main.Live")
+    static let selfInfoText = TUILiveKitAppLocalize("TUILiveKitApp.Main.SelfInfo")
 }

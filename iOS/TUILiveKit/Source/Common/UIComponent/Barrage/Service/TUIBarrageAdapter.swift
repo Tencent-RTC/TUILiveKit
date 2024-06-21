@@ -46,7 +46,7 @@ class TUIBarrageWrapper: Codable {
     }
 }
 
-class TUIBarrageAdapter:TUIBarrageService {
+class TUIBarrageAdapter: TUIBarrageService {
     private let imManager: V2TIMManager = {
         V2TIMManager.sharedInstance()
     }()

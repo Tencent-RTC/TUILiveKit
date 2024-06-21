@@ -21,8 +21,6 @@ class LiveStoreProvider {
 
     private(set) lazy var viewStore: Store<ViewState, Void> = Store(initialState: ViewState())
     private var cancellableSet: Set<AnyCancellable> = []
-
-    
     
     init() {
         initializeStore()
@@ -30,6 +28,7 @@ class LiveStoreProvider {
     }
     
     deinit {
+        operation.unregister(reducer: operationReducer)
         operation.unregister(reducer: userReducer)
         operation.unregister(reducer: roomReducer)
         operation.unregister(reducer: seatReducer)
@@ -47,6 +46,7 @@ class LiveStoreProvider {
     }
     
     private func initializeStore() {
+        initializeOperationStore()
         initializeRoomStore()
         initializeSeatStore()
         initializeUserStore()
@@ -57,6 +57,10 @@ class LiveStoreProvider {
 #if DEBUG
         operation.register(interceptor: PrintInterceptor<OperationState>())
 #endif
+    }
+    
+    private func initializeOperationStore() {
+        operation.register(reducer: operationReducer)
     }
     
     private func initializeUserStore() {

@@ -29,7 +29,7 @@ class LiveDataModel {
 }
 
 class AnchorEndView: UIView {
-    @Injected var viewStore: LiveRoomViewStore
+    @Injected var routerStore: RouterStore
     
     private var isViewReady: Bool = false
     override func didMoveToWindow() {
@@ -227,7 +227,7 @@ extension AnchorEndView {
 
 extension AnchorEndView {
     @objc func closeButtonClick() {
-       viewStore.navigate(action: .exit)
+        routerStore.router(action: .exit)
     }
 }
 

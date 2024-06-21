@@ -10,7 +10,7 @@ import Combine
 
 class AnchorLinkControlPanel: UIView {
     @Injected private var store: LiveStore
-    @Injected private var viewStore: LiveRoomViewStore
+    @Injected private var routerStore: RouterStore
     private var cancellable = Set<AnyCancellable>()
     private var isPortrait: Bool = {
         WindowUtils.isPortrait
@@ -132,7 +132,7 @@ extension AnchorLinkControlPanel {
 
 extension AnchorLinkControlPanel {
     @objc func backButtonClick(sender: UIButton) {
-        viewStore.navigate(action: .pop)
+        routerStore.router(action: .dismiss)
     }
 }
 
