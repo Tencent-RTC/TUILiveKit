@@ -12,16 +12,16 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SeatState {
-    private boolean                                  filterEmptySeat = false;
-    public  LiveData<List<SeatInfo>>                 seatList            = new LiveData<>(new ArrayList<>());
+    private boolean                                  filterEmptySeat     = false;
+    public  LiveData<List<SeatInfo>>                 seatList            = new LiveData<>(new CopyOnWriteArrayList<>());
     public  LiveData<LinkedHashSet<SeatApplication>> seatApplicationList = new LiveData<>(new LinkedHashSet<>());
     public  LiveData<String>                         mySeatApplicationId = new LiveData<>("");
 
     public void reset() {
-        filterEmptySeat = false;
-        seatApplicationList.get().clear();
+        seatList.get().clear();
         seatApplicationList.get().clear();
         mySeatApplicationId.set("");
     }
@@ -51,7 +51,7 @@ public class SeatState {
         return builder.toString();
     }
 
-    public void initSeatList(List<TUIRoomDefine.SeatInfo> list) {
+    public void updateSeatList(List<TUIRoomDefine.SeatInfo> list) {
         this.seatList.get().clear();
         List<SeatInfo> newList = new ArrayList<>();
         for (TUIRoomDefine.SeatInfo info : list) {
@@ -63,21 +63,6 @@ public class SeatState {
             newList.add(seatInfo);
         }
         this.seatList.addAll(newList);
-    }
-
-    public void updateSeatList(List<TUIRoomDefine.SeatInfo> list) {
-        if (list.size() != this.seatList.get().size()) {
-            initSeatList(list);
-            return;
-        }
-        for (int i = 0; i < list.size(); i++) {
-            SeatInfo oldSeatInfo = this.seatList.get().get(i);
-            TUIRoomDefine.SeatInfo newSeatInfo = list.get(i);
-            if (oldSeatInfo == null || newSeatInfo == null) {
-                continue;
-            }
-            oldSeatInfo.updateState(newSeatInfo);
-        }
     }
 
     public void initSeatApplicationList(List<TUIRoomDefine.Request> list) {
@@ -163,6 +148,19 @@ public class SeatState {
             this.avatarUrl.set(seatInfo.avatarUrl, false);
             this.isLocked.set(seatInfo.isLocked, false);
             this.isAudioLocked.set(seatInfo.isAudioLocked, false);
+        }
+
+        public void updateState(SeatInfo newSeatInfo) {
+            this.index = newSeatInfo.index;
+            this.userId.set(newSeatInfo.userId.get());
+            if (!TextUtils.isEmpty(newSeatInfo.name.get())) {
+                this.name.set(newSeatInfo.name.get(), false);
+            } else {
+                this.name.set(this.userId.get(), false);
+            }
+            this.avatarUrl.set(newSeatInfo.avatarUrl.get(), false);
+            this.isLocked.set(newSeatInfo.isLocked.get(), false);
+            this.isAudioLocked.set(newSeatInfo.isAudioLocked.get(), false);
         }
     }
 

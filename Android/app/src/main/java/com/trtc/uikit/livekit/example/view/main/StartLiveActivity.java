@@ -1,4 +1,4 @@
-package com.trtc.uikit.livekit.example.main;
+package com.trtc.uikit.livekit.example.view.main;
 
 import com.trtc.uikit.livekit.view.LiveIdentityGenerator.RoomType;
 
@@ -14,11 +14,11 @@ import com.trtc.uikit.livekit.view.LiveIdentityGenerator;
 import com.trtc.uikit.livekit.view.TUILiveAnchorFragment;
 import com.trtc.uikit.livekit.example.R;
 
-public class AnchorActivity extends FullScreenActivity {
+public class StartLiveActivity extends FullScreenActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.app_activity_anchor);
+        setContentView(R.layout.app_activity_start_live);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

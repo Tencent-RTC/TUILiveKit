@@ -30,7 +30,6 @@ import com.trtc.uikit.livekit.common.uicomponent.barrage.view.EmojiSpan;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,7 +41,6 @@ public class BarrageMsgListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private final OnItemClickListener      mOnItemClickListener;
     private final LayoutInflater           mLayoutInflater;
     private final IEmojiResource           mEmojiResource;
-    private final Random                   mRandomLevel = new Random();
     private       TUIBarrageDisplayAdapter mCustomAdapter;
 
     public BarrageMsgListAdapter(Context context, String ownerId, List<TUIBarrage> msgEntityList,
@@ -123,7 +121,8 @@ public class BarrageMsgListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private int getLevel(TUIBarrage barrage) {
         try {
-            return Integer.parseInt(barrage.user.level);
+            int level = Integer.parseInt(barrage.user.level);
+            return Math.max(level, 0);
         } catch (Exception e) {
             return 0;
         }

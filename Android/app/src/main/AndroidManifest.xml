@@ -12,7 +12,6 @@
         </intent>
     </queries>
     <application
-        tools:replace="android:allowBackup"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -21,31 +20,23 @@
         android:roundIcon="@drawable/app_ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+        tools:replace="android:allowBackup"
         tools:targetApi="31">
         <activity
-            android:name=".login.LoginActivity"
+            android:name=".view.main.MainActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.login.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name=".login.ProfileActivity"
+            android:name=".view.login.ProfileActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
-
-
-        <activity
-            android:name=".main.MainActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" />
-
-        <activity android:name=".main.AnchorActivity"/>
-        <activity android:name=".main.AudienceActivity"/>
-        <activity android:name=".main.RoomListActivity"/>
+        <activity android:name=".view.main.StartLiveActivity" />
     </application>
-
 </manifest>

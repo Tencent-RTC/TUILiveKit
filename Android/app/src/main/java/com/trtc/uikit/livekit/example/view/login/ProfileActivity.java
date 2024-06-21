@@ -1,4 +1,4 @@
-package com.trtc.uikit.livekit.example.login;
+package com.trtc.uikit.livekit.example.view.login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,8 +17,10 @@ import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.uikit.livekit.example.BaseActivity;
 import com.trtc.uikit.livekit.example.R;
-import com.trtc.uikit.livekit.example.main.MainActivity;
-import com.trtc.uikit.livekit.example.settings.SettingsConfig;
+import com.trtc.uikit.livekit.example.service.ICallBack;
+import com.trtc.uikit.livekit.example.service.IMManager;
+import com.trtc.uikit.livekit.example.view.main.MainActivity;
+import com.trtc.uikit.livekit.example.store.AppStore;
 
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -109,16 +111,12 @@ public class ProfileActivity extends BaseActivity {
             ToastUtil.toastLongMessage(getString(R.string.app_hint_user_name));
             return;
         }
-
-        V2TIMUserFullInfo v2TIMUserFullInfo = new V2TIMUserFullInfo();
-        v2TIMUserFullInfo.setNickname(userName);
-        v2TIMUserFullInfo.setFaceUrl(mAvatarUrl);
-        V2TIMManager.getInstance().setSelfInfo(v2TIMUserFullInfo, new V2TIMCallback() {
+        IMManager.setSelfInfo(mAvatarUrl, userName, new ICallBack() {
             @Override
             public void onSuccess() {
                 ToastUtil.toastLongMessage(getString(R.string.app_toast_register_success_and_logging_in));
-                SettingsConfig.userName = userName;
-                SettingsConfig.userAvatar = mAvatarUrl;
+                AppStore.userName = userName;
+                AppStore.userAvatar = mAvatarUrl;
                 startMainActivity();
                 finish();
             }

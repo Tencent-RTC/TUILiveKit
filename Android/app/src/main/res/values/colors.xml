@@ -11,5 +11,5 @@
     <color name="app_color_unclickable_color">#0F000000</color>
     <color name="app_color_light_blue_gray">#F4F5F9</color>
     <color name="app_color_light_sky_blue">#D5DFED</color>
-
+    <color name="app_color_bottom_line_grey">#66000000</color>
 </resources>

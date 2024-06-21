@@ -40,6 +40,12 @@ public class VideoView extends BasicView {
     }
 
     @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mLiveController.getVideoViewFactory().removeVideoViewByUserId(mSeatInfo.userId.get());
+    }
+
+    @Override
     protected void initView() {
         LayoutInflater.from(mContext).inflate(R.layout.livekit_video_view, this, true);
         bindViewId();

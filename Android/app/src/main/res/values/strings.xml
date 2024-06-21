@@ -8,7 +8,7 @@
     <string name="app_toast_login_fail">Login failed</string>
     <string name="app_title_register">Register</string>
     <string name="app_hint_user_name">Enter a username</string>
-    <string name="app_tips_user_name">Chinese characters, letters, numbers and underscores, 2 – 20 words</string>
+    <string name="app_tips_user_name">Letters, numbers and underscores, 2 – 20 words</string>
     <string name="app_toast_register_success_and_logging_in">Registered successfully</string>
     <string name="app_toast_failed_to_set">Failed: %s</string>
 
@@ -25,4 +25,14 @@
     <string name="app_toast_login_success">Logged in</string>
     <string name="app_room_list">Live Room List</string>
     <string name="app_start_voice_live">Start Voice Live</string>
+    <string name="app_follow_count">Likes</string>
+    <string name="app_fans_count">Fans</string>
+    <string name="livekit_bottom_bar_personal_center">Me</string>
+    <string name="app_change_name_title">Name</string>
+    <string name="app_name_save">Save</string>
+    <string name="app_title_me">My Profile</string>
+    <string name="app_tips_title">Warm Tips</string>
+    <string name="app_logout_tips">Are you sure you want to log out?</string>
+    <string name="app_logout">Yes</string>
+    <string name="app_cancel">Cancel</string>
 </resources>

@@ -12,10 +12,13 @@ import com.trtc.uikit.livekit.manager.LiveController;
 import com.trtc.uikit.livekit.manager.controller.MediaController;
 import com.trtc.uikit.livekit.state.operation.SeatState;
 
+import java.util.List;
+
 @SuppressLint("ViewConstructor")
 public class PlayerVideoView extends VideoView {
 
-    private final Observer<String> userNickNameChangedListener = this::onNicknameChange;
+    private final Observer<String>                   userNickNameChangedListener = this::onNicknameChange;
+    private final Observer<List<SeatState.SeatInfo>> mLinkAudienceListObserver   = this::onLinkAudienceListChange;
 
     public PlayerVideoView(@NonNull Context context, LiveController liveController, SeatState.SeatInfo seatInfo) {
         super(context, liveController, seatInfo);
@@ -26,19 +29,21 @@ public class PlayerVideoView extends VideoView {
         super.initView();
 
         initTUIVideoView();
-        initTextName();
+        initNicknameView();
     }
 
     @Override
     protected void addObserver() {
         super.addObserver();
         mSeatInfo.name.observe(userNickNameChangedListener);
+        mSeatState.seatList.observe(mLinkAudienceListObserver);
     }
 
     @Override
     protected void removeObserver() {
         super.removeObserver();
         mSeatInfo.name.removeObserver(userNickNameChangedListener);
+        mSeatState.seatList.removeObserver(mLinkAudienceListObserver);
     }
 
     private void initTUIVideoView() {
@@ -48,8 +53,12 @@ public class PlayerVideoView extends VideoView {
         mediaController.startPlayRemoteVideo(mSeatInfo.userId.get(), TUIRoomDefine.VideoStreamType.CAMERA_STREAM, null);
     }
 
-    private void initTextName() {
-        mTextName.setVisibility(VISIBLE);
+    private void initNicknameView() {
+        if (mSeatState.seatList.get().size() > 1) {
+            mTextName.setVisibility(VISIBLE);
+        } else {
+            mTextName.setVisibility(GONE);
+        }
         if (TextUtils.isEmpty(mSeatInfo.name.get())) {
             mTextName.setText(mSeatInfo.userId.get());
         } else {
@@ -58,11 +67,10 @@ public class PlayerVideoView extends VideoView {
     }
 
     private void onNicknameChange(String name) {
-        mTextName.setVisibility(VISIBLE);
-        if (TextUtils.isEmpty(mSeatInfo.name.get())) {
-            mTextName.setText(mSeatInfo.userId.get());
-        } else {
-            mTextName.setText(mSeatInfo.name.get());
-        }
+        initNicknameView();
+    }
+
+    private void onLinkAudienceListChange(List<SeatState.SeatInfo> seatInfoList) {
+        initNicknameView();
     }
 }

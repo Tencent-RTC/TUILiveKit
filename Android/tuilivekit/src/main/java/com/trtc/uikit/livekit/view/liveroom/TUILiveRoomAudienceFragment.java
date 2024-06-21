@@ -90,7 +90,8 @@ public class TUILiveRoomAudienceFragment extends Fragment {
 
     private void initLiveController() {
         mLiveController = new LiveController();
-        mLiveController.getRoomSate().roomId = mRoomId;
+        mLiveController.getSeatState().setFilterEmptySeat(true);
+        mLiveController.setRoomId(mRoomId);
         mCurrentLinkStatus = mLiveController.getViewState().linkStatus.get();
     }
 

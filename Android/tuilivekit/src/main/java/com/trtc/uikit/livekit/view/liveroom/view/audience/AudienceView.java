@@ -20,14 +20,14 @@ import com.trtc.uikit.livekit.state.LiveDefine;
 import com.trtc.uikit.livekit.state.operation.SeatState;
 import com.trtc.uikit.livekit.view.liveroom.view.audience.component.livestreaming.AudienceLivingView;
 import com.trtc.uikit.livekit.view.liveroom.view.audience.component.video.AudienceVideoView;
-import com.trtc.uikit.livekit.view.liveroom.view.common.video.VideoViewFactory;
 
 @SuppressLint("ViewConstructor")
 public class AudienceView extends BasicView {
 
-    private RelativeLayout mLayoutAudienceVideoContainer;
-    private RelativeLayout mLayoutAudienceMaskViewContainer;
-    private RelativeLayout mLayoutAudienceLivingContainer;
+    private RelativeLayout     mLayoutAudienceVideoContainer;
+    private RelativeLayout     mLayoutAudienceDashboardViewContainer;
+    private RelativeLayout     mLayoutAudienceLivingContainer;
+    private AudienceLivingView mAudienceLivingView;
 
     private final Observer<LiveDefine.LiveStatus> mAnchorStatusChangeObserver = this::onAnchorStatusChange;
 
@@ -59,7 +59,6 @@ public class AudienceView extends BasicView {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mLiveController.getSeatState().setFilterEmptySeat(true);
         Constants.DATA_REPORT_COMPONENT = DATA_REPORT_COMPONENT_LIVE_ROOM;
         mLiveController.getRoomController().join(mRoomState.roomId);
     }
@@ -67,7 +66,7 @@ public class AudienceView extends BasicView {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        VideoViewFactory.instance.clearBySeatList(mSeatState.seatList.get());
+        mLiveController.getVideoViewFactory().clearBySeatList(mSeatState.seatList.get());
         mLiveController.getState().reset();
     }
 
@@ -102,41 +101,44 @@ public class AudienceView extends BasicView {
 
     private void displayComplete() {
         mUserController.muteAllRemoteAudio(false);
+        mAudienceLivingView.setVisibility(VISIBLE);
     }
 
     private void endDisplay() {
         mUserController.muteAllRemoteAudio(true);
+        mAudienceLivingView.setVisibility(GONE);
     }
 
     private void destroy() {
         mLiveController.getRoomController().exit();
         removeAllViews();
-        VideoViewFactory.instance.mVideoViewMap.remove(mRoomState.ownerInfo.userId);
-        VideoViewFactory.instance.mVideoViewMap.remove(mUserState.selfInfo.userId);
+        mLiveController.getVideoViewFactory().removeVideoViewByUserId(mRoomState.ownerInfo.userId);
+        mLiveController.getVideoViewFactory().removeVideoViewByUserId(mUserState.selfInfo.userId);
         if (!mSeatState.seatList.get().isEmpty()) {
             for (SeatState.SeatInfo seatInfo : mSeatState.seatList.get()) {
-                VideoViewFactory.instance.mVideoViewMap.remove(seatInfo.userId.get());
+                mLiveController.getVideoViewFactory().removeVideoViewByUserId(seatInfo.userId.get());
             }
         }
     }
 
     private void bindViewId() {
         mLayoutAudienceVideoContainer = findViewById(R.id.rl_audience_video_view);
-        mLayoutAudienceMaskViewContainer = findViewById(R.id.rl_audience_mask_container);
+        mLayoutAudienceDashboardViewContainer = findViewById(R.id.rl_audience_mask_container);
         mLayoutAudienceLivingContainer = findViewById(R.id.rl_audience_living);
     }
 
     private void initAudienceLivingView() {
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-        AudienceLivingView mAudienceLivingView = new AudienceLivingView(mContext, mLiveController);
+        mAudienceLivingView = new AudienceLivingView(mContext, mLiveController);
         mLayoutAudienceLivingContainer.addView(mAudienceLivingView, layoutParams);
+        mAudienceLivingView.setVisibility(GONE);
     }
 
     private void initAudienceMaskView() {
         AudienceDashboardView mAudienceEndView = new AudienceDashboardView(mContext, mLiveController);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-        mLayoutAudienceMaskViewContainer.addView(mAudienceEndView, layoutParams);
-        mLayoutAudienceMaskViewContainer.setVisibility(GONE);
+        mLayoutAudienceDashboardViewContainer.addView(mAudienceEndView, layoutParams);
+        mLayoutAudienceDashboardViewContainer.setVisibility(GONE);
     }
 
     private void initAudienceVideoView() {
@@ -147,9 +149,9 @@ public class AudienceView extends BasicView {
 
     private void showAudienceMaskView(boolean isShow) {
         if (isShow) {
-            mLayoutAudienceMaskViewContainer.setVisibility(VISIBLE);
+            mLayoutAudienceDashboardViewContainer.setVisibility(VISIBLE);
         } else {
-            mLayoutAudienceMaskViewContainer.setVisibility(GONE);
+            mLayoutAudienceDashboardViewContainer.setVisibility(GONE);
         }
     }
 

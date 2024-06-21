@@ -31,7 +31,7 @@ public class SeatController extends Controller {
         mLiveService.getSeatList(new TUIRoomDefine.GetSeatListCallback() {
             @Override
             public void onSuccess(List<TUIRoomDefine.SeatInfo> list) {
-                mSeatState.initSeatList(list);
+                mSeatState.updateSeatList(list);
                 updateSelfSeatedState();
                 autoTakeSeatByOwner();
             }

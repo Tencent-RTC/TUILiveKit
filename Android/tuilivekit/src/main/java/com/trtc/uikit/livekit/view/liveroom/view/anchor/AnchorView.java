@@ -18,7 +18,6 @@ import com.trtc.uikit.livekit.state.LiveDefine;
 import com.trtc.uikit.livekit.view.liveroom.view.anchor.component.livestreaming.AnchorLivingView;
 import com.trtc.uikit.livekit.view.liveroom.view.anchor.component.preview.AnchorPreviewView;
 import com.trtc.uikit.livekit.view.liveroom.view.anchor.component.video.AnchorVideoView;
-import com.trtc.uikit.livekit.view.liveroom.view.common.video.VideoViewFactory;
 
 @SuppressLint("ViewConstructor")
 public class AnchorView extends BasicView {
@@ -126,7 +125,7 @@ public class AnchorView extends BasicView {
 
     private void destroy() {
         mLiveController.getRoomController().exit();
-        VideoViewFactory.instance.clear();
+        mLiveController.getVideoViewFactory().clear();
     }
 
     private void onLiveStatusChange(LiveDefine.LiveStatus liveStatus) {

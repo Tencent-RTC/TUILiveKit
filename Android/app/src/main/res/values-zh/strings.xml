@@ -25,4 +25,14 @@
     <string name="app_toast_login_success">登录成功</string>
     <string name="app_room_list">直播间列表</string>
     <string name="app_start_voice_live">开始音频直播</string>
+    <string name="app_follow_count">关注</string>
+    <string name="app_fans_count">粉丝</string>
+    <string name="livekit_bottom_bar_personal_center">我</string>
+    <string name="app_change_name_title">设置名字</string>
+    <string name="app_name_save">保存</string>
+    <string name="app_title_me">个人信息</string>
+    <string name="app_tips_title">温馨提示</string>
+    <string name="app_logout_tips">确定退出当前账号吗?</string>
+    <string name="app_logout">确定</string>
+    <string name="app_cancel">取消</string>
 </resources>

@@ -2,6 +2,7 @@ package com.trtc.uikit.livekit.view.liveroom.view.audience.component.video;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 
 import androidx.gridlayout.widget.GridLayout;
@@ -22,6 +23,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 @SuppressLint("ViewConstructor")
 public class AudienceVideoView extends BasicView {
+    private static final String TAG = "AudienceVideoView";
 
     private       GridLayout                               mLayoutVideoList;
     private       LinkMicGridHelper                        mLinkMicGridHelper;
@@ -43,11 +45,13 @@ public class AudienceVideoView extends BasicView {
         initVideoViewList();
     }
 
+    @Override
     protected void addObserver() {
         mViewState.linkStatus.observe(mLinkStatusObserver);
         mSeatState.seatList.observe(mLinkAudienceListObserver);
     }
 
+    @Override
     protected void removeObserver() {
         mViewState.linkStatus.removeObserver(mLinkStatusObserver);
         mSeatState.seatList.removeObserver(mLinkAudienceListObserver);
@@ -68,19 +72,26 @@ public class AudienceVideoView extends BasicView {
     }
 
     private void addPlaceHolderView(SeatState.SeatInfo seatInfo) {
-        VideoView videoView = VideoViewFactory.instance.createPlaceHolderVideoView(seatInfo, mLiveController, mContext);
+        VideoView videoView = mLiveController.getVideoViewFactory().createPlaceHolderVideoView(seatInfo,
+                mLiveController, mContext);
         mLinkMicGridHelper.addAudienceView(videoView);
     }
 
     private void removePlaceHolderView(SeatState.SeatInfo seatInfo) {
-        VideoView videoView = VideoViewFactory.instance.createPlaceHolderVideoView(seatInfo, mLiveController, mContext);
+        VideoView videoView = mLiveController.getVideoViewFactory().createPlaceHolderVideoView(seatInfo,
+                mLiveController, mContext);
         mLinkMicGridHelper.removeAudienceView(videoView);
-        VideoViewFactory.instance.destroyPlaceHolderVideoView();
+        mLiveController.getVideoViewFactory().destroyPlaceHolderVideoView();
     }
 
     private void addView(SeatState.SeatInfo seatInfo) {
         boolean isOwner = mRoomState.ownerInfo.userId.equals(seatInfo.userId.get());
-        VideoView videoView = VideoViewFactory.instance.createVideoView(seatInfo, mLiveController, mContext);
+        VideoView videoView = mLiveController.getVideoViewFactory().createVideoView(seatInfo,
+                mLiveController, mContext);
+        if (videoView == null) {
+            Log.e(TAG, "addView fail, seatInfo.userId = " + seatInfo.userId.get());
+            return;
+        }
         if (isOwner) {
             mLinkMicGridHelper.addAnchorView(videoView);
         } else {
@@ -89,17 +100,29 @@ public class AudienceVideoView extends BasicView {
     }
 
     private void removeView(SeatState.SeatInfo seatInfo) {
-        VideoView linkAudienceVideoView = VideoViewFactory.instance.createVideoView(seatInfo, mLiveController,
+        VideoView videoView = mLiveController.getVideoViewFactory().createVideoView(seatInfo, mLiveController,
                 mContext);
-        mLinkMicGridHelper.removeAudienceView(linkAudienceVideoView);
-        VideoViewFactory.instance.mVideoViewMap.remove(seatInfo.userId.get());
+        mLiveController.getVideoViewFactory().removeVideoViewByUserId(seatInfo.userId.get());
+        if (videoView == null) {
+            Log.e(TAG, "removeView fail, seatInfo.userId = " + seatInfo.userId.get());
+            return;
+        }
+        mLinkMicGridHelper.removeAudienceView(videoView);
     }
 
     private void onLinkAudienceListChange(List<SeatState.SeatInfo> audienceList) {
-        for (SeatState.SeatInfo userInfo : audienceList) {
-            if (!mLinkUserList.contains(userInfo)) {
-                mLinkUserList.add(userInfo);
-                addView(userInfo);
+        for (SeatState.SeatInfo seatInfo : audienceList) {
+            boolean isContainer = false;
+            for (int i = 0; i < mLinkUserList.size(); i++) {
+                if (mLinkUserList.get(i).userId.get().equals(seatInfo.userId.get())) {
+                    isContainer = true;
+                    mLinkUserList.get(i).updateState(seatInfo);
+                    break;
+                }
+            }
+            if (!isContainer) {
+                mLinkUserList.add(seatInfo);
+                addView(seatInfo);
             }
         }
 
