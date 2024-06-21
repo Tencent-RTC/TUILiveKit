@@ -12,7 +12,7 @@ import RTCCommon
 
 class VideoLinkSettingPanel: RTCBaseView {
     @Injected private var store: LiveStore
-    @Injected private var viewStore: LiveRoomViewStore
+    @Injected private var routerStore: RouterStore
     private var cancellableSet = Set<AnyCancellable>()
     private var needCloseCameraWhenViewDisappear: Bool = false
     private var isPortrait: Bool = {
@@ -42,19 +42,25 @@ class VideoLinkSettingPanel: RTCBaseView {
         designConfig.backgroundColor = .g3.withAlphaComponent(0.3)
         designConfig.cornerRadius = 10.scale375Width()
         designConfig.type = .imageAboveTitle
-        items.append(FeatureItem(title: .beautyText, image: .liveBundleImage("live_videoSetting_beauty"),
-                                 designConfig: designConfig, actionClosure: { [weak self] in
+        items.append(FeatureItem(title: .beautyText, 
+                                 image: .liveBundleImage("live_videoSetting_beauty"),
+                                 designConfig: designConfig, 
+                                 actionClosure: { [weak self] in
             guard let self = self else { return }
-            self.viewStore.navigate(action: .present(.beauty(true)))
+            self.routerStore.router(action: .present(.beauty(true)))
         }))
-        items.append(FeatureItem(title: .mirrorText, image: .liveBundleImage("live_videoSetting_mirror"),
-                                 designConfig: designConfig, actionClosure: { [weak self] in
+        items.append(FeatureItem(title: .mirrorText,
+                                 image: .liveBundleImage("live_videoSetting_mirror"),
+                                 designConfig: designConfig,
+                                 actionClosure: { [weak self] in
             guard let self = self else { return }
             let isMirror = store.selectCurrent(MediaSelectors.getMirrorState)
             self.store.dispatch(action: MediaActions.switchMirror(payload: isMirror == true ? false : true))
         }))
-        items.append(FeatureItem(title: .flipText, image: .liveBundleImage("live_videoSetting_flip"),
-                                 designConfig: designConfig, actionClosure: { [weak self] in
+        items.append(FeatureItem(title: .flipText,
+                                 image: .liveBundleImage("live_videoSetting_flip"),
+                                 designConfig: designConfig, 
+                                 actionClosure: { [weak self] in
             guard let self = self else { return }
             let isFrontCamera = store.selectCurrent(MediaSelectors.getFrontCameraState)
             store.dispatch(action: MediaActions.switchCamera(payload: isFrontCamera == true ? .rear : .front))
@@ -117,9 +123,7 @@ class VideoLinkSettingPanel: RTCBaseView {
         }
         featureClickPanel.snp.makeConstraints { make in
             make.top.equalTo(previewView.snp.bottom).offset(24.scale375Height())
-            make.leading.equalTo(previewView)
-            make.trailing.equalTo(previewView)
-            make.height.equalTo(56.scale375Width())
+            make.centerX.equalToSuperview()
         }
         requestLinkMicButton.snp.makeConstraints { make in
             make.top.equalTo(featureClickPanel.snp.bottom).offset(111.scale375Height())
@@ -152,11 +156,11 @@ extension VideoLinkSettingPanel {
     @objc func requestLinkMicButtonClick(_ sender: FeatureItemButton) {
         store.dispatch(action: ViewActions.updateAutoOpenCameraOnSeated(payload: true))
         store.dispatch(action: SeatActions.takeSeat(payload: nil))
-        viewStore.navigate(action: .popToRoute(.audience))
+        routerStore.router(action: .routeTo(.audience))
     }
     
     private func subscribeCurrentRoute() {
-        viewStore.select(LiveRoomViewSelectors.routeStack)
+        routerStore.select(RouterSelectors.routeStack)
             .receive(on: RunLoop.main)
             .sink { [weak self] routeStack in
                 guard let self = self else { return }

@@ -10,11 +10,22 @@ import Foundation
 
 extension Resolver: ResolverRegistering {
     public static func registerAllServices() {
+        registerRouterStoreDependency()
         registerVoiceRoomDependency()
         registerLiveRoomDependency()
         registerAudioEffectService()
         registerMusicPanelService()
-        registerRoomListService()
+        registerLiveListService()
+    }
+}
+
+extension Resolver {
+    public static func registerRouterStoreDependency() {
+        register {
+            RouterStoreProvider()
+        }
+        .implements(RouterStore.self)
+        .scope(.shared)
     }
 }
 

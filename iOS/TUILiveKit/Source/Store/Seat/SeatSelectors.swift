@@ -18,6 +18,7 @@ enum SeatSelectors {
     
     static func getSeatInfo(index: Int) -> Selector<OperationState, SeatInfo> {
         return Selector.with(getSeatState) { state in
+            if state.seatList.isEmpty { return SeatInfo() }
             assert(state.seatList.count > index, "seat index exception，please check seat list in SeatState.")
             return state.seatList[index]
         }

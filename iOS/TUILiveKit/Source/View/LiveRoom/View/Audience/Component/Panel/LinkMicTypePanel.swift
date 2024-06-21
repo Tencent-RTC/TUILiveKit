@@ -8,7 +8,7 @@
 import Foundation
 
 class LinkMicTypePanel: UIView {
-    @Injected var viewStore: LiveRoomViewStore
+    @Injected var routerStore: RouterStore
     
     private var isPortrait: Bool = {
         WindowUtils.isPortrait
@@ -122,7 +122,7 @@ extension LinkMicTypePanel {
 
 extension LinkMicTypePanel {
     @objc func videoSettingImageViewAction() {
-        viewStore.navigate(action: .present(.linkSetting))
+        routerStore.router(action: RouterAction.present(.linkSetting))
     }
 }
 

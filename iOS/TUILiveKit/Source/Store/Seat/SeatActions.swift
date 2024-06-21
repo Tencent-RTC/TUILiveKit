@@ -31,7 +31,6 @@ enum SeatActions {
     static let addSeatApplication = ActionTemplate(id: key.appending(".addSeatApplication"), payloadType:SeatApplication.self)
     static let removeSeatApplication = ActionTemplate(id: key.appending(".removeSeatApplication"), payloadType:String.self)
     static let addSeatApplicationUser = ActionTemplate(id: key.appending(".addSeatApplicationUser"), payloadType: User.self)
-    
 }
 
 // MARK: - Subject action, only event, no reduce.

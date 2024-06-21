@@ -19,6 +19,11 @@
 		470EB6C4266A46F80072071F /* LaunchImage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 470EB6C0266A46F80072071F /* LaunchImage@2x.png */; };
 		470EB6C7266A47050072071F /* LaunchScreen_en.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 470EB6C5266A47050072071F /* LaunchScreen_en.storyboard */; };
 		4795D41B265F4A6200C82562 /* GenerateTestUserSig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4795D41A265F4A6200C82562 /* GenerateTestUserSig.swift */; };
+		A917D53F2C22789400F9C310 /* MeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A917D53E2C22789400F9C310 /* MeViewController.swift */; };
+		A917D5412C2278A600F9C310 /* MeRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A917D5402C2278A600F9C310 /* MeRootView.swift */; };
+		A917D5432C2282FA00F9C310 /* IMManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A917D5422C2282FA00F9C310 /* IMManager.swift */; };
+		A917D5452C22B45100F9C310 /* RenamePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A917D5442C22B45100F9C310 /* RenamePanel.swift */; };
+		A917D5472C22CA4400F9C310 /* AlignmentButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A917D5462C22CA4400F9C310 /* AlignmentButton.swift */; };
 		A955662C2ADF8C1900D86BFD /* MainRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95566222ADF8C1900D86BFD /* MainRootView.swift */; };
 		A955662D2ADF8C1900D86BFD /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95566232ADF8C1900D86BFD /* MainViewController.swift */; };
 		A955663F2ADFA0E900D86BFD /* SettingsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A955663E2ADFA0E900D86BFD /* SettingsConfig.swift */; };
@@ -54,11 +59,17 @@
 		4795D41A265F4A6200C82562 /* GenerateTestUserSig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenerateTestUserSig.swift; sourceTree = "<group>"; };
 		6040800812EC33F228E2E5BE /* Pods-TUILiveKitApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TUILiveKitApp.release.xcconfig"; path = "Target Support Files/Pods-TUILiveKitApp/Pods-TUILiveKitApp.release.xcconfig"; sourceTree = "<group>"; };
 		8018584458DE71D036649193 /* Pods_TUILiveKitApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TUILiveKitApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A917D53E2C22789400F9C310 /* MeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeViewController.swift; sourceTree = "<group>"; };
+		A917D5402C2278A600F9C310 /* MeRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeRootView.swift; sourceTree = "<group>"; };
+		A917D5422C2282FA00F9C310 /* IMManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMManager.swift; sourceTree = "<group>"; };
+		A917D5442C22B45100F9C310 /* RenamePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenamePanel.swift; sourceTree = "<group>"; };
+		A917D5462C22CA4400F9C310 /* AlignmentButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlignmentButton.swift; sourceTree = "<group>"; };
 		A95566222ADF8C1900D86BFD /* MainRootView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainRootView.swift; sourceTree = "<group>"; };
 		A95566232ADF8C1900D86BFD /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		A955663E2ADFA0E900D86BFD /* SettingsConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsConfig.swift; sourceTree = "<group>"; };
 		A95566422ADFC42100D86BFD /* LoginRootView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginRootView.swift; sourceTree = "<group>"; };
 		A95566432ADFC42100D86BFD /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		A998DE4B2AE27E3B00A8BF18 /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		A9BC405A2AB43DE4008AD131 /* RegisterRootView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterRootView.swift; sourceTree = "<group>"; };
 		A9BC405C2AB43DE4008AD131 /* UserAgreementViewController+UI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserAgreementViewController+UI.swift"; sourceTree = "<group>"; };
 		A9BC40652AB43DE4008AD131 /* RegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
@@ -118,6 +129,7 @@
 				A955663D2ADFA03200D86BFD /* Setting */,
 				A95566152ADF825C00D86BFD /* UserAgreement */,
 				A95566162ADF82BE00D86BFD /* Resource */,
+				A998DE4A2AE27E0F00A8BF18 /* Extension */,
 				40DD29F1264395FF00DC4BA8 /* Assets.xcassets */,
 				470EB6C5266A47050072071F /* LaunchScreen_en.storyboard */,
 				40DD29F3264395FF00DC4BA8 /* LaunchScreen.storyboard */,
@@ -179,6 +191,11 @@
 			children = (
 				A95566232ADF8C1900D86BFD /* MainViewController.swift */,
 				A95566222ADF8C1900D86BFD /* MainRootView.swift */,
+				A917D53E2C22789400F9C310 /* MeViewController.swift */,
+				A917D5402C2278A600F9C310 /* MeRootView.swift */,
+				A917D5422C2282FA00F9C310 /* IMManager.swift */,
+				A917D5442C22B45100F9C310 /* RenamePanel.swift */,
+				A917D5462C22CA4400F9C310 /* AlignmentButton.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -198,6 +215,14 @@
 				A95566422ADFC42100D86BFD /* LoginRootView.swift */,
 			);
 			path = Login;
+			sourceTree = "<group>";
+		};
+		A998DE4A2AE27E0F00A8BF18 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				A998DE4B2AE27E3B00A8BF18 /* UIViewController+Extension.swift */,
+			);
+			path = Extension;
 			sourceTree = "<group>";
 		};
 		C11E261F2B0B0B8300674403 /* Localized */ = {
@@ -371,20 +396,25 @@
 			files = (
 				A95566452ADFC42100D86BFD /* LoginViewController.swift in Sources */,
 				4795D41B265F4A6200C82562 /* GenerateTestUserSig.swift in Sources */,
+				A917D5432C2282FA00F9C310 /* IMManager.swift in Sources */,
+				A917D53F2C22789400F9C310 /* MeViewController.swift in Sources */,
 				A9BC40712AB43DE4008AD131 /* UserAgreementViewController.swift in Sources */,
 				C1C7E7502B16DC8B008E0066 /* SandBoxFileBroswerCell.swift in Sources */,
 				A955662D2ADF8C1900D86BFD /* MainViewController.swift in Sources */,
 				A9BC40702AB43DE4008AD131 /* RegisterViewController.swift in Sources */,
+				A917D5412C2278A600F9C310 /* MeRootView.swift in Sources */,
 				A9BC40722AB43DE4008AD131 /* LayoutDefine.swift in Sources */,
 				40DD29E9264395FF00DC4BA8 /* AppDelegate.swift in Sources */,
 				C11E26292B0B0B8300674403 /* TUILiveKitAppLocalized.swift in Sources */,
 				A955662C2ADF8C1900D86BFD /* MainRootView.swift in Sources */,
 				C1C7E7512B16DC8B008E0066 /* SandBoxFileBroswerModel.swift in Sources */,
+				A917D5472C22CA4400F9C310 /* AlignmentButton.swift in Sources */,
 				A95566442ADFC42100D86BFD /* LoginRootView.swift in Sources */,
 				A9BC40682AB43DE4008AD131 /* RegisterRootView.swift in Sources */,
 				A9BC406A2AB43DE4008AD131 /* UserAgreementViewController+UI.swift in Sources */,
 				A955663F2ADFA0E900D86BFD /* SettingsConfig.swift in Sources */,
 				C1C7E74F2B16DC8A008E0066 /* SandBoxFileBrowserViewController.swift in Sources */,
+				A917D5452C22B45100F9C310 /* RenamePanel.swift in Sources */,
 				40DD29EB264395FF00DC4BA8 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

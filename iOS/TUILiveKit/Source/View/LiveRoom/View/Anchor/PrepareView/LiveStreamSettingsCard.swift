@@ -14,7 +14,7 @@ import Combine
 class LiveStreamSettingsCard: UIView {
     private var cancellableSet = Set<AnyCancellable>()
     @Injected private var store: LiveStore
-    @Injected private var viewStore: LiveRoomViewStore
+    @Injected private var routerStore: RouterStore
     private lazy var roomNamePublisher = self.store.select(RoomSelectors.getRoomName)
     private lazy var roomCoverUrlPublisher = self.store.select(RoomSelectors.getRoomCoverUrl)
     private lazy var roomCategoryPublisher = self.store.select(RoomSelectors.getCategory)
@@ -179,7 +179,7 @@ extension LiveStreamSettingsCard {
 extension LiveStreamSettingsCard {
     @objc func coverButtonClick() {
         inputTextField.resignFirstResponder()
-        viewStore.navigate(action: .present(.systemImageSelection))
+        routerStore.router(action: RouterAction.present(.systemImageSelection))
     }
 
     @objc func editIconClick() {
@@ -212,7 +212,7 @@ extension LiveStreamSettingsCard {
             })
             items.append(item)
         }
-        viewStore.navigate(action: .present(.listMenu(items)))
+        routerStore.router(action: RouterAction.present(.listMenu(items)))
     }
 
     private func showModeSelection() {
@@ -231,7 +231,7 @@ extension LiveStreamSettingsCard {
             })
             items.append(item)
         }
-        viewStore.navigate(action: .present(.listMenu(items)))
+        routerStore.router(action: RouterAction.present(.listMenu(items)))
     }
 }
 

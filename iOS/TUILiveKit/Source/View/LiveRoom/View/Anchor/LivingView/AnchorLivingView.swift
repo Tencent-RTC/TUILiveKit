@@ -12,7 +12,7 @@ import Combine
 
 class AnchorLivingView: UIView {
     private let roomId:String
-    @Injected private var viewStore: LiveRoomViewStore
+    @Injected private var routerStore: RouterStore
     @Injected private var store: LiveStore
     private lazy var ownerInfoPublisher = store.select(RoomSelectors.getRoomOwnerInfo)
     private lazy var roomIdPublisher = store.select(RoomSelectors.getRoomId)
@@ -51,20 +51,30 @@ class AnchorLivingView: UIView {
     }()
 
     private lazy var featureClickPanel: FeatureClickPanel = {
+        let designConfig = FeatureItemDesignConfig()
+        designConfig.type = .singleImage
+        designConfig.imageSize = CGSize(width: 36.scale375(), height: 36.scale375())
+        
         let model = FeatureClickPanelModel()
-        model.itemSize = CGSize(width: 36.scale375Width(), height: 36.scale375Width())
+        model.itemSize = designConfig.imageSize
         model.itemDiff = 6.scale375()
-        model.items.append(FeatureItem(image: .liveBundleImage("live_link_icon"), actionClosure: { [weak self] in
+        model.items.append(FeatureItem(image: .liveBundleImage("live_link_icon"), 
+                                       designConfig: designConfig,
+                                       actionClosure: { [weak self] in
             guard let self = self else { return }
-            self.viewStore.navigate(action: .present(.linkControl))
+            self.routerStore.router(action: .present(.linkControl))
         }))
-        model.items.append(FeatureItem(image: .liveBundleImage("live_anchor_setting_icon"), actionClosure: { [weak self] in
+        model.items.append(FeatureItem(image: .liveBundleImage("live_anchor_setting_icon"),
+                                       designConfig: designConfig,
+                                       actionClosure: { [weak self] in
             guard let self = self else { return }
-            self.viewStore.navigate(action: .present(.setting))
+            self.routerStore.router(action: .present(.setting))
         }))
-        model.items.append(FeatureItem(image: .liveBundleImage("live_anchor_music_icon"), actionClosure: { [weak self] in
+        model.items.append(FeatureItem(image: .liveBundleImage("live_anchor_music_icon"),
+                                       designConfig: designConfig,
+                                       actionClosure: { [weak self] in
             guard let self = self else { return }
-            self.viewStore.navigate(action: .present(.musicList))
+            self.routerStore.router(action: .present(.musicList))
         }))
         let featureClickPanel = FeatureClickPanel(model: model)
         return featureClickPanel
@@ -228,8 +238,6 @@ extension AnchorLivingView {
 
         featureClickPanel.snp.makeConstraints { make in
             make.trailing.equalToSuperview().offset(-16.scale375())
-            make.height.equalTo(featureClickPanel.mm_h)
-            make.width.equalTo(featureClickPanel.mm_w)
             make.bottom.equalToSuperview().offset(-34.scale375Height())
         }
         
@@ -261,7 +269,7 @@ extension AnchorLivingView {
             self.showEndView()
             self.musicPanelView.resetMusicPanelState()
         })
-        viewStore.navigate(action: .present(.listMenu([item])))
+        routerStore.router(action: .present(.listMenu([item])))
     }
     
     private func showEndView() {
@@ -285,7 +293,7 @@ extension AnchorLivingView {
     }
 
     @objc func roomInfoViewClick() {
-        viewStore.navigate(action: .present(.roomInfo))
+        routerStore.router(action: .present(.roomInfo))
     }
    
     private func presentPopup(view: UIView) {

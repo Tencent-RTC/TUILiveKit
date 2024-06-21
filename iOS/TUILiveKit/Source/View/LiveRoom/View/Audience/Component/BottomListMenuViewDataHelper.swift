@@ -9,7 +9,7 @@ import Foundation
 
 class BottomPopupListViewDataHelper {
     @WeakLazyInjected var store: LiveStore?
-    @WeakLazyInjected var viewStore: LiveRoomViewStore?
+    @WeakLazyInjected var routerStore: RouterStore?
     // audience take seat list menu.
     func generateLinkTypeMenuData() -> [LinkMicTypeCellData] {
         var data = [LinkMicTypeCellData]()
@@ -17,14 +17,14 @@ class BottomPopupListViewDataHelper {
                                         text: .videoLinkRequestText,
                                         action: {
             self.applyToTakeSeat(needOpenCamera: true)
-            self.viewStore?.navigate(action: .pop)
+            self.routerStore?.router(action: .dismiss)
         }))
         
         data.append(LinkMicTypeCellData(image: .liveBundleImage("live_link_audio"),
                                         text: .audioLinkRequestText,
                                         action: {
             self.applyToTakeSeat(needOpenCamera: false)
-            self.viewStore?.navigate(action: .pop)
+            self.routerStore?.router(action: .dismiss)
         }))
         return data
     }
@@ -33,13 +33,13 @@ class BottomPopupListViewDataHelper {
         var menus: [ButtonMenuInfo] = []
         var gift = ButtonMenuInfo(normalIcon: "live_gift_icon", normalTitle: "")
         gift.tapAction = { sender in
-            guard let viewStore = self.viewStore else { return }
-            viewStore.navigate(action: .present(.giftView))
+            guard let routerStore = self.routerStore else { return }
+            routerStore.router(action: .present(.giftView))
         }
         menus.append(gift)
         var linkMic = ButtonMenuInfo(normalIcon: "live_link_icon", selectIcon: "live_linking_icon")
         linkMic.tapAction = { sender in
-            guard let store = self.store, let viewStore = self.viewStore else { return }
+            guard let store = self.store, let routerStore = self.routerStore else { return }
             if sender.isSelected {
                 let requestId = store.selectCurrent(SeatSelectors.getMySeatApplicationId)
                 store.dispatch(action: SeatActions.cancelApplication(payload: requestId))
@@ -47,7 +47,7 @@ class BottomPopupListViewDataHelper {
                 if store.selectCurrent(UserSelectors.isOnSeat) {
                     store.dispatch(action: SeatActions.leaveSeat())
                 } else {
-                    viewStore.navigate(action: .present(.linkType))
+                    routerStore.router(action: .present(.linkType))
                 }
             }
         }

@@ -15,7 +15,7 @@ import Combine
 
 class BeautyPanel: UIView {
     @Injected private var store: LiveStore
-    @Injected private var viewStore: LiveRoomViewStore
+    @Injected private var routerStore: RouterStore
     private var cancellableSet = Set<AnyCancellable>()
     private var hasRenderView: Bool
     init(hasRenderView: Bool = true) {
@@ -277,7 +277,7 @@ extension BeautyPanel {
 // MARK: Action
 extension BeautyPanel {
     @objc func backButtonClick(sender: UIButton) {
-        viewStore.navigate(action: .pop)
+        routerStore.router(action: .dismiss)
     }
 
     @objc func sliderValueChanged() {

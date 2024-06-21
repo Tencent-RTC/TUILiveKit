@@ -10,15 +10,15 @@ import Foundation
 
 class VoiceRoomPrepareViewDateHelper {
     @WeakLazyInjected var store: LiveStore?
-    @WeakLazyInjected var viewStore: VoiceRoomViewStore?
+    @WeakLazyInjected var routerStore: RouterStore?
     
     func generateCategorySelectionData() -> [ActionItem] {
         return LiveStreamCategory.allCases.map { category in
             var info = ActionItem(title: category.getString(), icon: "")
             info.actionClosure = { _ in
-                guard let store = self.store, let viewStore = self.viewStore else { return }
+                guard let store = self.store, let routerStore = self.routerStore else { return }
                 store.dispatch(action: RoomActions.updateRoomCategory(payload: category))
-                viewStore.dispatch(action: VoiceRoomNavigatorActions.navigatorTo(payload: .main))
+                routerStore.router(action: .dismiss)
             }
             return info
         }
@@ -28,9 +28,9 @@ class VoiceRoomPrepareViewDateHelper {
         return LiveStreamPrivacyStatus.allCases.map { mode in
             var info = ActionItem(title: mode.getString(), icon: "")
             info.actionClosure = { _ in
-                guard let store = self.store, let viewStore = self.viewStore else { return }
+                guard let store = self.store, let routerStore = self.routerStore else { return }
                 store.dispatch(action: RoomActions.updateRoomMode(payload: mode))
-                viewStore.dispatch(action: VoiceRoomNavigatorActions.navigatorTo(payload: .main))
+                routerStore.router(action: .dismiss)
             }
             return info
         }

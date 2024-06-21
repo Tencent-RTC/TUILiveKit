@@ -22,7 +22,7 @@
 "TUILiveKitApp.Main.joinLiveStream" = "加入直播";
 "TUILiveKitApp.Main.joinStreamId" = "请输入直播间号";
 "TUILiveKitApp.Main.streamdoesnotexist" = "当前直播间不存在";
-"TUILiveKitApp.Main.areyousureloginout" = "确定要退出登录吗？";
+"TUILiveKitApp.Main.areyousureloginout" = "确定退出当前账号吗？";
 "TUILiveKitApp.Main.cancel" = "取消";
 "TUILiveKitApp.Main.determine" = "确定";
 "TUILiveKitApp.Main.cancel" = "取消";
@@ -30,3 +30,11 @@
 "TUILiveKitApp.Main.video" = "视频直播";
 "TUILiveKitApp.Main.audio" = "语音直播";
 "TUILiveKitApp.Main.liveRoomList" = "直播间列表";
+"TUILiveKitApp.Main.Live" = "直播";
+"TUILiveKitApp.Main.SelfInfo" = "个人信息";
+"TUILiveKitApp.Main.Me" = "我";
+"TUILiveKitApp.Main.Likes" = "关注";
+"TUILiveKitApp.Main.Fans" = "粉丝";
+"TUILiveKitApp.Main.Name" = "昵称";
+"TUILiveKitApp.Main.Save" = "保存";
+"TUILiveKitApp.Main.Operate.Success" = "操作成功";

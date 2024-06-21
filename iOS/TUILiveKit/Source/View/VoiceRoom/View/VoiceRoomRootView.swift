@@ -10,11 +10,13 @@ import Kingfisher
 import SnapKit
 import TUICore
 import RTCCommon
+import RTCRoomEngine
 
 class VoiceRoomRootView: RTCBaseView {
     
     @Injected var store: LiveStore
     @Injected var viewStore: VoiceRoomViewStore
+    @Injected var routerStore: RouterStore
     
     // TopView Status
     lazy var userCount = self.store.select(RoomSelectors.getUserCount)
@@ -32,12 +34,13 @@ class VoiceRoomRootView: RTCBaseView {
         return store.selectCurrent(UserSelectors.isOwner)
     }
     
+    private let giftCloudServer: IGiftCloudServer = GiftCloudServer()
     private lazy var roomIdPublisher = self.store.select(RoomSelectors.getRoomId)
     private lazy var ownerInfoPublisher = self.store.select(RoomSelectors.getRoomOwnerInfo)
 
     let backgroundImageView: UIImageView = {
         let backgroundImageView = UIImageView(frame: .zero)
-        backgroundImageView.contentMode = .scaleAspectFill
+        backgroundImageView.contentMode = .scaleToFill
         return backgroundImageView
     }()
 
@@ -98,10 +101,8 @@ class VoiceRoomRootView: RTCBaseView {
     }()
 
     lazy var giftListView: TUIGiftListView = {
-        let roomId = self.store.selectCurrent(RoomSelectors.getRoomId)
-        let view = TUIGiftListView(groupId: roomId)
+        let view = TUIGiftListView(groupId: store.selectCurrent(RoomSelectors.getRoomId))
         view.delegate = self
-        let giftCloudServer = GiftCloudServer()
         giftCloudServer.queryGiftInfoList { error, giftList in
             if error == .noError {
                 view.setGiftList(giftList)
@@ -115,6 +116,19 @@ class VoiceRoomRootView: RTCBaseView {
         let view = MusicPanelView(frame: .zero)
         return view
     }()
+    
+    init(frame: CGRect, 
+         roomId: String,
+         roomParams: RoomParams? = nil) {
+        super.init(frame: frame)
+        store.dispatch(action: UserActions.getSelfInfo())
+        store.dispatch(action: RoomActions.updateRoomId(payload: roomId))
+        if let roomParams = roomParams {
+            start(roomParams: roomParams)
+        } else {
+            join()
+        }
+    }
     
     override func constructViewHierarchy() {
         layer.insertSublayer(backgroundLayer, at: 0)
@@ -131,9 +145,10 @@ class VoiceRoomRootView: RTCBaseView {
         backgroundImageView.snp.makeConstraints { (make) in
             make.edges.equalToSuperview()
         }
+        
         topView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.top.equalTo(safeAreaLayoutGuide.snp.top).offset(10)
+            make.top.equalToSuperview().offset(54.scale375Height())
         }
         seatListView.snp.makeConstraints { make in
             make.top.equalTo(topView.snp.bottom).offset(40)
@@ -142,7 +157,7 @@ class VoiceRoomRootView: RTCBaseView {
             make.right.equalToSuperview()
         }
         bottomMenu.snp.makeConstraints { make in
-            make.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).offset(-20)
+            make.bottom.equalToSuperview().offset(-34.scale375Height())
             make.trailing.equalToSuperview()
             make.height.equalTo(36)
         }
@@ -156,7 +171,7 @@ class VoiceRoomRootView: RTCBaseView {
             make.leading.equalToSuperview().offset(16.scale375())
             make.centerY.equalTo(bottomMenu.snp.centerY)
             make.width.equalTo(130.scale375())
-            make.height.equalTo(36)
+            make.height.equalTo(36.scale375Height())
         }
         giftDisplayView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -174,7 +189,56 @@ class VoiceRoomRootView: RTCBaseView {
     }
     
     override func setupViewStyle() {}
+
+    deinit {
+        giftCacheService.clearCacheDirectory()
+        print("deinit \(type(of: self))")
+    }
+}
+
+extension VoiceRoomRootView {
+    private func start(roomParams: RoomParams) {
+        let roomInfo = TUIRoomInfo()
+        roomInfo.roomId = store.selectCurrent(RoomSelectors.getRoomId)
+        roomInfo.isSeatEnabled = true
+        roomInfo.roomType = .live
+        
+        roomInfo.name = store.selectCurrent(UserSelectors.getSelfInfo).name
+        roomInfo.seatMode = roomParams.seatMode
+        roomInfo.maxSeatCount = roomParams.maxSeatCount
+        let config = generateActionParamTuple(param: roomInfo, actions: [])
+        DataReporter.componentType = .voiceRoom
+        store.dispatch(action: RoomActions.start(payload: config))
+    }
     
+    private func join() {
+        let roomId = store.selectCurrent(RoomSelectors.getRoomId)
+        let param = generateActionParamTuple(param: roomId, actions: [])
+        DataReporter.componentType = .voiceRoom
+        store.dispatch(action: ViewActions.updateLiveStatus(payload: .previewing))
+        store.dispatch(action: RoomActions.join(payload: param))
+    }
+    
+    func didEnterRoom() {
+        var actions:[Action] = [
+            SeatActions.fetchSeatList(),
+            UserActions.fetchUserList(),
+            RoomActions.fetchRoomOwnerInfo(),
+        ]
+        if store.selectCurrent(UserSelectors.isOwner) {
+            actions.append(SeatActions.takeSeat(payload: nil))
+            actions.append(MediaActions.operateMicrophone(payload: true))
+        } else {
+            actions.append(UserActions.checkFollowType(payload: store.selectCurrent(RoomSelectors.roomOwnerId)))
+        }
+        actions.forEach { action in
+            store.dispatch(action: action)
+        }
+        viewStore.dispatch(action: VoiceRoomViewActions.updateBottomMenus())
+    }
+}
+
+extension VoiceRoomRootView {
     private func showAnchorEndView() {
         store.dispatch(action: RoomActions.stop())
         let roomId: String = store.selectCurrent(RoomSelectors.getRoomId)
@@ -207,10 +271,18 @@ class VoiceRoomRootView: RTCBaseView {
             }
         }
     }
+}
 
-    deinit {
-        giftCacheService.clearCacheDirectory()
-        print("deinit \(type(of: self))")
+
+extension VoiceRoomRootView: RouterViewProvider {
+    func getRouteView(route: Route) -> UIView? {
+        if route == .musicList {
+            return musicPanelView
+        } else if route == .giftView {
+            return giftListView
+        } else {
+            return nil
+        }
     }
 }
 
@@ -309,14 +381,14 @@ extension VoiceRoomRootView: TopViewDelegate {
                     self.showAnchorEndView()
                     self.musicPanelView.resetMusicPanelState()
                 })
-                viewStore.dispatch(action: VoiceRoomNavigatorActions.navigatorTo(payload: .listMenu([item])))
+                routerStore.router(action: .present(.listMenu([item])))
             } else {
                 store.dispatch(action: RoomActions.leave())
             }
         case .roomInfo:
-            viewStore.dispatch(action: VoiceRoomNavigatorActions.navigatorTo(payload: .roomInfoPanel))
+            routerStore.router(action: .present(.roomInfo))
         case .audienceList:
-            viewStore.dispatch(action: VoiceRoomNavigatorActions.navigatorTo(payload: .audienceList))
+            routerStore.router(action: .present(.recentViewer))
         }
     }
 }
@@ -366,7 +438,7 @@ extension VoiceRoomRootView: SeatListViewDelegate {
         let seatInfo = store.selectCurrent(SeatSelectors.getSeatList)[index]
         let menus = BottomMenuViewDataHelper().generateOperateSeatMenuData(seat: seatInfo)
         if menus.count > 0 {
-            viewStore.dispatch(action: VoiceRoomNavigatorActions.navigatorTo(payload: .listMenu(menus)))
+            routerStore.router(action: .present(.listMenu(menus)))
         }
     }
 }
@@ -382,16 +454,40 @@ extension VoiceRoomRootView: TUIBarrageDisplayViewDelegate {
 
 extension VoiceRoomRootView: TUIGiftListViewDelegate {
     func onRecharge(giftListView view: TUIGiftListView) {
-        view.setBalance(1_000)
+        giftCloudServer.rechargeBalance { [weak self] error, balance in
+            guard let self = self else { return }
+            if error == .noError {
+                view.setBalance(balance)
+            } else {
+                let toastInfo = ToastInfo(message: .balanceInsufficientText)
+                store.dispatch(action: ViewActions.toastEvent(payload: toastInfo))
+            }
+        }
     }
 
     func onSendGift(giftListView view: TUIGiftListView, giftModel: TUIGift, giftCount: Int) {
+        
+        let anchorInfo = store.selectCurrent(RoomSelectors.getRoomOwnerInfo)
         let receiver = TUIGiftUser()
-        receiver.userId = store.selectCurrent(RoomSelectors.roomOwnerId)
-        receiver.userName = ""
-        receiver.avatarUrl = ""
+        receiver.userId = anchorInfo.userId
+        receiver.userName = anchorInfo.name
+        receiver.avatarUrl = anchorInfo.avatarUrl
         receiver.level = "0"
-        view.sendGift(giftModel: giftModel, giftCount: giftCount, receiver: receiver)
+        
+        let selfInfo = store.selectCurrent(UserSelectors.getSelfInfo)
+        giftCloudServer.sendGift(sender: selfInfo.userId,
+                                 receiver: receiver.userId,
+                                 giftModel: giftModel,
+                                 giftCount: giftCount) { [weak self] error, balance in
+            guard let self = self else { return }
+            if error == .noError {
+                view.sendGift(giftModel: giftModel, giftCount: giftCount, receiver: receiver)
+                view.setBalance(balance)
+            } else {
+                let toastInfo = ToastInfo(message: .balanceInsufficientText)
+                store.dispatch(action: ViewActions.toastEvent(payload: toastInfo))
+            }
+        }
     }
 }
 
@@ -435,5 +531,5 @@ extension VoiceRoomRootView: TUIGiftPlayViewDelegate {
 fileprivate extension String {
     static let meText = localized("live.barrage.me")
     static var confirmCloseText = localized("live.anchor.confirm.close")
-    
+    static let balanceInsufficientText = localized("live.balanceInsufficient")
 }

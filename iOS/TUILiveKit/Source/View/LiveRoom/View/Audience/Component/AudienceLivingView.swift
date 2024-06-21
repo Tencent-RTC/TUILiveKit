@@ -13,10 +13,12 @@ import Combine
 class AudienceLivingView: RTCBaseView {
     // MARK: - private property.
     @Injected var viewStore: LiveRoomViewStore
+    @Injected var routerStore: RouterStore
     @Injected var store: LiveStore
     private lazy var roomIdPublisher = store.select(RoomSelectors.getRoomId)
     private lazy var ownerInfoPublisher = store.select(RoomSelectors.getRoomOwnerInfo)
     private var cancellableSet = Set<AnyCancellable>()
+    
     private let giftCacheService = GiftCacheService()
 
     private lazy var roomInfoView: RoomInfoView = {
@@ -211,12 +213,12 @@ extension AudienceLivingView {
 // MARK: - View Action.
 extension AudienceLivingView {
     @objc func roomInfoViewClick() {
-        viewStore.navigate(action: .present(.roomInfo))
+        routerStore.router(action: RouterAction.present(.roomInfo))
     }
 
     @objc func leaveImageViewClick() {
         store.dispatch(action: RoomActions.leave())
-        viewStore.navigate(action: .exit)
+        routerStore.router(action: RouterAction.exit)
     }
 
     private func showCancelLinkMicPanel() {
@@ -227,17 +229,9 @@ extension AudienceLivingView {
             guard let self = self else { return }
             let requestId = self.store.selectCurrent(SeatSelectors.getMySeatApplicationId)
             self.store.dispatch(action: SeatActions.cancelApplication(payload: requestId))
-            self.viewStore.navigate(action: .pop)
+            self.routerStore.router(action: .dismiss)
         }
-        viewStore.navigate(action: .present(.listMenu([item])))
-    }
-}
-
-extension AudienceLivingView {
-    private func updateBottomAreaLayout() {
-        featureClickPanel.snp.updateConstraints { make in
-            make.width.equalTo(featureClickPanel.mm_w)
-        }
+        routerStore.router(action: RouterAction.present(.listMenu([item])))
     }
 }
 

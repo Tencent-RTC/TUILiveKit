@@ -47,6 +47,10 @@ class AnchorView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        print("deinit \(type(of: self))")
+    }
+    
     private var isViewReady: Bool = false
     override func didMoveToWindow() {
         super.didMoveToWindow()
@@ -101,7 +105,7 @@ extension AnchorView {
     private func bindInteraction() {
         store.dispatch(action: MediaActions.operateCamera(payload: true))
     }
-
+    
 }
 
 // MARK: Action
@@ -135,7 +139,7 @@ extension AnchorView {
             }
         }
     }
-
+    
     private func startLiving() {
         self.prepareView.alpha = 0
         UIView.animate(withDuration: 0.5) { [weak self] in
@@ -147,12 +151,13 @@ extension AnchorView {
         }
         startLiveBlock?()
     }
-
+    
     private func createRoom() {
+        store.dispatch(action: RoomActions.updateRoomId(payload: roomId))
         startLiving()
         subscribeLiveStatus()
         let roomInfo = TUIRoomInfo()
-        roomInfo.roomId = roomId
+        roomInfo.roomId = store.selectCurrent(RoomSelectors.getRoomId)
         roomInfo.name = store.roomState.roomName
         roomInfo.isSeatEnabled = true
         roomInfo.seatMode = store.roomState.seatMode
@@ -169,10 +174,10 @@ extension AnchorView {
             .sink { [weak self] status in
                 guard let self = self else { return }
                 switch status {
-                    case .pushing:
+                case .pushing:
                     self.store.dispatch(action: SeatActions.takeSeat(payload: nil))
-                    default:
-                        break
+                default:
+                    break
                 }
             }
             .store(in: &cancellableSet)
@@ -188,23 +193,9 @@ extension AnchorView : AnchorPrepareViewDelegate {
 }
 
 private extension String {
-    static var enterRoomFailedTitleText = {
-        localized("live.alert.enterRoom.failed.title")
-    }()
-
-    static var enterRoomFailedMessageText = {
-        localized("live.alert.enterRoom.failed.message.xxx")
-    }()
-
-    static var confirmText = {
-        localized("live.alert.confirm")
-    }()
-
-    static var roomNameEmptyToast = {
-        localized("live.anchor.room.name.empty.toast")
-    }()
-    
-    static var operateFailedText: String {
-        localized("live.operation.fail.xxx")
-    }
+    static var enterRoomFailedTitleText = localized("live.alert.enterRoom.failed.title")
+    static var enterRoomFailedMessageText = localized("live.alert.enterRoom.failed.message.xxx")
+    static var confirmText = localized("live.alert.confirm")
+    static var roomNameEmptyToast = localized("live.anchor.room.name.empty.toast")
+    static var operateFailedText = localized("live.operation.fail.xxx")
 }

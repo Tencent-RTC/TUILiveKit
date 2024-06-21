@@ -168,6 +168,11 @@ class RenderView: UIView {
     }
     
     private func updateAvatarImageView() {
+        let currentLiveStatus = store.selectCurrent(ViewSelectors.getLiveStatus)
+        if currentLiveStatus == .previewing {
+            avatarImageView.isHidden = true
+            return
+        }
         guard let seatInfo = seatInfo else { return }
         if store.userState.hasVideoStreamUserList.contains(seatInfo.userId) {
             avatarImageView.isHidden = true

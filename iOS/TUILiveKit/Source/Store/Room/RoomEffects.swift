@@ -55,6 +55,7 @@ class RoomEffects: Effects {
             .flatMap { _ in
                 environment.roomService.stop()
                     .map {
+                        environment.store?.dispatch(action: OperationActions.clearAllState())
                         return RoomActions.stopSuccess()
                     }
                     .catch { error -> Just<Action> in
@@ -86,21 +87,23 @@ class RoomEffects: Effects {
             .eraseToAnyPublisher()
     }
 
-    let leaveLive = Effect<Environment>.dispatchingOne { actions, environment in
+    let leaveLive = Effect<Environment>.dispatchingMultiple { actions, environment in
         actions
             .wasCreated(from: RoomActions.leave)
             .flatMap { _ in
                 environment.roomService.leave()
                     .map { _ in
                         environment.store?.dispatch(action: ViewActions.updateLiveStatus(payload: .none))
-                        environment.store?.dispatch(action: MediaActions.stopLocalPreview())
-                        environment.store?.dispatch(action: MediaActions.cameraClosed())
-                        environment.store?.dispatch(action: MediaActions.microphoneClosed())
-                        return RoomActions.leaveSuccess()
+                        environment.store?.dispatch(action: OperationActions.clearAllState())
+                        return [RoomActions.leaveSuccess(),
+                                MediaActions.stopLocalPreview(),
+                                MediaActions.cameraClosed(),
+                                MediaActions.microphoneClosed(),
+                        ]
                     }
-                    .catch { error -> Just<Action> in
+                    .catch { error -> Just<[Action]> in
                         let action = environment.errorService.convert(error: error)
-                        return Just(action)
+                        return Just([action])
                     }
             }
             .eraseToAnyPublisher()

@@ -50,7 +50,7 @@ class AudienceListView: RTCBaseView {
     
     // MARK: - private property.
     @Injected private var store: LiveStore
-    @Injected private var viewStore: LiveRoomViewStore
+    @Injected private var routerStore: RouterStore
     private var cancellableSet: Set<AnyCancellable> = []
     private var listUser:[User] = []
     
@@ -173,6 +173,6 @@ extension AudienceListView: UICollectionViewDataSource {
 
 extension AudienceListView {
     @objc func containerTapAction() {
-        viewStore.navigate(action: .present(.recentViewer))
+        routerStore.router(action: .present(.recentViewer))
     }
 }

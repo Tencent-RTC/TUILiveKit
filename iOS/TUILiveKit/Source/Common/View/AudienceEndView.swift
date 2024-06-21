@@ -9,6 +9,7 @@ import UIKit
 import RTCCommon
 
 class AudienceEndView: UIView {
+    @Injected var store: LiveStore
     private let roomId: String
     private let avatarUrl: String
     private let userName: String
@@ -103,6 +104,7 @@ class AudienceEndView: UIView {
     
     @objc func closeButtonClick() {
         WindowUtils.getCurrentWindowViewController()?.backToPreviousPage()
+        store.dispatch(action: ViewActions.updateLiveStatus(payload: .none))
     }
     
     func update(avatarUrl: String, userName: String) {

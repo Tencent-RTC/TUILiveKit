@@ -11,7 +11,7 @@ import Combine
 
 class LinkMicAnchorFloatView: UIView {
     @Injected private var store: LiveStore
-    @Injected private var viewStore: LiveRoomViewStore
+    @Injected private var routerStore: RouterStore
     private var cancellableSet = Set<AnyCancellable>()
     
     private var applyList: [SeatApplication] = []
@@ -151,7 +151,7 @@ extension LinkMicAnchorFloatView: UICollectionViewDataSource {
 
 extension LinkMicAnchorFloatView {
     @objc func tapAction() {
-        viewStore.navigate(action: .present(.linkControl))
+        routerStore.router(action: RouterAction.present(.linkControl))
     }
 }
 

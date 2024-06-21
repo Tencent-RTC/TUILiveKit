@@ -66,6 +66,10 @@ class MatrixVideoRenderView: UIView {
         activateConstraints()
         bindInteraction()
     }
+    
+    deinit {
+        print("deinit \(type(of: self))")
+    }
 
     func constructViewHierarchy() {
         addSubview(attendeeCollectionView)
@@ -96,10 +100,16 @@ extension MatrixVideoRenderView {
     func getRenderUserList() -> [SeatInfo] {
         var list = store.seatState.seatList.filter { !$0.userId.isEmpty}
         if store.viewState.liveStatus == .previewing || store.viewState.liveStatus == .pushing {
-            list = list.filter({ $0.userId != store.userState.selfInfo.userId })
+            list = list.filter({ [weak self] in
+                guard let self = self else { return false }
+                return $0.userId != self.store.userState.selfInfo.userId
+            })
             list.insert(SeatInfo(userInfo: store.userState.selfInfo), at: 0)
         } else if store.viewState.liveStatus == .playing && store.viewState.linkStatus == .applying {
-            list = list.filter({ $0.userId != store.userState.selfInfo.userId })
+            list = list.filter({ [weak self] in
+                guard let self = self else { return false }
+                return $0.userId != store.userState.selfInfo.userId
+            })
             list.append(SeatInfo(userInfo: store.userState.selfInfo))
         }
         return list

@@ -86,7 +86,6 @@ class FeatureItemButton: UIControl {
         super.didMoveToWindow()
         guard !isViewReady else { return }
         isViewReady = true
-
         setView()
     }
 
@@ -113,9 +112,10 @@ class FeatureItemButton: UIControl {
         switch item.designConfig.type {
         case .singleImage:
             buttonImageView.snp.makeConstraints { make in
-                make.width.equalToSuperview().multipliedBy(item.designConfig.imageScale)
-                make.height.equalToSuperview().multipliedBy(item.designConfig.imageScale)
-                make.center.equalToSuperview()
+                make.width.equalTo(item.designConfig.imageSize.width)
+                make.height.equalTo(item.designConfig.imageSize.height)
+                make.top.bottom.equalToSuperview()
+                make.left.right.equalToSuperview()
             }
         case .imageAboveTitle:
             buttonImageView.snp.makeConstraints { make in
@@ -128,13 +128,13 @@ class FeatureItemButton: UIControl {
                 make.top.equalTo(buttonImageView.snp.bottom).offset(2.scale375())
                 make.width.equalToSuperview()
                 make.height.equalTo(item.designConfig.titleHeight)
+                make.bottom.equalToSuperview().offset(-2.scale375())
             }
         case .imageAboveTitleBottom:
             imageBgView.isHidden = false
             imageBgView.snp.makeConstraints { make in
                 make.width.height.equalTo(56.scale375())
-                make.centerX.equalToSuperview()
-                make.top.equalToSuperview()
+                make.top.left.right.equalToSuperview()
             }
 
             buttonImageView.snp.makeConstraints { make in
@@ -146,6 +146,7 @@ class FeatureItemButton: UIControl {
                 make.top.equalTo(imageBgView.snp.bottom).offset(3.scale375())
                 make.width.equalToSuperview()
                 make.height.equalTo(17.scale375())
+                make.bottom.equalToSuperview().offset(-2.scale375())
             }
         }
     }
@@ -173,22 +174,23 @@ class FeatureClickPanel: UIView {
 
     func setView() {
         var leftButton: FeatureItemButton?
-        for item in model.items {
+        for (index, item) in model.items.enumerated() {
             let button = createFeatureItemButton(item: item)
             button.snp.makeConstraints { make in
-                if let leftBu = leftButton {
-                    make.leading.equalTo(leftBu.snp.trailing).offset(model.itemDiff)
+                if let leftBtn = leftButton {
+                    make.leading.equalTo(leftBtn.snp.trailing).offset(model.itemDiff)
                 } else {
                     make.leading.equalToSuperview()
                 }
-                make.centerY.equalToSuperview()
                 make.width.equalTo(model.itemSize.width)
-                make.height.equalTo(model.itemSize.height)
+                make.top.equalToSuperview()
+                make.bottom.equalToSuperview()
+                if index == model.items.count - 1 {
+                    make.trailing.equalToSuperview()
+                }
             }
             leftButton = button
         }
-        mm_h = model.itemSize.height
-        mm_w = (model.itemSize.width + model.itemDiff) * CGFloat(model.items.count) - model.itemDiff
     }
 
     func createFeatureItemButton(item: FeatureItem) -> FeatureItemButton {

@@ -158,9 +158,6 @@ extension ServiceCenter: TUIRoomObserver {
     }
     
     // MARK: - room event.
-    func onKickedOutOfRoom(roomId: String, reason: TUIKickedOutOfRoomReason, message: String) {
-    }
-    
     func onRoomDismissed(roomId: String) {
         let toast = ToastInfo(message: .roomDismissed)
         let onRoomDismissedActions: [any Action] = [
@@ -169,6 +166,7 @@ extension ServiceCenter: TUIRoomObserver {
             MediaActions.stopLocalPreview(),
             ViewActions.toastEvent(payload: toast),
             ViewActions.updateLiveStatus(payload: .finished),
+            OperationActions.clearAllState(),
         ]
         onRoomDismissedActions.forEach { action in
             store?.dispatch(action: action)
@@ -190,6 +188,34 @@ extension ServiceCenter: TUIRoomObserver {
     func onRoomUserCountChanged(roomId: String, userCount: Int) {
         let audienceCount = userCount > 0 ? userCount - 1 : userCount
         store?.dispatch(action: RoomActions.updateRoomMemberCount(payload: audienceCount))
+    }
+    
+    func onKickedOffLine(message: String) {
+        handlingKickedEvents(message: message)
+    }
+    
+    func onKickedOutOfRoom(roomId: String, reason: TUIKickedOutOfRoomReason, message: String) {
+        if reason != .byServer {
+            handlingKickedEvents(message: message)
+        }
+    }
+}
+
+extension ServiceCenter {
+    private func handlingKickedEvents(message: String) {
+        guard let store = store else { return }
+        store.dispatch(action: ViewActions.toastEvent(payload: ToastInfo(message: message)))
+        if !store.selectCurrent(RoomSelectors.getRoomId).isEmpty {
+            let kickedActions: [any Action] = [
+                MediaActions.cameraClosed(),
+                MediaActions.microphoneClosed(),
+                MediaActions.stopLocalPreview(),
+            ]
+            kickedActions.forEach { action in
+                store.dispatch(action: action)
+            }
+            store.dispatch(action: ViewActions.updateLiveStatus(payload: .none))
+        }
     }
 }
 
