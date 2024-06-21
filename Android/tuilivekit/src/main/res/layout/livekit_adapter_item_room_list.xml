@@ -67,6 +67,8 @@
                     android:layout_gravity="center"
                     android:layout_marginStart="4dp"
                     android:gravity="center"
+                    android:singleLine="true"
+                    android:ellipsize="end"
                     android:textColor="@color/livekit_design_standard_g3"
                     android:textSize="12sp" />
             </LinearLayout>

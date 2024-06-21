@@ -84,6 +84,7 @@
             android:layout_marginTop="18dp"
             android:background="@drawable/livekit_live_info_button_follow"
             android:text="@string/livekit_follow_anchor"
+            android:textAllCaps="false"
             android:textColor="@color/common_color_white"
             android:textSize="16sp" />
 

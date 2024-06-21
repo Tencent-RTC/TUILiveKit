@@ -48,6 +48,7 @@
         android:text="@string/livekit_start_live"
         android:textColor="@android:color/white"
         android:textSize="16sp"
+        android:textAllCaps="false"
         android:textFontWeight="700"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

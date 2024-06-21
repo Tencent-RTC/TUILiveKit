@@ -39,6 +39,7 @@
         android:layout_gravity="center_horizontal"
         android:text="@string/livekit_gift_give_gift"
         android:textSize="12sp"
+        android:textAllCaps="false"
         android:textColor="@color/livekit_design_standard_flowkit_white"
         android:background="@drawable/livekit_bg_gift_give"
         android:visibility="gone"/>

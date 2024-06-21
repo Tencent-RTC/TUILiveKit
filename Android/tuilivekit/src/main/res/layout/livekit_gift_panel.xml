@@ -72,6 +72,7 @@
             android:gravity="center"
             android:textSize="16sp"
             android:textStyle="bold"
+            android:textAllCaps="false"
             android:textColor="@color/white"
             android:background="@drawable/livekit_gift_recharge_bg"
             android:text="@string/livekit_gift_recharge"/>

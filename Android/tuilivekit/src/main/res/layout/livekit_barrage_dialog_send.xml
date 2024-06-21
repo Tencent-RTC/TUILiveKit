@@ -65,6 +65,7 @@
                 android:background="@drawable/livekit_barrage_btn_send"
                 android:gravity="center"
                 android:text="@string/livekit_barrage_btn_send"
+                android:textAllCaps="false"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="@id/et_input_message"
                 app:layout_constraintEnd_toEndOf="parent"

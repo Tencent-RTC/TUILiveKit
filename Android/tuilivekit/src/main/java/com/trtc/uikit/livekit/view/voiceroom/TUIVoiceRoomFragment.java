@@ -71,9 +71,7 @@ public class TUIVoiceRoomFragment extends Fragment {
         View contentView = inflater.inflate(R.layout.livekit_voiceroom_fragment_main, container, false);
         mLayoutContainer = contentView.findViewById(R.id.rl_container);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-        if (mVoiceRoomRootView == null) {
-            mVoiceRoomRootView = new VoiceRoomRootView(requireActivity(), mLiveController, mRoomBehavior, mRoomParams);
-        }
+        mVoiceRoomRootView = new VoiceRoomRootView(requireActivity(), mLiveController, mRoomBehavior, mRoomParams);
         mLayoutContainer.addView(mVoiceRoomRootView, layoutParams);
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), mBackPressedCallback);
         return contentView;
@@ -118,7 +116,7 @@ public class TUIVoiceRoomFragment extends Fragment {
 
     private void initLiveController() {
         mLiveController = new LiveController();
-        mLiveController.getRoomSate().roomId = mRoomId;
+        mLiveController.setRoomId(mRoomId);
     }
 
     private void addObserver() {

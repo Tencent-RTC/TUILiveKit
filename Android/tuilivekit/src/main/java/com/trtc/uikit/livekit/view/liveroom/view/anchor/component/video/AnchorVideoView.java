@@ -13,7 +13,6 @@ import com.trtc.uikit.livekit.common.view.BasicView;
 import com.trtc.uikit.livekit.manager.LiveController;
 import com.trtc.uikit.livekit.state.operation.SeatState;
 import com.trtc.uikit.livekit.view.liveroom.view.common.video.VideoView;
-import com.trtc.uikit.livekit.view.liveroom.view.common.video.VideoViewFactory;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -67,8 +66,8 @@ public class AnchorVideoView extends BasicView {
         seatInfo.userId.set(mUserState.selfInfo.userId);
         seatInfo.avatarUrl.set(mUserState.selfInfo.avatarUrl.get());
         seatInfo.name.set(mUserState.selfInfo.name.get());
-        VideoView linkAudienceVideoView = VideoViewFactory.instance.createVideoView(seatInfo, mLiveController,
-                mContext);
+        VideoView linkAudienceVideoView = mLiveController.getVideoViewFactory().createVideoView(seatInfo,
+                mLiveController, mContext);
         mLinkMicGridHelper.addAnchorView(linkAudienceVideoView);
     }
 
@@ -76,21 +75,31 @@ public class AnchorVideoView extends BasicView {
         if (mUserState.selfInfo.userId.equals(seatInfo.userId.get())) {
             return;
         }
-        VideoView linkAudienceVideoView = VideoViewFactory.instance.createVideoView(seatInfo, mLiveController,
+        VideoView linkAudienceVideoView = mLiveController.getVideoViewFactory().createVideoView(seatInfo,
+                mLiveController,
                 mContext);
         mLinkMicGridHelper.addAudienceView(linkAudienceVideoView);
     }
 
     private void removeView(SeatState.SeatInfo seatInfo) {
-        VideoView linkAudienceVideoView = VideoViewFactory.instance.createVideoView(seatInfo, mLiveController,
+        VideoView linkAudienceVideoView = mLiveController.getVideoViewFactory().createVideoView(seatInfo,
+                mLiveController,
                 mContext);
         mLinkMicGridHelper.removeAudienceView(linkAudienceVideoView);
-        VideoViewFactory.instance.mVideoViewMap.remove(seatInfo.userId.get());
+        mLiveController.getVideoViewFactory().removeVideoViewByUserId(seatInfo.userId.get());
     }
 
     private void onLinkAudienceListChange(List<SeatState.SeatInfo> seatInfoList) {
         for (SeatState.SeatInfo seatInfo : seatInfoList) {
-            if (!mLinkUserList.contains(seatInfo)) {
+            boolean isContainer = false;
+            for (int i = 0; i < mLinkUserList.size(); i++) {
+                if (mLinkUserList.get(i).userId.get().equals(seatInfo.userId.get())) {
+                    isContainer = true;
+                    mLinkUserList.get(i).updateState(seatInfo);
+                    break;
+                }
+            }
+            if (!isContainer) {
                 mLinkUserList.add(seatInfo);
                 addAudienceView(seatInfo);
             }

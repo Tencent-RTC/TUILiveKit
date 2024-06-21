@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="LiveKitBarrageInputDialog">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowIsFloating">false</item>
@@ -45,5 +46,9 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSizeTopLeft">8dp</item>
         <item name="cornerSizeTopRight">8dp</item>
+    </style>
+
+    <style name="CustomTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
     </style>
 </resources>

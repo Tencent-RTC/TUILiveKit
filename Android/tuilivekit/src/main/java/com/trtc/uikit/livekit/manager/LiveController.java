@@ -1,6 +1,7 @@
 package com.trtc.uikit.livekit.manager;
 
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
+import com.trtc.uikit.livekit.common.utils.LiveKitLog;
 import com.trtc.uikit.livekit.manager.controller.MediaController;
 import com.trtc.uikit.livekit.manager.controller.RoomController;
 import com.trtc.uikit.livekit.manager.controller.SeatController;
@@ -16,16 +17,19 @@ import com.trtc.uikit.livekit.state.operation.RoomState;
 import com.trtc.uikit.livekit.state.operation.SeatState;
 import com.trtc.uikit.livekit.state.operation.UserState;
 import com.trtc.uikit.livekit.state.view.ViewState;
+import com.trtc.uikit.livekit.view.liveroom.view.common.video.VideoViewFactory;
 
 public class LiveController {
-    private final RoomController  mRoomController;
-    private final SeatController  mSeatController;
-    private final UserController  mUserController;
-    private final MediaController mMediaController;
-    private final ViewController  mViewController;
-    private final LiveState       mState;
-    private final ILiveService    mLiveService;
-    private final LiveObserver    mLiveObserver;
+    private final String           mTag = "LiveController[" + hashCode() + "]";
+    private final RoomController   mRoomController;
+    private final SeatController   mSeatController;
+    private final UserController   mUserController;
+    private final MediaController  mMediaController;
+    private final ViewController   mViewController;
+    private final LiveState        mState;
+    private final ILiveService     mLiveService;
+    private final LiveObserver     mLiveObserver;
+    private final VideoViewFactory mVideoViewFactory;
 
     public LiveController() {
         mState = new LiveState();
@@ -36,6 +40,7 @@ public class LiveController {
         mUserController = new UserController(mState, mLiveService);
         mMediaController = new MediaController(mState, mLiveService);
         mViewController = new ViewController(mState, mLiveService);
+        mVideoViewFactory = new VideoViewFactory();
         mLiveObserver = new LiveObserver(this);
         mLiveService.addObserver(mLiveObserver);
         mRoomController.addListener(mRoomControllerListener);
@@ -102,6 +107,16 @@ public class LiveController {
 
     public ViewState getViewState() {
         return mState.viewState;
+    }
+
+    public VideoViewFactory getVideoViewFactory() {
+        return mVideoViewFactory;
+    }
+
+    public void setRoomId(String roomId) {
+        getRoomSate().roomId = roomId;
+        LiveKitLog.info(mTag + " setRoomId:[mRoomId=" + roomId + ",mLiveService:" + mLiveService.hashCode()
+                + ",mLiveObserver:" + mLiveObserver.hashCode() + "]");
     }
 
     private final RoomController.Listener mRoomControllerListener = new RoomController.Listener() {

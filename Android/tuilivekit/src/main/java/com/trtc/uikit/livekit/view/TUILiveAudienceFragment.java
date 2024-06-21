@@ -7,6 +7,7 @@ import static com.trtc.uikit.livekit.view.voiceroom.TUIVoiceRoomFragment.RoomBeh
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -98,8 +99,7 @@ public class TUILiveAudienceFragment extends Fragment implements ITUINotificatio
         mViewPager2.setOffscreenPageLimit(1);
         mViewPager2.setUserInputEnabled(true);
         mViewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            private int lastPosition = 0;
-            private boolean isSlidingUpward = false;
+            private int currentPosition = 0;
 
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -108,15 +108,14 @@ public class TUILiveAudienceFragment extends Fragment implements ITUINotificatio
 
             @Override
             public void onPageSelected(int position) {
-                isSlidingUpward = position > lastPosition;
-                lastPosition = position;
+                currentPosition = position;
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
                 if (state == SCROLL_STATE_IDLE
-                        && isSlidingUpward
-                        && lastPosition >= adapter.getItemCount() - 2) {
+                        && currentPosition >= adapter.getItemCount() - 1
+                        && !TextUtils.isEmpty(mRoomListState.mFetchListCursor)) {
                     mRoomListService.fetchLiveList(true);
                 }
             }

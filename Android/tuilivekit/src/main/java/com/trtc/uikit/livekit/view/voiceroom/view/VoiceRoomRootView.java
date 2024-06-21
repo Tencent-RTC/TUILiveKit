@@ -235,6 +235,7 @@ public class VoiceRoomRootView extends BasicView {
                 });
             }
         });
+        mLayoutGiftContainer.setVisibility(GONE);
     }
 
     private void initBarrageView() {
@@ -244,6 +245,7 @@ public class VoiceRoomRootView extends BasicView {
                 mLiveController.getRoomSate().ownerInfo.userId);
         mLayoutBarrageContainer.addView(mBarrageDisplayView, layoutParams);
         mBarrageDisplayView.setAdapter(new GiftBarrageAdapter(mContext));
+        mLayoutBarrageContainer.setVisibility(GONE);
     }
 
     private void initAnchorEndView() {
@@ -299,9 +301,6 @@ public class VoiceRoomRootView extends BasicView {
         roomController.updateLikeNumber(mGiftPlayView.getLikeCount());
         roomController.updateMessageCount(mBarrageDisplayView.getBarrageCount());
         roomController.exit();
-        if (mContext instanceof Activity) {
-            ((Activity) mContext).finish();
-        }
     }
 
     private void onLiveStateChanged(LiveDefine.LiveStatus status) {
@@ -345,10 +344,18 @@ public class VoiceRoomRootView extends BasicView {
 
     private void displayComplete() {
         mUserController.muteAllRemoteAudio(false);
+        mLayoutBarrageContainer.setVisibility(VISIBLE);
+        mLayoutGiftContainer.setVisibility(VISIBLE);
+        mLayoutTopViewContainer.setVisibility(VISIBLE);
+        mLayoutBottomMenuContainer.setVisibility(VISIBLE);
     }
 
     private void endDisplay() {
         mUserController.muteAllRemoteAudio(true);
+        mLayoutBarrageContainer.setVisibility(GONE);
+        mLayoutGiftContainer.setVisibility(GONE);
+        mLayoutTopViewContainer.setVisibility(GONE);
+        mLayoutBottomMenuContainer.setVisibility(GONE);
     }
 
     public enum VoiceRoomViewStatus {

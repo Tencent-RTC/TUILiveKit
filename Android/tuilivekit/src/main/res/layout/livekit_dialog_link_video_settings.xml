@@ -111,6 +111,7 @@
         android:text="@string/livekit_btn_apply_link_mic"
         android:textColor="@color/livekit_design_standard_flowkit_white"
         android:textSize="16sp"
+        android:textAllCaps="false"
         android:background="@drawable/livekit_button_background"
         app:layout_constraintBottom_toTopOf="@+id/video_settings_apply_tips"
         app:layout_constraintStart_toStartOf="parent"

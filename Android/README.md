@@ -73,3 +73,8 @@ java.lang.IllegalStateException: You need to use a Theme.AppCompat theme (or des
 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:526)
 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1034)
 ```
+
+#### 4.Failed to open the web page address in the browser, Error details:
+```
+No activity match : Intent { act=android.intent.action.VIEW dat=https://cloud.tencent.com/... }
+```

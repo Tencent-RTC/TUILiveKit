@@ -29,6 +29,7 @@
             android:id="@+id/btn_link"
             android:layout_width="32dp"
             android:layout_height="32dp"
+            android:textAllCaps="false"
             android:background="@drawable/livekit_function_link_default" />
     </RelativeLayout>
 
@@ -47,6 +48,7 @@
             android:id="@+id/btn_settings"
             android:layout_width="32dp"
             android:layout_height="32dp"
+            android:textAllCaps="false"
             android:background="@drawable/livekit_function_settings" />
     </RelativeLayout>
 
@@ -65,6 +67,7 @@
             android:id="@+id/btn_music"
             android:layout_width="32dp"
             android:layout_height="32dp"
+            android:textAllCaps="false"
             android:background="@drawable/livekit_function_music" />
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

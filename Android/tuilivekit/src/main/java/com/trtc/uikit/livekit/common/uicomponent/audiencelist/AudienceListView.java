@@ -4,7 +4,10 @@ import static com.trtc.uikit.livekit.common.utils.Constants.ROOM_MAX_SHOW_USER_C
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Point;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -46,9 +49,7 @@ public class AudienceListView extends BottomPanelView {
     }
 
     private void initAudienceCountView() {
-        mLayoutAudienceCount.setOnClickListener(view -> {
-            showAudienceListPanelView();
-        });
+        mLayoutAudienceCount.setOnClickListener(view -> showAudienceListPanelView());
     }
 
     private void bindViewId() {
@@ -69,20 +70,46 @@ public class AudienceListView extends BottomPanelView {
         mRoomState.userCount.removeObserver(mMemberCountObserver);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void initAudienceAvatarView() {
         mRecycleAudienceList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL,
                 false));
         mAdapter = new AudienceListIconAdapter(mContext, mLiveController);
         mRecycleAudienceList.setAdapter(mAdapter);
+        mRecycleAudienceList.setOnTouchListener(new OnTouchListener() {
+            private final Point point = new Point();
+            private boolean scroll = false;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        point.set((int) event.getX(), (int) event.getY());
+                        scroll = false;
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        if (Math.abs(event.getX() - point.x) > 10 && !scroll) {
+                            scroll = true;
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if (!scroll) {
+                            showAudienceListPanelView();
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                return false;
+            }
+        });
     }
 
     private void showAudienceListPanelView() {
         if (mAudienceListPanel == null) {
             AudienceListPanelView panelView = new AudienceListPanelView(mContext, mLiveController);
             mAudienceListPanel = BottomPanel.create(panelView);
-            panelView.setOnBackButtonClickListener(() -> {
-                mAudienceListPanel.dismiss();
-            });
+            panelView.setOnBackButtonClickListener(() -> mAudienceListPanel.dismiss());
         }
         mAudienceListPanel.show();
     }

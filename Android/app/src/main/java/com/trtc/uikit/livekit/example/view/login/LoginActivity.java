@@ -1,4 +1,4 @@
-package com.trtc.uikit.livekit.example.login;
+package com.trtc.uikit.livekit.example.view.login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,8 +16,8 @@ import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.tencent.qcloud.tuikit.debug.GenerateTestUserSig;
 import com.trtc.uikit.livekit.example.BaseActivity;
 import com.trtc.uikit.livekit.example.R;
-import com.trtc.uikit.livekit.example.main.MainActivity;
-import com.trtc.uikit.livekit.example.settings.SettingsConfig;
+import com.trtc.uikit.livekit.example.view.main.MainActivity;
+import com.trtc.uikit.livekit.example.store.AppStore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +52,7 @@ public class LoginActivity extends BaseActivity {
                     @Override
                     public void onSuccess() {
                         Log.i(TAG, "login success");
-                        SettingsConfig.userId = userId;
+                        AppStore.userId = userId;
                         getUserInfo(userId);
                     }
 
@@ -89,8 +89,8 @@ public class LoginActivity extends BaseActivity {
                 if (TextUtils.isEmpty(userName) || TextUtils.isEmpty(userAvatar)) {
                     startProfileActivity();
                 } else {
-                    SettingsConfig.userAvatar = userAvatar;
-                    SettingsConfig.userName = userName;
+                    AppStore.userAvatar = userAvatar;
+                    AppStore.userName = userName;
                     startMainActivity();
                 }
                 finish();

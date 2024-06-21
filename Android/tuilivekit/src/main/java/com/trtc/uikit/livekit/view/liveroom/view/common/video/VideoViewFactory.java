@@ -15,13 +15,10 @@ public class VideoViewFactory {
 
     private static final String TAG = "VideoViewFactory";
 
-    public static VideoViewFactory instance = new VideoViewFactory();
+    private final Map<String, VideoView> mVideoViewMap = new HashMap<>();
+    private       VideoView              mPlaceholderVideoView;
 
-    public Map<String, VideoView> mVideoViewMap = new HashMap<>();
-
-    public VideoView mPlaceholderVideoView;
-
-    private VideoViewFactory() {
+    public VideoViewFactory() {
     }
 
     public VideoView createVideoView(SeatState.SeatInfo seatInfo, LiveController liveController, Context context) {
@@ -64,9 +61,13 @@ public class VideoViewFactory {
     public void clearBySeatList(List<SeatState.SeatInfo> seatList) {
         if (!seatList.isEmpty()) {
             for (SeatState.SeatInfo seatInfo : seatList) {
-                VideoViewFactory.instance.mVideoViewMap.remove(seatInfo.userId.get());
+                this.removeVideoViewByUserId(seatInfo.userId.get());
             }
         }
+    }
+
+    public void removeVideoViewByUserId(String userId) {
+        this.mVideoViewMap.remove(userId);
     }
 
     public void clear() {

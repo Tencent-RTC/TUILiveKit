@@ -103,6 +103,7 @@ public class TUILiveRoomAnchorFragment extends Fragment implements ITUINotificat
     private void initLiveController() {
         mLiveController = new LiveController();
         mLiveController.getSeatState().setFilterEmptySeat(true);
+        mLiveController.setRoomId(mRoomID);
         mLiveController.getViewState().currentNavigationState.observe(mRouteObserver);
         mViewState = mLiveController.getViewState();
         TUIRoomDefine.SeatMode seatMode = TUIRoomDefine.SeatMode.APPLY_TO_TAKE;
