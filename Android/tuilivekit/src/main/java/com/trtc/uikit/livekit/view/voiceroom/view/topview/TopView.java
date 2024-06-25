@@ -4,6 +4,7 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
@@ -58,6 +59,11 @@ public class TopView extends BasicView {
 
     private void initCloseView() {
         ImageView mImageClose = findViewById(R.id.iv_close);
-        mImageClose.setOnClickListener((view) -> mLiveController.getViewController().finish());
+        mImageClose.setOnClickListener((view) -> {
+            mLiveController.getRoomController().exit();
+            if (mContext instanceof Activity) {
+                ((Activity) mContext).finish();
+            }
+        });
     }
 }

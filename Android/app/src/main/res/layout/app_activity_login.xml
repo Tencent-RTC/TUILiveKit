@@ -71,6 +71,7 @@
             android:textColor="@color/app_color_black"
             android:textColorHint="@color/app_color_input_normal"
             android:textSize="16sp"
+            android:maxLength="32"
             android:digits="0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
             app:layout_constraintBottom_toBottomOf="@id/tv_phone_number"
             app:layout_constraintEnd_toEndOf="parent"
