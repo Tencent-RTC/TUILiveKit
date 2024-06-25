@@ -3,6 +3,7 @@ package com.trtc.uikit.livekit.example.view.login;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.widget.Button;
@@ -10,9 +11,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tencent.imsdk.v2.V2TIMCallback;
-import com.tencent.imsdk.v2.V2TIMManager;
-import com.tencent.imsdk.v2.V2TIMUserFullInfo;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.uikit.livekit.example.BaseActivity;
@@ -81,6 +79,17 @@ public class ProfileActivity extends BaseActivity {
         mEditUserName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence text, int start, int count, int after) {
+                InputFilter filter = (source, start1, end, dest, dstart, dend) -> {
+                    for (int i = start1; i < end; i++) {
+                        char c = source.charAt(i);
+                        if (!Character.isLetterOrDigit(c) && !Character.toString(c)
+                                .matches("\\p{IsHan}") && c != '_') {
+                            return "";
+                        }
+                    }
+                    return null;
+                };
+                mEditUserName.setFilters(new InputFilter[]{filter, new InputFilter.LengthFilter(20)});
             }
 
             @Override

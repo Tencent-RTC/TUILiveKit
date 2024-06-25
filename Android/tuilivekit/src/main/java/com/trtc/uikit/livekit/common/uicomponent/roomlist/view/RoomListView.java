@@ -91,7 +91,6 @@ public class RoomListView extends BasicView {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && isSlidingUpward) {
                     int lastItemPosition = layoutManager.findLastVisibleItemPosition();
                     if (lastItemPosition == mAdapter.getItemCount() - 1
-                            && isSlidingUpward
                             && !TextUtils.isEmpty(mRoomListState.mFetchListCursor)) {
                         mRecyclerView.post(() -> mAdapter.setLoadState(LoadMoreAdapterWrapper.LOADING));
                         mRoomListService.fetchLiveList(false);

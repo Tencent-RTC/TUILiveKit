@@ -235,7 +235,6 @@ public class VoiceRoomRootView extends BasicView {
                 });
             }
         });
-        mLayoutGiftContainer.setVisibility(GONE);
     }
 
     private void initBarrageView() {
@@ -245,7 +244,6 @@ public class VoiceRoomRootView extends BasicView {
                 mLiveController.getRoomSate().ownerInfo.userId);
         mLayoutBarrageContainer.addView(mBarrageDisplayView, layoutParams);
         mBarrageDisplayView.setAdapter(new GiftBarrageAdapter(mContext));
-        mLayoutBarrageContainer.setVisibility(GONE);
     }
 
     private void initAnchorEndView() {

@@ -2,6 +2,7 @@ package com.trtc.uikit.livekit.example.view.modify;
 
 
 import android.content.Context;
+import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.tencent.qcloud.tuicore.TUILogin;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.example.R;
 import com.trtc.uikit.livekit.example.service.ICallBack;
@@ -61,6 +63,16 @@ public class ChangeNickNamePicker extends PopupDialog {
     private void initEditInputName() {
         mEditInputName.setText(mTextNickname.getText());
         mEditInputName.setSelection(mEditInputName.getText().length());
+        InputFilter filter = (source, start, end, dest, dstart, dend) -> {
+            for (int i = start; i < end; i++) {
+                char c = source.charAt(i);
+                if (!Character.isLetterOrDigit(c) && !Character.toString(c).matches("\\p{IsHan}") && c != '_') {
+                    return "";
+                }
+            }
+            return null;
+        };
+        mEditInputName.setFilters(new InputFilter[]{filter, new InputFilter.LengthFilter(20)});
     }
 
     private void initBackView() {

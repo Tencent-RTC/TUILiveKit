@@ -99,22 +99,10 @@ public class TUILiveAudienceFragment extends Fragment implements ITUINotificatio
         mViewPager2.setOffscreenPageLimit(1);
         mViewPager2.setUserInputEnabled(true);
         mViewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            private int currentPosition = 0;
-
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                currentPosition = position;
-            }
-
             @Override
             public void onPageScrollStateChanged(int state) {
                 if (state == SCROLL_STATE_IDLE
-                        && currentPosition >= adapter.getItemCount() - 1
+                        && mViewPager2.getCurrentItem() == adapter.getItemCount() - 1
                         && !TextUtils.isEmpty(mRoomListState.mFetchListCursor)) {
                     mRoomListService.fetchLiveList(true);
                 }
