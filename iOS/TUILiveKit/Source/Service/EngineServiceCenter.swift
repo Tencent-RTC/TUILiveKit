@@ -7,40 +7,57 @@
 import RTCRoomEngine
 import Combine
 
+protocol BaseServiceProtocol {
+    var roomEngine: TUIRoomEngine? { get set }
+    init(roomEngine: TUIRoomEngine?)
+}
 
 // This object holds an instance of the RoomEngine service.
 class ServiceCenter: NSObject {
-    let mediaService: MediaService = MediaService()
-    let roomService: RoomService = RoomService()
-    let userService: UserService = UserService()
-    let seatService: SeatService = SeatService()
+    let mediaService: MediaService
+    let roomService: RoomService
+    let userService: UserService
+    let seatService: SeatService
+    let beautyService: BeautyService
     let errorService: ErrorService = ErrorService()
-    let beautyService: BeautyService = BeautyService()
     
-    @WeakLazyInjected var store: LiveStore?
+    let roomEngine: TUIRoomEngine?
+    
+    weak var store: LiveStoreProvider?
+    
+    init(store: LiveStoreProvider) {
+        self.store = store
+        self.roomEngine = ServiceCenter.getRoomEngine()
+        mediaService = MediaService(roomEngine: roomEngine)
+        roomService = RoomService(roomEngine: roomEngine)
+        userService = UserService(roomEngine: roomEngine)
+        seatService = SeatService(roomEngine: roomEngine)
+        beautyService = BeautyService(roomEngine: roomEngine)
+        super.init()
+        self.roomEngine?.addObserver(self)
+    }
     
     deinit {
+        self.store = nil
         debugPrint("deinit \(type(of: self))")
     }
     
-    private let volumeSubject = CurrentValueSubject<Set<String>, Never>([])
-    private var cancellableSet: Set<AnyCancellable> = []
-    override init() {
-        super.init()
-        TUIRoomEngine.sharedInstance().addObserver(self)
-        subscribe()
-    }
-    
-    func subscribe() {
-        let timeInterval :DispatchQueue.SchedulerTimeType.Stride = .milliseconds(500)
-        volumeSubject
-            .removeDuplicates()
-            .debounce(for: timeInterval, scheduler: DispatchQueue.main)
-            .sink { [weak self] speakUsers in
-                guard let store = self?.store else { return }
-                store.dispatch(action: UserActions.onUserVoiceVolumeChanged(payload: speakUsers))
-            }
-            .store(in: &cancellableSet)
+    static func getRoomEngine() -> TUIRoomEngine? {
+        LiveKitLog.info("\(#file)", "\(#line)","getRoomEngine")
+        let jsonObject: [String: String] = ["api" : "createSubRoom"]
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject, options: []) else {
+            LiveKitLog.error("\(#file)", "\(#line)","convert to jsonData error, jsonObject: \(jsonObject)")
+            return nil
+        }
+        guard let jsonString = String(data: jsonData, encoding: .utf8) else {
+            LiveKitLog.error("\(#file)", "\(#line)","convert to jsonString error, jsonObject: \(jsonObject)")
+            return nil
+        }
+        guard let roomEngine = TUIRoomEngine.callExperimentalAPI(jsonStr: jsonString) as? TUIRoomEngine else {
+            LiveKitLog.error("\(#file)", "\(#line)","getRoomEgnine error, jsonString: \(jsonString)")
+            return nil
+        }
+        return roomEngine
     }
     
 }
@@ -154,7 +171,7 @@ extension ServiceCenter: TUIRoomObserver {
                 return value > 25 ? [key] : []
             }
         let speakUsers = Set(result)
-        volumeSubject.send(speakUsers)
+        store?.dispatch(action: UserActions.onUserVoiceVolumeChanged(payload: speakUsers))
     }
     
     // MARK: - room event.

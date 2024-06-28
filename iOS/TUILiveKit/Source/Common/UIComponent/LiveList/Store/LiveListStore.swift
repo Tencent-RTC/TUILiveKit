@@ -6,8 +6,9 @@
 //
 
 import Combine
+import RTCRoomEngine
 
-protocol LiveListStoreProvider {
+protocol LiveListStore {
     func dispatch(action: Action)
     func select<Value: Equatable>(_ selector: Selector<LiveListState, Value>) -> AnyPublisher<Value, Never>
     func selectCurrent<Value>(_ selector: Selector<LiveListState, Value>) -> Value
@@ -15,8 +16,8 @@ protocol LiveListStoreProvider {
     func selectCurrent<Value>(_ selector: Selector<LiveListNavigationState, Value>) -> Value
 }
 
-class LiveListStore {
-    let service = LiveListService()
+class LiveListStoreProvider {
+    let service = LiveListService(roomEngine: TUIRoomEngine.sharedInstance())
     private(set) lazy var store: Store<LiveListState, LiveListService> = Store(initialState: LiveListState(),environment: service)
     private(set) lazy var navigator: Store<LiveListNavigationState, Void> = Store(initialState: LiveListNavigationState())
     
@@ -35,7 +36,7 @@ class LiveListStore {
     }
 }
 
-extension LiveListStore: LiveListStoreProvider {
+extension LiveListStoreProvider: LiveListStore {
     func dispatch(action: any Action) {
         guard let action = action as? IdentifiableAction else { return }
         if action.id.contains(LiveListNavigatorActions.key) {

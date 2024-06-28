@@ -39,25 +39,25 @@ public class TUIVoiceRoomViewController: UIViewController {
     // MARK: - Private property.
     private var needRestoreNavigationBarHiddenState: Bool = false
     
-    @Injected private var store: LiveStore
-    @Injected private var viewStore: VoiceRoomViewStore
-    @Injected private var routerStore: RouterStore
+    private let routerStore: RouterStoreProvider = RouterStoreProvider()
+    private lazy var store: LiveStoreProvider = LiveStoreFactory.getLiveStore(roomId: roomId)
     
     private lazy var routerCenter: RouterControlCenter = {
         let rootRoute: Route = behavior == .join ? .audience : .anchor
-        let routerCenter = RouterControlCenter(rootViewController: self, rootRoute: rootRoute)
+        let routerCenter = RouterControlCenter(rootViewController: self, store: store, rootRoute: rootRoute, routerStore: routerStore)
         return routerCenter
     }()
     
     private lazy var voiceRootView: VoiceRoomRootView = {
         let view = VoiceRoomRootView(frame: UIScreen.main.bounds,
                                      roomId: roomId,
+                                     routerStore: routerStore,
                                      roomParams: roomParams)
         return view
     }()
     
     private lazy var voicePrepareView: VoiceRoomPrepareView = {
-        let view = VoiceRoomPrepareView(frame: UIScreen.main.bounds)
+        let view = VoiceRoomPrepareView(frame: UIScreen.main.bounds, store: store, routerStore: routerStore)
         view.delegate = self
         return view
     }()
@@ -80,6 +80,14 @@ public class TUIVoiceRoomViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        store.dispatch(action: RoomActions.leaveSuccess())
+        unSubscribeViewState()
+        VoiceRoomViewStoreFactory.removeVoiceRoomViewStore(roomId: roomId)
+        LiveStoreFactory.removeLiveStore(roomId: roomId)
+        print("deinit \(type(of: self))")
+    }
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         handle(behavior: behavior)
@@ -93,14 +101,6 @@ public class TUIVoiceRoomViewController: UIViewController {
     public override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         restoreNavigationBar()
-    }
-    
-    deinit {
-        // Reset audio effect View data.
-        AudioEffectView.session.reset()
-        store.dispatch(action: RoomActions.leaveSuccess())
-        unSubscribeViewState()
-        print("deinit \(type(of: self))")
     }
     
     private func handle(behavior: RoomBehavior) {
@@ -161,15 +161,10 @@ extension TUIVoiceRoomViewController {
             .sink { [weak self] status in
                 guard let self = self else { return }
                 switch status {
-                case .previewing:
-                    voicePrepareView.isHidden = false
-                case .playing, .pushing:
-                    voicePrepareView.isHidden = true
-                    voiceRootView.didEnterRoom()
-                case .finished:
-                    voicePrepareView.isHidden = true
                 case .none:
                     routerStore.router(action: .exit)
+                default:
+                    break
                 }
             }
     }

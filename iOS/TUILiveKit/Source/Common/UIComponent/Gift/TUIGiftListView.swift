@@ -171,7 +171,7 @@ extension TUIGiftListView: TUIGiftPanelDelegate {
     }
    
     func onLikeDidSend(_ giftView: TUIGiftPanelView, sender: TUIGiftUser, isSuccess: Bool, message: String) {
-        TUIGiftStore.shared.likeData.value = TUILikeData(sender: sender)
+        TUIGiftStore.shared.likeDataMap.value = [groupId: TUILikeData(sender: sender)]
     }
 }
 

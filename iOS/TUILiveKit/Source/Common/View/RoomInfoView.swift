@@ -10,7 +10,7 @@ import Combine
 import Kingfisher
 
 class RoomInfoView: UIControl {
-    @Injected var store: LiveStore
+    var store: LiveStore
     private lazy var followingUserList = self.store.select(UserSelectors.getMyFollowingList)
     private lazy var roomOwnerInfo = self.store.select(RoomSelectors.getRoomOwnerInfo)
     private lazy var isOwner = self.store.select(UserSelectors.isOwner)
@@ -44,6 +44,15 @@ class RoomInfoView: UIControl {
         return button
     }()
 
+    init(store: LiveStore) {
+        self.store = store
+        super.init(frame: .zero)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     private var isViewReady = false
     override func didMoveToWindow() {
         super.didMoveToWindow()

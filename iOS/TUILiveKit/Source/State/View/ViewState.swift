@@ -12,5 +12,3 @@ struct ViewState {
     var liveStatus: LiveStatus = .previewing
     var autoOpenCameraOnSeated: Bool = true
 }
-
-

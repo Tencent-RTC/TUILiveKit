@@ -9,7 +9,7 @@ import UIKit
 import Combine
 
 class LinkMicBaseCell: UITableViewCell {
-    @Injected  var store: LiveStore
+    var store: LiveStore?
     var cancellableSet: Set<AnyCancellable> = []
     var seatInfo: SeatInfo? {
         didSet {

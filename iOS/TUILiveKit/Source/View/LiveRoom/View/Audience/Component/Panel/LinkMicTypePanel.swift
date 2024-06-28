@@ -8,7 +8,7 @@
 import Foundation
 
 class LinkMicTypePanel: UIView {
-    @Injected var routerStore: RouterStore
+    private let routerStore: RouterStore
     
     private var isPortrait: Bool = {
         WindowUtils.isPortrait
@@ -16,8 +16,9 @@ class LinkMicTypePanel: UIView {
 
     let data: [LinkMicTypeCellData]
     
-    init(data: [LinkMicTypeCellData]) {
+    init(data: [LinkMicTypeCellData], routerStore: RouterStore) {
         self.data = data
+        self.routerStore = routerStore
         super.init(frame: .zero)
     }
     

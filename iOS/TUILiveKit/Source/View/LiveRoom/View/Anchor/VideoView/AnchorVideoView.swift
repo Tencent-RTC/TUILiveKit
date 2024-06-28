@@ -8,8 +8,8 @@
 import UIKit
 
 class AnchorVideoView: MatrixVideoRenderView {
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init(store: any LiveStore) {
+        super.init(store: store)
     }
     
     required init?(coder: NSCoder) {

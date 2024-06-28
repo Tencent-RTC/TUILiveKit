@@ -8,10 +8,11 @@
 import UIKit
 import Combine
 import RTCCommon
+import RTCRoomEngine
 
 class AudioEffectView: UIView {
+    private let menuGenerator: AudioEffectMenuDateGenerator
     
-    @Injected private var menuGenerator: AudioEffectMenuDateGenerator
     var backButtonClickClosure: ((UIButton)->Void)?
     private var isViewReady: Bool = false
     private let backButton: UIButton = {
@@ -47,8 +48,9 @@ class AudioEffectView: UIView {
     lazy var menus: [Int : [SettingItem]] = self.menuGenerator.audioEffectMenus
     lazy var titles: [Int: String] = self.menuGenerator.audioEffectSectionTitles
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(roomEngine: TUIRoomEngine? = nil) {
+        self.menuGenerator = AudioEffectStoreProvider(roomEngine: roomEngine)
+        super.init(frame: .zero)
         backgroundColor = .clear
     }
     
@@ -217,8 +219,4 @@ extension AudioEffectView {
     func clickBack(sender: UIButton) {
         self.backButtonClickClosure?(sender)
     }
-}
-
-extension AudioEffectView {
-    static let session = ResolverScopeCache()
 }

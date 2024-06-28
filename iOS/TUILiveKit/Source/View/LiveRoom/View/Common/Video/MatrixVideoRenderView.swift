@@ -24,7 +24,7 @@ class MatrixVideoRenderCell: UICollectionViewCell {
 class MatrixVideoRenderView: UIView {
     let renderManager:MatrixVideoRenderManager = MatrixVideoRenderManager()
     // MARK: - private property.
-    @Injected var store: LiveStore
+    var store: LiveStore
     private lazy var seatListPublisher = store.select(SeatSelectors.getSeatList)
     private lazy var liveStatusPublisher = store.select(ViewSelectors.getLiveStatus)
     private lazy var linkStatusPublisher = store.select(ViewSelectors.getLinkStatus)
@@ -55,7 +55,20 @@ class MatrixVideoRenderView: UIView {
         collection.delegate = self
         return collection
     }()
-
+    
+    init(store: LiveStore) {
+        self.store = store
+        super.init(frame: .zero)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        print("deinit \(type(of: self))")
+    }
+    
     private var isViewReady: Bool = false
     override func didMoveToWindow() {
         super.didMoveToWindow()
@@ -65,10 +78,6 @@ class MatrixVideoRenderView: UIView {
         constructViewHierarchy()
         activateConstraints()
         bindInteraction()
-    }
-    
-    deinit {
-        print("deinit \(type(of: self))")
     }
 
     func constructViewHierarchy() {
@@ -168,7 +177,7 @@ extension MatrixVideoRenderView: UICollectionViewDelegateFlowLayout,
             return cell
         }
         let seatInfo = renderUserList[indexPath.item]
-        let renderView = renderManager.getRenderView(seatInfo)
+        let renderView = renderManager.getRenderView(seatInfo, store: store)
         cell.updateRenderView(renderView)
         return cell
     }

@@ -102,18 +102,17 @@ class UserRequestLinkCell: LinkMicBaseCell {
     
 }
 
-
 // MARK: Action
 
 extension UserRequestLinkCell {
     @objc func acceptButtonClick() {
         guard let seatApplication = seatApplication else{ return}
-        store.dispatch(action: SeatActions.responseSeatApplication(payload: (true, seatApplication.id)))
+        store?.dispatch(action: SeatActions.responseSeatApplication(payload: (true, seatApplication.id)))
     }
     
     @objc func rejectButtonClick() {
         guard let seatApplication = seatApplication else{ return}
-        store.dispatch(action: SeatActions.responseSeatApplication(payload: (false, seatApplication.id)))
+        store?.dispatch(action: SeatActions.responseSeatApplication(payload: (false, seatApplication.id)))
     }
 }
 

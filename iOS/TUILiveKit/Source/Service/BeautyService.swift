@@ -13,16 +13,20 @@ import Combine
     import TXLiteAVSDK_Professional
 #endif
 
-class BeautyService {
-    private let engine = TUIRoomEngine.sharedInstance()
-    private var trtcCloud: TRTCCloud {
-        return engine.getTRTCCloud()
+class BeautyService: BaseServiceProtocol {
+    var roomEngine: TUIRoomEngine?
+    required init(roomEngine: TUIRoomEngine?) {
+        self.roomEngine = roomEngine
+    }
+    
+    deinit {
+        debugPrint("deinit \(type(of: self))")
     }
     
     func setBeautyLevel(_ beautyLevel: Float) -> AnyPublisher<Void, Never> {
         return Future<Void, Never> { [weak self] promise in
-            guard let self = self else { return }
-            self.trtcCloud.getBeautyManager().setBeautyLevel(beautyLevel)
+            guard let self = self, let roomEngine = self.roomEngine else { return }
+            roomEngine.getTRTCCloud().getBeautyManager().setBeautyLevel(beautyLevel)
             promise(.success(()))
         }
         .eraseToAnyPublisher()
@@ -30,8 +34,8 @@ class BeautyService {
     
     func setWhitenessLevel(_ whitenessLevel: Float) -> AnyPublisher<Void, Never> {
         return Future<Void, Never> { [weak self] promise in
-            guard let self = self else { return }
-            self.trtcCloud.getBeautyManager().setWhitenessLevel(whitenessLevel)
+            guard let self = self, let roomEngine = self.roomEngine else { return }
+            roomEngine.getTRTCCloud().getBeautyManager().setWhitenessLevel(whitenessLevel)
             promise(.success(()))
         }
         .eraseToAnyPublisher()
@@ -39,8 +43,8 @@ class BeautyService {
     
     func setRuddyLevel(_ ruddyLevel: Float) -> AnyPublisher<Void, Never> {
         return Future<Void, Never> { [weak self] promise in
-            guard let self = self else { return }
-            self.trtcCloud.getBeautyManager().setRuddyLevel(ruddyLevel)
+            guard let self = self, let roomEngine = self.roomEngine else { return }
+            roomEngine.getTRTCCloud().getBeautyManager().setRuddyLevel(ruddyLevel)
             promise(.success(()))
         }
         .eraseToAnyPublisher()

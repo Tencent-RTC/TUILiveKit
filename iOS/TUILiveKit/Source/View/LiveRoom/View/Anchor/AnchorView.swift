@@ -13,23 +13,24 @@ import Combine
 
 class AnchorView: UIView {
     private let roomId:String
-    @Injected var store: LiveStore
+    private let store: LiveStore
+    private let routerStore: RouterStore
     private lazy var liveStatusPublisher = store.select(ViewSelectors.getLiveStatus)
     private var cancellableSet = Set<AnyCancellable>()
     var startLiveBlock:(()->Void)?
     
     private lazy var videoView: AnchorVideoView = {
-        AnchorVideoView()
+        AnchorVideoView(store: store)
     }()
     
     private lazy var prepareView: AnchorPrepareView = {
-        let view = AnchorPrepareView(frame: .zero)
+        let view = AnchorPrepareView(store: store, routerStore: routerStore)
         view.delegate = self
         return view
     }()
     
     private lazy var livingView: AnchorLivingView = {
-        let view = AnchorLivingView(roomId: roomId)
+        let view = AnchorLivingView(roomId: roomId, routerStore: routerStore)
         view.alpha = 0
         return view
     }()
@@ -38,8 +39,10 @@ class AnchorView: UIView {
         return livingView.musicPanelView
     }
     
-    init(roomId: String) {
+    init(roomId: String, routerStore: RouterStore) {
         self.roomId = roomId
+        self.store = LiveStoreFactory.getLiveStore(roomId: roomId)
+        self.routerStore = routerStore
         super.init(frame: .zero)
     }
     
@@ -104,6 +107,7 @@ extension AnchorView {
     
     private func bindInteraction() {
         store.dispatch(action: MediaActions.operateCamera(payload: true))
+        store.dispatch(action: UserActions.getSelfInfo())
     }
     
 }
@@ -117,15 +121,15 @@ extension AnchorView {
             let roomState = store.selectCurrent(RoomSelectors.getRoomState)
             let giftIncome = store.selectCurrent(RoomSelectors.getGiftIncome)
             let giftPeopleCount = store.selectCurrent(RoomSelectors.getGiftPeopleSet).count
-            let audienceCount = store.selectCurrent(UserSelectors.getAudienceUserList).count
+            let audienceCount = store.selectCurrent(UserSelectors.getUserList).count
             let liveDataModel = LiveDataModel(roomId: roomId,
                                               liveDuration: abs(Int(Date().timeIntervalSince1970 - Double(roomState.createTime / 1_000))),
-                                              audienceCount: audienceCount,
+                                              audienceCount: audienceCount == 0 ? 0 : audienceCount - 1,
                                               messageCount: livingView.getBarrageCount(),
                                               giftIncome: giftIncome,
                                               giftPeopleCount: giftPeopleCount,
                                               likeCount: livingView.getLikeCount())
-            let anchorEndView = AnchorEndView(liveDataModel: liveDataModel)
+            let anchorEndView = AnchorEndView(liveDataModel: liveDataModel, routerStore: routerStore)
             addSubview(anchorEndView)
             anchorEndView.snp.makeConstraints { make in
                 make.edges.equalToSuperview()
@@ -156,13 +160,14 @@ extension AnchorView {
         store.dispatch(action: RoomActions.updateRoomId(payload: roomId))
         startLiving()
         subscribeLiveStatus()
+        
         let roomInfo = TUIRoomInfo()
         roomInfo.roomId = store.selectCurrent(RoomSelectors.getRoomId)
-        roomInfo.name = store.roomState.roomName
+        roomInfo.name = store.selectCurrent(RoomSelectors.getRoomName)
         roomInfo.isSeatEnabled = true
+        roomInfo.roomType = .live
         roomInfo.seatMode = store.roomState.seatMode
         roomInfo.maxSeatCount = store.roomState.maxSeatCount
-        roomInfo.roomType = .live
         let config = generateActionParamTuple(param: roomInfo, actions: [])
         DataReporter.componentType = .liveRoom
         store.dispatch(action: RoomActions.start(payload: config))

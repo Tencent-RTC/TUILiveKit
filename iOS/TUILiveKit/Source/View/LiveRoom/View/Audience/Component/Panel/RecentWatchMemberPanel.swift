@@ -9,45 +9,13 @@ import Foundation
 import Combine
 
 class RecentWatchMemberPanel: UIView {
-    @Injected private var store: LiveStore
-    @Injected private var routerStore: RouterStore
+    private let store: LiveStore
+    private let routerStore: RouterStore
     private var cancellableSet = Set<AnyCancellable>()
     private var isPortrait: Bool = {
         return WindowUtils.isPortrait
     }()
     private var listUser:[User] = []
-    private var isViewReady: Bool = false
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        guard !isViewReady else { return }
-        backgroundColor = .clear
-        constructViewHierarchy()
-        activateConstraints()
-        subscribe()
-        isViewReady = true
-    }
-  
-    private func subscribe() {
-        store.select(UserSelectors.getAudienceUserList)
-            .receive(on: RunLoop.main)
-            .sink { [weak self] audienceUserList in
-                guard let self = self else { return }
-                let ownerId = store.selectCurrent(RoomSelectors.getRoomId)
-                listUser = audienceUserList.filter { $0.userId != ownerId }
-                let selfInfo = store.selectCurrent(UserSelectors.getSelfInfo)
-                userListTableView.reloadData()
-            }
-            .store(in: &cancellableSet)
-    }
-    
-    
-    init() {
-        super.init(frame: .zero)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 
     private lazy var backButton: UIButton = {
         let view = UIButton(type: .system)
@@ -74,6 +42,40 @@ class RecentWatchMemberPanel: UIView {
         tableView.register(UserMemberCell.self, forCellReuseIdentifier: UserMemberCell.cellReuseIdentifier)
         return tableView
     }()
+    
+    init(store: LiveStore, routerStore: RouterStore) {
+        self.store = store
+        self.routerStore = routerStore
+        super.init(frame: .zero)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private var isViewReady: Bool = false
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        guard !isViewReady else { return }
+        backgroundColor = .clear
+        constructViewHierarchy()
+        activateConstraints()
+        subscribe()
+        isViewReady = true
+    }
+  
+    private func subscribe() {
+        store.select(UserSelectors.getUserList)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] userList in
+                guard let self = self else { return }
+                let ownerId = self.store.selectCurrent(RoomSelectors.getRoomId)
+                self.listUser = userList.filter { $0.userId != ownerId }
+                self.userListTableView.reloadData()
+            }
+            .store(in: &cancellableSet)
+    }
+    
 }
 
 // MARK: Layout

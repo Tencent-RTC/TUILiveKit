@@ -12,7 +12,7 @@ import RTCRoomEngine
 
 class LiveListRootView: UIView {
     
-    @Injected private var store: LiveListStoreProvider
+    private var store: LiveListStore
     
     private var cancellableSet = Set<AnyCancellable>()
     private var liveListDataSource: [TUILiveInfo] = []
@@ -34,6 +34,15 @@ class LiveListRootView: UIView {
         collectionView.alwaysBounceVertical = true
         return collectionView
     }()
+    
+    init(store: LiveListStore) {
+        self.store = store
+        super.init(frame: .zero)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     private var isViewReady = false
     override func didMoveToWindow() {
@@ -141,10 +150,6 @@ extension LiveListRootView: UICollectionViewDelegate {
         let liveInfo = liveListDataSource[indexPath.item]
         store.dispatch(action: LiveListNavigatorActions.navigatorTo(payload: .toLive(liveInfo)))
     }
-}
-
-extension LiveListRootView {
-    static let session = ResolverScopeCache()
 }
 
 extension String {

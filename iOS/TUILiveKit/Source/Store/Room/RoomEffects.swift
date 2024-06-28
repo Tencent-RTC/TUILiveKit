@@ -26,7 +26,7 @@ class RoomEffects: Effects {
                         
                         store.dispatch(action: ViewActions.updateLiveStatus(payload: .pushing))
                         store.dispatch(action: RoomActions.updateRoomOwnerInfo(payload: store.userState.selfInfo))
-                        
+
                         let roomState = store.selectCurrent(RoomSelectors.getRoomState)
                         let liveInfo = TUILiveInfo()
                         liveInfo.roomInfo.roomId = roomInfo.roomId
@@ -35,10 +35,10 @@ class RoomEffects: Effects {
                         liveInfo.categoryList = [NSNumber(value: roomState.liveExtraInfo.category.rawValue)]
                         
                         return action.payload.nextActions + [
+                            RoomActions.updateRoomInfo(payload: roomInfo),
                             RoomActions.updateLiveInfo(payload: (liveInfo, .coverUrl)),
                             RoomActions.updateLiveInfo(payload: (liveInfo, .category)),
                             RoomActions.updateLiveInfo(payload: (liveInfo, .publish)),
-                            RoomActions.joinSuccess(payload: roomInfo),
                         ]
                     }
                     .catch { error -> Just<[Action]> in
@@ -74,9 +74,9 @@ class RoomEffects: Effects {
                     .map { roomInfo in
                         environment.store?.dispatch(action: RoomActions.updateRoomOwnerInfo(payload: User(userId: roomInfo.ownerId)))
                         environment.store?.dispatch(action: ViewActions.updateLiveStatus(payload: .playing))
-                        environment.store?.dispatch(action: RoomActions.fetchRoomOwnerInfo())
                         return [
-                            RoomActions.joinSuccess(payload: roomInfo),
+                            RoomActions.fetchRoomOwnerInfo(payload: roomInfo.ownerId),
+                            RoomActions.updateRoomInfo(payload: roomInfo),
                         ] + action.payload.nextActions
                     }
                     .catch { error -> Just<[Action]> in
@@ -111,8 +111,8 @@ class RoomEffects: Effects {
 
     let fetchRoomOwnerInfo = Effect<Environment>.dispatchingOne { actions, environment in
         actions.wasCreated(from: RoomActions.fetchRoomOwnerInfo)
-            .flatMap { _ in
-                environment.roomService.fetchRoomOwnerInfo()
+            .flatMap { action in
+                environment.roomService.fetchRoomOwnerInfo(ownerId: action.payload)
                     .map { user in
                         RoomActions.updateRoomOwnerInfo(payload: user)
                     }

@@ -11,8 +11,8 @@ protocol AnchorPrepareViewDelegate: AnyObject {
 }
 
 class AnchorPrepareView: UIView {
-    @WeakLazyInjected var store: LiveStore?
-    @Injected var routerStore: RouterStore
+    private let store: LiveStore
+    private let routerStore: RouterStore
     weak var delegate: AnchorPrepareViewDelegate?
     private var isPortrait: Bool = {
         WindowUtils.isPortrait
@@ -37,7 +37,7 @@ class AnchorPrepareView: UIView {
     }()
 
     private lazy var settingsCard: LiveStreamSettingsCard = {
-        var settingsCard = LiveStreamSettingsCard(frame: .zero)
+        var settingsCard = LiveStreamSettingsCard(store: store, routerStore: routerStore)
         return settingsCard
     }()
 
@@ -101,7 +101,9 @@ class AnchorPrepareView: UIView {
         isViewReady = true
     }
 
-    override init(frame: CGRect) {
+    init(store: LiveStore, routerStore: RouterStore) {
+        self.store = store
+        self.routerStore = routerStore
         super.init(frame: .zero)
         registerObserver()
     }
@@ -112,6 +114,7 @@ class AnchorPrepareView: UIView {
 
     deinit {
         NotificationCenter.default.removeObserver(self)
+        print("deinit \(type(of: self))")
     }
 
     private func registerObserver() {
@@ -290,13 +293,11 @@ extension AnchorPrepareView {
     }
 
     private func mirrorClick() {
-        guard let store = store else { return }
         let isMirror = !store.mediaState.isMirror
         store.dispatch(action: MediaActions.switchMirror(payload: isMirror))
     }
 
     private func flipClick() {
-        guard let store = store else { return }
         let isFrontCamera = !store.mediaState.isFrontCamera
         store.dispatch(action: MediaActions.switchCamera(payload: isFrontCamera ? .front : .rear))
     }

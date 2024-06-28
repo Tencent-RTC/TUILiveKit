@@ -13,22 +13,13 @@ import Combine
 
 class LiveStreamSettingsCard: UIView {
     private var cancellableSet = Set<AnyCancellable>()
-    @Injected private var store: LiveStore
-    @Injected private var routerStore: RouterStore
+    private let store: LiveStore
+    private let routerStore: RouterStore
+    
     private lazy var roomNamePublisher = self.store.select(RoomSelectors.getRoomName)
     private lazy var roomCoverUrlPublisher = self.store.select(RoomSelectors.getRoomCoverUrl)
     private lazy var roomCategoryPublisher = self.store.select(RoomSelectors.getCategory)
     private lazy var roomModePublisher = self.store.select(RoomSelectors.getLiveMode)
-
-    private var isViewReady: Bool = false
-    override func didMoveToWindow() {
-        super.didMoveToWindow()
-        guard !isViewReady else { return }
-        isViewReady = true
-        constructViewHierarchy()
-        activateConstraints()
-        subscribe()
-    }
 
     lazy var categorySelectionModel: PrepareSelectionModel = {
         let model = PrepareSelectionModel()
@@ -130,6 +121,28 @@ class LiveStreamSettingsCard: UIView {
         view.addTarget(self, action: #selector(modeSelectionClick), for: .touchUpInside)
         return view
     }()
+    
+    init(store: LiveStore, routerStore: RouterStore) {
+        self.store = store
+        self.routerStore = routerStore
+        super.init(frame: .zero)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private var isViewReady: Bool = false
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        guard !isViewReady else { return }
+        isViewReady = true
+        constructViewHierarchy()
+        activateConstraints()
+        subscribe()
+    }
+
+    
 }
 
 // MARK: Layout

@@ -67,35 +67,45 @@ class AudioEffectEffects: Effects {
     }
 }
 
-class AudioEffectService {
-    private let engine = TUIRoomEngine.sharedInstance()
-    private lazy var audioEffectManager: TXAudioEffectManager = self.engine.getTRTCCloud().getAudioEffectManager()
+class AudioEffectService: BaseServiceProtocol {
+    var roomEngine: TUIRoomEngine?
+    
+    required init(roomEngine: TUIRoomEngine?) {
+        self.roomEngine = roomEngine
+    }
+    
+    private func audioEffectManager() -> TXAudioEffectManager {
+        if let roomEngine = roomEngine {
+            return roomEngine.getTRTCCloud().getAudioEffectManager()
+        }
+        return TUIRoomEngine.sharedInstance().getTRTCCloud().getAudioEffectManager()
+    }
     
     func updateMusicVolume(_ volume: Int) {
-        audioEffectManager.setAllMusicVolume(volume)
+        audioEffectManager().setAllMusicVolume(volume)
     }
     
     func updateMicrophoneVolume(_ volume: Int) {
-        audioEffectManager.setVoiceVolume(volume)
+        audioEffectManager().setVoiceVolume(volume)
     }
     
     func updateMusicPitch(_ pitch: Double) {
-        audioEffectManager.setVoicePitch(pitch)
+        audioEffectManager().setVoicePitch(pitch)
     }
     
     func enableVoiceEarMonitor(enable: Bool) {
-        audioEffectManager.enableVoiceEarMonitor(enable)
+        audioEffectManager().enableVoiceEarMonitor(enable)
     }
     
     func setVoiceEarMonitorVolume(_ volume: Int) {
-        audioEffectManager.setVoiceEarMonitorVolume(volume)
+        audioEffectManager().setVoiceEarMonitorVolume(volume)
     }
     
     func updateChangerType(_ type: AudioChangerType) {
-        audioEffectManager.setVoiceChangerType(TXVoiceChangeType(rawValue: type.rawValue) ?? ._0)
+        audioEffectManager().setVoiceChangerType(TXVoiceChangeType(rawValue: type.rawValue) ?? ._0)
     }
     
     func updateReverbType(_ type: AudioReverbType) {
-        audioEffectManager.setVoiceReverbType(TXVoiceReverbType(rawValue: type.rawValue) ?? ._0)
+        audioEffectManager().setVoiceReverbType(TXVoiceReverbType(rawValue: type.rawValue) ?? ._0)
     }
 }

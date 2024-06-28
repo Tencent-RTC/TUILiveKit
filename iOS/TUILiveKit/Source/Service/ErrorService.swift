@@ -48,6 +48,26 @@ class ErrorService {
     }
 }
 
+
+enum TIMError: Int, Error {
+    case success = 0
+    case failed = -1
+    case invalidUserId = 7_002
+}
+
+extension TIMError: LocalizedError {
+    var description: String {
+        switch self {
+            case .success:
+                return .localized("live.error.success")
+            case .failed:
+                return .localized("live.error.failed")
+            case .invalidUserId:
+                return .localized("live.error.invalid.userId")
+        }
+    }
+}
+
 extension TUIError: LocalizedError {
     var description: String {
         switch self {
@@ -157,25 +177,6 @@ extension TUIError: LocalizedError {
                 return .localized("live.error.send.message.disabled.for.current")
             @unknown default:
                 return .localized("live.error.failed")
-        }
-    }
-}
-
-enum TIMError: Int, Error {
-    case success = 0
-    case failed = -1
-    case invalidUserId = 7_002
-}
-
-extension TIMError: LocalizedError {
-    var description: String {
-        switch self {
-            case .success:
-                return .localized("live.error.success")
-            case .failed:
-                return .localized("live.error.failed")
-            case .invalidUserId:
-                return .localized("live.error.invalid.userId")
         }
     }
 }

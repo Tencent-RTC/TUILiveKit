@@ -11,8 +11,9 @@ import RTCRoomEngine
 import RTCCommon
 
 class VideoLinkSettingPanel: RTCBaseView {
-    @Injected private var store: LiveStore
-    @Injected private var routerStore: RouterStore
+    private var store: LiveStore
+    private var routerStore: RouterStore
+    
     private var cancellableSet = Set<AnyCancellable>()
     private var needCloseCameraWhenViewDisappear: Bool = false
     private var isPortrait: Bool = {
@@ -99,6 +100,12 @@ class VideoLinkSettingPanel: RTCBaseView {
         view.lineBreakMode = .byWordWrapping
         return view
     }()
+    
+    init(store: LiveStore, routerStore: RouterStore) {
+        self.store = store
+        self.routerStore = routerStore
+        super.init(frame: .zero)
+    }
     
     override func constructViewHierarchy() {
         addSubview(titleLabel)

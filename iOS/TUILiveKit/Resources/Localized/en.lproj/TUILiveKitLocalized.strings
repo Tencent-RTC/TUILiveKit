@@ -233,3 +233,6 @@
 "live.room.list.noMoreData" = "There is no more data";
 "live.room.list.startLiveRoom" = "Please start a live room";
 "live.room.list.watching.xxx" = "xxx people are watching";
+
+"live.seat.takeSeatApplying" = "You have submitted a link mic request, please wait for the author approval";
+"live.seat.kickedOutOfSeat" = "Kicked out of seat by room owner";

@@ -10,8 +10,8 @@ import UIKit
 import Combine
 
 class LinkMicAnchorFloatView: UIView {
-    @Injected private var store: LiveStore
-    @Injected private var routerStore: RouterStore
+    private var store: LiveStore
+    private var routerStore: RouterStore
     private var cancellableSet = Set<AnyCancellable>()
     
     private var applyList: [SeatApplication] = []
@@ -43,8 +43,10 @@ class LinkMicAnchorFloatView: UIView {
     }()
     
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(store: LiveStore, routerStore: RouterStore) {
+        self.store = store
+        self.routerStore = routerStore
+        super.init(frame: .zero)
     }
 
     required init?(coder: NSCoder) {

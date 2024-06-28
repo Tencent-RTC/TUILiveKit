@@ -8,7 +8,10 @@
 // Action
 enum VoiceRoomViewActions {
     static let key = "VoiceRoom.View.action"
-    static let updateBottomMenus = ActionTemplate(id: key.appending(".updateBottomMenu"))
+    static let updateBottomMenus = ActionTemplate(id: key.appending(".updateBottomMenu"),
+                                                  payloadType: (LiveStore,
+                                                                RouterStore,
+                                                                VoiceRoomViewStore).self)
 }
 
 enum VoiceRoomViewResponseActions {

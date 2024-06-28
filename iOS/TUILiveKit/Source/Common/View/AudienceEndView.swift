@@ -9,7 +9,7 @@ import UIKit
 import RTCCommon
 
 class AudienceEndView: UIView {
-    @Injected var store: LiveStore
+    lazy var store: LiveStore = LiveStoreFactory.getLiveStore(roomId: roomId)
     private let roomId: String
     private let avatarUrl: String
     private let userName: String

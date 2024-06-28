@@ -7,6 +7,26 @@
 import RTCRoomEngine
 import Combine
 
+class LiveStoreFactory {
+    private static var liveStoreMap: [String : LiveStoreProvider] = [:]
+    
+    static func getLiveStore(roomId: String) -> LiveStoreProvider {
+        if let liveStore = liveStoreMap[roomId] {
+            return liveStore
+        }
+        let liveStore = LiveStoreProvider()
+        liveStoreMap.updateValue(liveStore, forKey: roomId)
+        return liveStore
+    }
+    
+    static func removeLiveStore(roomId: String) {
+        liveStoreMap.removeValue(forKey: roomId)
+    }
+    
+    static func removeAllStore() {
+        liveStoreMap.removeAll()
+    }
+}
 
 class LiveStoreProvider {
     let toastSubject = PassthroughSubject<ToastInfo, Never>()
@@ -15,8 +35,12 @@ class LiveStoreProvider {
     let seatActionSubject = PassthroughSubject<any IdentifiableAction, Never>()
     let errorSubject = PassthroughSubject<ErrorService.OperateError, Never>()
     
+    lazy var servicerCenter: ServiceCenter = {
+        ServiceCenter(store: self)
+    }()
+    
     private(set) lazy var operation: Store<OperationState, ServiceCenter> = {
-        return Store(initialState: OperationState(), environment: ServiceCenter())
+        return Store(initialState: OperationState(), environment: servicerCenter)
     }()
 
     private(set) lazy var viewStore: Store<ViewState, Void> = Store(initialState: ViewState())
@@ -55,7 +79,7 @@ class LiveStoreProvider {
         initializedBeautyStore()
         initializedViewStore()
 #if DEBUG
-        operation.register(interceptor: PrintInterceptor<OperationState>())
+//        operation.register(interceptor: PrintInterceptor<OperationState>())
 #endif
     }
     

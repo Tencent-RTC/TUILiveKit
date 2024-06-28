@@ -45,7 +45,7 @@ struct AudioEffectState {
     var reverbType: AudioReverbType = .none
 }
 
-protocol AudioEffectStoreProvider {
+protocol AudioEffectStore {
     func dispatch(action: Action)
     
     func select<Value: Equatable>(_ selector: Selector<AudioEffectState, Value>) -> AnyPublisher<Value, Never>

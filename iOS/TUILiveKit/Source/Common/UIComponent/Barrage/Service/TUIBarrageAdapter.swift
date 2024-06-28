@@ -51,12 +51,15 @@ class TUIBarrageAdapter: TUIBarrageService {
         V2TIMManager.sharedInstance()
     }()
 
-    private let engineManager: TUIRoomEngine = {
-        TUIRoomEngine.sharedInstance()
-    }()
+    private let engineManager: TUIRoomEngine?
+    
+    init(engineManager: TUIRoomEngine?) {
+        self.engineManager = engineManager
+    }
     
     static func defaultCreate(roomId: String, delegate:TUIBarrageServiceDelegate) -> TUIBarrageAdapter {
-        let service = TUIBarrageAdapter()
+        let store = LiveStoreFactory.getLiveStore(roomId: roomId)
+        let service = TUIBarrageAdapter(engineManager:  store.servicerCenter.roomEngine)
         service.roomId = roomId
         service.delegate = delegate
         return service
@@ -64,12 +67,12 @@ class TUIBarrageAdapter: TUIBarrageService {
     
     override func initialize() {
         imManager.addSimpleMsgListener(listener: self)
-        engineManager.addObserver(self)
+        engineManager?.addObserver(self)
     }
 
     override func destroy() {
         imManager.removeSimpleMsgListener(listener: self)
-        engineManager.removeObserver(self)
+        engineManager?.removeObserver(self)
     }
 
     override func sendBarrage(_ barrage: TUIBarrage) {
@@ -78,7 +81,7 @@ class TUIBarrageAdapter: TUIBarrageService {
         imManager.sendGroupTextMessage(barrage.content, to: roomId, priority: .PRIORITY_NORMAL) { [weak self] in
             guard let self = self else { return }
             self.delegate?.didSendBarrage(barrage)
-            TUIBarrageStore.shared.barrage.value = barrage
+            TUIBarrageStore.shared.barrageMap.value = [roomId: barrage]
         } fail: { error, message in
             debugPrint("sendGroupTextMessage failed. code:\(error), message:\(message ?? "")")
         }
