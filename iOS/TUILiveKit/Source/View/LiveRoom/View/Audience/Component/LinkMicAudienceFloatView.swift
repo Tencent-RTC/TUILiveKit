@@ -49,15 +49,17 @@ class UserImageCell: UICollectionViewCell {
 
 class LinkMicAudienceFloatView: UIView {
   
-    @Injected private var store: LiveStore
-    @Injected private var routerStore: RouterStore
+    private let store: LiveStore
+    private let routerStore: RouterStore
     
     private lazy var linkStatus =  store.select(ViewSelectors.getLinkStatus)
     private var cancellableSet = Set<AnyCancellable>()
     
     private var dotsTimer: Timer = Timer()
     private var isViewReady: Bool = false
-    init() {
+    init(store: LiveStore, routerStore: RouterStore) {
+        self.store = store
+        self.routerStore = routerStore
         super.init(frame: .zero)
         updateLabelText()
         subscribeViewState()
@@ -84,10 +86,11 @@ class LinkMicAudienceFloatView: UIView {
         constructViewHierarchy()
         activateConstraints()
         updateView()
-        store.select(UserSelectors.getAudienceUserList)
+        store.select(UserSelectors.getUserList)
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in
-                self?.updateView()
+                guard let self = self else { return }
+                self.updateView()
             }
             .store(in: &cancellableSet)
     }

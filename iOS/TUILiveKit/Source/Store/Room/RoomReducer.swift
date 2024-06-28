@@ -10,15 +10,6 @@ let roomReducer = Reducer<RoomState>(
     ReduceOn(RoomActions.join, reduce: { state, action in
         state.roomId = action.payload.param
     }),
-    ReduceOn(RoomActions.joinSuccess, reduce: { state, action in
-        let roomInfo = action.payload
-        state.roomId = roomInfo.roomId
-        state.roomName = roomInfo.name
-        state.ownerInfo.userId = roomInfo.ownerId
-        state.seatMode = roomInfo.seatMode
-        state.createTime = roomInfo.createTime
-        state.maxSeatCount = roomInfo.maxSeatCount
-    }),
     ReduceOn(RoomActions.updateRoomOwnerInfo, reduce: { state, action in
         state.ownerInfo = action.payload
     }),
@@ -56,10 +47,12 @@ let roomReducer = Reducer<RoomState>(
         state.ownerInfo.fansCount = action.payload
     }),
     ReduceOn(RoomActions.updateRoomInfo, reduce: { state, action in
-        state.roomId = action.payload.roomId
-        state.roomName = action.payload.name
-        state.createTime = action.payload.createTime
-        state.seatMode = action.payload.seatMode
-        state.ownerInfo.userId = action.payload.ownerId
+        let roomInfo = action.payload
+        state.roomId = roomInfo.roomId
+        state.roomName = roomInfo.name
+        state.ownerInfo.userId = roomInfo.ownerId
+        state.seatMode = roomInfo.seatMode
+        state.createTime = roomInfo.createTime
+        state.maxSeatCount = roomInfo.maxSeatCount
     })
 )

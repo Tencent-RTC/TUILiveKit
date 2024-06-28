@@ -9,33 +9,15 @@ import Foundation
 import Combine
 
 class AnchorLinkControlPanel: UIView {
-    @Injected private var store: LiveStore
-    @Injected private var routerStore: RouterStore
+    private let store: LiveStore
+    private let routerStore: RouterStore
+    
     private var cancellable = Set<AnyCancellable>()
     private var isPortrait: Bool = {
         WindowUtils.isPortrait
     }()
     private var linkingList: [SeatInfo] = []
     private var applyList: [SeatApplication] = []
-    private var isViewReady: Bool = false
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        guard !isViewReady else { return }
-        isViewReady = true
-        backgroundColor = .clear
-        constructViewHierarchy()
-        activateConstraints()
-        subscribeSeatState()
-    }
-
-    init() {
-        super.init(frame: .zero)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
     private lazy var backButton: UIButton = {
         let view = UIButton(type: .system)
         view.setBackgroundImage(.liveBundleImage("live_back_icon"), for: .normal)
@@ -65,6 +47,28 @@ class AnchorLinkControlPanel: UIView {
         return tableView
     }()
     
+    
+    init(store: LiveStore, routerStore: RouterStore) {
+        self.store = store
+        self.routerStore = routerStore
+        super.init(frame: .zero)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private var isViewReady: Bool = false
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        guard !isViewReady else { return }
+        isViewReady = true
+        backgroundColor = .clear
+        constructViewHierarchy()
+        activateConstraints()
+        subscribeSeatState()
+    }
+
     private func subscribeSeatState() {
         store.select(SeatSelectors.getSeatApplications)
             .receive(on: RunLoop.main)
@@ -159,16 +163,18 @@ extension AnchorLinkControlPanel: UITableViewDelegate {
         if indexPath.section == 0 {
             if indexPath.row < linkingList.count {
                 cell = tableView.dequeueReusableCell(withIdentifier: UserLinkCell.cellReuseIdentifier, for: indexPath) as? LinkMicBaseCell
+                cell?.store = store
                 cell?.seatInfo = linkingList[indexPath.row]
                 cell?.lineView.isHidden = (linkingList.count - 1) == indexPath.row
             }
         } else if indexPath.section == 1 {
             if indexPath.row < applyList.count {
                 cell = tableView.dequeueReusableCell(withIdentifier: UserRequestLinkCell.cellReuseIdentifier, for: indexPath) as? LinkMicBaseCell
+                cell?.store = store
                 cell?.seatApplication = applyList[indexPath.row]
             }
         }
-        return cell ?? tableView.dequeueReusableCell(withIdentifier: UserLinkCell.cellReuseIdentifier, for: indexPath)
+        return cell ?? tableView.dequeueReusableCell(withIdentifier: LinkMicBaseCell.cellReuseIdentifier, for: indexPath)
     }
 
     internal func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

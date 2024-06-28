@@ -6,10 +6,12 @@
 //
 
 import Foundation
+import Combine
 
 class StreamPublisherView: RenderView {
-    @Injected private var viewStore: LiveRoomViewStore
     private lazy var linkStatusPublisher = store.select(ViewSelectors.getLinkStatus)
+    private var linkStatusCancellable: AnyCancellable?
+    
     lazy var waitingLinkView: WaitLinkMicAnimationView = {
         let view = WaitLinkMicAnimationView()
         addSubview(view)
@@ -23,9 +25,7 @@ class StreamPublisherView: RenderView {
     private var isViewReady = false
     override func didMoveToWindow() {
         super.didMoveToWindow()
-        guard !isViewReady else {
-            return
-        }
+        guard !isViewReady else { return }
         isViewReady = true
         subscribeState()
     }
@@ -53,20 +53,23 @@ class StreamPublisherView: RenderView {
     }
     
     deinit {
-        debugPrint("deinit \(self)")
+        linkStatusCancellable?.cancel()
+        linkStatusCancellable = nil
+        print("deinit  \(type(of: self))")
     }
 }
 
 extension StreamPublisherView {
     
     private func subscribeState() {
-        linkStatusPublisher
+        linkStatusCancellable?.cancel()
+        linkStatusCancellable = nil
+        linkStatusCancellable = linkStatusPublisher
             .receive(on: RunLoop.main)
             .sink { [weak self] status in
                 guard let self = self else { return }
                 self.updateStatus()
             }
-            .store(in: &cancellableSet)
     }
 
 }

@@ -44,16 +44,23 @@ class MusicPanelEffects: Effects {
     
 }
 
-class MusicPanelService {
-    
+class MusicPanelService: BaseServiceProtocol {
     enum MusicPlayStatus: Int {
         case playing = 0
         case complete = 999
     }
     
-    private let engine = TUIRoomEngine.sharedInstance()
-    private lazy var audioEffectManager: TXAudioEffectManager = self.engine.getTRTCCloud().getAudioEffectManager()
-    @WeakLazyInjected var store: MusicPanelStoreProvider?
+    var roomEngine: TUIRoomEngine?
+    required init(roomEngine: TUIRoomEngine?) {
+        self.roomEngine = roomEngine
+    }
+    
+    private func audioEffectManager() -> TXAudioEffectManager {
+        guard let roomEngine = roomEngine else {
+            return TUIRoomEngine.sharedInstance().getTRTCCloud().getAudioEffectManager()
+        }
+        return roomEngine.getTRTCCloud().getAudioEffectManager()
+    }
     
     func startPlayMusic(musicInfo: MusicInfo) -> AnyPublisher<MusicPlayStatus, InternalError> {
         return Future<MusicPlayStatus, InternalError> { [weak self] promise in
@@ -63,7 +70,7 @@ class MusicPanelService {
             musicParam.path = musicInfo.path
             musicParam.publish = true
             musicParam.loopCount = Int.max
-            self.audioEffectManager.startPlayMusic(musicParam) { code in
+            audioEffectManager().startPlayMusic(musicParam) { code in
                 if code == 0 {
                     promise(.success(.playing))
                 } else {
@@ -78,11 +85,11 @@ class MusicPanelService {
     }
     
     func stopPlayMusic(musicId: Int32) {
-        audioEffectManager.stopPlayMusic(musicId)
+        audioEffectManager().stopPlayMusic(musicId)
     }
     
     func updateMusicVolume(volume: Int) {
-        audioEffectManager.setAllMusicVolume(volume)
+        audioEffectManager().setAllMusicVolume(volume)
     }
 }
 

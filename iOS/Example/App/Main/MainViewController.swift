@@ -56,7 +56,7 @@ class MainViewController: UIViewController {
     
     override func loadView() {
         super.loadView()
-        rootView.backgroundColor = .white
+        rootView.backgroundColor = UIColor(hex:"F2F5FC")
         rootView.rootVC = self
         view = rootView
     }

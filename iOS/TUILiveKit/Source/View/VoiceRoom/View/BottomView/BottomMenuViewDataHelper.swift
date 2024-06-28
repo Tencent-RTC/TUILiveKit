@@ -11,41 +11,33 @@ import RTCRoomEngine
 
 class BottomMenuViewDataHelper {
     
-    @WeakLazyInjected var store: LiveStore?
-    @WeakLazyInjected var viewStore: VoiceRoomViewStore?
-    @WeakLazyInjected var routerStore: RouterStore?
-    
     deinit {
         debugPrint("deinit \(type(of: self))")
     }
     
-    func generateBottomMenuData() -> [ButtonMenuInfo] {
-        guard let store = self.store else { return [] }
+    func generateBottomMenuData(store: LiveStore, routerStore: RouterStore, viewStore: VoiceRoomViewStore) -> [ButtonMenuInfo] {
         if store.selectCurrent(UserSelectors.isOwner) {
-            return ownerBottomMenu()
+            return ownerBottomMenu(store: store, routerStore: routerStore)
         } else {
-            return memberBottomMenu()
+            return memberBottomMenu(store: store, routerStore: routerStore, viewStore: viewStore)
         }
     }
     
-    func generateOperateSeatMenuData(seat: SeatInfo) -> [ActionItem] {
-        guard let store = self.store else { return [] }
+    func generateOperateSeatMenuData(store: LiveStore, routerStore: RouterStore, seat: SeatInfo) -> [ActionItem] {
         if store.selectCurrent(UserSelectors.isOwner) {
-            return generateRoomOwnerOperateSeatMenuData(seat: seat)
+            return generateRoomOwnerOperateSeatMenuData(store: store, routerStore: routerStore, seat: seat)
         } else {
-            return generateNormalUserOperateSeatMenuData(seat: seat)
+            return generateNormalUserOperateSeatMenuData(store: store, routerStore: routerStore, seat: seat)
         }
     }
 }
 
 extension BottomMenuViewDataHelper {
-    private func generateRoomOwnerOperateSeatMenuData(seat: SeatInfo) -> [ActionItem] {
-        guard let store = self.store else { return [] }
+    private func generateRoomOwnerOperateSeatMenuData(store: LiveStore,routerStore: RouterStore, seat: SeatInfo) -> [ActionItem] {
         var menus: [ActionItem] = []
         if seat.userId.isEmpty {
-            var lockSeat = ActionItem(title: seat.isLocked ? String.unLockSeat : String.lockSeat)
+            let lockSeat = ActionItem(title: seat.isLocked ? String.unLockSeat : String.lockSeat)
             lockSeat.actionClosure = { _ in
-                guard let store = self.store, let routerStore = self.routerStore else { return }
                 let lockSeat = TUISeatLockParams()
                 lockSeat.lockAudio = seat.isAudioLocked
                 lockSeat.lockVideo = seat.isVideoLocked
@@ -62,9 +54,8 @@ extension BottomMenuViewDataHelper {
             let audioStreamMutedSelector = Selector<OperationState, Bool>(keyPath: \OperationState.mediaState.isMicrophoneMuted)
             let isLocalAudioMuted = store.selectCurrent(audioStreamMutedSelector)
             let title = isLocalAudioMuted ? String.unmuteMicrophone : String.muteMicrophone
-            var lockAudio = ActionItem(title: title)
+            let lockAudio = ActionItem(title: title)
             lockAudio.actionClosure = { _ in
-                guard let store = self.store, let routerStore = self.routerStore else { return }
                 store.dispatch(action: MediaActions.operateMicrophoneMute(payload: !isLocalAudioMuted))
                 routerStore.router(action: .dismiss)
             }
@@ -72,9 +63,8 @@ extension BottomMenuViewDataHelper {
             
         } else {
             let title = seat.isAudioLocked ? String.unmuteAudio : String.muteAudio
-            var lockAudio = ActionItem(title: title)
+            let lockAudio = ActionItem(title: title)
             lockAudio.actionClosure = { _ in
-                guard let store = self.store, let routerStore = self.routerStore else { return }
                 let lockSeat = TUISeatLockParams()
                 lockSeat.lockAudio = !seat.isAudioLocked
                 lockSeat.lockVideo = seat.isVideoLocked
@@ -84,9 +74,8 @@ extension BottomMenuViewDataHelper {
             }
             menus.append(lockAudio)
             
-            var kickSeat = ActionItem(title: .kickSeat)
+            let kickSeat = ActionItem(title: .kickSeat)
             kickSeat.actionClosure = {  _ in
-                guard let store = self.store, let routerStore = self.routerStore else { return }
                 store.dispatch(action: SeatActions.kickSeat(payload: seat))
                 routerStore.router(action: .dismiss)
             }
@@ -96,14 +85,12 @@ extension BottomMenuViewDataHelper {
     }
     
     
-    private func generateNormalUserOperateSeatMenuData(seat: SeatInfo) -> [ActionItem] {
-        guard let store = self.store else { return [] }
+    private func generateNormalUserOperateSeatMenuData(store: LiveStore, routerStore: RouterStore, seat: SeatInfo) -> [ActionItem] {
         var menus: [ActionItem] = []
         let isOnSeat = store.selectCurrent(UserSelectors.isOnSeat)
         if seat.userId.isEmpty && !isOnSeat && !seat.isLocked {
-            var takeSeat = ActionItem(title: .applySeat)
+            let takeSeat = ActionItem(title: .applySeat)
             takeSeat.actionClosure = { _ in
-                guard let store = self.store, let routerStore = self.routerStore else { return }
                 store.dispatch(action: SeatActions.takeSeat(payload: seat.index))
                 routerStore.router(action: .dismiss)
             }
@@ -116,17 +103,15 @@ extension BottomMenuViewDataHelper {
             let audioStreamMutedSelector = Selector<OperationState, Bool>(keyPath: \OperationState.mediaState.isMicrophoneMuted)
             let isLocalAudioMuted = store.selectCurrent(audioStreamMutedSelector)
             let title = isLocalAudioMuted ? String.unmuteMicrophone : String.muteMicrophone
-            var lockAudio = ActionItem(title: title)
+            let lockAudio = ActionItem(title: title)
             lockAudio.actionClosure = { _ in
-                guard let store = self.store, let routerStore = self.routerStore else { return }
                 store.dispatch(action: MediaActions.operateMicrophoneMute(payload: !isLocalAudioMuted))
                 routerStore.router(action: .dismiss)
             }
             menus.append(lockAudio)
             
-            var leaveSeat = ActionItem(title: .leaveSeat)
+            let leaveSeat = ActionItem(title: .leaveSeat)
             leaveSeat.actionClosure = {  _ in
-                guard let store = self.store, let routerStore = self.routerStore else { return }
                 store.dispatch(action: SeatActions.leaveSeat())
                 routerStore.router(action: .dismiss)
             }
@@ -138,16 +123,14 @@ extension BottomMenuViewDataHelper {
 
 // MARK: - Bottom menu data function
 extension BottomMenuViewDataHelper {
-    private func ownerBottomMenu() -> [ButtonMenuInfo] {
+    private func ownerBottomMenu(store: LiveStore, routerStore: RouterStore) -> [ButtonMenuInfo] {
         var menus: [ButtonMenuInfo] = []
         var linkMic = ButtonMenuInfo(normalIcon: "live_link_voice_room", normalTitle: "")
         linkMic.tapAction = { sender in
-            guard let routerStore = self.routerStore else { return }
             routerStore.router(action: .present(.linkControl))
         }
         
         linkMic.bindStateClosure = { button, cancellableSet in
-            guard let store = self.store else { return }
             store
                 .select(SeatSelectors.getSeatApplicationCount)
                 .receive(on: RunLoop.main)
@@ -160,24 +143,21 @@ extension BottomMenuViewDataHelper {
         menus.append(linkMic)
         var audioEffect = ButtonMenuInfo(normalIcon: "live_music_icon")
         audioEffect.tapAction = { sender in
-            guard let routerStore = self.routerStore else { return }
             routerStore.router(action: .present(.audioEffect))
         }
         menus.append(audioEffect)
         var musicList = ButtonMenuInfo(normalIcon: "live_music_list")
         musicList.tapAction = { sender in
-            guard let routerStore = self.routerStore else { return }
             routerStore.router(action: .present(.musicList))
         }
         menus.append(musicList)
         return menus
     }
     
-    private func memberBottomMenu() -> [ButtonMenuInfo] {
+    private func memberBottomMenu(store: LiveStore, routerStore: RouterStore, viewStore: VoiceRoomViewStore) -> [ButtonMenuInfo] {
         var menus: [ButtonMenuInfo] = []
         var linkMic = ButtonMenuInfo(normalIcon: "live_connection_icon", selectIcon: "live_linking_icon")
         linkMic.tapAction = { sender in
-            guard let store = self.store else { return }
             if sender.isSelected {
                 let requestId = store.selectCurrent(SeatSelectors.getMySeatApplicationId)
                 // cancel
@@ -192,7 +172,6 @@ extension BottomMenuViewDataHelper {
             }
         }
         linkMic.bindStateClosure = { button, cancellableSet in
-            guard let store = self.store else { return }
             store
                 .select(SeatSelectors.getMySeatApplicationId)
                 .receive(on: RunLoop.main)
@@ -211,14 +190,12 @@ extension BottomMenuViewDataHelper {
         menus.append(linkMic)
         var gift = ButtonMenuInfo(normalIcon: "live_gift_icon", normalTitle: "")
         gift.tapAction = { sender in
-            guard let routerStore = self.routerStore else { return }
             routerStore.router(action: .present(.giftView))
         }
         menus.append(gift)
         var like = ButtonMenuInfo(normalIcon: "live_like_icon")
         like.tapAction = { sender in
-            guard let store = self.viewStore else { return }
-            store.dispatch(action: VoiceRoomViewResponseActions.like())
+            viewStore.dispatch(action: VoiceRoomViewResponseActions.like())
         }
         menus.append(like)
         return menus

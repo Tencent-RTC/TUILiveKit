@@ -82,7 +82,7 @@ class UserLinkCell: LinkMicBaseCell {
 extension UserLinkCell {
     @objc func hangUpButtonClick() {
         guard let seatInfo = seatInfo else{ return}
-        store.dispatch(action: SeatActions.kickSeat(payload: seatInfo))
+        store?.dispatch(action: SeatActions.kickSeat(payload: seatInfo))
     }
 }
 

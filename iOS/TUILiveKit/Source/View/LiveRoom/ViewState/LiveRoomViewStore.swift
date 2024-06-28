@@ -6,6 +6,27 @@
 //
 import Combine
 
+class LiveRoomViewStoreFactory {
+    private static var liveRoomViewStoreMap: [String : LiveRoomViewStore] = [:]
+    
+    static func getLiveRoomViewStore(roomId: String) -> LiveRoomViewStore {
+        if let liveRoomViewStore = liveRoomViewStoreMap[roomId] {
+            return liveRoomViewStore
+        }
+        let liveRoomViewStore = LiveRoomViewStoreProvider()
+        liveRoomViewStoreMap.updateValue(liveRoomViewStore, forKey: roomId)
+        return liveRoomViewStore
+    }
+    
+    static func removeLiveRoomViewStore(roomId: String) {
+        liveRoomViewStoreMap.removeValue(forKey: roomId)
+    }
+    
+    static func removeAllStore() {
+        liveRoomViewStoreMap.removeAll()
+    }
+}
+
 protocol LiveRoomViewStore {
     func select<Value: Equatable>(_ selector: Selector<LiveRoomViewState, Value>) -> AnyPublisher<Value, Never>
     func selectCurrent<Value>(_ selector: Selector<LiveRoomViewState, Value>) -> Value

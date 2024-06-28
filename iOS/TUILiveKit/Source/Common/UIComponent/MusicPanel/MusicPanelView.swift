@@ -8,17 +8,15 @@
 import UIKit
 import Combine
 import RTCCommon
+import RTCRoomEngine
 
 class MusicPanelView: UIView {
-    
-    @Injected private var menuGenerator: MusicPanelMenuDataGenerator
-    @WeakLazyInjected private var store: MusicPanelStoreProvider?
+
+    private let store: MusicPanelStoreProvider
     
     private var cancellableSet = Set<AnyCancellable>()
-    private lazy var getIsPlaying = self.store?.select(MusicPanelSelectors.getIsPlaying)
-    private lazy var getMusicInfoList = self.store?.select(MusicPanelSelectors.getMusicInfoList)
-    
-    private var isViewReady: Bool = false
+    private lazy var getIsPlaying = self.store.select(MusicPanelSelectors.getIsPlaying)
+    private lazy var getMusicInfoList = self.store.select(MusicPanelSelectors.getMusicInfoList)
     
     private let titleLabel: UILabel = {
         let label = UILabel(frame: .zero)
@@ -42,9 +40,9 @@ class MusicPanelView: UIView {
         return view
     }()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        backgroundColor = .clear
+    init(roomEngine: TUIRoomEngine? = nil) {
+        self.store = MusicPanelStoreProvider(roomEngine: roomEngine)
+        super.init(frame: .zero)
     }
     
     required init?(coder: NSCoder) {
@@ -55,9 +53,11 @@ class MusicPanelView: UIView {
         debugPrint("deinit \(type(of: self))")
     }
     
+    private var isViewReady: Bool = false
     override func didMoveToWindow() {
         super.didMoveToWindow()
         guard !isViewReady else { return }
+        backgroundColor = .clear
         constructViewHierarchy()
         activateConstraints()
         subscribeMusicPanelState()
@@ -92,14 +92,14 @@ class MusicPanelView: UIView {
     }
     
     func subscribeMusicPanelState() {
-        getIsPlaying?
+        getIsPlaying
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in
                 guard let self = self else { return }
                 self.tableView.reloadData()
             }
             .store(in: &cancellableSet)
-        getMusicInfoList?
+        getMusicInfoList
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in
                 guard let self = self else { return }
@@ -115,7 +115,7 @@ class MusicPanelView: UIView {
     }
     
     func resetMusicPanelState() {
-        if let store = store, let currentPlayMusic = store.selectCurrent(MusicPanelSelectors.getCurrentPlayMusic) {
+        if let currentPlayMusic = store.selectCurrent(MusicPanelSelectors.getCurrentPlayMusic) {
             store.dispatch(action: MusicPanelActions.stopPlayMusic(payload: currentPlayMusic))
         }
     }
@@ -127,11 +127,11 @@ class MusicPanelView: UIView {
 
 extension MusicPanelView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return menuGenerator.musicPanelMenus.count
+        return store.musicPanelMenus.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let item = menuGenerator.musicPanelMenus[indexPath.row]
+        let item = store.musicPanelMenus[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier:MusicInfoItemCell.identifier, for: indexPath)
         if let musicInfoItemCell = cell as? MusicInfoItemCell {
             musicInfoItemCell.musicInfoItem = item

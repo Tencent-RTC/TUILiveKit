@@ -11,12 +11,22 @@ import Kingfisher
 import Combine
 
 class UserStatusView: UIView {
-    @Injected var store: LiveStore
+    var store: LiveStore
     private lazy var audioStreamPublisher = store.select(UserSelectors.getHasAudioStreamUserList)
     private var cancellableSet = Set<AnyCancellable>()
     private var muteAudio: Bool = true
     private var isViewReady: Bool = false
     private var userId: String = ""
+    
+    init(store: LiveStore) {
+        self.store = store
+        super.init(frame: .zero)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func didMoveToWindow() {
         super.didMoveToWindow()
         guard !isViewReady else {
@@ -103,10 +113,28 @@ extension UserStatusView {
 }
 
 class RenderView: UIView {
-    @Injected var store: LiveStore
+    var store: LiveStore
     lazy var videoStreamPublisher = store.select(UserSelectors.getHasVideoStreamUserList)
     var cancellableSet = Set<AnyCancellable>()
     private var isViewReady = false
+    
+    init(store: LiveStore) {
+        self.store = store
+        super.init(frame: .zero)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        cancellableSet.forEach { cancellable in
+            cancellable.cancel()
+        }
+        cancellableSet.removeAll()
+        print("deinit \(self)")
+    }
+    
     override func didMoveToWindow() {
         super.didMoveToWindow()
         guard !isViewReady else {
@@ -141,8 +169,8 @@ class RenderView: UIView {
         return imageView
     }()
 
-    let userInfoView: UserStatusView = {
-        let view = UserStatusView()
+    lazy var userInfoView: UserStatusView = {
+        let view = UserStatusView(store: store)
         return view
     }()
 
@@ -174,7 +202,7 @@ class RenderView: UIView {
             return
         }
         guard let seatInfo = seatInfo else { return }
-        if store.userState.hasVideoStreamUserList.contains(seatInfo.userId) {
+        if store.selectCurrent(UserSelectors.getHasVideoStreamUserList).contains(seatInfo.userId) {
             avatarImageView.isHidden = true
         } else {
             avatarImageView.isHidden = false
@@ -199,15 +227,14 @@ extension RenderView {
 }
 
 class MatrixVideoRenderManager {
-    @Injected var store: LiveStore
     private var viewPool: [String: RenderView] = [:]
-    func getRenderView(_ seatInfo: SeatInfo) -> RenderView {
+    func getRenderView(_ seatInfo: SeatInfo, store: LiveStore) -> RenderView {
         guard let view = viewPool[seatInfo.userId] else {
             var view: RenderView
             if store.selectCurrent(UserSelectors.currentUserId) == seatInfo.userId {
-                view = StreamPublisherView()
+                view = StreamPublisherView(store: store)
             } else {
-                view = StreamPlayerView()
+                view = StreamPlayerView(store: store)
             }
             view.seatInfo = seatInfo
             viewPool[seatInfo.userId] = view

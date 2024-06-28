@@ -10,11 +10,13 @@ import RTCRoomEngine
 import Combine
 
 class AnchorVideoParametersSettingPanel: UIView {
-    @Injected private var store: LiveStore
-    @Injected private var routerStore: RouterStore
+    private let store: LiveStore
+    private let routerStore: RouterStore
     private var cancellableSet = Set<AnyCancellable>()
     weak var rootController: UIViewController?
-    init() {
+    init(store: LiveStore, routerStore: RouterStore) {
+        self.store = store
+        self.routerStore = routerStore
         super.init(frame: .zero)
     }
 

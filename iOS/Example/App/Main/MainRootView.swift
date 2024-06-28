@@ -26,7 +26,7 @@ class MainRootView: UIView {
 
     private let bottomView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = .clear
         return view
     }()
 

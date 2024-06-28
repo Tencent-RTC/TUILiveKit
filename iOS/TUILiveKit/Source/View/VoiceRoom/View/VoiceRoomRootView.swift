@@ -14,36 +14,35 @@ import RTCRoomEngine
 
 class VoiceRoomRootView: RTCBaseView {
     
-    @Injected var store: LiveStore
-    @Injected var viewStore: VoiceRoomViewStore
-    @Injected var routerStore: RouterStore
+    let roomId: String
+    let store: LiveStoreProvider
+    let viewStore: VoiceRoomViewStore
+    let routerStore: RouterStore
+    var isPlaying: Bool = false
     
-    // TopView Status
-    lazy var userCount = self.store.select(RoomSelectors.getUserCount)
+    // backgroundImage
     lazy var coverUrl = self.store.select(RoomSelectors.getRoomCoverUrl)
-    lazy var memberAvatars = self.store.select(UserSelectors.getMemberAvatars)
-
+    
     // SeatList Status
     lazy var seatCount = self.store.select(SeatSelectors.getSeatCount)
     lazy var liveStatusPublisher = self.store.select(ViewSelectors.getLiveStatus)
     
     private var cancellableSet = Set<AnyCancellable>()
     private let giftCacheService = GiftCacheService()
-
+    
     private var isOwner: Bool {
         return store.selectCurrent(UserSelectors.isOwner)
     }
     
-    private let giftCloudServer: IGiftCloudServer = GiftCloudServer()
     private lazy var roomIdPublisher = self.store.select(RoomSelectors.getRoomId)
     private lazy var ownerInfoPublisher = self.store.select(RoomSelectors.getRoomOwnerInfo)
-
+    
     let backgroundImageView: UIImageView = {
         let backgroundImageView = UIImageView(frame: .zero)
         backgroundImageView.contentMode = .scaleToFill
         return backgroundImageView
     }()
-
+    
     let backgroundLayer: CALayer = {
         let layer = CAGradientLayer()
         layer.colors = [UIColor.darkNavyColor.cgColor, UIColor.pureBlackColor.cgColor]
@@ -52,17 +51,17 @@ class VoiceRoomRootView: RTCBaseView {
         layer.endPoint = CGPoint(x: 0.6, y: 1.0)
         return layer
     }()
-
-    private let topView: TopView = {
-        let view = TopView(frame: .zero)
+    
+    private lazy var topView: TopView = {
+        let view = TopView(store: store)
         return view
     }()
-
+    
     private let seatListView: SeatListView = {
         let view = SeatListView(frame: .zero)
         return view
     }()
-
+    
     private lazy var bottomMenu: BottomMenuView = {
         let view = BottomMenuView(frame: .zero)
         let menusPublisher = self.viewStore.select(VoiceRoomViewSelectors.getBottomMenuButtons)
@@ -74,9 +73,8 @@ class VoiceRoomRootView: RTCBaseView {
             .store(in: &view.cancellableSet)
         return view
     }()
-
+    
     private lazy var barrageButton: TUIBarrageButton = {
-        let roomId = self.store.selectCurrent(RoomSelectors.getRoomId)
         let ownerId = self.store.selectCurrent(RoomSelectors.roomOwnerId)
         let view = TUIBarrageButton(roomId: roomId, ownerId: ownerId)
         view.layer.borderColor = UIColor.g3.withAlphaComponent(0.3).cgColor
@@ -84,42 +82,45 @@ class VoiceRoomRootView: RTCBaseView {
         view.layer.cornerRadius = 18.scale375Height()
         return view
     }()
-
+    
     private lazy var barrageDisplayView: TUIBarrageDisplayView = {
-        let roomId = self.store.selectCurrent(RoomSelectors.getRoomId)
         let ownerId = self.store.selectCurrent(RoomSelectors.roomOwnerId)
         let view = TUIBarrageDisplayView(roomId: roomId, ownerId: ownerId)
         view.delegate = self
         return view
     }()
-
+    
     private lazy var giftDisplayView: TUIGiftPlayView = {
-        let roomId = self.store.selectCurrent(RoomSelectors.getRoomId)
         let view = TUIGiftPlayView(groupId: roomId)
         view.delegate = self
         return view
     }()
-
+    
     lazy var giftListView: TUIGiftListView = {
-        let view = TUIGiftListView(groupId: store.selectCurrent(RoomSelectors.getRoomId))
+        let view = TUIGiftListView(groupId: roomId)
         view.delegate = self
-        giftCloudServer.queryGiftInfoList { error, giftList in
+        view.setGiftList(TUIGiftStore.shared.giftList)
+        TUIGiftStore.shared.giftCloudServer.queryBalance { error, balance in
             if error == .noError {
-                view.setGiftList(giftList)
+                view.setBalance(balance)
             }
         }
-        view.setBalance(500)
-        return view
-    }()
-
-    lazy var musicPanelView: MusicPanelView = {
-        let view = MusicPanelView(frame: .zero)
         return view
     }()
     
-    init(frame: CGRect, 
+    lazy var musicPanelView: MusicPanelView = {
+        let view = MusicPanelView(roomEngine: store.servicerCenter.roomEngine)
+        return view
+    }()
+    
+    init(frame: CGRect,
          roomId: String,
+         routerStore: RouterStore,
          roomParams: RoomParams? = nil) {
+        self.roomId = roomId
+        self.routerStore = routerStore
+        self.store = LiveStoreFactory.getLiveStore(roomId: roomId)
+        self.viewStore = VoiceRoomViewStoreFactory.getVoiceRoomViewStore(roomId: roomId)
         super.init(frame: frame)
         store.dispatch(action: UserActions.getSelfInfo())
         store.dispatch(action: RoomActions.updateRoomId(payload: roomId))
@@ -128,6 +129,12 @@ class VoiceRoomRootView: RTCBaseView {
         } else {
             join()
         }
+    }
+    
+    deinit {
+        giftCacheService.clearCacheDirectory()
+        isPlaying = false
+        print("deinit \(type(of: self))")
     }
     
     override func constructViewHierarchy() {
@@ -182,28 +189,22 @@ class VoiceRoomRootView: RTCBaseView {
         // Top view interaction.
         topView.delegate = self
         subscribeRoomState()
-        subscribeTopViewState()
+        subscribeBackgroundViewState()
         seatListView.delegate = self
         subscribeSeatState()
         subscribeCustomEvent()
     }
     
     override func setupViewStyle() {}
-
-    deinit {
-        giftCacheService.clearCacheDirectory()
-        print("deinit \(type(of: self))")
-    }
 }
 
 extension VoiceRoomRootView {
     private func start(roomParams: RoomParams) {
         let roomInfo = TUIRoomInfo()
         roomInfo.roomId = store.selectCurrent(RoomSelectors.getRoomId)
+        roomInfo.name = store.selectCurrent(RoomSelectors.getRoomName)
         roomInfo.isSeatEnabled = true
         roomInfo.roomType = .live
-        
-        roomInfo.name = store.selectCurrent(UserSelectors.getSelfInfo).name
         roomInfo.seatMode = roomParams.seatMode
         roomInfo.maxSeatCount = roomParams.maxSeatCount
         let config = generateActionParamTuple(param: roomInfo, actions: [])
@@ -223,7 +224,7 @@ extension VoiceRoomRootView {
         var actions:[Action] = [
             SeatActions.fetchSeatList(),
             UserActions.fetchUserList(),
-            RoomActions.fetchRoomOwnerInfo(),
+            RoomActions.fetchRoomOwnerInfo(payload: store.selectCurrent(RoomSelectors.roomOwnerId)),
         ]
         if store.selectCurrent(UserSelectors.isOwner) {
             actions.append(SeatActions.takeSeat(payload: nil))
@@ -234,7 +235,7 @@ extension VoiceRoomRootView {
         actions.forEach { action in
             store.dispatch(action: action)
         }
-        viewStore.dispatch(action: VoiceRoomViewActions.updateBottomMenus())
+        viewStore.dispatch(action: VoiceRoomViewActions.updateBottomMenus(payload: (store, routerStore, viewStore)))
     }
 }
 
@@ -245,15 +246,15 @@ extension VoiceRoomRootView {
         let roomState = store.selectCurrent(RoomSelectors.getRoomState)
         let giftIncome = store.selectCurrent(RoomSelectors.getGiftIncome)
         let giftPeopleCount = store.selectCurrent(RoomSelectors.getGiftPeopleSet).count
-        let audienceCount = store.selectCurrent(UserSelectors.getAudienceUserList).count
+        let audienceCount = store.selectCurrent(UserSelectors.getUserList).count
         let liveDataModel = LiveDataModel(roomId: roomId,
                                           liveDuration: abs(Int(Date().timeIntervalSince1970 - Double(roomState.createTime / 1_000))),
-                                          audienceCount: audienceCount,
+                                          audienceCount: audienceCount == 0 ? 0 : audienceCount - 1,
                                           messageCount: barrageDisplayView.getBarrageCount(),
                                           giftIncome: giftIncome,
                                           giftPeopleCount: giftPeopleCount,
                                           likeCount: giftDisplayView.getLikeCount())
-        let anchorEndView = AnchorEndView(liveDataModel: liveDataModel)
+        let anchorEndView = AnchorEndView(liveDataModel: liveDataModel, routerStore: routerStore)
         addSubview(anchorEndView)
         anchorEndView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -279,6 +280,7 @@ extension VoiceRoomRootView: RouterViewProvider {
         if route == .musicList {
             return musicPanelView
         } else if route == .giftView {
+            giftListView.setGiftList(TUIGiftStore.shared.giftList)
             return giftListView
         } else {
             return nil
@@ -297,6 +299,7 @@ extension VoiceRoomRootView {
                         self.topView.isHidden = false
                         self.bottomMenu.isHidden = false
                         self.seatListView.isHidden = false
+                        self.didEnterRoom()
                     case .none, .finished, .previewing:
                         self.topView.isHidden = true
                         self.bottomMenu.isHidden = true
@@ -328,8 +331,8 @@ extension VoiceRoomRootView {
             }
             .store(in: &cancellableSet)
     }
-
-    private func subscribeTopViewState() {
+    
+    private func subscribeBackgroundViewState() {
         coverUrl
             .receive(on: RunLoop.main)
             .sink(receiveValue: { [weak self] url in
@@ -337,23 +340,15 @@ extension VoiceRoomRootView {
                 self.backgroundImageView.kf.setImage(with: url)
             })
             .store(in: &cancellableSet)
-        userCount
-            .receive(on: RunLoop.main)
-            .assign(to: \TopView.memberCount, on: topView)
-            .store(in: &cancellableSet)
-        memberAvatars
-            .receive(on: RunLoop.main)
-            .assign(to: \TopView.memberAvatars, on: topView)
-            .store(in: &cancellableSet)
     }
-
+    
     private func subscribeSeatState() {
         seatCount
             .receive(on: RunLoop.main)
             .assign(to: \SeatListView.seatCount, on: seatListView)
             .store(in: &cancellableSet)
     }
-
+    
     private func subscribeCustomEvent() {
         viewStore.viewActionSubject
             .receive(on: DispatchQueue.main)
@@ -365,30 +360,39 @@ extension VoiceRoomRootView {
                 self.giftListView.sendLike()
             }
             .store(in: &cancellableSet)
+        store.toastSubject
+            .receive(on: RunLoop.main)
+            .sink { [weak self] toastInfo in
+                guard let self = self else { return }
+                self.makeToast(toastInfo.message)
+            }
+            .store(in: &cancellableSet)
     }
+    
 }
 
 extension VoiceRoomRootView: TopViewDelegate {
     func topView(_ topView: TopView, tap event: TopView.TapEvent, sender: Any?) {
         switch event {
-        case .stop:
-            if store.selectCurrent(UserSelectors.isOwner) {
-                let designConfig = ActionItemDesignConfig(lineWidth: 7, titleColor: .redPinkColor)
-                designConfig.backgroundColor = .g2
-                designConfig.lineColor = .g3.withAlphaComponent(0.1)
-                let item = ActionItem(title: .confirmCloseText, designConfig: designConfig, actionClosure: { [weak self] _ in
-                    guard let self = self else { return }
-                    self.showAnchorEndView()
-                    self.musicPanelView.resetMusicPanelState()
-                })
-                routerStore.router(action: .present(.listMenu([item])))
-            } else {
-                store.dispatch(action: RoomActions.leave())
-            }
-        case .roomInfo:
-            routerStore.router(action: .present(.roomInfo))
-        case .audienceList:
-            routerStore.router(action: .present(.recentViewer))
+            case .stop:
+                if store.selectCurrent(UserSelectors.isOwner) {
+                    let designConfig = ActionItemDesignConfig(lineWidth: 7, titleColor: .redPinkColor)
+                    designConfig.backgroundColor = .g2
+                    designConfig.lineColor = .g3.withAlphaComponent(0.1)
+                    let item = ActionItem(title: .confirmCloseText, designConfig: designConfig, actionClosure: { [weak self] _ in
+                        guard let self = self else { return }
+                        self.showAnchorEndView()
+                        self.musicPanelView.resetMusicPanelState()
+                    })
+                    routerStore.router(action: .present(.listMenu([item])))
+                } else {
+                    store.dispatch(action: RoomActions.leave())
+                    routerStore.router(action: .exit)
+                }
+            case .roomInfo:
+                routerStore.router(action: .present(.roomInfo))
+            case .audienceList:
+                routerStore.router(action: .present(.recentViewer))
         }
     }
 }
@@ -432,11 +436,12 @@ extension VoiceRoomRootView: SeatListViewDelegate {
             }
             .store(in: &seatView.cancellableSet)
     }
-
+    
     func seatListView(_ seatListView: SeatListView, didSelectSeatAt index: Int) {
         // Here you can handle the click event of the seat list view.
         let seatInfo = store.selectCurrent(SeatSelectors.getSeatList)[index]
-        let menus = BottomMenuViewDataHelper().generateOperateSeatMenuData(seat: seatInfo)
+        let helper = BottomMenuViewDataHelper()
+        let menus = helper.generateOperateSeatMenuData(store: store, routerStore: routerStore, seat: seatInfo)
         if menus.count > 0 {
             routerStore.router(action: .present(.listMenu(menus)))
         }
@@ -454,7 +459,7 @@ extension VoiceRoomRootView: TUIBarrageDisplayViewDelegate {
 
 extension VoiceRoomRootView: TUIGiftListViewDelegate {
     func onRecharge(giftListView view: TUIGiftListView) {
-        giftCloudServer.rechargeBalance { [weak self] error, balance in
+        TUIGiftStore.shared.giftCloudServer.rechargeBalance { [weak self] error, balance in
             guard let self = self else { return }
             if error == .noError {
                 view.setBalance(balance)
@@ -464,7 +469,7 @@ extension VoiceRoomRootView: TUIGiftListViewDelegate {
             }
         }
     }
-
+    
     func onSendGift(giftListView view: TUIGiftListView, giftModel: TUIGift, giftCount: Int) {
         
         let anchorInfo = store.selectCurrent(RoomSelectors.getRoomOwnerInfo)
@@ -475,10 +480,10 @@ extension VoiceRoomRootView: TUIGiftListViewDelegate {
         receiver.level = "0"
         
         let selfInfo = store.selectCurrent(UserSelectors.getSelfInfo)
-        giftCloudServer.sendGift(sender: selfInfo.userId,
-                                 receiver: receiver.userId,
-                                 giftModel: giftModel,
-                                 giftCount: giftCount) { [weak self] error, balance in
+        TUIGiftStore.shared.giftCloudServer.sendGift(sender: selfInfo.userId,
+                                                     receiver: receiver.userId,
+                                                     giftModel: giftModel,
+                                                     giftCount: giftCount) { [weak self] error, balance in
             guard let self = self else { return }
             if error == .noError {
                 view.sendGift(giftModel: giftModel, giftCount: giftCount, receiver: receiver)
@@ -515,7 +520,7 @@ extension VoiceRoomRootView: TUIGiftPlayViewDelegate {
         barrage.extInfo["gift_receiver_username"] = AnyCodable(receiver.userName)
         barrageDisplayView.insertBarrages([barrage])
     }
-
+    
     func giftPlayView(_ giftPlayView: TUIGiftPlayView, onPlayGiftAnimation gift: TUIGift) {
         giftCacheService.request(urlString: gift.animationUrl) { error, data in
             guard let data = data else { return }

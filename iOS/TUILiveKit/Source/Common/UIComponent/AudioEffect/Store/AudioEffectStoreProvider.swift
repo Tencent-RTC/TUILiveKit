@@ -5,17 +5,22 @@
 //  Created by aby on 2024/4/3.
 //
 import Combine
+import RTCRoomEngine
 
-
-class AudioEffectStore {
+class AudioEffectStoreProvider {
     typealias AudioChangerDataSource = (title: String, icon: UIImage?, changerType: AudioChangerType)
     typealias AudioReverbDataSource = (title: String, icon: UIImage?, reverbType: AudioReverbType)
     
-    let service = AudioEffectService()
+    let service: AudioEffectService
     private(set) lazy var store: Store<AudioEffectState, AudioEffectService> = Store(initialState: AudioEffectState(), environment: self.service)
     
-    init() {
+    init(roomEngine: TUIRoomEngine?) {
+        service = AudioEffectService(roomEngine: roomEngine)
         initializeStore()
+    }
+    
+    deinit {
+        print("deinit \(type(of: self))")
     }
     
     private func initializeStore() {
@@ -80,7 +85,7 @@ class AudioEffectStore {
     ]
 }
 
-extension AudioEffectStore: AudioEffectStoreProvider {
+extension AudioEffectStoreProvider: AudioEffectStore {
     func dispatch(action: Action) {
         store.dispatch(action: action)
     }
@@ -96,7 +101,7 @@ extension AudioEffectStore: AudioEffectStoreProvider {
     }
 }
 
-extension AudioEffectStore: AudioEffectMenuDateGenerator {
+extension AudioEffectStoreProvider: AudioEffectMenuDateGenerator {
     
     var audioEffectMenus: [Section : [SettingItem]] {
         return generateAudioEffectData()

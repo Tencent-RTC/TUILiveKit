@@ -11,7 +11,7 @@ import RTCCommon
 
 class RoomInfoPanelView: RTCBaseView {
 
-    @Injected var store: LiveStore
+    var store: LiveStore
    
     private var cancellableSet = Set<AnyCancellable>()
     private lazy var ownerInfoPublisher = self.store.select(RoomSelectors.getRoomOwnerInfo)
@@ -84,13 +84,18 @@ class RoomInfoPanelView: RTCBaseView {
         return button
     }()
     
-    override init(frame: CGRect) {
+    init(store: LiveStore) {
+        self.store = store
         super.init(frame: .zero)
         store.dispatch(action: RoomActions.fetchRoomOwnerFansCount(payload: store.selectCurrent(RoomSelectors.roomOwnerId)))
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        print("deinit \(type(of: self))")
     }
     
     override func constructViewHierarchy() {
@@ -190,7 +195,7 @@ class RoomInfoPanelView: RTCBaseView {
             .sink { [weak self] userList in
                 guard let self = self else { return }
                 let userIdList = userList.map { $0.userId }
-                if userIdList.contains(store.selectCurrent(RoomSelectors.roomOwnerId)) {
+                if userIdList.contains(self.store.selectCurrent(RoomSelectors.roomOwnerId)) {
                     self.followButton.isSelected = true
                     self.followButton.backgroundColor = .g3.withAlphaComponent(0.3)
                     self.followButton.setTitle(.unfollowText, for: .normal)
@@ -199,8 +204,8 @@ class RoomInfoPanelView: RTCBaseView {
                     self.followButton.backgroundColor = .deepSeaBlueColor
                     self.followButton.setTitle(.followText, for: .normal)
                 }
-                let roomOwnerId = store.selectCurrent(RoomSelectors.roomOwnerId)
-                store.dispatch(action: RoomActions.fetchRoomOwnerFansCount(payload: roomOwnerId))
+                let roomOwnerId = self.store.selectCurrent(RoomSelectors.roomOwnerId)
+                self.store.dispatch(action: RoomActions.fetchRoomOwnerFansCount(payload: roomOwnerId))
             }
             .store(in: &cancellableSet)
     }

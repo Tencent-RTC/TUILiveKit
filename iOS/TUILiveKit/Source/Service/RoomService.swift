@@ -8,12 +8,13 @@
 import RTCRoomEngine
 import Combine
 
-
 // TODO: - Dependency management, needs to consolidate RoomEngine instances.
-class RoomService {
-    @WeakLazyInjected var store: LiveStore?
-    private let engine = TUIRoomEngine.sharedInstance()
-    
+class RoomService: BaseServiceProtocol {
+    var roomEngine: TUIRoomEngine?
+    required init(roomEngine: TUIRoomEngine?) {
+        self.roomEngine = roomEngine
+    }
+
     deinit {
         debugPrint("deinit \(type(of: self))")
     }
@@ -39,8 +40,8 @@ class RoomService {
     
     func leave() -> AnyPublisher<Void, InternalError> {
         return Future<Void, InternalError> { [weak self] promise in
-            guard let self = self else { return }
-            self.engine.exitRoom(syncWaiting: true) {
+            guard let self = self, let roomEngine = self.roomEngine else { return }
+            roomEngine.exitRoom(syncWaiting: true) {
                 promise(.success(()))
             } onError: { err, message in
                 let error = InternalError(error: err, message: message)
@@ -52,8 +53,8 @@ class RoomService {
     
     func stop() -> AnyPublisher<Void, InternalError> {
         return Future<Void, InternalError> { [weak self] promise in
-            guard let self = self else { return }
-            self.engine.destroyRoom {
+            guard let self = self, let roomEngine = self.roomEngine else { return }
+            roomEngine.destroyRoom {
                 promise(.success(()))
             } onError: { err, message in
                 var error = InternalError(error: err, message: message)
@@ -74,8 +75,8 @@ class RoomService {
 extension RoomService {
     private func createRoom(info: TUIRoomInfo) -> AnyPublisher<Void, InternalError> {
         let future = Future<Void, InternalError> { [weak self] promise in
-            guard let self = self else { return }
-            self.engine.createRoom(info) {
+            guard let self = self, let roomEngine = self.roomEngine else { return }
+            roomEngine.createRoom(info) {
                 promise(.success(()))
             } onError: { err, message in
                 let error = InternalError(error: err, message: message)
@@ -87,8 +88,8 @@ extension RoomService {
     
     private func enterRoom(roomId: String) -> AnyPublisher<TUIRoomInfo, InternalError> {
         let future = Future<TUIRoomInfo, InternalError> { [weak self] promise in
-            guard let self = self else { return }
-            self.engine.enterRoom(roomId, roomType: .live) { roomInfo in
+            guard let self = self, let roomEngine = self.roomEngine else { return }
+            roomEngine.enterRoom(roomId, roomType: .live) { roomInfo in
                 guard let info = roomInfo else {
                     let error = InternalError(error: TUIError.roomIdInvalid, message: TUIError.roomIdInvalid.description)
                     promise(.failure(error))
@@ -108,8 +109,8 @@ extension RoomService {
 extension RoomService {
     func fetchRoomInfo(onSuccess: TUISuccessBlock? = nil, onError: TUIErrorBlock? = nil) -> AnyPublisher<TUIRoomInfo, InternalError> {
         return Future<TUIRoomInfo, InternalError> { [weak self] promise in
-            guard let self = self else { return }
-            self.engine.fetchRoomInfo { roomInfo in
+            guard let self = self, let roomEngine = self.roomEngine else { return }
+            roomEngine.fetchRoomInfo { roomInfo in
                 guard let roomInfo = roomInfo else {
                     let error = InternalError(error: TUIError.failed, message: "fetch room info fail.")
                     promise(.failure(error))
@@ -124,16 +125,10 @@ extension RoomService {
         .eraseToAnyPublisher()
     }
     
-    func fetchRoomOwnerInfo() -> AnyPublisher<User, InternalError> {
+    func fetchRoomOwnerInfo(ownerId: String) -> AnyPublisher<User, InternalError> {
         return Future<User, InternalError> { [weak self] promise in
-            guard let self = self else { return }
-            guard let store = self.store else {
-                let error = InternalError(error: TUIError.userNotExist, message: TUIError.userNotExist.description)
-                promise(.failure(error))
-                return
-            }
-            let ownerId = store.selectCurrent(RoomSelectors.roomOwnerId)
-            self.engine.getUserInfo(ownerId) { userInfo in
+            guard let self = self, let roomEngine = self.roomEngine else { return }
+            roomEngine.getUserInfo(ownerId) { userInfo in
                 if let user = userInfo {
                     promise(.success(User(userInfo: user)))
                 } else {
@@ -149,8 +144,8 @@ extension RoomService {
     
     func updateLiveInfo(liveInfo: TUILiveInfo, modifyFlag: TUILiveModifyFlag) -> AnyPublisher<Void, InternalError> {
         return Future<Void, InternalError> { [weak self] promise in
-            guard let self = self else { return }
-            guard let liveListManager = self.engine.getExtension(extensionType: .liveListManager) as? TUILiveListManager else {
+            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let liveListManager = roomEngine.getExtension(extensionType: .liveListManager) as? TUILiveListManager else {
                 let error = InternalError(error: TUIError.userNotExist, message: TUIError.userNotExist.description)
                 promise(.failure(error))
                 return

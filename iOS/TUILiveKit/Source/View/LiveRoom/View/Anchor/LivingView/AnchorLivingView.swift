@@ -12,8 +12,9 @@ import Combine
 
 class AnchorLivingView: UIView {
     private let roomId:String
-    @Injected private var routerStore: RouterStore
-    @Injected private var store: LiveStore
+    private let routerStore: RouterStore
+    private let store: LiveStoreProvider
+    
     private lazy var ownerInfoPublisher = store.select(RoomSelectors.getRoomOwnerInfo)
     private lazy var roomIdPublisher = store.select(RoomSelectors.getRoomId)
     private var cancellableSet: Set<AnyCancellable> = []
@@ -30,7 +31,7 @@ class AnchorLivingView: UIView {
     }()
     
     private lazy var roomInfoView: RoomInfoView = {
-        let view = RoomInfoView()
+        let view = RoomInfoView(store: store)
         view.mm_h = 32.scale375()
         view.backgroundColor = UIColor.g1.withAlphaComponent(0.4)
         view.layer.cornerRadius = view.mm_h * 0.5
@@ -46,7 +47,7 @@ class AnchorLivingView: UIView {
     }()
 
     private lazy var audienceListView: UIView = {
-        let view = AudienceListView()
+        let view = AudienceListView(store: store, routerStore: routerStore)
         return view
     }()
 
@@ -81,7 +82,7 @@ class AnchorLivingView: UIView {
     }()
     
     private lazy var floatView: LinkMicAnchorFloatView = {
-        let view = LinkMicAnchorFloatView(frame: .zero)
+        let view = LinkMicAnchorFloatView(store: store, routerStore: routerStore)
         view.isHidden = true
         return view
     }()
@@ -99,7 +100,7 @@ class AnchorLivingView: UIView {
     }()
     
     lazy var musicPanelView: MusicPanelView = {
-        let view = MusicPanelView(frame: .zero)
+        let view = MusicPanelView(roomEngine: store.servicerCenter.roomEngine)
         return view
     }()
     
@@ -114,13 +115,20 @@ class AnchorLivingView: UIView {
     }()
     
     
-    init(roomId: String) {
+    init(roomId: String, routerStore: RouterStore) {
         self.roomId = roomId
+        self.store = LiveStoreFactory.getLiveStore(roomId: roomId)
+        self.routerStore = routerStore
         super.init(frame: .zero)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        giftCacheService.clearCacheDirectory()
+        print("deinit \(type(of: self))")
     }
     
     private var isViewReady: Bool = false
@@ -145,15 +153,15 @@ class AnchorLivingView: UIView {
             }
             .store(in: &cancellableSet)
         
-        roomIdPublisher
-            .receive(on: RunLoop.main)
-            .sink { [weak self] roomId in
-                guard let self = self else { return }
-                self.barrageSendView.setRoomId(roomId: roomId)
-                self.barrageDisplayView.setRoomId(roomId: roomId)
-                self.giftDisplayView.setRoomId(roomId: roomId)
-            }
-            .store(in: &cancellableSet)
+//        roomIdPublisher
+//            .receive(on: RunLoop.main)
+//            .sink { [weak self] roomId in
+//                guard let self = self else { return }
+//                self.barrageSendView.setRoomId(roomId: roomId)
+//                self.barrageDisplayView.setRoomId(roomId: roomId)
+//                self.giftDisplayView.setRoomId(roomId: roomId)
+//            }
+//            .store(in: &cancellableSet)
         
         ownerInfoPublisher
             .receive(on: RunLoop.main)
@@ -163,10 +171,6 @@ class AnchorLivingView: UIView {
                 self.barrageDisplayView.setOwnerId(ownerId: ownerInfo.userId)
             }
             .store(in: &cancellableSet)
-    }
-    
-    deinit {
-        giftCacheService.clearCacheDirectory()
     }
 }
 
@@ -277,15 +281,15 @@ extension AnchorLivingView {
         let roomState = store.selectCurrent(RoomSelectors.getRoomState)
         let giftIncome = store.selectCurrent(RoomSelectors.getGiftIncome)
         let giftPeopleCount = store.selectCurrent(RoomSelectors.getGiftPeopleSet).count
-        let audienceCount = store.selectCurrent(UserSelectors.getAudienceUserList).count
+        let audienceCount = store.selectCurrent(UserSelectors.getUserList).count
         let liveDataModel = LiveDataModel(roomId: roomId,
                                           liveDuration: abs(Int(Date().timeIntervalSince1970 - Double(roomState.createTime / 1_000))),
-                                          audienceCount: audienceCount,
+                                          audienceCount: audienceCount == 0 ? 0 : audienceCount - 1,
                                           messageCount: barrageDisplayView.getBarrageCount(),
                                           giftIncome: giftIncome,
                                           giftPeopleCount: giftPeopleCount,
                                           likeCount: giftDisplayView.getLikeCount())
-        let anchorEndView = AnchorEndView(liveDataModel: liveDataModel)
+        let anchorEndView = AnchorEndView(liveDataModel: liveDataModel, routerStore: routerStore)
         addSubview(anchorEndView)
         anchorEndView.snp.makeConstraints { make in
             make.edges.equalToSuperview()

@@ -12,9 +12,10 @@ import Combine
 
 class AudienceLivingView: RTCBaseView {
     // MARK: - private property.
-    @Injected var viewStore: LiveRoomViewStore
-    @Injected var routerStore: RouterStore
-    @Injected var store: LiveStore
+    private let store: LiveStore
+    private let viewStore: LiveRoomViewStore
+    private let routerStore: RouterStore
+    
     private lazy var roomIdPublisher = store.select(RoomSelectors.getRoomId)
     private lazy var ownerInfoPublisher = store.select(RoomSelectors.getRoomOwnerInfo)
     private var cancellableSet = Set<AnyCancellable>()
@@ -22,7 +23,7 @@ class AudienceLivingView: RTCBaseView {
     private let giftCacheService = GiftCacheService()
 
     private lazy var roomInfoView: RoomInfoView = {
-        let view = RoomInfoView()
+        let view = RoomInfoView(store: store)
         view.mm_h = 32.scale375()
         view.backgroundColor = UIColor.g1.withAlphaComponent(0.4)
         view.layer.cornerRadius = view.mm_h * 0.5
@@ -31,7 +32,7 @@ class AudienceLivingView: RTCBaseView {
     }()
 
     private lazy var audienceListView: AudienceListView = {
-        var view = AudienceListView(frame: .zero)
+        var view = AudienceListView(store: store, routerStore: routerStore)
         return view
     }()
 
@@ -61,7 +62,7 @@ class AudienceLivingView: RTCBaseView {
     }()
 
     private lazy var floatView: LinkMicAudienceFloatView = {
-        let view = LinkMicAudienceFloatView()
+        let view = LinkMicAudienceFloatView(store: store, routerStore: routerStore)
         view.isHidden = true
         return view
     }()
@@ -79,6 +80,13 @@ class AudienceLivingView: RTCBaseView {
         view.delegate = self
         return view
     }()
+    
+    init(store: LiveStore, viewStore: LiveRoomViewStore, routerStore: RouterStore) {
+        self.store = store
+        self.viewStore = viewStore
+        self.routerStore = routerStore
+        super.init(frame: .zero)
+    }
 
     override func constructViewHierarchy() {
         backgroundColor = .clear
@@ -147,6 +155,7 @@ class AudienceLivingView: RTCBaseView {
     }
     
     override func bindInteraction() {
+        viewStore.dispatch(action: LiveRoomViewActions.updateBottomMenus(payload: (store, routerStore)))
         subscribeBottomMenuState()
         subscribeSeatSubject()
     }
@@ -157,6 +166,7 @@ class AudienceLivingView: RTCBaseView {
 }
 
 extension AudienceLivingView {
+    
     private func subscribeBottomMenuState() {
         let menusPublisher = self.viewStore.select(LiveRoomViewSelectors.getBottomMenuButtons)
         menusPublisher
@@ -165,17 +175,7 @@ extension AudienceLivingView {
     }
     
     private func subscribeSeatSubject() {
-        store.seatActionSubject
-            .receive(on: RunLoop.main)
-            .filter { $0.id == SeatResponseActions.takeSeatResponse.id }
-            .sink { [weak self] action in
-                guard let self = self else { return }
-                if let action = action as? AnonymousAction<TakeSeatResult> {
-                    self.handleTakeSeat(result: action.payload)
-                }
-            }
-            .store(in: &cancellableSet)
-        
+
         roomIdPublisher
             .receive(on: RunLoop.main)
             .sink { [weak self] roomId in
@@ -194,19 +194,14 @@ extension AudienceLivingView {
                 self.barrageDisplayView.setOwnerId(ownerId: ownerInfo.userId)
             }
             .store(in: &cancellableSet)
-    }
-    
-    private func handleTakeSeat(result: TakeSeatResult) {
-        switch result {
-            case .accepted(_, _):
-                self.makeToast(.linkSuccessTipText)
-            case .rejected(_, _, _):
-                self.makeToast(.rejectedMessageText)
-            case .timeout(_, _):
-                self.makeToast(.timeoutMessageText)
-            case .cancel(_, _):
-                self.makeToast(.cancelLinkMicRequestText)
-        }
+        
+        store.toastSubject
+            .receive(on: RunLoop.main)
+            .sink { [weak self] toastInfo in
+                guard let self = self else { return }
+                self.makeToast(toastInfo.message)
+            }
+            .store(in: &cancellableSet)
     }
 }
 
@@ -280,15 +275,12 @@ private extension String {
     static let cancelLinkMicRequestText = localized("live.audience.link.confirm.cancelLinkMicRequest")
     static let closeLinkMicText = localized("live.audience.link.confirm.closeLinkMic")
     static let waitToLinkText = localized("live.audience.wait.link.tips")
-    static let linkSuccessTipText = localized("live.link.success")
     static let enterRoomFailedTitleText = localized("live.alert.enterRoom.failed.title")
     static let enterRoomFailedmessageText = localized("live.alert.enterRoom.failed.message.xxx")
     static let confirmText = localized("live.alert.confirm")
     static let rejectedTitleText = localized("live.alert.linkMic.rejected.title")
-    static let rejectedMessageText = localized("live.alert.linkMic.rejected.message")
     static let knownText = localized("live.alert.known")
     static let timeoutTitleText = localized("live.alert.linkMic.timeout.title")
-    static let timeoutMessageText = localized("live.alert.linkMic.timeout.message")
     static let operateFailedText = localized("live.operation.fail.xxx")
     static let meText = localized("live.barrage.me")
 }

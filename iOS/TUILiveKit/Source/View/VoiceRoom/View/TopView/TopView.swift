@@ -48,31 +48,30 @@ class TopView: UIView {
         case audienceList
         case roomInfo
     }
-    @Injected private var store: LiveStore
     
+    private var store: LiveStore
     private lazy var isOwnerPublisher = self.store.select(UserSelectors.isOwner)
-    private var cancellableSet: Set<AnyCancellable> = []
+    private lazy var userCount = self.store.select(RoomSelectors.getUserCount)
+    private lazy var userList = self.store.select(UserSelectors.getUserList)
+
+    var cancellableSet: Set<AnyCancellable> = []
+    
+    var memberAvatars: [String] = [] {
+        didSet {
+            collectionView.reloadData()
+        }
+    }
+    
     weak var delegate: TopViewDelegate?
    
-    let roomInfoView: RoomInfoView = {
-        let view = RoomInfoView()
+    private lazy var roomInfoView: RoomInfoView = {
+        let view = RoomInfoView(store: store)
         view.mm_h = Int(componentHeight).scale375()
         view.backgroundColor = UIColor.g2.withAlphaComponent(0.4)
         view.layer.cornerRadius = view.mm_h * 0.5
         return view
     }()
     
-    var memberCount: Int = 0 {
-        didSet {
-            memberCountLabel.text = "\(memberCount)"
-        }
-    }
-    var memberAvatars: [String] = [] {
-        didSet {
-            collectionView.reloadData()
-        }
-    }
-    private var isViewReady: Bool = false
     let audienceContainer: UIView = {
         let view = UIView(frame: .zero)
         view.backgroundColor = .g2.withAlphaComponent(0.4)
@@ -104,12 +103,26 @@ class TopView: UIView {
         return label
     }()
     
-    lazy var stopButton: UIButton = {
+    let stopButton: UIButton = {
         let button = UIButton(type: .system)
         button.setBackgroundImage(.liveBundleImage( "live_anchor_close_icon"), for: .normal)
         return button
     }()
     
+    init(store: LiveStore) {
+        self.store = store
+        super.init(frame: .zero)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        print("deinit \(type(of: self))")
+    }
+
+    private var isViewReady: Bool = false
     override func didMoveToWindow() {
         super.didMoveToWindow()
         guard !isViewReady else { return }
@@ -178,6 +191,26 @@ class TopView: UIView {
                 guard let self = self else { return }
                 self.stopButton.setBackgroundImage(.liveBundleImage( isOwner ? "live_anchor_close_icon" : "live_leave_icon"), for: .normal)
             }
+            .store(in: &cancellableSet)
+        userCount
+            .receive(on: RunLoop.main)
+            .sink{ [weak self] userCount in
+                guard let self = self else { return }
+                self.memberCountLabel.text = "\(userCount)"
+            }
+            .store(in: &cancellableSet)
+        userList
+            .receive(on: RunLoop.main)
+            .sink(receiveValue: { [weak self] userList in
+                guard let self = self else { return }
+                let avatarUrlList = userList.filter { [weak self] in
+                    guard let self = self else { return true }
+                    return $0.userId != self.store.selectCurrent(RoomSelectors.roomOwnerId)
+                }.map { user in
+                    return user.avatarUrl
+                }
+                memberAvatars = avatarUrlList
+            })
             .store(in: &cancellableSet)
     }
 }

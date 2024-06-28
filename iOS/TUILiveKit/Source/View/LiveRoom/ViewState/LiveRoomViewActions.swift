@@ -11,6 +11,7 @@ enum LiveRoomViewActions {
     static let key = "LiveRoom.View.action"
     static let customEventKey = "LiveRoom.View.customEvent"
     
-    static let updateBottomMenus = ActionTemplate(id: key.appending(".updateBottomMenu"))
+    static let updateBottomMenus = ActionTemplate(id: key.appending(".updateBottomMenu"),
+                                                  payloadType: (LiveStore, RouterStore).self)
     static let like = ActionTemplate(id: customEventKey.appending(".like"))
 }

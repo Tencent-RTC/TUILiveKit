@@ -29,8 +29,7 @@ class LiveDataModel {
 }
 
 class AnchorEndView: UIView {
-    @Injected var routerStore: RouterStore
-    
+    private let routerStore: RouterStore
     private var isViewReady: Bool = false
     override func didMoveToWindow() {
         super.didMoveToWindow()
@@ -41,8 +40,9 @@ class AnchorEndView: UIView {
     }
 
     let liveDataModel: LiveDataModel
-    init(liveDataModel: LiveDataModel) {
+    init(liveDataModel: LiveDataModel, routerStore: RouterStore) {
         self.liveDataModel = liveDataModel
+        self.routerStore = routerStore
         super.init(frame: .zero)
     }
 

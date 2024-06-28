@@ -11,15 +11,14 @@ import TUICore
 import Combine
 
 public class TUILiveListViewController: UIViewController {
-    @Injected private var store: LiveStore
-    @Injected private var roomListStore: LiveListStoreProvider
-    private lazy var currentRouterPublisher = self.roomListStore.select(LiveListSelectors.getCurrentRouter)
+    private let liveListStore: LiveListStoreProvider = LiveListStoreProvider()
+    private lazy var currentRouterPublisher = self.liveListStore.select(LiveListSelectors.getCurrentRouter)
     
     // MARK: - Internal property.
     private var needRestoreNavigationBarHiddenState: Bool = false
     
     private lazy var rootView: LiveListRootView = {
-        let view = LiveListRootView(frame: .zero)
+        let view = LiveListRootView(store: liveListStore)
         return view
     }()
     
@@ -32,7 +31,7 @@ public class TUILiveListViewController: UIViewController {
         constructViewHierarchy()
         activateConstraints()
         bindInteraction()
-        view.backgroundColor = UIColor(hex:"F2F5FC")
+        view.backgroundColor = .g8
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -51,7 +50,6 @@ public class TUILiveListViewController: UIViewController {
     }
     
     func bindInteraction() {
-        subscribeToast()
         subscribeNavigationState()
     }
     
@@ -85,7 +83,6 @@ public class TUILiveListViewController: UIViewController {
     }
     
     deinit {
-        LiveListRootView.session.reset()
         print("deinit \(type(of: self))")
     }
 }
@@ -93,7 +90,7 @@ public class TUILiveListViewController: UIViewController {
 extension TUILiveListViewController {
     @objc
     private func backBtnClick(sender: UIButton) {
-        roomListStore.dispatch(action: LiveListNavigatorActions.navigatorTo(payload: .exit))
+        liveListStore.dispatch(action: LiveListNavigatorActions.navigatorTo(payload: .exit))
     }
     
     @objc
@@ -106,22 +103,6 @@ extension TUILiveListViewController {
 }
 
 extension TUILiveListViewController {
-    private func subscribeToast() {
-        store.toastSubject
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] toast in
-                guard let self = self else { return }
-                var position = TUICSToastPositionBottom
-                switch toast.position {
-                    case .center:
-                        position = TUICSToastPositionCenter
-                    default:
-                        break
-                }
-                self.view.makeToast(toast.message, duration: toast.duration, position: position)
-            }
-            .store(in: &cancellableSet)
-    }
     
     private func subscribeNavigationState() {
         currentRouterPublisher
@@ -135,20 +116,7 @@ extension TUILiveListViewController {
                     popupViewController?.dismiss(animated: true)
                     popupViewController = nil
                 case let .toLive(liveInfo):
-                    let roomId = liveInfo.roomInfo.roomId
-                    guard let roomType = LiveIdentityGenerator.shared.getIDType(roomId)  else {
-                        let viewController = TUILiveRoomAudienceViewController(roomId: roomId)
-                        self.navigationController?.pushViewController(viewController, animated: true)
-                        return
-                    }
-                    
-                    var viewController: UIViewController
-                    switch roomType {
-                    case .live:
-                        viewController = TUILiveRoomAudienceViewController(roomId: roomId)
-                    case .voice:
-                        viewController = TUIVoiceRoomViewController(roomId: roomId, behavior: .join)
-                    }
+                    let viewController  = TUILiveAudienceViewController(liveInfo: liveInfo, liveListStore: liveListStore)
                     self.navigationController?.pushViewController(viewController, animated: true)
                 }
             }
@@ -171,7 +139,7 @@ extension TUILiveListViewController {
     }
     
     private func popMenu() {
-        roomListStore.dispatch(action: LiveListNavigatorActions.navigatorTo(payload: .main))
+        liveListStore.dispatch(action: LiveListNavigatorActions.navigatorTo(payload: .main))
     }
 }
 

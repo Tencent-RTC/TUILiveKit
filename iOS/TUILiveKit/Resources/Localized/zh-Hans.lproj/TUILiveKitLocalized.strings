@@ -224,7 +224,6 @@
 "live.roomId.xxx" = "直播房间ID: xxx";
 "live.fans.count.xxx" = "xxx粉丝";
 
-
 "live.room.list.live" = "直播";
 "live.room.list.pullToRefresh" = "下拉刷新";
 "live.room.list.releaseToRefresh" = "松开刷新";
@@ -233,3 +232,6 @@
 "live.room.list.noMoreData" = "没有更多数据了";
 "live.room.list.startLiveRoom" = "请先开启一个直播间";
 "live.room.list.watching.xxx" = "xxx人正在观看";
+
+"live.seat.takeSeatApplying" = "你提交了连麦申请，请等待主播同意";
+"live.seat.kickedOutOfSeat" = "被主持人踢下麦位";

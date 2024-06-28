@@ -49,8 +49,8 @@ class AudienceListView: RTCBaseView {
     private let cellId = "TUIVideoSeatCell_Normal"
     
     // MARK: - private property.
-    @Injected private var store: LiveStore
-    @Injected private var routerStore: RouterStore
+    private let store: LiveStore
+    private let routerStore: RouterStore
     private var cancellableSet: Set<AnyCancellable> = []
     private var listUser:[User] = []
     
@@ -92,6 +92,12 @@ class AudienceListView: RTCBaseView {
         imageView.image = .liveBundleImage("live_selection_arrow_icon")
         return imageView
     }()
+    
+    init(store: LiveStore, routerStore: RouterStore) {
+        self.store = store
+        self.routerStore = routerStore
+        super.init(frame: .zero)
+    }
 
     override func constructViewHierarchy() {
         backgroundColor = .clear
@@ -136,11 +142,14 @@ class AudienceListView: RTCBaseView {
                 self.collectionView.reloadData()
             }
             .store(in: &cancellableSet)
-        store.select(UserSelectors.getAudienceUserList)
+        store.select(UserSelectors.getUserList)
             .receive(on: RunLoop.main)
             .sink { [weak self] userList in
                 guard let self = self else { return }
-                self.listUser = userList.filter { $0.userId != self.store.selectCurrent(RoomSelectors.roomOwnerId) }
+                self.listUser = userList.filter { [weak self] in
+                    guard let self = self else { return true }
+                    return $0.userId != self.store.selectCurrent(RoomSelectors.roomOwnerId)
+                }
                 self.collectionView.reloadData()
             }
             .store(in: &cancellableSet)

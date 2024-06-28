@@ -21,11 +21,11 @@ extension TUIBarrageDisplayViewDelegate {
 class TUIBarrageDisplayView: UIView {
     weak var delegate: TUIBarrageDisplayViewDelegate?
     private var roomId: String
-    private var dataSource: [TUIBarrage] = []
+    private var dataSource: [String : [TUIBarrage]] = [:]
     private var cellHeightMap: [Int : CGFloat] = [:]
     private var announcementTitle = ""
     private var announcementContent = ""
-    private var barrageCount = 0
+    private var barrageCount: [String: Int] = [:]
     private lazy var barrageManager: TUIBarrageManager = {
         TUIBarrageManager.defaultCreate(roomId: roomId, delegate: self)
     }()
@@ -78,8 +78,8 @@ class TUIBarrageDisplayView: UIView {
     }
 
     private func addObserver() {
-        TUIBarrageStore.shared.barrage.addObserver(self) { [weak self] barrage, _ in
-            guard let self = self else { return }
+        TUIBarrageStore.shared.barrageMap.addObserver(self) { [weak self] barrageMap, _ in
+            guard let self = self, let barrage = barrageMap[roomId] else { return }
             self.insertBarrages([barrage])
         }
     }
@@ -157,17 +157,31 @@ class TUIBarrageDisplayView: UIView {
     }
 
     func insertBarrages(_ barrages: [TUIBarrage]) {
-        dataSource.append(contentsOf: barrages)
+        if dataSource[roomId] != nil {
+            dataSource[roomId]?.append(contentsOf: barrages)
+        } else {
+            dataSource[roomId] = barrages
+        }
         barrageTableView.reloadData()
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            self.barrageTableView.scrollToRow(at: IndexPath(item: self.dataSource.count - 1, section: 0), at: .bottom, animated: true)
+            guard let self = self, let barrage =  self.dataSource[self.roomId] else { return }
+            self.barrageTableView.scrollToRow(at: IndexPath(item: barrage.count == 0 ? 0 : (barrage.count - 1), section: 0),
+                                              at: .bottom,
+                                              animated: true)
         }
-        barrageCount += 1
+        incrementBarrageCount(for: roomId)
+    }
+    
+    private func incrementBarrageCount(for roomId: String) {
+        if let count = barrageCount[roomId] {
+            barrageCount[roomId] = count + 1
+        } else {
+            barrageCount[roomId] = 1
+        }
     }
 
     func getBarrageCount() -> Int {
-        return barrageCount
+        return barrageCount[roomId] ?? 0
     }
 
     deinit {
@@ -175,16 +189,17 @@ class TUIBarrageDisplayView: UIView {
     }
 
     private func removeObserver() {
-        TUIBarrageStore.shared.barrage.removeObserver(self)
+        TUIBarrageStore.shared.barrageMap.removeObserver(self)
     }
 }
 
 extension TUIBarrageDisplayView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: TUIBarrageCell.cellReuseIdentifier, for: indexPath) as? TUIBarrageCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: TUIBarrageCell.cellReuseIdentifier, for: indexPath) as? TUIBarrageCell,
+              let barrage = dataSource[roomId]?[indexPath.row]
+        else {
             return UITableViewCell()
         }
-        let barrage = dataSource[indexPath.row]
         guard let view = delegate?.barrageDisplayView(self, createCustomCell: barrage) else {
             cell.useDefaultCell(barrage: barrage)
             cell.selectionStyle = .none
@@ -199,7 +214,7 @@ extension TUIBarrageDisplayView: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataSource.count
+        return dataSource[roomId]?.count ?? 0
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

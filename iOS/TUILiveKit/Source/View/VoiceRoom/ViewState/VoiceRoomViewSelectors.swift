@@ -9,6 +9,5 @@ import Foundation
 
 // Selector
 enum VoiceRoomViewSelectors {
-    // Bottom menu
     static let getBottomMenuButtons = Selector(keyPath: \VoiceRoomViewState.menu.menusButtons)
 }

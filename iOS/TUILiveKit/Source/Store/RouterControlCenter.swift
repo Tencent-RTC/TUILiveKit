@@ -13,8 +13,9 @@ protocol RouterViewProvider: NSObjectProtocol {
 }
 
 class RouterControlCenter {
-    let rootRoute: Route
-    @Injected private var routerStore: RouterStoreProvider
+    private var rootRoute: Route
+    private var store: LiveStoreProvider
+    private var routerStore: RouterStore
     
     weak var routerProvider: RouterViewProvider?
     private weak var rootViewController: UIViewController?
@@ -23,13 +24,24 @@ class RouterControlCenter {
     private var presentedRouteStack: [Route] = []
     private var presentedViewControllerMap: [Route: UIViewController] = [:]
     
-    init(rootViewController: UIViewController, rootRoute: Route) {
+    init(rootViewController: UIViewController, store: LiveStoreProvider, rootRoute: Route, routerStore: RouterStore) {
         self.rootViewController = rootViewController
         self.rootRoute = rootRoute
+        self.store = store
+        self.routerStore = routerStore
+        routerStore.dispatch(action: RouterActions.setRootRoute(payload: rootRoute))
+    }
+    
+    deinit {
+        print("deinit \(type(of: self))")
+    }
+    
+    func updateStore(rootRoute: Route, store: LiveStoreProvider) {
+        self.rootRoute = rootRoute
+        self.store = store
         routerStore.dispatch(action: RouterActions.setRootRoute(payload: rootRoute))
     }
 }
-
 
 extension RouterControlCenter {
     func subscribeRouter() {
@@ -127,30 +139,30 @@ extension RouterControlCenter {
         var view: UIView?
         switch route {
             case .roomInfo:
-                view = RoomInfoPanelView()
+                view = RoomInfoPanelView(store: store)
             case .recentViewer:
-                view = RecentWatchMemberPanel()
+                view = RecentWatchMemberPanel(store: store, routerStore: routerStore)
             case .linkControl:
-                view = AnchorLinkControlPanel()
+                view = AnchorLinkControlPanel(store: store, routerStore: routerStore)
             case .setting:
-                view = AnchorSettingPanel()
+                view = AnchorSettingPanel(store: store, routerStore: routerStore)
             case .musicList:
-                view = MusicPanelView(frame: .zero)
+                view = MusicPanelView(roomEngine: store.servicerCenter.roomEngine)
             case .audioEffect:
-                let audioEffect = AudioEffectView()
+            let audioEffect = AudioEffectView(roomEngine: store.servicerCenter.roomEngine)
                 audioEffect.backButtonClickClosure = { [weak self] _ in
                     guard let self = self else { return }
                     self.routerStore.router(action: .dismiss)
                 }
                 view = audioEffect
             case let .beauty(hasRenderView):
-                view = BeautyPanel(hasRenderView: hasRenderView)
+                view = BeautyPanel(hasRenderView: hasRenderView, store: store, routerStore: routerStore)
             case .videoSetting:
-                view = AnchorVideoParametersSettingPanel()
+                view = AnchorVideoParametersSettingPanel(store: store, routerStore: routerStore)
             case .linkType:
                 let dataHelper = BottomPopupListViewDataHelper()
-                let data = dataHelper.generateLinkTypeMenuData()
-                view = LinkMicTypePanel(data: data)
+                let data = dataHelper.generateLinkTypeMenuData(store: store, routerStore: routerStore)
+                view = LinkMicTypePanel(data: data, routerStore: routerStore)
             case .listMenu(let items):
                 let actionPanel = ActionPanel(items: items)
                 actionPanel.cancelActionClosure = { [weak self] in
@@ -159,9 +171,9 @@ extension RouterControlCenter {
                 }
                 view = actionPanel
             case .linkSetting:
-                view = VideoLinkSettingPanel()
+                view = VideoLinkSettingPanel(store: store, routerStore: routerStore)
             case .systemImageSelection:
-                let systemImageSelectionPanel = SystemImageSelectionPanel(configs: SystemImageModel.configs())
+                let systemImageSelectionPanel = SystemImageSelectionPanel(configs: SystemImageModel.configs(), store: store)
                 systemImageSelectionPanel.backButtonClickClosure = { [weak self] in
                     guard let self = self else { return }
                     self.routerStore.router(action: .dismiss)

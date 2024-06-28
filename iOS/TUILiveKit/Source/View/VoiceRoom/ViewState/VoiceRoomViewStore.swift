@@ -7,6 +7,27 @@
 
 import Combine
 
+class VoiceRoomViewStoreFactory {
+    private static var voiceRoomViewStoreMap: [String : VoiceRoomViewStore] = [:]
+    
+    static func getVoiceRoomViewStore(roomId: String) -> VoiceRoomViewStore {
+        if let voiceRoomViewStore = voiceRoomViewStoreMap[roomId] {
+            return voiceRoomViewStore
+        }
+        let voiceRoomViewStore = VoiceRoomViewStoreProvider()
+        voiceRoomViewStoreMap.updateValue(voiceRoomViewStore, forKey: roomId)
+        return voiceRoomViewStore
+    }
+    
+    static func removeVoiceRoomViewStore(roomId: String) {
+        voiceRoomViewStoreMap.removeValue(forKey: roomId)
+    }
+    
+    static func removeAllStore() {
+        voiceRoomViewStoreMap.removeAll()
+    }
+}
+
 protocol VoiceRoomViewStore {
     var viewActionSubject: PassthroughSubject<any IdentifiableAction, Never> { get }
     

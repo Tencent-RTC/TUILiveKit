@@ -14,8 +14,6 @@ struct VoiceRoomViewState {
 }
 
 struct MenuState {
-    var menusButtons: [ButtonMenuInfo] = {
-        let creator = BottomPopupListViewDataHelper()
-        return creator.generateAudienceBottomMenuData()
-    }()
+    var menusButtons: [ButtonMenuInfo] = []
 }
+

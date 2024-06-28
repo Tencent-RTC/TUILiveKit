@@ -10,34 +10,15 @@ import Combine
 
 class SystemImageSelectionPanel: UIView {
     var backButtonClickClosure: (()->Void)?
-    @WeakLazyInjected private var store: LiveStore?
+    private var store: LiveStore
     private var cancellableSet = Set<AnyCancellable>()
+    private var configs: [SystemImageModel]
+    private var currentSelectModel: SystemImageModel?
     
     private var isPortrait: Bool = {
         return WindowUtils.isPortrait
     }()
-
-    private var isViewReady: Bool = false
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        guard !isViewReady else { return }
-        isViewReady = true
-        backgroundColor = .clear
-        constructViewHierarchy()
-        activateConstraints()
-    }
-
-    private var configs: [SystemImageModel]
-    private var currentSelectModel: SystemImageModel?
-    init(configs:[SystemImageModel]) {
-        self.configs = configs
-        super.init(frame: .zero)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
+    
     private lazy var backButton: UIButton = {
         let view = UIButton(type: .system)
         view.setBackgroundImage(.liveBundleImage("live_back_icon"), for: .normal)
@@ -71,8 +52,7 @@ class SystemImageSelectionPanel: UIView {
         collection.delegate = self
         return collection
     }()
-
-
+    
     private lazy var confirmButton: UIButton = {
         let view = UIButton(type: .system)
         view.frame = CGRect(origin: .zero, size: CGSize(width: 200.scale375(), height: 52.scale375()))
@@ -86,6 +66,26 @@ class SystemImageSelectionPanel: UIView {
         view.backgroundColor = .brandBlueColor
         return view
     }()
+    
+    init(configs:[SystemImageModel], store: LiveStore) {
+        self.configs = configs
+        self.store = store
+        super.init(frame: .zero)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private var isViewReady: Bool = false
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        guard !isViewReady else { return }
+        isViewReady = true
+        backgroundColor = .clear
+        constructViewHierarchy()
+        activateConstraints()
+    }
     
 }
 
@@ -149,8 +149,8 @@ extension SystemImageSelectionPanel {
     }
 
     @objc func confirmButtonClick() {
-        guard let currentCoverUrl = store?.selectCurrent(RoomSelectors.getRoomCoverUrl)?.path else { return }
-        store?.dispatch(action: RoomActions.updateRoomCoverUrl(payload: currentSelectModel?.url ?? currentCoverUrl))
+        guard let currentCoverUrl = store.selectCurrent(RoomSelectors.getRoomCoverUrl)?.path else { return }
+        store.dispatch(action: RoomActions.updateRoomCoverUrl(payload: currentSelectModel?.url ?? currentCoverUrl))
         backButtonClickClosure?()
     }
 }

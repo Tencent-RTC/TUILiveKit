@@ -13,18 +13,19 @@ import Combine
 
 public class TUILiveRoomAnchorViewController: UIViewController {
     // MARK: - private property.
-    @Injected private var store: LiveStore
+    private lazy var store: LiveStoreProvider = LiveStoreFactory.getLiveStore(roomId: roomId)
+    private let routerStore: RouterStoreProvider = RouterStoreProvider()
     private var cancellableSet = Set<AnyCancellable>()
 
     private let roomId: String
     public var startLiveBlock:(()->Void)?
     private lazy var routerCenter: RouterControlCenter = {
-        let routerCenter = RouterControlCenter(rootViewController: self, rootRoute: .anchor)
+        let routerCenter = RouterControlCenter(rootViewController: self, store: store, rootRoute: .anchor, routerStore: routerStore)
         routerCenter.routerProvider = self
         return routerCenter
     }()
     private lazy var anchorView : AnchorView = {
-        let view = AnchorView(roomId: roomId)
+        let view = AnchorView(roomId: roomId, routerStore: routerStore)
         view.startLiveBlock = startLiveBlock
         return view
     }()
@@ -36,6 +37,12 @@ public class TUILiveRoomAnchorViewController: UIViewController {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        LiveRoomViewStoreFactory.removeLiveRoomViewStore(roomId: roomId)
+        LiveStoreFactory.removeLiveStore(roomId: roomId)
+        print("deinit \(type(of: self))")
     }
 
     public override func viewDidLoad() {
@@ -74,12 +81,6 @@ public class TUILiveRoomAnchorViewController: UIViewController {
     
     public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
-    }
-    
-    deinit {
-        // Reset audio effect View data.
-        AudioEffectView.session.reset()
-        print("deinit \(type(of: self))")
     }
 }
 

@@ -10,39 +10,48 @@ import RTCCommon
 import Combine
 
 class AudienceView: RTCBaseView {
-    @Injected var store: LiveStore
     let roomId: String
+    let store: LiveStore
+    let viewStore: LiveRoomViewStore
+    let routerStore: RouterStore
+    
     // MARK: - property: publisher
     lazy var  liveStatusPublisher = store.select(ViewSelectors.getLiveStatus)
     // MARK: - property: view
-    let videoView: MatrixVideoRenderView = MatrixVideoRenderView(frame: .zero)
-    let livingView: AudienceLivingView = AudienceLivingView(frame: .zero)
+    lazy var videoView: MatrixVideoRenderView = {
+        MatrixVideoRenderView(store: store)
+    }()
+    
+    lazy var livingView: AudienceLivingView = {
+        AudienceLivingView(store: store, viewStore: viewStore, routerStore: routerStore)
+    }()
+    
     lazy var dashboardView: AudienceEndView = {
         let roomOwner = store.selectCurrent(RoomSelectors.getRoomOwnerInfo)
-        let roomId = store.selectCurrent(RoomSelectors.getRoomId)
         let view = AudienceEndView(roomId: roomId, avatarUrl: roomOwner.avatarUrl,userName: roomOwner.name)
         view.isHidden = true
         return view
     }()
     
     lazy var giftPanelView: TUIGiftListView = {
-        let view = TUIGiftListView(groupId: store.selectCurrent(RoomSelectors.getRoomId))
+        let view = TUIGiftListView(groupId: roomId)
         view.delegate = self
-        giftCloudServer.queryGiftInfoList { error, giftList in
+        TUIGiftStore.shared.giftCloudServer.queryBalance { error, balance in
             if error == .noError {
-                view.setGiftList(giftList)
+                view.setBalance(balance)
             }
         }
-        view.setBalance(500)
         return view
     }()
     
     // MARK: - private property
     private var cancellableSet: Set<AnyCancellable> = []
-    private let giftCloudServer: IGiftCloudServer = GiftCloudServer()
     
-    init(roomId: String) {
+    init(roomId: String, routerStore: RouterStore) {
         self.roomId = roomId
+        self.store = LiveStoreFactory.getLiveStore(roomId: roomId)
+        self.viewStore = LiveRoomViewStoreFactory.getLiveRoomViewStore(roomId: roomId)
+        self.routerStore = routerStore
         super.init(frame: .zero)
     }
 
@@ -51,9 +60,8 @@ class AudienceView: RTCBaseView {
     }
 
     deinit {
-        debugPrint("deinit \(self)")
+        print("deinit \(self)")
     }
-    
     
     override func constructViewHierarchy() {
         backgroundColor = .clear
@@ -133,7 +141,7 @@ extension AudienceView {
             RoomActions.fetchRoomInfo(),
             SeatActions.fetchSeatList(),
             UserActions.fetchUserList(),
-            RoomActions.fetchRoomOwnerInfo(),
+            RoomActions.fetchRoomOwnerInfo(payload: store.selectCurrent(RoomSelectors.roomOwnerId)),
             UserActions.checkFollowType(payload: store.selectCurrent(RoomSelectors.roomOwnerId)),
         ]
         actions.forEach { store.dispatch(action: $0) }
@@ -143,6 +151,7 @@ extension AudienceView {
 extension AudienceView: RouterViewProvider {
     func getRouteView(route: Route) -> UIView? {
         if route == .giftView {
+            giftPanelView.setGiftList(TUIGiftStore.shared.giftList)
             return giftPanelView
         } else {
             return nil
@@ -152,7 +161,7 @@ extension AudienceView: RouterViewProvider {
 
 extension AudienceView: TUIGiftListViewDelegate {
     func onRecharge(giftListView view: TUIGiftListView) {
-        giftCloudServer.rechargeBalance { [weak self] error, balance in
+        TUIGiftStore.shared.giftCloudServer.rechargeBalance { [weak self] error, balance in
             guard let self = self else { return }
             if error == .noError {
                 view.setBalance(balance)
@@ -172,7 +181,7 @@ extension AudienceView: TUIGiftListViewDelegate {
         receiver.level = "0"
         
         let selfInfo = store.selectCurrent(UserSelectors.getSelfInfo)
-        giftCloudServer.sendGift(sender: selfInfo.userId,
+        TUIGiftStore.shared.giftCloudServer.sendGift(sender: selfInfo.userId,
                                  receiver: receiver.userId,
                                  giftModel: giftModel,
                                  giftCount: giftCount) { [weak self] error, balance in
@@ -193,14 +202,6 @@ extension AudienceView {
          let param = generateActionParamTuple(param: roomId, actions: [])
          DataReporter.componentType = .liveRoom
          store.dispatch(action: RoomActions.join(payload: param))
-    }
-    
-    func stopDisplay() {
-        
-    }
-    
-    func endDisplay() {
-        
     }
 }
 

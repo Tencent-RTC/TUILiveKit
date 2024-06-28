@@ -56,7 +56,7 @@ extension TUIGiftPresenter {
             if isSuccess {
                 let giftData = TUIGiftData(gift: giftModel, giftCount: giftCount, sender: sender, receiver: receiver)
                 giftData.sender.userName = .meText
-                TUIGiftStore.shared.giftData.value = giftData
+                TUIGiftStore.shared.giftDataMap.value = [groupId :giftData]
             }
         }
     }

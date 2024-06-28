@@ -27,13 +27,16 @@ class LiveListEffects: Effects {
     }
 }
 
-class LiveListService {
-    private let listManager = TUIRoomEngine.sharedInstance().getExtension(extensionType: .liveListManager)
+class LiveListService: BaseServiceProtocol {
+    var roomEngine: TUIRoomEngine?
+    required init(roomEngine: TUIRoomEngine?) {
+        self.roomEngine = roomEngine
+    }
     
     func getLiveList(cursor: String, count: Int = 20) -> AnyPublisher<(String, [TUILiveInfo]), InternalError> {
         return Future<(String,[TUILiveInfo]), InternalError> { [weak self] promise in
-            guard let self = self else { return }
-            guard let listManager = listManager as? TUILiveListManager else {
+            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let listManager = roomEngine.getExtension(extensionType: .liveListManager) as? TUILiveListManager else {
                 promise(.failure(InternalError(error:TUIError.failed, message: "getRoomListFailed")))
                 return 
             }

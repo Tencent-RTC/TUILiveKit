@@ -21,7 +21,7 @@ let Bottom_SafeHeight = WindowUtils.bottomSafeHeight
 
 class TUIGiftPlayView: UIView {
     weak var delegate: TUIGiftPlayViewDelegate?
-    private var groupId: String = ""
+    var groupId: String = ""
     private var presenter: TUIGiftPresenter = TUIGiftPresenter()
     private var currentLikeAnimationCount: Int = 0
     private var likeCount = 0
@@ -63,8 +63,8 @@ class TUIGiftPlayView: UIView {
     }
     
     private func addObserver() {
-        TUIGiftStore.shared.giftData.addObserver(self) { [weak self] giftData, _ in
-            guard let self = self else { return }
+        TUIGiftStore.shared.giftDataMap.addObserver(self) { [weak self] giftDataMap, _ in
+            guard let self = self, let giftData = giftDataMap[self.groupId] else { return }
             self.delegate?.giftPlayView(self,
                                         onReceiveGift: giftData.gift,
                                         giftCount: giftData.giftCount,
@@ -75,8 +75,8 @@ class TUIGiftPlayView: UIView {
                                receiver: giftData.receiver,
                                giftCount: giftData.giftCount)
         }
-        TUIGiftStore.shared.likeData.addObserver(self) { [weak self] likeData, _ in
-            guard let self = self else { return }
+        TUIGiftStore.shared.likeDataMap.addObserver(self) { [weak self] likeDataMap, _ in
+            guard let self = self, let likeData = likeDataMap[self.groupId]  else { return }
             self.playLikeModel(sender: likeData.sender)
         }
     }
@@ -153,8 +153,8 @@ class TUIGiftPlayView: UIView {
     }
     
     private func removeObserver() {
-        TUIGiftStore.shared.giftData.removeObserver(self)
-        TUIGiftStore.shared.likeData.removeObserver(self)
+        TUIGiftStore.shared.giftDataMap.removeObserver(self)
+        TUIGiftStore.shared.likeDataMap.removeObserver(self)
     }
     
     func playGiftAnimation(animationData: Data) {

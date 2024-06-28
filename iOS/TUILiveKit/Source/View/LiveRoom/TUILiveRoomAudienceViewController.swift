@@ -11,27 +11,34 @@ import TUICore
 public class TUILiveRoomAudienceViewController: UIViewController {
     
     private lazy var audienceView: AudienceView = {
-        let roomId = store.selectCurrent(RoomSelectors.getRoomId)
-        let view = AudienceView(roomId: roomId)
+        let view = AudienceView(roomId: roomId, routerStore: routerStore)
         return view
     }()
     
     // MARK: - private property.
-    @Injected private var store: LiveStore
+    let roomId: String
+    private lazy var store: LiveStoreProvider = LiveStoreFactory.getLiveStore(roomId: roomId)
+    private let routerStore: RouterStoreProvider = RouterStoreProvider()
     private var cancellableSet = Set<AnyCancellable>()
     private lazy var routerCenter: RouterControlCenter = {
-        let routerCenter = RouterControlCenter(rootViewController: self, rootRoute: .audience)
+        let routerCenter = RouterControlCenter(rootViewController: self, store: store, rootRoute: .audience, routerStore: routerStore)
         routerCenter.routerProvider = audienceView
         return routerCenter
     }()
     
     public init(roomId:String) {
+        self.roomId = roomId
         super.init(nibName: nil, bundle: nil)
-        self.store.dispatch(action: RoomActions.updateRoomId(payload: roomId))
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        LiveStoreFactory.removeLiveStore(roomId: roomId)
+        LiveRoomViewStoreFactory.removeLiveRoomViewStore(roomId: roomId)
+        print("deinit \(type(of: self))")
     }
     
     public override func viewDidLoad() {
@@ -51,13 +58,6 @@ public class TUILiveRoomAudienceViewController: UIViewController {
         super.viewDidDisappear(animated)
         UIApplication.shared.isIdleTimerDisabled = false
     }
-    
-    deinit {
-        // Reset audio effect View data.
-        AudioEffectView.session.reset()
-        print("deinit \(type(of: self))")
-    }
-    
 }
 
 extension TUILiveRoomAudienceViewController {

@@ -18,14 +18,19 @@ class VoiceRoomPrepareView: RTCBaseView {
     weak var delegate: VoiceRoomPrepareViewDelegate?
     private var cancellableSet = Set<AnyCancellable>()
     
-    @Injected var store: LiveStore
-    @Injected var routerStore: RouterStore
+    let store: LiveStore
+    let routerStore: RouterStore
     
+    private lazy var liveStatusPublisher = store.select(ViewSelectors.getLiveStatus)
     private lazy var roomNamePublisher = store.select(RoomSelectors.getRoomName)
     private lazy var roomCoverUrlPublisher = store.select(RoomSelectors.getRoomCoverUrl)
     private lazy var roomCategoryPublisher = store.select(RoomSelectors.getCategory)
     private lazy var roomModePublisher = store.select(RoomSelectors.getLiveMode)
-    private lazy var liveStatusPublisher = store.select(ViewSelectors.getLiveStatus)
+    
+    private lazy var dataHelper = {
+        let dataHelper = VoiceRoomPrepareViewDataHelper()
+        return dataHelper
+    }()
     
     let backgroundImageView: UIImageView = {
         let backgroundImageView = UIImageView(frame: .zero)
@@ -79,6 +84,16 @@ class VoiceRoomPrepareView: RTCBaseView {
         return view
     }()
     
+    init(frame: CGRect, store: LiveStore, routerStore: RouterStore) {
+        self.store = store
+        self.routerStore = routerStore
+        super.init(frame: frame)
+    }
+    
+    deinit {
+        debugPrint("deinit \(type(of: self))")
+    }
+    
     override func constructViewHierarchy() {
         layer.insertSublayer(backgroundLayer, at: 0)
         addSubview(backgroundImageView)
@@ -122,6 +137,7 @@ class VoiceRoomPrepareView: RTCBaseView {
         startButton.addTarget(self, action: #selector(clickStart(sender:)), for: .touchUpInside)
         cardView.delegate = self
         subscribeCardViewState()
+        subscribeEnterRoomState()
     }
     
     override func setupViewStyle() {
@@ -169,6 +185,22 @@ extension VoiceRoomPrepareView {
             }
             .store(in: &cancellableSet)
     }
+    
+    private func subscribeEnterRoomState() {
+        liveStatusPublisher
+            .receive(on: RunLoop.main)
+            .sink { [weak self] status in
+                guard let self = self else { return }
+                switch status {
+                case .previewing:
+                    self.isHidden = false
+                case .playing, .pushing, .finished:
+                    self.isHidden = true
+                default:
+                    break
+                }
+            }.store(in: &cancellableSet)
+    }
 }
 
 extension VoiceRoomPrepareView {
@@ -185,12 +217,12 @@ extension VoiceRoomPrepareView {
 
 extension VoiceRoomPrepareView: RoomSettingCardViewDelegate {
     func settingCardView(_ view: RoomSettingCardView, didTapCategory sectionView: SelectionView) {
-        let menus = VoiceRoomPrepareViewDateHelper().generateCategorySelectionData()
+        let menus = dataHelper.generateCategorySelectionData(store: store, routerStore: routerStore)
         routerStore.router(action: .present(.listMenu(menus)))
     }
     
     func settingCardView(_ view: RoomSettingCardView, didTapMode sectionView: SelectionView) {
-        let menus = VoiceRoomPrepareViewDateHelper().generateModeSelectionData()
+        let menus = dataHelper.generateModeSelectionData(store: store, routerStore: routerStore)
         routerStore.router(action: .present(.listMenu(menus)))
     }
     

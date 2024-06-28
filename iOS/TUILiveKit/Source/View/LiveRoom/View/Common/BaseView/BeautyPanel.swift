@@ -14,12 +14,14 @@ import Combine
 #endif
 
 class BeautyPanel: UIView {
-    @Injected private var store: LiveStore
-    @Injected private var routerStore: RouterStore
+    private var store: LiveStore
+    private var routerStore: RouterStore
     private var cancellableSet = Set<AnyCancellable>()
     private var hasRenderView: Bool
-    init(hasRenderView: Bool = true) {
+    init(hasRenderView: Bool = true, store: LiveStore, routerStore: RouterStore) {
         self.hasRenderView = hasRenderView
+        self.store = store
+        self.routerStore = routerStore
         super.init(frame: .zero)
     }
     

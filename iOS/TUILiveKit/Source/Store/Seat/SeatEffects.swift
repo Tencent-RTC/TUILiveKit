@@ -39,7 +39,10 @@ class SeatEffects: Effects {
         actions
             .wasCreated(from: SeatActions.takeSeat)
             .flatMap { action in
-                environment.store?.dispatch(action: ViewActions.updateLinkStatus(payload: .applying))
+                if let isOwner = environment.store?.selectCurrent(UserSelectors.isOwner), !isOwner {
+                    environment.store?.dispatch(action: ViewActions.updateLinkStatus(payload: .applying))
+                    environment.store?.dispatch(action: ViewActions.toastEvent(payload: ToastInfo(message: .takeSeatApplyingToast)))
+                }
                 return environment.seatService.takeSeat(index: action.payload, requestCallback: { [weak environment] request in
                     environment?.store?.dispatch(action: SeatActions.updateMySeatApplicationId(payload: request.requestId))
                 })
@@ -182,4 +185,5 @@ fileprivate extension String {
     static let takeSeatSuccess = localized("live.seat.takeSeatSuccess")
     static let takeSeatApplicationRejected = localized("live.seat.takeSeatApplicationRejected")
     static let takeSeatApplicationTimeout = localized("live.seat.takeSeatApplicationTimeout")
+    static let takeSeatApplyingToast = localized("live.seat.takeSeatApplying")
 }
