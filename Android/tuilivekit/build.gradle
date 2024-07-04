@@ -2,8 +2,8 @@ plugins {
     id 'com.android.library'
 }
 android {
+    compileSdk 34
     namespace "com.trtc.uikit.livekit"
-    compileSdkVersion 31
 
     defaultConfig {
         minSdkVersion 19
@@ -17,6 +17,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

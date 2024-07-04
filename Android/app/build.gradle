@@ -1,7 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdk 31
+    compileSdk 34
+    namespace "com.trtc.uikit.livekit.example"
 
     defaultConfig {
         applicationId "com.trtc.uikit.livekit.example"
@@ -20,6 +21,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
