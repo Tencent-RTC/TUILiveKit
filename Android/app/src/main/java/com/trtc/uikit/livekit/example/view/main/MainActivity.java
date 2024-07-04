@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -78,8 +77,8 @@ public class MainActivity extends FullScreenActivity implements View.OnClickList
     }
 
     private void replaceFragment(Fragment fragment) {
-        FragmentManager     fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction     = fragmentManager.beginTransaction();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fl_live_list, fragment);
         transaction.commit();
     }
@@ -151,19 +150,14 @@ public class MainActivity extends FullScreenActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.ll_live_hall:
-                clickLiveBottomBarChange();
-                clickLiveTopBarChange();
-                replaceFragment(new TUILiveListFragment());
-                break;
-            case R.id.ll_me:
-                clickMeBottomBarChange();
-                clickMeTopBarChange();
-                replaceFragment(new MeFragment());
-                break;
-            default:
-                break;
+        if (v.getId() == R.id.ll_live_hall) {
+            clickLiveBottomBarChange();
+            clickLiveTopBarChange();
+            replaceFragment(new TUILiveListFragment());
+        } else if (v.getId() == R.id.ll_me) {
+            clickMeBottomBarChange();
+            clickMeTopBarChange();
+            replaceFragment(new MeFragment());
         }
     }
 }
