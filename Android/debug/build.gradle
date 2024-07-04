@@ -3,7 +3,8 @@ plugins {
 }
 
 android {
-    compileSdkVersion 31
+    compileSdk 34
+    namespace 'com.tencent.qcloud.tuikit.debug'
 
     defaultConfig {
         minSdkVersion 19
