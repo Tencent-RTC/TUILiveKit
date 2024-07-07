@@ -1,0 +1,37 @@
+@import '../../assets/variable.scss';
+.tui-button-confirm{
+  background: #1C66E5;
+  border: none;
+  border-radius: 2.8125rem;
+  color: #FFF;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.375rem;
+  padding: 0.25rem 1.5rem;
+  margin-right: 1.25rem;
+  cursor: pointer;
+}
+
+.tui-button-cancel{
+  background: #FFF;
+  border: none;
+  color: #1C66E5;    
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.375rem;
+  border: 1px solid #1C66E5;
+  border-radius: 2.8125rem;
+  padding: 0.25rem 1.75rem;
+  cursor: pointer;
+}
+
+.tui-button-confirm, .tui-button-cancel{
+  &:disabled {
+    background-color: $color-gray-7;
+    color: $color-gray-1;
+    opacity: 1;
+    cursor: not-allowed;
+  }
+}

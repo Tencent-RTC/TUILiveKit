@@ -1,0 +1,69 @@
+@import "./variable.scss";
+
+* {
+  box-sizing: border-box;
+
+  &::-webkit-scrollbar {
+    width: 0.125rem;
+    height: 0.125rem;
+    background-color: $color-gray-8;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $color-gray-14;
+  }
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  overflow: auto;
+  touch-action: manipulation;
+}
+
+a {
+  text-decoration: none;
+  color: #006eff;
+}
+
+a:link,
+a:visited,
+a:hover,
+a:active {
+  color: #006eff;
+}
+
+.tui-title {
+  height: 2.5rem;
+  line-height: 2.5rem;
+  padding: 0 1rem;
+  border-bottom: 1px solid $color-split-line;
+  font-weight: 500;
+}
+
+.tui-window-header {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-app-region: drag;
+  height: 2.75rem;
+  line-height: 2.75rem;
+  font-size: 0.75rem;
+
+  button {
+    -webkit-app-region: no-drag;
+    border: none;
+    background-color: transparent;
+  }
+
+  .tui-icon {
+    display: flex;
+    font-size: 1rem;
+    cursor: pointer;
+    color: $color-white;
+  }
+}

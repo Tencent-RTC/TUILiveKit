@@ -1,0 +1,51 @@
+.resizable {
+  position: absolute;
+}
+
+.resize-anchor {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border: 1px solid transparent;
+  background-color: transparent;
+}
+.top-left-anchor {
+  top: -4px;
+  left: -4px;
+  cursor: nw-resize;
+}
+.top-anchor {
+  top: -4px;
+  left: calc(50% - 4px);
+  cursor: n-resize;
+}
+.top-right-anchor {
+  top: -4px;
+  right: -4px;
+  cursor: ne-resize
+}
+.left-anchor {
+  top: calc(50% - 4px);
+  left: -4px;
+  cursor: w-resize;
+}
+.right-anchor {
+  top: calc(50% - 4px);
+  right: -4px;
+  cursor: e-resize;
+}
+.bottom-left-anchor {
+  bottom: -4px;
+  left: -4px;
+  cursor: sw-resize;
+}
+.bottom-anchor {
+  bottom: -4px;
+  left: calc(50% - 4px);
+  cursor: s-resize;
+}
+.bottom-right-anchor {
+  bottom: -4px;
+  right: -4px;
+  cursor: se-resize;
+}

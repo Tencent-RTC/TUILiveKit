@@ -1,0 +1,76 @@
+/**
+ * @see https://www.electron.build/configuration/configuration
+ */
+{
+  "productName": "ultra-live-electron",
+  "appId": "com.tencentcloud.trtc.ultra-live-electron",
+  "asar": false,
+  "directories": {
+    "output": "release/${version}"
+  },
+  "files": [
+    "dist/**/*",
+    "*.js",
+    "!node_modules"
+  ],
+  "mac": {
+    "artifactName": "${productName}_${version}.${ext}",
+    "extraFiles": [
+      {
+        "from": "node_modules/trtc-electron-sdk/build/Release/${arch}/trtc_electron_sdk.node",
+        "to": "./Resources"
+      },
+      {
+        "from": "node_modules/trtc-electron-sdk/build/mac-framework/${arch}/",
+        "to": "./Frameworks"
+      },
+      {
+        "from": "node_modules/trtc-electron-plugin-xmagic/plugin/XMagic/mac/",
+        "to": "./Resources/app/plugin/XMagic/mac/"
+      }
+    ],
+    "target": ["dmg"],
+    "entitlements": "scripts/entitlements.mac.plist",
+    "entitlementsInherit": "scripts/entitlements.mac.plist",
+    "extendInfo": {
+      "NSCameraUsageDescription": "Need camera permission",
+      "NSMicrophoneUsageDescription": "Need microphone permission",
+    },
+  },
+  "win": {
+    "artifactName": "${productName}_${version}.${ext}",
+    "extraFiles": [
+      {
+        "from": "node_modules/trtc-electron-sdk/build/Release/",
+        "to": "./resources",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "node_modules/trtc-electron-plugin-xmagic/plugin/XMagic/win/${arch}/platforms/",
+        "to": "./platforms",
+        "filter": ["**/*"],
+      },
+      {
+        "from": "node_modules/trtc-electron-plugin-xmagic/plugin/XMagic/win/${arch}/",
+        "to": "./resources/app/plugin/XMagic/win/${arch}/",
+        "filter": ["**/*"],
+      },
+      {
+        "from": "node_modules/trtc-electron-plugin-xmagic/plugin/XMagic/win/res/",
+        "to": "./resources/app/plugin/XMagic/win/res/",
+        "filter": ["**/*"],
+      },
+    ],
+    "target": ["nsis", "zip"],
+  },
+  "nsis": {
+    "oneClick": false,
+    "perMachine": true,
+    "allowToChangeInstallationDirectory": true,
+    "deleteAppDataOnUninstall": true,
+    "createDesktopShortcut": true,
+    "runAfterFinish": true,
+  }
+}
