@@ -21,9 +21,8 @@ _简体中文 | [English](README.md)_
 
 这里以 含 UI 的集成（即TUILiveKit）为例，这也是我们推荐的集成方式，关键步骤如下：
 
-- **Step1**：[开通服务](https://cloud.tencent.com/document/product/647/105439)，针对开发者这里有详细的[组件介绍](https://cloud.tencent.com/document/product/647/105438) 
-- **Step2**：接入 TUILiveKit 到您的项目中，各平台详细的接入流程：[iOS](https://cloud.tencent.com/document/product/647/105441)、 [Android ](https://cloud.tencent.com/document/product/647/105442)
-- **Step3**：开启您的第一个在线直播体验
+- **Step1**：接入 TUILiveKit 到您的项目中，各平台详细的接入流程：[iOS](https://cloud.tencent.com/document/product/647/105441)、 [Android ](https://cloud.tencent.com/document/product/647/105442)
+- **Step2**：开启您的第一个在线直播体验
 
 
 
