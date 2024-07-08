@@ -22,16 +22,16 @@ _[简体中文](README-zh_CN.md) | English_
 
 Here, we take the UI-included integration TUILiveKit as an example, which is also our recommended method of integration. The key steps are as follows:：
 
-- **Step1**：Integrate TUILiveKit into Your Project: Detailed Integration Process for Each Platform：[iOS](https://www.tencentcloud.com/document/product/647/60036)、 [Android ](https://www.tencentcloud.com/document/product/647/60037)
+- **Step1**：Integrate TUILiveKit into Your Project: Detailed Integration Process for Each Platform：[iOS](https://trtc.io/document/60036)、 [Android ](https://trtc.io/document/60037)
 - **Step2**：Start Your First Online Live Streaming Experience
 
 
 
 ## Quick link
 
-- If You Encounter Difficulties, You Can First Refer To'FAQs' [iOS](https://www.tencentcloud.com/document/product/647/60048)，[Android](https://www.tencentcloud.com/document/product/647/60043)，Here We Have Compiled the Most Common Issues Encountered by Developers, Covering Various Platforms. We Hope This Will Help You Solve Problems Quickly.
-- To Learn About Our Latest Product Features, Please Check the Update Log [iOS](https://www.tencentcloud.com/document/product/647/60047)，[Android](https://www.tencentcloud.com/document/product/647/60042)。Here You Will Find the Latest Functional Features of TUILiveKit, as Well as the Iteration History of Past Versions
-- Complete API Documentation Available in Client-side API： [iOS](https://www.tencentcloud.com/document/product/647/60046)，[Android](https://www.tencentcloud.com/document/product/647/60041)。
+- If You Encounter Difficulties, You Can First Refer To'FAQs' [iOS](https://trtc.io/document/60048)，[Android](https://trtc.io/document/60043)，Here We Have Compiled the Most Common Issues Encountered by Developers, Covering Various Platforms. We Hope This Will Help You Solve Problems Quickly.
+- To Learn About Our Latest Product Features, Please Check the Update Log [iOS](https://trtc.io/document/60047)，[Android](https://trtc.io/document/60042)。Here You Will Find the Latest Functional Features of TUILiveKit, as Well as the Iteration History of Past Versions
+- Complete API Documentation Available in Client-side API： [iOS](https://trtc.io/document/60046)，[Android](https://trtc.io/document/60041)。
 - If you want to learn more about the projects maintained by Tencent Cloud  Media Services Team, you can check our [Product Official Website](https://trtc.io/), [Github Organizations](https://github.com/LiteAVSDK) etc.
 
 
