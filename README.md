@@ -22,9 +22,8 @@ _[简体中文](README-zh_CN.md) | English_
 
 Here, we take the UI-included integration TUILiveKit as an example, which is also our recommended method of integration. The key steps are as follows:：
 
-- **Step1**：[Activate the service](https://www.tencentcloud.com/document/product/647/60033)，For Developers: Detailed Documentation Here [Overview](https://www.tencentcloud.com/document/product/647/60034) 
-- **Step2**：Integrate TUILiveKit into Your Project: Detailed Integration Process for Each Platform：[iOS](https://www.tencentcloud.com/document/product/647/60036)、 [Android ](https://www.tencentcloud.com/document/product/647/60037)
-- **Step3**：Start Your First Online Live Streaming Experience
+- **Step1**：Integrate TUILiveKit into Your Project: Detailed Integration Process for Each Platform：[iOS](https://www.tencentcloud.com/document/product/647/60036)、 [Android ](https://www.tencentcloud.com/document/product/647/60037)
+- **Step2**：Start Your First Online Live Streaming Experience
 
 
 
