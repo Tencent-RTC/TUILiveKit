@@ -122,12 +122,17 @@ public class LinkMicGridHelper {
     }
 
     public void addAnchorView(View anchorView) {
+        if (anchorView == null) {
+            LiveKitLog.error("LinkMicGridHelper anchorView is null");
+            return;
+        }
         mAuthorView = anchorView;
         updateLinkMicGrid();
     }
 
     public void addAudienceView(View audienceView) {
         if (mAuthorView == null || mAudienceViewList.size() >= 8) {
+            LiveKitLog.error("LinkMicGridHelper anchorView is null or mAudienceViewList size more than 8");
             return;
         }
         mAudienceViewList.add(audienceView);
