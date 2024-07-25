@@ -51,6 +51,9 @@ public class SeatController extends Controller {
             @Override
             public void onAccepted(String requestId, String userId) {
                 mSeatState.mySeatApplicationId.set("", false);
+                if (!mRoomState.ownerInfo.userId.equals(mUserState.selfInfo.userId)) {
+                    mViewState.linkStatus.set(LiveDefine.LinkStatus.LINKING, false);
+                }
             }
 
             @Override
