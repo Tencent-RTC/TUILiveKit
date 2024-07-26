@@ -10,7 +10,7 @@ target 'TUILiveKitApp' do
   pod 'Alamofire'
   # Local Library
   pod 'TUILiveKit', :path => '../TUILiveKit'
-  pod 'RTCCommon'
+  pod 'RTCCommon', '>= 1.0.2'
 end
 
 post_install do |installer|
