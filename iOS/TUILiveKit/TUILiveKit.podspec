@@ -29,7 +29,7 @@ Pod::Spec.new do |spec|
   spec.default_subspec = 'TRTC'
   
   spec.subspec 'Professional' do |professional|
-    professional.dependency 'RTCRoomEngine/Professional', '>= 2.4.1'
+    professional.dependency 'RTCRoomEngine/Professional', '>= 2.5.0'
     professional.source_files = 'Source/**/*'
     professional.resource_bundles = {
       'TUILiveKitBundle' => ['Resources/*.xcassets', 'Resources/Localized/**/*.strings']
@@ -37,7 +37,7 @@ Pod::Spec.new do |spec|
   end
   
   spec.subspec 'TRTC' do |trtc|
-    trtc.dependency 'RTCRoomEngine/TRTC', '>= 2.4.1'
+    trtc.dependency 'RTCRoomEngine/TRTC', '>= 2.5.0'
     trtc.source_files = 'Source/**/*'
     trtc.resource_bundles = {
       'TUILiveKitBundle' => ['Resources/*.xcassets', 'Resources/Localized/**/*.strings']
