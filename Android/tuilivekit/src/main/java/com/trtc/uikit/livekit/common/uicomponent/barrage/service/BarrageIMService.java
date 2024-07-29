@@ -16,9 +16,9 @@ import com.trtc.uikit.livekit.common.utils.LiveKitLog;
 public class BarrageIMService implements IBarrageMessage {
     private static final String TAG = "BarrageIMService";
 
-    private SimpleListener         mSimpleListener;
-    private BarrageMessageDelegate mDelegate;
-    private String                 mRoomId;
+    private       SimpleListener         mSimpleListener;
+    private       BarrageMessageDelegate mDelegate;
+    private final String                 mRoomId;
 
     public BarrageIMService(String roomId) {
         mRoomId = roomId;

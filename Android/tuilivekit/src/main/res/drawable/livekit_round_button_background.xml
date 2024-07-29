@@ -4,7 +4,7 @@
     <item android:state_enabled="true">
         <shape android:shape="rectangle" android:useLevel="false">
             <solid android:color="@color/livekit_design_standard_b1" />
-            <corners android:radius="20dp" />
+            <corners android:radius="26dp" />
         </shape>
     </item>
 </selector>

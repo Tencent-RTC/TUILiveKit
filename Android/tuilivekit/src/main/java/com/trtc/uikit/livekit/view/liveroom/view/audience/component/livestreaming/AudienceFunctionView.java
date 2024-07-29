@@ -11,6 +11,7 @@ import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.uicomponent.barrage.TUIBarrageButton;
 import com.trtc.uikit.livekit.common.uicomponent.gift.TUILikeButton;
 import com.trtc.uikit.livekit.common.view.BasicView;
+import com.trtc.uikit.livekit.common.view.GiftButton;
 import com.trtc.uikit.livekit.manager.LiveController;
 import com.trtc.uikit.livekit.state.LiveDefine;
 import com.trtc.uikit.livekit.view.liveroom.view.audience.component.livestreaming.link.SelectLinkMicTypePanel;

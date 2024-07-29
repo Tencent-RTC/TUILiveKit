@@ -13,22 +13,6 @@
         tools:ignore="ContentDescription" />
 
     <RelativeLayout
-        android:id="@+id/rl_top_view"
-        android:layout_width="match_parent"
-        android:layout_height="32dp"
-        android:layout_marginTop="54dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <RelativeLayout
-        android:id="@+id/rl_bottom_menu"
-        android:layout_width="match_parent"
-        android:layout_height="36dp"
-        android:layout_marginBottom="34dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <RelativeLayout
         android:id="@+id/rl_barrage"
         android:layout_width="match_parent"
         android:layout_height="212dp"
@@ -39,28 +23,42 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <RelativeLayout
+        android:id="@+id/rl_gift"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RelativeLayout
+        android:id="@+id/rl_top_view"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:layout_marginTop="54dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RelativeLayout
+        android:id="@+id/rl_bottom_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="34dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <RelativeLayout
         android:id="@+id/rl_seat_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="112dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="56dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/rl_top_view" />
 
     <RelativeLayout
         android:id="@+id/rl_anchor_preview_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
-    <RelativeLayout
-        android:id="@+id/rl_gift"
-        android:layout_width="match_parent"
-        android:layout_height="600dp"
-        android:layout_marginBottom="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/rl_bottom_menu" />
-
 
     <RelativeLayout
         android:id="@+id/rl_end_view"

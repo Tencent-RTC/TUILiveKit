@@ -10,16 +10,20 @@ import com.tencent.imsdk.v2.V2TIMFollowInfo;
 import com.tencent.imsdk.v2.V2TIMFollowOperationResult;
 import com.tencent.imsdk.v2.V2TIMFollowTypeCheckResult;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
-import com.tencent.liteav.audio.TXAudioEffectManager;
+import com.tencent.trtc.TRTCCloud;
 
 import java.util.List;
 
 public interface ILiveService {
     void destroy();
 
-    void addObserver(TUIRoomObserver observer);
+    void addRoomEngineObserver(TUIRoomObserver observer);
 
-    void removeObserver(TUIRoomObserver observer);
+    void removeRoomEngineObserver(TUIRoomObserver observer);
+
+    void addLiveListManagerObserver(TUILiveListManager.Observer observer);
+
+    void removeLiveListManagerObserver(TUILiveListManager.Observer observer);
 
     /****************************************** Room Business *******************************************/
     void start(TUIRoomDefine.RoomInfo roomInfo, TUIRoomDefine.GetRoomInfoCallback callback);
@@ -29,6 +33,11 @@ public interface ILiveService {
     void leave(TUIRoomDefine.ActionCallback callback);
 
     void stop(TUIRoomDefine.ActionCallback callback);
+
+    void getLiveInfo(String roomId, TUILiveListManager.LiveInfoCallback callback);
+
+    void updateRoomSeatModeByAdmin(TUIRoomDefine.SeatMode seatMode, TUIRoomDefine.ActionCallback callback);
+
 
     /****************************************** Seat Business *******************************************/
     TUIRoomDefine.Request takeSeat(int seatIndex, int timeout, TUIRoomDefine.RequestCallback callback);
@@ -91,22 +100,6 @@ public interface ILiveService {
 
     void setVideoResolutionMode(TUIRoomDefine.ResolutionMode resolutionMode);
 
-    void setVoiceChangerType(TXAudioEffectManager.TXVoiceChangerType type);
-
-    void setVoiceReverbType(TXAudioEffectManager.TXVoiceReverbType type);
-
-    void enableVoiceEarMonitor(boolean enable);
-
-    void stopMusic(int id);
-
-    void startMusic(int id, String path, Float pitch);
-
-    void setMusicVolume(int volume);
-
-    void setVoiceEarMonitorVolume(int volume);
-
-    void setVoiceVolume(int volume);
-
     void setBeautyStyle(int style);
 
     void setBeautyLevel(float level);
@@ -126,10 +119,14 @@ public interface ILiveService {
 
     /****************************************** DATA REPORT *******************************************/
     void callExperimentalAPI(String jsonStr, Object param);
-    
+
     /****************************************** Plugin - Room List *******************************************/
     void fetchLiveList(String cursor, int count, TUILiveListManager.LiveInfoListCallback callback);
 
-    void setLiveInfo(LiveInfo liveInfo, LiveModifyFlag flag, TUIRoomDefine.ActionCallback callback);
+    void setLiveInfo(LiveInfo liveInfo, List<LiveModifyFlag> flagList, TUIRoomDefine.ActionCallback callback);
+
+    /****************************************** TRTC Cloud *******************************************/
+    TRTCCloud getTRTCCloud();
+
 
 }

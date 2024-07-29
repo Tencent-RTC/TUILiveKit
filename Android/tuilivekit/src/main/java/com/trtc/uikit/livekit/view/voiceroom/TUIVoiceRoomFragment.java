@@ -4,6 +4,8 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static com.trtc.uikit.livekit.common.utils.Constants.DEFAULT_MAX_SEAT_COUNT;
 import static com.trtc.uikit.livekit.common.utils.Constants.EVENT_KEY_LIVE_KIT;
 import static com.trtc.uikit.livekit.common.utils.Constants.EVENT_PARAMS_KEY_ENABLE_SLIDE;
+import static com.trtc.uikit.livekit.common.utils.Constants.EVENT_SUB_KEY_CLOSE_VOICE_ROOM;
+import static com.trtc.uikit.livekit.common.utils.Constants.EVENT_SUB_KEY_FINISH_ACTIVITY;
 import static com.trtc.uikit.livekit.common.utils.Constants.EVENT_SUB_KEY_LINK_STATUS_CHANGE;
 import static com.trtc.uikit.livekit.state.LiveDefine.LinkStatus.NONE;
 
@@ -20,8 +22,11 @@ import androidx.fragment.app.Fragment;
 
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.qcloud.tuicore.TUICore;
+import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
 import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.uicomponent.audioeffect.store.AudioEffectSateFactory;
+import com.trtc.uikit.livekit.common.uicomponent.music.store.MusicPanelSateFactory;
 import com.trtc.uikit.livekit.manager.LiveController;
 import com.trtc.uikit.livekit.state.LiveDefine;
 import com.trtc.uikit.livekit.view.voiceroom.view.VoiceRoomRootView;
@@ -30,7 +35,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TUIVoiceRoomFragment extends Fragment {
+public class TUIVoiceRoomFragment extends Fragment implements ITUINotification {
 
     private       RelativeLayout                  mLayoutContainer;
     private       VoiceRoomRootView               mVoiceRoomRootView;
@@ -45,7 +50,7 @@ public class TUIVoiceRoomFragment extends Fragment {
         public void handleOnBackPressed() {
             LiveDefine.LiveStatus liveStatus = mLiveController.getViewState().liveStatus.get();
             if (LiveDefine.LiveStatus.PUSHING == liveStatus || LiveDefine.LiveStatus.PLAYING == liveStatus) {
-                mLiveController.getViewController().finish();
+                TUICore.notifyEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_CLOSE_VOICE_ROOM, null);
             } else {
                 requireActivity().finish();
             }
@@ -63,6 +68,7 @@ public class TUIVoiceRoomFragment extends Fragment {
         super.onCreate(savedInstanceState);
         initLiveController();
         addObserver();
+        TUICore.registerEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_FINISH_ACTIVITY, this);
     }
 
     @Nullable
@@ -107,6 +113,9 @@ public class TUIVoiceRoomFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         removeObserver();
+        TUICore.unRegisterEvent(this);
+        MusicPanelSateFactory.removeState(mRoomId);
+        AudioEffectSateFactory.removeState(mRoomId);
         mLiveController.destroy();
     }
 
@@ -141,6 +150,20 @@ public class TUIVoiceRoomFragment extends Fragment {
                 params.put(EVENT_PARAMS_KEY_ENABLE_SLIDE, false);
             }
             TUICore.notifyEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_LINK_STATUS_CHANGE, params);
+        }
+    }
+
+    @Override
+    public void onNotifyEvent(String key, String subKey, Map<String, Object> param) {
+        if (EVENT_SUB_KEY_FINISH_ACTIVITY.equals(subKey)) {
+            if (param == null) {
+                requireActivity().finish();
+            } else {
+                String roomId = (String) param.get("roomId");
+                if (roomId != null && roomId.equals(mRoomId)) {
+                    requireActivity().finish();
+                }
+            }
         }
     }
 

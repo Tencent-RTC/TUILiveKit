@@ -16,18 +16,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfo;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.uicomponent.roomlist.view.ListAudienceActivity;
-import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfo;
 
 import java.util.List;
 
 public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.ViewHolder> {
-    private static final String TAG = "RoomListAdapter";
-    private Context        mContext;
-    private List<LiveInfo> mDataList;
+    private static final String         TAG = "RoomListAdapter";
+    private final        Context        mContext;
+    private final        List<LiveInfo> mDataList;
 
     public RoomListAdapter(Context context, List<LiveInfo> dataList) {
         mContext = context;
@@ -45,8 +45,7 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         LiveInfo liveInfo = mDataList.get(position);
         TUIRoomDefine.RoomInfo roomInfo = liveInfo.roomInfo;
-        ImageLoader.load(mContext, holder.mImageCover, liveInfo.coverUrl,
-                R.drawable.livekit_live_stream_default_cover);
+        ImageLoader.load(mContext, holder.mImageCover, liveInfo.coverUrl, R.drawable.livekit_live_stream_default_cover);
         ImageLoader.load(mContext, holder.mImageAvatar, roomInfo.ownerAvatarUrl,
                 R.drawable.livekit_live_stream_default_cover);
         holder.mTextRoomName.setText(TextUtils.isEmpty(roomInfo.name) ? roomInfo.roomId : roomInfo.name);

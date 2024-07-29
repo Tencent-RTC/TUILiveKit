@@ -104,9 +104,6 @@ public class ErrorHandler {
             case OPERATION_NOT_SUPPORTED_IN_CURRENT_ROOM_TYPE:
                 stringResId = R.string.livekit_error_operation_notSupported_inCurrentRoomType;
                 break;
-            case OPERATION_NOT_SUPPORTED_IN_CURRENT_SPEECH_MODE:
-                stringResId = R.string.livekit_error_operation_notSupported_inCurrentSpeechMode;
-                break;
             case ROOM_ID_INVALID:
                 stringResId = R.string.livekit_error_roomId_invalid;
                 break;

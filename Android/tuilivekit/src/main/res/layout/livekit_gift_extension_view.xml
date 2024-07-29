@@ -8,6 +8,6 @@
         android:id="@+id/iv_gift"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/livekit_function_gift"
+        android:src="@drawable/livekit_ic_gift"
         tools:ignore="ContentDescription,MissingConstraints" />
 </androidx.constraintlayout.widget.ConstraintLayout>

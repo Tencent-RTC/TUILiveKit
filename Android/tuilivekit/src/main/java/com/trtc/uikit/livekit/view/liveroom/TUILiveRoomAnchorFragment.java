@@ -3,6 +3,7 @@ package com.trtc.uikit.livekit.view.liveroom;
 import static com.trtc.uikit.livekit.common.utils.Constants.DEFAULT_MAX_SEAT_COUNT;
 import static com.trtc.uikit.livekit.common.utils.Constants.EVENT_KEY_LIVE_KIT;
 import static com.trtc.uikit.livekit.common.utils.Constants.EVENT_SUB_KEY_CLOSE_LIVE_ROOM;
+import static com.trtc.uikit.livekit.common.utils.Constants.EVENT_SUB_KEY_FINISH_ACTIVITY;
 import static com.trtc.uikit.livekit.common.utils.Constants.EVENT_SUB_KEY_START_VOICE_ROOM;
 
 import android.os.Bundle;
@@ -18,8 +19,11 @@ import androidx.fragment.app.Fragment;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
-import com.trtc.tuikit.common.livedata.Observer;
+import com.tencent.trtc.TRTCCloudDef;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.uicomponent.audioeffect.store.AudioEffectSateFactory;
+import com.trtc.uikit.livekit.common.uicomponent.beauty.VideoFrameListener;
+import com.trtc.uikit.livekit.common.uicomponent.music.store.MusicPanelSateFactory;
 import com.trtc.uikit.livekit.manager.LiveController;
 import com.trtc.uikit.livekit.manager.controller.RoomController;
 import com.trtc.uikit.livekit.state.LiveDefine;
@@ -30,14 +34,12 @@ import java.util.Map;
 
 public class TUILiveRoomAnchorFragment extends Fragment implements ITUINotification {
 
-    private final String         mRoomID;
-    private       RelativeLayout mLayoutContainer;
-    private       AnchorView     mAnchorView;
-    private       LiveController mLiveController;
-    private       ViewState      mViewState;
-
-    private final Observer<LiveDefine.NavigationStatus> mRouteObserver       = this::onNavigationStatusChange;
-    private final OnBackPressedCallback                 mBackPressedCallback = new OnBackPressedCallback(true) {
+    private final String                mRoomID;
+    private       RelativeLayout        mLayoutContainer;
+    private       AnchorView            mAnchorView;
+    private       LiveController        mLiveController;
+    private       ViewState             mViewState;
+    private final OnBackPressedCallback mBackPressedCallback = new OnBackPressedCallback(true) {
         @Override
         public void handleOnBackPressed() {
             LiveDefine.LiveStatus liveStatus = mViewState.liveStatus.get();
@@ -58,6 +60,7 @@ public class TUILiveRoomAnchorFragment extends Fragment implements ITUINotificat
         super.onCreate(savedInstanceState);
         initLiveController();
         TUICore.registerEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_START_VOICE_ROOM, this);
+        TUICore.registerEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_FINISH_ACTIVITY, this);
     }
 
     @Nullable
@@ -86,6 +89,12 @@ public class TUILiveRoomAnchorFragment extends Fragment implements ITUINotificat
     public void onDestroy() {
         super.onDestroy();
         TUICore.unRegisterEvent(this);
+        mLiveController.getLiveService().getTRTCCloud().setLocalVideoProcessListener(
+                TRTCCloudDef.TRTC_VIDEO_PIXEL_FORMAT_Texture_2D,
+                TRTCCloudDef.TRTC_VIDEO_BUFFER_TYPE_TEXTURE, null);
+        mLiveController.getLiveService().getTRTCCloud().exitRoom();
+        MusicPanelSateFactory.removeState(mRoomID);
+        AudioEffectSateFactory.removeState(mRoomID);
         unInitLiveController();
     }
 
@@ -97,6 +106,15 @@ public class TUILiveRoomAnchorFragment extends Fragment implements ITUINotificat
     public void onNotifyEvent(String key, String subKey, Map<String, Object> param) {
         if (EVENT_SUB_KEY_START_VOICE_ROOM.equals(subKey)) {
             mLiveController.getMediaController().closeLocalCamera();
+        } else if (EVENT_SUB_KEY_FINISH_ACTIVITY.equals(subKey)) {
+            if (param == null) {
+                requireActivity().finish();
+            } else {
+                String roomId = (String) param.get("roomId");
+                if (roomId != null && roomId.equals(mRoomID)) {
+                    requireActivity().finish();
+                }
+            }
         }
     }
 
@@ -104,22 +122,25 @@ public class TUILiveRoomAnchorFragment extends Fragment implements ITUINotificat
         mLiveController = new LiveController();
         mLiveController.getSeatState().setFilterEmptySeat(true);
         mLiveController.setRoomId(mRoomID);
-        mLiveController.getViewState().currentNavigationState.observe(mRouteObserver);
         mViewState = mLiveController.getViewState();
-        TUIRoomDefine.SeatMode seatMode = TUIRoomDefine.SeatMode.APPLY_TO_TAKE;
-        RoomController roomController = mLiveController.getRoomController();
+        TUIRoomDefine.SeatMode seatMode       = TUIRoomDefine.SeatMode.APPLY_TO_TAKE;
+        RoomController         roomController = mLiveController.getRoomController();
         roomController.initCreateRoomState(mRoomID, "", seatMode, DEFAULT_MAX_SEAT_COUNT);
         roomController.startPreview();
+        setLocalVideoProcessListener();
+    }
+
+    private void setLocalVideoProcessListener() {
+        if (TUICore.getService("TEBeautyExtension") == null) {
+            return;
+        }
+        VideoFrameListener videoFrameListener = new VideoFrameListener(getContext());
+        mLiveController.getLiveService().getTRTCCloud().setLocalVideoProcessListener(
+                TRTCCloudDef.TRTC_VIDEO_PIXEL_FORMAT_Texture_2D,
+                TRTCCloudDef.TRTC_VIDEO_BUFFER_TYPE_TEXTURE, videoFrameListener);
     }
 
     private void unInitLiveController() {
-        mLiveController.getViewState().currentNavigationState.removeObserver(mRouteObserver);
         mLiveController.destroy();
-    }
-
-    private void onNavigationStatusChange(LiveDefine.NavigationStatus navigationStatus) {
-        if (navigationStatus == LiveDefine.NavigationStatus.EXIT) {
-            requireActivity().finish();
-        }
     }
 }

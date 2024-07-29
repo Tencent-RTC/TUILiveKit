@@ -7,7 +7,8 @@ import com.trtc.uikit.livekit.manager.controller.RoomController;
 import com.trtc.uikit.livekit.manager.controller.SeatController;
 import com.trtc.uikit.livekit.manager.controller.UserController;
 import com.trtc.uikit.livekit.manager.controller.ViewController;
-import com.trtc.uikit.livekit.manager.observer.LiveObserver;
+import com.trtc.uikit.livekit.manager.observer.LiveListManagerObserver;
+import com.trtc.uikit.livekit.manager.observer.RoomEngineObserver;
 import com.trtc.uikit.livekit.service.ILiveService;
 import com.trtc.uikit.livekit.service.ServiceProvider;
 import com.trtc.uikit.livekit.state.LiveState;
@@ -20,16 +21,17 @@ import com.trtc.uikit.livekit.state.view.ViewState;
 import com.trtc.uikit.livekit.view.liveroom.view.common.video.VideoViewFactory;
 
 public class LiveController {
-    private final String           mTag = "LiveController[" + hashCode() + "]";
-    private final RoomController   mRoomController;
-    private final SeatController   mSeatController;
-    private final UserController   mUserController;
-    private final MediaController  mMediaController;
-    private final ViewController   mViewController;
-    private final LiveState        mState;
-    private final ILiveService     mLiveService;
-    private final LiveObserver     mLiveObserver;
-    private final VideoViewFactory mVideoViewFactory;
+    private final String                  mTag = "LiveController[" + hashCode() + "]";
+    private final RoomController          mRoomController;
+    private final SeatController          mSeatController;
+    private final UserController          mUserController;
+    private final MediaController         mMediaController;
+    private final ViewController          mViewController;
+    private final LiveState               mState;
+    private final ILiveService            mLiveService;
+    private final RoomEngineObserver      mRoomEngineObserver;
+    private final LiveListManagerObserver mLiveListManagerObserver;
+    private final VideoViewFactory        mVideoViewFactory;
 
     public LiveController() {
         mState = new LiveState();
@@ -41,14 +43,17 @@ public class LiveController {
         mMediaController = new MediaController(mState, mLiveService);
         mViewController = new ViewController(mState, mLiveService);
         mVideoViewFactory = new VideoViewFactory();
-        mLiveObserver = new LiveObserver(this);
-        mLiveService.addObserver(mLiveObserver);
+        mRoomEngineObserver = new RoomEngineObserver(this);
+        mLiveListManagerObserver = new LiveListManagerObserver(this);
+        mLiveService.addRoomEngineObserver(mRoomEngineObserver);
+        mLiveService.addLiveListManagerObserver(mLiveListManagerObserver);
         mRoomController.addListener(mRoomControllerListener);
     }
 
     public void destroy() {
         mRoomController.removeListener(mRoomControllerListener);
-        mLiveService.removeObserver(mLiveObserver);
+        mLiveService.removeRoomEngineObserver(mRoomEngineObserver);
+        mLiveService.removeLiveListManagerObserver(mLiveListManagerObserver);
         mRoomController.destroy();
         mSeatController.destroy();
         mUserController.destroy();
@@ -116,7 +121,7 @@ public class LiveController {
     public void setRoomId(String roomId) {
         getRoomSate().roomId = roomId;
         LiveKitLog.info(mTag + " setRoomId:[mRoomId=" + roomId + ",mLiveService:" + mLiveService.hashCode()
-                + ",mLiveObserver:" + mLiveObserver.hashCode() + "]");
+                + ",mLiveObserver:" + mRoomEngineObserver.hashCode() + "]");
     }
 
     private final RoomController.Listener mRoomControllerListener = new RoomController.Listener() {

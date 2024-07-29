@@ -14,7 +14,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.trtc.tuikit.common.livedata.LiveData;
+import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.uicomponent.beauty.BeautyViewFactory;
 import com.trtc.uikit.livekit.manager.LiveController;
 
 import java.util.ArrayList;
@@ -40,6 +42,8 @@ public class VideoSettingsAdapter extends RecyclerView.Adapter<VideoSettingsAdap
     private       int                mCurrentBeautyPosition = -1;
     public        LiveData<Integer>  mItemType              = new LiveData<>(ITEM_TYPE_SETTINGS);
     public        LiveData<Integer>  mCurrentBeautyType     = new LiveData<>(-1);
+    private       PopupDialog        mPopupDialog;
+    private       View               mBeautyView;
 
 
     @SuppressLint("NotifyDataSetChanged")
@@ -47,7 +51,6 @@ public class VideoSettingsAdapter extends RecyclerView.Adapter<VideoSettingsAdap
         mContext = context;
         mLiveController = liveController;
         initSettingsItem();
-        initBeautyItem();
 
         mData = mSettingsItem;
         notifyDataSetChanged();
@@ -56,7 +59,7 @@ public class VideoSettingsAdapter extends RecyclerView.Adapter<VideoSettingsAdap
     private void initSettingsItem() {
         mSettingsItem.add(new SettingsItem(mContext.getString(R.string.livekit_video_settings_item_beauty),
                 R.drawable.livekit_video_settings_beauty, ITEM_SETTINGS_BEAUTY, view -> {
-            enableBeautyType();
+            popUpBeautyPanel();
         }));
         mSettingsItem.add(new SettingsItem(mContext.getString(R.string.livekit_video_settings_item_mirror),
                 R.drawable.livekit_video_settings_mirror, ITEM_SETTINGS_MIRROR, view -> {
@@ -66,17 +69,6 @@ public class VideoSettingsAdapter extends RecyclerView.Adapter<VideoSettingsAdap
                 R.drawable.livekit_video_settings_flip, ITEM_SETTINGS_FLIP, view -> {
             mLiveController.getMediaController().switchCamera();
         }));
-    }
-
-    private void initBeautyItem() {
-        mBeautyItem.add(new SettingsItem(mContext.getString(R.string.livekit_beauty_item_close),
-                R.drawable.livekit_beauty_item_close, ITEM_BEAUTY_CLOSE, null));
-        mBeautyItem.add(new SettingsItem(mContext.getString(R.string.livekit_beauty_item_smooth),
-                R.drawable.livekit_beauty_item_smooth, ITEM_BEAUTY_SMOOTH, null));
-        mBeautyItem.add(new SettingsItem(mContext.getString(R.string.livekit_beauty_item_whiteness),
-                R.drawable.livekit_beauty_item_whiteness, ITEM_BEAUTY_WHITENESS, null));
-        mBeautyItem.add(new SettingsItem(mContext.getString(R.string.livekit_beauty_item_ruddy),
-                R.drawable.livekit_beauty_item_ruddy, ITEM_BEAUTY_RUDDY, null));
     }
 
     public int getCurrentBeautytype() {
@@ -92,10 +84,23 @@ public class VideoSettingsAdapter extends RecyclerView.Adapter<VideoSettingsAdap
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private void enableBeautyType() {
-        mData = mBeautyItem;
-        mItemType.set(ITEM_TYPE_BEAUTY);
-        notifyDataSetChanged();
+    private void popUpBeautyPanel() {
+        if (mPopupDialog == null) {
+            mPopupDialog = new PopupDialog(mContext, com.trtc.tuikit.common.R.style.TUICommonBottomDialogTheme);
+            mPopupDialog.setOnDismissListener(dialog -> {
+                if (mBeautyView != null) {
+                    ViewGroup parentView = (ViewGroup) mBeautyView.getParent();
+                    if (parentView != null) {
+                        parentView.removeView(mBeautyView);
+                    }
+                }
+                mPopupDialog = null;
+            });
+            BeautyViewFactory beautyViewFactory = new BeautyViewFactory();
+            mBeautyView = beautyViewFactory.getBeautyView(mContext, mLiveController);
+        }
+        mPopupDialog.setView(mBeautyView);
+        mPopupDialog.show();
     }
 
     @Override
@@ -137,6 +142,7 @@ public class VideoSettingsAdapter extends RecyclerView.Adapter<VideoSettingsAdap
         public abstract void bindData(int position);
     }
 
+
     public class SettingsViewHolder extends BaseViewHolder {
         public RelativeLayout mLayoutRoot;
         public TextView       mTextTitle;
@@ -157,6 +163,7 @@ public class VideoSettingsAdapter extends RecyclerView.Adapter<VideoSettingsAdap
             mLayoutRoot.setOnClickListener(mData.get(position).listener);
         }
     }
+
 
     public class BeautyViewHolder extends BaseViewHolder {
         public LinearLayout mLayoutRoot;
@@ -193,6 +200,7 @@ public class VideoSettingsAdapter extends RecyclerView.Adapter<VideoSettingsAdap
             });
         }
     }
+
 
     public static class SettingsItem {
         public String               title;

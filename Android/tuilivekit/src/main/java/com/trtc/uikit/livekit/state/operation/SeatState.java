@@ -51,9 +51,22 @@ public class SeatState {
         return builder.toString();
     }
 
-    public void updateSeatList(List<TUIRoomDefine.SeatInfo> list) {
+    public void initSeatList(int maxSeatCount) {
+        if (filterEmptySeat) {
+            return;
+        }
+        List<SeatInfo> list = new ArrayList<>(maxSeatCount);
+        for (int i = 0; i < maxSeatCount; i++) {
+            SeatInfo seatInfo = new SeatInfo();
+            seatInfo.index = i;
+            list.add(seatInfo);
+        }
         this.seatList.get().clear();
-        List<SeatInfo> newList = new ArrayList<>();
+        this.seatList.addAll(list);
+    }
+
+    private void initSeatList(List<TUIRoomDefine.SeatInfo> list) {
+        List<SeatInfo> newList = new ArrayList<>(list.size());
         for (TUIRoomDefine.SeatInfo info : list) {
             if (filterEmptySeat && TextUtils.isEmpty(info.userId)) {
                 continue;
@@ -62,7 +75,27 @@ public class SeatState {
             seatInfo.updateState(info);
             newList.add(seatInfo);
         }
+        this.seatList.get().clear();
         this.seatList.addAll(newList);
+    }
+
+    public void updateSeatList(List<TUIRoomDefine.SeatInfo> list) {
+        if (filterEmptySeat) {
+            initSeatList(list);
+            return;
+        }
+        if (list.size() != this.seatList.get().size()) {
+            initSeatList(list);
+            return;
+        }
+        for (int i = 0; i < list.size(); i++) {
+            SeatInfo oldSeatInfo = this.seatList.get().get(i);
+            TUIRoomDefine.SeatInfo newSeatInfo = list.get(i);
+            if (oldSeatInfo == null || newSeatInfo == null) {
+                continue;
+            }
+            oldSeatInfo.updateState(newSeatInfo);
+        }
     }
 
     public void initSeatApplicationList(List<TUIRoomDefine.Request> list) {
@@ -169,7 +202,7 @@ public class SeatState {
         public String userId    = "";
         public String userName  = "";
         public String avatarUrl = "";
-        public int    timestamp;
+        public long   timestamp;
 
         public SeatApplication(String id) {
             this.id = id;

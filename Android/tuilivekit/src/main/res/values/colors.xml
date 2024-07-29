@@ -9,7 +9,7 @@
     <!--    C2-->
     <color name="livekit_design_standard_c2">#6C54E8</color>
     <!--    C3-->
-    <color name="livekit_design_standard_c3">#FF643D</color>
+    <color name="livekit_design_standard_c3">#E04343</color>
     <!--    C4-->
     <color name="livekit_design_standard_c4">#F23C5B</color>
     <!--    B1D-->
@@ -29,9 +29,12 @@
     <!--    G5-->
     <color name="livekit_design_standard_g5">#8F9AB2</color>
     <!--    G6-->
-    <color name="livekit_design_standard_g6">#B2BBD1</color>
+    <color name="livekit_design_standard_g6">#C5CCDB</color>
     <!--    G7-->
     <color name="livekit_design_standard_g7">#D5E0F2</color>
+
+    <!--    G8-->
+    <color name="livekit_design_standard_g8">#F2F5FC</color>
 
     <!--    Flowkit/Red-->
     <color name="livekit_design_standard_flowkit_red">#FC5555</color>
@@ -51,6 +54,7 @@
     <!--    Colors in non-interactive specifications-->
     <color name="livekit_not_standard_gray_60_transparency">#9922262E</color>
     <color name="livekit_not_standard_40_g1">#660F1014</color>
+
     <color name="livekit_not_standard_white">#D1D9EC</color>
     <color name="livekit_not_standard_grey">#7C85A6</color>
     <color name="livekit_not_standard_red">#E5395C</color>
@@ -62,6 +66,9 @@
     <color name="livekit_not_standard_blue">#0157DF</color>
     <color name="livekit_not_standard_grey_c5">#36C5CCDB</color>
     <color name="livekit_not_standard_blue_d1">#25D1D1</color>
+    <color name="livekit_design_standard_g1_20_transparency">#CC0F1014</color>
+    <color name="livekit_design_standard_g1_60_transparency">#660F1014</color>
+    <color name="livekit_design_standard_g5_20_transparency">#CC99A2B2</color>
 
     <!--    barrage color-->
     <color name="livekit_barrage_color_msg_1">#3074FD</color>
@@ -80,4 +87,8 @@
     <color name="livekit_gift_two_fifth_black_color">#66000000</color>
     <color name="livekit_user_name_black_color">#6622262E</color>
     <color name="livekit_room_list_black_color">#F2F5FC</color>
+
+    <color name="livekit_speak_ripple_color">#FFDADE</color>
+    <color name="livekit_button_bg_line">#1AF2F5FC</color>
+    <color name="livekit_view_line">#4F586B4D</color>
 </resources>

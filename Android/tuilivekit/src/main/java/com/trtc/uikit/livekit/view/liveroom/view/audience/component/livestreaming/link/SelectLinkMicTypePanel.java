@@ -1,8 +1,5 @@
 package com.trtc.uikit.livekit.view.liveroom.view.audience.component.livestreaming.link;
 
-import static com.trtc.uikit.livekit.state.LiveDefine.LinkType.AUDIO;
-import static com.trtc.uikit.livekit.state.LiveDefine.LinkType.VIDEO;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -16,7 +13,6 @@ import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.view.BasicView;
 import com.trtc.uikit.livekit.manager.LiveController;
-import com.trtc.uikit.livekit.state.LiveDefine;
 
 @SuppressLint("ViewConstructor")
 public class SelectLinkMicTypePanel extends BasicView {
@@ -57,13 +53,15 @@ public class SelectLinkMicTypePanel extends BasicView {
 
     private void initLinkAudioView() {
         mLayoutLinkAudio.setOnClickListener(view -> {
-            applyLinkMic(AUDIO);
+            mViewController.enableAutoOpenCameraOnSeated(false);
+            applyLinkMic();
         });
     }
 
     private void initLinkVideoView() {
         mLayoutLinkVideo.setOnClickListener(view -> {
-            applyLinkMic(VIDEO);
+            mViewController.enableAutoOpenCameraOnSeated(true);
+            applyLinkMic();
         });
     }
 
@@ -78,8 +76,7 @@ public class SelectLinkMicTypePanel extends BasicView {
         });
     }
 
-    private void applyLinkMic(LiveDefine.LinkType type) {
-        mViewState.linkType.set(type);
+    private void applyLinkMic() {
         ToastUtil.toastShortMessageCenter(mContext.getString(R.string.livekit_toast_apply_link_mic));
         mSeatController.takeSeat(SEAT_INDEX);
         mListener.dismiss();

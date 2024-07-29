@@ -16,6 +16,7 @@
     <string name="livekit_stream_privacy_status_privacy">隐私</string>
     <string name="livekit_titile_preset_cover">系统图库</string>
     <string name="livekit_set_as_cover">设为封面</string>
+    <string name="livekit_set_as_background">设为背景</string>
     <string name="livekit_follow_anchor">关注</string>
     <string name="livekit_unfollow_anchor">取消关注</string>
     <string name="livekit_permission_camera">相机</string>
@@ -32,8 +33,8 @@
     <string name="livekit_accept">同意</string>
     <string name="livekit_reject">拒绝</string>
     <string name="livekit_enable_audience_request_link">允许观众申请连麦</string>
-    <string name="livekit_link_mic_up_title">当前麦位(%d/%d)</string>
-    <string name="livekit_link_mic_down_title">连麦申请(%d)</string>
+    <string name="livekit_seat_list_title">当前麦位(%d/%d)</string>
+    <string name="livekit_seat_application_title">连麦申请(%d)</string>
     <string name="livekit_link_mic_down_title_popup">连麦申请(%d)</string>
     <string name="livekit_title_link_mic_selector">选择连麦方式</string>
     <string name="livekit_text_link_mic_selector">选择连麦方式，主播同意后接通</string>
@@ -52,6 +53,7 @@
     <string name="livekit_video_settings_item_filter">滤镜</string>
     <string name="livekit_video_settings_item_mirror">镜像</string>
     <string name="livekit_video_settings_item_flip">翻转</string>
+    <string name="livekit_settings_bg_image">背景</string>
 
     <string name="livekit_beauty_panel_title">一键美颜</string>
     <string name="livekit_beauty_item_close">关闭</string>
@@ -176,13 +178,14 @@
     <string name="livekit_voiceroom_seat_mute">静音</string>
     <string name="livekit_cvoiceroom_seat_unmuted">解除静音</string>
     <string name="livekit_voiceroom_leave_seat">离开麦位</string>
-    <string name="livekit_voiceroom_apply_take_seat">申请上麦</string>
+    <string name="livekit_voiceroom_take_seat">上麦</string>
     <string name="livekit_voiceroom_mute_mic">静音麦克风</string>
     <string name="livekit_voiceroom_unmute_mic">解除麦克风静音</string>
     <string name="livekit_voiceroom_take_seat_rejected">上麦申请被拒绝</string>
     <string name="livekit_voiceroom_take_seat_timeout">上麦申请超时</string>
     <string name="livekit_voiceroom_kicked_out_of_seat">被主持人踢下麦位</string>
     <string name="livekit_voiceroom_take_seat_success">上麦成功</string>
+    <string name="livekit_voiceroom_need_agree">上麦需要房主同意</string>
 
     <!-- Error Toast-->
     <string name="livekit_error_success">"操作成功"</string>

@@ -112,7 +112,7 @@ public class AnchorLinkMicManagePanel extends BasicView {
         } else {
             mTextMicDownTitle.setVisibility(GONE);
         }
-        mTextMicDownTitle.setText(mContext.getString(R.string.livekit_link_mic_down_title,
+        mTextMicDownTitle.setText(mContext.getString(R.string.livekit_seat_application_title,
                 mLiveController.getSeatState().seatApplicationList.get().size()));
     }
 
@@ -120,7 +120,7 @@ public class AnchorLinkMicManagePanel extends BasicView {
     private void initMicUpTitleView() {
         if (mLiveController.getSeatState().seatList.get().size() > 1) {
             mTextMicUpTitle.setVisibility(VISIBLE);
-            mTextMicUpTitle.setText(mContext.getString(R.string.livekit_link_mic_up_title,
+            mTextMicUpTitle.setText(mContext.getString(R.string.livekit_seat_list_title,
                     mLiveController.getSeatState().seatList.get().size() - 1,
                     mLiveController.getRoomSate().maxSeatCount.get()));
         } else {
@@ -140,4 +140,3 @@ public class AnchorLinkMicManagePanel extends BasicView {
         mAnchorApplyLinkMicAdapter.updateData();
     }
 }
-

@@ -1,6 +1,6 @@
 package com.trtc.uikit.livekit.service;
 
-import com.trtc.uikit.livekit.service.impl.RoomEngineService;
+import com.trtc.uikit.livekit.service.impl.LiveServiceImpl;
 
 public class ServiceProvider {
 
@@ -16,6 +16,6 @@ public class ServiceProvider {
     }
 
     public ILiveService getLiveService() {
-        return new RoomEngineService();
+        return new LiveServiceImpl();
     }
 }

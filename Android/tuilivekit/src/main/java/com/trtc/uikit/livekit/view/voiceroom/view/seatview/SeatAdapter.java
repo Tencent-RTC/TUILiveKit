@@ -4,6 +4,9 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Rect;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,13 +25,15 @@ import java.util.List;
 
 public class SeatAdapter extends RecyclerView.Adapter<SeatAdapter.ViewHolder> {
     private final Context                  mContext;
+    private final SeatListView.Config      mConfig;
     private       List<SeatState.SeatInfo> mList;
     private       SeatState                mSeatState;
     private final LiveController           mLiveController;
 
-    public SeatAdapter(Context context, LiveController liveController) {
+    public SeatAdapter(Context context, LiveController liveController, SeatListView.Config config) {
         mContext = context;
         mLiveController = liveController;
+        mConfig = config;
         mSeatState = liveController.getSeatState();
         mList = new ArrayList<>(mSeatState.seatList.get());
         mSeatState = liveController.getSeatState();
@@ -52,7 +57,7 @@ public class SeatAdapter extends RecyclerView.Adapter<SeatAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         SeatState.SeatInfo seatInfo = mList.get(position);
-        SeatInfoView seatInfoView = new SeatInfoView(mContext, mLiveController, seatInfo);
+        SeatInfoView seatInfoView = new SeatInfoView(mContext, mLiveController, seatInfo, mConfig);
         holder.mLayoutSeatInfoContainer.removeAllViews();
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         holder.mLayoutSeatInfoContainer.addView(seatInfoView, layoutParams);
@@ -73,6 +78,21 @@ public class SeatAdapter extends RecyclerView.Adapter<SeatAdapter.ViewHolder> {
 
         private void initView(@NonNull final View itemView) {
             mLayoutSeatInfoContainer = itemView.findViewById(R.id.ll_seat_item);
+        }
+    }
+
+    public static class SpaceItemDecoration extends RecyclerView.ItemDecoration {
+        private final int mSpace;
+
+        public SpaceItemDecoration(Context context) {
+            DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+            mSpace = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 23, metrics);
+        }
+
+        @Override
+        public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent,
+                                   @NonNull RecyclerView.State state) {
+            outRect.bottom = mSpace;
         }
     }
 }

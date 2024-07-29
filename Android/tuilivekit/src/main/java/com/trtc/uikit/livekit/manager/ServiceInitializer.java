@@ -50,7 +50,6 @@ public final class ServiceInitializer extends ContentProvider {
         return false;
     }
 
-
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection,

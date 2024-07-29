@@ -1,11 +1,13 @@
 package com.trtc.uikit.livekit.manager.controller;
 
+import static com.trtc.uikit.livekit.common.utils.Constants.DEFAULT_MAX_SEAT_COUNT;
 import static com.trtc.uikit.livekit.state.LiveDefine.LiveStreamPrivacyStatus.PUBLIC;
 
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfo;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveModifyFlag;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
@@ -61,6 +63,11 @@ public class RoomController extends Controller {
         mRoomState.ownerInfo.name.set(mUserState.selfInfo.name.get());
         mRoomState.ownerInfo.avatarUrl.set(mUserState.selfInfo.avatarUrl.get());
         mUserState.selfInfo.role.set(TUIRoomDefine.Role.ROOM_OWNER);
+        if (maxSeatCount == 0) {
+            mSeatState.initSeatList(DEFAULT_MAX_SEAT_COUNT);
+        } else {
+            mSeatState.initSeatList(maxSeatCount);
+        }
     }
 
     public void start() {
@@ -103,6 +110,7 @@ public class RoomController extends Controller {
         mLiveService.join(roomId, new TUIRoomDefine.GetRoomInfoCallback() {
             @Override
             public void onSuccess(TUIRoomDefine.RoomInfo roomInfo) {
+                getLiveInfo(roomId);
                 onEnterRoomSuccess(roomInfo);
                 mViewState.liveStatus.set(LiveDefine.LiveStatus.PLAYING);
             }
@@ -114,9 +122,27 @@ public class RoomController extends Controller {
         });
     }
 
+    private void getLiveInfo(String roomId) {
+        LiveKitLog.info(TAG + " getLiveInfo [roomId: " + roomId + ",liveService:" + mLiveService.hashCode() + "]");
+        mLiveService.getLiveInfo(roomId, new TUILiveListManager.LiveInfoCallback() {
+            @Override
+            public void onSuccess(LiveInfo liveInfo) {
+                updateCoverUrl(liveInfo.coverUrl);
+            }
+
+            @Override
+            public void onError(TUICommonDefine.Error error, String s) {
+                ErrorHandler.onError(error);
+            }
+        });
+    }
+
+    private void updateCoverUrl(String coverUrl) {
+        mRoomState.coverURL.set(coverUrl, false);
+    }
+
     public void exit() {
         LiveKitLog.info(TAG + "[" + mRoomState.roomId + "] exit start");
-        mViewState.liveStatus.set(LiveDefine.LiveStatus.DASHBOARD);
         if (isOwner()) {
             stop();
         } else {
@@ -149,7 +175,17 @@ public class RoomController extends Controller {
     }
 
     public void setRoomName(String roomName) {
-        mRoomState.roomName.set(roomName);
+        mRoomState.roomName.set(roomName, false);
+    }
+
+    public void setCoverURL(String url) {
+        mRoomState.coverURL.set(url, false);
+    }
+
+    public void setBackgroundURL(String backgroundURL) {
+        if (mViewState.liveStatus.get() == LiveDefine.LiveStatus.PREVIEWING) {
+            mRoomState.backgroundURL.set(backgroundURL, false);
+        }
     }
 
     public String getDefaultRoomName() {
@@ -172,6 +208,26 @@ public class RoomController extends Controller {
 
     public void setLiveCategory(String category) {
         mRoomState.liveExtraInfo.category.set(category);
+    }
+
+    public void updateRoomSeatMode(TUIRoomDefine.SeatMode seatMode) {
+        LiveKitLog.info(TAG + " updateRoomSeatMode [roomId: " + mRoomState.roomId + "]");
+        if (mViewState.liveStatus.get() == LiveDefine.LiveStatus.PREVIEWING) {
+            mRoomState.seatMode.set(seatMode, false);
+            return;
+        }
+        mLiveService.updateRoomSeatModeByAdmin(seatMode, new TUIRoomDefine.ActionCallback() {
+            @Override
+            public void onSuccess() {
+                LiveKitLog.info(TAG + " updateRoomSeatMode success");
+                mRoomState.seatMode.set(seatMode, false);
+            }
+
+            @Override
+            public void onError(TUICommonDefine.Error error, String message) {
+                LiveKitLog.error(TAG + " updateRoomSeatMode:[Error] error:" + error + ",message:" + message + "]");
+            }
+        });
     }
 
     private void leave() {
@@ -204,7 +260,7 @@ public class RoomController extends Controller {
         });
     }
 
-    private boolean isOwner() {
+    public boolean isOwner() {
         String selfUserId = TUIRoomEngine.getSelfInfo().userId;
         if (TextUtils.isEmpty(selfUserId)) {
             return false;
@@ -257,9 +313,11 @@ public class RoomController extends Controller {
                 break;
             }
         }
-        mLiveService.setLiveInfo(liveInfo, LiveModifyFlag.COVER_URL, null);
-        mLiveService.setLiveInfo(liveInfo, LiveModifyFlag.PUBLISH, null);
-        mLiveService.setLiveInfo(liveInfo, LiveModifyFlag.CATEGORY, null);
+        List<LiveModifyFlag> flagList = new ArrayList<>();
+        flagList.add(LiveModifyFlag.COVER_URL);
+        flagList.add(LiveModifyFlag.PUBLISH);
+        flagList.add(LiveModifyFlag.CATEGORY);
+        mLiveService.setLiveInfo(liveInfo, flagList, null);
     }
 
     public void onRoomUserCountChanged(String roomId, int userCount) {
@@ -267,6 +325,15 @@ public class RoomController extends Controller {
             mRoomState.userCount.set(userCount - 1);
             if (userCount > mRoomState.liveExtraInfo.maxAudienceCount) {
                 mRoomState.liveExtraInfo.maxAudienceCount = userCount - 1;
+            }
+        }
+    }
+
+    public void onLiveInfoChanged(TUILiveListManager.LiveInfo liveInfo,
+                                  List<TUILiveListManager.LiveModifyFlag> modifyFlagList) {
+        for (TUILiveListManager.LiveModifyFlag flag : modifyFlagList) {
+            if (flag == LiveModifyFlag.COVER_URL) {
+                updateCoverUrl(liveInfo.coverUrl);
             }
         }
     }

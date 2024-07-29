@@ -58,7 +58,7 @@ public class ChangeVoiceAdapter extends RecyclerView.Adapter<ChangeVoiceAdapter.
         final ChangeVoiceItem changeVoiceItem = mData.get(position);
         holder.textTitle.setText(changeVoiceItem.title);
         holder.imageIcon.setImageResource(changeVoiceItem.icon);
-        if (changeVoiceItem.type == mAudioEffectService.mAudioEffectStore.changerType.get()) {
+        if (changeVoiceItem.type == mAudioEffectService.mAudioEffectState.changerType.get()) {
             holder.imageIcon.setBackgroundResource(R.drawable.livekit_settings_item_select_background);
             mSelectedPosition = mData.indexOf(changeVoiceItem);
         } else {

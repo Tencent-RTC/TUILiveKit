@@ -2,6 +2,7 @@ package com.trtc.uikit.livekit.view.liveroom;
 
 import static com.trtc.uikit.livekit.common.utils.Constants.EVENT_KEY_LIVE_KIT;
 import static com.trtc.uikit.livekit.common.utils.Constants.EVENT_PARAMS_KEY_ENABLE_SLIDE;
+import static com.trtc.uikit.livekit.common.utils.Constants.EVENT_SUB_KEY_FINISH_ACTIVITY;
 import static com.trtc.uikit.livekit.common.utils.Constants.EVENT_SUB_KEY_LINK_STATUS_CHANGE;
 import static com.trtc.uikit.livekit.state.LiveDefine.LinkStatus.NONE;
 
@@ -16,8 +17,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.tencent.qcloud.tuicore.TUICore;
+import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
+import com.tencent.trtc.TRTCCloudDef;
 import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.uicomponent.beauty.VideoFrameListener;
 import com.trtc.uikit.livekit.manager.LiveController;
 import com.trtc.uikit.livekit.state.LiveDefine;
 import com.trtc.uikit.livekit.view.liveroom.view.audience.AudienceView;
@@ -25,14 +29,13 @@ import com.trtc.uikit.livekit.view.liveroom.view.audience.AudienceView;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TUILiveRoomAudienceFragment extends Fragment {
+public class TUILiveRoomAudienceFragment extends Fragment implements ITUINotification {
 
-    private       AudienceView                          mAudienceView;
-    private       LiveController                        mLiveController;
-    private       LiveDefine.LinkStatus                 mCurrentLinkStatus;
-    private final String                                mRoomId;
-    private final Observer<LiveDefine.LinkStatus>       mLinkStatusObserver = this::onLinkStatusChange;
-    private final Observer<LiveDefine.NavigationStatus> mRouteObserver      = this::onNavigationStatusChange;
+    private       AudienceView                    mAudienceView;
+    private       LiveController                  mLiveController;
+    private       LiveDefine.LinkStatus           mCurrentLinkStatus;
+    private final String                          mRoomId;
+    private final Observer<LiveDefine.LinkStatus> mLinkStatusObserver = this::onLinkStatusChange;
 
 
     public TUILiveRoomAudienceFragment(String roomId) {
@@ -44,6 +47,7 @@ public class TUILiveRoomAudienceFragment extends Fragment {
         super.onCreate(savedInstanceState);
         initLiveController();
         addObserver();
+        TUICore.registerEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_FINISH_ACTIVITY, this);
     }
 
     @Nullable
@@ -85,6 +89,7 @@ public class TUILiveRoomAudienceFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         removeObserver();
+        TUICore.unRegisterEvent(this);
         mLiveController.destroy();
     }
 
@@ -93,19 +98,27 @@ public class TUILiveRoomAudienceFragment extends Fragment {
         mLiveController.getSeatState().setFilterEmptySeat(true);
         mLiveController.setRoomId(mRoomId);
         mCurrentLinkStatus = mLiveController.getViewState().linkStatus.get();
+        setLocalVideoProcessListener();
+    }
+
+    private void setLocalVideoProcessListener() {
+        if (TUICore.getService("TEBeautyExtension") == null) {
+            return;
+        }
+        mLiveController.getLiveService().getTRTCCloud().setLocalVideoProcessListener(
+                TRTCCloudDef.TRTC_VIDEO_PIXEL_FORMAT_Texture_2D,
+                TRTCCloudDef.TRTC_VIDEO_BUFFER_TYPE_TEXTURE, new VideoFrameListener(getContext()));
     }
 
     private void addObserver() {
         if (mLiveController != null) {
             mLiveController.getViewState().linkStatus.observe(mLinkStatusObserver);
-            mLiveController.getViewState().currentNavigationState.observe(mRouteObserver);
         }
     }
 
     private void removeObserver() {
         if (mLiveController != null) {
             mLiveController.getViewState().linkStatus.removeObserver(mLinkStatusObserver);
-            mLiveController.getViewState().currentNavigationState.removeObserver(mRouteObserver);
         }
     }
 
@@ -122,9 +135,17 @@ public class TUILiveRoomAudienceFragment extends Fragment {
         }
     }
 
-    private void onNavigationStatusChange(LiveDefine.NavigationStatus navigationStatus) {
-        if (navigationStatus == LiveDefine.NavigationStatus.EXIT) {
-            requireActivity().finish();
+    @Override
+    public void onNotifyEvent(String key, String subKey, Map<String, Object> param) {
+        if (EVENT_SUB_KEY_FINISH_ACTIVITY.equals(subKey)) {
+            if (param == null) {
+                requireActivity().finish();
+            } else {
+                String roomId = (String) param.get("roomId");
+                if (roomId != null && roomId.equals(mRoomId)) {
+                    requireActivity().finish();
+                }
+            }
         }
     }
 }

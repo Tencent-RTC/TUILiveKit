@@ -15,6 +15,7 @@
     <string name="livekit_stream_privacy_status_privacy">Privacy</string>
     <string name="livekit_titile_preset_cover">Preset Images</string>
     <string name="livekit_set_as_cover">Set as cover</string>
+    <string name="livekit_set_as_background">Set as background</string>
     <string name="livekit_follow_anchor">Follow</string>
     <string name="livekit_unfollow_anchor">unfollow</string>
     <string name="livekit_liveroom_id">Live Room ID:</string>
@@ -36,8 +37,8 @@
     <string name="livekit_accept">Accept</string>
     <string name="livekit_reject">Reject</string>
     <string name="livekit_enable_audience_request_link">Allow viewers to apply for continuous microphone</string>
-    <string name="livekit_link_mic_up_title">Current wheat position(%d/8)</string>
-    <string name="livekit_link_mic_down_title">Apply for continuous wheat(%d)</string>
+    <string name="livekit_seat_list_title">Current wheat position(%d/%d)</string>
+    <string name="livekit_seat_application_title">Apply for continuous wheat(%d)</string>
     <string name="livekit_link_mic_down_title_popup">Requesting(%d)</string>
 
     <string name="livekit_title_link_mic_selector">Choose Link Mode</string>
@@ -57,6 +58,7 @@
     <string name="livekit_video_settings_item_filter">Filter</string>
     <string name="livekit_video_settings_item_mirror">Mirror</string>
     <string name="livekit_video_settings_item_flip">Flip</string>
+    <string name="livekit_settings_bg_image">Background</string>
 
     <string name="livekit_beauty_panel_title">One-click beauty</string>
     <string name="livekit_beauty_item_close">Close</string>
@@ -181,13 +183,14 @@
     <string name="livekit_voiceroom_seat_mute">Mute Audio</string>
     <string name="livekit_cvoiceroom_seat_unmuted">Unmute Audio</string>
     <string name="livekit_voiceroom_leave_seat">Leave Seat</string>
-    <string name="livekit_voiceroom_apply_take_seat">Apply Seat</string>
+    <string name="livekit_voiceroom_take_seat">Take Seat</string>
     <string name="livekit_voiceroom_mute_mic">Mute Microphone</string>
     <string name="livekit_voiceroom_unmute_mic">Unmute Microphone</string>
     <string name="livekit_voiceroom_take_seat_rejected">Take seat application has been rejected</string>
     <string name="livekit_voiceroom_take_seat_timeout">Take seat application timeout</string>
     <string name="livekit_voiceroom_kicked_out_of_seat">Kicked out of seat by room owner</string>
     <string name="livekit_voiceroom_take_seat_success">Take seat success</string>
+    <string name="livekit_voiceroom_need_agree">Require your consent to speak</string>
 
     <!-- Error Toast-->
     <string name="livekit_error_success">"Operation successful"</string>

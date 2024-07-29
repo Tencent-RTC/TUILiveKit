@@ -1,29 +1,32 @@
 package com.trtc.uikit.livekit.common.uicomponent.music.service;
 
-import static com.trtc.uikit.livekit.common.uicomponent.music.store.MusicStore.MusicInfo.INVALID_ID;
+import static com.trtc.uikit.livekit.common.uicomponent.music.store.MusicPanelState.MusicInfo.INVALID_ID;
 
-import com.trtc.uikit.livekit.common.uicomponent.music.store.MusicStore;
+import com.tencent.liteav.audio.TXAudioEffectManager;
+import com.tencent.trtc.TRTCCloud;
+import com.trtc.uikit.livekit.common.uicomponent.music.store.MusicPanelSateFactory;
+import com.trtc.uikit.livekit.common.uicomponent.music.store.MusicPanelState;
 import com.trtc.uikit.livekit.common.utils.LiveKitLog;
-import com.trtc.uikit.livekit.manager.LiveController;
 
 public class MusicService {
-
     public static final String TAG = "MusicService";
 
-    public LiveController mLiveController;
-    public MusicStore     mMusicStore;
+    private final String          mRoomId;
+    private final TRTCCloud       mTRTCCloud;
+    public        MusicPanelState mMusicPanelState;
 
-    public MusicService(LiveController liveController) {
-        mLiveController = liveController;
-        mMusicStore = MusicStore.getInstance();
+    public MusicService(String roomId, TRTCCloud trtcCloud) {
+        mRoomId = roomId;
+        mTRTCCloud = trtcCloud;
+        mMusicPanelState = MusicPanelSateFactory.getState(roomId);
     }
 
-    public void operatePlayMusic(MusicStore.MusicInfo musicInfo) {
-        MusicStore.MusicInfo currentMusicInfo = mMusicStore.currentMusicInfo.get();
+    public void operatePlayMusic(MusicPanelState.MusicInfo musicInfo) {
+        MusicPanelState.MusicInfo currentMusicInfo = mMusicPanelState.currentMusicInfo.get();
         if (currentMusicInfo.id != INVALID_ID && currentMusicInfo.id != musicInfo.id) {
             stopMusic(currentMusicInfo.id);
         }
-        mMusicStore.currentMusicInfo.set(musicInfo);
+        mMusicPanelState.currentMusicInfo.set(musicInfo);
         boolean isPlaying = musicInfo.isPlaying.get();
         LiveKitLog.info(TAG + "operatePlayMusic:[isPlaying:" + isPlaying + "]");
         if (musicInfo.isPlaying.get()) {
@@ -33,27 +36,32 @@ public class MusicService {
         }
     }
 
-    private void startMusic(MusicStore.MusicInfo musicInfo) {
-        LiveKitLog.info(TAG + "[" + mLiveController.getRoomSate().roomId + "] startMusic:[musicInfo:" + musicInfo
-                + "]");
-        mLiveController.getLiveService().startMusic(musicInfo.id, musicInfo.path, musicInfo.pitch.get());
-        mMusicStore.currentMusicInfo.get().isPlaying.set(true);
+    private void startMusic(MusicPanelState.MusicInfo musicInfo) {
+        LiveKitLog.info(TAG + "[" + mRoomId + "] startMusic:[musicInfo:" + musicInfo + "]");
+        int id = musicInfo.id;
+        String path = musicInfo.path;
+        TXAudioEffectManager.AudioMusicParam audioMusicParam = new TXAudioEffectManager.AudioMusicParam(id, path);
+        audioMusicParam.loopCount = Integer.MAX_VALUE;
+        audioMusicParam.publish = true;
+        mTRTCCloud.getAudioEffectManager().startPlayMusic(audioMusicParam);
+        mTRTCCloud.getAudioEffectManager().setMusicPitch(id, musicInfo.pitch.get());
+        mMusicPanelState.currentMusicInfo.get().isPlaying.set(true);
     }
 
     private void stopMusic(int id) {
-        LiveKitLog.info(TAG + "[" + mLiveController.getRoomSate().roomId + "] stopMusic:[id:" + id + "]");
-        mLiveController.getLiveService().stopMusic(id);
-        mMusicStore.currentMusicInfo.get().isPlaying.set(false);
+        LiveKitLog.info(TAG + "[" + mRoomId + "] stopMusic:[id:" + id + "]");
+        mTRTCCloud.getAudioEffectManager().stopPlayMusic(id);
+        mMusicPanelState.currentMusicInfo.get().isPlaying.set(false);
     }
 
-    public void deleteMusic(MusicStore.MusicInfo musicInfo) {
+    public void deleteMusic(MusicPanelState.MusicInfo musicInfo) {
         boolean isPlaying = musicInfo.isPlaying.get();
-        LiveKitLog.info(TAG + "[" + mLiveController.getRoomSate().roomId + "] deleteMusic:[musicInfo:" + musicInfo
+        LiveKitLog.info(TAG + "[" + mRoomId + "] deleteMusic:[musicInfo:" + musicInfo
                 + ",isPlaying:" + isPlaying + "]");
         if (isPlaying) {
             stopMusic(musicInfo.id);
         }
-        mMusicStore.currentMusicInfo.set(new MusicStore.MusicInfo());
-        mMusicStore.musicList.remove(musicInfo);
+        mMusicPanelState.currentMusicInfo.set(new MusicPanelState.MusicInfo());
+        mMusicPanelState.musicList.remove(musicInfo);
     }
 }

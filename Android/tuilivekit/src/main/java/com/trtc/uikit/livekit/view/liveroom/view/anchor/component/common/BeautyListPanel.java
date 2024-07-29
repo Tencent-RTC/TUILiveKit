@@ -20,6 +20,7 @@ import com.trtc.uikit.livekit.view.liveroom.view.audience.component.livestreamin
 @SuppressLint("ViewConstructor")
 public class BeautyListPanel extends BasicView {
 
+
     private BeautyListAdapter mBeautyListAdapter;
     private SeekBar           mBeautySeekBar;
     private TextView          mTextBeautyLevel;

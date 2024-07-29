@@ -54,7 +54,7 @@ public class PermissionRequest {
         PermissionRequester.newInstance(permissions)
                 .title(context.getString(R.string.livekit_permission_title, appName, title))
                 .description(reason.toString())
-                .settingsTip(context.getString(R.string.livekit_permission_tips, title) + "\n" + reason.toString())
+                .settingsTip(context.getString(R.string.livekit_permission_tips, title) + "\n" + reason)
                 .callback(permissionCallback)
                 .request();
     }
@@ -109,7 +109,7 @@ public class PermissionRequest {
         PermissionRequester.newInstance(permissions)
                 .title(context.getString(R.string.livekit_permission_title, appName, title))
                 .description(reason.toString())
-                .settingsTip(context.getString(R.string.livekit_permission_tips, title) + "\n" + reason.toString())
+                .settingsTip(context.getString(R.string.livekit_permission_tips, title) + "\n" + reason)
                 .callback(permissionCallback)
                 .request();
     }

@@ -71,7 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_marginStart="24dp"
-            android:text="@string/livekit_link_mic_up_title"
+            android:text="@string/livekit_seat_list_title"
             android:textColor="@color/livekit_not_standard_grey"
             android:textSize="12sp" />
 
@@ -96,7 +96,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_marginStart="24dp"
-            android:text="@string/livekit_link_mic_down_title"
+            android:text="@string/livekit_seat_application_title"
             android:textColor="@color/livekit_not_standard_grey"
             android:textSize="12sp" />
 

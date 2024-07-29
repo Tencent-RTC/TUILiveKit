@@ -4,6 +4,7 @@ package com.trtc.uikit.livekit.common.uicomponent.audioeffect.view;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.widget.FrameLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -11,28 +12,31 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.tencent.trtc.TRTCCloud;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.uicomponent.audioeffect.service.AudioEffectService;
-import com.trtc.uikit.livekit.common.uicomponent.audioeffect.store.AudioEffectStore;
-import com.trtc.uikit.livekit.common.view.BottomPanelView;
-import com.trtc.uikit.livekit.manager.LiveController;
+import com.trtc.uikit.livekit.common.uicomponent.audioeffect.store.AudioEffectState;
 
 @SuppressLint("ViewConstructor")
-public class AudioEffectPanelView extends BottomPanelView {
+public class AudioEffectPanelView extends FrameLayout {
 
+    private final Context            mContext;
     private       TextView           mTextMusicVolume;
     private       TextView           mTextEarReturnVolume;
     private       TextView           mTextPeopleVolume;
     private final AudioEffectService mAudioEffectService;
-    private final AudioEffectStore   mAudioEffectStore;
+    private final AudioEffectState   mAudioEffectState;
 
-    public AudioEffectPanelView(Context context, LiveController liveController) {
-        super(context, liveController);
-        mAudioEffectService = new AudioEffectService(liveController);
-        mAudioEffectStore = mAudioEffectService.mAudioEffectStore;
+    protected OnBackButtonClickListener mOnBackButtonClickListener;
+
+    public AudioEffectPanelView(Context context, String roomId, TRTCCloud trtcCloud) {
+        super(context);
+        mContext = context;
+        mAudioEffectService = new AudioEffectService(roomId, trtcCloud);
+        mAudioEffectState = mAudioEffectService.mAudioEffectState;
+        initView();
     }
 
-    @Override
     protected void initView() {
         LayoutInflater.from(mContext).inflate(R.layout.livekit_anchor_settings_audio_effect_panel, this,
                 true);
@@ -48,14 +52,6 @@ public class AudioEffectPanelView extends BottomPanelView {
         initEarReturnVolume();
     }
 
-    @Override
-    protected void addObserver() {
-    }
-
-    @Override
-    protected void removeObserver() {
-    }
-
     private void bindViewId() {
         mTextMusicVolume = findViewById(R.id.tv_music_volume);
         mTextEarReturnVolume = findViewById(R.id.tv_ear_return_volume);
@@ -64,7 +60,7 @@ public class AudioEffectPanelView extends BottomPanelView {
 
     private void initEarReturnVolume() {
         SeekBar seekEarReturnVolume = findViewById(R.id.sb_ear_return_volume);
-        seekEarReturnVolume.setProgress(mAudioEffectStore.earMonitorVolume.get());
+        seekEarReturnVolume.setProgress(mAudioEffectState.earMonitorVolume.get());
 
         seekEarReturnVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -86,16 +82,16 @@ public class AudioEffectPanelView extends BottomPanelView {
 
     private void initEnableEarReturnView() {
         SwitchCompat switchEarReturn = findViewById(R.id.sc_enable_ear);
-        switchEarReturn.setChecked(mAudioEffectStore.enableVoiceEarMonitor.get());
+        switchEarReturn.setChecked(mAudioEffectState.enableVoiceEarMonitor.get());
         switchEarReturn.setOnCheckedChangeListener(
                 (button, enable) -> mAudioEffectService.enableVoiceEarMonitor(enable));
     }
 
     private void initPeopleVolumeView() {
-        mTextPeopleVolume.setText(String.valueOf(mAudioEffectStore.voiceVolume.get()));
+        mTextPeopleVolume.setText(String.valueOf(mAudioEffectState.voiceVolume.get()));
 
         SeekBar seekPeopleVolume = findViewById(R.id.sb_people_volume);
-        seekPeopleVolume.setProgress(mAudioEffectStore.voiceVolume.get());
+        seekPeopleVolume.setProgress(mAudioEffectState.voiceVolume.get());
         seekPeopleVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -115,10 +111,10 @@ public class AudioEffectPanelView extends BottomPanelView {
     }
 
     private void initMusicVolumeView() {
-        mTextMusicVolume.setText((String.valueOf(mAudioEffectStore.musicVolume.get())));
+        mTextMusicVolume.setText((String.valueOf(mAudioEffectState.musicVolume.get())));
 
         SeekBar seekMusicVolume = findViewById(R.id.sb_music_volume);
-        seekMusicVolume.setProgress(mAudioEffectStore.musicVolume.get());
+        seekMusicVolume.setProgress(mAudioEffectState.musicVolume.get());
         seekMusicVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -138,11 +134,15 @@ public class AudioEffectPanelView extends BottomPanelView {
     }
 
     private void initEarReturnVolumeView() {
-        mTextEarReturnVolume.setText((String.valueOf(mAudioEffectStore.earMonitorVolume.get())));
+        mTextEarReturnVolume.setText((String.valueOf(mAudioEffectState.earMonitorVolume.get())));
     }
 
     private void initBackView() {
-        findViewById(R.id.iv_back).setOnClickListener((view) -> onBackButtonClick());
+        findViewById(R.id.iv_back).setOnClickListener((view) -> {
+            if (mOnBackButtonClickListener != null) {
+                mOnBackButtonClickListener.onClick();
+            }
+        });
     }
 
     private void initReverbView() {
@@ -159,5 +159,13 @@ public class AudioEffectPanelView extends BottomPanelView {
         recyclerChangeVoice.setLayoutManager(
                 new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
         recyclerChangeVoice.setAdapter(adapterChangeVoice);
+    }
+
+    public void setOnBackButtonClickListener(OnBackButtonClickListener listener) {
+        mOnBackButtonClickListener = listener;
+    }
+
+    public interface OnBackButtonClickListener {
+        void onClick();
     }
 }

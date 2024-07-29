@@ -58,7 +58,7 @@ public class ReverbAdapter extends RecyclerView.Adapter<ReverbAdapter.ViewHolder
         final ReverbItem reverbItem = mData.get(position);
         holder.textTitle.setText(reverbItem.title);
         holder.imageIcon.setImageResource(reverbItem.icon);
-        if (reverbItem.type == mAudioEffectService.mAudioEffectStore.reverbType.get()) {
+        if (reverbItem.type == mAudioEffectService.mAudioEffectState.reverbType.get()) {
             holder.imageIcon.setBackgroundResource(R.drawable.livekit_settings_item_select_background);
             mSelectedPosition = mData.indexOf(reverbItem);
         } else {

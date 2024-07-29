@@ -20,7 +20,7 @@ public class BarrageJson {
     // map to TUIBarrage
     public static class Data {
         @SerializedName("extInfo")
-        private Map<String, String> extInfo = new HashMap<>();
+        private final Map<String, String> extInfo = new HashMap<>();
 
         @SerializedName("content")
         public String  content;

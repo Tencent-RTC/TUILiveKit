@@ -10,7 +10,6 @@ import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.uicomponent.barrage.TUIBarrageButton;
 import com.trtc.uikit.livekit.common.uicomponent.music.view.MusicPanelView;
 import com.trtc.uikit.livekit.common.view.BasicView;
-import com.trtc.uikit.livekit.common.view.BottomPanel;
 import com.trtc.uikit.livekit.manager.LiveController;
 import com.trtc.uikit.livekit.view.liveroom.view.anchor.component.common.SettingsPanel;
 import com.trtc.uikit.livekit.view.liveroom.view.anchor.component.livestreaming.link.AnchorLinkMicManagePanel;
@@ -22,7 +21,7 @@ public class AnchorFunctionView extends BasicView {
     private PopupDialog              mAnchorLinkMicDialog;
     private SettingsPanel            mSettingsPanel;
     private PopupDialog              mSettingsPanelDialog;
-    private BottomPanel              mMusicPanel;
+    private PopupDialog              mMusicPanel;
 
     public AnchorFunctionView(Context context, LiveController liveController) {
         super(context, liveController);
@@ -89,8 +88,10 @@ public class AnchorFunctionView extends BasicView {
     private void initMusicButton() {
         findViewById(R.id.btn_music).setOnClickListener((view) -> {
             if (mMusicPanel == null) {
-                MusicPanelView panelView = new MusicPanelView(mContext, mLiveController);
-                mMusicPanel = BottomPanel.create(panelView);
+                mMusicPanel = new PopupDialog(mContext);
+                MusicPanelView musicListPanelView = new MusicPanelView(mContext, mRoomState.roomId,
+                        mLiveController.getLiveService().getTRTCCloud());
+                mMusicPanel.setView(musicListPanelView);
             }
             mMusicPanel.show();
         });
