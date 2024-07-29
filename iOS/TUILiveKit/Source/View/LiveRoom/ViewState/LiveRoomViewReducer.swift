@@ -9,8 +9,8 @@ import Foundation
 
 let liveRoomMenuReducer = Reducer<MenuState>(
     ReduceOn(LiveRoomViewActions.updateBottomMenus, reduce: { state, action in
-        let creator = BottomPopupListViewDataHelper()
-        state.menusButtons = creator.generateAudienceBottomMenuData(store: action.payload.0,
-                                                                    routerStore: action.payload.1)
+        let creator = LiveRoomRootMenuDataHelper()
+        state.menusButtons = creator.generateBottomMenuData(store: action.payload.0,
+                                                            routerStore: action.payload.1)
     })
 )

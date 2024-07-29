@@ -11,7 +11,6 @@ let operationReducer = Reducer<OperationState>(
     ReduceOn(OperationActions.clearAllState, reduce: { state, action in
         state.roomState.roomId = ""
         state.roomState.createTime = 0
-        state.roomState.ownerInfo = User()
         state.roomState.roomName = ""
         state.roomState.userCount = 0
         state.roomState.liveExtraInfo.category = .chat

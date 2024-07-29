@@ -15,6 +15,22 @@ public class TUILivePreviewViewController: UIViewController {
     
     private let liveRoomId : String
     private let voiceRoomId : String
+    private var topButtonWidth = 0.0
+    private var listTopButton: [UIButton] = []
+    
+    private let lineLayer: CALayer = {
+        let lineLayer = CALayer()
+        lineLayer.backgroundColor = UIColor.white.cgColor
+        return lineLayer
+    }()
+    
+    private var selectIndex: Int = -1 {
+        didSet {
+            resetState()
+        }
+    }
+    
+    var listController: [UIViewController] = []
     
     public init(liveRoomId:String, voiceRoomId:String) {
         self.liveRoomId = liveRoomId
@@ -26,46 +42,9 @@ public class TUILivePreviewViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private var selectIndex: Int = -1 {
-        didSet {
-            resetState()
-        }
-    }
-    
-    lazy var listController: [UIViewController] = {
-        // TODO: - clear controller after start live.
-        let videoLiveController = TUILiveRoomAnchorViewController(roomId: liveRoomId)
-        videoLiveController.title = .videoLiveTitle
-        videoLiveController.startLiveBlock = { [weak self] in
-            guard let self = self else { return }
-            self.clearTopButton()
-        }
-        
-        var roomParams = RoomParams()
-        roomParams.maxSeatCount = 0
-        roomParams.seatMode = .applyToTake
-        let voiceLiveController = TUIVoiceRoomViewController(roomId: voiceRoomId, behavior: .prepareCreate, roomParams: roomParams)
-        voiceLiveController.title = .voiceLiveTitle
-        voiceLiveController.startLiveClosure = { [weak self] in
-            guard let self = self else { return }
-            DispatchQueue.global(qos: .userInitiated).async {
-                TUIRoomEngine.sharedInstance().closeLocalCamera()
-            }
-            self.clearTopButton()
-        }
-        return [videoLiveController, voiceLiveController]
-    }()
-
-    private var topButtonWidth = 0.0
-    private var listTopButton: [UIButton] = []
-    private lazy var lineLayer: CALayer? = {
-        let lineLayer = CALayer()
-        lineLayer.backgroundColor = UIColor.white.cgColor
-        return lineLayer
-    }()
-
     override public func viewDidLoad() {
         super.viewDidLoad()
+        initViewController()
         setupViewControllers()
         constructViewHierarchy()
         activateConstraints()
@@ -73,7 +52,6 @@ public class TUILivePreviewViewController: UIViewController {
 
     override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        guard let lineLayer = lineLayer else { return }
         if selectIndex < 0 {
             selectIndex = 0
             view.layer.addSublayer(lineLayer)
@@ -87,9 +65,42 @@ public class TUILivePreviewViewController: UIViewController {
     override public var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
     }
+    
+    deinit {
+        print("deinit \(type(of: self))")
+    }
 }
 
 extension TUILivePreviewViewController {
+    private func initViewController() {
+        let videoLiveController = TUILiveRoomAnchorViewController(roomId: liveRoomId)
+        videoLiveController.title = .videoLiveTitle
+        videoLiveController.startLiveBlock = { [weak self] in
+            guard let self = self else { return }
+            self.clearTopButton()
+            self.listController.last?.view.removeFromSuperview()
+            self.listController.last?.removeFromParent()
+            self.listController.remove(at: 1)
+        }
+        
+        var roomParams = RoomParams()
+        roomParams.maxSeatCount = 0
+        roomParams.seatMode = .applyToTake
+        let voiceLiveController = TUIVoiceRoomViewController(roomId: voiceRoomId, behavior: .prepareCreate, roomParams: roomParams)
+        voiceLiveController.title = .voiceLiveTitle
+        voiceLiveController.startLiveClosure = { [weak self] in
+            guard let self = self else { return }
+            DispatchQueue.global(qos: .userInitiated).async {
+                TUIRoomEngine.sharedInstance().closeLocalCamera()
+            }
+            self.listController.first?.view.removeFromSuperview()
+            self.listController.first?.removeFromParent()
+            self.listController.remove(at: 0)
+            self.clearTopButton()
+        }
+        self.listController = [videoLiveController, voiceLiveController]
+    }
+    
     private func setupViewControllers() {
         for i in 0 ... listController.count - 1 {
             let controller = listController[i]
@@ -151,7 +162,7 @@ extension TUILivePreviewViewController {
             button.titleLabel?.font = UIFont(name: "PingFangSC-Medium", size: (i == selectIndex) ? 18 : 16)
             button.isSelected = i == selectIndex
             if button.isSelected {
-                lineLayer?.frame = CGRect(x: button.frame.minX, y: button.frame.maxY - 2, width: button.frame.width, height: 2)
+                lineLayer.frame = CGRect(x: button.frame.minX, y: button.frame.maxY - 2, width: button.frame.width, height: 2)
             }
         }
     }
@@ -167,7 +178,7 @@ extension TUILivePreviewViewController {
     }
 
     private func clearTopButton() {
-        lineLayer?.isHidden = true
+        lineLayer.isHidden = true
         for button in listTopButton {
             button.isHidden = true
         }

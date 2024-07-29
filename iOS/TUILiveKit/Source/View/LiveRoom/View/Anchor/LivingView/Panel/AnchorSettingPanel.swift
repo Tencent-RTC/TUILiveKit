@@ -7,6 +7,8 @@
 
 import Combine
 import Foundation
+import RTCCommon
+
 class AnchorSettingPanel: UIView {
     private let store: LiveStore
     private let routerStore: RouterStore
@@ -142,7 +144,7 @@ private extension AnchorSettingPanel {
 
 private extension AnchorSettingPanel {
     private func beautyClick() {
-        routerStore.router(action: .present(.beauty(false)))
+        routerStore.router(action: .present(.beauty))
     }
 
     private func audioEffectClick() {

@@ -62,7 +62,7 @@ class AnchorEndView: UIView {
 
     private lazy var closeButton: UIButton = {
         let button = UIButton()
-        button.setImage(.liveBundleImage("live_audience_close_icon"), for: .normal)
+        button.setImage(.liveBundleImage("live_leave_icon"), for: .normal)
         button.addTarget(self, action: #selector(closeButtonClick), for: .touchUpInside)
         return button
     }()

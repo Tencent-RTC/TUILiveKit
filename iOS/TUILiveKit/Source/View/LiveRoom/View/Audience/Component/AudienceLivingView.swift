@@ -19,8 +19,7 @@ class AudienceLivingView: RTCBaseView {
     private lazy var roomIdPublisher = store.select(RoomSelectors.getRoomId)
     private lazy var ownerInfoPublisher = store.select(RoomSelectors.getRoomOwnerInfo)
     private var cancellableSet = Set<AnyCancellable>()
-    
-    private let giftCacheService = GiftCacheService()
+    private let giftCacheService = TUIGiftStore.shared.giftCacheService
 
     private lazy var roomInfoView: RoomInfoView = {
         let view = RoomInfoView(store: store)
@@ -56,7 +55,7 @@ class AudienceLivingView: RTCBaseView {
         return view
     }()
 
-    private lazy var featureClickPanel: BottomMenuView = {
+    private lazy var bottomMenu: BottomMenuView = {
         let view = BottomMenuView(frame: .zero)
         return view
     }()
@@ -90,13 +89,13 @@ class AudienceLivingView: RTCBaseView {
 
     override func constructViewHierarchy() {
         backgroundColor = .clear
+        addSubview(barrageDisplayView)
+        addSubview(giftDisplayView)
         addSubview(roomInfoView)
         addSubview(audienceListView)
         addSubview(leaveImageView)
-        addSubview(barrageDisplayView)
-        addSubview(featureClickPanel)
+        addSubview(bottomMenu)
         addSubview(floatView)
-        addSubview(giftDisplayView)
         addSubview(barrageSendView)
     }
 
@@ -141,7 +140,7 @@ class AudienceLivingView: RTCBaseView {
             make.bottom.equalToSuperview().offset(-34.scale375Height())
         }
 
-        featureClickPanel.snp.makeConstraints { make in
+        bottomMenu.snp.makeConstraints { make in
             make.trailing.equalToSuperview().offset(-16.scale375Width())
             make.height.equalTo(36.scale375Height())
             make.bottom.equalToSuperview().offset(-34.scale375Height())
@@ -155,22 +154,20 @@ class AudienceLivingView: RTCBaseView {
     }
     
     override func bindInteraction() {
-        viewStore.dispatch(action: LiveRoomViewActions.updateBottomMenus(payload: (store, routerStore)))
         subscribeBottomMenuState()
         subscribeSeatSubject()
-    }
-    
-    deinit {
-        giftCacheService.clearCacheDirectory()
     }
 }
 
 extension AudienceLivingView {
     
     private func subscribeBottomMenuState() {
-        let menusPublisher = self.viewStore.select(LiveRoomViewSelectors.getBottomMenuButtons)
-        menusPublisher
-            .assign(to: \.menus, on: featureClickPanel)
+        viewStore.select(LiveRoomViewSelectors.getBottomMenuButtons)
+            .receive(on: RunLoop.main)
+            .sink(receiveValue: { [weak self] menus in
+                guard let self = self else { return }
+                self.bottomMenu.menus = menus
+            })
             .store(in: &cancellableSet)
     }
     
@@ -259,11 +256,11 @@ extension AudienceLivingView: TUIGiftPlayViewDelegate {
     }
     
     func giftPlayView(_ giftPlayView: TUIGiftPlayView, onPlayGiftAnimation gift: TUIGift) {
-        giftCacheService.request(urlString: gift.animationUrl) { [weak giftPlayView] error, data in
-            guard let data = data else { return }
+        guard let url = URL(string: gift.animationUrl) else { return }
+        giftCacheService.request(withURL: url) { error, fileUrl in
             if error == 0 {
                 DispatchQueue.main.async {
-                    giftPlayView?.playGiftAnimation(animationData: data)
+                    giftPlayView.playGiftAnimation(playUrl: fileUrl)
                 }
             }
         }

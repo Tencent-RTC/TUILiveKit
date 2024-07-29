@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import RTCCommon
+
 protocol AnchorPrepareViewDelegate: AnyObject {
     func prepareView(_ view: AnchorPrepareView, didClickStart button: UIButton)
 }
@@ -36,9 +38,9 @@ class AnchorPrepareView: UIView {
         return view
     }()
 
-    private lazy var settingsCard: LiveStreamSettingsCard = {
-        var settingsCard = LiveStreamSettingsCard(store: store, routerStore: routerStore)
-        return settingsCard
+    private lazy var editView: LiveInfoEditView = {
+        let view = LiveInfoEditView(store: store, routerStore: routerStore)
+        return view
     }()
 
     private lazy var featureClickPanel: FeatureClickPanel = {
@@ -47,8 +49,8 @@ class AnchorPrepareView: UIView {
         designConfig.imageSize = CGSize(width: 36.scale375(), height: 36.scale375())
         designConfig.titleHeight = 20.scale375Height()
         let model = FeatureClickPanelModel()
-        model.itemSize = CGSize(width: 36.scale375(), height: 56.scale375Height())
-        model.itemDiff = 44.scale375()
+        model.itemSize = CGSize(width: 63.scale375(), height: 56.scale375Height())
+        model.itemDiff = 25.scale375()
         model.items.append(FeatureItem(title: .beautyText,
                                        image: .liveBundleImage("live_prepare_beauty_icon"),
                                        designConfig: designConfig,
@@ -83,9 +85,9 @@ class AnchorPrepareView: UIView {
 
     private lazy var startButton: UIButton = {
         let view = UIButton()
-        view.layer.cornerRadius = 10.0
+        view.layer.cornerRadius = 26.scale375()
         view.setTitle(.startLivingTitle, for: .normal)
-        view.titleLabel?.font = .customFont(ofSize: 16)
+        view.titleLabel?.font = .customFont(ofSize: 20, weight: .semibold)
         view.addTarget(self, action: #selector(startButtonClick), for: .touchUpInside)
         view.backgroundColor = .b1
         return view
@@ -113,7 +115,7 @@ class AnchorPrepareView: UIView {
     }
 
     deinit {
-        NotificationCenter.default.removeObserver(self)
+        unRegisterObserver()
         print("deinit \(type(of: self))")
     }
 
@@ -127,6 +129,10 @@ class AnchorPrepareView: UIView {
                                                name: UIResponder.keyboardWillHideNotification,
                                                object: nil)
     }
+    
+    private func unRegisterObserver() {
+        NotificationCenter.default.removeObserver(self)
+    }
 }
 
 // MARK: Layout
@@ -137,7 +143,7 @@ extension AnchorPrepareView {
         addSubview(topGradientView)
         addSubview(bottomGradientView)
         addSubview(backButton)
-        addSubview(settingsCard)
+        addSubview(editView)
         addSubview(featureClickPanel)
         addSubview(startButton)
     }
@@ -180,7 +186,7 @@ extension AnchorPrepareView {
             }
         }
 
-        settingsCard.snp.remakeConstraints { make in
+        editView.snp.remakeConstraints { make in
             make.width.equalTo(343.scale375())
             make.height.equalTo(112.scale375())
             if self.isPortrait {
@@ -194,18 +200,18 @@ extension AnchorPrepareView {
 
         startButton.snp.remakeConstraints { make in
             make.height.equalTo(52.scale375())
-            make.width.equalTo((isPortrait ? 275 : 101).scale375())
             if self.isPortrait {
-                make.centerX.equalToSuperview()
+                make.leading.equalToSuperview().offset(15)
+                make.trailing.equalToSuperview().offset(-15)
                 make.bottom.equalToSuperview().inset(WindowUtils.bottomSafeHeight + 30.scale375Height())
             } else {
+                make.width.equalTo(101.scale375())
                 make.trailing.equalToSuperview().inset(16)
                 make.bottom.equalToSuperview().inset(WindowUtils.bottomSafeHeight + 30.scale375Height())
             }
         }
 
         featureClickPanel.snp.remakeConstraints { make in
-            make.width.equalTo(276.scale375())
             if self.isPortrait {
                 make.centerX.equalToSuperview()
                 make.bottom.equalTo(startButton.snp.top).offset(-30.scale375Height())
@@ -270,7 +276,7 @@ extension AnchorPrepareView {
     }
 
     func updateSettingsCardConstraint(offset: CGFloat) {
-        settingsCard.snp.updateConstraints { make in
+        editView.snp.updateConstraints { make in
             if self.isPortrait {
                 make.top.equalToSuperview().offset(CGFloat(120.0).scale375Height())
             } else {
@@ -285,7 +291,7 @@ extension AnchorPrepareView {
     }
 
     private func beautyClick() {
-        routerStore.router(action: .present(.beauty(false)))
+        routerStore.router(action: .present(.beauty))
     }
 
     private func audioEffectsClick() {

@@ -11,7 +11,7 @@ import RTCRoomEngine
 
 class RoomEffects: Effects {
     typealias Environment = ServiceCenter
-
+    
     let startLive = Effect<Environment>.dispatchingMultiple { actions, environment in
         actions
             .wasCreated(from: RoomActions.start)
@@ -26,19 +26,13 @@ class RoomEffects: Effects {
                         
                         store.dispatch(action: ViewActions.updateLiveStatus(payload: .pushing))
                         store.dispatch(action: RoomActions.updateRoomOwnerInfo(payload: store.userState.selfInfo))
-
-                        let roomState = store.selectCurrent(RoomSelectors.getRoomState)
-                        let liveInfo = TUILiveInfo()
-                        liveInfo.roomInfo.roomId = roomInfo.roomId
-                        liveInfo.coverUrl = roomState.coverURL
-                        liveInfo.isPublicVisible = roomState.liveExtraInfo.liveMode == .public
-                        liveInfo.categoryList = [NSNumber(value: roomState.liveExtraInfo.category.rawValue)]
                         
+                        let roomState = store.selectCurrent(RoomSelectors.getRoomState)
                         return action.payload.nextActions + [
                             RoomActions.updateRoomInfo(payload: roomInfo),
-                            RoomActions.updateLiveInfo(payload: (liveInfo, .coverUrl)),
-                            RoomActions.updateLiveInfo(payload: (liveInfo, .category)),
-                            RoomActions.updateLiveInfo(payload: (liveInfo, .publish)),
+                            RoomActions.setRoomCoverUrl(payload: roomState.coverURL),
+                            RoomActions.setRoomCategory(payload: roomState.liveExtraInfo.category),
+                            RoomActions.setRoomMode(payload: roomState.liveExtraInfo.liveMode),
                         ]
                     }
                     .catch { error -> Just<[Action]> in
@@ -48,7 +42,7 @@ class RoomEffects: Effects {
             }
             .eraseToAnyPublisher()
     }
-
+    
     let stopLive = Effect<Environment>.dispatchingOne { actions, environment in
         actions
             .wasCreated(from: RoomActions.stop)
@@ -65,7 +59,7 @@ class RoomEffects: Effects {
             }
             .eraseToAnyPublisher()
     }
-
+    
     let joinLive = Effect<Environment>.dispatchingMultiple { actions, environment in
         actions
             .wasCreated(from: RoomActions.join)
@@ -86,7 +80,7 @@ class RoomEffects: Effects {
             }
             .eraseToAnyPublisher()
     }
-
+    
     let leaveLive = Effect<Environment>.dispatchingMultiple { actions, environment in
         actions
             .wasCreated(from: RoomActions.leave)
@@ -108,7 +102,7 @@ class RoomEffects: Effects {
             }
             .eraseToAnyPublisher()
     }
-
+    
     let fetchRoomOwnerInfo = Effect<Environment>.dispatchingOne { actions, environment in
         actions.wasCreated(from: RoomActions.fetchRoomOwnerInfo)
             .flatMap { action in
@@ -154,17 +148,100 @@ class RoomEffects: Effects {
             .eraseToAnyPublisher()
     }
     
-    let updateLiveInfo = Effect<Environment>.dispatchingOne { actions, environment in
-        actions.wasCreated(from: RoomActions.updateLiveInfo)
+    let fetchLiveInfo = Effect<Environment>.dispatchingMultiple { actions, environment in
+        actions.wasCreated(from: RoomActions.fetchLiveInfo)
             .flatMap { action in
-                environment.roomService.updateLiveInfo(liveInfo: action.payload.0, modifyFlag: action.payload.1)
+                environment.roomService.fetchLiveInfo(roomId: action.payload)
+                    .map { liveInfo in
+                        if let categoryValue = liveInfo.categoryList.first?.intValue,
+                           let category = LiveStreamCategory(rawValue: categoryValue) {
+                            environment.store?.dispatch(action: RoomActions.updateRoomCategory(payload: category))
+                        }
+                        return [RoomActions.updateRoomCoverUrl(payload: liveInfo.coverUrl),
+                                RoomActions.updateRoomMode(payload: liveInfo.isPublicVisible ? .public : .privacy),
+                        ]
+                    }
+                    .catch { error -> Just<[Action]> in
+                        let action = ViewActions.toastEvent(payload: ToastInfo(message: error.message))
+                        return Just([action])
+                    }
+            }
+            .eraseToAnyPublisher()
+    }
+    
+    let setRoomSeatModeByAdmin = Effect<Environment>.dispatchingOne { actions, environment in
+        actions.wasCreated(from: RoomActions.setRoomSeatModeByAdmin)
+            .flatMap { action in
+                environment.roomService.setRoomSeatModeByAdmin(action.payload)
                     .map { _ in
-                        RoomActions.onUpdateLiveInfoSuccess()
+                        RoomActions.updateRoomSeatModeByAdmin(payload: action.payload)
                     }
                     .catch { error -> Just<Action> in
                         let action = ViewActions.toastEvent(payload: ToastInfo(message: error.message))
                         return Just(action)
                     }
+            }
+            .eraseToAnyPublisher()
+    }
+    
+    let setRoomMode = Effect<Environment>.dispatchingOne { actions, environment in
+        actions.wasCreated(from: RoomActions.setRoomMode)
+            .flatMap { action in
+                var liveInfo = TUILiveInfo()
+                liveInfo.roomInfo.roomId = environment.store?.selectCurrent(RoomSelectors.getRoomId) ?? ""
+                liveInfo.isPublicVisible = action.payload == .public
+                return environment.roomService.setLiveInfo(liveInfo: liveInfo, modifyFlag: .publish)
+                    .map { _ in
+                        RoomActions.updateRoomMode(payload: action.payload)
+                    }
+                    .catch { error -> Just<Action> in
+                        let action = ViewActions.toastEvent(payload: ToastInfo(message: error.message))
+                        return Just(action)
+                    }
+            }
+            .eraseToAnyPublisher()
+    }
+    
+    let setRoomCategory = Effect<Environment>.dispatchingOne { actions, environment in
+        actions.wasCreated(from: RoomActions.setRoomCategory)
+            .flatMap { action in
+                var liveInfo = TUILiveInfo()
+                liveInfo.roomInfo.roomId = environment.store?.selectCurrent(RoomSelectors.getRoomId) ?? ""
+                liveInfo.categoryList = [NSNumber(value: action.payload.rawValue)]
+                return environment.roomService.setLiveInfo(liveInfo: liveInfo, modifyFlag: .category)
+                    .map { _ in
+                        RoomActions.updateRoomCategory(payload: action.payload)
+                    }
+                    .catch { error -> Just<Action> in
+                        let action = ViewActions.toastEvent(payload: ToastInfo(message: error.message))
+                        return Just(action)
+                    }
+            }
+            .eraseToAnyPublisher()
+    }
+    
+    let setRoomCoverUrl = Effect<Environment>.dispatchingOne { actions, environment in
+        actions.wasCreated(from: RoomActions.setRoomCoverUrl)
+            .flatMap { action in
+                var liveInfo = TUILiveInfo()
+                liveInfo.roomInfo.roomId = environment.store?.selectCurrent(RoomSelectors.getRoomId) ?? ""
+                liveInfo.coverUrl = action.payload
+                return environment.roomService.setLiveInfo(liveInfo: liveInfo, modifyFlag: .coverUrl)
+                    .map { _ in
+                        RoomActions.updateRoomCoverUrl(payload: action.payload)
+                    }
+                    .catch { error -> Just<Action> in
+                        let action = ViewActions.toastEvent(payload: ToastInfo(message: error.message))
+                        return Just(action)
+                    }
+            }
+            .eraseToAnyPublisher()
+    }
+    
+    let setRoomBackgroundUrl = Effect<Environment>.dispatchingOne { actions, environment in
+        actions.wasCreated(from: RoomActions.setRoomBackgroundUrl)
+            .flatMap { action in
+                return Just(RoomActions.updateRoomBackgroundUrl(payload: action.payload))
             }
             .eraseToAnyPublisher()
     }

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import RTCCommon
 
 class PrepareSelectionModel {
     var textLeftDiff:Float = 8.0

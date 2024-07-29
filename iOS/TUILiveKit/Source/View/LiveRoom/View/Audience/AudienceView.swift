@@ -11,7 +11,7 @@ import Combine
 
 class AudienceView: RTCBaseView {
     let roomId: String
-    let store: LiveStore
+    let store: LiveStoreProvider
     let viewStore: LiveRoomViewStore
     let routerStore: RouterStore
     
@@ -44,21 +44,26 @@ class AudienceView: RTCBaseView {
         return view
     }()
     
+    lazy var beautyPanelView: UIView = {
+        let view = TUIBeautyPanel(store: store, routerStore: routerStore)
+        return view
+    }()
+    
     // MARK: - private property
     private var cancellableSet: Set<AnyCancellable> = []
     
     init(roomId: String, routerStore: RouterStore) {
         self.roomId = roomId
-        self.store = LiveStoreFactory.getLiveStore(roomId: roomId)
-        self.viewStore = LiveRoomViewStoreFactory.getLiveRoomViewStore(roomId: roomId)
+        self.store = LiveStoreFactory.getStore(roomId: roomId)
+        self.viewStore = LiveRoomViewStoreFactory.getStore(roomId: roomId)
         self.routerStore = routerStore
         super.init(frame: .zero)
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     deinit {
         print("deinit \(self)")
     }
@@ -145,6 +150,7 @@ extension AudienceView {
             UserActions.checkFollowType(payload: store.selectCurrent(RoomSelectors.roomOwnerId)),
         ]
         actions.forEach { store.dispatch(action: $0) }
+        viewStore.dispatch(action: LiveRoomViewActions.updateBottomMenus(payload: (store, routerStore)))
     }
 }
 
@@ -153,7 +159,10 @@ extension AudienceView: RouterViewProvider {
         if route == .giftView {
             giftPanelView.setGiftList(TUIGiftStore.shared.giftList)
             return giftPanelView
-        } else {
+        } else if route == .beauty {
+            return beautyPanelView
+        }
+        else {
             return nil
         }
     }
@@ -182,9 +191,9 @@ extension AudienceView: TUIGiftListViewDelegate {
         
         let selfInfo = store.selectCurrent(UserSelectors.getSelfInfo)
         TUIGiftStore.shared.giftCloudServer.sendGift(sender: selfInfo.userId,
-                                 receiver: receiver.userId,
-                                 giftModel: giftModel,
-                                 giftCount: giftCount) { [weak self] error, balance in
+                                                     receiver: receiver.userId,
+                                                     giftModel: giftModel,
+                                                     giftCount: giftCount) { [weak self] error, balance in
             guard let self = self else { return }
             if error == .noError {
                 view.sendGift(giftModel: giftModel, giftCount: giftCount, receiver: receiver)
@@ -198,10 +207,10 @@ extension AudienceView: TUIGiftListViewDelegate {
 }
 
 extension AudienceView {
-     func startDisplay() {
-         let param = generateActionParamTuple(param: roomId, actions: [])
-         DataReporter.componentType = .liveRoom
-         store.dispatch(action: RoomActions.join(payload: param))
+    func startDisplay() {
+        let param = generateActionParamTuple(param: roomId, actions: [])
+        DataReporter.componentType = .liveRoom
+        store.dispatch(action: RoomActions.join(payload: param))
     }
 }
 
@@ -209,5 +218,5 @@ extension String {
     fileprivate static let enterRoomFailedMessageText = localized("live.alert.enterRoom.failed.message.xxx")
     
     fileprivate static let balanceInsufficientText =
-            localized("live.balanceInsufficient")
+    localized("live.balanceInsufficient")
 }

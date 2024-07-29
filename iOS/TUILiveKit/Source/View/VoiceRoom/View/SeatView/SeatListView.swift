@@ -17,18 +17,22 @@ protocol SeatListViewDelegate: AnyObject {
 }
 
 class SeatListView: UIView {
+    var itemSize = CGSize(width: 70, height: 105)
+    var verticalMargin = 20.0
     
-    @Published var seatCount: Int = 0
     weak var delegate: SeatListViewDelegate?
-    
+    @Published var seatCount: Int = 10
     private var cancellableSet = Set<AnyCancellable>()
-    let seatCollection: UICollectionView = {
+    
+    lazy var seatCollection: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: 64, height: 90)
-        layout.minimumLineSpacing = 20.0
-        layout.minimumInteritemSpacing = 26
-        layout.sectionInset = .init(top: 0, left: 20, bottom: 0, right: 20)
+        layout.itemSize = itemSize
+        layout.minimumLineSpacing = verticalMargin
+        layout.minimumInteritemSpacing = getHorizontalMargin()
+        
+        layout.sectionInset = .init(top: 0, left: getHorizontalMargin(), bottom: 0, right: getHorizontalMargin())
         layout.scrollDirection = .vertical
+        
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.isScrollEnabled = false
         collectionView.register(SeatCollectionCell.self, forCellWithReuseIdentifier: SeatCollectionCell.identifier)
@@ -44,6 +48,32 @@ class SeatListView: UIView {
         activeViewConstraint()
         bindInteraction()
         isViewReady = true
+    }
+    
+    func getHeight() -> CGFloat {
+        let height = itemSize.height
+        if seatCount <= 5 {
+            return height * 1 + verticalMargin * 0
+        } else if seatCount <= 10 {
+            return height * 2 + verticalMargin * 1
+        } else if seatCount <= 15 {
+            return height * 3 + verticalMargin * 2
+        } else {
+            return height * 4 + verticalMargin * 3
+        }
+    }
+    
+    func getHorizontalMargin() -> CGFloat {
+        switch seatCount {
+        case 3, 6, 9:
+            return (UIScreen.main.bounds.width - itemSize.width * 3.0) / 4.0
+        case 4, 8, 12, 16:
+            return (UIScreen.main.bounds.width - itemSize.width * 4.0) / 5.0
+        case 5, 10, 15:
+            return (UIScreen.main.bounds.width - itemSize.width * 5.0) / 6.0
+        default:
+            return (UIScreen.main.bounds.width - itemSize.width * 5.0) / 6.0
+        }
     }
     
     private func constructViewHierarchy() {
@@ -92,5 +122,19 @@ extension SeatListView: UICollectionViewDataSource {
             self.delegate?.seatListView(self, needUpdateViewState: seatCell.seatView, at: indexPath)
         }
         return cell
+    }
+}
+
+extension SeatListView: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, 
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return getHorizontalMargin()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, 
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: getHorizontalMargin(), bottom: 0, right: getHorizontalMargin())
     }
 }

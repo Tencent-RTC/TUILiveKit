@@ -8,6 +8,7 @@
 import Foundation
 import RTCRoomEngine
 import Combine
+import RTCCommon
 
 class AnchorVideoParametersSettingPanel: UIView {
     private let store: LiveStore

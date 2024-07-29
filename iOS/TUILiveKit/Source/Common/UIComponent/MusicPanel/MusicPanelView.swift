@@ -8,7 +8,11 @@
 import UIKit
 import Combine
 import RTCCommon
-import RTCRoomEngine
+#if canImport(TXLiteAVSDK_TRTC)
+    import TXLiteAVSDK_TRTC
+#elseif canImport(TXLiteAVSDK_Professional)
+    import TXLiteAVSDK_Professional
+#endif
 
 class MusicPanelView: UIView {
 
@@ -40,8 +44,14 @@ class MusicPanelView: UIView {
         return view
     }()
     
-    init(roomEngine: TUIRoomEngine? = nil) {
-        self.store = MusicPanelStoreProvider(roomEngine: roomEngine)
+    init(roomId: String, trtcCloud: TRTCCloud) {
+        if let musicPanelStore = MusicPanelStoreFactory.getStore(roomId: roomId) {
+            self.store = musicPanelStore
+        } else {
+            let musicPanelStore = MusicPanelStoreProvider(trtcCloud: trtcCloud)
+            MusicPanelStoreFactory.addStore(roomId: roomId, musicPanelStore: musicPanelStore)
+            self.store = musicPanelStore
+        }
         super.init(frame: .zero)
     }
     
@@ -112,12 +122,6 @@ class MusicPanelView: UIView {
         backgroundColor = .g2
         layer.cornerRadius = 20
         layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-    }
-    
-    func resetMusicPanelState() {
-        if let currentPlayMusic = store.selectCurrent(MusicPanelSelectors.getCurrentPlayMusic) {
-            store.dispatch(action: MusicPanelActions.stopPlayMusic(payload: currentPlayMusic))
-        }
     }
     
     var height: CGFloat {

@@ -1,8 +1,19 @@
 {
   "images" : [
     {
-      "filename" : "live_prepare_filp_icon.pdf",
-      "idiom" : "universal"
+      "filename" : "live_prepare_flip_icon.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "live_prepare_flip_icon@2x.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "live_prepare_flip_icon@3x.png",
+      "idiom" : "universal",
+      "scale" : "3x"
     }
   ],
   "info" : {

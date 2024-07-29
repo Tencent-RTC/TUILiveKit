@@ -5,6 +5,8 @@
 //  Created by krabyu on 2024/3/11.
 //
 
+import RTCCommon
+
 extension UIAlertController {
     static func showAlertController(title: String? = nil,
                                     message: String? = nil,

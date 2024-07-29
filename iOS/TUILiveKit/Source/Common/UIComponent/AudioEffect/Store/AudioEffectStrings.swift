@@ -14,7 +14,7 @@ extension String {
     
     static let voiceEarMonitorVolumeText: String = localized("live.music.voiceEarMonitorVolume")
     
-    static var backgroundMusicText: String = localized("live.music.backgroundMusic")
+    static var backgroundMusicText: String = localized("live.category.music")
     
     static var chooseMusicText: String = localized("live.music.chooseMusic")
     

@@ -16,6 +16,7 @@ import Combine
 
 class MusicPanelEffects: Effects {
     typealias Environment = MusicPanelService
+    static var id: String { "MusicPanelEffects" }
     
     let startPlayMusic = Effect<Environment>.dispatchingOne { actions, environment in
         actions.wasCreated(from: MusicPanelActions.startPlayMusic)
@@ -44,22 +45,23 @@ class MusicPanelEffects: Effects {
     
 }
 
-class MusicPanelService: BaseServiceProtocol {
+class MusicPanelService {
     enum MusicPlayStatus: Int {
         case playing = 0
         case complete = 999
     }
     
-    var roomEngine: TUIRoomEngine?
-    required init(roomEngine: TUIRoomEngine?) {
-        self.roomEngine = roomEngine
+    private var trtcCloud: TRTCCloud
+    init(trtcCloud: TRTCCloud) {
+        self.trtcCloud = trtcCloud
+    }
+    
+    deinit {
+        print("deinit \(type(of: self))")
     }
     
     private func audioEffectManager() -> TXAudioEffectManager {
-        guard let roomEngine = roomEngine else {
-            return TUIRoomEngine.sharedInstance().getTRTCCloud().getAudioEffectManager()
-        }
-        return roomEngine.getTRTCCloud().getAudioEffectManager()
+        return trtcCloud.getAudioEffectManager()
     }
     
     func startPlayMusic(musicInfo: MusicInfo) -> AnyPublisher<MusicPlayStatus, InternalError> {

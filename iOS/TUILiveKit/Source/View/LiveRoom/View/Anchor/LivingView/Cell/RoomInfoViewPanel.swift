@@ -7,6 +7,7 @@
 
 import Foundation
 import TUICore
+import RTCCommon
 
 class ListCellItemData {
     var titleText: String = ""

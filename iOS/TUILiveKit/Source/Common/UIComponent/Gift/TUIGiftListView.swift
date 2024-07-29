@@ -8,6 +8,7 @@
 import Foundation
 import SnapKit
 import TUICore
+import RTCCommon
 
 protocol TUIGiftListViewDelegate: AnyObject {
     func onRecharge(giftListView view: TUIGiftListView)

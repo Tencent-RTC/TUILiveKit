@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import RTCCommon
 
 class RecentWatchMemberPanel: UIView {
     private let store: LiveStore
@@ -69,7 +70,7 @@ class RecentWatchMemberPanel: UIView {
             .receive(on: RunLoop.main)
             .sink { [weak self] userList in
                 guard let self = self else { return }
-                let ownerId = self.store.selectCurrent(RoomSelectors.getRoomId)
+                let ownerId = self.store.selectCurrent(RoomSelectors.roomOwnerId)
                 self.listUser = userList.filter { $0.userId != ownerId }
                 self.userListTableView.reloadData()
             }

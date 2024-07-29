@@ -33,6 +33,8 @@
 "live.audience.videoLinkConfig.request" = "Apply for link";
 "live.audience.videoLinkConfig.tips" = "After the connection, the screen effect will automatically take effect";
 "live.anchor.link.control.title" = "Link Management";
+"live.anchor.link.control.onSeatList.xxx" = "On Seat List (xxx)";
+"live.anchor.link.control.applySeatList.xxx" = "Application List (xxx)";
 "live.anchor.link.agree.title" = "Agree";
 "live.anchor.link.reject.title" = "Reject";
 "live.anchor.link.hang.up.title" = "Hang up";
@@ -53,8 +55,10 @@
 "live.audience.link.confirm.closeLinkMic" = "End link";
 "live.audience.link.confirm.cancel" = "Cancel";
 "live.audience.gift.title" = "Gift";
-"live.anchor.system.image.selection.title" = "System Image Library";
-"live.anchor.system.image.selection.confirm" = "Set as cover";
+"live.anchor.cover.image.selection.title" = "Cover";
+"live.anchor.cover.image.selection.confirm" = "Set as cover";
+"live.anchor.background.image.selection.title" = "Background";
+"live.anchor.background.image.selection.confirm" = "Set as Background";
 "live.anchor.more.set.link" = "Link";
 "live.anchor.more.set.pk" = "Anchor PK";
 "live.anchor.more.set.gift" = "Send gift";
@@ -71,11 +75,13 @@
 "live.beauty.ruddy" = "Rosy";
 "live.anchor.setting.title" = "Settings";
 "live.anchor.setting.beauty" = "Beauty";
-"live.anchor.setting.audio.effects" = "Audio Effects";
+"live.anchor.setting.audio.effects" = "Audio";
 "live.anchor.setting.flip" = "Flip";
 "live.anchor.setting.mirror" = "Mirror";
+"live.anchor.setting.background" = "Background";
 "live.anchor.setting.video.parameters" = "Video";
 "live.anchor.setting.more.setting" = "More Settings";
+"live.anchor.setting.need.request" = "Require owner's consent to speak";
 "live.link.success" = "Link Successfully";
 "live.alert.confirm" = "Confirm";
 "live.alert.known" = "I know";
@@ -138,6 +144,8 @@
 "live.giftView.sendGift" = "Send Gift";
 "live.giftView.me" = "Me";
 "live.giftView.sendOut" = "Send Out";
+"live.gift.animation.isNotSVGAFile" = "animation is not svga resource file";
+"live.gift.animation.isNotMP4File" = "animation is not MP4 resource file";
 "live.preview.video.live" = "Live Video";
 "live.preview.voice.live" = "Live Voice";
 "live.giftView.balance.xxx" = "Balance xxx";
@@ -145,12 +153,9 @@
 "live.balanceInsufficient" = "Insufficient balance, please recharge.";
 "live.seat.unLockSeat" = "Unlock Seat";
 "live.seat.lockSeat" = "Lock Seat";
-"live.seat.unmuteMicrophone" = "Unmute Microphone";
-"live.seat.muteMicrophone" = "Mute Microphone";
 "live.seat.unmuteAudio" = "Unmute Audio";
 "live.seat.muteAudio" = "Mute Audio";
-"live.seat.kickSeat" = "Kick Seat";
-"live.seat.applySeat" = "Apply Seat";
+"live.seat.takeSeat" = "Take Seat";
 "live.seat.leaveSeat" = "Leave Seat";
 "live.seat.takeSeatApplicationRejected" = "Take seat application has been rejected";
 "live.seat.takeSeatApplicationTimeout" = "Take seat application timeout";
@@ -235,4 +240,3 @@
 "live.room.list.watching.xxx" = "xxx people are watching";
 
 "live.seat.takeSeatApplying" = "You have submitted a link mic request, please wait for the author approval";
-"live.seat.kickedOutOfSeat" = "Kicked out of seat by room owner";

@@ -209,7 +209,11 @@ class TUIBarrageDefaultCell: UIView {
     }
 
     private func getLevel(barrage: TUIBarrage) -> Int {
-        return Int.random(in: 0...120)
+        if let level = Int(barrage.user.level){
+            return max(level, 0)
+        } else {
+            return 0
+        }
     }
     
     private func getLevelImage(level: Int) -> UIImage? {

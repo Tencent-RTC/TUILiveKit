@@ -28,6 +28,9 @@ let roomReducer = Reducer<RoomState>(
     ReduceOn(RoomActions.updateRoomCoverUrl, reduce: { state, action in
         state.coverURL = action.payload
     }),
+    ReduceOn(RoomActions.updateRoomBackgroundUrl, reduce: { state, action in
+        state.backgroundURL = action.payload
+    }),
     ReduceOn(RoomActions.updateRoomCategory, reduce: { state, action in
         state.liveExtraInfo.category = action.payload
     }),
@@ -36,6 +39,12 @@ let roomReducer = Reducer<RoomState>(
     }),
     ReduceOn(RoomActions.updateRoomMemberCount, reduce: { state, action in
         state.userCount = action.payload
+    }),
+    ReduceOn(RoomActions.updateRoomSeatModeByAdmin, reduce: { state, action in
+        state.seatMode = action.payload
+    }),
+    ReduceOn(RoomActions.updateMaxSeatCount, reduce: { state, action in
+        state.maxSeatCount = action.payload
     }),
     ReduceOn(RoomActions.updateGiftIncome, reduce: { state, action in
         state.liveExtraInfo.giftIncome += action.payload

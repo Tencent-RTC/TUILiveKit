@@ -1,15 +1,23 @@
 {
   "images" : [
     {
-      "filename" : "livekit_audio_changer_uncle.pdf",
-      "idiom" : "universal"
+      "filename" : "live_audio_changer_uncle.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "live_audio_changer_uncle@2x.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "live_audio_changer_uncle@3x.png",
+      "idiom" : "universal",
+      "scale" : "3x"
     }
   ],
   "info" : {
     "author" : "xcode",
     "version" : 1
-  },
-  "properties" : {
-    "preserves-vector-representation" : true
   }
 }

@@ -10,12 +10,10 @@ enum RoomSelectors {
     
     static let getRoomId = Selector.with(getRoomState, keyPath: \RoomState.roomId)
     static let getRoomName = Selector.with(getRoomState, keyPath: \RoomState.roomName)
-    static let getUserCount = Selector.with(getRoomState, keyPath:\RoomState.userCount)
-    static let getRoomCoverUrl = Selector.with(getRoomState) { value in
-        let url = URL(string: value.coverURL)
-        return url
-    }
-    
+    static let getUserCount = Selector.with(getRoomState, keyPath: \RoomState.userCount)
+    static let getRoomCoverUrl = Selector.with(getRoomState, keyPath: \RoomState.coverURL)
+    static let getRoomBackgroundUrl = Selector.with(getRoomState, keyPath: \RoomState.backgroundURL)
+    static let getRoomSeatMode = Selector.with(getRoomState, keyPath: \RoomState.seatMode)
     static let roomOwnerId = Selector(keyPath: \OperationState.roomState.ownerInfo.userId)
     static let roomOwnerAvatar = Selector(keyPath: \OperationState.roomState.ownerInfo.avatarUrl)
     static let roomOwnerName = Selector(keyPath: \OperationState.roomState.ownerInfo.name)

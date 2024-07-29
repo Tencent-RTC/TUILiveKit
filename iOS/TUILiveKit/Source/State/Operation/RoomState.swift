@@ -16,7 +16,8 @@ struct RoomState: Codable {
     var createTime: UInt = 0
     var ownerInfo: User = User()
     var roomName: String = ""
-    var coverURL: String = String.randomBackgroundImageUrl()
+    var coverURL: String = "https://liteav-test-1252463788.cos.ap-guangzhou.myqcloud.com/voice_room/voice_room_cover1.png"
+    var backgroundURL: String = "https://liteav-test-1252463788.cos.ap-guangzhou.myqcloud.com/voice_room/voice_room_background1.png"
     
     
     var seatMode: TUISeatMode = .applyToTake
@@ -51,12 +52,5 @@ extension TUISeatMode: Codable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         try container.encode(self.rawValue)
-    }
-}
-
-fileprivate extension String {
-    static func randomBackgroundImageUrl() -> String {
-        let random = arc4random() % 12 + 1
-        return "https://liteav-test-1252463788.cos.ap-guangzhou.myqcloud.com/voice_room/voice_room_cover\(random).png"
     }
 }

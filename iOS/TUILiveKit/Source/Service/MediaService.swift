@@ -17,8 +17,8 @@ import TUICore
 #endif
 
 class MediaService: BaseServiceProtocol {
-    var roomEngine: TUIRoomEngine?
-    required init(roomEngine: TUIRoomEngine?) {
+    var roomEngine: TUIRoomEngine
+    required init(roomEngine: TUIRoomEngine) {
         self.roomEngine = roomEngine
     }
     
@@ -28,7 +28,7 @@ class MediaService: BaseServiceProtocol {
     
     func operateMicrophone(isOpened: Bool) -> AnyPublisher<Bool, InternalError> {
         return Future<Bool, InternalError> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             if isOpened {
                 roomEngine.openLocalMicrophone(.default) {
                     promise(.success(true))
@@ -46,7 +46,7 @@ class MediaService: BaseServiceProtocol {
     
     func muteLocalAudio(isMuted: Bool) -> AnyPublisher<Void, InternalError> {
         return Future<Void, InternalError> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             if isMuted {
                 roomEngine.muteLocalAudio()
                 promise(.success(()))
@@ -64,7 +64,7 @@ class MediaService: BaseServiceProtocol {
     
     func operateCamera(isOpened: Bool) -> AnyPublisher<Bool, InternalError> {
         return Future<Bool, InternalError> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             if isOpened {
                 roomEngine.openLocalCamera(isFront: true, quality: .quality1080P) {
                     promise(.success(true))
@@ -82,7 +82,7 @@ class MediaService: BaseServiceProtocol {
     
     func openLocalCamera(isFront: Bool) -> AnyPublisher<CameraDirection, InternalError> {
         return Future<CameraDirection, InternalError> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             roomEngine.openLocalCamera(isFront: isFront, quality: .quality1080P) {
                 promise(.success(isFront ? .front:.rear))
             } onError: { err, message in
@@ -95,7 +95,7 @@ class MediaService: BaseServiceProtocol {
     
     func updateVideoQuality(quality: TUIVideoQuality) -> AnyPublisher<Void, Never> {
         return Future<Void, Never> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             roomEngine.updateVideoQuality(quality)
             promise(.success(()))
         }
@@ -104,7 +104,7 @@ class MediaService: BaseServiceProtocol {
     
     func updateAudioQuality(quality: TUIAudioQuality) -> AnyPublisher<Void, Never> {
         return Future<Void, Never> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             roomEngine.updateAudioQuality(quality)
             promise(.success(()))
         }
@@ -113,7 +113,7 @@ class MediaService: BaseServiceProtocol {
     
     func setLocalVideoView(view: UIView?) -> AnyPublisher<Void, Never> {
         return Future<Void, Never> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             roomEngine.setLocalVideoView(view: view)
             promise(.success(()))
         }
@@ -122,7 +122,7 @@ class MediaService: BaseServiceProtocol {
     
     func stopLocalPreview() -> AnyPublisher<Void, Never> {
         return Future<Void, Never> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             roomEngine.getTRTCCloud().stopLocalPreview()
             promise(.success(()))
         }
@@ -131,7 +131,7 @@ class MediaService: BaseServiceProtocol {
     
     func switchCamera(isFrontCamera: Bool) -> AnyPublisher<Void, Never> {
         return Future<Void, Never> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             roomEngine.switchCamera(frontCamera: isFrontCamera)
             promise(.success(()))
         }
@@ -140,7 +140,7 @@ class MediaService: BaseServiceProtocol {
     
     func switchMirror(enable:Bool) -> AnyPublisher<Bool, InternalError> {
         return Future<Bool, InternalError> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             LiveKitLog.info("\(#file)", "\(#line)", "switchMirror:[enable:\(enable)]")
             let params = TRTCRenderParams()
             params.mirrorType = enable ? .enable : .disable
@@ -154,7 +154,7 @@ class MediaService: BaseServiceProtocol {
     
     func muteAllRemoteAudio(isMute: Bool) -> AnyPublisher<Void, Never> {
         return Future<Void, Never> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             roomEngine.getTRTCCloud().muteAllRemoteAudio(isMute)
             promise(.success(()))
         }

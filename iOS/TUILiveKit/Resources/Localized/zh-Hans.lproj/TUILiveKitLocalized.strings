@@ -33,6 +33,8 @@
 "live.audience.videoLinkConfig.request" = "申请连麦";
 "live.audience.videoLinkConfig.tips" = "接通后画面效果将自动生效";
 "live.anchor.link.control.title" = "连麦管理";
+"live.anchor.link.control.onSeatList.xxx" = "麦上列表 (xxx)";
+"live.anchor.link.control.applySeatList.xxx" = "申请列表 (xxx)";
 "live.anchor.link.agree.title" = "同意";
 "live.anchor.link.reject.title" = "拒绝";
 "live.anchor.link.hang.up.title" = "挂断";
@@ -53,8 +55,10 @@
 "live.audience.link.confirm.closeLinkMic" = "结束连麦";
 "live.audience.link.confirm.cancel" = "取消";
 "live.audience.gift.title" = "礼物";
-"live.anchor.system.image.selection.title" = "系统图库";
-"live.anchor.system.image.selection.confirm" = "设置为封面";
+"live.anchor.cover.image.selection.title" = "封面";
+"live.anchor.cover.image.selection.confirm" = "设置为封面";
+"live.anchor.background.image.selection.title" = "背景";
+"live.anchor.background.image.selection.confirm" = "设置为背景";
 "live.anchor.more.set.link" = "连麦";
 "live.anchor.more.set.pk" = "主播PK";
 "live.anchor.more.set.gift" = "送礼物";
@@ -74,8 +78,10 @@
 "live.anchor.setting.audio.effects" = "音效";
 "live.anchor.setting.flip" = "翻转";
 "live.anchor.setting.mirror" = "镜像";
+"live.anchor.setting.background" = "背景图";
 "live.anchor.setting.video.parameters" = "视频参数";
 "live.anchor.setting.more.setting" = "更多设置";
+"live.anchor.setting.need.request" = "需要房主同意上麦";
 "live.link.success" = "连麦成功";
 "live.alert.confirm" = "确认";
 "live.alert.known" = "我知道了";
@@ -138,6 +144,8 @@
 "live.giftView.sendGift" = "发送礼物";
 "live.giftView.me" = "我";
 "live.giftView.sendOut" = "送出";
+"live.gift.animation.isNotSVGAFile" = "礼物动画不是SVGA资源";
+"live.gift.animation.isNotMP4File" = "礼物动画不是MP4资源";
 "live.preview.video.live" = "视频直播";
 "live.preview.voice.live" = "语音直播";
 "live.giftView.balance.xxx" = "余额 xxx";
@@ -145,12 +153,9 @@
 "live.balanceInsufficient" = "余额不足，请充值";
 "live.seat.unLockSeat" = "解锁麦位";
 "live.seat.lockSeat" = "锁定麦位";
-"live.seat.unmuteMicrophone" = "解除麦克风静音";
-"live.seat.muteMicrophone" = "麦克风静音";
 "live.seat.unmuteAudio" = "解除静音";
 "live.seat.muteAudio" = "静音";
-"live.seat.kickSeat" = "踢人下麦";
-"live.seat.applySeat" = "申请上麦";
+"live.seat.takeSeat" = "上麦";
 "live.seat.leaveSeat" = "离开麦位";
 "live.seat.takeSeatApplicationRejected" = "上麦申请被拒绝";
 "live.seat.takeSeatApplicationTimeout" = "上麦申请超时";
@@ -234,4 +239,3 @@
 "live.room.list.watching.xxx" = "xxx人正在观看";
 
 "live.seat.takeSeatApplying" = "你提交了连麦申请，请等待主播同意";
-"live.seat.kickedOutOfSeat" = "被主持人踢下麦位";

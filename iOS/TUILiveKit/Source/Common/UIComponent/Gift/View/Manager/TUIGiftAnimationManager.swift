@@ -9,8 +9,6 @@ import Foundation
 
 typealias TUIDequeueClosure = (TUIGiftData) -> Void
 
-
-
 class TUIGiftAnimationManager {
     var queueArray: [TUIGiftData]
     var dequeueClosure: TUIDequeueClosure?
@@ -35,14 +33,7 @@ class TUIGiftAnimationManager {
             guard let self = self else { return }
             if self.playCount < self.simulcastCount {
                 self.playCount += 1
-                var giftData = self.queueArray.first
-                if giftData != nil {
-                    self.queueArray.removeFirst()
-                    self.queueArray.append(data)
-                } else {
-                    giftData = data
-                }
-                self.dequeueClosure?(giftData ?? data)
+                self.dequeueClosure?(data)
             } else {
                 self.queueArray.append(data)
             }
@@ -56,13 +47,13 @@ class TUIGiftAnimationManager {
     func finishPlay() {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
-            guard let gift = self.queueArray.first else {
-                self.playCount -= 1
-                self.playCount = max(0, self.playCount)
-                return
+            self.playCount = max(0, self.playCount - 1)
+
+            if let gift = self.queueArray.first {
+                self.queueArray.removeFirst()
+                self.playCount += 1
+                self.dequeueClosure?(gift)
             }
-            self.queueArray.removeFirst()
-            self.dequeueClosure?(gift)
         }
     }
 

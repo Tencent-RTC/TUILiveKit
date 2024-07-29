@@ -14,15 +14,17 @@ class AnchorLivingView: UIView {
     private let roomId:String
     private let routerStore: RouterStore
     private let store: LiveStoreProvider
+    private let viewStore: LiveRoomViewStore
     
     private lazy var ownerInfoPublisher = store.select(RoomSelectors.getRoomOwnerInfo)
     private lazy var roomIdPublisher = store.select(RoomSelectors.getRoomId)
+    private lazy var liveStatusPublisher = store.select(ViewSelectors.getLiveStatus)
+    
     private var cancellableSet: Set<AnyCancellable> = []
     private var isPortrait: Bool = {
         return WindowUtils.isPortrait
     }()
-    private let giftCacheService = GiftCacheService()
-    static let getLiveStatus = Selector(keyPath: \ViewState.liveStatus)
+    private let giftCacheService = TUIGiftStore.shared.giftCacheService
     
     private lazy var topGradientView: UIView = {
         var view = UIView(frame: CGRect(x: 0, y: 0, width: self.mm_w, height: 142.scale375Height()))
@@ -41,7 +43,7 @@ class AnchorLivingView: UIView {
 
     private lazy var closeButton: UIButton = {
         let view = UIButton(type: .system)
-        view.setBackgroundImage(.liveBundleImage("live_anchor_close_icon"), for: .normal)
+        view.setBackgroundImage(.liveBundleImage("live_leave_icon"), for: .normal)
         view.addTarget(self, action: #selector(closeButtonClick), for: .touchUpInside)
         return view
     }()
@@ -50,35 +52,10 @@ class AnchorLivingView: UIView {
         let view = AudienceListView(store: store, routerStore: routerStore)
         return view
     }()
-
-    private lazy var featureClickPanel: FeatureClickPanel = {
-        let designConfig = FeatureItemDesignConfig()
-        designConfig.type = .singleImage
-        designConfig.imageSize = CGSize(width: 36.scale375(), height: 36.scale375())
-        
-        let model = FeatureClickPanelModel()
-        model.itemSize = designConfig.imageSize
-        model.itemDiff = 6.scale375()
-        model.items.append(FeatureItem(image: .liveBundleImage("live_link_icon"), 
-                                       designConfig: designConfig,
-                                       actionClosure: { [weak self] in
-            guard let self = self else { return }
-            self.routerStore.router(action: .present(.linkControl))
-        }))
-        model.items.append(FeatureItem(image: .liveBundleImage("live_anchor_setting_icon"),
-                                       designConfig: designConfig,
-                                       actionClosure: { [weak self] in
-            guard let self = self else { return }
-            self.routerStore.router(action: .present(.setting))
-        }))
-        model.items.append(FeatureItem(image: .liveBundleImage("live_anchor_music_icon"),
-                                       designConfig: designConfig,
-                                       actionClosure: { [weak self] in
-            guard let self = self else { return }
-            self.routerStore.router(action: .present(.musicList))
-        }))
-        let featureClickPanel = FeatureClickPanel(model: model)
-        return featureClickPanel
+    
+    private lazy var bottomMenu: BottomMenuView = {
+        let view = BottomMenuView(frame: .zero)
+        return view
     }()
     
     private lazy var floatView: LinkMicAnchorFloatView = {
@@ -99,11 +76,6 @@ class AnchorLivingView: UIView {
         return view
     }()
     
-    lazy var musicPanelView: MusicPanelView = {
-        let view = MusicPanelView(roomEngine: store.servicerCenter.roomEngine)
-        return view
-    }()
-    
     private lazy var barrageSendView: TUIBarrageButton = {
         let ownerId = store.selectCurrent(RoomSelectors.roomOwnerId)
         var view = TUIBarrageButton(roomId: roomId, ownerId: ownerId)
@@ -114,11 +86,11 @@ class AnchorLivingView: UIView {
         return view
     }()
     
-    
     init(roomId: String, routerStore: RouterStore) {
         self.roomId = roomId
-        self.store = LiveStoreFactory.getLiveStore(roomId: roomId)
+        self.store = LiveStoreFactory.getStore(roomId: roomId)
         self.routerStore = routerStore
+        self.viewStore = LiveRoomViewStoreFactory.getStore(roomId: roomId)
         super.init(frame: .zero)
     }
     
@@ -127,7 +99,6 @@ class AnchorLivingView: UIView {
     }
     
     deinit {
-        giftCacheService.clearCacheDirectory()
         print("deinit \(type(of: self))")
     }
     
@@ -138,10 +109,14 @@ class AnchorLivingView: UIView {
         backgroundColor = .clear
         constructViewHierarchy()
         activateConstraints()
-        subscribeState()
+        bindInteraction()
         topGradientView.gradient(colors: [.g1,
                                           .g1.withAlphaComponent(0),], isVertical: true)
         isViewReady = true
+    }
+    
+    private func bindInteraction() {
+        subscribeState()
     }
     
     private func subscribeState() {
@@ -153,16 +128,6 @@ class AnchorLivingView: UIView {
             }
             .store(in: &cancellableSet)
         
-//        roomIdPublisher
-//            .receive(on: RunLoop.main)
-//            .sink { [weak self] roomId in
-//                guard let self = self else { return }
-//                self.barrageSendView.setRoomId(roomId: roomId)
-//                self.barrageDisplayView.setRoomId(roomId: roomId)
-//                self.giftDisplayView.setRoomId(roomId: roomId)
-//            }
-//            .store(in: &cancellableSet)
-        
         ownerInfoPublisher
             .receive(on: RunLoop.main)
             .sink { [weak self] ownerInfo in
@@ -171,6 +136,31 @@ class AnchorLivingView: UIView {
                 self.barrageDisplayView.setOwnerId(ownerId: ownerInfo.userId)
             }
             .store(in: &cancellableSet)
+        
+        viewStore.select(LiveRoomViewSelectors.getBottomMenuButtons)
+            .receive(on: RunLoop.main)
+            .sink(receiveValue: { [weak self] menus in
+                guard let self = self else { return }
+                self.bottomMenu.menus = menus
+            })
+            .store(in: &cancellableSet)
+        
+        liveStatusPublisher
+            .receive(on: RunLoop.main)
+            .sink { [weak self] status in
+                guard let self = self else { return }
+                switch status {
+                    case .pushing:
+                        self.didEnterRoom()
+                    default:
+                    break
+                }
+            }
+            .store(in: &cancellableSet)
+    }
+    
+    private func didEnterRoom() {
+        viewStore.dispatch(action: LiveRoomViewActions.updateBottomMenus(payload: (store, routerStore)))
     }
 }
 
@@ -185,7 +175,7 @@ extension AnchorLivingView {
         addSubview(closeButton)
         addSubview(audienceListView)
         addSubview(roomInfoView)
-        addSubview(featureClickPanel)
+        addSubview(bottomMenu)
         addSubview(floatView)
         addSubview(barrageSendView)
     }
@@ -212,9 +202,9 @@ extension AnchorLivingView {
             make.width.equalTo(268.scale375())
             make.height.equalTo(212.scale375Height())
             if self.isPortrait {
-                make.bottom.equalTo(featureClickPanel.snp.top).offset(-4.scale375Height())
+                make.bottom.equalTo(bottomMenu.snp.top).offset(-4.scale375Height())
             } else {
-                make.bottom.equalTo(featureClickPanel.snp.bottom)
+                make.bottom.equalTo(bottomMenu.snp.bottom)
             }
         }
         
@@ -240,9 +230,10 @@ extension AnchorLivingView {
             make.leading.equalToSuperview().inset((self.isPortrait ? 16 : 45).scale375())
         }
 
-        featureClickPanel.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().offset(-16.scale375())
+        bottomMenu.snp.makeConstraints { make in
             make.bottom.equalToSuperview().offset(-34.scale375Height())
+            make.trailing.equalToSuperview()
+            make.height.equalTo(36)
         }
         
         floatView.snp.makeConstraints { make in
@@ -264,16 +255,21 @@ extension AnchorLivingView {
 // MARK: Action
 
 extension AnchorLivingView {
-    @objc func closeButtonClick() {
+    @objc 
+    func closeButtonClick() {
         let designConfig = ActionItemDesignConfig(lineWidth: 7, titleColor: .redPinkColor)
         designConfig.backgroundColor = .g2
         designConfig.lineColor = .g3.withAlphaComponent(0.1)
         let item = ActionItem(title: .confirmCloseText, designConfig: designConfig, actionClosure: { [weak self] _ in
             guard let self = self else { return }
             self.showEndView()
-            self.musicPanelView.resetMusicPanelState()
         })
         routerStore.router(action: .present(.listMenu([item])))
+    }
+    
+    @objc
+    func roomInfoViewClick() {
+        routerStore.router(action: .present(.roomInfo))
     }
     
     private func showEndView() {
@@ -296,10 +292,6 @@ extension AnchorLivingView {
         }
     }
 
-    @objc func roomInfoViewClick() {
-        routerStore.router(action: .present(.roomInfo))
-    }
-   
     private func presentPopup(view: UIView) {
         if let vc = WindowUtils.getCurrentWindowViewController() {
             let menuContainerView = MenuContainerView(contentView: view)
@@ -362,11 +354,11 @@ extension AnchorLivingView: TUIGiftPlayViewDelegate {
     }
     
     func giftPlayView(_ giftPlayView: TUIGiftPlayView, onPlayGiftAnimation gift: TUIGift) {
-        giftCacheService.request(urlString: gift.animationUrl) { error, data in
-            guard let data = data else { return }
+        guard let url = URL(string: gift.animationUrl) else { return }
+        giftCacheService.request(withURL: url) { error, fileUrl in
             if error == 0 {
                 DispatchQueue.main.async {
-                    giftPlayView.playGiftAnimation(animationData: data)
+                    giftPlayView.playGiftAnimation(playUrl: fileUrl)
                 }
             }
         }
@@ -374,15 +366,7 @@ extension AnchorLivingView: TUIGiftPlayViewDelegate {
 }
 
 private extension String {
-    static var confirmCloseText = {
-        localized("live.anchor.confirm.close")
-    }()
-    
-    static var sendText = {
-       localized("live.giftView.sendOut")
-    }()
-    
-    static var meText = {
-        localized("live.barrage.me")
-    }()
+    static let confirmCloseText = localized("live.anchor.confirm.close")
+    static let sendText = localized("live.giftView.sendOut")
+    static let meText = localized("live.barrage.me")
 }

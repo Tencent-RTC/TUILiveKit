@@ -8,8 +8,8 @@ import RTCRoomEngine
 import Combine
 
 protocol BaseServiceProtocol {
-    var roomEngine: TUIRoomEngine? { get set }
-    init(roomEngine: TUIRoomEngine?)
+    var roomEngine: TUIRoomEngine { get set }
+    init(roomEngine: TUIRoomEngine)
 }
 
 // This object holds an instance of the RoomEngine service.
@@ -21,7 +21,7 @@ class ServiceCenter: NSObject {
     let beautyService: BeautyService
     let errorService: ErrorService = ErrorService()
     
-    let roomEngine: TUIRoomEngine?
+    let roomEngine: TUIRoomEngine
     
     weak var store: LiveStoreProvider?
     
@@ -34,34 +34,40 @@ class ServiceCenter: NSObject {
         seatService = SeatService(roomEngine: roomEngine)
         beautyService = BeautyService(roomEngine: roomEngine)
         super.init()
-        self.roomEngine?.addObserver(self)
+        roomEngine.addObserver(self)
+        
+        guard let liveListManager = roomEngine.getExtension(extensionType: .liveListManager) as? TUILiveListManager else { return }
+        liveListManager.addObserver(self)
     }
     
     deinit {
-        self.store = nil
         debugPrint("deinit \(type(of: self))")
+        self.store = nil
+        guard let liveListManager = roomEngine.getExtension(extensionType: .liveListManager) as? TUILiveListManager else { return }
+        liveListManager.removeObserver(self)
     }
     
-    static func getRoomEngine() -> TUIRoomEngine? {
+    static func getRoomEngine() -> TUIRoomEngine {
         LiveKitLog.info("\(#file)", "\(#line)","getRoomEngine")
         let jsonObject: [String: String] = ["api" : "createSubRoom"]
         guard let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject, options: []) else {
-            LiveKitLog.error("\(#file)", "\(#line)","convert to jsonData error, jsonObject: \(jsonObject)")
-            return nil
+            assert(false, "convert to jsonData error, jsonObject: \(jsonObject)")
+            LiveKitLog.error("\(#file)", "\(#line)", "convert to jsonData error, jsonObject: \(jsonObject)")
+            return TUIRoomEngine.sharedInstance()
         }
         guard let jsonString = String(data: jsonData, encoding: .utf8) else {
-            LiveKitLog.error("\(#file)", "\(#line)","convert to jsonString error, jsonObject: \(jsonObject)")
-            return nil
+            assert(false, "convert to jsonString error, jsonObject: \(jsonObject)")
+            LiveKitLog.error("\(#file)", "\(#line)", "convert to jsonString error, jsonObject: \(jsonObject)")
+            return TUIRoomEngine.sharedInstance()
         }
         guard let roomEngine = TUIRoomEngine.callExperimentalAPI(jsonStr: jsonString) as? TUIRoomEngine else {
-            LiveKitLog.error("\(#file)", "\(#line)","getRoomEgnine error, jsonString: \(jsonString)")
-            return nil
+            assert(false, "getRoomEngine error, jsonString: \(jsonString)")
+            LiveKitLog.error("\(#file)", "\(#line)","getRoomEngine error, jsonString: \(jsonString)")
+            return TUIRoomEngine.sharedInstance()
         }
         return roomEngine
     }
-    
 }
-
 
 extension ServiceCenter: TUIRoomObserver {
     func onRoomNameChanged(roomId: String, roomName: String) {
@@ -69,7 +75,10 @@ extension ServiceCenter: TUIRoomObserver {
     }
     
     func onRoomSeatModeChanged(roomId: String, seatMode: TUISeatMode) {
-        
+        guard let store = self.store else { return }
+        if roomId == store.selectCurrent(RoomSelectors.getRoomId) {
+            store.dispatch(action: RoomActions.updateRoomSeatModeByAdmin(payload: seatMode))
+        }
     }
     
     func onSeatListChanged(seatList: [TUISeatInfo], seated seatedList: [TUISeatInfo], left leftList: [TUISeatInfo]) {
@@ -78,6 +87,7 @@ extension ServiceCenter: TUIRoomObserver {
         while true {
             let isSelfSeated = seatedList.contains { $0.userId != nil && $0.userId == currentUserId }
             if isSelfSeated {
+                store.dispatch(action: MediaActions.operateMicrophoneMute(payload: false))
                 store.dispatch(action: MediaActions.operateMicrophone(payload: true))
                 if store.selectCurrent(ViewSelectors.autoOpenCameraOnSeated) {
                     store.dispatch(action: MediaActions.operateCamera(payload: true))
@@ -214,6 +224,27 @@ extension ServiceCenter: TUIRoomObserver {
     func onKickedOutOfRoom(roomId: String, reason: TUIKickedOutOfRoomReason, message: String) {
         if reason != .byServer {
             handlingKickedEvents(message: message)
+        }
+    }
+}
+
+extension ServiceCenter: TUILiveListManagerObserver {
+    func onLiveInfoChanged(liveInfo: TUILiveInfo, modifyFlag: TUILiveModifyFlag) {
+        guard let store = self.store else { return }
+        if store.selectCurrent(UserSelectors.isOwner) { return }
+        if modifyFlag == .category {
+            if let categoryValue = liveInfo.categoryList.first?.intValue,
+               let category = LiveStreamCategory(rawValue: categoryValue) {
+                store.dispatch(action: RoomActions.updateRoomCategory(payload: category))
+            }
+        }
+        
+        if modifyFlag == .coverUrl {
+            store.dispatch(action: RoomActions.updateRoomCoverUrl(payload: liveInfo.coverUrl))
+        }
+        
+        if modifyFlag == .publish {
+            store.dispatch(action: RoomActions.updateRoomMode(payload: liveInfo.isPublicVisible ? .public : .privacy))
         }
     }
 }

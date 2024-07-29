@@ -1,8 +1,19 @@
 {
   "images" : [
     {
-      "filename" : "live_link_voice_room.pdf",
-      "idiom" : "universal"
+      "filename" : "live_link_voice_room.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "live_link_voice_room@2x.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "live_link_voice_room@3x.png",
+      "idiom" : "universal",
+      "scale" : "3x"
     }
   ],
   "info" : {

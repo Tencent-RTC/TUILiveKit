@@ -1,8 +1,19 @@
 {
   "images" : [
     {
-      "filename" : "livekit_music_delete.pdf",
-      "idiom" : "universal"
+      "filename" : "live_music_delete.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "live_music_delete@2x.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "live_music_delete@3x.png",
+      "idiom" : "universal",
+      "scale" : "3x"
     }
   ],
   "info" : {

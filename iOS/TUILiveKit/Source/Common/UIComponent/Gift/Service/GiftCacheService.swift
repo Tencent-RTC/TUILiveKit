@@ -12,84 +12,58 @@ class GiftCacheService {
     private var cacheDirectory: URL = URL(fileURLWithPath: "")
     
     init() {
-        guard let cacheDirectory = getCacheDirectory() else { return }
-        let cacheGiftDirectory = cacheDirectory.appendingPathComponent("gift")
-        setCacheDirectory(cacheGiftDirectory)
+        guard let cachesDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first else { return }
+        self.cacheDirectory = cachesDirectory.appendingPathComponent("gift")
+        do {
+            try FileManager.default.createDirectory(at: cacheDirectory, withIntermediateDirectories: true, attributes: nil)
+        } catch {
+            debugPrint("create cacheDirectory failed. error: \(error)")
+        }
     }
     
-    private func getCacheDirectory() -> URL? {
-        let paths = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)
-        return paths.first
-    }
-  
-    func setCacheDirectory(_ cacheDirectoryUrl: URL) {
-        cacheDirectory = cacheDirectoryUrl
-    }
-    
-    func request(urlString: String, closure: ((Int, Data?) -> Void)?) {
-        guard let key = keyForUrl(url: urlString) else { return }
-        let result = readFileFromCacheDirectory(key: key)
-        if result != nil {
-            closure?(0, result)
+    func request(withURL url: URL, completion: ((Int, String) -> Void)?) {
+        let key = url.lastPathComponent
+        
+        if let cachedFilePath = getCachedFilePath(forKey: key) {
+            completion?(0, cachedFilePath)
             return
         }
-        DispatchQueue.global().sync {
-            guard let url = URL(string: urlString) else { return }
-            let task = URLSession.shared.dataTask(with: url) {data, response, error in
-                if error != nil {
-                    closure?(-1, nil)
-                    debugPrint("Error request url:\(urlString), error:\(String(describing: error))")
-                    return
-                }
-                guard let data = data else { return }
-                closure?(0, data)
-                self.saveFileToCacheDirectory(key: key, data: data)
+        
+        URLSession.shared.downloadTask(with: url) { (tempURL, _, error) in
+            guard let tempURL = tempURL, error == nil else {
+                debugPrint("download url:\(url) failed. error: \(error?.localizedDescription ?? "")")
+                completion?(-1, "")
+                return
             }
-            task.resume()
-        }
-    }
-    
-    private func keyForUrl(url: String) -> String? {
-        guard let data = url.data(using: .utf8) else {
-            return nil
-        }
-
-        let md5Hash = Insecure.MD5.hash(data: data)
-        let hexString = Data(md5Hash).hexEncodedString()
-
-        return hexString
-    }
-    
-    private func readFileFromCacheDirectory(key: String) -> Data? {
-        let fileURL = cacheDirectory.appendingPathComponent(key)
-        do {
-            let data = try Data(contentsOf: fileURL)
-            return data
-        } catch {
-            debugPrint("Error readFile:\(fileURL.path), error:\(error)")
-            return nil
-        }
-    }
-    
-    private func saveFileToCacheDirectory(key: String, data: Data) {
-        let fileURL = cacheDirectory.appendingPathComponent(key)
-        if !FileManager.default.fileExists(atPath: cacheDirectory.path) {
-           try? FileManager.default.createDirectory(at: cacheDirectory, withIntermediateDirectories: true, attributes: nil)
-        }
-        if !FileManager.default.fileExists(atPath: fileURL.path) {
-            FileManager.default.createFile(atPath: fileURL.path, contents: data)
-        } else {
+            
+            let destinationURL = self.cacheDirectory.appendingPathComponent(key)
             do {
-                try data.write(to: fileURL)
-            } catch {
-                debugPrint("Error saving file: \(error)")
+                try FileManager.default.moveItem(at: tempURL, to: destinationURL)
+                completion?(0, destinationURL.path)
+            } catch let error as NSError {
+                if error.code == NSFileWriteFileExistsError  {
+                    completion?(0, destinationURL.path)
+                } else {
+                    debugPrint("move file to \(destinationURL) failed. error: \(error)")
+                    completion?(-1, "")
+                }
+               
             }
+        }.resume()
+    }
+    
+    private func getCachedFilePath(forKey key: String) -> String? {
+        let fileUrl = cacheDirectory.appendingPathComponent(key)
+    
+        if FileManager.default.fileExists(atPath: fileUrl.path) {
+            return fileUrl.path
         }
+        return nil
     }
     
     func clearCacheDirectory() {
         do {
-            let fileURLs = try FileManager.default.contentsOfDirectory(at: cacheDirectory,
+            let fileURLs = try FileManager.default.contentsOfDirectory(at: self.cacheDirectory,
                                                                        includingPropertiesForKeys: nil,
                                                                        options: [])
             for fileURL in fileURLs {
@@ -98,11 +72,5 @@ class GiftCacheService {
         } catch {
             debugPrint("Error deleting files: \(error)")
         }
-    }
-}
-
-private extension Data {
-    func hexEncodedString() -> String {
-        return map { String(format: "%02hhx", $0) }.joined()
     }
 }

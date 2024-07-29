@@ -13,7 +13,7 @@ import Combine
 
 class AnchorView: UIView {
     private let roomId:String
-    private let store: LiveStore
+    private let store: LiveStoreProvider
     private let routerStore: RouterStore
     private lazy var liveStatusPublisher = store.select(ViewSelectors.getLiveStatus)
     private var cancellableSet = Set<AnyCancellable>()
@@ -35,13 +35,16 @@ class AnchorView: UIView {
         return view
     }()
     
-    var musicPanelView:MusicPanelView {
-        return livingView.musicPanelView
-    }
+    lazy var beautyPanelView: UIView = {
+        let roomEngine = store.roomEngine
+        let view = TUIBeautyPanel(store: store, routerStore: routerStore)
+        view.frame = CGRect(x: -100, y: -100, width: 0, height: 0)
+        return view
+    }()
     
     init(roomId: String, routerStore: RouterStore) {
         self.roomId = roomId
-        self.store = LiveStoreFactory.getLiveStore(roomId: roomId)
+        self.store = LiveStoreFactory.getStore(roomId: roomId)
         self.routerStore = routerStore
         super.init(frame: .zero)
     }
@@ -89,6 +92,7 @@ extension AnchorView {
         addSubview(videoView)
         addSubview(prepareView)
         addSubview(livingView)
+        addSubview(beautyPanelView)
     }
     
     private func activateConstraints() {
