@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import RTCCommon
 
 class AnchorLinkControlPanel: UIView {
     private let store: LiveStore

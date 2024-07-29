@@ -24,7 +24,6 @@ struct User: Codable {
     var name: String = ""
     var avatarUrl: String = ""
     var role: TUIRole = .generalUser
-    var status: LinkStatus = .none
     var fansCount: Int = 0
     
     init(userInfo: TUIUserInfo) {

@@ -10,11 +10,11 @@ import Combine
 
 // TODO: - Dependency management, needs to consolidate RoomEngine instances.
 class RoomService: BaseServiceProtocol {
-    var roomEngine: TUIRoomEngine?
-    required init(roomEngine: TUIRoomEngine?) {
+    var roomEngine: TUIRoomEngine
+    required init(roomEngine: TUIRoomEngine) {
         self.roomEngine = roomEngine
     }
-
+    
     deinit {
         debugPrint("deinit \(type(of: self))")
     }
@@ -40,7 +40,7 @@ class RoomService: BaseServiceProtocol {
     
     func leave() -> AnyPublisher<Void, InternalError> {
         return Future<Void, InternalError> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             roomEngine.exitRoom(syncWaiting: true) {
                 promise(.success(()))
             } onError: { err, message in
@@ -53,7 +53,7 @@ class RoomService: BaseServiceProtocol {
     
     func stop() -> AnyPublisher<Void, InternalError> {
         return Future<Void, InternalError> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             roomEngine.destroyRoom {
                 promise(.success(()))
             } onError: { err, message in
@@ -75,7 +75,7 @@ class RoomService: BaseServiceProtocol {
 extension RoomService {
     private func createRoom(info: TUIRoomInfo) -> AnyPublisher<Void, InternalError> {
         let future = Future<Void, InternalError> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             roomEngine.createRoom(info) {
                 promise(.success(()))
             } onError: { err, message in
@@ -88,7 +88,7 @@ extension RoomService {
     
     private func enterRoom(roomId: String) -> AnyPublisher<TUIRoomInfo, InternalError> {
         let future = Future<TUIRoomInfo, InternalError> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             roomEngine.enterRoom(roomId, roomType: .live) { roomInfo in
                 guard let info = roomInfo else {
                     let error = InternalError(error: TUIError.roomIdInvalid, message: TUIError.roomIdInvalid.description)
@@ -102,14 +102,14 @@ extension RoomService {
             }
         }
         return future.eraseToAnyPublisher()
-
+        
     }
 }
 
 extension RoomService {
     func fetchRoomInfo(onSuccess: TUISuccessBlock? = nil, onError: TUIErrorBlock? = nil) -> AnyPublisher<TUIRoomInfo, InternalError> {
         return Future<TUIRoomInfo, InternalError> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             roomEngine.fetchRoomInfo { roomInfo in
                 guard let roomInfo = roomInfo else {
                     let error = InternalError(error: TUIError.failed, message: "fetch room info fail.")
@@ -127,7 +127,7 @@ extension RoomService {
     
     func fetchRoomOwnerInfo(ownerId: String) -> AnyPublisher<User, InternalError> {
         return Future<User, InternalError> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             roomEngine.getUserInfo(ownerId) { userInfo in
                 if let user = userInfo {
                     promise(.success(User(userInfo: user)))
@@ -142,15 +142,46 @@ extension RoomService {
         }.eraseToAnyPublisher()
     }
     
-    func updateLiveInfo(liveInfo: TUILiveInfo, modifyFlag: TUILiveModifyFlag) -> AnyPublisher<Void, InternalError> {
+    func fetchLiveInfo(roomId: String) -> AnyPublisher<TUILiveInfo, InternalError> {
+        return Future<TUILiveInfo, InternalError> { [weak self] promise in
+            guard let self = self else { return }
+            guard let liveListManager = roomEngine.getExtension(extensionType: .liveListManager) as? TUILiveListManager else {
+                let error = InternalError(error: TUIError.userNotExist, message: TUIError.userNotExist.description)
+                promise(.failure(error))
+                return
+            }
+            liveListManager.getLiveInfo(roomId) { liveInfo in
+                promise(.success(liveInfo))
+            } onError: { error, message in
+                let error = InternalError(error: error, message: message)
+                promise(.failure(error))
+            }
+        }.eraseToAnyPublisher()
+    }
+    
+    func setLiveInfo(liveInfo: TUILiveInfo, modifyFlag: TUILiveModifyFlag) -> AnyPublisher<Void, InternalError> {
         return Future<Void, InternalError> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             guard let liveListManager = roomEngine.getExtension(extensionType: .liveListManager) as? TUILiveListManager else {
                 let error = InternalError(error: TUIError.userNotExist, message: TUIError.userNotExist.description)
                 promise(.failure(error))
                 return
             }
             liveListManager.setLiveInfo(liveInfo, modifyFlag: modifyFlag) {
+                promise(.success(()))
+            } onError: { error, message in
+                let error = InternalError(error: error, message: message)
+                promise(.failure(error))
+            }
+        }.eraseToAnyPublisher()
+    }
+}
+
+extension RoomService {
+    func setRoomSeatModeByAdmin(_ seatMode: TUISeatMode) -> AnyPublisher<Void, InternalError> {
+        return Future<Void, InternalError> { [weak self] promise in
+            guard let self = self else { return }
+            self.roomEngine.updateRoomSeatModeByAdmin(seatMode) {
                 promise(.success(()))
             } onError: { error, message in
                 let error = InternalError(error: error, message: message)

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import RTCCommon
 
 class TUIGiftStore {
     static let shared = TUIGiftStore()
@@ -19,6 +20,7 @@ class TUIGiftStore {
     }
     var giftList: [TUIGift] = []
     let giftCloudServer: IGiftCloudServer = GiftCloudServer()
+    let giftCacheService: GiftCacheService = GiftCacheService()
     var giftDataMap: Observable<[String: TUIGiftData]> = Observable([:])
     var likeDataMap: Observable<[String: TUILikeData]> = Observable([:])
 }

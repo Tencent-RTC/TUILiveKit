@@ -19,17 +19,19 @@ enum Route {
     case audience
     case roomInfo
     case recentViewer
-    case linkControl
+    case liveLinkControl
+    case voiceLinkControl
     case linkType // audience apply take seat.
     case linkSetting // audience take seat setting.
-    case setting
+    case featureSetting(_ settingModel: FeatureClickPanelModel)
     case listMenu(_ menus: [ActionItem])
     case musicList
     case audioEffect
-    case beauty(_ hasRenderView: Bool)
+    case beauty
     case videoSetting
     case giftView
-    case systemImageSelection
+    case systemImageSelection(_ imageType: ImageType)
+    case prepareSetting
 }
 
 extension Route: Equatable {
@@ -39,34 +41,40 @@ extension Route: Equatable {
             (.audience,.audience),
             (.roomInfo,.roomInfo),
             (.recentViewer,.recentViewer),
-            (.linkControl,.linkControl),
+            (.liveLinkControl,.liveLinkControl),
+            (.voiceLinkControl,.voiceLinkControl),
             (.linkType, .linkType),
             (.linkSetting, .linkSetting),
-            (.setting,.setting),
             (.musicList,.musicList),
             (.audioEffect,.audioEffect),
             (.beauty, .beauty),
             (.videoSetting,.videoSetting),
             (.giftView, .giftView),
-            (.systemImageSelection, .systemImageSelection):
+            (.prepareSetting, .prepareSetting):
             return true
+        case let (.featureSetting(l), .featureSetting(r)):
+            return l == r
         case let (.listMenu(l), .listMenu(r)):
+            return l == r
+        case let (.systemImageSelection(l), .systemImageSelection(r)):
             return l == r
         case (.anchor, _),
             (.audience, _),
             (.roomInfo, _),
             (.recentViewer, _),
-            (.linkControl, _),
+            (.liveLinkControl, _),
+            (.voiceLinkControl, _),
             (.linkType, _),
             (.linkSetting, _),
-            (.setting, _),
+            (.featureSetting, _),
             (.listMenu, _),
             (.musicList, _),
             (.audioEffect, _),
             (.beauty, _),
             (.videoSetting, _),
             (.giftView, _),
-            (.systemImageSelection, _):
+            (.systemImageSelection, _),
+            (.prepareSetting, _):
             return false
         default:
             break
@@ -85,14 +93,16 @@ extension Route: Hashable {
             return "roomInfo"
         case .recentViewer:
             return "recentViewer"
-        case .linkControl:
-            return "linkControl"
+        case .liveLinkControl:
+            return "liveLinkControl"
+        case .voiceLinkControl:
+            return "voiceLinkControl"
         case .linkType:
             return "linkType"
         case .linkSetting:
             return "linkSetting"
-        case .setting:
-            return "setting"
+        case .featureSetting(let settingModel):
+            return "featureSetting" + settingModel.id.uuidString
         case .listMenu(let items):
             var result = "listMenu"
             items.forEach { item in
@@ -109,8 +119,10 @@ extension Route: Hashable {
             return "videoSetting"
         case .giftView:
             return "giftView"
-        case .systemImageSelection:
-            return "systemImageSelection"
+        case .systemImageSelection(let imageType):
+            return "systemImageSelection" + imageType.rawValue
+        case .prepareSetting:
+            return "prepareSetting"
         }
     }
     

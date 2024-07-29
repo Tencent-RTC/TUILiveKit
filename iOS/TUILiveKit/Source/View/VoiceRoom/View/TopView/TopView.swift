@@ -17,30 +17,6 @@ protocol TopViewDelegate: AnyObject {
     func topView(_ topView: TopView, tap event:TopView.TapEvent, sender: Any?) -> Void
 }
 
-class UserAvatarCell: UICollectionViewCell {
-    static let identifier: String = "UserAvatarCell"
-    lazy var avatarImageView: UIImageView = {
-        let imageView = UIImageView(frame: .zero)
-        imageView.layer.cornerRadius = 24.scale375() * 0.5
-        imageView.layer.masksToBounds = true
-        contentView.addSubview(imageView)
-        return imageView
-    }()
-    
-    private var isViewReady = false
-    override func didMoveToWindow() {
-        super.didMoveToWindow()
-        guard !isViewReady else {
-            return
-        }
-        isViewReady = true
-        contentView.backgroundColor = .clear
-        avatarImageView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
-    }
-}
-
 class TopView: UIView {
     
     enum TapEvent {
@@ -50,17 +26,10 @@ class TopView: UIView {
     }
     
     private var store: LiveStore
-    private lazy var isOwnerPublisher = self.store.select(UserSelectors.isOwner)
-    private lazy var userCount = self.store.select(RoomSelectors.getUserCount)
-    private lazy var userList = self.store.select(UserSelectors.getUserList)
-
-    var cancellableSet: Set<AnyCancellable> = []
+    private var routerStore: RouterStore
     
-    var memberAvatars: [String] = [] {
-        didSet {
-            collectionView.reloadData()
-        }
-    }
+    private lazy var isOwnerPublisher = self.store.select(UserSelectors.isOwner)
+    var cancellableSet: Set<AnyCancellable> = []
     
     weak var delegate: TopViewDelegate?
    
@@ -72,45 +41,20 @@ class TopView: UIView {
         return view
     }()
     
-    let audienceContainer: UIView = {
-        let view = UIView(frame: .zero)
-        view.backgroundColor = .g2.withAlphaComponent(0.4)
-        view.layer.cornerRadius = componentHeight/2.0
+    private lazy var audienceListView: AudienceListView = {
+        let view = AudienceListView(store: store, routerStore: routerStore)
         return view
-    }()
-    
-    lazy var collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.itemSize = CGSize(width: 24.scale375(), height: 24.scale375())
-        layout.minimumLineSpacing = -8.scale375()
-        layout.minimumInteritemSpacing = 4.scale375()
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.showsVerticalScrollIndicator = false
-        collectionView.showsHorizontalScrollIndicator = false
-        collectionView.backgroundColor = .clear
-        collectionView.isUserInteractionEnabled = true
-        collectionView.contentMode = .scaleToFill
-        collectionView.dataSource = self
-        collectionView.register(UserAvatarCell.self, forCellWithReuseIdentifier: UserAvatarCell.identifier)
-        return collectionView
-    }()
-    
-    let memberCountLabel: UILabel = {
-        let label = UILabel(frame: .zero)
-        label.textColor = .whiteColor
-        label.font = UIFont.systemFont(ofSize: 10)
-        return label
     }()
     
     let stopButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setBackgroundImage(.liveBundleImage( "live_anchor_close_icon"), for: .normal)
+        button.setBackgroundImage(.liveBundleImage( "live_leave_icon"), for: .normal)
         return button
     }()
     
-    init(store: LiveStore) {
+    init(store: LiveStore, routerStore: RouterStore) {
         self.store = store
+        self.routerStore = routerStore
         super.init(frame: .zero)
     }
     
@@ -129,49 +73,37 @@ class TopView: UIView {
         constructViewHierarchy()
         activeViewConstraint()
         bindInteraction()
-        subscribeOwnerState()
         isViewReady = true
     }
     
     private func constructViewHierarchy() {
         addSubview(roomInfoView)
-        addSubview(audienceContainer)
-        audienceContainer.addSubview(collectionView)
-        audienceContainer.addSubview(memberCountLabel)
+        addSubview(audienceListView)
         addSubview(stopButton)
     }
     
     private func activeViewConstraint() {
         roomInfoView.snp.remakeConstraints { make in
-            make.centerY.equalTo(audienceContainer)
+            make.centerY.equalToSuperview()
             make.height.equalTo(roomInfoView.mm_h)
             make.width.greaterThanOrEqualTo(80.scale375())
             make.width.lessThanOrEqualTo(375.scale375()*0.5)
             make.leading.equalToSuperview().inset(16.scale375())
             make.top.bottom.equalToSuperview()
         }
-        audienceContainer.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.height.equalTo(componentHeight)
-            make.width.lessThanOrEqualTo(74)
-            make.right.equalTo(stopButton.snp.left).offset(-4)
+        
+        audienceListView.snp.remakeConstraints { make in
+            make.centerY.equalTo(stopButton)
+            make.height.equalTo(24.scale375())
+            make.width.equalTo(116.scale375())
+            make.trailing.equalTo(stopButton.snp.leading).offset(-4.scale375())
         }
-        collectionView.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(4)
-            make.height.equalToSuperview()
-            make.centerY.equalToSuperview()
-            make.width.lessThanOrEqualTo(74)
-        }
-        memberCountLabel.snp.makeConstraints { make in
-            make.right.equalToSuperview().offset(-4)
-            make.height.equalToSuperview()
-            make.centerY.equalToSuperview()
-            make.left.equalTo(collectionView.snp.right).offset(4)
-        }
+      
         stopButton.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.right.equalToSuperview().offset(-16)
-            make.height.width.equalTo(componentHeight)
+            make.height.equalTo(24.scale375())
+            make.width.equalTo(24.scale375())
         }
     }
     
@@ -180,59 +112,6 @@ class TopView: UIView {
     
         let roomInfoViewTap = UITapGestureRecognizer(target: self, action: #selector(roomInfoViewTap(sender:)))
         roomInfoView.addGestureRecognizer(roomInfoViewTap)
-        let audienceContainerTap = UITapGestureRecognizer(target: self, action: #selector(audienceContainerTap(sender:)))
-        audienceContainer.addGestureRecognizer(audienceContainerTap)
-    }
-    
-    private func subscribeOwnerState() {
-        isOwnerPublisher
-            .receive(on: RunLoop.main)
-            .sink { [weak self] isOwner in
-                guard let self = self else { return }
-                self.stopButton.setBackgroundImage(.liveBundleImage( isOwner ? "live_anchor_close_icon" : "live_leave_icon"), for: .normal)
-            }
-            .store(in: &cancellableSet)
-        userCount
-            .receive(on: RunLoop.main)
-            .sink{ [weak self] userCount in
-                guard let self = self else { return }
-                self.memberCountLabel.text = "\(userCount)"
-            }
-            .store(in: &cancellableSet)
-        userList
-            .receive(on: RunLoop.main)
-            .sink(receiveValue: { [weak self] userList in
-                guard let self = self else { return }
-                let avatarUrlList = userList.filter { [weak self] in
-                    guard let self = self else { return true }
-                    return $0.userId != self.store.selectCurrent(RoomSelectors.roomOwnerId)
-                }.map { user in
-                    return user.avatarUrl
-                }
-                memberAvatars = avatarUrlList
-            })
-            .store(in: &cancellableSet)
-    }
-}
-
-extension TopView: UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return memberAvatars.count > 2 ? 2 : memberAvatars.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UserAvatarCell.identifier, for: indexPath)
-        if let avatarCell = cell as? UserAvatarCell {
-            let avatar = memberAvatars[indexPath.item]
-            if let url = URL(string: avatar) {
-                avatarCell.avatarImageView.kf.setImage(with: url)
-            }
-        }
-        return cell
     }
 }
 
@@ -244,10 +123,5 @@ extension TopView {
     
     @objc func roomInfoViewTap(sender: UITapGestureRecognizer) {
         self.delegate?.topView(self, tap: .roomInfo, sender: sender)
-    }
-    
-    @objc
-    private func audienceContainerTap(sender: UITapGestureRecognizer) {
-        self.delegate?.topView(self, tap: .audienceList, sender: sender)
     }
 }

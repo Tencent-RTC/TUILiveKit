@@ -44,14 +44,14 @@ class VideoLinkSettingPanel: RTCBaseView {
         designConfig.cornerRadius = 10.scale375Width()
         designConfig.type = .imageAboveTitle
         items.append(FeatureItem(title: .beautyText, 
-                                 image: .liveBundleImage("live_videoSetting_beauty"),
-                                 designConfig: designConfig, 
+                                 image: .liveBundleImage("live_video_setting_beauty"),
+                                 designConfig: designConfig,
                                  actionClosure: { [weak self] in
             guard let self = self else { return }
-            self.routerStore.router(action: .present(.beauty(true)))
+            self.routerStore.router(action: .present(.beauty))
         }))
         items.append(FeatureItem(title: .mirrorText,
-                                 image: .liveBundleImage("live_videoSetting_mirror"),
+                                 image: .liveBundleImage("live_video_setting_mirror"),
                                  designConfig: designConfig,
                                  actionClosure: { [weak self] in
             guard let self = self else { return }
@@ -59,8 +59,8 @@ class VideoLinkSettingPanel: RTCBaseView {
             self.store.dispatch(action: MediaActions.switchMirror(payload: isMirror == true ? false : true))
         }))
         items.append(FeatureItem(title: .flipText,
-                                 image: .liveBundleImage("live_videoSetting_flip"),
-                                 designConfig: designConfig, 
+                                 image: .liveBundleImage("live_video_setting_flip"),
+                                 designConfig: designConfig,
                                  actionClosure: { [weak self] in
             guard let self = self else { return }
             let isFrontCamera = store.selectCurrent(MediaSelectors.getFrontCameraState)

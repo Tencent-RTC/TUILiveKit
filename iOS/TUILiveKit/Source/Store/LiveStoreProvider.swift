@@ -7,40 +7,37 @@
 import RTCRoomEngine
 import Combine
 
-class LiveStoreFactory {
-    private static var liveStoreMap: [String : LiveStoreProvider] = [:]
-    
-    static func getLiveStore(roomId: String) -> LiveStoreProvider {
-        if let liveStore = liveStoreMap[roomId] {
+class LiveStoreFactory: StoreFactory {
+    typealias T = LiveStoreProvider
+    static var storeMap: [String : T] = [:]
+    static func getStore(roomId: String) -> T {
+        if let liveStore = storeMap[roomId] {
             return liveStore
         }
-        let liveStore = LiveStoreProvider()
-        liveStoreMap.updateValue(liveStore, forKey: roomId)
+        let liveStore = T()
+        storeMap.updateValue(liveStore, forKey: roomId)
         return liveStore
-    }
-    
-    static func removeLiveStore(roomId: String) {
-        liveStoreMap.removeValue(forKey: roomId)
-    }
-    
-    static func removeAllStore() {
-        liveStoreMap.removeAll()
     }
 }
 
 class LiveStoreProvider {
     let toastSubject = PassthroughSubject<ToastInfo, Never>()
+    let alertSubject = PassthroughSubject<AlertInfo, Never>()
     let roomActionSubject = PassthroughSubject<any IdentifiableAction, Never>()
     let userActionSubject = PassthroughSubject<any IdentifiableAction, Never>()
     let seatActionSubject = PassthroughSubject<any IdentifiableAction, Never>()
     let errorSubject = PassthroughSubject<ErrorService.OperateError, Never>()
     
-    lazy var servicerCenter: ServiceCenter = {
+    private lazy var serviceCenter: ServiceCenter = {
         ServiceCenter(store: self)
     }()
     
+    lazy var roomEngine: TUIRoomEngine = {
+        serviceCenter.roomEngine
+    }()
+    
     private(set) lazy var operation: Store<OperationState, ServiceCenter> = {
-        return Store(initialState: OperationState(), environment: servicerCenter)
+        return Store(initialState: OperationState(), environment: serviceCenter)
     }()
 
     private(set) lazy var viewStore: Store<ViewState, Void> = Store(initialState: ViewState())
@@ -145,8 +142,8 @@ extension LiveStoreProvider: LiveStore {
                 
         if action.id.hasPrefix(ViewActions.key) {
             viewStore.dispatch(action: action)
-        } else if action.id.hasPrefix(ViewActions.toastEventKey) {
-            handleToast(action: action)
+        } else if action.id.hasPrefix(ViewActions.toastEventKey) || action.id.hasPrefix(ViewActions.alertEventKey) {
+            handleView(action: action)
         } else {
             operation.dispatch(action: action)
         }
@@ -185,9 +182,13 @@ extension LiveStoreProvider {
         }
     }
     
-    private func handleToast(action: Action) {
+    private func handleView(action: Action) {
         if let viewAction = action as? AnonymousAction<ToastInfo> {
             toastSubject.send(viewAction.payload)
         }
+        if let viewAction = action as? AnonymousAction<AlertInfo> {
+            alertSubject.send(viewAction.payload)
+        }
     }
+    
 }

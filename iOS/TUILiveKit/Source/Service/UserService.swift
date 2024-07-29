@@ -14,12 +14,11 @@ enum PlayRemoteUserVideoStatus {
     case onLoading(userId: String)
 }
 
-
 class UserService: BaseServiceProtocol {
-    var roomEngine: TUIRoomEngine?
+    var roomEngine: TUIRoomEngine
     private let imManager = V2TIMManager.sharedInstance()
     
-    required init(roomEngine: TUIRoomEngine?) {
+    required init(roomEngine: TUIRoomEngine) {
         self.roomEngine = roomEngine
     }
     
@@ -29,7 +28,7 @@ class UserService: BaseServiceProtocol {
 
     func fetchUserInfo(_ userId: String) -> AnyPublisher<User, InternalError> {
         return Future<User, InternalError> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             roomEngine.getUserInfo(userId) { userInfo in
                 if let user = userInfo {
                     promise(.success(User(userInfo: user)))
@@ -46,7 +45,7 @@ class UserService: BaseServiceProtocol {
     
     func fetchUserList() -> AnyPublisher<[User], InternalError> {
         return Future<[User], InternalError> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             roomEngine.getUserList(nextSequence: 0) { [weak self] userInfoList, sequence in
                 guard let self = self else { return }
                 let userList = userInfoList.map { userInfo in
@@ -115,7 +114,7 @@ class UserService: BaseServiceProtocol {
 extension UserService {
     func setRemoteVideoView(userId: String, streamType: TUIVideoStreamType, view: UIView?) -> AnyPublisher<Void, Never> {
         return Future<Void, Never> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             roomEngine.setRemoteVideoView(userId: userId, streamType: streamType, view: view)
             promise(.success(()))
         }
@@ -126,7 +125,7 @@ extension UserService {
                               streamType: TUIVideoStreamType)
     -> AnyPublisher<PlayRemoteUserVideoStatus, InternalError> {
         return Future<PlayRemoteUserVideoStatus, InternalError> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             roomEngine.startPlayRemoteVideo(userId: userId, streamType: streamType, onPlaying: { userId in
                 promise(.success(.onPlaying(userId: userId)))
             }, onLoading: { userId in
@@ -141,7 +140,7 @@ extension UserService {
     
     func stopPlayRemoteVideo(userId: String, streamType: TUIVideoStreamType) -> AnyPublisher<Void, Never> {
         return Future<Void, Never> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             roomEngine.stopPlayRemoteVideo(userId: userId, streamType: streamType)
             promise(.success(()))
         }

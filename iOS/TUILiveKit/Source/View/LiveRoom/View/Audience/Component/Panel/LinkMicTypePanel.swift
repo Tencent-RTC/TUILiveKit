@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import RTCCommon
 
 class LinkMicTypePanel: UIView {
     private let routerStore: RouterStore
@@ -58,7 +59,7 @@ class LinkMicTypePanel: UIView {
     
     private lazy var videoSettingButton: UIButton = {
         let view = UIButton()
-        view.setImage(.liveBundleImage("live_link_videoSetting"), for: .normal)
+        view.setImage(.liveBundleImage("live_link_video_setting"), for: .normal)
         view.addTarget(self, action: #selector(videoSettingImageViewAction), for: .touchUpInside)
         return view
         

@@ -17,7 +17,7 @@ public class TUILiveRoomAudienceViewController: UIViewController {
     
     // MARK: - private property.
     let roomId: String
-    private lazy var store: LiveStoreProvider = LiveStoreFactory.getLiveStore(roomId: roomId)
+    private lazy var store: LiveStoreProvider = LiveStoreFactory.getStore(roomId: roomId)
     private let routerStore: RouterStoreProvider = RouterStoreProvider()
     private var cancellableSet = Set<AnyCancellable>()
     private lazy var routerCenter: RouterControlCenter = {
@@ -36,8 +36,8 @@ public class TUILiveRoomAudienceViewController: UIViewController {
     }
     
     deinit {
-        LiveStoreFactory.removeLiveStore(roomId: roomId)
-        LiveRoomViewStoreFactory.removeLiveRoomViewStore(roomId: roomId)
+        LiveStoreFactory.removeStore(roomId: roomId)
+        LiveRoomViewStoreFactory.removeStore(roomId: roomId)
         print("deinit \(type(of: self))")
     }
     

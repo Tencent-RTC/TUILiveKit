@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import RTCCommon
 
 class FeatureCollectionViewDesignConfig {
     var scrollDirection: UICollectionView.ScrollDirection = .horizontal

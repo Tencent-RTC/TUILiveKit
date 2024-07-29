@@ -117,8 +117,6 @@ extension TUIError: LocalizedError {
                 return .localized("live.error.exitNotSupported.forRoomOwner")
             case .operationNotSupportedInCurrentRoomType:
                 return .localized("live.error.operation.notSupported.inCurrentSpeechMode")
-            case .operationNotSupportedInCurrentSpeechMode:
-                return .localized("live.error.operation.notSupported.inCurrentSpeechMode")
             case .roomIdInvalid:
                 return .localized("live.error.roomId.invalid")
             case .roomIdOccupied:

@@ -1,8 +1,19 @@
 {
   "images" : [
     {
-      "filename" : "live_emoji_icon.pdf",
-      "idiom" : "universal"
+      "filename" : "live_emoji_icon.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "live_emoji_icon@2x.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "live_emoji_icon@3x.png",
+      "idiom" : "universal",
+      "scale" : "3x"
     }
   ],
   "info" : {

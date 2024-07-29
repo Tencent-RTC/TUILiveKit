@@ -11,6 +11,8 @@ import Combine
 import RTCRoomEngine
 import TUICore
 
+let defaultMaxSeatCount = 10
+
 public struct RoomParams {
     public var maxSeatCount: Int = 0 //The default value is the maximum number of seat supported by the package
     public var seatMode: TUISeatMode = .applyToTake
@@ -40,7 +42,7 @@ public class TUIVoiceRoomViewController: UIViewController {
     private var needRestoreNavigationBarHiddenState: Bool = false
     
     private let routerStore: RouterStoreProvider = RouterStoreProvider()
-    private lazy var store: LiveStoreProvider = LiveStoreFactory.getLiveStore(roomId: roomId)
+    private lazy var store: LiveStoreProvider = LiveStoreFactory.getStore(roomId: roomId)
     
     private lazy var routerCenter: RouterControlCenter = {
         let rootRoute: Route = behavior == .join ? .audience : .anchor
@@ -52,12 +54,14 @@ public class TUIVoiceRoomViewController: UIViewController {
         let view = VoiceRoomRootView(frame: UIScreen.main.bounds,
                                      roomId: roomId,
                                      routerStore: routerStore,
-                                     roomParams: roomParams)
+                                     isCreate: roomParams != nil)
         return view
     }()
     
     private lazy var voicePrepareView: VoiceRoomPrepareView = {
-        let view = VoiceRoomPrepareView(frame: UIScreen.main.bounds, store: store, routerStore: routerStore)
+        let view = VoiceRoomPrepareView(frame: UIScreen.main.bounds,
+                                        store: store,
+                                        routerStore: routerStore)
         view.delegate = self
         return view
     }()
@@ -74,6 +78,10 @@ public class TUIVoiceRoomViewController: UIViewController {
         self.behavior = behavior
         self.roomParams = roomParams
         super.init(nibName: nil, bundle: nil)
+        if let roomParams = roomParams {
+            initRoomState(roomParams: roomParams)
+            initSeatState()
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -83,8 +91,10 @@ public class TUIVoiceRoomViewController: UIViewController {
     deinit {
         store.dispatch(action: RoomActions.leaveSuccess())
         unSubscribeViewState()
-        VoiceRoomViewStoreFactory.removeVoiceRoomViewStore(roomId: roomId)
-        LiveStoreFactory.removeLiveStore(roomId: roomId)
+        VoiceRoomViewStoreFactory.removeStore(roomId: roomId)
+        LiveStoreFactory.removeStore(roomId: roomId)
+        AudioEffectStoreFactory.removeStore(roomId: roomId)
+        MusicPanelStoreFactory.removeStore(roomId: roomId)
         print("deinit \(type(of: self))")
     }
     
@@ -114,6 +124,24 @@ public class TUIVoiceRoomViewController: UIViewController {
         }
     }
     
+    private func initRoomState(roomParams: RoomParams) {
+        store.dispatch(action: RoomActions.updateRoomId(payload: roomId))
+        let maxSeatCount = roomParams.maxSeatCount == 0 ? defaultMaxSeatCount : roomParams.maxSeatCount
+        store.dispatch(action: RoomActions.updateMaxSeatCount(payload: maxSeatCount))
+        store.dispatch(action: RoomActions.updateRoomSeatModeByAdmin(payload: roomParams.seatMode))
+    }
+    
+    private func initSeatState() {
+        let maxSeatCount = store.selectCurrent(RoomSelectors.getRoomState).maxSeatCount
+        var seatInfoList: [SeatInfo] = []
+        for index in 0...maxSeatCount {
+            var seatInfo = SeatInfo()
+            seatInfo.index = index
+            seatInfoList.append(seatInfo)
+        }
+        store.dispatch(action: SeatActions.seatListChanged(payload: seatInfoList))
+    }
+    
     private func showVoicePrepare() {
         view.addSubview(voicePrepareView)
         voicePrepareView.snp.makeConstraints { make in
@@ -139,10 +167,8 @@ extension TUIVoiceRoomViewController {
 
 // MARK: - Subscribe state
 extension TUIVoiceRoomViewController {
-    
     func subscribeViewState() {
         subscribeEnterRoomState()
-        subscribeToast()
     }
     
     func unSubscribeViewState() {
@@ -167,24 +193,6 @@ extension TUIVoiceRoomViewController {
                     break
                 }
             }
-    }
-    
-    private func subscribeToast() {
-        store.toastSubject
-            .removeDuplicates()
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] toast in
-                guard let self = self else { return }
-                var position = TUICSToastPositionBottom
-                switch toast.position {
-                    case .center:
-                        position = TUICSToastPositionCenter
-                    default:
-                        break
-                }
-                self.view.makeToast(toast.message, duration: toast.duration, position: position)
-            }
-            .store(in: &cancellableSet)
     }
 }
 

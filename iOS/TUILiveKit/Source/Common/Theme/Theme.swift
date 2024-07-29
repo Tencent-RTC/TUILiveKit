@@ -26,6 +26,7 @@ extension UIColor {
     static let g6 = themColor("#B2BBD1")
     static let g7 = themColor("#D5E0F2")
     static let g8 = themColor("#F2F5FC")
+    static let g9 = themColor("#E7ECF6")
     static let flowKitRed = themColor("#FC5555")
     static let flowKitGreen = themColor("#29CC6A")
     static let flowKitBlue = themColor("#0099FF")
@@ -34,6 +35,7 @@ extension UIColor {
     static let flowKitCharcoal = themColor("#222222")
     static let transparent = themColor("#00000000")
 
+    
     /// colors in non-interactive specifications
     static let gray60Transparency = themColor("#9922262E")
     static let whiteColor = themColor("#D1D9EC")
@@ -44,6 +46,7 @@ extension UIColor {
     static let brandBlueColor = themColor("#006CFF")
     static let blackColor = themColor("#181B21")
     static let redPinkColor = themColor("#ED414D")
+    static let redDotColor = themColor("#E04343")
     static let pureBlackColor = themColor("#000000")
     static let blueColor = themColor("#5592EE")
     static let lightBlueColor = themColor("#80BEF6")
@@ -58,6 +61,7 @@ extension UIColor {
     static let orangeColor = themColor("#0FA968")
     static let deepSeaBlueColor = themColor("#0157DF")
     static let cyanColor = themColor("#25D1D1")
+    static let grayColor = themColor("#C5CCDB")
     
     /// message color
     static let barrageColorMsg1 = themColor("#3074FD")
@@ -71,6 +75,12 @@ extension UIColor {
 
     /// color of gift
     static let giftTwoFifthBlackColor = themColor("#66000000")
+    static let giftContentColor = themColor("#EE3D544D")
+    
+    /// color of seat
+    static let seatContentColor = themColor("#F2F5FC1A")
+    static let seatContentBorderColor = themColor("#F2F5FC1A")
+    static let seatWaveColor = themColor("#FFDADE")
 
     private static func themColor(_ hex: String) -> UIColor {
         return UIColor(hex: hex) ?? .black

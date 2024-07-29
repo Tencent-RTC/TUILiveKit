@@ -16,6 +16,7 @@ import Combine
 
 class AudioEffectEffects: Effects {
     typealias Environment = AudioEffectService
+    static var id: String { "AudioEffectEffects" }
     
     let updateMusicVolume =  Effect<Environment>.nonDispatching { actions, environment in
         actions.wasCreated(from: AudioEffectActions.updateMusicVolume)
@@ -67,18 +68,15 @@ class AudioEffectEffects: Effects {
     }
 }
 
-class AudioEffectService: BaseServiceProtocol {
-    var roomEngine: TUIRoomEngine?
+class AudioEffectService {
+    let trtcCloud: TRTCCloud
     
-    required init(roomEngine: TUIRoomEngine?) {
-        self.roomEngine = roomEngine
+    init(trtcCloud: TRTCCloud) {
+        self.trtcCloud = trtcCloud
     }
     
     private func audioEffectManager() -> TXAudioEffectManager {
-        if let roomEngine = roomEngine {
-            return roomEngine.getTRTCCloud().getAudioEffectManager()
-        }
-        return TUIRoomEngine.sharedInstance().getTRTCCloud().getAudioEffectManager()
+        return trtcCloud.getAudioEffectManager()
     }
     
     func updateMusicVolume(_ volume: Int) {

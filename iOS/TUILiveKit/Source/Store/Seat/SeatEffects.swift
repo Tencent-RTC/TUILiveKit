@@ -41,7 +41,10 @@ class SeatEffects: Effects {
             .flatMap { action in
                 if let isOwner = environment.store?.selectCurrent(UserSelectors.isOwner), !isOwner {
                     environment.store?.dispatch(action: ViewActions.updateLinkStatus(payload: .applying))
-                    environment.store?.dispatch(action: ViewActions.toastEvent(payload: ToastInfo(message: .takeSeatApplyingToast)))
+                    let seatMode = environment.store?.selectCurrent(RoomSelectors.getRoomSeatMode) ?? .applyToTake
+                    if seatMode == .applyToTake {
+                        environment.store?.dispatch(action: ViewActions.toastEvent(payload: ToastInfo(message: .takeSeatApplyingToast)))
+                    }
                 }
                 return environment.seatService.takeSeat(index: action.payload, requestCallback: { [weak environment] request in
                     environment?.store?.dispatch(action: SeatActions.updateMySeatApplicationId(payload: request.requestId))

@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import RTCCommon
 
 protocol RouterViewProvider: NSObjectProtocol {
     func getRouteView(route: Route) -> UIView?
@@ -98,7 +99,7 @@ extension RouterControlCenter {
             view = getRouteDefaultView(route: route)
         }
         if let view = view {
-            let presentedVC = self.presentPopup(view: view)
+            let presentedVC = presentPopup(view: view, route: route)
             presentedRouteStack.append(route)
             presentedViewControllerMap[route] = presentedVC
         } else {
@@ -122,9 +123,10 @@ extension RouterControlCenter {
         }
     }
     
-    private func presentPopup(view: UIView) -> UIViewController {
+    private func presentPopup(view: UIView, route: Route) -> UIViewController {
         let menuContainerView = MenuContainerView(contentView: view)
-        let viewController = PopupViewController(contentView: menuContainerView)
+        let viewController = PopupViewController(contentView: menuContainerView,
+                                                 supportBlurView: supportBlurView(route: route))
         menuContainerView.blackAreaClickClosure = { [weak self] in
             guard let self = self else { return }
             self.routerStore.router(action: .dismiss)
@@ -135,6 +137,21 @@ extension RouterControlCenter {
         return viewController
     }
     
+    private func supportBlurView(route: Route) -> Bool {
+        switch route {
+        case .beauty:
+            return false
+        case .featureSetting(_):
+            if let _ = rootViewController as? TUILiveRoomAnchorViewController {
+                return false
+            } else {
+                return true
+            }
+        default:
+            return true
+        }
+    }
+    
     private func getRouteDefaultView(route: Route) -> UIView? {
         var view: UIView?
         switch route {
@@ -142,25 +159,27 @@ extension RouterControlCenter {
                 view = RoomInfoPanelView(store: store)
             case .recentViewer:
                 view = RecentWatchMemberPanel(store: store, routerStore: routerStore)
-            case .linkControl:
+            case .liveLinkControl:
                 view = AnchorLinkControlPanel(store: store, routerStore: routerStore)
-            case .setting:
-                view = AnchorSettingPanel(store: store, routerStore: routerStore)
+            case .voiceLinkControl:
+                view = AnchorSeatControlPanel(store: store)
+            case .featureSetting(let settingPanelModel):
+                view = SettingPanel(settingPanelModel: settingPanelModel)
             case .musicList:
-                view = MusicPanelView(roomEngine: store.servicerCenter.roomEngine)
+                view = MusicPanelView(roomId: store.selectCurrent(RoomSelectors.getRoomId),
+                                      trtcCloud: store.roomEngine.getTRTCCloud())
             case .audioEffect:
-            let audioEffect = AudioEffectView(roomEngine: store.servicerCenter.roomEngine)
+                let audioEffect = AudioEffectView(roomId: store.selectCurrent(RoomSelectors.getRoomId),
+                                                  trtcCloud: store.roomEngine.getTRTCCloud())
                 audioEffect.backButtonClickClosure = { [weak self] _ in
                     guard let self = self else { return }
                     self.routerStore.router(action: .dismiss)
                 }
                 view = audioEffect
-            case let .beauty(hasRenderView):
-                view = BeautyPanel(hasRenderView: hasRenderView, store: store, routerStore: routerStore)
             case .videoSetting:
                 view = AnchorVideoParametersSettingPanel(store: store, routerStore: routerStore)
             case .linkType:
-                let dataHelper = BottomPopupListViewDataHelper()
+                let dataHelper = LiveRoomRootMenuDataHelper()
                 let data = dataHelper.generateLinkTypeMenuData(store: store, routerStore: routerStore)
                 view = LinkMicTypePanel(data: data, routerStore: routerStore)
             case .listMenu(let items):
@@ -172,13 +191,18 @@ extension RouterControlCenter {
                 view = actionPanel
             case .linkSetting:
                 view = VideoLinkSettingPanel(store: store, routerStore: routerStore)
-            case .systemImageSelection:
-                let systemImageSelectionPanel = SystemImageSelectionPanel(configs: SystemImageModel.configs(), store: store)
+            case .systemImageSelection(let imageType):
+                let imageConfig = SystemImageFactory.getImageAssets(imageType: imageType)
+                let systemImageSelectionPanel = SystemImageSelectionPanel(configs: imageConfig,
+                                                                          store: store,
+                                                                          panelMode: imageType == .cover ? .cover : .background)
                 systemImageSelectionPanel.backButtonClickClosure = { [weak self] in
                     guard let self = self else { return }
                     self.routerStore.router(action: .dismiss)
                 }
                 view = systemImageSelectionPanel
+            case .prepareSetting:
+                view = PrepareSettingPanel(store: store, routerStore: routerStore)
             default:
                 break
         }

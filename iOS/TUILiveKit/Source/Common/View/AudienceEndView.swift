@@ -9,7 +9,7 @@ import UIKit
 import RTCCommon
 
 class AudienceEndView: UIView {
-    lazy var store: LiveStore = LiveStoreFactory.getLiveStore(roomId: roomId)
+    private let store: LiveStore
     private let roomId: String
     private let avatarUrl: String
     private let userName: String
@@ -25,7 +25,7 @@ class AudienceEndView: UIView {
     
     private lazy var closeButton: UIButton = {
         let button = UIButton()
-        button.setImage(.liveBundleImage("live_audience_close_icon"), for: .normal)
+        button.setImage(.liveBundleImage("live_leave_icon"), for: .normal)
         button.addTarget(self, action: #selector(closeButtonClick), for: .touchUpInside)
         return button
     }()
@@ -51,6 +51,7 @@ class AudienceEndView: UIView {
         self.roomId = roomId
         self.avatarUrl = avatarUrl
         self.userName = userName
+        self.store = LiveStoreFactory.getStore(roomId: roomId)
         super.init(frame: .zero)
         self.backgroundColor = .g2
     }

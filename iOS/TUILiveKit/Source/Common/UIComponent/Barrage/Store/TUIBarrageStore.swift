@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import RTCCommon
 
 class TUIBarrageStore {
     static let shared = TUIBarrageStore()

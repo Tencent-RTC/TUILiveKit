@@ -6,6 +6,7 @@
 //
 import Combine
 import Foundation
+import RTCCommon
 
 class MatrixVideoRenderCell: UICollectionViewCell {
     private var renderView: RenderView?

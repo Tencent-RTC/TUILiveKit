@@ -5,7 +5,6 @@
 //  Created by adamsfliu on 2024/4/28.
 //
 import Combine
-import RTCRoomEngine
 
 #if canImport(TXLiteAVSDK_TRTC)
     import TXLiteAVSDK_TRTC
@@ -18,18 +17,24 @@ class MusicPanelStoreProvider {
     let service: MusicPanelService
     private(set) lazy var store: Store<MusicPanelState, MusicPanelService> = Store(initialState: MusicPanelState(), environment: self.service)
     
-    init(roomEngine: TUIRoomEngine?) {
-        service = MusicPanelService(roomEngine: roomEngine)
+    init(trtcCloud: TRTCCloud) {
+        service = MusicPanelService(trtcCloud: trtcCloud)
         initializeStore()
     }
     
     deinit {
+        unInitializeStore()
         print("deinit \(type(of: self))")
     }
     
     private func initializeStore() {
         store.register(reducer: musicPanelReducer)
         store.register(effects: MusicPanelEffects())
+    }
+    
+    private func unInitializeStore() {
+        store.unregister(reducer: musicPanelReducer)
+        store.unregisterEffects(withId: MusicPanelEffects.id)
     }
 }
 

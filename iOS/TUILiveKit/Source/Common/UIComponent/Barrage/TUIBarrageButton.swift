@@ -7,6 +7,7 @@
 
 import TUICore
 import UIKit
+import RTCCommon
 
 class TUIBarrageButton: UIView {
     private var roomId: String
@@ -145,8 +146,9 @@ extension TUIBarrageButton: BarrageSendViewControllerDelegate {
 
 extension TUIBarrageButton: TUIBarrageManagerDelegate {
     func willSendBarrage(_ barrage: TUIBarrage) {
-        barrage.user.userName = TUILogin.getUserID() ?? ""
-        barrage.user.userId = TUILogin.getUserID() ?? ""
+        let userId = TUILogin.getUserID() ?? ""
+        barrage.user.userName = TUILogin.getNickName() ?? userId
+        barrage.user.userId = userId
         barrage.user.avatarUrl = TUILogin.getFaceUrl() ?? ""
         barrage.user.level = "0"
     }

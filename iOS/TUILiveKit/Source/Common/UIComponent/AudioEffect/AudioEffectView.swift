@@ -8,10 +8,14 @@
 import UIKit
 import Combine
 import RTCCommon
-import RTCRoomEngine
+#if canImport(TXLiteAVSDK_TRTC)
+    import TXLiteAVSDK_TRTC
+#elseif canImport(TXLiteAVSDK_Professional)
+    import TXLiteAVSDK_Professional
+#endif
 
 class AudioEffectView: UIView {
-    private let menuGenerator: AudioEffectMenuDateGenerator
+    private let store: AudioEffectStoreProvider
     
     var backButtonClickClosure: ((UIButton)->Void)?
     private var isViewReady: Bool = false
@@ -45,11 +49,17 @@ class AudioEffectView: UIView {
         return view
     }()
     
-    lazy var menus: [Int : [SettingItem]] = self.menuGenerator.audioEffectMenus
-    lazy var titles: [Int: String] = self.menuGenerator.audioEffectSectionTitles
+    lazy var menus: [Int : [SettingItem]] = self.store.audioEffectMenus
+    lazy var titles: [Int: String] = self.store.audioEffectSectionTitles
     
-    init(roomEngine: TUIRoomEngine? = nil) {
-        self.menuGenerator = AudioEffectStoreProvider(roomEngine: roomEngine)
+    init(roomId: String, trtcCloud: TRTCCloud) {
+        if let audioEffectStore = AudioEffectStoreFactory.getStore(roomId: roomId) {
+            self.store = audioEffectStore
+        } else {
+            let audioEffectStore = AudioEffectStoreProvider(trtcCloud: trtcCloud)
+            AudioEffectStoreFactory.addStore(roomId: roomId, audioEffectStore: audioEffectStore)
+            self.store = audioEffectStore
+        }
         super.init(frame: .zero)
         backgroundColor = .clear
     }

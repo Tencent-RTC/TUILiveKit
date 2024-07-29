@@ -8,6 +8,7 @@
 enum MediaSelectors {
     static let getMediaState = Selector(keyPath: \OperationState.mediaState)
     static let getMicrophoneState = Selector.with(getMediaState, keyPath: \.isMicrophoneOpened)
+    static let getMicrophoneMutedState = Selector.with(getMediaState, keyPath: \.isMicrophoneMuted)
     static let getFrontCameraState = Selector.with(getMediaState, keyPath: \.isFrontCamera)
     static let getMirrorState = Selector.with(getMediaState, keyPath: \.isMirror)
     static let getAudioQuality = Selector.with(getMediaState, keyPath: \.audioQuality)

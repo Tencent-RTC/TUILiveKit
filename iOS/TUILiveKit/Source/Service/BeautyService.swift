@@ -14,8 +14,8 @@ import Combine
 #endif
 
 class BeautyService: BaseServiceProtocol {
-    var roomEngine: TUIRoomEngine?
-    required init(roomEngine: TUIRoomEngine?) {
+    var roomEngine: TUIRoomEngine
+    required init(roomEngine: TUIRoomEngine) {
         self.roomEngine = roomEngine
     }
     
@@ -23,10 +23,14 @@ class BeautyService: BaseServiceProtocol {
         debugPrint("deinit \(type(of: self))")
     }
     
+    func getBeautyManager() -> TXBeautyManager {
+        roomEngine.getTRTCCloud().getBeautyManager()
+    }
+    
     func setBeautyLevel(_ beautyLevel: Float) -> AnyPublisher<Void, Never> {
         return Future<Void, Never> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
-            roomEngine.getTRTCCloud().getBeautyManager().setBeautyLevel(beautyLevel)
+            guard let self = self else { return }
+            getBeautyManager().setBeautyLevel(beautyLevel)
             promise(.success(()))
         }
         .eraseToAnyPublisher()
@@ -34,8 +38,8 @@ class BeautyService: BaseServiceProtocol {
     
     func setWhitenessLevel(_ whitenessLevel: Float) -> AnyPublisher<Void, Never> {
         return Future<Void, Never> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
-            roomEngine.getTRTCCloud().getBeautyManager().setWhitenessLevel(whitenessLevel)
+            guard let self = self else { return }
+            getBeautyManager().setWhitenessLevel(whitenessLevel)
             promise(.success(()))
         }
         .eraseToAnyPublisher()
@@ -43,8 +47,8 @@ class BeautyService: BaseServiceProtocol {
     
     func setRuddyLevel(_ ruddyLevel: Float) -> AnyPublisher<Void, Never> {
         return Future<Void, Never> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
-            roomEngine.getTRTCCloud().getBeautyManager().setRuddyLevel(ruddyLevel)
+            guard let self = self else { return }
+            getBeautyManager().setRuddyLevel(ruddyLevel)
             promise(.success(()))
         }
         .eraseToAnyPublisher()

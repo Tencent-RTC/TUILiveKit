@@ -6,24 +6,18 @@
 //
 import Combine
 
-class LiveRoomViewStoreFactory {
-    private static var liveRoomViewStoreMap: [String : LiveRoomViewStore] = [:]
+class LiveRoomViewStoreFactory: StoreFactory {
+
+    typealias T = LiveRoomViewStoreProvider
+    static var storeMap: [String : T] = [:]
     
-    static func getLiveRoomViewStore(roomId: String) -> LiveRoomViewStore {
-        if let liveRoomViewStore = liveRoomViewStoreMap[roomId] {
+    static func getStore(roomId: String) -> T {
+        if let liveRoomViewStore = storeMap[roomId] {
             return liveRoomViewStore
         }
-        let liveRoomViewStore = LiveRoomViewStoreProvider()
-        liveRoomViewStoreMap.updateValue(liveRoomViewStore, forKey: roomId)
+        let liveRoomViewStore = T()
+        storeMap.updateValue(liveRoomViewStore, forKey: roomId)
         return liveRoomViewStore
-    }
-    
-    static func removeLiveRoomViewStore(roomId: String) {
-        liveRoomViewStoreMap.removeValue(forKey: roomId)
-    }
-    
-    static func removeAllStore() {
-        liveRoomViewStoreMap.removeAll()
     }
 }
 

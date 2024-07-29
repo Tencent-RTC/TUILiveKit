@@ -5,7 +5,11 @@
 //  Created by aby on 2024/4/3.
 //
 import Combine
-import RTCRoomEngine
+#if canImport(TXLiteAVSDK_TRTC)
+    import TXLiteAVSDK_TRTC
+#elseif canImport(TXLiteAVSDK_Professional)
+    import TXLiteAVSDK_Professional
+#endif
 
 class AudioEffectStoreProvider {
     typealias AudioChangerDataSource = (title: String, icon: UIImage?, changerType: AudioChangerType)
@@ -14,18 +18,24 @@ class AudioEffectStoreProvider {
     let service: AudioEffectService
     private(set) lazy var store: Store<AudioEffectState, AudioEffectService> = Store(initialState: AudioEffectState(), environment: self.service)
     
-    init(roomEngine: TUIRoomEngine?) {
-        service = AudioEffectService(roomEngine: roomEngine)
+    init(trtcCloud: TRTCCloud) {
+        service = AudioEffectService(trtcCloud: trtcCloud)
         initializeStore()
     }
     
     deinit {
+        unInitializeStore()
         print("deinit \(type(of: self))")
     }
     
     private func initializeStore() {
         store.register(reducer: audioEffectReducer)
         store.register(effects: AudioEffectEffects())
+    }
+    
+    private func unInitializeStore() {
+        store.unregister(reducer: audioEffectReducer)
+        store.unregisterEffects(withId: AudioEffectEffects.id)
     }
     
     let changerDataSource: [AudioChangerDataSource] = [

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import RTCCommon
 
 class MoreSettingsModel {
     var title: String

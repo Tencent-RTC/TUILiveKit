@@ -51,7 +51,8 @@ public class TUILiveAudienceViewController: UIViewController {
     init(liveInfo: TUILiveInfo, liveListStore: LiveListStoreProvider) {
         self.displayLiveInfo = liveInfo
         self.liveListStore = liveListStore
-        self.store = LiveStoreFactory.getLiveStore(roomId: liveInfo.roomInfo.roomId)
+        self.store = LiveStoreFactory.getStore(roomId: liveInfo.roomInfo.roomId)
+        store.dispatch(action: RoomActions.updateRoomCoverUrl(payload: liveInfo.coverUrl))
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -196,7 +197,7 @@ extension TUILiveAudienceViewController: UIScrollViewDelegate {
         let row = scrollView.contentOffset.y / max(scrollView.bounds.height, 1)
         let indexPath = IndexPath(row: Int(row), section: 0)
         if let displayCell = displayCollectionView.cellForItem(at: indexPath) as? TUILiveDisplayViewCell {
-            let store = LiveStoreFactory.getLiveStore(roomId: displayCell.roomId)
+            let store = LiveStoreFactory.getStore(roomId: displayCell.roomId)
             routerCenter.updateStore(rootRoute: .audience, store: store)
             displayCell.startDisplay(routerCenter: routerCenter)
             unSubscribeLiveLinkState()
@@ -225,13 +226,11 @@ class TUILiveDisplayViewCell: UICollectionViewCell {
     }
     
     func joinRoom(roomId: String, routerStore: RouterStore) {
-        let store = LiveStoreFactory.getLiveStore(roomId: roomId)
-        self.roomId = roomId
-        
+        let store = LiveStoreFactory.getStore(roomId: roomId)
         if !store.selectCurrent(RoomSelectors.getRoomId).isEmpty {
             return
         }
-        
+        self.roomId = roomId
         contentView.subviews.forEach { subView in
             subView.removeFromSuperview()
         }
@@ -245,7 +244,7 @@ class TUILiveDisplayViewCell: UICollectionViewCell {
                 make.edges.equalToSuperview()
             }
         case .voice:
-            view = VoiceRoomRootView(frame: .zero, roomId: roomId, routerStore: routerStore)
+            view = VoiceRoomRootView(frame: .zero, roomId: roomId, routerStore: routerStore, isCreate: false)
             contentView.addSubview(view)
             view.snp.makeConstraints { make in
                 make.edges.equalToSuperview()
@@ -255,12 +254,12 @@ class TUILiveDisplayViewCell: UICollectionViewCell {
     }
     
     func prepareDisplay() {
-        let store = LiveStoreFactory.getLiveStore(roomId: roomId)
+        let store = LiveStoreFactory.getStore(roomId: roomId)
         store.dispatch(action: MediaActions.muteAllRemoteAudio(payload: true))
     }
     
     func startDisplay(routerCenter: RouterControlCenter) {
-        let store = LiveStoreFactory.getLiveStore(roomId: roomId)
+        let store = LiveStoreFactory.getStore(roomId: roomId)
         store.dispatch(action: MediaActions.muteAllRemoteAudio(payload: false))
         if let view = view as? AudienceView {
             routerCenter.routerProvider = view
@@ -272,14 +271,13 @@ class TUILiveDisplayViewCell: UICollectionViewCell {
     }
     
     func stopDisplay() {
-        let store = LiveStoreFactory.getLiveStore(roomId: roomId)
+        let store = LiveStoreFactory.getStore(roomId: roomId)
         store.dispatch(action: MediaActions.muteAllRemoteAudio(payload: true))
     }
     
     func finishDisplay() {
-        let store = LiveStoreFactory.getLiveStore(roomId: roomId)
+        let store = LiveStoreFactory.getStore(roomId: roomId)
         store.dispatch(action: RoomActions.leave())
-        store.dispatch(action: OperationActions.clearAllState())
     }
     
     deinit {

@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import TUICore
+import RTCCommon
 
 class GiftCloudServer: IGiftCloudServer {
-    private let GIFT_DATA_URL = "http://dldir1.qq.com/hudongzhibo/TRTC/TUIKit/Gift/gift_data.json"
     private var balance = 500
 
     func rechargeBalance(callback: @escaping (TUIGiftServerError, Int) -> Void) {
@@ -22,7 +23,8 @@ class GiftCloudServer: IGiftCloudServer {
 
     func queryGiftInfoList(callback: @escaping (TUIGiftServerError, [TUIGift]) -> Void) {
         DispatchQueue.global().async {
-            guard let url = URL(string: self.GIFT_DATA_URL) else { return }
+            let giftUrl = self.hasTCEffectPlayer() ? TE_GIFT_DATA_URL : GIFT_DATA_URL
+            guard let url = URL(string: giftUrl) else { return }
             let session = URLSession.shared
             let task = session.dataTask(with: url) { data, _, error in
                 if error != nil {
@@ -76,5 +78,10 @@ class GiftCloudServer: IGiftCloudServer {
             giftArray.append(model)
         }
         return giftArray
+    }
+    
+    private func hasTCEffectPlayer() -> Bool {
+        let service = TUICore.getService("TUIEffectPlayerService")
+        return service != nil
     }
 }

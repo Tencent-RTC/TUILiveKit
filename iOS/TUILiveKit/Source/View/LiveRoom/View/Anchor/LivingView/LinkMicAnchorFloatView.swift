@@ -153,7 +153,7 @@ extension LinkMicAnchorFloatView: UICollectionViewDataSource {
 
 extension LinkMicAnchorFloatView {
     @objc func tapAction() {
-        routerStore.router(action: RouterAction.present(.linkControl))
+        routerStore.router(action: RouterAction.present(.liveLinkControl))
     }
 }
 

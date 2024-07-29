@@ -13,7 +13,7 @@ import Combine
 
 public class TUILiveRoomAnchorViewController: UIViewController {
     // MARK: - private property.
-    private lazy var store: LiveStoreProvider = LiveStoreFactory.getLiveStore(roomId: roomId)
+    private lazy var store: LiveStoreProvider = LiveStoreFactory.getStore(roomId: roomId)
     private let routerStore: RouterStoreProvider = RouterStoreProvider()
     private var cancellableSet = Set<AnyCancellable>()
 
@@ -33,6 +33,7 @@ public class TUILiveRoomAnchorViewController: UIViewController {
     public init(roomId:String) {
         self.roomId = roomId
         super.init(nibName: nil, bundle: nil)
+        store.dispatch(action: RoomActions.updateRoomId(payload: roomId))
     }
     
     required init?(coder: NSCoder) {
@@ -40,8 +41,10 @@ public class TUILiveRoomAnchorViewController: UIViewController {
     }
     
     deinit {
-        LiveRoomViewStoreFactory.removeLiveRoomViewStore(roomId: roomId)
-        LiveStoreFactory.removeLiveStore(roomId: roomId)
+        LiveRoomViewStoreFactory.removeStore(roomId: roomId)
+        LiveStoreFactory.removeStore(roomId: roomId)
+        AudioEffectStoreFactory.removeStore(roomId: roomId)
+        MusicPanelStoreFactory.removeStore(roomId: roomId)
         print("deinit \(type(of: self))")
     }
 
@@ -121,8 +124,8 @@ extension TUILiveRoomAnchorViewController {
 
 extension TUILiveRoomAnchorViewController: RouterViewProvider {
     func getRouteView(route: Route) -> UIView? {
-        if route == .musicList {
-            return anchorView.musicPanelView
+        if route == .beauty {
+            return anchorView.beautyPanelView
         } else {
             return nil
         }

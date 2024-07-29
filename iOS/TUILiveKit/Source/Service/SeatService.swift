@@ -21,8 +21,8 @@ private let kTakeSeatTimeoutValue = 60
 typealias RequestClosure = (TUIRequest) -> Void
 
 class SeatService: BaseServiceProtocol {
-    var roomEngine: TUIRoomEngine?
-    required init(roomEngine: TUIRoomEngine?) {
+    var roomEngine: TUIRoomEngine
+    required init(roomEngine: TUIRoomEngine) {
         self.roomEngine = roomEngine
     }
     
@@ -32,7 +32,7 @@ class SeatService: BaseServiceProtocol {
     
     func getSeatList() -> AnyPublisher<[TUISeatInfo], InternalError> {
         return Future<[TUISeatInfo], InternalError> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             roomEngine.getSeatList { seatList in
                 promise(.success(seatList))
             } onError: { err, message in
@@ -45,7 +45,7 @@ class SeatService: BaseServiceProtocol {
     
     func takeSeat(index: Int?, requestCallback:@escaping RequestClosure) -> AnyPublisher<TakeSeatResult, InternalError> {
         return Future<TakeSeatResult, InternalError> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             let request = roomEngine.takeSeat(index ?? kRandomSeatIndex , timeout: 60) { requestId, operateUserId in
                 let result = TakeSeatResult.accepted(requestId, operateUserId)
                 promise(.success(result))
@@ -69,7 +69,7 @@ class SeatService: BaseServiceProtocol {
     
     func leaveSeat() -> AnyPublisher<Void, InternalError> {
         return Future<Void, InternalError> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             roomEngine.leaveSeat {
                 promise(.success(()))
             } onError: { err, message in
@@ -90,7 +90,7 @@ class SeatService: BaseServiceProtocol {
     
     func lockSeat(index: Int, lockMode: TUISeatLockParams) -> AnyPublisher<Void, InternalError> {
         return Future<Void, InternalError> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             roomEngine.lockSeatByAdmin(index, lockMode: lockMode) {
                 promise(.success(()))
             } onError: { err, message in
@@ -103,7 +103,7 @@ class SeatService: BaseServiceProtocol {
     
     func kickSeat(seat: SeatInfo) -> AnyPublisher<Void, InternalError> {
         return Future<Void, InternalError> { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             roomEngine.kickUserOffSeatByAdmin(seat.index, userId: seat.userId) {
                 promise(.success(()))
             } onError: { err, message in
@@ -116,7 +116,7 @@ class SeatService: BaseServiceProtocol {
     
     func fetchSeatApplicationList() -> AnyPublisher <[SeatApplication], InternalError> {
         return Future { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             roomEngine.getSeatApplicationList { requests in
                 let result = requests.map { request in
                     let seatApplication = SeatApplication(request: request)
@@ -132,7 +132,7 @@ class SeatService: BaseServiceProtocol {
     
     func responseSeatApplication(isAgree: Bool, requestId: String) -> AnyPublisher <Void, InternalError> {
         return Future { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             roomEngine.responseRemoteRequest(requestId, agree: isAgree) {
                 promise(.success(()))
             } onError: { err, message in
@@ -145,7 +145,7 @@ class SeatService: BaseServiceProtocol {
     
     func cancelRequest(requestId: String) -> AnyPublisher<Void, InternalError> {
         return Future { [weak self] promise in
-            guard let self = self, let roomEngine = self.roomEngine else { return }
+            guard let self = self else { return }
             roomEngine.cancelRequest(requestId) {
                 promise(.success(()))
             } onError: { err, message in

@@ -7,24 +7,18 @@
 
 import Combine
 
-class VoiceRoomViewStoreFactory {
-    private static var voiceRoomViewStoreMap: [String : VoiceRoomViewStore] = [:]
+class VoiceRoomViewStoreFactory: StoreFactory {
+
+    typealias T = VoiceRoomViewStoreProvider
+    static var storeMap: [String : T] = [:]
     
-    static func getVoiceRoomViewStore(roomId: String) -> VoiceRoomViewStore {
-        if let voiceRoomViewStore = voiceRoomViewStoreMap[roomId] {
-            return voiceRoomViewStore
+    static func getStore(roomId: String) -> T {
+        if let liveRoomViewStore = storeMap[roomId] {
+            return liveRoomViewStore
         }
-        let voiceRoomViewStore = VoiceRoomViewStoreProvider()
-        voiceRoomViewStoreMap.updateValue(voiceRoomViewStore, forKey: roomId)
-        return voiceRoomViewStore
-    }
-    
-    static func removeVoiceRoomViewStore(roomId: String) {
-        voiceRoomViewStoreMap.removeValue(forKey: roomId)
-    }
-    
-    static func removeAllStore() {
-        voiceRoomViewStoreMap.removeAll()
+        let liveRoomViewStore = T()
+        storeMap.updateValue(liveRoomViewStore, forKey: roomId)
+        return liveRoomViewStore
     }
 }
 
