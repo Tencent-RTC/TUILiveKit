@@ -72,6 +72,9 @@ public class UserController extends Controller {
         if (TextUtils.isEmpty(ownerId)) {
             return;
         }
+        if (ownerId.equals(mUserState.selfInfo.userId)) {
+            mUserState.selfInfo.role.set(TUIRoomDefine.Role.ROOM_OWNER);
+        }
         mLiveService.getUserInfo(ownerId, new TUIRoomDefine.GetUserInfoCallback() {
             @Override
             public void onSuccess(TUIRoomDefine.UserInfo userInfo) {

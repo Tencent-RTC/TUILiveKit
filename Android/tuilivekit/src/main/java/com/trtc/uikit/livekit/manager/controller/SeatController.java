@@ -32,6 +32,7 @@ public class SeatController extends Controller {
             @Override
             public void onSuccess(List<TUIRoomDefine.SeatInfo> list) {
                 mSeatState.updateSeatList(list);
+                mSeatState.seatList.notifyDataChanged();
                 updateSelfSeatedState();
                 autoTakeSeatByOwner();
             }
@@ -275,12 +276,17 @@ public class SeatController extends Controller {
                 mViewState.linkStatus.set(LiveDefine.LinkStatus.LINKING, false);
             }
         }
-
+        if (!seatedList.isEmpty()) {
+            mSeatState.seatList.notifyDataChanged();
+        }
         for (TUIRoomDefine.SeatInfo seatInfo : leftList) {
             LiveKitLog.info(TAG + " onUserLeft: [user:" + seatInfo.userId + "]");
             if (isSelfSeatInfo(seatInfo)) {
                 mViewState.linkStatus.set(LiveDefine.LinkStatus.NONE, false);
             }
+        }
+        if (!leftList.isEmpty()) {
+            mSeatState.seatList.notifyDataChanged();
         }
     }
 

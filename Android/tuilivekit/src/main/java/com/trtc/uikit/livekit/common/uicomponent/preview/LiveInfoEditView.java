@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.utils.Constants;
 import com.trtc.uikit.livekit.common.view.BasicView;
 import com.trtc.uikit.livekit.manager.LiveController;
 import com.trtc.uikit.livekit.state.LiveDefine;
@@ -29,8 +30,9 @@ public class LiveInfoEditView extends BasicView {
     private       EditText                                     mEditRoomName;
     private       TextView                                     mTextStreamCategory;
     private       TextView                                     mTextStreamPrivacyStatus;
-    private       ImageView                                    mImageStreamCover;
-    private final Observer<String>                             mLiveCoverObserver         = this::onLiveCoverChange;
+    private       ImageView               mImageStreamCover;
+    private       StreamPresetImagePicker mStreamPresetImagePicker;
+    private final Observer<String>        mLiveCoverObserver         = this::onLiveCoverChange;
     private final Observer<String>                             mLiveCategoryObserver      = this::onLiveCategoryChange;
     private final Observer<LiveDefine.LiveStreamPrivacyStatus> mLivePrivacyStatusObserver =
             this::onLivePrivacyStatusChange;
@@ -82,8 +84,17 @@ public class LiveInfoEditView extends BasicView {
         ImageLoader.load(mContext, mImageStreamCover, mRoomState.coverURL.get(),
                 R.drawable.livekit_live_stream_default_cover);
         coverSettingsLayout.setOnClickListener(view -> {
-            StreamPresetCoverPicker picker = new StreamPresetCoverPicker(mContext, mLiveController);
-            picker.show();
+            if (mStreamPresetImagePicker == null) {
+                StreamPresetImagePicker.Config config = new StreamPresetImagePicker.Config();
+                config.title = mContext.getString(R.string.livekit_titile_preset_cover);
+                config.confirmButtonText = mContext.getString(R.string.livekit_set_as_cover);
+                config.data = Arrays.asList(Constants.COVER_URL_LIST);
+                config.currentImageUrl = mRoomState.coverURL.get();
+                mStreamPresetImagePicker = new StreamPresetImagePicker(mContext, config);
+                mStreamPresetImagePicker.setOnItemClickListener(imageUrl
+                        -> mLiveController.getRoomController().setCoverURL(imageUrl));
+            }
+            mStreamPresetImagePicker.show();
         });
     }
 

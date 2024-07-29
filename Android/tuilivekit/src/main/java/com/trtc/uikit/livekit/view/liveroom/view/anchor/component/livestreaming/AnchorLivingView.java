@@ -22,6 +22,7 @@ import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
 import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.uicomponent.gift.store.GiftStore;
 import com.trtc.uikit.livekit.manager.LiveController;
 import com.trtc.uikit.livekit.manager.controller.RoomController;
 import com.trtc.uikit.livekit.common.uicomponent.audiencelist.AudienceListView;
@@ -35,6 +36,7 @@ import com.trtc.uikit.livekit.common.uicomponent.gift.view.GiftBarrageAdapter;
 import com.trtc.uikit.livekit.common.utils.Constants;
 import com.trtc.uikit.livekit.common.view.BasicView;
 import com.trtc.uikit.livekit.common.uicomponent.roominfo.RoomInfoView;
+import com.trtc.uikit.livekit.state.LiveDefine;
 import com.trtc.uikit.livekit.state.operation.UserState;
 
 import java.util.HashSet;
@@ -60,7 +62,7 @@ public class AnchorLivingView extends BasicView implements ITUINotification {
 
     public AnchorLivingView(@NonNull Context context, LiveController liveController) {
         super(context, liveController);
-        mGiftCacheService = new GiftCacheService(context);
+        mGiftCacheService = GiftStore.getInstance().mGiftCacheService;
     }
 
     @Override
@@ -73,7 +75,6 @@ public class AnchorLivingView extends BasicView implements ITUINotification {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         TUICore.unRegisterEvent(this);
-        mGiftCacheService.release();
     }
 
     @Override
@@ -193,6 +194,7 @@ public class AnchorLivingView extends BasicView implements ITUINotification {
     }
 
     private void closeLiveRoom() {
+        mViewController.updateLiveStatus(LiveDefine.LiveStatus.DASHBOARD);
         RoomController roomController = mLiveController.getRoomController();
         roomController.updateLikeNumber(mGiftPlayView.getLikeCount());
         roomController.updateMessageCount(mBarrageDisplayView.getBarrageCount());

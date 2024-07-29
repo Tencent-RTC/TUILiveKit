@@ -39,7 +39,7 @@ public class GiftListPanelView extends ViewPager implements IGiftListPanelView {
     }
 
     public void setGiftModelSource(List<TUIGift> giftDataSource) {
-        if (giftDataSource == null || giftDataSource.size() == 0) {
+        if (giftDataSource == null || giftDataSource.isEmpty()) {
             LiveKitLog.warn(TAG + " giftModelSource empty!");
             return;
         }

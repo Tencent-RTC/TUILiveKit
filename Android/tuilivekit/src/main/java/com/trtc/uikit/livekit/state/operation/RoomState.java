@@ -13,8 +13,8 @@ public class RoomState {
     public long                             createTime    = 0;
     public UserState.UserInfo               ownerInfo     = new UserState.UserInfo();
     public LiveData<String>                 roomName      = new LiveData<>("");
-    public LiveData<String>                 coverURL      =
-            new LiveData<>(Constants.DEFAULT_COVER_URL);
+    public LiveData<String>                 coverURL      = new LiveData<>(Constants.DEFAULT_COVER_URL);
+    public LiveData<String>                 backgroundURL = new LiveData<>(Constants.DEFAULT_BACKGROUND_URL);
     public LiveData<TUIRoomDefine.SeatMode> seatMode      =
             new LiveData<>(TUIRoomDefine.SeatMode.FREE_TO_TAKE);
     public LiveData<Integer>                userCount     = new LiveData<>(0);
@@ -25,6 +25,7 @@ public class RoomState {
         createTime = 0;
         roomName.set("");
         coverURL.set(Constants.DEFAULT_COVER_URL);
+        backgroundURL.set(Constants.DEFAULT_COVER_URL);
         seatMode.set(TUIRoomDefine.SeatMode.FREE_TO_TAKE);
         userCount.set(0);
         maxSeatCount.set(0);

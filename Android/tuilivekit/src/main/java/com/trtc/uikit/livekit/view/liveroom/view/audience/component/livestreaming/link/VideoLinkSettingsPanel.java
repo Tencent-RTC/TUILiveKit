@@ -20,6 +20,7 @@ import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.view.BasicView;
 import com.trtc.uikit.livekit.manager.LiveController;
 import com.trtc.uikit.livekit.manager.controller.MediaController;
+import com.trtc.uikit.livekit.state.LiveDefine;
 
 @SuppressLint("ViewConstructor")
 public class VideoLinkSettingsPanel extends BasicView {
@@ -67,7 +68,9 @@ public class VideoLinkSettingsPanel extends BasicView {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mLiveController.getMediaController().closeLocalCamera();
+        if (mLiveController.getViewState().linkStatus.get() == LiveDefine.LinkStatus.NONE) {
+            mLiveController.getMediaController().closeLocalCamera();
+        }
     }
 
     private void initApplyLinkMicButton() {
@@ -79,8 +82,8 @@ public class VideoLinkSettingsPanel extends BasicView {
     }
 
     private void initPreviewVideoView() {
-        TUIVideoView previewVideoView = findViewById(R.id.preview_audience_video);
-        MediaController mediaController = mLiveController.getMediaController();
+        TUIVideoView    previewVideoView = findViewById(R.id.preview_audience_video);
+        MediaController mediaController  = mLiveController.getMediaController();
         mediaController.setLocalVideoView(previewVideoView);
         mediaController.openLocalCamera();
     }

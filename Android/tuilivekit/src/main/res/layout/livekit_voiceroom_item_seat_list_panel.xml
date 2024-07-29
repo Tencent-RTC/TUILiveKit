@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:gravity="start">
+
+    <RelativeLayout
+        android:id="@+id/iv_head_container"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="24dp">
+
+        <androidx.constraintlayout.utils.widget.ImageFilterView
+            android:id="@+id/iv_head"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/livekit_ic_avatar"
+            app:round="20dp" />
+
+        <TextView
+            android:id="@+id/tv_seat_index"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/livekit_bg_seat_index"
+            android:textSize="12sp"
+            tools:text="1" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="12dp"
+        android:layout_toEndOf="@id/iv_head_container"
+        android:ellipsize="end"
+        android:maxWidth="100dp"
+        android:maxLines="1"
+        android:textColor="@color/livekit_design_standard_g6"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tv_level"
+        android:layout_width="32dp"
+        android:layout_height="14dp"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="4dp"
+        android:layout_toEndOf="@id/tv_name"
+        android:background="@drawable/livekit_audience_list_panel_level_background"
+        android:gravity="center"
+        android:text="lv20"
+        android:textColor="@color/livekit_design_standard_flowkit_white"
+        android:textSize="11sp" />
+
+    <TextView
+        android:id="@+id/tv_hang_up"
+        android:layout_width="60dp"
+        android:layout_height="24dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/livekit_link_mic_hang_up_background"
+        android:gravity="center"
+        android:text="@string/livekit_hang_up"
+        android:textColor="@color/livekit_not_standard_red"
+        android:textSize="12sp" />
+</RelativeLayout>

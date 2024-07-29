@@ -1,141 +1,88 @@
 package com.trtc.uikit.livekit.view.voiceroom.view.bottommenu;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.uicomponent.barrage.TUIBarrageButton;
+import com.trtc.uikit.livekit.common.view.BasicView;
 import com.trtc.uikit.livekit.manager.LiveController;
 import com.trtc.uikit.livekit.state.LiveDefine;
-import com.trtc.uikit.livekit.view.voiceroom.model.BottomMenuInfo;
-import com.trtc.uikit.livekit.state.operation.SeatState;
-import com.trtc.uikit.livekit.state.view.ViewState;
-import com.trtc.uikit.livekit.common.uicomponent.barrage.TUIBarrageButton;
-import com.trtc.uikit.livekit.common.uicomponent.gift.TUILikeButton;
-import com.trtc.uikit.livekit.common.view.BadgeView;
-import com.trtc.uikit.livekit.common.view.BasicView;
-
-import java.util.LinkedHashSet;
-import java.util.List;
 
 @SuppressLint("ViewConstructor")
 public class BottomMenuView extends BasicView {
-    private final List<BottomMenuInfo> mMenuInfoList;
-    private       LinearLayout         mViewContainer;
-    private       RelativeLayout       mBarrageButtonContainer;
-    private       ImageView            mTakeSeatButton;
-    private       BadgeView            mBadgeView;
-    private final boolean              mIsAudience;
+    private RelativeLayout mBarrageButtonContainer;
+    private View           mMicrophoneContainer;
+    private ImageView      mMicrophoneButton;
 
-    private final Observer<LiveDefine.LinkStatus> mIsInSeatObserver = this::updateTakeSeatIcon;
+    private final Observer<LiveDefine.LinkStatus> mLinkStateObserver = this::onLinkStateChanged;
 
-    private final Observer<String> mMySeatApplicationIdObserver = this::updateTakeSeatIcon;
+    private final Observer<Boolean> mMicrophoneMutedObserver = this::updateMicrophoneButton;
 
-    private final Observer<LinkedHashSet<SeatState.SeatApplication>> mSeatApplicationListObserver =
-            this::updateLickManager;
-
-    public BottomMenuView(Context context, LiveController liveController, List<BottomMenuInfo> list) {
+    public BottomMenuView(Context context, LiveController liveController) {
         super(context, liveController);
-        mMenuInfoList = list;
-        mIsAudience = mUserState.selfInfo.role.get() != TUIRoomDefine.Role.ROOM_OWNER;
     }
 
     @Override
     protected void initView() {
-        View roomView = LayoutInflater.from(mContext).inflate(
-                R.layout.livekit_voiceroom_layout_bottom_menu, this, true);
-        mViewContainer = roomView.findViewById(R.id.view_container);
-        mBarrageButtonContainer = roomView.findViewById(R.id.rl_barrage_button);
-        mBadgeView = new BadgeView(mContext);
-        setMenuButton(mMenuInfoList);
+        LayoutInflater.from(mContext).inflate(R.layout.livekit_voiceroom_layout_bottom_menu, this, true);
+        mBarrageButtonContainer = findViewById(R.id.rl_barrage_button);
+        mMicrophoneContainer = findViewById(R.id.microphone_container);
+        mMicrophoneButton = findViewById(R.id.iv_microphone);
+        mMicrophoneButton.setOnClickListener(v -> onMicrophoneButtonClick());
         showAudienceBarrageSendButton();
+        initFunctionContainer();
     }
 
     @Override
     protected void addObserver() {
-        if (mIsAudience) {
-            mViewState.linkStatus.observe(mIsInSeatObserver);
-            mSeatState.mySeatApplicationId.observe(mMySeatApplicationIdObserver);
-        } else {
-            mSeatState.seatApplicationList.observe(mSeatApplicationListObserver);
-        }
+        mViewState.linkStatus.observe(mLinkStateObserver);
+        mMediaState.isMicrophoneMuted.observe(mMicrophoneMutedObserver);
     }
 
     @Override
     protected void removeObserver() {
-        mViewState.linkStatus.removeObserver(mIsInSeatObserver);
-        mSeatState.mySeatApplicationId.removeObserver(mMySeatApplicationIdObserver);
-        mSeatState.seatApplicationList.removeObserver(mSeatApplicationListObserver);
+        mViewState.linkStatus.removeObserver(mLinkStateObserver);
+        mMediaState.isMicrophoneMuted.removeObserver(mMicrophoneMutedObserver);
     }
 
-    private void initTakeSeatButton(ImageView imageView) {
-        mTakeSeatButton = imageView;
-        updateTakeSeatIcon(mViewState.linkStatus.get());
-    }
-
-    private void initSeatApplicationButton(View itemView) {
-        mBadgeView = new BadgeView(mContext);
-        ViewGroup viewGroup = (ViewGroup) itemView;
-        viewGroup.addView(mBadgeView);
-        updateLickManager(mSeatState.seatApplicationList.get());
-    }
-
-    private void updateTakeSeatIcon(LiveDefine.LinkStatus linkStatus) {
-        boolean isInSeat = linkStatus == LiveDefine.LinkStatus.LINKING;
-        mTakeSeatButton.setImageResource(isInSeat ? R.drawable.livekit_audience_linking_mic :
-                R.drawable.livekit_ic_link_mic);
-    }
-
-    private void updateTakeSeatIcon(String mySeatApplicationId) {
-        if (TextUtils.isEmpty(mySeatApplicationId)) {
-            mTakeSeatButton.setImageResource(R.drawable.livekit_ic_link_mic);
+    private void initFunctionContainer() {
+        View functionView;
+        if (mUserState.selfInfo.role.get() == TUIRoomDefine.Role.ROOM_OWNER) {
+            functionView = new AnchorFunctionView(mContext, mLiveController);
         } else {
-            mTakeSeatButton.setImageResource(R.drawable.livekit_audience_applying_link_mic);
+            functionView = new AudienceFunctionView(mContext, mLiveController);
         }
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
+        RelativeLayout functionContainer = findViewById(R.id.function_container);
+        functionContainer.removeAllViews();
+        functionContainer.addView(functionView, layoutParams);
     }
 
-    private void updateLickManager(LinkedHashSet<SeatState.SeatApplication> list) {
-        mBadgeView.setVisibility(list.isEmpty() ? INVISIBLE : VISIBLE);
-    }
-
-    private void setMenuButton(List<BottomMenuInfo> mMenuInfoList) {
-        mViewContainer.removeAllViews();
-        for (BottomMenuInfo bottomMenuInfo : mMenuInfoList) {
-            View itemView =
-                    LayoutInflater.from(mContext).inflate(R.layout.livekit_voiceroom_item_bottom_menu, this,
-                            false);
-            ImageView iv = itemView.findViewById(R.id.iv_item);
-            if (bottomMenuInfo.navigationState == LiveDefine.NavigationStatus.LIKE) {
-                TUILikeButton likeButton = new TUILikeButton(mContext, mRoomState.roomId);
-                likeButton.setImageResource(R.drawable.livekit_ic_like);
-                mViewContainer.addView(likeButton);
-                continue;
-            } else if (bottomMenuInfo.navigationState == LiveDefine.NavigationStatus.LINK_MIC) {
-                initTakeSeatButton(iv);
-            } else if (bottomMenuInfo.navigationState == LiveDefine.NavigationStatus.LINK_MANAGEMENT) {
-                initSeatApplicationButton(itemView);
-            }
-            iv.setImageResource(bottomMenuInfo.icon);
-            itemView.setOnClickListener(view -> {
-                if (bottomMenuInfo.listener != null) {
-                    bottomMenuInfo.listener.onClick();
-                }
-            });
-            mViewContainer.addView(itemView);
-        }
+    private void onLinkStateChanged(LiveDefine.LinkStatus linkStatus) {
+        mMicrophoneContainer.setVisibility(linkStatus == LiveDefine.LinkStatus.LINKING ? VISIBLE : INVISIBLE);
     }
 
     private void showAudienceBarrageSendButton() {
         TUIBarrageButton barrageButton = new TUIBarrageButton(mContext, mRoomState.roomId, mRoomState.ownerInfo.userId);
         mBarrageButtonContainer.addView(barrageButton);
+    }
+
+    private void onMicrophoneButtonClick() {
+        mMediaController.operateMicrophone();
+    }
+
+    private void updateMicrophoneButton(boolean isMicrophoneMuted) {
+        mMicrophoneButton.setImageResource(isMicrophoneMuted ? R.drawable.livekit_ic_mic_closed :
+                R.drawable.livekit_ic_mic_opened);
     }
 }
 

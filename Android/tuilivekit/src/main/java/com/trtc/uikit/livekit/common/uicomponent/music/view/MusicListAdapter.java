@@ -13,32 +13,31 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.trtc.tuikit.common.ui.ConfirmWithCheckboxDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.uicomponent.music.service.MusicService;
-import com.trtc.uikit.livekit.common.uicomponent.music.store.MusicStore;
-import com.trtc.uikit.livekit.manager.LiveController;
+import com.trtc.uikit.livekit.common.uicomponent.music.store.MusicPanelState;
 
 public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.ViewHolder> {
 
-    private final Context      mContext;
-    private final MusicService mMusicService;
-    private final MusicStore   mMusicStore;
-    private       int          mSelectedPosition;
+    private final Context         mContext;
+    private final MusicService    mMusicService;
+    private final MusicPanelState mMusicPanelState;
+    private       int             mSelectedPosition;
 
-    public MusicListAdapter(Context context, LiveController liveController) {
+    public MusicListAdapter(Context context, MusicService musicService) {
         mContext = context;
-        mMusicService = new MusicService(liveController);
-        mMusicStore = mMusicService.mMusicStore;
+        mMusicService = musicService;
+        mMusicPanelState = mMusicService.mMusicPanelState;
         initData();
     }
 
     private void initData() {
-        if (mMusicStore.musicList.isEmpty()) {
-            mMusicStore.musicList.add(new MusicStore.MusicInfo(1,
+        if (mMusicPanelState.musicList.isEmpty()) {
+            mMusicPanelState.musicList.add(new MusicPanelState.MusicInfo(1,
                     mContext.getString(R.string.livekit_music_cheerful),
                     "https://dldir1.qq.com/hudongzhibo/TUIKit/resource/music/PositiveHappyAdvertising.mp3"));
-            mMusicStore.musicList.add(new MusicStore.MusicInfo(2,
+            mMusicPanelState.musicList.add(new MusicPanelState.MusicInfo(2,
                     mContext.getString(R.string.livekit_music_melancholy),
                     "https://dldir1.qq.com/hudongzhibo/TUIKit/resource/music/SadCinematicPiano.mp3"));
-            mMusicStore.musicList.add(new MusicStore.MusicInfo(3,
+            mMusicPanelState.musicList.add(new MusicPanelState.MusicInfo(3,
                     mContext.getString(R.string.livekit_music_wonder_world),
                     "https://dldir1.qq.com/hudongzhibo/TUIKit/resource/music/WonderWorld.mp3"));
         }
@@ -54,11 +53,11 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final MusicStore.MusicInfo musicInfo = mMusicStore.musicList.get(position);
+        final MusicPanelState.MusicInfo musicInfo = mMusicPanelState.musicList.get(position);
         holder.textMusicName.setText(musicInfo.name);
         if (musicInfo.isPlaying.get()) {
             holder.imageStartStop.setImageResource(R.drawable.livekit_music_pause);
-            mSelectedPosition = mMusicStore.musicList.indexOf(musicInfo);
+            mSelectedPosition = mMusicPanelState.musicList.indexOf(musicInfo);
         } else {
             holder.imageStartStop.setImageResource(R.drawable.livekit_music_start);
         }
@@ -90,7 +89,7 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.View
 
     @Override
     public int getItemCount() {
-        return mMusicStore.musicList.size();
+        return mMusicPanelState.musicList.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

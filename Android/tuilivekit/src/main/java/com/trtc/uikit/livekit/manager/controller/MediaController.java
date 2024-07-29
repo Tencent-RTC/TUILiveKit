@@ -1,7 +1,6 @@
 package com.trtc.uikit.livekit.manager.controller;
 
 import static com.tencent.liteav.beauty.TXBeautyManager.TXBeautyStyleSmooth;
-import static com.trtc.uikit.livekit.state.LiveDefine.LinkType.VIDEO;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.common.TUIVideoView;
@@ -220,8 +219,7 @@ public class MediaController extends Controller {
 
     private void initLivingConfig() {
         mLiveService.enableGravitySensor(true);
-        mLiveService.setVideoResolutionMode(mViewState.isPortrait.get()
-                ? TUIRoomDefine.ResolutionMode.PORTRAIT : TUIRoomDefine.ResolutionMode.LANDSCAPE);
+        mLiveService.setVideoResolutionMode(TUIRoomDefine.ResolutionMode.PORTRAIT);
         mLiveService.setBeautyStyle(TXBeautyStyleSmooth);
         updateVideoQuality(mMediaState.videoQuality.get());
         setBeautyLevel(mBeautyState.smoothLevel.get());
@@ -234,7 +232,7 @@ public class MediaController extends Controller {
         LiveKitLog.info(TAG + " onUserStateChanged status:" + status);
         if (status == LiveDefine.LinkStatus.LINKING) {
 
-            if (mViewState.enableCamera.get() && VIDEO == mViewState.linkType.get()) {
+            if (mViewState.autoOpenCameraOnSeated.get()) {
                 LiveKitLog.info(TAG + " requestPermissions:[Camera, Microphone]}");
                 PermissionRequest.requestPermissions(TUIConfig.getAppContext(), new PermissionCallback() {
                     @Override

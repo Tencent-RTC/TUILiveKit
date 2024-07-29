@@ -29,17 +29,6 @@ public class LiveDefine {
         DASHBOARD
     }
 
-
-    public enum NavigationStatus {
-        MAIN,
-        EXIT,
-        LINK_MIC,
-        LINK_MANAGEMENT,
-        MUSIC,
-        GIFT,
-        LIKE
-    }
-
     public enum LinkType {
         VIDEO,
         AUDIO

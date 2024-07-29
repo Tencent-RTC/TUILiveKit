@@ -14,11 +14,12 @@ import androidx.constraintlayout.utils.widget.ImageFilterView;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.manager.LiveController;
-import com.trtc.uikit.livekit.view.voiceroom.model.ListMenuInfo;
-import com.trtc.uikit.livekit.state.operation.SeatState;
-import com.trtc.uikit.livekit.view.voiceroom.model.MenuDataGenerate;
 import com.trtc.uikit.livekit.common.view.BasicView;
+import com.trtc.uikit.livekit.common.view.RippleView;
+import com.trtc.uikit.livekit.manager.LiveController;
+import com.trtc.uikit.livekit.state.operation.SeatState;
+import com.trtc.uikit.livekit.view.voiceroom.model.ListMenuInfo;
+import com.trtc.uikit.livekit.view.voiceroom.model.SeatActionSheetGenerator;
 import com.trtc.uikit.livekit.view.voiceroom.view.panel.seatactionsheet.SeatActionSheetPanel;
 
 import java.util.LinkedHashSet;
@@ -26,16 +27,20 @@ import java.util.List;
 
 @SuppressLint("ViewConstructor")
 public class SeatInfoView extends BasicView {
-    private final SeatState.SeatInfo mSeatInfo;
+    private final SeatState.SeatInfo  mSeatInfo;
+    private final SeatListView.Config mConfig;
 
     private ImageFilterView mImgHead;
+    private View            mEmptyViewContainer;
+    private ImageView       mIvEmptyView;
     private TextView        mTextName;
     private ImageView       mIvMute;
-    private ImageView       mIvTalkBorder;
+    private ImageView       mIvRoomOwner;
+    private RippleView      mIvTalkBorder;
 
     private SeatActionSheetPanel mSeatActionSheetPanel;
 
-    private final MenuDataGenerate mMenuDataGenerate;
+    private final SeatActionSheetGenerator mSeatActionSheetGenerator;
 
     private final Observer<LinkedHashSet<String>> hasAudioStreamUserListObserver = this::updateMuteState;
 
@@ -51,10 +56,12 @@ public class SeatInfoView extends BasicView {
 
     private final Observer<Boolean> isAudioLockedObserver = this::updateAudioLockState;
 
-    public SeatInfoView(@NonNull Context context, LiveController liveController, SeatState.SeatInfo seatInfo) {
+    public SeatInfoView(@NonNull Context context, LiveController liveController, SeatState.SeatInfo seatInfo,
+                        SeatListView.Config config) {
         super(context, liveController);
         mSeatInfo = seatInfo;
-        mMenuDataGenerate = new MenuDataGenerate(context, liveController);
+        mSeatActionSheetGenerator = new SeatActionSheetGenerator(context, liveController);
+        mConfig = config;
     }
 
     @Override
@@ -62,11 +69,17 @@ public class SeatInfoView extends BasicView {
         LayoutInflater.from(mContext).inflate(R.layout.livekit_voiceroom_seat_info_view, this, true);
         mTextName = findViewById(R.id.tv_name);
         mImgHead = findViewById(R.id.iv_head);
+        mEmptyViewContainer = findViewById(R.id.empty_seat_container);
+        mIvEmptyView = findViewById(R.id.iv_empty_seat);
         mIvMute = findViewById(R.id.iv_mute);
         mIvTalkBorder = findViewById(R.id.iv_talk_border);
+        mIvRoomOwner = findViewById(R.id.iv_room_owner);
         updateLockState(mSeatInfo.isLocked.get());
-        mImgHead.setOnClickListener(view -> {
-            List<ListMenuInfo> listMenuInfoList = mMenuDataGenerate.generateOperateSeatMenuInfo(mSeatInfo);
+        findViewById(R.id.seat_container).setOnClickListener(view -> {
+            if (mConfig.isPreview) {
+                return;
+            }
+            List<ListMenuInfo> listMenuInfoList = mSeatActionSheetGenerator.generate(mSeatInfo);
             if (listMenuInfoList.isEmpty()) {
                 return;
             }
@@ -107,21 +120,36 @@ public class SeatInfoView extends BasicView {
     }
 
     private void updateEmptySeatView() {
-        mImgHead.setImageResource(R.drawable.livekit_voiceroom_add_seat);
-        mTextName.setText("");
+        mEmptyViewContainer.setVisibility(View.VISIBLE);
+        mIvEmptyView.setImageResource(mSeatInfo.isLocked.get()
+                ? R.drawable.livekit_voiceroom_ic_lock : R.drawable.livekit_voiceroom_empty_seat);
+        mImgHead.setVisibility(View.GONE);
         mIvMute.setVisibility(View.GONE);
         mIvTalkBorder.setVisibility(View.GONE);
+        if (mConfig.isPreview) {
+            mTextName.setVisibility(View.GONE);
+        } else {
+            mTextName.setVisibility(View.VISIBLE);
+            mTextName.setText(String.valueOf(mSeatInfo.index + 1));
+        }
     }
 
     private void updateUserId(String userId) {
         if (TextUtils.isEmpty(userId)) {
             updateEmptySeatView();
         } else {
+            mEmptyViewContainer.setVisibility(View.GONE);
             updateName(mSeatInfo.name.get());
             updateAvatar(mSeatInfo.avatarUrl.get());
             updateMuteState(mUserState.hasAudioStreamUserList.get());
             updateUserVolumeState(mUserState.speakingUserList.get());
+            updateUserRole(userId);
         }
+    }
+
+    private void updateUserRole(String userId) {
+        boolean isOwner = mRoomState.ownerInfo.userId.equals(userId);
+        mIvRoomOwner.setVisibility(isOwner ? View.VISIBLE : View.GONE);
     }
 
     private void updateName(String name) {
@@ -132,6 +160,8 @@ public class SeatInfoView extends BasicView {
         if (TextUtils.isEmpty(mSeatInfo.userId.get())) {
             return;
         }
+        mEmptyViewContainer.setVisibility(View.GONE);
+        mImgHead.setVisibility(View.VISIBLE);
         if (TextUtils.isEmpty(avatar)) {
             mImgHead.setImageResource(R.drawable.livekit_ic_avatar);
         } else {
@@ -141,17 +171,14 @@ public class SeatInfoView extends BasicView {
 
     private void updateLockState(boolean isLocked) {
         if (isLocked) {
-            mImgHead.setImageResource(R.drawable.livekit_voiceroom_ic_lock);
-            mTextName.setText("");
-            mIvMute.setVisibility(View.GONE);
-            mIvTalkBorder.setVisibility(View.GONE);
+            updateEmptySeatView();
         } else {
             updateUserId(mSeatInfo.userId.get());
         }
     }
 
     private void updateAudioLockState(boolean isAudioLocked) {
-        if (isAudioLocked) {
+        if (isAudioLocked && !TextUtils.isEmpty(mSeatInfo.userId.get())) {
             mIvMute.setVisibility(View.VISIBLE);
             mIvTalkBorder.setVisibility(View.GONE);
         }

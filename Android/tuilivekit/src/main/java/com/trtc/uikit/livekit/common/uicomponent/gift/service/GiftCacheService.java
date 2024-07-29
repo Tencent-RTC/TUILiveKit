@@ -4,11 +4,10 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.LruCache;
 
+import com.trtc.tuikit.common.system.ContextProvider;
 import com.trtc.uikit.livekit.common.utils.LiveKitLog;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,14 +21,16 @@ import java.util.concurrent.Executors;
 
 public class GiftCacheService {
 
-    private static final String TAG = "GiftCacheService";
-    private static final int       CACHE_SIZE = 20;
+    private static final String TAG        = "GiftCacheService";
+    private static final int    CACHE_SIZE = 20;
+
     private ExecutorService        mExecutor;
     private File                   mCacheFile;
     private LruCache<String, File> mLruCache;
 
-    public GiftCacheService(Context context) {
-        setCacheDir(new File(context.getCacheDir() + File.separator + "gift"));
+    public GiftCacheService() {
+        Context appContext = ContextProvider.getApplicationContext();
+        setCacheDir(new File(appContext.getCacheDir() + File.separator + "gift"));
     }
 
     public void setCacheDir(File file) {
@@ -66,7 +67,7 @@ public class GiftCacheService {
         }
     }
 
-    public void request(String urlString, Callback<InputStream> callback) {
+    public void request(String urlString, Callback<String> callback) {
         LiveKitLog.info(TAG + " request: " + urlString);
         if (mExecutor != null && mExecutor.isShutdown()) {
             LiveKitLog.error(TAG + " mExecutor is isShutdown");
@@ -92,7 +93,7 @@ public class GiftCacheService {
         if (cache != null && cache.exists()) {
             LiveKitLog.info(TAG + " find cache: " + url);
             if (callback != null) {
-                callback.onResult(0, openCacheInputStream(cache));
+                callback.onResult(0, cache.getAbsolutePath());
             }
             return;
         }
@@ -103,7 +104,10 @@ public class GiftCacheService {
         mExecutor.submit(() -> {
             HttpURLConnection urlConnection = null;
             try {
-                File cacheFile = new File(mCacheFile, key);
+                File cacheFile = new File(mCacheFile, new File(urlString).getName());
+                if (cacheFile.exists()) {
+                    cacheFile.delete();
+                }
                 cacheFile.createNewFile();
                 urlConnection = (HttpURLConnection) url1.openConnection();
                 urlConnection.setRequestMethod("GET");
@@ -120,7 +124,7 @@ public class GiftCacheService {
                 fos.close();
                 mLruCache.put(key, cacheFile);
                 if (callback != null) {
-                    callback.onResult(0, openCacheInputStream(cacheFile));
+                    callback.onResult(0, cacheFile.getAbsolutePath());
                 }
             } catch (IOException e) {
                 LiveKitLog.info(TAG + " " + e.getLocalizedMessage());
@@ -133,16 +137,6 @@ public class GiftCacheService {
                 }
             }
         });
-    }
-
-    public InputStream openCacheInputStream(File file) {
-        try {
-            InputStream inputStream = new FileInputStream(file);
-            return inputStream;
-        } catch (FileNotFoundException e) {
-            LiveKitLog.info(TAG + " " + e.getLocalizedMessage());
-        }
-        return null;
     }
 
     private static String keyForUrl(String url) {

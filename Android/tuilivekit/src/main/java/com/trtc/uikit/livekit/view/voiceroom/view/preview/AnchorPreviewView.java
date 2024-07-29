@@ -1,6 +1,7 @@
 package com.trtc.uikit.livekit.view.voiceroom.view.preview;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static com.trtc.uikit.livekit.common.utils.Constants.DATA_REPORT_COMPONENT_VOICE_ROOM;
 import static com.trtc.uikit.livekit.common.utils.Constants.EVENT_KEY_LIVE_KIT;
 import static com.trtc.uikit.livekit.common.utils.Constants.EVENT_SUB_KEY_START_VOICE_ROOM;
@@ -10,6 +11,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
@@ -20,10 +22,10 @@ import com.trtc.uikit.livekit.common.uicomponent.preview.LiveInfoEditView;
 import com.trtc.uikit.livekit.common.utils.Constants;
 import com.trtc.uikit.livekit.common.view.BasicView;
 import com.trtc.uikit.livekit.manager.LiveController;
+import com.trtc.uikit.livekit.view.voiceroom.view.seatview.SeatListView;
 
 @SuppressLint("ViewConstructor")
 public class AnchorPreviewView extends BasicView {
-    private LiveInfoEditView mLiveStreamSettingsCard;
 
     public AnchorPreviewView(@NonNull Context context, LiveController liveController) {
         super(context, liveController);
@@ -41,18 +43,37 @@ public class AnchorPreviewView extends BasicView {
 
     @Override
     protected void initView() {
-        View rootView = LayoutInflater.from(getContext()).inflate(R.layout.livekit_anchor_preview,
-                this, true);
+        View rootView = LayoutInflater.from(getContext()).inflate(R.layout.livekit_anchor_preview, this, true);
         initLiveInfoEditView(rootView);
+        initFunctionView();
+        initSeatListView();
         initListener();
     }
 
     private void initLiveInfoEditView(View view) {
         RelativeLayout liveStreamSettingsCardContainer = view.findViewById(R.id.rl_room_settings_card_container);
-        mLiveStreamSettingsCard = new LiveInfoEditView(mContext, mLiveController);
+        LiveInfoEditView liveStreamSettingsCard = new LiveInfoEditView(mContext, mLiveController);
         liveStreamSettingsCardContainer.removeAllViews();
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-        liveStreamSettingsCardContainer.addView(mLiveStreamSettingsCard, layoutParams);
+        liveStreamSettingsCardContainer.addView(liveStreamSettingsCard, layoutParams);
+    }
+
+    private void initFunctionView() {
+        RelativeLayout layoutFunctionViewContainer = findViewById(R.id.rl_function);
+        layoutFunctionViewContainer.removeAllViews();
+        AnchorPreviewFunctionView functionView = new AnchorPreviewFunctionView(mContext, mLiveController);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
+        layoutFunctionViewContainer.addView(functionView, layoutParams);
+    }
+
+    private void initSeatListView() {
+        RelativeLayout layoutSeatListContainer = findViewById(R.id.rl_preview_seat_list);
+        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
+        layoutSeatListContainer.removeAllViews();
+        SeatListView.Config config = new SeatListView.Config();
+        config.isPreview = true;
+        SeatListView seatListView = new SeatListView(mContext, mLiveController, config);
+        layoutSeatListContainer.addView(seatListView, layoutParams);
     }
 
     private void initListener() {

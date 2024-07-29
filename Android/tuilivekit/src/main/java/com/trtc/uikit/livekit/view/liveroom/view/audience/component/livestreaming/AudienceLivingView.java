@@ -25,6 +25,7 @@ import com.trtc.uikit.livekit.common.uicomponent.gift.TUIGiftPlayView;
 import com.trtc.uikit.livekit.common.uicomponent.gift.model.TUIGift;
 import com.trtc.uikit.livekit.common.uicomponent.gift.model.TUIGiftUser;
 import com.trtc.uikit.livekit.common.uicomponent.gift.service.GiftCacheService;
+import com.trtc.uikit.livekit.common.uicomponent.gift.store.GiftStore;
 import com.trtc.uikit.livekit.common.uicomponent.gift.view.GiftBarrageAdapter;
 import com.trtc.uikit.livekit.common.uicomponent.roominfo.RoomInfoView;
 import com.trtc.uikit.livekit.common.utils.Constants;
@@ -56,7 +57,7 @@ public class AudienceLivingView extends BasicView {
 
     public AudienceLivingView(Context context, LiveController controller) {
         super(context, controller);
-        mGiftCacheService = new GiftCacheService(context);
+        mGiftCacheService = GiftStore.getInstance().mGiftCacheService;
     }
 
     @Override
@@ -70,12 +71,6 @@ public class AudienceLivingView extends BasicView {
         initAudienceListView();
         initAudienceFunctionView();
         initGiftPlayView();
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        mGiftCacheService.release();
     }
 
     @Override

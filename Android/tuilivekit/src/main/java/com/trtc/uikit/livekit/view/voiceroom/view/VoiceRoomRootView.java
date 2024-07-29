@@ -9,6 +9,7 @@ import static com.trtc.uikit.livekit.common.utils.Constants.GIFT_NAME;
 import static com.trtc.uikit.livekit.common.utils.Constants.GIFT_RECEIVER_USERNAME;
 import static com.trtc.uikit.livekit.common.utils.Constants.GIFT_VIEW_TYPE_1;
 import static com.trtc.uikit.livekit.view.voiceroom.TUIVoiceRoomFragment.RoomBehavior.JOIN;
+import static com.trtc.uikit.livekit.view.voiceroom.view.VoiceRoomRootView.VoiceRoomViewStatus.DESTROY;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -32,15 +33,15 @@ import com.trtc.uikit.livekit.common.uicomponent.gift.TUIGiftPlayView;
 import com.trtc.uikit.livekit.common.uicomponent.gift.model.TUIGift;
 import com.trtc.uikit.livekit.common.uicomponent.gift.model.TUIGiftUser;
 import com.trtc.uikit.livekit.common.uicomponent.gift.service.GiftCacheService;
+import com.trtc.uikit.livekit.common.uicomponent.gift.store.GiftStore;
 import com.trtc.uikit.livekit.common.uicomponent.gift.view.GiftBarrageAdapter;
 import com.trtc.uikit.livekit.common.utils.Constants;
 import com.trtc.uikit.livekit.common.view.BasicView;
 import com.trtc.uikit.livekit.manager.LiveController;
 import com.trtc.uikit.livekit.manager.controller.RoomController;
 import com.trtc.uikit.livekit.state.LiveDefine;
-import com.trtc.uikit.livekit.view.voiceroom.TUIVoiceRoomFragment;
 import com.trtc.uikit.livekit.state.operation.UserState;
-import com.trtc.uikit.livekit.view.voiceroom.model.MenuDataGenerate;
+import com.trtc.uikit.livekit.view.voiceroom.TUIVoiceRoomFragment;
 import com.trtc.uikit.livekit.view.voiceroom.view.bottommenu.BottomMenuView;
 import com.trtc.uikit.livekit.view.voiceroom.view.preview.AnchorPreviewView;
 import com.trtc.uikit.livekit.view.voiceroom.view.seatview.SeatListView;
@@ -65,18 +66,17 @@ public class VoiceRoomRootView extends BasicView {
     private final GiftCacheService                            mGiftCacheService;
     private final TUIVoiceRoomFragment.RoomBehavior           mRoomBehavior;
     private final TUIVoiceRoomFragment.RoomParams             mRoomParams;
-    private final Observer<String>                            mCoverURLObserver  = this::updateRoomCover;
-    private final Observer<LiveDefine.LiveStatus>             mLiveStateObserver = this::onLiveStateChanged;
-    private final Observer<LiveDefine.NavigationStatus>       mRouteObserver     = this::onNavigationStatusChange;
-    private final Set<String>                                 mUserIdCache       = new HashSet<>();
-    private final Observer<LinkedHashSet<UserState.UserInfo>> mUserListObserver  = this::onUserListChange;
+    private final Observer<String>                            mBackgroundURLObserver = this::updateRoomBackground;
+    private final Observer<LiveDefine.LiveStatus>             mLiveStateObserver     = this::onLiveStateChanged;
+    private final Set<String>                                 mUserIdCache           = new HashSet<>();
+    private final Observer<LinkedHashSet<UserState.UserInfo>> mUserListObserver      = this::onUserListChange;
 
     public VoiceRoomRootView(@NonNull Context context, LiveController liveController,
                              TUIVoiceRoomFragment.RoomBehavior behavior, TUIVoiceRoomFragment.RoomParams params) {
         super(context, liveController);
         mRoomBehavior = behavior;
         mRoomParams = params;
-        mGiftCacheService = new GiftCacheService(context);
+        mGiftCacheService = GiftStore.getInstance().mGiftCacheService;
     }
 
     @Override
@@ -84,11 +84,8 @@ public class VoiceRoomRootView extends BasicView {
         LayoutInflater.from(mContext).inflate(R.layout.livekit_voiceroom_root_view, this, true);
         bindViewId();
 
-        initSeatListView();
         initBarrageView();
         initGiftView();
-        initAnchorPreviewView(mViewState.liveStatus.get());
-        updateRoomCover(mRoomState.coverURL.get());
     }
 
     private void bindViewId() {
@@ -104,8 +101,7 @@ public class VoiceRoomRootView extends BasicView {
 
     @Override
     protected void addObserver() {
-        mRoomState.coverURL.observe(mCoverURLObserver);
-        mViewState.currentNavigationState.observe(mRouteObserver);
+        mRoomState.backgroundURL.observe(mBackgroundURLObserver);
         mViewState.liveStatus.observe(mLiveStateObserver);
         mUserState.userList.observe(mUserListObserver);
     }
@@ -119,19 +115,21 @@ public class VoiceRoomRootView extends BasicView {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mGiftCacheService.release();
         mLiveController.getState().reset();
     }
 
     @Override
     protected void removeObserver() {
-        mRoomState.coverURL.removeObserver(mCoverURLObserver);
-        mViewState.currentNavigationState.removeObserver(mRouteObserver);
+        mRoomState.backgroundURL.removeObserver(mBackgroundURLObserver);
         mViewState.liveStatus.removeObserver(mLiveStateObserver);
         mUserState.userList.removeObserver(mUserListObserver);
     }
 
     public void updateStatus(VoiceRoomViewStatus status) {
+        if (DESTROY == status) {
+            exit();
+            return;
+        }
         if (JOIN != mRoomBehavior) {
             return;
         }
@@ -144,9 +142,6 @@ public class VoiceRoomRootView extends BasicView {
                 break;
             case END_DISPLAY:
                 endDisplay();
-                break;
-            case DESTROY:
-                exit();
                 break;
             default:
                 break;
@@ -163,39 +158,39 @@ public class VoiceRoomRootView extends BasicView {
     private void initSeatListView() {
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
         mLayoutSeatListContainer.removeAllViews();
-        SeatListView seatListView = new SeatListView(mContext, mLiveController);
+        SeatListView.Config config = new SeatListView.Config();
+        config.isPreview = false;
+        SeatListView seatListView = new SeatListView(mContext, mLiveController, config);
         mLayoutSeatListContainer.addView(seatListView, layoutParams);
     }
 
     private void initBottomMenuView() {
         mLayoutBottomMenuContainer.removeAllViews();
-        MenuDataGenerate generate = new MenuDataGenerate(mContext, mLiveController);
-        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-        BottomMenuView bottomMenuView = new BottomMenuView(mContext, mLiveController,
-                generate.generateBottomMenuData());
+        BottomMenuView bottomMenuView = new BottomMenuView(mContext, mLiveController);
+        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
         mLayoutBottomMenuContainer.addView(bottomMenuView, layoutParams);
     }
 
-    private void updateRoomCover(String url) {
+    private void updateRoomBackground(String url) {
         if (mContext == null) {
             return;
         }
         if (mContext instanceof Activity && ((Activity) mContext).isDestroyed()) {
             return;
         }
-        ImageLoader.load(mContext, mRootBg, url, R.drawable.livekit_voiceroom_cover);
+        ImageLoader.load(mContext, mRootBg, url, R.drawable.livekit_voiceroom_bg);
     }
 
-    private void initAnchorPreviewView(LiveDefine.LiveStatus status) {
+    private void showPreviewView() {
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         AnchorPreviewView anchorPreviewView;
-        if (status == LiveDefine.LiveStatus.PREVIEWING) {
-            mLayoutAnchorPreviewViewContainer.removeAllViews();
-            anchorPreviewView = new AnchorPreviewView(mContext, mLiveController);
-            mLayoutAnchorPreviewViewContainer.addView(anchorPreviewView, layoutParams);
-        } else {
-            mLayoutAnchorPreviewViewContainer.removeAllViews();
-        }
+        mLayoutAnchorPreviewViewContainer.removeAllViews();
+        anchorPreviewView = new AnchorPreviewView(mContext, mLiveController);
+        mLayoutAnchorPreviewViewContainer.addView(anchorPreviewView, layoutParams);
+    }
+
+    private void removePreviewView() {
+        mLayoutAnchorPreviewViewContainer.removeAllViews();
     }
 
     private void initGiftView() {
@@ -261,7 +256,7 @@ public class VoiceRoomRootView extends BasicView {
     }
 
     private void enterRoom() {
-        mLiveController.getViewController().enableCamera(false);
+        mLiveController.getViewController().enableAutoOpenCameraOnSeated(false);
         Constants.DATA_REPORT_COMPONENT = DATA_REPORT_COMPONENT_VOICE_ROOM;
         switch (mRoomBehavior) {
             case AUTO_CREATE:
@@ -305,15 +300,12 @@ public class VoiceRoomRootView extends BasicView {
         if (status == LiveDefine.LiveStatus.PUSHING || status == LiveDefine.LiveStatus.PLAYING) {
             initBottomMenuView();
             initTopView();
-            initAnchorPreviewView(status);
+            initSeatListView();
+            removePreviewView();
         } else if (status == LiveDefine.LiveStatus.DASHBOARD) {
             showEndView();
-        }
-    }
-
-    private void onNavigationStatusChange(LiveDefine.NavigationStatus navigationStatus) {
-        if (navigationStatus == LiveDefine.NavigationStatus.EXIT) {
-            exit();
+        } else if (status == LiveDefine.LiveStatus.PREVIEWING) {
+            showPreviewView();
         }
     }
 

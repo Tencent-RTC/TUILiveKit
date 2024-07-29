@@ -8,13 +8,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
 
-import com.opensource.svgaplayer.SVGACallback;
-import com.opensource.svgaplayer.SVGAImageView;
-import com.opensource.svgaplayer.SVGAParser;
-import com.opensource.svgaplayer.SVGAVideoEntity;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
@@ -28,76 +23,61 @@ import com.trtc.uikit.livekit.common.uicomponent.gift.store.GiftSendData;
 import com.trtc.uikit.livekit.common.uicomponent.gift.store.GiftStore;
 import com.trtc.uikit.livekit.common.uicomponent.gift.view.GiftBulletFrameLayout;
 import com.trtc.uikit.livekit.common.uicomponent.gift.view.IGiftPlayView;
+import com.trtc.uikit.livekit.common.uicomponent.gift.view.animation.AnimationView;
 import com.trtc.uikit.livekit.common.uicomponent.gift.view.like.GiftHeartLayout;
 import com.trtc.uikit.livekit.common.utils.LiveKitLog;
 
-import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
 @SuppressLint("ViewConstructor")
 public class TUIGiftPlayView extends LinearLayout implements IGiftPlayView {
 
-    private static final String  TAG                       = "TUIGiftPlayView";
-    private static final int     MAX_SHOW_GIFT_BULLET_SIZE = 3;
+    private static final String TAG                       = "TUIGiftPlayView";
+    private static final int    MAX_SHOW_GIFT_BULLET_SIZE = 3;
 
-    private final Context                 mContext;
-    private       LinearLayout            mGiftBulletGroup;
-    private       GiftPresenter           mPresenter;
-    private final String                  mRoomId;
-    private       SVGAImageView           mAnimationView;
-    private       GiftHeartLayout         mHeartLayout;
-    private final List<TUIGift>           mSentGiftAnimation;
-    private       TUIGiftPlayViewListener mGiftPlayViewListener;
-    private final SVGAParser              mSVGAParser;
-    private int                           mLikeCount = 0;
+    private final Context                              mContext;
+    private       LinearLayout                         mGiftBulletGroup;
+    private       GiftPresenter                        mPresenter;
+    private final String                               mRoomId;
+    private       AnimationView                        mAnimationView;
+    private       GiftHeartLayout                      mHeartLayout;
+    private final List<TUIGift>                        mSentGiftAnimation;
+    private       TUIGiftPlayViewListener              mGiftPlayViewListener;
+    private       int                                  mLikeCount            = 0;
     private final ITUINotification                     mLikeNotification     = (key, subKey, param) -> receiveLike();
     private final Observer<Pair<String, GiftSendData>> mGiftSendDataObserver =
             new Observer<Pair<String, GiftSendData>>() {
-        @Override
-        public void onChanged(Pair<String, GiftSendData> pair) {
-            if (pair != null && TextUtils.equals(pair.first, mRoomId)) {
-                GiftSendData data = pair.second;
-                receiveGift(data.gift, data.giftCount, data.sender, data.receiver);
-            }
-        }
-    };
+                @Override
+                public void onChanged(Pair<String, GiftSendData> pair) {
+                    if (pair != null && TextUtils.equals(pair.first, mRoomId)) {
+                        GiftSendData data = pair.second;
+                        receiveGift(data.gift, data.giftCount, data.sender, data.receiver);
+                    }
+                }
+            };
 
     public TUIGiftPlayView(Context context, String roomId) {
         super(context);
         this.mContext = context;
         this.mRoomId = roomId;
-        mSVGAParser = SVGAParser.Companion.shareParser();
-        mSVGAParser.init(context);
         mSentGiftAnimation = new LinkedList<>();
         init();
     }
 
     private void init() {
-        LayoutInflater.from(getContext()).inflate(R.layout.livekit_gift_layout_svga_animator, this, true);
+        LayoutInflater.from(getContext()).inflate(R.layout.livekit_gift_layout_animator, this, true);
         mGiftBulletGroup = findViewById(R.id.gift_bullet_group);
-        mAnimationView = findViewById(R.id.gift_svga_view);
+        mAnimationView = findViewById(R.id.gift_anim_view);
         mHeartLayout = findViewById(R.id.heart_layout);
-        mAnimationView.setCallback(new SVGACallback() {
-            @Override
-            public void onPause() {
-            }
 
-            @Override
-            public void onFinished() {
-                if (isAttachedToWindow()) {
-                    mAnimationView.setVisibility(GONE);
-                    mSentGiftAnimation.remove(0);
-                    showGiftAnimation();
-                }
+        mAnimationView.setCallback(error -> {
+            if (error != 0) {
+                LiveKitLog.error(TAG + " onPlayError:" + error);
             }
-
-            @Override
-            public void onRepeat() {
-            }
-
-            @Override
-            public void onStep(int i, double v) {
+            if (isAttachedToWindow()) {
+                mSentGiftAnimation.remove(0);
+                showGiftAnimation();
             }
         });
         initPresenter();
@@ -117,8 +97,6 @@ public class TUIGiftPlayView extends LinearLayout implements IGiftPlayView {
         GiftStore.getInstance().mGiftSendData.removeObserver(mGiftSendDataObserver);
         GiftStore.getInstance().mGiftSendData.set(null);
         mPresenter.destroyPresenter();
-        mAnimationView.setCallback(null);
-        mAnimationView.stopAnimation();
         super.onDetachedFromWindow();
     }
 
@@ -147,11 +125,7 @@ public class TUIGiftPlayView extends LinearLayout implements IGiftPlayView {
     }
 
     private void showGiftAnimation() {
-        if (mSentGiftAnimation.isEmpty()) {
-            mAnimationView.setVisibility(GONE);
-            return;
-        }
-        if (mGiftPlayViewListener != null) {
+        if (!mSentGiftAnimation.isEmpty() && mGiftPlayViewListener != null) {
             mGiftPlayViewListener.onPlayGiftAnimation(this, mSentGiftAnimation.get(0));
         }
     }
@@ -193,24 +167,9 @@ public class TUIGiftPlayView extends LinearLayout implements IGiftPlayView {
         return mLikeCount;
     }
 
-    public void playGiftAnimation(InputStream stream) {
-        if (stream == null) {
-            LiveKitLog.error(TAG + " InputStream is null");
-            return;
-        }
-        mSVGAParser.decodeFromInputStream(stream, "", new SVGAParser.ParseCompletion() {
-            @Override
-            public void onComplete(@NonNull SVGAVideoEntity svgaVideoEntity) {
-                mAnimationView.setVisibility(VISIBLE);
-                mAnimationView.setVideoItem(svgaVideoEntity);
-                mAnimationView.startAnimation();
-            }
-
-            @Override
-            public void onError() {
-                LiveKitLog.error(TAG + " decodeFromURL onError");
-            }
-        }, true, null, "");
+    public void playGiftAnimation(String playUrl) {
+        LiveKitLog.info(TAG + " playGiftAnimation playUrl = " + playUrl);
+        post(() -> mAnimationView.playAnimation(playUrl));
     }
 
     public void setListener(TUIGiftPlayViewListener listener) {

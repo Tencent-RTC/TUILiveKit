@@ -1,31 +1,33 @@
 package com.trtc.uikit.livekit.common.uicomponent.gift.giftcloudserver;
 
+import static com.trtc.uikit.livekit.common.uicomponent.gift.giftcloudserver.GiftCloudServerConfig.GIFT_DATA_URL;
+import static com.trtc.uikit.livekit.common.uicomponent.gift.giftcloudserver.GiftCloudServerConfig.TE_GIFT_DATA_URL;
 import static com.trtc.uikit.livekit.common.uicomponent.gift.giftcloudserver.IGiftCloudServer.Error.BALANCE_INSUFFICIENT;
 import static com.trtc.uikit.livekit.common.uicomponent.gift.giftcloudserver.IGiftCloudServer.Error.NO_ERROR;
 import static com.trtc.uikit.livekit.common.uicomponent.gift.giftcloudserver.IGiftCloudServer.Error.PARAM_ERROR;
 
-import android.annotation.TargetApi;
-import android.os.Build;
-
+import com.google.gson.Gson;
+import com.tencent.qcloud.tuicore.TUICore;
+import com.tencent.qcloud.tuicore.TUIThemeManager;
+import com.trtc.uikit.livekit.common.uicomponent.gift.model.GiftBean;
 import com.trtc.uikit.livekit.common.uicomponent.gift.model.TUIGift;
+import com.trtc.uikit.livekit.common.utils.HttpGetRequest;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.Locale;
 
 public class GiftCloudServer implements IGiftCloudServer {
 
-    private static final int CORE_POOL_SIZE = 5;
+    private final String mGiftUrl;
 
-    private GiftListQuery      mGiftListQuery;
-    private ThreadPoolExecutor mExecutor;
-    private int                mBalance = 500;
+    private int mBalance = 500;
+
+    private final List<TUIGift> mCacheGiftList = new ArrayList<>();
 
     public GiftCloudServer() {
-        mExecutor = getThreadExecutor();
-        mGiftListQuery = new GiftListQueryImpl(mExecutor);
+        mGiftUrl = TUICore.getService("TUIEffectPlayerService") == null ? GIFT_DATA_URL : TE_GIFT_DATA_URL;
     }
 
     @Override
@@ -45,7 +47,25 @@ public class GiftCloudServer implements IGiftCloudServer {
 
     @Override
     public void queryGiftInfoList(Callback<List<TUIGift>> callback) {
-        mGiftListQuery.queryGiftInfoList(callback);
+        if (mCacheGiftList.isEmpty()) {
+            queryGiftList((error, result) -> {
+                if (error == 0) {
+                    synchronized (GiftCloudServer.this) {
+                        if (!mCacheGiftList.isEmpty()) {
+                            mCacheGiftList.clear();
+                        }
+                        mCacheGiftList.addAll(result);
+                    }
+                }
+                if (callback != null) {
+                    callback.onResult(error, result);
+                }
+            });
+        } else {
+            if (callback != null) {
+                callback.onResult(NO_ERROR, mCacheGiftList);
+            }
+        }
     }
 
     @Override
@@ -70,19 +90,51 @@ public class GiftCloudServer implements IGiftCloudServer {
         }
     }
 
-    private synchronized ThreadPoolExecutor getThreadExecutor() {
-        if (mExecutor == null || mExecutor.isShutdown()) {
-            mExecutor = new GiftThreadPool(CORE_POOL_SIZE);
-        }
-        return mExecutor;
+    private void queryGiftList(Callback<List<TUIGift>> callback) {
+        HttpGetRequest request = new HttpGetRequest(mGiftUrl, new HttpGetRequest.HttpListener() {
+            @Override
+            public void onSuccess(String response) {
+                Gson gson = new Gson();
+                GiftBean giftBean = gson.fromJson(response, GiftBean.class);
+                final List<TUIGift> giftDataList = transformGiftInfoList(giftBean);
+                if (giftDataList != null) {
+                    if (callback != null) {
+                        callback.onResult(NO_ERROR, giftDataList);
+                    }
+                } else {
+                    onFailed("query gift list failed!");
+                }
+            }
+
+            @Override
+            public void onFailed(String message) {
+                if (callback != null) {
+                    callback.onResult(IGiftCloudServer.Error.OPERATION_FAILED, Collections.EMPTY_LIST);
+                }
+            }
+        });
+        request.execute();
     }
 
-    private static class GiftThreadPool extends ThreadPoolExecutor {
-        @TargetApi(Build.VERSION_CODES.GINGERBREAD)
-        public GiftThreadPool(int poolSize) {
-            super(poolSize, poolSize, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingDeque<Runnable>(),
-                    Executors.defaultThreadFactory(), new AbortPolicy());
+    private List<TUIGift> transformGiftInfoList(GiftBean giftBean) {
+        if (giftBean == null) {
+            return null;
         }
+        List<GiftBean.GiftListBean> giftBeanList = giftBean.getGiftList();
+        if (giftBeanList == null) {
+            return null;
+        }
+        boolean isEnglish = Locale.ENGLISH.getLanguage().equals(TUIThemeManager.getInstance().getCurrentLanguage());
+        List<TUIGift> giftInfoList = new ArrayList<>();
+        for (GiftBean.GiftListBean bean : giftBeanList) {
+            TUIGift gift = new TUIGift();
+            gift.giftId = bean.getGiftId();
+            gift.giftName = isEnglish ? bean.getGiftNameEn() : bean.getGiftName();
+            gift.imageUrl = bean.getImageUrl();
+            gift.animationUrl = bean.getAnimationUrl();
+            gift.price = bean.getPrice();
+            giftInfoList.add(gift);
+        }
+        return giftInfoList;
     }
-
 }

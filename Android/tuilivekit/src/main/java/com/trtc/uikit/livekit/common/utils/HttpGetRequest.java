@@ -6,13 +6,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class HttpGetRequest {
     public static final int TIMEOUT          = 30000;
     public static final int RESPONSE_SUCCESS = 200;
 
-    private HttpListener mHttpListener;
-    private String       mUrl;
+    private final HttpListener mHttpListener;
+    private final String       mUrl;
 
     public HttpGetRequest(String url, HttpListener httpListener) {
         mHttpListener = httpListener;
@@ -37,7 +38,7 @@ public class HttpGetRequest {
             if (conn.getResponseCode() == RESPONSE_SUCCESS) {
                 StringBuilder sb = new StringBuilder();
                 inputStream = conn.getInputStream();
-                br = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
+                br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
                 String readLine;
                 while ((readLine = br.readLine()) != null) {
                     sb.append(readLine);

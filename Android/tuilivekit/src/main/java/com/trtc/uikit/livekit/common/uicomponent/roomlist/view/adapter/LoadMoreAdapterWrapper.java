@@ -20,8 +20,8 @@ public class LoadMoreAdapterWrapper extends RecyclerView.Adapter<RecyclerView.Vi
     public static final int LOADING_COMPLETE = 2;
     public static final int LOADING_END      = 3;
 
-    private int                  loadState = LOADING_COMPLETE;
-    private RecyclerView.Adapter adapter;
+    private       int                  loadState = LOADING_COMPLETE;
+    private final RecyclerView.Adapter adapter;
 
     public LoadMoreAdapterWrapper(RecyclerView.Adapter adapter) {
         this.adapter = adapter;

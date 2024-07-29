@@ -13,9 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.manager.LiveController;
 import com.trtc.uikit.livekit.common.uicomponent.audioeffect.view.AudioEffectPanelView;
-import com.trtc.uikit.livekit.common.view.BottomPanel;
+import com.trtc.uikit.livekit.common.uicomponent.beauty.BeautyViewFactory;
+import com.trtc.uikit.livekit.manager.LiveController;
 import com.trtc.uikit.livekit.view.liveroom.view.anchor.component.common.videoparams.VideoParamsPanel;
 
 import java.util.ArrayList;
@@ -33,11 +33,11 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
     private final        LiveController     mLiveController;
     private              PopupDialog        mDialogMoreSettings;
     private              MoreSettingsPanel  mMoreSettingsPanel;
-    private PopupDialog      mDialogVideoParams;
-    private VideoParamsPanel mVideoParamsPanel;
-    private BottomPanel      mAudioEffectPanel;
-    private              PopupDialog        mDialogBeautyList;
-    private              BeautyListPanel    mBeautyListPanel;
+    private              PopupDialog        mDialogVideoParams;
+    private              VideoParamsPanel   mVideoParamsPanel;
+    private              PopupDialog        mAudioEffectPanel;
+    private              PopupDialog        mPopupDialog;
+    private              View               mBeautyView;
 
     public SettingsListAdapter(Context context, LiveController liveController) {
         mContext = context;
@@ -49,7 +49,7 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
         mData.add(new SettingsItem(mContext.getString(R.string.livekit_video_settings_item_beauty)
                 , R.drawable.livekit_settings_item_beauty, ITEM_TYPE_BEAUTY));
         mData.add(new SettingsItem(mContext.getString(R.string.livekit_audio_effect)
-                , R.drawable.livekit_settings_item_music, ITEM_TYPE_AUDIO_EFFECT));
+                , R.drawable.livekit_settings_audio_effect, ITEM_TYPE_AUDIO_EFFECT));
         mData.add(new SettingsItem(mContext.getString(R.string.livekit_video_settings_item_flip)
                 , R.drawable.livekit_settings_item_flip, ITEM_TYPE_FLIP));
         mData.add(new SettingsItem(mContext.getString(R.string.livekit_video_settings_item_mirror)
@@ -135,23 +135,32 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
 
     private void showAudioEffectPanel() {
         if (mAudioEffectPanel == null) {
-            AudioEffectPanelView panelView = new AudioEffectPanelView(mContext, mLiveController);
-            mAudioEffectPanel = BottomPanel.create(panelView);
+            mAudioEffectPanel = new PopupDialog(mContext);
+            AudioEffectPanelView audioEffectPanel = new AudioEffectPanelView(mContext,
+                    mLiveController.getRoomSate().roomId, mLiveController.getLiveService().getTRTCCloud());
+            audioEffectPanel.setOnBackButtonClickListener(() -> mAudioEffectPanel.dismiss());
+            mAudioEffectPanel.setView(audioEffectPanel);
         }
         mAudioEffectPanel.show();
     }
 
     private void showBeautyPanel() {
-        if (mDialogBeautyList == null) {
-            mDialogBeautyList = new PopupDialog(mContext, com.trtc.tuikit.common.R.style.TUICommonBottomDialogTheme);
-            mDialogBeautyList.setOnDismissListener((dialogInterface) -> {
+        if (mPopupDialog == null) {
+            mPopupDialog = new PopupDialog(mContext, com.trtc.tuikit.common.R.style.TUICommonBottomDialogTheme);
+            mPopupDialog.setOnDismissListener(dialog -> {
+                if (mBeautyView != null) {
+                    ViewGroup parentView = (ViewGroup) mBeautyView.getParent();
+                    if (parentView != null) {
+                        parentView.removeView(mBeautyView);
+                    }
+                }
+                mPopupDialog = null;
             });
+            BeautyViewFactory beautyViewFactory = new BeautyViewFactory();
+            mBeautyView = beautyViewFactory.getBeautyView(mContext, mLiveController);
         }
-        if (mBeautyListPanel == null) {
-            mBeautyListPanel = new BeautyListPanel(mContext, mLiveController);
-        }
-        mDialogBeautyList.setView(mBeautyListPanel);
-        mDialogBeautyList.show();
+        mPopupDialog.setView(mBeautyView);
+        mPopupDialog.show();
     }
 
     @Override
@@ -171,6 +180,7 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
             imageIcon = itemView.findViewById(R.id.iv_icon);
         }
     }
+
 
     public static class SettingsItem {
         public String title;

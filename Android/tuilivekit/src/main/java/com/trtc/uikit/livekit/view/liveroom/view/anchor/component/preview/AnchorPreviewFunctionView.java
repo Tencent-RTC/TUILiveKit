@@ -3,22 +3,22 @@ package com.trtc.uikit.livekit.view.liveroom.view.anchor.component.preview;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.manager.LiveController;
 import com.trtc.uikit.livekit.common.uicomponent.audioeffect.view.AudioEffectPanelView;
+import com.trtc.uikit.livekit.common.uicomponent.beauty.BeautyViewFactory;
 import com.trtc.uikit.livekit.common.view.BasicView;
-import com.trtc.uikit.livekit.common.view.BottomPanel;
-import com.trtc.uikit.livekit.view.liveroom.view.anchor.component.common.BeautyListPanel;
+import com.trtc.uikit.livekit.manager.LiveController;
 
 @SuppressLint("ViewConstructor")
 public class AnchorPreviewFunctionView extends BasicView {
 
-    private BottomPanel     mAudioEffectPanel;
-    private PopupDialog     mDialogBeautyList;
-    private BeautyListPanel mBeautyListPanel;
-
+    private PopupDialog mAudioEffectPanel;
+    private PopupDialog mPopupDialog;
+    private View        mBeautyView;
 
     public AnchorPreviewFunctionView(Context context, LiveController liveController) {
         super(context, liveController);
@@ -47,25 +47,33 @@ public class AnchorPreviewFunctionView extends BasicView {
 
     private void initBeautyButton() {
         findViewById(R.id.iv_beauty).setOnClickListener(view -> {
-            if (mDialogBeautyList == null) {
-                mDialogBeautyList = new PopupDialog(mContext,
-                        com.trtc.tuikit.common.R.style.TUICommonBottomDialogTheme);
-                mDialogBeautyList.setOnDismissListener((dialogInterface) -> {
+            if (mPopupDialog == null) {
+                mPopupDialog = new PopupDialog(mContext, com.trtc.tuikit.common.R.style.TUICommonBottomDialogTheme);
+                mPopupDialog.setOnDismissListener(dialog -> {
+                    if (mBeautyView != null) {
+                        ViewGroup parentView = (ViewGroup) mBeautyView.getParent();
+                        if (parentView != null) {
+                            parentView.removeView(mBeautyView);
+                        }
+                    }
+                    mPopupDialog = null;
                 });
+                BeautyViewFactory beautyViewFactory = new BeautyViewFactory();
+                mBeautyView = beautyViewFactory.getBeautyView(mContext, mLiveController);
             }
-            if (mBeautyListPanel == null) {
-                mBeautyListPanel = new BeautyListPanel(mContext, mLiveController);
-            }
-            mDialogBeautyList.setView(mBeautyListPanel);
-            mDialogBeautyList.show();
+            mPopupDialog.setView(mBeautyView);
+            mPopupDialog.show();
         });
     }
 
     private void initAudioEffectButton() {
         findViewById(R.id.iv_audio_effect).setOnClickListener(view -> {
             if (mAudioEffectPanel == null) {
-                AudioEffectPanelView audioEffectPanel = new AudioEffectPanelView(mContext, mLiveController);
-                mAudioEffectPanel = BottomPanel.create(audioEffectPanel);
+                mAudioEffectPanel = new PopupDialog(mContext);
+                AudioEffectPanelView audioEffectPanel = new AudioEffectPanelView(mContext,
+                        mLiveController.getRoomSate().roomId, mLiveController.getLiveService().getTRTCCloud());
+                audioEffectPanel.setOnBackButtonClickListener(() -> mAudioEffectPanel.dismiss());
+                mAudioEffectPanel.setView(audioEffectPanel);
             }
             mAudioEffectPanel.show();
         });
