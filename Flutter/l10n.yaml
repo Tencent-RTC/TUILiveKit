@@ -1,0 +1,7 @@
+arb-dir: lib/common/language/i10n
+template-arb-file: livekit_en.arb
+output-localization-file: livekit_localizations.dart
+output-dir: lib/common/language/gen
+output-class: LiveKitLocalizations
+synthetic-package: false
+format: true
