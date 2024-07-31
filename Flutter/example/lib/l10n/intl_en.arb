@@ -1,0 +1,23 @@
+{
+  "app_trtc": "Tencent RTC",
+  "app_user_id": "User ID",
+  "app_enter_user_id": "Please enter your UserID",
+  "app_login": "Login",
+  "app_logout": "Logout",
+  "app_confirm": "Confirm",
+  "app_cancel": "Cancel",
+  "app_enter_nickname": "Enter your user nickname",
+  "app_tencent_cloud": "Tencent Cloud",
+  "app_login_fail": "Login failed",
+  "app_next": "Continue",
+  "app_nick_name": "Nickname",
+  "app_room_id": "Room ID",
+  "app_anchor": "Anchor",
+  "app_audience": "Audience",
+  "app_me": "Me",
+  "app_live": "Live",
+  "app_follow_count": "Likes",
+  "app_fans_count": "Fans",
+  "app_set_nickname": "Name",
+  "app_save": "Save"
+}
