@@ -14,7 +14,6 @@ import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.manager.LiveController;
 import com.trtc.uikit.livekit.manager.controller.MediaController;
 import com.trtc.uikit.livekit.common.view.BasicView;
-import com.trtc.uikit.livekit.state.operation.BeautyState;
 import com.trtc.uikit.livekit.view.liveroom.view.audience.component.livestreaming.link.VideoSettingsAdapter;
 
 @SuppressLint("ViewConstructor")

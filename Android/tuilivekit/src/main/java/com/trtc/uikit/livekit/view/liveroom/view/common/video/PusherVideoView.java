@@ -74,7 +74,7 @@ public class PusherVideoView extends VideoView {
             removeWaitLinkMicView();
         }
         mWaitLinkMicAnimationView = new WaitLinkMicAnimationView(mContext);
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ScreenUtil.dip2px(82),
+        LayoutParams layoutParams = new LayoutParams(ScreenUtil.dip2px(82),
                 ScreenUtil.dip2px(82));
         layoutParams.gravity = Gravity.CENTER;
         addView(mWaitLinkMicAnimationView, layoutParams);

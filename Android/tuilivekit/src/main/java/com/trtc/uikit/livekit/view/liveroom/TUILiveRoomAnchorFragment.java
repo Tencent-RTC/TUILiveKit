@@ -7,6 +7,8 @@ import static com.trtc.uikit.livekit.common.utils.Constants.EVENT_SUB_KEY_FINISH
 import static com.trtc.uikit.livekit.common.utils.Constants.EVENT_SUB_KEY_START_VOICE_ROOM;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +21,11 @@ import androidx.fragment.app.Fragment;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
-import com.tencent.trtc.TRTCCloudDef;
+import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.uicomponent.audioeffect.store.AudioEffectSateFactory;
-import com.trtc.uikit.livekit.common.uicomponent.beauty.VideoFrameListener;
 import com.trtc.uikit.livekit.common.uicomponent.music.store.MusicPanelSateFactory;
+import com.trtc.uikit.livekit.common.utils.LiveKitLog;
 import com.trtc.uikit.livekit.manager.LiveController;
 import com.trtc.uikit.livekit.manager.controller.RoomController;
 import com.trtc.uikit.livekit.state.LiveDefine;
@@ -51,6 +53,10 @@ public class TUILiveRoomAnchorFragment extends Fragment implements ITUINotificat
         }
     };
 
+    private final Observer<Boolean> mGLContextCreateFlagObserver = this::onGLContextCreateFlag;
+    private final Handler           mMainHandler                 = new Handler(Looper.getMainLooper());
+    private       boolean           mOnDestroyFlag               = false;
+
     public TUILiveRoomAnchorFragment(String roomId) {
         mRoomID = roomId;
     }
@@ -61,6 +67,7 @@ public class TUILiveRoomAnchorFragment extends Fragment implements ITUINotificat
         initLiveController();
         TUICore.registerEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_START_VOICE_ROOM, this);
         TUICore.registerEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_FINISH_ACTIVITY, this);
+        mLiveController.getBeautyState().glContextCreateFlag.observe(mGLContextCreateFlagObserver);
     }
 
     @Nullable
@@ -89,10 +96,6 @@ public class TUILiveRoomAnchorFragment extends Fragment implements ITUINotificat
     public void onDestroy() {
         super.onDestroy();
         TUICore.unRegisterEvent(this);
-        mLiveController.getLiveService().getTRTCCloud().setLocalVideoProcessListener(
-                TRTCCloudDef.TRTC_VIDEO_PIXEL_FORMAT_Texture_2D,
-                TRTCCloudDef.TRTC_VIDEO_BUFFER_TYPE_TEXTURE, null);
-        mLiveController.getLiveService().getTRTCCloud().exitRoom();
         MusicPanelSateFactory.removeState(mRoomID);
         AudioEffectSateFactory.removeState(mRoomID);
         unInitLiveController();
@@ -122,25 +125,33 @@ public class TUILiveRoomAnchorFragment extends Fragment implements ITUINotificat
         mLiveController = new LiveController();
         mLiveController.getSeatState().setFilterEmptySeat(true);
         mLiveController.setRoomId(mRoomID);
+        mLiveController.getMediaController().setCustomVideoProcess();
         mViewState = mLiveController.getViewState();
-        TUIRoomDefine.SeatMode seatMode       = TUIRoomDefine.SeatMode.APPLY_TO_TAKE;
-        RoomController         roomController = mLiveController.getRoomController();
+        TUIRoomDefine.SeatMode seatMode = TUIRoomDefine.SeatMode.APPLY_TO_TAKE;
+        RoomController roomController = mLiveController.getRoomController();
         roomController.initCreateRoomState(mRoomID, "", seatMode, DEFAULT_MAX_SEAT_COUNT);
         roomController.startPreview();
-        setLocalVideoProcessListener();
-    }
-
-    private void setLocalVideoProcessListener() {
-        if (TUICore.getService("TEBeautyExtension") == null) {
-            return;
-        }
-        VideoFrameListener videoFrameListener = new VideoFrameListener(getContext());
-        mLiveController.getLiveService().getTRTCCloud().setLocalVideoProcessListener(
-                TRTCCloudDef.TRTC_VIDEO_PIXEL_FORMAT_Texture_2D,
-                TRTCCloudDef.TRTC_VIDEO_BUFFER_TYPE_TEXTURE, videoFrameListener);
     }
 
     private void unInitLiveController() {
-        mLiveController.destroy();
+        mOnDestroyFlag = true;
+        if (Boolean.TRUE.equals(mLiveController.getBeautyState().glContextCreateFlag.get())) {
+            LiveKitLog.warn("Wait for LiveService to be destroyed by onGLContextDestory");
+            mLiveController.destroyWithoutLiveService();
+        } else {
+            mLiveController.getBeautyState().glContextCreateFlag.removeObserver(mGLContextCreateFlagObserver);
+            mLiveController.destroy();
+        }
+    }
+
+    private void onGLContextCreateFlag(Boolean value) {
+        if (Boolean.FALSE.equals(value)) {
+            mMainHandler.post(() -> {
+                if (mOnDestroyFlag) {
+                    mLiveController.getBeautyState().glContextCreateFlag.removeObserver(mGLContextCreateFlagObserver);
+                    mLiveController.getLiveService().destroy();
+                }
+            });
+        }
     }
 }

@@ -329,9 +329,9 @@ public class RoomController extends Controller {
         }
     }
 
-    public void onLiveInfoChanged(TUILiveListManager.LiveInfo liveInfo,
-                                  List<TUILiveListManager.LiveModifyFlag> modifyFlagList) {
-        for (TUILiveListManager.LiveModifyFlag flag : modifyFlagList) {
+    public void onLiveInfoChanged(LiveInfo liveInfo,
+                                  List<LiveModifyFlag> modifyFlagList) {
+        for (LiveModifyFlag flag : modifyFlagList) {
             if (flag == LiveModifyFlag.COVER_URL) {
                 updateCoverUrl(liveInfo.coverUrl);
             }

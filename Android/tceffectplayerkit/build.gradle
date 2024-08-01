@@ -1,0 +1,31 @@
+plugins {
+    id 'com.android.library'
+}
+
+android {
+    compileSdk 34
+    namespace 'com.tencent.tcmediax.tceffectplayerkit'
+
+    defaultConfig {
+        minSdkVersion 19
+        versionName "1.0"
+        versionCode 1
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    api 'com.tencent.mediacloud:TCMediaX:2.1.0.112'
+    implementation 'com.tencent.mediacloud:TCEffectPlayer:2.1.0.112'
+    implementation "com.tencent.liteav.tuikit:tuicore:latest.release"
+}

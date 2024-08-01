@@ -51,6 +51,11 @@ public class LiveController {
     }
 
     public void destroy() {
+        destroyWithoutLiveService();
+        mLiveService.destroy();
+    }
+
+    public void destroyWithoutLiveService() {
         mRoomController.removeListener(mRoomControllerListener);
         mLiveService.removeRoomEngineObserver(mRoomEngineObserver);
         mLiveService.removeLiveListManagerObserver(mLiveListManagerObserver);
@@ -59,7 +64,6 @@ public class LiveController {
         mUserController.destroy();
         mMediaController.destroy();
         mViewController.destroy();
-        mLiveService.destroy();
     }
 
     public ILiveService getLiveService() {

@@ -1,0 +1,45 @@
+<resources>
+
+
+
+    <string name="te_beauty_ability_menu_action">立即体验</string>
+    <string name="te_beauty_template_dialog_title">美颜、整妆模板</string>
+    <string name="te_beauty_template_dialog_sub_title">一键体验效果、美丽触手可及</string>
+    <string name="te_beauty_template_panel_edit_btn_name">参数</string>
+    <string name="te_beauty_template_panel_edit_back_name">返回</string>
+    <string name="te_beauty_activity_base_combo_title">基础套餐</string>
+    <string name="te_beauty_activity_advanced_combo_title">高级套餐</string>
+    <string name="te_beauty_combo_list_hot_tip">更多人选</string>
+
+    <string name="te_beauty_capabilities_panel_view_switch_turn_on">打开</string>
+    <string name="te_beauty_capabilities_panel_view_switch_turn_off">关闭</string>
+    <!--特效-->
+    <string name="te_beauty_panel_menu_view_layout_sticker">贴纸</string>
+    <string name="te_beauty_panel_menu_view_layout_beauty_3">美颜美型</string>
+    <string name="te_beauty_panel_menu_view_layout_makeup">美妆</string>
+    <string name="te_beauty_panel_menu_view_layout_lut">滤镜</string>
+    <string name="te_beauty_panel_view_folded_btn_txt">收起</string>
+    <string name="te_beauty_panel_view_expand_btn_txt">展开</string>
+    <string name="te_beauty_panel_view_expand_original_txt">原图</string>
+    <string name="te_beauty_panel_view_expand_te_txt">特效</string>
+    <string name="te_beauty_panel_view_revert_tip_title">确定重置吗</string>
+    <string name="te_beauty_panel_view_revert_tip_msg">重置会将目前所有特效恢复至默认效果，不可撤回</string>
+    <string name="te_beauty_panel_view_revert_tip_dialog_left_btn">取消</string>
+    <string name="te_beauty_panel_view_revert_tip_dialog_right_btn">重置</string>
+    <string name="te_beauty_panel_view_revert_btn_txt">重置</string>
+    <string name="te_beauty_panel_view_performance_parameter">性能参数</string>
+    <string name="te_beauty_panel_view_enhanced_mode">增强模式</string>
+    <string name="te_beauty_panel_view_only_white_skin">美白仅对皮肤生效</string>
+    <string name="te_beauty_panel_view_smart_beauty">智能美颜\n为男性、宝宝匹配减淡的美颜美妆效果</string>
+    <string name="te_beauty_panel_view_crop_texture">画面边缘裁剪</string>
+    <string name="te_beauty_panel_view_download_dialog_tip">下载中</string>
+
+
+    <string name="te_beauty_panel_view_green_screen_tip_title">导入图片</string>
+    <string name="te_beauty_panel_view_green_screen_tip_msg">请您站在绿幕前，选择一张图片，将绿幕替换为所选图片</string>
+    <string name="te_beauty_panel_view_green_screen_tip_dialog_left_btn">取消</string>
+    <string name="te_beauty_panel_view_green_screen_tip_dialog_right_btn">选择图片</string>
+    
+    <string name="te_beauty_panel_view_not_included_tips">该套餐不包含此能力</string>
+
+</resources>

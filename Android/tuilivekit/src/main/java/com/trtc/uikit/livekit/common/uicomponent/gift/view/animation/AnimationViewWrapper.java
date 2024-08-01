@@ -20,7 +20,7 @@ public final class AnimationViewWrapper extends AnimationView {
     public AnimationViewWrapper(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         mAnimationView = createAnimationView();
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
+        LayoutParams params = new LayoutParams(MATCH_PARENT, MATCH_PARENT);
         addView(mAnimationView, params);
     }
 

@@ -71,6 +71,14 @@ public class GenerateTestUserSig {
      */
     private static final String SECRETKEY = "";
 
+    public static final  String MAGIC_LICENSE_URL = "";
+
+    public static final  String MAGIC_LICENSE_KEY = "";
+
+    public static final String TC_EFFECT_PLAYER_LICENSE_URL = "";
+
+    public static final String TC_EFFECT_PLAYER_LICENSE_KEY = "";
+
 
     /**
      * Calculating UserSig
@@ -114,8 +122,8 @@ public class GenerateTestUserSig {
         if (TextUtils.isEmpty(priKeyContent)) {
             return "";
         }
-        long currTime = System.currentTimeMillis() / 1000;
-        JSONObject sigDoc = new JSONObject();
+        long       currTime = System.currentTimeMillis() / 1000;
+        JSONObject sigDoc   = new JSONObject();
         try {
             sigDoc.put("TLS.ver", "2.0");
             sigDoc.put("TLS.identifier", userId);
@@ -147,8 +155,8 @@ public class GenerateTestUserSig {
         Deflater compressor = new Deflater();
         compressor.setInput(sigDoc.toString().getBytes(Charset.forName("UTF-8")));
         compressor.finish();
-        byte[] compressedBytes = new byte[2048];
-        int compressedBytesLength = compressor.deflate(compressedBytes);
+        byte[] compressedBytes       = new byte[2048];
+        int    compressedBytesLength = compressor.deflate(compressedBytes);
         compressor.end();
         return new String(base64EncodeUrl(Arrays.copyOfRange(compressedBytes, 0, compressedBytesLength)));
     }
@@ -164,8 +172,8 @@ public class GenerateTestUserSig {
             contentToBeSigned += "TLS.userbuf:" + base64Userbuf + "\n";
         }
         try {
-            byte[] byteKey = priKeyContent.getBytes("UTF-8");
-            Mac hmac = Mac.getInstance("HmacSHA256");
+            byte[]        byteKey = priKeyContent.getBytes("UTF-8");
+            Mac           hmac    = Mac.getInstance("HmacSHA256");
             SecretKeySpec keySpec = new SecretKeySpec(byteKey, "HmacSHA256");
             hmac.init(keySpec);
             byte[] byteSig = hmac.doFinal(contentToBeSigned.getBytes("UTF-8"));
