@@ -37,6 +37,14 @@ let EXPIRETIME: Int = 604_800
  */
 let SECRETKEY = ""
 
+let BEAUTY_LICENSE_KEY = ""
+
+let BEAUTY_LICENSE_URL = ""
+
+let PLAYER_LICENSE_KEY = ""
+
+let PLAYER_LICENSE_URL = ""
+
 class GenerateTestUserSig {
     
     class func genTestUserSig(identifier: String) -> String {
