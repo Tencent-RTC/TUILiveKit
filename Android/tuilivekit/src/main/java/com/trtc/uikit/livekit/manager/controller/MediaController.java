@@ -2,12 +2,16 @@ package com.trtc.uikit.livekit.manager.controller;
 
 import static com.tencent.liteav.beauty.TXBeautyManager.TXBeautyStyleSmooth;
 
+import android.content.Context;
+import android.view.View;
+
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.common.TUIVideoView;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.qcloud.tuicore.TUIConfig;
 import com.tencent.qcloud.tuicore.permission.PermissionCallback;
 import com.trtc.tuikit.common.livedata.Observer;
+import com.trtc.uikit.livekit.common.uicomponent.beauty.TEBeautyService;
 import com.trtc.uikit.livekit.common.utils.LiveKitLog;
 import com.trtc.uikit.livekit.common.utils.PermissionRequest;
 import com.trtc.uikit.livekit.manager.error.ErrorHandler;
@@ -19,16 +23,20 @@ public class MediaController extends Controller {
     private static final String TAG = "MediaController";
 
     private final Observer<LiveDefine.LinkStatus> mLinkStateObserver = this::onLinkStateChanged;
+    private final TEBeautyService                 mTEBeautyService;
 
     public MediaController(LiveState state, ILiveService service) {
         super(state, service);
         mViewState.linkStatus.observe(mLinkStateObserver);
+        mTEBeautyService = new TEBeautyService(state, service.getTRTCCloud());
     }
 
     @Override
     public void destroy() {
         LiveKitLog.info(TAG + " destroy");
         mViewState.linkStatus.removeObserver(mLinkStateObserver);
+        mTEBeautyService.clearBeautyView();
+        closeLocalCamera();
     }
 
     public void operateMicrophone() {
@@ -136,6 +144,14 @@ public class MediaController extends Controller {
         mLiveService.setRuddyLevel(0);
     }
 
+    public void setCustomVideoProcess() {
+        mTEBeautyService.setCustomVideoProcess();
+    }
+
+    public View getTEBeautyView(Context context) {
+        return mTEBeautyService.getBeautyView(context);
+    }
+
     private void unMuteLocalAudio() {
         mLiveService.unMuteLocalAudio(new TUIRoomDefine.ActionCallback() {
             @Override
@@ -202,6 +218,7 @@ public class MediaController extends Controller {
             LiveKitLog.error(TAG + " camera is opened, no need to open again");
             return;
         }
+        mTEBeautyService.initBeautyKit();
         boolean isFront = mMediaState.isFrontCamera.get();
         TUIRoomDefine.VideoQuality quality = mMediaState.videoQuality.get();
         mLiveService.openLocalCamera(isFront, quality, new TUIRoomDefine.ActionCallback() {

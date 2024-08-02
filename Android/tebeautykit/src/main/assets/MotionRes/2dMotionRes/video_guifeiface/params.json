@@ -1,0 +1,207 @@
+{
+  "distortionList" : [
+    {
+      "direction" : 2,
+      "distortion" : 3,
+      "strength" : 0.5,
+      "position" : 69,
+      "radius" : 300
+    },
+    {
+      "direction" : 0,
+      "distortion" : 2,
+      "strength" : 0.3,
+      "position" : 64,
+      "radius" : 200
+    },
+    {
+      "direction" : 3,
+      "distortion" : 3,
+      "strength" : 1,
+      "position" : 67,
+      "radius" : 60
+    },
+    {
+      "direction" : 1,
+      "distortion" : 3,
+      "strength" : 0.9,
+      "position" : 71,
+      "radius" : 80
+    },
+    {
+      "direction" : 0,
+      "distortion" : 2,
+      "strength" : 0.3,
+      "position" : 43,
+      "radius" : 125
+    },
+    {
+      "direction" : 0,
+      "distortion" : 2,
+      "strength" : 0.35,
+      "position" : 53,
+      "radius" : 125
+    },
+    {
+      "direction" : 4,
+      "distortion" : 3,
+      "strength" : 0.4,
+      "position" : 6,
+      "radius" : 150
+    },
+    {
+      "direction" : 4,
+      "distortion" : 3,
+      "strength" : 0.4,
+      "position" : 12,
+      "radius" : 150
+    },
+    {
+      "direction" : 4,
+      "distortion" : 3,
+      "strength" : 0.4,
+      "position" : 9,
+      "radius" : 300
+    },
+    {
+      "direction" : 0,
+      "distortion" : 2,
+      "strength" : 0.2,
+      "position" : 81,
+      "radius" : 200
+    },
+    {
+      "direction" : 3,
+      "distortion" : 3,
+      "strength" : 0.2,
+      "position" : 43,
+      "radius" : 250
+    },
+    {
+      "direction" : 1,
+      "distortion" : 3,
+      "strength" : 0.2,
+      "position" : 53,
+      "radius" : 250
+    },
+    {
+      "direction" : 2,
+      "distortion" : 3,
+      "strength" : 0.4,
+      "position" : 21,
+      "radius" : 80
+    },
+    {
+      "direction" : 2,
+      "distortion" : 3,
+      "strength" : 0.4,
+      "position" : 29,
+      "radius" : 80
+    },
+    {
+      "direction" : 4,
+      "distortion" : 3,
+      "strength" : 0.3,
+      "position" : 26,
+      "radius" : 100
+    },
+    {
+      "direction" : 4,
+      "distortion" : 3,
+      "strength" : 0.3,
+      "position" : 34,
+      "radius" : 100
+    },
+    {
+      "direction" : 3,
+      "distortion" : 3,
+      "strength" : 1,
+      "position" : 75,
+      "radius" : 60
+    },
+    {
+      "direction" : 1,
+      "distortion" : 3,
+      "strength" : 0.8,
+      "position" : 79,
+      "radius" : 60
+    },
+    {
+      "direction" : 2,
+      "distortion" : 3,
+      "strength" : 0.4,
+      "position" : 39,
+      "radius" : 60
+    },
+    {
+      "direction" : 2,
+      "distortion" : 3,
+      "strength" : 0.4,
+      "position" : 49,
+      "radius" : 60
+    },
+    {
+      "direction" : 1,
+      "distortion" : 3,
+      "strength" : 0.4,
+      "position" : 35,
+      "radius" : 80
+    },
+    {
+      "direction" : 3,
+      "distortion" : 3,
+      "strength" : 0.4,
+      "position" : 45,
+      "radius" : 80
+    },
+    {
+      "direction" : 2,
+      "distortion" : 3,
+      "strength" : 0.5,
+      "position" : 64,
+      "radius" : 100
+    },
+    {
+      "direction" : 1,
+      "distortion" : 3,
+      "strength" : 0.2,
+      "position" : 2,
+      "radius" : 200
+    },
+    {
+      "direction" : 3,
+      "distortion" : 3,
+      "strength" : 0.2,
+      "position" : 16,
+      "radius" : 200
+    },
+    {
+      "direction" : 7,
+      "distortion" : 3,
+      "strength" : 0.2,
+      "position" : 5,
+      "radius" : 200
+    },
+    {
+      "direction" : 8,
+      "distortion" : 3,
+      "strength" : 0.2,
+      "position" : 13,
+      "radius" : 200
+    },
+    {
+      "direction" : 3,
+      "distortion" : 3,
+      "strength" : 0.4,
+      "position" : 65,
+      "radius" : 60
+    },
+    {
+      "direction" : 1,
+      "distortion" : 3,
+      "strength" : 0.4,
+      "position" : 66,
+      "radius" : 60
+    }
+  ]
+}

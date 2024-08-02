@@ -119,7 +119,7 @@ public class GiftBarrageAdapter implements TUIBarrageDisplayAdapter {
             ForegroundColorSpan receiverSpan = new ForegroundColorSpan(senderSpan.getForegroundColor());
             sb.setSpan(receiverSpan, sb.length() - receiver.length(), sb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
             String giftName = String.valueOf(barrage.extInfo.get(GIFT_NAME));
-            sb.append(giftName);
+            sb.append(" ").append(giftName);
             int giftNameColor = context.getResources().getColor(
                     GiftConstants.MESSAGE_COLOR[random.nextInt(GiftConstants.MESSAGE_COLOR.length)]);
             ForegroundColorSpan giftSpan = new ForegroundColorSpan(giftNameColor);

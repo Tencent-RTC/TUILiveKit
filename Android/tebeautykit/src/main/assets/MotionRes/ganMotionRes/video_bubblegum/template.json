@@ -1,0 +1,838 @@
+{
+   "componentLevel": 4,
+   "madeIn": "LightStudio",
+   "root": {
+      "id": 16,
+      "name": "拍摄模板",
+      "children": [
+         {
+            "id": 17,
+            "name": "2D画板",
+            "children": [
+               {
+                  "id": 18,
+                  "name": "GAN",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "type": "ScreenTransform",
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1,
+                           "eKeepRatio": true
+                        },
+                        "eEuler": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "anchor": {
+                           "left": 0,
+                           "right": 0,
+                           "top": 0,
+                           "bottom": 0
+                        },
+                        "offset": {
+                           "left": -360,
+                           "right": 360,
+                           "top": 640,
+                           "bottom": -640
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 0,
+                        "eFixSize": 3,
+                        "eEditingMode": 0,
+                        "eKeepRatio": true,
+                        "objectEnabled": true,
+                        "enabled": true,
+                        "entityId": 18,
+                        "componentID": 18001
+                     },
+                     {
+                        "componentID": 18002,
+                        "enabled": true,
+                        "entityId": 18,
+                        "inputResources": [],
+                        "resourcePath": "701cdb93-e830-4e11-9692-844e52de9c41",
+                        "type": "GAN",
+                        "version": 2
+                     },
+                     {
+                        "alignPoints": [
+                           64
+                        ],
+                        "componentID": 18003,
+                        "enabled": true,
+                        "entityId": 18,
+                        "faceIndex": [
+                           0,
+                           1,
+                           2,
+                           3,
+                           4
+                        ],
+                        "genderBinding": "",
+                        "isAllFrameFaceDetect": false,
+                        "isRefine": true,
+                        "isWaitFirstFrameDetect": false,
+                        "scalePivotPoint1": 0,
+                        "scalePivotPoint2": 18,
+                        "type": "FaceTracking",
+                        "xAxisRotateTrack": true,
+                        "xAxisScale": true,
+                        "xAxisTrack": true,
+                        "yAxisRotateTrack": true,
+                        "yAxisScale": true,
+                        "yAxisTrack": true,
+                        "zAxisRotateTrack": true,
+                        "version": 8
+                     },
+                     {
+                        "type": "EntityIdentifier",
+                        "name": "GAN",
+                        "id": 18,
+                        "enabled": true
+                     }
+                  ]
+               },
+               {
+                  "id": 53,
+                  "name": "前景贴纸",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "type": "ScreenTransform",
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1,
+                           "eKeepRatio": true
+                        },
+                        "eEuler": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "anchor": {
+                           "left": 0,
+                           "right": 0,
+                           "top": 0,
+                           "bottom": 0
+                        },
+                        "offset": {
+                           "left": -360,
+                           "right": 360,
+                           "top": 640,
+                           "bottom": -640
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 0,
+                        "eFixSize": 3,
+                        "eEditingMode": 0,
+                        "eKeepRatio": true,
+                        "objectEnabled": true,
+                        "enabled": true,
+                        "entityId": 53,
+                        "componentID": 53001,
+                        "version": 1
+                     },
+                     {
+                        "componentID": 53002,
+                        "enabled": true,
+                        "entityId": 53,
+                        "scaleMode": 2,
+                        "src": "b995b75c-9567-4f15-b37b-213b68b7dbd4",
+                        "type": "Image",
+                        "version": 2
+                     },
+                     {
+                        "alpha": 1,
+                        "mode": "normal",
+                        "type": "BlendMode",
+                        "enabled": true,
+                        "entityId": 53,
+                        "componentID": 53003
+                     },
+                     {
+                        "startOffset": 0,
+                        "duration": 2080000,
+                        "endOffset": -2147483648,
+                        "loopCount": -1,
+                        "type": "TimeOffset",
+                        "enabled": true,
+                        "entityId": 53,
+                        "componentID": 53004,
+                        "version": null
+                     },
+                     {
+                        "type": "EntityIdentifier",
+                        "name": "前景贴纸",
+                        "id": 53,
+                        "enabled": true
+                     }
+                  ]
+               },
+               {
+                  "id": 29,
+                  "name": "前景贴纸",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "type": "ScreenTransform",
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1,
+                           "eKeepRatio": true
+                        },
+                        "eEuler": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "anchor": {
+                           "left": 0.016666666666666607,
+                           "right": 0.016666666666666607,
+                           "top": 0.0031250000000000444,
+                           "bottom": 0.0031250000000000444
+                        },
+                        "offset": {
+                           "left": -367,
+                           "right": 367,
+                           "top": 641.64,
+                           "bottom": -641.64
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 0,
+                        "eFixSize": 3,
+                        "eEditingMode": 0,
+                        "eKeepRatio": true,
+                        "objectEnabled": true,
+                        "enabled": true,
+                        "entityId": 29,
+                        "componentID": 29001,
+                        "version": 915
+                     },
+                     {
+                        "componentID": 29002,
+                        "enabled": true,
+                        "entityId": 29,
+                        "scaleMode": 2,
+                        "src": "77a276f0-1cf0-4c6f-bc5d-8479a6da7b58",
+                        "type": "Image",
+                        "version": 2
+                     },
+                     {
+                        "alpha": 1,
+                        "mode": "normal",
+                        "type": "BlendMode",
+                        "enabled": true,
+                        "entityId": 29,
+                        "componentID": 29003
+                     },
+                     {
+                        "startOffset": 0,
+                        "duration": 1830000,
+                        "endOffset": -2147483648,
+                        "loopCount": -1,
+                        "type": "TimeOffset",
+                        "enabled": true,
+                        "entityId": 29,
+                        "componentID": 29004,
+                        "version": null
+                     },
+                     {
+                        "type": "EntityIdentifier",
+                        "name": "前景贴纸",
+                        "id": 29,
+                        "enabled": true
+                     }
+                  ]
+               }
+            ],
+            "enabled": true,
+            "version": 0,
+            "components": [
+               {
+                  "anchor": {
+                     "bottom": -1,
+                     "left": -1,
+                     "right": 1,
+                     "top": 1
+                  },
+                  "offset": {
+                     "bottom": 0,
+                     "left": 0,
+                     "right": 0,
+                     "top": 0
+                  },
+                  "pivot": {
+                     "x": 0,
+                     "y": 0
+                  },
+                  "ePinToEdge": 15,
+                  "eFixSize": 0,
+                  "eEditingMode": 1,
+                  "eKeepRatio": false,
+                  "position": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "scale": {
+                     "x": 1,
+                     "y": 1,
+                     "z": 1
+                  },
+                  "rotation": {
+                     "w": 1,
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "entityId": 17,
+                  "componentID": 17001,
+                  "type": "ScreenTransform",
+                  "enabled": true,
+                  "version": 2,
+                  "objectEnabled": true
+               },
+               {
+                  "componentID": 17002,
+                  "enabled": true,
+                  "entityId": 17,
+                  "renderTargetKey": "RenderTarget",
+                  "type": "Camera",
+                  "version": 2
+               },
+               {
+                  "type": "EntityIdentifier",
+                  "name": "2D画板",
+                  "id": 17,
+                  "enabled": true
+               }
+            ]
+         }
+      ],
+      "components": [
+         {
+            "anchor": {
+               "bottom": -1,
+               "left": -1,
+               "right": 1,
+               "top": 1
+            },
+            "offset": {
+               "bottom": 0,
+               "left": 0,
+               "right": 0,
+               "top": 0
+            },
+            "pivot": {
+               "x": 0,
+               "y": 0
+            },
+            "ePinToEdge": 15,
+            "eFixSize": 0,
+            "eEditingMode": 1,
+            "eKeepRatio": false,
+            "position": {
+               "x": 0,
+               "y": 0,
+               "z": 0
+            },
+            "scale": {
+               "x": 1,
+               "y": 1,
+               "z": 1
+            },
+            "rotation": {
+               "w": 1,
+               "x": 0,
+               "y": 0,
+               "z": 0
+            },
+            "objectEnabled": true,
+            "entityId": 16,
+            "componentID": 16001,
+            "type": "ScreenTransform",
+            "enabled": true,
+            "version": 6
+         },
+         {
+            "enableRotation": true,
+            "resetWhenStartRecord": true,
+            "type": "ExtraSetting",
+            "enabled": true,
+            "version": 1,
+            "entityId": 16,
+            "componentID": 16002
+         },
+         {
+            "type": "EntityIdentifier",
+            "name": "拍摄模板",
+            "id": 16,
+            "enabled": true
+         }
+      ],
+      "enabled": true,
+      "version": 0
+   },
+   "inputSources": {
+      "RenderTarget": {
+         "type": "RenderTarget",
+         "commandMap": {},
+         "width": 0,
+         "height": 0,
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "NEAREST",
+            "minFilter": "NEAREST",
+            "sRGB": true,
+            "samplerType": "SAMPLER_2D"
+         },
+         "key": "RenderTarget",
+         "path": "RenderTarget.rdt",
+         "label": "RenderTarget.rdt",
+         "inputKey": "DeviceCameraTexture",
+         "input": "DeviceCameraTexture"
+      },
+      "DeviceCameraTexture": {
+         "type": "TextureData",
+         "commandMap": {},
+         "key": "DeviceCameraTexture",
+         "path": "DeviceCameraTexture.tex",
+         "label": "DeviceCameraTexture.tex"
+      },
+      "701cdb93-e830-4e11-9692-844e52de9c41": {
+         "type": "zip",
+         "commandMap": {},
+         "key": "701cdb93-e830-4e11-9692-844e52de9c41",
+         "label": "styleChild.zip",
+         "path": "video_bubblegum/styleChild.zip"
+      },
+      "b995b75c-9567-4f15-b37b-213b68b7dbd4": {
+         "type": "PAGFileData",
+         "commandMap": {},
+         "key": "b995b75c-9567-4f15-b37b-213b68b7dbd4",
+         "label": "fg1_1.pag",
+         "path": "video_bubblegum/fg1_1.pag",
+         "duration": 2083334,
+         "timeRange": {
+            "startTime": 0,
+            "duration": 0
+         },
+         "loopCount": 0,
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "NEAREST",
+            "minFilter": "NEAREST",
+            "sRGB": true,
+            "samplerType": "SAMPLER_2D"
+         },
+         "resolution": {
+            "width": 720,
+            "height": 1280
+         },
+         "frameRate": 12,
+         "hasAudio": false
+      },
+      "77a276f0-1cf0-4c6f-bc5d-8479a6da7b58": {
+         "type": "PAGFileData",
+         "commandMap": {},
+         "key": "77a276f0-1cf0-4c6f-bc5d-8479a6da7b58",
+         "label": "fg2_2.pag",
+         "path": "video_bubblegum/fg2_2.pag",
+         "duration": 1833334,
+         "timeRange": {
+            "startTime": 0,
+            "duration": 0
+         },
+         "loopCount": 0,
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "NEAREST",
+            "minFilter": "NEAREST",
+            "sRGB": true,
+            "samplerType": "SAMPLER_2D"
+         },
+         "resolution": {
+            "width": 360,
+            "height": 640
+         },
+         "frameRate": 12,
+         "hasAudio": false
+      },
+      "2493a027-aa6e-427b-a3bf-b45760c1680c": {
+         "type": "folder",
+         "commandMap": {},
+         "key": "2493a027-aa6e-427b-a3bf-b45760c1680c",
+         "label": "root",
+         "path": "./"
+      },
+      "820f597e-345c-430c-a40e-14258a2bc804": {
+         "type": "folder",
+         "commandMap": {},
+         "key": "820f597e-345c-430c-a40e-14258a2bc804",
+         "label": "video_bubblegum",
+         "path": "video_bubblegum"
+      },
+      "ad7a12fe-a6dc-4c96-af43-65d4514ef571": {
+         "type": "AudioClipData",
+         "commandMap": {},
+         "key": "ad7a12fe-a6dc-4c96-af43-65d4514ef571",
+         "label": "bgm.mp3",
+         "path": "video_bubblegum/bgm.mp3",
+         "duration": 15072650,
+         "timeRange": {
+            "startTime": 0,
+            "duration": 15072650
+         },
+         "loopCount": 0
+      },
+      "65ef5944-bb36-4165-a57f-05d229e7989e": {
+         "type": "AudioClipData",
+         "commandMap": {},
+         "key": "65ef5944-bb36-4165-a57f-05d229e7989e",
+         "label": "bubblegum.mp3",
+         "path": "video_bubblegum/bubblegum.mp3",
+         "duration": 3056300,
+         "timeRange": {
+            "startTime": 0,
+            "duration": 3056300
+         },
+         "loopCount": 0
+      },
+      "512f7cbb-7882-4ea3-a696-0ed4bda2d5f8": {
+         "type": "PAGFileData",
+         "commandMap": {},
+         "key": "512f7cbb-7882-4ea3-a696-0ed4bda2d5f8",
+         "label": "bubblegum.pag",
+         "path": "video_bubblegum/bubblegum.pag",
+         "duration": 3083334,
+         "timeRange": {
+            "startTime": 0,
+            "duration": 0
+         },
+         "loopCount": 0,
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "NEAREST",
+            "minFilter": "NEAREST",
+            "sRGB": true,
+            "samplerType": "SAMPLER_2D"
+         },
+         "resolution": {
+            "width": 720,
+            "height": 720
+         },
+         "frameRate": 12,
+         "hasAudio": false
+      },
+      "DeviceCameraTexture1": {
+         "type": "TextureData",
+         "commandMap": {},
+         "key": "DeviceCameraTexture1",
+         "label": "DeviceCameraTexture.tex",
+         "path": "video_bubblegum/DeviceCameraTexture.tex"
+      },
+      "6d376efa-5439-4a1f-9e3a-f497a611dead": {
+         "type": "PAGFileData",
+         "commandMap": {},
+         "key": "6d376efa-5439-4a1f-9e3a-f497a611dead",
+         "label": "fg1_2.pag",
+         "path": "video_bubblegum/fg1_2.pag",
+         "duration": 3083334,
+         "timeRange": {
+            "startTime": 0,
+            "duration": 0
+         },
+         "loopCount": 0,
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "NEAREST",
+            "minFilter": "NEAREST",
+            "sRGB": true,
+            "samplerType": "SAMPLER_2D"
+         },
+         "resolution": {
+            "width": 360,
+            "height": 640
+         },
+         "frameRate": 12,
+         "hasAudio": false
+      },
+      "f27df803-3bab-4e35-a4e8-8bd971422870": {
+         "type": "PAGFileData",
+         "commandMap": {},
+         "key": "f27df803-3bab-4e35-a4e8-8bd971422870",
+         "label": "fg3.pag",
+         "path": "video_bubblegum/fg3.pag",
+         "duration": 2000000,
+         "timeRange": {
+            "startTime": 0,
+            "duration": 0
+         },
+         "loopCount": 0,
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "NEAREST",
+            "minFilter": "NEAREST",
+            "sRGB": true,
+            "samplerType": "SAMPLER_2D"
+         },
+         "resolution": {
+            "width": 360,
+            "height": 640
+         },
+         "frameRate": 12,
+         "hasAudio": false
+      },
+      "d65f8f97-6468-42d5-bee1-da978e629ace": {
+         "type": "ImageData",
+         "commandMap": {},
+         "key": "d65f8f97-6468-42d5-bee1-da978e629ace",
+         "label": "filterEffect.png",
+         "path": "video_bubblegum/filterEffect.png",
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "LINEAR",
+            "minFilter": "LINEAR_MIPMAP_LINEAR",
+            "sRGB": true,
+            "samplerType": "SAMPLER_2D"
+         },
+         "actualSize": 281232,
+         "resolution": {
+            "height": 512,
+            "width": 512
+         },
+         "compression": 0
+      },
+      "05a4afea-986b-4dfc-a0bb-6d89be503b17": {
+         "type": "ImageData",
+         "commandMap": {},
+         "key": "05a4afea-986b-4dfc-a0bb-6d89be503b17",
+         "label": "hairpin_0.png",
+         "path": "video_bubblegum/hairpin_0.png",
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "LINEAR",
+            "minFilter": "LINEAR_MIPMAP_LINEAR",
+            "sRGB": true,
+            "samplerType": "SAMPLER_2D"
+         },
+         "actualSize": 7469,
+         "resolution": {
+            "height": 78,
+            "width": 85
+         },
+         "compression": 0
+      },
+      "991b7f41-3a06-499c-a089-024d6479f12e": {
+         "type": "ImageData",
+         "commandMap": {},
+         "key": "991b7f41-3a06-499c-a089-024d6479f12e",
+         "label": "hat_0.png",
+         "path": "video_bubblegum/hat_0.png",
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "LINEAR",
+            "minFilter": "LINEAR_MIPMAP_LINEAR",
+            "sRGB": true,
+            "samplerType": "SAMPLER_2D"
+         },
+         "actualSize": 56973,
+         "resolution": {
+            "height": 320,
+            "width": 550
+         },
+         "compression": 0
+      },
+      "3e186584-8326-4e5f-b83d-0790545e8c20": {
+         "type": "ImageData",
+         "commandMap": {},
+         "key": "3e186584-8326-4e5f-b83d-0790545e8c20",
+         "label": "okbeng_0.png",
+         "path": "video_bubblegum/okbeng_0.png",
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "LINEAR",
+            "minFilter": "LINEAR_MIPMAP_LINEAR",
+            "sRGB": true,
+            "samplerType": "SAMPLER_2D"
+         },
+         "actualSize": 8328,
+         "resolution": {
+            "height": 76,
+            "width": 80
+         }
+      },
+      "RenderTarget1": {
+         "type": "RenderTarget",
+         "commandMap": {},
+         "key": "RenderTarget1",
+         "label": "RenderTarget.rdt",
+         "path": "video_bubblegum/RenderTarget.rdt",
+         "input": "DeviceCameraTexture",
+         "width": 0,
+         "height": 0,
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "NEAREST",
+            "minFilter": "NEAREST",
+            "sRGB": true,
+            "samplerType": "SAMPLER_2D"
+         },
+         "inputKey": "DeviceCameraTexture"
+      },
+      "2468f5a5-c598-4b47-a5c1-2a763e38751a": {
+         "type": "js",
+         "commandMap": {},
+         "key": "2468f5a5-c598-4b47-a5c1-2a763e38751a",
+         "label": "script_with_time.js",
+         "path": "video_bubblegum/script_with_time.js"
+      },
+      "702b0ff0-104c-40cb-842b-0aa1ac30cdc2": {
+         "type": "PAGFileData",
+         "commandMap": {},
+         "key": "702b0ff0-104c-40cb-842b-0aa1ac30cdc2",
+         "label": "zc1.pag",
+         "path": "video_bubblegum/zc1.pag",
+         "duration": 3083334,
+         "timeRange": {
+            "startTime": 0,
+            "duration": 0
+         },
+         "loopCount": 0,
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "NEAREST",
+            "minFilter": "NEAREST",
+            "sRGB": true,
+            "samplerType": "SAMPLER_2D"
+         },
+         "resolution": {
+            "width": 360,
+            "height": 640
+         },
+         "frameRate": 12,
+         "hasAudio": false
+      },
+      "2f37746b-8d15-4f1c-a5c0-bd13d71ea119": {
+         "type": "PAGFileData",
+         "commandMap": {},
+         "key": "2f37746b-8d15-4f1c-a5c0-bd13d71ea119",
+         "label": "zc2.pag",
+         "path": "video_bubblegum/zc2.pag",
+         "duration": 916667,
+         "timeRange": {
+            "startTime": 0,
+            "duration": 0
+         },
+         "loopCount": 0,
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "NEAREST",
+            "minFilter": "NEAREST",
+            "sRGB": true,
+            "samplerType": "SAMPLER_2D"
+         },
+         "resolution": {
+            "width": 360,
+            "height": 640
+         },
+         "frameRate": 12,
+         "hasAudio": false
+      }
+   },
+   "preset": {},
+   "properties": {
+      "layout": {
+         "width": 720,
+         "height": 1280
+      },
+      "boundsTrackerPlaceHolders": [],
+      "musicIDs": [],
+      "fonts": [],
+      "movieConfig": {
+         "sourceType": 2,
+         "minClipAssetCount": 1,
+         "maxClipAssetCount": 999,
+         "minImageDuration": 1000000,
+         "maxImageDuration": 10000000,
+         "minVideoDuration": 2000000,
+         "preferredCoverTime": 1000000,
+         "originVolume": 1,
+         "cropEvents": [
+            "SlowRhythmTrail"
+         ],
+         "imageCropSpace": 0,
+         "videoCropSpace": -1,
+         "disableEventsWhileTransition": true
+      },
+      "materialConfigs": [],
+      "resourceIDs": []
+   }
+}

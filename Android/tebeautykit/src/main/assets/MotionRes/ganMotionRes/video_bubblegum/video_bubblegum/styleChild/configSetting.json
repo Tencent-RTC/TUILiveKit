@@ -1,0 +1,8 @@
+{
+	"category":{
+	    "name": "category",
+	    "label": "GAN分类",
+	    "type": "string",
+	    "value":"变小孩"
+	}
+}

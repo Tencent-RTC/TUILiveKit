@@ -1,0 +1,53 @@
+{
+    "displayName":"虚拟背景",
+    "displayNameEn":"Virtual background",
+    "downloadPath":"MotionRes/segmentMotionRes/",
+    "propertyList":[
+        {
+            "displayName":"无",
+            "displayNameEn":"None",
+            "icon":"beauty_panel/panel_icon/beauty/none.png"
+        },
+        {
+            "displayName":"自定义背景",
+            "displayNameEn":"Custom",
+            "icon":"beauty_panel/panel_icon/motions_icon/add.png",
+            "resourceUri":"MotionRes/segmentMotionRes/video_empty_segmentation",
+            "sdkParam":{
+                "extraInfo":{
+                    "segType":"custom_background"
+                }
+            }
+        },
+        {
+            "displayName":"绿幕抠图",
+            "displayNameEn":"GreenScreen",
+            "icon":"beauty_panel/panel_icon/motions_icon/greenscreen.png",
+            "resourceUri":"MotionRes/segmentMotionRes/video_greenscreen",
+            "sdkParam":{
+                "extraInfo":{
+                    "segType":"green_background"
+                }
+            }
+        },
+        {
+            "displayName":"背景模糊-弱",
+            "displayNameEn":"Blur(weak)",
+            "icon":"beauty_panel/panel_icon/motions_icon/video_segmentation_blur_45.png",
+            "resourceUri":"MotionRes/segmentMotionRes/video_segmentation_blur_45"
+        },
+        {
+            "displayName":"背景模糊-强",
+            "displayNameEn":"Blur(strong)",
+            "icon":"beauty_panel/panel_icon/motions_icon/video_segmentation_blur_75.png",
+            "resourceUri":"MotionRes/segmentMotionRes/video_segmentation_blur_75"
+        },
+        {
+            "displayName":"背景透明",
+            "displayNameEn":"Transparent",
+            "icon":"beauty_panel/panel_icon/motions_icon/video_segmentation_transparent_bg.png",
+            "resourceUri":"MotionRes/segmentMotionRes/video_segmentation_transparent_bg"
+              
+        }
+    ]
+}

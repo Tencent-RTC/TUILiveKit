@@ -7,6 +7,8 @@ import static com.trtc.uikit.livekit.common.utils.Constants.EVENT_SUB_KEY_LINK_S
 import static com.trtc.uikit.livekit.state.LiveDefine.LinkStatus.NONE;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +20,9 @@ import androidx.fragment.app.Fragment;
 
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
-import com.tencent.trtc.TRTCCloudDef;
 import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.common.uicomponent.beauty.VideoFrameListener;
+import com.trtc.uikit.livekit.common.utils.LiveKitLog;
 import com.trtc.uikit.livekit.manager.LiveController;
 import com.trtc.uikit.livekit.state.LiveDefine;
 import com.trtc.uikit.livekit.view.liveroom.view.audience.AudienceView;
@@ -35,8 +36,10 @@ public class TUILiveRoomAudienceFragment extends Fragment implements ITUINotific
     private       LiveController                  mLiveController;
     private       LiveDefine.LinkStatus           mCurrentLinkStatus;
     private final String                          mRoomId;
-    private final Observer<LiveDefine.LinkStatus> mLinkStatusObserver = this::onLinkStatusChange;
-
+    private final Observer<LiveDefine.LinkStatus> mLinkStatusObserver          = this::onLinkStatusChange;
+    private final Observer<Boolean>               mGLContextCreateFlagObserver = this::onGLContextCreateFlag;
+    private final Handler                         mMainHandler                 = new Handler(Looper.getMainLooper());
+    private       boolean                         mOnDestroyFlag               = false;
 
     public TUILiveRoomAudienceFragment(String roomId) {
         mRoomId = roomId;
@@ -48,6 +51,7 @@ public class TUILiveRoomAudienceFragment extends Fragment implements ITUINotific
         initLiveController();
         addObserver();
         TUICore.registerEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_FINISH_ACTIVITY, this);
+        mLiveController.getBeautyState().glContextCreateFlag.observe(mGLContextCreateFlagObserver);
     }
 
     @Nullable
@@ -90,24 +94,37 @@ public class TUILiveRoomAudienceFragment extends Fragment implements ITUINotific
         super.onDestroy();
         removeObserver();
         TUICore.unRegisterEvent(this);
-        mLiveController.destroy();
+        unInitLiveController();
     }
 
     private void initLiveController() {
         mLiveController = new LiveController();
         mLiveController.getSeatState().setFilterEmptySeat(true);
         mLiveController.setRoomId(mRoomId);
+        mLiveController.getMediaController().setCustomVideoProcess();
         mCurrentLinkStatus = mLiveController.getViewState().linkStatus.get();
-        setLocalVideoProcessListener();
     }
 
-    private void setLocalVideoProcessListener() {
-        if (TUICore.getService("TEBeautyExtension") == null) {
-            return;
+    private void unInitLiveController() {
+        mOnDestroyFlag = true;
+        if (Boolean.TRUE.equals(mLiveController.getBeautyState().glContextCreateFlag.get())) {
+            LiveKitLog.warn("Wait for LiveService to be destroyed by onGLContextDestory");
+            mLiveController.destroyWithoutLiveService();
+        } else {
+            mLiveController.getBeautyState().glContextCreateFlag.removeObserver(mGLContextCreateFlagObserver);
+            mLiveController.destroy();
         }
-        mLiveController.getLiveService().getTRTCCloud().setLocalVideoProcessListener(
-                TRTCCloudDef.TRTC_VIDEO_PIXEL_FORMAT_Texture_2D,
-                TRTCCloudDef.TRTC_VIDEO_BUFFER_TYPE_TEXTURE, new VideoFrameListener(getContext()));
+    }
+
+    private void onGLContextCreateFlag(Boolean value) {
+        if (Boolean.FALSE.equals(value)) {
+            mMainHandler.post(() -> {
+                if (mOnDestroyFlag) {
+                    mLiveController.getBeautyState().glContextCreateFlag.removeObserver(mGLContextCreateFlagObserver);
+                    mLiveController.getLiveService().destroy();
+                }
+            });
+        }
     }
 
     private void addObserver() {
