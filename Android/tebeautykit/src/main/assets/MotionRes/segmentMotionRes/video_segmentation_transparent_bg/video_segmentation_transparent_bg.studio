@@ -1,0 +1,640 @@
+{
+   "name": "video_segmentation_transparent_bg",
+   "author": "paddyjiang",
+   "category": 1,
+   "scene": {
+      "id": 16,
+      "name": "拍摄模板",
+      "children": [
+         {
+            "id": 33,
+            "name": "非美型占位节点",
+            "children": [],
+            "enabled": true,
+            "version": 0,
+            "forbid": true,
+            "canNotRemove": true,
+            "isFirstChildren": true,
+            "components": [
+               {
+                  "type": "ScreenTransform",
+                  "position": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "rotation": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0,
+                     "w": 1
+                  },
+                  "scale": {
+                     "x": 1,
+                     "y": 1,
+                     "z": 1,
+                     "eKeepRatio": true
+                  },
+                  "eEuler": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "anchor": {
+                     "left": 0,
+                     "right": 0,
+                     "top": 0,
+                     "bottom": 0
+                  },
+                  "offset": {
+                     "left": -360,
+                     "right": 360,
+                     "top": 640,
+                     "bottom": -640
+                  },
+                  "pivot": {
+                     "x": 0,
+                     "y": 0
+                  },
+                  "ePinToEdge": 0,
+                  "eFixSize": 3,
+                  "eEditingMode": 0,
+                  "eKeepRatio": true,
+                  "objectEnabled": true,
+                  "enabled": true,
+                  "entityId": 33,
+                  "componentID": 33001,
+                  "level": 350
+               },
+               {
+                  "beautyStatus": 1,
+                  "componentID": 33002,
+                  "enabled": true,
+                  "entityId": 33,
+                  "level": 280,
+                  "makeupStatus": 1,
+                  "smoothStatus": 0,
+                  "type": "BasicBeautyPlaceHolder",
+                  "version": 4
+               }
+            ]
+         },
+         {
+            "id": 17,
+            "name": "2D画板",
+            "children": [
+               {
+                  "id": 18,
+                  "name": "AITexture",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "type": "ScreenTransform",
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1,
+                           "eKeepRatio": true
+                        },
+                        "eEuler": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "anchor": {
+                           "left": 0,
+                           "right": 0,
+                           "top": 0,
+                           "bottom": 0
+                        },
+                        "offset": {
+                           "left": -360,
+                           "right": 360,
+                           "top": 640,
+                           "bottom": -640
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 0,
+                        "eFixSize": 3,
+                        "eEditingMode": 0,
+                        "eKeepRatio": true,
+                        "objectEnabled": true,
+                        "enabled": true,
+                        "entityId": 18,
+                        "componentID": 18001,
+                        "level": 350
+                     },
+                     {
+                        "aiType": "BG_SEG_AGENT",
+                        "isRealTimeResult": true,
+                        "renderTargetList": [
+                           "RenderTarget1"
+                        ],
+                        "type": "AITextureComponent",
+                        "enabled": true,
+                        "entityId": 18,
+                        "componentID": 18002,
+                        "level": 265
+                     }
+                  ]
+               },
+               {
+                  "id": 19,
+                  "name": "分割",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "type": "ScreenTransform",
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1,
+                           "eKeepRatio": true
+                        },
+                        "eEuler": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "anchor": {
+                           "bottom": -1,
+                           "left": -1,
+                           "right": 1,
+                           "top": 1
+                        },
+                        "offset": {
+                           "bottom": 0,
+                           "left": 0,
+                           "right": 0,
+                           "top": 0
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 15,
+                        "eFixSize": 0,
+                        "eEditingMode": 1,
+                        "eKeepRatio": true,
+                        "objectEnabled": true,
+                        "enabled": true,
+                        "entityId": 19,
+                        "componentID": 19001,
+                        "level": 350
+                     },
+                     {
+                        "bgAlpha": 0,
+                        "componentID": 19002,
+                        "cutRange": [
+                           0,
+                           0,
+                           0,
+                           0
+                        ],
+                        "enabled": true,
+                        "entityId": 19,
+                        "level": 230,
+                        "maskResource": "RenderTarget1",
+                        "renderTarget": "RenderTarget2",
+                        "strokeBorderType": "glow",
+                        "strokeColor": "#ffffffff",
+                        "strokeEnable": false,
+                        "strokeGap": 0,
+                        "strokeSpeedLevel": 50,
+                        "strokeTextureColumn": 1,
+                        "strokeTextureResource": "",
+                        "strokeTextureRow": 1,
+                        "strokeWidth": 1,
+                        "type": "Segmentation",
+                        "version": 12
+                     }
+                  ]
+               },
+               {
+                  "id": 20,
+                  "name": "前景贴纸",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "anchor": {
+                           "bottom": -1,
+                           "left": -1,
+                           "right": 1,
+                           "top": 1
+                        },
+                        "offset": {
+                           "bottom": 0,
+                           "left": 0,
+                           "right": 0,
+                           "top": 0
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 15,
+                        "eFixSize": 0,
+                        "eEditingMode": 1,
+                        "eKeepRatio": true,
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "scale": {
+                           "eKeepRatio": true,
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "rotation": {
+                           "w": 1,
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "objectEnabled": true,
+                        "entityId": 20,
+                        "componentID": 20001,
+                        "type": "ScreenTransform",
+                        "enabled": true,
+                        "version": 2,
+                        "level": 350
+                     },
+                     {
+                        "componentID": 20002,
+                        "enabled": true,
+                        "entityId": 20,
+                        "level": 1,
+                        "scaleMode": 2,
+                        "src": "RenderTarget2",
+                        "type": "Image",
+                        "version": 14
+                     },
+                     {
+                        "alpha": 1,
+                        "mode": "normal",
+                        "type": "BlendMode",
+                        "enabled": true,
+                        "entityId": 20,
+                        "componentID": 20003,
+                        "level": 2
+                     },
+                     {
+                        "eAlignMode": 2,
+                        "startOffset": 0,
+                        "duration": 2000000,
+                        "endOffset": 0,
+                        "loopCount": -1,
+                        "type": "TimeOffset",
+                        "enabled": true,
+                        "entityId": 20,
+                        "componentID": 20004,
+                        "level": 1,
+                        "version": null
+                     }
+                  ]
+               },
+               {
+                  "id": 40,
+                  "name": "美型占位节点",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "forbid": true,
+                  "canNotRemove": true,
+                  "components": [
+                     {
+                        "type": "ScreenTransform",
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1,
+                           "eKeepRatio": true
+                        },
+                        "eEuler": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "anchor": {
+                           "left": 0,
+                           "right": 0,
+                           "top": 0,
+                           "bottom": 0
+                        },
+                        "offset": {
+                           "left": -360,
+                           "right": 360,
+                           "top": 640,
+                           "bottom": -640
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 0,
+                        "eFixSize": 3,
+                        "eEditingMode": 0,
+                        "eKeepRatio": true,
+                        "objectEnabled": true,
+                        "enabled": true,
+                        "entityId": 40,
+                        "componentID": 40001,
+                        "level": 350
+                     },
+                     {
+                        "componentID": 40002,
+                        "enabled": true,
+                        "entityId": 40,
+                        "level": 280,
+                        "reshapeStatus": 1,
+                        "type": "BasicReshapePlaceHolder",
+                        "version": 2
+                     }
+                  ]
+               }
+            ],
+            "enabled": true,
+            "version": 0,
+            "components": [
+               {
+                  "anchor": {
+                     "bottom": -1,
+                     "left": -1,
+                     "right": 1,
+                     "top": 1
+                  },
+                  "offset": {
+                     "bottom": 0,
+                     "left": 0,
+                     "right": 0,
+                     "top": 0
+                  },
+                  "pivot": {
+                     "x": 0,
+                     "y": 0
+                  },
+                  "ePinToEdge": 15,
+                  "eFixSize": 0,
+                  "eEditingMode": 1,
+                  "eKeepRatio": false,
+                  "position": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "scale": {
+                     "x": 1,
+                     "y": 1,
+                     "z": 1
+                  },
+                  "rotation": {
+                     "w": 0,
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "entityId": 17,
+                  "componentID": 17001,
+                  "type": "ScreenTransform",
+                  "enabled": true,
+                  "version": 2,
+                  "objectEnabled": true,
+                  "level": 350
+               },
+               {
+                  "componentID": 17002,
+                  "enabled": true,
+                  "entityId": 17,
+                  "renderTargetKey": "RenderTarget",
+                  "type": "Camera",
+                  "version": 2,
+                  "level": 2
+               }
+            ]
+         }
+      ],
+      "components": [
+         {
+            "anchor": {
+               "bottom": -1,
+               "left": -1,
+               "right": 1,
+               "top": 1
+            },
+            "offset": {
+               "bottom": 0,
+               "left": 0,
+               "right": 0,
+               "top": 0
+            },
+            "pivot": {
+               "x": 0,
+               "y": 0
+            },
+            "ePinToEdge": 15,
+            "eFixSize": 0,
+            "eEditingMode": 1,
+            "eKeepRatio": false,
+            "position": {
+               "x": 0,
+               "y": 0,
+               "z": 0
+            },
+            "scale": {
+               "x": 1,
+               "y": 1,
+               "z": 1
+            },
+            "rotation": {
+               "w": 0,
+               "x": 0,
+               "y": 0,
+               "z": 0
+            },
+            "objectEnabled": true,
+            "entityId": 16,
+            "componentID": 16001,
+            "type": "ScreenTransform",
+            "enabled": true,
+            "version": 10,
+            "level": 350
+         },
+         {
+            "defaultCameraPosition": 0,
+            "enableDowngradeAsset": true,
+            "enableRotation": true,
+            "needAutoBeauty": false,
+            "needVoiceDecibel": false,
+            "resetWhenStartRecord": true,
+            "supportCameraPosition": 0,
+            "sync3dRenderEnable": false,
+            "type": "ExtraSetting",
+            "enabled": true,
+            "version": 1,
+            "entityId": 16,
+            "componentID": 16002,
+            "level": 4
+         }
+      ],
+      "enabled": true,
+      "version": 0
+   },
+   "resources": {
+      "items": [
+         {
+            "type": "folder",
+            "commandMap": {},
+            "key": "232d13ab-69f6-400b-8b7d-20f18e6394f9",
+            "label": "root",
+            "path": "./",
+            "level": 2
+         },
+         {
+            "type": "TextureData",
+            "commandMap": {},
+            "key": "DeviceCameraTexture",
+            "path": "DeviceCameraTexture.tex",
+            "label": "DeviceCameraTexture.tex",
+            "level": 2
+         },
+         {
+            "type": "RenderTarget",
+            "commandMap": {},
+            "inputColor": "#ffffffff",
+            "sizeType": 0,
+            "useForDisplay": false,
+            "compatibilityMode": true,
+            "depthType": "DEPTH24",
+            "textureOptions": {
+               "wrapS": "REPEAT",
+               "wrapT": "REPEAT",
+               "magFilter": "NEAREST",
+               "minFilter": "NEAREST",
+               "sRGB": false,
+               "mipmap": false,
+               "samplerType": "SAMPLER_2D"
+            },
+            "key": "RenderTarget",
+            "path": "RenderTarget.rdt",
+            "label": "RenderTarget.rdt",
+            "inputKey": "DeviceCameraTexture",
+            "input": "DeviceCameraTexture",
+            "level": 2,
+            "width": 0,
+            "height": 0
+         },
+         {
+            "type": "RenderTarget",
+            "commandMap": {},
+            "inputColor": "#ffffffff",
+            "sizeType": 0,
+            "useForDisplay": false,
+            "compatibilityMode": true,
+            "depthType": "DEPTH24",
+            "textureOptions": {
+               "wrapS": "REPEAT",
+               "wrapT": "REPEAT",
+               "magFilter": "NEAREST",
+               "minFilter": "NEAREST",
+               "sRGB": false,
+               "mipmap": false,
+               "samplerType": "SAMPLER_2D"
+            },
+            "key": "RenderTarget1",
+            "label": "RenderTarget_AITexture_1.rdt",
+            "path": "RenderTarget_AITexture_1.rdt",
+            "input": "",
+            "inputType": "RT_InputType_Texture",
+            "level": 2,
+            "inputKey": "",
+            "width": 0,
+            "height": 0
+         },
+         {
+            "type": "RenderTarget",
+            "commandMap": {},
+            "inputColor": "#ffffffff",
+            "sizeType": 0,
+            "useForDisplay": false,
+            "compatibilityMode": true,
+            "depthType": "DEPTH24",
+            "textureOptions": {
+               "wrapS": "REPEAT",
+               "wrapT": "REPEAT",
+               "magFilter": "NEAREST",
+               "minFilter": "NEAREST",
+               "sRGB": false,
+               "mipmap": false,
+               "samplerType": "SAMPLER_2D"
+            },
+            "key": "RenderTarget2",
+            "label": "RenderTarget_Segmentation_2.rdt",
+            "path": "RenderTarget_Segmentation_2.rdt",
+            "input": "",
+            "inputType": "RT_InputType_Texture",
+            "level": 2,
+            "inputKey": "",
+            "width": 0,
+            "height": 0
+         },
+         {
+            "type": "default",
+            "commandMap": {},
+            "key": "eb93467d-2baa-46fc-9f2e-f351e9376d15",
+            "label": "video_segmentation_transparent_bg.2023-04-26-08-02-41-884Z.bak",
+            "path": "video_segmentation_transparent_bg.2023-04-26-08-02-41-884Z.bak",
+            "level": 2
+         }
+      ]
+   },
+   "cloudResourceData": [],
+   "componentLevel": 350,
+   "creationTime": "2021-12-27 15:45:52",
+   "updateTime": "2023-04-26 16:13:39",
+   "path": "/Users/jiangpeng/git_projects/light-sdk-youtu/assets/MotionRes/segmentMotionRes/video_segmentation_transparent_bg/",
+   "downloadMusicList": []
+}

@@ -1,0 +1,56 @@
+{
+    "id": "style_child",
+    "imageSize": [256, 256],
+    "modelName": "YT_BabyFaceBeauty_5w8.onnx.opt.onnx",
+    "cropBorderColorRGBA":"#00000000",
+    "outputRenderTargets":["gan_warptexture"],
+    "textureMaterials":["mattenew.png"],
+    "libraryPath":"age_style_process",
+    "preprocess":{
+        "blobNames":["0"],
+        "function":"age_style_preprocess_image"
+    },
+    "postprocess":{
+        "blobNames":["324","325"],
+        "function":"age_style_postprocess"
+    },
+    "postRender":{
+        "faceMaskName":"facemasknew.png"
+    },
+    "distortion":{
+        "filePath":"distortion.json"
+    },
+    "makeups":[
+        {
+            "image":"softlight.png",
+            "blendMode":6,
+            "blendAlpha":1.0
+        },
+        {
+            "image":"softlighlip.png",
+            "blendMode":6,
+            "blendAlpha":1.0
+        },
+        {
+            "image":"multiply.png",
+            "blendMode":2,
+            "blendAlpha":1.0
+        },
+        {
+            "image":"overlay.png",
+            "blendMode":4,
+            "blendAlpha":1.0
+        }
+    ],
+    "iris":[
+        {
+            "image":"iris_d_5.png",
+            "blendMode":1,
+            "blendAlpha": 0.4
+        }
+    ],
+    "warp":{
+        "inputRenderTarget":"gan_warptexture",
+        "transformMask":"merge.png"
+    }
+}

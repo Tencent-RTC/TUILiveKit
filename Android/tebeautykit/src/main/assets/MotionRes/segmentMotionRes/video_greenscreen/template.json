@@ -1,0 +1,827 @@
+{
+   "isFragment": false,
+   "componentLevel": 325,
+   "madeIn": "LightStudio",
+   "root": {
+      "id": 16,
+      "name": "拍摄模板",
+      "children": [
+         {
+            "id": 17,
+            "name": "绿幕抠图画板",
+            "children": [
+               {
+                  "id": 18,
+                  "name": "CustomGraph",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "type": "ScreenTransform",
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1,
+                           "eKeepRatio": true
+                        },
+                        "eEuler": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "anchor": {
+                           "top": 1,
+                           "bottom": -1,
+                           "left": -1,
+                           "right": 1
+                        },
+                        "offset": {
+                           "top": 0,
+                           "bottom": 0,
+                           "left": 0,
+                           "right": 0
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 15,
+                        "eFixSize": 0,
+                        "eEditingMode": 1,
+                        "eKeepRatio": true,
+                        "objectEnabled": true,
+                        "interactive": false,
+                        "enabled": true,
+                        "entityId": 18,
+                        "componentID": 18001,
+                        "level": 2
+                     },
+                     {
+                        "componentID": 18002,
+                        "enabled": true,
+                        "entityId": 18,
+                        "level": 325,
+                        "resourcePath": "646212fb-2c67-4a40-8325-ac159a4ee533",
+                        "type": "CustomGraph",
+                        "version": 283
+                     },
+                     {
+                        "componentID": 18003,
+                        "enabled": true,
+                        "entityId": 18,
+                        "level": 4,
+                        "scriptPath": "34f323b7-ad28-40a8-b5b5-a65c74e5d147",
+                        "type": "Script",
+                        "version": 45
+                     },
+                     {
+                        "type": "EntityIdentifier",
+                        "name": "CustomGraph",
+                        "id": 18,
+                        "originID": 18,
+                        "enabled": true
+                     }
+                  ]
+               }
+            ],
+            "enabled": true,
+            "version": 0,
+            "components": [
+               {
+                  "anchor": {
+                     "bottom": -1,
+                     "left": -1,
+                     "right": 1,
+                     "top": 1
+                  },
+                  "offset": {
+                     "bottom": 0,
+                     "left": 0,
+                     "right": 0,
+                     "top": 0
+                  },
+                  "pivot": {
+                     "x": 0,
+                     "y": 0
+                  },
+                  "ePinToEdge": 15,
+                  "eFixSize": 0,
+                  "eEditingMode": 1,
+                  "eKeepRatio": false,
+                  "position": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "scale": {
+                     "x": 1,
+                     "y": 1,
+                     "z": 1
+                  },
+                  "rotation": {
+                     "w": 1,
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "entityId": 17,
+                  "componentID": 17001,
+                  "type": "ScreenTransform",
+                  "enabled": true,
+                  "version": 2,
+                  "objectEnabled": true,
+                  "level": 2
+               },
+               {
+                  "componentID": 17002,
+                  "enabled": true,
+                  "entityId": 17,
+                  "level": 2,
+                  "renderTargetKey": "RenderTarget",
+                  "type": "Camera",
+                  "version": 6
+               },
+               {
+                  "type": "EntityIdentifier",
+                  "name": "绿幕抠图画板",
+                  "id": 17,
+                  "originID": 17,
+                  "enabled": true
+               }
+            ]
+         },
+         {
+            "id": 19,
+            "name": "模糊叠加画板",
+            "children": [
+               {
+                  "id": 22,
+                  "name": "背景贴纸",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "anchor": {
+                           "bottom": -1,
+                           "left": -1,
+                           "right": 1,
+                           "top": 1
+                        },
+                        "offset": {
+                           "bottom": 0,
+                           "left": 0,
+                           "right": 0,
+                           "top": 0
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 15,
+                        "eFixSize": 0,
+                        "eEditingMode": 1,
+                        "eKeepRatio": true,
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "scale": {
+                           "eKeepRatio": true,
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "rotation": {
+                           "w": 1,
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "objectEnabled": true,
+                        "entityId": 22,
+                        "componentID": 22001,
+                        "type": "ScreenTransform",
+                        "enabled": true,
+                        "version": 390,
+                        "interactive": false,
+                        "level": 2
+                     },
+                     {
+                        "componentID": 22002,
+                        "enabled": true,
+                        "entityId": 22,
+                        "level": 1,
+                        "scaleMode": 3,
+                        "src": "CustomBackground",
+                        "type": "Image",
+                        "version": 76
+                     },
+                     {
+                        "alpha": 1,
+                        "componentID": 22003,
+                        "enabled": true,
+                        "entityId": 22,
+                        "level": 2,
+                        "mode": "normal",
+                        "type": "BlendMode",
+                        "version": 71
+                     },
+                     {
+                        "startOffset": 0,
+                        "duration": 2000000,
+                        "endOffset": -2147483648,
+                        "loopCount": -1,
+                        "type": "TimeOffset",
+                        "enabled": true,
+                        "entityId": 22,
+                        "componentID": 22004,
+                        "level": 1,
+                        "version": 33
+                     },
+                     {
+                        "type": "EntityIdentifier",
+                        "name": "背景贴纸",
+                        "id": 22,
+                        "originID": 22,
+                        "enabled": true
+                     }
+                  ]
+               },
+               {
+                  "id": 23,
+                  "name": "抠图贴纸",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "anchor": {
+                           "bottom": -1,
+                           "left": -1,
+                           "right": 1,
+                           "top": 1
+                        },
+                        "offset": {
+                           "bottom": 0,
+                           "left": 0,
+                           "right": 0,
+                           "top": 0
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 15,
+                        "eFixSize": 0,
+                        "eEditingMode": 1,
+                        "eKeepRatio": true,
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "scale": {
+                           "eKeepRatio": true,
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "rotation": {
+                           "w": 1,
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "objectEnabled": true,
+                        "entityId": 23,
+                        "componentID": 23001,
+                        "type": "ScreenTransform",
+                        "enabled": true,
+                        "version": 902,
+                        "interactive": false,
+                        "level": 2
+                     },
+                     {
+                        "componentID": 23002,
+                        "enabled": true,
+                        "entityId": 23,
+                        "level": 1,
+                        "scaleMode": 2,
+                        "src": "RenderTarget",
+                        "type": "Image",
+                        "version": 24
+                     },
+                     {
+                        "alpha": 1,
+                        "componentID": 23003,
+                        "enabled": true,
+                        "entityId": 23,
+                        "level": 2,
+                        "mode": "normal",
+                        "type": "BlendMode",
+                        "version": 124
+                     },
+                     {
+                        "startOffset": 0,
+                        "duration": 2000000,
+                        "endOffset": -2147483648,
+                        "loopCount": -1,
+                        "type": "TimeOffset",
+                        "enabled": true,
+                        "entityId": 23,
+                        "componentID": 23004,
+                        "level": 1,
+                        "version": null
+                     },
+                     {
+                        "type": "EntityIdentifier",
+                        "name": "抠图贴纸",
+                        "id": 23,
+                        "originID": 23,
+                        "enabled": true
+                     }
+                  ]
+               }
+            ],
+            "enabled": true,
+            "version": 0,
+            "components": [
+               {
+                  "type": "ScreenTransform",
+                  "position": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "rotation": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0,
+                     "w": 1
+                  },
+                  "scale": {
+                     "x": 1,
+                     "y": 1,
+                     "z": 1,
+                     "eKeepRatio": true
+                  },
+                  "eEuler": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "anchor": {
+                     "top": 1,
+                     "bottom": -1,
+                     "left": -1,
+                     "right": 1
+                  },
+                  "offset": {
+                     "top": 0,
+                     "bottom": 0,
+                     "left": 0,
+                     "right": 0
+                  },
+                  "pivot": {
+                     "x": 0,
+                     "y": 0
+                  },
+                  "ePinToEdge": 15,
+                  "eFixSize": 0,
+                  "eEditingMode": 1,
+                  "eKeepRatio": true,
+                  "objectEnabled": true,
+                  "interactive": false,
+                  "enabled": true,
+                  "entityId": 19,
+                  "componentID": 19001,
+                  "level": 2
+               },
+               {
+                  "componentID": 19002,
+                  "duplicateInput": 0,
+                  "enabled": true,
+                  "entityId": 19,
+                  "level": 2,
+                  "renderTargetKey": "RenderTarget2",
+                  "type": "Camera",
+                  "version": 4
+               },
+               {
+                  "type": "EntityIdentifier",
+                  "name": "模糊叠加画板",
+                  "id": 19,
+                  "originID": 19,
+                  "enabled": true
+               }
+            ]
+         }
+      ],
+      "components": [
+         {
+            "anchor": {
+               "bottom": -1,
+               "left": -1,
+               "right": 1,
+               "top": 1
+            },
+            "offset": {
+               "bottom": 0,
+               "left": 0,
+               "right": 0,
+               "top": 0
+            },
+            "pivot": {
+               "x": 0,
+               "y": 0
+            },
+            "ePinToEdge": 15,
+            "eFixSize": 0,
+            "eEditingMode": 1,
+            "eKeepRatio": false,
+            "position": {
+               "x": 0,
+               "y": 0,
+               "z": 0
+            },
+            "scale": {
+               "x": 1,
+               "y": 1,
+               "z": 1
+            },
+            "rotation": {
+               "w": 1,
+               "x": 0,
+               "y": 0,
+               "z": 0
+            },
+            "objectEnabled": true,
+            "entityId": 16,
+            "componentID": 16001,
+            "type": "ScreenTransform",
+            "enabled": true,
+            "version": 4,
+            "level": 2
+         },
+         {
+            "defaultCameraPosition": 0,
+            "enableDowngradeAsset": true,
+            "enableRotation": true,
+            "needAutoBeauty": false,
+            "needVoiceDecibel": false,
+            "resetWhenStartRecord": true,
+            "supportCameraPosition": 0,
+            "sync3dRenderEnable": false,
+            "type": "ExtraSetting",
+            "enabled": true,
+            "version": 1,
+            "entityId": 16,
+            "componentID": 16002,
+            "level": 4,
+            "requireAbility": []
+         },
+         {
+            "type": "EntityIdentifier",
+            "name": "拍摄模板",
+            "id": 16,
+            "originID": 16,
+            "enabled": true
+         }
+      ],
+      "enabled": true,
+      "version": 0
+   },
+   "inputSources": {
+      "RenderTarget": {
+         "type": "RenderTarget",
+         "commandMap": {},
+         "inputColor": "#ffffffff",
+         "sizeType": 0,
+         "compatibilityMode": true,
+         "depthType": "DEPTH24",
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "LINEAR",
+            "minFilter": "LINEAR_MIPMAP_LINEAR",
+            "sRGB": false,
+            "mipmap": false,
+            "samplerType": "SAMPLER_2D"
+         },
+         "useForDisplay": false,
+         "key": "RenderTarget",
+         "label": "RenderTarget.rdt",
+         "path": "RenderTarget.rdt",
+         "input": "DeviceCameraTexture",
+         "level": 2,
+         "inputKey": "DeviceCameraTexture",
+         "width": 0,
+         "height": 0
+      },
+      "DeviceCameraTexture": {
+         "type": "TextureData",
+         "commandMap": {},
+         "key": "DeviceCameraTexture",
+         "label": "DeviceCameraTexture.tex",
+         "path": "DeviceCameraTexture.tex",
+         "level": 2
+      },
+      "646212fb-2c67-4a40-8325-ac159a4ee533": {
+         "type": "zip",
+         "commandMap": {},
+         "key": "646212fb-2c67-4a40-8325-ac159a4ee533",
+         "label": "CustomRender.zip",
+         "path": "CustomRender.zip",
+         "level": 2
+      },
+      "34f323b7-ad28-40a8-b5b5-a65c74e5d147": {
+         "type": "js",
+         "commandMap": {},
+         "key": "34f323b7-ad28-40a8-b5b5-a65c74e5d147",
+         "label": "script.js",
+         "path": "script.js",
+         "level": 2,
+         "requireAbilities": []
+      },
+      "RenderTarget2": {
+         "type": "RenderTarget",
+         "commandMap": {},
+         "inputColor": "#ffffffff",
+         "sizeType": 0,
+         "compatibilityMode": true,
+         "depthType": "DEPTH24",
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "LINEAR",
+            "minFilter": "LINEAR_MIPMAP_LINEAR",
+            "sRGB": false,
+            "mipmap": false,
+            "samplerType": "SAMPLER_2D"
+         },
+         "key": "RenderTarget2",
+         "label": "RenderTarget_camera_2.rdt",
+         "path": "RenderTarget_camera_2.rdt",
+         "input": "",
+         "inputType": "RT_InputType_Texture",
+         "level": 2,
+         "inputKey": "",
+         "width": 0,
+         "height": 0
+      },
+      "CustomBackground": {
+         "type": "ImageData",
+         "commandMap": {},
+         "compression": 0,
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "LINEAR",
+            "minFilter": "LINEAR_MIPMAP_LINEAR",
+            "sRGB": false,
+            "mipmap": true,
+            "samplerType": "SAMPLER_2D"
+         },
+         "reSize": 1,
+         "key": "CustomBackground",
+         "label": "defaultBackground.png",
+         "path": "defaultBackground.png",
+         "level": 2,
+         "actualSize": 42516,
+         "resolution": {
+            "height": 1800,
+            "width": 1200
+         },
+         "width": 1200,
+         "height": 1800
+      },
+      "16a7a2e2-2fb6-4370-b7af-0876c0d003bb": {
+         "type": "folder",
+         "commandMap": {},
+         "key": "16a7a2e2-2fb6-4370-b7af-0876c0d003bb",
+         "label": "root",
+         "path": "./",
+         "level": 2
+      },
+      "14a13923-c22e-4fb5-8c5a-bc126207759d": {
+         "type": "folder",
+         "commandMap": {},
+         "key": "14a13923-c22e-4fb5-8c5a-bc126207759d",
+         "label": "CustomRender",
+         "path": "CustomRender",
+         "level": 2
+      },
+      "f5802f84-b090-4338-a22a-87f7374bb318": {
+         "type": "JsonData",
+         "commandMap": {},
+         "key": "f5802f84-b090-4338-a22a-87f7374bb318",
+         "label": "CustomRender.json",
+         "path": "CustomRender/CustomRender.json",
+         "level": 2
+      },
+      "1e0eef7e-3258-433d-b3fe-f23b968610a0": {
+         "type": "gltf_bin",
+         "commandMap": {},
+         "key": "1e0eef7e-3258-433d-b3fe-f23b968610a0",
+         "label": "fs_chromakey.bin",
+         "path": "CustomRender/fs_chromakey.bin",
+         "level": 2
+      },
+      "a190277d-4203-4a1c-bab7-af116218b421": {
+         "type": "gltf_bin",
+         "commandMap": {},
+         "key": "a190277d-4203-4a1c-bab7-af116218b421",
+         "label": "vs_simple.bin",
+         "path": "CustomRender/vs_simple.bin",
+         "level": 2
+      },
+      "CustomBackgroundImage": {
+         "type": "ImageData",
+         "commandMap": {},
+         "compression": 0,
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "LINEAR",
+            "minFilter": "LINEAR_MIPMAP_LINEAR",
+            "sRGB": false,
+            "mipmap": true,
+            "samplerType": "SAMPLER_2D"
+         },
+         "reSize": 1,
+         "key": "CustomBackgroundImage",
+         "label": "defaultBackgroundImage.png",
+         "path": "defaultBackgroundImage.png",
+         "level": 2,
+         "actualSize": 42516,
+         "resolution": {
+            "height": 1800,
+            "width": 1200
+         },
+         "width": 1200,
+         "height": 1800
+      },
+      "CustomBackgroundVideo": {
+         "type": "VideoClipData",
+         "commandMap": {},
+         "loopCount": 0,
+         "key": "CustomBackgroundVideo",
+         "label": "defaultBackgroundVideo.mp4",
+         "path": "defaultBackgroundVideo.mp4",
+         "duration": 1000000,
+         "timeRange": {
+            "startTime": 0,
+            "duration": 1000000
+         },
+         "level": 2,
+         "actualSize": 3907,
+         "resolution": {
+            "height": 720,
+            "width": 1280
+         }
+      },
+      "f1fee01b-3cf6-4e52-95e2-820085f9a948": {
+         "type": "PostEffectData",
+         "commandMap": {},
+         "postEffectOptions": {
+            "effectType": "blur",
+            "subEffectType": "blur",
+            "kiraEffectType": "dynamic",
+            "effectStrength": 8,
+            "starMaxScale": 0.5,
+            "starMinScale": 0.1,
+            "starScaleTransformation": true,
+            "starScalePeriod": 1000,
+            "scaleType": "normal",
+            "scaleFrequencyType": "synchronize",
+            "scaleFrequency": 25,
+            "starScaleRate": 0.1,
+            "setScale": false,
+            "probabilityLow": 1,
+            "probabilityHigh": 1,
+            "minFeatureDistance": 3,
+            "fastPointNum": 20,
+            "fastThreshold": 15,
+            "maxCorners": 20,
+            "minDistance": 5,
+            "maxFeatureDetectNum": 200,
+            "maxKiraNum": 20,
+            "seedNum": 8,
+            "grayThreshold": 5,
+            "stabilityFactor": 5,
+            "highLightThreshold": 0.3,
+            "shaking": false,
+            "kiraBrightness": 1,
+            "alphaChange": true,
+            "maxAlpha": 0.5,
+            "minAlpha": 0.1,
+            "enableColorful": false,
+            "colorMixPlan": "default",
+            "colorNum": 4,
+            "colorPath": "",
+            "colorBlendMode": "normal",
+            "blendMode": "screen",
+            "fastNumPercentage": 0.8,
+            "clusterDistance": 10,
+            "shakeDisPlacement": 8,
+            "sleepTime": 15,
+            "clusterMaxSize": 5,
+            "switchEnvironment": false,
+            "filePaths": [],
+            "brightness": 0,
+            "contrast": 0,
+            "hue": 0,
+            "highlights": 0,
+            "sharpness": 0,
+            "shadows": 0,
+            "saturation": 0,
+            "temperature": 0,
+            "fade": 0,
+            "vignetting": 0,
+            "pitu_mode": 0,
+            "defocusGamaPath": "",
+            "defocusAntigamaPath": "",
+            "defocusBinPath": "",
+            "defocusMaskPath": "",
+            "defocusAlpha": 0
+         },
+         "key": "f1fee01b-3cf6-4e52-95e2-820085f9a948",
+         "label": "PostEffect.post",
+         "path": "PostEffect.post",
+         "level": 315,
+         "existingType": "blur"
+      },
+      "RenderTarget1": {
+         "type": "RenderTarget",
+         "commandMap": {},
+         "inputColor": "#ffffffff",
+         "sizeType": 0,
+         "compatibilityMode": true,
+         "depthType": "DEPTH24",
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "LINEAR",
+            "minFilter": "LINEAR_MIPMAP_LINEAR",
+            "sRGB": false,
+            "mipmap": false,
+            "samplerType": "SAMPLER_2D"
+         },
+         "useForDisplay": false,
+         "key": "RenderTarget1",
+         "label": "RenderTarget_camera_1.rdt",
+         "path": "RenderTarget_camera_1.rdt",
+         "input": "",
+         "inputType": "RT_InputType_Texture",
+         "level": 2,
+         "inputKey": "",
+         "width": 0,
+         "height": 0
+      }
+   },
+   "preset": {},
+   "properties": {
+      "layout": {
+         "width": 720,
+         "height": 1280
+      },
+      "boundsTrackerPlaceHolders": [],
+      "musicIDs": [],
+      "fonts": [],
+      "movieConfig": {
+         "sourceType": 2,
+         "minClipAssetCount": 1,
+         "maxClipAssetCount": 999,
+         "minImageDuration": 1000000,
+         "maxImageDuration": 10000000,
+         "minVideoDuration": 2000000,
+         "minFreezePointInterval": 0,
+         "preferredCoverTime": 1000000,
+         "originVolume": 1,
+         "cropEvents": [
+            "SlowRhythmTrail"
+         ],
+         "imageCropSpace": 0,
+         "videoCropSpace": -1,
+         "disableEventsWhileTransition": true,
+         "useInternalRhythm": true,
+         "headProtectDuration": 0
+      },
+      "materialConfigs": [],
+      "resourceIDs": []
+   }
+}

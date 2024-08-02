@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tencent.effect.beautykit.view.panelview.TEDetailPanel
+        android:id="@+id/te_panel_view_detail_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.tencent.effect.beautykit.view.panelview.TEPanelMenuView
+        android:visibility="gone"
+        android:id="@+id/te_panel_view_beauty_menu_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</FrameLayout>

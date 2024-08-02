@@ -1,3 +1,10 @@
+## 2.2.0
+### New Features
+- Android&iOS: UI overall interaction upgrade
+- Android&iOS: Added new start page function settings (music, sound effects, settings)
+- Android&iOS: Updated interaction of the function area at the bottom of the live page
+- Android&iOS: Added microphone sound wave effects, microphone UI upgrade 5. Added microphone management list panel
+- Android&iOS: Add plugins of beauty effects and gift effects 
 ## 2.1.0
 ### New Features
 - Android&iOS: Demo interactive upgrade.

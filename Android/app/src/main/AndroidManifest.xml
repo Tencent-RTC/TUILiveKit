@@ -17,6 +17,7 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@drawable/app_ic_launcher"
         android:label="@string/app_name"
+        android:resizeableActivity="true"
         android:roundIcon="@drawable/app_ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
@@ -37,6 +38,8 @@
             android:name=".view.login.ProfileActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
-        <activity android:name=".view.main.StartLiveActivity" />
+        <activity
+            android:name=".view.main.StartLiveActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
     </application>
 </manifest>
