@@ -10,7 +10,7 @@ import Combine
 class SeatEffects: Effects {
     typealias Environment = ServiceCenter
     private typealias SeatEffect = Effect<Environment>
-
+    
     let fetchSeatList = SeatEffect.dispatchingOne { actions, environment in
         actions
             .wasCreated(from: SeatActions.fetchSeatList)
@@ -34,7 +34,7 @@ class SeatEffects: Effects {
             }
             .eraseToAnyPublisher()
     }
-
+    
     let takeSeat = SeatEffect.dispatchingMultiple { actions, environment in
         actions
             .wasCreated(from: SeatActions.takeSeat)
@@ -49,21 +49,21 @@ class SeatEffects: Effects {
                 return environment.seatService.takeSeat(index: action.payload, requestCallback: { [weak environment] request in
                     environment?.store?.dispatch(action: SeatActions.updateMySeatApplicationId(payload: request.requestId))
                 })
-                    .map { result in
-                        handleTakeSeat(result: result, environment: environment)
-                        var actions: [Action] = [
-                            SeatActions.updateMySeatApplicationId(payload: ""),
-                        ]
-                        return actions
-                    }
-                    .catch { error -> Just<[Action]> in
-                        let action = environment.errorService.convert(error: error)
-                        return Just([action])
-                    }
+                .map { result in
+                    handleTakeSeat(result: result, environment: environment)
+                    var actions: [Action] = [
+                        SeatActions.updateMySeatApplicationId(payload: ""),
+                    ]
+                    return actions
+                }
+                .catch { error -> Just<[Action]> in
+                    let action = environment.errorService.convert(error: error)
+                    return Just([action])
+                }
             }
             .eraseToAnyPublisher()
     }
-
+    
     let lockSeat = SeatEffect.dispatchingOne { actions, environment in
         actions
             .wasCreated(from: SeatActions.lockSeat)
@@ -79,7 +79,7 @@ class SeatEffects: Effects {
             }
             .eraseToAnyPublisher()
     }
-
+    
     let kickSeat = SeatEffect.dispatchingOne({ actions, environment in
         actions
             .wasCreated(from: SeatActions.kickSeat)
@@ -95,7 +95,7 @@ class SeatEffects: Effects {
             }
             .eraseToAnyPublisher()
     })
-
+    
     let leaveSeat = SeatEffect.dispatchingOne({ actions, environment in
         actions
             .wasCreated(from: SeatActions.leaveSeat)
@@ -111,14 +111,69 @@ class SeatEffects: Effects {
             }
             .eraseToAnyPublisher()
     })
-
+    
+    let inviteSeat = SeatEffect.dispatchingMultiple({ actions, environment in
+        actions
+            .wasCreated(from: SeatActions.inviteSeat)
+            .flatMap { action in
+                environment.seatService.takeUserOnSeatByAdmin(seatIndex: action.payload.0, userId: action.payload.1.userId) { request in
+                    request.userName = action.payload.1.name
+                    request.avatarUrl = action.payload.1.avatarUrl
+                    let seatInvitation = SeatInvitation(request: request)
+                    environment.store?.dispatch(action: SeatActions.addSeatInvitation(payload: seatInvitation))
+                }
+                .map { result in
+                    handleInviteTakeSeat(result: result, environment: environment)
+                }
+                .catch { error -> Just<[Action]> in
+                    let action = environment.errorService.convert(error: error)
+                    return Just([action])
+                }
+                
+            }
+            .eraseToAnyPublisher()
+    })
+    
+    let cancelInviteSeat = SeatEffect.dispatchingOne({ actions, environment in
+        actions.wasCreated(from: SeatActions.cancelInviteSeat)
+            .flatMap { action in
+                environment.seatService.cancelRequest(requestId: action.payload.id)
+                    .map {
+                        SeatActions.removeSeatInvitation(payload: action.payload)
+                    }
+                    .catch { error in
+                        let action = environment.errorService.convert(error: error)
+                        return Just(action)
+                    }
+            }
+            .eraseToAnyPublisher()
+    })
+    
+    let responseSeatInvitation = SeatEffect.dispatchingMultiple { actions, environment in
+        actions
+            .wasCreated(from: SeatActions.responseSeatInvitation)
+            .flatMap { action in
+                environment.seatService.responseRemoteRequest(isAgree: action.payload.0, requestId: action.payload.1)
+                    .map {
+                        [
+                            SeatActions.onResponseSeatInvitation(),
+                        ]
+                    }
+                    .catch { error in
+                        let action = environment.errorService.convert(error: error)
+                        return Just([action])
+                    }
+            }
+            .eraseToAnyPublisher()
+    }
+    
     let fetchSeatApplication = SeatEffect.dispatchingOne { actions, environment in
         actions
             .wasCreated(from: SeatActions.fetchSeatApplicationList)
             .flatMap { _ in
                 environment.seatService.fetchSeatApplicationList()
                     .map { result in
-                        SeatActions.onSeatApplicationListUpdate(payload: result)
+                        SeatActions.onFetchSeatApplicationList(payload: result)
                     }
                     .catch { error in
                         let action = environment.errorService.convert(error: error)
@@ -127,12 +182,12 @@ class SeatEffects: Effects {
             }
             .eraseToAnyPublisher()
     }
-
+    
     let responseSeatApplication = SeatEffect.dispatchingMultiple { actions, environment in
         actions
             .wasCreated(from: SeatActions.responseSeatApplication)
             .flatMap { action in
-                environment.seatService.responseSeatApplication(isAgree: action.payload.0, requestId: action.payload.1)
+                environment.seatService.responseRemoteRequest(isAgree: action.payload.0, requestId: action.payload.1)
                     .map {
                         [
                             SeatActions.handleApplicationSuccess(),
@@ -146,9 +201,8 @@ class SeatEffects: Effects {
             }
             .eraseToAnyPublisher()
     }
-
-    let cancelSeatApplication = SeatEffect.dispatchingOne {
-        actions, environment in
+    
+    let cancelSeatApplication = SeatEffect.dispatchingOne { actions, environment in
         actions
             .wasCreated(from: SeatActions.cancelApplication)
             .flatMap { action in
@@ -169,17 +223,47 @@ class SeatEffects: Effects {
         store.dispatch(action: SeatResponseActions.takeSeatResponse(payload: result))
         var linkStatus: LinkStatus = LinkStatus.none
         switch result {
-            case .accepted:
-                store.dispatch(action: ViewActions.toastEvent(payload: ToastInfo(message: .takeSeatSuccess)))
-                linkStatus = .linking
-            case .rejected:
-                store.dispatch(action: ViewActions.toastEvent(payload: ToastInfo(message: .takeSeatApplicationRejected)))
-            case .timeout:
-                store.dispatch(action: ViewActions.toastEvent(payload: ToastInfo(message: .takeSeatApplicationTimeout)))
-            default:
-                break
+        case .accepted:
+            store.dispatch(action: ViewActions.toastEvent(payload: ToastInfo(message: .takeSeatSuccess)))
+            linkStatus = .linking
+        case .rejected:
+            store.dispatch(action: ViewActions.toastEvent(payload: ToastInfo(message: .takeSeatApplicationRejected)))
+        case .timeout:
+            store.dispatch(action: ViewActions.toastEvent(payload: ToastInfo(message: .takeSeatApplicationTimeout)))
+        default:
+            break
         }
         store.dispatch(action: ViewActions.updateLinkStatus(payload: linkStatus))
+    }
+    
+    static func handleInviteTakeSeat(result: TakeSeatResult, environment: Environment) -> [Action] {
+        var actions: [Action] = []
+        guard let store = environment.store else { return actions }
+        let seatInvitationMap = store.selectCurrent(SeatSelectors.getSeatInvitationMap)
+        switch result {
+        case .accepted(_, let userId):
+            if let seatInvitation = seatInvitationMap.first(where: { $0.key == userId }).map({ $0.value }) {
+                let message = String.localizedReplace(.inviteLinkAcceptText, replace: seatInvitation.userName)
+                store.dispatch(action: ViewActions.toastEvent(payload: ToastInfo(message: message)))
+                actions.append(SeatActions.removeSeatInvitation(payload: seatInvitation))
+            }
+        case .rejected(_, let userId, _):
+            if let seatInvitation = seatInvitationMap.first(where: { $0.key == userId }).map({ $0.value }) {
+                let message = String.localizedReplace(.inviteLinkRejectText, replace: seatInvitation.userName)
+                store.dispatch(action: ViewActions.toastEvent(payload: ToastInfo(message: message)))
+                actions.append(SeatActions.removeSeatInvitation(payload: seatInvitation))
+            }
+        case .timeout(_, let userId):
+            if let seatInvitation = seatInvitationMap.first(where: { $0.key == userId }).map({ $0.value }) {
+                store.dispatch(action: ViewActions.toastEvent(payload: ToastInfo(message: .inviteLinkTimeoutText)))
+                actions.append(SeatActions.removeSeatInvitation(payload: seatInvitation))
+            }
+        case .cancel(_, let userId):
+            if let seatInvitation = seatInvitationMap.first(where: { $0.key == userId }).map({ $0.value }) {
+                actions.append(SeatActions.removeSeatInvitation(payload: seatInvitation))
+            }
+        }
+        return actions
     }
 }
 
@@ -189,4 +273,7 @@ fileprivate extension String {
     static let takeSeatApplicationRejected = localized("live.seat.takeSeatApplicationRejected")
     static let takeSeatApplicationTimeout = localized("live.seat.takeSeatApplicationTimeout")
     static let takeSeatApplyingToast = localized("live.seat.takeSeatApplying")
+    static let inviteLinkAcceptText = localized("live.seat.inviteSeatSuccess.xxx")
+    static let inviteLinkRejectText = localized("live.seat.inviteSeatRejected.xxx")
+    static let inviteLinkTimeoutText = localized("live.seat.inviteSeatTimeout")
 }

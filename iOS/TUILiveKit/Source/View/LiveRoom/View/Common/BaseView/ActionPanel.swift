@@ -46,22 +46,23 @@ class ActionPanel: UIView {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(ActionCell.self, forCellReuseIdentifier: ActionCell.cellReuseIdentifier)
+        tableView.isScrollEnabled = false
         return tableView
     }()
     
     private lazy var cancelButton: UIButton = {
         let button = UIButton()
         button.setTitle(.cancelText, for: .normal)
-        button.setTitleColor(.g7, for: .normal)
+        button.setTitleColor(.g2, for: .normal)
         button.titleLabel?.textAlignment = .center
         button.titleLabel?.font = .customFont(ofSize: 16)
-        button.backgroundColor = .g2
+        button.backgroundColor = .white
         button.addTarget(self, action: #selector(cancelButtonClick), for: .touchUpInside)
         return button
     }()
     
     func constructViewHierarchy() {
-        backgroundColor = .g2
+        backgroundColor = .g8
         layer.cornerRadius = 20
         layer.masksToBounds = true
         addSubview(actionTableView)
@@ -82,7 +83,7 @@ class ActionPanel: UIView {
         
         actionTableView.snp.remakeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
-            make.bottom.equalTo(cancelButton.snp.top)
+            make.bottom.equalTo(cancelButton.snp.top).offset(7.scale375Height())
         }
         
         cancelButton.snp.remakeConstraints { make in
@@ -140,7 +141,6 @@ extension ActionPanel: UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let item = items[indexPath.row]
         item.actionClosure?(indexPath.row)
-        cancelButtonClick()
     }
 }
 

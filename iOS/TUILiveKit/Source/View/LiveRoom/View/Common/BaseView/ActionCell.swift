@@ -13,10 +13,10 @@ typealias ActionTapClosure = (Int) -> Void
 class ActionItemDesignConfig {
     var titleColor: UIColor
     var lineWidth: CGFloat
-    var backgroundColor: UIColor? = .clear
+    var backgroundColor: UIColor? = .white
     var titleFont: UIFont = .customFont(ofSize: 16)
-    var lineColor: UIColor? = .g3.withAlphaComponent(0.3)
-    init(lineWidth: CGFloat = 1.0, titleColor: UIColor = .flowKitWhite) {
+    var lineColor: UIColor? = .g8
+    init(lineWidth: CGFloat = 1.0, titleColor: UIColor = .g2) {
         self.lineWidth = lineWidth
         self.titleColor = titleColor
     }

@@ -10,7 +10,7 @@ import UIKit
 enum RouterAction {
     case routeTo(_ route: Route)
     case present(_ route: Route)
-    case dismiss
+    case dismiss(_ animated: Bool = true, completion: (() -> Void)? = nil)
     case exit
 }
 
@@ -21,6 +21,8 @@ enum Route {
     case recentViewer
     case liveLinkControl
     case voiceLinkControl
+    case linkInviteControl(_ index: Int)
+    case userControl(_ user: SeatInfo)
     case linkType // audience apply take seat.
     case linkSetting // audience take seat setting.
     case featureSetting(_ settingModel: FeatureClickPanelModel)
@@ -58,12 +60,18 @@ extension Route: Equatable {
             return l == r
         case let (.systemImageSelection(l), .systemImageSelection(r)):
             return l == r
+        case let (.linkInviteControl(l), .linkInviteControl(r)):
+            return l == r
+        case let (.userControl(l), .userControl(r)):
+            return l == r
         case (.anchor, _),
             (.audience, _),
             (.roomInfo, _),
             (.recentViewer, _),
             (.liveLinkControl, _),
             (.voiceLinkControl, _),
+            (.linkInviteControl, _),
+            (.userControl, _),
             (.linkType, _),
             (.linkSetting, _),
             (.featureSetting, _),
@@ -97,6 +105,10 @@ extension Route: Hashable {
             return "liveLinkControl"
         case .voiceLinkControl:
             return "voiceLinkControl"
+        case .linkInviteControl(let index):
+            return "linkInviteControl \(index)"
+        case .userControl(let seatInfo):
+            return "linkInviteControl \(seatInfo.userId)"
         case .linkType:
             return "linkType"
         case .linkSetting:
@@ -133,6 +145,7 @@ extension Route: Hashable {
 
 struct RouterState {
     var routeStack: [Route] = []
+    var dismissEvent: (animated: Bool, completion: (() -> Void)?)?
 }
 
 class PrintRouterStateInterceptor: Interceptor {
@@ -140,7 +153,7 @@ class PrintRouterStateInterceptor: Interceptor {
     func actionDispatched(action: any Action, oldState: RouterState, newState: RouterState) {
         let name = String(describing: type(of: self))
         let actionName = String(describing: type(of: action))
-        var actionLog = "\(name) - action dispatched: \(actionName)"
+        let actionLog = "\(name) - action dispatched: \(actionName)"
         print("action: \(actionLog), navigation stack: old: \(oldState.routeStack)")
         print("action: \(actionLog), navigation stack: new: \(newState.routeStack)")
     }

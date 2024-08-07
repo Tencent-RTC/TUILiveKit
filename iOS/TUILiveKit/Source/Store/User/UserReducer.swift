@@ -45,9 +45,14 @@ let userReducer = Reducer<UserState>(
     }),
     ReduceOn(UserActions.onUserInMyFollowingList, reduce: { state, action in
         if action.payload.1 {
-            state.myFollowingUserList.insert(action.payload.0)
+            if !state.myFollowingUserList.map({ $0.userId }).contains(action.payload.0.userId) {
+                state.myFollowingUserList.insert(action.payload.0)
+            }
         } else {
-            state.myFollowingUserList.remove(action.payload.0)
+            let followUserList = state.myFollowingUserList.filter({ $0.userId == action.payload.0.userId })
+            followUserList.forEach { user in
+                state.myFollowingUserList.remove(user)
+            }
         }
     })
 )

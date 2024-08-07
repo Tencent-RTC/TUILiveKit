@@ -16,7 +16,7 @@ enum TakeSeatResult {
 }
 
 private let kRandomSeatIndex = -1
-private let kTakeSeatTimeoutValue = 60
+private let kTimeoutValue: TimeInterval = 60
 
 typealias RequestClosure = (TUIRequest) -> Void
 
@@ -46,7 +46,7 @@ class SeatService: BaseServiceProtocol {
     func takeSeat(index: Int?, requestCallback:@escaping RequestClosure) -> AnyPublisher<TakeSeatResult, InternalError> {
         return Future<TakeSeatResult, InternalError> { [weak self] promise in
             guard let self = self else { return }
-            let request = roomEngine.takeSeat(index ?? kRandomSeatIndex , timeout: 60) { requestId, operateUserId in
+            let request = roomEngine.takeSeat(index ?? kRandomSeatIndex , timeout: kTimeoutValue) { requestId, operateUserId in
                 let result = TakeSeatResult.accepted(requestId, operateUserId)
                 promise(.success(result))
             } onRejected: {  requestId, operateUserId, message in
@@ -76,6 +76,32 @@ class SeatService: BaseServiceProtocol {
                 let error = InternalError(error: err, message: message)
                 promise(.failure(error))
             }
+        }
+        .eraseToAnyPublisher()
+    }
+    
+    func takeUserOnSeatByAdmin(seatIndex: Int,
+                               userId: String,
+                               requestCallback:@escaping RequestClosure) -> AnyPublisher<TakeSeatResult, InternalError> {
+        return Future<TakeSeatResult, InternalError> { [weak self] promise in
+            guard let self = self else { return }
+            let request = roomEngine.takeUserOnSeatByAdmin(seatIndex, userId: userId, timeout: kTimeoutValue) { requestId, operateUserId in
+                let result = TakeSeatResult.accepted(requestId, operateUserId)
+                promise(.success(result))
+            } onRejected: { requestId, operateUserId, message in
+                let result = TakeSeatResult.rejected(requestId, operateUserId, message)
+                promise(.success(result))
+            } onCancelled: { requestId, operateUserId in
+                let result = TakeSeatResult.cancel(requestId, operateUserId)
+                promise(.success(result))
+            } onTimeout: { requestId, operateUserId in
+                let result = TakeSeatResult.timeout(requestId, operateUserId)
+                promise(.success(result))
+            } onError: { requestId, operateUserId, err, message in
+                let error = InternalError(error: err, message: message)
+                promise(.failure(error))
+            }
+            requestCallback(request)
         }
         .eraseToAnyPublisher()
     }
@@ -130,7 +156,7 @@ class SeatService: BaseServiceProtocol {
         }.eraseToAnyPublisher()
     }
     
-    func responseSeatApplication(isAgree: Bool, requestId: String) -> AnyPublisher <Void, InternalError> {
+    func responseRemoteRequest(isAgree: Bool, requestId: String) -> AnyPublisher <Void, InternalError> {
         return Future { [weak self] promise in
             guard let self = self else { return }
             roomEngine.responseRemoteRequest(requestId, agree: isAgree) {

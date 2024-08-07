@@ -19,21 +19,10 @@ class VoiceRoomRootView: RTCBaseView {
     let viewStore: VoiceRoomViewStore
     let routerStore: RouterStore
     
-    // backgroundImage
-    lazy var backgroundUrlPublisher = self.store.select(RoomSelectors.getRoomBackgroundUrl)
-    
-    // SeatList Status
-    lazy var seatCount = self.store.select(SeatSelectors.getSeatCount)
-    lazy var isOnSeatPublisher = self.store.select(UserSelectors.isOnSeat)
-    lazy var liveStatusPublisher = self.store.select(ViewSelectors.getLiveStatus)
-    lazy var microphoneMutedStatusPublisher = self.store.select(MediaSelectors.getMicrophoneMutedState)
-    
-    private var cancellableSet = Set<AnyCancellable>()
-    private let giftCacheService = TUIGiftStore.shared.giftCacheService
-    
     private lazy var isOwner: Bool = store.selectCurrent(UserSelectors.isOwner)
-    private lazy var roomIdPublisher = self.store.select(RoomSelectors.getRoomId)
-    private lazy var ownerInfoPublisher = self.store.select(RoomSelectors.getRoomOwnerInfo)
+    private let giftCacheService = TUIGiftStore.shared.giftCacheService
+    private var cancellableSet = Set<AnyCancellable>()
+    private var alertPanel: AlertPanel?
     
     let backgroundImageView: UIImageView = {
         let backgroundImageView = UIImageView(frame: .zero)
@@ -192,19 +181,13 @@ class VoiceRoomRootView: RTCBaseView {
     override func bindInteraction() {
         // Top view interaction.
         topView.delegate = self
-        subscribeRoomState()
-        subscribeBackgroundViewState()
         seatListView.delegate = self
+        subscribeRoomState()
         subscribeSeatState()
-        subscribeCustomEvent()
-        subscribeIsOnSeatState()
-        subscribeBottomMenuState()
-        subscribeToastState()
-        subscribeAlertState()
+        subscribeUserState()
+        subscribeViewState()
         muteMicrophoneButton.addTarget(self, action: #selector(muteMicrophoneButtonClick(sender:)), for: .touchUpInside)
     }
-    
-    override func setupViewStyle() {}
 }
 
 extension VoiceRoomRootView {
@@ -243,6 +226,7 @@ extension VoiceRoomRootView {
             SeatActions.fetchSeatList(),
             UserActions.fetchUserList(),
             RoomActions.fetchRoomOwnerInfo(payload: store.selectCurrent(RoomSelectors.roomOwnerId)),
+            ViewActions.updateAutoOpenCameraOnSeated(payload: false),
         ]
         if isOwner {
             actions.append(SeatActions.takeSeat(payload: nil))
@@ -304,7 +288,119 @@ extension VoiceRoomRootView: RouterViewProvider {
 
 extension VoiceRoomRootView {
     private func subscribeRoomState() {
-        liveStatusPublisher
+        subscribeRoomBackgroundState()
+        subscribeRoomIdState()
+        subscribeRoomOwnerState()
+    }
+    
+    private func subscribeSeatState() {
+        subscribeSeatCountState()
+        subscribeReceivedSeatInvitationState()
+    }
+    
+    private func subscribeUserState() {
+        subscribeUserIsOnSeatState()
+    }
+    
+    private func subscribeViewState() {
+        subscribeViewLiveStatusState()
+        subscribeCustomEvent()
+        subscribeBottomMenuState()
+        subscribeToastState()
+        subscribeAlertState()
+    }
+}
+
+// room
+extension VoiceRoomRootView {
+    private func subscribeRoomBackgroundState() {
+        store.select(RoomSelectors.getRoomBackgroundUrl)
+            .receive(on: RunLoop.main)
+            .sink(receiveValue: { [weak self] url in
+                guard let self = self else { return }
+                self.backgroundImageView.kf.setImage(with: URL(string: url), placeholder: UIImage.placeholderImage)
+            })
+            .store(in: &cancellableSet)
+    }
+    
+    private func subscribeRoomIdState() {
+        store.select(RoomSelectors.getRoomId)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] roomId in
+                guard let self = self else { return }
+                if !roomId.isEmpty {
+                    self.barrageButton.setRoomId(roomId: roomId)
+                    self.barrageDisplayView.setRoomId(roomId: roomId)
+                    self.giftListView.setRoomId(roomId: roomId)
+                    self.giftDisplayView.setRoomId(roomId: roomId)
+                }
+            }
+            .store(in: &cancellableSet)
+    }
+    
+    private func subscribeRoomOwnerState() {
+        store.select(RoomSelectors.getRoomOwnerInfo)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] ownerInfo in
+                guard let self = self else { return }
+                self.barrageButton.setOwnerId(ownerId: ownerInfo.userId)
+                self.barrageDisplayView.setOwnerId(ownerId: ownerInfo.userId)
+            }
+            .store(in: &cancellableSet)
+    }
+}
+
+// seat
+extension VoiceRoomRootView {
+    private func subscribeSeatCountState() {
+        store.select(SeatSelectors.getSeatCount)
+            .receive(on: RunLoop.main)
+            .assign(to: \SeatListView.seatCount, on: seatListView)
+            .store(in: &cancellableSet)
+    }
+    
+    private func subscribeReceivedSeatInvitationState() {
+        store.select(SeatSelectors.getReceivedSeatInvitation)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] seatInvitation in
+                guard let self = self else { return }
+                if !seatInvitation.id.isEmpty {
+                    let alertInfo = AlertInfo(description: String.localizedReplace(.inviteLinkText, replace: "\(seatInvitation.userName)"),
+                                              imagePath: seatInvitation.avatarUrl,
+                                              cancelButtonInfo: (String.rejectText, .g3),
+                                              defaultButtonInfo: (String.acceptText, .b1)) { [weak self] in
+                        guard let self = self else { return }
+                        self.store.dispatch(action: SeatActions.responseSeatInvitation(payload: (false, seatInvitation.id)))
+                        self.store.dispatch(action: SeatActions.updateReceivedSeatInvitation(payload: SeatInvitation()))
+                    } defaultClosure: { [weak self] in
+                        guard let self = self else { return }
+                        self.store.dispatch(action: SeatActions.responseSeatInvitation(payload: (true, seatInvitation.id)))
+                        self.store.dispatch(action: SeatActions.updateReceivedSeatInvitation(payload: SeatInvitation()))
+                    }
+                    store.dispatch(action: ViewActions.alertEvent(payload: alertInfo))
+                } else {
+                    alertPanel?.dismiss()
+                }
+            }
+            .store(in: &cancellableSet)
+    }
+}
+
+// user
+extension VoiceRoomRootView {
+    private func subscribeUserIsOnSeatState() {
+        store.select(UserSelectors.isOnSeat)
+            .receive(on: RunLoop.main)
+            .map { !$0 }
+            .assign(to: \UIButton.isHidden, on: muteMicrophoneButton)
+            .store(in: &cancellableSet)
+    }
+}
+
+// view&media
+extension VoiceRoomRootView {
+    private func subscribeViewLiveStatusState() {
+        store.select(ViewSelectors.getLiveStatus)
             .receive(on: RunLoop.main)
             .sink { [weak self] status in
                 guard let self = self else { return }
@@ -326,62 +422,15 @@ extension VoiceRoomRootView {
                 }
             }
             .store(in: &cancellableSet)
-        
-        roomIdPublisher
-            .receive(on: RunLoop.main)
-            .sink { [weak self] roomId in
-                guard let self = self else { return }
-                if !roomId.isEmpty {
-                    self.barrageButton.setRoomId(roomId: roomId)
-                    self.barrageDisplayView.setRoomId(roomId: roomId)
-                    self.giftListView.setRoomId(roomId: roomId)
-                    self.giftDisplayView.setRoomId(roomId: roomId)
-                }
-            }
-            .store(in: &cancellableSet)
-        
-        ownerInfoPublisher
-            .receive(on: RunLoop.main)
-            .sink { [weak self] ownerInfo in
-                guard let self = self else { return }
-                self.barrageButton.setOwnerId(ownerId: ownerInfo.userId)
-                self.barrageDisplayView.setOwnerId(ownerId: ownerInfo.userId)
-            }
-            .store(in: &cancellableSet)
-    }
-    
-    private func subscribeBackgroundViewState() {
-        backgroundUrlPublisher
-            .receive(on: RunLoop.main)
-            .sink(receiveValue: { [weak self] url in
-                guard let self = self else { return }
-                self.backgroundImageView.kf.setImage(with: URL(string: url), placeholder: UIImage.placeholderImage)
-            })
-            .store(in: &cancellableSet)
-    }
-    
-    private func subscribeIsOnSeatState() {
-        isOnSeatPublisher
-            .receive(on: RunLoop.main)
-            .map { !$0 }
-            .assign(to: \UIButton.isHidden, on: muteMicrophoneButton)
-            .store(in: &cancellableSet)
     }
     
     private func subscribeMicrophoneState() {
-        microphoneMutedStatusPublisher
+        store.select(MediaSelectors.getMicrophoneMutedState)
             .receive(on: RunLoop.main)
             .sink(receiveValue: { [weak self] microphoneMuted in
                 guard let self = self else { return }
                 self.muteMicrophoneButton.isSelected = microphoneMuted
             })
-            .store(in: &cancellableSet)
-    }
-    
-    private func subscribeSeatState() {
-        seatCount
-            .receive(on: RunLoop.main)
-            .assign(to: \SeatListView.seatCount, on: seatListView)
             .store(in: &cancellableSet)
     }
     
@@ -413,14 +462,7 @@ extension VoiceRoomRootView {
             .receive(on: RunLoop.main)
             .sink { [weak self] toast in
                 guard let self = self else { return }
-                var position = TUICSToastPositionBottom
-                switch toast.position {
-                    case .center:
-                        position = TUICSToastPositionCenter
-                    default:
-                        break
-                }
-                self.makeToast(toast.message, duration: toast.duration, position: position)
+                self.makeToast(toast.message, duration: toast.duration, position: toast.position)
             }
             .store(in: &cancellableSet)
     }
@@ -430,7 +472,9 @@ extension VoiceRoomRootView {
             .receive(on: RunLoop.main)
             .sink { [weak self] alertInfo in
                 guard let self = self else { return }
-                AlertPanel(alertInfo: alertInfo).show()
+                let alertPanel = AlertPanel(alertInfo: alertInfo)
+                alertPanel.show()
+                self.alertPanel = alertPanel
             }
             .store(in: &cancellableSet)
     }
@@ -441,12 +485,13 @@ extension VoiceRoomRootView: TopViewDelegate {
         switch event {
         case .stop:
             if isOwner {
-                let designConfig = ActionItemDesignConfig(lineWidth: 7, titleColor: .redPinkColor)
-                designConfig.backgroundColor = .g2
-                designConfig.lineColor = .g3.withAlphaComponent(0.1)
+                let designConfig = ActionItemDesignConfig(lineWidth: 7, titleColor: .g2)
+                designConfig.backgroundColor = .white
+                designConfig.lineColor = .g8
                 let item = ActionItem(title: .confirmCloseText, designConfig: designConfig, actionClosure: { [weak self] _ in
                     guard let self = self else { return }
                     self.showAnchorEndView()
+                    self.routerStore.router(action: .dismiss())
                 })
                 routerStore.router(action: .present(.listMenu([item])))
             } else {
@@ -506,8 +551,7 @@ extension VoiceRoomRootView: SeatListViewDelegate {
     func seatListView(_ seatListView: SeatListView, didSelectSeatAt index: Int) {
         // Here you can handle the click event of the seat list view.
         let seatInfo = store.selectCurrent(SeatSelectors.getSeatList)[index]
-        let helper = VoiceRoomRootMenuDataHelper()
-        let menus = helper.generateOperateSeatMenuData(store: store, routerStore: routerStore, seat: seatInfo)
+        let menus = VoiceRoomRootMenuDataCreator().generateOperateSeatMenuData(store: store, routerStore: routerStore, seat: seatInfo)
         if menus.count > 0 {
             routerStore.router(action: .present(.listMenu(menus)))
         }
@@ -602,4 +646,7 @@ fileprivate extension String {
     static let meText = localized("live.barrage.me")
     static var confirmCloseText = localized("live.anchor.confirm.close")
     static let balanceInsufficientText = localized("live.balanceInsufficient")
+    static let rejectText = localized("live.anchor.link.reject.title")
+    static let acceptText = localized("live.anchor.link.accept.title")
+    static let inviteLinkText = localized("live.anchor.link.invite.desc.xxx")
 }

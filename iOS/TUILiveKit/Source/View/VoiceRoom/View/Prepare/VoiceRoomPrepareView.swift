@@ -55,7 +55,7 @@ class VoiceRoomPrepareView: RTCBaseView {
     }()
     
     private lazy var featureClickPanel: FeatureClickPanel = {
-        let designConfig = FeatureItemDesignConfig()
+        var designConfig = FeatureItemDesignConfig()
         designConfig.type = .imageAboveTitle
         designConfig.imageSize = CGSize(width: 36.scale375(), height: 36.scale375())
         designConfig.titleHeight = 20.scale375Height()
@@ -63,24 +63,24 @@ class VoiceRoomPrepareView: RTCBaseView {
         let model = FeatureClickPanelModel()
         model.itemSize = CGSize(width: 63.scale375(), height: 56.scale375Height())
         model.itemDiff = 25.scale375()
-        model.items.append(FeatureItem(title: .musicText,
-                                       image: .liveBundleImage("live_prepare_music_icon"),
+        model.items.append(FeatureItem(normalTitle: .musicText,
+                                       normalImage: .liveBundleImage("live_prepare_music_icon"),
                                        designConfig: designConfig,
-                                       actionClosure: { [weak self] in
+                                       actionClosure: { [weak self] _ in
             guard let self = self else { return }
             self.routerStore.router(action: .present(.musicList))
         }))
-        model.items.append(FeatureItem(title: .audioEffectsText,
-                                       image: .liveBundleImage("live_prepare_audio_icon"),
+        model.items.append(FeatureItem(normalTitle: .audioEffectsText,
+                                       normalImage: .liveBundleImage("live_prepare_audio_icon"),
                                        designConfig: designConfig,
-                                       actionClosure: { [weak self] in
+                                       actionClosure: { [weak self] _ in
             guard let self = self else { return }
             self.routerStore.router(action: .present(.audioEffect))
         }))
-        model.items.append(FeatureItem(title: .settingText,
-                                       image: .liveBundleImage("live_prepare_setting_icon"),
+        model.items.append(FeatureItem(normalTitle: .settingText,
+                                       normalImage: .liveBundleImage("live_prepare_setting_icon"),
                                        designConfig: designConfig,
-                                       actionClosure: { [weak self] in
+                                       actionClosure: { [weak self] _ in
             guard let self = self else { return }
             self.routerStore.router(action: .present(.prepareSetting))
         }))

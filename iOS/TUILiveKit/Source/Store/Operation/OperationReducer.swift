@@ -23,6 +23,8 @@ let operationReducer = Reducer<OperationState>(
         
         state.seatState.mySeatApplicationId = ""
         state.seatState.seatApplicationList = []
+        state.seatState.receivedSeatInvitation = SeatInvitation()
+        state.seatState.sentSeatInvitationMap = [:]
         state.seatState.seatList = []
         
         state.userState.hasAudioStreamUserList = []

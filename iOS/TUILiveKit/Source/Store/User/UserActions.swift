@@ -17,11 +17,12 @@ enum UserActions {
     static let stopPlayRemoteVideo = ActionTemplate(id: key.appending(".stopPlayRemoteVideo"), payloadType: (String, TUIVideoStreamType).self)
     static let fetchUserList = ActionTemplate(id: key.appending(".fetchUserList"))
     static let updateUserList = ActionTemplate(id: key.appending(".updateUserList"), payloadType: [User].self)
-    static let follow = ActionTemplate(id: key.appending(".follow"), payloadType: String.self)
-    static let unfollow = ActionTemplate(id: key.appending(".unfollow"), payloadType: String.self)
+    static let follow = ActionTemplate(id: key.appending(".follow"), payloadType: User.self)
+    static let unfollow = ActionTemplate(id: key.appending(".unfollow"), payloadType: User.self)
     static let checkFollowType = ActionTemplate(id: key.appending(".checkFollowType"), payloadType: String.self)
     static let fetchFollowersCount = ActionTemplate(id: key.appending(".fetchFollowersCount"), payloadType: String.self)
     static let updateFollowersCount = ActionTemplate(id: key.appending(".updateFollowersCount"), payloadType: Int.self)
+    
     static let updateRemoteVideoView = ActionTemplate(
         id: key.appending(".updateRemoteVideoView"),
         payloadType: (String, TUIVideoStreamType, RenderView).self)

@@ -85,7 +85,7 @@ class TUIBeautyPanel: UIView, TRTCCloudDelegate {
         guard !isAdvancedBeauty, let panel = beautyPanel as? BeautyPanel else { return }
         panel.backClosure = { [weak self] in
             guard let self = self else { return }
-            self.routerStore.router(action: .dismiss)
+            self.routerStore.router(action: .dismiss())
         }
     }
     
@@ -124,7 +124,7 @@ class TUIBeautyPanel: UIView, TRTCCloudDelegate {
 // MARK: Action
 extension TUIBeautyPanel {
     @objc func backButtonClick(sender: UIButton) {
-        routerStore.router(action: .dismiss)
+        routerStore.router(action: .dismiss())
     }
 }
 

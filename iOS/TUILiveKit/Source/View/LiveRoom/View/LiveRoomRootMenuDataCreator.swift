@@ -1,5 +1,5 @@
 //
-//  LiveRoomRootMenuDataHelper.swift
+//  LiveRoomRootMenuDataCreator.swift
 //  Alamofire
 //
 //  Created by aby on 2024/5/31.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-class LiveRoomRootMenuDataHelper {
+class LiveRoomRootMenuDataCreator {
     func generateBottomMenuData(store: LiveStore, routerStore: RouterStore) -> [ButtonMenuInfo] {
         if store.selectCurrent(UserSelectors.isOwner) {
             return ownerBottomMenu(store: store, routerStore: routerStore)
@@ -22,14 +22,14 @@ class LiveRoomRootMenuDataHelper {
                                         text: .videoLinkRequestText,
                                         action: {
             self.applyToTakeSeat(store: store, needOpenCamera: true)
-            routerStore.router(action: .dismiss)
+            routerStore.router(action: .dismiss())
         }))
         
         data.append(LinkMicTypeCellData(image: .liveBundleImage("live_link_audio"),
                                         text: .audioLinkRequestText,
                                         action: {
             self.applyToTakeSeat(store: store, needOpenCamera: false)
-            routerStore.router(action: .dismiss)
+            routerStore.router(action: .dismiss())
         }))
         return data
     }
@@ -39,7 +39,7 @@ class LiveRoomRootMenuDataHelper {
     }
 }
 
-extension LiveRoomRootMenuDataHelper {
+extension LiveRoomRootMenuDataCreator {
     func ownerBottomMenu(store: LiveStore, routerStore: RouterStore) -> [ButtonMenuInfo] {
         var menus: [ButtonMenuInfo] = []
         var linkMic = ButtonMenuInfo(normalIcon: "live_connection_icon")
@@ -68,41 +68,41 @@ extension LiveRoomRootMenuDataHelper {
         let model = FeatureClickPanelModel()
         model.itemSize = CGSize(width: 56.scale375(), height: 76.scale375())
         model.itemDiff = 12.scale375()
-        let designConfig = FeatureItemDesignConfig()
+        var designConfig = FeatureItemDesignConfig()
         designConfig.backgroundColor = .g3
         designConfig.cornerRadius = 10
         designConfig.titleFont = .customFont(ofSize: 12)
         designConfig.type = .imageAboveTitleBottom
-        model.items.append(FeatureItem(title: .beautyText,
-                                       image: .liveBundleImage("live_video_setting_beauty"),
+        model.items.append(FeatureItem(normalTitle: .beautyText,
+                                       normalImage: .liveBundleImage("live_video_setting_beauty"),
                                        designConfig: designConfig,
-                                       actionClosure: {
+                                       actionClosure: { _ in
             routerStore.router(action: .present(.beauty))
         }))
-        model.items.append(FeatureItem(title: .audioEffectsText,
-                                       image: .liveBundleImage("live_setting_audio_effects"),
+        model.items.append(FeatureItem(normalTitle: .audioEffectsText,
+                                       normalImage: .liveBundleImage("live_setting_audio_effects"),
                                        designConfig: designConfig,
-                                       actionClosure: {
+                                       actionClosure: { _ in
             routerStore.router(action: .present(.audioEffect))
         }))
-        model.items.append(FeatureItem(title: .flipText,
-                                       image: .liveBundleImage("live_video_setting_flip"),
+        model.items.append(FeatureItem(normalTitle: .flipText,
+                                       normalImage: .liveBundleImage("live_video_setting_flip"),
                                        designConfig: designConfig,
-                                       actionClosure: {
+                                       actionClosure: { _ in
             let isFrontCamera = store.selectCurrent(MediaSelectors.getFrontCameraState)
             store.dispatch(action: MediaActions.switchCamera(payload: isFrontCamera == true ? .rear : .front))
         }))
-        model.items.append(FeatureItem(title: .mirrorText,
-                                       image: .liveBundleImage("live_video_setting_mirror"),
+        model.items.append(FeatureItem(normalTitle: .mirrorText,
+                                       normalImage: .liveBundleImage("live_video_setting_mirror"),
                                        designConfig: designConfig,
-                                       actionClosure: {
+                                       actionClosure: { _ in
             let isMirror = store.selectCurrent(MediaSelectors.getMirrorState)
             store.dispatch(action: MediaActions.switchMirror(payload: isMirror == true ? false : true))
         }))
-        model.items.append(FeatureItem(title: .videoParametersText,
-                                       image: .liveBundleImage("live_setting_video_parameters"),
+        model.items.append(FeatureItem(normalTitle: .videoParametersText,
+                                       normalImage: .liveBundleImage("live_setting_video_parameters"),
                                        designConfig: designConfig,
-                                       actionClosure: {
+                                       actionClosure: { _ in
             routerStore.router(action: .present(.videoSetting))
         }))
         return model
@@ -154,7 +154,7 @@ extension LiveRoomRootMenuDataHelper {
     }
 }
 
-extension LiveRoomRootMenuDataHelper {
+extension LiveRoomRootMenuDataCreator {
     func applyToTakeSeat(store:LiveStore, needOpenCamera: Bool) {
         store.dispatch(action: ViewActions.updateAutoOpenCameraOnSeated(payload: needOpenCamera))
         store.dispatch(action: SeatActions.takeSeat(payload: nil))

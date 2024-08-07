@@ -219,13 +219,14 @@ extension LinkMicAudienceFloatView {
     
     private func showCancelLinkMicPanel() {
         var items: [ActionItem] = []
-        let designConfig = ActionItemDesignConfig(lineWidth: 7, titleColor: .redPinkColor)
-        designConfig.backgroundColor = .g2
-        designConfig.lineColor = .g3.withAlphaComponent(0.1)
+        let designConfig = ActionItemDesignConfig(lineWidth: 7, titleColor: .g2)
+        designConfig.backgroundColor = .white
+        designConfig.lineColor = .g8
         let item = ActionItem(title: .cancelLinkMicRequestText, designConfig: designConfig) { [weak self] _ in
             guard let self = self else { return }
             let requestId = self.store.selectCurrent(SeatSelectors.getMySeatApplicationId)
             self.store.dispatch(action: SeatActions.cancelApplication(payload: requestId))
+            self.routerStore.router(action: .dismiss())
         }
         items.append(item)
         routerStore.router(action: RouterAction.present(.listMenu(items)))

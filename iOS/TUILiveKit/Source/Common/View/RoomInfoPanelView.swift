@@ -157,8 +157,8 @@ class RoomInfoPanelView: RTCBaseView {
     }
     
     @objc func followButtonClick(_ sender: UIButton) {
-        let roomOwnerId = store.selectCurrent(RoomSelectors.roomOwnerId)
-        store.dispatch(action: sender.isSelected ? UserActions.unfollow(payload: roomOwnerId) : UserActions.follow(payload: roomOwnerId))
+        let roomOwnerInfo = store.selectCurrent(RoomSelectors.getRoomOwnerInfo)
+        store.dispatch(action: sender.isSelected ? UserActions.unfollow(payload: roomOwnerInfo) : UserActions.follow(payload: roomOwnerInfo))
     }
     
     @objc func copyButtonClick() {

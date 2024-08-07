@@ -7,7 +7,7 @@
 
 let voiceRoomMenuReducer = Reducer<MenuState>(
     ReduceOn(VoiceRoomViewActions.updateBottomMenus, reduce: { state, action in
-        let creator = VoiceRoomRootMenuDataHelper()
+        let creator = VoiceRoomRootMenuDataCreator()
         state.menusButtons = creator.generateBottomMenuData(store: action.payload.0,
                                                             routerStore: action.payload.1,
                                                             viewStore: action.payload.2)

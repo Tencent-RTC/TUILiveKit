@@ -125,7 +125,7 @@ extension RecentWatchMemberPanel {
 
 extension RecentWatchMemberPanel {
     @objc func backButtonClick(sender: UIButton) {
-        routerStore.router(action: .dismiss)
+        routerStore.router(action: .dismiss())
     }
 
 }

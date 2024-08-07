@@ -34,7 +34,7 @@ class AudienceEndView: UIView {
         let view = UIImageView()
         view.layer.cornerRadius = 40
         view.layer.masksToBounds = true
-        view.kf.setImage(with: URL(string: avatarUrl))
+        view.kf.setImage(with: URL(string: avatarUrl), placeholder: UIImage.avatarPlaceholderImage)
         return view
     }()
     
