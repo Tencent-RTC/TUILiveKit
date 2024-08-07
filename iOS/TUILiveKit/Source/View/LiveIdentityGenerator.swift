@@ -7,34 +7,40 @@
 
 import Foundation
 
-public final class LiveIdentityGenerator {
-    public enum RoomType: CaseIterable {
+@objcMembers
+public final class LiveIdentityGenerator: NSObject {
+    @objc public enum RoomType: Int {
         case live
         case voice
-        var prefix: String {
-            switch self {
-            case .live:
-                return "live_"
-            case .voice:
-                return "voice_"
-            }
-        }
+        case unknown
     }
 
     public static let shared = LiveIdentityGenerator()
-    private init() {
+    private override init() {
     }
 
-    public func generateId(_ id: String, _ type: RoomType) -> String {
-        return type.prefix + id
+    public func generateId(_ id: String, type: RoomType) -> String {
+        return getPrefix(type: type) + id
     }
 
-    public func getIDType(_ id: String) -> RoomType? {
-        for type in RoomType.allCases {
-            if id.hasPrefix(type.prefix) {
-                return type
+    public func getIDType(_ id: String) -> RoomType {
+        let roomTypeArray = [RoomType.live, RoomType.voice]
+        for roomType in roomTypeArray {
+            if id.hasPrefix(getPrefix(type: roomType)) {
+                return roomType
             }
         }
-        return nil
+        return .unknown
+    }
+    
+    private func getPrefix(type: RoomType) -> String {
+        switch type {
+        case .live:
+            return "live_"
+        case .voice:
+            return "voice_"
+        case .unknown:
+            return "unknown_"
+        }
     }
 }
