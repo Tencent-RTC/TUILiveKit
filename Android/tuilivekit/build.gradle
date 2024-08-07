@@ -33,7 +33,7 @@ dependencies {
 
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'com.github.yyued:SVGAPlayer-Android:2.6.1'
-    api 'io.trtc.uikit:common:1.0.0.294'
+    api 'io.trtc.uikit:common:1.0.0.314'
 
     def projects = this.rootProject.getAllprojects().stream().map { project -> project.name }.collect()
     api 'io.trtc.uikit:rtc_room_engine:latest.release'

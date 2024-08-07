@@ -91,6 +91,28 @@ public class SeatInfoView extends BasicView {
         });
     }
 
+    @Override
+    protected void addObserver() {
+        mSeatInfo.userId.observe(userIdObserver);
+        mSeatInfo.name.observe(nameObserver);
+        mSeatInfo.avatarUrl.observe(avatarObserver);
+        mSeatInfo.isLocked.observe(isLockedObserver);
+        mSeatInfo.isAudioLocked.observe(isAudioLockedObserver);
+        mUserState.hasAudioStreamUserList.observe(hasAudioStreamUserListObserver);
+        mUserState.speakingUserList.observe(hasAudioVolumeUserListObserver);
+    }
+
+    @Override
+    protected void removeObserver() {
+        mSeatInfo.userId.removeObserver(userIdObserver);
+        mSeatInfo.name.removeObserver(nameObserver);
+        mSeatInfo.avatarUrl.removeObserver(avatarObserver);
+        mSeatInfo.isLocked.removeObserver(isLockedObserver);
+        mSeatInfo.isAudioLocked.removeObserver(isAudioLockedObserver);
+        mUserState.hasAudioStreamUserList.removeObserver(hasAudioStreamUserListObserver);
+        mUserState.speakingUserList.removeObserver(hasAudioVolumeUserListObserver);
+    }
+
     private void updateMuteState(LinkedHashSet<String> list) {
         String userId = mSeatInfo.userId.get();
         if (TextUtils.isEmpty(userId)) {
@@ -182,27 +204,5 @@ public class SeatInfoView extends BasicView {
             mIvMute.setVisibility(View.VISIBLE);
             mIvTalkBorder.setVisibility(View.GONE);
         }
-    }
-
-    @Override
-    protected void addObserver() {
-        mSeatInfo.userId.observe(userIdObserver);
-        mSeatInfo.name.observe(nameObserver);
-        mSeatInfo.avatarUrl.observe(avatarObserver);
-        mSeatInfo.isLocked.observe(isLockedObserver);
-        mSeatInfo.isAudioLocked.observe(isAudioLockedObserver);
-        mUserState.hasAudioStreamUserList.observe(hasAudioStreamUserListObserver);
-        mUserState.speakingUserList.observe(hasAudioVolumeUserListObserver);
-    }
-
-    @Override
-    protected void removeObserver() {
-        mSeatInfo.userId.removeObserver(userIdObserver);
-        mSeatInfo.name.removeObserver(nameObserver);
-        mSeatInfo.avatarUrl.removeObserver(avatarObserver);
-        mSeatInfo.isLocked.removeObserver(isLockedObserver);
-        mSeatInfo.isAudioLocked.removeObserver(isAudioLockedObserver);
-        mUserState.hasAudioStreamUserList.removeObserver(hasAudioStreamUserListObserver);
-        mUserState.speakingUserList.removeObserver(hasAudioVolumeUserListObserver);
     }
 }

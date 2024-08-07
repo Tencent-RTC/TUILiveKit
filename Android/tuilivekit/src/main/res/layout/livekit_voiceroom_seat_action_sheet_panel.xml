@@ -10,13 +10,18 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:background="@color/livekit_design_standard_g8" />
+
     <TextView
         android:id="@+id/text_cancel"
         android:layout_width="match_parent"
-        android:layout_height="62dp"
-        android:gravity="center"
+        android:layout_height="97dp"
+        android:paddingTop="20dp"
+        android:gravity="center_horizontal"
         android:text="@string/cancel"
-        android:textColor="@color/livekit_design_standard_g7"
-        android:textSize="16sp" />
-
+        android:textColor="@color/livekit_design_standard_g2"
+        android:textSize="18sp" />
 </LinearLayout>

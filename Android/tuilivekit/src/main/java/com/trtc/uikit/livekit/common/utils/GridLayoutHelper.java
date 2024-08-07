@@ -50,7 +50,7 @@ public class GridLayoutHelper {
     }
 
     public void addViewToGrid(View view, int row, int column) {
-        if (view.getParent() instanceof GridLayout) {
+        if (view.getParent() != null && view.getParent() instanceof GridLayout) {
             moveViewInGridLayout(view, row, column);
             return;
         }

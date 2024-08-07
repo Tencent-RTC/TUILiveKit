@@ -30,7 +30,7 @@ public class SettingsPanelView extends BottomPanelView {
         mSwitchCompat = findViewById(R.id.need_request);
         mSwitchCompat.setOnCheckedChangeListener((compoundButton, enable) -> onSeatModeClicked(enable));
         ImageView imageBack = rootView.findViewById(R.id.iv_back);
-        imageBack.setOnClickListener(view -> onBackButtonClick());
+        imageBack.setOnClickListener(view -> dismiss());
     }
 
     @Override

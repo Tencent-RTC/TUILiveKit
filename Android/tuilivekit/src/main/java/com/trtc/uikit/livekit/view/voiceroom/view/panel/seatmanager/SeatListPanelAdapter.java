@@ -58,7 +58,7 @@ public class SeatListPanelAdapter extends RecyclerView.Adapter<SeatListPanelAdap
         holder.textHangUp.setTag(mData.get(position));
         holder.textHangUp.setOnClickListener((view) -> {
             final SeatState.SeatInfo seatInfo = (SeatState.SeatInfo) view.getTag();
-            mLiveController.getSeatController().kickUserOffSeatByAdmin(0, seatInfo, null);
+            mLiveController.getSeatController().kickUserOffSeatByAdmin(seatInfo);
         });
     }
 

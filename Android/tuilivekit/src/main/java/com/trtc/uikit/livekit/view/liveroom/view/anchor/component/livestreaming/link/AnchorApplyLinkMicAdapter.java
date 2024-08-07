@@ -56,13 +56,13 @@ public class AnchorApplyLinkMicAdapter extends RecyclerView.Adapter<AnchorApplyL
         holder.textReject.setTag(mData.get(position));
         holder.textReject.setOnClickListener((view) -> {
             final SeatState.SeatApplication seatApplication = (SeatState.SeatApplication) view.getTag();
-            mLiveController.getSeatController().rejectRequest(seatApplication.id);
+            mLiveController.getSeatController().responseSeatApplication(false, seatApplication.id);
         });
 
         holder.textAccept.setTag(mData.get(position));
         holder.textAccept.setOnClickListener((view) -> {
             final SeatState.SeatApplication seatApplication = (SeatState.SeatApplication) view.getTag();
-            mLiveController.getSeatController().acceptRequest(seatApplication.id);
+            mLiveController.getSeatController().responseSeatApplication(true, seatApplication.id);
         });
     }
 

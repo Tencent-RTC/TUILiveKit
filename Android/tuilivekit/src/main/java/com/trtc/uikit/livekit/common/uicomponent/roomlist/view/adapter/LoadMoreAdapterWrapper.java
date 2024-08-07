@@ -1,11 +1,13 @@
 package com.trtc.uikit.livekit.common.uicomponent.roomlist.view.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,15 +15,13 @@ import com.trtc.uikit.livekit.R;
 
 public class LoadMoreAdapterWrapper extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final int TYPE_ITEM   = 1;
-    private static final int TYPE_FOOTER = 2;
-
-    public static final int LOADING          = 1;
-    public static final int LOADING_COMPLETE = 2;
-    public static final int LOADING_END      = 3;
-
-    private       int                  loadState = LOADING_COMPLETE;
-    private final RecyclerView.Adapter adapter;
+    private static final int                  TYPE_ITEM        = 1;
+    private static final int                  TYPE_FOOTER      = 2;
+    public static final  int                  LOADING          = 1;
+    public static final  int                  LOADING_COMPLETE = 2;
+    public static final  int                  LOADING_END      = 3;
+    private final        RecyclerView.Adapter adapter;
+    private              int                  loadState        = LOADING_COMPLETE;
 
     public LoadMoreAdapterWrapper(RecyclerView.Adapter adapter) {
         this.adapter = adapter;
@@ -36,8 +36,9 @@ public class LoadMoreAdapterWrapper extends RecyclerView.Adapter<RecyclerView.Vi
         }
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == TYPE_FOOTER) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.livekit_live_room_list_refresh_footer, parent, false);
@@ -48,7 +49,7 @@ public class LoadMoreAdapterWrapper extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof FootViewHolder) {
             FootViewHolder footViewHolder = (FootViewHolder) holder;
             if (adapter.getItemCount() == 0) {
@@ -86,7 +87,7 @@ public class LoadMoreAdapterWrapper extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         RecyclerView.LayoutManager manager = recyclerView.getLayoutManager();
         if (manager instanceof GridLayoutManager) {
@@ -100,8 +101,7 @@ public class LoadMoreAdapterWrapper extends RecyclerView.Adapter<RecyclerView.Vi
         }
     }
 
-    private class FootViewHolder extends RecyclerView.ViewHolder {
-
+    private static class FootViewHolder extends RecyclerView.ViewHolder {
         ProgressBar pbProgressBar;
         TextView    tvLoading;
         TextView    tvNoMoreData;
@@ -114,6 +114,7 @@ public class LoadMoreAdapterWrapper extends RecyclerView.Adapter<RecyclerView.Vi
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setLoadState(int loadState) {
         this.loadState = loadState;
         notifyDataSetChanged();

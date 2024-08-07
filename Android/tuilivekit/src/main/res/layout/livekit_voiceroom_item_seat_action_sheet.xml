@@ -7,14 +7,13 @@
     <TextView
         android:id="@+id/text_action"
         android:layout_width="match_parent"
-        android:layout_height="62dp"
+        android:layout_height="58dp"
         android:gravity="center"
-        android:textColor="@color/livekit_not_standard_red"
-        android:textSize="16sp" />
+        android:textColor="@color/livekit_design_standard_g2"
+        android:textSize="18sp" />
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="7dp"
-        android:background="@color/livekit_not_standard_blue_30_transparency" />
-
+        android:layout_height="1dp"
+        android:background="@color/livekit_design_standard_g8" />
 </LinearLayout>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingDefaultResource">
+    <item android:drawable="@drawable/livekit_button_blue_bg" android:state_selected="false" />
+    <item android:drawable="@drawable/livekit_button_cancel_bg" android:state_selected="true" />
+</selector>

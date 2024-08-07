@@ -180,8 +180,8 @@
     <string name="livekit_voiceroom_lock">Lock Seat</string>
     <string name="livekit_voiceroom_unlock">Unlock Seat</string>
     <string name="livekit_voiceroom_kick_seat">Kick Seat</string>
-    <string name="livekit_voiceroom_seat_mute">Mute Audio</string>
-    <string name="livekit_cvoiceroom_seat_unmuted">Unmute Audio</string>
+    <string name="livekit_voiceroom_mute_seat">Mute</string>
+    <string name="livekit_cvoiceroom_unmuted_seat">Unmute</string>
     <string name="livekit_voiceroom_leave_seat">Leave Seat</string>
     <string name="livekit_voiceroom_take_seat">Take Seat</string>
     <string name="livekit_voiceroom_mute_mic">Mute Microphone</string>
@@ -191,7 +191,16 @@
     <string name="livekit_voiceroom_kicked_out_of_seat">Kicked out of seat by room owner</string>
     <string name="livekit_voiceroom_take_seat_success">Take seat success</string>
     <string name="livekit_voiceroom_need_agree">Require your consent to speak</string>
-
+    <string name="livekit_voiceroom_invite_seat_success">%s has accepted seat invitation</string>
+    <string name="livekit_voiceroom_invite_seat_rejected">%s has rejected seat invitation</string>
+    <string name="livekit_voiceroom_invite_seat_timeout">Seat invitation timeout</string>
+    <string name="livekit_voiceroom_invite_seat_canceled">Seat invitation has been canceled</string>
+    <string name="livekit_voiceroom_invite">Invite</string>
+    <string name="livekit_voiceroom_reject">Reject</string>
+    <string name="livekit_voiceroom_receive_seat_invitation">%s invites you to take seat</string>
+    <string name="livekit_voiceroom_empty_view">No users in the seat, go to invite</string>
+    <string name="livekit_end_user">End</string>
+    <string name="livekit_user_id">ID: %s</string>
     <!-- Error Toast-->
     <string name="livekit_error_success">"Operation successful"</string>
     <string name="livekit_error_failed">"Uncategorized common error"</string>
@@ -245,4 +254,5 @@
     <string name="livekit_error_open_screen_share_need_permission_from_admin">"You need to apply to the room owner or administrator before opening the screen sharing"</string>
     <string name="livekit_error_send_message_disabled_for_all">"All users are muted in the current room"</string>
     <string name="livekit_error_send_message_disabled_for_current">"You have been muted in the current room"</string>
+    <string name="livekit_kick_user">End</string>
 </resources>

@@ -177,7 +177,7 @@ public class AudienceLivingView extends BasicView {
 
         String text = mContext.getString(R.string.livekit_text_cancel_link_mic_apply);
         OnClickListener cancelRequestLinkClickListener = view1 -> {
-            mLiveController.getSeatController().cancelTakeSeatApplication();
+            mLiveController.getSeatController().cancelSeatApplication();
             linkMicDialog.dismiss();
         };
 

@@ -42,6 +42,9 @@ public interface ILiveService {
     /****************************************** Seat Business *******************************************/
     TUIRoomDefine.Request takeSeat(int seatIndex, int timeout, TUIRoomDefine.RequestCallback callback);
 
+    TUIRoomDefine.Request takeUserOnSeatByAdmin(int seatIndex, String userId, int timeout,
+                                                TUIRoomDefine.RequestCallback callback);
+
     void leaveSeat(TUIRoomDefine.ActionCallback callback);
 
     void lockSeat(int seatIndex, TUIRoomDefine.SeatLockParams params, TUIRoomDefine.ActionCallback callback);

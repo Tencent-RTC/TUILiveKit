@@ -5,30 +5,30 @@ import android.text.TextUtils;
 
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.view.BottomPanel;
 import com.trtc.uikit.livekit.manager.LiveController;
-import com.trtc.uikit.livekit.manager.controller.MediaController;
 import com.trtc.uikit.livekit.manager.controller.SeatController;
-import com.trtc.uikit.livekit.state.operation.MediaState;
 import com.trtc.uikit.livekit.state.operation.SeatState;
 import com.trtc.uikit.livekit.state.operation.UserState;
+import com.trtc.uikit.livekit.view.voiceroom.view.panel.invite.SeatInvitationView;
+import com.trtc.uikit.livekit.view.voiceroom.view.panel.user.UserManagerPanelView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SeatActionSheetGenerator {
-    private final Context         mContext;
-    private final LiveController  mLiveController;
-    private final SeatController  mSeatController;
-    private final MediaController mMediaController;
+    private final Context        mContext;
+    private final LiveController mLiveController;
+    private final SeatController mSeatController;
 
-    private final MediaState mMediaState;
+    private BottomPanel        mSeatInvitationPanel;
+    private SeatInvitationView mSeatInvitationView;
+    private BottomPanel        mUserManagerPanel;
 
     public SeatActionSheetGenerator(Context context, LiveController liveController) {
         mContext = context;
         mLiveController = liveController;
         mSeatController = liveController.getSeatController();
-        mMediaController = liveController.getMediaController();
-        mMediaState = liveController.getMediaState();
     }
 
     public List<ListMenuInfo> generate(SeatState.SeatInfo seatInfo) {
@@ -43,6 +43,11 @@ public class SeatActionSheetGenerator {
     private List<ListMenuInfo> generaSeatManagerMenuInfo(SeatState.SeatInfo seatInfo, UserState.UserInfo selfInfo) {
         List<ListMenuInfo> menuInfoList = new ArrayList<>();
         if (TextUtils.isEmpty(seatInfo.userId.get())) {
+            if (!seatInfo.isLocked.get()) {
+                ListMenuInfo inviteUser = new ListMenuInfo(mContext.getString(R.string.livekit_voiceroom_invite), () ->
+                        showSeatInvitationPanel(seatInfo.index));
+                menuInfoList.add(inviteUser);
+            }
             ListMenuInfo lockSeat = new ListMenuInfo(seatInfo.isLocked.get()
                     ? mContext.getString(R.string.livekit_voiceroom_unlock)
                     : mContext.getString(R.string.livekit_voiceroom_lock), () -> mSeatController.lockSeat(seatInfo));
@@ -50,15 +55,9 @@ public class SeatActionSheetGenerator {
             return menuInfoList;
         }
         if (isSelfSeatInfo(seatInfo, selfInfo)) {
-            ListMenuInfo muteAudio = generaMicMenuInfo();
-            menuInfoList.add(muteAudio);
             return menuInfoList;
         }
-        ListMenuInfo muteSeat = new ListMenuInfo(seatInfo.isAudioLocked.get()
-                ? mContext.getString(R.string.livekit_cvoiceroom_seat_unmuted) :
-                mContext.getString(R.string.livekit_voiceroom_seat_mute),
-                () -> mSeatController.muteSeatAudio(seatInfo));
-        menuInfoList.add(muteSeat);
+        showUserManagerPanel(seatInfo);
         return menuInfoList;
     }
 
@@ -73,13 +72,28 @@ public class SeatActionSheetGenerator {
             menuInfoList.add(takeSeat);
             return menuInfoList;
         }
+        if (isSelfSeatInfo(seatInfo, selfInfo)) {
+            return menuInfoList;
+        }
+        showUserManagerPanel(seatInfo);
         return menuInfoList;
     }
 
-    private ListMenuInfo generaMicMenuInfo() {
-        return new ListMenuInfo(mMediaState.isMicrophoneMuted.get()
-                ? mContext.getString(R.string.livekit_voiceroom_unmute_mic) :
-                mContext.getString(R.string.livekit_voiceroom_mute_mic), mMediaController::operateMicrophone);
+    private void showSeatInvitationPanel(int index) {
+        if (mSeatInvitationPanel == null) {
+            mSeatInvitationView = new SeatInvitationView(mContext, mLiveController);
+            mSeatInvitationPanel = BottomPanel.create(mSeatInvitationView);
+        }
+        mSeatInvitationView.setInviteSeatIndex(index);
+        mSeatInvitationPanel.show();
+    }
+
+    private void showUserManagerPanel(SeatState.SeatInfo seatInfo) {
+        if (mUserManagerPanel == null) {
+            UserManagerPanelView panelView = new UserManagerPanelView(mContext, mLiveController, seatInfo);
+            mUserManagerPanel = BottomPanel.create(panelView);
+        }
+        mUserManagerPanel.show();
     }
 
     private boolean isSelfSeatInfo(SeatState.SeatInfo seatInfo, UserState.UserInfo selfInfo) {

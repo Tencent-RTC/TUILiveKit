@@ -18,4 +18,8 @@ public class ToastUtils {
         }
         ToastUtil.toastShortMessage(context.getString(resourceId));
     }
+
+    public static void toast(String message) {
+        ToastUtil.toastShortMessage(message);
+    }
 }

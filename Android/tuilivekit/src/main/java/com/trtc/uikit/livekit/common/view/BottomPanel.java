@@ -16,13 +16,13 @@ public class BottomPanel extends PopupDialog {
         bottomPanel.setBackground(ContextCompat.getDrawable(bottomPanel.getContext(),
                 R.drawable.livekit_dialog_background));
         setView(bottomPanel);
-        bottomPanel.setOnBackButtonClickListener(this::dismiss);
+        bottomPanel.setOnDismissListener(this::dismiss);
     }
 
     private void setTransparentBackground(BottomPanelView bottomPanel) {
         bottomPanel.setBackgroundResource(com.trtc.tuikit.common.R.color.common_design_bottom_sheet_color);
         setView(bottomPanel);
-        bottomPanel.setOnBackButtonClickListener(this::dismiss);
+        bottomPanel.setOnDismissListener(this::dismiss);
     }
 
     public static BottomPanel create(BottomPanelView bottomPanel) {
