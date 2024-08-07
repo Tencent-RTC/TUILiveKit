@@ -123,6 +123,8 @@ extension ServiceCenter: TUIRoomObserver {
                 let actions: [ActionTemplate<User>] = [SeatActions.addSeatApplicationUser]
                 let param = generateActionTemplateParamTuple(param: request.userId, actions: actions)
                 store.dispatch(action: UserActions.fetchUserInfo(payload: param))
+            case .remoteUserOnSeat:
+                store.dispatch(action: SeatActions.updateReceivedSeatInvitation(payload: SeatInvitation(request: request)))
             default:
                 break
         }
@@ -130,9 +132,14 @@ extension ServiceCenter: TUIRoomObserver {
     
     func onRequestCancelled(requestId: String, userId: String) {
         guard let store = self.store else { return }
-        let isContainRequest = store.selectCurrent(SeatSelectors.getSeatApplications).contains { $0.id == requestId }
-        if isContainRequest {
+        let isContainApplicationRequest = store.selectCurrent(SeatSelectors.getSeatApplications).contains { $0.id == requestId }
+        if isContainApplicationRequest {
             store.dispatch(action: SeatActions.removeSeatApplication(payload: requestId))
+        }
+        
+        if store.selectCurrent(SeatSelectors.getReceivedSeatInvitation).id == requestId {
+            store.dispatch(action: SeatActions.updateReceivedSeatInvitation(payload: SeatInvitation()))
+            store.dispatch(action: ViewActions.toastEvent(payload: ToastInfo(message: .inviteCancelText)))
         }
     }
     
@@ -270,4 +277,5 @@ extension ServiceCenter {
 fileprivate extension String {
     static let roomDismissed = localized("live.audience.mask.title")
     static let kickedOutOfSeat = localized("live.seat.kickedOutOfSeat")
+    static let inviteCancelText = localized("live.seat.inviteSeatCancel")
 }

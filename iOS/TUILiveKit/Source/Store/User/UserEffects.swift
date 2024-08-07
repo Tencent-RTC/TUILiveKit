@@ -48,11 +48,9 @@ class UserEffects: Effects {
     let followUser = Effect<Environment>.dispatchingOne { actions, environment in
         actions.wasCreated(from: UserActions.follow)
             .flatMap { action in
-                environment.userService.followUser(userId: action.payload)
+                environment.userService.followUser(userId: action.payload.userId)
                     .map { result in
-                        var user = User()
-                        user.userId = action.payload
-                        return UserActions.onUserInMyFollowingList(payload: (user, true))
+                        return UserActions.onUserInMyFollowingList(payload: (action.payload, true))
                     }
                     .catch { error -> Just<Action> in
                         let action = environment.errorService.convert(error: error)
@@ -65,11 +63,9 @@ class UserEffects: Effects {
     let unfollowUser = Effect<Environment>.dispatchingOne { actions, environment in
         actions.wasCreated(from: UserActions.unfollow)
             .flatMap { action in
-                environment.userService.unfollowUser(userId: action.payload)
+                environment.userService.unfollowUser(userId: action.payload.userId)
                     .map { result in
-                        var user = User()
-                        user.userId = action.payload
-                        return UserActions.onUserInMyFollowingList(payload: (user, false))
+                        return UserActions.onUserInMyFollowingList(payload: (action.payload, false))
                     }
                     .catch { error -> Just<Action> in
                         let action = environment.errorService.convert(error: error)

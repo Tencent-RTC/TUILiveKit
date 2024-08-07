@@ -20,7 +20,8 @@ let routerReducer = Reducer<RouterState>(
             }) {
                 state.routeStack.append(route)
             }
-        case .dismiss:
+        case .dismiss(let animated, let completion):
+            state.dismissEvent = (animated, completion)
             if state.routeStack.count > 1 {
                 let _ = state.routeStack.popLast()
             }
@@ -34,5 +35,8 @@ let routerReducer = Reducer<RouterState>(
         } else {
             state.routeStack.append(action.payload)
         }
+    }),
+    ReduceOn(RouterActions.clearDismissEvent, reduce: { state, action in
+        state.dismissEvent = nil
     })
 )

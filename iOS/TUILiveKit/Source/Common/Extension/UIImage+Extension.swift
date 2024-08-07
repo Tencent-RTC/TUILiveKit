@@ -14,6 +14,9 @@ extension UIImage {
     static var placeholderImage: UIImage {
         UIColor.lightPurpleColor.trans2Image()
     }
+    static var avatarPlaceholderImage: UIImage? {
+        UIImage(named: "live_seat_placeholder_avatar", in: .liveBundle, compatibleWith: nil)
+    }
 }
 
 

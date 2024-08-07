@@ -11,6 +11,7 @@ import TUICore
 import RTCRoomEngine
 import Combine
 
+@objcMembers
 public class TUILiveRoomAnchorViewController: UIViewController {
     // MARK: - private property.
     private lazy var store: LiveStoreProvider = LiveStoreFactory.getStore(roomId: roomId)

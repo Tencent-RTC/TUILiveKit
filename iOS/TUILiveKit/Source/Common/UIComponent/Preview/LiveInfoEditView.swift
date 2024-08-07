@@ -218,6 +218,7 @@ extension LiveInfoEditView {
             let item = ActionItem(title: category.getString(), designConfig: config, actionClosure: { [weak self] _ in
                 guard let self = self else { return }
                 self.store.dispatch(action: RoomActions.updateRoomCategory(payload: category))
+                self.routerStore.router(action: .dismiss())
             })
             items.append(item)
         }
@@ -237,6 +238,7 @@ extension LiveInfoEditView {
             let item = ActionItem(title: mode.getString(), designConfig: config, actionClosure: { [weak self] _ in
                 guard let self = self else { return }
                 self.store.dispatch(action: RoomActions.updateRoomMode(payload: mode))
+                self.routerStore.router(action: .dismiss())
             })
             items.append(item)
         }

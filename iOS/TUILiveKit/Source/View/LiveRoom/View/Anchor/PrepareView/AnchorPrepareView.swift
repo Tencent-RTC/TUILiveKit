@@ -24,65 +24,65 @@ class AnchorPrepareView: UIView {
         var view = UIView()
         return view
     }()
-
+    
     private lazy var bottomGradientView: UIView = {
         var view = UIView(frame: CGRect(x: 0, y: 0, width: self.mm_w, height: 300.scale375()))
         view.gradient(colors: [.g1.withAlphaComponent(0), .g1,], isVertical: true)
         return view
     }()
-
+    
     private lazy var backButton: UIButton = {
         let view = UIButton(type: .system)
         view.setBackgroundImage(.liveBundleImage("live_back_icon"), for: .normal)
         view.addTarget(self, action: #selector(backButtonClick), for: .touchUpInside)
         return view
     }()
-
+    
     private lazy var editView: LiveInfoEditView = {
         let view = LiveInfoEditView(store: store, routerStore: routerStore)
         return view
     }()
-
+    
     private lazy var featureClickPanel: FeatureClickPanel = {
-        let designConfig = FeatureItemDesignConfig()
+        var designConfig = FeatureItemDesignConfig()
         designConfig.type = .imageAboveTitle
         designConfig.imageSize = CGSize(width: 36.scale375(), height: 36.scale375())
         designConfig.titleHeight = 20.scale375Height()
         let model = FeatureClickPanelModel()
         model.itemSize = CGSize(width: 63.scale375(), height: 56.scale375Height())
         model.itemDiff = 25.scale375()
-        model.items.append(FeatureItem(title: .beautyText,
-                                       image: .liveBundleImage("live_prepare_beauty_icon"),
+        model.items.append(FeatureItem(normalTitle: .beautyText,
+                                       normalImage: .liveBundleImage("live_prepare_beauty_icon"),
                                        designConfig: designConfig,
-                                       actionClosure: { [weak self] in
-                                           guard let self = self else { return }
-                                           self.beautyClick()
-                                       }))
-        model.items.append(FeatureItem(title: .audioText,
-                                       image: .liveBundleImage("live_prepare_audio_icon"),
+                                       actionClosure: { [weak self] _ in
+            guard let self = self else { return }
+            self.beautyClick()
+        }))
+        model.items.append(FeatureItem(normalTitle: .audioText,
+                                       normalImage: .liveBundleImage("live_prepare_audio_icon"),
                                        designConfig: designConfig,
-                                       actionClosure: { [weak self] in
-                                           guard let self = self else { return }
-                                           self.audioEffectsClick()
-                                       }))
-        model.items.append(FeatureItem(title: .flipText,
-                                       image: .liveBundleImage("live_prepare_flip_icon"),
+                                       actionClosure: { [weak self] _ in
+            guard let self = self else { return }
+            self.audioEffectsClick()
+        }))
+        model.items.append(FeatureItem(normalTitle: .flipText,
+                                       normalImage: .liveBundleImage("live_prepare_flip_icon"),
                                        designConfig: designConfig,
-                                       actionClosure: { [weak self] in
-                                           guard let self = self else { return }
-                                           self.flipClick()
-                                       }))
-        model.items.append(FeatureItem(title: .mirrorText,
-                                       image: .liveBundleImage("live_prepare_mirror_icon"),
+                                       actionClosure: { [weak self] _ in
+            guard let self = self else { return }
+            self.flipClick()
+        }))
+        model.items.append(FeatureItem(normalTitle: .mirrorText,
+                                       normalImage: .liveBundleImage("live_prepare_mirror_icon"),
                                        designConfig: designConfig,
-                                       actionClosure: { [weak self] in
-                                           guard let self = self else { return }
-                                           self.mirrorClick()
-                                       }))
+                                       actionClosure: { [weak self] _ in
+            guard let self = self else { return }
+            self.mirrorClick()
+        }))
         let featureClickPanel = FeatureClickPanel(model: model)
         return featureClickPanel
     }()
-
+    
     private lazy var startButton: UIButton = {
         let view = UIButton()
         view.layer.cornerRadius = 26.scale375()
@@ -92,7 +92,7 @@ class AnchorPrepareView: UIView {
         view.backgroundColor = .b1
         return view
     }()
-
+    
     private var isViewReady: Bool = false
     override func didMoveToWindow() {
         super.didMoveToWindow()
@@ -102,23 +102,23 @@ class AnchorPrepareView: UIView {
         activateConstraints()
         isViewReady = true
     }
-
+    
     init(store: LiveStore, routerStore: RouterStore) {
         self.store = store
         self.routerStore = routerStore
         super.init(frame: .zero)
         registerObserver()
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     deinit {
         unRegisterObserver()
         print("deinit \(type(of: self))")
     }
-
+    
     private func registerObserver() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(keyboardWillShow),
@@ -147,12 +147,12 @@ extension AnchorPrepareView {
         addSubview(featureClickPanel)
         addSubview(startButton)
     }
-
+    
     func updateRootViewOrientation(isPortrait: Bool) {
         self.isPortrait = isPortrait
         activateConstraints()
     }
-
+    
     func activateConstraints() {
         topGradientView.snp.remakeConstraints { make in
             make.centerX.equalToSuperview()
@@ -160,21 +160,21 @@ extension AnchorPrepareView {
             make.height.equalTo((isPortrait ? 129 : 70).scale375())
             make.width.equalToSuperview()
         }
-
+        
         bottomGradientView.snp.remakeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview()
             make.height.equalTo((isPortrait ? 300 : 160).scale375())
             make.width.equalToSuperview()
         }
-
+        
         DispatchQueue.main.async {
             self.topGradientView.gradient(colors: [.g1.withAlphaComponent(0.5),
                                                    .g1.withAlphaComponent(0),], isVertical: true)
             self.bottomGradientView.gradient(colors: [.g1.withAlphaComponent(0),
                                                       .g1,], isVertical: true)
         }
-
+        
         backButton.snp.remakeConstraints { make in
             make.height.equalTo(24.scale375())
             make.width.equalTo(24.scale375())
@@ -185,7 +185,7 @@ extension AnchorPrepareView {
                 make.top.equalToSuperview().offset(16)
             }
         }
-
+        
         editView.snp.remakeConstraints { make in
             make.width.equalTo(343.scale375())
             make.height.equalTo(112.scale375())
@@ -197,7 +197,7 @@ extension AnchorPrepareView {
                 make.bottom.equalTo(startButton)
             }
         }
-
+        
         startButton.snp.remakeConstraints { make in
             make.height.equalTo(52.scale375())
             if self.isPortrait {
@@ -210,7 +210,7 @@ extension AnchorPrepareView {
                 make.bottom.equalToSuperview().inset(WindowUtils.bottomSafeHeight + 30.scale375Height())
             }
         }
-
+        
         featureClickPanel.snp.remakeConstraints { make in
             if self.isPortrait {
                 make.centerX.equalToSuperview()
@@ -243,15 +243,15 @@ extension AnchorPrepareView {
             UIViewController.attemptRotationToDeviceOrientation()
         }
     }
-
+    
     @objc func backButtonClick() {
         WindowUtils.getCurrentWindowViewController()?.backToPreviousPage()
     }
-
+    
     @objc func startButtonClick() {
         delegate?.prepareView(self, didClickStart: startButton)
     }
-
+    
     @objc func keyboardWillShow(notification: Notification) {
         guard let userInfo = notification.userInfo else {
             return
@@ -263,7 +263,7 @@ extension AnchorPrepareView {
             self.updateSettingsCardConstraint(offset: keyboardRect.size.height * 0.5)
         }
     }
-
+    
     @objc func keyboardWillHide(notification: Notification) {
         guard let userInfo = notification.userInfo else {
             return
@@ -274,7 +274,7 @@ extension AnchorPrepareView {
             self.updateSettingsCardConstraint(offset: 0)
         }
     }
-
+    
     func updateSettingsCardConstraint(offset: CGFloat) {
         editView.snp.updateConstraints { make in
             if self.isPortrait {
@@ -289,28 +289,28 @@ extension AnchorPrepareView {
             }
         }
     }
-
+    
     private func beautyClick() {
         routerStore.router(action: .present(.beauty))
     }
-
+    
     private func audioEffectsClick() {
         routerStore.router(action: .present(.audioEffect))
     }
-
+    
     private func mirrorClick() {
         let isMirror = !store.mediaState.isMirror
         store.dispatch(action: MediaActions.switchMirror(payload: isMirror))
     }
-
+    
     private func flipClick() {
         let isFrontCamera = !store.mediaState.isFrontCamera
         store.dispatch(action: MediaActions.switchCamera(payload: isFrontCamera ? .front : .rear))
     }
-
+    
     private func showMoreSettingsPanel() {
     }
-
+    
     private func presentPopup(view: UIView) {
         if let vc = WindowUtils.getCurrentWindowViewController() {
             let menuContainerView = MenuContainerView(contentView: view)

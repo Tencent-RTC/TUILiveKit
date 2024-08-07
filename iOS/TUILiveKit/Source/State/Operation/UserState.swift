@@ -49,6 +49,12 @@ struct User: Codable {
         self.userId = userId
     }
     
+    init(seatInfo: SeatInfo) {
+        self.userId = seatInfo.userId
+        self.name = seatInfo.userName
+        self.avatarUrl = seatInfo.avatarUrl
+    }
+    
     init() {}
 }
 

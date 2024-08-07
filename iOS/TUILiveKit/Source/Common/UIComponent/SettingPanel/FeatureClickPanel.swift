@@ -13,7 +13,7 @@ enum FeatureItemType {
     case imageAboveTitleBottom
 }
 
-class FeatureItemDesignConfig {
+struct FeatureItemDesignConfig {
     var type: FeatureItemType = .singleImage
     var backgroundColor: UIColor? = .clear
     var titileColor: UIColor? = .g6
@@ -28,16 +28,27 @@ class FeatureItemDesignConfig {
     var imageScale: CGFloat = 1.0
 }
 
-class FeatureItem {
+struct FeatureItem {
     var normalTitle: String?
     var normalImage: UIImage?
+    var selectedTitle: String?
+    var selectedImage: UIImage?
+    var isSelected: Bool
     var designConfig: FeatureItemDesignConfig
-    var actionClosure: (()->Void)?
+    var actionClosure: ((FeatureItemButton)->Void)?
     
-    init(title: String? = nil, image: UIImage? = nil, designConfig: FeatureItemDesignConfig = FeatureItemDesignConfig(),
-         actionClosure: (()->Void)? = nil) {
-        normalTitle = title
-        normalImage = image
+    init(normalTitle: String? = nil,
+         normalImage: UIImage? = nil,
+         selectedTitle: String? = nil,
+         selectedImage: UIImage? = nil,
+         isSelected: Bool = false,
+         designConfig: FeatureItemDesignConfig = FeatureItemDesignConfig(),
+         actionClosure: ((FeatureItemButton)->Void)? = nil) {
+        self.normalTitle = normalTitle
+        self.normalImage = normalImage
+        self.selectedTitle = selectedTitle
+        self.selectedImage = selectedImage
+        self.isSelected = isSelected
         self.designConfig = designConfig
         self.actionClosure = actionClosure
     }
@@ -49,7 +60,6 @@ class FeatureClickPanelModel {
     var itemDiff: CGFloat = 0.0
     var itemSize: CGSize = .zero
 }
-
 
 extension FeatureClickPanelModel: Equatable {
     static func == (lhs: FeatureClickPanelModel, rhs: FeatureClickPanelModel) -> Bool {
@@ -64,6 +74,14 @@ class FeatureItemButton: UIControl {
         super.init(frame: .zero)
     }
 
+    override var isSelected: Bool {
+        didSet {
+            item.isSelected = isSelected
+            buttonTitle.text = item.isSelected ? item.selectedTitle : item.normalTitle
+            buttonImageView.image = item.isSelected ? item.selectedImage : item.normalImage
+        }
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -112,8 +130,7 @@ class FeatureItemButton: UIControl {
         addSubview(buttonImageView)
         addSubview(buttonTitle)
 
-        buttonImageView.image = item.normalImage
-        buttonTitle.text = item.normalTitle
+        isSelected = item.isSelected
         buttonTitle.textColor = item.designConfig.titileColor
         buttonTitle.font = item.designConfig.titleFont
 
@@ -221,6 +238,6 @@ class FeatureClickPanel: UIView {
 
 extension FeatureClickPanel {
     @objc func itemClick(_ sender: FeatureItemButton) {
-        sender.item.actionClosure?()
+        sender.item.actionClosure?(sender)
     }
 }

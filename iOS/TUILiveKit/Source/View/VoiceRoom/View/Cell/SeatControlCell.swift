@@ -87,38 +87,6 @@ class SeatControlCell: UITableViewCell {
     }
     
     func bindInteraction() {}
-    
-    func getLevel() -> Int {
-        return 0
-    }
-    
-    func getLevelImage(level: Int) -> UIImage? {
-        if level <= 30 {
-            return UIImage(named: "barrage_level1", in: Bundle.liveBundle, compatibleWith: nil)
-        } else if level <= 60 {
-            return UIImage(named: "barrage_level2", in: Bundle.liveBundle, compatibleWith: nil)
-        } else if level <= 90 {
-            return UIImage(named: "barrage_level3", in: Bundle.liveBundle, compatibleWith: nil)
-        } else {
-            return UIImage(named: "barrage_level4", in: Bundle.liveBundle, compatibleWith: nil)
-        }
-    }
-    
-    func getLevelBackground(level: Int) -> UIColor {
-        if level <= 30 {
-            return UIColor.horizontalGradientColor(colors: [UIColor(hex: "#6CFFE5"), UIColor(hex: "#82FFE1")],
-                                                   frame: CGRect(x: 0, y: 0, width: 35.scale375(), height: 14.scale375Height()))
-        } else if level <= 60 {
-            return UIColor.horizontalGradientColor(colors: [UIColor(hex: "#6CA7FF"), UIColor(hex: "#82B4FF")],
-                                                   frame: CGRect(x: 0, y: 0, width: 35.scale375(), height: 14.scale375Height()))
-        } else if level <= 90 {
-            return UIColor.horizontalGradientColor(colors: [UIColor(hex: "#9B6CFF"), UIColor(hex: "#AA82FF")],
-                                                   frame: CGRect(x: 0, y: 0, width: 35.scale375(), height: 14.scale375Height()))
-        } else {
-            return UIColor.horizontalGradientColor(colors: [UIColor(hex: "#FF6C87"), UIColor(hex: "#FF82CD")],
-                                                   frame: CGRect(x: 0, y: 0, width: 35.scale375(), height: 14.scale375Height()))
-        }
-    }
 }
 
 class OnTheSeatCell: SeatControlCell {
@@ -138,7 +106,7 @@ class OnTheSeatCell: SeatControlCell {
     
     let kickoffSeatButton: UIButton = {
         let button = UIButton()
-        button.layer.cornerRadius = 12
+        button.layer.cornerRadius = 12.scale375()
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.redColor.cgColor
         button.titleLabel?.font = UIFont.customFont(ofSize: 12)
@@ -188,13 +156,10 @@ class OnTheSeatCell: SeatControlCell {
     
     func updateSeatInfo(seatInfo: SeatInfo) {
         self.seatInfo = seatInfo
-        avatarImageView.kf.setImage(with: URL(string: seatInfo.avatarUrl))
+        avatarImageView.kf.setImage(with: URL(string: seatInfo.avatarUrl), placeholder: UIImage.avatarPlaceholderImage)
         userNameLabel.text = seatInfo.userName
         seatIndexLabel.text = "\(seatInfo.index + 1)"
-        let level = getLevel()
-        levelButton.backgroundColor = getLevelBackground(level: level)
-        levelButton.setImage(getLevelImage(level: level), for: .normal)
-        levelButton.setTitle("\(level)", for: .normal)
+        levelButton.setLevel()
     }
     
     @objc
@@ -207,13 +172,13 @@ class OnTheSeatCell: SeatControlCell {
 
 class ApplyTakeSeatCell: SeatControlCell {
     static let identifier = "ApplyTakeSeatCell"
-    var approveEventClosure: (( SeatApplication) -> Void)?
+    var approveEventClosure: ((SeatApplication) -> Void)?
     var rejectEventClosure: ((SeatApplication) -> Void)?
     var seatApplication: SeatApplication?
     
     let approveButton: UIButton = {
         let button = UIButton()
-        button.layer.cornerRadius = 12
+        button.layer.cornerRadius = 12.scale375()
         button.titleLabel?.font = UIFont.customFont(ofSize: 12)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .b1
@@ -223,7 +188,7 @@ class ApplyTakeSeatCell: SeatControlCell {
     
     let rejectButton: UIButton = {
         let button = UIButton()
-        button.layer.cornerRadius = 12
+        button.layer.cornerRadius = 12.scale375()
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.b1.cgColor
         button.titleLabel?.font = UIFont.customFont(ofSize: 12)
@@ -249,6 +214,21 @@ class ApplyTakeSeatCell: SeatControlCell {
     
     override func activateConstraints() {
         super.activateConstraints()
+        
+        userNameLabel.snp.remakeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.leading.equalTo(avatarImageView.snp.trailing).offset(12.scale375())
+            make.trailing.equalTo(levelButton.snp.leading).offset(-4.scale375())
+        }
+        
+        levelButton.snp.remakeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.leading.equalTo(userNameLabel.snp.trailing).offset(4.scale375())
+            make.width.equalTo(35.scale375())
+            make.height.equalTo(14.scale375Height())
+            make.trailing.equalTo(approveButton.snp.leading).offset(-4.scale375())
+        }
+        
         approveButton.snp.makeConstraints { make in
             make.trailing.equalTo(rejectButton.snp.leading).offset(-10.scale375())
             make.centerY.equalToSuperview()
@@ -270,12 +250,9 @@ class ApplyTakeSeatCell: SeatControlCell {
     
     func updateSeatApplication(seatApplication: SeatApplication) {
         self.seatApplication = seatApplication
-        avatarImageView.kf.setImage(with: URL(string: seatApplication.avatarUrl))
+        avatarImageView.kf.setImage(with: URL(string: seatApplication.avatarUrl), placeholder: UIImage.avatarPlaceholderImage)
         userNameLabel.text = seatApplication.userName
-        let level = getLevel()
-        levelButton.backgroundColor = getLevelBackground(level: level)
-        levelButton.setImage(getLevelImage(level: level), for: .normal)
-        levelButton.setTitle("\(level)", for: .normal)
+        levelButton.setLevel()
     }
     
     @objc
@@ -293,8 +270,85 @@ class ApplyTakeSeatCell: SeatControlCell {
     }
 }
 
-extension String {
-    fileprivate static let endTitleText = localized("live.anchor.link.hang.up.title")
-    fileprivate static let approveText = localized("live.anchor.link.agree.title")
-    fileprivate static let rejectText = localized("live.anchor.link.reject.title")
+class InviteTakeSeatCell: SeatControlCell {
+    static let identifier = "InviteTakeSeatCell"
+    var inviteEventClosure: ((User) -> Void)?
+    var cancelEventClosure: ((User) -> Void)?
+    var user: User?
+    
+    let inviteButton: UIButton = {
+        let button = UIButton()
+        button.layer.cornerRadius = 12.scale375()
+        button.titleLabel?.font = UIFont.customFont(ofSize: 12)
+        button.setTitleColor(.white, for: .normal)
+        button.setTitle(.inviteText, for: .normal)
+        button.setTitle(.cancelText, for: .selected)
+        button.setTitleColor(UIColor.redColor, for: .selected)
+        button.backgroundColor = .b1
+        return button
+    }()
+
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func constructViewHierarchy() {
+        super.constructViewHierarchy()
+        contentView.addSubview(inviteButton)
+    }
+    
+    override func activateConstraints() {
+        super.activateConstraints()
+        inviteButton.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().offset(-24.scale375())
+            make.centerY.equalToSuperview()
+            make.size.equalTo(CGSize(width: 60.scale375(), height: 24.scale375()))
+        }
+    }
+    
+    override func bindInteraction() {
+        super.bindInteraction()
+        inviteButton.addTarget(self, action: #selector(inviteButtonClick(sender:)), for: .touchUpInside)
+    }
+    
+    func updateUser(user: User) {
+        self.user = user
+        avatarImageView.kf.setImage(with: URL(string: user.avatarUrl), placeholder: UIImage.avatarPlaceholderImage)
+        userNameLabel.text = user.name
+        levelButton.setLevel()
+    }
+    
+    func updateButtonView(isSelected: Bool) {
+        inviteButton.isSelected = isSelected
+        inviteButton.layer.borderWidth = isSelected ? 1 : 0
+        inviteButton.layer.borderColor = isSelected ? UIColor.red.cgColor : UIColor.clear.cgColor
+        inviteButton.backgroundColor = isSelected ? .clear : .b1
+    }
+    
+    @objc
+    private func inviteButtonClick(sender: UIButton) {
+        if sender.isSelected {
+            if let cancelEventClosure = cancelEventClosure, let user = user {
+                updateButtonView(isSelected: false)
+                cancelEventClosure(user)
+            }
+        } else {
+            if let inviteEventClosure = inviteEventClosure, let user = user {
+                updateButtonView(isSelected: true)
+                inviteEventClosure(user)
+            }
+        }
+    }
+}
+
+fileprivate extension String {
+    static let endTitleText = localized("live.anchor.link.hang.up.title")
+    static let approveText = localized("live.anchor.link.agree.title")
+    static let rejectText = localized("live.anchor.link.reject.title")
+    static let inviteText = localized("live.seat.invite")
+    static let cancelText = localized("live.audience.link.confirm.cancel")
 }

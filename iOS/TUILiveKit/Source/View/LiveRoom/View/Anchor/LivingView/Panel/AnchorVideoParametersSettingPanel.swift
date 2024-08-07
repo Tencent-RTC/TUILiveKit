@@ -143,7 +143,7 @@ extension AnchorVideoParametersSettingPanel {
 
 extension AnchorVideoParametersSettingPanel {
     @objc func backButtonClick(sender: UIButton) {
-        routerStore.router(action: .dismiss)
+        routerStore.router(action: .dismiss())
     }
 
     @objc func videoQualityButtonClick() {
@@ -160,6 +160,7 @@ extension AnchorVideoParametersSettingPanel {
             let item = ActionItem(title: category.getString(), designConfig: config, actionClosure: { [weak self] _ in
                 guard let self = self else { return }
                 self.store.dispatch(action: MediaActions.updateVideoQuality(payload: category))
+                self.routerStore.router(action: .dismiss())
             })
             items.append(item)
         }

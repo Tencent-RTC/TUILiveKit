@@ -34,4 +34,8 @@ enum SeatSelectors {
             return state.seatApplicationList[index]
         }
     }
+    
+    static let getSeatInvitationMap = Selector.with(getSeatState, keyPath: \SeatState.sentSeatInvitationMap)
+    
+    static let getReceivedSeatInvitation = Selector.with(getSeatState, projector: \SeatState.receivedSeatInvitation)
 }

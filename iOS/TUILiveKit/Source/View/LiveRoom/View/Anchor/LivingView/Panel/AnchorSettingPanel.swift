@@ -19,15 +19,15 @@ class AnchorSettingPanel: UIView {
         self.routerStore = routerStore
         super.init(frame: .zero)
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     private var isPortrait: Bool = {
         WindowUtils.isPortrait
     }()
-
+    
     private var isViewReady: Bool = false
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -37,7 +37,7 @@ class AnchorSettingPanel: UIView {
         setView()
         isViewReady = true
     }
-
+    
     private let titleLabel: UILabel = {
         let view = UILabel()
         view.text = .settingTitleText
@@ -46,52 +46,52 @@ class AnchorSettingPanel: UIView {
         view.textAlignment = .center
         return view
     }()
-
+    
     private lazy var featureItems: [FeatureItem] = {
         var items: [FeatureItem] = []
-        let designConfig = FeatureItemDesignConfig()
+        var designConfig = FeatureItemDesignConfig()
         designConfig.backgroundColor = .g3
         designConfig.cornerRadius = 10
         designConfig.titleFont = .customFont(ofSize: 12)
         designConfig.type = .imageAboveTitleBottom
-        items.append(FeatureItem(title: .beautyText,
-                                 image: .liveBundleImage("live_videoSetting_beauty"),
+        items.append(FeatureItem(normalTitle: .beautyText,
+                                 normalImage: .liveBundleImage("live_videoSetting_beauty"),
                                  designConfig: designConfig,
-                                 actionClosure: { [weak self] in
-                                     guard let self = self else { return }
-                                     self.beautyClick()
-                                 }))
-        items.append(FeatureItem(title: .audioEffectsText,
-                                 image: .liveBundleImage("live_setting_audio_effects"),
+                                 actionClosure: { [weak self] _ in
+            guard let self = self else { return }
+            self.beautyClick()
+        }))
+        items.append(FeatureItem(normalTitle: .audioEffectsText,
+                                 normalImage: .liveBundleImage("live_setting_audio_effects"),
                                  designConfig: designConfig,
-                                 actionClosure: { [weak self] in
+                                 actionClosure: { [weak self] _ in
             guard let self = self else { return }
             self.audioEffectClick()
         }))
-        items.append(FeatureItem(title: .flipText,
-                                 image: .liveBundleImage("live_videoSetting_flip"),
+        items.append(FeatureItem(normalTitle: .flipText,
+                                 normalImage: .liveBundleImage("live_videoSetting_flip"),
                                  designConfig: designConfig,
-                                 actionClosure: { [weak self] in
+                                 actionClosure: { [weak self] _ in
             guard let self = self else { return }
             self.flipClick()
         }))
-        items.append(FeatureItem(title: .mirrorText,
-                                 image: .liveBundleImage("live_videoSetting_mirror"),
+        items.append(FeatureItem(normalTitle: .mirrorText,
+                                 normalImage: .liveBundleImage("live_videoSetting_mirror"),
                                  designConfig: designConfig,
-                                 actionClosure: { [weak self] in
+                                 actionClosure: { [weak self] _ in
             guard let self = self else { return }
             self.mirrorClick()
         }))
-        items.append(FeatureItem(title: .videoParametersText,
-                                 image: .liveBundleImage("live_setting_video_parameters"),
+        items.append(FeatureItem(normalTitle: .videoParametersText,
+                                 normalImage: .liveBundleImage("live_setting_video_parameters"),
                                  designConfig: designConfig,
-                                 actionClosure: { [weak self] in
+                                 actionClosure: { [weak self] _ in
             guard let self = self else { return }
             self.videoParametersClick()
         }))
         return items
     }()
-
+    
     private lazy var featureClickPanel: FeatureClickPanel = {
         let model = FeatureClickPanelModel()
         model.itemSize = CGSize(width: 56.scale375(), height: 76.scale375())
@@ -100,7 +100,7 @@ class AnchorSettingPanel: UIView {
         let featureClickPanel = FeatureClickPanel(model: model)
         return featureClickPanel
     }()
-
+    
     private func setView() {
         backgroundColor = .g2
         layer.cornerRadius = 20
@@ -115,7 +115,7 @@ private extension AnchorSettingPanel {
         addSubview(titleLabel)
         addSubview(featureClickPanel)
     }
-
+    
     func activateConstraints() {
         snp.remakeConstraints { make in
             if isPortrait {
@@ -125,14 +125,14 @@ private extension AnchorSettingPanel {
             }
             make.edges.equalToSuperview()
         }
-
+        
         titleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(20.scale375Height())
             make.centerX.equalToSuperview()
             make.width.equalToSuperview()
             make.height.equalTo(24.scale375Height())
         }
-
+        
         featureClickPanel.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(32.scale375Height())
             make.centerX.equalToSuperview()
@@ -146,24 +146,24 @@ private extension AnchorSettingPanel {
     private func beautyClick() {
         routerStore.router(action: .present(.beauty))
     }
-
+    
     private func audioEffectClick() {
         routerStore.router(action: .present(.audioEffect))
     }
-
+    
     private func mirrorClick() {
         let isMirror = store.selectCurrent(MediaSelectors.getMirrorState)
         store.dispatch(action: MediaActions.switchMirror(payload: isMirror == true ? false : true))
     }
-
+    
     private func flipClick() {
         let isFrontCamera = store.selectCurrent(MediaSelectors.getFrontCameraState)
         store.dispatch(action: MediaActions.switchCamera(payload: isFrontCamera == true ? .rear : .front))
     }
-
+    
     private func moreSettingClick() {
     }
-
+    
     private func videoParametersClick() {
         routerStore.router(action: .present(.videoSetting))
     }

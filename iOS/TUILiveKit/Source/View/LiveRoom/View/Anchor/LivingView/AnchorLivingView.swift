@@ -255,14 +255,15 @@ extension AnchorLivingView {
 // MARK: Action
 
 extension AnchorLivingView {
-    @objc 
+    @objc
     func closeButtonClick() {
-        let designConfig = ActionItemDesignConfig(lineWidth: 7, titleColor: .redPinkColor)
-        designConfig.backgroundColor = .g2
-        designConfig.lineColor = .g3.withAlphaComponent(0.1)
+        let designConfig = ActionItemDesignConfig(lineWidth: 7, titleColor: .g2)
+        designConfig.backgroundColor = .white
+        designConfig.lineColor = .g8
         let item = ActionItem(title: .confirmCloseText, designConfig: designConfig, actionClosure: { [weak self] _ in
             guard let self = self else { return }
             self.showEndView()
+            self.routerStore.router(action: .dismiss())
         })
         routerStore.router(action: .present(.listMenu([item])))
     }

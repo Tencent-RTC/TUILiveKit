@@ -12,6 +12,9 @@ struct SeatState: Encodable {
     var seatList: [SeatInfo] = []
     var seatApplicationList: [SeatApplication] = []
     var mySeatApplicationId: String = ""
+    
+    var sentSeatInvitationMap: [String: SeatInvitation] = [:]
+    var receivedSeatInvitation: SeatInvitation = SeatInvitation()
 }
 
 struct SeatApplication: Codable {
@@ -22,6 +25,23 @@ struct SeatApplication: Codable {
     var content: String
     var timestamp: UInt
     
+    init(request: TUIRequest) {
+        self.id = request.requestId
+        self.userId = request.userId
+        self.avatarUrl = request.avatarUrl
+        self.userName = request.userName
+        self.content = request.content
+        self.timestamp = request.timestamp
+    }
+}
+
+struct SeatInvitation: Codable {
+    var id: String
+    var userId: String
+    var avatarUrl: String
+    var userName: String
+    var content: String
+    var timestamp: UInt
     
     init(request: TUIRequest) {
         self.id = request.requestId
@@ -30,6 +50,15 @@ struct SeatApplication: Codable {
         self.userName = request.userName
         self.content = request.content
         self.timestamp = request.timestamp
+    }
+    
+    init() {
+        self.id = ""
+        self.userId = ""
+        self.avatarUrl = ""
+        self.userName = ""
+        self.content = ""
+        self.timestamp = 0
     }
 }
 
@@ -78,6 +107,8 @@ struct SeatInfo: Codable {
 extension SeatInfo: Equatable {}
 
 extension SeatApplication: Equatable {}
+
+extension SeatInvitation: Equatable {}
 
 extension SeatInfo: Hashable {
     

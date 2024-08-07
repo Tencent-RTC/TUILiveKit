@@ -113,11 +113,10 @@ class AlertPanel: UIView {
     
     func show() {
         WindowUtils.getCurrentWindowViewController()?.view.addSubview(self)
-        
     }
     
-    private func dismiss() {
-        self.removeFromSuperview()
+    func dismiss() {
+        removeFromSuperview()
     }
 }
 
@@ -214,7 +213,7 @@ extension AlertPanel {
     
     private func setupStyle() {
         if let imagePath = alertInfo.imagePath {
-            avatarImageView.kf.setImage(with: URL(string:imagePath))
+            avatarImageView.kf.setImage(with: URL(string:imagePath), placeholder: UIImage.avatarPlaceholderImage)
         }
         
         descriptionLabel.text = alertInfo.description
@@ -234,14 +233,12 @@ extension AlertPanel {
     private func cancelButtonClick(sender: UIButton) {
         if let cancelClosure = alertInfo.cancelClosure {
             cancelClosure()
-            dismiss()
         }
     }
     
     @objc
     private func defaultButtonClick(sender: UIButton) {
         alertInfo.defaultClosure()
-        dismiss()
     }
 }
 

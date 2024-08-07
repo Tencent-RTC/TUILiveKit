@@ -1,3 +1,8 @@
+## 2.3.0
+### New Features
+- Android&iOS: Add new feature for room owners to invite audience members to speak in voice rooms 
+- Android&iOS: Add a user management panel for users on seat
+- Android&iOS: Optimize some known issues
 ## 2.2.0
 ### New Features
 - Android&iOS: UI overall interaction upgrade

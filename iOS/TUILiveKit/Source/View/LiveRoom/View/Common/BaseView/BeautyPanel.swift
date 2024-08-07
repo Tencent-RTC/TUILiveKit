@@ -255,13 +255,13 @@ extension BeautyPanel {
 // MARK: Action
 extension BeautyPanel {
     private func  bindInteraction() {
-            let smoothLevel = store.selectCurrent(BeautySelectors.getSmoothLevel)
-            store.dispatch(action: BeautyActions.setSmoothLevel(payload: smoothLevel))
-            let whitenessLevel = store.selectCurrent(BeautySelectors.getWhitenessLevel)
-            store.dispatch(action: BeautyActions.setWhitenessLevel(payload: whitenessLevel))
-            let ruddyLevel = store.selectCurrent(BeautySelectors.getRuddyLevel)
-            store.dispatch(action: BeautyActions.setRuddyLevel(payload: ruddyLevel))
-        }
+        let smoothLevel = store.selectCurrent(BeautySelectors.getSmoothLevel)
+        store.dispatch(action: BeautyActions.setSmoothLevel(payload: smoothLevel))
+        let whitenessLevel = store.selectCurrent(BeautySelectors.getWhitenessLevel)
+        store.dispatch(action: BeautyActions.setWhitenessLevel(payload: whitenessLevel))
+        let ruddyLevel = store.selectCurrent(BeautySelectors.getRuddyLevel)
+        store.dispatch(action: BeautyActions.setRuddyLevel(payload: ruddyLevel))
+    }
     
     @objc func backButtonClick(sender: UIButton) {
         backClosure?()

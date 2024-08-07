@@ -25,12 +25,12 @@ class MenuContainerView: UIView {
     
     private let safeBottomView: UIView = {
         let view = UIView()
-        view.backgroundColor = .g2
         return view
     }()
     
-    init(contentView: UIView) {
+    init(contentView: UIView, safeBottomViewBackgroundColor: UIColor = .g2) {
         self.contentView = contentView
+        self.safeBottomView.backgroundColor = safeBottomViewBackgroundColor
         super.init(frame: .zero)
         self.backgroundColor = UIColor.clear
     }

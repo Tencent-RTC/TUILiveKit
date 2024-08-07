@@ -137,7 +137,7 @@ extension AnchorLinkControlPanel {
 
 extension AnchorLinkControlPanel {
     @objc func backButtonClick(sender: UIButton) {
-        routerStore.router(action: .dismiss)
+        routerStore.router(action: .dismiss())
     }
 }
 

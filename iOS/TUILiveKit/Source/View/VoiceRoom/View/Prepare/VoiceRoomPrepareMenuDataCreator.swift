@@ -1,5 +1,5 @@
 //
-//  VoiceRoomPrepareMenuDataHelper.swift
+//  VoiceRoomPrepareMenuDataCreator.swift
 //  TUILiveKit
 //
 //  Created by aby on 2024/4/8.
@@ -8,7 +8,7 @@
 import Foundation
 
 
-class VoiceRoomPrepareMenuDataHelper {
+class VoiceRoomPrepareMenuDataCreator {
     deinit {
         debugPrint("deinit \(type(of: self))")
     }
@@ -18,7 +18,7 @@ class VoiceRoomPrepareMenuDataHelper {
             let info = ActionItem(title: category.getString(), icon: "")
             info.actionClosure = { _ in
                 store.dispatch(action: RoomActions.updateRoomCategory(payload: category))
-                routerStore.router(action: .dismiss)
+                routerStore.router(action: .dismiss())
             }
             return info
         }
@@ -29,7 +29,7 @@ class VoiceRoomPrepareMenuDataHelper {
             let info = ActionItem(title: mode.getString(), icon: "")
             info.actionClosure = { _ in
                 store.dispatch(action: RoomActions.updateRoomMode(payload: mode))
-                routerStore.router(action: .dismiss)
+                routerStore.router(action: .dismiss())
             }
             return info
         }

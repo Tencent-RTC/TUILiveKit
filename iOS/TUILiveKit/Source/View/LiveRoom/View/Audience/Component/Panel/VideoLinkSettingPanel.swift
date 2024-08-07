@@ -38,30 +38,30 @@ class VideoLinkSettingPanel: RTCBaseView {
     
     private lazy var featureItems: [FeatureItem] = {
         var items = [FeatureItem]()
-        let designConfig = FeatureItemDesignConfig()
+        var designConfig = FeatureItemDesignConfig()
         designConfig.imageTopInset = 8.scale375Height()
         designConfig.backgroundColor = .g3.withAlphaComponent(0.3)
         designConfig.cornerRadius = 10.scale375Width()
         designConfig.type = .imageAboveTitle
-        items.append(FeatureItem(title: .beautyText, 
-                                 image: .liveBundleImage("live_video_setting_beauty"),
+        items.append(FeatureItem(normalTitle: .beautyText,
+                                 normalImage: .liveBundleImage("live_video_setting_beauty"),
                                  designConfig: designConfig,
-                                 actionClosure: { [weak self] in
+                                 actionClosure: { [weak self] _ in
             guard let self = self else { return }
             self.routerStore.router(action: .present(.beauty))
         }))
-        items.append(FeatureItem(title: .mirrorText,
-                                 image: .liveBundleImage("live_video_setting_mirror"),
+        items.append(FeatureItem(normalTitle: .mirrorText,
+                                 normalImage: .liveBundleImage("live_video_setting_mirror"),
                                  designConfig: designConfig,
-                                 actionClosure: { [weak self] in
+                                 actionClosure: { [weak self] _ in
             guard let self = self else { return }
             let isMirror = store.selectCurrent(MediaSelectors.getMirrorState)
             self.store.dispatch(action: MediaActions.switchMirror(payload: isMirror == true ? false : true))
         }))
-        items.append(FeatureItem(title: .flipText,
-                                 image: .liveBundleImage("live_video_setting_flip"),
+        items.append(FeatureItem(normalTitle: .flipText,
+                                 normalImage: .liveBundleImage("live_video_setting_flip"),
                                  designConfig: designConfig,
-                                 actionClosure: { [weak self] in
+                                 actionClosure: { [weak self] _ in
             guard let self = self else { return }
             let isFrontCamera = store.selectCurrent(MediaSelectors.getFrontCameraState)
             store.dispatch(action: MediaActions.switchCamera(payload: isFrontCamera == true ? .rear : .front))
@@ -189,8 +189,7 @@ extension VideoLinkSettingPanel {
 }
 
 private extension String {
-    static var videoLinkConfigTitleText: String =
-        localized("live.audience.videoLinkConfig.title")
+    static let videoLinkConfigTitleText = localized("live.audience.videoLinkConfig.title")
     static let requestText = localized("live.audience.videoLinkConfig.request")
     static let videoLinkConfigTipsText = localized("live.audience.videoLinkConfig.tips")
     static let beautyText = localized("live.audience.videoLinkConfig.beauty")

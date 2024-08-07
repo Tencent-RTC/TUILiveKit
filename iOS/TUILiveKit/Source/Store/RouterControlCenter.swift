@@ -82,7 +82,15 @@ extension RouterControlCenter {
                         break
                     }
                     if let route = presentedRouteStack.popLast(), let vc = presentedViewControllerMap[route] {
-                        vc.dismiss(animated: true)
+                        if let dismissEvent = routerStore.selectCurrent(RouterSelectors.dismissEvent) {
+                            vc.dismiss(animated: dismissEvent.animated) { [weak self] in
+                                guard let self = self else { return }
+                                dismissEvent.completion?()
+                                self.routerStore.dispatch(action: RouterActions.clearDismissEvent())
+                            }
+                        } else {
+                            vc.dismiss(animated: true)
+                        }
                         presentedViewControllerMap.removeValue(forKey: route)
                     }
                 }
@@ -103,7 +111,7 @@ extension RouterControlCenter {
             presentedRouteStack.append(route)
             presentedViewControllerMap[route] = presentedVC
         } else {
-            routerStore.router(action: .dismiss)
+            routerStore.router(action: .dismiss())
         }
     }
     
@@ -124,12 +132,16 @@ extension RouterControlCenter {
     }
     
     private func presentPopup(view: UIView, route: Route) -> UIViewController {
-        let menuContainerView = MenuContainerView(contentView: view)
+        var safeBottomViewBackgroundColor = UIColor.g2
+        if case .listMenu(_) = route {
+            safeBottomViewBackgroundColor = .white
+        }
+        let menuContainerView = MenuContainerView(contentView: view, safeBottomViewBackgroundColor: safeBottomViewBackgroundColor)
         let viewController = PopupViewController(contentView: menuContainerView,
                                                  supportBlurView: supportBlurView(route: route))
         menuContainerView.blackAreaClickClosure = { [weak self] in
             guard let self = self else { return }
-            self.routerStore.router(action: .dismiss)
+            self.routerStore.router(action: .dismiss())
         }
         guard let rootViewController = rootViewController else { return UIViewController()}
         let vc = getPresentedViewController(rootViewController)
@@ -162,7 +174,11 @@ extension RouterControlCenter {
             case .liveLinkControl:
                 view = AnchorLinkControlPanel(store: store, routerStore: routerStore)
             case .voiceLinkControl:
-                view = AnchorSeatControlPanel(store: store)
+                view = SeatManagerPanel(store: store, routerStore: routerStore)
+            case .linkInviteControl(let index):
+                view = SeatInvitationPanel(store: store, routerStore: routerStore, seatIndex: index)
+            case .userControl(let seatInfo):
+                view = UserManagerPanel(store: store, routerStore: routerStore, seatInfo: seatInfo)
             case .featureSetting(let settingPanelModel):
                 view = SettingPanel(settingPanelModel: settingPanelModel)
             case .musicList:
@@ -173,20 +189,19 @@ extension RouterControlCenter {
                                                   trtcCloud: store.roomEngine.getTRTCCloud())
                 audioEffect.backButtonClickClosure = { [weak self] _ in
                     guard let self = self else { return }
-                    self.routerStore.router(action: .dismiss)
+                    self.routerStore.router(action: .dismiss())
                 }
                 view = audioEffect
             case .videoSetting:
                 view = AnchorVideoParametersSettingPanel(store: store, routerStore: routerStore)
             case .linkType:
-                let dataHelper = LiveRoomRootMenuDataHelper()
-                let data = dataHelper.generateLinkTypeMenuData(store: store, routerStore: routerStore)
+                let data = LiveRoomRootMenuDataCreator().generateLinkTypeMenuData(store: store, routerStore: routerStore)
                 view = LinkMicTypePanel(data: data, routerStore: routerStore)
             case .listMenu(let items):
                 let actionPanel = ActionPanel(items: items)
                 actionPanel.cancelActionClosure = { [weak self] in
                     guard let self = self else { return }
-                    self.routerStore.router(action: .dismiss)
+                    self.routerStore.router(action: .dismiss())
                 }
                 view = actionPanel
             case .linkSetting:
@@ -198,7 +213,7 @@ extension RouterControlCenter {
                                                                           panelMode: imageType == .cover ? .cover : .background)
                 systemImageSelectionPanel.backButtonClickClosure = { [weak self] in
                     guard let self = self else { return }
-                    self.routerStore.router(action: .dismiss)
+                    self.routerStore.router(action: .dismiss())
                 }
                 view = systemImageSelectionPanel
             case .prepareSetting:

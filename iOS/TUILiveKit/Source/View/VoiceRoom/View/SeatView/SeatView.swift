@@ -106,7 +106,6 @@ class SeatView: UIView {
     
     let nameLabel: UILabel = {
         let label = UILabel(frame: .zero)
-        label.text = .handsupText
         label.font = UIFont.customFont(ofSize: 14)
         label.textColor = .g9
         label.textAlignment = .center
@@ -142,7 +141,6 @@ class SeatView: UIView {
     
     let giftCountLabel: UILabel = {
         let label = UILabel(frame: .zero)
-        label.text = .handsupText
         label.font = UIFont.customFont(ofSize: 12.0)
         label.textColor = .white
         label.textAlignment = .center
@@ -221,6 +219,7 @@ class SeatView: UIView {
         }
         muteImageView.snp.makeConstraints { (make) in
             make.trailing.bottom.equalTo(mainImageView)
+            make.size.equalTo(CGSize(width: 16.scale375(), height: 16.scale375()))
         }
         
         activateConstraintsSeatContent()
@@ -242,7 +241,8 @@ class SeatView: UIView {
     func activateConstraintsNameContent() {
         nameContentView.snp.makeConstraints { make in
             make.top.equalTo(mainImageView.snp.bottom).offset(4.scale375())
-            make.leading.trailing.equalToSuperview()
+            make.width.lessThanOrEqualToSuperview()
+            make.centerX.equalToSuperview()
             make.height.equalTo(18.scale375())
         }
         ownerImageView.snp.makeConstraints { make in
@@ -317,11 +317,10 @@ class SeatView: UIView {
             nameLabel.text = "\(seatInfo.index + 1)"
             toEmptySeatStyle()
         } else {
-            let placeholder = UIImage(named: "live_seat_placeholder_avatar", in: .liveBundle, compatibleWith: nil)
             if !seatInfo.avatarUrl.isEmpty, let avatarURL = URL(string: seatInfo.avatarUrl) {
-                mainImageView.kf.setImage(with: avatarURL, placeholder: placeholder)
+                mainImageView.kf.setImage(with: avatarURL, placeholder: UIImage.avatarPlaceholderImage)
             } else {
-                mainImageView.image = placeholder
+                mainImageView.image = UIImage.avatarPlaceholderImage
             }
             nameLabel.text = seatInfo.userName
             toUserOnSeatStyle()
@@ -355,18 +354,5 @@ extension SeatView {
             make.top.equalToSuperview()
             make.bottom.equalToSuperview()
         }
-    }
-}
-
-/// MARK: - internationalization string
-fileprivate extension String {
-    static var handsupText: String {
-        return ""
-    }
-    static var lockedText: String {
-        return ""
-    }
-    static var inviteHandsupText: String {
-        return ""
     }
 }

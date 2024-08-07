@@ -1,5 +1,5 @@
 //
-//  VoiceRoomRootMenuDataHelper.swift
+//  VoiceRoomRootMenuDataCreator.swift
 //  TUILiveKit
 //
 //  Created by aby on 2024/3/20.
@@ -8,7 +8,14 @@
 import Foundation
 import RTCRoomEngine
 
-class VoiceRoomRootMenuDataHelper {
+class VoiceRoomRootMenuDataCreator {
+    private let designConfig: ActionItemDesignConfig = {
+        let designConfig = ActionItemDesignConfig(lineWidth: 1, titleColor: .g2)
+        designConfig.backgroundColor = .white
+        designConfig.lineColor = .g8
+        return designConfig
+    }()
+    
     func generateBottomMenuData(store: LiveStore, routerStore: RouterStore, viewStore: VoiceRoomViewStore) -> [ButtonMenuInfo] {
         if store.selectCurrent(UserSelectors.isOwner) {
             return ownerBottomMenu(store: store, routerStore: routerStore)
@@ -30,18 +37,28 @@ class VoiceRoomRootMenuDataHelper {
     }
 }
 
-extension VoiceRoomRootMenuDataHelper {
+extension VoiceRoomRootMenuDataCreator {
     private func generateRoomOwnerOperateSeatMenuData(store: LiveStore,routerStore: RouterStore, seat: SeatInfo) -> [ActionItem] {
         var menus: [ActionItem] = []
         if seat.userId.isEmpty {
-            let lockSeat = ActionItem(title: seat.isLocked ? String.unLockSeat : String.lockSeat)
+            if !seat.isLocked {
+                let inviteTakeSeat = ActionItem(title: String.inviteText, designConfig: designConfig)
+                inviteTakeSeat.actionClosure = { _ in
+                    routerStore.router(action: .dismiss(false, completion: {
+                        routerStore.router(action: .present(.linkInviteControl(seat.index)))
+                    }))
+                }
+                menus.append(inviteTakeSeat)
+            }
+            
+            let lockSeat = ActionItem(title: seat.isLocked ? String.unLockSeat : String.lockSeat, designConfig: designConfig)
             lockSeat.actionClosure = { _ in
                 let lockSeat = TUISeatLockParams()
                 lockSeat.lockAudio = seat.isAudioLocked
                 lockSeat.lockVideo = seat.isVideoLocked
                 lockSeat.lockSeat = !seat.isLocked
                 store.dispatch(action: SeatActions.lockSeat(payload: (seat.index, lockSeat)))
-                routerStore.router(action: .dismiss)
+                routerStore.router(action: .dismiss())
             }
             menus.append(lockSeat)
             return menus
@@ -49,39 +66,39 @@ extension VoiceRoomRootMenuDataHelper {
         
         let isSelf = seat.userId == store.selectCurrent(UserSelectors.currentUserId)
         if !isSelf {
-            let title = seat.isAudioLocked ? String.unmuteAudio : String.muteAudio
-            let lockAudio = ActionItem(title: title)
-            lockAudio.actionClosure = { _ in
-                let lockSeat = TUISeatLockParams()
-                lockSeat.lockAudio = !seat.isAudioLocked
-                lockSeat.lockVideo = seat.isVideoLocked
-                lockSeat.lockSeat = seat.isLocked
-                store.dispatch(action: SeatActions.lockSeat(payload: (seat.index, lockSeat)))
-                routerStore.router(action: .dismiss)
-            }
-            menus.append(lockAudio)
+            presentUserControlPanel(store: store, routerStore: routerStore, seatInfo: seat)
         }
         return menus
     }
     
     private func generateNormalUserOperateSeatMenuData(store: LiveStore, routerStore: RouterStore, seat: SeatInfo) -> [ActionItem] {
         var menus: [ActionItem] = []
+        
         let isOnSeat = store.selectCurrent(UserSelectors.isOnSeat)
         if seat.userId.isEmpty && !isOnSeat && !seat.isLocked {
-            let takeSeat = ActionItem(title: .takeSeat)
+            let takeSeat = ActionItem(title: .takeSeat, designConfig: designConfig)
             takeSeat.actionClosure = { _ in
                 store.dispatch(action: SeatActions.takeSeat(payload: seat.index))
-                routerStore.router(action: .dismiss)
+                routerStore.router(action: .dismiss())
             }
             menus.append(takeSeat)
             return menus
         }
+        
+        if !seat.userId.isEmpty && seat.userId != store.selectCurrent(UserSelectors.currentUserId) {
+           presentUserControlPanel(store: store, routerStore: routerStore, seatInfo: seat)
+        }
         return menus
+    }
+    
+    private func presentUserControlPanel(store: LiveStore, routerStore: RouterStore, seatInfo: SeatInfo) {
+        store.dispatch(action: UserActions.checkFollowType(payload: seatInfo.userId))
+        routerStore.router(action: .present(.userControl(seatInfo)))
     }
 }
 
 // MARK: - Bottom menu data function
-extension VoiceRoomRootMenuDataHelper {
+extension VoiceRoomRootMenuDataCreator {
     private func ownerBottomMenu(store: LiveStore, routerStore: RouterStore) -> [ButtonMenuInfo] {
         var menus: [ButtonMenuInfo] = []
         
@@ -120,21 +137,21 @@ extension VoiceRoomRootMenuDataHelper {
         let model = FeatureClickPanelModel()
         model.itemSize = CGSize(width: 56.scale375(), height: 76.scale375())
         model.itemDiff = 44.scale375()
-        let designConfig = FeatureItemDesignConfig()
+        var designConfig = FeatureItemDesignConfig()
         designConfig.backgroundColor = .g3
         designConfig.cornerRadius = 10
         designConfig.titleFont = .customFont(ofSize: 12)
         designConfig.type = .imageAboveTitleBottom
-        model.items.append(FeatureItem(title: .musicText,
-                                       image: .liveBundleImage("live_setting_music_icon"),
+        model.items.append(FeatureItem(normalTitle: .musicText,
+                                       normalImage: .liveBundleImage("live_setting_music_icon"),
                                        designConfig: designConfig,
-                                       actionClosure: {
+                                       actionClosure: { _ in
             routerStore.router(action: .present(.musicList))
         }))
-        model.items.append(FeatureItem(title: .audioEffectsText,
-                                       image: .liveBundleImage("live_setting_audio_effects"),
+        model.items.append(FeatureItem(normalTitle: .audioEffectsText,
+                                       normalImage: .liveBundleImage("live_setting_audio_effects"),
                                        designConfig: designConfig,
-                                       actionClosure: {
+                                       actionClosure: { _ in
             routerStore.router(action: .present(.audioEffect))
         }))
         return model
@@ -200,7 +217,8 @@ fileprivate extension String {
     static let muteAudio = localized("live.seat.muteAudio")
     static let takeSeat = localized("live.seat.takeSeat")
     static let leaveSeat = localized("live.seat.leaveSeat")
-    static let backgroundText: String = localized("live.anchor.setting.background")
-    static let musicText: String = localized("live.category.music")
-    static let audioEffectsText: String = localized("live.anchor.setting.audio.effects")
+    static let backgroundText = localized("live.anchor.setting.background")
+    static let musicText = localized("live.category.music")
+    static let audioEffectsText = localized("live.anchor.setting.audio.effects")
+    static let inviteText = localized("live.seat.invite")
 }

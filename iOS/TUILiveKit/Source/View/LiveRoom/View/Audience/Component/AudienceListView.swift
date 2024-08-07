@@ -14,9 +14,9 @@ class UserInfoCell: UICollectionViewCell {
     var userInfo: User? {
         didSet {
             if let url = URL(string: userInfo?.avatarUrl ?? "") {
-                avatarImageView.kf.setImage(with: url, placeholder:UIImage.placeholderImage)
+                avatarImageView.kf.setImage(with: url, placeholder:UIImage.avatarPlaceholderImage)
             } else {
-                avatarImageView.image = .placeholderImage
+                avatarImageView.image = .avatarPlaceholderImage
             }
         }
     }
