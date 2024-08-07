@@ -235,7 +235,7 @@ class TUILiveDisplayViewCell: UICollectionViewCell {
             subView.removeFromSuperview()
         }
         
-        guard let roomType = LiveIdentityGenerator.shared.getIDType(roomId) else { return }
+        let roomType = LiveIdentityGenerator.shared.getIDType(roomId)
         switch roomType {
         case .live:
             view = AudienceView(roomId: roomId, routerStore: routerStore)
@@ -249,6 +249,8 @@ class TUILiveDisplayViewCell: UICollectionViewCell {
             view.snp.makeConstraints { make in
                 make.edges.equalToSuperview()
             }
+        case .unknown:
+            return
         }
         store.dispatch(action: MediaActions.muteAllRemoteAudio(payload: true))
     }

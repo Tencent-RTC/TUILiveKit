@@ -106,8 +106,8 @@ extension MainViewController {
     }
     
     func startButtonClick() {
-        let liveRoomId = LiveIdentityGenerator.shared.generateId(TUILogin.getUserID() ?? "", .live)
-        let voiceRoomId = LiveIdentityGenerator.shared.generateId(TUILogin.getUserID() ?? "", .voice)
+        let liveRoomId = LiveIdentityGenerator.shared.generateId(TUILogin.getUserID() ?? "", type: .live)
+        let voiceRoomId = LiveIdentityGenerator.shared.generateId(TUILogin.getUserID() ?? "", type: .voice)
         let viewController = TUILivePreviewViewController(liveRoomId: liveRoomId, voiceRoomId: voiceRoomId)
         self.navigationController?.pushViewController(viewController, animated: true)
     }
