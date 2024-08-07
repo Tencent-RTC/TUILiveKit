@@ -1,8 +1,10 @@
 package com.trtc.uikit.livekit.common.uicomponent.roomlist.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -15,33 +17,21 @@ import com.trtc.uikit.livekit.common.uicomponent.roomlist.service.RoomListServic
 import com.trtc.uikit.livekit.common.uicomponent.roomlist.store.RoomListState;
 import com.trtc.uikit.livekit.common.uicomponent.roomlist.view.adapter.LoadMoreAdapterWrapper;
 import com.trtc.uikit.livekit.common.uicomponent.roomlist.view.adapter.RoomListAdapter;
-import com.trtc.uikit.livekit.common.view.BasicView;
-import com.trtc.uikit.livekit.manager.LiveController;
 
-public class RoomListView extends BasicView {
-    private SwipeRefreshLayout     mSwipeRefreshLayout;
-    private RecyclerView           mRecyclerView;
-    private LoadMoreAdapterWrapper mAdapter;
+@SuppressLint("ViewConstructor")
+public class RoomListView extends FrameLayout {
+    private       SwipeRefreshLayout     mSwipeRefreshLayout;
+    private       RecyclerView           mRecyclerView;
+    private       LoadMoreAdapterWrapper mAdapter;
+    private final Context                mContext;
+    private final RoomListService        mRoomListService       = new RoomListService();
+    private final RoomListState          mRoomListState         = mRoomListService.mRoomListState;
+    private final Observer<Boolean>      mRefreshStatusObserver = this::onRefresh;
+    private final Observer<Boolean>      mLoadStatusObserver    = this::onLoadMore;
 
-    private final RoomListService mRoomListService = new RoomListService();
-    private final RoomListState   mRoomListState   = mRoomListService.mRoomListState;
-
-    private final Observer<Boolean> mRefreshStatusObserver = refreshing ->
-            post(() -> mSwipeRefreshLayout.setRefreshing(refreshing));
-
-    private final Observer<Boolean> mLoadStatusObserver = loading ->
-            post(() -> {
-                if (loading) {
-                    mAdapter.setLoadState((LoadMoreAdapterWrapper.LOADING));
-                } else {
-                    mAdapter.setLoadState(!TextUtils.isEmpty(mRoomListState.mFetchListCursor)
-                            ? LoadMoreAdapterWrapper.LOADING_COMPLETE
-                            : LoadMoreAdapterWrapper.LOADING_END);
-                }
-            });
-
-    public RoomListView(@NonNull Context context, @NonNull LiveController liveController) {
-        super(context, liveController);
+    public RoomListView(@NonNull Context context) {
+        super(context);
+        mContext = context;
     }
 
     protected void initView() {
@@ -49,21 +39,34 @@ public class RoomListView extends BasicView {
 
         initSwipeRefreshLayout();
         initRecyclerView();
-        refreshFetch();
     }
 
-    private void refreshFetch() {
+    private void refreshRoomList() {
         mRoomListService.refreshFetchList();
     }
 
     @Override
-    protected void addObserver() {
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+
+        initView();
+        refreshRoomList();
+        addObserver();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        removeObserver();
+    }
+
+    private void addObserver() {
         mRoomListState.mRefreshStatus.observe(mRefreshStatusObserver);
         mRoomListState.mLoadStatus.observe(mLoadStatusObserver);
     }
 
-    @Override
-    protected void removeObserver() {
+
+    private void removeObserver() {
         mRoomListState.mRefreshStatus.removeObserver(mRefreshStatusObserver);
         mRoomListState.mLoadStatus.removeObserver(mLoadStatusObserver);
     }
@@ -71,7 +74,7 @@ public class RoomListView extends BasicView {
     private void initSwipeRefreshLayout() {
         mSwipeRefreshLayout = findViewById(R.id.sfl_cover);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.livekit_design_standard_g5);
-        mSwipeRefreshLayout.setOnRefreshListener(this::refreshFetch);
+        mSwipeRefreshLayout.setOnRefreshListener(this::refreshRoomList);
     }
 
     private void initRecyclerView() {
@@ -101,6 +104,22 @@ public class RoomListView extends BasicView {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 isSlidingUpward = dy > 0;
+            }
+        });
+    }
+
+    private void onRefresh(Boolean refreshing) {
+        post(() -> mSwipeRefreshLayout.setRefreshing(refreshing));
+    }
+
+    private void onLoadMore(Boolean loading) {
+        post(() -> {
+            if (loading) {
+                mAdapter.setLoadState((LoadMoreAdapterWrapper.LOADING));
+            } else {
+                mAdapter.setLoadState(!TextUtils.isEmpty(mRoomListState.mFetchListCursor)
+                        ? LoadMoreAdapterWrapper.LOADING_COMPLETE
+                        : LoadMoreAdapterWrapper.LOADING_END);
             }
         });
     }

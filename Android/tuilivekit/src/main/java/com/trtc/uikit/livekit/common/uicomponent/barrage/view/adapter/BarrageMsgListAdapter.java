@@ -130,13 +130,13 @@ public class BarrageMsgListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private int getLevelDrawable(int level) {
         if (level <= 30) {
-            return R.drawable.live_barrage_level1;
+            return R.drawable.livekit_ic_level1;
         } else if (level <= 60) {
-            return R.drawable.live_barrage_level2;
+            return R.drawable.livekit_ic_level2;
         } else if (level <= 90) {
-            return R.drawable.live_barrage_level3;
+            return R.drawable.livekit_ic_level3;
         } else {
-            return R.drawable.live_barrage_level4;
+            return R.drawable.livekit_ic_level4;
         }
     }
 

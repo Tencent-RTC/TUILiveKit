@@ -19,7 +19,6 @@ import com.tencent.imsdk.v2.V2TIMFollowOperationResult;
 import com.tencent.imsdk.v2.V2TIMFollowTypeCheckResult;
 import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
-import com.tencent.liteav.audio.TXAudioEffectManager;
 import com.tencent.trtc.TRTCCloud;
 import com.tencent.trtc.TRTCCloudDef;
 import com.trtc.uikit.livekit.common.utils.LiveKitLog;
@@ -28,7 +27,6 @@ import com.trtc.uikit.livekit.service.ILiveService;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class LiveServiceImpl implements ILiveService {
@@ -250,6 +248,58 @@ public class LiveServiceImpl implements ILiveService {
             public void onError(String requestId, String userId, TUICommonDefine.Error error, String message) {
                 LiveKitLog.error(mTag + " takeSeat:onError, [requestId:" + requestId + ",userId:" + userId + ",error:"
                         + error + ",message:" + message + "]");
+                if (callback != null) {
+                    callback.onError(requestId, userId, error, message);
+                }
+            }
+        });
+    }
+
+    public TUIRoomDefine.Request takeUserOnSeatByAdmin(int seatIndex, String userId, int timeout,
+                                                       TUIRoomDefine.RequestCallback callback) {
+        LiveKitLog.info(mTag + " takeUserOnSeatByAdmin:[seatIndex:" + seatIndex + ",userId:" + userId + ",timeout:"
+                + timeout + "]");
+        return mTUIRoomEngine.takeUserOnSeatByAdmin(seatIndex, userId, timeout, new TUIRoomDefine.RequestCallback() {
+            @Override
+            public void onAccepted(String requestId, String userId) {
+                LiveKitLog.info(mTag + " takeUserOnSeatByAdmin:[onAccepted:[requestId:" + requestId + ",userId:"
+                        + userId + "]]");
+                if (callback != null) {
+                    callback.onAccepted(requestId, userId);
+                }
+            }
+
+            @Override
+            public void onRejected(String requestId, String userId, String message) {
+                LiveKitLog.info(mTag + " takeUserOnSeatByAdmin:[onRejected:[requestId:" + requestId + ",userId:"
+                        + userId + "]]");
+                if (callback != null) {
+                    callback.onRejected(requestId, userId, message);
+                }
+            }
+
+            @Override
+            public void onCancelled(String requestId, String userId) {
+                LiveKitLog.info(mTag + " takeUserOnSeatByAdmin:[onCancelled:[requestId:" + requestId + ",userId:"
+                        + userId + "]]");
+                if (callback != null) {
+                    callback.onCancelled(requestId, userId);
+                }
+            }
+
+            @Override
+            public void onTimeout(String requestId, String userId) {
+                LiveKitLog.info(mTag + " takeUserOnSeatByAdmin:[onTimeout:[requestId:" + requestId + ",userId:"
+                        + userId + "]]");
+                if (callback != null) {
+                    callback.onTimeout(requestId, userId);
+                }
+            }
+
+            @Override
+            public void onError(String requestId, String userId, TUICommonDefine.Error error, String message) {
+                LiveKitLog.error(mTag + " takeUserOnSeatByAdmin:onError, [requestId:" + requestId + ",userId:" + userId
+                        + ",error:" + error + ",message:" + message + "]");
                 if (callback != null) {
                     callback.onError(requestId, userId, error, message);
                 }

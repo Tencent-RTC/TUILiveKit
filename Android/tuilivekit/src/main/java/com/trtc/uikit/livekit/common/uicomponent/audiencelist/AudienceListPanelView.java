@@ -50,11 +50,7 @@ public class AudienceListPanelView extends BottomPanelView {
 
     private void initImageBackView() {
         ImageView mImageBack = findViewById(R.id.iv_back);
-        mImageBack.setOnClickListener(view -> {
-            if (mOnBackButtonClickListener != null) {
-                mOnBackButtonClickListener.onClick();
-            }
-        });
+        mImageBack.setOnClickListener(view -> dismiss());
     }
 
     private void initAudienceListView() {

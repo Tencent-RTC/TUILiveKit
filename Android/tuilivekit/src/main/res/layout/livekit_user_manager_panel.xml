@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="190dp"
+    android:background="@drawable/livekit_dialog_background"
+    android:orientation="vertical"
+    android:paddingBottom="20dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="24dp"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp">
+
+        <androidx.constraintlayout.utils.widget.ImageFilterView
+            android:id="@+id/iv_head"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/livekit_ic_avatar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:round="20dp" />
+
+        <TextView
+            android:id="@+id/user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:textColor="@color/livekit_design_standard_g6"
+            android:textSize="16sp"
+            app:layout_constraintStart_toEndOf="@id/iv_head"
+            app:layout_constraintTop_toTopOf="@id/iv_head" />
+
+        <TextView
+            android:id="@+id/user_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="6dp"
+            android:textColor="@color/livekit_not_standard_grey"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_head"
+            app:layout_constraintStart_toEndOf="@id/iv_head" />
+
+        <FrameLayout
+            android:id="@+id/fl_follow_panel"
+            android:layout_width="70dp"
+            android:layout_height="32dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tv_unfollow"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/livekit_user_manager_unfollow_bg"
+                android:text="@string/livekit_follow_anchor"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/iv_follow"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingStart="27dp"
+                android:paddingEnd="27dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/livekit_user_manager_follow_bg"
+                android:gravity="center"
+                android:src="@drawable/livekit_followed_button_check"
+                android:visibility="gone"
+                tools:ignore="ContentDescription" />
+
+        </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/user_controller_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/mute_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:id="@+id/iv_mute"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/livekit_settings_item_not_select_background"
+                android:importantForAccessibility="no"
+                android:padding="13dp"
+                android:src="@drawable/livekit_ic_unmute_microphone" />
+
+            <TextView
+                android:id="@+id/tv_mute"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="4dp"
+                android:singleLine="true"
+                android:text="@string/livekit_voiceroom_mute_seat"
+                android:textColor="@color/livekit_bottom_panel_text"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/hand_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/livekit_settings_item_not_select_background"
+                android:importantForAccessibility="no"
+                android:padding="13dp"
+                android:src="@drawable/livekit_ic_call_end" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="4dp"
+                android:singleLine="true"
+                android:text="@string/livekit_end_user"
+                android:textColor="@color/livekit_bottom_panel_text"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,9 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.view.BottomPanel;
 import com.trtc.uikit.livekit.common.view.BottomPanelView;
 import com.trtc.uikit.livekit.manager.LiveController;
 import com.trtc.uikit.livekit.state.operation.SeatState;
+import com.trtc.uikit.livekit.view.voiceroom.view.panel.invite.SeatInvitationView;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -26,8 +27,10 @@ public class SeatManagerView extends BottomPanelView {
     private TextView               mSeatApplicationTitle;
     private RecyclerView           mSeatListView;
     private RecyclerView           mSeatApplicationListView;
+    private View                   mEmptyView;
     private SeatApplicationAdapter mSeatApplicationAdapter;
     private SeatListPanelAdapter   mSeatListPanelAdapter;
+    private BottomPanel            mSeatInvitationPanel;
 
     private final Observer<List<SeatState.SeatInfo>> mSeatListObserver = this::onSeatListChange;
 
@@ -40,11 +43,11 @@ public class SeatManagerView extends BottomPanelView {
 
     @Override
     protected void initView() {
-        View rootView = LayoutInflater.from(mContext).inflate(R.layout.livekit_voiceroom_seat_manager_panel, this,
-                true);
+        LayoutInflater.from(mContext).inflate(R.layout.livekit_voiceroom_seat_manager_panel, this, true);
+        setTitle(mContext.getString(R.string.livekit_link_mic_manager));
+        showEndButton(R.drawable.livekit_ic_invite_user, v -> showSeatInvitationPanel());
+        findViewById(R.id.invite_button).setOnClickListener(v -> showSeatInvitationPanel());
         bindViewId();
-        ImageView imageBack = rootView.findViewById(R.id.iv_back);
-        imageBack.setOnClickListener(view -> onBackButtonClick());
         initSeatListView();
         initSeatApplicationListView();
     }
@@ -66,6 +69,7 @@ public class SeatManagerView extends BottomPanelView {
         mSeatApplicationTitle = findViewById(R.id.seat_application_title);
         mSeatListView = findViewById(R.id.rv_seat_list);
         mSeatApplicationListView = findViewById(R.id.rv_apply_link_user_list);
+        mEmptyView = findViewById(R.id.empty_view_container);
     }
 
     private void initSeatListView() {
@@ -108,11 +112,31 @@ public class SeatManagerView extends BottomPanelView {
     private void onSeatListChange(List<SeatState.SeatInfo> seatInfoList) {
         mSeatListPanelAdapter.updateData();
         initSeatListViewTitle();
+        updateEmptyView();
     }
 
     private void onSeatApplicationListChange(LinkedHashSet<SeatState.SeatApplication> seatApplications) {
         mSeatApplicationAdapter.updateData();
         initSeatApplicationTitleView();
+        updateEmptyView();
+    }
+
+    private void showSeatInvitationPanel() {
+        if (mSeatInvitationPanel == null) {
+            SeatInvitationView panelView = new SeatInvitationView(mContext, mLiveController);
+            mSeatInvitationPanel = BottomPanel.create(panelView);
+        }
+        mSeatInvitationPanel.show();
+    }
+
+    private void updateEmptyView() {
+        List<SeatState.SeatInfo> seatList = mSeatListPanelAdapter.getData();
+        LinkedHashSet<SeatState.SeatApplication> seatApplicationList = mSeatState.seatApplicationList.get();
+        if (seatList.isEmpty() && seatApplicationList.isEmpty()) {
+            mEmptyView.setVisibility(VISIBLE);
+        } else {
+            mEmptyView.setVisibility(GONE);
+        }
     }
 }
 

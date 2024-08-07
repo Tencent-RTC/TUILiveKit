@@ -91,4 +91,5 @@
     <color name="livekit_speak_ripple_color">#FFDADE</color>
     <color name="livekit_button_bg_line">#1AF2F5FC</color>
     <color name="livekit_view_line">#4F586B4D</color>
+    <color name="livekit_bottom_panel_text">#B2BBD1</color>
 </resources>

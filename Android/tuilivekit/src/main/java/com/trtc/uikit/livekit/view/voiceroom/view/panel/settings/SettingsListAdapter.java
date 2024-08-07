@@ -51,8 +51,6 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
     }
 
     private void initData() {
-        mData.add(new SettingsItem(mContext.getString(R.string.livekit_settings_bg_image)
-                , R.drawable.livekit_setting_bg_image, ITEM_TYPE_BGM_IMAGE));
         mData.add(new SettingsItem(mContext.getString(R.string.livekit_music)
                 , R.drawable.livekit_settings_music, ITEM_TYPE_MUSIC));
         mData.add(new SettingsItem(mContext.getString(R.string.livekit_audio_effect)

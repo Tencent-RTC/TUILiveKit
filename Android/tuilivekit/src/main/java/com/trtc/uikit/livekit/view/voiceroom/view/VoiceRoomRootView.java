@@ -14,6 +14,7 @@ import static com.trtc.uikit.livekit.view.voiceroom.view.VoiceRoomRootView.Voice
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -40,6 +41,7 @@ import com.trtc.uikit.livekit.common.view.BasicView;
 import com.trtc.uikit.livekit.manager.LiveController;
 import com.trtc.uikit.livekit.manager.controller.RoomController;
 import com.trtc.uikit.livekit.state.LiveDefine;
+import com.trtc.uikit.livekit.state.operation.SeatState;
 import com.trtc.uikit.livekit.state.operation.UserState;
 import com.trtc.uikit.livekit.view.voiceroom.TUIVoiceRoomFragment;
 import com.trtc.uikit.livekit.view.voiceroom.view.bottommenu.BottomMenuView;
@@ -66,10 +68,13 @@ public class VoiceRoomRootView extends BasicView {
     private final GiftCacheService                            mGiftCacheService;
     private final TUIVoiceRoomFragment.RoomBehavior           mRoomBehavior;
     private final TUIVoiceRoomFragment.RoomParams             mRoomParams;
-    private final Observer<String>                            mBackgroundURLObserver = this::updateRoomBackground;
-    private final Observer<LiveDefine.LiveStatus>             mLiveStateObserver     = this::onLiveStateChanged;
-    private final Set<String>                                 mUserIdCache           = new HashSet<>();
-    private final Observer<LinkedHashSet<UserState.UserInfo>> mUserListObserver      = this::onUserListChange;
+    private final Observer<String>                            mBackgroundURLObserver  = this::updateRoomBackground;
+    private final Observer<LiveDefine.LiveStatus>             mLiveStateObserver      = this::onLiveStateChanged;
+    private final Set<String>                                 mUserIdCache            = new HashSet<>();
+    private final Observer<LinkedHashSet<UserState.UserInfo>> mUserListObserver       = this::onUserListChange;
+    private final Observer<SeatState.SeatInvitation>          mSeatInvitationObserver = this::onSeatInvitationChanged;
+
+    private ConfirmDialog mInvitationDialog;
 
     public VoiceRoomRootView(@NonNull Context context, LiveController liveController,
                              TUIVoiceRoomFragment.RoomBehavior behavior, TUIVoiceRoomFragment.RoomParams params) {
@@ -104,6 +109,15 @@ public class VoiceRoomRootView extends BasicView {
         mRoomState.backgroundURL.observe(mBackgroundURLObserver);
         mViewState.liveStatus.observe(mLiveStateObserver);
         mUserState.userList.observe(mUserListObserver);
+        mSeatState.receivedSeatInvitation.observe(mSeatInvitationObserver);
+    }
+
+    @Override
+    protected void removeObserver() {
+        mRoomState.backgroundURL.removeObserver(mBackgroundURLObserver);
+        mViewState.liveStatus.removeObserver(mLiveStateObserver);
+        mUserState.userList.removeObserver(mUserListObserver);
+        mSeatState.receivedSeatInvitation.removeObserver(mSeatInvitationObserver);
     }
 
     @Override
@@ -116,13 +130,6 @@ public class VoiceRoomRootView extends BasicView {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mLiveController.getState().reset();
-    }
-
-    @Override
-    protected void removeObserver() {
-        mRoomState.backgroundURL.removeObserver(mBackgroundURLObserver);
-        mViewState.liveStatus.removeObserver(mLiveStateObserver);
-        mUserState.userList.removeObserver(mUserListObserver);
     }
 
     public void updateStatus(VoiceRoomViewStatus status) {
@@ -279,6 +286,9 @@ public class VoiceRoomRootView extends BasicView {
 
     private void showEndView() {
         mLayoutEndViewContainer.removeAllViews();
+        if (mInvitationDialog != null && mInvitationDialog.isShowing()) {
+            mInvitationDialog.dismiss();
+        }
         RoomController roomController = mLiveController.getRoomController();
         roomController.updateLikeNumber(mGiftPlayView.getLikeCount());
         roomController.updateMessageCount(mBarrageDisplayView.getBarrageCount());
@@ -326,6 +336,30 @@ public class VoiceRoomRootView extends BasicView {
         }
         mUserIdCache.clear();
         mUserIdCache.addAll(userIds);
+    }
+
+    private void onSeatInvitationChanged(SeatState.SeatInvitation seatInvitation) {
+        if (TextUtils.isEmpty(seatInvitation.id)) {
+            if (mInvitationDialog != null && mInvitationDialog.isShowing()) {
+                mInvitationDialog.dismiss();
+            }
+        } else {
+            showInvitationDialog(seatInvitation);
+        }
+    }
+
+    private void showInvitationDialog(SeatState.SeatInvitation seatInvitation) {
+        if (mInvitationDialog == null) {
+            mInvitationDialog = new ConfirmDialog(mContext);
+        }
+        mInvitationDialog.setPositiveText(mContext.getString(R.string.livekit_accept),
+                v -> mSeatController.responseSeatInvitation(true, seatInvitation.id));
+        mInvitationDialog.setNegativeText(mContext.getString(R.string.livekit_reject),
+                v -> mSeatController.responseSeatInvitation(false, seatInvitation.id));
+        mInvitationDialog.setHeadIconUrl(seatInvitation.avatarUrl);
+        mInvitationDialog.setContent(mContext.getString(R.string.livekit_voiceroom_receive_seat_invitation,
+                seatInvitation.userName));
+        mInvitationDialog.show();
     }
 
     private void startDisPlay() {

@@ -51,10 +51,9 @@ public class RoomEngineObserver extends TUIRoomObserver {
         mLiveController.getSeatController().onRequestReceived(request);
     }
 
-    @Override
-    public void onRequestCancelled(String requestId, String userId) {
-        LiveKitLog.info(mTag + " onRequestCancelled:[requestId:" + requestId + ",userId:" + userId + "]");
-        mLiveController.getSeatController().onRequestCancelled(requestId, userId);
+    public void onRequestCancelled(TUIRoomDefine.Request request, TUIRoomDefine.UserInfo operateUser) {
+        LiveKitLog.info(mTag + " onRequestCancelled:[request:" + request + ",operateUser:" + operateUser + "]");
+        mLiveController.getSeatController().onRequestCancelled(request, operateUser);
     }
 
     @Override

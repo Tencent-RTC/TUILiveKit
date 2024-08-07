@@ -29,7 +29,7 @@
             android:layout_width="8dp"
             android:layout_height="9.14dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/live_barrage_level1"
+            android:src="@drawable/livekit_ic_level1"
             tools:ignore="ContentDescription" />
 
         <TextView

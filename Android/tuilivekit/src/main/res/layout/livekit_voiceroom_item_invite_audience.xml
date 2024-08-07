@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="60dp"
     android:background="@color/livekit_design_standard_g2"
@@ -20,37 +21,36 @@
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toStartOf="@id/tv_accept"
-        android:maxLines="1"
         android:layout_centerVertical="true"
         android:layout_marginStart="12dp"
         android:layout_toEndOf="@id/iv_head"
-        android:textColor="@color/livekit_design_standard_g6"
+        android:textColor="@color/livekit_design_standard_g7"
         android:textSize="16sp" />
 
     <TextView
-        android:id="@+id/tv_reject"
-        android:layout_width="60dp"
+        android:id="@+id/tv_level"
+        android:layout_width="35dp"
+        android:layout_height="15dp"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="4dp"
+        android:layout_toEndOf="@id/tv_name"
+        android:background="@drawable/livekit_audience_list_panel_level_background"
+        android:gravity="center"
+        android:text="lv20"
+        android:textColor="@color/livekit_design_standard_flowkit_white"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/invite_button"
+        android:layout_width="54dp"
         android:layout_height="24dp"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="24dp"
-        android:background="@drawable/livekit_link_mic_reject_background"
+        android:background="@drawable/livekit_selector_item_invite_user"
         android:gravity="center"
-        android:text="@string/livekit_reject"
-        android:textColor="@color/livekit_design_standard_b1"
-        android:textSize="12sp" />
-
-    <TextView
-        android:id="@+id/tv_accept"
-        android:layout_width="60dp"
-        android:layout_height="24dp"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="10dp"
-        android:layout_toStartOf="@+id/tv_reject"
-        android:background="@drawable/livekit_link_mic_accept_background"
-        android:gravity="center"
-        android:text="@string/livekit_accept"
+        android:text="@string/livekit_voiceroom_invite"
         android:textColor="@color/livekit_design_standard_flowkit_white"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        tools:ignore="RelativeOverlap" />
 </RelativeLayout>

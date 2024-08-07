@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="718dp"
     android:background="@drawable/livekit_dialog_background"
-    android:orientation="vertical"
-    android:paddingBottom="20dp">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,34 +14,14 @@
         android:orientation="vertical"
         android:paddingBottom="20dp">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="20dp">
-
-            <ImageView
-                android:id="@+id/iv_back"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/livekit_return_arrow"
-                tools:ignore="ContentDescription" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="@string/livekit_link_mic_manager"
-                android:textColor="@color/livekit_design_standard_g7"
-                android:textSize="20sp" />
-        </RelativeLayout>
+        <include layout="@layout/livekit_panel_header" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="24dp"
             android:layout_marginTop="24dp"
             android:paddingStart="24dp"
-            android:paddingEnd="24dp">
+            android:paddingEnd="16dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -55,8 +34,8 @@
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/need_request"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="45dp"
+                android:layout_height="24dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_toEndOf="@id/need_request"
@@ -69,47 +48,79 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="16dp"
             android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
             android:background="@color/livekit_view_line"
             android:visibility="visible" />
 
-        <TextView
-            android:id="@+id/seat_list_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="24dp"
-            android:text="@string/livekit_seat_list_title"
-            android:textColor="@color/livekit_design_standard_g7"
-            android:textSize="16sp" />
+            <TextView
+                android:id="@+id/seat_list_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/livekit_seat_list_title"
+                android:textColor="@color/livekit_design_standard_g7"
+                android:textSize="16sp" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_seat_list"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_seat_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="0dp"
+                tools:ignore="InefficientWeight" />
+
+            <TextView
+                android:id="@+id/seat_application_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:text="@string/livekit_seat_application_title"
+                android:textColor="@color/livekit_design_standard_g7"
+                android:textSize="16sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_seat_application"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_weight="1"
+                android:padding="0dp"
+                tools:ignore="InefficientWeight" />
+
+        <LinearLayout
+            android:id="@+id/empty_view_container"
+            android:layout_marginTop="217dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="0dp"
-            tools:ignore="InefficientWeight" />
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/seat_application_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginStart="24dp"
-            android:text="@string/livekit_seat_application_title"
-            android:textColor="@color/livekit_design_standard_g7"
-            android:textSize="16sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/livekit_voiceroom_empty_view"
+                android:textColor="@color/livekit_design_standard_g5"
+                android:textSize="16sp" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_seat_application"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_weight="1"
-            android:padding="0dp"
-            tools:ignore="InefficientWeight" />
+            <Button
+                android:id="@+id/invite_button"
+                android:layout_width="201dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/livekit_round_button_background"
+                android:text="@string/livekit_voiceroom_invite"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                tools:ignore="UnusedAttribute" />
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

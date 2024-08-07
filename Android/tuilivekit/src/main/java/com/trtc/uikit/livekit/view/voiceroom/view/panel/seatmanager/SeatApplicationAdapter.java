@@ -54,8 +54,10 @@ public class SeatApplicationAdapter extends RecyclerView.Adapter<SeatApplication
         } else {
             ImageLoader.load(mContext, holder.imageHead, request.avatarUrl, R.drawable.livekit_ic_avatar);
         }
-        holder.textAccept.setOnClickListener((view) -> mLiveController.getSeatController().acceptRequest(request.id));
-        holder.textReject.setOnClickListener((view) -> mLiveController.getSeatController().rejectRequest(request.id));
+        holder.textAccept.setOnClickListener((view) -> mLiveController.getSeatController()
+                .responseSeatApplication(true, request.id));
+        holder.textReject.setOnClickListener((view) -> mLiveController.getSeatController()
+                .responseSeatApplication(false, request.id));
     }
 
     @SuppressLint("NotifyDataSetChanged")

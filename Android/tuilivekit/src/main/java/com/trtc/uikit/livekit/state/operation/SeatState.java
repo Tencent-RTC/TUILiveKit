@@ -7,23 +7,30 @@ import androidx.annotation.Nullable;
 
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.livedata.LiveData;
+import com.trtc.tuikit.common.livedata.LiveMapData;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SeatState {
-    private boolean                                  filterEmptySeat     = false;
-    public  LiveData<List<SeatInfo>>                 seatList            = new LiveData<>(new CopyOnWriteArrayList<>());
-    public  LiveData<LinkedHashSet<SeatApplication>> seatApplicationList = new LiveData<>(new LinkedHashSet<>());
-    public  LiveData<String>                         mySeatApplicationId = new LiveData<>("");
+    private boolean                                  filterEmptySeat        = false;
+    public  LiveData<List<SeatInfo>>                 seatList               =
+            new LiveData<>(new CopyOnWriteArrayList<>());
+    public  LiveData<LinkedHashSet<SeatApplication>> seatApplicationList    = new LiveData<>(new LinkedHashSet<>());
+    public  LiveData<String>                         mySeatApplicationId    = new LiveData<>("");
+    public  LiveMapData<String, SeatInvitation>      sentSeatInvitationMap  = new LiveMapData<>(new HashMap<>());
+    public  LiveData<SeatInvitation>                 receivedSeatInvitation = new LiveData<>(new SeatInvitation());
 
     public void reset() {
         seatList.get().clear();
         seatApplicationList.get().clear();
         mySeatApplicationId.set("");
+        sentSeatInvitationMap.get().clear();
+        receivedSeatInvitation.get().reset();
     }
 
     public void setFilterEmptySeat(boolean filterEmptySeat) {
@@ -110,13 +117,7 @@ public class SeatState {
     }
 
     public void addSeatApplication(TUIRoomDefine.Request request) {
-        if (request == null) {
-            return;
-        }
-        if (TextUtils.isEmpty(request.requestId)) {
-            return;
-        }
-        if (request.requestAction != TUIRoomDefine.RequestAction.REQUEST_TO_TAKE_SEAT) {
+        if (isRequestInvalid(request)) {
             return;
         }
         SeatApplication seatApplication = new SeatApplication(request.requestId);
@@ -127,6 +128,46 @@ public class SeatState {
     public void removeSeatApplication(String id) {
         SeatApplication application = new SeatApplication(id);
         seatApplicationList.remove(application);
+    }
+
+    public void addSendSeatInvitation(TUIRoomDefine.Request request) {
+        if (isRequestInvalid(request)) {
+            return;
+        }
+        SeatInvitation seatInvitation = new SeatInvitation();
+        seatInvitation.updateState(request);
+        sentSeatInvitationMap.put(request.userId, seatInvitation);
+    }
+
+    public void removeSentSeatInvitation(String userId) {
+        sentSeatInvitationMap.remove(userId);
+    }
+
+    public void addReceivedSeatInvitation(TUIRoomDefine.Request request) {
+        if (isRequestInvalid(request)) {
+            return;
+        }
+        SeatInvitation seatInvitation = new SeatInvitation();
+        seatInvitation.updateState(request);
+        receivedSeatInvitation.set(seatInvitation);
+    }
+
+    public void removeReceivedSeatInvitation() {
+        SeatInvitation seatInvitation = receivedSeatInvitation.get();
+        if (!TextUtils.isEmpty(seatInvitation.id)) {
+            receivedSeatInvitation.get().reset();
+            receivedSeatInvitation.notifyDataChanged();
+        }
+    }
+
+    private boolean isRequestInvalid(TUIRoomDefine.Request request) {
+        if (request == null) {
+            return true;
+        }
+        if (TextUtils.isEmpty(request.userId)) {
+            return true;
+        }
+        return TextUtils.isEmpty(request.requestId);
     }
 
     public static class SeatInfo {
@@ -209,14 +250,21 @@ public class SeatState {
         }
 
         public void updateState(TUIRoomDefine.Request request) {
-            this.userName = request.userName;
             this.avatarUrl = request.avatarUrl;
             this.userId = request.userId;
             this.timestamp = request.timestamp;
+            if (!TextUtils.isEmpty(request.userName)) {
+                this.userName = request.userName;
+            } else {
+                this.userName = request.userId;
+            }
         }
 
         @Override
         public boolean equals(@Nullable Object obj) {
+            if (TextUtils.isEmpty(this.id)) {
+                return false;
+            }
             if (obj instanceof SeatApplication) {
                 return this.id.equals(((SeatApplication) obj).id);
             }
@@ -236,6 +284,44 @@ public class SeatState {
                     + ", userId='" + userId + '\''
                     + ", timestamp=" + timestamp
                     + '}';
+        }
+    }
+
+    public static class SeatInvitation {
+        public String id        = "";
+        public String userId    = "";
+        public String userName  = "";
+        public String avatarUrl = "";
+        public long   timestamp;
+
+        public void updateState(TUIRoomDefine.Request request) {
+            this.id = request.requestId;
+            this.avatarUrl = request.avatarUrl;
+            this.userId = request.userId;
+            this.timestamp = request.timestamp;
+            if (!TextUtils.isEmpty(request.userName)) {
+                this.userName = request.userName;
+            } else {
+                this.userName = request.userId;
+            }
+        }
+
+        @NonNull
+        @Override
+        public String toString() {
+            return "SeatInvitation{"
+                    + "id='" + id + '\''
+                    + ", userId='" + userId + '\''
+                    + ", timestamp=" + timestamp
+                    + '}';
+        }
+
+        public void reset() {
+            this.id = "";
+            this.userId = "";
+            this.userName = "";
+            this.avatarUrl = "";
+            this.timestamp = 0;
         }
     }
 }

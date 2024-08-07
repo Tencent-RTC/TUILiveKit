@@ -109,7 +109,7 @@ public class AudienceListView extends BottomPanelView {
         if (mAudienceListPanel == null) {
             AudienceListPanelView panelView = new AudienceListPanelView(mContext, mLiveController);
             mAudienceListPanel = BottomPanel.create(panelView);
-            panelView.setOnBackButtonClickListener(() -> mAudienceListPanel.dismiss());
+            panelView.setOnDismissListener(() -> mAudienceListPanel.dismiss());
         }
         mAudienceListPanel.show();
     }

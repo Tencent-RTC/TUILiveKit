@@ -25,15 +25,15 @@ import com.trtc.uikit.livekit.common.uicomponent.roomlist.view.ListAudienceActiv
 import java.util.List;
 
 public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.ViewHolder> {
-    private static final String         TAG = "RoomListAdapter";
-    private final        Context        mContext;
-    private final        List<LiveInfo> mDataList;
+    private final Context        mContext;
+    private final List<LiveInfo> mDataList;
 
     public RoomListAdapter(Context context, List<LiveInfo> dataList) {
         mContext = context;
         mDataList = dataList;
     }
 
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.livekit_adapter_item_room_list,
@@ -94,7 +94,8 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.ViewHo
         }
 
         @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+        public void getItemOffsets(Rect outRect, @NonNull View view, @NonNull RecyclerView parent,
+                                   @NonNull RecyclerView.State state) {
             outRect.top = mDividerValue;
             outRect.left = mDividerValue;
             outRect.right = mDividerValue;

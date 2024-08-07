@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
@@ -90,7 +89,7 @@ public class AudienceFunctionView extends BasicView {
             if (TextUtils.isEmpty(takeSeatApplicationId)) {
                 mSeatController.takeSeat(-1);
             } else {
-                mSeatController.cancelTakeSeatApplication();
+                mSeatController.cancelSeatApplication();
             }
         });
     }

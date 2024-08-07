@@ -22,7 +22,7 @@ public class SeatActionSheetPanel extends PopupDialog {
         super(context);
         mContext = context;
         View rootView = View.inflate(context, R.layout.livekit_voiceroom_seat_action_sheet_panel, null);
-        rootView.setBackground(ContextCompat.getDrawable(context, R.drawable.livekit_dialog_background));
+        rootView.setBackground(ContextCompat.getDrawable(context, R.drawable.livekit_dialog_background_light));
         mViewContainer = rootView.findViewById(R.id.view_container);
         rootView.findViewById(R.id.text_cancel).setOnClickListener(view -> dismiss());
         setView(rootView);

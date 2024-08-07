@@ -175,8 +175,8 @@
     <string name="livekit_voiceroom_lock">锁定麦位</string>
     <string name="livekit_voiceroom_unlock">解锁麦位</string>
     <string name="livekit_voiceroom_kick_seat">踢人下麦</string>
-    <string name="livekit_voiceroom_seat_mute">静音</string>
-    <string name="livekit_cvoiceroom_seat_unmuted">解除静音</string>
+    <string name="livekit_voiceroom_mute_seat">静音</string>
+    <string name="livekit_cvoiceroom_unmuted_seat">解除静音</string>
     <string name="livekit_voiceroom_leave_seat">离开麦位</string>
     <string name="livekit_voiceroom_take_seat">上麦</string>
     <string name="livekit_voiceroom_mute_mic">静音麦克风</string>
@@ -186,6 +186,15 @@
     <string name="livekit_voiceroom_kicked_out_of_seat">被主持人踢下麦位</string>
     <string name="livekit_voiceroom_take_seat_success">上麦成功</string>
     <string name="livekit_voiceroom_need_agree">上麦需要房主同意</string>
+    <string name="livekit_voiceroom_invite_seat_success">%s 已接受上麦邀请</string>
+    <string name="livekit_voiceroom_invite_seat_rejected">%s 已拒绝上麦邀请</string>
+    <string name="livekit_voiceroom_invite_seat_timeout">上麦邀请超时</string>
+    <string name="livekit_voiceroom_invite_seat_canceled">上麦邀请已被取消</string>
+    <string name="livekit_voiceroom_invite">邀请</string>
+    <string name="livekit_voiceroom_reject">拒绝</string>
+    <string name="livekit_voiceroom_receive_seat_invitation">%s 向你发来上麦邀请</string>
+    <string name="livekit_voiceroom_empty_view">麦位没有用户，去邀请</string>
+    <string name="livekit_end_user">挂断</string>
 
     <!-- Error Toast-->
     <string name="livekit_error_success">"操作成功"</string>

@@ -2,23 +2,43 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="20dp"
-    android:paddingStart="24dp"
-    android:paddingEnd="24dp">
+    android:layout_height="44dp"
+    android:layout_marginTop="10dp">
 
     <ImageView
         android:id="@+id/iv_back"
+        android:visibility="gone"
+        android:layout_marginStart="24dp"
         android:layout_width="24dp"
         android:layout_height="24dp"
+        android:layout_centerVertical="true"
         android:src="@drawable/livekit_return_arrow"
         tools:ignore="ContentDescription" />
 
     <TextView
+        android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:text="@string/livekit_settings"
         android:textColor="@color/livekit_design_standard_g7"
         android:textSize="20sp" />
+
+    <FrameLayout
+        android:id="@+id/end_button_container"
+        android:visibility="gone"
+        android:layout_marginEnd="14dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true">
+
+        <ImageView
+            android:id="@+id/end_button"
+            android:layout_gravity="center"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            tools:ignore="ContentDescription" />
+    </FrameLayout>
+
 </RelativeLayout>

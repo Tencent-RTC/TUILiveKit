@@ -1,29 +1,29 @@
 package com.trtc.uikit.livekit.common.uicomponent.roomlist.service;
 
+import static com.tencent.cloud.tuikit.engine.common.TUICommonDefine.ExtensionType.LIVE_LIST_MANAGER;
+
 import android.text.TextUtils;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfo;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfoListCallback;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfoListResult;
-import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfo;
+import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
 import com.trtc.uikit.livekit.common.uicomponent.roomlist.store.RoomListState;
 import com.trtc.uikit.livekit.manager.error.ErrorHandler;
-import com.trtc.uikit.livekit.service.ILiveService;
-import com.trtc.uikit.livekit.service.ServiceProvider;
 
 import java.util.List;
 
 public class RoomListService {
 
-    private static final String TAG = "RoomListService";
-
     private static final int FETCH_LIST_COUNT = 20;
 
-    public final  RoomListState         mRoomListState  = new RoomListState();
-    private final ILiveService          mLiveService;
+    public final  RoomListState      mRoomListState = new RoomListState();
+    private final TUILiveListManager mTUILiveListManager;
 
     public RoomListService() {
-        mLiveService = ServiceProvider.getInstance().getLiveService();
+        mTUILiveListManager = (TUILiveListManager) TUIRoomEngine.sharedInstance().getExtension(LIVE_LIST_MANAGER);
     }
 
     public void refreshFetchList() {
@@ -37,7 +37,7 @@ public class RoomListService {
             mRoomListState.mRefreshStatus.set(true);
         }
         String cursor = mRoomListState.mFetchListCursor;
-        mLiveService.fetchLiveList(cursor, FETCH_LIST_COUNT, new LiveInfoListCallback() {
+        mTUILiveListManager.fetchLiveList(cursor, FETCH_LIST_COUNT, new LiveInfoListCallback() {
             @Override
             public void onSuccess(LiveInfoListResult result) {
                 List<LiveInfo> list = mRoomListState.mLiveList.get();
