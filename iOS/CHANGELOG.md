@@ -1,3 +1,7 @@
+## 2.4.0
+### New Features
+- Android&iOS: Add new feature for room owners change room background in voice rooms
+- Android&iOS: Optimize some known issues
 ## 2.3.0
 ### New Features
 - Android&iOS: Add new feature for room owners to invite audience members to speak in voice rooms 

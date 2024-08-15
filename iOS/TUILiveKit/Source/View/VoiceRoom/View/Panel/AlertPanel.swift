@@ -8,7 +8,7 @@
 import UIKit
 import RTCCommon
 
-typealias AlertButtonClickClosure = () -> Void
+typealias AlertButtonClickClosure = (AlertPanel) -> Void
 
 struct AlertInfo {
     let description: String
@@ -232,13 +232,13 @@ extension AlertPanel {
     @objc
     private func cancelButtonClick(sender: UIButton) {
         if let cancelClosure = alertInfo.cancelClosure {
-            cancelClosure()
+            cancelClosure(self)
         }
     }
     
     @objc
     private func defaultButtonClick(sender: UIButton) {
-        alertInfo.defaultClosure()
+        alertInfo.defaultClosure(self)
     }
 }
 

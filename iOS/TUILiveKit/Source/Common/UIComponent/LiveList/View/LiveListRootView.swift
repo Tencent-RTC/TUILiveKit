@@ -118,13 +118,10 @@ extension LiveListRootView {
                 guard let self = self else { return }
                 if result.cursor == "" {
                     self.liveListCollectionView.es.noticeNoMoreData()
-                    if self.liveListDataSource.isEmpty {
-                        self.liveListDataSource.append(contentsOf: result.liveInfoList)
-                    }
                 } else {
                     self.liveListCollectionView.es.resetNoMoreData()
-                    self.liveListDataSource.append(contentsOf: result.liveInfoList)
                 }
+                self.liveListDataSource.append(contentsOf: result.liveInfoList)
                 self.liveListCollectionView.reloadData()
             }
             .store(in: &cancellableSet)
