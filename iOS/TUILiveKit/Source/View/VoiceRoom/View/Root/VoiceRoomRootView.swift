@@ -22,7 +22,7 @@ class VoiceRoomRootView: RTCBaseView {
     private lazy var isOwner: Bool = store.selectCurrent(UserSelectors.isOwner)
     private let giftCacheService = TUIGiftStore.shared.giftCacheService
     private var cancellableSet = Set<AnyCancellable>()
-    private var alertPanel: AlertPanel?
+    private weak var alertPanel: AlertPanel?
     
     let backgroundImageView: UIImageView = {
         let backgroundImageView = UIImageView(frame: .zero)
@@ -368,11 +368,11 @@ extension VoiceRoomRootView {
                     let alertInfo = AlertInfo(description: String.localizedReplace(.inviteLinkText, replace: "\(seatInvitation.userName)"),
                                               imagePath: seatInvitation.avatarUrl,
                                               cancelButtonInfo: (String.rejectText, .g3),
-                                              defaultButtonInfo: (String.acceptText, .b1)) { [weak self] in
+                                              defaultButtonInfo: (String.acceptText, .b1)) { [weak self] _ in
                         guard let self = self else { return }
                         self.store.dispatch(action: SeatActions.responseSeatInvitation(payload: (false, seatInvitation.id)))
                         self.store.dispatch(action: SeatActions.updateReceivedSeatInvitation(payload: SeatInvitation()))
-                    } defaultClosure: { [weak self] in
+                    } defaultClosure: { [weak self] _ in
                         guard let self = self else { return }
                         self.store.dispatch(action: SeatActions.responseSeatInvitation(payload: (true, seatInvitation.id)))
                         self.store.dispatch(action: SeatActions.updateReceivedSeatInvitation(payload: SeatInvitation()))

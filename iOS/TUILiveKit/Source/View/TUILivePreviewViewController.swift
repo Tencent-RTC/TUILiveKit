@@ -83,7 +83,7 @@ extension TUILivePreviewViewController {
             self.listController.remove(at: 1)
         }
         
-        var roomParams = RoomParams()
+        let roomParams = RoomParams()
         roomParams.maxSeatCount = 0
         roomParams.seatMode = .applyToTake
         let voiceLiveController = TUIVoiceRoomViewController(roomId: voiceRoomId, behavior: .prepareCreate, roomParams: roomParams)

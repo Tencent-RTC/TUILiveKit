@@ -120,10 +120,10 @@ public class TUIVoiceRoomViewController: UIViewController {
             case .join, .autoCreate:
                 showVoiceRoot()
                 subscribeViewState()
-                enableSubscribeRouter(enable: true)
             case .prepareCreate:
                 showVoicePrepare()
         }
+        enableSubscribeRouter(enable: true)
     }
     
     private func initRoomState(roomParams: RoomParams) {
@@ -162,7 +162,7 @@ public class TUIVoiceRoomViewController: UIViewController {
 
 // MARK: - Store
 extension TUIVoiceRoomViewController {
-    func enableSubscribeRouter(enable: Bool) {
+    public func enableSubscribeRouter(enable: Bool) {
         enable ? routerCenter.subscribeRouter() : routerCenter.unSubscribeRouter()
     }
 }

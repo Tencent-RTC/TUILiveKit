@@ -109,12 +109,6 @@ extension VoiceRoomRootMenuDataCreator {
         }
         menus.append(setting)
         
-        var musicList = ButtonMenuInfo(normalIcon: "live_gift_icon")
-        musicList.tapAction = { sender in
-            routerStore.router(action: .present(.giftView))
-        }
-        menus.append(musicList)
-        
         var linkMic = ButtonMenuInfo(normalIcon: "live_link_voice_room", normalTitle: "")
         linkMic.tapAction = { sender in
             routerStore.router(action: .present(.voiceLinkControl))
@@ -142,6 +136,12 @@ extension VoiceRoomRootMenuDataCreator {
         designConfig.cornerRadius = 10
         designConfig.titleFont = .customFont(ofSize: 12)
         designConfig.type = .imageAboveTitleBottom
+        model.items.append(FeatureItem(normalTitle: .backgroundText,
+                                       normalImage: .liveBundleImage("live_setting_background_icon"),
+                                       designConfig: designConfig,
+                                       actionClosure: { _ in
+            routerStore.router(action: .present(.systemImageSelection(.background)))
+        }))
         model.items.append(FeatureItem(normalTitle: .musicText,
                                        normalImage: .liveBundleImage("live_setting_music_icon"),
                                        designConfig: designConfig,

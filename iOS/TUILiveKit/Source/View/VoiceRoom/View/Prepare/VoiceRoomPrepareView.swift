@@ -63,6 +63,13 @@ class VoiceRoomPrepareView: RTCBaseView {
         let model = FeatureClickPanelModel()
         model.itemSize = CGSize(width: 63.scale375(), height: 56.scale375Height())
         model.itemDiff = 25.scale375()
+        model.items.append(FeatureItem(normalTitle: .backgroundText,
+                                       normalImage: .liveBundleImage("live_prepare_background_icon"),
+                                       designConfig: designConfig,
+                                       actionClosure: { [weak self] _ in
+            guard let self = self else { return }
+            self.routerStore.router(action: .present(.systemImageSelection(.background)))
+        }))
         model.items.append(FeatureItem(normalTitle: .musicText,
                                        normalImage: .liveBundleImage("live_prepare_music_icon"),
                                        designConfig: designConfig,

@@ -56,6 +56,7 @@ public class TUILiveRoomAnchorViewController: UIViewController {
         constructViewHierarchy()
         activateConstraints()
         subscribeToast()
+        enableSubscribeRouter(enable: true)
     }
 
     public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -99,7 +100,7 @@ extension TUILiveRoomAnchorViewController {
         })
     }
     
-    func enableSubscribeRouter(enable: Bool) {
+    public func enableSubscribeRouter(enable: Bool) {
         enable ? routerCenter.subscribeRouter() : routerCenter.unSubscribeRouter()
     }
     

@@ -239,18 +239,22 @@ extension ServiceCenter: TUILiveListManagerObserver {
     func onLiveInfoChanged(liveInfo: TUILiveInfo, modifyFlag: TUILiveModifyFlag) {
         guard let store = self.store else { return }
         if store.selectCurrent(UserSelectors.isOwner) { return }
-        if modifyFlag == .category {
+        if modifyFlag.contains(.category) {
             if let categoryValue = liveInfo.categoryList.first?.intValue,
                let category = LiveStreamCategory(rawValue: categoryValue) {
                 store.dispatch(action: RoomActions.updateRoomCategory(payload: category))
             }
         }
         
-        if modifyFlag == .coverUrl {
+        if modifyFlag.contains(.backgroundUrl) {
+            store.dispatch(action: RoomActions.updateRoomBackgroundUrl(payload: liveInfo.backgroundUrl))
+        }
+        
+        if modifyFlag.contains(.coverUrl) {
             store.dispatch(action: RoomActions.updateRoomCoverUrl(payload: liveInfo.coverUrl))
         }
         
-        if modifyFlag == .publish {
+        if modifyFlag.contains(.publish) {
             store.dispatch(action: RoomActions.updateRoomMode(payload: liveInfo.isPublicVisible ? .public : .privacy))
         }
     }

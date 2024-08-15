@@ -31,6 +31,7 @@ class RoomEffects: Effects {
                         return action.payload.nextActions + [
                             RoomActions.updateRoomInfo(payload: roomInfo),
                             RoomActions.setRoomCoverUrl(payload: roomState.coverURL),
+                            RoomActions.setRoomBackgroundUrl(payload: roomState.backgroundURL),
                             RoomActions.setRoomCategory(payload: roomState.liveExtraInfo.category),
                             RoomActions.setRoomMode(payload: roomState.liveExtraInfo.liveMode),
                         ]
@@ -159,6 +160,7 @@ class RoomEffects: Effects {
                         }
                         return [RoomActions.updateRoomCoverUrl(payload: liveInfo.coverUrl),
                                 RoomActions.updateRoomMode(payload: liveInfo.isPublicVisible ? .public : .privacy),
+                                RoomActions.updateRoomBackgroundUrl(payload: liveInfo.backgroundUrl),
                         ]
                     }
                     .catch { error -> Just<[Action]> in
@@ -241,7 +243,17 @@ class RoomEffects: Effects {
     let setRoomBackgroundUrl = Effect<Environment>.dispatchingOne { actions, environment in
         actions.wasCreated(from: RoomActions.setRoomBackgroundUrl)
             .flatMap { action in
-                return Just(RoomActions.updateRoomBackgroundUrl(payload: action.payload))
+                var liveInfo = TUILiveInfo()
+                liveInfo.roomInfo.roomId = environment.store?.selectCurrent(RoomSelectors.getRoomId) ?? ""
+                liveInfo.backgroundUrl = action.payload
+                return environment.roomService.setLiveInfo(liveInfo: liveInfo, modifyFlag: .backgroundUrl)
+                    .map { _ in
+                        RoomActions.updateRoomBackgroundUrl(payload: action.payload)
+                    }
+                    .catch { error -> Just<Action> in
+                        let action = ViewActions.toastEvent(payload: ToastInfo(message: error.message))
+                        return Just(action)
+                    }
             }
             .eraseToAnyPublisher()
     }
