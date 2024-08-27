@@ -54,6 +54,7 @@ class AnimationViewWrapper: UIView {
 
 extension AnimationViewWrapper: AnimationView {
     func playAnimation(playUrl: String) {
+        LiveKitLog.info("\(#file)","\(#line)","playAnimation:[playUrl:\(playUrl)]")
         animationView?.playAnimation(playUrl: playUrl)
     }
     

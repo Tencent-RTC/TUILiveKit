@@ -100,6 +100,7 @@ class AudioEffectService {
     }
     
     func updateChangerType(_ type: AudioChangerType) {
+        LiveKitLog.info("\(#file)","\(#line)","setVoiceChangerType:[type:\(type.rawValue)]")
         audioEffectManager().setVoiceChangerType(TXVoiceChangeType(rawValue: type.rawValue) ?? ._0)
     }
     

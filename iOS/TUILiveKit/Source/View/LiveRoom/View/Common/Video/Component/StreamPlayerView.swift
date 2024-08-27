@@ -29,8 +29,8 @@ class StreamPlayerView: RenderView {
     
     override func updateView() {
         super.updateView()
-        guard let seatInfo = seatInfo else { return }
-        store.dispatch(action: UserActions.updateRemoteVideoView(payload: (seatInfo.userId, .cameraStream, self)))
+        guard let renderModel = renderModel else { return }
+        store.dispatch(action: UserActions.updateRemoteVideoView(payload: (renderModel.userId, .cameraStream, self)))
     }
     
     func subscribeHasVideoStream() {
@@ -39,14 +39,14 @@ class StreamPlayerView: RenderView {
         videoStreamCancellable = videoStreamPublisher
             .receive(on:RunLoop.main)
             .sink{ [weak self] userList in
-                guard let self = self, let seatInfo = self.seatInfo else { return }
-                let hasVideoSteam = userList.contains(seatInfo.userId)
+                guard let self = self, let renderModel = self.renderModel else { return }
+                let hasVideoSteam = userList.contains(renderModel.userId)
                 if hasVideoSteam && !isOpenCameraStream {
-                    self.store.dispatch(action: UserActions.startPlayRemoteVideo(payload: (seatInfo.userId, .cameraStream)))
+                    self.store.dispatch(action: UserActions.startPlayRemoteVideo(payload: (renderModel.userId, .cameraStream)))
                     self.isOpenCameraStream = true
                 }
                 if !hasVideoSteam {
-                    self.store.dispatch(action: UserActions.stopPlayRemoteVideo(payload: (seatInfo.userId, .cameraStream)))
+                    self.store.dispatch(action: UserActions.stopPlayRemoteVideo(payload: (renderModel.userId, .cameraStream)))
                     self.isOpenCameraStream = false
                 }
             }

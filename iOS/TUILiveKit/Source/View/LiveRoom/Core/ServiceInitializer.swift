@@ -80,11 +80,10 @@ extension ServiceInitializer {
     static func login(sdkAppId:Int,userId:String,userSig:String,onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
         LiveKitLog.info("\(#file)","\(#line)","login:[sdkAppId:\(sdkAppId),userId:\(userId),userSig:\(userSig)]")
         TUIRoomEngine.login(sdkAppId: sdkAppId, userId: userId, userSig: userSig) {
-            LiveKitLog.info("\(#file)","\(#line)","login:[onSuccess][sdkAppId:\(sdkAppId),userId:\(userId),userSig:\(userSig)]")
+            LiveKitLog.info("\(#file)","\(#line)","login:[onSuccess]")
             onSuccess()
         } onError: { code, message in
-            let log = "login:[sdkAppId:\(sdkAppId),userId:\(userId),userSig:\(userSig)],code:\(code),message:\(message)]"
-            LiveKitLog.error("\(#file)","\(#line)",log)
+            LiveKitLog.error("\(#file)","\(#line)","login:[onError:[code:\(code),message:\(message)]]")
             onError(code, message)
         }
     }
@@ -95,7 +94,7 @@ extension ServiceInitializer {
             LiveKitLog.info("\(#file)","\(#line)","logout:[onSuccess]")
             onSuccess()
         } onError: { code, message in
-            LiveKitLog.error("\(#file)","\(#line)","logout:[code:\(code),message:\(message)]")
+            LiveKitLog.error("\(#file)","\(#line)","logout:[onError:[code:\(code),message:\(message)]]")
             onError(code, message)
         }
     }

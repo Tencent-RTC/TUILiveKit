@@ -42,9 +42,45 @@ class LiveRoomRootMenuDataCreator {
 extension LiveRoomRootMenuDataCreator {
     func ownerBottomMenu(store: LiveStore, routerStore: RouterStore) -> [ButtonMenuInfo] {
         var menus: [ButtonMenuInfo] = []
-        var linkMic = ButtonMenuInfo(normalIcon: "live_connection_icon")
+        var connection = ButtonMenuInfo(normalIcon: "live_connection_icon")
+        connection.tapAction = { [weak self] sender in
+            guard let self = self else { return }
+            if store.selectCurrent(SeatSelectors.getSeatUserCount) > 1 {
+                store.dispatch(action: ViewActions.toastEvent(payload: ToastInfo(message: .connectDisableText)))
+            } else {
+                routerStore.router(action: .present(.connectionControl))
+            }
+        }
+        connection.bindStateClosure = { button, cancellableSet in
+            store
+                .select(SeatSelectors.getSeatList)
+                .receive(on: RunLoop.main)
+                .sink { seatList in
+                    let seatUserCount = seatList.filter({!$0.userId.isEmpty}).count
+                    let imageName = seatUserCount > 1 ? "live_connection_disable_icon" : "live_connection_icon"
+                    button.setImage(.liveBundleImage(imageName), for: .normal)
+                }
+                .store(in: &cancellableSet)
+        }
+        menus.append(connection)
+        
+        var linkMic = ButtonMenuInfo(normalIcon: "live_link_icon")
         linkMic.tapAction = { sender in
+            if store.selectCurrent(ConnectionSelectors.isConnecting) {
+                store.dispatch(action: ViewActions.toastEvent(payload: ToastInfo(message: .linkMicDisableTExt)))
+                return
+            }
             routerStore.router(action: .present(.liveLinkControl))
+        }
+        linkMic.bindStateClosure = { button, cancellableSet in
+            store
+                .select(ConnectionSelectors.isConnecting)
+                .receive(on: RunLoop.main)
+                .sink { isConnecting in
+                    let imageName = isConnecting ? "live_link_disable_icon" : "live_link_icon"
+                    button.setImage(.liveBundleImage(imageName), for: .normal)
+                }
+                .store(in: &cancellableSet)
         }
         menus.append(linkMic)
         
@@ -115,8 +151,12 @@ extension LiveRoomRootMenuDataCreator {
             routerStore.router(action: .present(.giftView))
         }
         menus.append(gift)
-        var linkMic = ButtonMenuInfo(normalIcon: "live_connection_icon", selectIcon: "live_linking_icon")
+        var linkMic = ButtonMenuInfo(normalIcon: "live_link_icon", selectIcon: "live_linking_icon")
         linkMic.tapAction = { sender in
+            if store.selectCurrent(ConnectionSelectors.isConnecting) {
+                store.dispatch(action: ViewActions.toastEvent(payload: ToastInfo(message: .linkMicDisableTExt)))
+                return
+            }
             if sender.isSelected {
                 let requestId = store.selectCurrent(SeatSelectors.getMySeatApplicationId)
                 store.dispatch(action: SeatActions.cancelApplication(payload: requestId))
@@ -139,10 +179,19 @@ extension LiveRoomRootMenuDataCreator {
                 .select(UserSelectors.isOnSeat)
                 .receive(on: RunLoop.main)
                 .sink { isOnSeat in
-                    let imageName = isOnSeat ? "live_linked_icon" : "live_connection_icon"
+                    let imageName = isOnSeat ? "live_linked_icon" : "live_link_icon"
                     button.setImage(.liveBundleImage(imageName), for: .normal)
                 }
                 .store(in: &cancellableSet)
+            store
+                .select(ConnectionSelectors.isConnecting)
+                .receive(on: RunLoop.main)
+                .sink { isConnecting in
+                    let imageName = isConnecting ? "live_link_disable_icon" : "live_link_icon"
+                    button.setImage(.liveBundleImage(imageName), for: .normal)
+                }
+                .store(in: &cancellableSet)
+
         }
         menus.append(linkMic)
         var like = ButtonMenuInfo(normalIcon: "live_like_icon")
@@ -171,4 +220,7 @@ private extension String {
     static let mirrorText = localized("live.anchor.setting.mirror")
     static let videoParametersText = localized("live.anchor.setting.video.parameters")
     static let moreSettingText = localized("live.anchor.setting.more.setting")
+    
+    static let connectDisableText = localized("live.error.connectionDisable.linkMic")
+    static let linkMicDisableTExt = localized("live.error.linkMicDisable.connecting")
 }

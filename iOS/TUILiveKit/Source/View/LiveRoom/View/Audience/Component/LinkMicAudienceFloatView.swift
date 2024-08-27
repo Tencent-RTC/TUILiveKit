@@ -229,7 +229,7 @@ extension LinkMicAudienceFloatView {
             self.routerStore.router(action: .dismiss())
         }
         items.append(item)
-        routerStore.router(action: RouterAction.present(.listMenu(items)))
+        routerStore.router(action: RouterAction.present(.listMenu(ActionPanelData(items: items))))
     }
 }
 

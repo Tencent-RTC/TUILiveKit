@@ -8,9 +8,28 @@
 import UIKit
 import RTCCommon
 
+struct ActionPanelData: Equatable {
+    
+    var title: String = ""
+    
+    var items: [ActionItem]  = []
+    
+    init(title: String = "", items: [ActionItem]) {
+        self.title = title
+        self.items = items
+    }
+    
+    static func ==(lhs: ActionPanelData, rhs: ActionPanelData) -> Bool {
+        return lhs.items == rhs.items
+    }
+}
+
 class ActionPanel: UIView {
     var cancelActionClosure: (() -> Void)?
-    private let items: [ActionItem]
+    private let panelData: ActionPanelData
+    private var items: [ActionItem] {
+        return panelData.items
+    }
     private var isPortrait:Bool = {
         WindowUtils.isPortrait
     }()
@@ -23,16 +42,23 @@ class ActionPanel: UIView {
         isViewReady = true
     }
     
+    private var actionTitleViewHeight: CGFloat {
+        return panelData.title != "" ? 50.scale375Width() : 0
+    }
+    
     lazy var viewHeight : CGFloat = {
         var viewHeight = 48.scale375Width()
         for row in 0 ... items.count {
             viewHeight = viewHeight + getCellHeight(row: row)
         }
+        if panelData.title != "" {
+            viewHeight += actionTitleViewHeight
+        }
         return viewHeight
     }()
     
-    init(items: [ActionItem]) {
-        self.items = items
+    init(panelData: ActionPanelData) {
+        self.panelData = panelData
         super.init(frame: .zero)
     }
     
@@ -47,7 +73,31 @@ class ActionPanel: UIView {
         tableView.dataSource = self
         tableView.register(ActionCell.self, forCellReuseIdentifier: ActionCell.cellReuseIdentifier)
         tableView.isScrollEnabled = false
+        tableView.contentInsetAdjustmentBehavior = .never
+        tableView.separatorStyle = .none
         return tableView
+    }()
+    
+    private lazy var actionHeaderView: UIView = {
+        let view = UIView(frame: .zero)
+        view.backgroundColor = .white
+        return view
+    }()
+    
+    private lazy var actionHeaderLineView: UIView = {
+        let view = UIView(frame: .zero)
+        view.backgroundColor = .g8
+        return view
+    }()
+
+    private lazy var titleLabel: UILabel = {
+        let titleLabel = UILabel(frame: .zero)
+        titleLabel.textColor = .g4
+        titleLabel.font = UIFont.customFont(ofSize: 12)
+        titleLabel.numberOfLines = 0
+        titleLabel.textAlignment = .center
+        titleLabel.text = panelData.title
+        return titleLabel
     }()
     
     private lazy var cancelButton: UIButton = {
@@ -65,10 +115,14 @@ class ActionPanel: UIView {
         backgroundColor = .g8
         layer.cornerRadius = 20
         layer.masksToBounds = true
+        addSubview(actionHeaderView)
+        actionHeaderView.addSubview(titleLabel)
+        actionHeaderView.addSubview(actionHeaderLineView)
         addSubview(actionTableView)
         addSubview(cancelButton)
+        actionHeaderView.isHidden = panelData.title == ""
     }
-
+    
     func activateConstraints() {
         let bottomSafeHeight = WindowUtils.bottomSafeHeight
         snp.remakeConstraints { [weak self] make in
@@ -81,13 +135,31 @@ class ActionPanel: UIView {
             make.edges.equalToSuperview()
         }
         
-        actionTableView.snp.remakeConstraints { make in
+        actionHeaderView.snp.remakeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
-            make.bottom.equalTo(cancelButton.snp.top).offset(7.scale375Height())
+            make.height.equalTo(actionTitleViewHeight)
+        }
+        
+        titleLabel.snp.remakeConstraints { make in
+            make.leading.trailing.equalToSuperview().inset(12)
+            make.centerY.equalToSuperview()
+        }
+        
+        actionHeaderLineView.snp.remakeConstraints { make in
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
+            make.height.equalTo(1)
+        }
+        
+        actionTableView.snp.remakeConstraints { [weak self] make in
+            guard let self = self else { return }
+            make.top.equalTo(actionHeaderView.snp.bottom)
+            make.leading.trailing.equalToSuperview()
+            make.height.equalTo(self.viewHeight - 48.scale375Width() - actionTitleViewHeight)
         }
         
         cancelButton.snp.remakeConstraints { make in
-            make.bottom.equalToSuperview().offset(-bottomSafeHeight)
+            make.top.equalTo(actionTableView.snp.bottom)
             make.centerX.equalToSuperview()
             make.width.equalToSuperview()
             make.height.equalTo(48.scale375Width())

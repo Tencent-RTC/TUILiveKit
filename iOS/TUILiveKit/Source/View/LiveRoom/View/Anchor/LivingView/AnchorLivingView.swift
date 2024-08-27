@@ -42,8 +42,8 @@ class AnchorLivingView: UIView {
     }()
 
     private lazy var closeButton: UIButton = {
-        let view = UIButton(type: .system)
-        view.setBackgroundImage(.liveBundleImage("live_leave_icon"), for: .normal)
+        let view = UIButton(frame: .zero)
+        view.setImage(.liveBundleImage("live_end_live_icon"), for: .normal)
         view.addTarget(self, action: #selector(closeButtonClick), for: .touchUpInside)
         return view
     }()
@@ -159,6 +159,8 @@ class AnchorLivingView: UIView {
             .store(in: &cancellableSet)
     }
     
+
+    
     private func didEnterRoom() {
         viewStore.dispatch(action: LiveRoomViewActions.updateBottomMenus(payload: (store, routerStore)))
     }
@@ -257,15 +259,31 @@ extension AnchorLivingView {
 extension AnchorLivingView {
     @objc
     func closeButtonClick() {
+        var title: String = ""
+        var items: [ActionItem] = []
+        let lineConfig = ActionItemDesignConfig(lineWidth: 1, titleColor: .redColor)
+        lineConfig.backgroundColor = .white
+        lineConfig.lineColor = .g8
+        if store.selectCurrent(ConnectionSelectors.isConnecting) {
+            title = .endLiveOnConnectionText
+            let endConnectionItem = ActionItem(title: .endLiveDisconnectText, designConfig: lineConfig, actionClosure: { [weak self] _ in
+                guard let self = self else { return }
+                self.store.dispatch(action: ConnectionActions.disconnect())
+                self.routerStore.router(action: .dismiss())
+            })
+            items.append(endConnectionItem)
+        }
+        
         let designConfig = ActionItemDesignConfig(lineWidth: 7, titleColor: .g2)
         designConfig.backgroundColor = .white
         designConfig.lineColor = .g8
-        let item = ActionItem(title: .confirmCloseText, designConfig: designConfig, actionClosure: { [weak self] _ in
+        let endLiveItem = ActionItem(title: .confirmCloseText, designConfig: designConfig, actionClosure: { [weak self] _ in
             guard let self = self else { return }
             self.showEndView()
             self.routerStore.router(action: .dismiss())
         })
-        routerStore.router(action: .present(.listMenu([item])))
+        items.append(endLiveItem)
+        routerStore.router(action: .present(.listMenu(ActionPanelData(title: title, items: items))))
     }
     
     @objc
@@ -292,7 +310,7 @@ extension AnchorLivingView {
             make.edges.equalToSuperview()
         }
     }
-
+    
     private func presentPopup(view: UIView) {
         if let vc = WindowUtils.getCurrentWindowViewController() {
             let menuContainerView = MenuContainerView(contentView: view)
@@ -366,8 +384,14 @@ extension AnchorLivingView: TUIGiftPlayViewDelegate {
     }
 }
 
-private extension String {
+fileprivate extension String {
     static let confirmCloseText = localized("live.anchor.confirm.close")
     static let sendText = localized("live.giftView.sendOut")
     static let meText = localized("live.barrage.me")
+    
+    static let endLiveOnConnectionText = localized("live.endLive.onConnection.alert")
+    static let endLiveDisconnectText = localized("live.endLive.onConnection.alert.disconnect")
+    static let endLiveOnLinkMicText = localized("live.endLive.onLinkMic.alert")
+    static let endLiveLinkMicDisconnectText = localized("live.endLive.onLinkMic.alert.disconnect")
+
 }

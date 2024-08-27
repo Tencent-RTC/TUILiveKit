@@ -26,12 +26,15 @@ class MatrixVideoRenderView: UIView {
     let renderManager:MatrixVideoRenderManager = MatrixVideoRenderManager()
     // MARK: - private property.
     var store: LiveStore
-    private lazy var seatListPublisher = store.select(SeatSelectors.getSeatList)
+
     private lazy var liveStatusPublisher = store.select(ViewSelectors.getLiveStatus)
     private lazy var linkStatusPublisher = store.select(ViewSelectors.getLinkStatus)
     
+    private lazy var seatListPublisher = store.select(SeatSelectors.getSeatList)
+    private lazy var connectedUsersPublisher = store.select(ConnectionSelectors.getConnectedUsers)
+
     private var cancellableSet = Set<AnyCancellable>()
-    private var renderUserList: [SeatInfo] = []
+    private var renderUserList: [VideoRenderModel] = []
     private var isPortrait: Bool = {
         WindowUtils.isPortrait
     }()
@@ -92,11 +95,10 @@ class MatrixVideoRenderView: UIView {
     }
     
     func bindInteraction() {
-        subscribeState()
+        subscribeLiveState()
     }
     
-    func updateView() {
-        let list = getRenderUserList()
+    func updateView(list:[VideoRenderModel]) {
         let diff = Set(renderUserList).subtracting(Set(list))
         renderManager.removeRenderViews(diff.shuffled())
         renderUserList = list
@@ -107,8 +109,34 @@ class MatrixVideoRenderView: UIView {
 
 extension MatrixVideoRenderView {
     
-    func getRenderUserList() -> [SeatInfo] {
-        var list = store.seatState.seatList.filter { !$0.userId.isEmpty}
+    func subscribeLiveState() {
+        liveStatusPublisher
+            .combineLatest(linkStatusPublisher, seatListPublisher, connectedUsersPublisher)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] liveStatus, linkStatus, seatList, connectedUsers in
+                guard let self = self else { return }
+                if connectedUsers.count > 0 {
+                    self.updateView(list: getVideoRenderVideModelList(from: connectedUsers))
+                } else {
+                    self.updateView(list: getVideoRenderVideModelList(from: seatList))
+                }
+            }
+            .store(in: &cancellableSet)
+    }
+    
+    private func getVideoRenderVideModelList(from connectedUsers: [ConnectionUser]) -> [VideoRenderModel] {
+        var list = connectedUsers.map { user in
+            return VideoRenderModel(connectionUser: user)
+        }
+        if let index = list.firstIndex(where: {$0.roomId == store.roomState.roomId}) {
+            let currentUser = list.remove(at: index)
+            list.insert(currentUser, at: 0)
+        }
+        return list
+    }
+    
+    private func getVideoRenderVideModelList(from seatList: [SeatInfo]) -> [VideoRenderModel] {
+        var list = seatList.filter { !$0.userId.isEmpty}
         if store.viewState.liveStatus == .previewing || store.viewState.liveStatus == .pushing {
             list = list.filter({ [weak self] in
                 guard let self = self else { return false }
@@ -122,40 +150,12 @@ extension MatrixVideoRenderView {
             })
             list.append(SeatInfo(userInfo: store.userState.selfInfo))
         }
-        return list
+        return list.map { seat in
+            var renderModel = VideoRenderModel(seatInfo: seat)
+            renderModel.roomId = store.roomState.roomId
+            return renderModel
+        }
     }
-    
-    func subscribeState() {
-        seatListPublisher
-            .receive(on: RunLoop.main)
-            .map({ seatlist in
-                return seatlist.filter { !$0.userId.isEmpty }
-            })
-            .filter { $0.count != 0 }
-            .sink { [weak self] seatList in
-                guard let self = self else { return }
-                self.updateView()
-            }
-            .store(in: &cancellableSet)
-        
-        liveStatusPublisher
-                .receive(on: RunLoop.main)
-                .sink { [weak self] status in
-                    guard let self = self else { return }
-                    self.updateView()
-                }
-                .store(in: &cancellableSet)
-        
-        linkStatusPublisher
-                .receive(on: RunLoop.main)
-                .sink { [weak self] status in
-                    guard let self = self else { return }
-                    self.updateView()
-                }
-                .store(in: &cancellableSet)
-        
-    }
-
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout

@@ -40,15 +40,15 @@ class StreamPublisherView: RenderView {
     func updateStatus() {
         store.dispatch(action: MediaActions.updateLocalVideoView(payload: self))
         switch store.viewState.linkStatus {
-            case .none:
-                self.avatarImageView.alpha = 0
-                self.waitingLinkView.stopAnim()
-            case .applying:
-                self.waitingLinkView.showAnim()
-                self.avatarImageView.alpha = 0
-            case .linking,.pking:
-                self.waitingLinkView.stopAnim()
-                self.avatarImageView.alpha = 1
+        case .none:
+            self.avatarImageView.alpha = 0
+            self.waitingLinkView.stopAnim()
+        case .applying:
+            self.waitingLinkView.showAnim()
+            self.avatarImageView.alpha = 0
+        case .linking,.pking:
+            self.waitingLinkView.stopAnim()
+            self.avatarImageView.alpha = 1
         }
     }
     

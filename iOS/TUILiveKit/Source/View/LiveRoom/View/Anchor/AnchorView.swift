@@ -16,6 +16,7 @@ class AnchorView: UIView {
     private let store: LiveStoreProvider
     private let routerStore: RouterStore
     private lazy var liveStatusPublisher = store.select(ViewSelectors.getLiveStatus)
+    private lazy var getReceivedConnectionPublisher = store.select(ConnectionSelectors.getReceivedConnectionRequest)
     private var cancellableSet = Set<AnyCancellable>()
     var startLiveBlock:(()->Void)?
     
@@ -42,6 +43,8 @@ class AnchorView: UIView {
         return view
     }()
     
+    private weak var alertPanel: AlertPanel?
+
     init(roomId: String, routerStore: RouterStore) {
         self.roomId = roomId
         self.store = LiveStoreFactory.getStore(roomId: roomId)
@@ -112,6 +115,8 @@ extension AnchorView {
     private func bindInteraction() {
         store.dispatch(action: MediaActions.operateCamera(payload: true))
         store.dispatch(action: UserActions.getSelfInfo())
+        subscribeAlertState()
+        subscribeConnectionState()
     }
     
 }
@@ -191,6 +196,41 @@ extension AnchorView {
             }
             .store(in: &cancellableSet)
     }
+
+    private func subscribeConnectionState() {
+        getReceivedConnectionPublisher.receive(on: RunLoop.main)
+            .sink { [weak self] connectionRequest in
+                guard let self = self else { return }
+                if let request = connectionRequest {
+                    let alertInfo = AlertInfo(description: String.localizedReplace(.connectionInviteText, replace: "\(request.userName)"),
+                                              imagePath: request.avatarUrl,
+                                              cancelButtonInfo: (String.rejectText, .g3),
+                                              defaultButtonInfo: (String.acceptText, .b1)) { [weak self] alertPanel in
+                        guard let self = self else { return }
+                        self.store.dispatch(action: ConnectionActions.reject(payload: request.roomId))
+                    } defaultClosure: { [weak self] alertPanel in
+                        guard let self = self else { return }
+                        self.store.dispatch(action: ConnectionActions.accept(payload: request.roomId))
+                    }
+                    self.store.dispatch(action: ViewActions.alertEvent(payload: alertInfo))
+                } else {
+                    self.alertPanel?.dismiss()
+                }
+            }
+            .store(in: &cancellableSet)
+    }
+
+    private func subscribeAlertState() {
+        store.alertSubject
+            .receive(on: RunLoop.main)
+            .sink { [weak self] alertInfo in
+                guard let self = self else { return }
+                let alertPanel = AlertPanel(alertInfo: alertInfo)
+                alertPanel.show()
+                self.alertPanel = alertPanel
+            }
+            .store(in: &cancellableSet)
+    }
 }
 
 extension AnchorView : AnchorPrepareViewDelegate {
@@ -207,4 +247,8 @@ private extension String {
     static var confirmText = localized("live.alert.confirm")
     static var roomNameEmptyToast = localized("live.anchor.room.name.empty.toast")
     static var operateFailedText = localized("live.operation.fail.xxx")
+    
+    static let connectionInviteText = localized("live.connection.invite.desc.xxx")
+    static let rejectText = localized("live.alert.refuse")
+    static let acceptText = localized("live.anchor.link.agree.title")
 }

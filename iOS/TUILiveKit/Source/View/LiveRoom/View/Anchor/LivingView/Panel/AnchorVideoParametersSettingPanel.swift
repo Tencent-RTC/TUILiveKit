@@ -164,7 +164,7 @@ extension AnchorVideoParametersSettingPanel {
             })
             items.append(item)
         }
-        routerStore.router(action: .present(.listMenu(items)))
+        routerStore.router(action: .present(.listMenu(ActionPanelData(items: items))))
     }
 }
 

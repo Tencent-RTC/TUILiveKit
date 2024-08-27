@@ -55,6 +55,7 @@ class LiveStoreProvider {
         operation.unregister(reducer: seatReducer)
         operation.unregister(reducer: mediaReducer)
         operation.unregister(reducer: beautyReducer)
+        operation.unregister(reducer: connectionReducer)
         
         operation.unregisterEffects(withId: UserEffects.id)
         operation.unregisterEffects(withId: RoomEffects.id)
@@ -62,6 +63,7 @@ class LiveStoreProvider {
         operation.unregisterEffects(withId: MediaEffects.id)
         operation.unregisterEffects(withId: ErrorEffects.id)
         operation.unregisterEffects(withId: BeautyEffects.id)
+        operation.unregisterEffects(withId: ConnectionEffects.id)
 
         debugPrint("deinit \(type(of: self))")
     }
@@ -74,6 +76,7 @@ class LiveStoreProvider {
         initializeMediaStore()
         initializeErrorEffect()
         initializedBeautyStore()
+        initializeConnectionStore()
         initializedViewStore()
 #if DEBUG
 //        operation.register(interceptor: PrintInterceptor<OperationState>())
@@ -123,6 +126,11 @@ class LiveStoreProvider {
     private func initializedBeautyStore() {
         operation.register(reducer: beautyReducer, for: \.beautyState)
         operation.register(effects: BeautyEffects())
+    }
+    
+    private func initializeConnectionStore() {
+        operation.register(reducer: connectionReducer, for: \.connectionState)
+        operation.register(effects: ConnectionEffects())
     }
 }
 

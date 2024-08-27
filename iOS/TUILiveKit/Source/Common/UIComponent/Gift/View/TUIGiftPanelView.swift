@@ -80,6 +80,9 @@ class TUIGiftPanelView: UIView {
     }
 
     func setGiftModelSource(_ giftDataSource: [TUIGift]) {
+        if giftDataSource.isEmpty {
+            LiveKitLog.warn("\(#file)", "\(#line)","giftModelSource empty!")
+        }
         self.giftDataSource = giftDataSource
     }
 

@@ -20,13 +20,14 @@ enum Route {
     case roomInfo
     case recentViewer
     case liveLinkControl
+    case connectionControl
     case voiceLinkControl
     case linkInviteControl(_ index: Int)
     case userControl(_ user: SeatInfo)
     case linkType // audience apply take seat.
     case linkSetting // audience take seat setting.
     case featureSetting(_ settingModel: FeatureClickPanelModel)
-    case listMenu(_ menus: [ActionItem])
+    case listMenu(_ data: ActionPanelData)
     case musicList
     case audioEffect
     case beauty
@@ -44,6 +45,7 @@ extension Route: Equatable {
             (.roomInfo,.roomInfo),
             (.recentViewer,.recentViewer),
             (.liveLinkControl,.liveLinkControl),
+            (.connectionControl,.connectionControl),
             (.voiceLinkControl,.voiceLinkControl),
             (.linkType, .linkType),
             (.linkSetting, .linkSetting),
@@ -69,6 +71,7 @@ extension Route: Equatable {
             (.roomInfo, _),
             (.recentViewer, _),
             (.liveLinkControl, _),
+            (.connectionControl, _),
             (.voiceLinkControl, _),
             (.linkInviteControl, _),
             (.userControl, _),
@@ -103,6 +106,8 @@ extension Route: Hashable {
             return "recentViewer"
         case .liveLinkControl:
             return "liveLinkControl"
+        case .connectionControl:
+            return "connectionControl"
         case .voiceLinkControl:
             return "voiceLinkControl"
         case .linkInviteControl(let index):
@@ -115,9 +120,9 @@ extension Route: Hashable {
             return "linkSetting"
         case .featureSetting(let settingModel):
             return "featureSetting" + settingModel.id.uuidString
-        case .listMenu(let items):
+        case .listMenu(let data):
             var result = "listMenu"
-            items.forEach { item in
+            data.items.forEach { item in
                 result += item.id.uuidString
             }
             return result

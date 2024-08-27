@@ -79,11 +79,12 @@ class TUIBarrageAdapter: TUIBarrageService {
         LiveKitLog.info("\(#file)", "\(#line)","sendBarrage:[barrage.content::\(barrage.content)]")
         delegate?.willSendBarrage(barrage)
         imManager.sendGroupTextMessage(barrage.content, to: roomId, priority: .PRIORITY_NORMAL) { [weak self] in
+            LiveKitLog.info("\(#file)","\(#line)","sendBarrage:[success]")
             guard let self = self else { return }
             self.delegate?.didSendBarrage(barrage)
             TUIBarrageStore.shared.barrageMap.value = [roomId: barrage]
         } fail: { error, message in
-            debugPrint("sendGroupTextMessage failed. code:\(error), message:\(message ?? "")")
+            LiveKitLog.error("\(#file)","\(#line)","sendBarrage:[onError[error:\(error),message:\(String(describing: message))]]")
         }
     }
 
@@ -94,13 +95,8 @@ class TUIBarrageAdapter: TUIBarrageService {
 
 extension TUIBarrageAdapter: V2TIMSimpleMsgListener {
     func onRecvGroupTextMessage(_ msgID: String!, groupID: String!, sender info: V2TIMGroupMemberInfo!, text: String!) {
-        LiveKitLog.info("\(#file)", "\(#line)",
-                        """
-                        onRecvGroupTextMessage:[msgID:\(String(describing: msgID))], 
-                        [groupID:\(String(describing: groupID))],
-                        [sender:\(String(describing: info))],
-                        [text:\(String(describing: text))]
-                        """)
+        let log = "onRecvGroupTextMessage:[msgID:\(msgID ?? ""),groupID:\(groupID ?? ""),sender:\(String(describing: info)),text:\(text ?? "")]"
+        LiveKitLog.info("\(#file)", "\(#line)",log)
         if self.roomId != groupID { return }
         constructBarrageFromIMText(groupId: groupID, info: info, text: text)
     }
@@ -119,11 +115,7 @@ extension TUIBarrageAdapter: V2TIMSimpleMsgListener {
 extension TUIBarrageAdapter: TUIRoomObserver {
     func onRemoteUserEnterRoom(roomId: String, userInfo: TUIUserInfo) {
         LiveKitLog.info("\(#file)", "\(#line)", 
-                                                 """
-                                                 onRemoteUserEnterRoom:[roomId:\(roomId)],
-                                                 [userInfo:\(userInfo)], [userInfo.userId:\(userInfo.userId),
-                                                 [userInfo.userName:\(userInfo.userName)]
-                                                 """)
+                        "onRemoteUserEnterRoom:[roomId:\(roomId),userId:\(userInfo.userId),userName:\(userInfo.userName)]")
         constructBarrageFromEngine(userInfo: userInfo)
     }
 
