@@ -493,7 +493,7 @@ extension VoiceRoomRootView: TopViewDelegate {
                     self.showAnchorEndView()
                     self.routerStore.router(action: .dismiss())
                 })
-                routerStore.router(action: .present(.listMenu([item])))
+                routerStore.router(action: .present(.listMenu(ActionPanelData(items: [item]))))
             } else {
                 store.dispatch(action: RoomActions.leave())
                 routerStore.router(action: .exit)
@@ -553,7 +553,7 @@ extension VoiceRoomRootView: SeatListViewDelegate {
         let seatInfo = store.selectCurrent(SeatSelectors.getSeatList)[index]
         let menus = VoiceRoomRootMenuDataCreator().generateOperateSeatMenuData(store: store, routerStore: routerStore, seat: seatInfo)
         if menus.count > 0 {
-            routerStore.router(action: .present(.listMenu(menus)))
+            routerStore.router(action: .present(.listMenu(ActionPanelData(items: menus))))
         }
     }
 }

@@ -19,6 +19,7 @@ class ServiceCenter: NSObject {
     let userService: UserService
     let seatService: SeatService
     let beautyService: BeautyService
+    let connectionService: ConnectionService
     let errorService: ErrorService = ErrorService()
     
     let roomEngine: TUIRoomEngine
@@ -33,11 +34,14 @@ class ServiceCenter: NSObject {
         userService = UserService(roomEngine: roomEngine)
         seatService = SeatService(roomEngine: roomEngine)
         beautyService = BeautyService(roomEngine: roomEngine)
+        connectionService = ConnectionService(roomEngine: roomEngine)
         super.init()
         roomEngine.addObserver(self)
         
-        guard let liveListManager = roomEngine.getExtension(extensionType: .liveListManager) as? TUILiveListManager else { return }
-        liveListManager.addObserver(self)
+        if let liveListManager = roomEngine.getExtension(extensionType: .liveListManager) as? TUILiveListManager {
+            liveListManager.addObserver(self)
+        }
+        roomEngine.getLiveConnectionManager().addObserver(self)
     }
     
     deinit {
@@ -51,18 +55,15 @@ class ServiceCenter: NSObject {
         LiveKitLog.info("\(#file)", "\(#line)","getRoomEngine")
         let jsonObject: [String: String] = ["api" : "createSubRoom"]
         guard let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject, options: []) else {
-            assert(false, "convert to jsonData error, jsonObject: \(jsonObject)")
             LiveKitLog.error("\(#file)", "\(#line)", "convert to jsonData error, jsonObject: \(jsonObject)")
             return TUIRoomEngine.sharedInstance()
         }
         guard let jsonString = String(data: jsonData, encoding: .utf8) else {
-            assert(false, "convert to jsonString error, jsonObject: \(jsonObject)")
-            LiveKitLog.error("\(#file)", "\(#line)", "convert to jsonString error, jsonObject: \(jsonObject)")
+            LiveKitLog.error("\(#file)", "\(#line)", "getRoomEngine:[onError:[jsonObject: \(jsonObject)]")
             return TUIRoomEngine.sharedInstance()
         }
         guard let roomEngine = TUIRoomEngine.callExperimentalAPI(jsonStr: jsonString) as? TUIRoomEngine else {
-            assert(false, "getRoomEngine error, jsonString: \(jsonString)")
-            LiveKitLog.error("\(#file)", "\(#line)","getRoomEngine error, jsonString: \(jsonString)")
+            LiveKitLog.error("\(#file)", "\(#line)","getRoomEngine:[onError:[jsonString: \(jsonString)]")
             return TUIRoomEngine.sharedInstance()
         }
         return roomEngine
@@ -75,6 +76,7 @@ extension ServiceCenter: TUIRoomObserver {
     }
     
     func onRoomSeatModeChanged(roomId: String, seatMode: TUISeatMode) {
+        LiveKitLog.info("\(#file)","\(#line)","onRoomSeatModeChanged:[roomId:\(roomId),seatMode:\(seatMode.rawValue)]")
         guard let store = self.store else { return }
         if roomId == store.selectCurrent(RoomSelectors.getRoomId) {
             store.dispatch(action: RoomActions.updateRoomSeatModeByAdmin(payload: seatMode))
@@ -82,6 +84,8 @@ extension ServiceCenter: TUIRoomObserver {
     }
     
     func onSeatListChanged(seatList: [TUISeatInfo], seated seatedList: [TUISeatInfo], left leftList: [TUISeatInfo]) {
+        LiveKitLog.info("\(#file)","\(#line)",
+                        "onSeatListChanged:[seatList:\(seatList),seatedList:\(seatedList),leftList:\(leftList)]")
         guard let store = self.store else { return }
         let currentUserId = store.selectCurrent(UserSelectors.currentUserId)
         while true {
@@ -110,27 +114,30 @@ extension ServiceCenter: TUIRoomObserver {
     }
     
     func onKickedOffSeat(userId: String) {
+        LiveKitLog.info("\(#file)","\(#line)","onKickedOffSeat:[userId:\(userId)]")
         guard let store = self.store else { return }
         store.dispatch(action: ViewActions.toastEvent(payload: ToastInfo(message: .kickedOutOfSeat)))
     }
     
     func onRequestReceived(request: TUIRequest) {
+        LiveKitLog.info("\(#file)","\(#line)","onRequestReceived:[request:\(request)]")
         guard let store = self.store else { return }
         switch request.requestAction {
-            case .takeSeat:
-                let seatApplication = SeatApplication(request: request)
-                store.dispatch(action: SeatActions.addSeatApplication(payload: seatApplication))
-                let actions: [ActionTemplate<User>] = [SeatActions.addSeatApplicationUser]
-                let param = generateActionTemplateParamTuple(param: request.userId, actions: actions)
-                store.dispatch(action: UserActions.fetchUserInfo(payload: param))
-            case .remoteUserOnSeat:
-                store.dispatch(action: SeatActions.updateReceivedSeatInvitation(payload: SeatInvitation(request: request)))
-            default:
-                break
+        case .takeSeat:
+            let seatApplication = SeatApplication(request: request)
+            store.dispatch(action: SeatActions.addSeatApplication(payload: seatApplication))
+            let actions: [ActionTemplate<User>] = [SeatActions.addSeatApplicationUser]
+            let param = generateActionTemplateParamTuple(param: request.userId, actions: actions)
+            store.dispatch(action: UserActions.fetchUserInfo(payload: param))
+        case .remoteUserOnSeat:
+            store.dispatch(action: SeatActions.updateReceivedSeatInvitation(payload: SeatInvitation(request: request)))
+        default:
+            break
         }
     }
     
     func onRequestCancelled(requestId: String, userId: String) {
+        LiveKitLog.info("\(#file)","\(#line)","onRequestCancelled:[requestId:\(requestId),userId:\(userId)]")
         guard let store = self.store else { return }
         let isContainApplicationRequest = store.selectCurrent(SeatSelectors.getSeatApplications).contains { $0.id == requestId }
         if isContainApplicationRequest {
@@ -144,6 +151,7 @@ extension ServiceCenter: TUIRoomObserver {
     }
     
     func onRequestProcessed(requestId: String, userId: String) {
+        LiveKitLog.info("\(#file)","\(#line)","onRequestProcessed:[requestId:\(requestId),userId:\(userId)]")
         guard let store = self.store else { return }
         let isContainRequest = store.selectCurrent(SeatSelectors.getSeatApplications).contains { $0.id == requestId }
         if isContainRequest {
@@ -153,19 +161,22 @@ extension ServiceCenter: TUIRoomObserver {
     
     // MARK: - Media event.
     func onUserVideoStateChanged(userId: String, streamType: TUIVideoStreamType, hasVideo: Bool, reason: TUIChangeReason) {
+        LiveKitLog.info("\(#file)","\(#line)",
+                        "onUserVideoStateChanged:[userId:\(userId),streamType:\(streamType.rawValue),hasVideo:\(hasVideo),reason:\(reason.rawValue)]")
         guard let store = self.store else { return }
         // TODO: - abyyxwang video status changed
         store.dispatch(action: UserActions.onUserVideoAvailable(payload: (userId, hasVideo)))
         switch reason {
-            case .byAdmin:
-                // TODO: - Toast handle
-                break
-            default:
-                break
+        case .byAdmin:
+            // TODO: - Toast handle
+            break
+        default:
+            break
         }
     }
     
     func onUserAudioStateChanged(userId: String, hasAudio: Bool, reason: TUIChangeReason) {
+        LiveKitLog.info("\(#file)","\(#line)","onUserAudioStateChanged:[userId:\(userId),hasAudio:\(hasAudio),reason:\(reason.rawValue)]")
         guard let store = self.store else { return }
         store.dispatch(action: UserActions.onUserAudioAvailable(payload: (userId, hasAudio)))
         if userId == store.selectCurrent(UserSelectors.currentUserId) {
@@ -173,11 +184,11 @@ extension ServiceCenter: TUIRoomObserver {
             store.dispatch(action: action)
         }
         switch reason {
-            case .byAdmin:
-                // TODO: - Toast handle
-                break
-            default:
-                break
+        case .byAdmin:
+            // TODO: - Toast handle
+            break
+        default:
+            break
         }
     }
     
@@ -193,6 +204,7 @@ extension ServiceCenter: TUIRoomObserver {
     
     // MARK: - room event.
     func onRoomDismissed(roomId: String) {
+        LiveKitLog.info("\(#file)","\(#line)","onRoomDismissed:[roomId:\(roomId)]")
         let toast = ToastInfo(message: .roomDismissed)
         let onRoomDismissedActions: [any Action] = [
             MediaActions.cameraClosed(),
@@ -208,27 +220,32 @@ extension ServiceCenter: TUIRoomObserver {
     }
     
     func onRemoteUserEnterRoom(roomId: String, userInfo: TUIUserInfo) {
+        LiveKitLog.info("\(#file)","\(#line)","onRemoteUserEnterRoom:[roomId:\(roomId),userId:\(userInfo.userId)]")
         guard let store = self.store else { return }
         if store.selectCurrent(RoomSelectors.roomOwnerId) == userInfo.userId { return }
         store.dispatch(action: UserActions.onUserEnterRoom(payload: User(userInfo: userInfo)))
     }
     
     func onRemoteUserLeaveRoom(roomId: String, userInfo: TUIUserInfo) {
+        LiveKitLog.info("\(#file)","\(#line)","onRemoteUserLeaveRoom:[roomId:\(roomId),userId:\(userInfo.userId)]")
         guard let store = self.store else { return }
         if store.selectCurrent(RoomSelectors.roomOwnerId) == userInfo.userId { return }
         store.dispatch(action: UserActions.onUserLeaveRoom(payload: User(userInfo: userInfo)))
     }
     
     func onRoomUserCountChanged(roomId: String, userCount: Int) {
+        LiveKitLog.info("\(#file)","\(#line)","onRoomUserCountChanged:[roomId:\(roomId),userCount:\(userCount)]")
         let audienceCount = userCount > 0 ? userCount - 1 : userCount
         store?.dispatch(action: RoomActions.updateRoomMemberCount(payload: audienceCount))
     }
     
     func onKickedOffLine(message: String) {
+        LiveKitLog.info("\(#file)","\(#line)","onKickedOffLine:[message:\(message)]")
         handlingKickedEvents(message: message)
     }
     
     func onKickedOutOfRoom(roomId: String, reason: TUIKickedOutOfRoomReason, message: String) {
+        LiveKitLog.info("\(#file)","\(#line)","onKickedOutOfRoom:[roomId:\(roomId),reason:\(reason.rawValue),message:\(message)]")
         if reason != .byServer {
             handlingKickedEvents(message: message)
         }
@@ -257,6 +274,39 @@ extension ServiceCenter: TUILiveListManagerObserver {
         if modifyFlag.contains(.publish) {
             store.dispatch(action: RoomActions.updateRoomMode(payload: liveInfo.isPublicVisible ? .public : .privacy))
         }
+    }
+}
+
+extension ServiceCenter: TUILiveConnectionObserver {
+    
+    func onConnectionUserListChanged(connectedList: [TUIConnectionUser], joinedList: [TUIConnectionUser], leavedList: [TUIConnectionUser]) {
+        guard let store = self.store else { return }
+        store.dispatch(action: ConnectionActions.onConnectionUserListChanged(payload: connectedList))
+    }
+    
+    func onConnectionRequestReceived(inviter: TUIConnectionUser, inviteeList: [TUIConnectionUser], extensionInfo: String) {
+        guard let store = self.store else { return }
+        store.dispatch(action: ConnectionActions.onConnectionRequestReceived(payload: (inviter, inviteeList, extensionInfo)))
+    }
+    
+    func onConnectionRequestCancelled(inviter: TUIConnectionUser) {
+        guard let store = self.store else { return }
+        store.dispatch(action: ConnectionActions.onConnectionRequestCancelled(payload: inviter))
+    }
+    
+    func onConnectionRequestAccept(invitee: TUIConnectionUser) {
+        guard let store = self.store else { return }
+        store.dispatch(action: ConnectionActions.onConnectionRequestAccept(payload: invitee))
+    }
+    
+    func onConnectionRequestReject(invitee: TUIConnectionUser) {
+        guard let store = self.store else { return }
+        store.dispatch(action: ConnectionActions.onConnectionRequestReject(payload: invitee))
+    }
+    
+    func onConnectionRequestTimeout(inviter: TUIConnectionUser, invitee: TUIConnectionUser) {
+        guard let store = self.store else { return }
+        store.dispatch(action: ConnectionActions.onConnectionRequestTimeout(payload: (store.roomState.roomId, inviter, invitee)))
     }
 }
 

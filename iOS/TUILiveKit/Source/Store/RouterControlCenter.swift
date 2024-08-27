@@ -175,6 +175,8 @@ extension RouterControlCenter {
                 view = AnchorLinkControlPanel(store: store, routerStore: routerStore)
             case .voiceLinkControl:
                 view = SeatManagerPanel(store: store, routerStore: routerStore)
+            case .connectionControl:
+                view = ConnectionManagerPanel(store: store, routerStore: routerStore)
             case .linkInviteControl(let index):
                 view = SeatInvitationPanel(store: store, routerStore: routerStore, seatIndex: index)
             case .userControl(let seatInfo):
@@ -197,8 +199,8 @@ extension RouterControlCenter {
             case .linkType:
                 let data = LiveRoomRootMenuDataCreator().generateLinkTypeMenuData(store: store, routerStore: routerStore)
                 view = LinkMicTypePanel(data: data, routerStore: routerStore)
-            case .listMenu(let items):
-                let actionPanel = ActionPanel(items: items)
+            case .listMenu(let data):
+                let actionPanel = ActionPanel(panelData: data)
                 actionPanel.cancelActionClosure = { [weak self] in
                     guard let self = self else { return }
                     self.routerStore.router(action: .dismiss())

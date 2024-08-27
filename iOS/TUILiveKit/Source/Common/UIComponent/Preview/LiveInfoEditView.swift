@@ -222,7 +222,7 @@ extension LiveInfoEditView {
             })
             items.append(item)
         }
-        routerStore.router(action: RouterAction.present(.listMenu(items)))
+        routerStore.router(action: RouterAction.present(.listMenu(ActionPanelData(items: items))))
     }
 
     private func showModeSelection() {
@@ -242,7 +242,7 @@ extension LiveInfoEditView {
             })
             items.append(item)
         }
-        routerStore.router(action: RouterAction.present(.listMenu(items)))
+        routerStore.router(action: RouterAction.present(.listMenu(ActionPanelData(items: items))))
     }
 }
 

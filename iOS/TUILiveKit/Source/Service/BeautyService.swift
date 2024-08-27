@@ -14,6 +14,7 @@ import Combine
 #endif
 
 class BeautyService: BaseServiceProtocol {
+ 
     var roomEngine: TUIRoomEngine
     required init(roomEngine: TUIRoomEngine) {
         self.roomEngine = roomEngine
@@ -30,6 +31,7 @@ class BeautyService: BaseServiceProtocol {
     func setBeautyLevel(_ beautyLevel: Float) -> AnyPublisher<Void, Never> {
         return Future<Void, Never> { [weak self] promise in
             guard let self = self else { return }
+            LiveKitLog.info("\(#file)", "\(#line)","setBeautyLevel:[level: \(beautyLevel)]")
             getBeautyManager().setBeautyLevel(beautyLevel)
             promise(.success(()))
         }
@@ -39,6 +41,7 @@ class BeautyService: BaseServiceProtocol {
     func setWhitenessLevel(_ whitenessLevel: Float) -> AnyPublisher<Void, Never> {
         return Future<Void, Never> { [weak self] promise in
             guard let self = self else { return }
+            LiveKitLog.info("\(#file)", "\(#line)","setWhitenessLevel:[level: \(whitenessLevel)]")
             getBeautyManager().setWhitenessLevel(whitenessLevel)
             promise(.success(()))
         }
@@ -48,6 +51,7 @@ class BeautyService: BaseServiceProtocol {
     func setRuddyLevel(_ ruddyLevel: Float) -> AnyPublisher<Void, Never> {
         return Future<Void, Never> { [weak self] promise in
             guard let self = self else { return }
+            LiveKitLog.info("\(#file)", "\(#line)","setRuddyLevel:[level: \(ruddyLevel)]")
             getBeautyManager().setRuddyLevel(ruddyLevel)
             promise(.success(()))
         }

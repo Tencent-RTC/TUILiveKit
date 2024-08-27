@@ -52,6 +52,10 @@ extension LiveStore {
         selectCurrent(BeautySelectors.getBeautyState)
     }
     
+    var connectionState: ConnectionState {
+        selectCurrent(ConnectionSelectors.getConnectionState)
+    }
+    
     var viewState: ViewState {
         selectCurrent(ViewSelectors.getViewState)
     }

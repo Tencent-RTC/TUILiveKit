@@ -45,6 +45,7 @@ class TCEffectAnimationView: UIView {
         let playerList = TUICore.getExtensionList(KEY_GET_VIEW,
                                                   param: [:])
         if playerList.count == 0 {
+            LiveKitLog.warn("\(#file)", "\(#line)","createAnimationView create view failed!")
             return nil
         }
         guard let playerAnimationView = playerList.first?.data?[KEY_GET_VIEW] as? UIView else { return nil }

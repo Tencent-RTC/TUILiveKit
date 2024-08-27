@@ -12,6 +12,9 @@ enum SeatSelectors {
     static let getSeatCount = Selector.with(getSeatList) { seatList in
         return seatList.count
     }
+    static let getSeatUserCount = Selector.with(getSeatList) { seatList in
+        return seatList.filter({!$0.userId.isEmpty}).count
+    }
     static let getSeatApplications = Selector.with(getSeatState, keyPath: \SeatState.seatApplicationList)
     
     static let getMySeatApplicationId = Selector.with(getSeatState, keyPath: \SeatState.mySeatApplicationId)

@@ -223,7 +223,7 @@ extension AudienceLivingView {
             self.store.dispatch(action: SeatActions.cancelApplication(payload: requestId))
             self.routerStore.router(action: .dismiss())
         }
-        routerStore.router(action: RouterAction.present(.listMenu([item])))
+        routerStore.router(action: RouterAction.present(.listMenu(ActionPanelData(items: [item]))))
     }
 }
 

@@ -106,6 +106,7 @@
 "live.alert.tips.title" = "Warm reminder";
 "live.alert.delete.desc.xxx" = "Are you sure you want to delete \"xxx\"?";
 "live.alert.cancel" = "Cancel";
+"live.alert.refuse" = "Refuse";
 "live.alert.sure" = "Confirm";
 "live.music.title" = "Sound effect settings";
 "live.music.voiceEarMonitor" = "Ear Monitor";
@@ -181,6 +182,20 @@
 "live.anchor.live.data.like.count" = "Likes";
 "live.user.follow" = "Follow";
 "live.user.unfollow" = "Unfollow";
+"live.connection.title" = "Co-host";
+"live.connection.connected" = "Connecting Streamers";
+"live.connection.request" = "Invite";
+"live.connection.inviting" = "Waiting";
+"live.connection.recommended.list" = "Suggested Hosts";
+"live.connection.invite.desc.xxx" = "xxx invite you to host together";
+"live.connection.disconnect" = "Disconnect";
+"live.connection.disconnect.alert" = "Are you sure you want to disconnect from other streamers?";
+"live.connection.disconnect.alert.disconnect" = "Disconnect";
+
+"live.endLive.onConnection.alert" = "You are currently co-hosting with other streamers. Would you like to  [End Co-host] or [End Live] ?";
+"live.endLive.onConnection.alert.disconnect" = "End Co-host";
+"live.endLive.onLinkMic.alert" = "You are currently connecting with guests. Would you like to  [End Multi-guest] or [End Live] ?";
+"live.endLive.onLinkMic.alert.disconnect" = "End Multi-guest";
 
 // MARK: - Error Toast
 
@@ -250,3 +265,8 @@
 "live.room.list.watching.xxx" = "xxx people are watching";
 
 "live.seat.takeSeatApplying" = "You have submitted a link mic request, please wait for the author approval";
+
+"live.error.connectionDisable.linkMic" = "The host is currently connecting with guests, unable to initiate Co-host.";
+"live.error.linkMicDisable.connecting" = "The host is currenly co-hosting with other streamers, unable to initiate Multi-guest.";
+"live.error.connectionDisable.connecting" = "The host is currently co-hosting with other streamers.";
+"live.error.connectionDisable.maxLimit" = "The number of co-hosting has exceeded the maximum limit.";

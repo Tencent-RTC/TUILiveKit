@@ -72,12 +72,12 @@ class UserStatusView: UIView {
         }
     }
 
-    func updateUserStatus(_ seatInfo: SeatInfo) {
-        userId = seatInfo.userId
-        if !seatInfo.userName.isEmpty {
-            userNameLabel.text = seatInfo.userName
+    func updateUserStatus(_ renderModel: VideoRenderModel) {
+        userId = renderModel.userId
+        if !renderModel.userName.isEmpty {
+            userNameLabel.text = renderModel.userName
         } else {
-            userNameLabel.text = seatInfo.userId
+            userNameLabel.text = renderModel.userId
         }
         if store.userState.hasAudioStreamUserList.first(where: { $0 == self.userId }) == nil {
             muteAudio = true
@@ -146,18 +146,18 @@ class RenderView: UIView {
         subscribeSeatState()
     }
     
-    var seatInfo: SeatInfo? {
+    var renderModel: VideoRenderModel? {
         didSet {
-            if oldValue?.userId != seatInfo?.userId {
+            if oldValue?.userId != renderModel?.userId {
                 updateView()
             }
         }
     }
 
     func updateView() {
-        guard let seatInfo = seatInfo else { return }
-        userInfoView.updateUserStatus(seatInfo)
-        avatarImageView.kf.setImage(with: URL(string: seatInfo.avatarUrl), placeholder: UIImage.placeholderImage)
+        guard let renderModel = renderModel else { return }
+        userInfoView.updateUserStatus(renderModel)
+        avatarImageView.kf.setImage(with: URL(string: renderModel.avatarUrl), placeholder: UIImage.placeholderImage)
         updateAvatarImageView()
     }
 
@@ -201,8 +201,8 @@ class RenderView: UIView {
             avatarImageView.isHidden = true
             return
         }
-        guard let seatInfo = seatInfo else { return }
-        if store.selectCurrent(UserSelectors.getHasVideoStreamUserList).contains(seatInfo.userId) {
+        guard let renderModel = renderModel else { return }
+        if store.selectCurrent(UserSelectors.getHasVideoStreamUserList).contains(renderModel.userId) {
             avatarImageView.isHidden = true
         } else {
             avatarImageView.isHidden = false
@@ -228,34 +228,34 @@ extension RenderView {
 
 class MatrixVideoRenderManager {
     private var viewPool: [String: RenderView] = [:]
-    func getRenderView(_ seatInfo: SeatInfo, store: LiveStore) -> RenderView {
-        guard let view = viewPool[seatInfo.userId] else {
+    func getRenderView(_ renderModel: VideoRenderModel, store: LiveStore) -> RenderView {
+        guard let view = viewPool[renderModel.userId] else {
             var view: RenderView
-            if store.selectCurrent(UserSelectors.currentUserId) == seatInfo.userId {
+            if store.selectCurrent(UserSelectors.currentUserId) == renderModel.userId {
                 view = StreamPublisherView(store: store)
             } else {
                 view = StreamPlayerView(store: store)
             }
-            view.seatInfo = seatInfo
-            viewPool[seatInfo.userId] = view
+            view.renderModel = renderModel
+            viewPool[renderModel.userId] = view
             return view
         }
-        view.seatInfo = seatInfo
+        view.renderModel = renderModel
         return view
     }
 
-    func removeRenderView(_ seatInfo: SeatInfo) {
-        viewPool.removeValue(forKey: seatInfo.userId)
+    func removeRenderView(_ renderModel: VideoRenderModel) {
+        viewPool.removeValue(forKey: renderModel.userId)
     }
 
-    func removeRenderViews(_ seatInfos: [SeatInfo]) {
-        for userInfo in seatInfos {
-            removeRenderView(userInfo)
+    func removeRenderViews(_ renderModels: [VideoRenderModel]) {
+        for renderModel in renderModels {
+            removeRenderView(renderModel)
         }
     }
     
-    func findRenderView(_ seatInfo: SeatInfo) -> RenderView? {
-        return viewPool[seatInfo.userId]
+    func findRenderView(_ renderModel: VideoRenderModel) -> RenderView? {
+        return viewPool[renderModel.userId]
     }
     
     func clearAllRenderView() {
