@@ -50,6 +50,7 @@ public class StreamPresetImagePicker extends PopupDialog {
         recyclerView.setLayoutManager(new GridLayoutManager(context, spanCount));
         recyclerView.addItemDecoration(new PresetImageGridAdapter.GridDividerItemDecoration(context));
         int selectedPosition = mConfig.data.indexOf(mConfig.currentImageUrl);
+        mSelectedImageURL = mConfig.currentImageUrl;
         recyclerView.setAdapter(new PresetImageGridAdapter(context, mConfig.data, selectedPosition, imageUrl
                 -> mSelectedImageURL = imageUrl));
     }

@@ -10,9 +10,9 @@ import com.tencent.imsdk.v2.V2TIMMessage;
 import com.tencent.imsdk.v2.V2TIMSimpleMsgListener;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.tencent.qcloud.tuicore.TUILogin;
-import com.trtc.uikit.livekit.common.uicomponent.gift.model.TUIGiftUser;
 import com.trtc.uikit.livekit.common.uicomponent.gift.model.GiftJson;
 import com.trtc.uikit.livekit.common.uicomponent.gift.model.TUIGift;
+import com.trtc.uikit.livekit.common.uicomponent.gift.model.TUIGiftUser;
 import com.trtc.uikit.livekit.common.utils.GsonNullStringAdapter;
 import com.trtc.uikit.livekit.common.utils.LiveKitLog;
 
@@ -26,7 +26,7 @@ public class GiftIMService {
 
     private final String                 mRoomId;
     private final ReceiveGiftMsgListener mReceiveGiftMsgListener;
-    private OnGiftMessageListener        mListener;
+    private       OnGiftMessageListener  mListener;
 
     private static final GsonNullStringAdapter mGsonNullStringAdapter = new GsonNullStringAdapter();
 
@@ -80,7 +80,7 @@ public class GiftIMService {
                 Gson gson = new Gson();
                 GiftJson json = gson.fromJson(customStr, GiftJson.class);
                 if (!GiftConstants.VALUE_VERSION.equals(json.version)) {
-                    LiveKitLog.info(TAG + " protocol version is not match, ignore msg.");
+                    LiveKitLog.error(TAG + " protocol version is not match, ignore msg.");
                 }
                 if (GiftConstants.VALUE_BUSINESS_ID.equals(json.businessID)) {
                     GiftJson.Data data = json.data;

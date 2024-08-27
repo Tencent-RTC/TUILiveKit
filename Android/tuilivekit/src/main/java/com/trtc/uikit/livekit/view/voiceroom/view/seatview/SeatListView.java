@@ -24,7 +24,7 @@ public class SeatListView extends BasicView {
     private       GridLayoutManager                  mGridLayoutManager;
     private final Observer<List<SeatState.SeatInfo>> mSeatListObserver = this::updateSeatListView;
 
-    public SeatListView(Context context, LiveController liveController, SeatListView.Config config) {
+    public SeatListView(Context context, LiveController liveController, Config config) {
         super(context, liveController);
         mConfig = config;
     }

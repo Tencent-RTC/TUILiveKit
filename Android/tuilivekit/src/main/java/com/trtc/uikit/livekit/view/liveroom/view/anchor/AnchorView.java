@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.uicomponent.dashboard.AnchorDashboardView;
+import com.trtc.uikit.livekit.common.utils.LiveKitLog;
 import com.trtc.uikit.livekit.common.view.BasicView;
 import com.trtc.uikit.livekit.manager.LiveController;
 import com.trtc.uikit.livekit.state.LiveDefine;
@@ -33,6 +34,18 @@ public class AnchorView extends BasicView {
 
     public AnchorView(@NonNull Context context, LiveController liveController) {
         super(context, liveController);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        LiveKitLog.info("AnchorView attached to window");
+        super.onAttachedToWindow();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        LiveKitLog.info("AnchorView detached to window");
     }
 
     @Override

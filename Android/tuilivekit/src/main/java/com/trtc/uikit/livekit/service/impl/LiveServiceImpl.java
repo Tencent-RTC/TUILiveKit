@@ -7,6 +7,7 @@ import static com.tencent.trtc.TRTCCloudDef.TRTC_VIDEO_MIRROR_TYPE_ENABLE;
 import com.google.gson.Gson;
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.common.TUIVideoView;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfo;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveModifyFlag;
@@ -30,16 +31,18 @@ import org.json.JSONObject;
 import java.util.List;
 
 public class LiveServiceImpl implements ILiveService {
-    private final String mTag = "RoomEngineService[" + hashCode() + "]";
+    private final String mTag = "LiveServiceImpl[" + hashCode() + "]";
 
-    private final TUIRoomEngine      mTUIRoomEngine;
-    private final TRTCCloud          mTRTCCloud;
-    private final TUILiveListManager mTUILiveListManager;
+    private final TUIRoomEngine            mTUIRoomEngine;
+    private final TRTCCloud                mTRTCCloud;
+    private final TUILiveListManager       mTUILiveListManager;
+    private final TUILiveConnectionManager mTUILiveConnectionManager;
 
     public LiveServiceImpl() {
         mTUIRoomEngine = createEngine();
         mTRTCCloud = mTUIRoomEngine.getTRTCCloud();
         mTUILiveListManager = (TUILiveListManager) mTUIRoomEngine.getExtension(LIVE_LIST_MANAGER);
+        mTUILiveConnectionManager = mTUIRoomEngine.getLiveConnectionManager();
     }
 
     @Override
@@ -49,26 +52,36 @@ public class LiveServiceImpl implements ILiveService {
 
     @Override
     public void addRoomEngineObserver(TUIRoomObserver observer) {
-        LiveKitLog.info(mTag + " addRoomEngineObserver:[observer:" + observer + "]");
+        LiveKitLog.info(mTag + " addRoomEngineObserver:[observer:" + observer.hashCode() + "]");
         mTUIRoomEngine.addObserver(observer);
     }
 
     @Override
     public void removeRoomEngineObserver(TUIRoomObserver observer) {
-        LiveKitLog.info(mTag + " removeRoomEngineObserver:[observer:" + observer + "]");
+        LiveKitLog.info(mTag + " removeRoomEngineObserver:[observer:" + observer.hashCode() + "]");
         mTUIRoomEngine.removeObserver(observer);
     }
 
     @Override
     public void addLiveListManagerObserver(TUILiveListManager.Observer observer) {
-        LiveKitLog.info(mTag + " addLiveListManagerObserver:[observer:" + observer + "]");
+        LiveKitLog.info(mTag + " addLiveListManagerObserver:[observer:" + observer.hashCode() + "]");
         mTUILiveListManager.addObserver(observer);
     }
 
     @Override
     public void removeLiveListManagerObserver(TUILiveListManager.Observer observer) {
-        LiveKitLog.info(mTag + " removeLiveListManagerObserver:[observer:" + observer + "]");
+        LiveKitLog.info(mTag + " removeLiveListManagerObserver:[observer:" + observer.hashCode() + "]");
         mTUILiveListManager.removeObserver(observer);
+    }
+
+    public void addLiveConnectionManagerObserver(TUILiveConnectionManager.Observer observer) {
+        LiveKitLog.info(mTag + " addLiveConnectionManagerObserver:[observer:" + observer.hashCode() + "]");
+        mTUILiveConnectionManager.addObserver(observer);
+    }
+
+    public void removeLiveConnectionManagerObserver(TUILiveConnectionManager.Observer observer) {
+        LiveKitLog.info(mTag + " removeLiveConnectionManagerObserver:[observer:" + observer.hashCode() + "]");
+        mTUILiveConnectionManager.removeObserver(observer);
     }
 
     /****************************************** Room Business *******************************************/
@@ -931,4 +944,26 @@ public class LiveServiceImpl implements ILiveService {
             throw new RuntimeException(e);
         }
     }
+
+    public void requestConnection(List<String> roomIdList, int timeoutSeconds, String extensionInfo,
+                                  TUILiveConnectionManager.ConnectionRequestCallback callback) {
+        mTUILiveConnectionManager.requestConnection(roomIdList, timeoutSeconds, extensionInfo, callback);
+    }
+
+    public void accept(String roomId, TUIRoomDefine.ActionCallback callback) {
+        mTUILiveConnectionManager.acceptConnection(roomId, callback);
+    }
+
+    public void reject(String roomId, TUIRoomDefine.ActionCallback callback) {
+        mTUILiveConnectionManager.rejectConnection(roomId, callback);
+    }
+
+    public void disconnect(TUIRoomDefine.ActionCallback callback) {
+        mTUILiveConnectionManager.disconnect(callback);
+    }
+
+    public void cancel(List<String> list, TUIRoomDefine.ActionCallback callback) {
+        mTUILiveConnectionManager.cancelConnectionRequest(list, callback);
+    }
+
 }

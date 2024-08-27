@@ -3,7 +3,6 @@ package com.trtc.uikit.livekit.view.voiceroom.view.bottommenu;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.trtc.tuikit.common.livedata.Observer;
@@ -12,7 +11,6 @@ import com.trtc.uikit.livekit.common.view.BasicView;
 import com.trtc.uikit.livekit.common.view.BottomPanel;
 import com.trtc.uikit.livekit.manager.LiveController;
 import com.trtc.uikit.livekit.state.operation.SeatState;
-import com.trtc.uikit.livekit.common.view.GiftButton;
 import com.trtc.uikit.livekit.view.voiceroom.view.panel.seatmanager.SeatManagerView;
 import com.trtc.uikit.livekit.view.voiceroom.view.panel.settings.SettingsPanelView;
 
@@ -35,7 +33,6 @@ public class AnchorFunctionView extends BasicView {
     protected void initView() {
         LayoutInflater.from(mContext).inflate(R.layout.livekit_voiceroom_anchor_function, this, true);
         mSeatApplicationCountText = findViewById(R.id.application_count);
-        initGiftButton();
         findViewById(R.id.iv_settings).setOnClickListener(v -> showSettingsPanel());
         findViewById(R.id.iv_seat_management).setOnClickListener(v -> showSeatManagementPanel());
     }
@@ -56,14 +53,6 @@ public class AnchorFunctionView extends BasicView {
             mSettingsPanelView = BottomPanel.create(panelView);
         }
         mSettingsPanelView.show();
-    }
-
-    private void initGiftButton() {
-        RelativeLayout layoutGiftContainer = findViewById(R.id.rl_gift);
-        GiftButton giftButton = new GiftButton(mContext, mLiveController);
-        giftButton.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
-                RelativeLayout.LayoutParams.MATCH_PARENT));
-        layoutGiftContainer.addView(giftButton);
     }
 
     private void showSeatManagementPanel() {

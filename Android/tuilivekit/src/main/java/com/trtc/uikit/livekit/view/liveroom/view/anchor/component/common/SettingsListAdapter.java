@@ -137,7 +137,7 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
         if (mAudioEffectPanel == null) {
             mAudioEffectPanel = new PopupDialog(mContext);
             AudioEffectPanelView audioEffectPanel = new AudioEffectPanelView(mContext,
-                    mLiveController.getRoomSate().roomId, mLiveController.getLiveService().getTRTCCloud());
+                    mLiveController.getRoomState().roomId, mLiveController.getLiveService().getTRTCCloud());
             audioEffectPanel.setOnBackButtonClickListener(() -> mAudioEffectPanel.dismiss());
             mAudioEffectPanel.setView(audioEffectPanel);
         }

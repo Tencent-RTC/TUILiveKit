@@ -21,6 +21,7 @@ import androidx.annotation.NonNull;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
 import com.trtc.tuikit.common.livedata.Observer;
+import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.uicomponent.gift.store.GiftStore;
 import com.trtc.uikit.livekit.manager.LiveController;
@@ -47,17 +48,20 @@ import java.util.Set;
 @SuppressLint("ViewConstructor")
 public class AnchorLivingView extends BasicView implements ITUINotification {
 
-    private final GiftCacheService                            mGiftCacheService;
-    private       RelativeLayout                              mLayoutFunctionContainer;
-    private       RelativeLayout                              mLayoutAudienceListContainer;
-    private       RelativeLayout                              mLayoutLiveInfoContainer;
-    private       RelativeLayout                              mLayoutApplyLinkAudienceContainer;
-    private       RelativeLayout                              mLayoutBarrageContainer;
-    private       TUIBarrageDisplayView                       mBarrageDisplayView;
-    private       RelativeLayout                              mLayoutGiftContainer;
-    private       TUIGiftPlayView                             mGiftPlayView;
-    private       ImageView                                   mImageClose;
-    private final Set<String>                                 mUserIdCache      = new HashSet<>();
+    private final GiftCacheService      mGiftCacheService;
+    private       RelativeLayout        mLayoutFunctionContainer;
+    private       RelativeLayout        mLayoutAudienceListContainer;
+    private       RelativeLayout        mLayoutLiveInfoContainer;
+    private       RelativeLayout        mLayoutApplyLinkAudienceContainer;
+    private       RelativeLayout        mLayoutBarrageContainer;
+    private       TUIBarrageDisplayView mBarrageDisplayView;
+    private       RelativeLayout        mLayoutGiftContainer;
+    private       TUIGiftPlayView       mGiftPlayView;
+    private       ImageView             mImageClose;
+    private       PopupDialog           mAnchorEndLiveDialog;
+    private       AnchorEndLivePanel    mAnchorEndLivePanel;
+    private final Set<String>           mUserIdCache = new HashSet<>();
+
     private final Observer<LinkedHashSet<UserState.UserInfo>> mUserListObserver = this::onUserListChange;
 
     public AnchorLivingView(@NonNull Context context, LiveController liveController) {
@@ -115,7 +119,26 @@ public class AnchorLivingView extends BasicView implements ITUINotification {
     }
 
     private void initCloseView() {
-        mImageClose.setOnClickListener((view) -> closeLiveRoom());
+        mImageClose.setOnClickListener(view -> showEndLiveDialog());
+    }
+
+    private void showEndLiveDialog() {
+        if (mAnchorEndLiveDialog == null) {
+            mAnchorEndLiveDialog = new PopupDialog(mContext, com.trtc.tuikit.common.R.style.TUICommonBottomDialogTheme);
+            mAnchorEndLiveDialog.setOnDismissListener(dialogInterface -> {
+            });
+        }
+        if (mAnchorEndLivePanel == null) {
+            mAnchorEndLivePanel = new AnchorEndLivePanel(mContext, mLiveController);
+            mAnchorEndLivePanel.setEndLiveListener(v -> {
+                mAnchorEndLiveDialog.dismiss();
+                closeLiveRoom();
+            });
+            mAnchorEndLivePanel.setCancelListener(v -> mAnchorEndLiveDialog.dismiss());
+        }
+        mAnchorEndLivePanel.configEndLivePanel(mAnchorEndLiveDialog);
+        mAnchorEndLiveDialog.setView(mAnchorEndLivePanel);
+        mAnchorEndLiveDialog.show();
     }
 
     private void initAudienceListView() {
@@ -155,7 +178,7 @@ public class AnchorLivingView extends BasicView implements ITUINotification {
             @Override
             public void onReceiveGift(TUIGift gift, int giftCount, TUIGiftUser sender, TUIGiftUser receiver) {
                 mLiveController.getRoomController().updateGiftIncome(
-                        gift.price * giftCount + mLiveController.getRoomSate().liveExtraInfo.giftIncome);
+                        gift.price * giftCount + mLiveController.getRoomState().liveExtraInfo.giftIncome);
                 mLiveController.getRoomController().insertGiftPeople(sender.userId);
                 if (mBarrageDisplayView == null) {
                     return;

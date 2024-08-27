@@ -109,7 +109,7 @@ public class GiftCloudServer implements IGiftCloudServer {
             @Override
             public void onFailed(String message) {
                 if (callback != null) {
-                    callback.onResult(IGiftCloudServer.Error.OPERATION_FAILED, Collections.EMPTY_LIST);
+                    callback.onResult(Error.OPERATION_FAILED, Collections.EMPTY_LIST);
                 }
             }
         });

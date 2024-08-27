@@ -59,7 +59,7 @@ public class AudienceFunctionView extends BasicView {
     }
 
     private void initLikeButton() {
-        TUILikeButton likeButton = new TUILikeButton(mContext, mLiveController.getRoomSate().roomId);
+        TUILikeButton likeButton = new TUILikeButton(mContext, mLiveController.getRoomState().roomId);
         likeButton.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.MATCH_PARENT));
         RelativeLayout container = findViewById(R.id.rl_like);

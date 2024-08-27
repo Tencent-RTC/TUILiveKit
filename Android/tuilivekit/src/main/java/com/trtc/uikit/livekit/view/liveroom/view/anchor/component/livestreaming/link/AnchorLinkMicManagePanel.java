@@ -122,7 +122,7 @@ public class AnchorLinkMicManagePanel extends BasicView {
             mTextMicUpTitle.setVisibility(VISIBLE);
             mTextMicUpTitle.setText(mContext.getString(R.string.livekit_seat_list_title,
                     mLiveController.getSeatState().seatList.get().size() - 1,
-                    mLiveController.getRoomSate().maxSeatCount.get()));
+                    mLiveController.getRoomState().maxSeatCount.get()));
         } else {
             mTextMicUpTitle.setVisibility(GONE);
         }

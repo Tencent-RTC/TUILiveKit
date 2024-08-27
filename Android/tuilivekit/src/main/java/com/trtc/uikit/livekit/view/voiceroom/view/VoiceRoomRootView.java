@@ -37,6 +37,7 @@ import com.trtc.uikit.livekit.common.uicomponent.gift.service.GiftCacheService;
 import com.trtc.uikit.livekit.common.uicomponent.gift.store.GiftStore;
 import com.trtc.uikit.livekit.common.uicomponent.gift.view.GiftBarrageAdapter;
 import com.trtc.uikit.livekit.common.utils.Constants;
+import com.trtc.uikit.livekit.common.utils.LiveKitLog;
 import com.trtc.uikit.livekit.common.view.BasicView;
 import com.trtc.uikit.livekit.manager.LiveController;
 import com.trtc.uikit.livekit.manager.controller.RoomController;
@@ -122,6 +123,7 @@ public class VoiceRoomRootView extends BasicView {
 
     @Override
     protected void onAttachedToWindow() {
+        LiveKitLog.info("VoiceRoomRootView attached to window");
         enterRoom();
         super.onAttachedToWindow();
     }
@@ -129,6 +131,7 @@ public class VoiceRoomRootView extends BasicView {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        LiveKitLog.info("VoiceRoomRootView detached to window");
         mLiveController.getState().reset();
     }
 
@@ -203,7 +206,7 @@ public class VoiceRoomRootView extends BasicView {
     private void initGiftView() {
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         mLayoutGiftContainer.removeAllViews();
-        mGiftPlayView = new TUIGiftPlayView(mContext, mLiveController.getRoomSate().roomId);
+        mGiftPlayView = new TUIGiftPlayView(mContext, mLiveController.getRoomState().roomId);
         mLayoutGiftContainer.addView(mGiftPlayView, layoutParams);
         mGiftPlayView.setListener(new TUIGiftPlayView.TUIGiftPlayViewListener() {
             @Override
@@ -242,8 +245,8 @@ public class VoiceRoomRootView extends BasicView {
     private void initBarrageView() {
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         mLayoutBarrageContainer.removeAllViews();
-        mBarrageDisplayView = new TUIBarrageDisplayView(mContext, mLiveController.getRoomSate().roomId,
-                mLiveController.getRoomSate().ownerInfo.userId);
+        mBarrageDisplayView = new TUIBarrageDisplayView(mContext, mLiveController.getRoomState().roomId,
+                mLiveController.getRoomState().ownerInfo.userId);
         mLayoutBarrageContainer.addView(mBarrageDisplayView, layoutParams);
         mBarrageDisplayView.setAdapter(new GiftBarrageAdapter(mContext));
     }

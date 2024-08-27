@@ -14,6 +14,7 @@ import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.uicomponent.dashboard.AudienceDashboardView;
 import com.trtc.uikit.livekit.common.utils.Constants;
+import com.trtc.uikit.livekit.common.utils.LiveKitLog;
 import com.trtc.uikit.livekit.common.view.BasicView;
 import com.trtc.uikit.livekit.manager.LiveController;
 import com.trtc.uikit.livekit.state.LiveDefine;
@@ -58,6 +59,7 @@ public class AudienceView extends BasicView {
 
     @Override
     protected void onAttachedToWindow() {
+        LiveKitLog.info("AudienceView attached to window");
         super.onAttachedToWindow();
         Constants.DATA_REPORT_COMPONENT = DATA_REPORT_COMPONENT_LIVE_ROOM;
         mLiveController.getRoomController().join(mRoomState.roomId);
@@ -66,6 +68,7 @@ public class AudienceView extends BasicView {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        LiveKitLog.info("AudienceView detached to window");
         mLiveController.getVideoViewFactory().clearBySeatList(mSeatState.seatList.get());
         mLiveController.getState().reset();
     }

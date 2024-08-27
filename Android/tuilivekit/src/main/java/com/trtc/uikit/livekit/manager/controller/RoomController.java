@@ -123,11 +123,11 @@ public class RoomController extends Controller {
     }
 
     private void getLiveInfo(String roomId) {
-        LiveKitLog.info(TAG + " getLiveInfo [roomId: " + roomId + ",liveService:" + mLiveService.hashCode() + "]");
         mLiveService.getLiveInfo(roomId, new TUILiveListManager.LiveInfoCallback() {
             @Override
             public void onSuccess(LiveInfo liveInfo) {
-                updateCoverUrl(liveInfo.coverUrl);
+                mRoomState.coverURL.set(liveInfo.coverUrl, false);
+                mRoomState.backgroundURL.set(liveInfo.backgroundUrl, false);
             }
 
             @Override
@@ -135,10 +135,6 @@ public class RoomController extends Controller {
                 ErrorHandler.onError(error);
             }
         });
-    }
-
-    private void updateCoverUrl(String coverUrl) {
-        mRoomState.coverURL.set(coverUrl, false);
     }
 
     public void exit() {
@@ -183,9 +179,34 @@ public class RoomController extends Controller {
     }
 
     public void setBackgroundURL(String backgroundURL) {
+        if (TextUtils.isEmpty(backgroundURL)) {
+            return;
+        }
+        if (backgroundURL.equals(mRoomState.backgroundURL.get())) {
+            return;
+        }
         if (mViewState.liveStatus.get() == LiveDefine.LiveStatus.PREVIEWING) {
             mRoomState.backgroundURL.set(backgroundURL, false);
+            return;
         }
+
+        LiveInfo liveInfo = new LiveInfo();
+        liveInfo.roomInfo = new TUIRoomDefine.RoomInfo();
+        liveInfo.roomInfo.roomId = mRoomState.roomId;
+        liveInfo.backgroundUrl = backgroundURL;
+        List<LiveModifyFlag> flagList = new ArrayList<>();
+        flagList.add(LiveModifyFlag.BACKGROUND_URL);
+        mLiveService.setLiveInfo(liveInfo, flagList, new TUIRoomDefine.ActionCallback() {
+            @Override
+            public void onSuccess() {
+                mRoomState.backgroundURL.set(backgroundURL, false);
+            }
+
+            @Override
+            public void onError(TUICommonDefine.Error error, String s) {
+                ErrorHandler.onError(error);
+            }
+        });
     }
 
     public String getDefaultRoomName() {
@@ -211,7 +232,6 @@ public class RoomController extends Controller {
     }
 
     public void updateRoomSeatMode(TUIRoomDefine.SeatMode seatMode) {
-        LiveKitLog.info(TAG + " updateRoomSeatMode [roomId: " + mRoomState.roomId + "]");
         if (mViewState.liveStatus.get() == LiveDefine.LiveStatus.PREVIEWING) {
             mRoomState.seatMode.set(seatMode, false);
             return;
@@ -219,28 +239,23 @@ public class RoomController extends Controller {
         mLiveService.updateRoomSeatModeByAdmin(seatMode, new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
-                LiveKitLog.info(TAG + " updateRoomSeatMode success");
                 mRoomState.seatMode.set(seatMode, false);
             }
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveKitLog.error(TAG + " updateRoomSeatMode:[Error] error:" + error + ",message:" + message + "]");
             }
         });
     }
 
     private void leave() {
-        LiveKitLog.info(TAG + " leave room [roomId: " + mRoomState.roomId + "]");
         mLiveService.leave(new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
-                LiveKitLog.info(TAG + " leave success");
             }
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveKitLog.error(TAG + " leave:[Error] error:" + error + ",message:" + message + "]");
             }
         });
     }
@@ -304,6 +319,7 @@ public class RoomController extends Controller {
         liveInfo.roomInfo = new TUIRoomDefine.RoomInfo();
         liveInfo.roomInfo.roomId = mRoomState.roomId;
         liveInfo.coverUrl = mRoomState.coverURL.get();
+        liveInfo.backgroundUrl = mRoomState.backgroundURL.get();
         liveInfo.isPublicVisible = PUBLIC == mRoomState.liveExtraInfo.liveMode.get();
         String category = mRoomState.liveExtraInfo.category.get();
         for (int i = 0; i < mCategoryList.size(); i++) {
@@ -317,6 +333,7 @@ public class RoomController extends Controller {
         flagList.add(LiveModifyFlag.COVER_URL);
         flagList.add(LiveModifyFlag.PUBLISH);
         flagList.add(LiveModifyFlag.CATEGORY);
+        flagList.add(LiveModifyFlag.BACKGROUND_URL);
         mLiveService.setLiveInfo(liveInfo, flagList, null);
     }
 
@@ -329,12 +346,23 @@ public class RoomController extends Controller {
         }
     }
 
-    public void onLiveInfoChanged(TUILiveListManager.LiveInfo liveInfo,
-                                  List<TUILiveListManager.LiveModifyFlag> modifyFlagList) {
-        for (TUILiveListManager.LiveModifyFlag flag : modifyFlagList) {
-            if (flag == LiveModifyFlag.COVER_URL) {
-                updateCoverUrl(liveInfo.coverUrl);
-            }
+    public void onLiveInfoChanged(LiveInfo liveInfo,
+                                  List<LiveModifyFlag> modifyFlagList) {
+        for (LiveModifyFlag flag : modifyFlagList) {
+            onLiveInfoChanged(flag, liveInfo);
+        }
+    }
+
+    private void onLiveInfoChanged(LiveModifyFlag flag, LiveInfo liveInfo) {
+        switch (flag) {
+            case COVER_URL:
+                mRoomState.coverURL.set(liveInfo.coverUrl, false);
+                break;
+            case BACKGROUND_URL:
+                mRoomState.backgroundURL.set(liveInfo.backgroundUrl, false);
+                break;
+            default:
+                break;
         }
     }
 

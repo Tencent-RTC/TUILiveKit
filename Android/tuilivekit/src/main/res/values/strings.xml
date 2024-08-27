@@ -33,12 +33,35 @@
     <string name="livekit_permission_bluetooth_reason">To ensure that you can connect to Bluetooth function for
         communication during Live, we need to request permission of nearby devices.</string>
     <string name="livekit_link_mic_manager">Link Management</string>
+    <string name="livekit_connection">Co-host</string>
+    <string name="livekit_disconnection">Disconnect</string>
     <string name="livekit_hang_up">Hang Up</string>
     <string name="livekit_accept">Accept</string>
     <string name="livekit_reject">Reject</string>
+    <string name="livekit_receive">Accept</string>
+    <string name="livekit_start_connection">Invite</string>
+    <string name="livekit_disconnect_tips">Are you sure you want to disconnect from other streamers?</string>
+    <string name="livekit_disconnect_cancel">Cancel</string>
+    <string name="livekit_end_connect">Disconnect</string>
+    <string name="livekit_connect_failed">Failed to connect.</string>
+    <string name="livekit_connect_inviting">Waiting</string>
+    <string name="livekit_connect_error">Other errors, cannot connect.</string>
+    <string name="livekit_connect_conflict">The host is currently co-hosting with other streamers.</string>
+    <string name="livekit_connection_room_full">The number of co-hosting has exceeded the maximum limit.</string>
+    <string name="livekit_connect_request_failed">Request failed.</string>
+    <string name="livekit_end_live">End Live</string>
+    <string name="livekit_end_pk_tips">You are currently in PK mode. Would you like to  [End PK] or [End Live]
+        ?</string>
+    <string name="livekit_end_pk">End PK</string>
+    <string name="livekit_end_connection_tips">You are currently co-hosting with other streamers. Would you like to
+        [End Co-host] or [End Live] ?</string>
+    <string name="livekit_end_connection">End Co-host</string>
+    <string name="livekit_connect_inviting_append">" invite you to host together"</string>
     <string name="livekit_enable_audience_request_link">Allow viewers to apply for continuous microphone</string>
     <string name="livekit_seat_list_title">Current wheat position(%d/%d)</string>
+    <string name="livekit_connection_list_title">Connecting Streamers(%d)</string>
     <string name="livekit_seat_application_title">Apply for continuous wheat(%d)</string>
+    <string name="livekit_recommended_list">Suggested Hosts</string>
     <string name="livekit_link_mic_down_title_popup">Requesting(%d)</string>
 
     <string name="livekit_title_link_mic_selector">Choose Link Mode</string>

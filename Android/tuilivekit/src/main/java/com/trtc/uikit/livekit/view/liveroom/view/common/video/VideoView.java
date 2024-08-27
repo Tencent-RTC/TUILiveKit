@@ -17,32 +17,30 @@ import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.view.BasicView;
 import com.trtc.uikit.livekit.manager.LiveController;
 import com.trtc.uikit.livekit.state.LiveDefine;
-import com.trtc.uikit.livekit.state.operation.SeatState;
 
 import java.util.LinkedHashSet;
 
 @SuppressLint("ViewConstructor")
 public class VideoView extends BasicView {
-
-    protected SeatState.SeatInfo mSeatInfo;
-    protected ImageView          mImageEnableAudio;
-    protected TextView           mTextName;
-    protected ImageView          mImageAvatar;
-    protected FrameLayout        mLayoutRoot;
-    protected TUIVideoView       mTUIVideoView;
+    protected RenderVideoViewModel mViewModel;
+    protected ImageView            mImageEnableAudio;
+    protected TextView             mTextName;
+    protected ImageView            mImageAvatar;
+    protected FrameLayout          mLayoutRoot;
+    protected TUIVideoView         mTUIVideoView;
 
     private final Observer<LinkedHashSet<String>> hasVideoStreamUserListObserver = this::onVideoStreamUserListChange;
     private final Observer<LinkedHashSet<String>> hasAudioStreamUserListObserver = this::onAudioStreamUserListChange;
 
-    public VideoView(@NonNull Context context, LiveController liveController, SeatState.SeatInfo seatInfo) {
+    public VideoView(@NonNull Context context, LiveController liveController, RenderVideoViewModel viewModel) {
         super(context, liveController);
-        mSeatInfo = seatInfo;
+        mViewModel = viewModel;
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mLiveController.getVideoViewFactory().removeVideoViewByUserId(mSeatInfo.userId.get());
+        mLiveController.getVideoViewFactory().removeVideoViewByUserId(mViewModel.userId);
     }
 
     @Override
@@ -90,7 +88,7 @@ public class VideoView extends BasicView {
     }
 
     protected void initImageAvatar() {
-        String userId = mSeatInfo.userId.get();
+        String userId = mViewModel.userId;
         if (TextUtils.isEmpty(userId)) {
             return;
         }
@@ -100,12 +98,12 @@ public class VideoView extends BasicView {
             mImageAvatar.setVisibility(GONE);
         } else {
             mImageAvatar.setVisibility(VISIBLE);
-            ImageLoader.load(mContext, mImageAvatar, mSeatInfo.avatarUrl.get(), R.drawable.livekit_ic_avatar);
+            ImageLoader.load(mContext, mImageAvatar, mViewModel.avatarUrl, R.drawable.livekit_ic_avatar);
         }
     }
 
     protected void initImageEnableAudio() {
-        String userId = mSeatInfo.userId.get();
+        String userId = mViewModel.userId;
         if (TextUtils.isEmpty(userId)) {
             return;
         }

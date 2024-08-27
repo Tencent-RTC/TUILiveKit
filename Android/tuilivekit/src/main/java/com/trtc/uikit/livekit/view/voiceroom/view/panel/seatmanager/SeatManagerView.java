@@ -105,7 +105,7 @@ public class SeatManagerView extends BottomPanelView {
         } else {
             mSeatListTitle.setVisibility(VISIBLE);
             mSeatListTitle.setText(mContext.getString(R.string.livekit_seat_list_title, seatList.size()
-                    , mLiveController.getRoomSate().maxSeatCount.get() - 1));
+                    , mLiveController.getRoomState().maxSeatCount.get() - 1));
         }
     }
 

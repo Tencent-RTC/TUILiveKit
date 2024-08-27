@@ -15,59 +15,36 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
-    <RelativeLayout
-        android:id="@+id/rl_link_mic"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="2dp"
-        android:scaleType="centerCrop"
+    <LinearLayout
+        android:id="@+id/rl_function"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@+id/rl_barrage"
-        app:layout_constraintEnd_toStartOf="@+id/rl_settings"
-        android:layout_weight="1">
-        <Button
-            android:id="@+id/btn_link"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:textAllCaps="false"
-            android:background="@drawable/livekit_function_link_default" />
-    </RelativeLayout>
-
-
-
-    <RelativeLayout
-        android:id="@+id/rl_settings"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="2dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toBottomOf="@+id/rl_barrage"
-        app:layout_constraintEnd_toStartOf="@+id/rl_music">
-        <Button
-            android:id="@+id/btn_settings"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:textAllCaps="false"
-            android:background="@drawable/livekit_function_settings" />
-    </RelativeLayout>
-
-
-
-    <RelativeLayout
-        android:id="@+id/rl_music"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="2dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toBottomOf="@+id/rl_barrage"
-        app:layout_constraintEnd_toEndOf="parent" >
-        <Button
-            android:id="@+id/btn_music"
+        android:layout_marginBottom="2dp" >
+        <View
+            android:id="@+id/v_connection"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:textAllCaps="false"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/livekit_function_connection" />
+        <View
+            android:id="@+id/v_link"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/livekit_function_link_default" />
+        <View
+            android:id="@+id/v_settings"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/livekit_function_settings" />
+        <View
+            android:id="@+id/v_music"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:background="@drawable/livekit_function_music" />
-    </RelativeLayout>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

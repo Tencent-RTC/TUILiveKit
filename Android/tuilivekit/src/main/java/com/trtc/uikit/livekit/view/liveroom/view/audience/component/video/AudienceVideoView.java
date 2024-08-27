@@ -14,9 +14,10 @@ import com.trtc.uikit.livekit.common.utils.LinkMicGridHelper;
 import com.trtc.uikit.livekit.common.view.BasicView;
 import com.trtc.uikit.livekit.manager.LiveController;
 import com.trtc.uikit.livekit.state.LiveDefine;
+import com.trtc.uikit.livekit.state.operation.ConnectionState;
 import com.trtc.uikit.livekit.state.operation.SeatState;
+import com.trtc.uikit.livekit.view.liveroom.view.common.video.RenderVideoViewModel;
 import com.trtc.uikit.livekit.view.liveroom.view.common.video.VideoView;
-import com.trtc.uikit.livekit.view.liveroom.view.common.video.VideoViewFactory;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -25,16 +26,22 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class AudienceVideoView extends BasicView {
     private static final String TAG = "AudienceVideoView";
 
-    private       GridLayout                               mLayoutVideoList;
-    private       LinkMicGridHelper                        mLinkMicGridHelper;
-    private       SeatState.SeatInfo                       mSelfSeatInfo;
-    private final CopyOnWriteArrayList<SeatState.SeatInfo> mLinkUserList;
-    private final Observer<List<SeatState.SeatInfo>>       mLinkAudienceListObserver = this::onLinkAudienceListChange;
-    private final Observer<LiveDefine.LinkStatus>          mLinkStatusObserver       = this::onLinkStatusChange;
+    private       GridLayout                                           mLayoutVideoList;
+    private       LinkMicGridHelper                                    mLinkMicGridHelper;
+    private       SeatState.SeatInfo                                   mSelfSeatInfo;
+    private final CopyOnWriteArrayList<SeatState.SeatInfo>             mLinkUserList;
+    private final CopyOnWriteArrayList<ConnectionState.ConnectionUser> mConnectedUserList;
+    private final Observer<List<SeatState.SeatInfo>>                   mLinkAudienceListObserver
+            = this::onLinkAudienceListChange;
+    private final Observer<List<ConnectionState.ConnectionUser>>       mConnectedListObserver
+            = this::onConnectedListChange;
+    private final Observer<LiveDefine.LinkStatus>                      mLinkStatusObserver
+            = this::onLinkStatusChange;
 
     public AudienceVideoView(Context context, LiveController liveController) {
         super(context.getApplicationContext(), liveController);
         mLinkUserList = new CopyOnWriteArrayList<>(mSeatState.seatList.get());
+        mConnectedUserList = new CopyOnWriteArrayList<>(mConnectionState.connectedUsers.get());
     }
 
     @Override
@@ -49,22 +56,32 @@ public class AudienceVideoView extends BasicView {
     protected void addObserver() {
         mViewState.linkStatus.observe(mLinkStatusObserver);
         mSeatState.seatList.observe(mLinkAudienceListObserver);
+        mConnectionState.connectedUsers.observe(mConnectedListObserver);
     }
 
     @Override
     protected void removeObserver() {
         mViewState.linkStatus.removeObserver(mLinkStatusObserver);
         mSeatState.seatList.removeObserver(mLinkAudienceListObserver);
+        mConnectionState.connectedUsers.removeObserver(mConnectedListObserver);
     }
 
     private void initVideoViewList() {
         mLinkMicGridHelper = new LinkMicGridHelper(mLayoutVideoList);
-
-        if (!mLinkUserList.isEmpty()) {
-            for (SeatState.SeatInfo seatInfo : mLinkUserList) {
-                addView(seatInfo);
+        for (SeatState.SeatInfo seatInfo : mLinkUserList) {
+            addView(new RenderVideoViewModel(seatInfo, mRoomState.roomId));
+        }
+        for (ConnectionState.ConnectionUser user : mConnectedUserList) {
+            if (mRoomState.ownerInfo.userId.equals(user.userId)) {
+                addView(new RenderVideoViewModel(user));
             }
         }
+        for (ConnectionState.ConnectionUser user : mConnectedUserList) {
+            if (!mRoomState.ownerInfo.userId.equals(user.userId)) {
+                addView(new RenderVideoViewModel(user));
+            }
+        }
+
     }
 
     private void bindViewId() {
@@ -84,12 +101,12 @@ public class AudienceVideoView extends BasicView {
         mLiveController.getVideoViewFactory().destroyPlaceHolderVideoView();
     }
 
-    private void addView(SeatState.SeatInfo seatInfo) {
-        boolean isOwner = mRoomState.ownerInfo.userId.equals(seatInfo.userId.get());
-        VideoView videoView = mLiveController.getVideoViewFactory().createVideoView(seatInfo,
-                mLiveController, mContext);
+    private void addView(RenderVideoViewModel renderVideoViewModel) {
+        boolean isOwner = mRoomState.ownerInfo.userId.equals(renderVideoViewModel.userId);
+        VideoView videoView = mLiveController.getVideoViewFactory().createVideoView(
+                renderVideoViewModel, mLiveController, mContext);
         if (videoView == null) {
-            Log.e(TAG, "addView fail, seatInfo.userId = " + seatInfo.userId.get());
+            Log.e(TAG, "addView fail, renderVideoViewModel.userId = " + renderVideoViewModel.userId);
             return;
         }
         if (isOwner) {
@@ -100,14 +117,56 @@ public class AudienceVideoView extends BasicView {
     }
 
     private void removeView(SeatState.SeatInfo seatInfo) {
-        VideoView videoView = mLiveController.getVideoViewFactory().createVideoView(seatInfo, mLiveController,
-                mContext);
+        VideoView videoView = mLiveController.getVideoViewFactory().createVideoView(new RenderVideoViewModel(seatInfo,
+                mLiveController.getRoomState().roomId), mLiveController, mContext);
         mLiveController.getVideoViewFactory().removeVideoViewByUserId(seatInfo.userId.get());
         if (videoView == null) {
             Log.e(TAG, "removeView fail, seatInfo.userId = " + seatInfo.userId.get());
             return;
         }
         mLinkMicGridHelper.removeAudienceView(videoView);
+    }
+
+    private void removeView(ConnectionState.ConnectionUser connectionUser) {
+        VideoView videoView = mLiveController.getVideoViewFactory().createVideoView(
+                new RenderVideoViewModel(connectionUser), mLiveController, mContext);
+        mLiveController.getVideoViewFactory().removeVideoViewByUserId(connectionUser.userId);
+        if (videoView == null) {
+            Log.e(TAG, "removeView fail, seatInfo.userId = " + connectionUser.userId);
+            return;
+        }
+        mLinkMicGridHelper.removeAudienceView(videoView);
+    }
+
+    private void addUserView(ConnectionState.ConnectionUser user) {
+        boolean isContainer = false;
+        for (int i = 0; i < mConnectedUserList.size(); i++) {
+            if (mConnectedUserList.get(i).userId.equals(user.userId)) {
+                isContainer = true;
+                break;
+            }
+        }
+        if (!isContainer) {
+            mConnectedUserList.add(user);
+            addView(new RenderVideoViewModel(user));
+        }
+    }
+
+    private void onConnectedListChange(List<ConnectionState.ConnectionUser> connectedUsers) {
+        for (ConnectionState.ConnectionUser user : connectedUsers) {
+            if (mRoomState.ownerInfo.userId.equals(user.userId)) {
+                addUserView(user);
+            }
+        }
+        for (ConnectionState.ConnectionUser user : connectedUsers) {
+            addUserView(user);
+        }
+        for (ConnectionState.ConnectionUser user : mConnectedUserList) {
+            if (!connectedUsers.contains(user)) {
+                mConnectedUserList.remove(user);
+                removeView(user);
+            }
+        }
     }
 
     private void onLinkAudienceListChange(List<SeatState.SeatInfo> audienceList) {
@@ -122,10 +181,9 @@ public class AudienceVideoView extends BasicView {
             }
             if (!isContainer) {
                 mLinkUserList.add(seatInfo);
-                addView(seatInfo);
+                addView(new RenderVideoViewModel(seatInfo, mRoomState.roomId));
             }
         }
-
         for (SeatState.SeatInfo userInfo : mLinkUserList) {
             if (!audienceList.contains(userInfo)) {
                 mLinkUserList.remove(userInfo);

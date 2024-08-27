@@ -35,14 +35,14 @@ public class SeatApplicationAdapter extends RecyclerView.Adapter<SeatApplication
 
     @NonNull
     @Override
-    public SeatApplicationAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.livekit_layout_voiceroom_item_seat_application,
                 parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SeatApplicationAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         SeatState.SeatApplication request = mData.get(position);
         if (TextUtils.isEmpty(request.userName)) {
             holder.textName.setText(request.userName);

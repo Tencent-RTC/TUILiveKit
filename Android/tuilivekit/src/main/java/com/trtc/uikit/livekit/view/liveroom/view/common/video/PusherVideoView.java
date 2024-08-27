@@ -23,8 +23,8 @@ public class PusherVideoView extends VideoView {
     private final Observer<LiveDefine.LinkStatus> mLinkStatusObserver = this::onLinkStatusChange;
     private       TUIVideoView                    mVideoView;
 
-    public PusherVideoView(@NonNull Context context, LiveController liveController, SeatState.SeatInfo seatInfo) {
-        super(context, liveController, seatInfo);
+    public PusherVideoView(@NonNull Context context, LiveController liveController, RenderVideoViewModel videoModel) {
+        super(context, liveController, videoModel);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class PusherVideoView extends VideoView {
             removeWaitLinkMicView();
         }
         mWaitLinkMicAnimationView = new WaitLinkMicAnimationView(mContext);
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ScreenUtil.dip2px(82),
+        LayoutParams layoutParams = new LayoutParams(ScreenUtil.dip2px(82),
                 ScreenUtil.dip2px(82));
         layoutParams.gravity = Gravity.CENTER;
         addView(mWaitLinkMicAnimationView, layoutParams);

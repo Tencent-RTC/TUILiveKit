@@ -16,12 +16,6 @@
         android:src="@drawable/livekit_function_settings"
         tools:ignore="ContentDescription" />
 
-    <RelativeLayout
-        android:id="@+id/rl_gift"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_gravity="center_vertical"
-        android:layout_marginEnd="8dp" />
 
     <RelativeLayout
         android:layout_gravity="center_vertical"

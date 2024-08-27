@@ -69,15 +69,15 @@ public class AudienceFunctionView extends BasicView {
     }
 
     private void initLikeButton() {
-        TUILikeButton likeButton = new TUILikeButton(mContext, mLiveController.getRoomSate().roomId);
+        TUILikeButton likeButton = new TUILikeButton(mContext, mLiveController.getRoomState().roomId);
         likeButton.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.MATCH_PARENT));
         mLayoutLikeContainer.addView(likeButton);
     }
 
     private void initBarrageSendButton() {
-        TUIBarrageButton barrageButton = new TUIBarrageButton(mContext, mLiveController.getRoomSate().roomId,
-                mLiveController.getRoomSate().ownerInfo.userId);
+        TUIBarrageButton barrageButton = new TUIBarrageButton(mContext, mLiveController.getRoomState().roomId,
+                mLiveController.getRoomState().ownerInfo.userId);
         mLayoutBarrageSendContainer.addView(barrageButton);
     }
 

@@ -23,7 +23,7 @@ public class StreamPrivacyStatusPicker extends PopupDialog {
 
     public StreamPrivacyStatusPicker(Context context, LiveController liveController) {
         super(context);
-        mRoomState = liveController.getRoomSate();
+        mRoomState = liveController.getRoomState();
         initView(context);
         initListItemClickListener();
     }

@@ -55,7 +55,7 @@ public final class TCEffectAnimationView extends AnimationView {
         mEffectAnimView = createAnimationView();
         if (mEffectAnimView != null) {
             mEffectPlayerService = TUICore.getService(KEY_SERVICE_NAME);
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
+            LayoutParams params = new LayoutParams(MATCH_PARENT, MATCH_PARENT);
             addView(mEffectAnimView, params);
         } else {
             mEffectPlayerService = null;
