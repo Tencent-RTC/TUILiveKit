@@ -9,7 +9,6 @@ import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.uicomponent.gift.store.GiftStore;
-import com.trtc.uikit.livekit.common.view.BasicView;
 import com.trtc.uikit.livekit.manager.LiveController;
 import com.trtc.uikit.livekit.common.uicomponent.gift.TUIGiftListView;
 import com.trtc.uikit.livekit.common.uicomponent.gift.giftcloudserver.IGiftCloudServer;
@@ -58,7 +57,7 @@ public class GiftButton extends BasicView {
     }
 
     private void initGiftListView() {
-        mGiftListView = new TUIGiftListView(mContext, mLiveController.getRoomSate().roomId);
+        mGiftListView = new TUIGiftListView(mContext, mLiveController.getRoomState().roomId);
         mGiftListView.setListener(new TUIGiftListView.OnGiftListener() {
             @Override
             public void onRecharge(TUIGiftListView view) {
@@ -74,9 +73,9 @@ public class GiftButton extends BasicView {
             @Override
             public void onSendGift(TUIGiftListView view, TUIGift gift, int giftCount) {
                 TUIGiftUser receiver = new TUIGiftUser();
-                receiver.userId = mLiveController.getRoomSate().ownerInfo.userId;
-                receiver.userName = mLiveController.getRoomSate().ownerInfo.name.get();
-                receiver.avatarUrl = mLiveController.getRoomSate().ownerInfo.avatarUrl.get();
+                receiver.userId = mLiveController.getRoomState().ownerInfo.userId;
+                receiver.userName = mLiveController.getRoomState().ownerInfo.name.get();
+                receiver.avatarUrl = mLiveController.getRoomState().ownerInfo.avatarUrl.get();
                 receiver.level = "0";
                 mGiftCloudServer.sendGift(TUILogin.getUserId(), receiver.userId, gift, giftCount,
                         (error, result) -> post(() -> {

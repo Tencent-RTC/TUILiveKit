@@ -58,7 +58,8 @@ public class AnchorPreviewFunctionView extends BasicView {
                 config.currentImageUrl = BackgroundImageUtils.transferThumbUrlFromImage(mRoomState.backgroundURL.get());
                 mStreamPresetImagePicker = new StreamPresetImagePicker(mContext, config);
                 mStreamPresetImagePicker.setOnItemClickListener(imageUrl
-                        -> mLiveController.getRoomController().setBackgroundURL(imageUrl));
+                        -> mLiveController.getRoomController().setBackgroundURL(
+                                BackgroundImageUtils.transferImageUrlFromThumb(imageUrl)));
             }
             mStreamPresetImagePicker.show();
         });

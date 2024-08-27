@@ -48,6 +48,9 @@ public class SeatController extends Controller {
     }
 
     public void takeSeat(int index) {
+        if (mViewState.linkStatus.get() == LiveDefine.LinkStatus.LINKING) {
+            return;
+        }
         if (needRequestToTakeSeat()) {
             mViewState.linkStatus.set(LiveDefine.LinkStatus.APPLYING);
         }
@@ -336,7 +339,6 @@ public class SeatController extends Controller {
                                   List<TUIRoomDefine.SeatInfo> leftList) {
         mSeatState.updateSeatList(seatList);
         for (TUIRoomDefine.SeatInfo seatInfo : seatedList) {
-            LiveKitLog.info(TAG + " onUserSeated: [user:" + seatInfo.userId + "]");
             if (isSelfSeatInfo(seatInfo)) {
                 mViewState.linkStatus.set(LiveDefine.LinkStatus.LINKING, false);
             }
@@ -345,7 +347,6 @@ public class SeatController extends Controller {
             mSeatState.seatList.notifyDataChanged();
         }
         for (TUIRoomDefine.SeatInfo seatInfo : leftList) {
-            LiveKitLog.info(TAG + " onUserLeft: [user:" + seatInfo.userId + "]");
             if (isSelfSeatInfo(seatInfo)) {
                 mViewState.linkStatus.set(LiveDefine.LinkStatus.NONE, false);
             }

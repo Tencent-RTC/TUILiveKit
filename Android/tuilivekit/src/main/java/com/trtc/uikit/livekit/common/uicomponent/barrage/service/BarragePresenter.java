@@ -9,9 +9,9 @@ import com.trtc.uikit.livekit.common.utils.LiveKitLog;
 public class BarragePresenter implements IBarragePresenter, IBarrageMessage.BarrageMessageDelegate {
     private static final String TAG = "BarragePresenter";
 
-    protected final Context          mContext;
-    private IBarrageDisplayView      mDisplayView;
-    private final IBarrageMessage    mBarrageService;
+    protected final Context             mContext;
+    private         IBarrageDisplayView mDisplayView;
+    private final   IBarrageMessage     mBarrageService;
 
     public BarragePresenter(Context context, IBarrageMessage service) {
         mContext = context;
@@ -42,7 +42,7 @@ public class BarragePresenter implements IBarragePresenter, IBarrageMessage.Barr
             @Override
             public void onFailed(int code, String msg) {
                 callback.onFailed(code, msg);
-                LiveKitLog.debug(TAG + " sendBarrage failed errorCode = " + code + " , errorMsg = " + msg);
+                LiveKitLog.error(TAG + " sendBarrage failed errorCode = " + code + " , errorMsg = " + msg);
             }
         });
     }
@@ -55,7 +55,7 @@ public class BarragePresenter implements IBarragePresenter, IBarrageMessage.Barr
     @Override
     public void receiveBarrage(TUIBarrage barrage) {
         if (barrage == null || barrage.content == null) {
-            LiveKitLog.debug(TAG + " receiveBarrage barrage is empty");
+            LiveKitLog.error(TAG + " receiveBarrage barrage is empty");
             return;
         }
         if (mDisplayView != null) {

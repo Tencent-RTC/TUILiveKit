@@ -1,6 +1,7 @@
 package com.trtc.uikit.livekit.service;
 
 import com.tencent.cloud.tuikit.engine.common.TUIVideoView;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfo;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveModifyFlag;
@@ -24,6 +25,10 @@ public interface ILiveService {
     void addLiveListManagerObserver(TUILiveListManager.Observer observer);
 
     void removeLiveListManagerObserver(TUILiveListManager.Observer observer);
+
+    void addLiveConnectionManagerObserver(TUILiveConnectionManager.Observer observer);
+
+    void removeLiveConnectionManagerObserver(TUILiveConnectionManager.Observer observer);
 
     /****************************************** Room Business *******************************************/
     void start(TUIRoomDefine.RoomInfo roomInfo, TUIRoomDefine.GetRoomInfoCallback callback);
@@ -131,5 +136,15 @@ public interface ILiveService {
     /****************************************** TRTC Cloud *******************************************/
     TRTCCloud getTRTCCloud();
 
+    /***************************************** Plugin - Connection ******************************************/
+    public void requestConnection(List<String> roomIdList, int timeoutSeconds, String extensionInfo,
+                                  TUILiveConnectionManager.ConnectionRequestCallback callback);
 
+    public void accept(String roomId, TUIRoomDefine.ActionCallback callback);
+
+    public void reject(String roomId, TUIRoomDefine.ActionCallback callback);
+
+    public void disconnect(TUIRoomDefine.ActionCallback callback);
+
+    public void cancel(List<String> list, TUIRoomDefine.ActionCallback callback);
 }

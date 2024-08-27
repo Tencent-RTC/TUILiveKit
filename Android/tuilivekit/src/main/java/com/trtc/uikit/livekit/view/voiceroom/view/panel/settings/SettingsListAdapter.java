@@ -46,11 +46,13 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
     public SettingsListAdapter(Context context, LiveController liveController) {
         mContext = context;
         mLiveController = liveController;
-        mRoomState = liveController.getRoomSate();
+        mRoomState = liveController.getRoomState();
         initData();
     }
 
     private void initData() {
+        mData.add(new SettingsItem(mContext.getString(R.string.livekit_settings_bg_image)
+                , R.drawable.livekit_setting_bg_image, ITEM_TYPE_BGM_IMAGE));
         mData.add(new SettingsItem(mContext.getString(R.string.livekit_music)
                 , R.drawable.livekit_settings_music, ITEM_TYPE_MUSIC));
         mData.add(new SettingsItem(mContext.getString(R.string.livekit_audio_effect)
@@ -108,7 +110,7 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
         if (mAudioEffectPanel == null) {
             mAudioEffectPanel = new PopupDialog(mContext);
             AudioEffectPanelView audioEffectPanel = new AudioEffectPanelView(mContext,
-                    mLiveController.getRoomSate().roomId, mLiveController.getLiveService().getTRTCCloud());
+                    mLiveController.getRoomState().roomId, mLiveController.getLiveService().getTRTCCloud());
             audioEffectPanel.setOnBackButtonClickListener(() -> mAudioEffectPanel.dismiss());
             mAudioEffectPanel.setView(audioEffectPanel);
         }

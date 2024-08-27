@@ -246,9 +246,7 @@ public class MediaController extends Controller {
     }
 
     private void onLinkStateChanged(LiveDefine.LinkStatus status) {
-        LiveKitLog.info(TAG + " onUserStateChanged status:" + status);
         if (status == LiveDefine.LinkStatus.LINKING) {
-
             if (mViewState.autoOpenCameraOnSeated.get()) {
                 LiveKitLog.info(TAG + " requestPermissions:[Camera, Microphone]}");
                 PermissionRequest.requestPermissions(TUIConfig.getAppContext(), new PermissionCallback() {

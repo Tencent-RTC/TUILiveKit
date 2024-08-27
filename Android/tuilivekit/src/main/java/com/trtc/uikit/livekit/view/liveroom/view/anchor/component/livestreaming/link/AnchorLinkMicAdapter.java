@@ -34,14 +34,14 @@ public class AnchorLinkMicAdapter extends RecyclerView.Adapter<AnchorLinkMicAdap
 
     @NonNull
     @Override
-    public AnchorLinkMicAdapter.LinkMicViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public LinkMicViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         view = LayoutInflater.from(mContext).inflate(R.layout.livekit_layout_anchor_link_mic_item, parent, false);
         return new LinkMicViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AnchorLinkMicAdapter.LinkMicViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull LinkMicViewHolder holder, int position) {
         if (TextUtils.isEmpty(mData.get(position).name.get())) {
             holder.textName.setText(mData.get(position).userId.get());
         } else {

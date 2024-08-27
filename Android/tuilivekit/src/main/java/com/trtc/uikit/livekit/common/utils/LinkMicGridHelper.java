@@ -12,10 +12,10 @@ import com.tencent.qcloud.tuicore.util.ScreenUtil;
 import java.util.ArrayList;
 
 public class LinkMicGridHelper {
-    private View             mAuthorView;
-    private ArrayList<View>  mAudienceViewList;
-    private GridLayoutHelper mHelper;
-    private GridLayout       mGridLayout;
+    private       View             mAuthorView;
+    private final ArrayList<View>  mAudienceViewList;
+    private final GridLayoutHelper mHelper;
+    private       GridLayout       mGridLayout;
 
     public LinkMicGridHelper(GridLayout gridLayout) {
         mGridLayout = gridLayout;
@@ -131,8 +131,9 @@ public class LinkMicGridHelper {
     }
 
     public void addAudienceView(View audienceView) {
-        if (mAuthorView == null || mAudienceViewList.size() >= 8) {
-            LiveKitLog.error("LinkMicGridHelper anchorView is null or mAudienceViewList size more than 8");
+        if (mAuthorView == null || audienceView == null || mAudienceViewList.size() >= 8) {
+            LiveKitLog.error("LinkMicGridHelper anchorView is null audienceView is null or mAudienceViewList size "
+                    + "more than 8");
             return;
         }
         mAudienceViewList.add(audienceView);

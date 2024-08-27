@@ -8,6 +8,7 @@ import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.view.BottomPanel;
 import com.trtc.uikit.livekit.manager.LiveController;
 import com.trtc.uikit.livekit.manager.controller.SeatController;
+import com.trtc.uikit.livekit.state.LiveDefine;
 import com.trtc.uikit.livekit.state.operation.SeatState;
 import com.trtc.uikit.livekit.state.operation.UserState;
 import com.trtc.uikit.livekit.view.voiceroom.view.panel.invite.SeatInvitationView;
@@ -64,6 +65,9 @@ public class SeatActionSheetGenerator {
     private List<ListMenuInfo> generaSeatGeneraUserMenuInfo(SeatState.SeatInfo seatInfo, UserState.UserInfo selfInfo) {
         List<ListMenuInfo> menuInfoList = new ArrayList<>();
         if (seatInfo.isLocked.get()) {
+            return menuInfoList;
+        }
+        if (mLiveController.getViewState().linkStatus.get() == LiveDefine.LinkStatus.LINKING) {
             return menuInfoList;
         }
         if (TextUtils.isEmpty(seatInfo.userId.get())) {

@@ -40,14 +40,15 @@ public class Constants {
     public static final String GIFT_RECEIVER_USERNAME = "gift_receiver_username";
     public static final int    GIFT_VIEW_TYPE_1       = 1;
 
-    public static final String EVENT_KEY_LIVE_KIT               = "EVENT_KEY_LIVE_KIT";
-    public static final String EVENT_SUB_KEY_START_LIVE_ROOM    = "EVENT_SUB_KEY_START_LIVE_ROOM";
-    public static final String EVENT_SUB_KEY_START_VOICE_ROOM   = "EVENT_SUB_KEY_START_VOICE_ROOM";
-    public static final String EVENT_SUB_KEY_CLOSE_LIVE_ROOM    = "EVENT_SUB_KEY_CLOSE_LIVE_ROOM";
-    public static final String EVENT_SUB_KEY_CLOSE_VOICE_ROOM   = "EVENT_SUB_KEY_CLOSE_VOICE_ROOM";
-    public static final String EVENT_SUB_KEY_LINK_STATUS_CHANGE = "EVENT_SUB_KEY_LINK_STATUS_CHANGE";
-    public static final String EVENT_PARAMS_KEY_ENABLE_SLIDE    = "EVENT_PARAMS_KEY_ENABLE_SLIDE";
+    public static final String EVENT_KEY_LIVE_KIT                       = "EVENT_KEY_LIVE_KIT";
+    public static final String EVENT_SUB_KEY_START_LIVE_ROOM            = "EVENT_SUB_KEY_START_LIVE_ROOM";
+    public static final String EVENT_SUB_KEY_START_VOICE_ROOM           = "EVENT_SUB_KEY_START_VOICE_ROOM";
+    public static final String EVENT_SUB_KEY_CLOSE_LIVE_ROOM            = "EVENT_SUB_KEY_CLOSE_LIVE_ROOM";
+    public static final String EVENT_SUB_KEY_CLOSE_VOICE_ROOM           = "EVENT_SUB_KEY_CLOSE_VOICE_ROOM";
+    public static final String EVENT_SUB_KEY_LINK_STATUS_CHANGE         = "EVENT_SUB_KEY_LINK_STATUS_CHANGE";
+    public static final String EVENT_PARAMS_KEY_ENABLE_SLIDE            = "EVENT_PARAMS_KEY_ENABLE_SLIDE";
     public static final String EVENT_SUB_KEY_FINISH_ACTIVITY    = "EVENT_SUB_KEY_FINISH_ACTIVITY";
+    public static final String EVENT_SUB_KEY_REQUEST_CONNECTION = "EVENT_SUB_KEY_REQUEST_CONNECTION_SUCCESS";
 
 
     public static final int DEFAULT_MAX_SEAT_COUNT   = 10;

@@ -21,21 +21,21 @@ public class VideoViewFactory {
     public VideoViewFactory() {
     }
 
-    public VideoView createVideoView(SeatState.SeatInfo seatInfo, LiveController liveController, Context context) {
-        if (seatInfo == null || TextUtils.isEmpty(seatInfo.userId.get())) {
-            Log.e(TAG, "createVideoView seatInfo:" + seatInfo);
+    public VideoView createVideoView(RenderVideoViewModel videoUser, LiveController liveController, Context context) {
+        if (videoUser == null || TextUtils.isEmpty(videoUser.userId)) {
+            Log.e(TAG, "createVideoView seatInfo:" + videoUser);
             return null;
         }
-        VideoView videoView = findVideoView(seatInfo.userId.get());
+        VideoView videoView = findVideoView(videoUser.userId);
         if (null != videoView) {
             return videoView;
         }
-        if (liveController.getUserState().selfInfo.userId.equals(seatInfo.userId.get())) {
-            videoView = new PusherVideoView(context, liveController, seatInfo);
+        if (liveController.getUserState().selfInfo.userId.equals(videoUser.userId)) {
+            videoView = new PusherVideoView(context, liveController, videoUser);
         } else {
-            videoView = new PlayerVideoView(context, liveController, seatInfo);
+            videoView = new PlayerVideoView(context, liveController, videoUser);
         }
-        mVideoViewMap.put(seatInfo.userId.get(), videoView);
+        mVideoViewMap.put(videoUser.userId, videoView);
         return videoView;
     }
 
@@ -43,9 +43,11 @@ public class VideoViewFactory {
                                                 Context context) {
         if (mPlaceholderVideoView == null) {
             if (liveController.getUserState().selfInfo.userId.equals(seatInfo.userId.get())) {
-                mPlaceholderVideoView = new PusherVideoView(context, liveController, seatInfo);
+                mPlaceholderVideoView = new PusherVideoView(context, liveController,
+                        new RenderVideoViewModel(seatInfo,liveController.getRoomState().roomId));
             } else {
-                mPlaceholderVideoView = new PlayerVideoView(context, liveController, seatInfo);
+                mPlaceholderVideoView = new PlayerVideoView(context, liveController,
+                        new RenderVideoViewModel(seatInfo,liveController.getRoomState().roomId));
             }
         }
         return mPlaceholderVideoView;

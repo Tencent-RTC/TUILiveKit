@@ -66,6 +66,9 @@
     <color name="livekit_not_standard_blue">#0157DF</color>
     <color name="livekit_not_standard_grey_c5">#36C5CCDB</color>
     <color name="livekit_not_standard_blue_d1">#25D1D1</color>
+    <color name="livekit_not_standard_purple_eb">#EBF2FF</color>
+    <color name="livekit_not_standard_purple_6a">#494F6A</color>
+    <color name="livekit_not_standard_white_ee">#EEEEEE</color>
     <color name="livekit_design_standard_g1_20_transparency">#CC0F1014</color>
     <color name="livekit_design_standard_g1_60_transparency">#660F1014</color>
     <color name="livekit_design_standard_g5_20_transparency">#CC99A2B2</color>

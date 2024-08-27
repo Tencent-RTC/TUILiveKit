@@ -36,23 +36,23 @@ public class AnchorDashboardView extends BasicView {
 
         TextView textDuration = findViewById(R.id.tv_duration);
         textDuration.setText(DateTimeUtil.formatSecondsTo00(
-                (int) (System.currentTimeMillis() - mLiveController.getRoomSate().createTime) / 1000));
+                (int) (System.currentTimeMillis() - mLiveController.getRoomState().createTime) / 1000));
 
         TextView textViewers = findViewById(R.id.tv_viewers);
-        textViewers.setText(String.format("%d", mLiveController.getRoomSate().liveExtraInfo.maxAudienceCount));
+        textViewers.setText(String.format("%d", mLiveController.getRoomState().liveExtraInfo.maxAudienceCount));
 
         TextView textMessageCount = findViewById(R.id.tv_message);
-        textMessageCount.setText(String.format("%d", mLiveController.getRoomSate().liveExtraInfo.messageCount));
+        textMessageCount.setText(String.format("%d", mLiveController.getRoomState().liveExtraInfo.messageCount));
 
         TextView textGiftIncome = findViewById(R.id.tv_gift_income);
-        textGiftIncome.setText(String.format("%d", mLiveController.getRoomSate().liveExtraInfo.giftIncome));
+        textGiftIncome.setText(String.format("%d", mLiveController.getRoomState().liveExtraInfo.giftIncome));
 
         TextView textGiftPeopleCount = findViewById(R.id.tv_gift_people);
         textGiftPeopleCount.setText(String.format("%d",
-                mLiveController.getRoomSate().liveExtraInfo.giftPeopleSet.size()));
+                mLiveController.getRoomState().liveExtraInfo.giftPeopleSet.size()));
 
         TextView textLikeCount = findViewById(R.id.tv_like);
-        textLikeCount.setText(String.format("%d", mLiveController.getRoomSate().liveExtraInfo.likeCount));
+        textLikeCount.setText(String.format("%d", mLiveController.getRoomState().liveExtraInfo.likeCount));
 
         findViewById(R.id.iv_back).setOnClickListener(view -> {
             if (mContext instanceof Activity) {

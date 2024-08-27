@@ -131,7 +131,7 @@ public class AudienceLivingView extends BasicView {
 
     private void initGiftPlayView() {
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-        TUIGiftPlayView giftPlayView = new TUIGiftPlayView(mContext, mLiveController.getRoomSate().roomId);
+        TUIGiftPlayView giftPlayView = new TUIGiftPlayView(mContext, mLiveController.getRoomState().roomId);
         mLayoutGiftShowContainer.addView(giftPlayView, layoutParams);
         giftPlayView.setListener(new TUIGiftPlayView.TUIGiftPlayViewListener() {
             @Override
@@ -166,8 +166,8 @@ public class AudienceLivingView extends BasicView {
 
     private void initBarrageShowView() {
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-        mBarrageDisplayView = new TUIBarrageDisplayView(mContext, mLiveController.getRoomSate().roomId,
-                mLiveController.getRoomSate().ownerInfo.userId);
+        mBarrageDisplayView = new TUIBarrageDisplayView(mContext, mLiveController.getRoomState().roomId,
+                mLiveController.getRoomState().ownerInfo.userId);
         mLayoutBarrageShowContainer.addView(mBarrageDisplayView, layoutParams);
         mBarrageDisplayView.setAdapter(new GiftBarrageAdapter(mContext));
     }
