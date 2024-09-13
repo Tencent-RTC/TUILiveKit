@@ -86,25 +86,28 @@ public class TUIVoiceRoomFragment extends Fragment implements ITUINotification {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mVoiceRoomRootView.updateStatus(VoiceRoomRootView.VoiceRoomViewStatus.START_DISPLAY);
+        mVoiceRoomRootView.post(() ->
+                mVoiceRoomRootView.updateStatus(VoiceRoomRootView.VoiceRoomViewStatus.START_DISPLAY));
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mVoiceRoomRootView.updateStatus(VoiceRoomRootView.VoiceRoomViewStatus.DISPLAY_COMPLETE);
+        mVoiceRoomRootView.post(() ->
+                mVoiceRoomRootView.updateStatus(VoiceRoomRootView.VoiceRoomViewStatus.DISPLAY_COMPLETE));
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mVoiceRoomRootView.updateStatus(VoiceRoomRootView.VoiceRoomViewStatus.END_DISPLAY);
+        mVoiceRoomRootView.post(() ->
+                mVoiceRoomRootView.updateStatus(VoiceRoomRootView.VoiceRoomViewStatus.END_DISPLAY));
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mVoiceRoomRootView.updateStatus(VoiceRoomRootView.VoiceRoomViewStatus.DESTROY);
+        mVoiceRoomRootView.post(() -> mVoiceRoomRootView.updateStatus(VoiceRoomRootView.VoiceRoomViewStatus.DESTROY));
         mBackPressedCallback.remove();
         mLayoutContainer.removeView(mVoiceRoomRootView);
     }
