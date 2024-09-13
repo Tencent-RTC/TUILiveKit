@@ -68,25 +68,25 @@ public class TUILiveRoomAudienceFragment extends Fragment implements ITUINotific
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mAudienceView.updateStatus(AudienceView.AudienceViewStatus.START_DISPLAY);
+        mAudienceView.post(() -> mAudienceView.updateStatus(AudienceView.AudienceViewStatus.START_DISPLAY));
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mAudienceView.updateStatus(AudienceView.AudienceViewStatus.DISPLAY_COMPLETE);
+        mAudienceView.post(() -> mAudienceView.updateStatus(AudienceView.AudienceViewStatus.DISPLAY_COMPLETE));
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mAudienceView.updateStatus(AudienceView.AudienceViewStatus.END_DISPLAY);
+        mAudienceView.post(() -> mAudienceView.updateStatus(AudienceView.AudienceViewStatus.END_DISPLAY));
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mAudienceView.updateStatus(AudienceView.AudienceViewStatus.DESTROY);
+        mAudienceView.post(() -> mAudienceView.updateStatus(AudienceView.AudienceViewStatus.DESTROY));
     }
 
     @Override
