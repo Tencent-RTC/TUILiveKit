@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent">
+
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/iv_avatar"
         android:layout_width="100dp"
@@ -14,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="27dp"
+        android:layout_marginTop="57dp"
         app:round="50dp" />
     <TextView
         android:id="@+id/tv_nickname"

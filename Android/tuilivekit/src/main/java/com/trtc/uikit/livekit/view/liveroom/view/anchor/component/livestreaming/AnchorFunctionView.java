@@ -4,10 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.widget.RelativeLayout;
 
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;

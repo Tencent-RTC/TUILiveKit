@@ -73,6 +73,7 @@ public class LiveController {
         mUserController.destroy();
         mMediaController.destroy();
         mViewController.destroy();
+        mConnectionController.destroy();
     }
 
     public ILiveService getLiveService() {

@@ -29,6 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.Map;
 
 public class LiveServiceImpl implements ILiveService {
     private final String mTag = "LiveServiceImpl[" + hashCode() + "]";
@@ -947,23 +948,112 @@ public class LiveServiceImpl implements ILiveService {
 
     public void requestConnection(List<String> roomIdList, int timeoutSeconds, String extensionInfo,
                                   TUILiveConnectionManager.ConnectionRequestCallback callback) {
-        mTUILiveConnectionManager.requestConnection(roomIdList, timeoutSeconds, extensionInfo, callback);
+        LiveKitLog.info(mTag + " requestConnection:[roomIdList:" + roomIdList + ",timeoutSeconds:" + timeoutSeconds
+                + ",extensionInfo:" + extensionInfo + "]");
+        mTUILiveConnectionManager.requestConnection(roomIdList, timeoutSeconds, extensionInfo,
+                new TUILiveConnectionManager.ConnectionRequestCallback() {
+            @Override
+            public void onSuccess(Map<String, TUILiveConnectionManager.ConnectionCode> resultMap) {
+                LiveKitLog.info(mTag
+                        + " requestConnection:[onSuccess:[resultMap:" + new Gson().toJson(resultMap) + "]]");
+                if (callback != null) {
+                    callback.onSuccess(resultMap);
+                }
+            }
+
+            @Override
+            public void onError(TUICommonDefine.Error error, String message) {
+                LiveKitLog.error(mTag + " requestConnection:[onError:[error:" + error + ",message:" + message + "]]");
+                if (callback != null) {
+                    callback.onError(error, message);
+                }
+            }
+        });
     }
 
-    public void accept(String roomId, TUIRoomDefine.ActionCallback callback) {
-        mTUILiveConnectionManager.acceptConnection(roomId, callback);
+    public void acceptConnection(String roomId, TUIRoomDefine.ActionCallback callback) {
+        LiveKitLog.info(mTag + " acceptConnection:[roomId:" + roomId + "]");
+        mTUILiveConnectionManager.acceptConnection(roomId, new TUIRoomDefine.ActionCallback() {
+            @Override
+            public void onSuccess() {
+                LiveKitLog.info(mTag + " acceptConnection:[onSuccess]");
+                if (callback != null) {
+                    callback.onSuccess();
+                }
+            }
+
+            @Override
+            public void onError(TUICommonDefine.Error error, String message) {
+                LiveKitLog.error(mTag + " acceptConnection:[onError:[error:" + error + ",message:" + message + "]]");
+                if (callback != null) {
+                    callback.onError(error, message);
+                }
+            }
+        });
     }
 
-    public void reject(String roomId, TUIRoomDefine.ActionCallback callback) {
-        mTUILiveConnectionManager.rejectConnection(roomId, callback);
+    public void rejectConnection(String roomId, TUIRoomDefine.ActionCallback callback) {
+        LiveKitLog.info(mTag + " rejectConnection:[roomId:" + roomId + "]");
+        mTUILiveConnectionManager.rejectConnection(roomId, new TUIRoomDefine.ActionCallback() {
+            @Override
+            public void onSuccess() {
+                LiveKitLog.info(mTag + " rejectConnection:[onSuccess]");
+                if (callback != null) {
+                    callback.onSuccess();
+                }
+            }
+
+            @Override
+            public void onError(TUICommonDefine.Error error, String message) {
+                LiveKitLog.error(mTag + " rejectConnection:[onError:[error:" + error + ",message:" + message + "]]");
+                if (callback != null) {
+                    callback.onError(error, message);
+                }
+            }
+        });
     }
 
     public void disconnect(TUIRoomDefine.ActionCallback callback) {
-        mTUILiveConnectionManager.disconnect(callback);
+        LiveKitLog.info(mTag + " disconnect:[]");
+        mTUILiveConnectionManager.disconnect(new TUIRoomDefine.ActionCallback() {
+            @Override
+            public void onSuccess() {
+                LiveKitLog.info(mTag + " disconnect:[onSuccess]");
+                if (callback != null) {
+                    callback.onSuccess();
+                }
+            }
+
+            @Override
+            public void onError(TUICommonDefine.Error error, String message) {
+                LiveKitLog.error(mTag + " disconnect:[onError:[error:" + error + ",message:" + message + "]]");
+                if (callback != null) {
+                    callback.onError(error, message);
+                }
+            }
+        });
     }
 
-    public void cancel(List<String> list, TUIRoomDefine.ActionCallback callback) {
-        mTUILiveConnectionManager.cancelConnectionRequest(list, callback);
+    public void cancelConnectionRequest(List<String> roomIdList, TUIRoomDefine.ActionCallback callback) {
+        LiveKitLog.info(mTag + " cancelConnectionRequest:[roomIdList:" + roomIdList + "]");
+        mTUILiveConnectionManager.cancelConnectionRequest(roomIdList, new TUIRoomDefine.ActionCallback() {
+            @Override
+            public void onSuccess() {
+                LiveKitLog.info(mTag + " cancelConnectionRequest:[onSuccess]");
+                if (callback != null) {
+                    callback.onSuccess();
+                }
+            }
+
+            @Override
+            public void onError(TUICommonDefine.Error error, String message) {
+                LiveKitLog.error(mTag
+                        + " cancelConnectionRequest:[onError:[error:" + error + ",message:" + message + "]]");
+                if (callback != null) {
+                    callback.onError(error, message);
+                }
+            }
+        });
     }
 
 }

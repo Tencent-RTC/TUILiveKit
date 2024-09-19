@@ -12,4 +12,6 @@
     <color name="app_color_light_blue_gray">#F4F5F9</color>
     <color name="app_color_light_sky_blue">#D5DFED</color>
     <color name="app_color_bottom_line_grey">#66000000</color>
+    <color name="app_color_main_item_bg">#66000000</color>
+    <color name="app_color_main_item_subtitle">#777777</color>
 </resources>

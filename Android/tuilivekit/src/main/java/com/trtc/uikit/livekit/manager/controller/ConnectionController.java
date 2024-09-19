@@ -70,46 +70,16 @@ public class ConnectionController extends Controller {
     }
 
     public void cancelRequest(List<String> list) {
-        mLiveService.cancel(list, new TUIRoomDefine.ActionCallback() {
-            @Override
-            public void onSuccess() {
-
-            }
-
-            @Override
-            public void onError(TUICommonDefine.Error error, String s) {
-
-            }
-        });
+        mLiveService.cancelConnectionRequest(list, null);
     }
 
     public void accept(String roomId) {
-        mLiveService.accept(roomId, new TUIRoomDefine.ActionCallback() {
-            @Override
-            public void onSuccess() {
-                LiveKitLog.info("acceptConnection :[onSuccess]");
-            }
-
-            @Override
-            public void onError(TUICommonDefine.Error error, String s) {
-                LiveKitLog.error("acceptConnection :[onError]");
-            }
-        });
+        mLiveService.acceptConnection(roomId, null);
 
     }
 
     public void reject(String roomId) {
-        mLiveService.reject(roomId, new TUIRoomDefine.ActionCallback() {
-            @Override
-            public void onSuccess() {
-                LiveKitLog.info("rejectConnection :[Success]");
-            }
-
-            @Override
-            public void onError(TUICommonDefine.Error error, String s) {
-                LiveKitLog.error("rejectConnection :[onError]");
-            }
-        });
+        mLiveService.rejectConnection(roomId, null);
     }
 
     public void disconnect() {
@@ -121,6 +91,7 @@ public class ConnectionController extends Controller {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
+
             }
         });
     }
@@ -179,7 +150,7 @@ public class ConnectionController extends Controller {
     }
 
     @Override
-    protected void destroy() {
+    public void destroy() {
         LiveKitLog.info(TAG + " destroy");
     }
 

@@ -35,4 +35,9 @@
     <string name="app_logout_tips">Are you sure you want to log out?</string>
     <string name="app_logout">Yes</string>
     <string name="app_cancel">Cancel</string>
+
+    <string name="app_main_item_video_live">Video Live</string>
+    <string name="app_main_item_video_live_sub">Live preview/Beauty filters/Multi-host</string>
+    <string name="app_main_item_voice_room">Voice Room</string>
+    <string name="app_main_item_voice_room_sub">High audio quality/Large room/Smooth mic on/off</string>
 </resources>
