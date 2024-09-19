@@ -35,4 +35,8 @@
     <string name="app_logout_tips">确定退出当前账号吗?</string>
     <string name="app_logout">确定</string>
     <string name="app_cancel">取消</string>
+    <string name="app_main_item_video_live">在线直播</string>
+    <string name="app_main_item_video_live_sub">开播预览·智能美颜·连麦PK</string>
+    <string name="app_main_item_voice_room">语聊房</string>
+    <string name="app_main_item_voice_room_sub">高音质·大房间·平滑上下麦</string>
 </resources>

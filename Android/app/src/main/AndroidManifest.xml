@@ -23,9 +23,7 @@
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
         tools:replace="android:allowBackup"
         tools:targetApi="31">
-        <activity
-            android:name=".view.main.MainActivity"
-            android:exported="true" />
+
         <activity
             android:name=".view.login.LoginActivity"
             android:exported="true">
@@ -37,9 +35,21 @@
         <activity
             android:name=".view.login.ProfileActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity" />
         <activity
-            android:name=".view.main.StartLiveActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:name=".view.main.MainActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.me.MeActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.scene.VideoLiveActivity"
+            android:launchMode="singleTask"
+            android:exported="true" />
+        <activity
+            android:name=".view.scene.VoiceRoomActivity"
+            android:launchMode="singleTask"
+            android:exported="true" />
     </application>
 </manifest>

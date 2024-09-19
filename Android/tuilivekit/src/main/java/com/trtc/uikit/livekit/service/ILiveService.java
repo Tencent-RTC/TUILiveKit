@@ -137,14 +137,14 @@ public interface ILiveService {
     TRTCCloud getTRTCCloud();
 
     /***************************************** Plugin - Connection ******************************************/
-    public void requestConnection(List<String> roomIdList, int timeoutSeconds, String extensionInfo,
-                                  TUILiveConnectionManager.ConnectionRequestCallback callback);
+    void requestConnection(List<String> roomIdList, int timeoutSeconds, String extensionInfo,
+                           TUILiveConnectionManager.ConnectionRequestCallback callback);
 
-    public void accept(String roomId, TUIRoomDefine.ActionCallback callback);
+    void acceptConnection(String roomId, TUIRoomDefine.ActionCallback callback);
 
-    public void reject(String roomId, TUIRoomDefine.ActionCallback callback);
+    void rejectConnection(String roomId, TUIRoomDefine.ActionCallback callback);
 
-    public void disconnect(TUIRoomDefine.ActionCallback callback);
+    void disconnect(TUIRoomDefine.ActionCallback callback);
 
-    public void cancel(List<String> list, TUIRoomDefine.ActionCallback callback);
+    void cancelConnectionRequest(List<String> list, TUIRoomDefine.ActionCallback callback);
 }
