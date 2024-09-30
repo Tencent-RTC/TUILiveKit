@@ -1,7 +1,5 @@
 package com.trtc.uikit.livekit.view.liveroom.view.anchor.component.livestreaming;
 
-import static com.trtc.uikit.livekit.state.operation.ConnectionState.ConnectionStatus.UNKNOWN;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
@@ -12,13 +10,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
-import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.view.BasicView;
 import com.trtc.uikit.livekit.manager.LiveController;
-import com.trtc.uikit.livekit.state.operation.ConnectionState;
 
 @SuppressLint("ViewConstructor")
 public class AnchorEndLivePanel extends BasicView {
@@ -27,9 +22,9 @@ public class AnchorEndLivePanel extends BasicView {
     private   boolean              mDisplay;
     private   String               mTips;
     private   String               mDisconnectText;
-    private   OnClickListener mEndLiveListener;
-    private   OnClickListener mCancelListener;
-    private   OnClickListener mDisconnectListener;
+    private   View.OnClickListener mEndLiveListener;
+    private   View.OnClickListener mCancelListener;
+    private   View.OnClickListener mDisconnectListener;
 
     public AnchorEndLivePanel(@NonNull Context context, @NonNull LiveController liveController) {
         super(context, liveController);
@@ -48,14 +43,24 @@ public class AnchorEndLivePanel extends BasicView {
     }
 
     public void configEndLivePanel(PopupDialog popupDialog) {
-        boolean isConnected = mConnectionState.connectedUsers.get().isEmpty();
-        setDisplayExpandedOption(!isConnected);
+        boolean isConnected = !mConnectionState.connectedUsers.get().isEmpty();
+        boolean isBattled = !mBattleState.mBattledUsers.get().isEmpty();
+        setDisplayExpandedOption(isConnected);
 
-        if (!isConnected) {
+        if (isBattled) {
+            String tips = getContext().getString(R.string.livekit_end_pk_tips);
+            String disconnectText = getContext().getString(R.string.livekit_end_pk);
+            View.OnClickListener endExpandedOptionListener = v -> {
+                mBattleController.exitBattle();
+                popupDialog.dismiss();
+            };
+            setTips(tips);
+            setDisconnectText(disconnectText, endExpandedOptionListener);
+        } else if (isConnected) {
             String tips = getContext().getString(R.string.livekit_end_connection_tips);
             String disconnectText = getContext().getString(R.string.livekit_end_connection);
-            OnClickListener endExpandedOptionListener = v -> {
-                disconnect();
+            View.OnClickListener endExpandedOptionListener = v -> {
+                mConnectionController.disconnect();
                 popupDialog.dismiss();
             };
             setTips(tips);
@@ -63,28 +68,11 @@ public class AnchorEndLivePanel extends BasicView {
         }
     }
 
-    public void disconnect() {
-        mConnectionController.disconnect();
-    }
-
-    public void setDisplayExpandedOption(boolean isDisplay) {
-        mDisplay = isDisplay;
-    }
-
-    public void setTips(String message) {
-        mTips = message;
-    }
-
-    public void setDisconnectText(String message, OnClickListener listener) {
-        mDisconnectText = message;
-        mDisconnectListener = listener;
-    }
-
-    public void setEndLiveListener(OnClickListener listener) {
+    public void setEndLiveListener(View.OnClickListener listener) {
         mEndLiveListener = listener;
     }
 
-    public void setCancelListener(OnClickListener listener) {
+    public void setCancelListener(View.OnClickListener listener) {
         mCancelListener = listener;
     }
 
@@ -96,6 +84,19 @@ public class AnchorEndLivePanel extends BasicView {
     @Override
     protected void removeObserver() {
 
+    }
+
+    private void setDisplayExpandedOption(boolean isDisplay) {
+        mDisplay = isDisplay;
+    }
+
+    private void setTips(String message) {
+        mTips = message;
+    }
+
+    private void setDisconnectText(String message, View.OnClickListener listener) {
+        mDisconnectText = message;
+        mDisconnectListener = listener;
     }
 
     private void initTips() {

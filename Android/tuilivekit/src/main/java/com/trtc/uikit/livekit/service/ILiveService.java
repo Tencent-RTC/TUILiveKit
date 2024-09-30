@@ -1,6 +1,9 @@
 package com.trtc.uikit.livekit.service;
 
 import com.tencent.cloud.tuikit.engine.common.TUIVideoView;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveBattleManager;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveBattleManager.BattleConfig;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveBattleManager.BattleRequestCallback;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfo;
@@ -29,6 +32,10 @@ public interface ILiveService {
     void addLiveConnectionManagerObserver(TUILiveConnectionManager.Observer observer);
 
     void removeLiveConnectionManagerObserver(TUILiveConnectionManager.Observer observer);
+
+    void addLiveBattleManagerObserver(TUILiveBattleManager.Observer observer);
+
+    void removeLiveBattleManagerObserver(TUILiveBattleManager.Observer observer);
 
     /****************************************** Room Business *******************************************/
     void start(TUIRoomDefine.RoomInfo roomInfo, TUIRoomDefine.GetRoomInfoCallback callback);
@@ -147,4 +154,15 @@ public interface ILiveService {
     void disconnect(TUIRoomDefine.ActionCallback callback);
 
     void cancelConnectionRequest(List<String> list, TUIRoomDefine.ActionCallback callback);
+
+    /***************************************** Plugin - Battle ******************************************/
+    void requestBattle(BattleConfig config, List<String> roomIdList, int timeout, BattleRequestCallback callback);
+
+    void cancelBattleRequest(String battleId, List<String> roomIdList, TUIRoomDefine.ActionCallback callback);
+
+    void acceptBattle(String battleId, TUIRoomDefine.ActionCallback callback);
+
+    void rejectBattle(String battleId, TUIRoomDefine.ActionCallback callback);
+
+    void exitBattle(String battleId, TUIRoomDefine.ActionCallback callback);
 }

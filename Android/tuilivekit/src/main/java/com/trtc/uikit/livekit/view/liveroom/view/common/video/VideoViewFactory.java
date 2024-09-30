@@ -85,7 +85,7 @@ public class VideoViewFactory {
         }
     }
 
-    private VideoView findVideoView(String userId) {
+    public VideoView findVideoView(String userId) {
         if (TextUtils.isEmpty(userId)) {
             return null;
         }

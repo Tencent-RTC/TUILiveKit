@@ -2,18 +2,21 @@ package com.trtc.uikit.livekit.manager;
 
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.uikit.livekit.common.utils.LiveKitLog;
+import com.trtc.uikit.livekit.manager.controller.BattleController;
 import com.trtc.uikit.livekit.manager.controller.ConnectionController;
 import com.trtc.uikit.livekit.manager.controller.MediaController;
 import com.trtc.uikit.livekit.manager.controller.RoomController;
 import com.trtc.uikit.livekit.manager.controller.SeatController;
 import com.trtc.uikit.livekit.manager.controller.UserController;
 import com.trtc.uikit.livekit.manager.controller.ViewController;
+import com.trtc.uikit.livekit.manager.observer.LiveBattleManagerObserver;
 import com.trtc.uikit.livekit.manager.observer.LiveConnectionManagerObserver;
 import com.trtc.uikit.livekit.manager.observer.LiveListManagerObserver;
 import com.trtc.uikit.livekit.manager.observer.RoomEngineObserver;
 import com.trtc.uikit.livekit.service.ILiveService;
 import com.trtc.uikit.livekit.service.ServiceProvider;
 import com.trtc.uikit.livekit.state.LiveState;
+import com.trtc.uikit.livekit.state.operation.BattleState;
 import com.trtc.uikit.livekit.state.operation.BeautyState;
 import com.trtc.uikit.livekit.state.operation.ConnectionState;
 import com.trtc.uikit.livekit.state.operation.MediaState;
@@ -31,11 +34,13 @@ public class LiveController {
     private final MediaController               mMediaController;
     private final ViewController                mViewController;
     private final ConnectionController          mConnectionController;
+    private final BattleController              mBattleController;
     private final LiveState                     mState;
     private final ILiveService                  mLiveService;
     private final RoomEngineObserver            mRoomEngineObserver;
     private final LiveListManagerObserver       mLiveListManagerObserver;
     private final LiveConnectionManagerObserver mliveConnectionManagerObserver;
+    private final LiveBattleManagerObserver     mBattleManagerObserver;
     private final VideoViewFactory              mVideoViewFactory;
 
     public LiveController() {
@@ -48,13 +53,16 @@ public class LiveController {
         mMediaController = new MediaController(mState, mLiveService);
         mViewController = new ViewController(mState, mLiveService);
         mConnectionController = new ConnectionController(mState, mLiveService);
+        mBattleController = new BattleController(mState, mLiveService);
         mVideoViewFactory = new VideoViewFactory();
         mRoomEngineObserver = new RoomEngineObserver(this);
         mLiveListManagerObserver = new LiveListManagerObserver(this);
         mliveConnectionManagerObserver = new LiveConnectionManagerObserver(this);
+        mBattleManagerObserver = new LiveBattleManagerObserver(this);
         mLiveService.addRoomEngineObserver(mRoomEngineObserver);
         mLiveService.addLiveListManagerObserver(mLiveListManagerObserver);
         mLiveService.addLiveConnectionManagerObserver(mliveConnectionManagerObserver);
+        mLiveService.addLiveBattleManagerObserver(mBattleManagerObserver);
         mRoomController.addListener(mRoomControllerListener);
     }
 
@@ -68,12 +76,13 @@ public class LiveController {
         mLiveService.removeRoomEngineObserver(mRoomEngineObserver);
         mLiveService.removeLiveListManagerObserver(mLiveListManagerObserver);
         mLiveService.removeLiveConnectionManagerObserver(mliveConnectionManagerObserver);
+        mLiveService.removeLiveBattleManagerObserver(mBattleManagerObserver);
         mRoomController.destroy();
         mSeatController.destroy();
         mUserController.destroy();
         mMediaController.destroy();
         mViewController.destroy();
-        mConnectionController.destroy();
+        mBattleController.destroy();
     }
 
     public ILiveService getLiveService() {
@@ -104,6 +113,10 @@ public class LiveController {
         return mConnectionController;
     }
 
+    public BattleController getBattleController() {
+        return mBattleController;
+    }
+
     public LiveState getState() {
         return mState;
     }
@@ -118,6 +131,10 @@ public class LiveController {
 
     public ConnectionState getConnectionState() {
         return mState.operationState.connectionState;
+    }
+
+    public BattleState getBattleState() {
+        return mState.operationState.battleState;
     }
 
     public UserState getUserState() {

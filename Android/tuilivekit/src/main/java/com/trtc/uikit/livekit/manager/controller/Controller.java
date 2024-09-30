@@ -2,6 +2,7 @@ package com.trtc.uikit.livekit.manager.controller;
 
 import com.trtc.uikit.livekit.service.ILiveService;
 import com.trtc.uikit.livekit.state.LiveState;
+import com.trtc.uikit.livekit.state.operation.BattleState;
 import com.trtc.uikit.livekit.state.operation.BeautyState;
 import com.trtc.uikit.livekit.state.operation.ConnectionState;
 import com.trtc.uikit.livekit.state.operation.MediaState;
@@ -19,6 +20,7 @@ public abstract class Controller {
     protected BeautyState     mBeautyState;
     protected ViewState       mViewState;
     protected ConnectionState mConnectionState;
+    protected BattleState     mBattleState;
     protected ILiveService    mLiveService;
 
     protected Controller(LiveState state, ILiveService service) {
@@ -29,6 +31,7 @@ public abstract class Controller {
         mMediaState = mState.operationState.mediaState;
         mBeautyState = mState.operationState.beautyState;
         mConnectionState = mState.operationState.connectionState;
+        mBattleState = mState.operationState.battleState;
         mViewState = mState.viewState;
         mLiveService = service;
     }

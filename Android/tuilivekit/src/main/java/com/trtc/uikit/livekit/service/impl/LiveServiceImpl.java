@@ -7,6 +7,11 @@ import static com.tencent.trtc.TRTCCloudDef.TRTC_VIDEO_MIRROR_TYPE_ENABLE;
 import com.google.gson.Gson;
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.common.TUIVideoView;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveBattleManager;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveBattleManager.BattleInfo;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveBattleManager.BattleConfig;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveBattleManager.BattleRequestCallback;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveBattleManager.BattleCode;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfo;
@@ -28,6 +33,7 @@ import com.trtc.uikit.livekit.service.ILiveService;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -38,12 +44,14 @@ public class LiveServiceImpl implements ILiveService {
     private final TRTCCloud                mTRTCCloud;
     private final TUILiveListManager       mTUILiveListManager;
     private final TUILiveConnectionManager mTUILiveConnectionManager;
+    private final TUILiveBattleManager     mTUILiveBattleManager;
 
     public LiveServiceImpl() {
         mTUIRoomEngine = createEngine();
         mTRTCCloud = mTUIRoomEngine.getTRTCCloud();
         mTUILiveListManager = (TUILiveListManager) mTUIRoomEngine.getExtension(LIVE_LIST_MANAGER);
         mTUILiveConnectionManager = mTUIRoomEngine.getLiveConnectionManager();
+        mTUILiveBattleManager = mTUIRoomEngine.getLiveBattleManager();
     }
 
     @Override
@@ -83,6 +91,18 @@ public class LiveServiceImpl implements ILiveService {
     public void removeLiveConnectionManagerObserver(TUILiveConnectionManager.Observer observer) {
         LiveKitLog.info(mTag + " removeLiveConnectionManagerObserver:[observer:" + observer.hashCode() + "]");
         mTUILiveConnectionManager.removeObserver(observer);
+    }
+
+    @Override
+    public void addLiveBattleManagerObserver(TUILiveBattleManager.Observer observer) {
+        LiveKitLog.info(mTag + " addLiveBattleManagerObserver:[observer:" + observer.hashCode() + "]");
+        mTUILiveBattleManager.addObserver(observer);
+    }
+
+    @Override
+    public void removeLiveBattleManagerObserver(TUILiveBattleManager.Observer observer) {
+        LiveKitLog.info(mTag + " removeLiveBattleManagerObserver:[observer:" + observer.hashCode() + "]");
+        mTUILiveBattleManager.removeObserver(observer);
     }
 
     /****************************************** Room Business *******************************************/
@@ -1056,4 +1076,117 @@ public class LiveServiceImpl implements ILiveService {
         });
     }
 
+    /***************************************** Plugin - Battle ******************************************/
+    @Override
+    public void requestBattle(BattleConfig config, List<String> roomIdList, int timeout,
+                              BattleRequestCallback callback) {
+        LiveKitLog.info(mTag + " requestBattle:[config:" + new Gson().toJson(config) + ",roomIdList:"
+                + roomIdList + ",timeout:" + timeout + "]");
+        mTUILiveBattleManager.requestBattle(config, roomIdList, timeout, new BattleRequestCallback() {
+            @Override
+            public void onSuccess(BattleInfo battleInfo, Map<String, BattleCode> map) {
+                LiveKitLog.info(mTag + " requestBattle:[onSuccess:[battleInfo:" + new Gson().toJson(battleInfo)
+                        + ",map:" + new Gson().toJson(map) + "]]");
+                if (callback != null) {
+                    callback.onSuccess(battleInfo, map);
+                }
+            }
+
+            @Override
+            public void onError(TUICommonDefine.Error error, String s) {
+                LiveKitLog.error(mTag + " requestBattle:[onError:[error:" + error + ",s:" + s + "]]");
+                if (callback != null) {
+                    callback.onError(error, s);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void cancelBattleRequest(String battleId, List<String> roomIdList, TUIRoomDefine.ActionCallback callback) {
+        LiveKitLog.info(mTag + " cancelBattleRequest:[battleId:" + battleId + ",roomIdList:" + roomIdList + "]");
+        mTUILiveBattleManager.cancelBattleRequest(battleId, roomIdList, new TUIRoomDefine.ActionCallback() {
+            @Override
+            public void onSuccess() {
+                LiveKitLog.info(mTag + " cancelBattleRequest:[onSuccess]");
+                if (callback != null) {
+                    callback.onSuccess();
+                }
+            }
+
+            @Override
+            public void onError(TUICommonDefine.Error error, String s) {
+                LiveKitLog.error(mTag + " cancelBattleRequest:[onError:[error:" + error + ",s:" + s + "]]");
+                if (callback != null) {
+                    callback.onError(error, s);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void acceptBattle(String battleId, TUIRoomDefine.ActionCallback callback) {
+        LiveKitLog.info(mTag + " acceptBattle:[battleId:" + battleId + "]");
+        mTUILiveBattleManager.acceptBattle(battleId, new TUIRoomDefine.ActionCallback() {
+            @Override
+            public void onSuccess() {
+                LiveKitLog.info(mTag + " acceptBattle:[onSuccess]");
+                if (callback != null) {
+                    callback.onSuccess();
+                }
+            }
+
+            @Override
+            public void onError(TUICommonDefine.Error error, String s) {
+                LiveKitLog.error(mTag + " acceptBattle:[onError:[error:" + error + ",s:" + s + "]]");
+                if (callback != null) {
+                    callback.onError(error, s);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void rejectBattle(String battleId, TUIRoomDefine.ActionCallback callback) {
+        LiveKitLog.info(mTag + " rejectBattle:[battleId:" + battleId + "]");
+        mTUILiveBattleManager.rejectBattle(battleId, new TUIRoomDefine.ActionCallback() {
+            @Override
+            public void onSuccess() {
+                LiveKitLog.info(mTag + " rejectBattle:[onSuccess]");
+                if (callback != null) {
+                    callback.onSuccess();
+                }
+            }
+
+            @Override
+            public void onError(TUICommonDefine.Error error, String s) {
+                LiveKitLog.error(mTag + " rejectBattle:[onError:[error:" + error + ",s:" + s + "]]");
+                if (callback != null) {
+                    callback.onError(error, s);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void exitBattle(String battleId, TUIRoomDefine.ActionCallback callback) {
+        LiveKitLog.info(mTag + " exitBattle:[battleId:" + battleId + "]");
+        mTUILiveBattleManager.exitBattle(battleId, new TUIRoomDefine.ActionCallback() {
+            @Override
+            public void onSuccess() {
+                LiveKitLog.info(mTag + " exitBattle:[onSuccess]");
+                if (callback != null) {
+                    callback.onSuccess();
+                }
+            }
+
+            @Override
+            public void onError(TUICommonDefine.Error error, String s) {
+                LiveKitLog.error(mTag + " exitBattle:[onError:[error:" + error + ",s:" + s + "]]");
+                if (callback != null) {
+                    callback.onError(error, s);
+                }
+            }
+        });
+    }
 }

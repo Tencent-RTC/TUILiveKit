@@ -7,6 +7,7 @@ public class OperationState {
     public MediaState      mediaState      = new MediaState();
     public BeautyState     beautyState     = new BeautyState();
     public ConnectionState connectionState = new ConnectionState();
+    public BattleState     battleState     = new BattleState();
 
     public void reset() {
         roomState.reset();
@@ -15,5 +16,6 @@ public class OperationState {
         mediaState.reset();
         beautyState.reset();
         connectionState.reset();
+        battleState.reset();
     }
 }

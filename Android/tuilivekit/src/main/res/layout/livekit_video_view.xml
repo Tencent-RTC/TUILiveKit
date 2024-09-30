@@ -44,5 +44,11 @@
             android:background="@drawable/livekit_user_name_background"
             android:textSize="10sp" />
     </LinearLayout>
+
+    <com.trtc.uikit.livekit.view.liveroom.view.common.battle.BattleMemberInfoView
+        android:id="@+id/fl_battle_member_info_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
 </FrameLayout>
 

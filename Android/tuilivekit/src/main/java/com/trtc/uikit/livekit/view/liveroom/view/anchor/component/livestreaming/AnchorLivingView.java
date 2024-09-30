@@ -12,6 +12,7 @@ import static com.trtc.uikit.livekit.common.utils.Constants.GIFT_VIEW_TYPE_1;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -217,6 +218,7 @@ public class AnchorLivingView extends BasicView implements ITUINotification {
     }
 
     private void closeLiveRoom() {
+        mBattleController.exitBattle();
         mViewController.updateLiveStatus(LiveDefine.LiveStatus.DASHBOARD);
         RoomController roomController = mLiveController.getRoomController();
         roomController.updateLikeNumber(mGiftPlayView.getLikeCount());

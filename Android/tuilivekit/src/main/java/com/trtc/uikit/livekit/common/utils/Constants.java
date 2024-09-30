@@ -49,7 +49,7 @@ public class Constants {
     public static final String EVENT_PARAMS_KEY_ENABLE_SLIDE            = "EVENT_PARAMS_KEY_ENABLE_SLIDE";
     public static final String EVENT_SUB_KEY_FINISH_ACTIVITY    = "EVENT_SUB_KEY_FINISH_ACTIVITY";
     public static final String EVENT_SUB_KEY_REQUEST_CONNECTION = "EVENT_SUB_KEY_REQUEST_CONNECTION_SUCCESS";
-
+    public static final String EVENT_SUB_KEY_TOAST              = "EVENT_SUB_KEY_TOAST";
 
     public static final int DEFAULT_MAX_SEAT_COUNT   = 10;
     public static final int ROOM_MAX_SHOW_USER_COUNT = 100;

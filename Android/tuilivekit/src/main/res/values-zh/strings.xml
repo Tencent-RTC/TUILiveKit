@@ -183,6 +183,19 @@
     <string name="livekit_no_more_data">没有更多数据了</string>
     <string name="livekit_no_room_tip">请先开启一个直播间</string>
 
+    <!-- Battle -->
+    <string name="livekit_battle_wait_start">等待同意PK...</string>
+    <string name="livekit_battle_wait_stop">停止等待</string>
+    <string name="livekit_battle_inviting">向你发来PK邀请</string>
+    <string name="livekit_battle_inviter_cancel">取消了 PK，请尝试再次发起</string>
+    <string name="livekit_battle_invitee_reject">拒绝了 PK</string>
+    <string name="livekit_battle_connecting">连线中</string>
+    <string name="livekit_battle_end_pk">结束PK</string>
+    <string name="livekit_battle_pk_end">PK结束</string>
+    <string name="livekit_battle_end_pk_tips">确定要结束PK吗？结束后将以当前结果为最终结果</string>
+    <string name="livekit_battle_error_conflict">主播正在PK中，无法发起PK</string>
+    <string name="livekit_battle_error_other">其他错误，无法发起PK</string>
+
     <!-- Common -->
     <string name="livekit_common_this_live_data">本场直播数据</string>
     <string name="livekit_common_live_duration">直播时长</string>

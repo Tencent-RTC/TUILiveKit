@@ -1,5 +1,7 @@
 package com.trtc.uikit.livekit.state.operation;
 
+import androidx.annotation.Nullable;
+
 import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.trtc.tuikit.common.livedata.LiveData;
@@ -58,6 +60,14 @@ public class ConnectionState {
             this.avatarUrl = connectionUser.avatarUrl;
             this.joinConnectionTime = connectionUser.joinConnectionTime;
             this.connectionStatus = connectionStatus;
+        }
+
+        @Override
+        public boolean equals(@Nullable Object obj) {
+            if (obj instanceof ConnectionUser) {
+                return this.userId.equals(((ConnectionUser) obj).userId);
+            }
+            return false;
         }
     }
 }
