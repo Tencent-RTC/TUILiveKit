@@ -100,7 +100,7 @@ public class AnchorRecommendedAdapter extends RecyclerView.Adapter<AnchorRecomme
             if (recommendUser.connectionStatus == ConnectionState.ConnectionStatus.UNKNOWN) {
                 List<String> roomIdList = Collections.singletonList(recommendUser.roomId);
                 int timeoutSeconds = 10;
-                mLiveController.getConnectionController().requestConnection(roomIdList, timeoutSeconds, null);
+                mLiveController.getConnectionController().requestConnection(roomIdList, timeoutSeconds, "");
             }
         });
     }

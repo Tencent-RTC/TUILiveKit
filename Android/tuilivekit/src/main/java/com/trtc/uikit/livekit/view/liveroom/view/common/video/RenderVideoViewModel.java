@@ -1,7 +1,6 @@
 package com.trtc.uikit.livekit.view.liveroom.view.common.video;
 
-import android.text.TextUtils;
-
+import com.trtc.uikit.livekit.state.operation.BattleState;
 import com.trtc.uikit.livekit.state.operation.ConnectionState;
 import com.trtc.uikit.livekit.state.operation.SeatState;
 
@@ -12,6 +11,13 @@ public class RenderVideoViewModel {
     public String roomId;
 
     public RenderVideoViewModel() {
+    }
+
+    public RenderVideoViewModel(BattleState.BattleUser user) {
+        this.userId = user.userId;
+        this.name = user.userName;
+        this.avatarUrl = user.avatarUrl;
+        this.roomId = user.roomId;
     }
 
     public RenderVideoViewModel(ConnectionState.ConnectionUser user) {

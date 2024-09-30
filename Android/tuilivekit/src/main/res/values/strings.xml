@@ -190,6 +190,19 @@
     <string name="livekit_no_more_data">There is no more data</string>
     <string name="livekit_no_room_tip">Please start a live room</string>
 
+    <!-- Battle -->
+    <string name="livekit_battle_wait_start">Watting for battle...</string>
+    <string name="livekit_battle_wait_stop">Stop waiting</string>
+    <string name="livekit_battle_inviting">invite you to battle together</string>
+    <string name="livekit_battle_inviter_cancel">canceled battle, please try to initiate it again</string>
+    <string name="livekit_battle_invitee_reject">rejected battle</string>
+    <string name="livekit_battle_connecting">Connecting</string>
+    <string name="livekit_battle_end_pk">End PK</string>
+    <string name="livekit_battle_pk_end">PK End</string>
+    <string name="livekit_battle_end_pk_tips">Are you sure you want to end the battle? The current result will be the final result after the end</string>
+    <string name="livekit_battle_error_conflict">The anchor is in the battle and cannot initiate the battle</string>
+    <string name="livekit_battle_error_other">The other error, cannot initiate the battle</string>
+
     <!-- Common -->
     <string name="livekit_common_this_live_data">Live data</string>
     <string name="livekit_common_live_duration">Duration</string>

@@ -6,11 +6,13 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 
 import com.trtc.uikit.livekit.manager.LiveController;
+import com.trtc.uikit.livekit.manager.controller.BattleController;
 import com.trtc.uikit.livekit.manager.controller.ConnectionController;
 import com.trtc.uikit.livekit.manager.controller.MediaController;
 import com.trtc.uikit.livekit.manager.controller.SeatController;
 import com.trtc.uikit.livekit.manager.controller.UserController;
 import com.trtc.uikit.livekit.manager.controller.ViewController;
+import com.trtc.uikit.livekit.state.operation.BattleState;
 import com.trtc.uikit.livekit.state.operation.BeautyState;
 import com.trtc.uikit.livekit.state.operation.ConnectionState;
 import com.trtc.uikit.livekit.state.operation.MediaState;
@@ -24,6 +26,7 @@ public abstract class BasicView extends FrameLayout {
     protected final LiveController       mLiveController;
     protected final SeatController       mSeatController;
     protected final ConnectionController mConnectionController;
+    protected final BattleController     mBattleController;
     protected final UserController       mUserController;
     protected final MediaController      mMediaController;
     protected final ViewController       mViewController;
@@ -31,6 +34,7 @@ public abstract class BasicView extends FrameLayout {
     protected RoomState       mRoomState;
     protected SeatState       mSeatState;
     protected ConnectionState mConnectionState;
+    protected BattleState     mBattleState;
     protected UserState       mUserState;
     protected ViewState       mViewState;
     protected MediaState      mMediaState;
@@ -45,6 +49,7 @@ public abstract class BasicView extends FrameLayout {
         mMediaController = liveController.getMediaController();
         mViewController = liveController.getViewController();
         mConnectionController = liveController.getConnectionController();
+        mBattleController = liveController.getBattleController();
         mRoomState = liveController.getRoomState();
         mSeatState = liveController.getSeatState();
         mUserState = liveController.getUserState();
@@ -52,6 +57,7 @@ public abstract class BasicView extends FrameLayout {
         mBeautyState = liveController.getBeautyState();
         mViewState = liveController.getViewState();
         mConnectionState = liveController.getConnectionState();
+        mBattleState = liveController.getBattleState();
     }
 
     @Override

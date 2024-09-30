@@ -3,7 +3,7 @@ package com.trtc.uikit.livekit.common.utils;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
+import android.widget.FrameLayout;
 
 import androidx.gridlayout.widget.GridLayout;
 
@@ -65,18 +65,18 @@ public class LinkMicGridHelper {
 
     private void refreshGridLayoutParams() {
         int count = mAudienceViewList.size();
-        RelativeLayout.LayoutParams layoutParams;
+        FrameLayout.LayoutParams layoutParams;
         if (count == 0) {
-            layoutParams = new RelativeLayout.LayoutParams(
+            layoutParams = new FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             layoutParams.topMargin = 0;
         } else if (count == 2 || count == 4 || count == 5) {
             int screenWidth = ScreenUtil.getScreenWidth(mGridLayout.getContext());
-            layoutParams = new RelativeLayout.LayoutParams(screenWidth, screenWidth * 2 / 3);
+            layoutParams = new FrameLayout.LayoutParams(screenWidth, screenWidth * 2 / 3);
             layoutParams.topMargin = ScreenUtil.dip2px(144);
         } else {
             int screenWidth = ScreenUtil.getScreenWidth(mGridLayout.getContext());
-            layoutParams = new RelativeLayout.LayoutParams(screenWidth, screenWidth);
+            layoutParams = new FrameLayout.LayoutParams(screenWidth, screenWidth);
             layoutParams.topMargin = ScreenUtil.dip2px(144);
         }
         mGridLayout.setLayoutParams(layoutParams);

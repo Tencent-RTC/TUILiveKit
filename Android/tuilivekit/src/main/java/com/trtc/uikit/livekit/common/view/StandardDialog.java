@@ -23,12 +23,14 @@ public class StandardDialog extends Dialog {
     private String               mContent;
     private String               mPositiveText;
     private String               mNegativeText;
+    private int                  mPositiveTextColor;
     private View.OnClickListener mPositiveClickListener;
     private View.OnClickListener mNegativeClickListener;
 
     public StandardDialog(@NonNull Context context) {
         super(context);
         Objects.requireNonNull(getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        mPositiveTextColor = context.getResources().getColor(R.color.livekit_design_standard_b1);
     }
 
     public void setContent(String content) {
@@ -47,6 +49,10 @@ public class StandardDialog extends Dialog {
     public void setNegativeText(String negativeText, View.OnClickListener listener) {
         mNegativeText = negativeText;
         mNegativeClickListener = listener;
+    }
+
+    public void setPositiveTextColor(int color) {
+        mPositiveTextColor = color;
     }
 
     @Override
@@ -91,6 +97,7 @@ public class StandardDialog extends Dialog {
         if (!TextUtils.isEmpty(mPositiveText)) {
             buttonPositive.setText(mPositiveText);
         }
+        buttonPositive.setTextColor(mPositiveTextColor);
         buttonPositive.setOnClickListener(mPositiveClickListener);
     }
 
