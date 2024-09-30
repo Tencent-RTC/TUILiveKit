@@ -8,7 +8,7 @@
 import UIKit
 
 class AnchorVideoView: MatrixVideoRenderView {
-    override init(store: any LiveStore) {
+    override init(store: LiveStoreProvider) {
         super.init(store: store)
     }
     

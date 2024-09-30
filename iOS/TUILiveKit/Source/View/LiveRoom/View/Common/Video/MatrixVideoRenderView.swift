@@ -23,15 +23,16 @@ class MatrixVideoRenderCell: UICollectionViewCell {
 }
 
 class MatrixVideoRenderView: UIView {
-    let renderManager:MatrixVideoRenderManager = MatrixVideoRenderManager()
+    lazy var renderManager:MatrixVideoRenderManager = store.renderManager
     // MARK: - private property.
-    var store: LiveStore
+    var store: LiveStoreProvider
 
     private lazy var liveStatusPublisher = store.select(ViewSelectors.getLiveStatus)
     private lazy var linkStatusPublisher = store.select(ViewSelectors.getLinkStatus)
     
     private lazy var seatListPublisher = store.select(SeatSelectors.getSeatList)
     private lazy var connectedUsersPublisher = store.select(ConnectionSelectors.getConnectedUsers)
+    private lazy var battleUsersPublisher = store.select(BattleSelectors.getBattleUsers)
 
     private var cancellableSet = Set<AnyCancellable>()
     private var renderUserList: [VideoRenderModel] = []
@@ -60,7 +61,12 @@ class MatrixVideoRenderView: UIView {
         return collection
     }()
     
-    init(store: LiveStore) {
+    private lazy var battleInfoView: BattleInfoView = {
+        let view = BattleInfoView(store: store)
+        return view
+    }()
+    
+    init(store: LiveStoreProvider) {
         self.store = store
         super.init(frame: .zero)
     }
@@ -86,10 +92,14 @@ class MatrixVideoRenderView: UIView {
 
     func constructViewHierarchy() {
         addSubview(attendeeCollectionView)
+        addSubview(battleInfoView)
     }
 
     func activateConstraints() {
         attendeeCollectionView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        battleInfoView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
     }
@@ -116,15 +126,31 @@ extension MatrixVideoRenderView {
             .sink { [weak self] liveStatus, linkStatus, seatList, connectedUsers in
                 guard let self = self else { return }
                 if connectedUsers.count > 0 {
-                    self.updateView(list: getVideoRenderVideModelList(from: connectedUsers))
+                    self.updateView(list: getVideoRenderVideoModelList(from: connectedUsers))
                 } else {
-                    self.updateView(list: getVideoRenderVideModelList(from: seatList))
+                    self.updateView(list: getVideoRenderVideoModelList(from: seatList))
                 }
             }
             .store(in: &cancellableSet)
     }
     
-    private func getVideoRenderVideModelList(from connectedUsers: [ConnectionUser]) -> [VideoRenderModel] {
+    func subscribeBattleState() {
+        battleUsersPublisher
+            .receive(on: RunLoop.main)
+            .sink { [weak self] battleUsers in
+                guard let self = self else { return }
+                self.handleBattleUserListChanged(battleUsers)
+            }
+            .store(in: &cancellableSet)
+    }
+    
+    private func handleBattleUserListChanged(_ battleUsers: [BattleUser]) {
+        if battleUsers.count > 2 {
+            bringSubviewToFront(battleInfoView)
+        }
+    }
+    
+    private func getVideoRenderVideoModelList(from connectedUsers: [ConnectionUser]) -> [VideoRenderModel] {
         var list = connectedUsers.map { user in
             return VideoRenderModel(connectionUser: user)
         }
@@ -135,7 +161,7 @@ extension MatrixVideoRenderView {
         return list
     }
     
-    private func getVideoRenderVideModelList(from seatList: [SeatInfo]) -> [VideoRenderModel] {
+    private func getVideoRenderVideoModelList(from seatList: [SeatInfo]) -> [VideoRenderModel] {
         var list = seatList.filter { !$0.userId.isEmpty}
         if store.viewState.liveStatus == .previewing || store.viewState.liveStatus == .pushing {
             list = list.filter({ [weak self] in

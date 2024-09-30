@@ -14,7 +14,7 @@ class BottomMenuView: RTCBaseView {
     var cancellableSet = Set<AnyCancellable>()
     private let buttonSliceIndex: Int = 1
     
-    private let maxMenuButtonNumber = 4
+    private let maxMenuButtonNumber = 5
     private let buttonWidth: CGFloat = 36.0
     private let buttonSpacing: CGFloat = 6.0
     

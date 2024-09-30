@@ -191,11 +191,25 @@
 "live.connection.disconnect" = "断开";
 "live.connection.disconnect.alert" = "确定要断开与其他主播的连线吗？";
 "live.connection.disconnect.alert.disconnect" = "断开连线";
+"live.connection.connecting" = "连线中";
+"live.battle.request.wait.xxx" = "等待同意PKxxx";
+"live.battle.request.cancel" = "取消";
+"live.battle.invitation.desc.xxx" = "xxx 向你发来PK邀请";
+"live.battle.confirm.end" = "结束PK";
+"live.battle.end.alert" = "确定要结束PK吗？结束后将以当前结果为最终结果";
+"live.battle.invitation.timeout" = "PK邀请已超时";
+"live.battle.invitation.reject.xxx" = "xxx 拒绝了PK";
+"live.battle.invitation.cancelled.xxx" = "xxx 取消了PK，请尝试再次发起PK";
+"live.battle.end" = "PK结束";
+"live.battle.error.conflict" = "主播正在PK中，无法发起PK";
+"live.battle.error.other" = "其他错误，无法发起PK";
 
 "live.endLive.onConnection.alert" = "当前处于连线状态，是否需要「断开连线」或「关闭直播间」";
 "live.endLive.onConnection.alert.disconnect" = "断开连线";
 "live.endLive.onLinkMic.alert" = "当前处于连麦状态，是否需要「断开连麦」或「关闭直播间」";
 "live.endLive.onLinkMic.alert.disconnect" = "断开连麦";
+"live.endLive.onBattle.alert" = "当前处于PK状态，是否需要「断开PK」或「关闭直播间」";
+"live.endLive.onBattle.alert.endBattle" = "断开PK";
 
 // MARK: - Error Toast
 "live.error.success" = "操作成功";
@@ -266,6 +280,9 @@
 "live.seat.takeSeatApplying" = "你提交了连麦申请，请等待主播同意";
 
 "live.error.connectionDisable.linkMic" = "主播连麦中，无法发起连线";
+"live.error.connectionDisable.battle" = "主播PK中，无法发起连线";
 "live.error.linkMicDisable.connecting" = "主播连线中，无法发起连麦";
+"live.error.linkMicDisable.battling" = "主播PK中，无法发起连麦";
+"live.error.battleDisable.unconnected" = "发起PK前请先连线";
 "live.error.connectionDisable.connecting" = "主播连线中，无法发起连线";
 "live.error.connectionDisable.maxLimit" = "连线已超过最大人数限制";

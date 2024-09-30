@@ -48,6 +48,20 @@ class ErrorService {
     }
 }
 
+extension TUIBattleCode: LocalizedError {
+    var description: String {
+        switch self {
+            case .unknown:
+                return .localized("live.error.failed")
+            case .success:
+                return .localized("live.error.success")
+            case .battlingOtherRoom:
+                return .localized("live.battle.error.conflict")
+            default:
+                return .localized("live.battle.error.other")
+        }
+    }
+}
 
 enum TIMError: Int, Error {
     case success = 0

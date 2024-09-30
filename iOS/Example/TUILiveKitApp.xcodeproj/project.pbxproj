@@ -134,6 +134,7 @@
 				A955663D2ADFA03200D86BFD /* Setting */,
 				A95566152ADF825C00D86BFD /* UserAgreement */,
 				A95566162ADF82BE00D86BFD /* Resource */,
+				A998DE4A2AE27E0F00A8BF18 /* Extension */,
 				40DD29F1264395FF00DC4BA8 /* Assets.xcassets */,
 				470EB6C5266A47050072071F /* LaunchScreen_en.storyboard */,
 				40DD29F3264395FF00DC4BA8 /* LaunchScreen.storyboard */,
@@ -233,6 +234,13 @@
 				A95566422ADFC42100D86BFD /* LoginRootView.swift */,
 			);
 			path = Login;
+			sourceTree = "<group>";
+		};
+		A998DE4A2AE27E0F00A8BF18 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Extension;
 			sourceTree = "<group>";
 		};
 		C11E261F2B0B0B8300674403 /* Localized */ = {

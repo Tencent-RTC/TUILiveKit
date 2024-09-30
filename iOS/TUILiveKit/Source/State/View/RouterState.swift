@@ -35,60 +35,64 @@ enum Route {
     case giftView
     case systemImageSelection(_ imageType: ImageType)
     case prepareSetting
+    case battleCountdown(_ countdownTime: TimeInterval)
 }
 
 extension Route: Equatable {
     static func == (lhs: Route, rhs: Route) -> Bool {
         switch (lhs, rhs) {
-        case (.anchor,.anchor),
-            (.audience,.audience),
-            (.roomInfo,.roomInfo),
-            (.recentViewer,.recentViewer),
-            (.liveLinkControl,.liveLinkControl),
-            (.connectionControl,.connectionControl),
-            (.voiceLinkControl,.voiceLinkControl),
-            (.linkType, .linkType),
-            (.linkSetting, .linkSetting),
-            (.musicList,.musicList),
-            (.audioEffect,.audioEffect),
-            (.beauty, .beauty),
-            (.videoSetting,.videoSetting),
-            (.giftView, .giftView),
-            (.prepareSetting, .prepareSetting):
-            return true
-        case let (.featureSetting(l), .featureSetting(r)):
-            return l == r
-        case let (.listMenu(l), .listMenu(r)):
-            return l == r
-        case let (.systemImageSelection(l), .systemImageSelection(r)):
-            return l == r
-        case let (.linkInviteControl(l), .linkInviteControl(r)):
-            return l == r
-        case let (.userControl(l), .userControl(r)):
-            return l == r
-        case (.anchor, _),
-            (.audience, _),
-            (.roomInfo, _),
-            (.recentViewer, _),
-            (.liveLinkControl, _),
-            (.connectionControl, _),
-            (.voiceLinkControl, _),
-            (.linkInviteControl, _),
-            (.userControl, _),
-            (.linkType, _),
-            (.linkSetting, _),
-            (.featureSetting, _),
-            (.listMenu, _),
-            (.musicList, _),
-            (.audioEffect, _),
-            (.beauty, _),
-            (.videoSetting, _),
-            (.giftView, _),
-            (.systemImageSelection, _),
-            (.prepareSetting, _):
-            return false
-        default:
-            break
+            case (.anchor,.anchor),
+                (.audience,.audience),
+                (.roomInfo,.roomInfo),
+                (.recentViewer,.recentViewer),
+                (.liveLinkControl,.liveLinkControl),
+                (.connectionControl,.connectionControl),
+                (.voiceLinkControl,.voiceLinkControl),
+                (.linkType, .linkType),
+                (.linkSetting, .linkSetting),
+                (.musicList,.musicList),
+                (.audioEffect,.audioEffect),
+                (.beauty, .beauty),
+                (.videoSetting,.videoSetting),
+                (.giftView, .giftView),
+                (.prepareSetting, .prepareSetting):
+                return true
+            case let (.featureSetting(l), .featureSetting(r)):
+                return l == r
+            case let (.listMenu(l), .listMenu(r)):
+                return l == r
+            case let (.systemImageSelection(l), .systemImageSelection(r)):
+                return l == r
+            case let (.linkInviteControl(l), .linkInviteControl(r)):
+                return l == r
+            case let (.userControl(l), .userControl(r)):
+                return l == r
+            case let (.battleCountdown(l), .battleCountdown(r)):
+                return l == r
+            case (.anchor, _),
+                (.audience, _),
+                (.roomInfo, _),
+                (.recentViewer, _),
+                (.liveLinkControl, _),
+                (.connectionControl, _),
+                (.voiceLinkControl, _),
+                (.linkInviteControl, _),
+                (.userControl, _),
+                (.linkType, _),
+                (.linkSetting, _),
+                (.featureSetting, _),
+                (.listMenu, _),
+                (.musicList, _),
+                (.audioEffect, _),
+                (.beauty, _),
+                (.videoSetting, _),
+                (.giftView, _),
+                (.systemImageSelection, _),
+                (.prepareSetting, _),
+                (.battleCountdown, _):
+                return false
+            default:
+                break
         }
     }
 }
@@ -96,50 +100,52 @@ extension Route: Equatable {
 extension Route: Hashable {
     func convertToString() -> String {
         switch self {
-        case .anchor:
-            return "anchor"
-        case .audience:
-            return "audience"
-        case .roomInfo:
-            return "roomInfo"
-        case .recentViewer:
-            return "recentViewer"
-        case .liveLinkControl:
-            return "liveLinkControl"
-        case .connectionControl:
-            return "connectionControl"
-        case .voiceLinkControl:
-            return "voiceLinkControl"
-        case .linkInviteControl(let index):
-            return "linkInviteControl \(index)"
-        case .userControl(let seatInfo):
-            return "linkInviteControl \(seatInfo.userId)"
-        case .linkType:
-            return "linkType"
-        case .linkSetting:
-            return "linkSetting"
-        case .featureSetting(let settingModel):
-            return "featureSetting" + settingModel.id.uuidString
-        case .listMenu(let data):
-            var result = "listMenu"
-            data.items.forEach { item in
-                result += item.id.uuidString
-            }
-            return result
-        case .musicList:
-            return "musicList"
-        case .audioEffect:
-            return "audioEffect"
-        case .beauty:
-            return "beauty"
-        case .videoSetting:
-            return "videoSetting"
-        case .giftView:
-            return "giftView"
-        case .systemImageSelection(let imageType):
-            return "systemImageSelection" + imageType.rawValue
-        case .prepareSetting:
-            return "prepareSetting"
+            case .anchor:
+                return "anchor"
+            case .audience:
+                return "audience"
+            case .roomInfo:
+                return "roomInfo"
+            case .recentViewer:
+                return "recentViewer"
+            case .liveLinkControl:
+                return "liveLinkControl"
+            case .connectionControl:
+                return "connectionControl"
+            case .voiceLinkControl:
+                return "voiceLinkControl"
+            case .linkInviteControl(let index):
+                return "linkInviteControl \(index)"
+            case .userControl(let seatInfo):
+                return "linkInviteControl \(seatInfo.userId)"
+            case .linkType:
+                return "linkType"
+            case .linkSetting:
+                return "linkSetting"
+            case .featureSetting(let settingModel):
+                return "featureSetting" + settingModel.id.uuidString
+            case .listMenu(let data):
+                var result = "listMenu"
+                data.items.forEach { item in
+                    result += item.id.uuidString
+                }
+                return result
+            case .musicList:
+                return "musicList"
+            case .audioEffect:
+                return "audioEffect"
+            case .beauty:
+                return "beauty"
+            case .videoSetting:
+                return "videoSetting"
+            case .giftView:
+                return "giftView"
+            case .systemImageSelection(let imageType):
+                return "systemImageSelection" + imageType.rawValue
+            case .prepareSetting:
+                return "prepareSetting"
+            case .battleCountdown(let countdownTime):
+                return "battleCountdown \(countdownTime)"
         }
     }
     
