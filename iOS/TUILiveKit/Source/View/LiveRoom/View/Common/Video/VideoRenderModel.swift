@@ -36,6 +36,14 @@ struct VideoRenderModel: Encodable {
         self.avatarUrl = connectionUser.avatarUrl
         self.roomId = connectionUser.roomId
     }
+    
+    init(battleUser: BattleUser) {
+        self.init()
+        self.userId = battleUser.userId
+        self.userName = battleUser.userName
+        self.avatarUrl = battleUser.avatarUrl
+        self.roomId = battleUser.roomId
+    }
 }
 
 extension VideoRenderModel: Equatable {}

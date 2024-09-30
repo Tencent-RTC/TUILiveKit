@@ -20,6 +20,7 @@ class ServiceCenter: NSObject {
     let seatService: SeatService
     let beautyService: BeautyService
     let connectionService: ConnectionService
+    let battleService: BattleService
     let errorService: ErrorService = ErrorService()
     
     let roomEngine: TUIRoomEngine
@@ -35,6 +36,7 @@ class ServiceCenter: NSObject {
         seatService = SeatService(roomEngine: roomEngine)
         beautyService = BeautyService(roomEngine: roomEngine)
         connectionService = ConnectionService(roomEngine: roomEngine)
+        battleService = BattleService(roomEngine: roomEngine)
         super.init()
         roomEngine.addObserver(self)
         
@@ -42,6 +44,7 @@ class ServiceCenter: NSObject {
             liveListManager.addObserver(self)
         }
         roomEngine.getLiveConnectionManager().addObserver(self)
+        roomEngine.getLiveBattleManager().addObserver(self)
     }
     
     deinit {
@@ -49,6 +52,9 @@ class ServiceCenter: NSObject {
         self.store = nil
         guard let liveListManager = roomEngine.getExtension(extensionType: .liveListManager) as? TUILiveListManager else { return }
         liveListManager.removeObserver(self)
+        
+        roomEngine.getLiveConnectionManager().removeObserver(self)
+        roomEngine.getLiveBattleManager().removeObserver(self)
     }
     
     static func getRoomEngine() -> TUIRoomEngine {
@@ -280,33 +286,133 @@ extension ServiceCenter: TUILiveListManagerObserver {
 extension ServiceCenter: TUILiveConnectionObserver {
     
     func onConnectionUserListChanged(connectedList: [TUIConnectionUser], joinedList: [TUIConnectionUser], leavedList: [TUIConnectionUser]) {
+        LiveKitLog.info("\(#file)",
+                        "\(#line)",
+                        "onConnectionUserListChanged:[connectedList:\(connectedList),joinedList:\(joinedList),leavedList:\(leavedList)]")
         guard let store = self.store else { return }
         store.dispatch(action: ConnectionActions.onConnectionUserListChanged(payload: connectedList))
     }
     
     func onConnectionRequestReceived(inviter: TUIConnectionUser, inviteeList: [TUIConnectionUser], extensionInfo: String) {
+        LiveKitLog.info("\(#file)",
+                        "\(#line)",
+                        "onConnectionRequestReceived:[inviter:\(inviter),inviteeList:\(inviteeList),extensionInfo:\(extensionInfo)]")
         guard let store = self.store else { return }
         store.dispatch(action: ConnectionActions.onConnectionRequestReceived(payload: (inviter, inviteeList, extensionInfo)))
     }
     
     func onConnectionRequestCancelled(inviter: TUIConnectionUser) {
+        LiveKitLog.info("\(#file)",
+                        "\(#line)",
+                        "onConnectionRequestCancelled:[inviter:\(inviter)]")
         guard let store = self.store else { return }
         store.dispatch(action: ConnectionActions.onConnectionRequestCancelled(payload: inviter))
     }
     
     func onConnectionRequestAccept(invitee: TUIConnectionUser) {
+        LiveKitLog.info("\(#file)",
+                        "\(#line)",
+                        "onConnectionRequestAccept:[invitee:\(invitee)]")
         guard let store = self.store else { return }
         store.dispatch(action: ConnectionActions.onConnectionRequestAccept(payload: invitee))
     }
     
     func onConnectionRequestReject(invitee: TUIConnectionUser) {
+        LiveKitLog.info("\(#file)",
+                        "\(#line)",
+                        "onConnectionRequestReject:[invitee:\(invitee)]")
         guard let store = self.store else { return }
         store.dispatch(action: ConnectionActions.onConnectionRequestReject(payload: invitee))
     }
     
     func onConnectionRequestTimeout(inviter: TUIConnectionUser, invitee: TUIConnectionUser) {
+        LiveKitLog.info("\(#file)",
+                        "\(#line)",
+                        "onConnectionRequestTimeout:[inviter:\(inviter),invitee:\(invitee)]")
         guard let store = self.store else { return }
         store.dispatch(action: ConnectionActions.onConnectionRequestTimeout(payload: (store.roomState.roomId, inviter, invitee)))
+    }
+}
+
+extension ServiceCenter: TUILiveBattleObserver {
+    func onBattleStarted(battleInfo: TUIBattleInfo) {
+        LiveKitLog.info("\(#file)", "\(#line)", "onBattleStarted:[battleInfo:\(battleInfo)]")
+        handleBattleStarted(battleInfo: battleInfo)
+    }
+    
+    private func handleBattleStarted(battleInfo: TUIBattleInfo) {
+        guard let store = self.store else { return }
+        battleInfo.config.duration = battleInfo.config.duration + Double(battleInfo.startTime) - Date().timeIntervalSince1970
+       
+        store.dispatch(action: BattleActions.onBattleStarted(payload: battleInfo))
+    }
+    
+    func onBattleEnded(battleInfo: TUIBattleInfo, reason: TUIBattleStoppedReason) {
+        LiveKitLog.info("\(#file)", "\(#line)","onBattleEnded:[battleInfo:\(battleInfo),reason:\(reason)]")
+        guard let store = store else { return }
+        store.dispatch(action: BattleActions.onBattleEnded(payload:(battleInfo, reason)))
+    }
+    
+    func onUserJoinBattle(battleId: String, battleUser: TUIBattleUser) {
+        LiveKitLog.info("\(#file)", "\(#line)","onUserJoinBattle:[battleId:\(battleId),battleUser:\(battleUser)]")
+        store?.dispatch(action: BattleActions.onUserJoinBattle(payload:(battleUser)))
+    }
+    
+    func onUserExitBattle(battleId: String, battleUser: TUIBattleUser) {
+        LiveKitLog.info("\(#file)", "\(#line)","onUserExitBattle:[battleId:\(battleId),battleUser:\(battleUser)]")
+        store?.dispatch(action: BattleActions.onUserExitBattle(payload:(battleUser)))
+    }
+    
+    func onBattleScoreChanged(battleId: String, battleUserList: [TUIBattleUser]) {
+        LiveKitLog.info("\(#file)", "\(#line)","onBattleScoreChanged:[battleId:\(battleId),battleUserList:\(battleUserList)]")
+        store?.dispatch(action: BattleActions.onBattleScoreChanged(payload:(battleUserList)))
+    }
+    
+    func onBattleRequestReceived(battleInfo: TUIBattleInfo, inviter: TUIBattleUser, invitee: TUIBattleUser) {
+        LiveKitLog.info("\(#file)", 
+                        "\(#line)",
+                        "onBattleRequestReceived:[battleInfo:\(battleInfo),inviter:\(inviter),invitee:\(invitee)]")
+        guard let store = self.store else { return}
+        store.dispatch(action: BattleActions.onBattleRequestReceived(payload:(battleInfo.battleId, inviter)))
+    }
+    
+    func onBattleRequestCancelled(battleInfo: TUIBattleInfo, inviter: TUIBattleUser, invitee: TUIBattleUser) {
+        LiveKitLog.info("\(#file)",
+                        "\(#line)",
+                        "onBattleRequestCancelled:[battleInfo:\(battleInfo),inviter:\(inviter),invitee:\(invitee)]")
+        guard let store = store else { return }
+        store.dispatch(action: BattleActions.onBattleRequestCancelled(payload:(inviter)))
+        
+        let message = String.localizedReplace(.battleInvitationCancelledText, replace: inviter.userName)
+        store.dispatch(action: ViewActions.toastEvent(payload: ToastInfo(message: message, position: .center)))
+    }
+    
+    func onBattleRequestTimeout(battleInfo: TUIBattleInfo, inviter: TUIBattleUser, invitee: TUIBattleUser) {
+        LiveKitLog.info("\(#file)",
+                        "\(#line)",
+                        "onBattleRequestTimeout:[battleInfo:\(battleInfo),inviter:\(inviter),invitee:\(invitee)]")
+        guard let store = store else { return }
+        store.dispatch(action: BattleActions.onBattleRequestTimeout(payload:(inviter, invitee)))
+        store.dispatch(action: ViewActions.toastEvent(payload: ToastInfo(message: .battleInvitationTimeoutText, position: .center)))
+    }
+    
+    func onBattleRequestAccept(battleInfo: TUIBattleInfo, inviter: TUIBattleUser, invitee: TUIBattleUser) {
+        LiveKitLog.info("\(#file)",
+                        "\(#line)",
+                        "onBattleRequestAccept:[battleInfo:\(battleInfo),inviter:\(inviter),invitee:\(invitee)]")
+        guard let store = store else { return }
+        store.dispatch(action: BattleActions.onBattleRequestAccept(payload:(invitee)))
+    }
+    
+    func onBattleRequestReject(battleInfo: TUIBattleInfo, inviter: TUIBattleUser, invitee: TUIBattleUser) {
+        LiveKitLog.info("\(#file)",
+                        "\(#line)",
+                        "onBattleRequestReject:[battleInfo:\(battleInfo),inviter:\(inviter),invitee:\(invitee)]")
+        guard let store = store else { return }
+        store.dispatch(action: BattleActions.onBattleRequestReject(payload:(invitee)))
+        
+        let message = String.localizedReplace(.battleInvitationRejectText, replace: invitee.userName)
+        store.dispatch(action: ViewActions.toastEvent(payload: ToastInfo(message: message, position: .center)))
     }
 }
 
@@ -332,4 +438,7 @@ fileprivate extension String {
     static let roomDismissed = localized("live.audience.mask.title")
     static let kickedOutOfSeat = localized("live.seat.kickedOutOfSeat")
     static let inviteCancelText = localized("live.seat.inviteSeatCancel")
+    static let battleInvitationTimeoutText = localized("live.battle.invitation.timeout")
+    static let battleInvitationRejectText = localized("live.battle.invitation.reject.xxx")
+    static let battleInvitationCancelledText = localized("live.battle.invitation.cancelled.xxx")
 }

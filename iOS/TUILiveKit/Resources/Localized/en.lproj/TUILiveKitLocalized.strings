@@ -191,11 +191,25 @@
 "live.connection.disconnect" = "Disconnect";
 "live.connection.disconnect.alert" = "Are you sure you want to disconnect from other streamers?";
 "live.connection.disconnect.alert.disconnect" = "Disconnect";
+"live.connection.connecting" = "Connecting";
+"live.battle.request.wait.xxx" = "Waiting for battlexxx";
+"live.battle.request.cancel" = "Cancel";
+"live.battle.invitation.desc.xxx" = "xxx invite you to battle together";
+"live.battle.confirm.end" = "End PK";
+"live.battle.end.alert" = "Are you sure you want to end the battle? The current result will be the final result after the end.";
+"live.battle.invitation.timeout" = "Battle request has been timeout";
+"live.battle.invitation.reject.xxx" = "xxx rejected battle";
+"live.battle.invitation.cancelled.xxx" = "xxx cancelled battle，please try to initiate it again.";
+"live.battle.end" = "PK End";
+"live.battle.error.conflict" = "The anchor is in the battle and cannot initiate the battle";
+"live.battle.error.other" = "The other error, cannot initiate the battle";
 
 "live.endLive.onConnection.alert" = "You are currently co-hosting with other streamers. Would you like to  [End Co-host] or [End Live] ?";
 "live.endLive.onConnection.alert.disconnect" = "End Co-host";
 "live.endLive.onLinkMic.alert" = "You are currently connecting with guests. Would you like to  [End Multi-guest] or [End Live] ?";
 "live.endLive.onLinkMic.alert.disconnect" = "End Multi-guest";
+"live.endLive.onBattle.alert" = "You are currently battling with other streams. Would you like to  [End Battle] or [End Live] ?";
+"live.endLive.onBattle.alert.endBattle" = "End Battle";
 
 // MARK: - Error Toast
 
@@ -267,6 +281,9 @@
 "live.seat.takeSeatApplying" = "You have submitted a link mic request, please wait for the author approval";
 
 "live.error.connectionDisable.linkMic" = "The host is currently connecting with guests, unable to initiate Co-host.";
-"live.error.linkMicDisable.connecting" = "The host is currenly co-hosting with other streamers, unable to initiate Multi-guest.";
+"live.error.connectionDisable.battle" = "The host is currently in battle with guests, unable to initiate Co-host.";
+"live.error.linkMicDisable.connecting" = "The host is currently co-hosting with other streamers, unable to initiate Multi-guest.";
+"live.error.linkMicDisable.battling" = "The host is currently in battle with other streamers, unable to initiate Multi-guest.";
+"live.error.battleDisable.unconnected" = "Please connect before you begin the battle.";
 "live.error.connectionDisable.connecting" = "The host is currently co-hosting with other streamers.";
 "live.error.connectionDisable.maxLimit" = "The number of co-hosting has exceeded the maximum limit.";

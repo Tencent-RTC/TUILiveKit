@@ -157,6 +157,7 @@ class RenderView: UIView {
     func updateView() {
         guard let renderModel = renderModel else { return }
         userInfoView.updateUserStatus(renderModel)
+        battleInfoView.updateUserInfo(renderModel)
         avatarImageView.kf.setImage(with: URL(string: renderModel.avatarUrl), placeholder: UIImage.placeholderImage)
         updateAvatarImageView()
     }
@@ -165,7 +166,6 @@ class RenderView: UIView {
         let imageView = UIImageView(frame: .zero)
         imageView.layer.cornerRadius = 40.scale375() * 0.5
         imageView.layer.masksToBounds = true
-        addSubview(imageView)
         return imageView
     }()
 
@@ -173,11 +173,17 @@ class RenderView: UIView {
         let view = UserStatusView(store: store)
         return view
     }()
+    
+    private lazy var battleInfoView: BattleMemberInfoView = {
+        let view = BattleMemberInfoView(store: store)
+        return view
+    }()
 
     func constructViewHierarchy() {
         backgroundColor = .blackColor.withAlphaComponent(0.4)
         addSubview(avatarImageView)
         addSubview(userInfoView)
+        addSubview(battleInfoView)
     }
 
     func activateConstraints() {
@@ -192,6 +198,10 @@ class RenderView: UIView {
             make.bottom.equalToSuperview().offset(-5)
             make.leading.equalToSuperview().offset(5)
             make.width.lessThanOrEqualTo(self).multipliedBy(0.9)
+        }
+        
+        battleInfoView.snp.remakeConstraints { make in
+            make.edges.equalToSuperview()
         }
     }
     

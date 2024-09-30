@@ -17,6 +17,8 @@ class AnchorView: UIView {
     private let routerStore: RouterStore
     private lazy var liveStatusPublisher = store.select(ViewSelectors.getLiveStatus)
     private lazy var getReceivedConnectionPublisher = store.select(ConnectionSelectors.getReceivedConnectionRequest)
+    private lazy var getReceivedBattlePublisher = store.select(BattleSelectors.getReceivedBattleRequest)
+   
     private var cancellableSet = Set<AnyCancellable>()
     var startLiveBlock:(()->Void)?
     
@@ -117,8 +119,8 @@ extension AnchorView {
         store.dispatch(action: UserActions.getSelfInfo())
         subscribeAlertState()
         subscribeConnectionState()
+        subscribeBattleState()
     }
-    
 }
 
 // MARK: Action
@@ -219,6 +221,31 @@ extension AnchorView {
             }
             .store(in: &cancellableSet)
     }
+    
+    private func subscribeBattleState() {
+        getReceivedBattlePublisher
+            .receive(on: RunLoop.main)
+            .sink { [weak self] battleRequest in
+                guard let self = self else { return }
+                let battleId = self.store.selectCurrent(BattleSelectors.getBattleId)
+                if let request = battleRequest {
+                    let alertInfo = AlertInfo(description: String.localizedReplace(.battleInvitationText, replace: request.userName),
+                                              imagePath: request.avatarUrl,
+                                              cancelButtonInfo: (String.rejectText, .g3),
+                                              defaultButtonInfo: (String.acceptText, .b1)) { [weak self] alertPanel in
+                        guard let self = self else { return }
+                        self.store.dispatch(action: BattleActions.rejectBattle(payload: battleId))
+                    } defaultClosure: { [weak self] alertPanel in
+                        guard let self = self else { return }
+                        self.store.dispatch(action: BattleActions.acceptBattle(payload: battleId))
+                    }
+                    self.store.dispatch(action: ViewActions.alertEvent(payload: alertInfo))
+                } else {
+                    self.alertPanel?.dismiss()
+                }
+            }
+            .store(in: &cancellableSet)
+    }
 
     private func subscribeAlertState() {
         store.alertSubject
@@ -250,5 +277,6 @@ private extension String {
     
     static let connectionInviteText = localized("live.connection.invite.desc.xxx")
     static let rejectText = localized("live.alert.refuse")
-    static let acceptText = localized("live.anchor.link.agree.title")
+    static let acceptText = localized("live.anchor.link.accept.title")
+    static let battleInvitationText = localized("live.battle.invitation.desc.xxx")
 }

@@ -106,7 +106,6 @@ extension TUILiveRoomAnchorViewController {
     
     private func subscribeToast() {
         store.toastSubject
-            .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] toast in
                 guard let self = self else { return }

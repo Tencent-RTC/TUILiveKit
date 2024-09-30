@@ -15,4 +15,5 @@ struct OperationState: Encodable {
     var userState = UserState()
     var beautyState = BeautyState()
     var connectionState = ConnectionState()
+    var battleState = BattleState()
 }

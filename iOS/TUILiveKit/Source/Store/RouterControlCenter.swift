@@ -151,16 +151,18 @@ extension RouterControlCenter {
     
     private func supportBlurView(route: Route) -> Bool {
         switch route {
-        case .beauty:
-            return false
-        case .featureSetting(_):
-            if let _ = rootViewController as? TUILiveRoomAnchorViewController {
+            case .beauty:
                 return false
-            } else {
+            case .battleCountdown(_):
+                return false
+            case .featureSetting(_):
+                if let _ = rootViewController as? TUILiveRoomAnchorViewController {
+                    return false
+                } else {
+                    return true
+                }
+            default:
                 return true
-            }
-        default:
-            return true
         }
     }
     
@@ -220,6 +222,14 @@ extension RouterControlCenter {
                 view = systemImageSelectionPanel
             case .prepareSetting:
                 view = PrepareSettingPanel(store: store, routerStore: routerStore)
+            case .battleCountdown(let countdownTime):
+                view = BattleCountDownView(store: store, routerStore: routerStore, countdownTime: countdownTime)
+                if let view = view as? BattleCountDownView {
+                    view.timeEndClosure = { [weak self] in
+                        guard let self = self else { return }
+                        self.routerStore.router(action: .dismiss())
+                    }
+                }
             default:
                 break
         }

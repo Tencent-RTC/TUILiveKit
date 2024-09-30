@@ -63,6 +63,7 @@ extension UIColor {
     static let cyanColor = themColor("#25D1D1")
     static let grayColor = themColor("#C5CCDB")
     static let tipsGrayColor = themColor("#8F9AB2")
+    static let pinkColor = themColor("#F15065")
     
     /// message color
     static let barrageColorMsg1 = themColor("#3074FD")

@@ -40,14 +40,14 @@ class AnchorLivingView: UIView {
         view.addTarget(self, action: #selector(roomInfoViewClick), for: .touchUpInside)
         return view
     }()
-
+    
     private lazy var closeButton: UIButton = {
         let view = UIButton(frame: .zero)
         view.setImage(.liveBundleImage("live_end_live_icon"), for: .normal)
         view.addTarget(self, action: #selector(closeButtonClick), for: .touchUpInside)
         return view
     }()
-
+    
     private lazy var audienceListView: UIView = {
         let view = AudienceListView(store: store, routerStore: routerStore)
         return view
@@ -153,13 +153,13 @@ class AnchorLivingView: UIView {
                     case .pushing:
                         self.didEnterRoom()
                     default:
-                    break
+                        break
                 }
             }
             .store(in: &cancellableSet)
     }
     
-
+    
     
     private func didEnterRoom() {
         viewStore.dispatch(action: LiveRoomViewActions.updateBottomMenus(payload: (store, routerStore)))
@@ -181,12 +181,12 @@ extension AnchorLivingView {
         addSubview(floatView)
         addSubview(barrageSendView)
     }
-
+    
     func updateRootViewOrientation(isPortrait: Bool) {
         self.isPortrait = isPortrait
         activateConstraints()
     }
-
+    
     func activateConstraints() {
         topGradientView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
@@ -198,7 +198,7 @@ extension AnchorLivingView {
         giftDisplayView.snp.remakeConstraints { make in
             make.edges.equalToSuperview()
         }
-
+        
         barrageDisplayView.snp.remakeConstraints { make in
             make.left.equalToSuperview().offset(16)
             make.width.equalTo(268.scale375())
@@ -216,14 +216,14 @@ extension AnchorLivingView {
             make.trailing.equalToSuperview().inset((self.isPortrait ? 16 : 45).scale375())
             make.top.equalToSuperview().inset((self.isPortrait ? 58 : 24).scale375Height())
         }
-
+        
         audienceListView.snp.remakeConstraints { make in
             make.centerY.equalTo(closeButton)
             make.height.equalTo(24.scale375())
             make.width.equalTo(116.scale375())
             make.trailing.equalTo(closeButton.snp.leading).offset(-4.scale375())
         }
-
+        
         roomInfoView.snp.remakeConstraints { make in
             make.centerY.equalTo(closeButton)
             make.height.equalTo(roomInfoView.mm_h)
@@ -231,7 +231,7 @@ extension AnchorLivingView {
             make.width.lessThanOrEqualTo(375.scale375()*0.5)
             make.leading.equalToSuperview().inset((self.isPortrait ? 16 : 45).scale375())
         }
-
+        
         bottomMenu.snp.makeConstraints { make in
             make.bottom.equalToSuperview().offset(-34.scale375Height())
             make.trailing.equalToSuperview()
@@ -264,11 +264,27 @@ extension AnchorLivingView {
         let lineConfig = ActionItemDesignConfig(lineWidth: 1, titleColor: .redColor)
         lineConfig.backgroundColor = .white
         lineConfig.lineColor = .g8
-        if store.selectCurrent(ConnectionSelectors.isConnecting) {
+        
+        let selfUserId = store.selectCurrent(UserSelectors.getSelfInfo).userId
+        if store.selectCurrent(BattleSelectors.getBattleUsers).contains(where: {$0.userId == selfUserId}) {
+            title = .endLiveOnBattleText
+            let endBattleItem = ActionItem(title: .endLiveBattleText, designConfig: lineConfig, actionClosure: { [weak self] _ in
+                guard let self = self else { return }
+                let battleId = store.selectCurrent(BattleSelectors.getBattleId)
+                self.store.dispatch(action: BattleActions.exitBattle(payload: battleId))
+                self.routerStore.router(action: .dismiss())
+            })
+            items.append(endBattleItem)
+        } else if store.selectCurrent(ConnectionSelectors.isConnecting) {
             title = .endLiveOnConnectionText
             let endConnectionItem = ActionItem(title: .endLiveDisconnectText, designConfig: lineConfig, actionClosure: { [weak self] _ in
                 guard let self = self else { return }
                 self.store.dispatch(action: ConnectionActions.disconnect())
+                let selfUserId = store.selectCurrent(UserSelectors.getSelfInfo).userId
+                if store.selectCurrent(BattleSelectors.getBattleUsers).contains(where: {$0.userId == selfUserId}) {
+                    let battleId = store.selectCurrent(BattleSelectors.getBattleId)
+                    self.store.dispatch(action: BattleActions.exitBattle(payload: battleId))
+                }
                 self.routerStore.router(action: .dismiss())
             })
             items.append(endConnectionItem)
@@ -279,6 +295,7 @@ extension AnchorLivingView {
         designConfig.lineColor = .g8
         let endLiveItem = ActionItem(title: .confirmCloseText, designConfig: designConfig, actionClosure: { [weak self] _ in
             guard let self = self else { return }
+            self.exitBattle()
             self.showEndView()
             self.routerStore.router(action: .dismiss())
         })
@@ -289,6 +306,13 @@ extension AnchorLivingView {
     @objc
     func roomInfoViewClick() {
         routerStore.router(action: .present(.roomInfo))
+    }
+    
+    private func exitBattle() {
+        let battleId = store.selectCurrent(BattleSelectors.getBattleId)
+        if !battleId.isEmpty {
+            store.dispatch(action: BattleActions.exitBattle(payload: battleId))
+        }
     }
     
     private func showEndView() {
@@ -355,6 +379,7 @@ extension AnchorLivingView: TUIGiftPlayViewDelegate {
             store.dispatch(action: RoomActions.updateGiftIncome(payload: gift.price * giftCount))
             store.dispatch(action: RoomActions.updateGiftPeople(payload: sender.userId))
         }
+        
         let barrage = TUIBarrage()
         barrage.content = "gift"
         barrage.user.userId = sender.userId
@@ -393,5 +418,6 @@ fileprivate extension String {
     static let endLiveDisconnectText = localized("live.endLive.onConnection.alert.disconnect")
     static let endLiveOnLinkMicText = localized("live.endLive.onLinkMic.alert")
     static let endLiveLinkMicDisconnectText = localized("live.endLive.onLinkMic.alert.disconnect")
-
+    static let endLiveOnBattleText = localized("live.endLive.onBattle.alert")
+    static let endLiveBattleText = localized("live.endLive.onBattle.alert.endBattle")
 }
