@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0421D8562CB682DC0075593D /* VoiceRoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0421D8552CB682DC0075593D /* VoiceRoomViewController.swift */; };
+		047F81F12CB77E5C0079BA02 /* VideoLiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047F81F02CB77E5C0079BA02 /* VideoLiveViewController.swift */; };
+		04B9468C2CB51EB80052D0F2 /* MainCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B9468B2CB51EB80052D0F2 /* MainCollectionCell.swift */; };
+		04B946902CB52F8B0052D0F2 /* MainItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B9468F2CB52F8B0052D0F2 /* MainItemModel.swift */; };
 		40DD29E9264395FF00DC4BA8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40DD29E8264395FF00DC4BA8 /* AppDelegate.swift */; };
 		40DD29EB264395FF00DC4BA8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40DD29EA264395FF00DC4BA8 /* SceneDelegate.swift */; };
 		40DD29F0264395FF00DC4BA8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 40DD29EE264395FF00DC4BA8 /* Main.storyboard */; };
@@ -22,8 +26,6 @@
 		A917D5412C2278A600F9C310 /* MeRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A917D5402C2278A600F9C310 /* MeRootView.swift */; };
 		A917D5432C2282FA00F9C310 /* IMManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A917D5422C2282FA00F9C310 /* IMManager.swift */; };
 		A917D5452C22B45100F9C310 /* RenamePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A917D5442C22B45100F9C310 /* RenamePanel.swift */; };
-		A917D5472C22CA4400F9C310 /* AlignmentButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A917D5462C22CA4400F9C310 /* AlignmentButton.swift */; };
-		A955662C2ADF8C1900D86BFD /* MainRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95566222ADF8C1900D86BFD /* MainRootView.swift */; };
 		A955662D2ADF8C1900D86BFD /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95566232ADF8C1900D86BFD /* MainViewController.swift */; };
 		A955663F2ADFA0E900D86BFD /* SettingsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A955663E2ADFA0E900D86BFD /* SettingsConfig.swift */; };
 		A95566442ADFC42100D86BFD /* LoginRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95566422ADFC42100D86BFD /* LoginRootView.swift */; };
@@ -43,6 +45,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0421D8552CB682DC0075593D /* VoiceRoomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceRoomViewController.swift; sourceTree = "<group>"; };
+		047F81F02CB77E5C0079BA02 /* VideoLiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoLiveViewController.swift; sourceTree = "<group>"; };
+		04B9468B2CB51EB80052D0F2 /* MainCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCollectionCell.swift; sourceTree = "<group>"; };
+		04B9468F2CB52F8B0052D0F2 /* MainItemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainItemModel.swift; sourceTree = "<group>"; };
 		40DD29E5264395FF00DC4BA8 /* TUILiveKitApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TUILiveKitApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		40DD29E8264395FF00DC4BA8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		40DD29EA264395FF00DC4BA8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -62,8 +68,6 @@
 		A917D5402C2278A600F9C310 /* MeRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeRootView.swift; sourceTree = "<group>"; };
 		A917D5422C2282FA00F9C310 /* IMManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMManager.swift; sourceTree = "<group>"; };
 		A917D5442C22B45100F9C310 /* RenamePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenamePanel.swift; sourceTree = "<group>"; };
-		A917D5462C22CA4400F9C310 /* AlignmentButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlignmentButton.swift; sourceTree = "<group>"; };
-		A95566222ADF8C1900D86BFD /* MainRootView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainRootView.swift; sourceTree = "<group>"; };
 		A95566232ADF8C1900D86BFD /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		A955663E2ADFA0E900D86BFD /* SettingsConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsConfig.swift; sourceTree = "<group>"; };
 		A95566422ADFC42100D86BFD /* LoginRootView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginRootView.swift; sourceTree = "<group>"; };
@@ -102,6 +106,42 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		047F81F22CB7BE990079BA02 /* Scene */ = {
+			isa = PBXGroup;
+			children = (
+				047F81F02CB77E5C0079BA02 /* VideoLiveViewController.swift */,
+				0421D8552CB682DC0075593D /* VoiceRoomViewController.swift */,
+			);
+			path = Scene;
+			sourceTree = "<group>";
+		};
+		047F81F32CB7BEB80079BA02 /* Me */ = {
+			isa = PBXGroup;
+			children = (
+				A917D53E2C22789400F9C310 /* MeViewController.swift */,
+				A917D5402C2278A600F9C310 /* MeRootView.swift */,
+				A917D5422C2282FA00F9C310 /* IMManager.swift */,
+				A917D5442C22B45100F9C310 /* RenamePanel.swift */,
+			);
+			path = Me;
+			sourceTree = "<group>";
+		};
+		04B9468D2CB52F4E0052D0F2 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				04B9468B2CB51EB80052D0F2 /* MainCollectionCell.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		04B9468E2CB52F690052D0F2 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				04B9468F2CB52F8B0052D0F2 /* MainItemModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		40DD29DC264395FF00DC4BA8 = {
 			isa = PBXGroup;
 			children = (
@@ -128,8 +168,10 @@
 				40DD29E8264395FF00DC4BA8 /* AppDelegate.swift */,
 				40DD29EA264395FF00DC4BA8 /* SceneDelegate.swift */,
 				A9BC40672AB43DE4008AD131 /* LayoutDefine.swift */,
-				A95566202ADF8C1900D86BFD /* Main */,
 				A95566402ADFC42100D86BFD /* Login */,
+				A95566202ADF8C1900D86BFD /* Main */,
+				047F81F32CB7BEB80079BA02 /* Me */,
+				047F81F22CB7BE990079BA02 /* Scene */,
 				A95566142ADF825400D86BFD /* Register */,
 				A955663D2ADFA03200D86BFD /* Setting */,
 				A95566152ADF825C00D86BFD /* UserAgreement */,
@@ -208,13 +250,9 @@
 		A95566202ADF8C1900D86BFD /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				04B9468D2CB52F4E0052D0F2 /* View */,
+				04B9468E2CB52F690052D0F2 /* Model */,
 				A95566232ADF8C1900D86BFD /* MainViewController.swift */,
-				A95566222ADF8C1900D86BFD /* MainRootView.swift */,
-				A917D53E2C22789400F9C310 /* MeViewController.swift */,
-				A917D5402C2278A600F9C310 /* MeRootView.swift */,
-				A917D5422C2282FA00F9C310 /* IMManager.swift */,
-				A917D5442C22B45100F9C310 /* RenamePanel.swift */,
-				A917D5462C22CA4400F9C310 /* AlignmentButton.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -408,7 +446,9 @@
 				4795D41B265F4A6200C82562 /* GenerateTestUserSig.swift in Sources */,
 				A917D5432C2282FA00F9C310 /* IMManager.swift in Sources */,
 				A917D53F2C22789400F9C310 /* MeViewController.swift in Sources */,
+				04B9468C2CB51EB80052D0F2 /* MainCollectionCell.swift in Sources */,
 				A9BC40712AB43DE4008AD131 /* UserAgreementViewController.swift in Sources */,
+				04B946902CB52F8B0052D0F2 /* MainItemModel.swift in Sources */,
 				C1C7E7502B16DC8B008E0066 /* SandBoxFileBroswerCell.swift in Sources */,
 				A955662D2ADF8C1900D86BFD /* MainViewController.swift in Sources */,
 				A9BC40702AB43DE4008AD131 /* RegisterViewController.swift in Sources */,
@@ -416,15 +456,15 @@
 				A9BC40722AB43DE4008AD131 /* LayoutDefine.swift in Sources */,
 				40DD29E9264395FF00DC4BA8 /* AppDelegate.swift in Sources */,
 				C11E26292B0B0B8300674403 /* TUILiveKitAppLocalized.swift in Sources */,
-				A955662C2ADF8C1900D86BFD /* MainRootView.swift in Sources */,
 				C1C7E7512B16DC8B008E0066 /* SandBoxFileBroswerModel.swift in Sources */,
-				A917D5472C22CA4400F9C310 /* AlignmentButton.swift in Sources */,
 				A95566442ADFC42100D86BFD /* LoginRootView.swift in Sources */,
 				A9BC40682AB43DE4008AD131 /* RegisterRootView.swift in Sources */,
 				A9BC406A2AB43DE4008AD131 /* UserAgreementViewController+UI.swift in Sources */,
 				A955663F2ADFA0E900D86BFD /* SettingsConfig.swift in Sources */,
 				C1C7E74F2B16DC8A008E0066 /* SandBoxFileBrowserViewController.swift in Sources */,
 				A917D5452C22B45100F9C310 /* RenamePanel.swift in Sources */,
+				047F81F12CB77E5C0079BA02 /* VideoLiveViewController.swift in Sources */,
+				0421D8562CB682DC0075593D /* VoiceRoomViewController.swift in Sources */,
 				40DD29EB264395FF00DC4BA8 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

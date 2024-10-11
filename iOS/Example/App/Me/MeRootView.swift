@@ -6,9 +6,10 @@
 //
 
 import UIKit
+import RTCCommon
 
 class MeRootView: UIView {
-    var rootVC: MeViewController?
+    weak var rootVC: MeViewController?
     
     let imageView: UIImageView = {
         let imageView = UIImageView()
@@ -70,7 +71,7 @@ class MeRootView: UIView {
         guard !isViewReady else { return }
         constructViewHierarchy()
         activateConstraints()
-        backgroundColor = .clear
+        backgroundColor = .white
         isViewReady = true
     }
 }
@@ -89,7 +90,7 @@ extension MeRootView {
     
     private func activateConstraints() {
         imageView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(16.scale375Height())
+            make.top.equalToSuperview().offset(navigationFullHeight() + 16.scale375Height())
             make.leading.equalToSuperview().offset(138.scale375())
             make.height.width.equalTo(100.scale375())
         }

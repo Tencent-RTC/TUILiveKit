@@ -20,7 +20,7 @@ class AppNavigationController: UINavigationController {
     }
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        guard let supportedInterfaceOrientations = 
+        guard let supportedInterfaceOrientations =
                 topViewController?.supportedInterfaceOrientations as? UIInterfaceOrientationMask
         else { return .portrait }
         return supportedInterfaceOrientations
@@ -32,149 +32,146 @@ class AppNavigationController: UINavigationController {
 }
 
 class MainViewController: UIViewController {
-    enum ContentType {
-        case liveList
-        case selfInfo
-    }
-    private var currentContentType: ContentType = .liveList
-    private let liveListVC = TUILiveListViewController()
-    private let meVC = MeViewController()
-    private var rootView: MainRootView = MainRootView()
+    
+    private var menuItems: [MainItemModel] = []
+    
+    private lazy var collectionView: UICollectionView = {
+        let flowLayout = UICollectionViewFlowLayout()
+        flowLayout.sectionInset = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
+        flowLayout.minimumLineSpacing = 0
+        flowLayout.minimumInteritemSpacing = 0
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
+        collectionView.register(MainCollectionCell.self,
+                                forCellWithReuseIdentifier: MainCollectionCell.CellID)
+        collectionView.backgroundColor = UIColor.clear
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.isScrollEnabled = true
+        collectionView.isPagingEnabled = true
+        return collectionView
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationController?.navigationBar.barTintColor = .white
-        self.addChild(liveListVC)
-        self.addChild(meVC)
-        updateNavigationView(contentType: currentContentType)
-        setupContentView(contentType: currentContentType)
+        initMenuData()
+        setupNavigation()
+        constructViewHierarchy()
+        activateConstraints()
+        view.backgroundColor = .white
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(false, animated: false)
     }
-    
-    override func loadView() {
-        super.loadView()
-        rootView.backgroundColor = UIColor(hex:"F2F5FC")
-        rootView.rootVC = self
-        view = rootView
-    }
 }
 
-// MARK: NavigationView
-
+// MARK: - Private
 extension MainViewController {
-    private func updateNavigationView(contentType: ContentType) {
-        let titleView = UILabel()
-        titleView.text = contentType == .liveList ? .liveText : .selfInfoText
-        titleView.textColor = .black
-        titleView.textAlignment = .center
-        titleView.font = UIFont.boldSystemFont(ofSize: 17)
-        titleView.adjustsFontSizeToFitWidth = true
-        let width = titleView.sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude,
-                                                  height: CGFloat.greatestFiniteMagnitude)).width
-        titleView.frame = CGRect(origin:CGPoint.zero, size:CGSize(width: width, height: 500))
-        self.navigationItem.titleView = titleView
+    
+    private func initMenuData() {
+        menuItems = [
+            MainItemModel(imageName: "main_item_video_live", title: .videoLiveTitle, content: .videoLiveDesc),
+            MainItemModel(imageName: "main_item_voice_room", title: .voiceRoomTitle, content: .voiceRoomDesc),
+        ]
+    }
+    
+    private func constructViewHierarchy() {
+        view.addSubview(collectionView)
+    }
+    
+    private func activateConstraints() {
+        collectionView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+    }
+    
+    private func setupNavigation() {
+        let logoImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+        logoImageView.contentMode = .scaleAspectFit
+        logoImageView.image = UIImage(named: "main_nav_logo")
+        let logoImageItem = UIBarButtonItem(customView: logoImageView)
+        
+        let logoTitleItem = UIBarButtonItem(title: "TUILiveKit", style: .plain, target: nil, action: nil)
+        logoTitleItem.tintColor = .black
+        navigationItem.leftBarButtonItems = [logoImageItem, logoTitleItem]
         
         let debugButton = UIButton(type: .custom)
         debugButton.setImage(UIImage(named: "debug"), for: .normal)
-        debugButton.addTarget(self, action: #selector(debugButtonClick), for: .touchUpInside)
+        debugButton.addTarget(self, action: #selector(debugClick), for: .touchUpInside)
         debugButton.sizeToFit()
         let debugButtonItem = UIBarButtonItem(customView: debugButton)
         debugButtonItem.tintColor = .black
         
-        
-        let rightButton = UIButton()
-        let image = UIImage(named: contentType == .liveList ? "help_small" : "leave_icon")
-        rightButton.setImage(image, for: .normal)
-        rightButton.addTarget(self, action: #selector(rightButtonClick), for: .touchUpInside)
-        rightButton.sizeToFit()
-        let rightButtonItem = UIBarButtonItem(customView: rightButton)
-        rightButtonItem.tintColor = .black
-        navigationItem.rightBarButtonItems = [rightButtonItem, debugButtonItem]
+        let mineBtn = UIButton(frame: .zero)
+        mineBtn.layer.cornerRadius = 15
+        mineBtn.layer.masksToBounds = true
+        mineBtn.addTarget(self, action: #selector(mineAction), for: .touchUpInside)
+        mineBtn.kf.setBackgroundImage(with: URL(string: SettingsConfig.share.avatar),
+                                      for: .normal,
+                                      placeholder: UIImage(named: "main_mine_nor"))
+        mineBtn.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        mineBtn.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        let mineItem = UIBarButtonItem(customView: mineBtn)
+        navigationItem.rightBarButtonItems = [mineItem, debugButtonItem]
     }
 }
 
-// MARK: Action
-
-extension MainViewController {
-    func liveListButtonClick() {
-        currentContentType = .liveList
-        updateNavigationView(contentType: currentContentType)
-        setupContentView(contentType: currentContentType)
+// MARK: - Actions
+extension MainViewController  {
+    
+    @objc private func mineAction() {
+        let viewController = MeViewController()
+        navigationController?.pushViewController(viewController, animated: true)
     }
     
-    func startButtonClick() {
-        let liveRoomId = LiveIdentityGenerator.shared.generateId(TUILogin.getUserID() ?? "", type: .live)
-        let voiceRoomId = LiveIdentityGenerator.shared.generateId(TUILogin.getUserID() ?? "", type: .voice)
-        let viewController = TUILivePreviewViewController(liveRoomId: liveRoomId, voiceRoomId: voiceRoomId)
-        self.navigationController?.pushViewController(viewController, animated: true)
-    }
-    
-    func meButtonClick() {
-        currentContentType = .selfInfo
-        updateNavigationView(contentType: currentContentType)
-        setupContentView(contentType: currentContentType)
-    }
-    
-    private func setupContentView(contentType: ContentType) {
-        rootView.contentView.subviews.forEach { $0.removeFromSuperview() }
-       
-        let vc = contentType == .liveList ? liveListVC : meVC
-        rootView.contentView.addSubview(vc.view)
-        vc.view.snp.remakeConstraints { make in
-            make.edges.equalToSuperview()
-        }
-        vc.view.backgroundColor = .clear
-        rootView.liveListButton.isSelected = contentType == .liveList
-        rootView.meButton.isSelected = contentType == .selfInfo
-    }
-    
-    @objc func debugButtonClick() {
+    @objc private func debugClick() {
         let debugVC = SandBoxFileBrowserViewController(bathPath: NSHomeDirectory())
         navigationController?.pushViewController(debugVC, animated: true)
     }
+}
+
+// MARK: - UICollectionViewDataSource
+extension MainViewController: UICollectionViewDataSource {
     
-    @objc func rightButtonClick() {
-        if currentContentType == .liveList {
-            jumpToDocument()
-        } else if currentContentType == .selfInfo {
-            goBackToLogin()
+    func collectionView(_ collectionView: UICollectionView,
+                        numberOfItemsInSection section: Int) -> Int {
+        return menuItems.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainCollectionCell.CellID,
+                                                      for: indexPath) as! MainCollectionCell
+        cell.config(menuItems[indexPath.row])
+        return cell
+    }
+    
+}
+
+// MARK: - UICollectionViewDelegate
+extension MainViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if indexPath.item == 0 {
+            let controller = VideoLiveViewController()
+            navigationController?.pushViewController(controller, animated: true)
+        } else {
+            let controller = VoiceRoomViewController()
+            navigationController?.pushViewController(controller, animated: true)
         }
     }
     
-    private func jumpToDocument() {
-        if let url = URL(string: "https://cloud.tencent.com/document/product/647/105441") {
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
-        }
-    }
-    
-    private func goBackToLogin() {
-        let alertVC = UIAlertController(title:
-         TUILiveKitAppLocalize("TUILiveKitApp.Main.areyousureloginout"), message: nil,
-         preferredStyle: .alert)
-        let cancelAction = UIAlertAction(title: TUILiveKitAppLocalize("TUILiveKitApp.Main.cancel"),
-                                         style: .cancel, handler: nil)
-        let sureAction = UIAlertAction(title: TUILiveKitAppLocalize("TUILiveKitApp.Main.determine"),
-                                       style: .default) { (action) in
-            let appDelegate = UIApplication.shared.delegate as? AppDelegate
-            appDelegate?.showLoginViewController()
-            TUILogin.logout {
-                debugPrint("logout success")
-            } fail: { code, msg in
-                debugPrint("logout error")
-            }
-        }
-        alertVC.addAction(cancelAction)
-        alertVC.addAction(sureAction)
-        present(alertVC, animated: true, completion: nil)
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: ScreenWidth / 2 - 12, height: 106)
     }
 }
 
-// MARK: Localized String
-
+// MARK: - Localized String
 private extension String {
-    static let liveText = TUILiveKitAppLocalize("TUILiveKitApp.Main.Live")
-    static let selfInfoText = TUILiveKitAppLocalize("TUILiveKitApp.Main.SelfInfo")
+    static let videoLiveTitle = TUILiveKitAppLocalize("TUILiveKitApp.Main.video")
+    static let videoLiveDesc = TUILiveKitAppLocalize("TUILiveKitApp.Main.video.desc")
+    static let voiceRoomTitle = TUILiveKitAppLocalize("TUILiveKitApp.Main.audio")
+    static let voiceRoomDesc = TUILiveKitAppLocalize("TUILiveKitApp.Main.audio.desc")
 }

@@ -47,6 +47,13 @@ class MeViewController: UIViewController {
     func initView() {
         rootView.imageView.kf.setImage(with: URL(string: SettingsConfig.share.avatar))
         rootView.nameLabel.text = SettingsConfig.share.name
+        
+        let logoutItem = UIBarButtonItem(image: UIImage(named: "leave_icon"),
+                                         style: .done,
+                                         target: self,
+                                         action: #selector(logout))
+        logoutItem.tintColor = .black
+        navigationItem.rightBarButtonItem = logoutItem
     }
     
     func updateData() {
@@ -62,6 +69,33 @@ class MeViewController: UIViewController {
     func nameLabelClick() {
         RenamePanel.show(in: self)
     }
+}
+
+// MARK: - Actions
+extension MeViewController {
+    
+    @objc private func logout() {
+        let alertVC = UIAlertController(title:
+         TUILiveKitAppLocalize("TUILiveKitApp.Main.areyousureloginout"), message: nil,
+         preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: TUILiveKitAppLocalize("TUILiveKitApp.Main.cancel"),
+                                         style: .cancel, handler: nil)
+        let sureAction = UIAlertAction(title: TUILiveKitAppLocalize("TUILiveKitApp.Main.determine"),
+                                       style: .default) { (action) in
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+            appDelegate?.showLoginViewController()
+            TUILogin.logout {
+                debugPrint("logout success")
+            } fail: { code, msg in
+                debugPrint("logout error")
+            }
+        }
+        alertVC.addAction(cancelAction)
+        alertVC.addAction(sureAction)
+        present(alertVC, animated: true, completion: nil)
+        
+    }
+    
 }
 
 // MARK: Notification
