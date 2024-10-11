@@ -30,7 +30,7 @@ Pod::Spec.new do |spec|
   
   spec.subspec 'Professional' do |professional|
     professional.dependency 'RTCRoomEngine/Professional', '>= 2.5.2'
-    professional.source_files = 'Source/**/*'
+    professional.source_files = 'Source/**/*', 'VideoLiveKit.swift', 'VoiceRoomKit.swift', 'VoiceRoomDefine.swift'
     professional.resource_bundles = {
       'TUILiveKitBundle' => ['Resources/*.xcassets', 'Resources/Localized/**/*.strings']
     }
@@ -38,7 +38,7 @@ Pod::Spec.new do |spec|
   
   spec.subspec 'TRTC' do |trtc|
     trtc.dependency 'RTCRoomEngine/TRTC', '>= 2.5.2'
-    trtc.source_files = 'Source/**/*'
+    trtc.source_files = 'Source/**/*', 'VideoLiveKit.swift', 'VoiceRoomKit.swift', 'VoiceRoomDefine.swift'
     trtc.resource_bundles = {
       'TUILiveKitBundle' => ['Resources/*.xcassets', 'Resources/Localized/**/*.strings']
     }

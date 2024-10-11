@@ -28,7 +28,9 @@
 "TUILiveKitApp.Main.cancel" = "Cancel";
 "TUILiveKitApp.Main.confirm" = "OK";
 "TUILiveKitApp.Main.video" = "Living";
+"TUILiveKitApp.Main.video.desc" = "Live preview/Beauty filters/Multi-host";
 "TUILiveKitApp.Main.audio" = "Voice";
+"TUILiveKitApp.Main.audio.desc" = "High audio quality/Large room/Smooth mic on/off";
 "TUILiveKitApp.Main.liveRoomList" = "Live Room List";
 "TUILiveKitApp.Main.Live" = "Live";
 "TUILiveKitApp.Main.SelfInfo" = "My Profile";

@@ -27,8 +27,10 @@
 "TUILiveKitApp.Main.determine" = "确定";
 "TUILiveKitApp.Main.cancel" = "取消";
 "TUILiveKitApp.Main.confirm" = "确定";
-"TUILiveKitApp.Main.video" = "视频直播";
-"TUILiveKitApp.Main.audio" = "语音直播";
+"TUILiveKitApp.Main.video" = "在线直播";
+"TUILiveKitApp.Main.video.desc" = "开播预览·智能美颜·连麦PK";
+"TUILiveKitApp.Main.audio" = "语聊房";
+"TUILiveKitApp.Main.audio.desc" = "高音质·大房间·平滑上下麦";
 "TUILiveKitApp.Main.liveRoomList" = "直播间列表";
 "TUILiveKitApp.Main.Live" = "直播";
 "TUILiveKitApp.Main.SelfInfo" = "个人信息";
