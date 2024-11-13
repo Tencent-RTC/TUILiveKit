@@ -21,7 +21,17 @@ class SeatListView: UIView {
     var verticalMargin = 20.0
     
     weak var delegate: SeatListViewDelegate?
-    @Published var seatCount: Int = 10
+    
+    init(seatCount: Int) {
+        self.seatCount = seatCount
+        super.init(frame: .zero)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    @Published var seatCount: Int
     private var cancellableSet = Set<AnyCancellable>()
     
     lazy var seatCollection: UICollectionView = {
@@ -52,6 +62,9 @@ class SeatListView: UIView {
     
     func getHeight() -> CGFloat {
         let height = itemSize.height
+        if seatCount == 9 {
+            return height * 3 + verticalMargin * 2
+        }
         if seatCount <= 5 {
             return height * 1 + verticalMargin * 0
         } else if seatCount <= 10 {
@@ -92,8 +105,9 @@ class SeatListView: UIView {
         $seatCount
             .removeDuplicates()
             .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
+            .sink { [weak self] count in
                 guard let self = self else { return }
+                print("===== seat count: \(count)")
                 self.seatCollection.reloadData()
             }
             .store(in: &cancellableSet)

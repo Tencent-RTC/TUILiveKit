@@ -94,6 +94,7 @@ extension ServiceCenter: TUIRoomObserver {
                         "onSeatListChanged:[seatList:\(seatList),seatedList:\(seatedList),leftList:\(leftList)]")
         guard let store = self.store else { return }
         let currentUserId = store.selectCurrent(UserSelectors.currentUserId)
+        store.dispatch(action: RoomActions.updateMaxSeatCount(payload: seatList.count))
         while true {
             let isSelfSeated = seatedList.contains { $0.userId != nil && $0.userId == currentUserId }
             if isSelfSeated {

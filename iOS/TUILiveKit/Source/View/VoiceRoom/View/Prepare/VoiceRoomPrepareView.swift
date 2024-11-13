@@ -36,8 +36,9 @@ class VoiceRoomPrepareView: RTCBaseView {
         return view
     }()
     
-    private let seatListView: SeatListView = {
-        let view = SeatListView(frame: .zero)
+    private lazy var seatListView: SeatListView = {
+        let seatCount = store.selectCurrent(SeatSelectors.getSeatCount)
+        let view = SeatListView(seatCount: seatCount)
         view.itemSize = CGSize(width: 70, height: 70)
         view.verticalMargin = 0
         return view

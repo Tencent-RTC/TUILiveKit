@@ -41,7 +41,8 @@ class VoiceRoomRootView: RTCBaseView {
     }()
     
     private lazy var seatListView: SeatListView = {
-        let view = SeatListView(frame: .zero)
+        let seatCount = store.selectCurrent(SeatSelectors.getSeatCount)
+        let view = SeatListView(seatCount: seatCount)
         return view
     }()
     
@@ -355,7 +356,11 @@ extension VoiceRoomRootView {
     private func subscribeSeatCountState() {
         store.select(SeatSelectors.getSeatCount)
             .receive(on: RunLoop.main)
-            .assign(to: \SeatListView.seatCount, on: seatListView)
+            .sink(receiveValue: { [weak self] count in
+                guard let self = self else { return }
+                debugPrint("===== count:\(count)")
+                self.seatListView.seatCount = count
+            })
             .store(in: &cancellableSet)
     }
     

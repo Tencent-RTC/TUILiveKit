@@ -136,7 +136,7 @@ public class TUIVoiceRoomViewController: UIViewController {
     private func initSeatState() {
         let maxSeatCount = store.selectCurrent(RoomSelectors.getRoomState).maxSeatCount
         var seatInfoList: [SeatInfo] = []
-        for index in 0...maxSeatCount {
+        for index in 0..<maxSeatCount {
             var seatInfo = SeatInfo()
             seatInfo.index = index
             seatInfoList.append(seatInfo)
