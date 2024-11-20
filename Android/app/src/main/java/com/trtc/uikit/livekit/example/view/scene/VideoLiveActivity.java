@@ -3,6 +3,7 @@ package com.trtc.uikit.livekit.example.view.scene;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -10,11 +11,11 @@ import androidx.fragment.app.FragmentTransaction;
 import com.tencent.qcloud.tuicore.TUILogin;
 import com.trtc.tuikit.common.FullScreenActivity;
 import com.trtc.tuikit.common.util.ActivityLauncher;
-import com.trtc.uikit.livekit.VideoLiveKit;
+import com.trtc.uikit.livekit.livestream.VideoLiveKit;
 import com.trtc.uikit.livekit.example.R;
 import com.trtc.uikit.livekit.example.store.AppStore;
-import com.trtc.uikit.livekit.view.LiveIdentityGenerator;
-import com.trtc.uikit.livekit.view.TUILiveListFragment;
+import com.trtc.uikit.livekit.LiveIdentityGenerator;
+import com.trtc.uikit.livekit.component.roomlist.TUILiveListFragment;
 
 public class VideoLiveActivity extends FullScreenActivity {
 
@@ -26,6 +27,7 @@ public class VideoLiveActivity extends FullScreenActivity {
         initWebsiteLinkView();
         initLiveListFragment();
         initStartLiveView();
+        initBackButton();
     }
 
     private void initWebsiteLinkView() {
@@ -42,6 +44,10 @@ public class VideoLiveActivity extends FullScreenActivity {
             String roomId = identityGenerator.generateId(TUILogin.getUserId(), LiveIdentityGenerator.RoomType.LIVE);
             VideoLiveKit.createInstance(getApplicationContext()).startLive(roomId);
         });
+    }
+
+    private void initBackButton() {
+        findViewById(R.id.iv_back).setOnClickListener(v -> onBackPressed());
     }
 
     private void initLiveListFragment() {

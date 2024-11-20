@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">LiveKit</string>
-    <string name="livekit_app_running">%s is currently live broadcasting</string>
+    <string name="livekit_app_running">Running</string>
     <string name="livekit_audience_number">%d people</string>
     <string name="livekit_anchor_audience_list_panel_title">Online audience</string>
     <string name="livekit_barrage_text_hint">Let\'s talk</string>
@@ -290,5 +290,9 @@
     <string name="livekit_error_open_screen_share_need_permission_from_admin">"You need to apply to the room owner or administrator before opening the screen sharing"</string>
     <string name="livekit_error_send_message_disabled_for_all">"All users are muted in the current room"</string>
     <string name="livekit_error_send_message_disabled_for_current">"You have been muted in the current room"</string>
+    <string name="livekit_error_room_connected_in_other">"When connecting across rooms, viewers in the room are not allowed to connect"</string>
     <string name="livekit_kick_user">End</string>
+    <!-- FloatWindow -->
+    <string name="livekit_float_window_received_connection_invitation">You\'ve received an invitation to connect, and you can go back to full-screen mode for post-processing</string>
+    <string name="livekit_float_window_received_battle_invitation">You\'ve received an invitation to battle, and you can go back to full-screen mode for post-processing</string>
 </resources>

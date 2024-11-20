@@ -10,12 +10,12 @@ import androidx.fragment.app.FragmentTransaction;
 import com.tencent.qcloud.tuicore.TUILogin;
 import com.trtc.tuikit.common.FullScreenActivity;
 import com.trtc.tuikit.common.util.ActivityLauncher;
-import com.trtc.uikit.livekit.VoiceRoomDefine;
-import com.trtc.uikit.livekit.VoiceRoomKit;
+import com.trtc.uikit.livekit.voiceroom.VoiceRoomDefine;
+import com.trtc.uikit.livekit.voiceroom.VoiceRoomKit;
 import com.trtc.uikit.livekit.example.R;
 import com.trtc.uikit.livekit.example.store.AppStore;
-import com.trtc.uikit.livekit.view.LiveIdentityGenerator;
-import com.trtc.uikit.livekit.view.TUILiveListFragment;
+import com.trtc.uikit.livekit.LiveIdentityGenerator;
+import com.trtc.uikit.livekit.component.roomlist.TUILiveListFragment;
 
 public class VoiceRoomActivity extends FullScreenActivity {
 
@@ -27,6 +27,7 @@ public class VoiceRoomActivity extends FullScreenActivity {
         initWebsiteLinkView();
         initLiveListFragment();
         initCreateRoomView();
+        initBackButton();
     }
 
     private void initWebsiteLinkView() {
@@ -45,6 +46,10 @@ public class VoiceRoomActivity extends FullScreenActivity {
             voiceRoomInfo.maxAnchorCount = VoiceRoomDefine.MAX_CONNECTED_VIEWERS_COUNT;
             VoiceRoomKit.createInstance(getApplicationContext()).createRoom(roomId, voiceRoomInfo);
         });
+    }
+
+    private void initBackButton() {
+        findViewById(R.id.iv_back).setOnClickListener(v -> onBackPressed());
     }
 
     private void initLiveListFragment() {

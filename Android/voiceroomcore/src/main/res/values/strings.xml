@@ -1,0 +1,9 @@
+<resources>
+    <string name="voiceroomcore_permission_microphone">Microphone</string>
+    <string name="voiceroomcore_permission_mic_reason">Needs access to your microphone, and it can be used for functions
+        such as Live etc.</string>
+    <string name="voiceroomcore_permission_tips">Please turn on the %s permission first</string>
+    <string name="voiceroomcore_permission_title">%s applies for access to the %s</string>
+    <string name="voiceroomcore_permission_separator">,</string>
+    <string name="voiceroomcore_app_running">Running</string>
+</resources>

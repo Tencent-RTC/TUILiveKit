@@ -1,0 +1,74 @@
+plugins {
+    id 'com.android.library'
+}
+
+ext {
+    tuikitEnginePath = ""
+}
+
+android {
+    compileSdk 34
+    namespace 'com.tencent.qcloud.tuikit.engine.source'
+
+    defaultConfig {
+        minSdkVersion 19
+        versionName "1.0"
+        versionCode 1
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    sourceSets {
+        main {
+            java.srcDirs = ["$tuikitEnginePath/src/platform_adapter/java/src/main/java/"]
+            java.srcDirs += ["$tuikitEnginePath/api/java/src/main/java/com/tencent/cloud/tuikit/engine/common/",
+                             "$tuikitEnginePath/api/java/src/main/java/com/tencent/cloud/tuikit/engine/extension/",
+                             "$tuikitEnginePath/api/java/src/main/java/com/tencent/cloud/tuikit/engine/room/"]
+            java.srcDirs += ["$tuikitEnginePath/src/common/java/src/main/java/"]
+            java.srcDirs += ["$tuikitEnginePath/src/basic/android/java/src/main/java/"]
+            java.srcDirs += ["$tuikitEnginePath/src/trtc_controller/modules/trtc_adapter/android/java/src/main/java/"]
+            java.srcDirs += ["$tuikitEnginePath/src/extensions/device_manager/java/src/main/java/"]
+            java.srcDirs += ["$tuikitEnginePath/src/extensions/conference_list/java/src/main/java/"]
+            java.srcDirs += ["$tuikitEnginePath/src/extensions/live_list/java/src/main/java/"]
+            java.srcDirs += ["$tuikitEnginePath/src/extensions/conference_invitation/java/src/main/java/"]
+            java.srcDirs += ["$tuikitEnginePath/src/extensions/live_connection/java/src/main/java/"]
+            java.srcDirs += ["$tuikitEnginePath/src/extensions/live_battle/java/src/main/java/"]
+
+            jniLibs.srcDirs = ["$tuikitEnginePath/src/platform_adapter/java/src/main/jniLibs"]
+        }
+    }
+    packagingOptions {
+        doNotStrip "**/*.so"
+    }
+}
+
+dependencies {
+    api rootProject.getProperties().containsKey("liteavSdk") ?
+            rootProject.ext.liteavSdk : "com.tencent.liteav:LiteAVSDK_TRTC:latest.release"
+}
+
+afterEvaluate {
+    def localPropertiesFile = file("${rootDir}/local.properties")
+    def localProperties = new Properties()
+    localPropertiesFile.withInputStream { stream -> localProperties.load(stream)}
+    def sdkPath = localProperties.getProperty("sdk.dir")
+    def ndkPath = "${sdkPath}/ndk/22.1.7171670"
+    tasks.configureEach { task ->
+        if (task.name == "preDebugBuild") {
+            task.doLast {
+                exec {
+                    commandLine './build_sdk.sh', "$tuikitEnginePath", "$sdkPath", "$ndkPath"
+                }
+            }
+        }
+    }
+}

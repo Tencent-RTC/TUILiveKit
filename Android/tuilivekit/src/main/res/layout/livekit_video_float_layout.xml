@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.trtc.uikit.livekit.component.floatwindow.view.RoundFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/livekit_float_view_width"
+    android:layout_height="@dimen/livekit_float_view_height"
+    android:background="@color/livekit_color_float_Window_bg">
+
+    <FrameLayout
+        android:id="@+id/fl_video_grid_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/iv_close"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_gravity="center"
+                android:background="@drawable/livekit_ic_audience_exit"
+                android:importantForAccessibility="no" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:id="@+id/iv_enable_volume"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/livekit_volume_opened"
+                android:importantForAccessibility="no" />
+
+            <ImageView
+                android:id="@+id/iv_enable_mic"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/livekit_microphone_opened"
+                android:importantForAccessibility="no" />
+
+            <ImageView
+                android:id="@+id/iv_enable_video"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/livekit_video_opened"
+                android:importantForAccessibility="no" />
+
+        </LinearLayout>
+    </RelativeLayout>
+
+</com.trtc.uikit.livekit.component.floatwindow.view.RoundFrameLayout>

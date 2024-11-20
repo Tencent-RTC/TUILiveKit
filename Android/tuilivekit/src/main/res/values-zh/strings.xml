@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">LiveKit</string>
-    <string name="livekit_app_running">%s正在直播中</string>
+    <string name="livekit_app_running">运行中</string>
     <string name="livekit_audience_number">%d人</string>
     <string name="livekit_anchor_audience_list_panel_title">在线观众</string>
     <string name="livekit_barrage_text_hint">聊聊吧~</string>
@@ -283,4 +283,9 @@
     <string name="livekit_error_open_screen_share_need_permission_from_admin">"需要向房主或管理员申请后打开屏幕分享"</string>
     <string name="livekit_error_send_message_disabled_for_all">"当前房间已开启全员禁言"</string>
     <string name="livekit_error_send_message_disabled_for_current">"当前房间内，您已被禁言"</string>
+    <string name="livekit_error_room_connected_in_other">"当跨房连线时不允许房间内观众连线"</string>
+    <string name="livekit_kick_user">End</string>
+    <!-- FloatWindow -->
+    <string name="livekit_float_window_received_connection_invitation">收到连线邀请，可回到全屏模式后处理</string>
+    <string name="livekit_float_window_received_battle_invitation">收到 PK 邀请，可回到全屏模式后处理</string>
 </resources>

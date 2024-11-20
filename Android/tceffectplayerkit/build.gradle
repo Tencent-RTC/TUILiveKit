@@ -7,7 +7,7 @@ android {
     namespace 'com.tencent.tcmediax.tceffectplayerkit'
 
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 21
         versionName "1.0"
         versionCode 1
     }

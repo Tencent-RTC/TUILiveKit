@@ -4,7 +4,6 @@
     android:layout_width="56dp"
     android:layout_height="79dp"
     android:layout_gravity="center"
-    android:layout_marginStart="12dp"
     android:layout_marginTop="8dp"
     android:gravity="center_horizontal"
     android:orientation="vertical">

@@ -22,4 +22,7 @@
 
     <integer name="livekit_gift_heart_anim_duration">1000</integer>
     <integer name="livekit_gift_heart_anim_bezier_factor">6</integer>
+
+    <dimen name="livekit_float_view_width">110dp</dimen>
+    <dimen name="livekit_float_view_height">188dp</dimen>
 </resources>
