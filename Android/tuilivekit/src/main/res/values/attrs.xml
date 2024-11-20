@@ -19,7 +19,7 @@
     </declare-styleable>
 
     <declare-styleable name="LiveKitGiftRoundCornerImageView">
-        <attr name="shape_cir">
+        <attr name="livekit_shape_cir">
             <enum name="circle" value="0" />
             <enum name="fillet" value="1" />
         </attr>

@@ -1,12 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:columnCount="5"
+    android:rowCount="2">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_seat_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-</LinearLayout>
+    <include
+        layout="@layout/livekit_voiceroom_seat_info_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:layout_marginTop="24dp" />
+
+    <include
+        layout="@layout/livekit_voiceroom_seat_info_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:layout_marginTop="24dp" />
+
+    <include
+        layout="@layout/livekit_voiceroom_seat_info_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:layout_marginTop="24dp" />
+
+    <include
+        layout="@layout/livekit_voiceroom_seat_info_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:layout_marginTop="24dp" />
+
+    <include
+        layout="@layout/livekit_voiceroom_seat_info_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:layout_marginTop="24dp" />
+
+
+    <include
+        layout="@layout/livekit_voiceroom_seat_info_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:layout_marginTop="24dp" />
+
+    <include
+        layout="@layout/livekit_voiceroom_seat_info_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:layout_marginTop="24dp" />
+
+    <include
+        layout="@layout/livekit_voiceroom_seat_info_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:layout_marginTop="24dp" />
+
+    <include
+        layout="@layout/livekit_voiceroom_seat_info_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:layout_marginTop="24dp" />
+
+    <include
+        layout="@layout/livekit_voiceroom_seat_info_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:layout_marginTop="24dp" />
+</GridLayout>

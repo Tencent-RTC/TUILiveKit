@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.trtc.uikit.livekit.common.uicomponent.gift.view.animation.AnimationViewWrapper
+    <com.trtc.uikit.livekit.component.gift.view.animation.AnimationViewWrapper
         android:id="@+id/gift_anim_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
@@ -21,7 +21,7 @@
 
     </RelativeLayout>
 
-    <com.trtc.uikit.livekit.common.uicomponent.gift.view.like.GiftHeartLayout
+    <com.trtc.uikit.livekit.component.gift.view.like.GiftHeartLayout
         android:id="@+id/heart_layout"
         android:layout_width="100dp"
         android:layout_height="200dp"

@@ -24,7 +24,7 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="2dp" >
         <View
-            android:id="@+id/v_connection"
+            android:id="@+id/v_co_host"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginEnd="8dp"
@@ -36,7 +36,7 @@
             android:layout_marginEnd="8dp"
             android:background="@drawable/livekit_function_battle" />
         <View
-            android:id="@+id/v_link"
+            android:id="@+id/v_co_guest"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginEnd="8dp"

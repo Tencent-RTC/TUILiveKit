@@ -9,10 +9,16 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application>
         <activity
-            android:name=".common.uicomponent.roomlist.view.ListAudienceActivity"
+            android:name=".component.roomlist.view.ListAudienceActivity"
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
@@ -21,28 +27,24 @@
             tools:ignore="DiscouragedApi" />
 
         <activity
-            android:name=".view.liveroom.VideoLiveAnchorActivity"
+            android:name=".livestream.view.anchor.VideoLiveAnchorActivity"
             android:exported="false"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
         <activity
-            android:name=".view.liveroom.VideoLiveAudienceActivity"
+            android:name=".livestream.view.audience.VideoLiveAudienceActivity"
             android:exported="false"
             android:launchMode="standard"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
         <activity
-            android:name=".view.voiceroom.VoiceRoomActivity"
+            android:name=".voiceroom.view.VoiceRoomActivity"
             android:exported="false"
             android:launchMode="standard"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
-
-        <provider
-            android:name="com.trtc.uikit.livekit.manager.ServiceInitializer"
-            android:authorities="${applicationId}.ServiceInitializer"
-            android:enabled="true"
-            android:exported="false" />
     </application>
 
 </manifest>

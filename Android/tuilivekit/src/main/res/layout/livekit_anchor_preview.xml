@@ -18,8 +18,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <RelativeLayout
-        android:id="@+id/rl_room_settings_card_container"
+    <com.trtc.uikit.livekit.voiceroom.view.preview.LiveInfoEditView
+        android:id="@+id/rl_live_info_edit_view"
         android:layout_width="343dp"
         android:layout_height="112dp"
         android:layout_marginTop="96dp"
@@ -27,17 +27,14 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <RelativeLayout
-        android:id="@+id/rl_preview_seat_list"
+    <include
+        layout="@layout/livekit_voiceroom_seat_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginTop="24dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rl_room_settings_card_container" />
+        app:layout_constraintTop_toBottomOf="@id/rl_live_info_edit_view" />
 
-    <RelativeLayout
+    <com.trtc.uikit.livekit.voiceroom.view.preview.AnchorPreviewFunctionView
         android:id="@+id/rl_function"
         android:layout_width="match_parent"
         android:layout_height="56dp"
@@ -52,9 +49,9 @@
         android:id="@+id/btn_start_live"
         android:layout_width="match_parent"
         android:layout_height="52dp"
-        android:layout_marginBottom="60dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
+        android:layout_marginBottom="60dp"
         android:background="@drawable/livekit_round_button_background"
         android:text="@string/livekit_start_live"
         android:textAllCaps="false"

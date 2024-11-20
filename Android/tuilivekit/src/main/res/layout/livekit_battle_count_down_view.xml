@@ -4,7 +4,7 @@
     android:layout_height="242dp"
     android:layout_gravity="center">
 
-    <com.trtc.uikit.livekit.view.liveroom.view.anchor.component.livestreaming.battle.BattleCountdownBackView
+    <com.trtc.uikit.livekit.livestream.view.anchor.pushing.battle.BattleCountdownBackView
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

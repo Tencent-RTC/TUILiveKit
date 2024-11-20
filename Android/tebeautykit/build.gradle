@@ -5,7 +5,7 @@ android {
     namespace "com.tencent.effect.beautykit"
 
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 21
 
         consumerProguardFiles "consumer-rules.pro"
     }

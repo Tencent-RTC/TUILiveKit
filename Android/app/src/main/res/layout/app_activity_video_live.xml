@@ -26,6 +26,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_marginStart="15dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/app_ic_back"
+            tools:ignore="ContentDescription" />
+
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="match_parent"

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="VoiceRoomCoreRippleView">
+        <attr name="color" format="color"/>
+        <attr name="start_radius" format="dimension"/>
+    </declare-styleable>
+</resources>

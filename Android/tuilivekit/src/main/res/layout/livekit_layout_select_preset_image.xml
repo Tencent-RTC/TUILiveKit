@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="718dp"
     android:background="@drawable/livekit_dialog_background"
@@ -17,7 +18,8 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_centerVertical="true"
-            android:src="@drawable/livekit_return_arrow" />
+            android:src="@drawable/livekit_return_arrow"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/title"
@@ -33,20 +35,20 @@
         android:id="@+id/rv_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="320dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="24dp" />
+        android:layout_marginEnd="24dp"
+        android:minHeight="320dp" />
 
     <Button
         android:id="@+id/btn_confirm"
         android:layout_width="match_parent"
         android:layout_height="52dp"
         android:layout_gravity="center"
-        android:layout_marginTop="33dp"
-        android:layout_marginBottom="33dp"
         android:layout_marginStart="24dp"
+        android:layout_marginTop="33dp"
         android:layout_marginEnd="24dp"
+        android:layout_marginBottom="33dp"
         android:background="@drawable/livekit_button_background"
         android:text="@string/livekit_set_as_cover"
         android:textAllCaps="false"

@@ -12,18 +12,46 @@
         android:scaleType="fitXY"
         tools:ignore="ContentDescription" />
 
-    <RelativeLayout
-        android:id="@+id/rl_barrage"
+    <com.trtc.uikit.livekit.component.barrage.BarrageStreamView
+        android:id="@+id/barrage_stream_view"
         android:layout_width="match_parent"
         android:layout_height="212dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="56dp"
         android:layout_marginBottom="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/rl_bottom_menu"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_menu"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <RelativeLayout
-        android:id="@+id/rl_gift"
+    <com.trtc.uikit.livekit.voiceroom.view.topview.TopView
+        android:id="@+id/top_view"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:layout_marginTop="54dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.trtc.uikit.livekit.voiceroom.view.bottommenu.BottomMenuView
+        android:id="@+id/bottom_menu"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="34dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.trtc.uikit.livekit.voiceroomcore.SeatGridView
+        android:id="@+id/seat_grid_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="56dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top_view" />
+
+    <com.trtc.uikit.livekit.component.gift.GiftPlayView
+        android:id="@+id/gift_play_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -31,32 +59,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <RelativeLayout
-        android:id="@+id/rl_top_view"
-        android:layout_width="match_parent"
-        android:layout_height="32dp"
-        android:layout_marginTop="54dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <RelativeLayout
-        android:id="@+id/rl_bottom_menu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="34dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <RelativeLayout
-        android:id="@+id/rl_seat_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="56dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rl_top_view" />
-
-    <RelativeLayout
-        android:id="@+id/rl_anchor_preview_view"
+    <com.trtc.uikit.livekit.voiceroom.view.preview.AnchorPreviewView
+        android:id="@+id/anchor_preview_view"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

@@ -1,0 +1,19 @@
+<resources>
+    <!-- Foreground Service -->
+    <string name="livestreamcore_app_running">Running</string>
+    <!-- System Permission -->
+    <string name="livestreamcore_permission_camera">Camera</string>
+    <string name="livestreamcore_permission_microphone">Microphone</string>
+    <string name="livestreamcore_permission_mic_reason">Needs access to your microphone, and it can be used for functions
+        such as Live etc.</string>
+    <string name="livestreamcore_permission_camera_reason">Needs access to your camera, and it can be used for functions
+        such as Live etc. For beauty filters to work, we will collect the facial information captured by your camera in
+        real time to detect your facial features.</string>
+    <string name="livestreamcore_permission_separator">,</string>
+    <string name="livestreamcore_permission_tips">Please turn on the %s permission first</string>
+    <string name="livestreamcore_permission_title">%s applies for access to the %s</string>
+    <!-- Host Connection -->
+    <string name="livestreamcore_cohost_conflict">The host is currently co-hosting with other streamers.</string>
+    <string name="livestreamcore_cohost_room_full">The number of co-hosting has exceeded the maximum limit.</string>
+    <string name="livestreamcore_cohost_error">Other errors, cannot connect.</string>
+</resources>

@@ -33,7 +33,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/et_input_message" />
 
-            <com.trtc.uikit.livekit.common.uicomponent.barrage.view.EmojiEditText
+            <com.trtc.uikit.livekit.component.barrage.view.EmojiEditText
                 android:id="@+id/et_input_message"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
