@@ -18,12 +18,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfo;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
+import com.tencent.qcloud.tuicore.TUILogin;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.component.floatwindow.service.FloatWindowManager;
 import com.trtc.uikit.livekit.component.roomlist.view.ListAudienceActivity;
+import com.trtc.uikit.livekit.livestream.view.anchor.VideoLiveAnchorActivity;
 
 import java.util.List;
+import java.util.Objects;
 
 public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.ViewHolder> {
     private final Context        mContext;
@@ -57,9 +60,18 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.ViewHo
         holder.mLayoutCoverBorder.setOnClickListener((view) -> {
             FloatWindowManager.getInstance().releaseFloatWindow();
             final LiveInfo info = (LiveInfo) view.getTag();
-            Intent intent = new Intent(mContext, ListAudienceActivity.class);
-            intent.putExtra("roomId", info.roomInfo.roomId);
-            mContext.startActivity(intent);
+            if (info.roomInfo != null && Objects.equals(info.roomInfo.ownerId, TUILogin.getUserId())
+                    && !info.roomInfo.roomId.startsWith("voice_")) {
+                Intent intent = new Intent(mContext, VideoLiveAnchorActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra(VideoLiveAnchorActivity.INTENT_KEY_ROOM_ID, info.roomInfo.roomId);
+                intent.putExtra(VideoLiveAnchorActivity.INTENT_KEY_NEED_CREATE, false);
+                mContext.startActivity(intent);
+            } else {
+                Intent intent = new Intent(mContext, ListAudienceActivity.class);
+                intent.putExtra("roomId", info.roomInfo.roomId);
+                mContext.startActivity(intent);
+            }
         });
     }
 

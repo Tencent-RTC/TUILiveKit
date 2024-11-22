@@ -47,6 +47,7 @@ import com.trtc.uikit.livekit.component.gift.view.BarrageViewTypeDelegate;
 import com.trtc.uikit.livekit.component.gift.view.GiftBarrageAdapter;
 import com.trtc.uikit.livekit.component.music.MusicPanelView;
 import com.trtc.uikit.livekit.component.roominfo.RoomInfoView;
+import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
 import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
 import com.trtc.uikit.livekit.livestream.manager.observer.LiveStreamObserver;
 import com.trtc.uikit.livekit.livestream.state.BattleState;
@@ -56,6 +57,7 @@ import com.trtc.uikit.livekit.livestream.state.RoomState;
 import com.trtc.uikit.livekit.livestream.state.RoomState.LiveStatus;
 import com.trtc.uikit.livekit.livestream.state.UserState;
 import com.trtc.uikit.livekit.livestream.view.BasicView;
+import com.trtc.uikit.livekit.livestream.view.anchor.TUILiveRoomAnchorFragment.RoomBehavior;
 import com.trtc.uikit.livekit.livestream.view.anchor.dashboard.AnchorDashboardView;
 import com.trtc.uikit.livekit.livestream.view.anchor.preview.LiveInfoEditView;
 import com.trtc.uikit.livekit.livestream.view.anchor.preview.PreviewFunctionView;
@@ -103,6 +105,7 @@ public class AnchorView extends BasicView {
     private       ApplyCoGuestFloatView          mApplyCoGuestFloatView;
     private       BattleInfoView                 mBattleInfoView;
     private       StandardDialog                 mProcessConnectionDialog;
+    private       RoomBehavior                   mRoomBehavior;
     private final Observer<LiveStatus>           mLiveStatusObserver             = this::onLiveStatusChange;
     private final Observer<ConnectionUser>       mReceivedConnectRequestObserver = this::onReceivedCoHostRequest;
     private final Observer<List<ConnectionUser>> mConnectedObserver              = this::onConnectedUserChange;
@@ -120,6 +123,11 @@ public class AnchorView extends BasicView {
 
     public AnchorView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    public void init(LiveStreamManager liveStreamManager, TUILiveRoomAnchorFragment.RoomBehavior behavior) {
+        mRoomBehavior = behavior;
+        init(liveStreamManager);
     }
 
     public void destroy() {
@@ -234,6 +242,32 @@ public class AnchorView extends BasicView {
 
         mLiveCoreView.startCamera(true, null);
         mLiveCoreView.startMicrophone(null);
+        if (mRoomBehavior == TUILiveRoomAnchorFragment.RoomBehavior.ENTER_ROOM) {
+            mLayoutPushing.setVisibility(VISIBLE);
+            mLiveCoreView.joinLiveStream(mRoomState.roomId, new GetRoomInfoCallback() {
+                @Override
+                public void onSuccess(RoomInfo roomInfo) {
+                    mLiveManager.getRoomManager().updateLiveStatus(RoomState.LiveStatus.PUSHING);
+                    mLiveManager.getRoomManager().updateRoomState(roomInfo);
+                    mLiveManager.getRoomManager().updateLiveInfo();
+                    mUserManager.getAudienceList();
+                    mUserManager.updateOwnerUserInfo();
+                    mCoGuestManager.getSeatList();
+                    if (mUserState.selfInfo.role.get() == TUIRoomDefine.Role.ROOM_OWNER) {
+                        mCoGuestManager.getSeatApplicationList();
+                    }
+                }
+
+                @Override
+                public void onError(TUICommonDefine.Error error, String message) {
+                    ErrorHandler.onError(error);
+                    removeAllViews();
+                    if (mContext instanceof Activity) {
+                        ((Activity) mContext).finish();
+                    }
+                }
+            });
+        }
     }
 
     private void initComponentView() {
