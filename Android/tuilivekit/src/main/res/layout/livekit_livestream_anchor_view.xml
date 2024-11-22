@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
     <FrameLayout
         android:id="@+id/lsv_video_view_container"
@@ -19,7 +19,8 @@
         <FrameLayout
             android:id="@+id/fl_preview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:visibility="gone">
 
             <RelativeLayout
                 android:id="@+id/rl_anchor_preview_mask"
@@ -168,7 +169,8 @@
                 android:layout_height="86dp"
                 android:layout_gravity="top|end"
                 android:layout_marginTop="112dp"
-                android:layout_marginEnd="8dp" />
+                android:layout_marginEnd="8dp"
+                android:visibility="gone" />
 
             <com.trtc.uikit.livekit.component.roominfo.RoomInfoView
                 android:id="@+id/room_info_view"
@@ -208,7 +210,8 @@
         <com.trtc.uikit.livekit.livestream.view.anchor.dashboard.AnchorDashboardView
             android:id="@+id/anchor_dashboard_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:visibility="gone" />
     </FrameLayout>
 
 </FrameLayout>

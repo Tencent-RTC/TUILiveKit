@@ -37,6 +37,7 @@ public class TUILiveRoomAnchorFragment extends Fragment implements ITUINotificat
     private       AnchorView            mAnchorView;
     private       LiveStreamManager     mLiveManager;
     private       boolean               mOnDestroyFlag               = false;
+    private       RoomBehavior          mRoomBehavior                = RoomBehavior.CREATE_ROOM;
     private final Observer<Boolean>     mGLContextCreateFlagObserver = this::onGLContextCreateFlag;
     private final Handler               mMainHandler                 = new Handler(Looper.getMainLooper());
     private final OnBackPressedCallback mBackPressedCallback         = new OnBackPressedCallback(true) {
@@ -55,6 +56,11 @@ public class TUILiveRoomAnchorFragment extends Fragment implements ITUINotificat
         mRoomID = roomId;
     }
 
+    public TUILiveRoomAnchorFragment(String roomId, RoomBehavior behavior) {
+        mRoomID = roomId;
+        mRoomBehavior = behavior;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +77,7 @@ public class TUILiveRoomAnchorFragment extends Fragment implements ITUINotificat
         mLayoutContainer = contentView.findViewById(R.id.rl_container);
         if (mAnchorView == null) {
             mAnchorView = new AnchorView(requireActivity());
-            mAnchorView.init(mLiveManager);
+            mAnchorView.init(mLiveManager, mRoomBehavior);
         }
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
@@ -125,7 +131,9 @@ public class TUILiveRoomAnchorFragment extends Fragment implements ITUINotificat
             mLiveManager.getMediaManager().setCustomVideoProcess();
             RoomManager roomController = mLiveManager.getRoomManager();
             roomController.initCreateRoomState(mRoomID, "", 0);
-            roomController.startPreview();
+            if (mRoomBehavior == RoomBehavior.CREATE_ROOM) {
+                roomController.startPreview();
+            }
         } else {
             mLiveManager = manager;
             FloatWindowManager.getInstance().setLiveStreamManager(null);
@@ -151,5 +159,10 @@ public class TUILiveRoomAnchorFragment extends Fragment implements ITUINotificat
                 }
             });
         }
+    }
+
+    public enum RoomBehavior {
+        CREATE_ROOM,
+        ENTER_ROOM,
     }
 }
