@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.foregroundservice.AudioForegroundService;
-import com.trtc.tuikit.common.foregroundservice.VideoForegroundService;
 import com.trtc.tuikit.common.system.ContextProvider;
 import com.trtc.uikit.livekit.voiceroomcore.R;
 import com.trtc.uikit.livekit.voiceroomcore.SeatGridViewObserver;
@@ -131,7 +130,7 @@ public class RoomManager extends BaseManager {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("api", "setFramework");
             jsonObject.put("params", params);
-            mService.callExperimentalAPI(jsonObject.toString(), null);
+            mService.callExperimentalAPI(jsonObject.toString());
         } catch (JSONException e) {
             Logger.error( FILE,"dataReport:"+e);
         }

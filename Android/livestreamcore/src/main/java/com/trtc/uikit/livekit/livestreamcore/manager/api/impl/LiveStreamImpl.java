@@ -10,14 +10,10 @@ import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomObserver;
-import com.tencent.cloud.tuikit.engine.room.internal.TUIRoomEngineImpl;
 import com.tencent.trtc.TRTCCloud;
 import com.tencent.trtc.TRTCCloudDef;
 import com.trtc.uikit.livekit.livestreamcore.common.utils.Logger;
 import com.trtc.uikit.livekit.livestreamcore.manager.api.ILiveStream;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Map;
@@ -653,38 +649,14 @@ public class LiveStreamImpl implements ILiveStream {
     }
 
     @Override
-    public void callExperimentalAPI(String jsonStr, Object param) {
-        Logger.info(mTag + " callExperimentalAPI:[jsonStr:" + jsonStr + "param:" + new Gson().toJson(param) + "]");
-        TUIRoomEngineImpl.callExperimentalAPI(jsonStr, param);
+    public void callExperimentalAPI(String jsonStr) {
+        Logger.info(mTag + " callExperimentalAPI:[jsonStr:" + jsonStr+ "]");
+        TUIRoomEngine.callExperimentalAPI(jsonStr);
     }
 
     @Override
     public TRTCCloud getTRTCCloud() {
         return mTRTCCloud;
-    }
-
-    private TUIRoomEngine createEngine() {
-        Logger.info(mTag + " createEngine:[]");
-        TUIRoomEngine roomEngine;
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("api", "createSubRoom");
-            roomEngine = (TUIRoomEngine) TUIRoomEngineImpl.callExperimentalAPI(jsonObject.toString());
-            return roomEngine;
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void destroyEngine() {
-        Logger.info(mTag + " destroyEngine:[]");
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("api", "destroySubRoom");
-            TUIRoomEngineImpl.callExperimentalAPI(jsonObject.toString(), mTUIRoomEngine);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public void requestConnection(List<String> roomIdList, int timeoutSeconds, String extensionInfo,

@@ -180,7 +180,7 @@ public class RoomManager extends BaseManager {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("api", "setFramework");
             jsonObject.put("params", params);
-            mVideoLiveService.callExperimentalAPI(jsonObject.toString(), null);
+            mVideoLiveService.callExperimentalAPI(jsonObject.toString());
         } catch (JSONException e) {
             Log.e(TAG, "dataReport:", e);
         }
