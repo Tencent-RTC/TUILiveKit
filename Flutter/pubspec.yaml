@@ -17,8 +17,10 @@ dependencies:
   intl: ^0.19.0
   plugin_platform_interface: ^2.0.2
   rtc_room_engine: ^2.5.0
+  #    path: ../../engine/rtc_room_engine
   tencent_cloud_uikit_core: ^1.7.0
-  tencent_cloud_chat_sdk: any
+  tencent_trtc_cloud: ^2.8.1
+  tencent_cloud_chat_sdk: ^8.0.5901
   fluttertoast: ^8.2.2
   permission_handler: ^11.0.0
 

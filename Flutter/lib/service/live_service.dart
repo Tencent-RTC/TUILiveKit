@@ -1,4 +1,3 @@
-import 'package:rtc_room_engine/api/extension/tui_live_list_manager.dart';
 import 'package:rtc_room_engine/rtc_room_engine.dart';
 import 'package:tencent_cloud_chat_sdk/models/v2_tim_follow_info.dart';
 import 'package:tencent_cloud_chat_sdk/models/v2_tim_follow_operation_result.dart';
@@ -7,7 +6,6 @@ import 'package:tencent_cloud_chat_sdk/models/v2_tim_value_callback.dart';
 import 'package:tencent_trtc_cloud/trtc_cloud_def.dart';
 
 abstract class ILiveService {
-
   void destroy();
 
   void addObserver(TUIRoomObserver observer);
@@ -64,6 +62,8 @@ abstract class ILiveService {
 
   void startPlayRemoteVideo(String userId, TUIVideoStreamType streamType, TUIPlayCallback? playCallback);
 
+  void stopPlayRemoteVideo(String userId, TUIVideoStreamType streamType);
+
   Future<TUIActionCallback> muteLocalAudio();
 
   Future<TUIActionCallback> unMuteLocalAudio();
@@ -96,7 +96,7 @@ abstract class ILiveService {
 
   Future<void> setBeautyLevel(int beautyLevel);
 
-  Future<void> setWhitenessLevel(int whitenessLevel) ;
+  Future<void> setWhitenessLevel(int whitenessLevel);
 
   Future<void> setRuddyLevel(int ruddyLevel);
 
@@ -113,8 +113,9 @@ abstract class ILiveService {
   void callExperimentalAPI(String jsonStr);
 
   Future<TUIValueCallBack<TUILiveListResult>> fetchLiveList(String cursor, int count);
-  Future<TUIActionCallback> setLiveInfo(
-      String roomId, {String? coverUrl, List<int>? categoryList, bool? isPublicVisible, int? activityStatus});
+
+  Future<TUIActionCallback> setLiveInfo(String roomId,
+      {String? coverUrl, List<int>? categoryList, bool? isPublicVisible, int? activityStatus});
 
   TUILoginUserInfo getSelfInfo();
 }

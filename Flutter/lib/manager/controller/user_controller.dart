@@ -164,6 +164,17 @@ class UserController extends Controller {
   }
 
   void onUserVideoStateChanged(String userId, TUIVideoStreamType streamType, bool hasVideo, TUIChangeReason reason) {
+    if (streamType == TUIVideoStreamType.screenStream) {
+      if (hasVideo) {
+        userState.hasScreenStreamUserList.value.add(userId);
+      } else {
+        userState.hasScreenStreamUserList.value.remove(userId);
+      }
+      final LinkedHashSet<String> tempList = LinkedHashSet<String>();
+      tempList.addAll(userState.hasScreenStreamUserList.value);
+      userState.hasScreenStreamUserList.value = tempList;
+      return;
+    }
     if (hasVideo) {
       userState.hasVideoStreamUserList.value.add(userId);
     } else {
@@ -178,14 +189,14 @@ class UserController extends Controller {
   }
 
   void onUserVoiceVolumeChanged(Map<String, int> volumeMap) {
-    volumeMap.entries.forEach((entry) {
+    for (var entry in volumeMap.entries) {
       String userId = entry.key;
       if (entry.value > volumeCanHeardMinLimit) {
         userState.speakingUserList.value.add(userId);
       } else {
         userState.speakingUserList.value.remove(userId);
       }
-    });
+    }
   }
 
   void onRemoteUserEnterRoom(String roomId, TUIUserInfo userInfo) {

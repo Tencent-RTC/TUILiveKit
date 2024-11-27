@@ -1,4 +1,4 @@
-import 'package:tencent_live_uikit/service/impl/room_engine_service.dart';
+import 'package:tencent_live_uikit/service/impl/live_service_impl.dart';
 import 'package:tencent_live_uikit/service/live_service.dart';
 
 class ServiceProvider {
@@ -7,6 +7,6 @@ class ServiceProvider {
   static final ServiceProvider instance = ServiceProvider._();
 
   ILiveService getLiveService() {
-    return RoomEngineService();
+    return LiveServiceImpl();
   }
 }

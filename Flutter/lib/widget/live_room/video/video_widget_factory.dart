@@ -7,11 +7,11 @@ import 'package:tencent_live_uikit/state/operation/seat_state.dart';
 import 'package:tencent_live_uikit/widget/live_room/video/index.dart';
 
 class VideoWidgetFactory {
-  final LiveController _liveController;
+  final WeakReference<LiveController> _liveController;
   final Map<String, VideoItemWidget> _videoWidgetMap = HashMap<String, VideoItemWidget>();
   final Map<String, GlobalKey> _globalKeyMap = HashMap<String, GlobalKey>();
 
-  VideoWidgetFactory({required LiveController liveController}) : _liveController = liveController;
+  VideoWidgetFactory({required WeakReference<LiveController> liveController}) : _liveController = liveController;
 
   VideoItemWidget? createVideoWidget(SeatInfo seatInfo) {
     if (seatInfo.userId.value.isEmpty) {
@@ -25,7 +25,7 @@ class VideoWidgetFactory {
     }
     videoWidget = VideoItemWidget(
       key: globalKey,
-      liveController: _liveController,
+      liveController: _liveController.target!,
       seatInfo: seatInfo,
     );
     _videoWidgetMap[seatInfo.userId.value] = videoWidget;

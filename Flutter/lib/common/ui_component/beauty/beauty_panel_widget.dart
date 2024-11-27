@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:rtc_room_engine/rtc_room_engine.dart';
 import 'package:tencent_live_uikit/common/index.dart';
 
 class BeautyPanelWidget extends BasicWidget {

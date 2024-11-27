@@ -25,9 +25,8 @@ class LiveController {
     userController = UserController(state, liveService);
     mediaController = MediaController(state, liveService);
     viewController = ViewController(state, liveService);
-    videoWidgetFactory = VideoWidgetFactory(liveController: this);
-
-    liveObserver = LiveObserver(this);
+    videoWidgetFactory = VideoWidgetFactory(liveController: WeakReference(this));
+    liveObserver = LiveObserver(WeakReference(this));
     liveService.addObserver(liveObserver);
   }
 

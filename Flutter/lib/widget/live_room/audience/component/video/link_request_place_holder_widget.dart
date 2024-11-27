@@ -39,7 +39,6 @@ class LinkRequestPlaceHolderWidgetState extends BasicState<LinkRequestPlaceHolde
 
   @override
   void dispose() {
-    print("LinkRequestPlaceHolderWidget.dispose");
     timer.cancel();
     super.dispose();
   }
@@ -69,7 +68,6 @@ class LinkRequestPlaceHolderWidgetState extends BasicState<LinkRequestPlaceHolde
 
   void initTimer() {
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      print("LinkRequestPlaceHolderWidget.Timer:$dotCount");
       StringBuffer sb = StringBuffer();
       for (int i = 0; i < dotCount; i++) {
         sb.write(".");

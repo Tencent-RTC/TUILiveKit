@@ -45,11 +45,8 @@ extension MusicServiceLogicExtension on MusicService {
   void _startMusic(MusicInfo musicInfo) {
     musicState.currentMusicInfo.value = musicInfo;
     musicInfo.isPlaying.value = true;
-    final AudioMusicParam musicParam = AudioMusicParam(
-        path: musicInfo.path,
-        id: musicInfo.id,
-        publish: true,
-        loopCount: 100000000);
+    final AudioMusicParam musicParam =
+        AudioMusicParam(path: musicInfo.path, id: musicInfo.id, publish: true, loopCount: 100000000);
     liveController.liveService.startPlayMusic(musicParam);
   }
 
@@ -71,22 +68,16 @@ extension MusicServiceLogicExtension on MusicService {
 
       list.add(MusicInfo(
           id: 1,
-          name: LiveKitLocalizations.of(Global.appContext())!
-              .livekit_music_cheerful,
-          path:
-              "https://dldir1.qq.com/hudongzhibo/TUIKit/resource/music/PositiveHappyAdvertising.mp3"));
+          name: LiveKitLocalizations.of(Global.appContext())!.livekit_music_cheerful,
+          path: "https://dldir1.qq.com/hudongzhibo/TUIKit/resource/music/PositiveHappyAdvertising.mp3"));
       list.add(MusicInfo(
           id: 2,
-          name: LiveKitLocalizations.of(Global.appContext())!
-              .livekit_music_melancholy,
-          path:
-              "https://dldir1.qq.com/hudongzhibo/TUIKit/resource/music/SadCinematicPiano.mp3"));
+          name: LiveKitLocalizations.of(Global.appContext())!.livekit_music_melancholy,
+          path: "https://dldir1.qq.com/hudongzhibo/TUIKit/resource/music/SadCinematicPiano.mp3"));
       list.add(MusicInfo(
           id: 3,
-          name: LiveKitLocalizations.of(Global.appContext())!
-              .livekit_music_wonder_world,
-          path:
-              "https://dldir1.qq.com/hudongzhibo/TUIKit/resource/music/WonderWorld.mp3"));
+          name: LiveKitLocalizations.of(Global.appContext())!.livekit_music_wonder_world,
+          path: "https://dldir1.qq.com/hudongzhibo/TUIKit/resource/music/WonderWorld.mp3"));
       musicState.musicList.value = list;
     }
   }

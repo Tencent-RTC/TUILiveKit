@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tencent_live_uikit/common/index.dart';
-import 'package:tencent_live_uikit/common/ui_component/index.dart';
 
 import 'anchor_preview_function_widget.dart';
 
@@ -14,7 +13,6 @@ class AnchorPreviewWidget extends BasicWidget {
 }
 
 class AnchorPreviewWidgetState extends BasicState<AnchorPreviewWidget> {
-
   @override
   Widget build(BuildContext context) {
     return Stack(

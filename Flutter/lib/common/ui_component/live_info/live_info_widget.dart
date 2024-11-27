@@ -13,10 +13,6 @@ class LiveInfoWidget extends BasicWidget {
 }
 
 class LiveInfoWidgetState extends BasicState<LiveInfoWidget> {
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {

@@ -153,7 +153,8 @@ class ErrorHandler {
         message = LiveKitLocalizations.of(Global.appContext())?.livekit_error_open_microphone_need_seat_unlock;
         break;
       case TUIError.errOpenMicrophoneNeedPermissionFromAdmin:
-        message = LiveKitLocalizations.of(Global.appContext())?.livekit_error_open_microphone_need_permission_from_admin;
+        message =
+            LiveKitLocalizations.of(Global.appContext())?.livekit_error_open_microphone_need_permission_from_admin;
         break;
       case TUIError.errOpenCameraNeedSeatUnlock:
         message = LiveKitLocalizations.of(Global.appContext())?.livekit_error_open_camera_need_seat_unlock;
@@ -165,7 +166,8 @@ class ErrorHandler {
         message = LiveKitLocalizations.of(Global.appContext())?.livekit_error_open_screen_share_need_seat_unlock;
         break;
       case TUIError.errOpenScreenShareNeedPermissionFromAdmin:
-        message = LiveKitLocalizations.of(Global.appContext())?.livekit_error_open_screen_share_need_permission_from_admin;
+        message =
+            LiveKitLocalizations.of(Global.appContext())?.livekit_error_open_screen_share_need_permission_from_admin;
         break;
       case TUIError.errSendMessageDisabledForAll:
         message = LiveKitLocalizations.of(Global.appContext())?.livekit_error_send_message_disabled_for_all;

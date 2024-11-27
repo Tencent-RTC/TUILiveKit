@@ -19,11 +19,6 @@ class VideoLinkSettingsPanelWidgetState extends BasicState<VideoLinkSettingsPane
   late final List<BeautyItem> list;
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void dispose() {
     liveController.mediaController.closeLocalCamera();
     super.dispose();

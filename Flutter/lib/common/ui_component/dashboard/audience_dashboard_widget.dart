@@ -88,8 +88,8 @@ class AudienceDashboardWidgetState extends BasicState<AudienceDashboardWidget> {
       child: Text(
         liveController.getRoomSate().ownerInfo.name.value ?? "",
         overflow: TextOverflow.ellipsis,
-        style: const TextStyle(fontSize: 14, fontStyle: FontStyle.normal, color: LivekitColors
-            .livekitDesignStandardFlowkitWhite),
+        style: const TextStyle(
+            fontSize: 14, fontStyle: FontStyle.normal, color: LivekitColors.livekitDesignStandardFlowkitWhite),
       ),
     );
   }

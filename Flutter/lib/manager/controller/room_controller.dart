@@ -27,6 +27,7 @@ class RoomController extends Controller {
   }
 
   Future<TUIValueCallBack<TUIRoomInfo>> start() async {
+    LiveKitLogger.info("$tag start[roomId:${roomState.roomId},liveService:${liveService.hashCode}]");
     _dataReport();
     if (roomState.roomId.isEmpty) {
       LiveKitLogger.error('$tag not init create room state');
@@ -55,6 +56,7 @@ class RoomController extends Controller {
   }
 
   Future<TUIValueCallBack<TUIRoomInfo>> join(String roomId) async {
+    LiveKitLogger.info("$tag start[roomId:$roomId,liveService:${liveService.hashCode}]");
     _dataReport();
     TUIValueCallBack<TUIRoomInfo> result = await liveService.join(roomId);
     if (result.code != TUIError.success) {
@@ -68,6 +70,7 @@ class RoomController extends Controller {
   }
 
   Future<TUIActionCallback> exit() {
+    LiveKitLogger.info("$tag exit[roomId:${roomState.roomId},liveService:${liveService.hashCode}]");
     viewState.liveStatus.value = LiveStatus.dashboard;
     if (_isOwner()) {
       return _stop();

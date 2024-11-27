@@ -13,6 +13,13 @@ class AnchorWidget extends BasicWidget {
 }
 
 class AnchorWidgetState extends BasicState<AnchorWidget> {
+
+  @override
+  void initState() {
+    LiveKitLogger.info("AnchorWidget init");
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,6 +38,7 @@ class AnchorWidgetState extends BasicState<AnchorWidget> {
 
   @override
   void dispose() {
+    LiveKitLogger.info("AnchorWidget dispose");
     liveController.roomController.exit();
     super.dispose();
   }

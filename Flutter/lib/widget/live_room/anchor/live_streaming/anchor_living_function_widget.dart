@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tencent_live_uikit/common/index.dart';
-import 'package:tencent_live_uikit/common/ui_component/music/widget/music_panel_widget.dart';
 import 'package:tencent_live_uikit/widget/live_room/anchor/common/settings_panel_widget.dart';
 import 'package:tencent_live_uikit/widget/live_room/anchor/live_streaming/link/anchor_link_mic_manage_panel_widget.dart';
 

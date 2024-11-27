@@ -66,8 +66,10 @@ class ApplyLinkMicFloatWidgetState extends BasicState<ApplyLinkMicFloatWidget> {
                   borderRadius: BorderRadius.circular(18),
                 ),
                 padding: const EdgeInsets.all(2),
-                child: Image.asset(LivekitImages.livekitEllipsis,
-                  package: Constants.pluginName,),
+                child: Image.asset(
+                  LivekitImages.livekitEllipsis,
+                  package: Constants.pluginName,
+                ),
               ),
             ),
           ),
@@ -85,15 +87,17 @@ class ApplyLinkMicFloatWidgetState extends BasicState<ApplyLinkMicFloatWidget> {
                 padding: const EdgeInsets.all(2),
                 child: ClipOval(
                   child: Image.network(
-                    liveController.getSeatState().seatApplicationList.value.isNotEmpty ?
-                    liveController.getSeatState().seatApplicationList.value[0].avatarUrl ?? "" : "",
+                    liveController.getSeatState().seatApplicationList.value.isNotEmpty
+                        ? liveController.getSeatState().seatApplicationList.value[0].avatarUrl ?? ""
+                        : "",
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return Image.asset(
                         LivekitImages.livekitDefaultAvatar,
                         package: Constants.pluginName,
                       );
-                    },),
+                    },
+                  ),
                 ),
               ),
             ),
@@ -112,15 +116,17 @@ class ApplyLinkMicFloatWidgetState extends BasicState<ApplyLinkMicFloatWidget> {
                 padding: const EdgeInsets.all(2.0),
                 child: ClipOval(
                   child: Image.network(
-                    liveController.getSeatState().seatApplicationList.value.length > 1 ?
-                    liveController.getSeatState().seatApplicationList.value[1].avatarUrl ?? "" : "",
+                    liveController.getSeatState().seatApplicationList.value.length > 1
+                        ? liveController.getSeatState().seatApplicationList.value[1].avatarUrl ?? ""
+                        : "",
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return Image.asset(
                         LivekitImages.livekitDefaultAvatar,
                         package: Constants.pluginName,
                       );
-                    },),
+                    },
+                  ),
                 ),
               ),
             ),

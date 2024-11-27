@@ -43,7 +43,7 @@ class RoomState with ChangeNotifier {
 class LiveExtraInfo {
   final ValueNotifier<int> category = ValueNotifier(0);
   final ValueNotifier<LiveStreamPrivacyStatus> liveMode = ValueNotifier(LiveStreamPrivacyStatus.publicity);
-  final Set<String> giftPeopleSet = Set<String>();
+  final Set<String> giftPeopleSet = <String>{};
   int maxAudienceCount = 0;
   int messageCount = 0;
   int giftIncome = 0;

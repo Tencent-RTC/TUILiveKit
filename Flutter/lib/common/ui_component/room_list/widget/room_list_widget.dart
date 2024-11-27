@@ -3,22 +3,23 @@ import 'package:tencent_live_uikit/common/index.dart';
 import 'package:tencent_live_uikit/common/ui_component/room_list/service/room_list_service.dart';
 import 'package:tencent_live_uikit/common/ui_component/room_list/store/room_list_state.dart';
 import 'package:tencent_live_uikit/tencent_live_uikit.dart';
-import 'package:tencent_live_uikit/common/boot/index.dart';
 
-class RoomListWidget extends BasicWidget {
-  const RoomListWidget({super.key, required super.liveController});
+class RoomListWidget extends StatefulWidget {
+  const RoomListWidget({super.key});
 
   @override
-  RoomListWidgetState getState() {
+  RoomListWidgetState createState() {
     return RoomListWidgetState();
   }
 }
 
-class RoomListWidgetState extends BasicState<RoomListWidget> {
+class RoomListWidgetState extends State<RoomListWidget> {
+  late final double screenWidth = MediaQuery.of(context).size.width;
+  late final double screenHeight = MediaQuery.of(context).size.height;
   final int _column = 2;
   final double _childAspectRatio = 169.0 / 262.0;
-  late final RoomListService _roomListService;
-  final RoomListState _roomListState = RoomListState();
+  late final RoomListService _roomListService = RoomListService();
+  late final RoomListState _roomListState = _roomListService.roomListState;
   final ScrollController _scrollController = ScrollController();
   late final VoidCallback _listener = _onLoginChange;
 
@@ -57,7 +58,6 @@ class RoomListWidgetState extends BasicState<RoomListWidget> {
   }
 
   void _initData() {
-    _roomListService = RoomListService(liveController: liveController, roomListState: _roomListState);
     _scrollController.addListener(_scrollListener);
     if (Boot().isLogin.value) {
       _onRefresh();
@@ -69,7 +69,7 @@ class RoomListWidgetState extends BasicState<RoomListWidget> {
   }
 
   void _removeListener() {
-    liveController.getViewState().liveStatus.removeListener(_listener);
+    Boot().isLogin.removeListener(_listener);
   }
 
   void _onLoginChange() {

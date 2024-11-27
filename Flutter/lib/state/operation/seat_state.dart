@@ -17,6 +17,7 @@ class SeatState {
     this.filterEmptySeat = filterEmptySeat;
   }
 
+  @override
   String toString() {
     StringBuffer buffer = StringBuffer('{');
     buffer.write("object");
@@ -102,7 +103,7 @@ class SeatInfo {
   ValueNotifier<bool?> isAudioLocked = ValueNotifier(false);
   ValueNotifier<bool?> isVideoLocked = ValueNotifier(false);
 
-  SeatInfo() {}
+  SeatInfo();
 
   SeatInfo.fromUserId(String userId) {
     this.userId.value = userId;
@@ -120,6 +121,7 @@ class SeatInfo {
     return other is SeatInfo && other.userId.value == userId.value;
   }
 
+  @override
   int get hashCode => userId.value.hashCode;
 
   void updateState(TUISeatInfo seatInfo) {
@@ -165,6 +167,7 @@ class SeatApplication {
     timestamp = request.timestamp;
   }
 
+  @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     return other is SeatApplication && other.id == id;

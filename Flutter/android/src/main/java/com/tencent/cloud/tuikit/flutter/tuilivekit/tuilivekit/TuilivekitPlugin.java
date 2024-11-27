@@ -1,9 +1,11 @@
 package com.tencent.cloud.tuikit.flutter.tuilivekit.tuilivekit;
 
+import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.tencent.cloud.tuikit.flutter.tuilivekit.tuilivekit.utils.LiveKitLog;
 import com.tencent.cloud.tuikit.flutter.tuilivekit.tuilivekit.utils.MethodUtils;
 
 import java.lang.reflect.Method;
@@ -21,12 +23,14 @@ public class TuilivekitPlugin implements FlutterPlugin, MethodCallHandler {
 
     public static final String TAG = "TuilivekitPlugin";
 
-    private MethodChannel channel;
+    private MethodChannel mMethodChannel;
+    private Context       mContext;
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
-        channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "tuilivekit");
-        channel.setMethodCallHandler(this);
+        mContext = flutterPluginBinding.getApplicationContext();
+        mMethodChannel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "tuilivekit");
+        mMethodChannel.setMethodCallHandler(this);
     }
 
     @Override
@@ -42,7 +46,7 @@ public class TuilivekitPlugin implements FlutterPlugin, MethodCallHandler {
 
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
-        channel.setMethodCallHandler(null);
+        mMethodChannel.setMethodCallHandler(null);
     }
 
     public void apiLog(MethodCall call, MethodChannel.Result result) {
@@ -51,13 +55,13 @@ public class TuilivekitPlugin implements FlutterPlugin, MethodCallHandler {
 
         switch (level) {
             case 1:
-                Log.w(TAG, logString);
+                LiveKitLog.warn(mContext, logString);
                 break;
             case 2:
-                Log.e(TAG, logString);
+                LiveKitLog.error(mContext, logString);
                 break;
             default:
-                Log.i(TAG, logString);
+                LiveKitLog.info(mContext, logString);
                 break;
         }
         result.success(0);

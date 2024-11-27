@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tencent_live_uikit/common/index.dart';
 import 'package:tencent_live_uikit/common/ui_component/music/service/music_service.dart';
-import 'package:tencent_live_uikit/common/ui_component/music/store/music_state_factory.dart';
 
 class MusicPanelWidget extends BasicWidget {
   const MusicPanelWidget({super.key, required super.liveController});

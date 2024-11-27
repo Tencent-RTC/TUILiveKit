@@ -48,11 +48,8 @@ class LiveCoverSelectWidgetState extends BasicState<LiveCoverSelectWidget> {
                 ),
                 Center(
                   child: Text(
-                    LiveKitLocalizations.of(Global.appContext())!
-                        .livekit_preset_cover,
-                    style: const TextStyle(
-                        color: LivekitColors.livekitDesignStandardFlowkitWhite,
-                        fontSize: 16),
+                    LiveKitLocalizations.of(Global.appContext())!.livekit_preset_cover,
+                    style: const TextStyle(color: LivekitColors.livekitDesignStandardFlowkitWhite, fontSize: 16),
                   ),
                 ),
               ],

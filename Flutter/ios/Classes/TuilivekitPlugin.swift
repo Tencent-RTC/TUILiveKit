@@ -29,12 +29,14 @@ public class TuilivekitPlugin: NSObject, FlutterPlugin {
       }
 
       switch level {
+      case 0:
+          LiveKitLog.info("\(#file)", "\(#line)","\(logString)")
       case 1:
-          print("\(TuilivekitPlugin.TAG): \(logString)")
+          LiveKitLog.warn("\(#file)", "\(#line)","\(logString)")
       case 2:
-          print("\(TuilivekitPlugin.TAG): \(logString)")
+          LiveKitLog.error("\(#file)", "\(#line)","\(logString)")
       default:
-          print("\(TuilivekitPlugin.TAG): \(logString)")
+          LiveKitLog.info("\(#file)", "\(#line)","\(logString)")
       }
 
       result(0)

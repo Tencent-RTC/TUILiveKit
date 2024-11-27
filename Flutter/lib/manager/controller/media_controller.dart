@@ -78,6 +78,10 @@ class MediaController extends Controller {
     liveService.startPlayRemoteVideo(userId, type, playCallback);
   }
 
+  void stopPlayRemoteVideo(String userId, TUIVideoStreamType type) {
+    liveService.stopPlayRemoteVideo(userId, type);
+  }
+
   Future<TUIActionCallback> openLocalCamera() async {
     var cameraPermission = await Permission.camera.request();
 

@@ -16,8 +16,10 @@ class AudienceWidget extends BasicWidget {
 
 class AudienceWidgetState extends BasicState {
   late final VoidCallback _listener = _onLiveStatusChange;
+
   @override
   void initState() {
+    LiveKitLogger.info("AudienceWidget init");
     super.initState();
     _join();
     _addListener();
@@ -44,6 +46,7 @@ class AudienceWidgetState extends BasicState {
 
   @override
   void dispose() {
+    LiveKitLogger.info("AudienceWidget dispose");
     _removeListener();
     liveController.roomController.exit();
     super.dispose();

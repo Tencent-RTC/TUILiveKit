@@ -7,6 +7,7 @@ class UserState {
   final ValueNotifier<LinkedHashSet<UserInfo>> userList = ValueNotifier(LinkedHashSet<UserInfo>());
   final ValueNotifier<LinkedHashSet<String>> hasAudioStreamUserList = ValueNotifier(LinkedHashSet<String>());
   final ValueNotifier<LinkedHashSet<String>> hasVideoStreamUserList = ValueNotifier(LinkedHashSet<String>());
+  final ValueNotifier<LinkedHashSet<String>> hasScreenStreamUserList = ValueNotifier(LinkedHashSet<String>());
   final ValueNotifier<LinkedHashSet<String>> speakingUserList = ValueNotifier(LinkedHashSet<String>());
   final ValueNotifier<LinkedHashSet<UserInfo>> myFollowingUserList = ValueNotifier(LinkedHashSet<UserInfo>());
 
@@ -14,6 +15,7 @@ class UserState {
     userList.value.clear();
     hasAudioStreamUserList.value.clear();
     hasVideoStreamUserList.value.clear();
+    hasScreenStreamUserList.value.clear();
     speakingUserList.value.clear();
     myFollowingUserList.value.clear();
   }
@@ -56,7 +58,7 @@ class UserInfo {
   ValueNotifier<TUIRole> role = ValueNotifier(TUIRole.generalUser);
   ValueNotifier<int> fansCount = ValueNotifier(0);
 
-  UserInfo() {}
+  UserInfo();
 
   UserInfo.formUserId(this.userId);
 

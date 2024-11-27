@@ -1,21 +1,15 @@
-import 'package:rtc_room_engine/api/common/tui_common_define.dart';
-import 'package:rtc_room_engine/api/extension/tui_live_list_manager.dart';
-import 'package:rtc_room_engine/api/room/tui_room_define.dart';
+import 'package:rtc_room_engine/rtc_room_engine.dart';
 import 'package:tencent_live_uikit/common/logger/logger.dart';
 import 'package:tencent_live_uikit/common/ui_component/room_list/store/room_list_state.dart';
 import 'package:tencent_live_uikit/manager/error/error_handler.dart';
-import 'package:tencent_live_uikit/manager/live_controller.dart';
 
 class RoomListService {
   static const String tag = 'RoomListService';
-  final int fetchListCount = 20;
-  late LiveController liveController;
-  late RoomListState roomListState;
+  late final int fetchListCount = 20;
+  late final TUILiveListManager _liveListManager = TUIRoomEngine.sharedInstance().getExtension(TUIExtensionType.liveListManger);
+  late final RoomListState roomListState = RoomListState();
 
-  RoomListService({
-    required this.liveController,
-    required this.roomListState,
-  });
+  RoomListService();
 
   Future<void> refreshFetchList() async {
     if (roomListState.refreshStatus.value) {
@@ -38,7 +32,7 @@ class RoomListService {
 extension RoomListServiceLogicExtension on RoomListService {
   Future<void> _fetchLiveList() async {
     final String cursor = roomListState.cursor;
-    TUIValueCallBack<TUILiveListResult> result = await liveController.liveService.fetchLiveList(cursor, fetchListCount);
+    TUIValueCallBack<TUILiveListResult> result = await _liveListManager.fetchLiveList(cursor, fetchListCount);
     if (result.code != TUIError.success) {
       LiveKitLogger.error("${RoomListService.tag} _initData [code:${result.code},message:${result.message}]");
       ErrorHandler.onError(result.code);
@@ -57,7 +51,7 @@ extension RoomListServiceLogicExtension on RoomListService {
 
   Future<void> _loadMoreData() async {
     final String cursor = roomListState.cursor;
-    TUIValueCallBack<TUILiveListResult> result = await liveController.liveService.fetchLiveList(cursor, fetchListCount);
+    TUIValueCallBack<TUILiveListResult> result = await _liveListManager.fetchLiveList(cursor, fetchListCount);
     if (result.code != TUIError.success) {
       LiveKitLogger.error("${RoomListService.tag} _initData [code:${result.code},message:${result.message}]");
       ErrorHandler.onError(result.code);

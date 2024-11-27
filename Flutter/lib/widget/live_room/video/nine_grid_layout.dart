@@ -64,7 +64,7 @@ class NineGridLayout extends MultiChildLayoutDelegate {
   void _performLayout3(Size size) {
     for (var id in layoutIdList) {
       if (hasChild(id)) {
-        Size childSize = Size(0, 0);
+        Size childSize = const Size(0, 0);
         double offsetX = 0;
         double offsetY = 0;
         switch (id) {
@@ -130,8 +130,7 @@ class NineGridLayout extends MultiChildLayoutDelegate {
           offsetY = screenWidth * 2 / 3;
         }
         offsetY = offsetY + marginTop;
-        var offset = new Offset(offsetX, offsetY);
-
+        final offset = Offset(offsetX, offsetY);
         positionChild(id, offset);
       }
     }

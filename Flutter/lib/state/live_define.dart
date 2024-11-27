@@ -1,12 +1,12 @@
 enum LiveStreamPrivacyStatus {
   publicity,
-  privacy
+  privacy,
 }
 
 enum LinkStatus {
   none,
   applying,
-  linking
+  linking,
 }
 
 enum LiveStatus {
@@ -14,5 +14,5 @@ enum LiveStatus {
   previewing,
   pushing,
   playing,
-  dashboard
+  dashboard,
 }

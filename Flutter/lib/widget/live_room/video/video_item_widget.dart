@@ -32,17 +32,26 @@ class VideoItemState extends BasicState<VideoItemWidget> {
   }
 
   _initVideoView() {
-    return VideoView(
-      onViewCreated: (id) {
-        _nativeViewPtr = id;
-        if (widget.seatInfo.userId.value == TUIRoomEngine.getSelfInfo().userId) {
-          liveController.mediaController.setLocalVideoView(_nativeViewPtr);
-        } else {
-          liveController.mediaController
-              .setRemoteVideoView(widget.seatInfo.userId.value, TUIVideoStreamType.cameraStream, _nativeViewPtr);
-          liveController.mediaController
-              .startPlayRemoteVideo(widget.seatInfo.userId.value, TUIVideoStreamType.cameraStream, null);
-        }
+    return ValueListenableBuilder(
+      valueListenable: liveController.getUserState().hasScreenStreamUserList,
+      builder: (BuildContext context, LinkedHashSet<String> value, Widget? child) {
+        _switchStreamType();
+        return VideoView(
+          onViewCreated: (id) {
+            _nativeViewPtr = id;
+            if (widget.seatInfo.userId.value == TUIRoomEngine.getSelfInfo().userId) {
+              liveController.mediaController.setLocalVideoView(_nativeViewPtr);
+            } else {
+              var streamType = TUIVideoStreamType.cameraStream;
+              if (liveController.getUserState().hasScreenStreamUserList.value.contains(widget.seatInfo.userId.value)) {
+                streamType = TUIVideoStreamType.screenStream;
+              }
+              liveController.mediaController
+                  .setRemoteVideoView(widget.seatInfo.userId.value, streamType, _nativeViewPtr);
+              liveController.mediaController.startPlayRemoteVideo(widget.seatInfo.userId.value, streamType, null);
+            }
+          },
+        );
       },
     );
   }
@@ -111,6 +120,26 @@ class VideoItemState extends BasicState<VideoItemWidget> {
         },
       ),
     );
+  }
+
+  _switchStreamType() {
+    if (_nativeViewPtr != 0) {
+      if (liveController.getUserState().hasScreenStreamUserList.value.contains(widget.seatInfo.userId.value)) {
+        liveController.mediaController
+            .setRemoteVideoView(widget.seatInfo.userId.value, TUIVideoStreamType.screenStream, _nativeViewPtr);
+        liveController.mediaController
+            .stopPlayRemoteVideo(widget.seatInfo.userId.value, TUIVideoStreamType.cameraStream);
+        liveController.mediaController
+            .startPlayRemoteVideo(widget.seatInfo.userId.value, TUIVideoStreamType.screenStream, null);
+      } else {
+        liveController.mediaController
+            .setRemoteVideoView(widget.seatInfo.userId.value, TUIVideoStreamType.cameraStream, _nativeViewPtr);
+        liveController.mediaController
+            .stopPlayRemoteVideo(widget.seatInfo.userId.value, TUIVideoStreamType.screenStream);
+        liveController.mediaController
+            .startPlayRemoteVideo(widget.seatInfo.userId.value, TUIVideoStreamType.cameraStream, null);
+      }
+    }
   }
 }
 
