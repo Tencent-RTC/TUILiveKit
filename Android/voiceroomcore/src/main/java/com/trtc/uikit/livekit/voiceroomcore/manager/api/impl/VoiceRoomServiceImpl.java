@@ -5,7 +5,6 @@ import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomObserver;
-import com.tencent.cloud.tuikit.engine.room.internal.TUIRoomEngineImpl;
 import com.trtc.uikit.livekit.voiceroomcore.common.utils.Logger;
 import com.trtc.uikit.livekit.voiceroomcore.manager.api.IVoiceRoomService;
 
@@ -546,8 +545,8 @@ public class VoiceRoomServiceImpl implements IVoiceRoomService {
     }
 
     @Override
-    public void callExperimentalAPI(String jsonStr, Object param) {
-        Logger.info(FILE, "callExperimentalAPI:[jsonStr:" + jsonStr + "param:" + new Gson().toJson(param) + "]");
-        TUIRoomEngineImpl.callExperimentalAPI(jsonStr, param);
+    public void callExperimentalAPI(String jsonStr) {
+        Logger.info(FILE, "callExperimentalAPI:[jsonStr:" + jsonStr + "]");
+        TUIRoomEngine.callExperimentalAPI(jsonStr);
     }
 }

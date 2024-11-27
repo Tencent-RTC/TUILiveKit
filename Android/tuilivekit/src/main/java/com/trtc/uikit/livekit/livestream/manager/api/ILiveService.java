@@ -128,7 +128,7 @@ public interface ILiveService {
     void getUserFollowInfo(List<String> userIDList, V2TIMValueCallback<List<V2TIMFollowInfo>> callback);
 
     /****************************************** DATA REPORT *******************************************/
-    void callExperimentalAPI(String jsonStr, Object param);
+    void callExperimentalAPI(String jsonStr);
 
     /****************************************** Plugin - Room List *******************************************/
     void fetchLiveList(String cursor, int count, TUILiveListManager.LiveInfoListCallback callback);

@@ -2,6 +2,8 @@ package com.trtc.uikit.livekit.voiceroomcore;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
+import android.view.View;
+
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 
@@ -62,5 +64,13 @@ public class VoiceRoomDefine {
         void onTimeout(TUIRoomDefine.UserInfo userInfo);
 
         void onError(TUIRoomDefine.UserInfo userInfo, TUICommonDefine.Error error, String message);
+    }
+
+    public interface SeatViewAdapter {
+        View createSeatView(SeatGridView seatGridView, TUIRoomDefine.SeatInfo seatInfo);
+
+        void updateSeatView(SeatGridView seatGridView, TUIRoomDefine.SeatInfo seatInfo, View seatView);
+
+        void updateUserVolume(SeatGridView seatGridView, int volume, View seatView);
     }
 }

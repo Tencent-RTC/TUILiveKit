@@ -92,7 +92,7 @@ public interface ILiveStream {
     void setCameraMirror(boolean isMirror);
 
     /****************************************** DATA REPORT *******************************************/
-    void callExperimentalAPI(String jsonStr, Object param);
+    void callExperimentalAPI(String jsonStr);
 
     /****************************************** TRTC Cloud *******************************************/
     TRTCCloud getTRTCCloud();

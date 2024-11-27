@@ -18,7 +18,6 @@ import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveModifyFl
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomObserver;
-import com.tencent.cloud.tuikit.engine.room.internal.TUIRoomEngineImpl;
 import com.tencent.imsdk.v2.V2TIMFollowInfo;
 import com.tencent.imsdk.v2.V2TIMFollowOperationResult;
 import com.tencent.imsdk.v2.V2TIMFollowTypeCheckResult;
@@ -29,9 +28,6 @@ import com.tencent.trtc.TRTCCloud;
 import com.tencent.trtc.TRTCCloudDef;
 import com.trtc.uikit.livekit.livestream.manager.api.ILiveService;
 import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Map;
@@ -182,7 +178,8 @@ public class LiveServiceImpl implements ILiveService {
                 mTUIRoomEngine.enterRoom(roomId, TUIRoomDefine.RoomType.LIVE, new TUIRoomDefine.GetRoomInfoCallback() {
                     @Override
                     public void onSuccess(TUIRoomDefine.RoomInfo roomInfo) {
-                        LiveStreamLog.info(mTag + " enterRoom:[onSuccess:[roomInfo" + new Gson().toJson(roomInfo) + "]]");
+                        LiveStreamLog.info(mTag + " enterRoom:[onSuccess:[roomInfo" + new Gson().toJson(roomInfo) +
+                                "]]");
                         if (callback != null) {
                             callback.onSuccess(roomInfo);
                         }
@@ -190,7 +187,8 @@ public class LiveServiceImpl implements ILiveService {
 
                     @Override
                     public void onError(TUICommonDefine.Error error, String message) {
-                        LiveStreamLog.error(mTag + " enterRoom:[onError:[error:" + error + ",message:" + message + "]]");
+                        LiveStreamLog.error(mTag + " enterRoom:[onError:[error:" + error + ",message:" + message +
+                                "]]");
                         if (callback != null) {
                             callback.onError(error, message);
                         }
@@ -259,7 +257,8 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onCancelled(String requestId, String userId) {
-                LiveStreamLog.info(mTag + " takeSeat:[onCancelled:[requestId:" + requestId + ",userId:" + userId + "]]");
+                LiveStreamLog.info(mTag + " takeSeat:[onCancelled:[requestId:" + requestId + ",userId:" + userId +
+                        "]]");
                 if (callback != null) {
                     callback.onCancelled(requestId, userId);
                 }
@@ -275,7 +274,8 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onError(String requestId, String userId, TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(mTag + " takeSeat:onError, [requestId:" + requestId + ",userId:" + userId + ",error:"
+                LiveStreamLog.error(mTag + " takeSeat:onError, [requestId:" + requestId + ",userId:" + userId + "," +
+                        "error:"
                         + error + ",message:" + message + "]");
                 if (callback != null) {
                     callback.onError(requestId, userId, error, message);
@@ -606,7 +606,8 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(mTag + " openLocalMicrophone:[onError:[error:" + error + ",message:" + message + "]]");
+                LiveStreamLog.error(mTag + " openLocalMicrophone:[onError:[error:" + error + ",message:" + message +
+                        "]]");
                 if (callback != null) {
                     callback.onError(error, message);
                 }
@@ -648,7 +649,8 @@ public class LiveServiceImpl implements ILiveService {
         LiveStreamLog.info(mTag + " setVideoEncoderMirror:[isMirror:" + isMirror + "]");
         TRTCCloudDef.TRTCRenderParams trtcRenderParams = new TRTCCloudDef.TRTCRenderParams();
         trtcRenderParams.mirrorType = isMirror ? TRTC_VIDEO_MIRROR_TYPE_ENABLE : TRTC_VIDEO_MIRROR_TYPE_DISABLE;
-        LiveStreamLog.info(mTag + " setLocalRenderParams:[trtcRenderParams:" + new Gson().toJson(trtcRenderParams) + "]");
+        LiveStreamLog.info(mTag + " setLocalRenderParams:[trtcRenderParams:" + new Gson().toJson(trtcRenderParams) +
+                "]");
         mTRTCCloud.setLocalRenderParams(trtcRenderParams);
         mTRTCCloud.setVideoEncoderMirror(isMirror);
     }
@@ -788,7 +790,8 @@ public class LiveServiceImpl implements ILiveService {
                 new V2TIMValueCallback<List<V2TIMFollowOperationResult>>() {
                     @Override
                     public void onSuccess(List<V2TIMFollowOperationResult> results) {
-                        LiveStreamLog.info(mTag + " followUser:[onSuccess:[results:" + new Gson().toJson(results) + "]]");
+                        LiveStreamLog.info(mTag + " followUser:[onSuccess:[results:" + new Gson().toJson(results) +
+                                "]]");
                         if (callback != null) {
                             callback.onSuccess(results);
                         }
@@ -796,7 +799,8 @@ public class LiveServiceImpl implements ILiveService {
 
                     @Override
                     public void onError(int code, String message) {
-                        LiveStreamLog.error(mTag + " followUser:[onSuccess:[code:" + code + ",message:" + message + "]]");
+                        LiveStreamLog.error(mTag + " followUser:[onSuccess:[code:" + code + ",message:" + message +
+                                "]]");
                         if (callback != null) {
                             callback.onError(code, message);
                         }
@@ -881,9 +885,9 @@ public class LiveServiceImpl implements ILiveService {
     }
 
     @Override
-    public void callExperimentalAPI(String jsonStr, Object param) {
-        LiveStreamLog.info(mTag + " callExperimentalAPI:[jsonStr:" + jsonStr + "param:" + new Gson().toJson(param) + "]");
-        TUIRoomEngineImpl.callExperimentalAPI(jsonStr, param);
+    public void callExperimentalAPI(String jsonStr) {
+        LiveStreamLog.info(mTag + " callExperimentalAPI:[jsonStr:" + jsonStr + "]");
+        TUIRoomEngine.callExperimentalAPI(jsonStr);
     }
 
     /****************************************** Plugin - Room List *******************************************/
@@ -912,7 +916,8 @@ public class LiveServiceImpl implements ILiveService {
 
     @Override
     public void setLiveInfo(LiveInfo liveInfo, List<LiveModifyFlag> flagList, TUIRoomDefine.ActionCallback callback) {
-        LiveStreamLog.info((mTag + " setLiveInfo:[liveInfo:" + new Gson().toJson(liveInfo) + ",flag:" + flagList + "]"));
+        LiveStreamLog.info((mTag + " setLiveInfo:[liveInfo:" + new Gson().toJson(liveInfo) + ",flag:" + flagList +
+                "]"));
         mTUILiveListManager.setLiveInfo(liveInfo, flagList, new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
@@ -937,29 +942,7 @@ public class LiveServiceImpl implements ILiveService {
         return mTRTCCloud;
     }
 
-    private TUIRoomEngine createEngine() {
-        LiveStreamLog.info(mTag + " createEngine:[]");
-        TUIRoomEngine roomEngine;
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("api", "createSubRoom");
-            roomEngine = (TUIRoomEngine) TUIRoomEngineImpl.callExperimentalAPI(jsonObject.toString());
-            return roomEngine;
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
-    private void destroyEngine() {
-        LiveStreamLog.info(mTag + " destroyEngine:[]");
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("api", "destroySubRoom");
-            TUIRoomEngineImpl.callExperimentalAPI(jsonObject.toString(), mTUIRoomEngine);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     /***************************************** Plugin - Battle ******************************************/
     @Override

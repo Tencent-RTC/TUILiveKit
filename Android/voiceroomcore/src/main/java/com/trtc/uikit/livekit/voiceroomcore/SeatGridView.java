@@ -44,10 +44,10 @@ import java.util.List;
 import java.util.Map;
 
 public class SeatGridView extends FrameLayout {
-    private final SeatGridLayout              mSeatGridLayout;
-    private final VoiceRoomManager            mVoiceRoomManager;
-    private final SeatGridViewObserverManager mSeatGridViewObserverManager;
-    private       SeatViewAdapter             mSeatViewAdapter;
+    private final SeatGridLayout                  mSeatGridLayout;
+    private final VoiceRoomManager                mVoiceRoomManager;
+    private final SeatGridViewObserverManager     mSeatGridViewObserverManager;
+    private       VoiceRoomDefine.SeatViewAdapter mSeatViewAdapter;
 
     public SeatGridView(Context context) {
         this(context, null);
@@ -168,7 +168,7 @@ public class SeatGridView extends FrameLayout {
                 mVoiceRoomManager.getRoomState().maxSeatCount.get());
     }
 
-    public void setSeatViewAdapter(SeatViewAdapter adapter) {
+    public void setSeatViewAdapter(VoiceRoomDefine.SeatViewAdapter adapter) {
         DataReporter.reportEventData(LIVEKIT_METRICS_METHOD_CALL_SEAT_GRID_VIEW_SET_SEAT_VIEW_ADAPTER);
         mSeatViewAdapter = adapter;
         initSeatListView(mVoiceRoomManager.getSeatState().seatList.getList());
