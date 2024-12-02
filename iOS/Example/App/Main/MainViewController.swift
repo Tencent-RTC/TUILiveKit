@@ -7,7 +7,7 @@
 
 import UIKit
 import TUICore
-import TUILiveKit
+import SeatGridView
 
 class AppNavigationController: UINavigationController {
     override init(rootViewController: UIViewController) {
@@ -32,7 +32,7 @@ class AppNavigationController: UINavigationController {
 }
 
 class MainViewController: UIViewController {
-    
+
     private var menuItems: [MainItemModel] = []
     
     private lazy var collectionView: UICollectionView = {
@@ -113,8 +113,18 @@ extension MainViewController {
         mineBtn.widthAnchor.constraint(equalToConstant: 30).isActive = true
         mineBtn.heightAnchor.constraint(equalToConstant: 30).isActive = true
         let mineItem = UIBarButtonItem(customView: mineBtn)
-        navigationItem.rightBarButtonItems = [mineItem, debugButtonItem]
+        navigationItem.rightBarButtonItems = [mineItem, debugButtonItem, getSeatGridViewLogicTestButton()]
     }
+    
+    private func getSeatGridViewLogicTestButton() -> UIBarButtonItem {
+            let button = UIButton()
+            button.setImage(UIImage(systemName: "waveform.path"), for: .normal)
+            button.addTarget(self, action: #selector(seatGridViewLayoutTestButtonClick), for: .touchUpInside)
+            button.sizeToFit()
+            let barButtonItem = UIBarButtonItem(customView: button)
+            barButtonItem.tintColor = .black
+            return barButtonItem
+        }
 }
 
 // MARK: - Actions
@@ -128,6 +138,11 @@ extension MainViewController  {
     @objc private func debugClick() {
         let debugVC = SandBoxFileBrowserViewController(bathPath: NSHomeDirectory())
         navigationController?.pushViewController(debugVC, animated: true)
+    }
+       
+    @objc private func seatGridViewLayoutTestButtonClick() {
+        let seatGridViewLayoutTestVC = LayoutTestViewController()
+        navigationController?.pushViewController(seatGridViewLayoutTestVC, animated: true)
     }
 }
 

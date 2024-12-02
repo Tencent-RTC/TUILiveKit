@@ -9,7 +9,6 @@
 import Foundation
 import WebKit
 import TUICore
-import TUILiveKit
 
 class LoginViewController: UIViewController {
     let UserIdKey = "UserIdKey"

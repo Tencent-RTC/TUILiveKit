@@ -40,3 +40,8 @@
 "TUILiveKitApp.Main.Name" = "Name";
 "TUILiveKitApp.Main.Save" = "Save";
 "TUILiveKitApp.Main.Operate.Success" = "Successful operation";
+
+"TUILiveKitApp.Test.SeatGridView.universalLayout.xxx" = "Unviersal：xxx";
+"TUILiveKitApp.Test.SeatGridView.seatCount" = "SeatCount";
+"TUILiveKitApp.Test.SeatGridView.freeLayout" = "FreeLayout";
+"TUILiveKitApp.Test.SeatGridView.line.xxx" = "line xxx";

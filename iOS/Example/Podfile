@@ -1,3 +1,5 @@
+source 'https://github.com/CocoaPods/Specs.git'
+
 use_frameworks!
 
 platform :ios, '13.0'
@@ -11,6 +13,9 @@ target 'TUILiveKitApp' do
   # Local Library
   pod 'TUILiveKit', :path => '../TUILiveKit'
   pod 'RTCCommon', '>= 1.0.2'
+  pod 'SeatGridView', :path => '../SeatGridView/SeatGridView.podspec'
+  pod 'LiveStreamCore', :path => '../LiveStreamCore/LiveStreamCore.podspec'
+  
 end
 
 post_install do |installer|

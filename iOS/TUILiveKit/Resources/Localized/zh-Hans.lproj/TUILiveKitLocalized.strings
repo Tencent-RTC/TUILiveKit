@@ -60,7 +60,7 @@
 "live.anchor.cover.image.selection.title" = "封面";
 "live.anchor.cover.image.selection.confirm" = "设置为封面";
 "live.anchor.background.image.selection.title" = "背景";
-"live.anchor.background.image.selection.confirm" = "设置为背景";
+"live.anchor.background.image.selection.confirm" = "设为背景";
 "live.anchor.more.set.link" = "连麦";
 "live.anchor.more.set.pk" = "主播PK";
 "live.anchor.more.set.gift" = "送礼物";
@@ -80,10 +80,10 @@
 "live.anchor.setting.audio.effects" = "音效";
 "live.anchor.setting.flip" = "翻转";
 "live.anchor.setting.mirror" = "镜像";
-"live.anchor.setting.background" = "背景图";
+"live.anchor.setting.background" = "背景";
 "live.anchor.setting.video.parameters" = "视频参数";
 "live.anchor.setting.more.setting" = "更多设置";
-"live.anchor.setting.need.request" = "需要房主同意上麦";
+"live.anchor.setting.need.request" = "上麦需要房主同意";
 "live.link.success" = "连麦成功";
 "live.alert.confirm" = "确认";
 "live.alert.known" = "我知道了";
@@ -108,7 +108,7 @@
 "live.alert.cancel" = "取消";
 "live.alert.refuse" = "拒绝";
 "live.alert.sure" = "确定";
-"live.music.title" = "音效设置";
+"live.music.title" = "音效";
 "live.music.voiceEarMonitor" = "耳返";
 "live.music.voiceEarMonitorVolume" = "耳返音量";
 "live.music.backgroundMusic" = "背景音乐";
@@ -213,7 +213,7 @@
 
 // MARK: - Error Toast
 "live.error.success" = "操作成功";
-"live.error.failed" = "暂未归类的通用错误";
+"live.error.failed" = "操作错误";
 "live.error.freqLimit" = "请求被限频，请稍后重试";
 "live.error.repeat.operation" = "重复操作";
 "live.error.sdkAppId.notFound" = "未找到 SDKAppID，请在腾讯云视立方 SDK[控制台](https://console.cloud.tencent.com/vcube/project/manage)确认应用信息";
@@ -286,3 +286,19 @@
 "live.error.battleDisable.unconnected" = "发起PK前请先连线";
 "live.error.connectionDisable.connecting" = "主播连线中，无法发起连线";
 "live.error.connectionDisable.maxLimit" = "连线已超过最大人数限制";
+
+"live.streamDashboard.title" = "仪表盘";
+"live.streamDashboard.net.info" = "网络信息";
+"live.streamDashboard.net.RTT" = "往返延时";
+"live.streamDashboard.net.downLoss" = "下行丢包率";
+"live.streamDashboard.net.upLoss" = "上行丢包率";
+"live.streamDashboard.media.info" = "音视频信息";
+"live.streamDashboard.video.info" = "视频信息";
+"live.streamDashboard.video.local" = "本地用户";
+"live.streamDashboard.video.remote" = "远端用户";
+"live.streamDashboard.video.resolution" = "分辨率";
+"live.streamDashboard.video.bitrate" = "码率";
+"live.streamDashboard.video.frameRate" = "帧率";
+"live.streamDashboard.audio.info" = "音频信息";
+"live.streamDashboard.audio.sampleRate" = "采样率";
+"live.streamDashboard.audio.bitrate" = "码率";

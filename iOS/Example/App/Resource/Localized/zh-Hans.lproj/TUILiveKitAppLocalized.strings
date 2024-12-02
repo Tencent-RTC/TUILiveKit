@@ -40,3 +40,8 @@
 "TUILiveKitApp.Main.Name" = "昵称";
 "TUILiveKitApp.Main.Save" = "保存";
 "TUILiveKitApp.Main.Operate.Success" = "操作成功";
+
+"TUILiveKitApp.Test.SeatGridView.universalLayout.xxx" = "通用布局：xxx";
+"TUILiveKitApp.Test.SeatGridView.seatCount" = "麦位数量";
+"TUILiveKitApp.Test.SeatGridView.freeLayout" = "自定义布局";
+"TUILiveKitApp.Test.SeatGridView.line.xxx" = "第xxx行";
