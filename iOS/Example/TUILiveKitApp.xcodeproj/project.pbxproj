@@ -16,6 +16,9 @@
 		40DD29F0264395FF00DC4BA8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 40DD29EE264395FF00DC4BA8 /* Main.storyboard */; };
 		40DD29F2264395FF00DC4BA8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 40DD29F1264395FF00DC4BA8 /* Assets.xcassets */; };
 		40DD29F5264395FF00DC4BA8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 40DD29F3264395FF00DC4BA8 /* LaunchScreen.storyboard */; };
+		40F4B5E72CD0BE7B00AF941B /* SandBoxFileBroswerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F4B5E32CD0BE7B00AF941B /* SandBoxFileBroswerCell.swift */; };
+		40F4B5E82CD0BE7B00AF941B /* SandBoxFileBroswerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F4B5E42CD0BE7B00AF941B /* SandBoxFileBroswerModel.swift */; };
+		40F4B5E92CD0BE7B00AF941B /* SandBoxFileBrowserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F4B5E52CD0BE7B00AF941B /* SandBoxFileBrowserViewController.swift */; };
 		470EB6C1266A46F80072071F /* LaunchImage@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 470EB6BD266A46F80072071F /* LaunchImage@3x.png */; };
 		470EB6C2266A46F80072071F /* LaunchImage_en@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 470EB6BE266A46F80072071F /* LaunchImage_en@3x.png */; };
 		470EB6C3266A46F80072071F /* LaunchImage_en@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 470EB6BF266A46F80072071F /* LaunchImage_en@2x.png */; };
@@ -30,18 +33,17 @@
 		A955663F2ADFA0E900D86BFD /* SettingsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A955663E2ADFA0E900D86BFD /* SettingsConfig.swift */; };
 		A95566442ADFC42100D86BFD /* LoginRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95566422ADFC42100D86BFD /* LoginRootView.swift */; };
 		A95566452ADFC42100D86BFD /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95566432ADFC42100D86BFD /* LoginViewController.swift */; };
+		A998DE4C2AE27E3B00A8BF18 /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A998DE4B2AE27E3B00A8BF18 /* UIViewController+Extension.swift */; };
 		A9BC40682AB43DE4008AD131 /* RegisterRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BC405A2AB43DE4008AD131 /* RegisterRootView.swift */; };
 		A9BC406A2AB43DE4008AD131 /* UserAgreementViewController+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BC405C2AB43DE4008AD131 /* UserAgreementViewController+UI.swift */; };
 		A9BC40702AB43DE4008AD131 /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BC40652AB43DE4008AD131 /* RegisterViewController.swift */; };
 		A9BC40712AB43DE4008AD131 /* UserAgreementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BC40662AB43DE4008AD131 /* UserAgreementViewController.swift */; };
 		A9BC40722AB43DE4008AD131 /* LayoutDefine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BC40672AB43DE4008AD131 /* LayoutDefine.swift */; };
+		A9DD617E2CF968F000D4BAF0 /* LayoutTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DD617C2CF968F000D4BAF0 /* LayoutTestViewController.swift */; };
 		BD3BA6D28DB6203C280AC8A9 /* Pods_TUILiveKitApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D97B79F59C2263839B21BAD1 /* Pods_TUILiveKitApp.framework */; };
 		C11E26272B0B0B8300674403 /* TUILiveKitAppLocalized.strings in Resources */ = {isa = PBXBuildFile; fileRef = C11E26202B0B0B8300674403 /* TUILiveKitAppLocalized.strings */; };
 		C11E26282B0B0B8300674403 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C11E26222B0B0B8300674403 /* InfoPlist.strings */; };
 		C11E26292B0B0B8300674403 /* TUILiveKitAppLocalized.swift in Sources */ = {isa = PBXBuildFile; fileRef = C11E26262B0B0B8300674403 /* TUILiveKitAppLocalized.swift */; };
-		C1C7E74F2B16DC8A008E0066 /* SandBoxFileBrowserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1C7E74C2B16DC8A008E0066 /* SandBoxFileBrowserViewController.swift */; };
-		C1C7E7502B16DC8B008E0066 /* SandBoxFileBroswerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1C7E74D2B16DC8A008E0066 /* SandBoxFileBroswerCell.swift */; };
-		C1C7E7512B16DC8B008E0066 /* SandBoxFileBroswerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1C7E74E2B16DC8A008E0066 /* SandBoxFileBroswerModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +58,9 @@
 		40DD29F1264395FF00DC4BA8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		40DD29F4264395FF00DC4BA8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		40DD29F62643960000DC4BA8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		40F4B5E32CD0BE7B00AF941B /* SandBoxFileBroswerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SandBoxFileBroswerCell.swift; sourceTree = "<group>"; };
+		40F4B5E42CD0BE7B00AF941B /* SandBoxFileBroswerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SandBoxFileBroswerModel.swift; sourceTree = "<group>"; };
+		40F4B5E52CD0BE7B00AF941B /* SandBoxFileBrowserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SandBoxFileBrowserViewController.swift; sourceTree = "<group>"; };
 		470EB6BD266A46F80072071F /* LaunchImage@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LaunchImage@3x.png"; sourceTree = "<group>"; };
 		470EB6BE266A46F80072071F /* LaunchImage_en@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LaunchImage_en@3x.png"; sourceTree = "<group>"; };
 		470EB6BF266A46F80072071F /* LaunchImage_en@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LaunchImage_en@2x.png"; sourceTree = "<group>"; };
@@ -72,6 +77,7 @@
 		A955663E2ADFA0E900D86BFD /* SettingsConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsConfig.swift; sourceTree = "<group>"; };
 		A95566422ADFC42100D86BFD /* LoginRootView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginRootView.swift; sourceTree = "<group>"; };
 		A95566432ADFC42100D86BFD /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		A998DE4B2AE27E3B00A8BF18 /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		A9ACBFEF2C49F1A90047F980 /* libtcpag.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = libtcpag.framework; path = "../TCEffectPlayerKit/Frameworks/libtcpag.xcframework/ios-arm64/libtcpag.framework"; sourceTree = "<group>"; };
 		A9ACBFF12C49F1B70047F980 /* TCEffectPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TCEffectPlayer.framework; path = "../TCEffectPlayerKit/Frameworks/TCEffectPlayer.xcframework/ios-arm64_armv7/TCEffectPlayer.framework"; sourceTree = "<group>"; };
 		A9ACBFF32C49F1C30047F980 /* TCMediaX.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TCMediaX.framework; path = "../TCEffectPlayerKit/Frameworks/TCMediaX.xcframework/ios-arm64_armv7/TCMediaX.framework"; sourceTree = "<group>"; };
@@ -83,14 +89,12 @@
 		A9BC40652AB43DE4008AD131 /* RegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		A9BC40662AB43DE4008AD131 /* UserAgreementViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserAgreementViewController.swift; sourceTree = "<group>"; };
 		A9BC40672AB43DE4008AD131 /* LayoutDefine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayoutDefine.swift; sourceTree = "<group>"; };
+		A9DD617C2CF968F000D4BAF0 /* LayoutTestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutTestViewController.swift; sourceTree = "<group>"; };
 		C11E26212B0B0B8300674403 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/TUILiveKitAppLocalized.strings"; sourceTree = "<group>"; };
 		C11E26232B0B0B8300674403 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		C11E26242B0B0B8300674403 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/TUILiveKitAppLocalized.strings; sourceTree = "<group>"; };
 		C11E26252B0B0B8300674403 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C11E26262B0B0B8300674403 /* TUILiveKitAppLocalized.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TUILiveKitAppLocalized.swift; sourceTree = "<group>"; };
-		C1C7E74C2B16DC8A008E0066 /* SandBoxFileBrowserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SandBoxFileBrowserViewController.swift; sourceTree = "<group>"; };
-		C1C7E74D2B16DC8A008E0066 /* SandBoxFileBroswerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SandBoxFileBroswerCell.swift; sourceTree = "<group>"; };
-		C1C7E74E2B16DC8A008E0066 /* SandBoxFileBroswerModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SandBoxFileBroswerModel.swift; sourceTree = "<group>"; };
 		D97B79F59C2263839B21BAD1 /* Pods_TUILiveKitApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TUILiveKitApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -145,7 +149,6 @@
 		40DD29DC264395FF00DC4BA8 = {
 			isa = PBXGroup;
 			children = (
-				C1C7E74B2B16DC8A008E0066 /* SandBoxBroswer */,
 				4795D419265F4A6200C82562 /* Debug */,
 				40DD29E7264395FF00DC4BA8 /* App */,
 				40DD29E6264395FF00DC4BA8 /* Products */,
@@ -165,9 +168,11 @@
 		40DD29E7264395FF00DC4BA8 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				A9DD61762CF967FC00D4BAF0 /* Tests */,
 				40DD29E8264395FF00DC4BA8 /* AppDelegate.swift */,
 				40DD29EA264395FF00DC4BA8 /* SceneDelegate.swift */,
 				A9BC40672AB43DE4008AD131 /* LayoutDefine.swift */,
+				40F4B5E62CD0BE7B00AF941B /* SandBoxBroswer */,
 				A95566402ADFC42100D86BFD /* Login */,
 				A95566202ADF8C1900D86BFD /* Main */,
 				047F81F32CB7BEB80079BA02 /* Me */,
@@ -184,6 +189,16 @@
 				40DD29F62643960000DC4BA8 /* Info.plist */,
 			);
 			path = App;
+			sourceTree = "<group>";
+		};
+		40F4B5E62CD0BE7B00AF941B /* SandBoxBroswer */ = {
+			isa = PBXGroup;
+			children = (
+				40F4B5E32CD0BE7B00AF941B /* SandBoxFileBroswerCell.swift */,
+				40F4B5E42CD0BE7B00AF941B /* SandBoxFileBroswerModel.swift */,
+				40F4B5E52CD0BE7B00AF941B /* SandBoxFileBrowserViewController.swift */,
+			);
+			path = SandBoxBroswer;
 			sourceTree = "<group>";
 		};
 		4795D419265F4A6200C82562 /* Debug */ = {
@@ -277,8 +292,25 @@
 		A998DE4A2AE27E0F00A8BF18 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
+				A998DE4B2AE27E3B00A8BF18 /* UIViewController+Extension.swift */,
 			);
 			path = Extension;
+			sourceTree = "<group>";
+		};
+		A9DD61762CF967FC00D4BAF0 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				A9DD61772CF9684A00D4BAF0 /* SeatGridView */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		A9DD61772CF9684A00D4BAF0 /* SeatGridView */ = {
+			isa = PBXGroup;
+			children = (
+				A9DD617C2CF968F000D4BAF0 /* LayoutTestViewController.swift */,
+			);
+			path = SeatGridView;
 			sourceTree = "<group>";
 		};
 		C11E261F2B0B0B8300674403 /* Localized */ = {
@@ -289,17 +321,6 @@
 				C11E26262B0B0B8300674403 /* TUILiveKitAppLocalized.swift */,
 			);
 			path = Localized;
-			sourceTree = "<group>";
-		};
-		C1C7E74B2B16DC8A008E0066 /* SandBoxBroswer */ = {
-			isa = PBXGroup;
-			children = (
-				C1C7E74C2B16DC8A008E0066 /* SandBoxFileBrowserViewController.swift */,
-				C1C7E74D2B16DC8A008E0066 /* SandBoxFileBroswerCell.swift */,
-				C1C7E74E2B16DC8A008E0066 /* SandBoxFileBroswerModel.swift */,
-			);
-			name = SandBoxBroswer;
-			path = App/SandBoxBroswer;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -448,20 +469,22 @@
 				A917D53F2C22789400F9C310 /* MeViewController.swift in Sources */,
 				04B9468C2CB51EB80052D0F2 /* MainCollectionCell.swift in Sources */,
 				A9BC40712AB43DE4008AD131 /* UserAgreementViewController.swift in Sources */,
+				40F4B5E72CD0BE7B00AF941B /* SandBoxFileBroswerCell.swift in Sources */,
+				40F4B5E82CD0BE7B00AF941B /* SandBoxFileBroswerModel.swift in Sources */,
+				40F4B5E92CD0BE7B00AF941B /* SandBoxFileBrowserViewController.swift in Sources */,
 				04B946902CB52F8B0052D0F2 /* MainItemModel.swift in Sources */,
-				C1C7E7502B16DC8B008E0066 /* SandBoxFileBroswerCell.swift in Sources */,
+				A998DE4C2AE27E3B00A8BF18 /* UIViewController+Extension.swift in Sources */,
 				A955662D2ADF8C1900D86BFD /* MainViewController.swift in Sources */,
 				A9BC40702AB43DE4008AD131 /* RegisterViewController.swift in Sources */,
 				A917D5412C2278A600F9C310 /* MeRootView.swift in Sources */,
 				A9BC40722AB43DE4008AD131 /* LayoutDefine.swift in Sources */,
 				40DD29E9264395FF00DC4BA8 /* AppDelegate.swift in Sources */,
 				C11E26292B0B0B8300674403 /* TUILiveKitAppLocalized.swift in Sources */,
-				C1C7E7512B16DC8B008E0066 /* SandBoxFileBroswerModel.swift in Sources */,
+				A9DD617E2CF968F000D4BAF0 /* LayoutTestViewController.swift in Sources */,
 				A95566442ADFC42100D86BFD /* LoginRootView.swift in Sources */,
 				A9BC40682AB43DE4008AD131 /* RegisterRootView.swift in Sources */,
 				A9BC406A2AB43DE4008AD131 /* UserAgreementViewController+UI.swift in Sources */,
 				A955663F2ADFA0E900D86BFD /* SettingsConfig.swift in Sources */,
-				C1C7E74F2B16DC8A008E0066 /* SandBoxFileBrowserViewController.swift in Sources */,
 				A917D5452C22B45100F9C310 /* RenamePanel.swift in Sources */,
 				047F81F12CB77E5C0079BA02 /* VideoLiveViewController.swift in Sources */,
 				0421D8562CB682DC0075593D /* VoiceRoomViewController.swift in Sources */,
