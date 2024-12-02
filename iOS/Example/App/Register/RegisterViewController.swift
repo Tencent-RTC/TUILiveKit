@@ -11,7 +11,6 @@ import SnapKit
 import UIKit
 import ImSDK_Plus
 import TUICore
-import TUILiveKit
 
 class RegisterViewController: UIViewController {
     

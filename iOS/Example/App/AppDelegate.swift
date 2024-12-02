@@ -6,17 +6,16 @@
 //
 
 import UIKit
-import TUILiveKit
 import TUICore
 import RTCRoomEngine
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    func application(_ application: UIApplication, 
+    func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         return true
     }
-
+    
     // MARK: UISceneSession Lifecycle
 
     func application(_ application: UIApplication,
@@ -53,8 +52,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             debugPrint("window error")
         }
     }
-
-    
-    
 }
-

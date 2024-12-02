@@ -69,7 +69,7 @@
 "live.anchor.more.set.nickname" = "Hide audience nickname";
 "live.anchor.more.set.share" = "Allow sharing";
 "live.anchor.more.set.title" = "More settings";
-"live.anchor.confirm.close" = "Close living";
+"live.anchor.confirm.close" = "End Live";
 "live.beauty.title" = "One-click beauty";
 "live.beauty.buffing" = "Buffing";
 "live.beauty.close" = "Close";
@@ -287,3 +287,19 @@
 "live.error.battleDisable.unconnected" = "Please connect before you begin the battle.";
 "live.error.connectionDisable.connecting" = "The host is currently co-hosting with other streamers.";
 "live.error.connectionDisable.maxLimit" = "The number of co-hosting has exceeded the maximum limit.";
+
+"live.streamDashboard.title" = "DashBoard";
+"live.streamDashboard.net.info" = "Network Information";
+"live.streamDashboard.net.RTT" = "RTT";
+"live.streamDashboard.net.downLoss" = "DownLoss";
+"live.streamDashboard.net.upLoss" = "UpLoss";
+"live.streamDashboard.media.info" = "Media Information";
+"live.streamDashboard.video.info" = "Video Information";
+"live.streamDashboard.video.local" = "Local User";
+"live.streamDashboard.video.remote" = "Remote User";
+"live.streamDashboard.video.resolution" = "Resolution";
+"live.streamDashboard.video.bitrate" = "Bitrate";
+"live.streamDashboard.video.frameRate" = "FrameRate";
+"live.streamDashboard.audio.info" = "Audio Information";
+"live.streamDashboard.audio.sampleRate" = "SampleRate";
+"live.streamDashboard.audio.bitrate" = "Bitrate";

@@ -39,5 +39,5 @@ TODO: Add long description of the pod here.
   s.dependency 'SSZipArchive'
   s.dependency 'AFNetworking'
   s.dependency 'TUICore'
-  s.dependency 'TXLiteAVSDK_TRTC'
+  s.dependency 'TXLiteAVSDK_Professional'
 end
