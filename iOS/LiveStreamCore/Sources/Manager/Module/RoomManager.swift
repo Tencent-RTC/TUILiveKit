@@ -157,6 +157,9 @@ extension RoomManager {
     private func onJoinLiveSuccess(roomInfo: TUIRoomInfo) {
         updateRoomState(roomInfo: roomInfo)
         modifyRoomState(value: .playing, keyPath: \RoomState.liveStatus, isPublished: true)
+        if context?.userManager.userState.selfInfo.userId == roomInfo.ownerId {
+            context?.userManager.onStartLiveSuccess()
+        }
         updateOwnerInfo(roomInfo: roomInfo)
         Task {
             try? await context?.coGuestManager.initConnectedGuestList()
