@@ -123,11 +123,13 @@ class GiftPlayView: UIView {
 
 extension GiftPlayView {
     func playGiftAnimation(playUrl: String) {
-        animationView.setFinishClosure { [weak self] code in
+        animationView.playAnimation(playUrl: playUrl) { [weak self] code in
             guard let self = self else { return }
+            if code != 0 {
+                makeToast(.playFailedText)
+            }
             self.advancedAnimationManager.finishPlay()
         }
-        animationView.playAnimation(playUrl: playUrl)
     }
     
     func getLikeCount() -> Int {
@@ -319,4 +321,8 @@ extension GiftPlayView {
         let service = TUICore.getService("TUIEffectPlayerService")
         return service != nil
     }
+}
+
+private extension String {
+    static var playFailedText = localized("live.error.failed")
 }

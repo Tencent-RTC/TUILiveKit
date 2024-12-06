@@ -45,7 +45,7 @@ extension LSUserManager {
 
 // MARK: - Interface
 extension LSUserManager {
-    func getAudienceList() {
+    func fetchAudienceList() {
         Task {
             do {
                 let userList = try await service.getUserList()

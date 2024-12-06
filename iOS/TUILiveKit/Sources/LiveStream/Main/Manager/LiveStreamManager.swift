@@ -84,8 +84,8 @@ extension LiveStreamManager {
         return context.roomManager.getDefaultRoomName()
     }
     
-    func updateLiveInfo() {
-        context.roomManager.updateLiveInfo()
+    func syncLiveInfoToService() {
+        context.roomManager.syncLiveInfoToService()
     }
     
     func updateRoomState(roomInfo: TUIRoomInfo) {
@@ -158,8 +158,8 @@ extension LiveStreamManager {
         context.userManager.subscribeState(selector)
     }
     
-    func getAudienceList() {
-        context.userManager.getAudienceList()
+    func fetchAudienceList() {
+        context.userManager.fetchAudienceList()
     }
     
     func muteAllRemoteAudio(isMute: Bool) {

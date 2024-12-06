@@ -8,7 +8,6 @@
 import UIKit
 
 protocol AnimationView: UIView {
-    func playAnimation(playUrl: String)
-    func setFinishClosure(onFinished: @escaping ((Int)->Void))
+    func playAnimation(playUrl: String, onFinished: @escaping ((Int)->Void))
 }
 

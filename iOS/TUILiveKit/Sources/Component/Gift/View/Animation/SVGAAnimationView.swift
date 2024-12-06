@@ -10,7 +10,8 @@ import SVGAPlayer
 
 class SVGAAnimationView: UIView, AnimationView {
     var finishClosure: ((Int) -> Void)?
-    func playAnimation(playUrl: String) {
+    func playAnimation(playUrl: String, onFinished: @escaping ((Int)->Void)) {
+        finishClosure = onFinished
         reportGiftData()
         if !isSVGAFile(url: playUrl) {
             makeToast(.isNotSVGAFileText)
@@ -22,14 +23,14 @@ class SVGAAnimationView: UIView, AnimationView {
         }
         
         let playerView = SVGAPlayer(frame: self.bounds)
-        playerView.contentMode = .scaleAspectFit
+        playerView.contentMode = .scaleAspectFill
         playerView.delegate = self
         playerView.loops = 1
         playerView.clearsAfterStop = true
         addSubview(playerView)
         playerView.snp.makeConstraints { make in
-           make.edges.equalToSuperview()
-       }
+            make.edges.equalToSuperview()
+        }
         
         let parser = SVGAParser()
         parser.parse(with: animationData, cacheKey: url.lastPathComponent) { [weak self] videoItem in
@@ -40,10 +41,6 @@ class SVGAAnimationView: UIView, AnimationView {
             guard let self = self else { return }
             self.svgaPlayerDidFinishedAnimation(playerView)
         }
-    }
-    
-    func setFinishClosure(onFinished: @escaping ((Int)->Void)) {
-        finishClosure = onFinished
     }
     
     private func isSVGAFile(url: String) -> Bool {

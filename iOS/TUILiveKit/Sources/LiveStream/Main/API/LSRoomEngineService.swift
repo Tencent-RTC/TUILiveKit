@@ -52,7 +52,7 @@ class LSRoomEngineService {
 
 // MARK: - RoomAPI
 extension LSRoomEngineService {
-    func setLiveInfo(liveInfo: TUILiveInfo, modifyFlag: TUILiveModifyFlag) async throws {
+    func syncLiveInfoToService(liveInfo: TUILiveInfo, modifyFlag: TUILiveModifyFlag) async throws {
         return try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self, let liveListManager = liveListManager else {
                 let error = InternalError(error: TUIError.failed, message: TUIError.failed.description)

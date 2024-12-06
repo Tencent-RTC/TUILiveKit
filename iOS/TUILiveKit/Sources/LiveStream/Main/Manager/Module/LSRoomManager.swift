@@ -88,7 +88,7 @@ extension LSRoomManager {
         }
     }
     
-    func updateLiveInfo() {
+    func syncLiveInfoToService() {
         let liveInfo = TUILiveInfo()
         liveInfo.roomInfo.roomId = roomState.roomId
         liveInfo.coverUrl = roomState.coverURL
@@ -98,7 +98,7 @@ extension LSRoomManager {
             var modifyFlag: TUILiveModifyFlag = []
             modifyFlag = modifyFlag.union([.coverUrl, .publish, .category, .backgroundUrl])
             do {
-                try await service.setLiveInfo(liveInfo: liveInfo, modifyFlag: modifyFlag)
+                try await service.syncLiveInfoToService(liveInfo: liveInfo, modifyFlag: modifyFlag)
             } catch let err {
                 toastSubject.send(err.localizedDescription)
             }
