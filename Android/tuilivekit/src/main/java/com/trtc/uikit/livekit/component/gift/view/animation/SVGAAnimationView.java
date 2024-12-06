@@ -44,7 +44,10 @@ public final class SVGAAnimationView extends AnimationView implements SVGACallba
     public void playAnimation(String playUrl) {
         InputStream stream = openInputStream(playUrl);
         if (stream == null) {
-            Log.i(TAG, "InputStream is null");
+            Log.e(TAG, "InputStream is null");
+            if (mCallback != null) {
+                mCallback.onFinished(-1);
+            }
             return;
         }
         mSVGAParser.decodeFromInputStream(stream, "", new SVGAParser.ParseCompletion() {
@@ -58,6 +61,9 @@ public final class SVGAAnimationView extends AnimationView implements SVGACallba
             @Override
             public void onError() {
                 Log.e(TAG, "decodeFromURL onError");
+                if (mCallback != null) {
+                    mCallback.onFinished(-1);
+                }
             }
         }, true, null, "");
     }
