@@ -42,7 +42,7 @@ public class UserState {
         if (TextUtils.isEmpty(userInfo.userId)) {
             return;
         }
-        UserInfo info = new UserInfo(userInfo.userId);
+        UserInfo info = new UserInfo(userInfo);
         enterUserInfo.set(info);
         userList.add(info);
     }

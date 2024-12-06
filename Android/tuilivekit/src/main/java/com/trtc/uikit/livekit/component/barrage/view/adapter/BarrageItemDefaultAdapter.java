@@ -21,17 +21,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tencent.qcloud.tuicore.util.ScreenUtil;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.component.barrage.service.IEmojiResource;
 import com.trtc.uikit.livekit.component.barrage.store.BarrageStore;
 import com.trtc.uikit.livekit.component.barrage.store.model.Barrage;
 import com.trtc.uikit.livekit.component.barrage.view.EmojiSpan;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public final class BarrageItemDefaultAdapter implements BarrageItemAdapter {
 
@@ -165,35 +159,28 @@ public final class BarrageItemDefaultAdapter implements BarrageItemAdapter {
 
         private void processEmojiSpan(SpannableStringBuilder sb, IEmojiResource emojiResource, Rect rect,
                                       int fontSize) {
-            if (sb == null || emojiResource == null) {
-                return;
-            }
             String text = sb.toString();
-            Pattern pattern = Pattern.compile(emojiResource.getEncodePattern());
-            List<String> matches = new ArrayList<>();
-            Matcher matcher = pattern.matcher(sb);
-            while (matcher.find()) {
-                matches.add(matcher.group());
-            }
-            for (String item : matches) {
-                int resId = emojiResource.getResId(item);
-                if (resId == 0) {
-                    continue;
-                }
-                int fromIndex = 0;
-                while (fromIndex < text.length()) {
-                    int index = text.indexOf(item, fromIndex);
-                    if (index == -1) {
-                        break;
+            int startIndex = 0;
+            for (int i = 0; i < text.length(); i++) {
+                if (text.charAt(i) == '[') {
+                    int endIndex = text.indexOf(']', i);
+                    if (endIndex != -1) {
+                        String emojiKey = text.substring(i, endIndex + 1);
+                        int resId = emojiResource.getResId(emojiKey);
+                        if (resId != 0) {
+                            Drawable emojiDrawable = emojiResource.getDrawable(mContext, resId, rect);
+                            if (emojiDrawable == null) {
+                                continue;
+                            }
+                            emojiDrawable.setBounds(0, 0, fontSize, fontSize);
+                            EmojiSpan imageSpan = new EmojiSpan(emojiDrawable, 0);
+                            sb.setSpan(imageSpan, startIndex, endIndex + 1, SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
+                        startIndex = endIndex + 1;
+                        i = endIndex;
                     }
-                    fromIndex = index + item.length();
-                    Drawable emojiDrawable = emojiResource.getDrawable(mContext, resId, rect);
-                    if (emojiDrawable == null) {
-                        continue;
-                    }
-                    emojiDrawable.setBounds(0, 0, fontSize, fontSize);
-                    EmojiSpan imageSpan = new EmojiSpan(emojiDrawable, ScreenUtil.dip2px(0));
-                    sb.setSpan(imageSpan, index, index + item.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                } else {
+                    startIndex++;
                 }
             }
         }
