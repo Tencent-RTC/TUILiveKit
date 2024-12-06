@@ -12,9 +12,11 @@ import java.util.Objects;
 import java.util.Set;
 
 public class UserState {
-    public UserInfo                          selfInfo               = new UserInfo();
-    public LiveData<LinkedHashSet<UserInfo>> userList               = new LiveData<>(new LinkedHashSet<>());
-    public LiveData<LinkedHashSet<UserInfo>> myFollowingUserList    = new LiveData<>(new LinkedHashSet<>());
+    public UserInfo                          selfInfo            = new UserInfo();
+    public LiveData<LinkedHashSet<UserInfo>> userList            = new LiveData<>(new LinkedHashSet<>());
+    public LiveData<LinkedHashSet<UserInfo>> myFollowingUserList = new LiveData<>(new LinkedHashSet<>());
+    public LiveData<UserInfo>                enterUserInfo       = new LiveData<>();
+
 
     public void reset() {
         userList.get().clear();
@@ -35,6 +37,8 @@ public class UserState {
         if (TextUtils.isEmpty(userInfo.userId)) {
             return;
         }
+        UserInfo info = new UserInfo(userInfo);
+        enterUserInfo.set(info);
         userList.add(new UserInfo(userInfo));
     }
 

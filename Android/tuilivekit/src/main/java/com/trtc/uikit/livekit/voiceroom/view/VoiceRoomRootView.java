@@ -3,13 +3,13 @@ package com.trtc.uikit.livekit.voiceroom.view;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static com.trtc.uikit.livekit.voiceroom.api.Constants.EVENT_KEY_LIVE_KIT;
 import static com.trtc.uikit.livekit.voiceroom.api.Constants.EVENT_SUB_KEY_CLOSE_VOICE_ROOM;
-import static com.trtc.uikit.livekit.voiceroom.view.TUIVoiceRoomFragment.RoomBehavior.JOIN;
 import static com.trtc.uikit.livekit.voiceroom.api.Constants.GIFT_COUNT;
 import static com.trtc.uikit.livekit.voiceroom.api.Constants.GIFT_ICON_URL;
 import static com.trtc.uikit.livekit.voiceroom.api.Constants.GIFT_NAME;
 import static com.trtc.uikit.livekit.voiceroom.api.Constants.GIFT_RECEIVER_USERNAME;
 import static com.trtc.uikit.livekit.voiceroom.api.Constants.GIFT_VIEW_TYPE;
 import static com.trtc.uikit.livekit.voiceroom.api.Constants.GIFT_VIEW_TYPE_1;
+import static com.trtc.uikit.livekit.voiceroom.view.TUIVoiceRoomFragment.RoomBehavior.JOIN;
 
 import android.app.Activity;
 import android.content.Context;
@@ -84,12 +84,11 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
 
     private SeatGridViewCoreObserver mSeatGridViewCoreObserver;
 
-    private final Observer<String>                            mBackgroundURLObserver  = this::updateRoomBackground;
-    private final Observer<RoomState.LiveStatus>              mLiveStateObserver      = this::onLiveStateChanged;
-    private final Set<String>                                 mUserIdCache            = new HashSet<>();
-    private final Observer<LinkedHashSet<UserState.UserInfo>> mUserListObserver       = this::onUserListChanged;
-    private final Observer<SeatState.SeatInvitation>          mSeatInvitationObserver = this::onSeatInvitationChanged;
-    private final Observer<SeatState.LinkStatus>              mLinkStateObserver      = this::onLinkStateChanged;
+    private final Observer<String>                   mBackgroundURLObserver  = this::updateRoomBackground;
+    private final Observer<RoomState.LiveStatus>     mLiveStateObserver      = this::onLiveStateChanged;
+    private final Observer<UserState.UserInfo>       mEnterUserObserver      = this::onEnterUserChange;
+    private final Observer<SeatState.SeatInvitation> mSeatInvitationObserver = this::onSeatInvitationChanged;
+    private final Observer<SeatState.LinkStatus>     mLinkStateObserver      = this::onLinkStateChanged;
 
     public VoiceRoomRootView(@NonNull Context context) {
         this(context, null);
@@ -182,7 +181,7 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
     private void addObserver() {
         mVoiceRoomManager.getRoomState().backgroundURL.observe(mBackgroundURLObserver);
         mVoiceRoomManager.getRoomState().liveStatus.observe(mLiveStateObserver);
-        mVoiceRoomManager.getUserState().userList.observe(mUserListObserver);
+        mVoiceRoomManager.getUserState().enterUserInfo.observe(mEnterUserObserver);
         mVoiceRoomManager.getSeatState().receivedSeatInvitation.observe(mSeatInvitationObserver);
         mVoiceRoomManager.getSeatState().linkStatus.observe(mLinkStateObserver);
         mSeatGridViewCoreObserver = new SeatGridViewCoreObserver(mContext, mVoiceRoomManager, mSeatGridView);
@@ -193,7 +192,7 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
     private void removeObserver() {
         mVoiceRoomManager.getRoomState().backgroundURL.removeObserver(mBackgroundURLObserver);
         mVoiceRoomManager.getRoomState().liveStatus.removeObserver(mLiveStateObserver);
-        mVoiceRoomManager.getUserState().userList.removeObserver(mUserListObserver);
+        mVoiceRoomManager.getUserState().enterUserInfo.removeObserver(mEnterUserObserver);
         mVoiceRoomManager.getSeatState().receivedSeatInvitation.removeObserver(mSeatInvitationObserver);
         mVoiceRoomManager.getSeatState().linkStatus.removeObserver(mLinkStateObserver);
         mSeatGridView.removeObserver(mSeatGridViewCoreObserver);
@@ -436,23 +435,16 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
         }
     }
 
-    private void onUserListChanged(LinkedHashSet<UserState.UserInfo> list) {
-        Set<String> userIds = new HashSet<>();
-        for (UserState.UserInfo userInfo : list) {
-            String userId = userInfo.userId;
-            userIds.add(userId);
-            if (mBarrageStreamView != null && !mUserIdCache.contains(userId)) {
-                Barrage barrage = new Barrage();
-                barrage.content = mContext.getString(R.string.livekit_entered_room);
-                barrage.user.userId = userInfo.userId;
-                barrage.user.userName = userInfo.name.get();
-                barrage.user.avatarUrl = userInfo.avatarUrl.get();
-                barrage.user.level = "0";
-                mBarrageStreamView.insertBarrages(barrage);
-            }
+    private void onEnterUserChange(UserState.UserInfo userInfo) {
+        if (userInfo != null && mBarrageStreamView != null) {
+            Barrage barrage = new Barrage();
+            barrage.content = mContext.getString(R.string.livekit_entered_room);
+            barrage.user.userId = userInfo.userId;
+            barrage.user.userName = userInfo.name.get();
+            barrage.user.avatarUrl = userInfo.avatarUrl.get();
+            barrage.user.level = "0";
+            mBarrageStreamView.insertBarrages(barrage);
         }
-        mUserIdCache.clear();
-        mUserIdCache.addAll(userIds);
     }
 
     private void onSeatInvitationChanged(SeatState.SeatInvitation seatInvitation) {
@@ -516,6 +508,7 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
     }
 
     private ExitConfirmDialog mExitConfirmDialog;
+
     @Override
     public void onNotifyEvent(String key, String subKey, Map<String, Object> param) {
         if (EVENT_SUB_KEY_CLOSE_VOICE_ROOM.equals(subKey)) {
