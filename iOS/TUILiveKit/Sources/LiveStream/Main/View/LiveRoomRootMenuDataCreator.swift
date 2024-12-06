@@ -93,8 +93,7 @@ extension LiveRoomRootMenuDataCreator {
         menus.append(connection)
         
         var battle = LSButtonMenuInfo(normalIcon: "live_battle_icon")
-        battle.tapAction = { [weak self] sender in
-            guard let self = self else { return }
+        battle.tapAction = { sender in
             let selfUserId = manager.userState.selfInfo.userId
             let isSelfInBattle = manager.battleState.battleUsers.contains(where: { $0.userId == selfUserId })
             if isSelfInBattle {

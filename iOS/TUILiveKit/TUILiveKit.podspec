@@ -23,14 +23,13 @@ Pod::Spec.new do |spec|
   spec.dependency 'Protobuf', '~> 3.22.1'
   spec.dependency 'RTCCommon', '>= 1.0.2'
   spec.dependency "ESPullToRefresh"
-  spec.dependency "SeatGridView"
-  spec.dependency "LiveStreamCore"
-
 
   spec.default_subspec = 'Professional'
   
   spec.subspec 'Professional' do |professional|
     professional.dependency 'RTCRoomEngine/Professional', '>= 2.5.2'
+    professional.dependency 'SeatGridView/Professional'
+    professional.dependency 'LiveStreamCore/Professional'
     professional.source_files = 'Sources/**/*', 'VideoLiveKit.swift', 'VoiceRoomKit.swift', 'VoiceRoomDefine.swift'
     professional.resource_bundles = {
       'TUILiveKitBundle' => ['Resources/*.xcassets', 'Resources/Localized/**/*.strings']
@@ -39,6 +38,8 @@ Pod::Spec.new do |spec|
   
   spec.subspec 'TRTC' do |trtc|
     trtc.dependency 'RTCRoomEngine/TRTC', '>= 2.5.2'
+    trtc.dependency 'SeatGridView/TRTC'
+    trtc.dependency 'LiveStreamCore/TRTC'
     trtc.source_files = 'Sources/**/*', 'VideoLiveKit.swift', 'VoiceRoomKit.swift', 'VoiceRoomDefine.swift'
     trtc.resource_bundles = {
       'TUILiveKitBundle' => ['Resources/*.xcassets', 'Resources/Localized/**/*.strings']

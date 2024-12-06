@@ -39,8 +39,8 @@ public class TUILiveRoomAnchorViewController: UIViewController {
         view.startLiveBlock = startLiveBlock
         return view
     }()
-        
-    public init(roomId: String, needPrepare: Bool = true) {
+    
+    public init(roomId: String, needPrepare: Bool = true, liveInfo: TUILiveInfo? = nil) {
         self.roomId = roomId
         self.needPrepare = needPrepare
         super.init(nibName: nil, bundle: nil)
@@ -50,19 +50,29 @@ public class TUILiveRoomAnchorViewController: UIViewController {
         manager.update { roomState in
             roomState.roomId = roomId
         }
+        if needPrepare, let liveInfo = liveInfo {
+            manager.updateRoomState(roomInfo: liveInfo.roomInfo)
+            manager.update { roomState in
+                roomState.coverURL = liveInfo.coverUrl
+                roomState.liveExtraInfo.liveMode = liveInfo.isPublicVisible ? .public : .privacy
+                if let category = liveInfo.categoryList.first {
+                    roomState.liveExtraInfo.category = LiveStreamCategory(rawValue: category.intValue) ?? .chat
+                }
+            }
+        }
     }
-        
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-        
+    
     deinit {
         BeautyStoreFactory.removeStore(roomId: roomId)
         AudioEffectStoreFactory.removeStore(roomId: roomId)
         MusicPanelStoreFactory.removeStore(roomId: roomId)
         print("deinit \(type(of: self))")
     }
-    
+
     public override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.setNavigationBarHidden(true, animated: true)

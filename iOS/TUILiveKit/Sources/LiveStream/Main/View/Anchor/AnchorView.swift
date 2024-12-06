@@ -173,8 +173,8 @@ extension AnchorView {
             guard let self = self, let roomInfo = roomInfo else { return }
             manager.update(liveStatus: .pushing)
             manager.updateRoomState(roomInfo: roomInfo)
-            manager.updateLiveInfo()
-            manager.getAudienceList()
+            manager.syncLiveInfoToService()
+            manager.fetchAudienceList()
             manager.updateOwnerUserInfo()
             manager.fetchSeatList()
             if manager.userState.selfInfo.role == .roomOwner {
@@ -191,21 +191,19 @@ extension AnchorView {
             }
         }
     }
-                
+    
     func joinSelfCreatedRoom() {
         startLiving()
         videoView.joinLiveStream(roomId: roomId) { [weak self] roomInfo in
             guard let self = self, let roomInfo = roomInfo else { return }
             manager.update(liveStatus: .pushing)
             manager.updateRoomState(roomInfo: roomInfo)
-            manager.updateLiveInfo()
-            manager.getAudienceList()
+            manager.fetchAudienceList()
             manager.updateOwnerUserInfo()
             manager.fetchSeatList()
             if manager.userState.selfInfo.role == .roomOwner {
                 manager.fetchSeatApplicationList()
             }
-            
         } onError: { [weak self] code, message in
             guard let self = self else { return }
             manager.update(liveStatus: .none)

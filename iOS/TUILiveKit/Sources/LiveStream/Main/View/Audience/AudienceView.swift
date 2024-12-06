@@ -203,9 +203,13 @@ extension AudienceView: GiftListViewDelegate {
                 view.sendGift(giftModel: giftModel, giftCount: giftCount, receiver: receiver)
                 view.setBalance(balance)
             } else {
-                manager.toastSubject.send(.balanceInsufficientText)
+                isGiftListPanelExist() ? view.makeToast(.balanceInsufficientText) : manager.toastSubject.send(.balanceInsufficientText)
             }
         }
+    }
+    private func isGiftListPanelExist()-> Bool {
+        guard let currentRoute = routerManager.routerState.routeStack.last else { return false }
+        return currentRoute == .giftView
     }
 }
 
