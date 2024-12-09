@@ -10,12 +10,14 @@ import RTCCommon
 import RTCRoomEngine
 
 class LiveStreamManager {
-    class Context {
+    public class Context {
         let service: LiveStreamService = LiveStreamService()
         let observers: LiveStreamObserverList = LiveStreamObserverList()
         
         lazy var roomEngineObserver = RoomEngineObserver(context: self)
         lazy var liveConnectionObserver = LiveConnectionObserver(context: self)
+        lazy var imObserver = IMObserver(context: self)
+        
         lazy var roomManager = RoomManager(context: self)
         lazy var coGuestManager = CoGuestManager(context: self)
         lazy var coHostManager = CoHostManager(context: self)
@@ -24,12 +26,13 @@ class LiveStreamManager {
         lazy var viewManager = ViewManager(context: self)
     }
     
-    private let context: Context
+    public let context: Context
     
     init() {
         context = Context()
         context.service.addRoomEngineObserver(context.roomEngineObserver)
         context.service.addLiveConnectionManagerObserver(context.liveConnectionObserver)
+        context.service.addImObserver(context.imObserver)
     }
     
     func addObserver(_ observer: ConnectionObserver) {
@@ -56,6 +59,7 @@ class LiveStreamManager {
         debugPrint("deinit:\(self)")
         context.service.removeRoomEngineObserver(context.roomEngineObserver)
         context.service.removeLiveConnectionManagerObserver(context.liveConnectionObserver)
+        context.service.removeImObserver(context.imObserver)
     }
 }
 

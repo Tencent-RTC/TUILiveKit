@@ -72,6 +72,8 @@ protocol LiveStream {
     func closeLocalCamera()
 
     func switchCamera(isFrontCamera: Bool)
+    
+    func updateVideoQualityEx(streamType: TUIVideoStreamType, params: TUIRoomVideoEncoderParams)
 
     func setLocalVideoView(_ view: UIView?)
 

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import ImSDK_Plus
 import RTCRoomEngine
 #if canImport(TXLiteAVSDK_TRTC)
     import TXLiteAVSDK_TRTC
@@ -55,6 +56,14 @@ class LiveStreamService: LiveStream {
     
     func removeLiveConnectionManagerObserver(_ observer: any TUILiveConnectionObserver) {
         connectionManager.removeObserver(observer)
+    }
+    
+    func addImObserver(_ observer: V2TIMSDKListener) {
+        V2TIMManager.sharedInstance().add(observer)
+    }
+    
+    func removeImObserver(_ observer: V2TIMSDKListener) {
+        V2TIMManager.sharedInstance().remove(observer)
     }
     
     func createRoom(roomInfo: TUIRoomInfo) async throws {
@@ -259,6 +268,10 @@ class LiveStreamService: LiveStream {
     
     func switchCamera(isFrontCamera: Bool) {
         roomEngine.getMediaDeviceManager().switchCamera(isFrontCamera)
+    }
+    
+    func updateVideoQualityEx(streamType: TUIVideoStreamType, params: TUIRoomVideoEncoderParams) {
+        roomEngine.updateVideoQualityEx(streamType: streamType, params: params)
     }
     
     func setLocalVideoView(_ view: UIView?) {

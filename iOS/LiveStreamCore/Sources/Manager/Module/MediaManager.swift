@@ -7,15 +7,23 @@
 
 import RTCCommon
 import RTCRoomEngine
+import TUICore
+#if canImport(TXLiteAVSDK_TRTC)
+import TXLiteAVSDK_TRTC
+#elseif canImport(TXLiteAVSDK_Professional)
+import TXLiteAVSDK_Professional
+#endif
 
-class MediaManager {
+public class MediaManager {
     let observerState = ObservableState<MediaState>(initialState: MediaState())
-    var mediaState: MediaState {
+    public var mediaState: MediaState {
         observerState.state
     }
     
     private weak var context: LiveStreamManager.Context?
     private let service: LiveStreamService
+    
+    private var localVideoViewObservation: NSKeyValueObservation? = nil
     
     init(context: LiveStreamManager.Context) {
         self.context = context
@@ -38,6 +46,7 @@ class MediaManager {
         
         do {
             try await context.service.openLocalCamera(isFront: useFrontCamera, quality: .quality1080P)
+            initVideoAdvanceSettings()
             initLivingConfig()
             modifyMediaState(value: true, keyPath: \MediaState.isCameraOpened, isPublished: true)
         } catch let LiveStreamCoreError.error(code, message) {
@@ -50,10 +59,16 @@ class MediaManager {
     
     func closeLocalCamera() {
         service.closeLocalCamera()
+        unInitVideoAdvanceSettings()
         modifyMediaState(value: false, keyPath: \MediaState.isCameraOpened, isPublished: true)
     }
     
     func setLocalVideoView(view: UIView?) {
+        if let localView = view {
+            subscribeLocalVideoView(localView)
+        } else {
+            unsubscribeLocalVideoView()
+        }
         service.setLocalVideoView(view)
     }
     
@@ -125,6 +140,86 @@ class MediaManager {
     }
 }
 
+// MARK: - Video Advance Setting
+extension MediaManager {
+    
+    public func updateVideoEncParams(_ params: TUIRoomVideoEncoderParams) {
+        service.updateVideoQualityEx(streamType: .cameraStream, params: params)
+        modifyMediaState(value: params, keyPath: \MediaState.videoEncParams.currentEnc)
+    }
+    
+    public func changeVideoEncParams(encType: VideoEncParams.VideoEncType) {
+        switch encType {
+        case .big:
+            service.updateVideoQualityEx(streamType: .cameraStream, params: mediaState.videoEncParams.big)
+        case .small:
+            service.updateVideoQualityEx(streamType: .cameraStream, params: mediaState.videoEncParams.small)
+        }
+        modifyMediaState(value: encType, keyPath: \MediaState.videoEncParams.currentEncType)
+    }
+    
+    public func enableMirror(_ isMirror: Bool) {
+        let params = TRTCRenderParams()
+        params.mirrorType = isMirror ? .enable : .disable
+        service.getTRTCCloud().setLocalRenderParams(params)
+        modifyMediaState(value: isMirror, keyPath: \MediaState.isMirrorEnabled)
+    }
+    
+    public func enableAdvancedVisible(_ visible: Bool) {
+        observerState.update { state in
+            state.videoAdvanceSettings.isVisible = visible
+        }
+    }
+    
+    public func enableUltimate(_ enable: Bool) {
+        TUICore.callService(.TUICore_VideoAdvanceService,
+                            method: .TUICore_VideoAdvanceService_EnableUltimate,
+                            param: ["enable" : NSNumber(value: enable)])
+        modifyMediaState(value: enable, keyPath: \MediaState.videoAdvanceSettings.isUltimateEnabled)
+    }
+    
+    public func enableH265(_ enable: Bool) {
+        TUICore.callService(.TUICore_VideoAdvanceService,
+                            method: .TUICore_VideoAdvanceService_EnableH265,
+                            param: ["enable" : NSNumber(value: enable)])
+        modifyMediaState(value: enable, keyPath: \MediaState.videoAdvanceSettings.isH265Enabled)
+    }
+    
+    public func enableHDR(_ renderType: HDRRenderType) {
+        TUICore.callService(.TUICore_VideoAdvanceService,
+                            method: .TUICore_VideoAdvanceService_EnableHDR,
+                            param: ["renderType" : NSNumber(value: renderType.rawValue)])
+        modifyMediaState(value: renderType, keyPath: \MediaState.videoAdvanceSettings.hdrRenderType)
+    }
+
+    private func subscribeLocalVideoView(_ view: UIView) {
+        localVideoViewObservation = view.observe(\.bounds, options: [.new]) { [weak self] (_, change) in
+            guard let self = self else { return }
+            guard let newFrame = change.newValue else { return }
+            if floor(newFrame.width)/ScreenWidth > 0.5 {
+                self.changeVideoEncParams(encType: .big)
+            } else {
+                self.changeVideoEncParams(encType: .small)
+            }
+        }
+    }
+    
+    private func unsubscribeLocalVideoView() {
+        if let observation = localVideoViewObservation {
+            observation.invalidate()
+        }
+        localVideoViewObservation = nil
+    }
+    
+    private func initVideoAdvanceSettings() {
+        enableUltimate(true)
+    }
+    
+    private func unInitVideoAdvanceSettings() {
+        enableUltimate(false)
+    }
+}
+
 // MARK: - Callback from other manager
 extension MediaManager {
     func onSelfAudioStateChanged(hasAudio: Bool) {
@@ -144,6 +239,7 @@ extension MediaManager {
         modifyMediaState(value: true, keyPath: \MediaState.isMicrophoneMuted)
         modifyMediaState(value: false, keyPath: \MediaState.isCameraOpened, isPublished: true)
         modifyMediaState(value: true, keyPath: \MediaState.isFrontCamera)
+        unInitVideoAdvanceSettings()
     }
 }
 
@@ -160,4 +256,14 @@ extension MediaManager {
             mediaState[keyPath: keyPath] = value
         }
     }
+}
+
+// MARK: - Video Advance API Extension
+fileprivate extension String {
+    
+    static let TUICore_VideoAdvanceService = "TUICore_VideoAdvanceService"
+
+    static let TUICore_VideoAdvanceService_EnableUltimate = "TUICore_VideoAdvanceService_EnableUltimate"
+    static let TUICore_VideoAdvanceService_EnableH265 = "TUICore_VideoAdvanceService_EnableH265"
+    static let TUICore_VideoAdvanceService_EnableHDR = "TUICore_VideoAdvanceService_EnableHDR"
 }

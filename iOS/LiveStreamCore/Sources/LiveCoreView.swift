@@ -156,6 +156,10 @@ public extension LiveCoreView {
     func setLayoutMode(layoutMode: LayoutMode, layoutJson: String? = nil) {
         videoLiveManager.setLayoutMode(layoutMode: layoutMode, layoutJson: layoutJson)
     }
+    
+    func getMediaManager() -> MediaManager {
+        return videoLiveManager.context.mediaManager
+    }
 }
 
 // MARK: - Private
@@ -436,6 +440,9 @@ extension LiveCoreView {
         for seatInfo in addedUsers {
             coGuestUserList.append(seatInfo)
             addCoGuestLiveView(userInfo: LiveStreamConvert.convertToUserInfo(seatInfo: seatInfo))
+            if seatInfo.userId == videoLiveManager.userState.selfInfo.userId {
+                addLocalVideoView()
+            }
         }
         for seatInfo in removedUsers {
             coGuestUserList.removeAll { $0.userId == seatInfo.userId }
