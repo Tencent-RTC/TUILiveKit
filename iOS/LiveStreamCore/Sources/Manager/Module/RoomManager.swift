@@ -101,6 +101,15 @@ class RoomManager {
             roomState.ownerInfo.avatarUrl = roomInfo.ownerAvatarUrl
         }
     }
+    
+    func onReconnected() {
+        Task {
+            try? await context?.coGuestManager.initConnectedGuestList()
+        }
+        Task {
+            try? await context?.coGuestManager.initGuestApplicationList()
+        }
+    }
 }
 
 // MARK: - Observer
