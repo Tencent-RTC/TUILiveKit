@@ -53,7 +53,7 @@ android {
 
 dependencies {
     api rootProject.getProperties().containsKey("liteavSdk") ?
-            rootProject.ext.liteavSdk : "com.tencent.liteav:LiteAVSDK_TRTC:latest.release"
+            rootProject.ext.liteavSdk : "com.tencent.liteav:LiteAVSDK_Professional:latest.release"
 }
 
 afterEvaluate {
