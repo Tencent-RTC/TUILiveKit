@@ -26,10 +26,10 @@ android {
 
 dependencies {
     api 'com.tencent.liteav.tuikit:tuicore:latest.release'
-    api 'io.trtc.uikit:common:1.0.0.455'
-    api 'io.trtc.uikit:rtc_room_engine:latest.release'
-    api "com.tencent.liteav:LiteAVSDK_TRTC:latest.release"
-    api "com.tencent.imsdk:imsdk-plus:latest.release"
+    api 'io.trtc.uikit:common:1.0.0.490'
+    api rootProject.getProperties().containsKey("roomEngineSdk") ? rootProject.ext.roomEngineSdk : "io.trtc.uikit:rtc_room_engine:latest.release"
+    api rootProject.getProperties().containsKey("liteavSdk") ? rootProject.ext.liteavSdk : "com.tencent.liteav:LiteAVSDK_Professional:latest.release"
+    api rootProject.getProperties().containsKey("imSdk") ? rootProject.ext.imSdk : "com.tencent.imsdk:imsdk-plus:latest.release"
     api "com.google.code.gson:gson:2.8.9"
     api 'com.google.android.flexbox:flexbox:3.0.0'
     api 'androidx.constraintlayout:constraintlayout:2.1.1'
