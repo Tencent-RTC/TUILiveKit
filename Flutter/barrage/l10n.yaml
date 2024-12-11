@@ -1,0 +1,7 @@
+arb-dir: lib/common/language/i10n
+template-arb-file: barrage_en.arb
+output-localization-file: barrage_localizations.dart
+output-dir: lib/common/language/gen
+output-class: BarrageLocalizations
+synthetic-package: false
+format: true
