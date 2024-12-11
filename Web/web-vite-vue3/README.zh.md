@@ -25,10 +25,10 @@
    ```
 
 ## 配置 Demo
-1. 激活 [TUILiveKit](https://cloud.tencent.com/document/product/647/104842) 服务。SDKAppID 和 SDKSecretKey。
+1. 激活 [TUILiveKit](https://cloud.tencent.com/document/product/647/105439) 服务。SDKAppID 和 SDKSecretKey。
    <img src="https://web.sdk.qcloud.com/trtc/live/web/image/active-livekit.png"/>
 
-2. 打开 `TUIRoomKit/Web/example/vite-vue3-ts/src/config/basic-info-config.js` 文件，并输入激活服务时获得的 `SDKAppID` 和 `SDKSecretKey`:
+2. 打开 `TUILiveKit/Web/web-vite-vue3/src/config/basic-info-config.js` 文件，并输入激活服务时获得的 `SDKAppID` 和 `SDKSecretKey`:
    <img src="https://web.sdk.qcloud.com/trtc/live/web/image/supplementary-config.png"/>
 ## 跑通 Demo
 
@@ -48,5 +48,5 @@
 
 ## 关于更多
 - [客户端 API 文档](https://cloud.tencent.com/document/product/647/81970)
-- [Livekit 组件介绍](https://cloud.tencent.com/document/product/647/81970)
+- [Livekit 组件介绍](https://cloud.tencent.com/document/product/647/105438)
 - [Livekit 开通服务](https://cloud.tencent.com/document/product/647/105439)
