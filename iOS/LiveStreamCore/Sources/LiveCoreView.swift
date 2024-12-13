@@ -111,7 +111,7 @@ public extension LiveCoreView {
     
     func respondIntraRoomConnection(userId: String, isAccepted: Bool,
                                     onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
-        respondIntraConnnection(userId: userId, isAccepted: isAccepted, onSuccess: onSuccess, onError: onError)
+        respondIntraConnection(userId: userId, isAccepted: isAccepted, onSuccess: onSuccess, onError: onError)
     }
     
     func disconnectUser(userId: String, onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
@@ -398,7 +398,7 @@ extension LiveCoreView {
         }
     }
     
-    private func respondIntraConnnection(userId: String, isAccepted: Bool,
+    private func respondIntraConnection(userId: String, isAccepted: Bool,
                                          onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
         if checkIntraRoomConnection(userId: userId, onError: onError) {
             return
