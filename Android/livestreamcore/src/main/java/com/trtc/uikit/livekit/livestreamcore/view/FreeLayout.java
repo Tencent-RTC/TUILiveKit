@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.tencent.qcloud.tuicore.util.ScreenUtil;
+import com.trtc.uikit.livekit.livestreamcore.common.utils.ColorUtil;
 import com.trtc.uikit.livekit.livestreamcore.view.viewmodel.LayoutConfig;
 import com.trtc.uikit.livekit.livestreamcore.view.viewmodel.LayoutInfo;
 import com.trtc.uikit.livekit.livestreamcore.view.viewmodel.ViewInfo;
@@ -81,10 +82,11 @@ public class FreeLayout extends FrameLayout {
         if (layoutInfo == null || layoutInfo.viewInfoList.isEmpty()) {
             return;
         }
-        setBackgroundColor(layoutInfo.backgroundColor);
+        setBackgroundColor(ColorUtil.parseHex(layoutInfo.backgroundColor));
         for (int i = 0; i < childViewCount && i < layoutInfo.viewInfoList.size(); i++) {
             final View child = getChildAt(i);
             final ViewInfo viewInfo = layoutInfo.viewInfoList.get(i);
+            child.setBackgroundColor(ColorUtil.parseHex(viewInfo.backgroundColor));
             if (child.getVisibility() != GONE) {
                 int viewWidth = (int) (viewInfo.width * mScreenWidth);
                 int viewHeight = viewInfo.height == FULLSCREEN_MODE ? mScreenHeight :

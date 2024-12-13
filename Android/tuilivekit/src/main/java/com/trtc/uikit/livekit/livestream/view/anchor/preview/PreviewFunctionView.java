@@ -15,13 +15,15 @@ import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.component.audioeffect.AudioEffectPanel;
 import com.trtc.uikit.livekit.component.beauty.BeautyViewFactory;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
+import com.trtc.uikit.livekit.livestream.view.widgets.videosettings.VideoSettingsDialog;
+import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
 public class PreviewFunctionView extends FrameLayout {
-
     private PopupDialog       mAudioEffectPanel;
     private PopupDialog       mPopupDialog;
     private View              mBeautyView;
     private LiveStreamManager mLiveManager;
+    private LiveCoreView      mLiveCoreView;
 
     public PreviewFunctionView(@NonNull Context context) {
         this(context, null);
@@ -36,9 +38,9 @@ public class PreviewFunctionView extends FrameLayout {
         LayoutInflater.from(getContext()).inflate(R.layout.livekit_layout_anchor_preview_function, this, true);
     }
 
-    public void init(LiveStreamManager manager) {
+    public void init(LiveStreamManager manager, LiveCoreView liveCoreView) {
         mLiveManager = manager;
-
+        mLiveCoreView = liveCoreView;
         initView();
     }
 
@@ -91,7 +93,9 @@ public class PreviewFunctionView extends FrameLayout {
 
     private void initMirrorButton() {
         findViewById(R.id.iv_mirror).setOnClickListener(view -> {
-            mLiveManager.getMediaManager().setCameraMirror();
+            VideoSettingsDialog videoSettingsDialog =
+                    new VideoSettingsDialog(getContext(), mLiveCoreView);
+            videoSettingsDialog.show();
         });
     }
 }

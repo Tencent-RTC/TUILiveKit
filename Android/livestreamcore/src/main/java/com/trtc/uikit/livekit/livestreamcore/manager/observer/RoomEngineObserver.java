@@ -77,6 +77,12 @@ public class RoomEngineObserver extends TUIRoomObserver {
     }
 
     @Override
+    public void onUserInfoChanged(TUIRoomDefine.UserInfo userInfo, List<TUIRoomDefine.UserInfoModifyFlag> modifyFlag) {
+        Logger.info(mTag + " onUserInfoChanged:[userInfo:" + userInfo + ",modifyFlag:" + modifyFlag + "]");
+        mVideoLiveManager.getUserManager().onUserInfoChanged(userInfo, modifyFlag);
+    }
+
+    @Override
     public void onRemoteUserEnterRoom(String roomId, TUIRoomDefine.UserInfo userInfo) {
         Logger.info(mTag + " onRemoteUserEnterRoom:[roomId:" + roomId + ",userId:" + userInfo.userId + "]");
     }

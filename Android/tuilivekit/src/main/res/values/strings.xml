@@ -295,4 +295,26 @@
     <!-- FloatWindow -->
     <string name="livekit_float_window_received_connection_invitation">You\'ve received an invitation to connect, and you can go back to full-screen mode for post-processing</string>
     <string name="livekit_float_window_received_battle_invitation">You\'ve received an invitation to battle, and you can go back to full-screen mode for post-processing</string>
+
+    <string name="livekit_video_fps">"Video FPS"</string>
+    <string name="livekit_video_bitrate">"Video Bitrate"</string>
+    <string name="livekit_video_resolution">Quality</string>
+    <string name="livekit_resolution_360p">"360p"</string>
+    <string name="livekit_resolution_540p">"540p"</string>
+    <string name="livekit_resolution_720p">"720p"</string>
+    <string name="livekit_resolution_1080p">"1080p"</string>
+    <string name="livekit_dashboard_title">Dashboard</string>
+    <string name="livekit_dashboard_video_info_title">Video Info</string>
+    <string name="livekit_dashboard_audio_info_title">Audio Info</string>
+    <string name="livekit_dashboard_network_info_title">Network Info</string>
+    <string name="livekit_dashboard_media_info_title">Media Info</string>
+    <string name="livekit_dashboard_local_user">Local User</string>
+    <string name="livekit_dashboard_remote_user">Remote User</string>
+    <string name="livekit_dashboard_stream_type">StreamType</string>
+    <string name="livekit_dashboard_audio_sample_rate">Audio Sample Rate</string>
+    <string name="livekit_audio_bitrate">"Audio Bitrate"</string>
+    <string name="livekit_audio_capture_state">Audio Capture State</string>
+    <string name="livekit_settings_video_config">Video Config</string>
+    <string name="livekit_video_ultimate">Ultimate</string>
+    <string name="livekit_video_hevc">H.265</string>
 </resources>

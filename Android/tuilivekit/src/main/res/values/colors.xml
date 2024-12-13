@@ -72,6 +72,7 @@
     <color name="livekit_design_standard_g1_20_transparency">#CC0F1014</color>
     <color name="livekit_design_standard_g1_60_transparency">#660F1014</color>
     <color name="livekit_design_standard_g5_20_transparency">#CC99A2B2</color>
+    <color name="livekit_not_standard_black_1f">#1F000000</color>
 
     <!--    barrage color-->
     <color name="livekit_barrage_color_msg_1">#3074FD</color>
@@ -81,8 +82,8 @@
     <color name="livekit_barrage_color_msg_5">#FF8BB7</color>
     <color name="livekit_barrage_color_msg_6">#FC6091</color>
     <color name="livekit_barrage_color_msg_7">#FCAF41</color>
-    <color name="livekit_barrage_item_back_color">#660F1014</color>
-    <color name="livekit_barrage_level_back_color">#FF4D8EFF</color>
+    <color name="livekit_barrage_item_back_color">#66000000</color>
+    <color name="livekit_barrage_level_back_color">#4D8EFF</color>
     <color name="livekit_barrage_user_name_color">#FF80BEF6</color>
     <color name="livekit_barrage_g8">#FFF2F5FC</color>
 
@@ -98,4 +99,7 @@
 
     <!--    float window color-->
     <color name="livekit_color_float_Window_bg">#22262E</color>
+    <color name="livekit_color_dashboard_green">#47D4AB</color>
+    <color name="livekit_color_dashboard_pink">#F95F91</color>
+    <color name="livekit_color_dashboard_title">#99FFFFFF</color>
 </resources>

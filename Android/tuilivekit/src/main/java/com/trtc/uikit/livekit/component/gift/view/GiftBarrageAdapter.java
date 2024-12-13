@@ -10,6 +10,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.SpannableStringBuilder;
@@ -45,7 +46,7 @@ public final class GiftBarrageAdapter implements BarrageItemAdapter {
 
     public GiftBarrageAdapter(Context context) {
         mContext = context;
-        int giftIconSize = 18;
+        int giftIconSize = 13;
         Rect bounds = new Rect(0, 0, ScreenUtil.dip2px(giftIconSize), ScreenUtil.dip2px(giftIconSize));
         mDefaultGiftIcon.setBounds(bounds);
     }
@@ -79,6 +80,7 @@ public final class GiftBarrageAdapter implements BarrageItemAdapter {
             linearLayout.setPadding(0, ScreenUtil.dip2px(5), 0, ScreenUtil.dip2px(5));
             textView.setTextColor(Color.WHITE);
             textView.setTextSize(12);
+            textView.setTypeface(null, Typeface.BOLD);
             textView.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
             textView.setPadding(ScreenUtil.dip2px(5), ScreenUtil.dip2px(5),
                     ScreenUtil.dip2px(5), ScreenUtil.dip2px(5));

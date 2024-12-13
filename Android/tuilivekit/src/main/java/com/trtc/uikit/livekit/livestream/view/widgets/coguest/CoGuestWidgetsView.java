@@ -87,9 +87,7 @@ public class CoGuestWidgetsView extends BasicView {
         boolean isPreview = RoomState.LiveStatus.PREVIEWING == mRoomState.liveStatus.get();
         if (isPreview || hasVideoStream) {
             mImageAvatar.setVisibility(GONE);
-            setBackgroundResource(R.color.livekit_design_standard_transparent);
         } else {
-            setBackgroundResource(R.color.livekit_design_standard_g2);
             mImageAvatar.setVisibility(VISIBLE);
             ImageLoader.load(mContext, mImageAvatar, mState.userAvatar, R.drawable.livekit_ic_avatar);
         }

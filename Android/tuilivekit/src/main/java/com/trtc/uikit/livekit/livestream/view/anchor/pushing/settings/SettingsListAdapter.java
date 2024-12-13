@@ -1,8 +1,5 @@
 package com.trtc.uikit.livekit.livestream.view.anchor.pushing.settings;
 
-import static com.tencent.trtc.TRTCCloudDef.TRTC_VIDEO_MIRROR_TYPE_DISABLE;
-import static com.tencent.trtc.TRTCCloudDef.TRTC_VIDEO_MIRROR_TYPE_ENABLE;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,14 +12,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
-import com.tencent.trtc.TRTCCloud;
-import com.tencent.trtc.TRTCCloudDef;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.component.audioeffect.AudioEffectPanel;
 import com.trtc.uikit.livekit.component.beauty.BeautyViewFactory;
+import com.trtc.uikit.livekit.component.dashboard.StreamDashboardDialog;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
-import com.trtc.uikit.livekit.livestream.view.anchor.pushing.settings.videoparms.VideoParamsPanelDialog;
+import com.trtc.uikit.livekit.livestream.view.widgets.videosettings.VideoSettingsDialog;
+import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,22 +28,23 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
     private static final int                 ITEM_TYPE_BEAUTY       = 0;
     private static final int                 ITEM_TYPE_AUDIO_EFFECT = 1;
     private static final int                 ITEM_TYPE_FLIP         = 2;
-    private static final int                 ITEM_TYPE_MIRROR       = 3;
-    private static final int                 ITEM_TYPE_VIDEO_PARAMS = 4;
+    private static final int                 ITEM_TYPE_VIDEO_PARAMS = 3;
+    private static final int                 ITEM_TYPE_DASHBOARD    = 4;
     private final        List<SettingsItem>  mData                  = new ArrayList<>();
     private final        Context             mContext;
-    private final        TRTCCloud           mTRTCCloud;
     private final        LiveStreamManager   mLiveStreamManager;
+    private final        LiveCoreView        mLiveCoreView;
+    private final        SettingsPanelDialog mSettingsDialog;
     private              PopupDialog         mAudioEffectDialog;
     private              PopupDialog         mPopupDialog;
     private              View                mBeautyView;
-    private              SettingsPanelDialog mSettingsDialog;
 
-    public SettingsListAdapter(Context context, LiveStreamManager liveStreamManager, SettingsPanelDialog dialog) {
+    public SettingsListAdapter(Context context, LiveStreamManager liveStreamManager,
+                               LiveCoreView liveCoreView, SettingsPanelDialog dialog) {
         mContext = context;
         mLiveStreamManager = liveStreamManager;
+        mLiveCoreView = liveCoreView;
         mSettingsDialog = dialog;
-        mTRTCCloud = TUIRoomEngine.sharedInstance().getTRTCCloud();
         initData();
     }
 
@@ -57,10 +55,10 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
                 , R.drawable.livekit_settings_audio_effect, ITEM_TYPE_AUDIO_EFFECT));
         mData.add(new SettingsItem(mContext.getString(R.string.livekit_video_settings_item_flip)
                 , R.drawable.livekit_settings_item_flip, ITEM_TYPE_FLIP));
-        mData.add(new SettingsItem(mContext.getString(R.string.livekit_video_settings_item_mirror)
-                , R.drawable.livekit_settings_item_mirror, ITEM_TYPE_MIRROR));
         mData.add(new SettingsItem(mContext.getString(R.string.livekit_video_config)
                 , R.drawable.livekit_settings_item_video_params, ITEM_TYPE_VIDEO_PARAMS));
+        mData.add(new SettingsItem(mContext.getString(R.string.livekit_dashboard_title)
+                , R.drawable.livekit_settings_dashboard, ITEM_TYPE_DASHBOARD));
     }
 
     @NonNull
@@ -88,30 +86,17 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
                 case ITEM_TYPE_FLIP:
                     handleCameraFlip();
                     break;
-                case ITEM_TYPE_MIRROR:
-                    handleCameraMirror();
-                    break;
                 case ITEM_TYPE_VIDEO_PARAMS:
                     showVideoParamsPanel();
+                    break;
+                case ITEM_TYPE_DASHBOARD:
+                    showMediaDashboardDialog();
                     break;
                 default:
                     break;
 
             }
         });
-    }
-
-    private void handleCameraMirror() {
-        boolean isMirror = mLiveStreamManager.getMediaState().isMirror.get();
-        setCameraMirror(!isMirror);
-        mLiveStreamManager.getMediaState().isMirror.set(!isMirror);
-    }
-
-    private void setCameraMirror(boolean isMirror) {
-        TRTCCloudDef.TRTCRenderParams trtcRenderParams = new TRTCCloudDef.TRTCRenderParams();
-        trtcRenderParams.mirrorType = isMirror ? TRTC_VIDEO_MIRROR_TYPE_ENABLE : TRTC_VIDEO_MIRROR_TYPE_DISABLE;
-        mTRTCCloud.setLocalRenderParams(trtcRenderParams);
-        mTRTCCloud.setVideoEncoderMirror(isMirror);
     }
 
     private void handleCameraFlip() {
@@ -126,8 +111,14 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
 
     private void showVideoParamsPanel() {
         mSettingsDialog.dismiss();
-        VideoParamsPanelDialog dialog = new VideoParamsPanelDialog(mContext, mLiveStreamManager);
+        VideoSettingsDialog dialog = new VideoSettingsDialog(mContext, mLiveCoreView);
         dialog.show();
+    }
+
+    private void showMediaDashboardDialog() {
+        mSettingsDialog.dismiss();
+        StreamDashboardDialog streamDashboardDialog = new StreamDashboardDialog(mContext);
+        streamDashboardDialog.show();
     }
 
     private void showAudioEffectPanel() {

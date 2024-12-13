@@ -25,34 +25,34 @@ import com.tencent.qcloud.tuicore.util.SPUtils;
 import com.tencent.qcloud.tuicore.util.ScreenUtil;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.component.barrage.store.model.Barrage;
+import com.trtc.uikit.livekit.component.barrage.BarrageInputView.OnSendListener;
 import com.trtc.uikit.livekit.component.barrage.service.BarrageIMService;
 import com.trtc.uikit.livekit.component.barrage.service.BarragePresenter;
 import com.trtc.uikit.livekit.component.barrage.service.IBarrageMessage;
-import com.trtc.uikit.livekit.component.barrage.service.IEmojiResource;
-import com.trtc.uikit.livekit.component.barrage.view.util.OnDecorViewListener;
-import com.trtc.uikit.livekit.component.barrage.BarrageInputView.OnSendListener;
 import com.trtc.uikit.livekit.component.barrage.service.IBarragePresenter;
+import com.trtc.uikit.livekit.component.barrage.service.IEmojiResource;
 import com.trtc.uikit.livekit.component.barrage.store.BarrageStore;
+import com.trtc.uikit.livekit.component.barrage.store.model.Barrage;
+import com.trtc.uikit.livekit.component.barrage.view.util.OnDecorViewListener;
 
 public class BarrageSendView extends Dialog implements IBarrageSendView, OnDecorViewListener.OnKeyboardCallback {
-    private static final String FILE_NAME = "keyboard.common";
-    private static final String KEY_KEYBOARD_HEIGHT = "sp.key.keyboard.height";
-    private final SPUtils            mKeyboardSP;
+    private static final String  FILE_NAME           = "keyboard.common";
+    private static final String  KEY_KEYBOARD_HEIGHT = "sp.key.keyboard.height";
+    private final        SPUtils mKeyboardSP;
 
-    private final Context            mContext;
-    private final ImageView          mEmojiSwitchImage;
-    private final EmojiEditText      mEditText;
-    private final View               mLayoutOutSide;
-    private final InputMethodManager mInputMethodManager;
-    private final IBarragePresenter  mPresenter;
-    private final Button             mButtonSend;
-    private final ViewGroup          mBottomPlaceholder;
-    private int                      mKeyboardHeight;
-    private int                      mLastScreenOrientation;
-    private OnDecorViewListener      mOnGlobalLayoutListener;
-    private OnSendListener           mOnSendListener;
-    private  String                  mRoomID;
+    private final Context             mContext;
+    private final ImageView           mEmojiSwitchImage;
+    private final EmojiEditText       mEditText;
+    private final View                mLayoutOutSide;
+    private final InputMethodManager  mInputMethodManager;
+    private final IBarragePresenter   mPresenter;
+    private final Button              mButtonSend;
+    private final ViewGroup           mBottomPlaceholder;
+    private       int                 mKeyboardHeight;
+    private       int                 mLastScreenOrientation;
+    private       OnDecorViewListener mOnGlobalLayoutListener;
+    private       OnSendListener      mOnSendListener;
+    private       String              mRoomID;
 
     public BarrageSendView(Context context, String roomId) {
         this(context, new BarrageIMService(roomId));
@@ -278,7 +278,7 @@ public class BarrageSendView extends Dialog implements IBarrageSendView, OnDecor
         barrage.user.userName = TUILogin.getNickName();
         barrage.user.userId = TUILogin.getUserId();
         barrage.user.avatarUrl = TUILogin.getFaceUrl();
-        barrage.user.level = "0";
+        barrage.user.level = "66";
         return barrage;
     }
 

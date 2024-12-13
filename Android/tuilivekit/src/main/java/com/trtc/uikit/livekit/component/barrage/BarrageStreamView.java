@@ -26,6 +26,7 @@ import com.trtc.uikit.livekit.component.barrage.store.BarrageStore;
 import com.trtc.uikit.livekit.component.barrage.store.model.Barrage;
 import com.trtc.uikit.livekit.component.barrage.view.IBarrageDisplayView;
 import com.trtc.uikit.livekit.component.barrage.view.adapter.BarrageItemAdapter;
+import com.trtc.uikit.livekit.component.barrage.view.adapter.BarrageItemDefaultAdapter;
 import com.trtc.uikit.livekit.component.barrage.view.adapter.BarrageItemTypeDelegate;
 import com.trtc.uikit.livekit.component.barrage.view.adapter.BarrageMsgListAdapter;
 
@@ -41,8 +42,8 @@ public class BarrageStreamView extends FrameLayout implements IBarrageDisplayVie
     private              ArrayList<Barrage>    mMsgList;
     private              int                   mBarrageCount = 0;
     private              String                mRoomId;
-    private              String                mOwnerId;
-    private              IBarragePresenter     mPresenter;
+    private final        BarrageIMService      mService;
+    private final        IBarragePresenter     mPresenter;
 
     private final Observer<Pair<String, Barrage>> mBarrageObserver = barragePair -> {
         if (barragePair != null && TextUtils.equals(mRoomId, barragePair.first)) {
@@ -61,15 +62,16 @@ public class BarrageStreamView extends FrameLayout implements IBarrageDisplayVie
     public BarrageStreamView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
-        LayoutInflater.from(mContext).inflate(R.layout.livekit_barrage_view_display, this);
+        mService = new BarrageIMService("");
+        mPresenter = new BarragePresenter(mContext, mService);
+        initView();
     }
 
     public void init(String roomId, String ownerId) {
         mRoomId = roomId;
-        mOwnerId = ownerId;
-        mPresenter = new BarragePresenter(mContext, new BarrageIMService(roomId));
+        mService.setRoomId(roomId);
         mPresenter.initDisplayView(this);
-        initView();
+        mAdapter.setItemAdapter(0, new BarrageItemDefaultAdapter(mContext, ownerId));
     }
 
     public void setItemTypeDelegate(BarrageItemTypeDelegate delegate) {
@@ -96,11 +98,12 @@ public class BarrageStreamView extends FrameLayout implements IBarrageDisplayVie
     }
 
     private void initView() {
+        LayoutInflater.from(mContext).inflate(R.layout.livekit_barrage_view_display, this);
         mTextNotice = findViewById(R.id.tv_notice);
         mRecyclerMsg = findViewById(R.id.rv_msg);
         mMsgList = new ArrayList<>();
-        mAdapter = new BarrageMsgListAdapter(mContext, mOwnerId, mMsgList);
         mRecyclerMsg.setLayoutManager(new LinearLayoutManager(mContext));
+        mAdapter = new BarrageMsgListAdapter(mMsgList);
         mRecyclerMsg.setAdapter(mAdapter);
     }
 

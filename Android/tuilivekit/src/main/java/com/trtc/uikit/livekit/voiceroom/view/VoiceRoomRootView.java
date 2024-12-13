@@ -57,10 +57,7 @@ import com.trtc.uikit.livekit.voiceroom.view.topview.TopView;
 import com.trtc.uikit.livekit.voiceroomcore.SeatGridView;
 import com.trtc.uikit.livekit.voiceroomcore.VoiceRoomDefine;
 
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
     private static final String FILE = "VoiceRoomRootView";

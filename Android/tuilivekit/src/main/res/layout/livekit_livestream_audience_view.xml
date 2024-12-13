@@ -71,6 +71,17 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <ImageView
+                    android:id="@+id/iv_dashboard"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="8dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/livekit_function_dashboard"
+                    app:layout_constraintBottom_toBottomOf="@+id/barrage_input_view"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_gift"
+                    tools:ignore="ContentDescription" />
+
                 <com.trtc.uikit.livekit.component.gift.GiftButton
                     android:id="@+id/btn_gift"
                     android:layout_width="32dp"

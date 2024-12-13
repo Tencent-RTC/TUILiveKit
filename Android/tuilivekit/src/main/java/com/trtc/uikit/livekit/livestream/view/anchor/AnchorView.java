@@ -23,8 +23,8 @@ import android.widget.RelativeLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.gson.Gson;
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
-import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.GetRoomInfoCallback;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.RoomInfo;
@@ -57,7 +57,6 @@ import com.trtc.uikit.livekit.livestream.state.RoomState;
 import com.trtc.uikit.livekit.livestream.state.RoomState.LiveStatus;
 import com.trtc.uikit.livekit.livestream.state.UserState;
 import com.trtc.uikit.livekit.livestream.view.BasicView;
-import com.trtc.uikit.livekit.livestream.view.anchor.TUILiveRoomAnchorFragment.RoomBehavior;
 import com.trtc.uikit.livekit.livestream.view.anchor.dashboard.AnchorDashboardView;
 import com.trtc.uikit.livekit.livestream.view.anchor.preview.LiveInfoEditView;
 import com.trtc.uikit.livekit.livestream.view.anchor.preview.PreviewFunctionView;
@@ -74,6 +73,7 @@ import com.trtc.uikit.livekit.livestream.view.widgets.coguest.CoGuestWidgetsView
 import com.trtc.uikit.livekit.livestream.view.widgets.cohost.CoHostWidgetsView;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine;
+import com.trtc.uikit.livekit.livestreamcore.common.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,37 +81,38 @@ import java.util.List;
 @SuppressLint("ViewConstructor")
 public class AnchorView extends BasicView {
 
-    private       LiveCoreView                   mLiveCoreView;
-    private       FrameLayout                    mLayoutPreview;
-    private       FrameLayout                    mLayoutPushing;
-    private       AnchorDashboardView            mAnchorDashboardView;
-    private       LiveInfoEditView               mLiveInfoEditView;
-    private       PreviewFunctionView            mPreviewFunctionView;
-    private       RelativeLayout                 mLayoutAnchorPreviewMask;
-    private       RelativeLayout                 mLayoutAnchorLivingTopMask;
-    private       RelativeLayout                 mLayoutAnchorLivingBottomMask;
-    private       Button                         mButtonStartLive;
-    private       ImageView                      mImageEndLive;
-    private       ImageView                      mImageFloatWindow;
-    private       View                           mViewCoGuest;
-    private       View                           mViewCoHost;
-    private       View                           mViewBattle;
-    private       AudienceListView               mAudienceListView;
-    private       RoomInfoView                   mRoomInfoView;
-    private       BarrageInputView               mBarrageInputView;
-    private       BarrageStreamView              mBarrageStreamView;
-    private       GiftPlayView                   mGiftPlayView;
-    private       PopupDialog                    mMusicPanelDialog;
-    private       ApplyCoGuestFloatView          mApplyCoGuestFloatView;
-    private       BattleInfoView                 mBattleInfoView;
-    private       StandardDialog                 mProcessConnectionDialog;
-    private       RoomBehavior                   mRoomBehavior;
-    private final Observer<LiveStatus>           mLiveStatusObserver             = this::onLiveStatusChange;
-    private final Observer<ConnectionUser>       mReceivedConnectRequestObserver = this::onReceivedCoHostRequest;
-    private final Observer<List<ConnectionUser>> mConnectedObserver              = this::onConnectedUserChange;
-    private final Observer<Boolean>              mBattleStartObserver            = this::onBattleStartChange;
-    private final Observer<Boolean>              mBattleResultDisplayObserver    = this::onBattleResultDisplay;
-    private final Observer<UserState.UserInfo>   mEnterUserObserver              = this::onEnterUserChange;
+    private       LiveCoreView                           mLiveCoreView;
+    private       FrameLayout                            mLayoutPreview;
+    private       FrameLayout                            mLayoutPushing;
+    private       AnchorDashboardView                    mAnchorDashboardView;
+    private       LiveInfoEditView                       mLiveInfoEditView;
+    private       PreviewFunctionView                    mPreviewFunctionView;
+    private       RelativeLayout                         mLayoutAnchorPreviewMask;
+    private       RelativeLayout                         mLayoutAnchorLivingTopMask;
+    private       RelativeLayout                         mLayoutAnchorLivingBottomMask;
+    private       Button                                 mButtonStartLive;
+    private       ImageView                              mImageEndLive;
+    private       ImageView                              mImageFloatWindow;
+    private       View                                   mViewCoGuest;
+    private       View                                   mViewCoHost;
+    private       View                                   mViewBattle;
+    private       AudienceListView                       mAudienceListView;
+    private       RoomInfoView                           mRoomInfoView;
+    private       BarrageInputView                       mBarrageInputView;
+    private       BarrageStreamView                      mBarrageStreamView;
+    private       GiftPlayView                           mGiftPlayView;
+    private       PopupDialog                            mMusicPanelDialog;
+    private       ApplyCoGuestFloatView                  mApplyCoGuestFloatView;
+    private       BattleInfoView                         mBattleInfoView;
+    private       StandardDialog                         mProcessConnectionDialog;
+    private       TUILiveRoomAnchorFragment.RoomBehavior mRoomBehavior;
+    private final Observer<LiveStatus>                   mLiveStatusObserver             = this::onLiveStatusChange;
+    private final Observer<ConnectionUser>               mReceivedConnectRequestObserver =
+            this::onReceivedCoHostRequest;
+    private final Observer<List<ConnectionUser>>         mConnectedObserver              = this::onConnectedUserChange;
+    private final Observer<Boolean>                      mBattleStartObserver            = this::onBattleStartChange;
+    private final Observer<Boolean>                      mBattleResultDisplayObserver    = this::onBattleResultDisplay;
+    private final Observer<UserState.UserInfo>           mEnterUserObserver              = this::onEnterUserChange;
 
     public AnchorView(@NonNull Context context) {
         this(context, null);
@@ -212,38 +213,43 @@ public class AnchorView extends BasicView {
             }
 
             @Override
-            public void updateCoGuestView(UserInfo userInfo, View coGuestView) {
-
+            public void updateCoGuestView(UserInfo userInfo, List<LiveCoreViewDefine.UserInfoModifyFlag> modifyFlag,
+                                          View coGuestView) {
+                Logger.info("Anchor initLiveCoreView updateCoGuestView: userInfo = " + new Gson().toJson(userInfo)
+                        + ",modifyFlag = " + new Gson().toJson(modifyFlag) + ",coGuestView = " + coGuestView);
             }
 
+
             @Override
-            public View createCoHostView(TUILiveConnectionManager.ConnectionUser connectionUser) {
+            public View createCoHostView(LiveCoreViewDefine.CoHostUser coHostUser) {
                 FrameLayout composeCoHostLayout = new FrameLayout(mContext);
                 FrameLayout.LayoutParams layoutParams =
                         new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                                 ViewGroup.LayoutParams.MATCH_PARENT);
 
                 CoHostWidgetsView coHostWidgetsView = new CoHostWidgetsView(mContext);
-                coHostWidgetsView.init(mLiveManager, connectionUser);
+                coHostWidgetsView.init(mLiveManager, coHostUser);
                 composeCoHostLayout.addView(coHostWidgetsView, layoutParams);
 
                 BattleMemberInfoView battleMemberInfoView = new BattleMemberInfoView(mContext);
-                battleMemberInfoView.init(mLiveManager, connectionUser.userId);
+                battleMemberInfoView.init(mLiveManager, coHostUser.connectionUser.userId);
                 composeCoHostLayout.addView(battleMemberInfoView, layoutParams);
                 return composeCoHostLayout;
             }
 
             @Override
-            public void updateCoHostView(TUILiveConnectionManager.ConnectionUser connectionUser, View coHostView) {
-
+            public void updateCoHostView(LiveCoreViewDefine.CoHostUser coHostUser,
+                                         List<LiveCoreViewDefine.UserInfoModifyFlag> modifyFlag, View coHostView) {
+                Logger.info("Anchor initLiveCoreView updateCoHostView: coHostUser = " + new Gson().toJson(coHostUser)
+                        + ",modifyFlag = " + new Gson().toJson(modifyFlag) + ",coHostView = " + coHostView);
             }
-
         });
 
         mLiveCoreView.startCamera(true, null);
         mLiveCoreView.startMicrophone(null);
         if (mRoomBehavior == TUILiveRoomAnchorFragment.RoomBehavior.ENTER_ROOM) {
             mLayoutPushing.setVisibility(VISIBLE);
+            mUserManager.initSelfUserData();
             mLiveCoreView.joinLiveStream(mRoomState.roomId, new GetRoomInfoCallback() {
                 @Override
                 public void onSuccess(RoomInfo roomInfo) {
@@ -319,7 +325,7 @@ public class AnchorView extends BasicView {
 
     private void initSettingsPanel() {
         findViewById(R.id.v_settings).setOnClickListener(view -> {
-            SettingsPanelDialog settingsPanelDialog = new SettingsPanelDialog(mContext, mLiveManager);
+            SettingsPanelDialog settingsPanelDialog = new SettingsPanelDialog(mContext, mLiveManager, mLiveCoreView);
             settingsPanelDialog.show();
         });
     }
@@ -341,6 +347,7 @@ public class AnchorView extends BasicView {
             RoomInfo roomInfo = new RoomInfo();
             roomInfo.roomId = mRoomState.roomId;
             roomInfo.name = mRoomState.roomName.get();
+            mUserManager.initSelfUserData();
             mLiveCoreView.startLiveStream(roomInfo, new GetRoomInfoCallback() {
                 @Override
                 public void onSuccess(RoomInfo roomInfo) {
@@ -369,7 +376,7 @@ public class AnchorView extends BasicView {
     }
 
     private void initPreviewFunctionView() {
-        mPreviewFunctionView.init(mLiveManager);
+        mPreviewFunctionView.init(mLiveManager, mLiveCoreView);
     }
 
     private void initAudienceListView() {
@@ -603,7 +610,7 @@ public class AnchorView extends BasicView {
             barrage.user.userId = userInfo.userId;
             barrage.user.userName = userInfo.name.get();
             barrage.user.avatarUrl = userInfo.avatarUrl.get();
-            barrage.user.level = "0";
+            barrage.user.level = "32";
             mBarrageStreamView.insertBarrages(barrage);
         }
     }

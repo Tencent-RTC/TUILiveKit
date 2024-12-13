@@ -77,7 +77,7 @@ public class UserManager extends BaseManager {
         });
     }
 
-    private void initSelfUserData() {
+    public void initSelfUserData() {
         TUIRoomDefine.LoginUserInfo loginUserInfo = TUIRoomEngine.getSelfInfo();
         mUserState.selfInfo.userId = loginUserInfo.userId;
         mUserState.selfInfo.name.set(loginUserInfo.userName);

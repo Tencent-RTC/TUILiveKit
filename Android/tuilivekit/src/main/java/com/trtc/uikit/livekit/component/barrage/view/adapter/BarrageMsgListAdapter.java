@@ -1,7 +1,6 @@
 package com.trtc.uikit.livekit.component.barrage.view.adapter;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.util.Log;
 import android.view.ViewGroup;
 
@@ -23,9 +22,8 @@ public final class BarrageMsgListAdapter extends RecyclerView.Adapter<RecyclerVi
     private final Map<Integer, BarrageItemAdapter> mAdapterMap = new HashMap<>();
     private       BarrageItemTypeDelegate          mViewTypeDelegate;
 
-    public BarrageMsgListAdapter(Context context, String ownerId, List<Barrage> msgEntityList) {
+    public BarrageMsgListAdapter(List<Barrage> msgEntityList) {
         this.mMsgEntityList = msgEntityList;
-        setItemAdapter(0, new BarrageItemDefaultAdapter(context, ownerId));
         setItemTypeDelegate((position, barrage) -> 0);
     }
 

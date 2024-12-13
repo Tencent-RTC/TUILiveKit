@@ -4,7 +4,6 @@ import static com.tencent.cloud.tuikit.engine.common.TUICommonDefine.ExtensionTy
 
 import com.google.gson.Gson;
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
-import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfo;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveModifyFlag;
@@ -28,13 +27,11 @@ public class VoiceRoomImpl implements IVoiceRoom {
     private final TUIRoomEngine            mTUIRoomEngine;
     private final TRTCCloud                mTRTCCloud;
     private final TUILiveListManager       mTUILiveListManager;
-    private final TUILiveConnectionManager mTUILiveConnectionManager;
 
     public VoiceRoomImpl() {
         mTUIRoomEngine = TUIRoomEngine.sharedInstance();
         mTRTCCloud = mTUIRoomEngine.getTRTCCloud();
         mTUILiveListManager = (TUILiveListManager) mTUIRoomEngine.getExtension(LIVE_LIST_MANAGER);
-        mTUILiveConnectionManager = mTUIRoomEngine.getLiveConnectionManager();
     }
 
     @Override
