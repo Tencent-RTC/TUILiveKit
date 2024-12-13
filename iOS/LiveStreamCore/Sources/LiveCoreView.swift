@@ -364,7 +364,9 @@ extension LiveCoreView {
     private func applyToConnection(timeOut: Int, onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
         Task {
             do {
-                let result = try await videoLiveManager.applyToConnection(timeOut: timeOut)
+                let result = try await videoLiveManager.applyToConnection(timeOut: timeOut) { [weak self] in
+                    self?.videoLiveManager.asyncRunMainThread(onSuccess)
+                }
                 switch result {
                 case .accepted(userId: _):
                     if !videoLiveManager.coGuestState.openCameraOnCoGuest {
@@ -379,7 +381,6 @@ extension LiveCoreView {
                     }
                 default: break
                 }
-                videoLiveManager.asyncRunMainThread(onSuccess)
             } catch let LiveStreamCoreError.error(code, message) {
                 videoLiveManager.asyncRunMainThread(onError, code, message)
             }

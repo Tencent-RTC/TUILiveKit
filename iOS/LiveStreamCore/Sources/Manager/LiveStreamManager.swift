@@ -152,17 +152,18 @@ extension LiveStreamManager {
         context.coGuestManager.enableAutoOpenCameraOnSeated(enable: enable)
     }
     
-    func applyToConnection(timeOut: Int) async throws -> TakeSeatResult {
+    func applyToConnection(timeOut: Int, onSendRequestSuccess: (() -> Void)?) async throws -> TakeSeatResult {
         LCDataReporter.reportEventData(event: .methodCallLiveStreamRequestIntraRoomConnection)
-        return try await context.coGuestManager.applyToConnection(timeOut: timeOut)
+        return try await context.coGuestManager.applyToConnection(timeOut: timeOut, onSendRequestSuccess: onSendRequestSuccess)
     }
     
     func inviteGuestToConnection(userId: String, onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
         LCDataReporter.reportEventData(event: .methodCallLiveStreamRequestIntraRoomConnection)
         Task {
             do {
-                try await context.coGuestManager.inviteGuestToConnection(userId: userId)
-                asyncRunMainThread(onSuccess)
+                try await context.coGuestManager.inviteGuestToConnection(userId: userId) { [weak self] in
+                    self?.asyncRunMainThread(onSuccess)
+                }
             } catch let LiveStreamCoreError.error(code, message) {
                 asyncRunMainThread(onError, code, message)
             }
