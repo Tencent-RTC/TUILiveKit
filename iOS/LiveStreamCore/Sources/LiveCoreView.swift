@@ -27,10 +27,12 @@ import TUICore
     private var coGuestUserList: [TUISeatInfo] = []
     private var coHostUserList: [TUIConnectionUser] = []
     private var waitingCoGuestView: UIView?
+    private var videoViewModelMap: [String: VideoViewModel] = [:]
     
     public init() {
         super.init(frame: .zero)
         LCDataReporter.reportEventData(event: .panelShowLiveCoreView)
+        videoLiveManager.context.delegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -250,12 +252,22 @@ extension LiveCoreView {
         videoLiveManager.setLocalVideoView(view: localVideoView.videoView)
         if !liveStreamContainerView.containsView(localVideoView) {
             if let videoViewDelegate = videoViewDelegate {
+                let selfInfo = videoLiveManager.userState.selfInfo
+                let selfUserId = selfInfo.userId
+                
                 let coGuestWidgetsView = videoViewDelegate.createCoGuestView(userInfo: videoLiveManager.userState.selfInfo)
                 localVideoView.setCoGuestView(coGuestWidgetsView)
+                let videoViewModel = VideoViewModel()
+                videoViewModel.coGuestUser = selfInfo
+                videoViewModel.userView = coGuestWidgetsView
+                videoViewModelMap[selfUserId] = videoViewModel
                 
-                let connectUser = LiveStreamConvert.convertToConnectionUser(userInfo: videoLiveManager.userState.selfInfo,
-                                                                            roomId: videoLiveManager.roomState.roomId)
-                let coHostWidgetsView = videoViewDelegate.createCoHostView(connectionUser: connectUser)
+                let hasVideo = videoLiveManager.userState.hasVideoStreamUserList.contains(selfUserId) ||
+                               videoLiveManager.mediaState.isCameraOpened
+                let hasAudio = videoLiveManager.userState.hasAudioStreamUserList.contains(selfUserId) ||
+                               !videoLiveManager.mediaState.isMicrophoneMuted
+                let coHostUser = LiveStreamConvert.convertToCoHostUser(userInfo: selfInfo, roomId: videoLiveManager.roomState.roomId, hasVideoStream: hasVideo, hasAudioStream: hasAudio)
+                let coHostWidgetsView = videoViewDelegate.createCoHostView(coHostUser: coHostUser)
                 localVideoView.setCoHostView(coHostWidgetsView)
             }
             liveStreamContainerView.addView(localVideoView)
@@ -269,6 +281,7 @@ extension LiveCoreView {
             liveStreamContainerView.removeView(localVideoView)
             videoLiveManager.clearLocalLiveView()
         }
+        videoViewModelMap.removeValue(forKey: videoLiveManager.userState.selfInfo.userId)
     }
     
     private func addCoGuestLiveView(userInfo: TUIUserInfo) {
@@ -281,6 +294,11 @@ extension LiveCoreView {
             if let videoViewDelegate = videoViewDelegate {
                 let coGuestWidgetsView = videoViewDelegate.createCoGuestView(userInfo: userInfo)
                 liveView.setCoGuestView(coGuestWidgetsView)
+                
+                let videoViewModel = VideoViewModel()
+                videoViewModel.coGuestUser = userInfo
+                videoViewModel.userView = coGuestWidgetsView
+                videoViewModelMap[userInfo.userId] = videoViewModel
             }
             liveStreamContainerView.addView(liveView)
         }
@@ -293,6 +311,7 @@ extension LiveCoreView {
         let liveView = videoLiveManager.getRemoteLiveViewByUserId(userId: userInfo.userId)
         videoLiveManager.removeRemoteView(userId: userInfo.userId)
         liveStreamContainerView.removeView(liveView)
+        videoViewModelMap.removeValue(forKey: userInfo.userId)
     }
     
     private func addCoHostLiveView(user: TUIConnectionUser) {
@@ -303,8 +322,16 @@ extension LiveCoreView {
         videoLiveManager.setRemoteVideoView(userId: user.userId, streamType: .cameraStream, view: liveView.videoView)
         if !liveStreamContainerView.containsView(liveView) {
             if let videoViewDelegate = videoViewDelegate {
-                let coHostWidgetsView = videoViewDelegate.createCoHostView(connectionUser: user)
+                let hasVideo = videoLiveManager.userState.hasVideoStreamUserList.contains(user.userId)
+                let hasAudio = videoLiveManager.userState.hasAudioStreamUserList.contains(user.userId)
+                let coHostUser = LiveStreamConvert.convertToCoHostUser(connectionUser: user, hasVideoStream: hasVideo, hasAudioStream: hasAudio)
+                let coHostWidgetsView = videoViewDelegate.createCoHostView(coHostUser: coHostUser)
                 liveView.setCoHostView(coHostWidgetsView)
+                
+                let videoViewModel = VideoViewModel()
+                videoViewModel.coHostUser = coHostUser
+                videoViewModel.userView = coHostWidgetsView
+                videoViewModelMap[user.userId] = videoViewModel
             }
             liveStreamContainerView.addView(liveView)
         }
@@ -318,6 +345,7 @@ extension LiveCoreView {
         let liveView = videoLiveManager.getRemoteLiveViewByUserId(userId: user.userId)
         videoLiveManager.removeRemoteView(userId: user.userId)
         liveStreamContainerView.removeView(liveView)
+        videoViewModelMap.removeValue(forKey: user.userId)
     }
     
     private func requestIntraConnection(userId: String, timeOut: Int, openCamera: Bool,
@@ -490,4 +518,52 @@ extension LiveCoreView {
         
         return (addedUsers, removedUsers)
     }
+}
+
+// MARK: - UpdateUserInfoDelegate
+extension LiveCoreView: UpdateUserInfoDelegate {
+    func onUserAudioStateChanged(userId: String, hasAudio: Bool, reason: TUIChangeReason) {
+        guard let videoViewDelegate = videoViewDelegate,
+              let videoViewModel = videoViewModelMap[userId],
+              let userView = videoViewModel.userView else { return }
+        let modifyFlags: UserInfoModifyFlag = [.hasAudioStream]
+        if let coGuestUser = videoViewModel.coGuestUser {
+            coGuestUser.hasAudioStream = hasAudio
+            videoViewDelegate.updateCoGuestView(userInfo: coGuestUser, modifyFlag: modifyFlags, coGuestView: userView)
+        } else if let coHostUser = videoViewModel.coHostUser {
+            coHostUser.hasAudioStream = hasAudio
+            videoViewDelegate.updateCoHostView(coHostUser: coHostUser, modifyFlag: modifyFlags, coHostView: userView)
+        }
+    }
+    
+    func onUserVideoStateChanged(userId: String, hasVideo: Bool, reason: TUIChangeReason) {
+        guard let videoViewDelegate = videoViewDelegate,
+              let videoViewModel = videoViewModelMap[userId],
+              let userView = videoViewModel.userView else { return }
+        let modifyFlags: UserInfoModifyFlag = [.hasVideoStream]
+        if let coGuestUser = videoViewModel.coGuestUser {
+            coGuestUser.hasVideoStream = hasVideo
+            videoViewDelegate.updateCoGuestView(userInfo: coGuestUser, modifyFlag: modifyFlags, coGuestView: userView)
+        } else if let coHostUser = videoViewModel.coHostUser {
+            coHostUser.hasAudioStream = hasVideo
+            videoViewDelegate.updateCoHostView(coHostUser: coHostUser, modifyFlag: modifyFlags, coHostView: userView)
+        }
+    }
+    
+    func onUserInfoChanged(userInfo: TUIUserInfo, modifyFlag: TUIUserInfoModifyFlag) {
+        guard let videoViewDelegate = videoViewDelegate,
+              let videoViewModel = videoViewModelMap[userInfo.userId],
+              let userView = videoViewModel.userView else { return }
+        let modifyFlags: UserInfoModifyFlag = LiveStreamConvert.convertToUserInfoModifyFlag(flag: modifyFlag)
+        if var coGuestUser = videoViewModel.coGuestUser {
+            coGuestUser = userInfo
+            videoViewDelegate.updateCoGuestView(userInfo: coGuestUser, modifyFlag: modifyFlags, coGuestView: userView)
+        }
+    }
+}
+
+class VideoViewModel {
+    var coHostUser: CoHostUser?
+    var coGuestUser: TUIUserInfo?
+    var userView: UIView?
 }

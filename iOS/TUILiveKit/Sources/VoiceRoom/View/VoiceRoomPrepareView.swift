@@ -8,9 +8,11 @@ import UIKit
 import RTCRoomEngine
 import Combine
 import RTCCommon
+import SeatGridView
 
 protocol VoiceRoomPrepareViewDelegate: AnyObject {
     func prepareView(_ view: VoiceRoomPrepareView, didClickStart button: UIButton)
+    func prepareView(_ view: VoiceRoomPrepareView, didClickBack button: UIButton)
 }
 
 class VoiceRoomPrepareView: RTCBaseView {
@@ -254,7 +256,7 @@ extension VoiceRoomPrepareView {
 extension VoiceRoomPrepareView {
     @objc
     func clickBack(sender: UIButton) {
-        routerManager.router(action: .exit)
+        delegate?.prepareView(self, didClickBack: sender)
     }
     
     @objc

@@ -9,10 +9,18 @@ import Combine
 import RTCCommon
 import RTCRoomEngine
 
+protocol UpdateUserInfoDelegate: AnyObject {
+    func onUserAudioStateChanged(userId: String, hasAudio: Bool, reason: TUIChangeReason)
+    func onUserVideoStateChanged(userId: String, hasVideo: Bool, reason: TUIChangeReason)
+    func onUserInfoChanged(userInfo: TUIUserInfo, modifyFlag: TUIUserInfoModifyFlag)
+}
+
 class LiveStreamManager {
     public class Context {
         let service: LiveStreamService = LiveStreamService()
         let observers: LiveStreamObserverList = LiveStreamObserverList()
+        
+        weak var delegate: UpdateUserInfoDelegate?
         
         lazy var roomEngineObserver = RoomEngineObserver(context: self)
         lazy var liveConnectionObserver = LiveConnectionObserver(context: self)

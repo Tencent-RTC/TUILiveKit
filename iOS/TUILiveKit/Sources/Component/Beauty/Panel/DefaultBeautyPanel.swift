@@ -16,11 +16,10 @@ import TXLiteAVSDK_Professional
 
 class DefaultBeautyPanel: UIView {
     var backClosure: (() ->Void)?
-    private let store: BeautyStoreProvider
+    private let manager = BeautyManager()
     private var cancellableSet = Set<AnyCancellable>()
     private var hasRenderView: Bool
-    init(store: BeautyStoreProvider, hasRenderView: Bool = true) {
-        self.store = store
+    init(hasRenderView: Bool = false) {
         self.hasRenderView = hasRenderView
         super.init(frame: .zero)
     }
@@ -115,12 +114,16 @@ class DefaultBeautyPanel: UIView {
         return view
     }()
     
-    private lazy var featureCollectionView: FeatureCollectionView = {
-        let model = FeatureCollectionViewModel()
-        model.items = featureItems
+    private let config: FeatureCollectionViewDesignConfig = {
         let config = FeatureCollectionViewDesignConfig()
         config.scrollDirection = .vertical
         config.hasHeader = false
+        return config
+    }()
+    
+    private lazy var featureCollectionView: FeatureCollectionView = {
+        let model = FeatureCollectionViewModel()
+        model.items = featureItems
         var collectionView = FeatureCollectionView(model: model, designConfig: config)
         collectionView.clickEventCallBack.addObserver(self) { [weak self] action, _ in
             guard let actionType = action as? BeautyTypeEvent else{ return}
@@ -150,9 +153,9 @@ class DefaultBeautyPanel: UIView {
                                                  isSelected: false,
                                                  action: beauty)
             if beauty == .closeClick {
-                item.isSelected = store.selectCurrent(BeautySelectors.isCloseBeauty)
+                item.isSelected = manager.isCloseBeauty()
             } else if beauty == .buffingClick {
-                item.isSelected = !store.selectCurrent(BeautySelectors.isCloseBeauty)
+                item.isSelected = !manager.isCloseBeauty()
             }
             items.append(item)
         }
@@ -164,15 +167,15 @@ class DefaultBeautyPanel: UIView {
         layer.cornerRadius = 20
         layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         
-        if !store.selectCurrent(BeautySelectors.isCloseBeauty) {
+        if !manager.isCloseBeauty() {
             enableBuffing()
         }
     }
     
     private func updatePreview() {
         if hasRenderView {
-            store.dispatch(action: BeautyActions.setLocalVideoView(payload: previewView))
-            store.dispatch(action: BeautyActions.openLocalCamera())
+            manager.setLocalVideoView(previewView)
+            manager.openLocalCamera()
         }
     }
 }
@@ -193,11 +196,6 @@ extension DefaultBeautyPanel {
     
     func activateConstraints() {
         snp.remakeConstraints { make in
-            if isPortrait {
-                make.height.equalTo(hasRenderView ? 718.scale375Height() : 374.scale375Height())
-            } else {
-                make.width.equalTo(375.scale375())
-            }
             make.edges.equalToSuperview()
         }
         
@@ -246,10 +244,12 @@ extension DefaultBeautyPanel {
             make.height.equalTo(22.scale375Height())
         }
         
+        let height = config.itemSize.height * CGFloat(featureItems.count / 5 + 1) + CGFloat(featureItems.count - 1) * config.itemSpacing
         featureCollectionView.snp.makeConstraints { make in
             make.top.equalTo(sliderLabel.snp.bottom).offset(16.scale375Height())
             make.leading.trailing.equalToSuperview().inset(24.scale375())
-            make.height.equalTo(238.scale375())
+            make.height.equalTo(min(height, 238).scale375Height())
+            make.bottom.equalToSuperview().offset(-20.scale375Height())
         }
     }
 }
@@ -257,12 +257,9 @@ extension DefaultBeautyPanel {
 // MARK: Action
 extension DefaultBeautyPanel {
     private func  bindInteraction() {
-        let smoothLevel = store.selectCurrent(BeautySelectors.getSmoothLevel)
-        store.dispatch(action: BeautyActions.setSmoothLevel(payload: smoothLevel))
-        let whitenessLevel = store.selectCurrent(BeautySelectors.getWhitenessLevel)
-        store.dispatch(action: BeautyActions.setWhitenessLevel(payload: whitenessLevel))
-        let ruddyLevel = store.selectCurrent(BeautySelectors.getRuddyLevel)
-        store.dispatch(action: BeautyActions.setRuddyLevel(payload: ruddyLevel))
+        manager.setSmoothLevel(manager.state.smoothLevel)
+        manager.setWhitenessLevel(manager.state.whitenessLevel)
+        manager.setRuddyLevel(manager.state.ruddyLevel)
     }
     
     @objc func backButtonClick(sender: UIButton) {
@@ -271,14 +268,14 @@ extension DefaultBeautyPanel {
     
     @objc func sliderValueChanged() {
         switch currentBeautyType {
-            case .buffingClick:
-                store.dispatch(action: BeautyActions.setSmoothLevel(payload: Int(slider.value)))
-            case .whitenessClick:
-                store.dispatch(action: BeautyActions.setWhitenessLevel(payload: Int(slider.value)))
-            case .ruddyClick:
-                store.dispatch(action: BeautyActions.setRuddyLevel(payload: Int(slider.value)))
-            default:
-                break
+        case .buffingClick:
+            manager.setSmoothLevel(slider.value)
+        case .whitenessClick:
+            manager.setWhitenessLevel(slider.value)
+        case .ruddyClick:
+            manager.setRuddyLevel(slider.value)
+        default:
+            break
         }
         sliderLabel.text = String(Int(slider.value))
     }
@@ -286,9 +283,7 @@ extension DefaultBeautyPanel {
     private func closeBeauty() {
         isPresent = false
         currentBeautyType = .closeClick
-        store.dispatch(action: BeautyActions.setWhitenessLevel(payload: 0))
-        store.dispatch(action: BeautyActions.setSmoothLevel(payload: 0))
-        store.dispatch(action: BeautyActions.setRuddyLevel(payload: 0))
+        manager.closeBeauty()
         slider.setValue(0, animated: true)
         sliderLabel.text = String(Int(slider.value))
     }
@@ -297,8 +292,8 @@ extension DefaultBeautyPanel {
         isPresent = true
         currentBeautyType = .buffingClick
         beautyTypeLabel.text = .buffingText
-        let smoothLevel = store.selectCurrent(BeautySelectors.getSmoothLevel)
-        store.dispatch(action: BeautyActions.setSmoothLevel(payload: smoothLevel))
+        let smoothLevel = manager.state.smoothLevel
+        manager.setSmoothLevel(smoothLevel)
         slider.setValue(Float(smoothLevel), animated: true)
         sliderLabel.text = String(Int(slider.value))
     }
@@ -307,8 +302,8 @@ extension DefaultBeautyPanel {
         isPresent = true
         currentBeautyType = .whitenessClick
         beautyTypeLabel.text = .whitenessText
-        let whitenessLevel = store.selectCurrent(BeautySelectors.getWhitenessLevel)
-        store.dispatch(action: BeautyActions.setWhitenessLevel(payload: whitenessLevel))
+        let whitenessLevel = manager.state.whitenessLevel
+        manager.setWhitenessLevel(whitenessLevel)
         slider.setValue(Float(whitenessLevel), animated: true)
         sliderLabel.text = String(Int(slider.value))
     }
@@ -317,8 +312,8 @@ extension DefaultBeautyPanel {
         isPresent = true
         currentBeautyType = .ruddyClick
         beautyTypeLabel.text = .ruddyText
-        let ruddyLevel = store.selectCurrent(BeautySelectors.getRuddyLevel)
-        store.dispatch(action: BeautyActions.setRuddyLevel(payload: ruddyLevel))
+        let ruddyLevel = manager.state.ruddyLevel
+        manager.setRuddyLevel(ruddyLevel)
         slider.setValue(Float(ruddyLevel), animated: true)
         sliderLabel.text = String(Int(slider.value))
     }

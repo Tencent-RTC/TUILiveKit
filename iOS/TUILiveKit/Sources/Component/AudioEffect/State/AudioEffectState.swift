@@ -7,12 +7,6 @@
 
 import Foundation
 
-#if canImport(TXLiteAVSDK_TRTC)
-    import TXLiteAVSDK_TRTC
-#elseif canImport(TXLiteAVSDK_Professional)
-    import TXLiteAVSDK_Professional
-#endif
-
 enum AudioChangerType: Int {
     case none = 0
     case child = 1

@@ -82,6 +82,10 @@
 "live.anchor.setting.mirror" = "镜像";
 "live.anchor.setting.background" = "背景";
 "live.anchor.setting.video.parameters" = "视频参数";
+"live.anchor.setting.video.resolution" = "视频分辨率";
+"live.anchor.setting.video.fps" = "视频帧率";
+"live.anchor.setting.video.bitrate" = "视频码率";
+"live.anchor.setting.video.ultimate" = "至臻画质";
 "live.anchor.setting.more.setting" = "更多设置";
 "live.anchor.setting.need.request" = "上麦需要房主同意";
 "live.link.success" = "连麦成功";

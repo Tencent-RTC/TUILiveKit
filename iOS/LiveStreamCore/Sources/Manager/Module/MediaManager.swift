@@ -213,10 +213,12 @@ extension MediaManager {
     
     private func initVideoAdvanceSettings() {
         enableUltimate(true)
+        enableH265(true)
     }
     
     private func unInitVideoAdvanceSettings() {
         enableUltimate(false)
+        enableH265(false)
     }
 }
 

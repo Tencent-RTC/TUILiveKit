@@ -98,8 +98,17 @@ class CoGuestManager {
     
     func inviteGuestToConnection(userId: String) async throws {
         do {
-            let _ = try await service.takeUserOnSeatByAdmin(seatIndex: requestDefaultIndex, userId: userId, timeout: TimeInterval(requestTimeOut)) { [weak self] request in
+            let result = try await service.takeUserOnSeatByAdmin(seatIndex: requestDefaultIndex, userId: userId, timeout: TimeInterval(requestTimeOut)) { [weak self] request in
                 self?.sentInvitationMap[userId] = request
+            }
+            switch result {
+            case .accepted(userId: let userId):
+                onUserConnectionAccepted(userId: userId)
+            case .rejected(userId: let userId):
+                onUserConnectionRejected(userId: userId)
+            case .timeout(userId: let userId):
+                onUserConnectionTimeout(userId: userId)
+            default: break
             }
             sentInvitationMap.removeValue(forKey: userId)
         } catch let LiveStreamCoreError.seatError(userId, code, message) {

@@ -238,12 +238,6 @@ extension LiveRoomRootMenuDataCreator {
                                        actionClosure: { _ in
             manager.switchCamera()
         }))
-        model.items.append(LSFeatureItem(normalTitle: .mirrorText,
-                                       normalImage: .liveBundleImage("live_video_setting_mirror"),
-                                       designConfig: designConfig,
-                                       actionClosure: { _ in
-            manager.setCameraMirror()
-        }))
         model.items.append(LSFeatureItem(normalTitle: .videoParametersText,
                                        normalImage: .liveBundleImage("live_setting_video_parameters"),
                                        designConfig: designConfig,
@@ -345,7 +339,6 @@ private extension String {
     static let beautyText = localized("live.anchor.setting.beauty")
     static let audioEffectsText = localized("live.anchor.setting.audio.effects")
     static let flipText = localized("live.anchor.setting.flip")
-    static let mirrorText = localized("live.anchor.setting.mirror")
     static let videoParametersText = localized("live.anchor.setting.video.parameters")
     static let moreSettingText = localized("live.anchor.setting.more.setting")
     

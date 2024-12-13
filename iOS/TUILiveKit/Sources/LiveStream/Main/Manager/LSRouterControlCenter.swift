@@ -186,64 +186,68 @@ extension LSRouterControlCenter {
     private func getRouteDefaultView(route: LSRoute) -> UIView? {
         var view: UIView?
         switch route {
-            case .liveLinkControl:
-                view = AnchorLinkControlPanel(manager: manager, routerManager: routerManager, coreView: coreView)
-            case .connectionControl:
-                view = LSCoHostManagerPanel(manager: manager.coHostManager, coreView: coreView)
-            case .featureSetting(let settingPanelModel):
-                view = LSSettingPanel(settingPanelModel: settingPanelModel)
-            case .musicList:
-                view = MusicView(roomId: manager.roomState.roomId,
-                                      trtcCloud: TUIRoomEngine.sharedInstance().getTRTCCloud())
-            case .audioEffect:
-                let audioEffect = AudioEffectView(roomId: manager.roomState.roomId,
-                                                  trtcCloud: TUIRoomEngine.sharedInstance().getTRTCCloud())
-                audioEffect.backButtonClickClosure = { [weak self] _ in
-                    guard let self = self else { return }
-                    self.routerManager.router(action: .dismiss())
-                }
-                view = audioEffect
-            case .videoSetting:
-                view = AnchorVideoParametersSettingPanel(manager: manager, routerManager: routerManager)
-            case .linkType(let data):
-                view = LinkMicTypePanel(data: data, routerManager: routerManager)
-            case .listMenu(let data):
-                let actionPanel = ActionPanel(panelData: data)
-                actionPanel.cancelActionClosure = { [weak self] in
-                    guard let self = self else { return }
-                    self.routerManager.router(action: .dismiss())
-                }
-                view = actionPanel
-            case .linkSetting:
-                view = VideoLinkSettingPanel(manager: manager, routerManager: routerManager, coreView: coreView)
-            case .systemImageSelection:
-                let imageConfig = LSSystemImageFactory.getImageAssets()
-                let systemImageSelectionPanel = LSSystemImageSelectionPanel(configs: imageConfig, manager: manager)
-                systemImageSelectionPanel.backButtonClickClosure = { [weak self] in
-                    guard let self = self else { return }
-                    self.routerManager.router(action: .dismiss())
-                }
-                view = systemImageSelectionPanel
-            case .prepareSetting:
-                break
-            case .battleCountdown(let countdownTime):
-                let countdownView = LSBattleCountDownView(countdownTime: countdownTime, manager: manager.battleManager)
-                countdownView.timeEndClosure = { [weak self] in
-                    guard let self = self else { return }
-                    self.routerManager.router(action: .dismiss())
-                }
-                countdownView.cancelClosure = { [weak self] in
-                    guard let self = self else { return }
-                    self.routerManager.router(action: .dismiss())
-                }
-                view = countdownView
-            case .alert(let info):
-                view = LSAlertPanel(alertInfo: info)
-            case .streamDashboard:
-                view = StreamDashboardPanel(roomId: manager.roomState.roomId,
-                                            trtcCloud: TUIRoomEngine.sharedInstance().getTRTCCloud())
-            default:
-                break
+        case .liveLinkControl:
+            view = AnchorLinkControlPanel(manager: manager, routerManager: routerManager, coreView: coreView)
+        case .connectionControl:
+            view = LSCoHostManagerPanel(manager: manager.coHostManager, coreView: coreView)
+        case .featureSetting(let settingPanelModel):
+            view = LSSettingPanel(settingPanelModel: settingPanelModel)
+        case .musicList:
+            view = MusicView(roomId: manager.roomState.roomId,
+                             trtcCloud: TUIRoomEngine.sharedInstance().getTRTCCloud())
+        case .audioEffect:
+            let audioEffect = AudioEffectView()
+            audioEffect.backButtonClickClosure = { [weak self] _ in
+                guard let self = self else { return }
+                self.routerManager.router(action: .dismiss())
+            }
+            view = audioEffect
+        case .linkType(let data):
+            view = LinkMicTypePanel(data: data, routerManager: routerManager)
+        case .listMenu(let data):
+            let actionPanel = ActionPanel(panelData: data)
+            actionPanel.cancelActionClosure = { [weak self] in
+                guard let self = self else { return }
+                self.routerManager.router(action: .dismiss())
+            }
+            view = actionPanel
+        case .linkSetting:
+            view = VideoLinkSettingPanel(manager: manager, routerManager: routerManager, coreView: coreView)
+        case .systemImageSelection:
+            let imageConfig = LSSystemImageFactory.getImageAssets()
+            let systemImageSelectionPanel = LSSystemImageSelectionPanel(configs: imageConfig, manager: manager)
+            systemImageSelectionPanel.backButtonClickClosure = { [weak self] in
+                guard let self = self else { return }
+                self.routerManager.router(action: .dismiss())
+            }
+            view = systemImageSelectionPanel
+        case .prepareSetting:
+            break
+        case .battleCountdown(let countdownTime):
+            let countdownView = LSBattleCountDownView(countdownTime: countdownTime, manager: manager.battleManager)
+            countdownView.timeEndClosure = { [weak self] in
+                guard let self = self else { return }
+                self.routerManager.router(action: .dismiss())
+            }
+            countdownView.cancelClosure = { [weak self] in
+                guard let self = self else { return }
+                self.routerManager.router(action: .dismiss())
+            }
+            view = countdownView
+        case .alert(let info):
+            view = LSAlertPanel(alertInfo: info)
+        case .streamDashboard:
+            view = StreamDashboardPanel(roomId: manager.roomState.roomId,
+                                        trtcCloud: TUIRoomEngine.sharedInstance().getTRTCCloud())
+        case .beauty:
+            let beautyView = BeautyView()
+            beautyView.backClosure = { [weak self] in
+                guard let self = self else { return }
+                routerManager.router(action: .dismiss())
+            }
+            view = beautyView
+        default:
+            break
         }
         return view
     }
@@ -264,7 +268,8 @@ extension LSRouterControlCenter {
         switch route {
         case .beauty, .battleCountdown(_),
                 .featureSetting(_), .alert(_),
-                .streamDashboard:
+                .streamDashboard,
+                .videoSetting:
             return false
         default:
             return true

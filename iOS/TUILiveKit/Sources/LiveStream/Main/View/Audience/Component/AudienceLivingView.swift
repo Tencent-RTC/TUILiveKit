@@ -127,7 +127,7 @@ class AudienceLivingView: RTCBaseView {
         barrageDisplayView.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(16)
             make.bottom.equalTo(barrageSendView.snp.top).offset(-8.scale375Height())
-            make.width.equalTo(247.scale375Width())
+            make.width.equalTo(305.scale375Width())
             make.height.equalTo(212.scale375Height())
         }
 

@@ -180,45 +180,45 @@ extension VRRouterControlCenter {
     private func getRouteDefaultView(route: VRRoute) -> UIView? {
         var view: UIView?
         switch route {
-            case .voiceLinkControl(let coreView):
-                view = VRSeatManagerPanel(manager: manager, routerManager: routerManager, coreView: coreView)
-            case .linkInviteControl(let coreView, let index):
-                view = VRSeatInvitationPanel(manager: manager, routerManager: routerManager, coreView: coreView, seatIndex: index)
-            case .userControl(let coreView, let seatInfo):
-                view = VRUserManagerPanel(manager: manager, routerMangear: routerManager, coreView: coreView, seatInfo: seatInfo)
-            case .featureSetting(let settingPanelModel):
-                view = VRSettingPanel(settingPanelModel: settingPanelModel)
-            case .musicList:
-                view = MusicView(roomId: manager.roomState.roomId,trtcCloud: TUIRoomEngine.sharedInstance().getTRTCCloud())
-            case .audioEffect:
-            let audioEffect = AudioEffectView(roomId: manager.roomState.roomId,trtcCloud: TUIRoomEngine.sharedInstance().getTRTCCloud())
-                audioEffect.backButtonClickClosure = { [weak self] _ in
-                    guard let self = self else { return }
-                    self.routerManager.router(action: .dismiss())
-                }
-                view = audioEffect
-            case .listMenu(let data):
-                let actionPanel = ActionPanel(panelData: data)
-                actionPanel.cancelActionClosure = { [weak self] in
-                    guard let self = self else { return }
-                    self.routerManager.router(action: .dismiss())
-                }
-                view = actionPanel
-            case .systemImageSelection(let imageType):
-                let imageConfig = VRSystemImageFactory.getImageAssets(imageType: imageType)
-                let systemImageSelectionPanel = VRImageSelectionPanel(configs: imageConfig,
-                                                                          panelMode: imageType == .cover ? .cover : .background, manager: manager)
-                systemImageSelectionPanel.backButtonClickClosure = { [weak self] in
-                    guard let self = self else { return }
-                    self.routerManager.router(action: .dismiss())
-                }
-                view = systemImageSelectionPanel
-            case .prepareSetting:
-                view = VRPrepareSettingPanel(manager: manager, routerManager: routerManager)
-            case .alert(let info):
-                view = VRAlertPanel(alertInfo: info)
-            default:
-                break
+        case .voiceLinkControl(let coreView):
+            view = VRSeatManagerPanel(manager: manager, routerManager: routerManager, coreView: coreView)
+        case .linkInviteControl(let coreView, let index):
+            view = VRSeatInvitationPanel(manager: manager, routerManager: routerManager, coreView: coreView, seatIndex: index)
+        case .userControl(let coreView, let seatInfo):
+            view = VRUserManagerPanel(manager: manager, routerMangear: routerManager, coreView: coreView, seatInfo: seatInfo)
+        case .featureSetting(let settingPanelModel):
+            view = VRSettingPanel(settingPanelModel: settingPanelModel)
+        case .musicList:
+            view = MusicView(roomId: manager.roomState.roomId,trtcCloud: TUIRoomEngine.sharedInstance().getTRTCCloud())
+        case .audioEffect:
+            let audioEffect = AudioEffectView()
+            audioEffect.backButtonClickClosure = { [weak self] _ in
+                guard let self = self else { return }
+                self.routerManager.router(action: .dismiss())
+            }
+            view = audioEffect
+        case .listMenu(let data):
+            let actionPanel = ActionPanel(panelData: data)
+            actionPanel.cancelActionClosure = { [weak self] in
+                guard let self = self else { return }
+                self.routerManager.router(action: .dismiss())
+            }
+            view = actionPanel
+        case .systemImageSelection(let imageType):
+            let imageConfig = VRSystemImageFactory.getImageAssets(imageType: imageType)
+            let systemImageSelectionPanel = VRImageSelectionPanel(configs: imageConfig,
+                                                                  panelMode: imageType == .cover ? .cover : .background, manager: manager)
+            systemImageSelectionPanel.backButtonClickClosure = { [weak self] in
+                guard let self = self else { return }
+                self.routerManager.router(action: .dismiss())
+            }
+            view = systemImageSelectionPanel
+        case .prepareSetting:
+            view = VRPrepareSettingPanel(manager: manager, routerManager: routerManager)
+        case .alert(let info):
+            view = VRAlertPanel(alertInfo: info)
+        default:
+            break
         }
         return view
     }

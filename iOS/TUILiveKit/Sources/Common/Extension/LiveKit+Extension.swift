@@ -28,15 +28,15 @@ extension TUIVideoQuality {
     func getString() -> String {
         switch self {
         case .quality360P:
-            return .localized("live.video.quality.360P")
+            return "360P"
         case .quality540P:
-            return .localized("live.video.quality.540P")
+            return "540P"
         case .quality720P:
-            return .localized("live.video.quality.720P")
+            return "720P"
         case .quality1080P:
-            return .localized("live.video.quality.1080P")
+            return "1080P"
         @unknown default:
-            return .localized("live.video.quality.1080P")
+            return "1080P"
         }
     }
 }

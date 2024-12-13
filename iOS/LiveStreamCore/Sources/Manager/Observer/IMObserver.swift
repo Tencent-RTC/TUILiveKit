@@ -19,6 +19,7 @@ class IMObserver: NSObject {
 
 extension IMObserver: V2TIMSDKListener {
     func onConnectSuccess() {
+        // TODO: Need fix by RoomEngine
         context?.roomManager.onReconnected()
     }
 }

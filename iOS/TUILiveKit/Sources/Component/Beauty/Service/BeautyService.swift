@@ -28,54 +28,45 @@ class BeautyService {
         roomEngine.getTRTCCloud().getBeautyManager()
     }
     
-    func setBeautyLevel(_ beautyLevel: Float) -> AnyPublisher<Void, Never> {
-        return Future<Void, Never> { [weak self] promise in
-            guard let self = self else { return }
-            LiveKitLog.info("\(#file)", "\(#line)","setBeautyLevel:[level: \(beautyLevel)]")
-            getBeautyManager().setBeautyLevel(beautyLevel)
-            promise(.success(()))
-        }
-        .eraseToAnyPublisher()
+    func setBeautyLevel(_ beautyLevel: Float) {
+        LiveKitLog.info("\(#file)", "\(#line)","setBeautyLevel:[level: \(beautyLevel)]")
+        getBeautyManager().setBeautyLevel(beautyLevel)
+
     }
     
-    func setWhitenessLevel(_ whitenessLevel: Float) -> AnyPublisher<Void, Never> {
-        return Future<Void, Never> { [weak self] promise in
-            guard let self = self else { return }
-            LiveKitLog.info("\(#file)", "\(#line)","setWhitenessLevel:[level: \(whitenessLevel)]")
-            getBeautyManager().setWhitenessLevel(whitenessLevel)
-            promise(.success(()))
-        }
-        .eraseToAnyPublisher()
+    func setWhitenessLevel(_ whitenessLevel: Float) {
+        LiveKitLog.info("\(#file)", "\(#line)","setWhitenessLevel:[level: \(whitenessLevel)]")
+        getBeautyManager().setWhitenessLevel(whitenessLevel)
     }
     
-    func setRuddyLevel(_ ruddyLevel: Float) -> AnyPublisher<Void, Never> {
-        return Future<Void, Never> { [weak self] promise in
-            guard let self = self else { return }
-            LiveKitLog.info("\(#file)", "\(#line)","setRuddyLevel:[level: \(ruddyLevel)]")
-            getBeautyManager().setRuddyLevel(ruddyLevel)
-            promise(.success(()))
-        }
-        .eraseToAnyPublisher()
+    func setRuddyLevel(_ ruddyLevel: Float) {
+        LiveKitLog.info("\(#file)", "\(#line)","setRuddyLevel:[level: \(ruddyLevel)]")
+        getBeautyManager().setRuddyLevel(ruddyLevel)
     }
     
-    func setLocalVideoView(_ view: UIView) -> AnyPublisher<Void, Never> {
-        return Future<Void, Never> { [weak self] promise in
-            guard let self = self else { return }
-            roomEngine.setLocalVideoView(view: view)
-            promise(.success(()))
-        }
-        .eraseToAnyPublisher()
+    func setLocalVideoView(_ view: UIView) {
+        roomEngine.setLocalVideoView(view: view)
     }
     
-    func openLocalCamera() -> AnyPublisher<Void, Never> {
-        return Future<Void, Never> { [weak self] promise in
+    func openLocalCamera() async throws {
+        return try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self else { return }
             roomEngine.openLocalCamera(isFront: true, quality: .quality1080P) {
+                continuation.resume()
             } onError: { code, message in
-                debugPrint("openLocalCamera error: \(code) \(message)")
+                continuation.resume(throwing: InternalError(error: code, message: message))
             }
-            promise(.success(()))
         }
-        .eraseToAnyPublisher()
+    }
+    
+    func closeBeauty() {
+        setWhitenessLevel(0)
+        setBeautyLevel(0)
+        setRuddyLevel(0)
+    }
+    
+    static func closeBeauty() {
+        let service = BeautyService(roomEngine: TUIRoomEngine.sharedInstance())
+        service.closeBeauty()
     }
 }

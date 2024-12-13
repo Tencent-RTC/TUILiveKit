@@ -47,6 +47,7 @@ class SGRoomManager {
             update(roomInfo: roomInfo)
             frameworkDataReport()
             async let _ = try await context?.seatManager.onEnterRoom(roomInfo: roomInfo)
+            notifyEnterRoom()
             return roomInfo
         } catch let SeatGridViewError.error(code, message){
             VRLog.error("\(#file)","\(#line)","enter:[roomId:\(roomId),code:\(code),message:\(message)]")
@@ -82,6 +83,7 @@ class SGRoomManager {
         do {
             try await self.service.createRoom(roomInfo: roomInfo)
             let roomInfo = try await enter(roomId: roomInfo.roomId)
+            notifyEnterRoom()
             // TODO: UserManager add OnEnterRoom
 //            self.state.userState.selfInfo.userRole = .roomOwner
             return roomInfo
@@ -93,6 +95,19 @@ class SGRoomManager {
     
     deinit {
         debugPrint("deinit:\(self)")
+    }
+}
+
+extension SGRoomManager {
+    private func notifyEnterRoom() {
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(Notification(name: SeatGridViewOnEnterRoomNotifyName))
+        }
+    }
+    private func notifyExitRoom() {
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(Notification(name: SeatGridViewOnExitRoomNotifyName))
+        }
     }
 }
 
@@ -112,6 +127,7 @@ extension SGRoomManager {
     
     func refreshRoomState() {
         roomState = SGRoomState()
+        notifyExitRoom()
     }
 }
 

@@ -161,6 +161,7 @@ extension RoomManager {
         Task {
             try? await context?.coGuestManager.initGuestApplicationList()
         }
+        notifyEnterRoom()
     }
     
     private func onJoinLiveSuccess(roomInfo: TUIRoomInfo) {
@@ -173,6 +174,7 @@ extension RoomManager {
         Task {
             try? await context?.coGuestManager.initConnectedGuestList()
         }
+        notifyEnterRoom()
     }
     
     private func onLeaveRoom() {
@@ -184,11 +186,25 @@ extension RoomManager {
         context?.mediaManager.onLeaveRoom()
         context?.userManager.onLeaveRoom()
         context?.viewManager.onLeaveRoom()
+        notifyExitRoom()
     }
     
     private func modifyRoomState<T>(value: T, keyPath: WritableKeyPath<RoomState, T>, isPublished: Bool = false) {
         observerState.update(isPublished: isPublished) { roomState in
             roomState[keyPath: keyPath] = value
+        }
+    }
+}
+
+extension RoomManager {
+    private func notifyEnterRoom() {
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(Notification(name: LiveCoreViewOnEnterRoomNotifyName))
+        }
+    }
+    private func notifyExitRoom() {
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(Notification(name: LiveCoreViewOnExitRoomNotifyName))
         }
     }
 }
