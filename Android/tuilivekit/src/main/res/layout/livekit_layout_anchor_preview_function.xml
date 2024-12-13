@@ -96,7 +96,7 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/livekit_live_preview_function_item_mirror"
+            android:src="@drawable/livekit_live_preview_function_item_settings"
             tools:ignore="ContentDescription" />
 
         <TextView
@@ -104,7 +104,7 @@
             android:layout_height="20dp"
             android:layout_below="@+id/iv_mirror"
             android:gravity="center_horizontal"
-            android:text="@string/livekit_video_settings_item_mirror"
+            android:text="@string/livekit_settings"
             android:textColor="@color/livekit_not_standard_white_e7"
             android:textSize="12sp" />
 

@@ -7,10 +7,7 @@
     android:layout_marginBottom="3dp"
     android:background="@drawable/livekit_barrage_bg_msg_item"
     android:orientation="horizontal"
-    android:paddingStart="6dp"
-    android:paddingTop="4dp"
-    android:paddingEnd="6dp"
-    android:paddingBottom="4dp">
+    android:padding="6dp">
 
     <LinearLayout
         android:id="@+id/ll_level_background"
@@ -38,9 +35,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="2dp"
-            android:textColor="@color/livekit_design_standard_flowkit_white"
-            android:textFontWeight="400"
-            android:textSize="10sp"
+            android:textColor="@color/livekit_room_list_black_color"
+            android:textSize="9sp"
+            android:textStyle="bold"
             tools:ignore="SmallSp,UnusedAttribute"
             tools:visibility="visible" />
 
@@ -60,20 +57,21 @@
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:textColor="@color/livekit_barrage_g8"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tv_anchor_flag"
-            android:layout_width="42dp"
+            android:layout_width="44dp"
             android:layout_height="14dp"
             android:layout_marginTop="1dp"
             android:background="@drawable/livekit_barrage_bg_anchor_flag"
             android:gravity="center"
             android:text="@string/livekit_anchor"
             android:textAllCaps="true"
-            android:textColor="@color/livekit_design_standard_flowkit_white"
-            android:textFontWeight="700"
-            android:textSize="8sp"
+            android:textColor="@color/livekit_room_list_black_color"
+            android:textSize="9sp"
+            android:textStyle="bold"
             tools:ignore="SmallSp,UnusedAttribute" />
     </FrameLayout>
 
@@ -88,7 +86,7 @@
         android:paddingRight="16dp"
         android:paddingBottom="4dp"
         android:text="@string/livekit_barrage_agree"
-        android:textColor="@color/livekit_design_standard_flowkit_white"
+        android:textColor="@color/livekit_room_list_black_color"
         android:textSize="14sp"
         android:visibility="gone"
         tools:visibility="visible" />

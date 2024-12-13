@@ -1,22 +1,20 @@
 package com.trtc.uikit.livekit.livestreamcore.manager;
 
+import com.trtc.uikit.livekit.livestreamcore.manager.api.ILiveStream;
+import com.trtc.uikit.livekit.livestreamcore.manager.api.impl.LiveStreamImpl;
 import com.trtc.uikit.livekit.livestreamcore.manager.module.CoGuestManager;
 import com.trtc.uikit.livekit.livestreamcore.manager.module.CoHostManager;
 import com.trtc.uikit.livekit.livestreamcore.manager.module.MediaManager;
 import com.trtc.uikit.livekit.livestreamcore.manager.module.RoomManager;
 import com.trtc.uikit.livekit.livestreamcore.manager.module.UserManager;
-import com.trtc.uikit.livekit.livestreamcore.manager.module.ViewManager;
 import com.trtc.uikit.livekit.livestreamcore.manager.observer.LiveConnectionManagerObserver;
 import com.trtc.uikit.livekit.livestreamcore.manager.observer.RoomEngineObserver;
-import com.trtc.uikit.livekit.livestreamcore.manager.api.ILiveStream;
-import com.trtc.uikit.livekit.livestreamcore.manager.api.impl.LiveStreamImpl;
 import com.trtc.uikit.livekit.livestreamcore.state.CoGuestState;
 import com.trtc.uikit.livekit.livestreamcore.state.CoHostState;
 import com.trtc.uikit.livekit.livestreamcore.state.LiveStreamState;
 import com.trtc.uikit.livekit.livestreamcore.state.MediaState;
 import com.trtc.uikit.livekit.livestreamcore.state.RoomState;
 import com.trtc.uikit.livekit.livestreamcore.state.UserState;
-import com.trtc.uikit.livekit.livestreamcore.state.ViewState;
 
 public class LiveStreamManager {
     private final RoomManager                   mRoomManager;
@@ -24,10 +22,9 @@ public class LiveStreamManager {
     private final CoHostManager                 mCoHostManager;
     private final UserManager                   mUserManager;
     private final MediaManager                  mMediaManager;
-    private final ViewManager                   mViewManager;
-    private final LiveStreamState    mState;
-    private final ILiveStream        mLiveService;
-    private final RoomEngineObserver mRoomEngineObserver;
+    private final LiveStreamState               mState;
+    private final ILiveStream                   mLiveService;
+    private final RoomEngineObserver            mRoomEngineObserver;
     private final LiveConnectionManagerObserver mliveConnectionManagerObserver;
 
     public LiveStreamManager() {
@@ -38,7 +35,6 @@ public class LiveStreamManager {
         mCoGuestManager = new CoGuestManager(mState, mLiveService);
         mUserManager = new UserManager(mState, mLiveService);
         mMediaManager = new MediaManager(mState, mLiveService);
-        mViewManager = new ViewManager(mState, mLiveService);
         mCoHostManager = new CoHostManager(mState, mLiveService);
         mRoomEngineObserver = new RoomEngineObserver(this);
         mliveConnectionManagerObserver = new LiveConnectionManagerObserver(this);
@@ -58,7 +54,6 @@ public class LiveStreamManager {
         mCoGuestManager.destroy();
         mUserManager.destroy();
         mMediaManager.destroy();
-        mViewManager.destroy();
         mCoHostManager.destroy();
     }
 
@@ -80,10 +75,6 @@ public class LiveStreamManager {
 
     public MediaManager getMediaManager() {
         return mMediaManager;
-    }
-
-    public ViewManager getViewManager() {
-        return mViewManager;
     }
 
     public LiveStreamState getState() {
@@ -108,9 +99,5 @@ public class LiveStreamManager {
 
     public MediaState getMediaState() {
         return mState.mediaState;
-    }
-
-    public ViewState getViewState() {
-        return mState.viewState;
     }
 }

@@ -85,6 +85,8 @@ public interface ILiveStream {
 
     void setBeautyStyle(int style);
 
+    void updateVideoQualityEx(TUIRoomDefine.RoomVideoEncoderParams videoEncParam);
+
     void updateVideoQuality(TUIRoomDefine.VideoQuality quality);
 
     void updateAudioQuality(TUIRoomDefine.AudioQuality quality);

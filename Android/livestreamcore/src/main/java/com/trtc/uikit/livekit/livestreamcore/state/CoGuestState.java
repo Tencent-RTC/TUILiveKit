@@ -4,27 +4,33 @@ import static com.trtc.uikit.livekit.livestreamcore.state.CoGuestState.CoGuestSt
 
 import androidx.annotation.NonNull;
 
+import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.Request;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.SeatInfo;
 import com.trtc.tuikit.common.livedata.LiveData;
 
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class CoGuestState {
-    public LiveData<CoGuestStatus>          coGuestStatus         = new LiveData<>(NONE);
-    public LiveData<List<SeatInfo>>         connectedUserList     = new LiveData<>(new CopyOnWriteArrayList<>());
-    public LiveData<LinkedHashSet<Request>> connectionRequestList = new LiveData<>(new LinkedHashSet<>());
-    public LiveData<String>                 myRequestId           = new LiveData<>("");
-    public boolean                          openCameraOnCoGuest   = true;
-    public boolean                          enableConnection      = true;
+    public LiveData<CoGuestStatus>          coGuestStatus          = new LiveData<>(NONE);
+    public LiveData<List<SeatInfo>>         connectedUserList      = new LiveData<>(new CopyOnWriteArrayList<>());
+    public LiveData<LinkedHashSet<Request>> connectionRequestList  = new LiveData<>(new LinkedHashSet<>());
+    public LiveData<String>                 myRequestId            = new LiveData<>("");
+    public Map<String, Request>             sentSeatInvitationMap  = new HashMap<>();
+    public TUIRoomDefine.Request            receivedSeatInvitation = new TUIRoomDefine.Request();
+    public boolean                          openCameraOnCoGuest    = true;
+    public boolean                          enableConnection       = true;
 
     public void reset() {
         coGuestStatus.set(NONE);
         connectedUserList.get().clear();
         connectionRequestList.get().clear();
         myRequestId.set("");
+        receivedSeatInvitation.userId = "";
     }
 
     @NonNull

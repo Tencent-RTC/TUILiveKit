@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/livekit_dialog_background"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_1080p"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:text="@string/livekit_resolution_1080p"
+        android:textColor="@color/livekit_design_standard_g7"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/livekit_design_standard_g3" />
+
+    <TextView
+        android:id="@+id/tv_720p"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:text="@string/livekit_resolution_720p"
+        android:textColor="@color/livekit_design_standard_g7"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/livekit_design_standard_g3" />
+
+    <TextView
+        android:id="@+id/tv_540p"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:text="@string/livekit_resolution_540p"
+        android:textColor="@color/livekit_design_standard_g7"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/livekit_design_standard_g3" />
+
+    <TextView
+        android:id="@+id/tv_360p"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:text="@string/livekit_resolution_360p"
+        android:textColor="@color/livekit_design_standard_g7"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/livekit_design_standard_g3" />
+
+    <TextView
+        android:id="@+id/tv_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:text="@string/cancel"
+        android:textColor="@color/livekit_design_standard_g7"
+        android:textSize="16sp" />
+</LinearLayout>

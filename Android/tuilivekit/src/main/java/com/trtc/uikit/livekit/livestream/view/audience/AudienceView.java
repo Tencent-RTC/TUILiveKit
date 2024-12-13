@@ -22,8 +22,8 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.gson.Gson;
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
-import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.GetRoomInfoCallback;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.RoomInfo;
@@ -35,6 +35,7 @@ import com.trtc.uikit.livekit.component.audiencelist.AudienceListView;
 import com.trtc.uikit.livekit.component.barrage.BarrageInputView;
 import com.trtc.uikit.livekit.component.barrage.BarrageStreamView;
 import com.trtc.uikit.livekit.component.barrage.store.model.Barrage;
+import com.trtc.uikit.livekit.component.dashboard.StreamDashboardDialog;
 import com.trtc.uikit.livekit.component.floatwindow.service.FloatWindowManager;
 import com.trtc.uikit.livekit.component.gift.GiftButton;
 import com.trtc.uikit.livekit.component.gift.GiftPlayView;
@@ -66,11 +67,14 @@ import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine;
 import com.trtc.uikit.livekit.livestreamcore.common.utils.Logger;
 
+import java.util.List;
+
 @SuppressLint("ViewConstructor")
 public class AudienceView extends BasicView {
     private       LiveCoreView                         mLiveCoreView;
     private       FrameLayout                          mLayoutPlaying;
     private       AudienceDashboardView                mAudienceDashboardView;
+    private       ImageView                            mImageDashboard;
     private       GiftButton                           mButtonGift;
     private       LikeButton                           mButtonLike;
     private       ImageView                            mImageCoGuest;
@@ -109,6 +113,7 @@ public class AudienceView extends BasicView {
         mButtonGift = findViewById(R.id.btn_gift);
         mButtonLike = findViewById(R.id.btn_like);
         mBarrageInputView = findViewById(R.id.barrage_input_view);
+        mImageDashboard = findViewById(R.id.iv_dashboard);
         mRoomInfoView = findViewById(R.id.room_info_view);
         mAudienceListView = findViewById(R.id.audience_list_view);
         mBarrageStreamView = findViewById(R.id.barrage_stream_view);
@@ -140,39 +145,44 @@ public class AudienceView extends BasicView {
         mLiveCoreView.setVideoViewAdapter(new LiveCoreViewDefine.VideoViewAdapter() {
             @Override
             public View createCoGuestView(UserInfo userInfo) {
-                Logger.info("initLiveStreamListView createCoGuestView:" + userInfo.userId);
+                Logger.info("initLiveCoreView createCoGuestView:" + userInfo.userId);
                 CoGuestWidgetsView coGuestWidgetsView = new CoGuestWidgetsView(getContext());
                 coGuestWidgetsView.init(mLiveManager, userInfo);
                 return coGuestWidgetsView;
             }
 
             @Override
-            public void updateCoGuestView(UserInfo userInfo, View coGuestView) {
-
+            public void updateCoGuestView(UserInfo userInfo, List<LiveCoreViewDefine.UserInfoModifyFlag> modifyFlag,
+                                          View coGuestView) {
+                Logger.info("initLiveCoreView updateCoGuestView: userInfo = " + new Gson().toJson(userInfo)
+                        + ",modifyFlag = " + new Gson().toJson(modifyFlag) + ",coGuestView = " + coGuestView);
             }
 
             @Override
-            public View createCoHostView(TUILiveConnectionManager.ConnectionUser connectionUser) {
+            public View createCoHostView(LiveCoreViewDefine.CoHostUser coHostUser) {
                 FrameLayout composeCoHostLayout = new FrameLayout(mContext);
                 FrameLayout.LayoutParams layoutParams =
                         new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                                 ViewGroup.LayoutParams.MATCH_PARENT);
 
                 CoHostWidgetsView coHostWidgetsView = new CoHostWidgetsView(mContext);
-                coHostWidgetsView.init(mLiveManager, connectionUser);
+                coHostWidgetsView.init(mLiveManager, coHostUser);
                 composeCoHostLayout.addView(coHostWidgetsView, layoutParams);
 
                 BattleMemberInfoView battleMemberInfoView = new BattleMemberInfoView(mContext);
-                battleMemberInfoView.init(mLiveManager, connectionUser.userId);
+                battleMemberInfoView.init(mLiveManager, coHostUser.connectionUser.userId);
                 composeCoHostLayout.addView(battleMemberInfoView, layoutParams);
                 return composeCoHostLayout;
             }
 
             @Override
-            public void updateCoHostView(TUILiveConnectionManager.ConnectionUser connectionUser, View coHostView) {
-
+            public void updateCoHostView(LiveCoreViewDefine.CoHostUser coHostUser,
+                                         List<LiveCoreViewDefine.UserInfoModifyFlag> modifyFlag, View coHostView) {
+                Logger.info("initLiveCoreView updateCoHostView: coHostUser = " + new Gson().toJson(coHostUser)
+                        + ",modifyFlag = " + new Gson().toJson(modifyFlag) + ",coHostView = " + coHostView);
             }
         });
+        mUserManager.initSelfUserData();
         mLiveCoreView.joinLiveStream(mRoomState.roomId, new GetRoomInfoCallback() {
             @Override
             public void onSuccess(RoomInfo roomInfo) {
@@ -213,6 +223,7 @@ public class AudienceView extends BasicView {
         initExitRoomView();
         initBarrageStreamView();
         initBarrageInputView();
+        initDashboardIcon();
         initGiftView();
         initLikeView();
         initGiftPlayView();
@@ -324,6 +335,13 @@ public class AudienceView extends BasicView {
             TypeSelectDialog typeSelectDialog = new TypeSelectDialog(mContext, mLiveManager,
                     mLiveCoreView);
             typeSelectDialog.show();
+        });
+    }
+
+    private void initDashboardIcon() {
+        mImageDashboard.setOnClickListener(view -> {
+            StreamDashboardDialog streamDashboardDialog = new StreamDashboardDialog(mContext);
+            streamDashboardDialog.show();
         });
     }
 

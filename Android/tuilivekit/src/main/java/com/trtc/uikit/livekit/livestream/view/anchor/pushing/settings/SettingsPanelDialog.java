@@ -14,15 +14,18 @@ import com.tencent.qcloud.tuicore.util.ScreenUtil;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
+import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
 @SuppressLint("ViewConstructor")
 public class SettingsPanelDialog extends PopupDialog {
 
     private final LiveStreamManager mLiveManager;
+    private final LiveCoreView      mLiveCoreView;
 
-    public SettingsPanelDialog(@NonNull Context context, LiveStreamManager manager) {
+    public SettingsPanelDialog(@NonNull Context context, LiveStreamManager manager, LiveCoreView liveCoreView) {
         super(context);
         mLiveManager = manager;
+        mLiveCoreView = liveCoreView;
         initView();
     }
 
@@ -45,11 +48,11 @@ public class SettingsPanelDialog extends PopupDialog {
             @Override
             public void getItemOffsets(@NonNull Rect outRect, @NonNull View view,
                                        @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-                int position = parent.getChildLayoutPosition(view);
+                int position = parent.getChildLayoutPosition(view) % spanCount;
                 outRect.left = (1 + position) * spanSpace1 - position * spanSpace0;
             }
         });
-        SettingsListAdapter mAdapter = new SettingsListAdapter(getContext(), mLiveManager, this);
+        SettingsListAdapter mAdapter = new SettingsListAdapter(getContext(), mLiveManager, mLiveCoreView, this);
         mRecycleSettingsList.setAdapter(mAdapter);
     }
 }

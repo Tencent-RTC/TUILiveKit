@@ -6,7 +6,7 @@ public class ViewInfo {
     public double width;
     public double height;
     public int    zOrder;
-    public int    backgroundColor;
+    public String backgroundColor;
     public String placeHolderImage;
 
 }

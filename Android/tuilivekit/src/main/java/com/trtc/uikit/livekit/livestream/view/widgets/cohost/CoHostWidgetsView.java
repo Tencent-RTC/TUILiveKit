@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.utils.widget.ImageFilterView;
 
-import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
@@ -19,6 +18,7 @@ import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
 import com.trtc.uikit.livekit.livestream.state.CoHostState.ConnectionUser;
 import com.trtc.uikit.livekit.livestream.state.RoomState;
 import com.trtc.uikit.livekit.livestream.view.BasicView;
+import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -44,12 +44,12 @@ public class CoHostWidgetsView extends BasicView {
         super(context, attrs, defStyleAttr);
     }
 
-    public void init(LiveStreamManager manager, TUILiveConnectionManager.ConnectionUser userInfo) {
+    public void init(LiveStreamManager manager, LiveCoreViewDefine.CoHostUser userInfo) {
         super.init(manager);
-        mState.roomId = userInfo.roomId;
-        mState.userId = userInfo.userId;
-        mState.userName = userInfo.userName;
-        mState.userAvatar = userInfo.avatarUrl;
+        mState.roomId = userInfo.connectionUser.roomId;
+        mState.userId = userInfo.connectionUser.userId;
+        mState.userName = userInfo.connectionUser.userName;
+        mState.userAvatar = userInfo.connectionUser.avatarUrl;
 
         refreshView();
         addObserver();

@@ -67,8 +67,10 @@ public final class FloatWindowCore {
             Log.i(TAG, "show failed: no permission");
             return;
         }
-        mFloatViewManager.setX(Math.max(mFloatViewManager.getX(), mWindowConfig.marginToEdge));
-        mFloatViewManager.setX(Math.max(mFloatViewManager.getY(), mWindowConfig.marginToEdge));
+        int x = mFloatViewManager.getParentWidth() - mWindowConfig.marginToEdge - mFloatViewManager.getWidth();
+        int y = mWindowConfig.marginToEdge;
+        mFloatViewManager.setX(x);
+        mFloatViewManager.setY(y);
         mFloatViewManager.addView(mRootView, mFloatViewManager.getLayoutParams());
     }
 

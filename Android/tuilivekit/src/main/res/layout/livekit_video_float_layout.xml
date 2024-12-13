@@ -16,16 +16,16 @@
 
         <FrameLayout
             android:id="@+id/iv_close"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true">
 
             <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_gravity="center"
-                android:background="@drawable/livekit_ic_audience_exit"
+                android:background="@drawable/live_float_window_exit"
                 android:importantForAccessibility="no" />
         </FrameLayout>
 

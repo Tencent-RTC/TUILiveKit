@@ -16,11 +16,15 @@ import com.trtc.uikit.livekit.component.barrage.store.model.Barrage;
 public class BarrageIMService implements IBarrageMessage {
     private static final String TAG = "BarrageIMService";
 
-    private       SimpleListener         mSimpleListener;
-    private       BarrageMessageDelegate mDelegate;
-    private final String                 mRoomId;
+    private SimpleListener         mSimpleListener;
+    private BarrageMessageDelegate mDelegate;
+    private String                 mRoomId;
 
     public BarrageIMService(String roomId) {
+        setRoomId(roomId);
+    }
+
+    public void setRoomId(String roomId) {
         mRoomId = roomId;
     }
 
@@ -79,7 +83,7 @@ public class BarrageIMService implements IBarrageMessage {
             barrage.user.userId = sender.getUserID();
             barrage.user.userName = sender.getNickName();
             barrage.user.avatarUrl = sender.getFaceUrl();
-            barrage.user.level = "0";
+            barrage.user.level = "32";
 
             if (mDelegate != null) {
                 mDelegate.onReceivedBarrage(barrage);

@@ -4,6 +4,7 @@ import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.RoomInfo;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.UserInfo;
+import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine;
 
 public class LiveStreamConvert {
     public static UserInfo convertToUserInfo(TUIRoomDefine.SeatInfo seatInfo) {
@@ -42,7 +43,9 @@ public class LiveStreamConvert {
         return info;
     }
 
-    public static TUILiveConnectionManager.ConnectionUser convertToConnectionUser(TUIRoomDefine.UserInfo userInfo, String roomId) {
+    public static LiveCoreViewDefine.CoHostUser convertToCoHostUser(TUIRoomDefine.UserInfo userInfo,
+                                                                    String roomId, boolean hasVideoStream,
+                                                                    boolean hasAudioStream) {
         if (userInfo == null) {
             return null;
         }
@@ -51,6 +54,34 @@ public class LiveStreamConvert {
         connectionUser.userId = userInfo.userId;
         connectionUser.userName = userInfo.userName;
         connectionUser.avatarUrl = userInfo.avatarUrl;
-        return connectionUser;
+
+        LiveCoreViewDefine.CoHostUser coHostUser = new LiveCoreViewDefine.CoHostUser();
+        coHostUser.connectionUser = connectionUser;
+        coHostUser.hasVideoStream = hasVideoStream;
+        coHostUser.hasAudioStream = hasAudioStream;
+        return coHostUser;
+    }
+
+    public static LiveCoreViewDefine.CoHostUser convertToCoHostUser(TUILiveConnectionManager.ConnectionUser hostUser,
+                                                                    boolean hasVideoStream, boolean hasAudioStream) {
+        if (hostUser == null) {
+            return null;
+        }
+        LiveCoreViewDefine.CoHostUser coHostUser = new LiveCoreViewDefine.CoHostUser();
+        coHostUser.connectionUser = hostUser;
+        coHostUser.hasAudioStream = hasAudioStream;
+        coHostUser.hasVideoStream = hasVideoStream;
+        return coHostUser;
+    }
+
+    public static LiveCoreViewDefine.UserInfoModifyFlag convertToUserInfoModifyFlag(TUIRoomDefine.UserInfoModifyFlag flag) {
+        switch (flag) {
+            case USER_ROLE:
+                return LiveCoreViewDefine.UserInfoModifyFlag.USER_ROLE;
+            case NAME_CARD:
+                return LiveCoreViewDefine.UserInfoModifyFlag.NAME_CARD;
+            default:
+                return LiveCoreViewDefine.UserInfoModifyFlag.NONE;
+        }
     }
 }

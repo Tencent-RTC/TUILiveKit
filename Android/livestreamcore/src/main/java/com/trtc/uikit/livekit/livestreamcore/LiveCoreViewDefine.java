@@ -51,10 +51,43 @@ public class LiveCoreViewDefine {
     public interface VideoViewAdapter {
         View createCoGuestView(TUIRoomDefine.UserInfo userInfo);
 
-        void updateCoGuestView(TUIRoomDefine.UserInfo userInfo, View coGuestView);
+        void updateCoGuestView(TUIRoomDefine.UserInfo userInfo, List<UserInfoModifyFlag> modifyFlag, View coGuestView);
 
-        View createCoHostView(ConnectionUser connectionUser);
+        View createCoHostView(CoHostUser coHostUser);
 
-        void updateCoHostView(ConnectionUser connectionUser, View coHostView);
+        void updateCoHostView(CoHostUser coHostUser, List<UserInfoModifyFlag> modifyFlag, View coHostView);
+    }
+
+    public static class CoHostUser {
+        public ConnectionUser connectionUser;
+        public boolean        hasAudioStream;
+        public boolean        hasVideoStream;
+
+    }
+
+    public enum UserInfoModifyFlag {
+        NONE(0x00),
+        USER_ROLE(0x01),
+        NAME_CARD(0x01 << 1),
+        HAS_VIDEO_STREAM(0x01 << 2),
+        HAS_AUDIO_STREAM(0x01 << 3);
+        final int mValue;
+
+        UserInfoModifyFlag(int value) {
+            mValue = value;
+        }
+
+        public int getValue() {
+            return mValue;
+        }
+
+        public static UserInfoModifyFlag fromInt(int value) {
+            for (UserInfoModifyFlag flag : UserInfoModifyFlag.values()) {
+                if (flag.mValue == value) {
+                    return flag;
+                }
+            }
+            return NONE;
+        }
     }
 }

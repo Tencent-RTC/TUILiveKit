@@ -78,6 +78,85 @@ public class CoGuestManager extends BaseManager {
         });
     }
 
+    public TUIRoomDefine.Request inviteGuestToConnection(String userId, int timeout,
+                                                         TUIRoomDefine.RequestCallback callback) {
+        TUIRoomDefine.Request request = mVideoLiveService.takeUserOnSeatByAdmin(REQUEST_DEFAULT_INDEX, userId, timeout,
+                new TUIRoomDefine.RequestCallback() {
+                    @Override
+                    public void onAccepted(String requestId, String userId) {
+                        mCoGuestState.sentSeatInvitationMap.remove(userId);
+                        if (callback != null) {
+                            callback.onAccepted(requestId, userId);
+                        }
+                    }
+
+                    @Override
+                    public void onRejected(String requestId, String userId, String message) {
+                        mCoGuestState.sentSeatInvitationMap.remove(userId);
+                        if (callback != null) {
+                            callback.onRejected(requestId, userId, message);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(String requestId, String userId) {
+                        mCoGuestState.sentSeatInvitationMap.remove(userId);
+                        if (callback != null) {
+                            callback.onCancelled(requestId, userId);
+                        }
+                    }
+
+                    @Override
+                    public void onTimeout(String requestId, String userId) {
+                        mCoGuestState.sentSeatInvitationMap.remove(userId);
+                        if (callback != null) {
+                            callback.onTimeout(requestId, userId);
+                        }
+                    }
+
+                    @Override
+                    public void onError(String requestId, String userId, TUICommonDefine.Error error, String message) {
+                        mCoGuestState.sentSeatInvitationMap.remove(userId);
+                        if (callback != null) {
+                            callback.onError(requestId, userId, error, message);
+                        }
+                    }
+                });
+        addSendSeatInvitation(request);
+        return request;
+    }
+
+    public void cancelGuestInvitation(String userId, TUIRoomDefine.ActionCallback callback) {
+        TUIRoomDefine.Request request = mCoGuestState.sentSeatInvitationMap.get(userId);
+        if (request == null || TextUtils.isEmpty(request.requestId)) {
+            Logger.error("cancelInvitation error, request id is empty");
+            if (callback != null) {
+                callback.onError(TUICommonDefine.Error.FAILED, "you don't have the seat invitation");
+            }
+            return;
+        }
+        mVideoLiveService.cancelRequest(request.requestId, callback);
+        mCoGuestState.sentSeatInvitationMap.remove(userId);
+    }
+
+    public void respondGuestInvitation(TUIRoomDefine.UserInfo userInfo, boolean isAgree,
+                                       TUIRoomDefine.ActionCallback callback) {
+        String requestId = mCoGuestState.receivedSeatInvitation.requestId;
+        if (TextUtils.isEmpty(requestId)) {
+            if (callback != null) {
+                callback.onError(TUICommonDefine.Error.FAILED, "you don't have the seat invitation");
+            }
+            return;
+        }
+        if (isAgree) {
+            mVideoLiveService.acceptRequest(requestId, callback);
+        } else {
+            mVideoLiveService.rejectRequest(requestId, callback);
+        }
+        mCoGuestState.receivedSeatInvitation.requestId = "";
+        mCoGuestState.receivedSeatInvitation.userId = "";
+    }
+
     public TUIRoomDefine.Request applyToConnection(int timeout, TUIRoomDefine.RequestCallback callback) {
         if (mCoGuestState.coGuestStatus.get() == CoGuestStatus.LINKING) {
             return null;
@@ -257,6 +336,20 @@ public class CoGuestManager extends BaseManager {
         mCoGuestState.connectionRequestList.addAll(list);
     }
 
+    private void addSendSeatInvitation(TUIRoomDefine.Request request) {
+        if (isRequestInvalid(request)) {
+            return;
+        }
+        mCoGuestState.sentSeatInvitationMap.put(request.userId, request);
+    }
+
+    private void addReceivedSeatInvitation(TUIRoomDefine.Request request) {
+        if (isRequestInvalid(request)) {
+            return;
+        }
+        mCoGuestState.receivedSeatInvitation = request;
+    }
+
     private void addSeatApplication(TUIRoomDefine.Request request) {
         if (isRequestInvalid(request)) {
             return;
@@ -378,9 +471,7 @@ public class CoGuestManager extends BaseManager {
     }
 
     public void onRequestReceived(TUIRoomDefine.Request request) {
-        if (!mVideoLiveState.coHostState.connectedUserList.get().isEmpty()
-                || !mVideoLiveState.coHostState.sentConnectionRequestList.get().isEmpty()
-                || mVideoLiveState.coHostState.receivedConnectionRequest.get() != null) {
+        if (!mVideoLiveState.coHostState.connectedUserList.get().isEmpty() || !mVideoLiveState.coHostState.sentConnectionRequestList.get().isEmpty() || mVideoLiveState.coHostState.receivedConnectionRequest.get() != null) {
             rejectRequest(request.requestId, null);
             return;
         }
@@ -416,15 +507,13 @@ public class CoGuestManager extends BaseManager {
     }
 
     private void notifyUserConnectionRequest(TUIRoomDefine.Request request) {
-        if (mCoGuestObserver != null && (request.requestAction == TUIRoomDefine.RequestAction.REQUEST_TO_TAKE_SEAT
-                || request.requestAction == TUIRoomDefine.RequestAction.REQUEST_REMOTE_USER_ON_SEAT)) {
+        if (mCoGuestObserver != null && (request.requestAction == TUIRoomDefine.RequestAction.REQUEST_TO_TAKE_SEAT || request.requestAction == TUIRoomDefine.RequestAction.REQUEST_REMOTE_USER_ON_SEAT)) {
             mCoGuestObserver.onUserConnectionRequest(request);
         }
     }
 
     private void notifyUserConnectionCancelled(TUIRoomDefine.Request request, TUIRoomDefine.UserInfo operateUser) {
-        if (mCoGuestObserver != null && (request.requestAction == TUIRoomDefine.RequestAction.REQUEST_TO_TAKE_SEAT
-                || request.requestAction == TUIRoomDefine.RequestAction.REQUEST_REMOTE_USER_ON_SEAT)) {
+        if (mCoGuestObserver != null && (request.requestAction == TUIRoomDefine.RequestAction.REQUEST_TO_TAKE_SEAT || request.requestAction == TUIRoomDefine.RequestAction.REQUEST_REMOTE_USER_ON_SEAT)) {
             mCoGuestObserver.onUserConnectionCancelled(request, operateUser);
         }
     }
@@ -444,7 +533,6 @@ public class CoGuestManager extends BaseManager {
             }
         }
     }
-
 
     public interface CoGuestObserver {
         void onConnectedUsersUpdated(List<TUIRoomDefine.SeatInfo> userList, List<TUIRoomDefine.SeatInfo> joinList,

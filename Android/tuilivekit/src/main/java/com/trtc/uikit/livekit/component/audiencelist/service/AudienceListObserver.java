@@ -25,6 +25,11 @@ public class AudienceListObserver extends TUIRoomObserver {
         if (userInfo.userId.equals(mAudienceListState.ownerId)) {
             return;
         }
+        for (TUIRoomDefine.UserInfo info :  mAudienceListState.audienceList.get()) {
+            if (info.userId.equals(userInfo.userId)) {
+                return;
+            }
+        }
         TUIRoomDefine.UserInfo audienceUser = new TUIRoomDefine.UserInfo();
         audienceUser.userId = userInfo.userId;
         audienceUser.userName = userInfo.userName;
