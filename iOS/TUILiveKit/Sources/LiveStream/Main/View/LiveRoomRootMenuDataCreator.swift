@@ -242,7 +242,10 @@ extension LiveRoomRootMenuDataCreator {
                                        normalImage: .liveBundleImage("live_setting_video_parameters"),
                                        designConfig: designConfig,
                                        actionClosure: { _ in
-            routerManager.router(action: .present(.videoSetting))
+            routerManager.router(action: .dismiss(.panel, completion: { [weak self] in
+                guard let _ = self else { return }
+                routerManager.router(action: .present(.videoSetting))
+            }))
         }))
         model.items.append(LSFeatureItem(normalTitle: .streamDashboardText,
                                        normalImage: .liveBundleImage("live_setting_stream_dashboard"),

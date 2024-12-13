@@ -61,7 +61,7 @@ class CoGuestManager {
         }
     }
     
-    func applyToConnection(timeOut: Int) async throws -> TakeSeatResult {
+    func applyToConnection(timeOut: Int, onSendRequestSuccess: (() -> Void)? = nil) async throws -> TakeSeatResult {
         if coGuestState.coGuestStatus == .linking {
             throw LiveStreamCoreError.error(code: .alreadyInSeat,
                                             message: TUIError.alreadyInSeat.lcDescription)
@@ -71,6 +71,7 @@ class CoGuestManager {
             let result = try await service.takeSeat(seatIndex: requestDefaultIndex,
                                                     timeout: TimeInterval(timeOut)) { [weak self] request in
                 self?.modifyCoGuestState(value: request.requestId, keyPath: \CoGuestState.myRequestId)
+                onSendRequestSuccess?()
             }
             switch result {
             case .accepted(userId: let userId):
@@ -96,10 +97,11 @@ class CoGuestManager {
         }
     }
     
-    func inviteGuestToConnection(userId: String) async throws {
+    func inviteGuestToConnection(userId: String, onSendRequestSuccess: (() -> Void)?) async throws {
         do {
             let result = try await service.takeUserOnSeatByAdmin(seatIndex: requestDefaultIndex, userId: userId, timeout: TimeInterval(requestTimeOut)) { [weak self] request in
                 self?.sentInvitationMap[userId] = request
+                onSendRequestSuccess?()
             }
             switch result {
             case .accepted(userId: let userId):

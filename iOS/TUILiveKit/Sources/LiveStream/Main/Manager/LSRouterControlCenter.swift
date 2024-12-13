@@ -257,7 +257,7 @@ extension LSRouterControlCenter {
 extension LSRouterControlCenter {
     private func isTempPanel(route: LSRoute) -> Bool {
         switch route {
-        case .battleCountdown(_), .alert(_):
+        case .battleCountdown(_), .alert(_), .videoSetting:
             return true
         default:
             return false

@@ -46,7 +46,7 @@ public struct VideoEncParams {
     public var big: TUIRoomVideoEncoderParams = {
         let param = TUIRoomVideoEncoderParams()
         param.videoResolution = .quality1080P
-        param.bitrate = 5000
+        param.bitrate = 6000
         param.fps = 30
         param.resolutionMode = .portrait
         return param
