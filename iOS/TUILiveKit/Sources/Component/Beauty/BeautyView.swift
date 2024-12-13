@@ -31,25 +31,13 @@ let TUICore_TEBeautyService_PanelLevel = "TUICore_TEBeautyService_PanelLevel"
 
 class BeautyView: UIView, TRTCCloudDelegate {
     var backClosure: (()->Void)?
-    private let roomId: String
-    private let isOwner: Bool
-    private let store: BeautyStoreProvider
     private var isAdvancedBeauty = false
     private let roomEngine: TUIRoomEngine
     private lazy var trtcCloud = roomEngine.getTRTCCloud()
     private var cancellableSet = Set<AnyCancellable>()
     private var beautyPanel: UIView = UIView()
     
-    init(roomId: String, isOwner: Bool = true) {
-        self.roomId = roomId
-        self.isOwner = isOwner
-        if let beautyStore = BeautyStoreFactory.getStore(roomId: roomId) {
-            self.store = beautyStore
-        } else {
-            let beautyStore = BeautyStoreProvider()
-            BeautyStoreFactory.addStore(roomId: roomId, beautyStore: beautyStore)
-            self.store = beautyStore
-        }
+    init() {
         roomEngine = TUIRoomEngine.sharedInstance()
         super.init(frame: .zero)
     }
@@ -74,7 +62,7 @@ class BeautyView: UIView, TRTCCloudDelegate {
             beautyPanel.backgroundColor = .black
             setBeautyMode(isAdvanced: true)
         } else {
-            beautyPanel = DefaultBeautyPanel(store: store, hasRenderView: !isOwner)
+            beautyPanel = DefaultBeautyPanel()
             setBeautyMode(isAdvanced: false)
         }
         addSubview(beautyPanel)
@@ -84,7 +72,6 @@ class BeautyView: UIView, TRTCCloudDelegate {
         beautyPanel.snp.makeConstraints { [weak self] make in
             guard let self = self else { return }
             make.edges.equalToSuperview()
-            make.height.equalTo(isAdvancedBeauty ? 200.scale375Height() : 374.scale375Height())
         }
     }
     

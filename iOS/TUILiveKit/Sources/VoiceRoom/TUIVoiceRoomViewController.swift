@@ -88,10 +88,10 @@ public class TUIVoiceRoomViewController: UIViewController {
     
     deinit {
         UIApplication.shared.isIdleTimerDisabled = false
-        AudioEffectStoreFactory.removeStore(roomId: roomId)
         MusicPanelStoreFactory.removeStore(roomId: roomId)
         cancellableSet.forEach { $0.cancel() }
         cancellableSet.removeAll()
+        StateCache.shared.clear()
         print("deinit \(type(of: self))")
     }
     
@@ -214,6 +214,10 @@ extension TUIVoiceRoomViewController: VoiceRoomRootViewDelegate {
 extension TUIVoiceRoomViewController: VoiceRoomPrepareViewDelegate {
     func prepareView(_ view: VoiceRoomPrepareView, didClickStart button: UIButton) {
         showVoiceRoot()
+    }
+    
+    func prepareView(_ view: VoiceRoomPrepareView, didClickBack button: UIButton) {
+        routerManager.router(action: .exit)
     }
 }
 

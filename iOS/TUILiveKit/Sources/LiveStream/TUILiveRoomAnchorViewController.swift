@@ -67,8 +67,7 @@ public class TUILiveRoomAnchorViewController: UIViewController {
     }
     
     deinit {
-        BeautyStoreFactory.removeStore(roomId: roomId)
-        AudioEffectStoreFactory.removeStore(roomId: roomId)
+        StateCache.shared.clear()
         MusicPanelStoreFactory.removeStore(roomId: roomId)
         print("deinit \(type(of: self))")
     }
@@ -139,13 +138,12 @@ extension TUILiveRoomAnchorViewController {
                 view.makeToast(message)
             }.store(in: &cancellableSet)
     }
-    
 }
 
 extension TUILiveRoomAnchorViewController: LSRouterViewProvider {
     func getRouteView(route: LSRoute) -> UIView? {
-        if route == .beauty {
-            return anchorView.beautyPanelView
+        if route == .videoSetting {
+            return VideoSettingPanel(routerManager: routerManager, mediaManager: coreView.getMediaManager())
         } else {
             return nil
         }

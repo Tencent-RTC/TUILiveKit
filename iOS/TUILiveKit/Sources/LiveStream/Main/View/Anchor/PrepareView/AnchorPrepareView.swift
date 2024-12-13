@@ -73,12 +73,12 @@ class AnchorPrepareView: UIView {
             guard let self = self else { return }
             self.flipClick()
         }))
-        model.items.append(LSFeatureItem(normalTitle: .mirrorText,
-                                       normalImage: .liveBundleImage("live_prepare_mirror_icon"),
-                                       designConfig: designConfig,
-                                       actionClosure: { [weak self] _ in
+        model.items.append(LSFeatureItem(normalTitle: .videoSettingText,
+                                         normalImage: .liveBundleImage("live_prepare_video_icon"),
+                                         designConfig: designConfig,
+                                         actionClosure: { [weak self] _ in
             guard let self = self else { return }
-            self.mirrorClick()
+            self.videoSettingClick()
         }))
         let featureClickPanel = LSFeatureClickPanel(model: model)
         return featureClickPanel
@@ -302,8 +302,8 @@ extension AnchorPrepareView {
         routerManager.router(action: .present(.audioEffect))
     }
     
-    private func mirrorClick() {
-        manager.setCameraMirror()
+    private func videoSettingClick() {
+        routerManager.router(action: .present(.videoSetting))
     }
     
     private func flipClick() {
@@ -318,5 +318,5 @@ private extension String {
     static let beautyText: String = localized("live.anchor.setting.beauty")
     static let audioText: String = localized("live.anchor.setting.audio.effects")
     static let flipText: String = localized("live.anchor.setting.flip")
-    static let mirrorText: String = localized("live.anchor.setting.mirror")
+    static let videoSettingText: String = localized("live.anchor.setting.title")
 }

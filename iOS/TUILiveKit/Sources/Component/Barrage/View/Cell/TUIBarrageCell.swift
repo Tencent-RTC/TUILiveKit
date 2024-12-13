@@ -42,8 +42,17 @@ class TUIBarrageCell: UITableViewCell {
     }
 
     func getCellHeight() -> CGFloat {
-        return isCustomCell ? (customCell.mm_h + 4.scale375Height()) :
-            (defaultCell.mm_h + 4.scale375Height())
+        if isCustomCell {
+            return customCell.mm_h + 6
+        }
+        guard let defaultCell = defaultCell as? TUIBarrageDefaultCell else {
+            return defaultCell.mm_h + 4.scale375Height()
+        }
+        var barrageContentHeight = defaultCell.barrageContentSize.height
+        if barrageContentHeight < 18 {
+            barrageContentHeight = 18
+        }
+        return barrageContentHeight + 2*4 + 6
     }
 }
 
@@ -70,16 +79,21 @@ class TUIBarrageDefaultCell: UIView {
     var isOwner: Bool {
         barrage.user.userId == TUIBarrageStore.shared.ownerId
     }
+    let barrageContentMaxWidth: CGFloat = 240.scale375()
+    lazy var barrageContentSize: CGSize = {
+        let barrageSize = CGSize(width: barrageContentMaxWidth, height: CGFloat(integerLiteral: Int.max))
+        return barrageLabel.sizeThatFits(barrageSize)
+    }()
 
     private let levelButton: UIButton = {
         let button = UIButton()
-        button.layer.cornerRadius = 7.scale375Height()
+        button.layer.cornerRadius = 7
         button.titleLabel?.textColor = .flowKitWhite
         button.isEnabled = false
-        let spacing: CGFloat = 2.scale375()
+        let spacing: CGFloat = 2
         button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -spacing / 2, bottom: 0, right: spacing / 2)
         button.titleEdgeInsets = UIEdgeInsets(top: 0, left: spacing / 2, bottom: 0, right: -spacing / 2)
-        button.titleLabel?.font = UIFont(name: "PingFangSC-Regular", size: 12)
+        button.titleLabel?.font = .customFont(ofSize: 10, weight: .semibold)
         return button
     }()
 
@@ -95,7 +109,7 @@ class TUIBarrageDefaultCell: UIView {
 
     private lazy var barrageLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "PingFangSC-Regular", size: 14)
+        label.font = .customFont(ofSize: 12, weight: .semibold)
         label.numberOfLines = 5
         label.textAlignment = .left
         label.lineBreakMode = .byTruncatingTail
@@ -132,63 +146,65 @@ class TUIBarrageDefaultCell: UIView {
     }
 
     func activateConstraints() {
-        snp.makeConstraints { [weak self] make in
-            guard let self = self else { return }
+        snp.makeConstraints { make in
             make.top.leading.equalToSuperview()
-            make.width.equalTo(self.mm_w)
-            make.height.equalTo(self.mm_h)
         }
         levelButton.snp.makeConstraints { make in
-            make.leading.equalToSuperview().inset(8.scale375())
-            make.top.equalToSuperview().offset(8.scale375Height())
-            make.width.equalTo(35.scale375())
-            make.height.equalTo(14.scale375Height())
+            make.leading.equalToSuperview().inset(8)
+            make.top.equalToSuperview().offset(6)
+            make.width.equalTo(35)
+            make.height.equalTo(14)
         }
         if isOwner {
             anchorButton.snp.makeConstraints { make in
-                make.leading.equalTo(levelButton.snp.trailing).offset(5.scale375())
+                make.leading.equalTo(levelButton.snp.trailing).offset(5)
                 make.centerY.equalTo(levelButton)
-                make.height.equalTo(14.scale375Height())
-                make.width.equalTo(42.scale375())
+                make.height.equalTo(14)
+                make.width.equalTo(42)
             }
         }
         barrageLabel.snp.makeConstraints { [weak self] make in
             guard let self = self else { return }
-            make.leading.equalToSuperview().inset(8.scale375())
-            make.top.equalToSuperview().inset(6.scale375())
-            make.width.equalTo(self.barrageLabel.mm_w)
-            make.height.equalTo(self.barrageLabel.mm_h)
+            let contentSize = self.barrageContentSize
+            make.leading.equalTo(levelButton.snp.trailing).offset(5)
+            make.trailing.equalToSuperview().inset(8)
+            
+            make.top.bottom.equalToSuperview().inset(4)
+
+            make.width.equalTo(contentSize.width)
+            if contentSize.height > 18 {
+                make.height.equalTo(contentSize.height)
+            } else {
+                make.height.equalTo(18)
+            }
         }
     }
 
     func setupDefaultCell(_ barrage: TUIBarrage) {
-        barrageLabel.mm_w = 231.scale375()
+        if isOwner {
+            barrage.user.level = "65"
+        } else {
+            barrage.user.level = "32"
+        }
         let level = getLevel(barrage: barrage)
         levelButton.backgroundColor = getLevelBackground(level: level)
         levelButton.setImage(getLevelImage(level: level), for: .normal)
         levelButton.setTitle("\(level)", for: .normal)
         barrageLabel.attributedText = getBarrageLabelAttributedText(barrage: barrage)
-        barrageLabel.sizeToFit()
-        mm_h = barrageLabel.mm_h + 2.scale375Height() + 10.scale375Height()
-        mm_w = barrageLabel.mm_w + 16.scale375()
-        if mm_h < 40 {
-            layer.cornerRadius = mm_h * 0.5
-        } else {
-            layer.cornerRadius = 12
-        }
+        layer.cornerRadius = 13
     }
 
     func getBarrageLabelAttributedText(barrage: TUIBarrage)
         -> NSMutableAttributedString {
-        let placeholderString = String(repeating: " ", count: isOwner ? 28 : 13)
+            let placeholderString = String(repeating: " ", count: isOwner ? 12 : 0)
         let isNormal = isNormalMessage(barrage: barrage)
         let userName = barrage.user.userName + (isNormal ? "：" : "")
         let userNameAttributes: [NSAttributedString.Key: Any] =
-            [.foregroundColor: UIColor.lightBlueColor, .font: UIFont.systemFont(ofSize: 12)]
+            [.foregroundColor: UIColor.lightBlueColor, .font: UIFont.customFont(ofSize: 12, weight: .semibold)]
         let userNameAttributedText = NSMutableAttributedString(string: "\(placeholderString)\(userName)",
                                                                attributes: userNameAttributes)
-
-        let contentFont = UIFont(name: "PingFangSC-Regular", size: 12) ?? UIFont.systemFont(ofSize: 12)
+                 
+        let contentFont = UIFont.customFont(ofSize: 12, weight: .semibold)
         let contentAttributes: [NSAttributedString.Key: Any] =
             [.font: contentFont]
         let contentAttributedText: NSMutableAttributedString = isNormal ? getBarrageContentAttributedText(content: barrage.content) :
@@ -204,8 +220,7 @@ class TUIBarrageDefaultCell: UIView {
     func getBarrageContentAttributedText(content: String)
         -> NSMutableAttributedString {
         return EmotionHelper.shared.obtainImagesAttributedString(byText: content,
-                                                                 font: UIFont(name: "PingFangSC-Regular", size: 12) ??
-                                                                     UIFont.systemFont(ofSize: 12))
+                                                                 font: UIFont.customFont(ofSize: 12, weight: .semibold))
     }
 
     private func getLevel(barrage: TUIBarrage) -> Int {
@@ -268,13 +283,13 @@ class TUIBarrageCustomCell: UIView {
     }
 
     func setupCustomCell() {
-        mm_h = customView.mm_h + 12.scale375Height()
+        mm_h = customView.mm_h
         mm_w = customView.mm_w + 16.scale375()
         layer.cornerRadius = mm_h * 0.5
         if mm_h < 40 {
             layer.cornerRadius = mm_h * 0.5
         } else {
-            layer.cornerRadius = 12
+            layer.cornerRadius = 13
         }
     }
 
@@ -290,10 +305,10 @@ class TUIBarrageCustomCell: UIView {
             make.height.equalTo(self.mm_h)
         }
 
-        customView.snp.makeConstraints { make in
-            make.leading.equalToSuperview().inset(8.scale375())
+        customView.snp.remakeConstraints { make in
+            make.leading.equalToSuperview()
             make.centerY.equalToSuperview()
-            make.width.equalTo(self.customView.mm_w)
+            make.width.equalTo(self.customView.mm_w + 8)
             make.height.equalTo(self.customView.mm_h)
         }
     }

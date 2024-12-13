@@ -1,42 +1,27 @@
 //
-//  AudioEffectStoreImpl.swift
+//  AudioEffectDataProvider.swift
 //  TUILiveKit
 //
 //  Created by aby on 2024/4/3.
 //
 import Combine
-#if canImport(TXLiteAVSDK_TRTC)
-    import TXLiteAVSDK_TRTC
-#elseif canImport(TXLiteAVSDK_Professional)
-    import TXLiteAVSDK_Professional
-#endif
+import RTCCommon
 
-class AudioEffectStoreProvider {
+protocol AudioEffectMenuDateGenerator {
+    typealias Section = Int
+    var audioEffectMenus: [Section: [SettingItem]] { get }
+    var audioEffectSectionTitles: [Section: String] { get }
+}
+
+class AudioEffectDataProvider {
+    
+    private weak var manager: AudioEffectManager?
+    init(manager: AudioEffectManager) {
+        self.manager = manager
+    }
+    
     typealias AudioChangerDataSource = (title: String, icon: UIImage?, changerType: AudioChangerType)
     typealias AudioReverbDataSource = (title: String, icon: UIImage?, reverbType: AudioReverbType)
-    
-    let service: AudioEffectService
-    private(set) lazy var store: Store<AudioEffectState, AudioEffectService> = Store(initialState: AudioEffectState(), environment: self.service)
-    
-    init(trtcCloud: TRTCCloud) {
-        service = AudioEffectService(trtcCloud: trtcCloud)
-        initializeStore()
-    }
-    
-    deinit {
-        unInitializeStore()
-        print("deinit \(type(of: self))")
-    }
-    
-    private func initializeStore() {
-        store.register(reducer: audioEffectReducer)
-        store.register(effects: AudioEffectEffects())
-    }
-    
-    private func unInitializeStore() {
-        store.unregister(reducer: audioEffectReducer)
-        store.unregisterEffects(withId: AudioEffectEffects.id)
-    }
     
     let changerDataSource: [AudioChangerDataSource] = [
         (
@@ -95,23 +80,7 @@ class AudioEffectStoreProvider {
     ]
 }
 
-extension AudioEffectStoreProvider: AudioEffectStore {
-    func dispatch(action: Action) {
-        store.dispatch(action: action)
-    }
-    
-    func select<Value>(_ selector: Selector<AudioEffectState, Value>) -> AnyPublisher<Value, Never> where Value : Equatable {
-       return store.select(selector)
-            .removeDuplicates()
-            .eraseToAnyPublisher()
-    }
-    
-    func selectCurrent<Value>(_ selector: Selector<AudioEffectState, Value>) -> Value {
-       return store.selectCurrent(selector)
-    }
-}
-
-extension AudioEffectStoreProvider: AudioEffectMenuDateGenerator {
+extension AudioEffectDataProvider: AudioEffectMenuDateGenerator {
     
     var audioEffectMenus: [Section : [SettingItem]] {
         return generateAudioEffectData()
@@ -140,25 +109,25 @@ extension AudioEffectStoreProvider: AudioEffectMenuDateGenerator {
     }
     
     private func firstSectionMenus() -> [SettingItem] {
+        guard let manager = manager else { return [] }
         var firstSection: [SettingItem] = []
-        var earMonitor = SwitchItem(title: .voiceEarMonitorText, isOn: store.selectCurrent(AudioEffectSelectors.isEarMonitorOpened))
-        earMonitor.isOn = store.selectCurrent(AudioEffectSelectors.isEarMonitorOpened)
+        var earMonitor = SwitchItem(title: .voiceEarMonitorText, isOn: manager.state.isEarMonitorOpened)
         earMonitor.action = { [weak self] isOpened in
             guard let self = self else { return }
-            self.store.dispatch(action: AudioEffectActions.operateEarMonitor(payload: isOpened))
+            self.manager?.setVoiceEarMonitorEnable(isOpened)
         }
         firstSection.append(earMonitor)
         var earMonitorVolume = SliderItem(title: .voiceEarMonitorVolumeText)
         earMonitorVolume.min = 0
         earMonitorVolume.max = 100
-        earMonitorVolume.currentValue = Float(store.selectCurrent(AudioEffectSelectors.earMonitorVolume))
+        earMonitorVolume.currentValue = Float(manager.state.earMonitorVolume)
         earMonitorVolume.valueDidChanged = { [weak self] value in
             guard let self = self else { return }
-            self.store.dispatch(action: AudioEffectActions.updateEarMonitorVolume(payload: Int(value)))
+            self.manager?.setVoiceEarMonitorVolume(Int(value))
         }
         earMonitorVolume.subscribeState = { [weak self] cell, cancellables in
             guard let self = self else { return }
-            self.store.select(AudioEffectSelectors.earMonitorVolume)
+            self.manager?.subscribeState(StateSelector(keyPath: \.earMonitorVolume))
                 .receive(on: DispatchQueue.main)
                 .sink { [weak cell] value in
                     guard let sliderCell = cell else { return }
@@ -172,18 +141,19 @@ extension AudioEffectStoreProvider: AudioEffectMenuDateGenerator {
     }
     
     private func secondSectionMenus() -> [SettingItem] {
+        guard let manager = manager else { return [] }
         var secondSection:[SettingItem] = []
         var musicVolume = SliderItem(title: .musicVolumeText)
         musicVolume.min = 0
         musicVolume.max = 100
-        musicVolume.currentValue = Float(store.selectCurrent(AudioEffectSelectors.musicVolume))
+        musicVolume.currentValue = Float(manager.state.musicVolume)
         musicVolume.valueDidChanged = { [weak self] value in
             guard let self = self else { return }
-            self.store.dispatch(action: AudioEffectActions.updateMusicVolume(payload: Int(value)))
+            self.manager?.setMusicVolume(Int(value))
         }
         musicVolume.subscribeState = { [weak self] cell, cancellableSet in
             guard let self = self else { return }
-            self.store.select(AudioEffectSelectors.musicVolume)
+            self.manager?.subscribeState(StateSelector(keyPath: \.musicVolume))
                 .receive(on: DispatchQueue.main)
                 .sink { [weak cell] value in
                     guard let sliderCell = cell else { return }
@@ -196,14 +166,14 @@ extension AudioEffectStoreProvider: AudioEffectMenuDateGenerator {
         var microphoneVolume = SliderItem(title: .microphoneVolumeText)
         microphoneVolume.min = 0
         microphoneVolume.max = 100
-        microphoneVolume.currentValue = Float(store.selectCurrent(AudioEffectSelectors.microphoneVolume))
+        microphoneVolume.currentValue = Float(manager.state.microphoneVolume)
         microphoneVolume.valueDidChanged = { [weak self] value in
             guard let self = self else { return }
-            self.store.dispatch(action: AudioEffectActions.updateMicrophoneVolume(payload: Int(value)))
+            self.manager?.setMicrophoneVolume(Int(value))
         }
         microphoneVolume.subscribeState = { [weak self] cell, cancellableSet in
             guard let self = self else { return }
-            self.store.select(AudioEffectSelectors.microphoneVolume)
+            self.manager?.subscribeState(StateSelector(keyPath: \.microphoneVolume))
                 .receive(on: DispatchQueue.main)
                 .sink { [weak cell] value in
                     guard let sliderCell = cell else { return }
@@ -224,11 +194,12 @@ extension AudioEffectStoreProvider: AudioEffectMenuDateGenerator {
     
     private func createAudioChangerMenu(title: String, icon: UIImage?, changerType: AudioChangerType) -> ButtonItem {
         var item = ButtonItem(buttonTitle: title)
+        guard let manager = manager else { return item }
         item.icon = icon
-        item.isSelected = store.selectCurrent(AudioEffectSelectors.changerType) == changerType
+        item.isSelected = manager.state.changerType == changerType
         item.action = { [weak self] in
             guard let self = self else { return }
-            self.store.dispatch(action: AudioEffectActions.changerVoice(payload: changerType))
+            self.manager?.setChangerType(changerType)
         }
         return item
     }
@@ -241,11 +212,12 @@ extension AudioEffectStoreProvider: AudioEffectMenuDateGenerator {
     
     private func createAudioReverbMenu(title: String, icon: UIImage?, reverbType: AudioReverbType) -> ButtonItem {
         var item = ButtonItem(buttonTitle: title)
+        guard let manager = manager else { return item }
         item.icon = icon
-        item.isSelected = store.selectCurrent(AudioEffectSelectors.reverbType) == reverbType
+        item.isSelected = manager.state.reverbType == reverbType
         item.action = { [weak self] in
             guard let self = self else { return }
-            self.store.dispatch(action: AudioEffectActions.reverbVoice(payload: reverbType))
+            self.manager?.setReverbType(reverbType)
         }
         return item
     }

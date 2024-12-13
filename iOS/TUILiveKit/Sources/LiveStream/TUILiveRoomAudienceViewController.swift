@@ -48,8 +48,7 @@ public class TUILiveRoomAudienceViewController: UIViewController {
     }
     
     deinit {
-//        LiveStoreFactory.removeStore(roomId: roomId)
-//        LiveRoomViewStoreFactory.removeStore(roomId: roomId)
+        StateCache.shared.clear()
         print("deinit \(type(of: self))")
     }
     

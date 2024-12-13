@@ -102,3 +102,9 @@ extension SeatGridViewObserver {
     func onUserAudioStateChanged(userInfo: TUIUserInfo, hasAudio: Bool, reason: TUIChangeReason) {}
     func onSeatViewClicked(seatView: UIView, seatInfo: TUISeatInfo) {}
 }
+
+// MARK: ------------- Private Notification -------------
+// MARK: - Room
+public let SeatGridViewOnEnterRoomNotifyName: Notification.Name = Notification.Name("__kSeatGridView_NotifyName_Room_EnterRoom__")
+public let SeatGridViewOnExitRoomNotifyName: Notification.Name = Notification.Name("__kSeatGridView_NotifyName_Room_ExitRoom__")
+// MARK: - Audio

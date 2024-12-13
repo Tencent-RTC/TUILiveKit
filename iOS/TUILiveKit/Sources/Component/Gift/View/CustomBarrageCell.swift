@@ -36,12 +36,12 @@ class CustomBarrageCell: UIView {
         return label
     }()
     
-    private var cellHeight = 22.scale375Height()
+    private let cellHeight: CGFloat = 26
     
     init(barrage: TUIBarrage) {
         super.init(frame: .zero)
         backgroundColor = UIColor(hex: "#0F1014")?.withAlphaComponent(0.4)
-        layer.cornerRadius = 13.scale375Height()
+        layer.cornerRadius = 13
         layer.masksToBounds = true
         updateViewContent(barrage: barrage)
         updateCellSize()
@@ -77,7 +77,7 @@ class CustomBarrageCell: UIView {
     private func getBarrageAttributedText(barrage: TUIBarrage) -> NSMutableAttributedString {
         let userName = barrage.user.userName
         let userNameAttributes: [NSAttributedString.Key: Any] =
-            [.foregroundColor: UIColor.lightBlueColor, .font: UIFont.systemFont(ofSize: 12)]
+            [.foregroundColor: UIColor.lightBlueColor, .font: UIFont.customFont(ofSize: 12, weight: .semibold)]
         let mutableAttributedString = NSMutableAttributedString(string: userName, attributes: userNameAttributes)
         
         let sendAttributedText = NSAttributedString(string: " " + .sendText, attributes: [.foregroundColor: UIColor.white])
@@ -97,7 +97,7 @@ class CustomBarrageCell: UIView {
         mutableAttributedString.append(giftNameAttributedString)
 
         mutableAttributedString.addAttribute(.font,
-                                             value: UIFont.systemFont(ofSize: 12),
+                                             value: UIFont.customFont(ofSize: 12, weight: .semibold),
                                              range: NSRange(location: 0, length: mutableAttributedString.length))
         return mutableAttributedString
     }
@@ -131,15 +131,16 @@ extension CustomBarrageCell {
     
     private func activateConstraints() {
         if self.superview != nil {
-            snp.makeConstraints { make in
-                make.leading.equalToSuperview()
+            snp.remakeConstraints { make in
+                make.leading.top.equalToSuperview()
             }
         }
         containerView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
+            make.height.equalTo(cellHeight)
         }
         barrageLabel.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(4)
+            make.leading.equalToSuperview().offset(8)
             make.centerY.equalToSuperview()
         }
         giftImageView.snp.makeConstraints { make in

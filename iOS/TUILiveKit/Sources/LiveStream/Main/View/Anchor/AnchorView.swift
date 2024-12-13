@@ -40,16 +40,6 @@ class AnchorView: UIView {
         return view
     }()
     
-    lazy var beautyPanelView: UIView = {
-        let view = BeautyView(roomId: roomId)
-        view.backClosure =  { [weak self] in
-            guard let self = self else { return }
-            routerManager.router(action: .dismiss())
-        }
-        view.frame = CGRect(x: -100, y: -100, width: 0, height: 0)
-        return view
-    }()
-    
     private weak var alertPanel: LSAlertPanel?
 
     init(roomId: String, manager: LiveStreamManager, routerManager: LSRouterManager, coreView: LiveCoreView) {
@@ -105,7 +95,6 @@ extension AnchorView {
         addSubview(battleInfoView)
         addSubview(prepareView)
         addSubview(livingView)
-        addSubview(beautyPanelView)
     }
     
     private func activateConstraints() {
@@ -271,15 +260,15 @@ extension AnchorView: VideoViewDelegate {
         return CoGuestView(userInfo: userInfo, manager: manager)
     }
     
-    func updateCoGuestView(userInfo: TUIUserInfo, coGuestView: UIView) {
+    func updateCoGuestView(userInfo: TUIUserInfo, modifyFlag: LiveStreamCore.UserInfoModifyFlag, coGuestView: UIView) {
         
     }
     
-    func createCoHostView(connectionUser: TUIConnectionUser) -> UIView? {
-        return CoHostView(connectionUser: connectionUser, manager: manager)
+    func createCoHostView(coHostUser: CoHostUser) -> UIView? {
+        return CoHostView(connectionUser: coHostUser, manager: manager)
     }
     
-    func updateCoHostView(connectionUser: TUIConnectionUser, coHostView: UIView) {
+    func updateCoHostView(coHostUser: LiveStreamCore.CoHostUser, modifyFlag: LiveStreamCore.UserInfoModifyFlag, coHostView: UIView) {
         
     }
 }

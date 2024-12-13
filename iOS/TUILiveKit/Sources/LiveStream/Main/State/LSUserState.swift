@@ -6,6 +6,7 @@
 //
 
 import RTCRoomEngine
+import LiveStreamCore
 
 struct LSUserState {
     var selfInfo: LSUser = LSUser()
@@ -37,10 +38,10 @@ struct LSUser: Codable {
         self.avatarUrl = loginInfo.avatarUrl
     }
     
-    init(connectionUser: TUIConnectionUser) {
-        self.userId = connectionUser.userId
-        self.name = connectionUser.userName
-        self.avatarUrl = connectionUser.avatarUrl
+    init(coHostUser: CoHostUser) {
+        self.userId = coHostUser.connectionUser.userId
+        self.name = coHostUser.connectionUser.userName
+        self.avatarUrl = coHostUser.connectionUser.avatarUrl
     }
     
     init(userId: String) {

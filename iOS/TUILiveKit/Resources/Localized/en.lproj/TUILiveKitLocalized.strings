@@ -82,6 +82,10 @@
 "live.anchor.setting.mirror" = "Mirror";
 "live.anchor.setting.background" = "Background";
 "live.anchor.setting.video.parameters" = "Video";
+"live.anchor.setting.video.resolution" = "Video Resolution";
+"live.anchor.setting.video.fps" = "Video FPS";
+"live.anchor.setting.video.bitrate" = "Video Bitrate";
+"live.anchor.setting.video.ultimate" = "Ultimate-Video";
 "live.anchor.setting.more.setting" = "More Settings";
 "live.anchor.setting.need.request" = "Require owner's consent to speak";
 "live.link.success" = "Link Successfully";

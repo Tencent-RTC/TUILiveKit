@@ -14,97 +14,52 @@ import Combine
     import TXLiteAVSDK_Professional
 #endif
 
-class AudioEffectEffects: Effects {
-    typealias Environment = AudioEffectService
-    static var id: String { "AudioEffectEffects" }
-    
-    let updateMusicVolume =  Effect<Environment>.nonDispatching { actions, environment in
-        actions.wasCreated(from: AudioEffectActions.updateMusicVolume)
-            .sink { action in
-                environment.updateMusicVolume(action.payload)
-            }
+class AudioEffectService: AudioEffectManagerInterface {
+    func setMusicVolume(_ volume: Int) {
+        audioEffectManager.setAllMusicVolume(volume)
     }
     
-    let updateMicrophoneVolume =  Effect<Environment>.nonDispatching { actions, environment in
-        actions.wasCreated(from: AudioEffectActions.updateMicrophoneVolume)
-            .sink { action in
-                environment.updateMicrophoneVolume(action.payload)
-            }
+    func setMicrophoneVolume(_ volume: Int) {
+        audioEffectManager.setVoiceVolume(volume)
     }
     
-    let updateMusicPitch =  Effect<Environment>.nonDispatching { actions, environment in
-        actions.wasCreated(from: AudioEffectActions.updateMusicPitchLevel)
-            .sink { action in
-                environment.updateMusicPitch(action.payload)
-            }
+    func setMusicPitch(_ pitch: Double) {
+        audioEffectManager.setVoicePitch(pitch)
     }
     
-    let enableVoiceEarMonitor = Effect<Environment>.nonDispatching { actions, environment in
-        actions.wasCreated(from: AudioEffectActions.operateEarMonitor)
-            .sink { action in
-                environment.enableVoiceEarMonitor(enable: action.payload)
-            }
-    }
-    
-    let updateEarMonitorVolume = Effect<Environment>.nonDispatching { actions, environment in
-        actions.wasCreated(from: AudioEffectActions.updateEarMonitorVolume)
-            .sink { action in
-                environment.setVoiceEarMonitorVolume(action.payload)
-            }
-    }
-    
-    let updateChangerType = Effect<Environment>.nonDispatching { actions, environment in
-        actions.wasCreated(from: AudioEffectActions.changerVoice)
-            .sink { action in
-                environment.updateChangerType(action.payload)
-            }
-    }
-    
-    let updateReverbType = Effect<Environment>.nonDispatching { actions, environment in
-        actions.wasCreated(from: AudioEffectActions.reverbVoice)
-            .sink { action in
-                environment.updateReverbType(action.payload)
-            }
-    }
-}
-
-class AudioEffectService {
-    let trtcCloud: TRTCCloud
-    
-    init(trtcCloud: TRTCCloud) {
-        self.trtcCloud = trtcCloud
-    }
-    
-    private func audioEffectManager() -> TXAudioEffectManager {
-        return trtcCloud.getAudioEffectManager()
-    }
-    
-    func updateMusicVolume(_ volume: Int) {
-        audioEffectManager().setAllMusicVolume(volume)
-    }
-    
-    func updateMicrophoneVolume(_ volume: Int) {
-        audioEffectManager().setVoiceVolume(volume)
-    }
-    
-    func updateMusicPitch(_ pitch: Double) {
-        audioEffectManager().setVoicePitch(pitch)
-    }
-    
-    func enableVoiceEarMonitor(enable: Bool) {
-        audioEffectManager().enableVoiceEarMonitor(enable)
+    func setVoiceEarMonitorEnable(_ enable: Bool) {
+        audioEffectManager.enableVoiceEarMonitor(enable)
     }
     
     func setVoiceEarMonitorVolume(_ volume: Int) {
-        audioEffectManager().setVoiceEarMonitorVolume(volume)
+        audioEffectManager.setVoiceEarMonitorVolume(volume)
     }
     
-    func updateChangerType(_ type: AudioChangerType) {
-        LiveKitLog.info("\(#file)","\(#line)","setVoiceChangerType:[type:\(type.rawValue)]")
-        audioEffectManager().setVoiceChangerType(TXVoiceChangeType(rawValue: type.rawValue) ?? ._0)
+    func setChangerType(_ type: AudioChangerType) {
+        audioEffectManager.setVoiceChangerType(TXVoiceChangeType(rawValue: type.rawValue) ?? ._0)
     }
     
-    func updateReverbType(_ type: AudioReverbType) {
-        audioEffectManager().setVoiceReverbType(TXVoiceReverbType(rawValue: type.rawValue) ?? ._0)
+    func setReverbType(_ type: AudioReverbType) {
+        audioEffectManager.setVoiceReverbType(TXVoiceReverbType(rawValue: type.rawValue) ?? ._0)
+    }
+}
+
+extension AudioEffectService {
+    private var audioEffectManager: TXAudioEffectManager {
+        TUIRoomEngine.sharedInstance().getTRTCCloud().getAudioEffectManager()
+    }
+    
+    static func resetAudioSettings() {
+        LiveKitLog.info("\(#file)", "\(#line)", "AudioEffectView reset effects")
+        
+        let service = AudioEffectService()
+        service.setVoiceEarMonitorEnable(false)
+        service.setVoiceEarMonitorVolume(100)
+        
+        service.setMusicVolume(60)
+        service.setMicrophoneVolume(100)
+        
+        service.setChangerType(.none)
+        service.setReverbType(.none)
     }
 }

@@ -9,7 +9,7 @@ import Foundation
 import RTCRoomEngine
 
 struct BeautyState: Encodable {
-    var smoothLevel: Int = 0
-    var whitenessLevel: Int = 0
-    var ruddyLevel: Int = 0
+    var smoothLevel: Float = 0
+    var whitenessLevel: Float = 0
+    var ruddyLevel: Float = 0
 }

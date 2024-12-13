@@ -9,15 +9,16 @@ import Foundation
 import RTCCommon
 import Combine
 import RTCRoomEngine
+import LiveStreamCore
 
 class CoHostView: UIView {
     private let manager: LiveStreamManager
     private var isViewReady: Bool = false
-    private var connectionUser: TUIConnectionUser
+    private var coHostUser: CoHostUser
     private var cancellableSet = Set<AnyCancellable>()
     
-    init(connectionUser: TUIConnectionUser, manager: LiveStreamManager) {
-        self.connectionUser = connectionUser
+    init(connectionUser: CoHostUser, manager: LiveStreamManager) {
+        self.coHostUser = connectionUser
         self.manager = manager
         super.init(frame: .zero)
     }
@@ -39,12 +40,12 @@ class CoHostView: UIView {
     }
     
     private lazy var userInfoView: UserStatusView = {
-        let view = UserStatusView(userInfo: LSUser(connectionUser: connectionUser), manager: manager)
+        let view = UserStatusView(userInfo: LSUser(coHostUser: coHostUser), manager: manager)
         return view
     }()
     
     private lazy var battleMemberInfoView: BattleMemberInfoView = {
-        let view = BattleMemberInfoView(manager: manager, userId: connectionUser.userId)
+        let view = BattleMemberInfoView(manager: manager, userId: coHostUser.connectionUser.userId)
         return view
     }()
     
@@ -80,12 +81,12 @@ class CoHostView: UIView {
     }
     
     private func initViewState() {
-        if connectionUser.userId == manager.userState.selfInfo.userId {
+        if coHostUser.connectionUser.userId == manager.userState.selfInfo.userId {
             userInfoView.isHidden = true
         }
-        avatarImageView.kf.setImage(with: URL(string: connectionUser.avatarUrl),
+        avatarImageView.kf.setImage(with: URL(string: coHostUser.connectionUser.avatarUrl),
                                     placeholder: UIImage.avatarPlaceholderImage)
-        let hasVideo = manager.userState.hasVideoStreamUserList.contains(connectionUser.userId)
+        let hasVideo = manager.userState.hasVideoStreamUserList.contains(coHostUser.connectionUser.userId)
         let isPreview = manager.roomState.liveStatus == .previewing
         avatarImageView.isHidden = hasVideo || isPreview
     }
@@ -99,7 +100,7 @@ extension CoHostView {
             .removeDuplicates()
             .sink { [weak self] userIdList in
                 guard let self = self, manager.roomState.liveStatus != .previewing else { return }
-                if userIdList.contains(self.connectionUser.userId) {
+                if userIdList.contains(self.coHostUser.connectionUser.userId) {
                     avatarImageView.isHidden = true
                 } else {
                     avatarImageView.isHidden = false

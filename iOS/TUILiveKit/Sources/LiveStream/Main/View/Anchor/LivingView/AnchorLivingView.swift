@@ -190,7 +190,7 @@ extension AnchorLivingView {
         
         barrageDisplayView.snp.remakeConstraints { make in
             make.left.equalToSuperview().offset(16)
-            make.width.equalTo(268.scale375())
+            make.width.equalTo(305.scale375())
             make.height.equalTo(212.scale375Height())
             if self.isPortrait {
                 make.bottom.equalTo(bottomMenu.snp.top).offset(-4.scale375Height())

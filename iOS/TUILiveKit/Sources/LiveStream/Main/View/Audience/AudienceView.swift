@@ -50,15 +50,6 @@ class AudienceView: RTCBaseView {
         return view
     }()
     
-    lazy var beautyPanelView: UIView = {
-        let view = BeautyView(roomId: roomId, isOwner: false)
-        view.backClosure = { [weak self] in
-            guard let self = self else { return }
-            routerManager.router(action: .dismiss())
-        }
-        return view
-    }()
-    
     init(roomId: String, manager: LiveStreamManager, routerManager: LSRouterManager, coreView: LiveCoreView) {
         self.roomId = roomId
         self.manager = manager
@@ -164,8 +155,8 @@ extension AudienceView: LSRouterViewProvider {
         if route == .giftView {
             giftPanelView.setGiftList(TUIGiftStore.shared.giftList)
             return giftPanelView
-        } else if route == .beauty {
-            return beautyPanelView
+        } else if route == .videoSetting {
+            return VideoSettingPanel(routerManager: routerManager, mediaManager: videoView.getMediaManager())
         }
         else {
             return nil
@@ -240,15 +231,15 @@ extension AudienceView: VideoViewDelegate {
         return CoGuestView(userInfo: userInfo, manager: manager)
     }
     
-    func updateCoGuestView(userInfo: TUIUserInfo, coGuestView: UIView) {
+    func updateCoGuestView(userInfo: TUIUserInfo, modifyFlag: LiveStreamCore.UserInfoModifyFlag, coGuestView: UIView) {
         
     }
     
-    func createCoHostView(connectionUser: TUIConnectionUser) -> UIView? {
-        return CoHostView(connectionUser: connectionUser, manager: manager)
+    func createCoHostView(coHostUser: CoHostUser) -> UIView? {
+        return CoHostView(connectionUser: coHostUser, manager: manager)
     }
     
-    func updateCoHostView(connectionUser: TUIConnectionUser, coHostView: UIView) {
+    func updateCoHostView(coHostUser: LiveStreamCore.CoHostUser, modifyFlag: LiveStreamCore.UserInfoModifyFlag, coHostView: UIView) {
         
     }
 }

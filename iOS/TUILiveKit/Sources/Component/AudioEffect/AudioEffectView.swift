@@ -15,7 +15,7 @@ import RTCCommon
 #endif
 
 class AudioEffectView: UIView {
-    private let store: AudioEffectStoreProvider
+    private let manager = AudioEffectManager()
     
     var backButtonClickClosure: ((UIButton)->Void)?
     private var isViewReady: Bool = false
@@ -35,7 +35,7 @@ class AudioEffectView: UIView {
         return label
     }()
     
-    private let tableView: UITableView = {
+    private lazy var tableView: UITableView = {
         let view = UITableView(frame: .zero, style: .grouped)
         view.register(SwitchCell.self, forCellReuseIdentifier: SwitchCell.identifier)
         view.register(ButtonCell.self, forCellReuseIdentifier: ButtonCell.identifier)
@@ -49,19 +49,14 @@ class AudioEffectView: UIView {
         return view
     }()
     
-    lazy var menus: [Int : [SettingItem]] = self.store.audioEffectMenus
-    lazy var titles: [Int: String] = self.store.audioEffectSectionTitles
+    private lazy var menus: [Int : [SettingItem]] = manager.audioEffectMenus
+    private lazy var titles: [Int: String] = manager.audioEffectSectionTitles
     
-    init(roomId: String, trtcCloud: TRTCCloud) {
-        if let audioEffectStore = AudioEffectStoreFactory.getStore(roomId: roomId) {
-            self.store = audioEffectStore
-        } else {
-            let audioEffectStore = AudioEffectStoreProvider(trtcCloud: trtcCloud)
-            AudioEffectStoreFactory.addStore(roomId: roomId, audioEffectStore: audioEffectStore)
-            self.store = audioEffectStore
-        }
+    init() {
         super.init(frame: .zero)
         backgroundColor = .clear
+        layer.cornerRadius = 16
+        layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
     }
     
     required init?(coder: NSCoder) {
@@ -69,11 +64,11 @@ class AudioEffectView: UIView {
     }
     
     deinit {
-        LiveKitLog.info("\(#file)", "\(#line)", "AudioEffectView deinit to reset effects")
-        resetEffects()
         debugPrint("deinit \(type(of: self))")
     }
-    
+}
+
+extension AudioEffectView {
     override func didMoveToWindow() {
         super.didMoveToWindow()
         guard !isViewReady else { return }
@@ -82,17 +77,6 @@ class AudioEffectView: UIView {
         bindInteraction()
         setupViewStyle()
         isViewReady = true
-    }
-    
-    private func resetEffects() {
-        store.dispatch(action: AudioEffectActions.operateEarMonitor(payload: false))
-        store.dispatch(action: AudioEffectActions.updateEarMonitorVolume(payload: 100))
-        
-        store.dispatch(action: AudioEffectActions.updateMusicVolume(payload: 60))
-        store.dispatch(action: AudioEffectActions.updateMicrophoneVolume(payload: 100))
-        
-        store.dispatch(action: AudioEffectActions.changerVoice(payload: .none))
-        store.dispatch(action: AudioEffectActions.reverbVoice(payload: .none))
     }
     
     func constructViewHierarchy() {

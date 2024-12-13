@@ -36,11 +36,38 @@ import RTCRoomEngine
 
 @objc public protocol VideoViewDelegate {
     func createCoGuestView(userInfo: TUIUserInfo) -> UIView?
-    func updateCoGuestView(userInfo: TUIUserInfo, coGuestView: UIView)
-    func createCoHostView(connectionUser: TUIConnectionUser) -> UIView?
-    func updateCoHostView(connectionUser: TUIConnectionUser, coHostView: UIView)
+    func updateCoGuestView(userInfo: TUIUserInfo, modifyFlag: UserInfoModifyFlag, coGuestView: UIView)
+    func createCoHostView(coHostUser: CoHostUser) -> UIView?
+    func updateCoHostView(coHostUser: CoHostUser, modifyFlag: UserInfoModifyFlag, coHostView: UIView)
 }
 
 @objc public protocol WaitingCoGuestViewDelegate {
     func waitingCoGuestView() -> UIView?
 }
+
+@objcMembers public class CoHostUser: NSObject {
+    public var connectionUser: TUIConnectionUser = TUIConnectionUser()
+    public var hasAudioStream: Bool = false
+    public var hasVideoStream: Bool = true
+}
+
+@objc public class UserInfoModifyFlag: NSObject, OptionSet {
+    public let rawValue: UInt
+
+    @objc public static let none = UserInfoModifyFlag([])
+    @objc public static let userRole = UserInfoModifyFlag(rawValue: 0x01 << 0)
+    @objc public static let nameCard = UserInfoModifyFlag(rawValue: 0x01 << 1)
+    @objc public static let hasVideoStream = UserInfoModifyFlag(rawValue: 0x01 << 2)
+    @objc public static let hasAudioStream = UserInfoModifyFlag(rawValue: 0x01 << 3)
+
+    required public init(rawValue: UInt) {
+        self.rawValue = rawValue
+    }
+}
+
+// MARK: ------------- Private Notification -------------
+// MARK: - Room
+public let LiveCoreViewOnEnterRoomNotifyName: Notification.Name = Notification.Name("__kLiveCoreView_NotifyName_Room_EnterRoom__")
+public let LiveCoreViewOnExitRoomNotifyName: Notification.Name = Notification.Name("__kLiveCoreView_NotifyName_Room_ExitRoom__")
+// MARK: - Video
+// MARK: - Audio
