@@ -60,7 +60,7 @@ class SGRoomEngineObserver: NSObject, TUIRoomObserver {
         context.seatManager.onRequestCancelled(request: request, operateUser: operateUser)
         guard let requestType = SGRequestType.init(action: request.requestAction) else { return }
         Task {
-            var userInfo = TUIUserInfo()
+            let userInfo = TUIUserInfo()
             userInfo.userId = request.userId
             userInfo.userName = request.userName
             userInfo.avatarUrl = request.avatarUrl
@@ -73,17 +73,11 @@ class SGRoomEngineObserver: NSObject, TUIRoomObserver {
     func onKickedOffSeat(seatIndex: Int, operateUser: TUIUserInfo) {
         guard let context = self.context else { return }
         VRLog.info("\(#file)","\(#line)","onKickedOffSeat:[seatIndex:\(seatIndex),operateUser:\(operateUser)]")
-        // TODO: 讨论：这里到底对外通知踢下麦，谁能收到，收到要干啥？
-//        Task {
-//            let seatInfo = context.seatManager.seatState.seatList[seatIndex].seatInfo
-//            var userInfo = TUIUserInfo()
-//            userInfo.userId = seatInfo.userId
-//            userInfo.userName = seatInfo.userName
-//            userInfo.avatarUrl = seatInfo.avatarUrl
-//            await context.observers.notifyObservers { observer in
-//                observer.onKickedOffSeat(userInfo: userInfo)
-//            }
-//        }
+        Task {
+            await context.observers.notifyObservers { observer in
+                observer.onKickedOffSeat(userInfo: operateUser)
+            }
+        }
     }
     
     

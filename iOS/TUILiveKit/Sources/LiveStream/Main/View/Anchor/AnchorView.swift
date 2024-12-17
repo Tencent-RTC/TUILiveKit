@@ -166,6 +166,7 @@ extension AnchorView {
             manager.fetchAudienceList()
             manager.updateOwnerUserInfo()
             manager.fetchSeatList()
+            manager.updateSelfUserInfo()
             if manager.userState.selfInfo.role == .roomOwner {
                 manager.fetchSeatApplicationList()
             }
@@ -190,6 +191,7 @@ extension AnchorView {
             manager.fetchAudienceList()
             manager.updateOwnerUserInfo()
             manager.fetchSeatList()
+            manager.updateSelfUserInfo()
             if manager.userState.selfInfo.role == .roomOwner {
                 manager.fetchSeatApplicationList()
             }

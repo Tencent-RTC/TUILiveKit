@@ -99,7 +99,6 @@ extension UserStatusView {
         manager.subscribeUserState(StateSelector(keyPath: \LSUserState.hasAudioStreamUserList))
             .receive(on: RunLoop.main)
             .removeDuplicates()
-            .filter { $0.count != 0 }
             .sink { [weak self] userIdList in
                 guard let self = self else { return }
                 if userIdList.contains(self.userInfo.userId) {

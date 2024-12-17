@@ -57,19 +57,19 @@ class VideoLinkSettingPanel: RTCBaseView {
             DataReporter.reportEventData(eventKey: isEffectBeauty ? Constants.DataReport.kDataReportPanelShowLiveRoomBeautyEffect :
                                             Constants.DataReport.kDataReportPanelShowLiveRoomBeauty)
         }))
-        items.append(LSFeatureItem(normalTitle: .mirrorText,
-                                 normalImage: .liveBundleImage("live_video_setting_mirror"),
-                                 designConfig: designConfig,
-                                 actionClosure: { [weak self] _ in
-            guard let self = self else { return }
-            self.manager.setCameraMirror()
-        }))
         items.append(LSFeatureItem(normalTitle: .flipText,
                                  normalImage: .liveBundleImage("live_video_setting_flip"),
                                  designConfig: designConfig,
                                  actionClosure: { [weak self] _ in
             guard let self = self else { return }
             self.manager.switchCamera()
+        }))
+        items.append(LSFeatureItem(normalTitle: .videoParametersText,
+                                 normalImage: .liveBundleImage("live_setting_video_parameters"),
+                                 designConfig: designConfig,
+                                 actionClosure: { [weak self] _ in
+            guard let self = self else { return }
+            self.routerManager.router(action: .present(.videoSetting))
         }))
         return items
     }()
@@ -207,7 +207,7 @@ private extension String {
     static let beautyText = localized("live.audience.videoLinkConfig.beauty")
     static let makeupText = localized("live.audience.videoLinkConfig.makeup")
     static let filterText = localized("live.audience.videoLinkConfig.filter")
-    static let mirrorText = localized("live.audience.videoLinkConfig.mirror")
+    static let videoParametersText = localized("live.anchor.setting.video.parameters")
     static let flipText = localized("live.audience.videoLinkConfig.flip")
     static let operateFailedText = localized("live.operation.fail.xxx")
 }

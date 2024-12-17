@@ -217,6 +217,7 @@ extension AudienceView {
             guard let self = self, let roomInfo = roomInfo else { return }
             manager.updateRoomState(roomInfo: roomInfo)
             manager.updateOwnerUserInfo()
+            manager.updateSelfUserInfo()
             manager.update(liveStatus: .playing)
         } onError: { [weak self] code, message in
             guard let self = self else { return }

@@ -62,7 +62,7 @@ class CoHostView: UIView {
         addSubview(avatarImageView)
         addSubview(battleMemberInfoView)
     }
-
+    
     private func activateConstraints() {
         userInfoView.snp.makeConstraints { make in
             make.height.equalTo(18)
@@ -88,7 +88,7 @@ class CoHostView: UIView {
                                     placeholder: UIImage.avatarPlaceholderImage)
         let hasVideo = manager.userState.hasVideoStreamUserList.contains(coHostUser.connectionUser.userId)
         let isPreview = manager.roomState.liveStatus == .previewing
-        avatarImageView.isHidden = hasVideo || isPreview
+        avatarImageView.isHidden = hasVideo || isPreview || coHostUser.hasVideoStream
     }
 }
 
@@ -100,7 +100,7 @@ extension CoHostView {
             .removeDuplicates()
             .sink { [weak self] userIdList in
                 guard let self = self, manager.roomState.liveStatus != .previewing else { return }
-                if userIdList.contains(self.coHostUser.connectionUser.userId) {
+                if userIdList.contains(self.coHostUser.connectionUser.userId) || self.coHostUser.hasVideoStream {
                     avatarImageView.isHidden = true
                 } else {
                     avatarImageView.isHidden = false

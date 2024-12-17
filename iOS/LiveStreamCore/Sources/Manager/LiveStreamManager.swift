@@ -25,7 +25,7 @@ class LiveStreamManager {
         lazy var roomEngineObserver = RoomEngineObserver(context: self)
         lazy var liveConnectionObserver = LiveConnectionObserver(context: self)
         lazy var imObserver = IMObserver(context: self)
-        
+        lazy var liveLayoutObserver = LiveLayoutObserver(context: self)
         lazy var roomManager = RoomManager(context: self)
         lazy var coGuestManager = CoGuestManager(context: self)
         lazy var coHostManager = CoHostManager(context: self)
@@ -41,6 +41,7 @@ class LiveStreamManager {
         context.service.addRoomEngineObserver(context.roomEngineObserver)
         context.service.addLiveConnectionManagerObserver(context.liveConnectionObserver)
         context.service.addImObserver(context.imObserver)
+        context.service.addLiveLayoutManagerObserver(context.liveLayoutObserver)
     }
     
     func addObserver(_ observer: ConnectionObserver) {
@@ -68,6 +69,7 @@ class LiveStreamManager {
         context.service.removeRoomEngineObserver(context.roomEngineObserver)
         context.service.removeLiveConnectionManagerObserver(context.liveConnectionObserver)
         context.service.removeImObserver(context.imObserver)
+        context.service.removeLiveLayoutManagerObserver(context.liveLayoutObserver)
     }
 }
 
@@ -407,6 +409,10 @@ extension LiveStreamManager {
     
     func getRemoteLiveViewByUserId(userId: String) -> LiveStreamView {
         return context.viewManager.getRemoteLiveViewByUserId(userId: userId)
+    }
+    
+    func updateVideoLayout(layout: VideoLayoutInfo?) {
+        context.viewManager.updateVideoLayout(layout: layout)
     }
     
     func setLayoutMode(layoutMode: LayoutMode, layoutJson: String? = nil) {

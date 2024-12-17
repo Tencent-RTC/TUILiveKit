@@ -10,7 +10,7 @@ import RTCCommon
 import RTCRoomEngine
 import Combine
 
-class LSRoomManager { 
+class LSRoomManager {
     private let observerState = ObservableState<LSRoomState>(initialState: LSRoomState())
     var roomState: LSRoomState {
         observerState.state
@@ -73,12 +73,13 @@ extension LSRoomManager {
     func getDefaultRoomName() -> String {
         guard let context = context else { return "" }
         return context.userManager.userState.selfInfo.name.isEmpty ?
-            context.userManager.userState.selfInfo.userId :
-            context.userManager.userState.selfInfo.name
+        context.userManager.userState.selfInfo.userId :
+        context.userManager.userState.selfInfo.name
     }
     
     func updateRoomState(roomInfo: TUIRoomInfo) {
         update { state in
+            state.roomId = roomInfo.roomId
             state.createTime = roomInfo.createTime
             state.roomName = roomInfo.name
             state.ownerInfo.userId = roomInfo.ownerId
