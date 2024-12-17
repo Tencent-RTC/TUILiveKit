@@ -94,6 +94,7 @@ extension LiveStreamManager {
     
     func update(roomState: LSRoomStateUpdateClosure) {
         context.roomManager.update(roomState: roomState)
+        context.coHostManager.update(currentRoomId: context.roomManager.roomState.roomId)
     }
     
     func update(liveStatus: LiveStatus) {
@@ -168,6 +169,10 @@ extension LiveStreamManager {
     
     func updateOwnerUserInfo() {
         context.userManager.updateOwnerUserInfo()
+    }
+    
+    func updateSelfUserInfo() {
+        context.userManager.updateSelfUserInfo()
     }
 }
 

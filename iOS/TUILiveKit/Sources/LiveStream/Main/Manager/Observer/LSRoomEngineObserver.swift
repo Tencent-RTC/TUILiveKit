@@ -52,4 +52,8 @@ extension LSRoomEngineObserver: TUIRoomObserver {
     func onKickedOutOfRoom(roomId: String, reason: TUIKickedOutOfRoomReason, message: String) {
         context?.roomManager.onLiveEnd()
     }
+    
+    func onUserInfoChanged(userInfo: TUIUserInfo, modifyFlag: TUIUserInfoModifyFlag) {
+        context?.userManager.onUserInfoChanged(userInfo: userInfo, modifyFlag: modifyFlag)
+    }
 }

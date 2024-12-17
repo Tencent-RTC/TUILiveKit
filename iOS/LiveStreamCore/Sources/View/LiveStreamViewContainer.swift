@@ -64,12 +64,9 @@ class LiveStreamViewContainer: UIView {
     }
     
     func removeAllViews() {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            self.liveStreamViews.forEach { $0.removeFromSuperview() }
-            self.liveStreamViews.removeAll()
-            setNeedsLayout()
-        }
+        liveStreamViews.forEach { $0.removeFromSuperview() }
+        liveStreamViews.removeAll()
+        setNeedsLayout()
     }
     
     func setLayoutConfig(layoutConfig: LayoutConfig) {

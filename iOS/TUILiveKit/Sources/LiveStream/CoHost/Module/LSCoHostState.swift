@@ -9,7 +9,7 @@ import Foundation
 import RTCRoomEngine
 
 struct LSCoHostState: Encodable {
-    let currentRoomId: String
+    var currentRoomId: String = ""
     var connectedUsers: [ConnectionUser] = []
     
     var sentConnectionRequests: [ConnectionUser] = []

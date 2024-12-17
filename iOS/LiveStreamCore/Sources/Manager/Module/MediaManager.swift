@@ -28,6 +28,11 @@ public class MediaManager {
     init(context: LiveStreamManager.Context) {
         self.context = context
         self.service = context.service
+        initVideoAdvanceSettings()
+    }
+    
+    deinit {
+        unInitVideoAdvanceSettings()
     }
     
     func openLocalCamera(useFrontCamera: Bool) async throws {
@@ -46,7 +51,6 @@ public class MediaManager {
         
         do {
             try await context.service.openLocalCamera(isFront: useFrontCamera, quality: .quality1080P)
-            initVideoAdvanceSettings()
             initLivingConfig()
             modifyMediaState(value: true, keyPath: \MediaState.isCameraOpened, isPublished: true)
         } catch let LiveStreamCoreError.error(code, message) {
@@ -59,7 +63,6 @@ public class MediaManager {
     
     func closeLocalCamera() {
         service.closeLocalCamera()
-        unInitVideoAdvanceSettings()
         modifyMediaState(value: false, keyPath: \MediaState.isCameraOpened, isPublished: true)
     }
     
@@ -191,7 +194,7 @@ extension MediaManager {
                             param: ["renderType" : NSNumber(value: renderType.rawValue)])
         modifyMediaState(value: renderType, keyPath: \MediaState.videoAdvanceSettings.hdrRenderType)
     }
-
+    
     private func subscribeLocalVideoView(_ view: UIView) {
         localVideoViewObservation = view.observe(\.bounds, options: [.new]) { [weak self] (_, change) in
             guard let self = self else { return }
@@ -219,6 +222,13 @@ extension MediaManager {
     private func unInitVideoAdvanceSettings() {
         enableUltimate(false)
         enableH265(false)
+        
+        let param = TUIRoomVideoEncoderParams()
+        param.videoResolution = .quality1080P
+        param.resolutionMode = .portrait
+        param.fps = 30
+        param.bitrate = 6000
+        updateVideoEncParams(param)
     }
 }
 
@@ -250,7 +260,6 @@ extension MediaManager {
     private func initLivingConfig() {
         service.enableGravitySensor(enable: true)
         service.setVideoResolutionMode(.portrait)
-        service.setBeautyStyle(.smooth)
     }
     
     private func modifyMediaState<T>(value: T, keyPath: WritableKeyPath<MediaState, T>, isPublished: Bool = false) {
@@ -264,7 +273,7 @@ extension MediaManager {
 fileprivate extension String {
     
     static let TUICore_VideoAdvanceService = "TUICore_VideoAdvanceService"
-
+    
     static let TUICore_VideoAdvanceService_EnableUltimate = "TUICore_VideoAdvanceService_EnableUltimate"
     static let TUICore_VideoAdvanceService_EnableH265 = "TUICore_VideoAdvanceService_EnableH265"
     static let TUICore_VideoAdvanceService_EnableHDR = "TUICore_VideoAdvanceService_EnableHDR"

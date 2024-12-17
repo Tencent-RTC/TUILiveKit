@@ -31,11 +31,12 @@ class LiveStreamService: LiveStream {
     let roomEngine: TUIRoomEngine
     let trtcCloud: TRTCCloud
     let connectionManager: TUILiveConnectionManager
-    
+    let layoutManager: TUILiveLayoutManager?
     init() {
         roomEngine = TUIRoomEngine.sharedInstance()
         trtcCloud = roomEngine.getTRTCCloud()
         connectionManager = roomEngine.getLiveConnectionManager()
+        layoutManager = roomEngine.getExtension(extensionType: .liveLayoutManager) as? TUILiveLayoutManager
     }
 
     func destroy() {
@@ -64,6 +65,16 @@ class LiveStreamService: LiveStream {
     
     func removeImObserver(_ observer: V2TIMSDKListener) {
         V2TIMManager.sharedInstance().remove(observer)
+    }
+    
+    func addLiveLayoutManagerObserver(_ observer: any TUILiveLayoutObserver) {
+        guard let layoutManager = layoutManager else { return }
+        layoutManager.addObserver(observer)
+    }
+    
+    func removeLiveLayoutManagerObserver(_ observer: any TUILiveLayoutObserver) {
+        guard let layoutManager = layoutManager else { return }
+        layoutManager.removeObserver(observer)
     }
     
     func createRoom(roomInfo: TUIRoomInfo) async throws {
@@ -269,7 +280,7 @@ class LiveStreamService: LiveStream {
     func switchCamera(isFrontCamera: Bool) {
         roomEngine.getMediaDeviceManager().switchCamera(isFrontCamera)
     }
-    
+
     func updateVideoQualityEx(streamType: TUIVideoStreamType, params: TUIRoomVideoEncoderParams) {
         roomEngine.updateVideoQualityEx(streamType: streamType, params: params)
     }
@@ -277,7 +288,7 @@ class LiveStreamService: LiveStream {
     func setLocalVideoView(_ view: UIView?) {
         roomEngine.setLocalVideoView(view: view)
     }
-    
+     
     func setRemoteVideoView(userId: String, streamType: TUIVideoStreamType, videoView: UIView) {
         roomEngine.setRemoteVideoView(userId: userId, streamType: streamType, view: videoView)
     }
@@ -385,23 +396,10 @@ class LiveStreamService: LiveStream {
             }
         }
     }
-    
 }
 
 // MARK: - Private
 extension LiveStreamService {
-    private func enableUnlimitedRoom() {
-        var jsonObject = [String: Any]()
-        jsonObject["api"] = "enableUnlimitedRoom"
-        var params = [String: Any]()
-        params["enable"] = true
-        jsonObject["params"] = params
-        if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject, options: []),
-           let jsonString = String(data: jsonData, encoding: .utf8) {
-            callExperimentalAPI(jsonStr: jsonString)
-        }
-    }
-    
     private func destroyEngine() {
         LiveStreamLog.info("\(#file)", "\(#line)", "destroyEngine:[]")
         

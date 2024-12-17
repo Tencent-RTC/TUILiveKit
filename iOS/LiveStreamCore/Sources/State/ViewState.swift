@@ -10,4 +10,5 @@ struct ViewState {
     var remoteLiveViewMap: [String: LiveStreamView] = [:]
     var layoutMode: LayoutMode = .gridLayout
     var layoutConfig: LayoutConfig? = nil
+    var videoLayout: VideoLayoutInfo? = nil
 }

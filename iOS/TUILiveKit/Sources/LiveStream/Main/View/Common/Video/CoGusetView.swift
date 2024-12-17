@@ -79,7 +79,7 @@ class CoGuestView: UIView {
         }
         let hasVideo = manager.userState.hasVideoStreamUserList.contains(userInfo.userId)
         let isPreview = manager.roomState.liveStatus == .previewing
-        avatarImageView.isHidden = hasVideo || isPreview
+        avatarImageView.isHidden = hasVideo || isPreview || userInfo.hasVideoStream
     }
 }
 
@@ -91,7 +91,7 @@ extension CoGuestView {
             .removeDuplicates()
             .sink { [weak self] userIdList in
                 guard let self = self, manager.roomState.liveStatus != .previewing else { return }
-                if userIdList.contains(self.userInfo.userId) {
+                if userIdList.contains(self.userInfo.userId) || self.userInfo.hasVideoStream {
                     avatarImageView.isHidden = true
                 } else {
                     avatarImageView.isHidden = false

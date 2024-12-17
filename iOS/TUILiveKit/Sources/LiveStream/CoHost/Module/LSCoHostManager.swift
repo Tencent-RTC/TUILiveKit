@@ -20,14 +20,12 @@ class LSCoHostManager {
     }
     
     private var listCount = 20
-    
     private let service: LSCoHostService
     private typealias Context = LiveStreamManager.Context
-    init(context: LiveStreamManager.Context ) {
+    init(context: LiveStreamManager.Context) {
         self.service = context.coHostService
         self.toastSubject = context.toastSubject
-        let roomId = context.roomManager.roomState.roomId
-        self.observableState = ObservableState(initialState: LSCoHostState(currentRoomId: roomId))
+        self.observableState = ObservableState(initialState: LSCoHostState())
     }
     
     func subscribeCoHostState<Value>(_ selector: StateSelector<LSCoHostState, Value>) -> AnyPublisher<Value, Never> {
@@ -98,6 +96,12 @@ extension LSCoHostManager {
     func update(connectedUser: [ConnectionUser]) {
         observableState.update { state in
             state.connectedUsers = connectedUser
+        }
+    }
+    
+    func update(currentRoomId: String) {
+        observableState.update { state in
+            state.currentRoomId = currentRoomId
         }
     }
 }

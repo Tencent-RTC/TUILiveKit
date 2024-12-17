@@ -26,6 +26,16 @@ class CoHostManager {
         return coHostState.enableConnection
     }
     
+    func hasMixStreamUser() -> Bool {
+        guard let context = context else { return false }
+        if let _ = coHostState.connectedUserList.first(where: { user in
+            user.userId.hasSuffix(context.roomManager.mixStreamIdSuffix)
+        }) {
+            return true
+        }
+        return false
+    }
+    
     func setEnableConnection(enable: Bool) {
         modifyCoHostState(value: enable, keyPath: \CoHostState.enableConnection)
     }

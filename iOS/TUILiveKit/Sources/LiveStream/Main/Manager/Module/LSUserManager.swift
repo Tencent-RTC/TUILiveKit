@@ -69,6 +69,19 @@ extension LSUserManager {
         service.muteAllRemoteAudio(isMute: isMute)
     }
     
+    func updateSelfUserInfo() {
+        Task {
+            do {
+                let userInfo = try await service.getUserInfo(userId: userState.selfInfo.userId)
+                update { state in
+                    state.selfInfo.role = userInfo.userRole
+                }
+            } catch let err {
+                toastSubject.send(err.localizedDescription)
+            }
+        }
+    }
+    
     func updateOwnerUserInfo() {
         guard let ownerId = context?.roomManager.roomState.ownerInfo.userId, !ownerId.isEmpty else { return }
         if ownerId == userState.selfInfo.userId {
@@ -161,6 +174,23 @@ extension LSUserManager {
         let user = LSUser(userInfo: userInfo)
         update { state in
             state.userList.remove(user)
+        }
+    }
+    
+    func onUserInfoChanged(userInfo: TUIUserInfo, modifyFlag: TUIUserInfoModifyFlag) {
+        update { state in
+            let userList = state.userList
+            if var user = userList.first(where: { $0.userId == userInfo.userId }) {
+                if modifyFlag.contains(.userRole) {
+                    user.role = userInfo.userRole
+                }
+                state.userList.remove(user)
+                state.userList.insert(user)
+            } else if state.selfInfo.userId == userInfo.userId {
+                if modifyFlag.contains(.userRole) {
+                    state.selfInfo.role = userInfo.userRole
+                }
+            }
         }
     }
 }

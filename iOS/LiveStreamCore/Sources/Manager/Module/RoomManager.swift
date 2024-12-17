@@ -14,6 +14,10 @@ class RoomManager {
         observerState.state
     }
     
+    lazy var mixStreamIdSuffix: String = {
+        "_feedback_" + roomState.roomId
+    }()
+    
     private weak var context: LiveStreamManager.Context?
     private let service: LiveStreamService
     
@@ -45,6 +49,7 @@ class RoomManager {
         context?.coGuestManager.setEnableConnection(enable: true)
         initCreateRoomState(roomId: roomInfo.roomId, maxCount: roomInfo.maxSeatCount)
         dataReport()
+        enableUnlimitedRoom()
         do {
             try await service.createRoom(roomInfo: roomInfo)
             let roomInfo = try await service.enterRoom(roomId: roomInfo.roomId)
@@ -58,6 +63,9 @@ class RoomManager {
     }
     
     func joinLive(roomId: String) async throws -> TUIRoomInfo {
+        observerState.update(isPublished: false) { roomState in
+            roomState.roomId = roomId
+        }
         dataReport()
         do {
             let roomInfo = try await service.enterRoom(roomId: roomId)
@@ -121,6 +129,19 @@ extension RoomManager {
 
 // MARK: - Private
 extension RoomManager {
+    
+    private func enableUnlimitedRoom() {
+        var jsonObject = [String: Any]()
+        jsonObject["api"] = "enableUnlimitedRoom"
+        var params = [String: Any]()
+        params["enable"] = true
+        jsonObject["params"] = params
+        if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject, options: []),
+           let jsonString = String(data: jsonData, encoding: .utf8) {
+            service.callExperimentalAPI(jsonStr: jsonString)
+        }
+    }
+    
     private func dataReport() {
         do {
             let apiParams: [String : Any] = [

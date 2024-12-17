@@ -170,17 +170,26 @@ extension VideoSettingPanel {
         })
         moreDataSource.append(mirrorItem)
         if mediaManager.mediaState.videoAdvanceSettings.isVisible {
-            let ultimateItem = VideoSettingSwitchItem(title: .ultimateText,
-                                                      isOn: mediaManager.mediaState.videoAdvanceSettings.isUltimateEnabled,
-                                                    action: { [weak self] isOn in
-                guard let self = self else { return }
-                self.mediaManager.enableUltimate(isOn)
-            })
-            moreDataSource.append(ultimateItem)
+            addUltimateItem()
+            addH265Item()
         }
     }
 
     private func reloadMoreSettings() {
+        let ultimateIndex = addUltimateItem()
+        let h265Index = addH265Item()
+        collectionView.performBatchUpdates { [weak self] in
+            guard let self = self else { return }
+            let items = [
+                ultimateIndex,
+                h265Index,
+            ]
+            self.collectionView.insertItems(at: items)
+        }
+    }
+    
+    @discardableResult
+    private func addUltimateItem() -> IndexPath {
         let ultimateItem = VideoSettingSwitchItem(title: .ultimateText,
                                                   isOn: mediaManager.mediaState.videoAdvanceSettings.isUltimateEnabled,
                                                   action: { [weak self] enable in
@@ -188,6 +197,11 @@ extension VideoSettingPanel {
             self.mediaManager.enableUltimate(enable)
         })
         moreDataSource.append(ultimateItem)
+        return IndexPath(item: moreDataSource.count-1, section: 1)
+    }
+    
+    @discardableResult
+    private func addH265Item() -> IndexPath {
         let h265Item = VideoSettingSwitchItem(title: "H265",
                                               isOn: mediaManager.mediaState.videoAdvanceSettings.isH265Enabled,
                                               action: { [weak self] enable in
@@ -195,14 +209,7 @@ extension VideoSettingPanel {
             self.mediaManager.enableH265(enable)
         })
         moreDataSource.append(h265Item)
-        collectionView.performBatchUpdates { [weak self] in
-            guard let self = self else { return }
-            let items = [
-                IndexPath(item: 1, section: 1),
-                IndexPath(item: 2, section: 1),
-            ]
-            self.collectionView.insertItems(at: items)
-        }
+        return IndexPath(item: moreDataSource.count-1, section: 1)
     }
     
     private func selectVideoResolution() {

@@ -71,6 +71,11 @@ class ViewManager {
     func onLeaveRoom() {
         modifyViewState(value: nil, keyPath: \ViewState.localLiveView)
         modifyViewState(value: [:], keyPath: \ViewState.remoteLiveViewMap)
+        modifyViewState(value: nil, keyPath: \ViewState.videoLayout)
+    }
+    
+    func updateVideoLayout(layout: VideoLayoutInfo?) {
+        modifyViewState(value: layout, keyPath: \ViewState.videoLayout, isPublished: true)
     }
 }
 

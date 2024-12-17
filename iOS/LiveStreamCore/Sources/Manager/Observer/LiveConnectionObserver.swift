@@ -21,6 +21,12 @@ class LiveConnectionObserver: NSObject, TUILiveConnectionObserver {
         context?.coHostManager.onConnectionUserListChanged(connectedList: connectedList, joinedList: joinedList, leavedList: leavedList)
         Task {
             await context?.observers.notifyObservers { observer in
+                let connectedList = connectedList.filter { user in
+                    if let context = context {
+                        return !user.userId.hasSuffix(context.roomManager.mixStreamIdSuffix)
+                    }
+                    return true
+                }
                 observer.onConnectedRoomsUpdated(hostUserList: connectedList)
             }
         }

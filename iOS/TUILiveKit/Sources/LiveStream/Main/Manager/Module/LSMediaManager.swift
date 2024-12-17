@@ -104,6 +104,5 @@ extension LSMediaManager {
     private func initLivingConfig() {
         service.enableGravitySensor(enable: true)
         service.setVideoResolutionMode(.portrait)
-        service.setBeautyStyle(.smooth)
     }
 }
