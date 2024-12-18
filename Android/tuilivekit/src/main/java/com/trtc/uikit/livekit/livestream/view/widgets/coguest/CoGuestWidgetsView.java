@@ -49,6 +49,7 @@ public class CoGuestWidgetsView extends BasicView {
         mState.userId = userInfo.userId;
         mState.userName = userInfo.userName;
         mState.userAvatar = userInfo.avatarUrl;
+        mState.hasVideoStream = userInfo.hasVideoStream;
 
         refreshView();
         addObserver();
@@ -85,7 +86,7 @@ public class CoGuestWidgetsView extends BasicView {
         }
         boolean hasVideoStream = mUserState.hasVideoStreamUserList.get().contains(userId);
         boolean isPreview = RoomState.LiveStatus.PREVIEWING == mRoomState.liveStatus.get();
-        if (isPreview || hasVideoStream) {
+        if (isPreview || hasVideoStream || mState.hasVideoStream) {
             mImageAvatar.setVisibility(GONE);
         } else {
             mImageAvatar.setVisibility(VISIBLE);

@@ -119,9 +119,6 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
             return;
         }
         switch (status) {
-            case START_DISPLAY:
-                startDisPlay();
-                break;
             case DISPLAY_COMPLETE:
                 displayComplete();
                 break;
@@ -484,12 +481,7 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
         });
     }
 
-    private void startDisPlay() {
-        mVoiceRoomManager.getUserManager().muteAllRemoteAudio(true);
-    }
-
     private void displayComplete() {
-        mVoiceRoomManager.getUserManager().muteAllRemoteAudio(false);
         mBarrageStreamView.setVisibility(VISIBLE);
         mGiftPlayView.setVisibility(VISIBLE);
         mTopView.setVisibility(VISIBLE);
@@ -497,7 +489,6 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
     }
 
     private void endDisplay() {
-        mVoiceRoomManager.getUserManager().muteAllRemoteAudio(true);
         mBarrageStreamView.setVisibility(GONE);
         mGiftPlayView.setVisibility(GONE);
         mTopView.setVisibility(GONE);

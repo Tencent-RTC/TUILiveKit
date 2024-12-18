@@ -166,82 +166,82 @@ public class IndicatorSeekBar extends View {
         }
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.TE_IndicatorSeekBar);
         //seekBar
-        mMax = ta.getFloat(R.styleable.TE_IndicatorSeekBar_isb_max, indicatorSeekBarParams.max);
-        mMin = ta.getFloat(R.styleable.TE_IndicatorSeekBar_isb_min, indicatorSeekBarParams.min);
-        mProgress = ta.getFloat(R.styleable.TE_IndicatorSeekBar_isb_progress, indicatorSeekBarParams.progress);
+        mMax = ta.getFloat(R.styleable.TE_IndicatorSeekBar_te_isb_max, indicatorSeekBarParams.max);
+        mMin = ta.getFloat(R.styleable.TE_IndicatorSeekBar_te_isb_min, indicatorSeekBarParams.min);
+        mProgress = ta.getFloat(R.styleable.TE_IndicatorSeekBar_te_isb_progress, indicatorSeekBarParams.progress);
         mIsFloatProgress = ta.getBoolean(
-                R.styleable.TE_IndicatorSeekBar_isb_progress_value_float, indicatorSeekBarParams.progressValueFloat);
+                R.styleable.TE_IndicatorSeekBar_te_isb_progress_value_float, indicatorSeekBarParams.progressValueFloat);
         mUserSeekable = ta.getBoolean(
-                R.styleable.TE_IndicatorSeekBar_isb_user_seekable, indicatorSeekBarParams.userSeekable);
+                R.styleable.TE_IndicatorSeekBar_te_isb_user_seekable, indicatorSeekBarParams.userSeekable);
         mClearPadding = ta.getBoolean(
-                R.styleable.TE_IndicatorSeekBar_isb_clear_default_padding, indicatorSeekBarParams.clearPadding);
+                R.styleable.TE_IndicatorSeekBar_te_isb_clear_default_padding, indicatorSeekBarParams.clearPadding);
         mOnlyThumbDraggable = ta.getBoolean(
-                R.styleable.TE_IndicatorSeekBar_isb_only_thumb_draggable, indicatorSeekBarParams.onlyThumbDraggable);
+                R.styleable.TE_IndicatorSeekBar_te_isb_only_thumb_draggable, indicatorSeekBarParams.onlyThumbDraggable);
         mSeekSmoothly = ta.getBoolean(
-                R.styleable.TE_IndicatorSeekBar_isb_seek_smoothly, indicatorSeekBarParams.seekSmoothly);
-        mR2L = ta.getBoolean(R.styleable.TE_IndicatorSeekBar_isb_r2l, indicatorSeekBarParams.r2l);
+                R.styleable.TE_IndicatorSeekBar_te_isb_seek_smoothly, indicatorSeekBarParams.seekSmoothly);
+        mR2L = ta.getBoolean(R.styleable.TE_IndicatorSeekBar_te_isb_r2l, indicatorSeekBarParams.r2l);
         //track
-        mBackgroundTrackSize = ta.getDimensionPixelSize(R.styleable.TE_IndicatorSeekBar_isb_track_background_size,
+        mBackgroundTrackSize = ta.getDimensionPixelSize(R.styleable.TE_IndicatorSeekBar_te_isb_track_background_size,
                 indicatorSeekBarParams.trackBackgroundSize);
-        mProgressTrackSize = ta.getDimensionPixelSize(R.styleable.TE_IndicatorSeekBar_isb_track_progress_size,
+        mProgressTrackSize = ta.getDimensionPixelSize(R.styleable.TE_IndicatorSeekBar_te_isb_track_progress_size,
                 indicatorSeekBarParams.trackProgressSize);
-        mBackgroundTrackColor = ta.getColor(R.styleable.TE_IndicatorSeekBar_isb_track_background_color,
+        mBackgroundTrackColor = ta.getColor(R.styleable.TE_IndicatorSeekBar_te_isb_track_background_color,
                 indicatorSeekBarParams.trackBackgroundColor);
-        mProgressTrackColor = ta.getColor(R.styleable.TE_IndicatorSeekBar_isb_track_progress_color,
+        mProgressTrackColor = ta.getColor(R.styleable.TE_IndicatorSeekBar_te_isb_track_progress_color,
                 indicatorSeekBarParams.trackProgressColor);
-        mTrackRoundedCorners = ta.getBoolean(R.styleable.TE_IndicatorSeekBar_isb_track_rounded_corners,
+        mTrackRoundedCorners = ta.getBoolean(R.styleable.TE_IndicatorSeekBar_te_isb_track_rounded_corners,
                 indicatorSeekBarParams.trackRoundedCorners);
         //thumb
-        mThumbSize = ta.getDimensionPixelSize(R.styleable.TE_IndicatorSeekBar_isb_thumb_size,
+        mThumbSize = ta.getDimensionPixelSize(R.styleable.TE_IndicatorSeekBar_te_isb_thumb_size,
                 indicatorSeekBarParams.thumbSize);
-        mThumbDrawable = ta.getDrawable(R.styleable.TE_IndicatorSeekBar_isb_thumb_drawable);
-        mAdjustAuto = ta.getBoolean(R.styleable.TE_IndicatorSeekBar_isb_thumb_adjust_auto, true);
-        initThumbColor(ta.getColorStateList(R.styleable.TE_IndicatorSeekBar_isb_thumb_color),
+        mThumbDrawable = ta.getDrawable(R.styleable.TE_IndicatorSeekBar_te_isb_thumb_drawable);
+        mAdjustAuto = ta.getBoolean(R.styleable.TE_IndicatorSeekBar_te_isb_thumb_adjust_auto, true);
+        initThumbColor(ta.getColorStateList(R.styleable.TE_IndicatorSeekBar_te_isb_thumb_color),
                 indicatorSeekBarParams.thumbColor);
         //thumb text
-        mShowThumbText = ta.getBoolean(R.styleable.TE_IndicatorSeekBar_isb_show_thumb_text,
+        mShowThumbText = ta.getBoolean(R.styleable.TE_IndicatorSeekBar_te_isb_show_thumb_text,
                 indicatorSeekBarParams.showThumbText);
-        mThumbTextColor = ta.getColor(R.styleable.TE_IndicatorSeekBar_isb_thumb_text_color,
+        mThumbTextColor = ta.getColor(R.styleable.TE_IndicatorSeekBar_te_isb_thumb_text_color,
                 indicatorSeekBarParams.thumbTextColor);
         //tickMarks
-        mTicksCount = ta.getInt(R.styleable.TE_IndicatorSeekBar_isb_ticks_count, indicatorSeekBarParams.tickCount);
-        mShowTickMarksType = ta.getInt(R.styleable.TE_IndicatorSeekBar_isb_show_tick_marks_type,
+        mTicksCount = ta.getInt(R.styleable.TE_IndicatorSeekBar_te_isb_ticks_count, indicatorSeekBarParams.tickCount);
+        mShowTickMarksType = ta.getInt(R.styleable.TE_IndicatorSeekBar_te_isb_show_tick_marks_type,
                 indicatorSeekBarParams.showTickMarksType);
-        mTickMarksSize = ta.getDimensionPixelSize(R.styleable.TE_IndicatorSeekBar_isb_tick_marks_size,
+        mTickMarksSize = ta.getDimensionPixelSize(R.styleable.TE_IndicatorSeekBar_te_isb_tick_marks_size,
                 indicatorSeekBarParams.tickMarksSize);
-        initTickMarksColor(ta.getColorStateList(R.styleable.TE_IndicatorSeekBar_isb_tick_marks_color),
+        initTickMarksColor(ta.getColorStateList(R.styleable.TE_IndicatorSeekBar_te_isb_tick_marks_color),
                 indicatorSeekBarParams.tickMarksColor);
-        mTickMarksDrawable = ta.getDrawable(R.styleable.TE_IndicatorSeekBar_isb_tick_marks_drawable);
-        mTickMarksSweptHide = ta.getBoolean(R.styleable.TE_IndicatorSeekBar_isb_tick_marks_swept_hide,
+        mTickMarksDrawable = ta.getDrawable(R.styleable.TE_IndicatorSeekBar_te_isb_tick_marks_drawable);
+        mTickMarksSweptHide = ta.getBoolean(R.styleable.TE_IndicatorSeekBar_te_isb_tick_marks_swept_hide,
                 indicatorSeekBarParams.tickMarksSweptHide);
-        mTickMarksEndsHide = ta.getBoolean(R.styleable.TE_IndicatorSeekBar_isb_tick_marks_ends_hide,
+        mTickMarksEndsHide = ta.getBoolean(R.styleable.TE_IndicatorSeekBar_te_isb_tick_marks_ends_hide,
                 indicatorSeekBarParams.tickMarksEndsHide);
         //tickTexts
-        mShowTickText = ta.getBoolean(R.styleable.TE_IndicatorSeekBar_isb_show_tick_texts,
+        mShowTickText = ta.getBoolean(R.styleable.TE_IndicatorSeekBar_te_isb_show_tick_texts,
                 indicatorSeekBarParams.showTickText);
-        mTickTextsSize = ta.getDimensionPixelSize(R.styleable.TE_IndicatorSeekBar_isb_tick_texts_size,
+        mTickTextsSize = ta.getDimensionPixelSize(R.styleable.TE_IndicatorSeekBar_te_isb_tick_texts_size,
                 indicatorSeekBarParams.tickTextsSize);
-        initTickTextsColor(ta.getColorStateList(R.styleable.TE_IndicatorSeekBar_isb_tick_texts_color),
+        initTickTextsColor(ta.getColorStateList(R.styleable.TE_IndicatorSeekBar_te_isb_tick_texts_color),
                 indicatorSeekBarParams.tickTextsColor);
-        mTickTextsCustomArray = ta.getTextArray(R.styleable.TE_IndicatorSeekBar_isb_tick_texts_array);
-        initTextsTypeface(ta.getInt(R.styleable.TE_IndicatorSeekBar_isb_tick_texts_typeface, -1),
+        mTickTextsCustomArray = ta.getTextArray(R.styleable.TE_IndicatorSeekBar_te_isb_tick_texts_array);
+        initTextsTypeface(ta.getInt(R.styleable.TE_IndicatorSeekBar_te_isb_tick_texts_typeface, -1),
                 indicatorSeekBarParams.tickTextsTypeFace);
         //indicator
-        mShowIndicatorType = ta.getInt(R.styleable.TE_IndicatorSeekBar_isb_show_indicator,
+        mShowIndicatorType = ta.getInt(R.styleable.TE_IndicatorSeekBar_te_isb_show_indicator,
                 indicatorSeekBarParams.showIndicatorType);
-        mIndicatorColor = ta.getColor(R.styleable.TE_IndicatorSeekBar_isb_indicator_color,
+        mIndicatorColor = ta.getColor(R.styleable.TE_IndicatorSeekBar_te_isb_indicator_color,
                 indicatorSeekBarParams.indicatorColor);
-        mIndicatorTextSize = ta.getDimensionPixelSize(R.styleable.TE_IndicatorSeekBar_isb_indicator_text_size,
+        mIndicatorTextSize = ta.getDimensionPixelSize(R.styleable.TE_IndicatorSeekBar_te_isb_indicator_text_size,
                 indicatorSeekBarParams.indicatorTextSize);
-        mIndicatorTextColor = ta.getColor(R.styleable.TE_IndicatorSeekBar_isb_indicator_text_color,
+        mIndicatorTextColor = ta.getColor(R.styleable.TE_IndicatorSeekBar_te_isb_indicator_text_color,
                 indicatorSeekBarParams.indicatorTextColor);
         int indicatorContentViewId = ta.getResourceId(
-                R.styleable.TE_IndicatorSeekBar_isb_indicator_content_layout, 0);
+                R.styleable.TE_IndicatorSeekBar_te_isb_indicator_content_layout, 0);
         if (indicatorContentViewId > 0) {
             mIndicatorContentView = View.inflate(mContext, indicatorContentViewId, null);
         }
         int indicatorTopContentLayoutId = ta.getResourceId(
-                R.styleable.TE_IndicatorSeekBar_isb_indicator_top_content_layout, 0);
+                R.styleable.TE_IndicatorSeekBar_te_isb_indicator_top_content_layout, 0);
         if (indicatorTopContentLayoutId > 0) {
             mIndicatorTopContentView = View.inflate(mContext, indicatorTopContentLayoutId, null);
         }

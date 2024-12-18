@@ -5,6 +5,7 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.RoomInfo;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.UserInfo;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine;
+import com.trtc.uikit.livekit.livestreamcore.view.cdnmodel.VideoViewInfo;
 
 public class LiveStreamConvert {
     public static UserInfo convertToUserInfo(TUIRoomDefine.SeatInfo seatInfo) {
@@ -28,6 +29,15 @@ public class LiveStreamConvert {
         userInfo.userId = hostUser.userId;
         userInfo.userName = hostUser.userName;
         userInfo.avatarUrl = hostUser.avatarUrl;
+        return userInfo;
+    }
+
+    public static UserInfo convertToUserInfo(VideoViewInfo viewInfo) {
+        UserInfo userInfo = new UserInfo();
+        userInfo.userId = viewInfo.userId;
+        userInfo.userName = userInfo.userId;
+        userInfo.avatarUrl = "";
+        userInfo.hasVideoStream = true;
         return userInfo;
     }
 

@@ -123,7 +123,7 @@ public class VideoCoGuestSettingsDialog extends PopupDialog {
 
     private void initRecycleSettingsOption() {
         mRecycleSettingsOption.setLayoutManager(new GridLayoutManager(getContext(), 5));
-        mAdapter = new VideoCoGuestSettingsAdapter(getContext(), mLiveManager);
+        mAdapter = new VideoCoGuestSettingsAdapter(getContext(), mLiveManager, mLiveStream);
         mRecycleSettingsOption.setAdapter(mAdapter);
     }
 

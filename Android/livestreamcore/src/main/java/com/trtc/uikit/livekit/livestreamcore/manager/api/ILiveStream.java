@@ -2,6 +2,7 @@ package com.trtc.uikit.livekit.livestreamcore.manager.api;
 
 import com.tencent.cloud.tuikit.engine.common.TUIVideoView;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveLayoutManager;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomObserver;
 import com.tencent.trtc.TRTCCloud;
@@ -18,6 +19,10 @@ public interface ILiveStream {
     void addLiveConnectionManagerObserver(TUILiveConnectionManager.Observer observer);
 
     void removeLiveConnectionManagerObserver(TUILiveConnectionManager.Observer observer);
+
+    void addLiveLayoutManagerObserver(TUILiveLayoutManager.Observer observer);
+    
+    void removeLiveLayoutManagerObserver(TUILiveLayoutManager.Observer observer);
 
     /****************************************** Room Business *******************************************/
     void createRoom(TUIRoomDefine.RoomInfo roomInfo, TUIRoomDefine.ActionCallback callback);

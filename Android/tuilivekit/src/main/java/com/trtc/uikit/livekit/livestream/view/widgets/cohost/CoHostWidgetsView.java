@@ -50,6 +50,7 @@ public class CoHostWidgetsView extends BasicView {
         mState.userId = userInfo.connectionUser.userId;
         mState.userName = userInfo.connectionUser.userName;
         mState.userAvatar = userInfo.connectionUser.avatarUrl;
+        mState.hasVideoStream = userInfo.hasVideoStream;
 
         refreshView();
         addObserver();
@@ -84,13 +85,11 @@ public class CoHostWidgetsView extends BasicView {
         if (TextUtils.isEmpty(userId)) {
             return;
         }
-        boolean hasVideoStream = mUserState.hasVideoStreamUserList.get().contains(userId);
+        boolean hasVideoStream = mUserState.hasVideoStreamUserList.get().contains(userId) || mState.hasVideoStream;
         boolean isPreview = RoomState.LiveStatus.PREVIEWING == mRoomState.liveStatus.get();
         if (isPreview || hasVideoStream) {
             mImageAvatar.setVisibility(GONE);
-            setBackgroundResource(R.color.livekit_design_standard_transparent);
         } else {
-            setBackgroundResource(R.color.livekit_design_standard_g2);
             mImageAvatar.setVisibility(VISIBLE);
             ImageLoader.load(mContext, mImageAvatar, mState.userAvatar, R.drawable.livekit_ic_avatar);
         }

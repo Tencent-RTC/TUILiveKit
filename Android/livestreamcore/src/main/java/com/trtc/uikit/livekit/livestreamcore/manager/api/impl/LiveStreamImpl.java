@@ -1,5 +1,6 @@
 package com.trtc.uikit.livekit.livestreamcore.manager.api.impl;
 
+import static com.tencent.cloud.tuikit.engine.common.TUICommonDefine.ExtensionType.LIVE_LAYOUT_MANAGER;
 import static com.tencent.trtc.TRTCCloudDef.TRTC_VIDEO_MIRROR_TYPE_DISABLE;
 import static com.tencent.trtc.TRTCCloudDef.TRTC_VIDEO_MIRROR_TYPE_ENABLE;
 
@@ -7,6 +8,7 @@ import com.google.gson.Gson;
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.common.TUIVideoView;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveLayoutManager;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomObserver;
@@ -57,6 +59,20 @@ public class LiveStreamImpl implements ILiveStream {
     public void removeLiveConnectionManagerObserver(TUILiveConnectionManager.Observer observer) {
         Logger.info(mTag + " removeLiveConnectionManagerObserver:[observer:" + observer.hashCode() + "]");
         mTUILiveConnectionManager.removeObserver(observer);
+    }
+
+    @Override
+    public void addLiveLayoutManagerObserver(TUILiveLayoutManager.Observer observer) {
+        Logger.info(mTag + " addLiveLayoutManagerObserver:[observer:" + observer.hashCode() + "]");
+        TUILiveLayoutManager manager = (TUILiveLayoutManager) mTUIRoomEngine.getExtension(LIVE_LAYOUT_MANAGER);
+        manager.addObserver(observer);
+    }
+
+    @Override
+    public void removeLiveLayoutManagerObserver(TUILiveLayoutManager.Observer observer) {
+        Logger.info(mTag + " removeLiveLayoutManagerObserver:[observer:" + observer.hashCode() + "]");
+        TUILiveLayoutManager manager = (TUILiveLayoutManager) mTUIRoomEngine.getExtension(LIVE_LAYOUT_MANAGER);
+        manager.removeObserver(observer);
     }
 
     /****************************************** Room Business *******************************************/

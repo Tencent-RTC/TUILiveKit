@@ -1,5 +1,6 @@
 package com.trtc.uikit.livekit.livestreamcore.manager.module;
 
+import static com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.VideoQuality.Q_1080P;
 import static com.tencent.liteav.beauty.TXBeautyManager.TXBeautyStyleSmooth;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
@@ -24,12 +25,14 @@ public class MediaManager extends BaseManager {
     public MediaManager(LiveStreamState state, ILiveStream service) {
         super(state, service);
         mMediaState = state.mediaState;
+        initVideoAdvanceSettings();
     }
 
     @Override
     public void destroy() {
         Logger.info(TAG + " destroy");
         closeLocalCamera();
+        unInitVideoAdvanceSettings();
     }
 
     public void updateVideoQualityEx(TUIRoomDefine.RoomVideoEncoderParams videoEncParams) {
@@ -87,7 +90,6 @@ public class MediaManager extends BaseManager {
                 Logger.info(TAG + " requestPermissions:[onGranted]");
                 mVideoLiveState.mediaState.hasCameraPermission.set(true);
                 openLocalCameraByService(callback);
-                initVideoAdvanceSettings();
             }
 
             @Override
@@ -103,7 +105,6 @@ public class MediaManager extends BaseManager {
     public void closeLocalCamera() {
         mVideoLiveService.closeLocalCamera();
         mVideoLiveState.mediaState.isCameraOpened.set(false);
-        unInitVideoAdvanceSettings();
     }
 
     public void setLocalVideoView(TUIVideoView view) {
@@ -192,6 +193,13 @@ public class MediaManager extends BaseManager {
     private void unInitVideoAdvanceSettings() {
         enableUltimate(false);
         enableH265(false);
+
+        TUIRoomDefine.RoomVideoEncoderParams roomVideoEncoderParams = new TUIRoomDefine.RoomVideoEncoderParams();
+        roomVideoEncoderParams.videoResolution = Q_1080P;
+        roomVideoEncoderParams.bitrate = 6000;
+        roomVideoEncoderParams.fps = 30;
+        roomVideoEncoderParams.resolutionMode = TUIRoomDefine.ResolutionMode.PORTRAIT;
+        mVideoLiveService.updateVideoQualityEx(roomVideoEncoderParams);
     }
 
     private void addLocalVideoListener(TUIVideoView view) {
@@ -246,7 +254,7 @@ public class MediaManager extends BaseManager {
             return;
         }
         boolean isFront = mVideoLiveState.mediaState.isFrontCamera.get();
-        TUIRoomDefine.VideoQuality quality = TUIRoomDefine.VideoQuality.Q_1080P;
+        TUIRoomDefine.VideoQuality quality = Q_1080P;
         mVideoLiveService.openLocalCamera(isFront, quality, new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
@@ -270,7 +278,7 @@ public class MediaManager extends BaseManager {
         mVideoLiveService.enableGravitySensor(true);
         mVideoLiveService.setVideoResolutionMode(TUIRoomDefine.ResolutionMode.PORTRAIT);
         mVideoLiveService.setBeautyStyle(TXBeautyStyleSmooth);
-        mVideoLiveService.updateVideoQuality(TUIRoomDefine.VideoQuality.Q_1080P);
+        mVideoLiveService.updateVideoQuality(Q_1080P);
         mVideoLiveService.updateAudioQuality(TUIRoomDefine.AudioQuality.DEFAULT);
         mVideoLiveService.setCameraMirror(true);
     }
