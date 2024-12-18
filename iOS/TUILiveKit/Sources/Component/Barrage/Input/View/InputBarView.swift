@@ -12,10 +12,8 @@ let UIInputTextViewMinHeight: Int = 42
 let UIInputTextViewMaxHeight: Int = 90
 
 protocol InputBarViewDelegate: AnyObject {
-    func inputBarView(inputBarView: InputBarView, inputTextViewShouldBeginEditing inputTextView: UITextView)
-    func inputBarView(inputBarView: InputBarView, inputTextViewDidBeginEditing inputTextView: UITextView)
-    func inputBarView(inputBarView: InputBarView, onKeyboardSendClick inputNormalText: String)
-    func inputBarView(inputBarView: InputBarView, onEmotionButtonClick emotionSwitchButton: UIButton)
+    func inputBarView(inputBarView: InputBarView, onSendText inputNormalText: String)
+    func inputBarViewDidSwitchToEmotion(isEmotion: Bool)
 }
 
 class InputBarView: UIView {
@@ -26,28 +24,6 @@ class InputBarView: UIView {
     var textViewFrameX: CGFloat = 0
     var rightViewsMinX: CGFloat = 0
     let textViewHorizontalMargin: CGFloat = 8
-    let safeAreaInsetsLeft: CGFloat = {
-        var value: CGFloat = 0.0
-        if #available(iOS 15, *) {
-            if let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
-                value = windowScene.windows.first?.safeAreaInsets.left ?? 0
-            }
-        } else {
-            value = UIApplication.shared.windows.first?.safeAreaInsets.left ?? 0
-        }
-        return value
-    }()
-    let safeAreaInsetsRight: CGFloat = {
-        var value: CGFloat = 0.0
-        if #available(iOS 15, *) {
-            if let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
-                value = windowScene.windows.first?.safeAreaInsets.right ?? 0
-            }
-        } else {
-            value = UIApplication.shared.windows.first?.safeAreaInsets.right ?? 0
-        }
-        return value
-    }()
     
     weak var delegate: InputBarViewDelegate?
     private var inputBarHeightChangeAnimationDuration: TimeInterval = 0.2
@@ -58,35 +34,27 @@ class InputBarView: UIView {
 
     lazy var emotionSwitchButton: UIButton = {
         let button = UIButton()
-        button.frame = CGRect(x: horizontalPadding + Int(safeAreaInsetsLeft), y: verticalPadding, width: buttonWidth, height: buttonHeight)
-        button.setBackgroundImage(UIImage(named: "live_emoji_icon", in: Bundle.liveBundle, compatibleWith: nil), for: .normal)
-        button.setBackgroundImage(UIImage(named: "live_barrage_softKeyboard", in: Bundle.liveBundle, compatibleWith: nil), for: .selected)
+        button.setImage(UIImage(named: "live_emoji_icon", in: .liveBundle, compatibleWith: nil), for: .normal)
+        button.setImage(UIImage(named: "live_barrage_softkeyboard", in: .liveBundle, compatibleWith: nil), for: .selected)
         button.addTarget(self, action: #selector(emotionSwitchButtonClick), for: .touchUpInside)
         return button
     }()
 
     lazy var rightSendButton: UIButton = {
         let button = UIButton()
-        let offsetX: CGFloat = self.bounds.width - CGFloat(horizontalPadding) - 64 - CGFloat(safeAreaInsetsRight)
-        let offsetY: CGFloat = CGFloat(verticalPadding - 4)
-        button.frame = CGRect(x: offsetX, y: offsetY, width: 64, height: 36)
         button.setTitle(.sendText, for: .normal)
-        button.layer.cornerRadius = 18
+        button.layer.cornerRadius = 18.scale375Height()
+        button.backgroundColor = UIColor(red: 41 / 255.0, green: 204 / 255.0, blue: 106 / 255.0, alpha: 1)
         button.addTarget(self, action: #selector(rightSendButtonClick), for: .touchUpInside)
         return button
     }()
 
     lazy var inputTextView: UITextView = {
-        textViewFrameX = CGRectGetMaxX(emotionSwitchButton.frame)
-        rightViewsMinX = CGRectGetMinX(rightSendButton.frame)
-        let textViewWidth = rightViewsMinX - textViewHorizontalMargin - textViewFrameX - textViewHorizontalMargin
-
         let view = UITextView(frame: .zero)
         view.font = UIFont.systemFont(ofSize: 17.5)
         view.returnKeyType = UIReturnKeyType.send
         view.scrollsToTop = false
         view.textAlignment = .left
-        view.layer.cornerRadius = 6.0
         view.textContainerInset = UIEdgeInsets(top: 10.0, left: 8.0, bottom: 10.0, right: 8.0)
         view.enablesReturnKeyAutomatically = true
         view.autoresizingMask = .flexibleWidth
@@ -94,72 +62,80 @@ class InputBarView: UIView {
         view.showsVerticalScrollIndicator = false
         view.showsHorizontalScrollIndicator = false
         view.layer.cornerRadius = CGFloat(UIInputTextViewMinHeight / 2)
-        view.frame = CGRect(x: textViewFrameX + textViewHorizontalMargin, y: CGFloat(verticalPadding - 8),
-                            width: textViewWidth, height: CGFloat(UIInputTextViewMinHeight))
+        view.textColor = UIColor(red: 213 / 255.0, green: 244 / 255.0, blue: 242 / 255.0, alpha: 0.6)
+        view.backgroundColor = UIColor(red: 79 / 255.0, green: 88 / 255.0, blue: 107 / 255.0, alpha: 0.3)
         return view
     }()
-
-    lazy var topLineView: UIView = {
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: Int(CGRectGetWidth(self.bounds)), height: 1 / Int(UIScreen.main.scale)))
-        return view
-    }()
-
-    // this function only needs to be called once
-    func setup() {
-        previousTextViewContentHeight = getTextViewContentHeight()
-
-        backgroundColor = UIColor(red: 34 / 255.0, green: 38 / 255.0, blue: 46 / 255.0, alpha: 1)
-        inputTextView.textColor = UIColor(red: 213 / 255.0, green: 244 / 255.0, blue: 242 / 255.0, alpha: 0.6)
-        inputTextView.backgroundColor = UIColor(red: 79 / 255.0, green: 88 / 255.0, blue: 107 / 255.0, alpha: 0.3)
-        rightSendButton.backgroundColor = UIColor(red: 41 / 255.0, green: 204 / 255.0, blue: 106 / 255.0, alpha: 1)
-        topLineView.backgroundColor = UIColor(red: 41 / 255.0, green: 204 / 255.0, blue: 106 / 255.0, alpha: 1)
-
+    
+    private var isViewReady: Bool = false
+    override func didMoveToWindow() {
+        super.didMoveToWindow()        
+        guard !isViewReady else { return }
+        
         inputBarHeightChangeAnimationDuration = 0.2
         inputBarHeightChangeAnimationWhenSendDuration = 0.1
 
+        constructViewHierarchy()
+        activateConstraints()
+        
+        previousTextViewContentHeight = getTextViewContentHeight()
+    }
+    
+    private func constructViewHierarchy() {
         addSubview(emotionSwitchButton)
         addSubview(inputTextView)
         addSubview(rightSendButton)
-        addSubview(topLineView)
-
-        inputTextView.addObserver(self, forKeyPath: "contentSize", options: .new, context: nil)
     }
 
+    private func activateConstraints() {
+        emotionSwitchButton.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(horizontalPadding)
+            make.top.equalToSuperview().offset(verticalPadding)
+            make.width.equalTo(buttonWidth)
+            make.height.equalTo(buttonHeight)
+        }
+        rightSendButton.snp.makeConstraints { make in
+            make.centerY.equalTo(emotionSwitchButton)
+            make.trailing.equalToSuperview().offset(-horizontalPadding)
+            make.size.equalTo(CGSize(width: 64.scale375Width(), height: 36.scale375Height()))
+        }
+        inputTextView.snp.makeConstraints { make in
+            make.leading.equalTo(emotionSwitchButton.snp.trailing).offset(textViewHorizontalMargin)
+            make.trailing.equalTo(rightSendButton.snp.leading).offset(-textViewHorizontalMargin)
+            make.height.equalTo(UIInputTextViewMinHeight)
+            make.top.equalToSuperview().offset((verticalPadding - 8).scale375Height())
+            make.bottom.equalToSuperview().offset(-(verticalPadding - 8).scale375Height())
+        }
+    }
+    
     @objc func emotionSwitchButtonClick(sender: UIButton) {
         sender.isSelected = !sender.isSelected
-        delegate?.inputBarView(inputBarView: self, onEmotionButtonClick: sender)
+        delegate?.inputBarViewDidSwitchToEmotion(isEmotion: sender.isSelected)
     }
 
     @objc func rightSendButtonClick() {
-        delegate?.inputBarView(inputBarView: self, onKeyboardSendClick: inputTextView.normalText)
+        delegate?.inputBarView(inputBarView: self, onSendText: inputTextView.normalText)
+        inputTextView.text = nil
+    }
+    
+    @discardableResult
+    override func becomeFirstResponder() -> Bool {
+        super.becomeFirstResponder()
+        return inputTextView.becomeFirstResponder()
+    }
+    
+    @discardableResult
+    override func resignFirstResponder() -> Bool {
+        super.resignFirstResponder()
+        return inputTextView.resignFirstResponder()
     }
 
-    func resetTextViewHeightBy(textViewHeightShouldChangeValue height: CGFloat) {
-        let prevFrame = inputTextView.frame
-        inputTextView.frame = CGRect(x: prevFrame.origin.x,
-                                     y: prevFrame.origin.y,
-                                     width: prevFrame.size.width,
-                                     height: prevFrame.size.height + height)
+    func insert(emotionImageAttributedString attributedString: NSAttributedString) {
+        inputTextView.insert(emotionAttributedString: attributedString)
     }
 
-    func textViewBecomeFirstResponder() {
-        inputTextView.becomeFirstResponder()
-    }
-
-    func textViewResignFirstResponder() {
-        inputTextView.resignFirstResponder()
-    }
-
-    func textViewInputNormalText() -> String {
-        return inputTextView.normalText
-    }
-
-    func insertEmotionAttributedString(emotionImageAttributedString attributedString: NSAttributedString) {
-        inputTextView.insertEmotionAttributedString(emotionAttributedString: attributedString)
-    }
-
-    func insertEmotion(emotionKey: String) {
-        inputTextView.insertEmotionKey(emotionKey: emotionKey)
+    func insert(emotionKey: String) {
+        inputTextView.insert(emotionKey: emotionKey)
     }
 
     func deleteEmotion() -> Bool {
@@ -168,7 +144,6 @@ class InputBarView: UIView {
 
     func clearInputTextBySend() -> TimeInterval {
         let currentIsOneLine: Bool = Int(inputTextView.frame.size.height) == UIInputTextViewMinHeight
-        clearInputTextBySendSoon = true
         inputTextView.text = nil
         clearInputTextBySendSoon = false
         return currentIsOneLine ? 0 : inputBarHeightChangeAnimationWhenSendDuration
@@ -178,35 +153,38 @@ class InputBarView: UIView {
         let size = inputTextView.sizeThatFits(inputTextView.frame.size)
         return (ceil(size.height) > CGFloat(UIInputTextViewMinHeight)) ? ceil(size.height) : CGFloat(UIInputTextViewMinHeight)
     }
-
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        backgroundColor = UIColor(red: 34 / 255.0, green: 38 / 255.0, blue: 46 / 255.0, alpha: 1)
+        inputTextView.addObserver(self, forKeyPath: "contentSize", options: .new, context: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     deinit {
         inputTextView.removeObserver(self, forKeyPath: "contentSize")
-        inputTextView.delegate = nil
     }
 }
 
 extension InputBarView: UITextViewDelegate {
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
-        delegate?.inputBarView(inputBarView: self, inputTextViewShouldBeginEditing: inputTextView)
         emotionSwitchButton.isSelected = false
         return true
     }
 
     func textViewDidBeginEditing(_ textView: UITextView) {
-        inputTextView.becomeFirstResponder()
         if previousTextViewContentHeight != 0 {
             previousTextViewContentHeight = getTextViewContentHeight()
         }
-        delegate?.inputBarView(inputBarView: self, inputTextViewDidBeginEditing: inputTextView)
-    }
-
-    func textViewDidEndEditing(_ textView: UITextView) {
-        inputTextView.resignFirstResponder()
     }
 
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if keyboardSendEnabled && text == "\n" {
-            delegate?.inputBarView(inputBarView: self, onKeyboardSendClick: textView.normalText)
+            delegate?.inputBarView(inputBarView: self, onSendText: textView.normalText)
+            textView.text = nil
             return false
         }
         return true
@@ -235,19 +213,11 @@ extension InputBarView {
                 inputBarHeightChangeAnimationDuration
                 UIView.animate(withDuration: animationDuration) { [weak self] in
                     guard let self = self else { return }
-                    if heightShouldShrink {
-                        self.resetTextViewHeightBy(textViewHeightShouldChangeValue: textViewHeightShouldChangeValue)
+                    inputTextView.snp.updateConstraints { [weak self] make in
+                        guard let self = self else { return }
+                        make.height.equalTo(CGRectGetHeight(inputTextView.frame) + textViewHeightShouldChangeValue)
                     }
-
-                    var inputBarViewFrame = self.frame
-                    inputBarViewFrame.origin.y -= textViewHeightShouldChangeValue
-                    inputBarViewFrame.size.height += textViewHeightShouldChangeValue
-                    self.frame = inputBarViewFrame
-
-                    if !heightShouldShrink {
-                        // In order to be compatible with earlier versions of iOS, all this code cannot be combined with the above
-                        self.resetTextViewHeightBy(textViewHeightShouldChangeValue: textViewHeightShouldChangeValue)
-                    }
+                    inputTextView.layoutIfNeeded()
                 }
                 previousTextViewContentHeight = min(newContentHeight, CGFloat(UIInputTextViewMaxHeight))
             }

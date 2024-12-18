@@ -81,6 +81,7 @@ extension LSRoomManager {
         update { state in
             state.roomId = roomInfo.roomId
             state.createTime = roomInfo.createTime
+            state.roomId = roomInfo.roomId
             state.roomName = roomInfo.name
             state.ownerInfo.userId = roomInfo.ownerId
             state.ownerInfo.name = roomInfo.ownerName
@@ -127,8 +128,31 @@ extension LSRoomManager {
     }
     
     func onLiveInfoChanged(liveInfo: TUILiveInfo, modifyFlag: TUILiveModifyFlag) {
-        if modifyFlag.contains(.coverUrl) {
-            update(roomCoverUrl: liveInfo.coverUrl)
+        updateLiveInfo(liveInfo: liveInfo, updateRoomInfo: false, modifyFlag: modifyFlag)
+    }
+}
+
+// MARK: - Private functions
+extension LSRoomManager {
+    func updateLiveInfo(liveInfo: TUILiveInfo,
+                        updateRoomInfo: Bool = true,
+                        modifyFlag: TUILiveModifyFlag = [.activityStatus, .category, .publish, .coverUrl]) {
+        if updateRoomInfo {
+            updateRoomState(roomInfo: liveInfo.roomInfo)
+        }
+        update { state in
+            if modifyFlag.contains(.coverUrl) {
+                state.coverURL = liveInfo.coverUrl
+            }
+            if modifyFlag.contains(.publish) {
+                state.liveExtraInfo.liveMode = liveInfo.isPublicVisible ? .public : .privacy
+            }
+            if modifyFlag.contains(.activityStatus) {
+                state.liveExtraInfo.activeStatus = liveInfo.activityStatus
+            }
+            if modifyFlag.contains(.category), let category = liveInfo.categoryList.first {
+                state.liveExtraInfo.category = LiveStreamCategory(rawValue: category.intValue) ?? .chat
+            }
         }
     }
 }

@@ -14,7 +14,9 @@ class CustomBarrageCell: UIView {
     
     private lazy var containerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .clear
+        view.backgroundColor = UIColor(hex: "#0F1014")?.withAlphaComponent(0.4)
+        view.layer.cornerRadius = 13
+        view.layer.masksToBounds = true
         return view
     }()
     
@@ -40,11 +42,8 @@ class CustomBarrageCell: UIView {
     
     init(barrage: TUIBarrage) {
         super.init(frame: .zero)
-        backgroundColor = UIColor(hex: "#0F1014")?.withAlphaComponent(0.4)
-        layer.cornerRadius = 13
-        layer.masksToBounds = true
+        backgroundColor = .clear
         updateViewContent(barrage: barrage)
-        updateCellSize()
     }
     
     required init?(coder: NSCoder) {
@@ -63,7 +62,6 @@ class CustomBarrageCell: UIView {
     private func updateViewContent(barrage: TUIBarrage) {
         let barrageAttributedText = getBarrageAttributedText(barrage: barrage)
         barrageLabel.attributedText = barrageAttributedText
-        
         
         if let giftIconUrlString = barrage.extInfo["gift_icon_url"]?.value as? String,
            let giftIconUrl = URL(string: giftIconUrlString) {
@@ -106,17 +104,6 @@ class CustomBarrageCell: UIView {
         let giftCount = barrage.extInfo["gift_count"]?.value as? Int ?? 0
         return NSAttributedString(string: " x\(giftCount)", attributes: [.foregroundColor: UIColor.white])
     }
-    
-    private func updateCellSize() {
-        barrageLabel.sizeToFit()
-        countLabel.sizeToFit()
-        let barrageLabelWidth = barrageLabel.bounds.width
-        let countLabelWidth = countLabel.bounds.width
-        
-        let margin = 28.0
-        mm_w = barrageLabelWidth + countLabelWidth + giftImageView.bounds.width + margin
-        mm_h = cellHeight
-    }
 }
 
 
@@ -130,13 +117,9 @@ extension CustomBarrageCell {
     }
     
     private func activateConstraints() {
-        if self.superview != nil {
-            snp.remakeConstraints { make in
-                make.leading.top.equalToSuperview()
-            }
-        }
         containerView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.top.leading.bottom.equalToSuperview()
+            make.trailing.lessThanOrEqualToSuperview()
             make.height.equalTo(cellHeight)
         }
         barrageLabel.snp.makeConstraints { make in
@@ -151,10 +134,10 @@ extension CustomBarrageCell {
         countLabel.snp.makeConstraints { make in
             make.leading.equalTo(giftImageView.snp.trailing)
             make.centerY.equalToSuperview()
+            make.trailing.equalToSuperview().offset(-8)
         }
     }
 }
-
 
 private extension String {
     static let sendText = localized("live.customBarrageCell.send")

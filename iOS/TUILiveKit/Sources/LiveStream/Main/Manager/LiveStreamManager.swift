@@ -112,6 +112,10 @@ extension LiveStreamManager {
     func update(roomCoverUrl: String) {
         context.roomManager.update(roomCoverUrl: roomCoverUrl)
     }
+    
+    func prepareLiveInfoBeforeEnterRoom(liveInfo: TUILiveInfo) {
+        context.roomManager.updateLiveInfo(liveInfo: liveInfo)
+    }
 }
 
 // MARK: - Media API

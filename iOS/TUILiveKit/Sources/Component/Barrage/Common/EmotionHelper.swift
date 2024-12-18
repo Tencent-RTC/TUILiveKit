@@ -15,7 +15,7 @@ class EmotionHelper {
     private init() {}
 
     var emotions: [Emotion] = []
-    private var cacheTotalImageDictionary: [String: UIImage] = [:]
+    private var cacheTotalImageDictionary: [String: Emotion] = [:]
     private var cacheAttributedDictionary: [String: NSAttributedString] = [:]
     private var regularExpression: NSRegularExpression = try! NSRegularExpression(pattern: "\\[TUIEmoji_[a-zA-Z0-9_]+\\]", options: [])
 
@@ -31,15 +31,10 @@ class EmotionHelper {
     }
 
     func cacheTotalImage() {
-        if cacheTotalImageDictionary.count == 0 {
-            var emotionImageDictionary: [String: UIImage] = [:]
+        if cacheTotalImageDictionary.isEmpty {
             for emotion in emotions {
-                if emotion.image.size.width != 0 {
-                    emotion.image = UIImage(named: emotion.identifier, in: Bundle.liveBundle, compatibleWith: nil) ?? UIImage()
-                }
-                emotionImageDictionary[emotion.displayName] = emotion.image
+                cacheTotalImageDictionary[emotion.displayName] = emotion
             }
-            cacheTotalImageDictionary = emotionImageDictionary
         }
     }
 
@@ -66,11 +61,11 @@ class EmotionHelper {
 
     func obtainImageAttributedString(byImageKey imageKey: String, font: UIFont, useCache: Bool) -> NSAttributedString {
         if !useCache {
-            let image = cacheTotalImageDictionary[imageKey]
+            let image = cacheTotalImageDictionary[imageKey]?.image
             if image == nil {
                 return NSAttributedString(string: imageKey)
             }
-            let emotionAttachment = EmotionAttachment()
+            let emotionAttachment = NSTextAttachment()
             emotionAttachment.displayText = imageKey
             emotionAttachment.image = image
             emotionAttachment.bounds = CGRect(x: 0, y: font.descender, width: font.lineHeight, height: font.lineHeight)
@@ -81,11 +76,11 @@ class EmotionHelper {
         let keyFont = String(format: "%@%.1f", imageKey, font.pointSize)
         var imageAttributedString = cacheAttributedDictionary[keyFont]
         if imageAttributedString == nil {
-            let image = cacheTotalImageDictionary[imageKey]
+            let image = cacheTotalImageDictionary[imageKey]?.image
             if image == nil {
                 return NSAttributedString(string: imageKey)
             }
-            let emotionAttachment = EmotionAttachment()
+            let emotionAttachment = NSTextAttachment()
             emotionAttachment.displayText = imageKey
             emotionAttachment.image = image
             emotionAttachment.bounds = CGRect(x: 0, y: font.descender, width: font.lineHeight, height: font.lineHeight)
@@ -166,9 +161,5 @@ class EmotionHelper {
         
         emotions.append(Emotion(identifier: "live_barrage_emoji_60", displayName: "[TUIEmoji_Knife]"))
         emotions.append(Emotion(identifier: "live_barrage_emoji_61", displayName: "[TUIEmoji_Like]"))
-
-        for emotion in emotions {
-            emotion.image = UIImage(named: emotion.identifier, in: Bundle.liveBundle, compatibleWith: nil) ?? UIImage()
-        }
     }
 }
