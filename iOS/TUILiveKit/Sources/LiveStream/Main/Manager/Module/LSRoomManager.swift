@@ -42,6 +42,12 @@ extension LSRoomManager {
 
 // MARK: - Interface
 extension LSRoomManager {
+    func update(roomId: String) {
+        update { state in
+            state.roomId = roomId
+        }
+    }
+    
     func update(roomState: LSRoomStateUpdateClosure) {
         observerState.update(reduce: roomState)
     }

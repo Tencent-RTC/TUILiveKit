@@ -13,7 +13,7 @@ import RTCRoomEngine
 public class TUILiveRoomAudienceViewController: UIViewController {
     
     private lazy var audienceView: AudienceView = {
-        let view = AudienceView(roomId: liveInfo.roomInfo.roomId, manager: manager, routerManager: routerManager, coreView: coreView)
+        let view = AudienceView(roomId: roomId, manager: manager, routerManager: routerManager, coreView: coreView)
         view.livingView.onButtonTap = { [weak self] in
             guard let self = self else { return }
             FloatWindow.shared.showFloatWindow(controller: self)
@@ -24,7 +24,7 @@ public class TUILiveRoomAudienceViewController: UIViewController {
     private let coreView = LiveCoreView()
     
     // MARK: - private property.
-    let liveInfo: TUILiveInfo
+    let roomId: String
     private let manager = LiveStreamManager()
     private let routerManager: LSRouterManager = LSRouterManager()
     private var cancellableSet = Set<AnyCancellable>()
@@ -35,8 +35,14 @@ public class TUILiveRoomAudienceViewController: UIViewController {
         return routerCenter
     }()
     
+    public init(roomId: String) {
+        self.roomId = roomId
+        manager.prepareRoomIdBeforeEnterRoom(roomId: roomId)
+        super.init(nibName: nil, bundle: nil)
+    }
+    
     public init(liveInfo: TUILiveInfo) {
-        self.liveInfo = liveInfo
+        self.roomId = liveInfo.roomInfo.roomId
         manager.prepareLiveInfoBeforeEnterRoom(liveInfo: liveInfo)
         super.init(nibName: nil, bundle: nil)
     }
@@ -100,7 +106,7 @@ extension TUILiveRoomAudienceViewController {
 // MARK: - FloatWindowDataSource
 extension TUILiveRoomAudienceViewController: FloatWindowDataSource {
     func getRoomId() -> String {
-        liveInfo.roomInfo.roomId
+        roomId
     }
 
     func getCoreView() -> LiveCoreView {

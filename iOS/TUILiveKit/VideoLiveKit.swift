@@ -26,8 +26,8 @@ public class VideoLiveKit: NSObject {
         getRootController()?.present(viewController, animated: true)
     }
     
-    public func joinLive(liveInfo: TUILiveInfo) {
-        let viewController = TUILiveRoomAudienceViewController(liveInfo: liveInfo)
+    public func joinLive(roomId: String) {
+        let viewController = TUILiveRoomAudienceViewController(roomId: roomId)
         viewController.modalPresentationStyle = .fullScreen
         getRootController()?.present(viewController, animated: true)
     }
