@@ -47,18 +47,17 @@ public class TUILiveRoomAnchorViewController: UIViewController {
         if FloatWindow.shared.isShowingFloatWindow() {
             FloatWindow.shared.releaseFloatWindow()
         }
-        manager.update { roomState in
-            roomState.roomId = roomId
-        }
-        if needPrepare, let liveInfo = liveInfo {
-            manager.updateRoomState(roomInfo: liveInfo.roomInfo)
-            manager.update { roomState in
-                roomState.coverURL = liveInfo.coverUrl
-                roomState.liveExtraInfo.liveMode = liveInfo.isPublicVisible ? .public : .privacy
-                if let category = liveInfo.categoryList.first {
-                    roomState.liveExtraInfo.category = LiveStreamCategory(rawValue: category.intValue) ?? .chat
-                }
-            }
+        
+        if let liveInfo = liveInfo {
+            manager.prepareLiveInfoBeforeEnterRoom(liveInfo: liveInfo)
+        } else {
+            let liveInfo = TUILiveInfo()
+            liveInfo.roomInfo.roomId = roomId
+            liveInfo.coverUrl = manager.roomState.coverURL
+            liveInfo.isPublicVisible = manager.roomState.liveExtraInfo.liveMode == .public
+            liveInfo.activityStatus = manager.roomState.liveExtraInfo.activeStatus
+            liveInfo.categoryList = [NSNumber(value: manager.roomState.liveExtraInfo.category.rawValue)]
+            manager.prepareLiveInfoBeforeEnterRoom(liveInfo: liveInfo)
         }
     }
     

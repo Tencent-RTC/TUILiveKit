@@ -57,7 +57,7 @@ class AnchorLivingView: UIView {
     
     private lazy var barrageDisplayView: BarrageStreamView = {
         let ownerId = manager.roomState.ownerInfo.userId
-        let view = BarrageStreamView(roomId: roomId, ownerId: ownerId)
+        let view = BarrageStreamView(roomId: roomId)
         view.delegate = self
         return view
     }()
@@ -69,12 +69,12 @@ class AnchorLivingView: UIView {
     }()
     
     private lazy var barrageSendView: BarrageInputView = {
-        let ownerId = manager.roomState.ownerInfo.userId
-        var view = BarrageInputView(roomId: roomId, ownerId: ownerId)
+        var view = BarrageInputView(roomId: roomId)
         view.layer.borderColor = UIColor.g3.withAlphaComponent(0.3).cgColor
         view.layer.borderWidth = 0.5
         view.layer.cornerRadius = 18.scale375Height()
         view.backgroundColor = .g1.withAlphaComponent(0.4)
+        view.delegate = self
         return view
     }()
     
@@ -122,8 +122,7 @@ class AnchorLivingView: UIView {
             .receive(on: RunLoop.main)
             .sink { [weak self] ownerInfo in
                 guard let self = self else { return }
-                self.barrageSendView.setOwnerId(ownerId: ownerInfo.userId)
-                self.barrageDisplayView.setOwnerId(ownerId: ownerInfo.userId)
+                self.barrageDisplayView.setOwnerId(ownerInfo.userId)
             }
             .store(in: &cancellableSet)
         
@@ -401,6 +400,12 @@ extension AnchorLivingView: GiftPlayViewDelegate {
 extension AnchorLivingView: LiveEndViewDelegate {
     func onCloseButtonClick() {
         routerManager.router(action: .exit)
+    }
+}
+
+extension AnchorLivingView: BarrageInputViewDelegate {
+    func barrageInputViewOnSendBarrage(_ barrage: TUIBarrage) {
+        barrageDisplayView.insertBarrages([barrage])
     }
 }
 

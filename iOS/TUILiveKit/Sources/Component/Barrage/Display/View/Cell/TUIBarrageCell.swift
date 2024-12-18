@@ -9,81 +9,54 @@ import RTCCommon
 import SnapKit
 import UIKit
 
+fileprivate let cellMargin: CGFloat = 6.scale375Height()
+fileprivate let barrageContentMaxWidth: CGFloat = 240.scale375Width()
+
 class TUIBarrageCell: UITableViewCell {
     static let identifier: String = "BarrageCell"
-    private var isCustomCell = false
-    private var defaultCell = UIView()
-    private var customCell = UIView()
-
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        contentView.subviews.forEach { $0.removeFromSuperview()}
-    }
-
+    private var contentCell: UIView?
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         backgroundColor = .clear
+        selectionStyle = .none
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func useDefaultCell(barrage: TUIBarrage) {
-        defaultCell = TUIBarrageCellFactory.createCell(type: .default, param: ["barrage": barrage])
-        contentView.addSubview(defaultCell)
-        isCustomCell = false
-    }
-
-    func useCustomCell(_ cell: UIView) {
-        customCell = TUIBarrageCellFactory.createCell(type: .custom, param: ["customView": cell])
-        contentView.addSubview(customCell)
-        isCustomCell = true
-    }
-
-    func getCellHeight() -> CGFloat {
-        if isCustomCell {
-            return customCell.mm_h + 6
+    func setContent(_ barrage: TUIBarrage, ownerId: String) {
+        if let cell = contentCell {
+            cell.removeFromSuperview()
         }
-        guard let defaultCell = defaultCell as? TUIBarrageDefaultCell else {
-            return defaultCell.mm_h + 4.scale375Height()
+        let cell = TUIBarrageDefaultCell(barrage: barrage, ownerId: ownerId)
+        contentView.addSubview(cell)
+        contentCell = cell
+        cell.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
-        var barrageContentHeight = defaultCell.barrageContentSize.height
-        if barrageContentHeight < 18 {
-            barrageContentHeight = 18
-        }
-        return barrageContentHeight + 2*4 + 6
-    }
-}
-
-class TUIBarrageCellFactory {
-    enum CellType {
-        case `default`
-        case custom
     }
 
-    static func createCell(type: CellType, param: [String: Any]) -> UIView {
-        switch type {
-        case .default:
-            let barrage = param["barrage"] as? TUIBarrage ?? TUIBarrage()
-            return TUIBarrageDefaultCell(barrage: barrage)
-        case .custom:
-            let customView = param["customView"] as? UIView ?? UIView()
-            return TUIBarrageCustomCell(customView: customView)
+    func setContent(_ view: UIView) {
+        if let cell = contentCell {
+            cell.removeFromSuperview()
+        }
+        let cell = TUIBarrageCustomCell(customView: view)
+        contentView.addSubview(cell)
+        contentCell = cell
+        cell.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
     }
 }
 
 class TUIBarrageDefaultCell: UIView {
-    let barrage: TUIBarrage
-    var isOwner: Bool {
-        barrage.user.userId == TUIBarrageStore.shared.ownerId
+    private let barrage: TUIBarrage
+    private let ownerId: String
+    private var isOwner: Bool {
+        barrage.user.userId == ownerId
     }
-    let barrageContentMaxWidth: CGFloat = 240.scale375()
-    lazy var barrageContentSize: CGSize = {
-        let barrageSize = CGSize(width: barrageContentMaxWidth, height: CGFloat(integerLiteral: Int.max))
-        return barrageLabel.sizeThatFits(barrageSize)
-    }()
 
     private let levelButton: UIButton = {
         let button = UIButton()
@@ -116,12 +89,21 @@ class TUIBarrageDefaultCell: UIView {
         label.textColor = .white
         return label
     }()
+    
+    private lazy var backgroundView: UIView = {
+        let view = UIView(frame: .zero)
+        view.backgroundColor = .g1.withAlphaComponent(0.4)
+        view.layer.cornerRadius = 13
+        view.clipsToBounds = true
+        return view
+    }()
 
-    init(barrage: TUIBarrage) {
+    init(barrage: TUIBarrage, ownerId: String) {
         self.barrage = barrage
+        self.ownerId = ownerId
         super.init(frame: .zero)
-        backgroundColor = .g1.withAlphaComponent(0.4)
-        setupDefaultCell(barrage)
+        backgroundColor = .clear
+        setupDefaultCell(barrage, ownerId: ownerId)
     }
 
     private var isViewReady = false
@@ -138,16 +120,19 @@ class TUIBarrageDefaultCell: UIView {
     }
 
     func constructViewHierarchy() {
-        addSubview(barrageLabel)
-        addSubview(levelButton)
+        addSubview(backgroundView)
+        backgroundView.addSubview(barrageLabel)
+        backgroundView.addSubview(levelButton)
         if isOwner {
-            addSubview(anchorButton)
+            backgroundView.addSubview(anchorButton)
         }
     }
 
     func activateConstraints() {
-        snp.makeConstraints { make in
-            make.top.leading.equalToSuperview()
+        backgroundView.snp.makeConstraints { make in
+            make.leading.bottom.equalToSuperview()
+            make.trailing.lessThanOrEqualToSuperview()
+            make.top.equalToSuperview().offset(cellMargin)
         }
         levelButton.snp.makeConstraints { make in
             make.leading.equalToSuperview().inset(8)
@@ -163,24 +148,17 @@ class TUIBarrageDefaultCell: UIView {
                 make.width.equalTo(42)
             }
         }
-        barrageLabel.snp.makeConstraints { [weak self] make in
-            guard let self = self else { return }
-            let contentSize = self.barrageContentSize
+        
+        let height = barrageLabel.getHeight(maxWidth: barrageContentMaxWidth)
+        barrageLabel.snp.makeConstraints { make in
             make.leading.equalTo(levelButton.snp.trailing).offset(5)
             make.trailing.equalToSuperview().inset(8)
-            
             make.top.bottom.equalToSuperview().inset(4)
-
-            make.width.equalTo(contentSize.width)
-            if contentSize.height > 18 {
-                make.height.equalTo(contentSize.height)
-            } else {
-                make.height.equalTo(18)
-            }
+            make.height.equalTo(height)
         }
     }
 
-    func setupDefaultCell(_ barrage: TUIBarrage) {
+    func setupDefaultCell(_ barrage: TUIBarrage, ownerId: String) {
         if isOwner {
             barrage.user.level = "65"
         } else {
@@ -191,7 +169,6 @@ class TUIBarrageDefaultCell: UIView {
         levelButton.setImage(getLevelImage(level: level), for: .normal)
         levelButton.setTitle("\(level)", for: .normal)
         barrageLabel.attributedText = getBarrageLabelAttributedText(barrage: barrage)
-        layer.cornerRadius = 13
     }
 
     func getBarrageLabelAttributedText(barrage: TUIBarrage)
@@ -265,6 +242,7 @@ class TUIBarrageCustomCell: UIView {
     init(customView: UIView) {
         self.customView = customView
         super.init(frame: .zero)
+        backgroundColor = .clear
     }
 
     required init?(coder: NSCoder) {
@@ -276,44 +254,38 @@ class TUIBarrageCustomCell: UIView {
     override func didMoveToWindow() {
         super.didMoveToWindow()
         guard !isViewReady else { return }
-        setupCustomCell()
         constructViewHierarchy()
         activateConstraints()
         isViewReady = true
     }
 
-    func setupCustomCell() {
-        mm_h = customView.mm_h
-        mm_w = customView.mm_w + 16.scale375()
-        layer.cornerRadius = mm_h * 0.5
-        if mm_h < 40 {
-            layer.cornerRadius = mm_h * 0.5
-        } else {
-            layer.cornerRadius = 13
-        }
-    }
-
     func constructViewHierarchy() {
         addSubview(customView)
     }
+    
+    override func draw(_ rect: CGRect) {
+        super.draw(rect)
+        let height = customView.bounds.height
+        layer.cornerRadius = height < 40 ? height * 0.5 : 13
+    }
 
     func activateConstraints() {
-        snp.makeConstraints { [weak self] make in
-            guard let self = self else { return }
-            make.top.leading.equalToSuperview()
-            make.width.equalTo(self.mm_w)
-            make.height.equalTo(self.mm_h)
-        }
-
-        customView.snp.remakeConstraints { make in
-            make.leading.equalToSuperview()
-            make.centerY.equalToSuperview()
-            make.width.equalTo(self.customView.mm_w + 8)
-            make.height.equalTo(self.customView.mm_h)
+        customView.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(cellMargin)
+            make.bottom.equalToSuperview()
+            make.leading.equalToSuperview().offset(8)
+            make.trailing.equalToSuperview().offset(-8)
         }
     }
 }
 
 private extension String {
     static let anchorText = localized("live.barrage.anchor")
+}
+
+private extension UILabel {
+    func getHeight(maxWidth: CGFloat) -> CGFloat {
+        let size = CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude)
+        return sizeThatFits(size).height
+    }
 }

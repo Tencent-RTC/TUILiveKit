@@ -61,12 +61,12 @@ class AudienceLivingView: RTCBaseView {
 
     private lazy var barrageSendView: BarrageInputView = {
         let roomId = manager.roomState.roomId
-        let ownerId = manager.roomState.ownerInfo.userId
-        var view = BarrageInputView(roomId: roomId, ownerId: ownerId)
+        var view = BarrageInputView(roomId: roomId)
         view.layer.borderColor = UIColor.g3.withAlphaComponent(0.3).cgColor
         view.layer.borderWidth = 0.5
         view.layer.cornerRadius = 18.scale375Height()
         view.layer.masksToBounds = true
+        view.delegate = self
         return view
     }()
 
@@ -85,7 +85,7 @@ class AudienceLivingView: RTCBaseView {
     private lazy var barrageDisplayView: BarrageStreamView = {
         let roomId = manager.roomState.roomId
         let ownerId = manager.roomState.ownerInfo.userId
-        let view = BarrageStreamView(roomId: roomId, ownerId: ownerId)
+        let view = BarrageStreamView(roomId: roomId)
         view.delegate = self
         return view
     }()
@@ -222,8 +222,6 @@ extension AudienceLivingView {
             .receive(on: RunLoop.main)
             .sink { [weak self] roomId in
                 guard let self = self else { return }
-                self.barrageSendView.setRoomId(roomId: roomId)
-                self.barrageDisplayView.setRoomId(roomId: roomId)
                 self.giftDisplayView.setRoomId(roomId: roomId)
                 self.initComponentView()
             }
@@ -233,8 +231,7 @@ extension AudienceLivingView {
             .receive(on: RunLoop.main)
             .sink { [weak self] ownerInfo in
                 guard let self = self else { return }
-                self.barrageSendView.setOwnerId(ownerId: ownerInfo.userId)
-                self.barrageDisplayView.setOwnerId(ownerId: ownerInfo.userId)
+                self.barrageDisplayView.setOwnerId(ownerInfo.userId)
             }
             .store(in: &cancellableSet)
     }
@@ -315,6 +312,12 @@ extension AudienceLivingView: LinkMicAudienceFloatViewDelegate {
             let error = InternalError(error: code, message: message)
             self.manager.toastSubject.send(error.localizedMessage)
         }
+    }
+}
+
+extension AudienceLivingView: BarrageInputViewDelegate {
+    func barrageInputViewOnSendBarrage(_ barrage: TUIBarrage) {
+        barrageDisplayView.insertBarrages([barrage])
     }
 }
 

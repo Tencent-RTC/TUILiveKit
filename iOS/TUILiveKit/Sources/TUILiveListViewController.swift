@@ -139,7 +139,7 @@ extension TUILiveListViewController {
                             let vc = TUILiveRoomAnchorViewController(roomId: liveInfo.roomInfo.roomId, needPrepare: false)
                             self.navigationController?.pushViewController(vc, animated: true)
                         } else {
-                            let vc = TUILiveRoomAudienceViewController(roomId: liveInfo.roomInfo.roomId)
+                            let vc = TUILiveRoomAudienceViewController(liveInfo: liveInfo)
                             self.navigationController?.pushViewController(vc, animated: true)
                         }
                         break

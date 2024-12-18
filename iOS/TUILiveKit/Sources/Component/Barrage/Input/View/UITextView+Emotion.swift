@@ -8,7 +8,7 @@
 import UIKit
 
 extension UITextView {
-    func insertEmotionAttributedString(emotionAttributedString: NSAttributedString) {
+    func insert(emotionAttributedString: NSAttributedString) {
         guard let content = attributedText.mutableCopy() as? NSMutableAttributedString
         else {
             return
@@ -23,7 +23,7 @@ extension UITextView {
         selectedRange = newRange
     }
 
-    func insertEmotionKey(emotionKey: String) {
+    func insert(emotionKey: String) {
         guard let content: NSMutableAttributedString = attributedText.copy() as? NSMutableAttributedString else { return }
         let location = selectedRange.location
         content.insert(NSAttributedString(string: emotionKey, attributes: [.font: font ?? UIFont.systemFont(ofSize: 14),
@@ -59,7 +59,7 @@ extension UITextView {
         guard let attributedText = attributedText else { return "" }
         var normalText = ""
         attributedText.enumerateAttributes(in: NSRange(location: 0, length: attributedText.length)) { attributes, range, _ in
-            if let attachment = attributes[.attachment] as? EmotionAttachment {
+            if let attachment = attributes[.attachment] as? NSTextAttachment {
                 let emotionAttachment = attachment
                 normalText += emotionAttachment.displayText
             } else {

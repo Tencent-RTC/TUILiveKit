@@ -9,26 +9,30 @@ import TUICore
 import UIKit
 import RTCCommon
 
-class BarrageInputView: UIView {
-    private var roomId: String
-    private lazy var barrageManager:TUIBarrageManager = {
-       TUIBarrageManager.defaultCreate(roomId: roomId, delegate: self)
-    }()
+protocol BarrageInputViewDelegate: AnyObject {
+    func barrageInputViewOnSendBarrage(_ barrage: TUIBarrage)
+}
 
+class BarrageInputView: UIView {
+    
+    weak var delegate: BarrageInputViewDelegate?
+    
+    private let roomId: String
     private var defaultView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
         return view
     }()
 
-    private let emojiView: UIImageView = {
-        var view = UIImageView()
+    private lazy var emojiView: UIImageView = {
+        let view = UIImageView()
         view.image = UIImage(named: "live_emoji_icon", in: Bundle.liveBundle, compatibleWith: nil)
+        view.isUserInteractionEnabled = false
         return view
     }()
 
-    private let label: UILabel = {
-        var label = UILabel()
+    private lazy var placeholderLabel: UILabel = {
+        let label = UILabel()
         label.backgroundColor = .clear
         label.textColor = .g8
         label.font = UIFont(name: "PingFangSC-Regular", size: 12)
@@ -36,20 +40,9 @@ class BarrageInputView: UIView {
         return label
     }()
 
-    private lazy var clickView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .clear
-        let tap = UITapGestureRecognizer(target: self, action: #selector(showInputView))
-        view.addGestureRecognizer(tap)
-        view.isUserInteractionEnabled = true
-        return view
-    }()
-
-    init(roomId: String, ownerId: String) {
+    init(roomId: String) {
         self.roomId = roomId
-        TUIBarrageStore.shared.ownerId = ownerId
         super.init(frame: .zero)
-        barrageManager.initService()
         backgroundColor = .g2.withAlphaComponent(0.5)
         layer.borderColor = UIColor.g3.withAlphaComponent(0.3).cgColor
         layer.borderWidth = 0.5
@@ -69,11 +62,47 @@ class BarrageInputView: UIView {
         activateConstraints()
         isViewReady = true
     }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        
+        let vc = BarrageSendViewController(roomId: roomId)
+        vc.modalPresentationStyle = .overFullScreen
+        vc.delegate = self
+        WindowUtils.getCurrentWindowViewController()?.present(vc, animated: true)
+    }
+}
 
+extension BarrageInputView: BarrageSendViewControllerDelegate {
+    func barrageSendViewControllerOnSendBarrage(_ barrage: TUIBarrage) {
+        delegate?.barrageInputViewOnSendBarrage(barrage)
+    }
+}
+
+// MARK: - Special configure
+extension BarrageInputView {
+    func setText(text: String) {
+        placeholderLabel.text = text
+    }
+    
+    func setTextColor(color: UIColor) {
+        placeholderLabel.textColor = color
+    }
+    
+    func setImage(image: UIImage) {
+        emojiView.image = image
+    }
+    
+    func setTextVisibility(show: Bool) {
+        placeholderLabel.isHidden = !show
+    }
+}
+
+// MARK: - Private functions
+extension BarrageInputView {
     private func constructViewHierarchy() {
         addSubview(emojiView)
-        addSubview(label)
-        addSubview(clickView)
+        addSubview(placeholderLabel)
     }
 
     private func activateConstraints() {
@@ -84,78 +113,13 @@ class BarrageInputView: UIView {
             make.height.equalTo(20.scale375Width())
         }
 
-        label.snp.makeConstraints { make in
+        placeholderLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(8.scale375())
             make.centerY.equalToSuperview()
             make.trailing.equalTo(emojiView.snp.leading).offset(-6.scale375())
             make.height.equalTo(24.scale375Width())
         }
-
-        clickView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
     }
-
-    @objc private func showInputView() {
-        let barrageInputViewController = BarrageSendViewController(delegate: self)
-        barrageInputViewController.view.backgroundColor = .clear
-        let nav = UINavigationController(rootViewController: barrageInputViewController)
-        nav.modalPresentationStyle = .overFullScreen
-        WindowUtils.getCurrentWindowViewController()?.present(nav, animated: true)
-        barrageInputViewController.showInputBar()
-    }
-    
-    private func sendBarrage(_ barrage: TUIBarrage) {
-        barrageManager.sendBarrage(barrage)
-    }
-    
-    func setRoomId(roomId: String) {
-        self.roomId = roomId
-        barrageManager = TUIBarrageManager.defaultCreate(roomId: roomId, delegate: self)
-        barrageManager.initService()
-    }
-    
-    func setOwnerId(ownerId: String) {
-        TUIBarrageStore.shared.ownerId = ownerId
-    }
-    
-    func setText(text: String) {
-        label.text = text
-    }
-    
-    func setTextColor(color: UIColor) {
-        label.textColor = color
-    }
-    
-    func setImage(image: UIImage) {
-        emojiView.image = image
-    }
-    
-    func setTextVisibility(show: Bool) {
-        label.isHidden = !show
-    }
-}
-
-extension BarrageInputView: BarrageSendViewControllerDelegate {
-    func barrageSendViewController(_ barrageSendViewController: BarrageSendViewController, message: String) {
-        let barrage = TUIBarrage()
-        barrage.content = message
-        sendBarrage(barrage)
-    }
-}
-
-extension BarrageInputView: TUIBarrageManagerDelegate {
-    func willSendBarrage(_ barrage: TUIBarrage) {
-        let userId = TUILogin.getUserID() ?? ""
-        barrage.user.userName = TUILogin.getNickName() ?? userId
-        barrage.user.userId = userId
-        barrage.user.avatarUrl = TUILogin.getFaceUrl() ?? ""
-        barrage.user.level = "0"
-    }
-
-    func didSendBarrage(_ barrage: TUIBarrage) {}
-
-    func didReceiveBarrage(_ barrage: TUIBarrage) {}
 }
 
 private extension String {

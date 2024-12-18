@@ -7,6 +7,7 @@
 
 import Foundation
 import TUICore
+import RTCRoomEngine
 
 @objcMembers
 public class VideoLiveKit: NSObject {
@@ -25,8 +26,8 @@ public class VideoLiveKit: NSObject {
         getRootController()?.present(viewController, animated: true)
     }
     
-    public func joinLive(roomId: String) {
-        let viewController = TUILiveRoomAudienceViewController(roomId: roomId)
+    public func joinLive(liveInfo: TUILiveInfo) {
+        let viewController = TUILiveRoomAudienceViewController(liveInfo: liveInfo)
         viewController.modalPresentationStyle = .fullScreen
         getRootController()?.present(viewController, animated: true)
     }

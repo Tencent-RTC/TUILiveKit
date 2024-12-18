@@ -26,5 +26,6 @@ struct LSRoomState {
         var giftIncome: Int = 0
         var giftPeopleSet: Set<String> = []
         var likeCount: Int = 0
+        var activeStatus: Int = 0
     }
 }

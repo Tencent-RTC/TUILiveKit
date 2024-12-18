@@ -66,17 +66,17 @@ class VoiceRoomRootView: RTCBaseView {
     
     private lazy var barrageButton: BarrageInputView = {
         let ownerId = manager.roomState.ownerInfo.userId
-        let view = BarrageInputView(roomId: manager.roomState.roomId, ownerId: ownerId)
+        let view = BarrageInputView(roomId: manager.roomState.roomId)
         view.layer.borderColor = UIColor.g3.withAlphaComponent(0.3).cgColor
         view.layer.borderWidth = 1
         view.layer.cornerRadius = 18.scale375Height()
         view.backgroundColor = .clear
+        view.delegate = self
         return view
     }()
     
     private lazy var barrageDisplayView: BarrageStreamView = {
-        let ownerId = manager.roomState.ownerInfo.userId
-        let view = BarrageStreamView(roomId: manager.roomState.roomId, ownerId: ownerId)
+        let view = BarrageStreamView(roomId: manager.roomState.roomId)
         view.delegate = self
         return view
     }()
@@ -395,8 +395,6 @@ extension VoiceRoomRootView {
             .sink { [weak self] roomId in
                 guard let self = self else { return }
                 if !roomId.isEmpty {
-                    self.barrageButton.setRoomId(roomId: roomId)
-                    self.barrageDisplayView.setRoomId(roomId: roomId)
                     self.giftListView.setRoomId(roomId: roomId)
                     self.giftDisplayView.setRoomId(roomId: roomId)
                 }
@@ -409,8 +407,7 @@ extension VoiceRoomRootView {
             .receive(on: RunLoop.main)
             .sink { [weak self] ownerInfo in
                 guard let self = self else { return }
-                self.barrageButton.setOwnerId(ownerId: ownerInfo.userId)
-                self.barrageDisplayView.setOwnerId(ownerId: ownerInfo.userId)
+                self.barrageDisplayView.setOwnerId(ownerInfo.userId)
             }
             .store(in: &cancellableSet)
     }
@@ -814,6 +811,12 @@ extension VoiceRoomRootView: GiftPlayViewDelegate {
                 }
             }
         }
+    }
+}
+
+extension VoiceRoomRootView: BarrageInputViewDelegate {
+    func barrageInputViewOnSendBarrage(_ barrage: TUIBarrage) {
+        barrageDisplayView.insertBarrages([barrage])
     }
 }
 
