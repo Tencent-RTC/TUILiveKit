@@ -66,7 +66,6 @@ public class VideoFloatView extends FrameLayout {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mLiveStreamManager.getUserManager().muteAllRemoteAudio(false);
         mLiveStreamManager.getUserState().selfInfo.role.observe(mRoleObserver);
         mLiveStreamManager.getMediaState().isMicrophoneMuted.observe(mMicrophoneMutedObserver);
         mLiveStreamManager.getMediaState().isCameraOpened.observe(mCameraOpenedObserver);
@@ -75,7 +74,6 @@ public class VideoFloatView extends FrameLayout {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mLiveStreamManager.getUserManager().muteAllRemoteAudio(true);
         mLiveStreamManager.getUserState().selfInfo.role.removeObserver(mRoleObserver);
         mLiveStreamManager.getMediaState().isMicrophoneMuted.removeObserver(mMicrophoneMutedObserver);
         mLiveStreamManager.getMediaState().isCameraOpened.removeObserver(mCameraOpenedObserver);

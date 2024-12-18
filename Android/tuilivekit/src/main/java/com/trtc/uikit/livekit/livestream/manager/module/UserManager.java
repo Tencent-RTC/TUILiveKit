@@ -11,6 +11,7 @@ import com.trtc.uikit.livekit.livestream.state.LiveState;
 import com.trtc.uikit.livekit.livestream.state.UserState;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -138,5 +139,21 @@ public class UserManager extends BaseManager {
 
     public void onRemoteUserLeaveRoom(String roomId, TUIRoomDefine.UserInfo userInfo) {
         mUserState.removeUser(userInfo);
+    }
+
+    public void onUserInfoChanged(TUIRoomDefine.UserInfo userInfo, List<TUIRoomDefine.UserInfoModifyFlag> modifyFlag) {
+        if (TextUtils.equals(mUserState.selfInfo.userId, userInfo.userId)
+                && modifyFlag.contains(TUIRoomDefine.UserInfoModifyFlag.USER_ROLE)) {
+            mUserState.selfInfo.role.set(userInfo.userRole);
+        }
+        LinkedHashSet<UserState.UserInfo> userList = mUserState.userList.get();
+        for (UserState.UserInfo info : userList) {
+            if (TextUtils.equals(info.userId, userInfo.userId)) {
+                if (modifyFlag.contains(TUIRoomDefine.UserInfoModifyFlag.USER_ROLE)) {
+                    info.role.set(userInfo.userRole);
+                }
+                break;
+            }
+        }
     }
 }

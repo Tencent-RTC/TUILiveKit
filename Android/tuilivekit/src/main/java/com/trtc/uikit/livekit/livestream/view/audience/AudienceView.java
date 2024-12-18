@@ -393,39 +393,12 @@ public class AudienceView extends BasicView {
 
     public void updateStatus(AudienceViewStatus status) {
         switch (status) {
-            case CREATE:
-                create();
-                break;
-            case START_DISPLAY:
-                startDisPlay();
-                break;
-            case DISPLAY_COMPLETE:
-                displayComplete();
-                break;
-            case END_DISPLAY:
-                endDisplay();
-                break;
             case DESTROY:
                 destroy();
                 break;
             default:
                 break;
         }
-    }
-
-    private void create() {
-    }
-
-    private void startDisPlay() {
-        mUserManager.muteAllRemoteAudio(true);
-    }
-
-    private void displayComplete() {
-        mUserManager.muteAllRemoteAudio(false);
-    }
-
-    private void endDisplay() {
-        mUserManager.muteAllRemoteAudio(true);
     }
 
     private void destroy() {

@@ -49,9 +49,9 @@ public final class TEBeautySettings {
                 Log.i(TAG, "copyRes callback: " + errorCode + ", " + errorMessage);
                 setBeautyVersion(beautyVersion);
                 TEBeautyKit.setTELicense(appContext, licenseUrl, licenseKey, (error, msg) -> {
-                    Log.i(TAG, "setTELicense callback: " + errorCode + ", " + errorMessage);
-                    if (errorCode == TELicenseCheck.ERROR_OK) {
-                        Log.d(TAG, "License Verification Success");
+                    Log.i(TAG, "setTELicense callback: " + error + ", " + msg);
+                    if (error == TELicenseCheck.ERROR_OK) {
+                        Log.i(TAG, "License Verification Success");
                     } else {
                         Log.e(TAG, "License Verification Failed: " + error + ", " + msg);
                     }

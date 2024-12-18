@@ -3,16 +3,16 @@ package com.trtc.uikit.livekit.livestream.state;
 import com.trtc.tuikit.common.livedata.LiveData;
 
 public class BeautyState {
-    public LiveData<Integer> smoothLevel         = new LiveData<>(6);
-    public LiveData<Integer> whitenessLevel      = new LiveData<>(6);
-    public LiveData<Integer> ruddyLevel          = new LiveData<>(6);
+    public LiveData<Integer> smoothLevel         = new LiveData<>(0);
+    public LiveData<Integer> whitenessLevel      = new LiveData<>(0);
+    public LiveData<Integer> ruddyLevel          = new LiveData<>(0);
     public LiveData<Boolean> glContextCreateFlag = new LiveData<>();
 
 
     public void reset() {
-        smoothLevel.set(6);
-        whitenessLevel.set(6);
-        ruddyLevel.set(6);
+        smoothLevel.set(0);
+        whitenessLevel.set(0);
+        ruddyLevel.set(0);
         glContextCreateFlag.set(null);
     }
 }

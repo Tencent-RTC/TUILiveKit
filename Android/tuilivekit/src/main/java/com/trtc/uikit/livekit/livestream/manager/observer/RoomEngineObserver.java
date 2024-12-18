@@ -114,4 +114,11 @@ public class RoomEngineObserver extends TUIRoomObserver {
             TUICore.notifyEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_FINISH_ACTIVITY, params);
         }
     }
+
+    @Override
+    public void onUserInfoChanged(TUIRoomDefine.UserInfo userInfo, List<TUIRoomDefine.UserInfoModifyFlag> modifyFlag) {
+        LiveStreamLog.info(mTag + "onUserInfoChanged:[userInfo:" + new Gson().toJson(userInfo)
+                + ", modifyFlag:" + new Gson().toJson(modifyFlag));
+        mLiveManager.getUserManager().onUserInfoChanged(userInfo, modifyFlag);
+    }
 }

@@ -61,6 +61,7 @@ public class RoomManager extends BaseManager {
         }
 
         mVideoLiveState.roomState.liveStatus.set(PUSHING);
+        enableUnlimitedRoom();
         mVideoLiveService.createRoom(roomInfo, new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
@@ -208,5 +209,18 @@ public class RoomManager extends BaseManager {
         Logger.info(TAG + " stopForegroundService");
         Context context = ContextProvider.getApplicationContext();
         VideoForegroundService.stop(context);
+    }
+
+    private void enableUnlimitedRoom() {
+        JSONObject jsonObject = new JSONObject();
+        JSONObject params = new JSONObject();
+        try {
+            jsonObject.put("api", "enableUnlimitedRoom");
+            params.put("enable", true);
+            jsonObject.put("params", params);
+            mVideoLiveService.callExperimentalAPI(jsonObject.toString());
+        } catch (JSONException e) {
+            Log.e(TAG, "enableUnlimitedRoom:", e);
+        }
     }
 }

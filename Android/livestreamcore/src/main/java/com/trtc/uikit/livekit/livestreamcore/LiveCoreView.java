@@ -37,7 +37,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
-import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager.ConnectionUser;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.ActionCallback;
@@ -46,6 +45,7 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.RoomInfo;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.SeatInfo;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.UserInfo;
 import com.trtc.tuikit.common.livedata.Observer;
+import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine.CoHostUser;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine.ConnectionObserver;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine.LayoutMode;
 import com.trtc.uikit.livekit.livestreamcore.common.convert.LiveStreamConvert;
@@ -57,6 +57,7 @@ import com.trtc.uikit.livekit.livestreamcore.manager.module.CoHostManager;
 import com.trtc.uikit.livekit.livestreamcore.manager.module.MediaManager;
 import com.trtc.uikit.livekit.livestreamcore.manager.module.UserManager;
 import com.trtc.uikit.livekit.livestreamcore.state.CoGuestState;
+import com.trtc.uikit.livekit.livestreamcore.state.CoGuestState.CoGuestStatus;
 import com.trtc.uikit.livekit.livestreamcore.state.CoHostState;
 import com.trtc.uikit.livekit.livestreamcore.state.MediaState;
 import com.trtc.uikit.livekit.livestreamcore.state.RoomState;
@@ -64,8 +65,12 @@ import com.trtc.uikit.livekit.livestreamcore.state.UserState;
 import com.trtc.uikit.livekit.livestreamcore.view.FreeLayout;
 import com.trtc.uikit.livekit.livestreamcore.view.GridLayout;
 import com.trtc.uikit.livekit.livestreamcore.view.LiveStreamView;
+import com.trtc.uikit.livekit.livestreamcore.view.cdnmodel.VideoCanvasInfo;
+import com.trtc.uikit.livekit.livestreamcore.view.cdnmodel.VideoLayoutConfig;
+import com.trtc.uikit.livekit.livestreamcore.view.cdnmodel.VideoViewInfo;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,6 +96,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class LiveCoreView extends FrameLayout {
     private       Context                                      mContext;
     private       FreeLayout                                   mFreeLayout;
+    private       FreeLayout                                   mViewInfoLayout;
     private       LiveStreamManager                            mVideoLiveManager;
     private       RoomState                                    mRoomState;
     private       UserState                                    mUserState;
@@ -101,11 +107,15 @@ public class LiveCoreView extends FrameLayout {
     private       Map<String, VideoViewModel>                  mVideoViewModelMap       = new HashMap<>();
     private       LiveStreamView                               mLocalLiveView;
     private final Map<String, LiveStreamView>                  mRemoteLiveViewMap       = new HashMap<>();
+    private final Map<String, FrameLayout>                     mRemoteVideoLayoutMap    = new HashMap<>();
     private final List<ConnectionObserver>                     mConnectionObserver      = new CopyOnWriteArrayList<>();
     private final CopyOnWriteArrayList<TUIRoomDefine.SeatInfo> mCoGuestUserList         = new CopyOnWriteArrayList<>();
+    private final CopyOnWriteArrayList<VideoViewInfo>          mCoVideoViewInfoList     = new CopyOnWriteArrayList<>();
     private final CopyOnWriteArrayList<ConnectionUser>         mCoHostUserList          = new CopyOnWriteArrayList<>();
     private final Observer<List<SeatInfo>>                     mCoGuestUserListObserver = this::onCoGuestUserListChange;
     private final Observer<List<ConnectionUser>>               mCoHostUserListObserver  = this::onCoHostUserListChange;
+    private final Observer<String>                             mVideoViewLayoutObserver = this::onVideoViewLayoutChange;
+    private final Observer<CoGuestStatus>                      mCoGuestStatusObserver   = this::onCoGuestStatusChange;
 
     public LiveCoreView(@NonNull Context context) {
         this(context, null);
@@ -189,8 +199,6 @@ public class LiveCoreView extends FrameLayout {
             return;
         }
         if (TextUtils.isEmpty(userId) || userId.equals(mRoomState.ownerInfo.userId)) {
-            UserInfo userInfo = new UserInfo();
-            userInfo.userId = mRoomState.ownerInfo.userId;
             applyToConnection(timeout, callback);
         } else {
             inviteGuestToConnection(userId, timeout, callback);
@@ -386,8 +394,14 @@ public class LiveCoreView extends FrameLayout {
 
     private void callbackConnectedRoomsUpdated(List<ConnectionUser> connectionUserList) {
         if (!mConnectionObserver.isEmpty()) {
+            List<ConnectionUser> list = new ArrayList<>();
+            for (int i = 0; i < connectionUserList.size(); i++) {
+                if (!mVideoLiveManager.getViewManager().isMixUserId(connectionUserList.get(i).userId)) {
+                    list.add(connectionUserList.get(i));
+                }
+            }
             for (ConnectionObserver observer : mConnectionObserver) {
-                observer.onConnectedRoomsUpdated(connectionUserList);
+                observer.onConnectedRoomsUpdated(list);
             }
         }
     }
@@ -627,6 +641,8 @@ public class LiveCoreView extends FrameLayout {
     private void addObserver() {
         mCoGuestState.connectedUserList.observe(mCoGuestUserListObserver);
         mCoHostState.connectedUserList.observe(mCoHostUserListObserver);
+        mCoGuestState.coGuestStatus.observe(mCoGuestStatusObserver);
+        mVideoLiveManager.getViewState().viewLayoutInCdnMode.observe(mVideoViewLayoutObserver);
     }
 
     private boolean checkRequestIntraRoomConnection(String userId, ActionCallback callback) {
@@ -948,19 +964,9 @@ public class LiveCoreView extends FrameLayout {
         }
     }
 
-    private boolean containsSeatInfo(List<TUIRoomDefine.SeatInfo> list, TUIRoomDefine.SeatInfo item) {
-        for (TUIRoomDefine.SeatInfo seatInfo : list) {
-            if (seatInfo.userId.equals(item.userId)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean containsConnectionUser(List<TUILiveConnectionManager.ConnectionUser> list,
-                                           TUILiveConnectionManager.ConnectionUser item) {
-        for (TUILiveConnectionManager.ConnectionUser connectionUser : list) {
-            if (connectionUser.userId.equals(item.userId)) {
+    private static <T> boolean containsItem(List<T> list, T item, Comparator<T> comparator) {
+        for (T element : list) {
+            if (comparator.compare(element, item) == 0) {
                 return true;
             }
         }
@@ -968,10 +974,21 @@ public class LiveCoreView extends FrameLayout {
     }
 
     private void initView() {
+        initVideoLayout();
+        initViewInfoLayout();
+    }
+
+    private void initVideoLayout() {
         mFreeLayout = new GridLayout(mContext);
         FrameLayout.LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-
         addView(mFreeLayout, layoutParams);
+    }
+
+    private void initViewInfoLayout() {
+        mViewInfoLayout = new FreeLayout(mContext);
+        mViewInfoLayout.setVisibility(GONE);
+        FrameLayout.LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        addView(mViewInfoLayout, layoutParams);
     }
 
     private void addLocalVideoView() {
@@ -1030,6 +1047,9 @@ public class LiveCoreView extends FrameLayout {
                 TUIRoomDefine.VideoStreamType.CAMERA_STREAM, null);
         if (mFreeLayout.indexOfChild(liveView) < 0) {
             mFreeLayout.addView(liveView);
+            if (mVideoLiveManager.getViewManager().isMixUserId(userInfo.userId)) {
+                return;
+            }
             if (mVideoViewAdapter != null) {
                 View widgetsView = mVideoViewAdapter.createCoGuestView(userInfo);
                 if (widgetsView == null) {
@@ -1107,21 +1127,101 @@ public class LiveCoreView extends FrameLayout {
 
     private void onCoGuestUserListChange(List<SeatInfo> coGuestUsers) {
         for (SeatInfo seatInfo : coGuestUsers) {
-            if (!containsSeatInfo(mCoGuestUserList, seatInfo)) {
+            if (!containsItem(mCoGuestUserList, seatInfo, (o1, o2) -> o1.userId.compareTo(o2.userId))) {
                 mCoGuestUserList.add(seatInfo);
                 addCoGuestLiveView(LiveStreamConvert.convertToUserInfo(seatInfo));
             }
         }
         for (SeatInfo seatInfo : mCoGuestUserList) {
-            if (!containsSeatInfo(coGuestUsers, seatInfo)) {
+            if (!containsItem(coGuestUsers, seatInfo, (o1, o2) -> o1.userId.compareTo(o2.userId))) {
                 mCoGuestUserList.remove(seatInfo);
                 removeCoGuestLiveView(LiveStreamConvert.convertToUserInfo(seatInfo));
             }
         }
     }
 
+    private void onVideoViewLayoutChange(String viewLayout) {
+        if (TextUtils.isEmpty(viewLayout)) {
+            mViewInfoLayout.setVisibility(GONE);
+            mViewInfoLayout.removeAllViews();
+            mRemoteVideoLayoutMap.clear();
+            mCoVideoViewInfoList.clear();
+            return;
+        }
+        VideoLayoutConfig videoLayoutConfig = VideoLayoutConfig.parseJson(viewLayout);
+        List<VideoViewInfo> viewInfoList = videoLayoutConfig.viewInfoList;
+        VideoCanvasInfo canvas = videoLayoutConfig.canvas;
+        mViewInfoLayout.setLayout(videoLayoutConfig.layoutJson);
+        mViewInfoLayout.setVisibility(viewInfoList.isEmpty() ? GONE : VISIBLE);
+        if (viewInfoList.size() == 1) {
+            FrameLayout.LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+            mViewInfoLayout.setLayoutParams(params);
+        } else if (viewInfoList.size() > 1) {
+            FrameLayout.LayoutParams params = (LayoutParams) mViewInfoLayout.getLayoutParams();
+            params.height = (int) (mFreeLayout.getMeasuredWidth() * (1.0 * canvas.height / canvas.width));
+            params.topMargin = (mFreeLayout.getMeasuredHeight() - params.height) / 2;
+            mViewInfoLayout.setLayoutParams(params);
+        }
+        for (VideoViewInfo info : viewInfoList) {
+            if (containsItem(mCoVideoViewInfoList, info, (o1, o2) -> o1.userId.compareTo(o2.userId))) {
+                continue;
+            }
+            mCoVideoViewInfoList.add(info);
+            addVideoLayoutView(info);
+        }
+        for (VideoViewInfo info : mCoVideoViewInfoList) {
+            if (containsItem(viewInfoList, info, (o1, o2) -> o1.userId.compareTo(o2.userId))) {
+                continue;
+            }
+            mCoVideoViewInfoList.remove(info);
+            removeVideoLayoutView(info);
+        }
+    }
+
+    private void addVideoLayoutView(VideoViewInfo info) {
+        FrameLayout frameLayout = mRemoteVideoLayoutMap.get(info.userId);
+        if (frameLayout == null) {
+            frameLayout = new FrameLayout(mContext);
+            mRemoteVideoLayoutMap.put(info.userId, frameLayout);
+        }
+        if (mViewInfoLayout.indexOfChild(frameLayout) < 0) {
+            mViewInfoLayout.addView(frameLayout);
+            if (mVideoViewAdapter == null) {
+                return;
+            }
+            View widgetsView = null;
+            TUIRoomDefine.UserInfo userInfo = LiveStreamConvert.convertToUserInfo(info);
+            if (mCoHostState.connectedUserList.get().isEmpty()) {
+                widgetsView = mVideoViewAdapter.createCoGuestView(userInfo);
+            } else {
+                CoHostUser user = LiveStreamConvert.convertToCoHostUser(userInfo, mRoomState.roomId, true, true);
+                widgetsView = mVideoViewAdapter.createCoHostView(user);
+            }
+            if (widgetsView == null) {
+                return;
+            }
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            frameLayout.addView(widgetsView, params);
+        }
+    }
+
+    private void removeVideoLayoutView(VideoViewInfo info) {
+        TUIRoomDefine.UserInfo userInfo = LiveStreamConvert.convertToUserInfo(info);
+        FrameLayout frameLayout = mRemoteVideoLayoutMap.remove(userInfo.userId);
+        if (frameLayout != null) {
+            mViewInfoLayout.removeView(frameLayout);
+            mViewInfoLayout.requestLayout();
+        }
+    }
+
     private void onCoHostUserListChange(List<ConnectionUser> coHostUsers) {
         postDelayed(() -> {
+            for (ConnectionUser user : coHostUsers) {
+                if (mVideoLiveManager.getViewManager().isMixUserId(user.userId)) {
+                    return;
+                }
+            }
             for (ConnectionUser user : coHostUsers) {
                 if (mRoomState.ownerInfo.userId.equals(user.userId)) {
                     addCoHostLiveView(user);
@@ -1129,19 +1229,25 @@ public class LiveCoreView extends FrameLayout {
                 }
             }
             for (ConnectionUser user : coHostUsers) {
-                if (!containsConnectionUser(mCoHostUserList, user)) {
+                if (!containsItem(mCoHostUserList, user, (o1, o2) -> o1.userId.compareTo(o2.userId))) {
                     mCoHostUserList.add(user);
                     addCoHostLiveView(user);
                 }
             }
             for (ConnectionUser user : mCoHostUserList) {
-                if (!containsConnectionUser(coHostUsers, user)) {
+                if (!containsItem(coHostUsers, user, (o1, o2) -> o1.userId.compareTo(o2.userId))) {
                     mCoHostUserList.remove(user);
                     removeCoHostLiveView(user);
                 }
             }
         }, 1000);
 
+    }
+
+    private void onCoGuestStatusChange(CoGuestStatus status) {
+        if (status == CoGuestStatus.LINKING) {
+            mVideoLiveManager.getViewManager().updateViewLayoutInCdnMode("");
+        }
     }
 
     private LiveStreamView createRemoteLiveViewByUserId(String userId) {

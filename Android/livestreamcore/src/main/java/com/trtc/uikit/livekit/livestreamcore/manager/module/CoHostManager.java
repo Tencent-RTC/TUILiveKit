@@ -47,7 +47,7 @@ public class CoHostManager extends BaseManager {
     }
 
     public void requestConnection(String roomId, int timeoutSeconds, TUIRoomDefine.ActionCallback callback) {
-        mVideoLiveService.requestConnection(Collections.singletonList(roomId), timeoutSeconds, null,
+        mVideoLiveService.requestConnection(Collections.singletonList(roomId), timeoutSeconds, "",
                 new TUILiveConnectionManager.ConnectionRequestCallback() {
                     @Override
                     public void onSuccess(Map<String, TUILiveConnectionManager.ConnectionCode> map) {

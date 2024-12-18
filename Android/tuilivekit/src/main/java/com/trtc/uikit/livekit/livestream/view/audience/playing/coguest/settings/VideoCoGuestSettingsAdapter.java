@@ -18,6 +18,8 @@ import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.component.beauty.BeautyViewFactory;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
+import com.trtc.uikit.livekit.livestream.view.widgets.videosettings.VideoSettingsDialog;
+import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +28,7 @@ public class VideoCoGuestSettingsAdapter extends RecyclerView.Adapter<VideoCoGue
     public static final  int ITEM_TYPE_SETTINGS   = 1;
     public static final  int ITEM_TYPE_BEAUTY     = 2;
     private static final int ITEM_SETTINGS_BEAUTY = 101;
-    private static final int ITEM_SETTINGS_MIRROR = 104;
+    private static final int ITEM_SETTINGS_VIDEO  = 104;
     private static final int ITEM_SETTINGS_FLIP   = 105;
 
     public static final int ITEM_BEAUTY_CLOSE     = 201;
@@ -37,6 +39,7 @@ public class VideoCoGuestSettingsAdapter extends RecyclerView.Adapter<VideoCoGue
     private final Context            mContext;
     private final List<SettingsItem> mSettingsItem          = new ArrayList<>();
     private final LiveStreamManager  mLiveManager;
+    private final LiveCoreView       mLiveStream;
     private       List<SettingsItem> mData;
     private       int                mCurrentBeautyPosition = -1;
     public        LiveData<Integer>  mItemType              = new LiveData<>(ITEM_TYPE_SETTINGS);
@@ -46,9 +49,10 @@ public class VideoCoGuestSettingsAdapter extends RecyclerView.Adapter<VideoCoGue
 
 
     @SuppressLint("NotifyDataSetChanged")
-    public VideoCoGuestSettingsAdapter(Context context, LiveStreamManager manager) {
+    public VideoCoGuestSettingsAdapter(Context context, LiveStreamManager manager, LiveCoreView liveStream) {
         mContext = context;
         mLiveManager = manager;
+        mLiveStream = liveStream;
         initSettingsItem();
 
         mData = mSettingsItem;
@@ -60,9 +64,9 @@ public class VideoCoGuestSettingsAdapter extends RecyclerView.Adapter<VideoCoGue
                 R.drawable.livekit_video_settings_beauty, ITEM_SETTINGS_BEAUTY, view -> {
             popUpBeautyPanel();
         }));
-        mSettingsItem.add(new SettingsItem(mContext.getString(R.string.livekit_video_settings_item_mirror),
-                R.drawable.livekit_video_settings_mirror, ITEM_SETTINGS_MIRROR, view -> {
-            mLiveManager.getMediaManager().setCameraMirror();
+        mSettingsItem.add(new SettingsItem(mContext.getString(R.string.livekit_video_config),
+                R.drawable.livekit_settings_item_video_params, ITEM_SETTINGS_VIDEO, view -> {
+            showVideoSettingsDialog();
         }));
         mSettingsItem.add(new SettingsItem(mContext.getString(R.string.livekit_video_settings_item_flip),
                 R.drawable.livekit_video_settings_flip, ITEM_SETTINGS_FLIP, view -> {
@@ -100,6 +104,11 @@ public class VideoCoGuestSettingsAdapter extends RecyclerView.Adapter<VideoCoGue
         }
         mPopupDialog.setView(mBeautyView);
         mPopupDialog.show();
+    }
+
+    private void showVideoSettingsDialog() {
+        VideoSettingsDialog videoSettingsDialog = new VideoSettingsDialog(mContext, mLiveStream);
+        videoSettingsDialog.show();
     }
 
     @Override

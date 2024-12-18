@@ -77,12 +77,6 @@ public class MediaManager extends BaseManager {
         mMediaState.isFrontCamera.set(!isFrontCamera);
     }
 
-    public void setCameraMirror() {
-        boolean isMirror = mMediaState.isMirror.get();
-        mLiveService.setCameraMirror(!isMirror);
-        mMediaState.isMirror.set(!isMirror);
-    }
-
     public void updateVideoQuality(TUIRoomDefine.VideoQuality quality) {
         mLiveService.updateVideoQuality(quality);
         mMediaState.videoQuality.set(quality);
