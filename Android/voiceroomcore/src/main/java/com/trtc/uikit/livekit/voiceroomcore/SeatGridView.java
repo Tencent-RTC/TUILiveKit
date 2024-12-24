@@ -82,9 +82,9 @@ public class SeatGridView extends FrameLayout {
         mVoiceRoomManager.getMediaManager().muteMicrophone();
     }
 
-    public void unMuteLocalAudio(TUIRoomDefine.ActionCallback callback) {
+    public void unmuteMicrophone(TUIRoomDefine.ActionCallback callback) {
         DataReporter.reportEventData(LIVEKIT_METRICS_METHOD_CALL_SEAT_GRID_VIEW_UNMUTE_MICROPHONE);
-        mVoiceRoomManager.getMediaManager().unMuteLocalAudio(callback);
+        mVoiceRoomManager.getMediaManager().unmuteMicrophone(callback);
     }
 
     //Room Management

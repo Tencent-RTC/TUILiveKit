@@ -523,7 +523,7 @@ public class VoiceRoomServiceImpl implements IVoiceRoomService {
     }
 
     @Override
-    public void unMuteLocalAudio(TUIRoomDefine.ActionCallback callback) {
+    public void unmuteMicrophone(TUIRoomDefine.ActionCallback callback) {
         Logger.info(FILE, "unMuteLocalAudio:[]");
         mTUIRoomEngine.unmuteLocalAudio(new TUIRoomDefine.ActionCallback() {
             @Override

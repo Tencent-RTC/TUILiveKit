@@ -203,13 +203,13 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
 
     private void onLinkStateChanged(SeatState.LinkStatus status) {
         if (status == SeatState.LinkStatus.LINKING) {
-            unMuteLocalAudio();
+            unmuteMicrophone();
             startMicrophone();
         }
     }
 
-    private void unMuteLocalAudio() {
-        mSeatGridView.unMuteLocalAudio(new TUIRoomDefine.ActionCallback() {
+    private void unmuteMicrophone() {
+        mSeatGridView.unmuteMicrophone(new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
                 mVoiceRoomManager.getMediaManager().updateMicrophoneMuteState(false);

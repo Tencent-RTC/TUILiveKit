@@ -61,8 +61,8 @@ public class MediaManager extends BaseManager {
         mService.muteLocalAudio();
     }
 
-    public void unMuteLocalAudio(TUIRoomDefine.ActionCallback callback) {
-        mService.unMuteLocalAudio(callback);
+    public void unmuteMicrophone(TUIRoomDefine.ActionCallback callback) {
+        mService.unmuteMicrophone(callback);
     }
 
     private void openLocalMicrophoneByService(TUIRoomDefine.ActionCallback callback) {
