@@ -119,7 +119,7 @@ public class BottomMenuView extends BasicView {
     }
 
     private void unMuteMicrophone() {
-        mSeatGridView.unMuteLocalAudio(new TUIRoomDefine.ActionCallback() {
+        mSeatGridView.unmuteMicrophone(new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
                 mMediaManager.updateMicrophoneMuteState(false);

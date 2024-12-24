@@ -57,7 +57,7 @@ public interface IVoiceRoomService {
 
     void muteLocalAudio();
 
-    void unMuteLocalAudio(TUIRoomDefine.ActionCallback callback);
+    void unmuteMicrophone(TUIRoomDefine.ActionCallback callback);
 
     /****************************************** DATA REPORT *******************************************/
     void callExperimentalAPI(String jsonStr);
