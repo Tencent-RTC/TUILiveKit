@@ -26,7 +26,7 @@ class BarrageManager {
     listener = V2TimAdvancedMsgListener(
       onRecvNewMessage: (V2TimMessage message) {
         debugPrint("BarrageManager receiveBarrage onRecvNewMessage{msgID:${message.msgID},groupID:${message.groupID},"
-            "groupID:${message.groupID},sender:${message.sender},text:${message.textElem!.text}}");
+            "groupID:${message.groupID},sender:${message.sender},text:${message.textElem?.text}}");
         if (message.elemType == MessageElemType.V2TIM_ELEM_TYPE_TEXT) {
           String? text = message.textElem!.text;
           if ((message.groupID != BarrageStore().roomId) || text == null || text.isEmpty) {

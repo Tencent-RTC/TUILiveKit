@@ -5,6 +5,7 @@ import 'package:tencent_live_uikit/tencent_live_uikit.dart';
 import 'package:tencent_live_uikit_example/generated/l10n.dart';
 import 'package:tencent_live_uikit_example/src/view/index.dart';
 import 'package:barrage/barrage.dart';
+import 'package:gift/gift.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,12 +36,14 @@ class _MyAppState extends State<MyApp> {
         ],
         localizationsDelegates: const [
           ...LiveKitLocalizations.localizationsDelegates,
-          ...BarrageLocalizations.localizationsDelegates
+          ...BarrageLocalizations.localizationsDelegates,
+          ...GiftLocalizations.localizationsDelegates,
         ],
         supportedLocales: [
           ...S.delegate.supportedLocales,
           ...LiveKitLocalizations.supportedLocales,
-          ...BarrageLocalizations.supportedLocales
+          ...BarrageLocalizations.supportedLocales,
+          ...GiftLocalizations.supportedLocales,
         ],
         builder: (context, child) => Scaffold(
               resizeToAvoidBottomInset: false,
