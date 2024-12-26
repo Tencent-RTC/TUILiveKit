@@ -1,5 +1,6 @@
 import 'package:barrage/barrage.dart';
 import 'package:flutter/material.dart';
+import 'package:gift/gift.dart';
 import 'package:tencent_live_uikit/common/index.dart';
 import 'package:tencent_live_uikit/state/live_define.dart';
 
@@ -15,38 +16,41 @@ class AudienceFunctionWidget extends BasicWidget {
 }
 
 class AudienceFunctionWidgetState extends BasicState<AudienceFunctionWidget> {
-  late BarrageSendController _sendController;
+  late BarrageSendController _barrageSendController;
+  late GiftSendController _giftSendController;
+  late LikeSendController _likeSendController;
 
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
       _initBarrageSendWidget(),
       _initLinkMicWidget(),
+      _initGiftSendWidget(),
+      _initLikeSendWidget(),
     ]);
   }
 
   _initBarrageSendWidget() {
     return Positioned(
-      left: 15,
-      top: 0,
-      width: 130,
-      height: 36,
-      child: ValueListenableBuilder(
+        left: 15,
+        top: 0,
+        width: 130,
+        height: 36,
+        child: ValueListenableBuilder(
           valueListenable: liveController.getRoomSate().enterRoomSuccess,
           builder: (BuildContext context, bool value, Widget? child) {
             if (liveController.getRoomSate().enterRoomSuccess.value) {
-              _sendController = BarrageSendController(
+              _barrageSendController = BarrageSendController(
                   roomId: liveController.getRoomSate().roomId,
                   ownerId: liveController.getRoomSate().ownerInfo.userId,
                   selfUserId: liveController.getUserState().selfInfo.userId,
                   selfName: liveController.getUserState().selfInfo.name.value);
-              return BarrageSendWidget(controller: _sendController);
+              return BarrageSendWidget(controller: _barrageSendController);
             } else {
               return Container();
             }
           },
-      )
-    );
+        ));
   }
 
   _initLinkMicWidget() {
@@ -54,7 +58,7 @@ class AudienceFunctionWidgetState extends BasicState<AudienceFunctionWidget> {
         valueListenable: liveController.getViewState().linkStatus,
         builder: (BuildContext context, LinkStatus value, Widget? child) {
           return Positioned(
-              right: 20,
+              right: 60,
               top: 2,
               width: 32,
               height: 32,
@@ -78,6 +82,70 @@ class AudienceFunctionWidgetState extends BasicState<AudienceFunctionWidget> {
                 ),
               ));
         });
+  }
+
+  _initGiftSendWidget() {
+    return Positioned(
+        right: 100,
+        top: 2,
+        width: 32,
+        height: 32,
+        child: ValueListenableBuilder(
+          valueListenable: liveController.getRoomSate().enterRoomSuccess,
+          builder: (BuildContext context, bool value, Widget? child) {
+            if (liveController.getRoomSate().enterRoomSuccess.value) {
+              GiftUser ownerInfo = GiftUser(
+                  userId: liveController.getRoomSate().ownerInfo.userId,
+                  avatarUrl: liveController.getRoomSate().ownerInfo.avatarUrl.value,
+                  userName: liveController.getRoomSate().ownerInfo.name.value,
+                  level: "66");
+
+              GiftUser selfInfo = GiftUser(
+                  userId: liveController.getUserState().selfInfo.userId,
+                  avatarUrl: liveController.getUserState().selfInfo.avatarUrl.value,
+                  userName: liveController.getUserState().selfInfo.name.value,
+                  level: "32");
+
+              _giftSendController =
+                  GiftSendController(roomId: liveController.getRoomSate().roomId, owner: ownerInfo, self: selfInfo);
+              return GiftSendWidget(controller: _giftSendController);
+            } else {
+              return Container();
+            }
+          },
+        ));
+  }
+
+  _initLikeSendWidget() {
+    return Positioned(
+        right: 20,
+        top: 2,
+        width: 32,
+        height: 32,
+        child: ValueListenableBuilder(
+          valueListenable: liveController.getRoomSate().enterRoomSuccess,
+          builder: (BuildContext context, bool value, Widget? child) {
+            if (liveController.getRoomSate().enterRoomSuccess.value) {
+              GiftUser ownerInfo = GiftUser(
+                  userId: liveController.getRoomSate().ownerInfo.userId,
+                  avatarUrl: liveController.getRoomSate().ownerInfo.avatarUrl.value,
+                  userName: liveController.getRoomSate().ownerInfo.name.value,
+                  level: "66");
+
+              GiftUser selfInfo = GiftUser(
+                  userId: liveController.getUserState().selfInfo.userId,
+                  avatarUrl: liveController.getUserState().selfInfo.avatarUrl.value,
+                  userName: liveController.getUserState().selfInfo.name.value,
+                  level: "32");
+
+              _likeSendController =
+                  LikeSendController(roomId: liveController.getRoomSate().roomId, owner: ownerInfo, self: selfInfo);
+              return LikeSendWidget(controller: _likeSendController);
+            } else {
+              return Container();
+            }
+          },
+        ));
   }
 }
 

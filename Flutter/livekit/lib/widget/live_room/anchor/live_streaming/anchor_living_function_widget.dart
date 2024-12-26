@@ -14,7 +14,7 @@ class AnchorLivingFunctionWidget extends BasicWidget {
 }
 
 class AnchorLivingFunctionWidgetState extends BasicState<AnchorLivingFunctionWidget> {
-  late BarrageSendController _sendController;
+  late BarrageSendController _barrageSendController;
 
   @override
   Widget build(BuildContext context) {
@@ -36,12 +36,12 @@ class AnchorLivingFunctionWidgetState extends BasicState<AnchorLivingFunctionWid
           valueListenable: liveController.getRoomSate().enterRoomSuccess,
           builder: (BuildContext context, bool value, Widget? child) {
             if (liveController.getRoomSate().enterRoomSuccess.value) {
-              _sendController = BarrageSendController(
+              _barrageSendController = BarrageSendController(
                   roomId: liveController.getRoomSate().roomId,
-                  ownerId:  liveController.getRoomSate().ownerInfo.userId,
+                  ownerId: liveController.getRoomSate().ownerInfo.userId,
                   selfUserId: liveController.getUserState().selfInfo.userId,
                   selfName: liveController.getUserState().selfInfo.name.value);
-              return BarrageSendWidget(controller: _sendController);
+              return BarrageSendWidget(controller: _barrageSendController);
             } else {
               return Container();
             }
@@ -102,8 +102,6 @@ class AnchorLivingFunctionWidgetState extends BasicState<AnchorLivingFunctionWid
 }
 
 extension AnchorLivingFunctionWidgetStateLogicExtension on AnchorLivingFunctionWidgetState {
-  _showBarrageSendWidget() {}
-
   _showLinkPanelWidget() {
     showWidget(AnchorLinkMicManagePanelWidget(liveController: liveController));
   }

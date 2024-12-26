@@ -36,6 +36,8 @@ class RoomState with ChangeNotifier {
     roomName.value = roomInfo.name;
     seatMode.value = roomInfo.seatMode;
     ownerInfo.userId = roomInfo.ownerId;
+    ownerInfo.name.value = roomInfo.ownerName;
+    ownerInfo.avatarUrl.value = roomInfo.ownerAvatarUrl;
     maxSeatCount.value = roomInfo.maxSeatCount;
     notifyListeners();
   }

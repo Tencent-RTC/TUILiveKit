@@ -21,10 +21,16 @@ dependencies:
   tencent_cloud_uikit_core: ^1.7.0
   tencent_trtc_cloud: ^2.8.1
   tencent_cloud_chat_sdk: ^8.0.5901
-  fluttertoast: ^8.2.2
+
+  fluttertoast: ^8.2.10
   permission_handler: ^11.0.0
+  cached_network_image: ^3.4.1
+  # 添加 barrage 本地依赖
   barrage:
     path: ../barrage
+  # 添加 gift 本地依赖
+  gift:
+    path: ../gift
 
 dev_dependencies:
   flutter_test:

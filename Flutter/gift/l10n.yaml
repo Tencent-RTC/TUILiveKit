@@ -1,0 +1,7 @@
+arb-dir: lib/common/language/i10n
+template-arb-file: gift_en.arb
+output-localization-file: gift_localizations.dart
+output-dir: lib/common/language/gen
+output-class: GiftLocalizations
+synthetic-package: false
+format: true
