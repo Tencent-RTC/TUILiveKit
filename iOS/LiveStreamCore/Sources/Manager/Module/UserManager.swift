@@ -9,6 +9,7 @@ import RTCCommon
 import RTCRoomEngine
 
 class UserManager {
+    weak var delegate: UpdateUserInfoDelegate?
     let observerState = ObservableState<UserState>(initialState: UserState())
     var userState: UserState {
         observerState.state
@@ -32,6 +33,7 @@ class UserManager {
         if userId == userState.selfInfo.userId {
             context?.mediaManager.onSelfAudioStateChanged(hasAudio: hasAudio)
         }
+        delegate?.onUserAudioStateChanged(userId: userId, hasAudio: hasAudio, reason: reason)
     }
     
     func onUserVideoStateChanged(userId: String, hasVideo: Bool, reason: TUIChangeReason) {
@@ -58,6 +60,11 @@ class UserManager {
         if isSelf(userId: userId) {
             context.mediaManager.onSelfVideoStateChanged(hasVideo: hasVideo)
         }
+        delegate?.onUserVideoStateChanged(userId: userId, hasVideo: hasVideo, reason: reason)
+    }
+    
+    func onUserInfoChanged(userInfo: TUIUserInfo, modifyFlag: TUIUserInfoModifyFlag) {
+        delegate?.onUserInfoChanged(userInfo: userInfo, modifyFlag: modifyFlag)
     }
 }
 

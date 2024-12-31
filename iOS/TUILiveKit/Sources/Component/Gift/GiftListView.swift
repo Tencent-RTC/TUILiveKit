@@ -2,194 +2,196 @@
 //  GiftListView.swift
 //  TUILiveKit
 //
-//  Created by WesleyLei on 2023/11/7.
+//  Created by krabyu on 2024/1/2.
 //
 
-import Foundation
 import SnapKit
+import UIKit
 import TUICore
-import RTCCommon
 
 protocol GiftListViewDelegate: AnyObject {
-    func onRecharge(giftListView view: GiftListView)
-    func onSendGift(giftListView view: GiftListView, giftModel: TUIGift, giftCount: Int)
+    func onSendGift(gift model: TUIGift, giftCount: Int)
 }
 
 class GiftListView: UIView {
-    private var giftArray: [TUIGift] = []
-    private var groupId: String
     weak var delegate: GiftListViewDelegate?
-    init(groupId: String) {
-        self.groupId = groupId
+    
+    private let roomId: String
+    private lazy var manager = GiftManager(roomId: roomId)
+    private var sendLikeDate = Date(timeIntervalSinceNow: -1 * 60)
+    private var currentLikeCount: Int = 0
+    private var sendLikeWorkItem: DispatchWorkItem?
+    private var giftDataSource: [TUIGift] = []
+    private var currentSelectedCellIndex: IndexPath?
+    
+    private var rows: Int = 2
+    private var itemSize: CGSize = CGSize(width: 74, height: 74 + 53)
+    
+    private lazy var flowLayout: TUIGiftSideslipLayout = {
+        let layout = TUIGiftSideslipLayout()
+        layout.scrollDirection = .horizontal
+        layout.itemSize = itemSize
+        layout.rows = rows
+        return layout
+    }()
+
+    private lazy var collectionView: UICollectionView = {
+        let view = UICollectionView(frame: self.bounds, collectionViewLayout: self.flowLayout)
+        if #available(iOS 11.0, *) {
+            view.contentInsetAdjustmentBehavior = .never
+        }
+        view.register(TUIGiftCell.self, forCellWithReuseIdentifier: TUIGiftCell.cellReuseIdentifier)
+        view.isPagingEnabled = true
+        view.scrollsToTop = false
+        view.delegate = self
+        view.dataSource = self
+        view.showsVerticalScrollIndicator = false
+        view.showsHorizontalScrollIndicator = false
+        view.backgroundColor = .clear
+        return view
+    }()
+
+    init(roomId: String, delegate: GiftListViewDelegate? = nil) {
+        self.roomId = roomId
+        self.delegate = delegate
         super.init(frame: .zero)
+        sendLikeDate = Date(timeIntervalSinceNow: -1 * 60)
+        setupUI()
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private var isPortrait: Bool = {
-        WindowUtils.isPortrait
-    }()
-
-    private var isViewReady: Bool = false
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        guard !isViewReady else { return }
-        backgroundColor = .clear
-        constructViewHierarchy()
-        activateConstraints()
-        isViewReady = true
-    }
-
-    private let titleLabel: UILabel = {
-        let label = UILabel(frame: .zero)
-        label.contentMode = .center
-        label.font = .customFont(ofSize: 16, weight: .medium)
-        label.textColor = .white
-        label.text = .giftTitle
-        label.sizeToFit()
-        return label
-    }()
-
-    private lazy var giftListPanelView: TUIGiftPanelView = {
-        TUIGiftPanelView(self, groupId: self.groupId)
-    }()
-    
-    private lazy var balanceLabel: UILabel = {
-        let label = UILabel(frame: .zero)
-        label.font = .customFont(ofSize: 14, weight: .medium)
-        label.textColor = .white
-        label.text = .localizedReplace(.balanceText, replace: "0")
-        label.sizeToFit()
-        return label
-    }()
-    
-    private lazy var rechargeButton: UIButton = {
-        let button = UIButton()
-        button.backgroundColor = .systemBlue
-        button.setTitle(.rechargeText, for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 12
-        button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
-        button.addTarget(self, action: #selector(rechargeButtonClick), for: .touchUpInside)
-        return button
-    }()
-
-    private func updateGiftListView() {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            self.giftListPanelView.setGiftModelSource(self.giftArray)
-            self.giftListPanelView.reloadData()
-        }
-    }
-    
-    @objc func rechargeButtonClick() {
-        delegate?.onRecharge(giftListView: self)
-    }
-    
-    func setBalance(_ balance: Int) {
-        self.balanceLabel.text = .localizedReplace(.balanceText, replace: "\(balance)")
-    }
-    
     func setGiftList(_ giftList: [TUIGift]) {
-        giftArray = giftList
-        updateGiftListView()
-    }
-    
-    func sendGift(giftModel: TUIGift, giftCount: Int, receiver: TUIGiftUser) {
-        DataReporter.reportEventData(eventKey: getReportKey())
-        giftListPanelView.sendGift(model: giftModel, giftCount: giftCount, receiver: receiver)
-    }
-    
-    func sendLike() {
-        giftListPanelView.sendLike()
-    }
-    
-    func setRoomId(roomId: String) {
-        self.groupId = roomId
-        giftListPanelView = TUIGiftPanelView(self, groupId: self.groupId)
+        if giftDataSource.isEmpty {
+            LiveKitLog.warn("\(#file)", "\(#line)", "giftModelSource empty!")
+        }
+        self.giftDataSource = giftList
+        collectionView.reloadData()
     }
 }
 
+// MARK: - Special config
+extension GiftListView {
+    func setRows(rows: Int) {
+        if flowLayout.rows != rows {
+            flowLayout.rows = rows
+            collectionView.reloadData()
+        }
+    }
 
-// MARK: Layout
+    func setItemSize(itemSize: CGSize) {
+        if flowLayout.itemSize == itemSize {
+            flowLayout.itemSize = itemSize
+            collectionView.reloadData()
+        }
+    }
+}
+
+// MARK: - Private functions
 
 extension GiftListView {
-    private func constructViewHierarchy() {
-        backgroundColor = .g2
-        layer.cornerRadius = 16
-        layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        addSubview(titleLabel)
-        addSubview(giftListPanelView)
-        addSubview(balanceLabel)
-        addSubview(rechargeButton)
-    }
-
-    private func activateConstraints() {
-        titleLabel.snp.remakeConstraints { make in
-            make.top.equalToSuperview().offset(20)
-            make.centerX.equalToSuperview()
-            make.height.equalTo(24.scale375Width())
-            make.width.equalTo(titleLabel.mm_w)
-        }
-
-        giftListPanelView.snp.remakeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-            make.bottom.equalTo(rechargeButton.snp.top).offset(-12)
-            make.height.equalTo(256)
-            make.top.equalTo(titleLabel.snp.bottom).offset(32)
-        }
-        
-        rechargeButton.snp.remakeConstraints { make in
-            make.top.equalTo(giftListPanelView.snp.bottom).offset(12)
-            make.bottom.trailing.equalToSuperview().offset(-16)
-            make.height.equalTo(24)
-        }
-        
-        balanceLabel.snp.remakeConstraints { make in
-            make.bottom.equalTo(rechargeButton.snp.bottom)
-            make.trailing.equalTo(rechargeButton.snp.leading).offset(-12)
-            make.height.equalTo(24)
+    private func setupUI() {
+        addSubview(collectionView)
+        collectionView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
     }
 }
 
-// MARK: TUIGiftPanelDelegate
+// MARK: UICollectionViewDelegate
 
-extension GiftListView: TUIGiftPanelDelegate {
-    func onSendGift(gift model: TUIGift, giftCount: Int) {
-        delegate?.onSendGift(giftListView: self, giftModel: model, giftCount: giftCount)
+extension GiftListView: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let preSelectedCellIndex = currentSelectedCellIndex
+        currentSelectedCellIndex = indexPath
+        if let index = preSelectedCellIndex,
+           let cell = collectionView.cellForItem(at: index) as? TUIGiftCell {
+            cell.isSelected = false
+        }
+        if let index = currentSelectedCellIndex, let cell = collectionView.cellForItem(at: index) as? TUIGiftCell {
+            cell.isSelected = true
+        }
+    }
+}
+
+// MARK: UICollectionViewDataSource
+
+extension GiftListView: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return giftDataSource.count
     }
     
-    func onGiftDidSend(_ giftView: TUIGiftPanelView,
-                       gift model: TUIGift,
-                       sender: TUIGiftUser,
-                       receiver: TUIGiftUser,
-                       giftCount: Int,
-                       isSuccess: Bool,
-                       message: String) {
-        if !isSuccess {
-            superview?.makeToast(message)
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let reuseCell = collectionView.dequeueReusableCell(withReuseIdentifier: TUIGiftCell.cellReuseIdentifier, for: indexPath)
+        guard let cell = reuseCell as? TUIGiftCell else { return reuseCell }
+        if giftDataSource.count > indexPath.row {
+            let model = giftDataSource[indexPath.row]
+            cell.giftModel = model
+            cell.isSelected = false
+            cell.sendBlock = { [weak self, weak cell] giftModel in
+                guard let self = self else { return }
+                guard let cell = cell else { return }
+                self.delegate?.onSendGift(gift: giftModel, giftCount: 1)
+                cell.isSelected = false
+            }
         }
-    }
-   
-    func onLikeDidSend(_ giftView: TUIGiftPanelView, sender: TUIGiftUser, isSuccess: Bool, message: String) {
-        TUIGiftStore.shared.likeDataMap.value = [groupId: TUILikeData(sender: sender)]
+        return cell
     }
 }
 
+extension GiftListView {
+    func sendGift(model: TUIGift, giftCount: Int, receiver: TUIGiftUser, completion: @escaping (_ isSuccess: Bool, _ message: String) -> ()) {
+        DataReporter.reportEventData(eventKey: getReportKey())
+        manager.sendGift(model, receiver: receiver, giftCount: giftCount) { code, msg in
+            completion(code == 0, msg)
+        }
+    }
+
+    func sendLike(completion: @escaping (_ sender: TUIGiftUser, _ isSuccess: Bool, _ message: String) -> ()) {
+        let maxLikeCount: Int = 20
+        let maxDuration: Double = 5
+        if currentLikeCount >= maxLikeCount {
+            manager.sendLike { sender, code, msg in
+                completion(sender, code == 0, msg)
+            }
+            currentLikeCount = 0
+            sendLikeDate = Date()
+            return
+        }
+        let duration = -sendLikeDate.timeIntervalSinceNow
+        if duration > maxDuration {
+            manager.sendLike { sender, code, msg in
+                completion(sender, code == 0, msg)
+            }
+            currentLikeCount = 0
+            sendLikeDate = Date()
+        } else {
+            currentLikeCount += 1
+            let sender = TUIGiftUser()
+            completion(sender, false, "send like by local.")
+            let delayInSeconds = maxDuration - duration
+            sendLikeWorkItem?.cancel()
+            let workItem = DispatchWorkItem { [weak self] in
+                self?.sendLike(completion: completion)
+            }
+            sendLikeWorkItem = workItem
+            DispatchQueue.main.asyncAfter(deadline: .now() + delayInSeconds, execute: workItem)
+        }
+    }
+}
 
 // MARK: DataReport
-
 private extension GiftListView {
     private func getReportKey() -> Int {
         let isSupportEffectPlayer = isSupportEffectPlayer()
         var key = Constants.DataReport.kDataReportLiveGiftSVGASendCount
-        if DataReporter.componentType == .liveRoom {
+        switch DataReporter.componentType {
+        case .liveRoom:
             key = isSupportEffectPlayer ? Constants.DataReport.kDataReportLiveGiftEffectSendCount :
             Constants.DataReport.kDataReportLiveGiftSVGASendCount
-        } else if DataReporter.componentType == .voiceRoom {
+        case .voiceRoom:
             key = isSupportEffectPlayer ? Constants.DataReport.kDataReportVoiceGiftEffectSendCount :
             Constants.DataReport.kDataReportVoiceGiftSVGASendCount
         }
@@ -199,23 +201,5 @@ private extension GiftListView {
     private func isSupportEffectPlayer() -> Bool {
         let service = TUICore.getService("TUIEffectPlayerService")
         return service != nil
-    }
-}
-
-private extension String {
-    static var giftTitle: String {
-        localized("live.audience.gift.title")
-    }
-    static var meText: String {
-        localized("live.barrage.me")
-    }
-    static var sendText: String {
-        localized("live.giftView.sendOut")
-    }
-    static var balanceText: String {
-        localized("live.giftView.balance.xxx")
-    }
-    static var rechargeText: String {
-        localized("live.giftView.recharge")
     }
 }

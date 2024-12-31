@@ -7,24 +7,23 @@
 
 import Foundation
 import RTCRoomEngine
+import LiveStreamCore
 
 class LSBattleManagerObserver: NSObject {
-    private(set) weak var context: LiveStreamManager.Context?
     private weak var manager: LSBattleManager?
-    init(context: LiveStreamManager.Context) {
-        self.context = context
-        manager = context.battleManager
+    init(battleManager: LSBattleManager) {
+        self.manager = battleManager
         super.init()
     }
 }
 
-extension LSBattleManagerObserver: TUILiveBattleObserver {
+extension LSBattleManagerObserver: BattleObserver {
     func onBattleStarted(battleInfo: TUIBattleInfo) {
         manager?.onBattleStarted(battleInfo: battleInfo)
     }
     
-    func onBattleEnded(battleInfo: TUIBattleInfo, reason: TUIBattleStoppedReason) {
-        manager?.onBattleEnded(battleInfo: battleInfo, reason: reason)
+    func onBattleEnded(battleInfo: TUIBattleInfo) {
+        manager?.onBattleEnded(battleInfo: battleInfo)
     }
     
     func onUserJoinBattle(battleId: String, battleUser: TUIBattleUser) {
@@ -39,23 +38,23 @@ extension LSBattleManagerObserver: TUILiveBattleObserver {
         manager?.onBattleScoreChanged(battleId: battleId, battleUserList: battleUserList)
     }
     
-    func onBattleRequestReceived(battleInfo: TUIBattleInfo, inviter: TUIBattleUser, invitee: TUIBattleUser) {
-        manager?.onBattleRequestReceived(battleInfo: battleInfo, inviter: inviter, invitee: invitee)
+    func onBattleRequestReceived(battleId: String, inviter: TUIBattleUser, invitee: TUIBattleUser) {
+        manager?.onBattleRequestReceived(battleId: battleId, inviter: inviter, invitee: invitee)
     }
     
-    func onBattleRequestCancelled(battleInfo: TUIBattleInfo, inviter: TUIBattleUser, invitee: TUIBattleUser) {
-        manager?.onBattleRequestCancelled(battleInfo: battleInfo, inviter: inviter, invitee: invitee)
+    func onBattleRequestCancelled(battleId: String, inviter: TUIBattleUser, invitee: TUIBattleUser) {
+        manager?.onBattleRequestCancelled(battleId: battleId, inviter: inviter, invitee: invitee)
     }
     
-    func onBattleRequestTimeout(battleInfo: TUIBattleInfo, inviter: TUIBattleUser, invitee: TUIBattleUser) {
-        manager?.onBattleRequestTimeout(battleInfo: battleInfo, inviter: inviter, invitee: invitee)
+    func onBattleRequestTimeout(battleId: String, inviter: TUIBattleUser, invitee: TUIBattleUser) {
+        manager?.onBattleRequestTimeout(battleId: battleId, inviter: inviter, invitee: invitee)
     }
     
-    func onBattleRequestAccept(battleInfo: TUIBattleInfo, inviter: TUIBattleUser, invitee: TUIBattleUser) {
-        manager?.onBattleRequestAccept(battleInfo: battleInfo, inviter: inviter, invitee: invitee)
+    func onBattleRequestAccept(battleId: String, inviter: TUIBattleUser, invitee: TUIBattleUser) {
+        manager?.onBattleRequestAccept(battleId: battleId, inviter: inviter, invitee: invitee)
     }
     
-    func onBattleRequestReject(battleInfo: TUIBattleInfo, inviter: TUIBattleUser, invitee: TUIBattleUser) {
-        manager?.onBattleRequestReject(battleInfo: battleInfo, inviter: inviter, invitee: invitee)
+    func onBattleRequestReject(battleId: String, inviter: TUIBattleUser, invitee: TUIBattleUser) {
+        manager?.onBattleRequestReject(battleId: battleId, inviter: inviter, invitee: invitee)
     }
 }

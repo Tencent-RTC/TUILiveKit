@@ -18,14 +18,12 @@ class LSBattleManager {
         observableState.state
     }
     
-    private let service: LSBattleService
     private typealias Context = LiveStreamManager.Context
     private weak var context: Context?
     private var timer: DispatchSourceTimer?
     
     init(context: LiveStreamManager.Context) {
         self.context = context
-        self.service = context.battleService
         self.observableState = ObservableState(initialState: LSBattleState())
     }
     
@@ -38,90 +36,39 @@ class LSBattleManager {
             state = LSBattleState()
         }
     }
+    
+    func updateBattleUserRectFromIndex(rect: CGRect, index: Int) {
+        observableState.update { state in
+            state.battleUsers[index].rect = rect
+        }
+    }
 }
 
 extension LSBattleManager {
-    func requestBattle(userIds: [String], timeout: TimeInterval) {
-        guard let context = context else { return }
-        let isOnDisplayResult = state.isOnDisplayResult
-        let selfUserId = context.userManager.userState.selfInfo.userId
-        let isSelfInConnection = context.coHostManager.state.connectedUsers.contains(where: { $0.userId == selfUserId })
-        guard !isOnDisplayResult && isSelfInConnection else {
-            context.toastSubject.send(.battleDisableText)
-            return
-        }
-        
-        Task {
-            let config = TUIBattleConfig()
-            config.duration = battleDuration
-            config.needResponse = true
-            config.extensionInfo = ""
-            do {
-                let result = try await service.requestBattle(config: config, userIdList: userIds, timeout: timeout)
-                let resultMap = result.resultMap
-                let battleInfo = result.battleInfo
-                observableState.update { state in
-                    state.battleId = battleInfo.battleId
-                    state.addSentBattleRequest(info: battleInfo, requestResultMap: resultMap)
-                    state.isInWaiting = true
-                }
-            } catch let err {
-                // throw error
-            }
+    func onRequestBattle(battleId: String, battleUserList: [TUIBattleUser]) {
+        observableState.update { state in
+            state.battleId = battleId
+            state.isInWaiting = true
+            state.sentBattleRequest = battleUserList
         }
     }
     
-    func cancelBattleRequest() {
-        Task {
-            do {
-                let userList = state.sentBattleRequest.inviteeIdList
-                try await service.cancelBattleRequest(battleId: state.battleId, userIdList: userList)
-                observableState.update { state in
-                    state.isInWaiting = false
-                    state.clearSentBattleReuqest()
-                }
-            } catch let err {
-                
-            }
-        }
-    }
-    func acceptBattle() {
-        Task {
-            do {
-                if let request = state.receivedBattleRequest {
-                    try await service.acceptBattle(battleId: request.info.battleId)
-                    observableState.update { state in
-                        state.receivedBattleRequest = nil
-                    }
-                }
-            } catch let err {
-                
-            }
+    func onCanceledBattle() {
+        observableState.update { state in
+            state.isInWaiting = false
+            state.clearSentBattleRequest()
         }
     }
     
-    func rejectBattle() {
-        Task {
-            do {
-                if let request = state.receivedBattleRequest {
-                    try await service.rejectBattle(battleId: request.info.battleId)
-                    observableState.update { state in
-                        state.receivedBattleRequest = nil
-                    }
-                }
-            } catch let err {
-                
-            }
+    func onResponseBattle() {
+        observableState.update { state in
+            state.receivedBattleRequest = nil
         }
     }
     
-    func exitBattle() {
-        Task {
-            do {
-                try await service.exitBattle(battleId: state.battleId)
-            } catch let err {
-                
-            }
+    func onExitBattle() {
+        observableState.update { state in
+            state.clearSentBattleRequest()
         }
     }
     
@@ -158,7 +105,7 @@ extension LSBattleManager {
         sortedBattleUsersByScore(battleUsers: battleUsers)
     }
     
-    func onBattleEnded(battleInfo: TUIBattleInfo, reason: TUIBattleStoppedReason) {
+    func onBattleEnded(battleInfo: TUIBattleInfo) {
         observableState.update { state in
             var battleUsers = battleInfo.inviteeList.map { user in
                 return BattleUser(user)
@@ -202,23 +149,23 @@ extension LSBattleManager {
         sortedBattleUsersByScore(battleUsers: battleUserList.map { BattleUser($0) })
     }
     
-    func onBattleRequestReceived(battleInfo: TUIBattleInfo, inviter: TUIBattleUser, invitee: TUIBattleUser) {
+    func onBattleRequestReceived(battleId: String, inviter: TUIBattleUser, invitee: TUIBattleUser) {
         observableState.update { state in
-            state.battleId = battleInfo.battleId
-            state.receivedBattleRequest = (battleInfo, BattleUser(inviter), BattleUser(invitee))
+            state.battleId = battleId
+            state.receivedBattleRequest = (battleId, BattleUser(inviter))
         }
     }
     
-    func onBattleRequestCancelled(battleInfo: TUIBattleInfo, inviter: TUIBattleUser, invitee: TUIBattleUser) {
+    func onBattleRequestCancelled(battleId: String, inviter: TUIBattleUser, invitee: TUIBattleUser) {
         observableState.update { state in
             state.receivedBattleRequest = nil
         }
         context?.toastSubject.send(.localizedReplace(.battleInviterCancelledText, replace: "\(inviter.userName)"))
     }
     
-    func onBattleRequestTimeout(battleInfo: TUIBattleInfo, inviter: TUIBattleUser, invitee: TUIBattleUser) {
+    func onBattleRequestTimeout(battleId: String, inviter: TUIBattleUser, invitee: TUIBattleUser) {
         observableState.update { state in
-            if state.receivedBattleRequest?.info.battleId == battleInfo.battleId {
+            if state.receivedBattleRequest?.battleId == battleId {
                 state.receivedBattleRequest = nil
             }
             // FIXME: krabyu  Here needs to fix when battleInfo.battleId is not empty
@@ -227,25 +174,25 @@ extension LSBattleManager {
 //                guard state.sentBattleRequest.inviteeIdList.isEmpty else { return }
 //                state.isInWaiting = false
 //            }
-            state.sentBattleRequest.inviteeIdList.removeAll { $0 == invitee.userId }
+            state.sentBattleRequest.removeAll { $0.userId == invitee.userId }
             state.isInWaiting = false
             context?.toastSubject.send(.battleInvitationTimeoutText)
         }
     }
     
-    func onBattleRequestAccept(battleInfo: TUIBattleInfo, inviter: TUIBattleUser, invitee: TUIBattleUser) {
+    func onBattleRequestAccept(battleId: String, inviter: TUIBattleUser, invitee: TUIBattleUser) {
         observableState.update { state in
-            state.sentBattleRequest.inviteeIdList.removeAll { $0 == invitee.userId }
-            if state.sentBattleRequest.inviteeIdList.isEmpty {
+            state.sentBattleRequest.removeAll { $0.userId == invitee.userId }
+            if state.sentBattleRequest.isEmpty {
                 state.isInWaiting = false
             }
         }
     }
     
-    func onBattleRequestReject(battleInfo: TUIBattleInfo, inviter: TUIBattleUser, invitee: TUIBattleUser) {
+    func onBattleRequestReject(battleId: String, inviter: TUIBattleUser, invitee: TUIBattleUser) {
         observableState.update { state in
-            state.sentBattleRequest.inviteeIdList.removeAll { $0 == invitee.userId }
-            if state.sentBattleRequest.inviteeIdList.isEmpty {
+            state.sentBattleRequest.removeAll { $0.userId == invitee.userId }
+            if state.sentBattleRequest.isEmpty {
                 state.isInWaiting = false
             }
         }

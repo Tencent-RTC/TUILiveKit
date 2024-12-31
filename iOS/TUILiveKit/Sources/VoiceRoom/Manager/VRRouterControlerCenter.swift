@@ -9,16 +9,11 @@ import Combine
 import RTCCommon
 import RTCRoomEngine
 
-protocol VRRouterViewProvider: NSObjectProtocol {
-    func getRouteView(route: VRRoute) -> UIView?
-}
-
 class VRRouterControlCenter {
     private var rootRoute: VRRoute
     private var routerManager: VRRouterManager
     private let manager: VoiceRoomManager
     
-    weak var routerProvider: VRRouterViewProvider?
     private weak var rootViewController: UIViewController?
     private var cancellableSet = Set<AnyCancellable>()
     private var presentedRouteStack: [VRRoute] = []
@@ -104,13 +99,7 @@ extension VRRouterControlCenter {
             return
         }
         
-        var view: UIView? = routerProvider?.getRouteView(route: route)
-        
-        if view == nil {
-            view = getRouteDefaultView(route: route)
-        }
-        
-        if let view = view {
+        if let view = getRouteDefaultView(route: route) {
             var presentedViewController: UIViewController = UIViewController()
             switch route {
             case .alert(_):
@@ -217,6 +206,10 @@ extension VRRouterControlCenter {
             view = VRPrepareSettingPanel(manager: manager, routerManager: routerManager)
         case .alert(let info):
             view = VRAlertPanel(alertInfo: info)
+        case .giftView:
+            let giftPanel = GiftListPanel(roomId: manager.roomState.roomId, dataSource: manager)
+            giftPanel.setGiftList(TUIGiftStore.shared.giftList)
+            view = giftPanel
         default:
             break
         }

@@ -17,7 +17,7 @@ class LiveConnectionObserver: NSObject, TUILiveConnectionObserver {
     
     func onConnectionUserListChanged(connectedList: [TUIConnectionUser], joinedList: [TUIConnectionUser], leavedList: [TUIConnectionUser]) {
         LiveStreamLog.info("\(#file)","\(#line)",
-                           "onRoomDismissed:[connectedList:\(connectedList),joinedList:\(joinedList),leavedList:\(leavedList)]")
+                           "onConnectionUserListChanged:[connectedList:\(connectedList),joinedList:\(joinedList),leavedList:\(leavedList)]")
         context?.coHostManager.onConnectionUserListChanged(connectedList: connectedList, joinedList: joinedList, leavedList: leavedList)
         Task {
             await context?.observers.notifyObservers { observer in

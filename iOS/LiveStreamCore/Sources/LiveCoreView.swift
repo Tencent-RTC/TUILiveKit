@@ -12,6 +12,8 @@ import RTCRoomEngine
 import TUICore
 
 @objcMembers public class LiveCoreView: UIView {
+    
+    // MARK: - public property.
     public weak var videoViewDelegate: VideoViewDelegate? {
         didSet {
             LCDataReporter.reportEventData(event: .methodCallLiveStreamSetVideoViewDelegate)
@@ -19,22 +21,10 @@ import TUICore
     }
     public weak var waitingCoGuestViewDelegate: WaitingCoGuestViewDelegate?
     
-    private let videoLiveManager: LiveStreamManager = LiveStreamManager()
-    private var layoutConfig: LayoutConfig?
-    private var cancellableSet: Set<AnyCancellable> = []
-    private var isViewReady = false
-    
-    private var coGuestUserList: [TUISeatInfo] = []
-    private var coHostUserList: [TUIConnectionUser] = []
-    private var videoLayoutList: [ViewInfo] = []
-    private var waitingCoGuestView: UIView?
-    private var videoViewModelMap: [String: VideoViewModel] = [:]
-    private var videoLayoutViewMap: [String: UIView] = [:]
-    
     public init() {
         super.init(frame: .zero)
         LCDataReporter.reportEventData(event: .panelShowLiveCoreView)
-        videoLiveManager.context.delegate = self
+        manager.context.userManager.delegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -56,9 +46,22 @@ import TUICore
         isViewReady = true
     }
     
+    // MARK: - private store property.
+    private let manager: LiveStreamManager = LiveStreamManager()
+    private let viewModel: LiveCoreViewModel = LiveCoreViewModel()
+    private var cancellableSet: Set<AnyCancellable> = []
+    private var isViewReady = false
+    
+    private var coGuestUserList: [TUISeatInfo] = []
+    private var coHostUserList: [TUIConnectionUser] = []
+    private var waitingCoGuestView: UIView?
+    private var videoViewModelMap: [String: VideoViewModel] = [:]
+    private var videoLayoutList: [ViewInfo] = []
+    private var videoLayoutViewMap: [String: UIView] = [:]
+    private var battleViewInfoMap: [String: BattleViewInfo] = [:]
+    
     private lazy var liveStreamContainerView: LiveStreamViewContainer = {
         let view = LiveStreamViewContainer()
-        view.layoutConfig = layoutConfig
         return view
     }()
     
@@ -69,112 +72,139 @@ import TUICore
 }
 
 // MARK: - Public API
-public extension LiveCoreView {
-    func startCamera(useFrontCamera: Bool, onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
-        videoLiveManager.startLocalCamera(useFrontCamera: useFrontCamera, onSuccess: onSuccess, onError: onError)
+extension LiveCoreView {
+    
+    public func startLiveStream(roomInfo: TUIRoomInfo, onSuccess: @escaping TUIRoomInfoBlock, onError: @escaping TUIErrorBlock) {
+        manager.startLive(roomInfo: roomInfo, onSuccess: onSuccess, onError: onError)
     }
     
-    func startMicrophone(onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
-        videoLiveManager.startMicrophone(onSuccess: onSuccess, onError: onError)
+    public func stopLiveStream(onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
+        terminateBattle(battleId: manager.battleState.battleId) {} onError: { _, _ in}
+        manager.stopLive(onSuccess: onSuccess, onError: onError)
     }
     
-    func muteMicrophone(mute: Bool) {
-        videoLiveManager.muteMicrophone(mute: mute)
+    public func joinLiveStream(roomId: String, onSuccess: @escaping TUIRoomInfoBlock, onError: @escaping TUIErrorBlock) {
+        manager.joinLive(roomId: roomId, onSuccess: onSuccess, onError: onError)
     }
     
-    func stopCamera() {
-        videoLiveManager.stopCamera()
+    public func leaveLiveStream(onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
+        manager.leaveLive(onSuccess: onSuccess, onError: onError)
     }
     
-    func stopMicrophone() {
-        videoLiveManager.stopMicrophone()
+    public func startCamera(useFrontCamera: Bool, onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
+        manager.startLocalCamera(useFrontCamera: useFrontCamera, onSuccess: onSuccess, onError: onError)
     }
     
-    func startLiveStream(roomInfo: TUIRoomInfo, onSuccess: @escaping TUIRoomInfoBlock, onError: @escaping TUIErrorBlock) {
-        videoLiveManager.startLive(roomInfo: roomInfo, onSuccess: onSuccess, onError: onError)
+    public func stopCamera() {
+        manager.stopCamera()
     }
     
-    func stopLiveStream(onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
-        videoLiveManager.stopLive(onSuccess: onSuccess, onError: onError)
+    public func startMicrophone(onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
+        manager.startMicrophone(onSuccess: onSuccess, onError: onError)
     }
     
-    func joinLiveStream(roomId: String, onSuccess: @escaping TUIRoomInfoBlock, onError: @escaping TUIErrorBlock) {
-        videoLiveManager.joinLive(roomId: roomId, onSuccess: onSuccess, onError: onError)
+    public func muteMicrophone(mute: Bool) {
+        manager.muteMicrophone(mute: mute)
     }
     
-    func leaveLiveStream(onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
-        videoLiveManager.leaveLive(onSuccess: onSuccess, onError: onError)
+    public func stopMicrophone() {
+        manager.stopMicrophone()
     }
     
-    func requestIntraRoomConnection(userId: String, timeOut: Int, openCamera: Bool,
+    public func requestIntraRoomConnection(userId: String, timeOut: Int, openCamera: Bool,
                                     onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
-        requestIntraConnection(userId: userId, timeOut: timeOut, openCamera: openCamera,
-                               onSuccess: onSuccess, onError: onError)
+        manager.requestIntraRoomConnection(userId: userId, timeOut: timeOut, openCamera: openCamera, onSuccess: onSuccess, onError: onError)
     }
     
-    func cancelIntraRoomConnection(userId: String, onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
-        cancelIntraConnection(userId: userId, onSuccess: onSuccess, onError: onError)
+    public func cancelIntraRoomConnection(userId: String, onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
+        manager.cancelIntraRoomConnection(userId: userId, onSuccess: onSuccess, onError: onError)
     }
     
-    func respondIntraRoomConnection(userId: String, isAccepted: Bool,
+    public func respondIntraRoomConnection(userId: String, isAccepted: Bool,
                                     onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
-        respondIntraConnection(userId: userId, isAccepted: isAccepted, onSuccess: onSuccess, onError: onError)
+        manager.respondIntraRoomConnection(userId: userId, isAccepted: isAccepted, onSuccess: onSuccess, onError: onError)
     }
     
-    func disconnectUser(userId: String, onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
-        if checkIntraRoomConnection(userId: userId, onError: onError) {
-            return
-        }
-        videoLiveManager.disconnectByAdamin(userId: userId, onSuccess: onSuccess, onError: onError)
+    public func disconnectUser(userId: String, onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
+        manager.disconnectByAdamin(userId: userId, onSuccess: onSuccess, onError: onError)
     }
     
-    func terminateIntraRoomConnection() {
-        videoLiveManager.disconnectBySelf()
+    public func terminateIntraRoomConnection() {
+        manager.disconnectBySelf()
     }
     
-    func requestCrossRoomConnection(roomId: String, timeOut: Int,
+    public func requestCrossRoomConnection(roomId: String, timeOut: Int,
                                     onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
-        if checkCrossRoomConnection(roomId: roomId, onError: onError) {
-            return
-        }
-        videoLiveManager.requestConnection(roomId: roomId, timeOut: timeOut, onSuccess: onSuccess, onError: onError)
+        manager.requestConnection(roomId: roomId, timeOut: timeOut, onSuccess: onSuccess, onError: onError)
     }
     
-    func cancelCrossRoomConnection(roomId: String, onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
-        videoLiveManager.cancelRequest(roomId: roomId, onSuccess: onSuccess, onError: onError)
+    public func cancelCrossRoomConnection(roomId: String, onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
+        manager.cancelRequest(roomId: roomId, onSuccess: onSuccess, onError: onError)
     }
     
-    func respondToCrossRoomConnection(roomId: String, isAccepted: Bool,
+    public func respondToCrossRoomConnection(roomId: String, isAccepted: Bool,
                                       onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
-        videoLiveManager.respondToCrossRoomConnection(roomId: roomId, isAccepted: isAccepted,
+        manager.respondToCrossRoomConnection(roomId: roomId, isAccepted: isAccepted,
                                                       onSuccess: onSuccess, onError: onError)
     }
     
-    func terminateCrossRoomConnection() {
-        videoLiveManager.disconnect()
+    public func terminateCrossRoomConnection() {
+        manager.disconnect()
     }
     
-    func registerConnectionObserver(observer: ConnectionObserver) {
-        videoLiveManager.addObserver(observer)
+    public func registerConnectionObserver(observer: ConnectionObserver) {
+        manager.addObserver(observer)
     }
     
-    func unregisterConnectionObserver(observer: ConnectionObserver) {
-        videoLiveManager.removerObserver(observer)
+    public func unregisterConnectionObserver(observer: ConnectionObserver) {
+        manager.removerObserver(observer)
     }
     
-    func setLayoutMode(layoutMode: LayoutMode, layoutJson: String? = nil) {
-        videoLiveManager.setLayoutMode(layoutMode: layoutMode, layoutJson: layoutJson)
+    public func requestBattle(config: TUIBattleConfig, userIdList: [String],
+                       timeout: TimeInterval, onSuccess: @escaping TUIBattleRequestBlock, onError: @escaping TUIErrorBlock) {
+        manager.requestBattle(config: config, userIdList: userIdList, timeout: timeout, onSuccess: onSuccess, onError: onError)
+    }
+        
+    public func cancelBattle(battleId: String, userIdList: [String], onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
+        manager.cancelBattle(battleId: battleId, userIdList: userIdList, onSuccess: onSuccess, onError: onError)
+    }
+
+    public func respondToBattle(battleId: String, isAccepted: Bool, onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
+        manager.respondToBattle(battleId: battleId, isAccepted: isAccepted, onSuccess: onSuccess, onError: onError)
+    }
+
+    public func terminateBattle(battleId: String, onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
+        if !battleId.isEmpty {
+            manager.terminateBattle(battleId: battleId, onSuccess: onSuccess, onError: onError)
+        }
     }
     
-    func getMediaManager() -> MediaManager {
-        return videoLiveManager.context.mediaManager
+    public func registerBattleObserver(observer: BattleObserver) {
+        manager.addBattleObserver(observer)
+    }
+    
+    public func unregisterBattleObserver(observer: BattleObserver) {
+        manager.removerBattleObserver(observer)
     }
 }
 
-// MARK: - Private
+extension LiveCoreView {
+    public func setLayoutMode(layoutMode: LayoutMode, layoutJson: String? = nil) {
+        setLayout(layoutMode: layoutMode, layoutJson: layoutJson)
+    }
+}
+
+// MARK: - Public manager
+extension LiveCoreView {
+    public var mediaManager: MediaManager {
+        manager.context.mediaManager
+    }
+}
+
+// MARK: - View layout logic.
 extension LiveCoreView {
     private func initLayout() {
-        videoLiveManager.setLayoutMode(layoutMode: .gridLayout)
+        setLayout(layoutMode: .gridLayout)
     }
     
     private func constructViewHierarchy() {
@@ -193,7 +223,7 @@ extension LiveCoreView {
     }
     
     private func subscribeState() {
-        videoLiveManager.subscribeCoGuestState(StateSelector(keyPath: \CoGuestState.connectedUserList))
+        manager.subscribeCoGuestState(StateSelector(keyPath: \CoGuestState.connectedUserList))
             .receive(on: RunLoop.main)
             .removeDuplicates()
             .sink { [weak self] coGuestUsers in
@@ -202,30 +232,30 @@ extension LiveCoreView {
             }
             .store(in: &cancellableSet)
         
-        videoLiveManager.subscribeCoGuestState(StateSelector(keyPath: \CoGuestState.coGuestStatus))
+        manager.subscribeCoGuestState(StateSelector(keyPath: \CoGuestState.coGuestStatus))
             .receive(on: RunLoop.main)
             .removeDuplicates()
             .sink { [weak self] coGuestStatus in
                 guard let self = self else { return }
                 guard let waitingCoGuestViewDelegate = self.waitingCoGuestViewDelegate else { return }
                 switch coGuestStatus {
-                case .applying:
-                    waitingCoGuestView = waitingCoGuestView ?? waitingCoGuestViewDelegate.waitingCoGuestView()
-                    self.liveStreamContainerView.addView(waitingCoGuestView ?? UIView())
-                case .linking:
-                    self.videoLiveManager.updateVideoLayout(layout: nil)
-                    guard let waitingCoGuestView = waitingCoGuestView else { return }
-                    self.liveStreamContainerView.removeView(waitingCoGuestView)
-                    self.waitingCoGuestView = nil
-                case .none:
-                    guard let waitingCoGuestView = waitingCoGuestView else { return }
-                    self.liveStreamContainerView.removeView(waitingCoGuestView)
-                    self.waitingCoGuestView = nil
+                    case .applying:
+                        waitingCoGuestView = waitingCoGuestView ?? waitingCoGuestViewDelegate.waitingCoGuestView()
+                        self.liveStreamContainerView.addView(waitingCoGuestView ?? UIView())
+                    case .linking:
+                        self.manager.updateVideoLayout(layout: nil)
+                        guard let waitingCoGuestView = waitingCoGuestView else { return }
+                        self.liveStreamContainerView.removeView(waitingCoGuestView)
+                        self.waitingCoGuestView = nil
+                    case .none:
+                        guard let waitingCoGuestView = waitingCoGuestView else { return }
+                        self.liveStreamContainerView.removeView(waitingCoGuestView)
+                        self.waitingCoGuestView = nil
                 }
             }
             .store(in: &cancellableSet)
         
-        videoLiveManager.subscribeCoHostState(StateSelector(keyPath: \CoHostState.connectedUserList))
+        manager.subscribeCoHostState(StateSelector(keyPath: \CoHostState.connectedUserList))
             .receive(on: RunLoop.main)
             .removeDuplicates()
             .sink { [weak self] coHostUsers in
@@ -234,7 +264,7 @@ extension LiveCoreView {
             }
             .store(in: &cancellableSet)
         
-        videoLiveManager.subscribeRoomState(StateSelector(keyPath: \RoomState.liveStatus))
+        manager.subscribeRoomState(StateSelector(keyPath: \RoomState.liveStatus))
             .receive(on: RunLoop.main)
             .removeDuplicates()
             .sink { [weak self] status in
@@ -245,16 +275,7 @@ extension LiveCoreView {
             }
             .store(in: &cancellableSet)
         
-        videoLiveManager.subscribeViewState(StateSelector(keyPath: \ViewState.layoutMode))
-            .receive(on: RunLoop.main)
-            .removeDuplicates()
-            .sink { [weak self] layoutConfig in
-                guard let self = self, let layoutConfig = videoLiveManager.viewState.layoutConfig else { return }
-                self.liveStreamContainerView.setLayoutConfig(layoutConfig: layoutConfig)
-            }
-            .store(in: &cancellableSet)
-        
-        videoLiveManager.subscribeMediaState(StateSelector(keyPath: \MediaState.isCameraOpened))
+        manager.subscribeMediaState(StateSelector(keyPath: \MediaState.isCameraOpened))
             .receive(on: RunLoop.main)
             .removeDuplicates()
             .sink { [weak self] isCameraOpened in
@@ -263,7 +284,7 @@ extension LiveCoreView {
             }
             .store(in: &cancellableSet)
         
-        videoLiveManager.subscribeViewState(StateSelector(keyPath: \ViewState.videoLayout))
+        manager.subscribeLayoutState(StateSelector(keyPath: \LayoutState.videoLayout))
             .receive(on: RunLoop.main)
             .removeDuplicates()
             .sink { [weak self] videoLayout in
@@ -272,28 +293,42 @@ extension LiveCoreView {
                                           pixelScale: videoLayout?.pixelScale ?? 0)
             }
             .store(in: &cancellableSet)
+        
+        manager.subscribeBattleState(StateSelector(keyPath: \BattleState.isBattleStart))
+            .receive(on: RunLoop.main)
+            .removeDuplicates()
+            .sink { [weak self] isBattleStart in
+                guard let self = self else { return }
+                if isBattleStart {
+                    onBattleStart()
+                }
+            }
+            .store(in: &cancellableSet)
     }
     
+}
+
+extension LiveCoreView {
     private func addLocalVideoView() {
-        let localVideoView = videoLiveManager.getLocalLiveView()
-        videoLiveManager.setLocalVideoView(view: localVideoView.videoView)
+        let localVideoView = viewModel.getLocalLiveView()
+        manager.setLocalVideoView(view: localVideoView.videoView)
         if !liveStreamContainerView.containsView(localVideoView) {
             if let videoViewDelegate = videoViewDelegate {
-                let selfInfo = videoLiveManager.userState.selfInfo
+                let selfInfo = manager.userState.selfInfo
                 let selfUserId = selfInfo.userId
                 
-                let coGuestWidgetsView = videoViewDelegate.createCoGuestView(userInfo: videoLiveManager.userState.selfInfo)
+                let coGuestWidgetsView = videoViewDelegate.createCoGuestView(userInfo: manager.userState.selfInfo)
                 localVideoView.setCoGuestView(coGuestWidgetsView)
                 let videoViewModel = VideoViewModel()
                 videoViewModel.coGuestUser = selfInfo
                 videoViewModel.userView = coGuestWidgetsView
                 videoViewModelMap[selfUserId] = videoViewModel
                 
-                let hasVideo = videoLiveManager.userState.hasVideoStreamUserList.contains(selfUserId) ||
-                videoLiveManager.mediaState.isCameraOpened
-                let hasAudio = videoLiveManager.userState.hasAudioStreamUserList.contains(selfUserId) ||
-                !videoLiveManager.mediaState.isMicrophoneMuted
-                let coHostUser = LiveStreamConvert.convertToCoHostUser(userInfo: selfInfo, roomId: videoLiveManager.roomState.roomId, hasVideoStream: hasVideo, hasAudioStream: hasAudio)
+                let hasVideo = manager.userState.hasVideoStreamUserList.contains(selfUserId) ||
+                manager.mediaState.isCameraOpened
+                let hasAudio = manager.userState.hasAudioStreamUserList.contains(selfUserId) ||
+                !manager.mediaState.isMicrophoneMuted
+                let coHostUser = LiveStreamConvert.convertToCoHostUser(userInfo: selfInfo, roomId: manager.roomState.roomId, hasVideoStream: hasVideo, hasAudioStream: hasAudio)
                 let coHostWidgetsView = videoViewDelegate.createCoHostView(coHostUser: coHostUser)
                 localVideoView.setCoHostView(coHostWidgetsView)
             }
@@ -302,24 +337,24 @@ extension LiveCoreView {
     }
     
     private func removeLocalVideoView() {
-        let localVideoView = videoLiveManager.getLocalLiveView()
-        videoLiveManager.setLocalVideoView(view: nil)
+        let localVideoView = viewModel.getLocalLiveView()
+        manager.setLocalVideoView(view: nil)
         if liveStreamContainerView.containsView(localVideoView) {
             liveStreamContainerView.removeView(localVideoView)
-            videoLiveManager.clearLocalLiveView()
+            viewModel.clearLocalLiveView()
         }
-        videoViewModelMap.removeValue(forKey: videoLiveManager.userState.selfInfo.userId)
+        videoViewModelMap.removeValue(forKey: manager.userState.selfInfo.userId)
     }
     
     private func addCoGuestLiveView(userInfo: TUIUserInfo) {
-        if userInfo.userId == videoLiveManager.userState.selfInfo.userId {
+        if userInfo.userId == manager.userState.selfInfo.userId {
             return
         }
-        let liveView = videoLiveManager.getRemoteLiveViewByUserId(userId: userInfo.userId)
-        videoLiveManager.setRemoteVideoView(userId: userInfo.userId, streamType: .cameraStream, view: liveView.videoView)
+        let liveView = viewModel.getRemoteLiveViewByUserId(userId: userInfo.userId)
+        manager.setRemoteVideoView(userId: userInfo.userId, streamType: .cameraStream, view: liveView.videoView)
         if !liveStreamContainerView.containsView(liveView) {
             if let videoViewDelegate = videoViewDelegate,
-               !userInfo.userId.hasSuffix(videoLiveManager.context.roomManager.mixStreamIdSuffix) {
+               !userInfo.userId.hasSuffix(manager.context.roomManager.mixStreamIdSuffix) {
                 let coGuestWidgetsView = videoViewDelegate.createCoGuestView(userInfo: userInfo)
                 liveView.setCoGuestView(coGuestWidgetsView)
                 
@@ -333,25 +368,25 @@ extension LiveCoreView {
     }
     
     private func removeCoGuestLiveView(userInfo: TUIUserInfo) {
-        if userInfo.userId == videoLiveManager.userState.selfInfo.userId {
+        if userInfo.userId == manager.userState.selfInfo.userId {
             return
         }
-        let liveView = videoLiveManager.getRemoteLiveViewByUserId(userId: userInfo.userId)
-        videoLiveManager.removeRemoteView(userId: userInfo.userId)
+        let liveView = viewModel.getRemoteLiveViewByUserId(userId: userInfo.userId)
+        viewModel.removeRemoteView(userId: userInfo.userId)
         liveStreamContainerView.removeView(liveView)
         videoViewModelMap.removeValue(forKey: userInfo.userId)
     }
     
     private func addCoHostLiveView(user: TUIConnectionUser) {
-        if user.userId == videoLiveManager.userState.selfInfo.userId {
+        if user.userId == manager.userState.selfInfo.userId {
             return
         }
-        let liveView = videoLiveManager.getRemoteLiveViewByUserId(userId: user.userId)
-        videoLiveManager.setRemoteVideoView(userId: user.userId, streamType: .cameraStream, view: liveView.videoView)
+        let liveView = viewModel.getRemoteLiveViewByUserId(userId: user.userId)
+        manager.setRemoteVideoView(userId: user.userId, streamType: .cameraStream, view: liveView.videoView)
         if !liveStreamContainerView.containsView(liveView) {
             if let videoViewDelegate = videoViewDelegate {
-                let hasVideo = videoLiveManager.userState.hasVideoStreamUserList.contains(user.userId)
-                let hasAudio = videoLiveManager.userState.hasAudioStreamUserList.contains(user.userId)
+                let hasVideo = manager.userState.hasVideoStreamUserList.contains(user.userId)
+                let hasAudio = manager.userState.hasAudioStreamUserList.contains(user.userId)
                 let coHostUser = LiveStreamConvert.convertToCoHostUser(connectionUser: user, hasVideoStream: hasVideo, hasAudioStream: hasAudio)
                 let coHostWidgetsView = videoViewDelegate.createCoHostView(coHostUser: coHostUser)
                 liveView.setCoHostView(coHostWidgetsView)
@@ -366,130 +401,14 @@ extension LiveCoreView {
     }
     
     private func removeCoHostLiveView(user: TUIConnectionUser) {
-        if user.userId == videoLiveManager.userState.selfInfo.userId ||
-            user.userId == videoLiveManager.roomState.ownerInfo.userId {
+        if user.userId == manager.userState.selfInfo.userId ||
+            user.userId == manager.roomState.ownerInfo.userId {
             return
         }
-        let liveView = videoLiveManager.getRemoteLiveViewByUserId(userId: user.userId)
-        videoLiveManager.removeRemoteView(userId: user.userId)
+        let liveView = viewModel.getRemoteLiveViewByUserId(userId: user.userId)
+        viewModel.removeRemoteView(userId: user.userId)
         liveStreamContainerView.removeView(liveView)
         videoViewModelMap.removeValue(forKey: user.userId)
-    }
-    
-    private func requestIntraConnection(userId: String, timeOut: Int, openCamera: Bool,
-                                        onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
-        videoLiveManager.enableAutoOpenCameraOnSeated(enable: openCamera)
-        if checkRequestIntraRoomConnection(userId: userId, onError: onError) {
-            return
-        }
-        if userId.isEmpty || userId == videoLiveManager.roomState.ownerInfo.userId {
-            applyToConnection(timeOut: timeOut, onSuccess: onSuccess, onError: onError)
-        } else {
-            videoLiveManager.inviteGuestToConnection(userId: userId, onSuccess: onSuccess, onError: onError)
-        }
-    }
-    
-    private func applyToConnection(timeOut: Int, onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
-        Task {
-            do {
-                let result = try await videoLiveManager.applyToConnection(timeOut: timeOut) { [weak self] in
-                    self?.videoLiveManager.asyncRunMainThread(onSuccess)
-                }
-                switch result {
-                case .accepted(userId: _):
-                    if !videoLiveManager.coGuestState.openCameraOnCoGuest {
-                        addLocalVideoView()
-                    } else {
-                        startCamera(useFrontCamera: true) {
-                        } onError: { _, _ in
-                        }
-                    }
-                    startMicrophone() {
-                    } onError: { _, _ in
-                    }
-                default: break
-                }
-            } catch let LiveStreamCoreError.error(code, message) {
-                videoLiveManager.asyncRunMainThread(onError, code, message)
-            }
-        }
-    }
-    
-    private func cancelIntraConnection(userId: String,
-                                       onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
-        if checkIntraRoomConnection(userId: userId, onError: onError) {
-            return
-        }
-        if userId.isEmpty || userId == videoLiveManager.roomState.ownerInfo.userId {
-            videoLiveManager.cancelGuestApplication(onSuccess: onSuccess, onError: onError)
-        } else {
-            videoLiveManager.cancelInviteApplication(userId: userId, onSuccess: onSuccess, onError: onError)
-        }
-    }
-    
-    private func respondIntraConnection(userId: String, isAccepted: Bool,
-                                        onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
-        if checkIntraRoomConnection(userId: userId, onError: onError) {
-            return
-        }
-        if userId.isEmpty || userId == videoLiveManager.roomState.ownerInfo.userId {
-            videoLiveManager.respondGuestInvitation(isAgree: isAccepted, onSuccess: onSuccess, onError: onError)
-        } else {
-            videoLiveManager.respondGuestApplication(userId: userId, isAccepted: isAccepted,
-                                                     onSuccess: onSuccess, onError: onError)
-        }
-    }
-    
-    private func checkRequestIntraRoomConnection(userId: String, onError: @escaping TUIErrorBlock) -> Bool {
-        if checkIntraRoomConnection(userId: userId, onError: onError) {
-            return true
-        }
-        if !videoLiveManager.coHostState.connectedUserList.isEmpty ||
-            !videoLiveManager.coHostState.sentConnectionRequestList.isEmpty {
-            onError(.roomConnectedInOther, "When connecting across rooms, viewers in the room are not allowed to connect")
-            return true
-        }
-        return false
-    }
-    
-    private func checkIntraRoomConnection(userId: String, onError: @escaping TUIErrorBlock) -> Bool {
-        if videoLiveManager.roomState.liveStatus == .none {
-            onError(.operationInvalidBeforeEnterRoom,
-                    TUIError.operationInvalidBeforeEnterRoom.lcDescription)
-            return true
-        }
-        if !videoLiveManager.isCoGuestEnable() {
-            onError(.failed, "The audience connection function is disabled in the current room")
-            return true
-        }
-        if videoLiveManager.userState.selfInfo.userRole == .roomOwner && userId.isEmpty {
-            onError(.failed, "userId is empty")
-            return true
-        }
-        return false
-    }
-    
-    private func checkCrossRoomConnection(roomId: String, onError: @escaping TUIErrorBlock) -> Bool {
-        if videoLiveManager.roomState.liveStatus == .none {
-            onError(.operationInvalidBeforeEnterRoom,
-                    TUIError.operationInvalidBeforeEnterRoom.lcDescription)
-            return true
-        }
-        if !videoLiveManager.isCoHostEnable() {
-            onError(.failed, "Room connection function is disabled")
-            return true
-        }
-        if videoLiveManager.coGuestState.connectedUserList.count > 1 ||
-            !videoLiveManager.coGuestState.connectionRequestList.isEmpty ||
-            videoLiveManager.coHostState.receivedConnectionRequest != nil {
-            onError(.alreadyInSeat, "Cross-room connections are not allowed when there are viewers connected in the room")
-            return true
-        }
-        if roomId.isEmpty {
-            onError(.invalidParameter, "roomId is empty")
-            return true
-        }
-        return false
     }
     
     private func onCoGuestUserListChanged(coGuestUsers: [TUISeatInfo]) {
@@ -497,25 +416,25 @@ extension LiveCoreView {
         for seatInfo in addedUsers {
             coGuestUserList.append(seatInfo)
             addCoGuestLiveView(userInfo: LiveStreamConvert.convertToUserInfo(seatInfo: seatInfo))
-            if seatInfo.userId == videoLiveManager.userState.selfInfo.userId {
+            if seatInfo.userId == manager.userState.selfInfo.userId {
                 addLocalVideoView()
             }
         }
         for seatInfo in removedUsers {
             coGuestUserList.removeAll { $0.userId == seatInfo.userId }
             removeCoGuestLiveView(userInfo: LiveStreamConvert.convertToUserInfo(seatInfo: seatInfo))
-            if seatInfo.userId == videoLiveManager.userState.selfInfo.userId {
+            if seatInfo.userId == manager.userState.selfInfo.userId {
                 removeLocalVideoView()
             }
         }
     }
     
     private func onCoHostUserListChanged(coHostUsers: [TUIConnectionUser]) {
-        if videoLiveManager.context.coHostManager.hasMixStreamUser() {
+        if manager.context.coHostManager.hasMixStreamUser() {
             return
         }
         for user in coHostUsers {
-            if videoLiveManager.roomState.ownerInfo.userId == user.userId {
+            if manager.roomState.ownerInfo.userId == user.userId {
                 addCoHostLiveView(user: user)
                 break
             }
@@ -528,6 +447,16 @@ extension LiveCoreView {
         for user in removedUsers {
             coHostUserList.removeAll { $0.userId == user.userId }
             removeCoHostLiveView(user: user)
+        }
+        
+        coHostUserList.forEach { user in
+            battleViewInfoMap.removeValue(forKey: user.userId)
+        }
+        
+        if !manager.battleState.battledUsers.isEmpty &&
+            liveStreamContainerView.getFullScreenWidgetsView().subviews.count == 0 {
+            addBattleContainerView(container: liveStreamContainerView)
+            addBattleView(container: liveStreamContainerView)
         }
     }
     
@@ -550,6 +479,12 @@ extension LiveCoreView {
         
         return (addedUsers, removedUsers)
     }
+    
+    private func setLayout(layoutMode: LayoutMode, layoutJson: String? = nil) {
+        viewModel.setLayoutMode(layoutMode: layoutMode, layoutJson: layoutJson)
+        guard let layoutConfig = viewModel.layoutConfig else { return }
+        liveStreamContainerView.setLayoutConfig(layoutConfig: layoutConfig)
+    }
 }
 
 // MARK: - UpdateUserInfoDelegate
@@ -561,10 +496,10 @@ extension LiveCoreView: UpdateUserInfoDelegate {
         let modifyFlags: UserInfoModifyFlag = [.hasAudioStream]
         if let coGuestUser = videoViewModel.coGuestUser {
             coGuestUser.hasAudioStream = hasAudio
-            videoViewDelegate.updateCoGuestView(userInfo: coGuestUser, modifyFlag: modifyFlags, coGuestView: userView)
+            videoViewDelegate.updateCoGuestView(coGuestView: userView,userInfo: coGuestUser, modifyFlag: modifyFlags)
         } else if let coHostUser = videoViewModel.coHostUser {
             coHostUser.hasAudioStream = hasAudio
-            videoViewDelegate.updateCoHostView(coHostUser: coHostUser, modifyFlag: modifyFlags, coHostView: userView)
+            videoViewDelegate.updateCoHostView(coHostView: userView, coHostUser: coHostUser, modifyFlag: modifyFlags)
         }
     }
     
@@ -575,10 +510,10 @@ extension LiveCoreView: UpdateUserInfoDelegate {
         let modifyFlags: UserInfoModifyFlag = [.hasVideoStream]
         if let coGuestUser = videoViewModel.coGuestUser {
             coGuestUser.hasVideoStream = hasVideo
-            videoViewDelegate.updateCoGuestView(userInfo: coGuestUser, modifyFlag: modifyFlags, coGuestView: userView)
+            videoViewDelegate.updateCoGuestView(coGuestView: userView, userInfo: coGuestUser, modifyFlag: modifyFlags)
         } else if let coHostUser = videoViewModel.coHostUser {
             coHostUser.hasAudioStream = hasVideo
-            videoViewDelegate.updateCoHostView(coHostUser: coHostUser, modifyFlag: modifyFlags, coHostView: userView)
+            videoViewDelegate.updateCoHostView(coHostView: userView, coHostUser: coHostUser, modifyFlag: modifyFlags)
         }
     }
     
@@ -589,7 +524,7 @@ extension LiveCoreView: UpdateUserInfoDelegate {
         let modifyFlags: UserInfoModifyFlag = LiveStreamConvert.convertToUserInfoModifyFlag(flag: modifyFlag)
         if var coGuestUser = videoViewModel.coGuestUser {
             coGuestUser = userInfo
-            videoViewDelegate.updateCoGuestView(userInfo: coGuestUser, modifyFlag: modifyFlags, coGuestView: userView)
+            videoViewDelegate.updateCoGuestView(coGuestView: userView, userInfo: coGuestUser, modifyFlag: modifyFlags)
         }
     }
 }
@@ -598,6 +533,11 @@ class VideoViewModel {
     var coHostUser: CoHostUser?
     var coGuestUser: TUIUserInfo?
     var userView: UIView?
+}
+
+class BattleViewInfo {
+    var battleUser: TUIBattleUser?
+    var battleView: UIView?
 }
 
 // MARK: - LayoutInfoChanged
@@ -610,6 +550,10 @@ extension LiveCoreView {
             make.center.equalToSuperview()
         }
         
+        videoLayoutList.removeAll()
+        videoLayoutViewMap.removeAll()
+        layoutContainerView.removeAllViews()
+        
         let layoutConfig = [layoutList.count : LayoutInfo(backgroundColor: "", viewInfoList: layoutList)]
         layoutContainerView.setLayoutConfig(layoutConfig: layoutConfig)
         let (addedUsers, removedUsers) = calculateVideoLayoutChanges(newList: layoutList)
@@ -620,6 +564,16 @@ extension LiveCoreView {
         for layoutInfo in removedUsers {
             videoLayoutList.removeAll { $0.userId == layoutInfo.userId }
             removeVideoLayoutView(layoutInfo: layoutInfo)
+        }
+        
+        videoLayoutList.forEach { layoutInfo in
+            battleViewInfoMap.removeValue(forKey: layoutInfo.userId)
+        }
+        
+        if !manager.battleState.battledUsers.isEmpty &&
+            layoutContainerView.getFullScreenWidgetsView().subviews.count == 0 {
+            addBattleContainerView(container: layoutContainerView)
+            addBattleView(container: layoutContainerView)
         }
     }
     
@@ -634,30 +588,35 @@ extension LiveCoreView {
     }
     
     private func addVideoLayoutView(layoutInfo: ViewInfo) {
-        if layoutInfo.userId == videoLiveManager.userState.selfInfo.userId {
+        if layoutInfo.userId == manager.userState.selfInfo.userId {
             return
         }
         let liveView = getVideoLayoutViewByUserId(userId: layoutInfo.userId)
         if !layoutContainerView.containsView(liveView) {
             if let videoViewDelegate = videoViewDelegate {
-                if let user = videoLiveManager.coHostState.connectedUserList.first(where: { $0.userId == layoutInfo.userId }) {
-                    let hasAudio = videoLiveManager.userState.hasAudioStreamUserList.contains(user.userId)
-                    let coHostUser = LiveStreamConvert.convertToCoHostUser(connectionUser: user, hasVideoStream: true, hasAudioStream: hasAudio)
-                    if let layoutWidgetsView = videoViewDelegate.createCoHostView(coHostUser: coHostUser) {
-                        liveView.addSubview(layoutWidgetsView)
-                        layoutWidgetsView.snp.makeConstraints { make in
-                            make.edges.equalToSuperview()
-                        }
-                    }
-                } else {
-                    let userInfo = TUIUserInfo()
-                    userInfo.userId = layoutInfo.userId
-                    userInfo.hasVideoStream = true
+                let userInfo = TUIUserInfo()
+                userInfo.userId = layoutInfo.userId
+                userInfo.userName = layoutInfo.userId
+                userInfo.avatarUrl = ""
+                userInfo.hasVideoStream = true
+                if manager.coHostState.connectedUserList.isEmpty {
                     if let layoutWidgetsView = videoViewDelegate.createCoGuestView(userInfo: userInfo) {
                         liveView.addSubview(layoutWidgetsView)
                         layoutWidgetsView.snp.makeConstraints { make in
                             make.edges.equalToSuperview()
                         }
+                        debugPrint("createCoGuestView: frame: \(liveView.frame), userId: \(userInfo.userId)")
+                    }
+                } else {
+                    
+                    let hasAudio = manager.userState.hasAudioStreamUserList.contains(userInfo.userId)
+                    let coHostUser = LiveStreamConvert.convertToCoHostUser(userInfo: userInfo, roomId: manager.roomState.roomId, hasVideoStream: userInfo.hasVideoStream, hasAudioStream: hasAudio)
+                    if let layoutWidgetsView = videoViewDelegate.createCoHostView(coHostUser: coHostUser) {
+                        liveView.addSubview(layoutWidgetsView)
+                        layoutWidgetsView.snp.makeConstraints { make in
+                            make.edges.equalToSuperview()
+                        }
+                        debugPrint("createCoHostView: frame: \(liveView.frame), userId: \(coHostUser.connectionUser.userId)")
                     }
                 }
             }
@@ -666,7 +625,7 @@ extension LiveCoreView {
     }
     
     private func removeVideoLayoutView(layoutInfo: ViewInfo) {
-        if layoutInfo.userId == videoLiveManager.userState.selfInfo.userId {
+        if layoutInfo.userId == manager.userState.selfInfo.userId {
             return
         }
         let liveView = getVideoLayoutViewByUserId(userId: layoutInfo.userId)
@@ -681,6 +640,96 @@ extension LiveCoreView {
             let layoutView = UIView()
             videoLayoutViewMap[userId] = layoutView
             return layoutView
+        }
+    }
+}
+
+// MARK: - BattleStateSubscribe
+extension LiveCoreView {
+    private func onBattleStart() {
+        removeAllBattleView()
+        if manager.context.coHostManager.hasMixStreamUser() {
+            if videoLayoutList.isEmpty {
+                // wait for onLiveVideoLayoutChanged
+                LiveStreamLog.info("\(#file)","\(#line)", "LiveCoreView onBattleStarted, wait for onLiveVideoLayoutChanged")
+            } else {
+                addBattleContainerView(container: layoutContainerView)
+                addBattleView(container: layoutContainerView)
+            }
+        } else {
+            addBattleContainerView(container: liveStreamContainerView)
+            addBattleView(container: liveStreamContainerView)
+        }
+    }
+    
+    private func addBattleContainerView(container: LiveStreamViewContainer) {
+        let fullScreenView = container.getFullScreenWidgetsView()
+        fullScreenView.isHidden = false
+        
+        if let videoViewDelegate = videoViewDelegate, let battleContainerView = videoViewDelegate.createBattleContainerView() {
+            fullScreenView.addSubview(battleContainerView)
+            battleContainerView.snp.makeConstraints { make in
+                make.edges.equalToSuperview()
+            }
+        }
+    }
+    
+    private func addBattleView(container: LiveStreamViewContainer) {
+        var itemView: UIView?
+        let battleUsers = manager.battleState.battledUsers
+        for battleUser in battleUsers {
+            if container == liveStreamContainerView {
+                if battleUser.userId == manager.userState.selfInfo.userId {
+                    itemView = viewModel.getLocalLiveView()
+                } else {
+                    itemView = viewModel.getRemoteLiveViewByUserId(userId: battleUser.userId)
+                }
+            } else if container == layoutContainerView {
+                itemView = videoLayoutViewMap[battleUser.userId]
+            }
+            
+            guard let itemView = itemView, container.containsView(itemView) else { continue }
+            
+            if let videoViewDelegate = videoViewDelegate, let battleView = videoViewDelegate.createBattleView(battleUser: battleUser) {
+                let battleViewInfo = BattleViewInfo()
+                battleViewInfo.battleUser = battleUser
+                battleViewInfo.battleView = battleView
+                battleViewInfoMap.updateValue(battleViewInfo, forKey: battleUser.userId)
+                
+                itemView.addSubview(battleView)
+                battleView.snp.makeConstraints { make in
+                    make.edges.equalToSuperview()
+                }
+                container.layoutIfNeeded()
+            }
+        }
+        updateBattleContainerView(container: container)
+    }
+    
+    private func updateBattleContainerView(container: LiveStreamViewContainer) {
+        guard let videoViewDelegate = videoViewDelegate, container.getFullScreenWidgetsView().subviews.count != 0 else { return }
+        guard let battleContainerView = container.getFullScreenWidgetsView().subviews.first else { return }
+        var userInfos: [BattleUserViewModel] = []
+        battleViewInfoMap.forEach { (userId, battleViewInfo) in
+            if let battleUser = battleViewInfo.battleUser,
+               let battleView = battleViewInfo.battleView,
+               battleView.superview != nil {
+                let model = BattleUserViewModel()
+                model.battleUser = battleUser
+                model.rect = battleView.superview?.frame ?? .zero
+                userInfos.append(model)
+            }
+        }
+        videoViewDelegate.updateBattleContainerView(battleContainerView: battleContainerView, userInfos: userInfos)
+    }
+    
+    private func removeAllBattleView() {
+        liveStreamContainerView.removeFullScreenWidgetsViews()
+        layoutContainerView.removeFullScreenWidgetsViews()
+        
+        battleViewInfoMap.forEach { (_, viewInfo) in
+            guard let battleView = viewInfo.battleView else { return }
+            battleView.removeFromSuperview()
         }
     }
 }

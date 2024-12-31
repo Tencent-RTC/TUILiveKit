@@ -12,14 +12,13 @@ let battleDuration: TimeInterval = 30
 let battleRequestTimeout: TimeInterval = 10
 let battleEndInfoDuration: TimeInterval = 5
 
-typealias LSReceivedBattleRequest = (info: TUIBattleInfo, inviter: BattleUser, invitee: BattleUser)
-typealias LSSentBattleRequest = (info: TUIBattleInfo?, inviteeIdList: [String])
+typealias LSReceivedBattleRequest = (battleId: String, inviter: BattleUser)
 
 struct LSBattleState {
     
     var battleId: String = ""
     var battleUsers: [BattleUser] = []
-    var sentBattleRequest: LSSentBattleRequest = (nil, [])
+    var sentBattleRequest: [TUIBattleUser] = []
     var receivedBattleRequest: LSReceivedBattleRequest?
     var durationCountDown: Int = 0
     var battleConfig: BattleConfig = BattleConfig()
@@ -30,20 +29,16 @@ struct LSBattleState {
     var isBattleRunning: Bool = false
     var isOnDisplayResult: Bool = false
     
-    mutating func addSentBattleRequest(info: TUIBattleInfo, requestResultMap: [String: TUIBattleCode]) {
-        let userIDs = sentBattleRequest.inviteeIdList
-        requestResultMap.forEach { (key, code) in
-            if code == .success {
-                if !userIDs.contains(where: { $0 == key }) {
-                    sentBattleRequest.inviteeIdList.append(key)
-                }
-            }
-        }
-        sentBattleRequest.info = info
+    var inviteeIdList: [String] {
+        sentBattleRequest.map { $0.userId }
     }
     
-    mutating func clearSentBattleReuqest() {
-        sentBattleRequest = (nil, [])
+    mutating func addSentBattleRequest(user: TUIBattleUser) {
+        sentBattleRequest.append(user)
+    }
+    
+    mutating func clearSentBattleRequest() {
+        sentBattleRequest.removeAll()
     }
 }
 
@@ -54,6 +49,7 @@ struct BattleUser: Codable {
     var userName: String
     var score: UInt
     var ranking: Int
+    var rect: CGRect
     
     init() {
         roomId = ""
@@ -62,6 +58,7 @@ struct BattleUser: Codable {
         userName = ""
         score = 0
         ranking = 1
+        rect = .zero
     }
     
     init(_ battleUser: TUIBattleUser) {
@@ -71,6 +68,7 @@ struct BattleUser: Codable {
         self.avatarUrl = battleUser.avatarUrl
         self.score = battleUser.score
         ranking = 1
+        rect = .zero
     }
 }
 

@@ -26,8 +26,7 @@ class LSRouterControlCenter {
     private var cancellableSet = Set<AnyCancellable>()
     private var presentedRouteStack: [LSRoute] = []
     private var presentedViewControllerMap: [LSRoute: UIViewController] = [:]
-    private lazy var liveStreamObserver = LiveStreamObserver(manager: manager)
-    
+
     init(rootViewController: UIViewController, rootRoute: LSRoute, routerManager: LSRouterManager, manager: LiveStreamManager, coreView: LiveCoreView) {
         self.rootViewController = rootViewController
         self.rootRoute = rootRoute
@@ -35,7 +34,6 @@ class LSRouterControlCenter {
         self.manager = manager
         self.coreView = coreView
         routerManager.setRootRoute(route: rootRoute)
-        coreView.registerConnectionObserver(observer: liveStreamObserver)
     }
     
     func updateRootRoute(rootRoute: LSRoute) {
@@ -44,7 +42,6 @@ class LSRouterControlCenter {
     }
     
     deinit {
-        coreView.unregisterConnectionObserver(observer: liveStreamObserver)
         print("deinit \(type(of: self))")
     }
 }
@@ -224,7 +221,7 @@ extension LSRouterControlCenter {
         case .prepareSetting:
             break
         case .battleCountdown(let countdownTime):
-            let countdownView = LSBattleCountDownView(countdownTime: countdownTime, manager: manager.battleManager)
+            let countdownView = LSBattleCountDownView(countdownTime: countdownTime, manager: manager.battleManager, coreView: coreView)
             countdownView.timeEndClosure = { [weak self] in
                 guard let self = self else { return }
                 self.routerManager.router(action: .dismiss())
@@ -246,6 +243,10 @@ extension LSRouterControlCenter {
                 routerManager.router(action: .dismiss())
             }
             view = beautyView
+        case .giftView:
+            let giftPanel = GiftListPanel(roomId: manager.roomState.roomId, dataSource: manager)
+            giftPanel.setGiftList(TUIGiftStore.shared.giftList)
+            view = giftPanel
         default:
             break
         }

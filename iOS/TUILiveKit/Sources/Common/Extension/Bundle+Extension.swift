@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 extension Bundle {
     static var liveBundle: Bundle {
@@ -18,7 +19,7 @@ class SharedBundle {
         if let bundle = getLiveBundle() {
             return bundle
         } else {
-            return Bundle()
+            return .main
         }
     }
     

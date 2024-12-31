@@ -1,5 +1,5 @@
 //
-//  TUIGiftPresenter.swift
+//  GiftManager.swift
 //  TUILiveKit
 //
 //  Created by krabyu on 2024/1/2.
@@ -8,75 +8,64 @@
 import Foundation
 import TUICore
 
-protocol TUIGiftPresenterDelegate: AnyObject {
-    func onGiftDidSend(_ model: TUIGift, sender: TUIGiftUser, receiver: TUIGiftUser, giftCount: Int, isSuccess: Bool, message: String)
-    func onLikeDidSend(sender: TUIGiftUser, isSuccess: Bool, message: String)
+protocol GiftManagerDelegate: AnyObject {
     func onReceiveGift(_ model: TUIGift, giftCount: Int, sender: TUIGiftUser, receiver: TUIGiftUser)
     func onReceiveLike(sender: TUIGiftUser)
 }
 
-class TUIGiftPresenter {
-    var groupId: String = ""
-    var msgService: TUIGiftIMService = TUIGiftIMService()
-    weak var delegate: TUIGiftPresenterDelegate?
-
-    static func defaultCreate(_ delegate: TUIGiftPresenterDelegate, groupId: String) -> TUIGiftPresenter {
-        let service = TUIGiftPresenter()
-        service.delegate = delegate
-        service.groupId = groupId
-        service.initIM()
-        return service
-    }
-
-    private func initIM() {
-        msgService = TUIGiftIMService.defaultCreate(self, groupID: groupId)
-    }
-
-    private func dealloc() {
-        msgService.releaseResources()
+class GiftManager {
+    weak var delegate: GiftManagerDelegate?
+    
+    private let DEFAULT_AVATAR = "https://liteav.sdk.qcloud.com/app/res/picture/voiceroom/avatar/user_avatar1.png"
+    private let roomId: String
+    private let imService: TUIGiftIMService
+    
+    init(roomId: String, delegate: GiftManagerDelegate? = nil) {
+        self.roomId = roomId
+        self.delegate = delegate
+        self.imService = TUIGiftIMService(roomId: roomId)
+        imService.delegate = self
     }
 }
 
 // MARK: Send Msg
 
-extension TUIGiftPresenter {
-    func sendGift(_ giftModel: TUIGift, receiver: TUIGiftUser, giftCount: Int) {
+extension GiftManager {
+    func sendGift(_ giftModel: TUIGift, receiver: TUIGiftUser, giftCount: Int, completion: @escaping (Int, String) -> ()) {
         let sender = TUIGiftUser()
         sender.userId = TUILogin.getUserID() ?? ""
         sender.userName = TUILogin.getNickName() ?? ""
         sender.avatarUrl = TUILogin.getFaceUrl() ?? DEFAULT_AVATAR
         sender.level = "0"
-        msgService.sendGiftMessage(giftModel,
+        imService.sendGiftMessage(giftModel,
                                    sender: sender,
                                    receiver: receiver,
                                    giftCount: giftCount) { [weak self] code, msg in
             guard let self = self else { return }
-            let isSuccess = (code == 0)
-            self.delegate?.onGiftDidSend(giftModel, sender: sender, receiver: receiver, giftCount: giftCount, isSuccess: isSuccess, message: msg)
-            if isSuccess {
+            completion(code, msg)
+            if code == 0 {
                 let giftData = TUIGiftData(gift: giftModel, giftCount: giftCount, sender: sender, receiver: receiver)
                 giftData.sender.userName = .meText
-                TUIGiftStore.shared.giftDataMap.value = [groupId :giftData]
+                TUIGiftStore.shared.giftDataMap.value = [roomId: giftData]
             }
         }
     }
 
-    func sendLike() {
+    func sendLike(completion: @escaping (TUIGiftUser, Int, String) -> ()) {
         let sender = TUIGiftUser()
         sender.userId = TUILogin.getUserID() ?? ""
         sender.userName = TUILogin.getNickName() ?? ""
         sender.avatarUrl = TUILogin.getFaceUrl() ?? DEFAULT_AVATAR
         sender.level = "0"
-        msgService.sendLikeMessage(sender: sender) { [weak self] code, msg in
-            let isSuccess = (code == 0)
-            self?.delegate?.onLikeDidSend(sender: sender, isSuccess: isSuccess, message: msg)
+        imService.sendLikeMessage(sender: sender) { code, msg in
+            completion(sender, code, msg)
         }
     }
 }
 
 // MARK: TUIGiftIMServiceDelegate
 
-extension TUIGiftPresenter: TUIGiftIMServiceDelegate {
+extension GiftManager: TUIGiftIMServiceDelegate {
     func onReceiveGiftMessage(_ giftModel: TUIGift, sender: TUIGiftUser, receiver: TUIGiftUser, count: Int) {
         delegate?.onReceiveGift(giftModel, giftCount: count, sender: sender, receiver: receiver)
     }

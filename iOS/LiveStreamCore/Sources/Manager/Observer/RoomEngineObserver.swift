@@ -91,14 +91,12 @@ class RoomEngineObserver: NSObject, TUIRoomObserver {
         LiveStreamLog.info("\(#file)","\(#line)",
                            "onUserAudioStateChanged:[userId:\(userId),hasAudio:\(hasAudio),reason:\(reason)]")
         context?.userManager.onUserAudioStateChanged(userId: userId, hasAudio: hasAudio, reason: reason)
-        context?.delegate?.onUserAudioStateChanged(userId: userId, hasAudio: hasAudio, reason: reason)
     }
     
     func onUserVideoStateChanged(userId: String, streamType: TUIVideoStreamType, hasVideo: Bool, reason: TUIChangeReason) {
         LiveStreamLog.info("\(#file)","\(#line)",
                            "onUserVideoStateChanged:[userId:\(userId),streamType:\(streamType),hasVideo:\(hasVideo),reason:\(reason)]")
         context?.userManager.onUserVideoStateChanged(userId: userId, hasVideo: hasVideo, reason: reason)
-        context?.delegate?.onUserVideoStateChanged(userId: userId, hasVideo: hasVideo, reason: reason)
     }
     
     func onRemoteUserEnterRoom(roomId: String, userInfo: TUIUserInfo) {
@@ -118,7 +116,7 @@ class RoomEngineObserver: NSObject, TUIRoomObserver {
     }
     
     func onUserInfoChanged(userInfo: TUIUserInfo, modifyFlag: TUIUserInfoModifyFlag) {
-        context?.delegate?.onUserInfoChanged(userInfo: userInfo, modifyFlag: modifyFlag)
+        context?.userManager.onUserInfoChanged(userInfo: userInfo, modifyFlag: modifyFlag)
     }
 }
 

@@ -40,14 +40,6 @@ class LSRoomEngineService {
     func removeLiveListManagerObserver(_ observer: TUILiveListManagerObserver) {
         liveListManager?.removeObserver(observer)
     }
-    
-    func addBattleObserver(_ observer: TUILiveBattleObserver) {
-        roomEngine.getLiveBattleManager().addObserver(observer)
-    }
-    
-    func removeBattleObserver(_ observer: TUILiveBattleObserver) {
-        roomEngine.getLiveBattleManager().removeObserver(observer)
-    }
 }
 
 // MARK: - RoomAPI

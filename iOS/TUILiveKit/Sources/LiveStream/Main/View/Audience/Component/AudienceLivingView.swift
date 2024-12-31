@@ -91,7 +91,7 @@ class AudienceLivingView: RTCBaseView {
     }()
 
     private lazy var giftDisplayView: GiftPlayView = {
-        let view = GiftPlayView(groupId: "store.roomState.roomId")
+        let view = GiftPlayView(roomId: manager.roomState.roomId)
         view.delegate = self
         return view
     }()
@@ -222,7 +222,6 @@ extension AudienceLivingView {
             .receive(on: RunLoop.main)
             .sink { [weak self] roomId in
                 guard let self = self else { return }
-                self.giftDisplayView.setRoomId(roomId: roomId)
                 self.initComponentView()
             }
             .store(in: &cancellableSet)

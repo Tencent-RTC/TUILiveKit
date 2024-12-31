@@ -67,6 +67,8 @@ public struct VideoAdvanceSetting {
     
     public var isUltimateEnabled: Bool = false
     
+    public var isBFrameEnabled: Bool = false
+    
     public var isH265Enabled: Bool = false
     
     public var hdrRenderType: HDRRenderType = .none

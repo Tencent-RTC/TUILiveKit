@@ -31,11 +31,14 @@ class LiveStreamService: LiveStream {
     let roomEngine: TUIRoomEngine
     let trtcCloud: TRTCCloud
     let connectionManager: TUILiveConnectionManager
+    let battleManager: TUILiveBattleManager
     let layoutManager: TUILiveLayoutManager?
+    
     init() {
         roomEngine = TUIRoomEngine.sharedInstance()
         trtcCloud = roomEngine.getTRTCCloud()
         connectionManager = roomEngine.getLiveConnectionManager()
+        battleManager = roomEngine.getLiveBattleManager()
         layoutManager = roomEngine.getExtension(extensionType: .liveLayoutManager) as? TUILiveLayoutManager
     }
 
@@ -57,6 +60,14 @@ class LiveStreamService: LiveStream {
     
     func removeLiveConnectionManagerObserver(_ observer: any TUILiveConnectionObserver) {
         connectionManager.removeObserver(observer)
+    }
+    
+    func addLiveBattleManagerObserver(_ observer: any TUILiveBattleObserver) {
+        battleManager.addObserver(observer)
+    }
+    
+    func removeLiveBattleManagerObserver(_ observer: any TUILiveBattleObserver) {
+        battleManager.removeObserver(observer)
     }
     
     func addImObserver(_ observer: V2TIMSDKListener) {
@@ -390,6 +401,56 @@ class LiveStreamService: LiveStream {
     func cancelConnectionRequest(list: [String]) async throws {
         try await withCheckedThrowingContinuation { continuation in
             connectionManager.cancelConnectionRequest(roomIdList: list) {
+                continuation.resume()
+            } onError: { code, message in
+                continuation.resume(throwing: LiveStreamCoreError.error(code: code, message: message))
+            }
+        }
+    }
+    
+    func requestBattle(config: TUIBattleConfig, userIdList: [String], timeout: TimeInterval) async throws -> (TUIBattleInfo, [String: NSNumber]) {
+        return try await withCheckedThrowingContinuation { continuation in
+            battleManager.requestBattle(config: config, userIdList: userIdList, timeout: timeout) { battleInfo, resultMap in
+                continuation.resume(returning: (battleInfo, resultMap))
+            } onError: { code, message in
+                continuation.resume(throwing: LiveStreamCoreError.error(code: code, message: message))
+            }
+        }
+    }
+    
+    func cancelBattle(battleId: String, userIdList: [String]) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            battleManager.cancelBattleRequest(battleId: battleId, userIdList: userIdList) {
+                continuation.resume()
+            } onError: { code, message in
+                continuation.resume(throwing: LiveStreamCoreError.error(code: code, message: message))
+            }
+        }
+    }
+    
+    func acceptBattle(battleId: String) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            battleManager.acceptBattle(battleId: battleId) {
+                continuation.resume()
+            } onError: { code, message in
+                continuation.resume(throwing: LiveStreamCoreError.error(code: code, message: message))
+            }
+        }
+    }
+    
+    func rejectBattle(battleId: String) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            battleManager.rejectBattle(battleId: battleId) {
+                continuation.resume()
+            } onError: { code, message in
+                continuation.resume(throwing: LiveStreamCoreError.error(code: code, message: message))
+            }
+        }
+    }
+    
+    func exitBattle(battleId: String) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            battleManager.exitBattle(battleId: battleId) {
                 continuation.resume()
             } onError: { code, message in
                 continuation.resume(throwing: LiveStreamCoreError.error(code: code, message: message))

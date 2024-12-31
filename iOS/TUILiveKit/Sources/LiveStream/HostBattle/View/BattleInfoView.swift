@@ -8,6 +8,7 @@
 import UIKit
 import Combine
 import RTCCommon
+import LiveStreamCore
 
 public enum BattleResultType {
     case draw
@@ -20,8 +21,6 @@ class BattleInfoView: RTCBaseView {
     private lazy var connectedUsersPublisher = manager.subscribeCoHostState(StateSelector(keyPath: \LSCoHostState.connectedUsers))
     private lazy var battleUsersPublisher = manager.subscribeBattleState(StateSelector(keyPath: \LSBattleState.battleUsers))
     private lazy var isBattleRunningPublisher = manager.subscribeBattleState(StateSelector(keyPath: \LSBattleState.isBattleRunning))
-    private lazy var receivedBattleRequestPublisher = manager.subscribeBattleState(StateSelector(keyPath: \LSBattleState.receivedBattleRequest))
-    private lazy var isInWaitingPublisher = manager.subscribeBattleState(StateSelector(keyPath: \LSBattleState.isInWaiting))
     private lazy var durationCountDownPublisher = manager.subscribeBattleState(StateSelector(keyPath: \LSBattleState.durationCountDown))
     private lazy var isOnDisplayResultPublisher = manager.subscribeBattleState(StateSelector(keyPath: \LSBattleState.isOnDisplayResult))
     
@@ -32,6 +31,7 @@ class BattleInfoView: RTCBaseView {
         manager.coHostState
     }
     
+    private weak var coreView: LiveCoreView?
     private let manager: LiveStreamManager
     private let routerManager: LSRouterManager
     private let isOwner: Bool
@@ -41,10 +41,11 @@ class BattleInfoView: RTCBaseView {
         manager.roomState.ownerInfo.userId
     }
     
-    init(manager: LiveStreamManager, routerManager: LSRouterManager, isOwner: Bool) {
+    init(manager: LiveStreamManager, routerManager: LSRouterManager, isOwner: Bool, coreView: LiveCoreView) {
         self.manager = manager
         self.routerManager = routerManager
         self.isOwner = isOwner
+        self.coreView = coreView
         super.init(frame: .zero)
         backgroundColor = .clear
     }
@@ -96,26 +97,24 @@ class BattleInfoView: RTCBaseView {
     
     override func activateConstraints() {
         singleBattleScoreView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(128.scale375Height())
+            make.top.equalToSuperview()
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(18.scale375Height())
         }
         battleTimeView.snp.makeConstraints { make in
-            make.top.equalTo(singleBattleScoreView.snp.bottom).offset(-2.scale375Height())
+            make.top.equalTo(singleBattleScoreView.snp.bottom)
             make.centerX.equalToSuperview()
             make.width.equalTo(72.scale375())
             make.height.equalTo(22.scale375Height())
         }
         startBattleImageView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(214.scale375Height())
-            make.centerX.equalToSuperview()
+            make.center.equalToSuperview()
             make.width.equalTo(240.scale375())
             make.height.equalTo(120.scale375Height())
         }
         battleResultImageView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(251.scale375Height())
+            make.center.equalToSuperview()
             make.width.equalTo(234.scale375())
-            make.centerX.equalToSuperview()
         }
         battleClockButton.snp.makeConstraints { make in
             make.center.equalToSuperview()
@@ -126,6 +125,18 @@ class BattleInfoView: RTCBaseView {
     
     override func bindInteraction() {
         subscribeBattleState()
+    }
+
+    func updateView(userInfos: [LiveStreamCore.BattleUserViewModel]) {
+        userInfos.forEach { battleUserViewModel in
+            for (index, battleUser) in manager.battleManager.state.battleUsers.enumerated() {
+                if battleUser.userId == battleUserViewModel.battleUser.userId {
+                    manager.battleManager.updateBattleUserRectFromIndex(rect: battleUserViewModel.rect, index: index)
+                    break
+                }
+            }
+        }
+        onBattleScoreChanged()
     }
     
     private func subscribeBattleState() {
@@ -169,27 +180,6 @@ class BattleInfoView: RTCBaseView {
             }
             .store(in: &cancellableSet)
         
-        receivedBattleRequestPublisher
-            .removeDuplicates(by: {(firstRequest, secondRequest) -> Bool in
-                return firstRequest?.info.battleId == secondRequest?.info.battleId &&  
-                firstRequest?.inviter.userId == secondRequest?.inviter.userId
-            })
-            .receive(on: RunLoop.main)
-            .sink { [weak self] receivedRequest in
-                guard let self = self else { return }
-                self.onReceivedBattleRequestChanged(battleUser: receivedRequest?.inviter)
-            }
-            .store(in: &cancellableSet)
-        
-        isInWaitingPublisher
-            .removeDuplicates()
-            .receive(on: RunLoop.main)
-            .sink { [weak self] inWaiting in
-                guard let self = self else { return }
-                self.onInWaitingChanged(inWaiting: inWaiting)
-            }
-            .store(in: &cancellableSet)
-        
         durationCountDownPublisher
             .removeDuplicates()
             .receive(on: RunLoop.main)
@@ -223,40 +213,6 @@ class BattleInfoView: RTCBaseView {
     
     private func onBattleStartChanged(start: Bool) {
         start ? onBattleStart() : onBattleEnd()
-    }
-    
-    private func onReceivedBattleRequestChanged(battleUser: BattleUser?) {
-        guard let battleUser = battleUser else {
-            routerManager.router(action: .dismiss(.alert))
-            return
-        }
-        let alertInfo = LSAlertInfo(description: .localizedReplace(.battleInvitationText, replace: battleUser.userName),
-                                    imagePath: battleUser.avatarUrl,
-                                    cancelButtonInfo: (String.rejectText, .g3),
-                                    defaultButtonInfo: (String.acceptText, .b1)) { [weak self] _ in
-            guard let self = self else { return }
-            manager.battleManager.rejectBattle()
-            routerManager.router(action: .dismiss(.alert))
-        } defaultClosure: { [weak self] _ in
-            guard let self = self else { return }
-            manager.battleManager.acceptBattle()
-            routerManager.router(action: .dismiss(.alert))
-        }
-        routerManager.router(action: .present(.alert(info: alertInfo)))
-    }
-    
-    private func onInWaitingChanged(inWaiting: Bool) {
-        if inWaiting {
-            routerManager.router(action: .present(.battleCountdown(battleRequestTimeout)))
-        } else {
-            let topRoute = routerManager.routerState.routeStack.last
-            switch topRoute {
-            case .battleCountdown(_):
-                routerManager.router(action: .dismiss())
-            default:
-                break
-            }
-        }
     }
     
     private func onDurationCountDown(duration: Int) {
@@ -300,7 +256,7 @@ class BattleInfoView: RTCBaseView {
             // owner on left
             let firstUser = userList[0]
             let secondUser = userList[1]
-            if firstUser.userId == ownerId {
+            if firstUser.rect.origin.x < secondUser.rect.origin.x {
                 updateData(leftUser: firstUser, rightUser: secondUser)
             } else {
                 updateData(leftUser: secondUser, rightUser: firstUser)
@@ -311,10 +267,10 @@ class BattleInfoView: RTCBaseView {
     private func updateData(leftUser: BattleUser, rightUser: BattleUser) {
         singleBattleScoreView.isHidden = false
         singleBattleScoreView.updateScores(leftScore: Int(leftUser.score), rightScore: Int(rightUser.score))
+//        singleBattleScoreView.updateScores(leftScore: leftUser.userId, rightScore: rightUser.userId)
     }
-    
+        
     private func onBattleStart() {
-        singleBattleScoreView.isHidden = true
         isHidden = false
         battleTimeView.isHidden = false
         if isOwner && battleState.isShowingStartView {

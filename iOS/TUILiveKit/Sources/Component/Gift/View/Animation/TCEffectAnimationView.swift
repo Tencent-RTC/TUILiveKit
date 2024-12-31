@@ -18,7 +18,8 @@ let KEY_PARAM_VIEW = "view"
 class TCEffectAnimationView: UIView {
     var usable: Bool = false
     private var effectAnimationView: UIView?
-    
+    private var finishClosure: ((Int) -> Void)?
+
     init() {
         super.init(frame: .zero)
         effectAnimationView = createAnimationView()
@@ -68,6 +69,7 @@ class TCEffectAnimationView: UIView {
 
 extension TCEffectAnimationView: AnimationView {
     func playAnimation(playUrl: String, onFinished: @escaping ((Int)->Void)) {
+        finishClosure = onFinished
         reportGiftData()
         if !isMp4File(url: playUrl) {
             makeToast(.isNotMp4FileText)
@@ -78,7 +80,7 @@ extension TCEffectAnimationView: AnimationView {
             TUICore.callService(KEY_SERVICE_NAME,
                                 method: KEY_METHOD_START_PLAY,
                                 param: [KEY_PARAM_PLAY_URL:playUrl,
-                                        KEY_PARAM_VIEW:animationView,]) { code, message,_ in
+                                        KEY_PARAM_VIEW:animationView]) { code, message,_ in
                 onFinished(code)
             }
         }

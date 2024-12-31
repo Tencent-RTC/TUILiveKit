@@ -8,17 +8,20 @@
 import UIKit
 import Combine
 import RTCCommon
+import LiveStreamCore
 
 class LSBattleCountDownView: UIView {
+    private weak var coreView: LiveCoreView?
     var countdownTime: TimeInterval = 5
     var timeEndClosure: (()->Void)?
     var cancelClosure: (()->Void)?
     private var dotsTimer: Timer = Timer()
     private let manager: LSBattleManager
     
-    init(countdownTime: TimeInterval, manager: LSBattleManager) {
+    init(countdownTime: TimeInterval, manager: LSBattleManager, coreView: LiveCoreView) {
         self.manager = manager
         self.countdownTime = countdownTime
+        self.coreView = coreView
         super.init(frame: .zero)
     }
     
@@ -103,8 +106,7 @@ class LSBattleCountDownView: UIView {
             make.width.equalTo(375.scale375())
         }
         backgroundView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(204.scale375Height())
-            make.centerX.equalToSuperview()
+            make.center.equalToSuperview()
             make.width.height.equalTo(160.scale375())
         }
         timeLabel.snp.makeConstraints { make in
@@ -134,7 +136,12 @@ class LSBattleCountDownView: UIView {
     }
     
     @objc private func cancelButtonClick() {
-        manager.cancelBattleRequest()
+        coreView?.cancelBattle(battleId: manager.state.battleId, userIdList: manager.state.inviteeIdList, onSuccess: { [weak self] in
+            guard let self = self else { return }
+            self.manager.onCanceledBattle()
+        }, onError: { _, _ in
+            
+        })
         cancelClosure?()
         countdownTimer.stop()
         if dotsTimer.isValid {

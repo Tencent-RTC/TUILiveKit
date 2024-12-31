@@ -25,6 +25,10 @@ protocol LiveStream {
     func addLiveConnectionManagerObserver(_ observer: TUILiveConnectionObserver)
 
     func removeLiveConnectionManagerObserver(_ observer: TUILiveConnectionObserver)
+    
+    func addLiveBattleManagerObserver(_ observer: TUILiveBattleObserver)
+    
+    func removeLiveBattleManagerObserver(_ observer: TUILiveBattleObserver)
 
     /****************************************** Room Business *******************************************/
     func createRoom(roomInfo: TUIRoomInfo) async throws

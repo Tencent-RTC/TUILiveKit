@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 extension UIImage {
     static func liveBundleImage(_ named: String) -> UIImage? {

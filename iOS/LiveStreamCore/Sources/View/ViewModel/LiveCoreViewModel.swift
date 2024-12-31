@@ -1,56 +1,42 @@
 //
-//  ViewManager.swift
+//  LiveCoreViewModel.swift
 //  LiveStreamCore
 //
-//  Created by jeremiawang on 2024/10/30.
+//  Created by jeremiawang on 2024/12/20.
 //
 
-import RTCCommon
-
-class ViewManager {
-    let observerState = ObservableState<ViewState>(initialState: ViewState())
-    var viewState: ViewState {
-        observerState.state
-    }
-    
-    private weak var context: LiveStreamManager.Context?
-    private let service: LiveStreamService
-    
-    init(context: LiveStreamManager.Context) {
-        self.context = context
-        self.service = context.service
-    }
+class LiveCoreViewModel {
+    private var localLiveView: LiveStreamView? = nil
+    private var remoteLiveViewMap: [String: LiveStreamView] = [:]
+    private var layoutMode: LayoutMode = .gridLayout
+    var layoutConfig: LayoutConfig? = nil
     
     func getLocalLiveView() -> LiveStreamView {
-        if let liveView = viewState.localLiveView {
+        if let liveView = localLiveView {
             return liveView
         } else {
             let newView = LiveStreamView()
-            modifyViewState(value: newView, keyPath: \ViewState.localLiveView)
+            localLiveView = newView
             return newView
         }
     }
     
     func clearLocalLiveView() {
-        modifyViewState(value: nil, keyPath: \ViewState.localLiveView)
+        localLiveView = nil
     }
     
     func getRemoteLiveViewByUserId(userId: String) -> LiveStreamView {
-        if let liveView = viewState.remoteLiveViewMap[userId] {
+        if let liveView = remoteLiveViewMap[userId] {
             return liveView
         } else {
             let newLiveView = LiveStreamView()
-            observerState.update(isPublished: false) { viewState in
-                viewState.remoteLiveViewMap[userId] = newLiveView
-            }
+            remoteLiveViewMap[userId] = newLiveView
             return newLiveView
         }
     }
     
     func removeRemoteView(userId: String) {
-        observerState.update(isPublished: false) { viewState in
-            viewState.remoteLiveViewMap.removeValue(forKey: userId)
-        }
+        remoteLiveViewMap.removeValue(forKey: userId)
     }
     
     func setLayoutMode(layoutMode: LayoutMode, layoutJson: String? = nil) {
@@ -63,24 +49,14 @@ class ViewManager {
         }
         
         if let layoutConfig = layoutConfig {
-            modifyViewState(value: layoutConfig, keyPath: \ViewState.layoutConfig)
-            modifyViewState(value: layoutMode, keyPath: \ViewState.layoutMode, isPublished: true)
+            self.layoutConfig = layoutConfig
+            self.layoutMode = layoutMode
         }
-    }
-    
-    func onLeaveRoom() {
-        modifyViewState(value: nil, keyPath: \ViewState.localLiveView)
-        modifyViewState(value: [:], keyPath: \ViewState.remoteLiveViewMap)
-        modifyViewState(value: nil, keyPath: \ViewState.videoLayout)
-    }
-    
-    func updateVideoLayout(layout: VideoLayoutInfo?) {
-        modifyViewState(value: layout, keyPath: \ViewState.videoLayout, isPublished: true)
     }
 }
 
-// MARK: - Private
-extension ViewManager {
+// MARK: - private
+extension LiveCoreViewModel {
     private func decodeLayoutConfig(from jsonString: String?) -> LayoutConfig? {
         guard let jsonString = jsonString, let jsonData = jsonString.data(using: .utf8) else {
             debugPrint("Error: layoutJson is nil or cannot be converted to Data.")
@@ -110,12 +86,6 @@ extension ViewManager {
         } catch {
             debugPrint("Error loading or parsing JSON: \(error)")
             return nil
-        }
-    }
-    
-    private func modifyViewState<T>(value: T, keyPath: WritableKeyPath<ViewState, T>, isPublished: Bool = false) {
-        observerState.update(isPublished: isPublished) { viewState in
-            viewState[keyPath: keyPath] = value
         }
     }
 }

@@ -34,11 +34,28 @@ import RTCRoomEngine
     func onRoomDismissed(roomId: String)
 }
 
+@objc public protocol BattleObserver {
+    func onBattleStarted(battleInfo: TUIBattleInfo)
+    func onBattleEnded(battleInfo: TUIBattleInfo)
+    func onUserJoinBattle(battleId: String, battleUser: TUIBattleUser)
+    func onUserExitBattle(battleId: String, battleUser: TUIBattleUser)
+    func onBattleScoreChanged(battleId: String, battleUserList: [TUIBattleUser])
+    func onBattleRequestReceived(battleId: String, inviter: TUIBattleUser, invitee: TUIBattleUser)
+    func onBattleRequestCancelled(battleId: String, inviter: TUIBattleUser, invitee: TUIBattleUser)
+    func onBattleRequestTimeout(battleId: String, inviter: TUIBattleUser, invitee: TUIBattleUser)
+    func onBattleRequestAccept(battleId: String, inviter: TUIBattleUser, invitee: TUIBattleUser)
+    func onBattleRequestReject(battleId: String, inviter: TUIBattleUser, invitee: TUIBattleUser)
+}
+
 @objc public protocol VideoViewDelegate {
     func createCoGuestView(userInfo: TUIUserInfo) -> UIView?
-    func updateCoGuestView(userInfo: TUIUserInfo, modifyFlag: UserInfoModifyFlag, coGuestView: UIView)
+    func updateCoGuestView(coGuestView: UIView, userInfo: TUIUserInfo, modifyFlag: UserInfoModifyFlag)
     func createCoHostView(coHostUser: CoHostUser) -> UIView?
-    func updateCoHostView(coHostUser: CoHostUser, modifyFlag: UserInfoModifyFlag, coHostView: UIView)
+    func updateCoHostView(coHostView: UIView, coHostUser: CoHostUser, modifyFlag: UserInfoModifyFlag)
+    func createBattleView(battleUser: TUIBattleUser) -> UIView?
+    func updateBattleView(battleView: UIView, battleUser: TUIBattleUser)
+    func createBattleContainerView() -> UIView?
+    func updateBattleContainerView(battleContainerView: UIView, userInfos: [BattleUserViewModel])
 }
 
 @objc public protocol WaitingCoGuestViewDelegate {
@@ -49,6 +66,11 @@ import RTCRoomEngine
     public var connectionUser: TUIConnectionUser = TUIConnectionUser()
     public var hasAudioStream: Bool = false
     public var hasVideoStream: Bool = true
+}
+
+@objcMembers public class BattleUserViewModel: NSObject {
+    public var battleUser: TUIBattleUser = TUIBattleUser()
+    public var rect: CGRect = .zero
 }
 
 @objc public class UserInfoModifyFlag: NSObject, OptionSet {
@@ -64,6 +86,8 @@ import RTCRoomEngine
         self.rawValue = rawValue
     }
 }
+
+public typealias TUIBattleRequestBlock = (String, [TUIBattleUser]) -> Void
 
 // MARK: ------------- Private Notification -------------
 // MARK: - Room

@@ -206,7 +206,6 @@ extension RoomManager {
         context?.coGuestManager.onLeaveRoom()
         context?.mediaManager.onLeaveRoom()
         context?.userManager.onLeaveRoom()
-        context?.viewManager.onLeaveRoom()
         notifyExitRoom()
     }
     

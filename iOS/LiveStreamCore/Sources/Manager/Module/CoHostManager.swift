@@ -41,6 +41,7 @@ class CoHostManager {
     }
     
     func requestConnection(roomId: String, timeout: Int) async throws {
+        try checkCrossRoomConnection(roomId: roomId)
         do {
             let map = try await service.requestConnection(roomIdList: [roomId], timeout: timeout, extensionInfo: "")
             let code = map[roomId]
@@ -171,6 +172,26 @@ extension CoHostManager {
             coHostState.sentConnectionRequestList.removeAll { user in
                 user.roomId == inviteeRoomId
             }
+        }
+    }
+    
+    private func checkCrossRoomConnection(roomId: String) throws {
+        guard let context = context else { throw LiveStreamCoreError.error(code: .failed, message: "failed") }
+        if context.roomManager.roomState.liveStatus == .none {
+            throw LiveStreamCoreError.error(code: .operationInvalidBeforeEnterRoom,
+                                            message: TUIError.operationInvalidBeforeEnterRoom.lcDescription)
+        }
+        if !isEnable() {
+            throw LiveStreamCoreError.error(code: .failed, message: "Room connection function is disabled")
+        }
+        if context.coGuestManager.coGuestState.connectedUserList.count > 1 ||
+            !context.coGuestManager.coGuestState.connectionRequestList.isEmpty ||
+            coHostState.receivedConnectionRequest != nil {
+            throw LiveStreamCoreError.error(code: .alreadyInSeat,
+                                            message: "Cross-room connections are not allowed when there are viewers connected in the room")
+        }
+        if roomId.isEmpty {
+            throw LiveStreamCoreError.error(code: .invalidParameter, message: "roomId is empty")
         }
     }
 }

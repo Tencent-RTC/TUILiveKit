@@ -22,8 +22,9 @@ let Bottom_SafeHeight = WindowUtils.bottomSafeHeight
 
 class GiftPlayView: UIView {
     weak var delegate: GiftPlayViewDelegate?
-    var groupId: String = ""
-    private var presenter: TUIGiftPresenter = TUIGiftPresenter()
+    
+    private let roomId: String
+    private let manager: GiftManager
     private var currentLikeAnimationCount: Int = 0
     private var likeCount = 0
     private var giftCacheKey = ""
@@ -52,11 +53,11 @@ class GiftPlayView: UIView {
                                          .yellow, .green, .blue,
                                          .gray, .cyan, .brown,]
     
-    init(groupId: String) {
-        self.groupId = groupId
+    init(roomId: String) {
+        self.roomId = roomId
+        self.manager = GiftManager(roomId: roomId)
         super.init(frame: .zero)
         isUserInteractionEnabled = false
-        initPresenter()
         addObserver()
     }
     
@@ -73,10 +74,6 @@ class GiftPlayView: UIView {
         isViewReady = true
     }
     
-    private func initPresenter() {
-        presenter = TUIGiftPresenter.defaultCreate(self, groupId: groupId)
-    }
-    
     private func clearData() {
         normalAnimationManager.clearData()
         advancedAnimationManager.clearData()
@@ -87,35 +84,40 @@ class GiftPlayView: UIView {
     }
     
     private func addObserver() {
+        manager.delegate = self
+        
         TUIGiftStore.shared.giftDataMap.addObserver(self) { [weak self] giftDataMap, _ in
-            guard let self = self, let giftData = giftDataMap[self.groupId] else { return }
+            guard let self = self, let giftData = giftDataMap[self.roomId] else { return }
             self.delegate?.giftPlayView(self,
                                         onReceiveGift: giftData.gift,
                                         giftCount: giftData.giftCount,
                                         sender: giftData.sender,
                                         receiver: giftData.receiver)
-            self.playGiftModel(giftModel: giftData.gift,
-                               sender: giftData.sender,
-                               receiver: giftData.receiver,
-                               giftCount: giftData.giftCount)
+            playGift(giftData)
         }
         TUIGiftStore.shared.likeDataMap.addObserver(self) { [weak self] likeDataMap, _ in
-            guard let self = self, let likeData = likeDataMap[self.groupId]  else { return }
+            guard let self = self, let likeData = likeDataMap[self.roomId]  else { return }
             self.playLikeModel(sender: likeData.sender)
         }
     }
     
-    private func playGiftModel(giftModel: TUIGift, sender: TUIGiftUser, receiver: TUIGiftUser, giftCount: Int) {
-        if giftModel.animationUrl.count > 0 {
-            advancedAnimationManager.enqueue(giftModel: giftModel, sender: sender, receiver: receiver, giftCount: giftCount)
+    private func playGift(_ gift: TUIGiftData) {
+        if gift.isAdvanced {
+            advancedAnimationManager.enqueue(giftData: gift)
         } else {
-            normalAnimationManager.enqueue(giftModel: giftModel, sender: sender, receiver: receiver, giftCount: giftCount)
+            normalAnimationManager.enqueue(giftData: gift)
         }
     }
     
     private func removeObserver() {
         TUIGiftStore.shared.giftDataMap.removeObserver(self)
         TUIGiftStore.shared.likeDataMap.removeObserver(self)
+    }
+}
+
+fileprivate extension TUIGiftData {
+    var isAdvanced: Bool {
+        gift.animationUrl.count > 0
     }
 }
 
@@ -134,11 +136,6 @@ extension GiftPlayView {
     
     func getLikeCount() -> Int {
         return likeCount
-    }
-    
-    func setRoomId(roomId: String) {
-        self.groupId = roomId
-        initPresenter()
     }
 }
 
@@ -281,7 +278,7 @@ private extension GiftPlayView {
 
 // MARK: TUIGiftPresenterDelegate
 
-extension GiftPlayView: TUIGiftPresenterDelegate {
+extension GiftPlayView: GiftManagerDelegate {
     func onGiftDidSend(_ model: TUIGift, sender: TUIGiftUser, receiver: TUIGiftUser, giftCount: Int, isSuccess: Bool, message: String) {
     }
     
@@ -290,7 +287,7 @@ extension GiftPlayView: TUIGiftPresenterDelegate {
     }
     
     func onReceiveGift(_ model: TUIGift, giftCount: Int, sender: TUIGiftUser, receiver: TUIGiftUser) {
-        playGiftModel(giftModel: model, sender: sender, receiver: receiver, giftCount: giftCount)
+        playGift(TUIGiftData(gift: model, giftCount: giftCount, sender: sender, receiver: receiver))
         delegate?.giftPlayView(self, onReceiveGift: model, giftCount: giftCount, sender: sender, receiver: receiver)
     }
     

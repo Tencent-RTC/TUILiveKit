@@ -20,14 +20,11 @@ class AudienceView: RTCBaseView {
     
     // MARK: - property: view
     private let videoView: LiveCoreView
+    private lazy var liveStreamObserver = LiveStreamObserver(manager: manager)
+    private lazy var battleObserver = LSBattleManagerObserver(battleManager: manager.battleManager)
     
     lazy var livingView: AudienceLivingView = {
         let view = AudienceLivingView(manager: manager, routerManager: routerManager, coreView: videoView)
-        return view
-    }()
-    
-    private lazy var battleInfoView: BattleInfoView = {
-        let view = BattleInfoView(manager: manager, routerManager: routerManager, isOwner: false)
         return view
     }()
     
@@ -39,17 +36,6 @@ class AudienceView: RTCBaseView {
         return view
     }()
     
-    lazy var giftPanelView: GiftListView = {
-        let view = GiftListView(groupId: roomId)
-        view.delegate = self
-        TUIGiftStore.shared.giftCloudServer.queryBalance { error, balance in
-            if error == .noError {
-                view.setBalance(balance)
-            }
-        }
-        return view
-    }()
-    
     init(roomId: String, manager: LiveStreamManager, routerManager: LSRouterManager, coreView: LiveCoreView) {
         self.roomId = roomId
         self.manager = manager
@@ -58,6 +44,8 @@ class AudienceView: RTCBaseView {
         super.init(frame: .zero)
         self.videoView.videoViewDelegate = self
         self.videoView.waitingCoGuestViewDelegate = self
+        self.videoView.registerConnectionObserver(observer: liveStreamObserver)
+        self.videoView.registerBattleObserver(observer: battleObserver)
     }
     
     required init?(coder: NSCoder) {
@@ -65,13 +53,14 @@ class AudienceView: RTCBaseView {
     }
     
     deinit {
+        videoView.unregisterConnectionObserver(observer: liveStreamObserver)
+        videoView.unregisterBattleObserver(observer: battleObserver)
         print("deinit \(self)")
     }
     
     override func constructViewHierarchy() {
         backgroundColor = .clear
         addSubview(videoView)
-        addSubview(battleInfoView)
         addSubview(livingView)
         addSubview(dashboardView)
     }
@@ -80,9 +69,6 @@ class AudienceView: RTCBaseView {
         videoView.snp.makeConstraints({ make in
             make.edges.equalToSuperview()
         })
-        battleInfoView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
         livingView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
@@ -94,7 +80,6 @@ class AudienceView: RTCBaseView {
     override func bindInteraction() {
         prepareRoomState()
         subscribeRoomState()
-        subscribeCustomEvent()
     }
     
     private func prepareRoomState() {
@@ -114,14 +99,6 @@ class AudienceView: RTCBaseView {
 }
 
 extension AudienceView {
-    private func subscribeCustomEvent() {
-        manager.likeSubject
-            .sink { [weak self] in
-                self?.giftPanelView.sendLike()
-            }
-            .store(in: &cancellableSet)
-    }
-    
     private func subscribeRoomState() {
         manager.subscribeRoomState(StateSelector(keyPath: \LSRoomState.liveStatus))
             .receive(on: RunLoop.main)
@@ -152,55 +129,12 @@ extension AudienceView {
 
 extension AudienceView: LSRouterViewProvider {
     func getRouteView(route: LSRoute) -> UIView? {
-        if route == .giftView {
-            giftPanelView.setGiftList(TUIGiftStore.shared.giftList)
-            return giftPanelView
-        } else if route == .videoSetting {
-            return VideoSettingPanel(routerManager: routerManager, mediaManager: videoView.getMediaManager())
+        if route == .videoSetting {
+            return VideoSettingPanel(routerManager: routerManager, mediaManager: videoView.mediaManager)
         }
         else {
             return nil
         }
-    }
-}
-
-extension AudienceView: GiftListViewDelegate {
-    func onRecharge(giftListView view: GiftListView) {
-        TUIGiftStore.shared.giftCloudServer.rechargeBalance { [weak self] error, balance in
-            guard let self = self else { return }
-            if error == .noError {
-                view.setBalance(balance)
-            } else {
-                manager.toastSubject.send(.balanceInsufficientText)
-            }
-        }
-    }
-    
-    func onSendGift(giftListView view: GiftListView, giftModel: TUIGift, giftCount: Int) {
-        let anchorInfo = manager.roomState.ownerInfo
-        let receiver = TUIGiftUser()
-        receiver.userId = anchorInfo.userId
-        receiver.userName = anchorInfo.name
-        receiver.avatarUrl = anchorInfo.avatarUrl
-        receiver.level = "0"
-        
-        let selfInfo = manager.userState.selfInfo
-        TUIGiftStore.shared.giftCloudServer.sendGift(sender: selfInfo.userId,
-                                                     receiver: receiver.userId,
-                                                     giftModel: giftModel,
-                                                     giftCount: giftCount) { [weak self] error, balance in
-            guard let self = self else { return }
-            if error == .noError {
-                view.sendGift(giftModel: giftModel, giftCount: giftCount, receiver: receiver)
-                view.setBalance(balance)
-            } else {
-                isGiftListPanelExist() ? view.makeToast(.balanceInsufficientText) : manager.toastSubject.send(.balanceInsufficientText)
-            }
-        }
-    }
-    private func isGiftListPanelExist()-> Bool {
-        guard let currentRoute = routerManager.routerState.routeStack.last else { return false }
-        return currentRoute == .giftView
     }
 }
 
@@ -232,7 +166,7 @@ extension AudienceView: VideoViewDelegate {
         return CoGuestView(userInfo: userInfo, manager: manager)
     }
     
-    func updateCoGuestView(userInfo: TUIUserInfo, modifyFlag: LiveStreamCore.UserInfoModifyFlag, coGuestView: UIView) {
+    func updateCoGuestView(coGuestView: UIView, userInfo: TUIUserInfo, modifyFlag: LiveStreamCore.UserInfoModifyFlag) {
         
     }
     
@@ -240,8 +174,26 @@ extension AudienceView: VideoViewDelegate {
         return CoHostView(connectionUser: coHostUser, manager: manager)
     }
     
-    func updateCoHostView(coHostUser: LiveStreamCore.CoHostUser, modifyFlag: LiveStreamCore.UserInfoModifyFlag, coHostView: UIView) {
+    func updateCoHostView(coHostView: UIView, coHostUser: LiveStreamCore.CoHostUser, modifyFlag: LiveStreamCore.UserInfoModifyFlag) {
         
+    }
+    
+    func createBattleView(battleUser: TUIBattleUser) -> UIView? {
+        return BattleMemberInfoView(manager: manager, userId: battleUser.userId)
+    }
+    
+    func updateBattleView(battleView: UIView, battleUser: TUIBattleUser) {
+        
+    }
+    
+    func createBattleContainerView() -> UIView? {
+        return BattleInfoView(manager: manager, routerManager: routerManager, isOwner: true, coreView: videoView)
+    }
+    
+    func updateBattleContainerView(battleContainerView: UIView, userInfos: [LiveStreamCore.BattleUserViewModel]) {
+        if let battleInfoView = battleContainerView as? BattleInfoView {
+            battleInfoView.updateView(userInfos: userInfos)
+        }
     }
 }
 
@@ -253,7 +205,4 @@ extension AudienceView: WaitingCoGuestViewDelegate {
 
 extension String {
     fileprivate static let enterRoomFailedMessageText = localized("live.alert.enterRoom.failed.message.xxx")
-    
-    fileprivate static let balanceInsufficientText =
-    localized("live.balanceInsufficient")
 }

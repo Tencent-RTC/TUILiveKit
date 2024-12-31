@@ -142,7 +142,7 @@ extension TUILiveRoomAnchorViewController {
 extension TUILiveRoomAnchorViewController: LSRouterViewProvider {
     func getRouteView(route: LSRoute) -> UIView? {
         if route == .videoSetting {
-            return VideoSettingPanel(routerManager: routerManager, mediaManager: coreView.getMediaManager())
+            return VideoSettingPanel(routerManager: routerManager, mediaManager: coreView.mediaManager)
         } else {
             return nil
         }
