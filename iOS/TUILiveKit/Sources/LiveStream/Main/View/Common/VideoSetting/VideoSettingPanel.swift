@@ -357,6 +357,22 @@ extension VideoSettingPanel: UICollectionViewDelegateFlowLayout {
     }
 }
 
+private extension TUIVideoQuality {
+    func getString() -> String {
+        switch self {
+        case .quality360P:
+            return "360P"
+        case .quality540P:
+            return "540P"
+        case .quality720P:
+            return "720P"
+        case .quality1080P:
+            return "1080P"
+        @unknown default:
+            return "1080P"
+        }
+    }
+}
 
 fileprivate extension String {
     static var settingTitleText: String {

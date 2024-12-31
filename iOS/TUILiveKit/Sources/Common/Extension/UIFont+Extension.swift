@@ -5,6 +5,8 @@
 //  Created by krabyu on 2024/3/11.
 //
 
+import UIKit
+
 extension UIFont {
     static func customFont(ofSize fontSize: CGFloat, weight: UIFont.Weight = .regular) -> UIFont {
         switch weight {

@@ -9,8 +9,6 @@ import Foundation
 import ImSDK_Plus
 import TUICore
 
-let DEFAULT_AVATAR = "https://liteav.sdk.qcloud.com/app/res/picture/voiceroom/avatar/user_avatar1.png"
-
 typealias TUIGiftIMSendBlock = ((Int, String) -> Void)?
 
 protocol TUIGiftIMServiceDelegate: AnyObject {
@@ -20,24 +18,16 @@ protocol TUIGiftIMServiceDelegate: AnyObject {
 
 class TUIGiftIMService: NSObject {
     weak var delegate: TUIGiftIMServiceDelegate?
-    weak var imManager: V2TIMManager?
-    var groupID: String = ""
-
-    static func defaultCreate(_ delegate: TUIGiftIMServiceDelegate, groupID: String) -> TUIGiftIMService {
-        let service = TUIGiftIMService()
-        service.delegate = delegate
-        service.groupID = groupID
-        service.initIMListener()
-        return service
-    }
-
-    private func initIMListener() {
+    
+    private weak var imManager: V2TIMManager?
+    private let roomId: String
+    
+    init(roomId: String, delegate: TUIGiftIMServiceDelegate? = nil) {
+        self.delegate = delegate
+        self.roomId = roomId
+        super.init()
         imManager = V2TIMManager.sharedInstance()
         imManager?.addSimpleMsgListener(listener: self)
-    }
-
-    func releaseResources() {
-        imManager?.removeSimpleMsgListener(listener: self)
     }
 }
 
@@ -57,7 +47,7 @@ extension TUIGiftIMService {
             let giftWrapper = TUIGiftWrapper(businessID: "TUIGift", data: giftData)
             let encoder = JSONEncoder()
             let data = try encoder.encode(giftWrapper)
-            imManager?.sendGroupCustomMessage(data, to: groupID, priority: .PRIORITY_NORMAL) {
+            imManager?.sendGroupCustomMessage(data, to: roomId, priority: .PRIORITY_NORMAL) {
                 callback?(0, "send gift message success.")
             } fail: { code, message in
                 debugPrint("sendGroupCustomMessage failed. code:\(code), message:\(message ?? "")")
@@ -74,7 +64,7 @@ extension TUIGiftIMService {
             let likeWrapper = TUILikeWrapper(businessID: "TUIGift_like", data: likeData)
             let encoder = JSONEncoder()
             let data = try encoder.encode(likeWrapper)
-            imManager?.sendGroupCustomMessage(data, to: groupID, priority: .PRIORITY_NORMAL) {
+            imManager?.sendGroupCustomMessage(data, to: roomId, priority: .PRIORITY_NORMAL) {
                 callback?(0, "send like message success.")
             } fail: { code, message in
                 debugPrint("sendGroupCustomMessage failed. code:\(code), message:\(message ?? "")")
@@ -102,22 +92,21 @@ extension TUIGiftIMService {
 
 extension TUIGiftIMService: V2TIMSimpleMsgListener {
     func onRecvGroupCustomMessage(_ msgID: String, groupID: String, sender info: V2TIMGroupMemberInfo, customData data: Data!) {
-        if self.groupID == groupID {
-            let decoder = JSONDecoder()
-            do {
-                let giftWrapper = try decoder.decode(TUIGiftWrapper.self, from: data)
-                if giftWrapper.businessID == "TUIGift" {
-                    let giftData = giftWrapper.data
-                    onReceiveGift(giftData)
-                }
-            } catch {
-                guard let likeWrapper = try? decoder.decode(TUILikeWrapper.self, from: data) else { return }
-                if likeWrapper.businessID == "TUIGift_like" {
-                    let likeData = likeWrapper.data
-                    onReceiveLike(likeData)
-                }
-                print("Decoding TUIBarrage failed. error:\(error)")
+        guard roomId == groupID else { return }
+        let decoder = JSONDecoder()
+        do {
+            let giftWrapper = try decoder.decode(TUIGiftWrapper.self, from: data)
+            if giftWrapper.businessID == "TUIGift" {
+                let giftData = giftWrapper.data
+                onReceiveGift(giftData)
             }
+        } catch {
+            guard let likeWrapper = try? decoder.decode(TUILikeWrapper.self, from: data) else { return }
+            if likeWrapper.businessID == "TUIGift_like" {
+                let likeData = likeWrapper.data
+                onReceiveLike(likeData)
+            }
+            print("Decoding TUIBarrage failed. error:\(error)")
         }
     }
 }

@@ -64,6 +64,8 @@ class VoiceRoomManager: VRRoomManagerInterface, VRMediaManagerInterface, VRUserM
     public let toastSubject = PassthroughSubject<String, Never>()
     // Event for exit room
     public let exitSubject = PassthroughSubject<Void, Never>()
+    // Event for click like button
+    public let likeSubject = PassthroughSubject<Void, Never>()
     
     private let context: Context
     init() {
@@ -287,5 +289,17 @@ extension VoiceRoomManager {
     
     func update(applicationStateIsApplying: Bool) {
         seatManager.update(applicationStateIsApplying: applicationStateIsApplying)
+    }
+}
+
+extension VoiceRoomManager: GiftListPanelDataSource {
+    func getSendLikeSubject() -> PassthroughSubject<Void, Never> {
+        likeSubject
+    }
+    
+    func getAnchorInfo() -> GiftUser {
+        let owner = roomState.ownerInfo
+        let giftUser = GiftUser(userId: owner.userId, name: owner.name, avatarUrl: owner.avatarUrl)
+        return giftUser
     }
 }

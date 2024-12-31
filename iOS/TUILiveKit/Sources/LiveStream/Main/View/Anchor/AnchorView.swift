@@ -18,6 +18,8 @@ class AnchorView: UIView {
     private let routerManager: LSRouterManager
     
     private lazy var coHostRequestPublisher = manager.coHostManager.subscribeCoHostState(StateSelector(keyPath: \LSCoHostState.receivedConnectionRequest))
+    private lazy var receivedBattleRequestPublisher = manager.subscribeBattleState(StateSelector(keyPath: \LSBattleState.receivedBattleRequest))
+    private lazy var isInWaitingPublisher = manager.subscribeBattleState(StateSelector(keyPath: \LSBattleState.isInWaiting))
     private var cancellableSet = Set<AnyCancellable>()
     var startLiveBlock:(()->Void)?
     
@@ -35,13 +37,10 @@ class AnchorView: UIView {
         return view
     }()
     
-    private lazy var battleInfoView: BattleInfoView = {
-        let view = BattleInfoView(manager: manager, routerManager: routerManager, isOwner: true)
-        return view
-    }()
-    
     private weak var alertPanel: LSAlertPanel?
-
+    private lazy var liveStreamObserver = LiveStreamObserver(manager: manager)
+    private lazy var battleObserver = LSBattleManagerObserver(battleManager: manager.battleManager)
+    
     init(roomId: String, manager: LiveStreamManager, routerManager: LSRouterManager, coreView: LiveCoreView) {
         self.roomId = roomId
         self.manager = manager
@@ -49,6 +48,8 @@ class AnchorView: UIView {
         self.videoView = coreView
         super.init(frame: .zero)
         self.videoView.videoViewDelegate = self
+        self.videoView.registerConnectionObserver(observer: liveStreamObserver)
+        self.videoView.registerBattleObserver(observer: battleObserver)
     }
     
     required init?(coder: NSCoder) {
@@ -61,6 +62,8 @@ class AnchorView: UIView {
             videoView.stopCamera()
             videoView.stopMicrophone()
         }
+        videoView.unregisterConnectionObserver(observer: liveStreamObserver)
+        videoView.unregisterBattleObserver(observer: battleObserver)
         print("deinit \(type(of: self))")
     }
     
@@ -92,7 +95,6 @@ extension AnchorView {
     
     private func constructViewHierarchy() {
         addSubview(videoView)
-        addSubview(battleInfoView)
         addSubview(prepareView)
         addSubview(livingView)
     }
@@ -109,10 +111,6 @@ extension AnchorView {
         livingView.snp.makeConstraints({ make in
             make.edges.equalToSuperview()
         })
-        
-        battleInfoView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
     }
     
     private func bindInteraction() {
@@ -129,13 +127,14 @@ extension AnchorView {
             self.manager.toastSubject.send(error.localizedMessage)
         }
         subscribeCoHostState()
+        subscribeBattleState()
     }
 }
 
 // MARK: Action
 
 extension AnchorView {
-
+    
     private func startLiving() {
         self.prepareView.alpha = 0
         UIView.animate(withDuration: 0.5) { [weak self] in
@@ -206,16 +205,16 @@ extension AnchorView {
             }
         }
     }
-
+    
     private func subscribeCoHostState() {
         coHostRequestPublisher.receive(on: RunLoop.main)
             .sink { [weak self] connectionRequest in
                 guard let self = self else { return }
                 if let request = connectionRequest {
                     let alertInfo = LSAlertInfo(description: String.localizedReplace(.connectionInviteText, replace: "\(request.userName)"),
-                                              imagePath: request.avatarUrl,
-                                              cancelButtonInfo: (String.rejectText, .g3),
-                                              defaultButtonInfo: (String.acceptText, .b1)) { [weak self] alertPanel in
+                                                imagePath: request.avatarUrl,
+                                                cancelButtonInfo: (String.rejectText, .g3),
+                                                defaultButtonInfo: (String.acceptText, .b1)) { [weak self] alertPanel in
                         guard let self = self else { return }
                         videoView.respondToCrossRoomConnection(roomId: request.roomId, isAccepted: false) { [weak self] in
                             guard let self = self else { return }
@@ -247,6 +246,77 @@ extension AnchorView {
             }
             .store(in: &cancellableSet)
     }
+    
+    private func subscribeBattleState() {
+        receivedBattleRequestPublisher
+            .removeDuplicates(by: {(firstRequest, secondRequest) -> Bool in
+                return firstRequest?.battleId == secondRequest?.battleId &&
+                firstRequest?.inviter.userId == secondRequest?.inviter.userId
+            })
+            .receive(on: RunLoop.main)
+            .sink { [weak self] receivedRequest in
+                guard let self = self else { return }
+                self.onReceivedBattleRequestChanged(battleUser: receivedRequest?.inviter)
+            }
+            .store(in: &cancellableSet)
+        
+        isInWaitingPublisher
+            .removeDuplicates()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] inWaiting in
+                guard let self = self else { return }
+                self.onInWaitingChanged(inWaiting: inWaiting)
+            }
+            .store(in: &cancellableSet)
+    }
+}
+
+extension AnchorView {
+    private func onReceivedBattleRequestChanged(battleUser: BattleUser?) {
+        guard let battleUser = battleUser else {
+            routerManager.router(action: .dismiss(.alert))
+            return
+        }
+        let alertInfo = LSAlertInfo(description: .localizedReplace(.battleInvitationText, replace: battleUser.userName),
+                                    imagePath: battleUser.avatarUrl,
+                                    cancelButtonInfo: (String.rejectText, .g3),
+                                    defaultButtonInfo: (String.acceptText, .b1)) { [weak self] _ in
+            guard let self = self else { return }
+            videoView.respondToBattle(battleId: manager.battleState.battleId, isAccepted: false, onSuccess: { [weak self] in
+                guard let self = self else { return }
+                manager.battleManager.onResponseBattle()
+            }, onError: { _, _ in
+                
+            })
+            
+            routerManager.router(action: .dismiss(.alert))
+        } defaultClosure: { [weak self] _ in
+            guard let self = self else { return }
+            videoView.respondToBattle(battleId: manager.battleState.battleId, isAccepted: true, onSuccess: { [weak self] in
+                guard let self = self else { return }
+                manager.battleManager.onResponseBattle()
+            }, onError: { _, _ in
+                
+            })
+            routerManager.router(action: .dismiss(.alert))
+        }
+        routerManager.router(action: .present(.alert(info: alertInfo)))
+    }
+    
+    private func onInWaitingChanged(inWaiting: Bool) {
+        if inWaiting {
+            routerManager.router(action: .present(.battleCountdown(battleRequestTimeout)))
+        } else {
+            let topRoute = routerManager.routerState.routeStack.last
+            switch topRoute {
+            case .battleCountdown(_):
+                routerManager.router(action: .dismiss())
+            default:
+                break
+            }
+        }
+    }
+
 }
 
 extension AnchorView : AnchorPrepareViewDelegate {
@@ -262,7 +332,7 @@ extension AnchorView: VideoViewDelegate {
         return CoGuestView(userInfo: userInfo, manager: manager)
     }
     
-    func updateCoGuestView(userInfo: TUIUserInfo, modifyFlag: LiveStreamCore.UserInfoModifyFlag, coGuestView: UIView) {
+    func updateCoGuestView(coGuestView: UIView, userInfo: TUIUserInfo, modifyFlag: LiveStreamCore.UserInfoModifyFlag) {
         
     }
     
@@ -270,8 +340,26 @@ extension AnchorView: VideoViewDelegate {
         return CoHostView(connectionUser: coHostUser, manager: manager)
     }
     
-    func updateCoHostView(coHostUser: LiveStreamCore.CoHostUser, modifyFlag: LiveStreamCore.UserInfoModifyFlag, coHostView: UIView) {
+    func updateCoHostView(coHostView: UIView, coHostUser: LiveStreamCore.CoHostUser, modifyFlag: LiveStreamCore.UserInfoModifyFlag) {
         
+    }
+    
+    func createBattleView(battleUser: TUIBattleUser) -> UIView? {
+        return BattleMemberInfoView(manager: manager, userId: battleUser.userId)
+    }
+    
+    func updateBattleView(battleView: UIView, battleUser: TUIBattleUser) {
+        
+    }
+    
+    func createBattleContainerView() -> UIView? {
+        return BattleInfoView(manager: manager, routerManager: routerManager, isOwner: true, coreView: videoView)
+    }
+    
+    func updateBattleContainerView(battleContainerView: UIView, userInfos: [LiveStreamCore.BattleUserViewModel]) {
+        if let battleInfoView = battleContainerView as? BattleInfoView {
+            battleInfoView.updateView(userInfos: userInfos)
+        }
     }
 }
 

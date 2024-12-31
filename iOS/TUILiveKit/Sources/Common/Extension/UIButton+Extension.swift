@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 extension UIButton {
     func setLevel(level: Int = 0) {

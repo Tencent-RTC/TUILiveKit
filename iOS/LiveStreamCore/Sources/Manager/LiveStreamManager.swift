@@ -18,20 +18,22 @@ protocol UpdateUserInfoDelegate: AnyObject {
 class LiveStreamManager {
     public class Context {
         let service: LiveStreamService = LiveStreamService()
+
         let observers: LiveStreamObserverList = LiveStreamObserverList()
-        
-        weak var delegate: UpdateUserInfoDelegate?
         
         lazy var roomEngineObserver = RoomEngineObserver(context: self)
         lazy var liveConnectionObserver = LiveConnectionObserver(context: self)
+        lazy var liveBattleObserver = LiveBattleObserver(context: self)
         lazy var imObserver = IMObserver(context: self)
         lazy var liveLayoutObserver = LiveLayoutObserver(context: self)
+        
         lazy var roomManager = RoomManager(context: self)
         lazy var coGuestManager = CoGuestManager(context: self)
         lazy var coHostManager = CoHostManager(context: self)
+        lazy var battleManager = BattleManager(context: self)
         lazy var userManager = UserManager(context: self)
         lazy var mediaManager = MediaManager(context: self)
-        lazy var viewManager = ViewManager(context: self)
+        lazy var layoutManager = LayoutManager(context: self)
     }
     
     public let context: Context
@@ -40,6 +42,7 @@ class LiveStreamManager {
         context = Context()
         context.service.addRoomEngineObserver(context.roomEngineObserver)
         context.service.addLiveConnectionManagerObserver(context.liveConnectionObserver)
+        context.service.addLiveBattleManagerObserver(context.liveBattleObserver)
         context.service.addImObserver(context.imObserver)
         context.service.addLiveLayoutManagerObserver(context.liveLayoutObserver)
     }
@@ -50,6 +53,14 @@ class LiveStreamManager {
     
     func removerObserver(_ observer: ConnectionObserver) {
         context.observers.removeObserver(observer)
+    }
+    
+    func addBattleObserver(_ observer: BattleObserver) {
+        context.observers.addBattleObserver(observer)
+    }
+    
+    func removerBattleObserver(_ observer: BattleObserver) {
+        context.observers.removeBattleObserver(observer)
     }
     
     func asyncRunMainThread(_ successBlock: @escaping TUISuccessBlock) {
@@ -64,10 +75,17 @@ class LiveStreamManager {
         }
     }
     
+    func asyncRunMainThread(_ successBlock: @escaping TUIBattleRequestBlock, _ battleId: String, _ battleUserList: [TUIBattleUser]) {
+        DispatchQueue.main.async {
+            successBlock(battleId, battleUserList)
+        }
+    }
+    
     deinit {
         debugPrint("deinit:\(self)")
         context.service.removeRoomEngineObserver(context.roomEngineObserver)
         context.service.removeLiveConnectionManagerObserver(context.liveConnectionObserver)
+        context.service.removeLiveBattleManagerObserver(context.liveBattleObserver)
         context.service.removeImObserver(context.imObserver)
         context.service.removeLiveLayoutManagerObserver(context.liveLayoutObserver)
     }
@@ -154,16 +172,12 @@ extension LiveStreamManager {
         context.coGuestManager.enableAutoOpenCameraOnSeated(enable: enable)
     }
     
-    func applyToConnection(timeOut: Int, onSendRequestSuccess: (() -> Void)?) async throws -> TakeSeatResult {
-        LCDataReporter.reportEventData(event: .methodCallLiveStreamRequestIntraRoomConnection)
-        return try await context.coGuestManager.applyToConnection(timeOut: timeOut, onSendRequestSuccess: onSendRequestSuccess)
-    }
-    
-    func inviteGuestToConnection(userId: String, onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
+    func requestIntraRoomConnection(userId: String, timeOut: Int, openCamera: Bool, 
+                                    onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
         LCDataReporter.reportEventData(event: .methodCallLiveStreamRequestIntraRoomConnection)
         Task {
             do {
-                try await context.coGuestManager.inviteGuestToConnection(userId: userId) { [weak self] in
+                try await context.coGuestManager.requestIntraRoomConnection(userId: userId, timeOut: timeOut, openCamera: openCamera) { [weak self] in
                     self?.asyncRunMainThread(onSuccess)
                 }
             } catch let LiveStreamCoreError.error(code, message) {
@@ -172,11 +186,11 @@ extension LiveStreamManager {
         }
     }
     
-    func cancelGuestApplication(onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
+    func cancelIntraRoomConnection(userId: String, onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
         LCDataReporter.reportEventData(event: .methodCallLiveStreamCancelIntraRoomConnection)
         Task {
             do {
-                try await context.coGuestManager.cancelGuestApplication()
+                try await context.coGuestManager.cancelIntraRoomConnection(userId: userId)
                 asyncRunMainThread(onSuccess)
             } catch let LiveStreamCoreError.error(code, message) {
                 asyncRunMainThread(onError, code, message)
@@ -184,37 +198,12 @@ extension LiveStreamManager {
         }
     }
     
-    func cancelInviteApplication(userId: String, onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
-        LCDataReporter.reportEventData(event: .methodCallLiveStreamCancelIntraRoomConnection)
-        Task {
-            do {
-                try await context.coGuestManager.cancelInviteApplication(userId: userId)
-                asyncRunMainThread(onSuccess)
-            } catch let LiveStreamCoreError.error(code, message) {
-                asyncRunMainThread(onError, code, message)
-            }
-        }
-    }
-    
-    func respondGuestApplication(userId: String, isAccepted: Bool,
-                                 onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
+    func respondIntraRoomConnection(userId: String, isAccepted: Bool,
+                                    onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
         LCDataReporter.reportEventData(event: .methodCallLiveStreamRespondIntraRoomConnection)
         Task {
             do {
-                try await context.coGuestManager.respondGuestApplication(userId: userId, isAgree: isAccepted)
-                asyncRunMainThread(onSuccess)
-            } catch let LiveStreamCoreError.error(code, message) {
-                asyncRunMainThread(onError, code, message)
-            }
-        }
-    }
-    
-    func respondGuestInvitation(isAgree: Bool,
-                                     onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
-        LCDataReporter.reportEventData(event: .methodCallLiveStreamRespondIntraRoomConnection)
-        Task {
-            do {
-                try await context.coGuestManager.respondGuestInvitation(isAgree: isAgree)
+                try await context.coGuestManager.respondIntraRoomConnection(userId: userId, isAccepted: isAccepted)
                 asyncRunMainThread(onSuccess)
             } catch let LiveStreamCoreError.error(code, message) {
                 asyncRunMainThread(onError, code, message)
@@ -306,6 +295,66 @@ extension LiveStreamManager {
     }
 }
 
+// MARK: - Battle API
+extension LiveStreamManager {
+    var battleState: BattleState {
+        context.battleManager.battleState
+    }
+    
+    func subscribeBattleState<Value>(_ selector: StateSelector<BattleState, Value>) -> AnyPublisher<Value, Never> {
+        return context.battleManager.observerState.subscribe(selector)
+    }
+    
+    func requestBattle(config: TUIBattleConfig, userIdList: [String],
+                       timeout: TimeInterval, onSuccess: @escaping TUIBattleRequestBlock, onError: @escaping TUIErrorBlock) {
+        Task {
+            do {
+                let (battleId, battleUserList) = try await context.battleManager.requestBattle(config: config, userIdList: userIdList, timeout: timeout)
+                asyncRunMainThread(onSuccess, battleId, battleUserList)
+            } catch let LiveStreamCoreError.error(code, message) {
+                asyncRunMainThread(onError, code, message)
+            }
+        }
+    }
+
+    func cancelBattle(battleId: String, userIdList: [String], onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
+        Task {
+            do {
+                try await context.battleManager.cancelBattle(battleId: battleId, userIdList: userIdList)
+                asyncRunMainThread(onSuccess)
+            } catch let LiveStreamCoreError.error(code, message) {
+                asyncRunMainThread(onError, code, message)
+            }
+        }
+    }
+
+    func respondToBattle(battleId: String, isAccepted: Bool, onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
+        Task {
+            do {
+                if isAccepted {
+                    try await context.battleManager.acceptBattle(battleId: battleId)
+                } else {
+                    try await context.battleManager.rejectBattle(battleId: battleId)
+                }
+                asyncRunMainThread(onSuccess)
+            } catch let LiveStreamCoreError.error(code, message) {
+                asyncRunMainThread(onError, code, message)
+            }
+        }
+    }
+
+    func terminateBattle(battleId: String, onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
+        Task {
+            do {
+                try await context.battleManager.exitBattle(battleId: battleId)
+                asyncRunMainThread(onSuccess)
+            } catch let LiveStreamCoreError.error(code, message) {
+                asyncRunMainThread(onError, code, message)
+            }
+        }
+    }
+}
+
 // MARK: - User API
 extension LiveStreamManager {
     var userState: UserState {
@@ -385,38 +434,17 @@ extension LiveStreamManager {
     }
 }
 
-// MARK: - View API
+// MARK: - Layout API
 extension LiveStreamManager {
-    var viewState: ViewState {
-        context.viewManager.viewState
+    var layoutState: LayoutState {
+        context.layoutManager.layoutState
     }
     
-    func subscribeViewState<Value>(_ selector: StateSelector<ViewState, Value>) -> AnyPublisher<Value, Never> {
-        return context.viewManager.observerState.subscribe(selector)
-    }
-    
-    func getLocalLiveView() -> LiveStreamView {
-        return context.viewManager.getLocalLiveView()
-    }
-    
-    func clearLocalLiveView() {
-        context.viewManager.clearLocalLiveView()
-    }
-    
-    func removeRemoteView(userId: String) {
-        context.viewManager.removeRemoteView(userId: userId)
-    }
-    
-    func getRemoteLiveViewByUserId(userId: String) -> LiveStreamView {
-        return context.viewManager.getRemoteLiveViewByUserId(userId: userId)
+    func subscribeLayoutState<Value>(_ selector: StateSelector<LayoutState, Value>) -> AnyPublisher<Value, Never> {
+        return context.layoutManager.observerState.subscribe(selector)
     }
     
     func updateVideoLayout(layout: VideoLayoutInfo?) {
-        context.viewManager.updateVideoLayout(layout: layout)
-    }
-    
-    func setLayoutMode(layoutMode: LayoutMode, layoutJson: String? = nil) {
-        LCDataReporter.reportEventData(event: .methodCallLiveStreamSetLayoutMode)
-        context.viewManager.setLayoutMode(layoutMode: layoutMode, layoutJson: layoutJson)
+        context.layoutManager.updateVideoLayout(layout: layout)
     }
 }

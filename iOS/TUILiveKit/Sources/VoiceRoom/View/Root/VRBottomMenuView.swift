@@ -12,13 +12,8 @@ import Combine
 import SeatGridView
 import RTCRoomEngine
 
-protocol VRBottomMenuViewDelegate: AnyObject {
-    func likeButtonClicked()
-}
-
 class VRBottomMenuView: UIView {
     var cancellableSet = Set<AnyCancellable>()
-    weak var delegate: VRBottomMenuViewDelegate?
     
     private let manager: VoiceRoomManager
     private let routerManager: VRRouterManager
@@ -292,7 +287,7 @@ extension VRBottomMenuView {
         var like = VRButtonMenuInfo(normalIcon: "live_like_icon")
         like.tapAction = { [weak self] sender in
             guard let self = self else { return }
-            self.delegate?.likeButtonClicked()
+            manager.likeSubject.send()
         }
         menus.append(like)
         

@@ -230,7 +230,7 @@ class BattleMemberInfoView: RTCBaseView {
     }
     
     private func onBattleStart() {
-        reset()
+//        reset()
     }
     
     private func onBattleEnd() {

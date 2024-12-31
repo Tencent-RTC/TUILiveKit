@@ -44,11 +44,6 @@ class CoHostView: UIView {
         return view
     }()
     
-    private lazy var battleMemberInfoView: BattleMemberInfoView = {
-        let view = BattleMemberInfoView(manager: manager, userId: coHostUser.connectionUser.userId)
-        return view
-    }()
-    
     private lazy var avatarImageView: UIImageView = {
         let imageView = UIImageView(frame: .zero)
         imageView.layer.cornerRadius = 40.scale375() * 0.5
@@ -60,7 +55,6 @@ class CoHostView: UIView {
     private func constructViewHierarchy() {
         addSubview(userInfoView)
         addSubview(avatarImageView)
-        addSubview(battleMemberInfoView)
     }
     
     private func activateConstraints() {
@@ -74,9 +68,6 @@ class CoHostView: UIView {
             make.center.equalToSuperview()
             make.width.equalTo(40.scale375())
             make.height.equalTo(40.scale375())
-        }
-        battleMemberInfoView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
         }
     }
     

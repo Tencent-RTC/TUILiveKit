@@ -18,9 +18,11 @@ class BarrageStreamView: UIView {
     private let roomId: String
     private var ownerId: String = ""
     private let manager: BarrageDisplayManager
+    private var lastReloadDate: Date?
     
-    private var dataSource: [String : [TUIBarrage]] = [:]
-    private var barrageCount: [String: Int] = [:]
+    // Max count of dataSource, default is 1000
+    private let dataSource = ListManager<TUIBarrage>(maxLength: 1000)
+    private var reloadWorkItem: DispatchWorkItem?
 
     private lazy var barrageTableView: UITableView = {
         let view = UITableView(frame: self.bounds, style: .plain)
@@ -31,6 +33,7 @@ class BarrageStreamView: UIView {
         view.contentInsetAdjustmentBehavior = .never
         view.estimatedRowHeight = 30.scale375Height()
         view.register(TUIBarrageCell.self, forCellReuseIdentifier: TUIBarrageCell.cellReuseIdentifier)
+        view.transform = CGAffineTransform(scaleX: 1, y: -1)
         return view
     }()
 
@@ -61,43 +64,37 @@ class BarrageStreamView: UIView {
     }
 
     func insertBarrages(_ barrages: [TUIBarrage]) {
-        if dataSource[roomId] != nil {
-            dataSource[roomId]?.append(contentsOf: barrages)
-        } else {
-            dataSource[roomId] = barrages
+        barrageTableView.layer.removeAllAnimations()
+        dataSource.append(contentsOf: barrages)
+        var indexPaths: [IndexPath] = []
+        for i in 0 ..< barrages.count {
+            indexPaths.append(IndexPath(row: i, section: 0))
         }
-        barrageTableView.reloadData()
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self, let barrage =  self.dataSource[self.roomId] else { return }
-            self.barrageTableView.scrollToRow(at: IndexPath(item: barrage.count == 0 ? 0 : (barrage.count - 1), section: 0),
-                                              at: .bottom,
-                                              animated: true)
-        }
-        incrementBarrageCount(for: roomId)
+        setNeedsReloadData()
     }
     
     func getBarrageCount() -> Int {
-        return barrageCount[roomId] ?? 0
+        dataSource.totalCount
     }
 }
 
 extension BarrageStreamView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: TUIBarrageCell.cellReuseIdentifier, for: indexPath) as? TUIBarrageCell,
-              let barrage = dataSource[roomId]?[indexPath.row]
-        else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: TUIBarrageCell.cellReuseIdentifier, for: indexPath) as? TUIBarrageCell else {
             return UITableViewCell()
         }
+        guard let barrage = dataSource.reverse(index: indexPath.row) else { return cell }
         if let view = delegate?.barrageDisplayView(self, createCustomCell: barrage) {
             cell.setContent(view)
         } else {
             cell.setContent(barrage, ownerId: ownerId)
         }
+        cell.transform = CGAffineTransform(scaleX: 1, y: -1)
         return cell
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataSource[roomId]?.count ?? 0
+        return dataSource.count
     }
 }
 
@@ -109,11 +106,23 @@ extension BarrageStreamView: BarrageDisplayManagerDelegate {
 
 // MARK: - Private functions
 extension BarrageStreamView {
-    private func incrementBarrageCount(for roomId: String) {
-        if let count = barrageCount[roomId] {
-            barrageCount[roomId] = count + 1
-        } else {
-            barrageCount[roomId] = 1
+    private func setNeedsReloadData() {
+        let current = Date()
+        if let last = lastReloadDate {
+            let dur = current.timeIntervalSince(last)
+            if dur <= 0.25 {
+                return
+            }
+        }
+        lastReloadDate = current
+        reloadWorkItem?.cancel()
+        reloadWorkItem = DispatchWorkItem(block: { [weak self] in
+            guard let self = self else { return }
+            barrageTableView.reloadData()
+            barrageTableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+        })
+        if let workItem = reloadWorkItem {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: workItem)
         }
     }
     

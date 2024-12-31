@@ -58,6 +58,11 @@ class SingleBattleScoreView: UIView {
         self.rightScore = rightScore
         updateScoreBars()
     }
+    
+    func updateScores(leftScore: String, rightScore: String) {
+        self.leftScoreLabel.text = leftScore
+        self.rightScoreLabel.text = rightScore
+    }
 }
 
 // MARK: - Layout
@@ -73,9 +78,9 @@ extension SingleBattleScoreView {
     
     private func activateConstraints() {
         leftScoreBar.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(2.scale375Height())
+            make.top.equalToSuperview()
             make.leading.equalToSuperview()
-            make.height.equalTo(14.scale375Height())
+            make.height.equalTo(18.scale375Height())
             make.width.equalToSuperview().multipliedBy(0.5)
         }
         dividerImageView.snp.makeConstraints { make in
@@ -84,7 +89,7 @@ extension SingleBattleScoreView {
             make.height.width.equalTo(18.scale375Height())
         }
         rightScoreBar.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(2)
+            make.top.equalToSuperview()
             make.leading.equalTo(leftScoreBar.snp.trailing)
             make.trailing.equalToSuperview()
             make.height.equalTo(leftScoreBar)
@@ -92,12 +97,12 @@ extension SingleBattleScoreView {
         leftScoreLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(8.scale375())
             make.centerY.equalToSuperview()
-            make.height.equalTo(14.scale375Height())
+            make.height.equalTo(18.scale375Height())
         }
         rightScoreLabel.snp.makeConstraints { make in
             make.trailing.equalToSuperview().offset(-8.scale375())
             make.centerY.equalToSuperview()
-            make.height.equalTo(14.scale375Height())
+            make.height.equalTo(18.scale375Height())
         }
     }
 }
@@ -128,13 +133,13 @@ extension SingleBattleScoreView {
         UIView.animate(withDuration: 0.5) { [weak self] in
             guard let self = self else { return }
             self.leftScoreBar.snp.remakeConstraints { make in
-                make.top.equalToSuperview().offset(2.scale375Height())
+                make.top.equalToSuperview()
                 make.leading.equalToSuperview()
-                make.height.equalTo(14.scale375Height())
+                make.height.equalTo(18.scale375Height())
                 make.width.equalToSuperview().multipliedBy(leftScoreBarHorizontalPercent)
             }
             self.rightScoreBar.snp.remakeConstraints { make in
-                make.top.equalToSuperview().offset(2.scale375Height())
+                make.top.equalToSuperview()
                 make.leading.equalTo(self.leftScoreBar.snp.trailing)
                 make.trailing.equalToSuperview()
                 make.height.equalTo(self.leftScoreBar)

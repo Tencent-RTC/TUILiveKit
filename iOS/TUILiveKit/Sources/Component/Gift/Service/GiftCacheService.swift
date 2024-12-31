@@ -9,11 +9,12 @@ import Foundation
 import CryptoKit
 
 class GiftCacheService {
-    private var cacheDirectory: URL = URL(fileURLWithPath: "")
+    private var cacheDirectory: URL {
+        guard let cachesDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first else { return URL(fileURLWithPath: "") }
+        return cachesDirectory.appendingPathComponent("gift")
+    }
     
     init() {
-        guard let cachesDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first else { return }
-        self.cacheDirectory = cachesDirectory.appendingPathComponent("gift")
         do {
             try FileManager.default.createDirectory(at: cacheDirectory, withIntermediateDirectories: true, attributes: nil)
         } catch {

@@ -61,7 +61,38 @@ class CoGuestManager {
         }
     }
     
-    func applyToConnection(timeOut: Int, onSendRequestSuccess: (() -> Void)? = nil) async throws -> TakeSeatResult {
+    func requestIntraRoomConnection(userId: String,
+                                    timeOut: Int,
+                                    openCamera: Bool,
+                                    onSendRequestSuccess: @escaping (() -> Void)) async throws {
+        enableAutoOpenCameraOnSeated(enable: openCamera)
+        try checkRequestIntraRoomConnection(userId: userId)
+        if userId.isEmpty || userId == context?.roomManager.roomState.ownerInfo.userId {
+            try await applyToConnection(timeOut: timeOut, onSendRequestSuccess: onSendRequestSuccess)
+        } else {
+            try await inviteGuestToConnection(userId: userId, onSendRequestSuccess: onSendRequestSuccess)
+        }
+    }
+    
+    func cancelIntraRoomConnection(userId: String) async throws {
+        try checkIntraRoomConnection(userId: userId)
+        if userId.isEmpty || userId == context?.roomManager.roomState.ownerInfo.userId {
+            try await cancelGuestApplication()
+        } else {
+            try await cancelInviteApplication(userId: userId)
+        }
+    }
+    
+    func respondIntraRoomConnection(userId: String, isAccepted: Bool) async throws {
+        try checkIntraRoomConnection(userId: userId)
+        if userId.isEmpty || userId == context?.roomManager.roomState.ownerInfo.userId {
+            try await respondGuestInvitation(isAgree: isAccepted)
+        } else {
+            try await respondGuestApplication(userId: userId, isAgree: isAccepted)
+        }
+    }
+    
+    func applyToConnection(timeOut: Int, onSendRequestSuccess: (() -> Void)? = nil) async throws {
         if coGuestState.coGuestStatus == .linking {
             throw LiveStreamCoreError.error(code: .alreadyInSeat,
                                             message: TUIError.alreadyInSeat.lcDescription)
@@ -80,6 +111,10 @@ class CoGuestManager {
                     modifyCoGuestState(value: .linking, keyPath: \CoGuestState.coGuestStatus, isPublished: true)
                     onUserConnectionAccepted(userId: userId)
                 }
+                if coGuestState.openCameraOnCoGuest {
+                    try? await context?.mediaManager.openLocalCamera(useFrontCamera: true)
+                }
+                try? await context?.mediaManager.openLocalMicrophone()
             case .rejected(userId: let userId):
                 clearMyRequest()
                 onUserConnectionRejected(userId: userId)
@@ -89,7 +124,6 @@ class CoGuestManager {
             case .cancel(userId: _):
                 clearMyRequest()
             }
-            return result
         } catch let LiveStreamCoreError.seatError(userId, code, message) {
             clearMyRequest()
             LiveStreamLog.error("\(#file)","\(#line)","leave:[code:\(code),message:\(message)]")
@@ -187,6 +221,7 @@ class CoGuestManager {
     }
     
     func disconnectByAdmin(userId: String) async throws {
+        try checkIntraRoomConnection(userId: userId)
         do {
             try await service.kickUserOffSeatByAdmin(seatIndex: requestDefaultIndex, userId: userId)
         } catch let LiveStreamCoreError.error(code, message) {
@@ -378,6 +413,32 @@ extension CoGuestManager {
     private func modifyCoGuestState<T>(value: T, keyPath: WritableKeyPath<CoGuestState, T>, isPublished: Bool = false) {
         observerState.update(isPublished: isPublished) { coGuestState in
             coGuestState[keyPath: keyPath] = value
+        }
+    }
+    
+    private func checkRequestIntraRoomConnection(userId: String) throws {
+        guard let context = context else { throw LiveStreamCoreError.error(code: .failed, message: "failed") }
+        try checkIntraRoomConnection(userId: userId)
+        if !context.coHostManager.coHostState.connectedUserList.isEmpty ||
+            !context.coHostManager.coHostState.sentConnectionRequestList.isEmpty {
+            throw LiveStreamCoreError.error(code: .roomConnectedInOther,
+                                            message: "When connecting across rooms, viewers in the room are not allowed to connect")
+        }
+    }
+    
+    private func checkIntraRoomConnection(userId: String) throws {
+        guard let context = context else { throw LiveStreamCoreError.error(code: .failed, message: "failed") }
+        if context.roomManager.roomState.liveStatus == .none {
+            throw LiveStreamCoreError.error(code: .operationInvalidBeforeEnterRoom,
+                                            message: TUIError.operationInvalidBeforeEnterRoom.lcDescription)
+        }
+        if !isEnable() {
+            throw LiveStreamCoreError.error(code: .failed,
+                                            message: "The audience connection function is disabled in the current room")
+        }
+        if context.userManager.userState.selfInfo.userRole == .roomOwner && userId.isEmpty {
+            throw LiveStreamCoreError.error(code: .failed,
+                                            message: "userId is empty")
         }
     }
 }

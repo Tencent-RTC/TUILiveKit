@@ -63,7 +63,7 @@ class AnchorLivingView: UIView {
     }()
     
     private lazy var giftDisplayView: GiftPlayView = {
-        let view = GiftPlayView(groupId: roomId)
+        let view = GiftPlayView(roomId: roomId)
         view.delegate = self
         return view
     }()
@@ -261,7 +261,7 @@ extension AnchorLivingView {
             title = .endLiveOnBattleText
             let endBattleItem = ActionItem(title: .endLiveBattleText, designConfig: lineConfig, actionClosure: { [weak self] _ in
                 guard let self = self else { return }
-                self.manager.battleManager.exitBattle()
+                exitBattle()
                 self.routerManager.router(action: .dismiss())
             })
             items.append(endBattleItem)
@@ -290,7 +290,9 @@ extension AnchorLivingView {
     }
     
     private func exitBattle() {
-        manager.battleManager.exitBattle()
+        coreView.terminateBattle(battleId: manager.battleState.battleId) {
+        } onError: { _, _ in
+        }
     }
     
     private func showEndView() {

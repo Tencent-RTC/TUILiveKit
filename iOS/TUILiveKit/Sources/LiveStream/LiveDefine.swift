@@ -13,6 +13,15 @@ typealias NextActionTemplateParamTuple<T, Payload> = (param: T, nextActionTempla
 public enum LiveStreamPrivacyStatus: NSInteger, CaseIterable {
     case `public` = 0
     case privacy = 1
+    
+    func getString() -> String {
+        switch self {
+        case .public:
+            return .localized("live.mode.public")
+        case .privacy:
+            return .localized("live.mode.privacy")
+        }
+    }
 }
 
 extension LiveStreamPrivacyStatus: Codable {}

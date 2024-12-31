@@ -18,28 +18,39 @@ class SVGAAnimationView: UIView, AnimationView {
             finishClosure?(-1)
             return
         }
-        guard let url = URL(string: playUrl), let animationData = FileManager.default.contents(atPath: playUrl) else {   finishClosure?(-1)
-            return
-        }
         
-        let playerView = SVGAPlayer(frame: self.bounds)
+        let playerView = SVGAPlayer(frame: bounds)
         playerView.contentMode = .scaleAspectFill
         playerView.delegate = self
         playerView.loops = 1
-        playerView.clearsAfterStop = true
         addSubview(playerView)
         playerView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
         
-        let parser = SVGAParser()
-        parser.parse(with: animationData, cacheKey: url.lastPathComponent) { [weak self] videoItem in
-            guard let self = self else { return }
-            playerView.videoItem = videoItem
-            playerView.startAnimation()
-        } failureBlock: { [weak self] erro in
-            guard let self = self else { return }
-            self.svgaPlayerDidFinishedAnimation(playerView)
+        DispatchQueue.global().async { [weak self] in
+            guard let url = URL(string: playUrl), let animationData = FileManager.default.contents(atPath: playUrl) else {
+                guard let self = self else { return }
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    playerView.removeFromSuperview()
+                    finishClosure?(-1)
+                }
+                return
+            }
+            let parser = SVGAParser()
+            parser.parse(with: animationData, cacheKey: url.lastPathComponent) { [weak self] videoItem in
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    playerView.videoItem = videoItem
+                    playerView.startAnimation()
+                }
+            } failureBlock: { [weak self] erro in
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    self.svgaPlayerDidFinishedAnimation(playerView)
+                }
+            }
         }
     }
     
@@ -53,7 +64,7 @@ class SVGAAnimationView: UIView, AnimationView {
 // MARK: SVGAPlayerDelegate
 
 extension SVGAAnimationView: SVGAPlayerDelegate {
-    func svgaPlayerDidFinishedAnimation(_ player: SVGAPlayer!) {
+    func svgaPlayerDidFinishedAnimation(_ player: SVGAPlayer) {
         UIView.animate(withDuration: 0.2) {
             player.alpha = 0
         } completion: { _ in

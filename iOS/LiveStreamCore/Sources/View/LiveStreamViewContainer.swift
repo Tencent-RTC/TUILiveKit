@@ -11,7 +11,15 @@ class LiveStreamViewContainer: UIView {
     var layoutConfig: LayoutConfig?
     
     @Published private var liveStreamViews: [UIView] = []
+    @Published private var isLayoutFinished: Bool = false
     private var cancelableSet: Set<AnyCancellable> = []
+    
+    private let fullScreenWidgetsView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        view.isHidden = true
+        return view
+    }()
     
     private var isViewReady: Bool = false
     override func didMoveToWindow() {
@@ -43,6 +51,8 @@ class LiveStreamViewContainer: UIView {
             view.frame = CGRect(x: x, y: y, width: width, height: height)
             view.layer.zPosition = CGFloat(viewInfo.zOrder)
         }
+        fullScreenWidgetsView.frame = calculateFullScreenWidgetsFrame()
+        addSubview(fullScreenWidgetsView)
     }
     
     func addView(_ view: UIView) {
@@ -69,9 +79,18 @@ class LiveStreamViewContainer: UIView {
         setNeedsLayout()
     }
     
+    func removeFullScreenWidgetsViews() {
+        fullScreenWidgetsView.subviews.forEach { $0.removeFromSuperview() }
+        fullScreenWidgetsView.isHidden = true
+    }
+    
     func setLayoutConfig(layoutConfig: LayoutConfig) {
         self.layoutConfig = layoutConfig
         setNeedsLayout()
+    }
+    
+    func getFullScreenWidgetsView() -> UIView {
+        return fullScreenWidgetsView
     }
     
     private func updateBackgroundColor() {
@@ -81,5 +100,31 @@ class LiveStreamViewContainer: UIView {
         for (index, view) in liveStreamViews.enumerated() {
             view.backgroundColor = UIColor.tui_color(withHex: layoutInfo?.viewInfoList[index].backgroundColor ?? "")
         }
+    }
+    
+    private func calculateFullScreenWidgetsFrame() -> CGRect {
+        guard let layoutInfo = layoutConfig?[liveStreamViews.count] else { return CGRect.zero }
+        let screenWidth = bounds.width
+        let screenHeight = bounds.height
+        
+        var fullScreenX: CGFloat = 0.0
+        var fullScreenY: CGFloat = screenHeight
+        var fullScreenWidth: CGFloat = 0.0
+        var fullScreenHeight: CGFloat = 0.0
+        
+        for viewInfo in layoutInfo.viewInfoList {
+            let x = viewInfo.x * screenWidth
+            let y = viewInfo.y * screenWidth
+            let width = viewInfo.width * screenWidth
+            let height = viewInfo.height == -1.0 ? screenHeight : viewInfo.height * screenWidth
+            fullScreenX = min(fullScreenX, x)
+            fullScreenY = min(fullScreenY, y)
+            fullScreenWidth = max(fullScreenWidth, x + width) - fullScreenX
+            fullScreenHeight = max(fullScreenHeight, y + height) - fullScreenY
+        }
+        return CGRect(x: fullScreenX,
+                      y: fullScreenY - 18.scale375Height(),
+                      width: fullScreenWidth,
+                      height: fullScreenHeight + 18.scale375Height())
     }
 }

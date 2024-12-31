@@ -179,6 +179,16 @@ extension MediaManager {
                             method: .TUICore_VideoAdvanceService_EnableUltimate,
                             param: ["enable" : NSNumber(value: enable)])
         modifyMediaState(value: enable, keyPath: \MediaState.videoAdvanceSettings.isUltimateEnabled)
+        if enable {
+            enableBFrame(false)
+        }
+    }
+    
+    public func enableBFrame(_ enable: Bool) {
+        TUICore.callService(.TUICore_VideoAdvanceService,
+                            method: .TUICore_VideoAdvanceService_EnableBFrame,
+                            param: ["enable" : NSNumber(value: enable)])
+        modifyMediaState(value: enable, keyPath: \MediaState.videoAdvanceSettings.isBFrameEnabled)
     }
     
     public func enableH265(_ enable: Bool) {
@@ -277,4 +287,5 @@ fileprivate extension String {
     static let TUICore_VideoAdvanceService_EnableUltimate = "TUICore_VideoAdvanceService_EnableUltimate"
     static let TUICore_VideoAdvanceService_EnableH265 = "TUICore_VideoAdvanceService_EnableH265"
     static let TUICore_VideoAdvanceService_EnableHDR = "TUICore_VideoAdvanceService_EnableHDR"
+    static let TUICore_VideoAdvanceService_EnableBFrame = "TUICore_VideoAdvanceService_EnableBFrame"
 }

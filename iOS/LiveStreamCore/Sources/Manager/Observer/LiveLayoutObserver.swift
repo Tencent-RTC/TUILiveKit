@@ -34,7 +34,7 @@ class LiveLayoutObserver: NSObject, TUILiveLayoutObserver {
             return viewInfo
         })
         videoLayout.layoutList = layoutList
-        context?.viewManager.updateVideoLayout(layout: videoLayout)
+        context?.layoutManager.updateVideoLayout(layout: videoLayout)
     }
     
     private func convertLayoutListFromJsonString(jsonString: String) -> VideoLayoutInfo? {

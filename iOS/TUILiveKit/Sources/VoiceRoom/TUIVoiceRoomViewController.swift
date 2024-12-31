@@ -134,7 +134,6 @@ public class TUIVoiceRoomViewController: UIViewController {
         voiceRootView.snp.makeConstraints { make in
             make.top.bottom.leading.trailing.equalToSuperview()
         }
-        routerCenter.routerProvider = voiceRootView
     }
     
     private func showAnchorEndView(info: [String: Any]) {

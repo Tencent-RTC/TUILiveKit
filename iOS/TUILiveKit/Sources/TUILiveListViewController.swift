@@ -134,7 +134,8 @@ extension TUILiveListViewController {
                     case .voice:
                         let vc = TUIVoiceRoomViewController(roomId: liveInfo.roomInfo.roomId, behavior: isOwner ? .autoCreate : .join)
                         self.navigationController?.pushViewController(vc, animated: true)
-                    case .live:
+                    default:
+                        // How to determine room type without roomId
                         if isOwner {
                             let vc = TUILiveRoomAnchorViewController(roomId: liveInfo.roomInfo.roomId, needPrepare: false)
                             self.navigationController?.pushViewController(vc, animated: true)
@@ -142,8 +143,6 @@ extension TUILiveListViewController {
                             let vc = TUILiveRoomAudienceViewController(liveInfo: liveInfo)
                             self.navigationController?.pushViewController(vc, animated: true)
                         }
-                        break
-                    default: break
                     }
                 }
             }
