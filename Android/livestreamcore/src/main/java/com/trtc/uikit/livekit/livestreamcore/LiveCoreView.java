@@ -27,6 +27,7 @@ import static com.trtc.uikit.livekit.livestreamcore.state.RoomState.LiveStatus.P
 import static com.trtc.uikit.livekit.livestreamcore.state.RoomState.LiveStatus.PUSHING;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -37,6 +38,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveBattleManager.BattleConfig;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveBattleManager.BattleInfo;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveBattleManager.BattleUser;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager.ConnectionUser;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.ActionCallback;
@@ -45,6 +49,8 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.RoomInfo;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.SeatInfo;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.UserInfo;
 import com.trtc.tuikit.common.livedata.Observer;
+import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine.BattleObserver;
+import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine.BattleRequestCallback;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine.CoHostUser;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine.ConnectionObserver;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine.LayoutMode;
@@ -52,6 +58,7 @@ import com.trtc.uikit.livekit.livestreamcore.common.convert.LiveStreamConvert;
 import com.trtc.uikit.livekit.livestreamcore.common.utils.DataReporter;
 import com.trtc.uikit.livekit.livestreamcore.common.utils.Logger;
 import com.trtc.uikit.livekit.livestreamcore.manager.LiveStreamManager;
+import com.trtc.uikit.livekit.livestreamcore.manager.module.BattleManager;
 import com.trtc.uikit.livekit.livestreamcore.manager.module.CoGuestManager;
 import com.trtc.uikit.livekit.livestreamcore.manager.module.CoHostManager;
 import com.trtc.uikit.livekit.livestreamcore.manager.module.MediaManager;
@@ -62,6 +69,7 @@ import com.trtc.uikit.livekit.livestreamcore.state.CoHostState;
 import com.trtc.uikit.livekit.livestreamcore.state.MediaState;
 import com.trtc.uikit.livekit.livestreamcore.state.RoomState;
 import com.trtc.uikit.livekit.livestreamcore.state.UserState;
+import com.trtc.uikit.livekit.livestreamcore.view.BattleContainLayout;
 import com.trtc.uikit.livekit.livestreamcore.view.FreeLayout;
 import com.trtc.uikit.livekit.livestreamcore.view.GridLayout;
 import com.trtc.uikit.livekit.livestreamcore.view.LiveStreamView;
@@ -97,6 +105,7 @@ public class LiveCoreView extends FrameLayout {
     private       Context                                      mContext;
     private       FreeLayout                                   mFreeLayout;
     private       FreeLayout                                   mViewInfoLayout;
+    private       BattleContainLayout                          mBattleContainLayout;
     private       LiveStreamManager                            mVideoLiveManager;
     private       RoomState                                    mRoomState;
     private       UserState                                    mUserState;
@@ -104,13 +113,15 @@ public class LiveCoreView extends FrameLayout {
     private       CoHostState                                  mCoHostState;
     private       CoGuestState                                 mCoGuestState;
     private       LiveCoreViewDefine.VideoViewAdapter          mVideoViewAdapter;
-    private       Map<String, VideoViewModel>                  mVideoViewModelMap       = new HashMap<>();
+    private final Map<String, VideoViewModel>                  mVideoViewModelMap       = new HashMap<>();
+    private final Map<String, BattleViewInfo>                  mBattleViewInfoMap       = new HashMap<>();
     private       LiveStreamView                               mLocalLiveView;
     private final Map<String, LiveStreamView>                  mRemoteLiveViewMap       = new HashMap<>();
-    private final Map<String, FrameLayout>                     mRemoteVideoLayoutMap    = new HashMap<>();
+    private final Map<String, FrameLayout>                     mVideoLayoutViewMap      = new HashMap<>();
     private final List<ConnectionObserver>                     mConnectionObserver      = new CopyOnWriteArrayList<>();
+    private final List<BattleObserver>                         mBattleObserver          = new CopyOnWriteArrayList<>();
     private final CopyOnWriteArrayList<TUIRoomDefine.SeatInfo> mCoGuestUserList         = new CopyOnWriteArrayList<>();
-    private final CopyOnWriteArrayList<VideoViewInfo>          mCoVideoViewInfoList     = new CopyOnWriteArrayList<>();
+    private final CopyOnWriteArrayList<VideoViewInfo>          mVideoLayoutList         = new CopyOnWriteArrayList<>();
     private final CopyOnWriteArrayList<ConnectionUser>         mCoHostUserList          = new CopyOnWriteArrayList<>();
     private final Observer<List<SeatInfo>>                     mCoGuestUserListObserver = this::onCoGuestUserListChange;
     private final Observer<List<ConnectionUser>>               mCoHostUserListObserver  = this::onCoHostUserListChange;
@@ -178,6 +189,7 @@ public class LiveCoreView extends FrameLayout {
 
     public void stopLiveStream(ActionCallback callback) {
         DataReporter.reportEventData(LIVEKIT_METRICS_METHOD_CALL_LIVE_STREAM_DESTROY_ROOM);
+        terminateBattle(mVideoLiveManager.getBattleState().battleId, null);
         stopLive(callback);
     }
 
@@ -279,24 +291,54 @@ public class LiveCoreView extends FrameLayout {
         mConnectionObserver.remove(observer);
     }
 
+    public void requestBattle(BattleConfig config, List<String> userIdList, int timeout,
+                              BattleRequestCallback callback) {
+        mVideoLiveManager.getBattleManager().requestBattle(config, userIdList, timeout, callback);
+    }
+
+    public void cancelBattle(String battleId, List<String> userIdList, TUIRoomDefine.ActionCallback callback) {
+        mVideoLiveManager.getBattleManager().cancelRequest(battleId, userIdList, callback);
+    }
+
+    public void respondToBattle(String battleId, boolean isAccepted, TUIRoomDefine.ActionCallback callback) {
+        if (isAccepted) {
+            mVideoLiveManager.getBattleManager().acceptBattle(battleId, callback);
+        } else {
+            mVideoLiveManager.getBattleManager().rejectBattle(battleId, callback);
+        }
+    }
+
+    public void terminateBattle(String battleId, TUIRoomDefine.ActionCallback callback) {
+        if (!TextUtils.isEmpty(battleId)) {
+            mVideoLiveManager.getBattleManager().exitBattle(battleId, callback);
+        }
+    }
+
+    public void registerBattleObserver(LiveCoreViewDefine.BattleObserver observer) {
+        mBattleObserver.add(observer);
+    }
+
+    public void unregisterBattleObserver(LiveCoreViewDefine.BattleObserver observer) {
+        mBattleObserver.remove(observer);
+    }
+
     public void setLayoutMode(LayoutMode layoutModel, String layoutJson) {
         DataReporter.reportEventData(LIVEKIT_METRICS_METHOD_CALL_LIVE_STREAM_SET_LAYOUT_MODE);
         if (layoutModel == LayoutMode.GRID_LAYOUT) {
             mFreeLayout.setLayoutResource(R.raw.livestreamcore_video_layout_grid);
+            mBattleContainLayout.setLayoutResource(R.raw.livestreamcore_video_layout_grid);
         } else if (layoutModel == LayoutMode.FLOAT_LAYOUT) {
             mFreeLayout.setLayoutResource(R.raw.livestreamcore_video_layout_float);
+            mBattleContainLayout.setLayoutResource(R.raw.livestreamcore_video_layout_float);
         } else {
             mFreeLayout.setLayout(layoutJson);
+            mBattleContainLayout.setLayout(layoutJson);
         }
     }
 
     public void setVideoViewAdapter(LiveCoreViewDefine.VideoViewAdapter viewAdapter) {
         DataReporter.reportEventData(LIVEKIT_METRICS_METHOD_CALL_LIVE_STREAM_SET_VIDEO_VIEW_ADAPTER);
         mVideoViewAdapter = viewAdapter;
-    }
-
-    public FreeLayout getVideoLayout() {
-        return mFreeLayout;
     }
 
     public MediaManager getMediaManager() {
@@ -396,7 +438,7 @@ public class LiveCoreView extends FrameLayout {
         if (!mConnectionObserver.isEmpty()) {
             List<ConnectionUser> list = new ArrayList<>();
             for (int i = 0; i < connectionUserList.size(); i++) {
-                if (!mVideoLiveManager.getViewManager().isMixUserId(connectionUserList.get(i).userId)) {
+                if (!mVideoLiveManager.getCoHostManager().isMixStreamUserId(connectionUserList.get(i).userId)) {
                     list.add(connectionUserList.get(i));
                 }
             }
@@ -462,6 +504,86 @@ public class LiveCoreView extends FrameLayout {
         }
     }
 
+    private void callbackBattleStarted(BattleInfo battleInfo) {
+        if (!mBattleObserver.isEmpty()) {
+            for (BattleObserver observer : mBattleObserver) {
+                observer.onBattleStarted(battleInfo);
+            }
+        }
+    }
+
+    private void callbackBattleEnded(BattleInfo battleInfo) {
+        if (!mBattleObserver.isEmpty()) {
+            for (BattleObserver observer : mBattleObserver) {
+                observer.onBattleEnded(battleInfo);
+            }
+        }
+    }
+
+    private void callbackUserJoinBattle(String battleId, BattleUser battleUser) {
+        if (!mBattleObserver.isEmpty()) {
+            for (BattleObserver observer : mBattleObserver) {
+                observer.onUserJoinBattle(battleId, battleUser);
+            }
+        }
+    }
+
+    private void callbackUserExitBattle(String battleId, BattleUser battleUser) {
+        if (!mBattleObserver.isEmpty()) {
+            for (BattleObserver observer : mBattleObserver) {
+                observer.onUserExitBattle(battleId, battleUser);
+            }
+        }
+    }
+
+    private void callbackBattleScoreChanged(String battleId, List<BattleUser> battleUserList) {
+        if (!mBattleObserver.isEmpty()) {
+            for (BattleObserver observer : mBattleObserver) {
+                observer.onBattleScoreChanged(battleId, battleUserList);
+            }
+        }
+    }
+
+    private void callbackBattleRequestReceived(String battleId, BattleUser inviter, BattleUser invitee) {
+        if (!mBattleObserver.isEmpty()) {
+            for (BattleObserver observer : mBattleObserver) {
+                observer.onBattleRequestReceived(battleId, inviter, invitee);
+            }
+        }
+    }
+
+    private void callbackBattleRequestCancelled(String battleId, BattleUser inviter, BattleUser invitee) {
+        if (!mBattleObserver.isEmpty()) {
+            for (BattleObserver observer : mBattleObserver) {
+                observer.onBattleRequestCancelled(battleId, inviter, invitee);
+            }
+        }
+    }
+
+    private void callbackBattleRequestTimeout(String battleId, BattleUser inviter, BattleUser invitee) {
+        if (!mBattleObserver.isEmpty()) {
+            for (BattleObserver observer : mBattleObserver) {
+                observer.onBattleRequestTimeout(battleId, inviter, invitee);
+            }
+        }
+    }
+
+    private void callbackBattleRequestAccept(String battleId, BattleUser inviter, BattleUser invitee) {
+        if (!mBattleObserver.isEmpty()) {
+            for (BattleObserver observer : mBattleObserver) {
+                observer.onBattleRequestAccept(battleId, inviter, invitee);
+            }
+        }
+    }
+
+    private void callbackBattleRequestReject(String battleId, BattleUser inviter, BattleUser invitee) {
+        if (!mBattleObserver.isEmpty()) {
+            for (BattleObserver observer : mBattleObserver) {
+                observer.onBattleRequestReject(battleId, inviter, invitee);
+            }
+        }
+    }
+
     private void init(Context context) {
         mContext = context;
         initManager();
@@ -514,6 +636,9 @@ public class LiveCoreView extends FrameLayout {
         mVideoLiveManager.getCoHostManager().setCoHostObserver(new CoHostManager.CoHostObserver() {
             @Override
             public void onConnectedRoomsUpdated(List<ConnectionUser> userList) {
+                if (userList.isEmpty()) {
+                    removeBattleView();
+                }
                 callbackConnectedRoomsUpdated(userList);
             }
 
@@ -548,6 +673,72 @@ public class LiveCoreView extends FrameLayout {
             }
         });
 
+        mVideoLiveManager.getBattleManager().setBattleObserver(new BattleManager.BattleObserver() {
+
+            @Override
+            public void onBattleStarted(BattleInfo battleInfo) {
+                removeBattleView();
+
+                boolean hasMixStreamUser = mVideoLiveManager.getCoHostManager().hasMixStreamUser();
+                Logger.info("LiveCoreView onBattleStarted, hasMixStreamUser:" + hasMixStreamUser);
+                if (hasMixStreamUser) {
+                    if (mVideoLayoutList.isEmpty()) {
+                        Logger.info("LiveCoreView onBattleStarted, wait for onLiveVideoLayoutChanged");
+                    } else {
+                        addBattleViewOnFreeLayout(mViewInfoLayout);
+                    }
+                } else {
+                    addBattleViewOnFreeLayout(mFreeLayout);
+                }
+                callbackBattleStarted(battleInfo);
+            }
+
+            @Override
+            public void onBattleEnded(BattleInfo battleInfo) {
+                callbackBattleEnded(battleInfo);
+            }
+
+            @Override
+            public void onUserJoinBattle(String battleId, BattleUser battleUser) {
+                callbackUserJoinBattle(battleId, battleUser);
+            }
+
+            @Override
+            public void onUserExitBattle(String battleId, BattleUser battleUser) {
+                callbackUserExitBattle(battleId, battleUser);
+            }
+
+            @Override
+            public void onBattleScoreChanged(String battleId, List<BattleUser> battleUserList) {
+                callbackBattleScoreChanged(battleId, battleUserList);
+            }
+
+            @Override
+            public void onBattleRequestReceived(String battleId, BattleUser inviter, BattleUser invitee) {
+                callbackBattleRequestReceived(battleId, inviter, invitee);
+            }
+
+            @Override
+            public void onBattleRequestCancelled(String battleId, BattleUser inviter, BattleUser invitee) {
+                callbackBattleRequestCancelled(battleId, inviter, invitee);
+            }
+
+            @Override
+            public void onBattleRequestTimeout(String battleId, BattleUser inviter, BattleUser invitee) {
+                callbackBattleRequestTimeout(battleId, inviter, invitee);
+            }
+
+            @Override
+            public void onBattleRequestAccept(String battleId, BattleUser inviter, BattleUser invitee) {
+                callbackBattleRequestAccept(battleId, inviter, invitee);
+            }
+
+            @Override
+            public void onBattleRequestReject(String battleId, BattleUser inviter, BattleUser invitee) {
+                callbackBattleRequestReject(battleId, inviter, invitee);
+            }
+        });
+
         mVideoLiveManager.getUserManager().setUserInfoObserver(new UserManager.UserInfoObserver() {
             @Override
             public void onUserAudioStateChanged(String userId, boolean hasAudio, TUIRoomDefine.ChangeReason reason) {
@@ -565,12 +756,12 @@ public class LiveCoreView extends FrameLayout {
                 modifyFlags.add(LiveCoreViewDefine.UserInfoModifyFlag.HAS_AUDIO_STREAM);
                 if (videoViewModel.coGuestUser != null) {
                     videoViewModel.coGuestUser.hasAudioStream = hasAudio;
-                    mVideoViewAdapter.updateCoGuestView(videoViewModel.coGuestUser, modifyFlags,
-                            videoViewModel.userView);
+                    mVideoViewAdapter.updateCoGuestView(videoViewModel.userView, videoViewModel.coGuestUser,
+                            modifyFlags);
                 }
                 if (videoViewModel.coHostUser != null) {
                     videoViewModel.coHostUser.hasAudioStream = hasAudio;
-                    mVideoViewAdapter.updateCoHostView(videoViewModel.coHostUser, modifyFlags, videoViewModel.userView);
+                    mVideoViewAdapter.updateCoHostView(videoViewModel.userView, videoViewModel.coHostUser, modifyFlags);
                 }
             }
 
@@ -591,12 +782,13 @@ public class LiveCoreView extends FrameLayout {
                 modifyFlags.add(LiveCoreViewDefine.UserInfoModifyFlag.HAS_VIDEO_STREAM);
                 if (videoViewModel.coGuestUser != null) {
                     videoViewModel.coGuestUser.hasVideoStream = hasVideo;
-                    mVideoViewAdapter.updateCoGuestView(videoViewModel.coGuestUser, modifyFlags,
-                            videoViewModel.userView);
+                    mVideoViewAdapter.updateCoGuestView(videoViewModel.userView,
+                            videoViewModel.coGuestUser, modifyFlags);
                 }
                 if (videoViewModel.coHostUser != null) {
                     videoViewModel.coHostUser.hasVideoStream = hasVideo;
-                    mVideoViewAdapter.updateCoHostView(videoViewModel.coHostUser, modifyFlags, videoViewModel.userView);
+                    mVideoViewAdapter.updateCoHostView(videoViewModel.userView,
+                            videoViewModel.coHostUser, modifyFlags);
                 }
             }
 
@@ -624,8 +816,8 @@ public class LiveCoreView extends FrameLayout {
                 }
                 if (videoViewModel.coGuestUser != null) {
                     videoViewModel.coGuestUser = userInfo;
-                    mVideoViewAdapter.updateCoGuestView(videoViewModel.coGuestUser, modifyFlags,
-                            videoViewModel.userView);
+                    mVideoViewAdapter.updateCoGuestView(videoViewModel.userView,
+                            videoViewModel.coGuestUser, modifyFlags);
                 }
             }
         });
@@ -976,6 +1168,7 @@ public class LiveCoreView extends FrameLayout {
     private void initView() {
         initVideoLayout();
         initViewInfoLayout();
+        initBattleContainLayout();
     }
 
     private void initVideoLayout() {
@@ -989,6 +1182,14 @@ public class LiveCoreView extends FrameLayout {
         mViewInfoLayout.setVisibility(GONE);
         FrameLayout.LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         addView(mViewInfoLayout, layoutParams);
+    }
+
+    private void initBattleContainLayout() {
+        mBattleContainLayout = new BattleContainLayout(mContext);
+        mBattleContainLayout.setLayout(mFreeLayout.getLayout());
+        mBattleContainLayout.setVisibility(GONE);
+        FrameLayout.LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        addView(mBattleContainLayout, layoutParams);
     }
 
     private void addLocalVideoView() {
@@ -1047,7 +1248,7 @@ public class LiveCoreView extends FrameLayout {
                 TUIRoomDefine.VideoStreamType.CAMERA_STREAM, null);
         if (mFreeLayout.indexOfChild(liveView) < 0) {
             mFreeLayout.addView(liveView);
-            if (mVideoLiveManager.getViewManager().isMixUserId(userInfo.userId)) {
+            if (mVideoLiveManager.getCoHostManager().isMixStreamUserId(userInfo.userId)) {
                 return;
             }
             if (mVideoViewAdapter != null) {
@@ -1116,13 +1317,13 @@ public class LiveCoreView extends FrameLayout {
         if (userInfo.userId.equals(mUserState.selfInfo.userId) || userInfo.userId.equals(mRoomState.ownerInfo.userId)) {
             return;
         }
-        LiveStreamView liveView = mRemoteLiveViewMap.get(userInfo.userId);
+        LiveStreamView liveView = mRemoteLiveViewMap.remove(userInfo.userId);
+        mVideoViewModelMap.remove(userInfo.userId);
+        mBattleViewInfoMap.remove(userInfo.userId);
         if (liveView != null) {
-            mRemoteLiveViewMap.remove(userInfo.userId);
             mFreeLayout.removeView(liveView);
             mFreeLayout.requestLayout();
         }
-        mVideoViewModelMap.remove(userInfo.userId);
     }
 
     private void onCoGuestUserListChange(List<SeatInfo> coGuestUsers) {
@@ -1138,14 +1339,17 @@ public class LiveCoreView extends FrameLayout {
                 removeCoGuestLiveView(LiveStreamConvert.convertToUserInfo(seatInfo));
             }
         }
+        mBattleContainLayout.setLayout(mFreeLayout.getLayout());
+        mBattleContainLayout.setViewCount(mFreeLayout.getChildCount());
+        mBattleContainLayout.resize(mFreeLayout.getMeasuredWidth(), mFreeLayout.getMeasuredHeight());
     }
 
     private void onVideoViewLayoutChange(String viewLayout) {
         if (TextUtils.isEmpty(viewLayout)) {
             mViewInfoLayout.setVisibility(GONE);
             mViewInfoLayout.removeAllViews();
-            mRemoteVideoLayoutMap.clear();
-            mCoVideoViewInfoList.clear();
+            mVideoLayoutViewMap.clear();
+            mVideoLayoutList.clear();
             return;
         }
         VideoLayoutConfig videoLayoutConfig = VideoLayoutConfig.parseJson(viewLayout);
@@ -1153,62 +1357,82 @@ public class LiveCoreView extends FrameLayout {
         VideoCanvasInfo canvas = videoLayoutConfig.canvas;
         mViewInfoLayout.setLayout(videoLayoutConfig.layoutJson);
         mViewInfoLayout.setVisibility(viewInfoList.isEmpty() ? GONE : VISIBLE);
+        mBattleContainLayout.setLayout(videoLayoutConfig.layoutJson);
+        mBattleContainLayout.setViewCount(viewInfoList.size());
         if (viewInfoList.size() == 1) {
             FrameLayout.LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
             mViewInfoLayout.setLayoutParams(params);
+            mBattleContainLayout.resize(mFreeLayout.getMeasuredWidth(), mFreeLayout.getMeasuredHeight());
         } else if (viewInfoList.size() > 1) {
             FrameLayout.LayoutParams params = (LayoutParams) mViewInfoLayout.getLayoutParams();
             params.height = (int) (mFreeLayout.getMeasuredWidth() * (1.0 * canvas.height / canvas.width));
             params.topMargin = (mFreeLayout.getMeasuredHeight() - params.height) / 2;
             mViewInfoLayout.setLayoutParams(params);
+            mBattleContainLayout.resize(mFreeLayout.getMeasuredWidth(), params.height);
+
+            FrameLayout.LayoutParams battleParams = (LayoutParams) mBattleContainLayout.getLayoutParams();
+            battleParams.topMargin += params.topMargin;
+            mBattleContainLayout.setLayoutParams(battleParams);
         }
+        for (VideoViewInfo info : mVideoLayoutList) {
+            removeVideoLayoutView(info);
+        }
+        mVideoLayoutList.clear();
+
         for (VideoViewInfo info : viewInfoList) {
-            if (containsItem(mCoVideoViewInfoList, info, (o1, o2) -> o1.userId.compareTo(o2.userId))) {
-                continue;
-            }
-            mCoVideoViewInfoList.add(info);
+            mVideoLayoutList.add(info);
             addVideoLayoutView(info);
         }
-        for (VideoViewInfo info : mCoVideoViewInfoList) {
-            if (containsItem(viewInfoList, info, (o1, o2) -> o1.userId.compareTo(o2.userId))) {
-                continue;
-            }
-            mCoVideoViewInfoList.remove(info);
-            removeVideoLayoutView(info);
+        removeBattleView();
+        if (!mVideoLiveManager.getBattleState().mBattledUsers.get().isEmpty()) {
+            addBattleViewOnFreeLayout(mViewInfoLayout);
         }
     }
 
     private void addVideoLayoutView(VideoViewInfo info) {
-        FrameLayout frameLayout = mRemoteVideoLayoutMap.get(info.userId);
+        FrameLayout frameLayout = mVideoLayoutViewMap.get(info.userId);
         if (frameLayout == null) {
             frameLayout = new FrameLayout(mContext);
-            mRemoteVideoLayoutMap.put(info.userId, frameLayout);
+            mVideoLayoutViewMap.put(info.userId, frameLayout);
         }
         if (mViewInfoLayout.indexOfChild(frameLayout) < 0) {
             mViewInfoLayout.addView(frameLayout);
             if (mVideoViewAdapter == null) {
                 return;
             }
-            View widgetsView = null;
             TUIRoomDefine.UserInfo userInfo = LiveStreamConvert.convertToUserInfo(info);
             if (mCoHostState.connectedUserList.get().isEmpty()) {
-                widgetsView = mVideoViewAdapter.createCoGuestView(userInfo);
+                View widgetsView = mVideoViewAdapter.createCoGuestView(userInfo);
+                if (widgetsView != null) {
+                    FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    frameLayout.addView(widgetsView, params);
+                    VideoViewModel videoViewModel = new VideoViewModel();
+                    videoViewModel.coGuestUser = userInfo;
+                    videoViewModel.userView = widgetsView;
+                    mVideoViewModelMap.put(userInfo.userId, videoViewModel);
+                }
             } else {
-                CoHostUser user = LiveStreamConvert.convertToCoHostUser(userInfo, mRoomState.roomId, true, true);
-                widgetsView = mVideoViewAdapter.createCoHostView(user);
+                CoHostUser coHostUser = LiveStreamConvert.convertToCoHostUser(userInfo, mRoomState.roomId, true, true);
+                View widgetsView = mVideoViewAdapter.createCoHostView(coHostUser);
+                if (widgetsView != null) {
+                    FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    frameLayout.addView(widgetsView, params);
+                    VideoViewModel videoViewModel = new VideoViewModel();
+                    videoViewModel.coHostUser = coHostUser;
+                    videoViewModel.userView = widgetsView;
+                    mVideoViewModelMap.put(userInfo.userId, videoViewModel);
+                }
             }
-            if (widgetsView == null) {
-                return;
-            }
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            frameLayout.addView(widgetsView, params);
         }
     }
 
     private void removeVideoLayoutView(VideoViewInfo info) {
         TUIRoomDefine.UserInfo userInfo = LiveStreamConvert.convertToUserInfo(info);
-        FrameLayout frameLayout = mRemoteVideoLayoutMap.remove(userInfo.userId);
+        FrameLayout frameLayout = mVideoLayoutViewMap.remove(userInfo.userId);
+        mVideoViewModelMap.remove(userInfo.userId);
+        mBattleViewInfoMap.remove(userInfo.userId);
         if (frameLayout != null) {
             mViewInfoLayout.removeView(frameLayout);
             mViewInfoLayout.requestLayout();
@@ -1216,32 +1440,134 @@ public class LiveCoreView extends FrameLayout {
     }
 
     private void onCoHostUserListChange(List<ConnectionUser> coHostUsers) {
-        postDelayed(() -> {
-            for (ConnectionUser user : coHostUsers) {
-                if (mVideoLiveManager.getViewManager().isMixUserId(user.userId)) {
-                    return;
-                }
+        for (ConnectionUser user : coHostUsers) {
+            if (mVideoLiveManager.getCoHostManager().isMixStreamUserId(user.userId)) {
+                return;
             }
-            for (ConnectionUser user : coHostUsers) {
-                if (mRoomState.ownerInfo.userId.equals(user.userId)) {
-                    addCoHostLiveView(user);
-                    break;
-                }
+        }
+        for (ConnectionUser user : coHostUsers) {
+            if (mRoomState.ownerInfo.userId.equals(user.userId)) {
+                addCoHostLiveView(user);
+                break;
             }
-            for (ConnectionUser user : coHostUsers) {
-                if (!containsItem(mCoHostUserList, user, (o1, o2) -> o1.userId.compareTo(o2.userId))) {
-                    mCoHostUserList.add(user);
-                    addCoHostLiveView(user);
-                }
+        }
+        for (ConnectionUser user : coHostUsers) {
+            if (!containsItem(mCoHostUserList, user, (o1, o2) -> o1.userId.compareTo(o2.userId))) {
+                mCoHostUserList.add(user);
+                addCoHostLiveView(user);
             }
-            for (ConnectionUser user : mCoHostUserList) {
-                if (!containsItem(coHostUsers, user, (o1, o2) -> o1.userId.compareTo(o2.userId))) {
-                    mCoHostUserList.remove(user);
-                    removeCoHostLiveView(user);
-                }
+        }
+        for (ConnectionUser user : mCoHostUserList) {
+            if (!containsItem(coHostUsers, user, (o1, o2) -> o1.userId.compareTo(o2.userId))) {
+                mCoHostUserList.remove(user);
+                removeCoHostLiveView(user);
             }
-        }, 1000);
+        }
+        mBattleContainLayout.setLayout(mFreeLayout.getLayout());
+        mBattleContainLayout.setViewCount(mFreeLayout.getChildCount());
+        mBattleContainLayout.resize(mFreeLayout.getMeasuredWidth(), mFreeLayout.getMeasuredHeight());
+    }
 
+    private void addUserBattleView(FreeLayout freeLayout, BattleUser battleUser) {
+        ViewGroup itemView = null;
+        if (freeLayout == mFreeLayout) {
+            if (TextUtils.equals(mUserState.selfInfo.userId, battleUser.userId)) {
+                itemView = mLocalLiveView;
+            } else {
+                itemView = mRemoteLiveViewMap.get(battleUser.userId);
+            }
+        } else if (freeLayout == mViewInfoLayout) {
+            itemView = mVideoLayoutViewMap.get(battleUser.userId);
+        }
+        if (itemView == null || freeLayout.indexOfChild(itemView) < 0) {
+            return;
+        }
+        if (mVideoViewAdapter != null) {
+            View widgetsView = mVideoViewAdapter.createBattleView(battleUser);
+            if (widgetsView == null) {
+                return;
+            }
+            BattleViewInfo battleViewInfo = new BattleViewInfo();
+            battleViewInfo.battleUser = battleUser;
+            battleViewInfo.battleView = widgetsView;
+            mBattleViewInfoMap.put(battleUser.userId, battleViewInfo);
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT);
+            itemView.addView(widgetsView, params);
+        }
+    }
+
+    private void addBattleViewOnFreeLayout(FreeLayout freeLayout) {
+        List<BattleUser> battleUserList = mVideoLiveManager.getBattleState().mBattledUsers.get();
+        for (BattleUser battleUser : battleUserList) {
+            addUserBattleView(freeLayout, battleUser);
+        }
+
+        FrameLayout containerView = mBattleContainLayout;
+        containerView.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) ->
+                updateBattleContainerView());
+        containerView.setVisibility(VISIBLE);
+        if (mVideoViewAdapter != null) {
+            View widgetsView = mVideoViewAdapter.createBattleContainerView();
+            if (widgetsView == null) {
+                return;
+            }
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT);
+            containerView.addView(widgetsView, params);
+        }
+    }
+
+    private void updateBattleContainerView() {
+        FrameLayout containerView = mBattleContainLayout;
+        if (mVideoViewAdapter == null || containerView.getChildCount() == 0) {
+            return;
+        }
+        View battleContainerView = containerView.getChildAt(0);
+        List<LiveCoreViewDefine.BattleUserViewModel> list = new ArrayList<>();
+        boolean hasChanged = false;
+        for (String userId : mBattleViewInfoMap.keySet()) {
+            BattleViewInfo battleViewInfo = mBattleViewInfoMap.get(userId);
+            if (battleViewInfo == null || battleViewInfo.battleUser == null
+                    || battleViewInfo.battleView == null || battleViewInfo.battleView.getParent() == null) {
+                continue;
+            }
+            LiveCoreViewDefine.BattleUserViewModel model = new LiveCoreViewDefine.BattleUserViewModel();
+            model.battleUser = battleViewInfo.battleUser;
+            model.rect.set(battleViewInfo.rect);
+            ViewGroup parentView = (ViewGroup) battleViewInfo.battleView.getParent();
+            Rect rect = new Rect();
+            rect.top = parentView.getTop();
+            rect.bottom = parentView.getBottom();
+            rect.left = parentView.getLeft();
+            rect.right = parentView.getRight();
+            if (!hasChanged && !rect.equals(model.rect)) {
+                hasChanged = true;
+            }
+            model.rect.set(rect);
+            battleViewInfo.rect.set(rect);
+            list.add(model);
+        }
+        if (hasChanged) {
+            mVideoViewAdapter.updateBattleContainerView(battleContainerView, list);
+        }
+    }
+
+    private void removeBattleView() {
+        mBattleContainLayout.removeAllViews();
+        mBattleContainLayout.setVisibility(GONE);
+        for (String userId : mBattleViewInfoMap.keySet()) {
+            BattleViewInfo battleViewInfo = mBattleViewInfoMap.get(userId);
+            if (battleViewInfo == null) {
+                continue;
+            }
+            View view = battleViewInfo.battleView;
+            ViewGroup parentView = (ViewGroup) view.getParent();
+            if (parentView != null) {
+                parentView.removeView(view);
+            }
+        }
+        mBattleViewInfoMap.clear();
     }
 
     private void onCoGuestStatusChange(CoGuestStatus status) {
@@ -1263,5 +1589,11 @@ public class LiveCoreView extends FrameLayout {
         LiveCoreViewDefine.CoHostUser coHostUser;
         TUIRoomDefine.UserInfo        coGuestUser;
         View                          userView;
+    }
+
+    private static class BattleViewInfo {
+        BattleUser battleUser;
+        View       battleView;
+        Rect       rect = new Rect();
     }
 }

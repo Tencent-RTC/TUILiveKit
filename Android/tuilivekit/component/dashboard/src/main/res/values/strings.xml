@@ -1,0 +1,16 @@
+<resources>
+    <string name="livekit_dashboard_loading">Loading...</string>
+    <string name="livekit_dashboard_video_fps">"Video FPS"</string>
+    <string name="livekit_dashboard_video_resolution">Quality</string>
+    <string name="livekit_dashboard_video_bitrate">"Video Bitrate"</string>
+    <string name="livekit_dashboard_audio_bitrate">"Audio Bitrate"</string>
+    <string name="livekit_dashboard_title">Dashboard</string>
+    <string name="livekit_dashboard_video_info_title">Video Info</string>
+    <string name="livekit_dashboard_audio_info_title">Audio Info</string>
+    <string name="livekit_dashboard_network_info_title">Network Info</string>
+    <string name="livekit_dashboard_media_info_title">Media Info</string>
+    <string name="livekit_dashboard_local_user">Local User</string>
+    <string name="livekit_dashboard_remote_user">Remote User</string>
+    <string name="livekit_dashboard_stream_type">StreamType</string>
+    <string name="livekit_dashboard_audio_sample_rate">Audio Sample Rate</string>
+</resources>

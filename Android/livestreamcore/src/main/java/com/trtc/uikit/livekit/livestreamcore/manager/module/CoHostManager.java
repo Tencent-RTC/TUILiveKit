@@ -46,6 +46,21 @@ public class CoHostManager extends BaseManager {
         mVideoLiveState.coHostState.enableConnection = enable;
     }
 
+    public boolean isMixStreamUserId(String userId) {
+        String mixStreamIdSuffix =  "_feedback_" + mVideoLiveState.roomState.roomId;
+        return userId != null && userId.endsWith(mixStreamIdSuffix);
+    }
+
+    public boolean hasMixStreamUser() {
+        List<ConnectionUser> connectedUserList = mCoHostState.connectedUserList.get();
+        for (int i = 0; i < connectedUserList.size(); i++) {
+            if (isMixStreamUserId(connectedUserList.get(i).userId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void requestConnection(String roomId, int timeoutSeconds, TUIRoomDefine.ActionCallback callback) {
         mVideoLiveService.requestConnection(Collections.singletonList(roomId), timeoutSeconds, "",
                 new TUILiveConnectionManager.ConnectionRequestCallback() {
@@ -54,7 +69,9 @@ public class CoHostManager extends BaseManager {
                         if (map != null) {
                             TUILiveConnectionManager.ConnectionCode code = map.get(roomId);
                             if (code == TUILiveConnectionManager.ConnectionCode.SUCCESS) {
-                                addSendConnectionRequest(new ConnectionUser());
+                                ConnectionUser connectionUser = new ConnectionUser();
+                                connectionUser.roomId = roomId;
+                                addSendConnectionRequest(connectionUser);
                                 if (callback != null) {
                                     callback.onSuccess();
                                 }
@@ -80,11 +97,12 @@ public class CoHostManager extends BaseManager {
     }
 
     public void accept(String roomId, TUIRoomDefine.ActionCallback callback) {
+        removeReceivedConnectionRequest();
         mVideoLiveService.acceptConnection(roomId, callback);
-
     }
 
     public void reject(String roomId, TUIRoomDefine.ActionCallback callback) {
+        removeReceivedConnectionRequest();
         mVideoLiveService.rejectConnection(roomId, callback);
     }
 
@@ -156,7 +174,7 @@ public class CoHostManager extends BaseManager {
             removeReceivedConnectionRequest();
         }
 
-        notifyCrossRoomConnectionTimeout(invitee, invitee);
+        notifyCrossRoomConnectionTimeout(inviter, invitee);
     }
 
     @Override

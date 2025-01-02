@@ -1,0 +1,20 @@
+<resources>
+    <string-array name="livekit_stream_category_list">
+        <item>Daily chat</item>
+        <item>Appearance</item>
+        <item>Knowledge teaching</item>
+        <item>Shopping</item>
+        <item>Music</item>
+    </string-array>
+    <string-array name="livekit_stream_privacy_status">
+        <item>Public</item>
+        <item>Privacy</item>
+    </string-array>
+    <string-array name="livekit_video_resolution">
+        <item>LD</item>
+        <item>SD</item>
+        <item>HD</item>
+        <item>Ultra HD</item>
+    </string-array>
+
+</resources>

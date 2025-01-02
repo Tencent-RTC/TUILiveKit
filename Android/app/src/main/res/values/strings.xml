@@ -10,7 +10,7 @@
     <string name="app_hint_user_name">Enter a username</string>
     <string name="app_tips_user_name">Letters, numbers and underscores, 1 – 20 words</string>
     <string name="app_toast_register_success_and_logging_in">Registered successfully</string>
-    <string name="app_toast_failed_to_set">Failed: %s</string>
+    <string name="app_toast_failed_to_set">Failed: %1$s</string>
 
     <string name="app_custom_name_1">Martijn</string>
     <string name="app_custom_name_2">irfan</string>

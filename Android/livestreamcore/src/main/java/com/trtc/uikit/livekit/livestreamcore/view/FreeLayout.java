@@ -53,6 +53,10 @@ public class FreeLayout extends FrameLayout {
         requestLayout();
     }
 
+    public String getLayout() {
+        return mLayoutJson;
+    }
+
     public void setLayoutResource(int resourceId) {
         try (InputStream inputStream = getResources().openRawResource(resourceId);
              BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {

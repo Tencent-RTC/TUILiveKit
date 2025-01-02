@@ -31,9 +31,8 @@ android {
 }
 
 dependencies {
-    api fileTree(dir: 'libs', include: ['*.jar'])
     api project(':debug')
-    api project(':tuilivekit')
+    api project(':tuilivekit:livekit')
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
     implementation 'androidx.appcompat:appcompat:1.3.1'

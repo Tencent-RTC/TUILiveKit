@@ -1,0 +1,10 @@
+<resources>
+    <string name="livekit_music">Music</string>
+    <string name="livekit_music_cheerful">Cheerful</string>
+    <string name="livekit_music_melancholy">Melancholy</string>
+    <string name="livekit_music_wonder_world">Wonder World</string>
+    <string name="livekit_music_tips_title">Warm Tips</string>
+    <string name="livekit_musuic_delete_tips">Are you sure you want to delete \"%s\"?</string>
+    <string name="livekit_music_cancel">Cancel</string>
+    <string name="livekit_music_confirm">Confirm</string>
+</resources>

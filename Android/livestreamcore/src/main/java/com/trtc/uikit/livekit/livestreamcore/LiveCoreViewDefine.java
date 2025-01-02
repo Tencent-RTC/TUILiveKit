@@ -1,7 +1,11 @@
 package com.trtc.uikit.livekit.livestreamcore;
 
+import android.graphics.Rect;
 import android.view.View;
 
+import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveBattleManager.BattleInfo;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveBattleManager.BattleUser;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager.ConnectionUser;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.UserInfo;
@@ -48,14 +52,56 @@ public class LiveCoreViewDefine {
         void onRoomDismissed(String roomId);
     }
 
+    public interface BattleObserver {
+        void onBattleStarted(BattleInfo battleInfo);
+
+        void onBattleEnded(BattleInfo battleInfo);
+
+        void onUserJoinBattle(String battleId, BattleUser battleUser);
+
+        void onUserExitBattle(String battleId, BattleUser battleUser);
+
+        void onBattleScoreChanged(String battleId, List<BattleUser> battleUserList);
+
+        void onBattleRequestReceived(String battleId, BattleUser inviter, BattleUser invitee);
+
+        void onBattleRequestCancelled(String battleId, BattleUser inviter, BattleUser invitee);
+
+        void onBattleRequestTimeout(String battleId, BattleUser inviter, BattleUser invitee);
+
+        void onBattleRequestAccept(String battleId, BattleUser inviter, BattleUser invitee);
+
+        void onBattleRequestReject(String battleId, BattleUser inviter, BattleUser invitee);
+    }
+
+    public interface BattleRequestCallback {
+        void onSuccess(String battleId, List<String> requestedUserIdList);
+
+        void onError(TUICommonDefine.Error error, String message);
+    }
+
+
     public interface VideoViewAdapter {
         View createCoGuestView(TUIRoomDefine.UserInfo userInfo);
 
-        void updateCoGuestView(TUIRoomDefine.UserInfo userInfo, List<UserInfoModifyFlag> modifyFlag, View coGuestView);
+        void updateCoGuestView(View coGuestView, TUIRoomDefine.UserInfo userInfo, List<UserInfoModifyFlag> modifyFlag);
 
         View createCoHostView(CoHostUser coHostUser);
 
-        void updateCoHostView(CoHostUser coHostUser, List<UserInfoModifyFlag> modifyFlag, View coHostView);
+        void updateCoHostView(View coHostView, CoHostUser coHostUser, List<UserInfoModifyFlag> modifyFlag);
+
+        View createBattleView(BattleUser battleUser);
+
+        void updateBattleView(View battleView, BattleUser battleUser);
+
+        View createBattleContainerView();
+
+        void updateBattleContainerView(View battleContainnerView, List<BattleUserViewModel> userInfos);
+    }
+
+    public static class BattleUserViewModel {
+        public BattleUser battleUser;
+        public Rect       rect = new Rect();
     }
 
     public static class CoHostUser {

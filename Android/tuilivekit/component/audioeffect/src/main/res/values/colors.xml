@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="livekit_audio_effect_design_standard_g2">#22262E</color>
+    <color name="livekit_audio_effect_design_standard_b1">#1C66E5</color>
+    <color name="livekit_audio_effect_design_standard_g5">#8F9AB2</color>
+    <color name="livekit_audio_effect_design_standard_g7">#D5E0F2</color>
+    <color name="livekit_audio_effect_design_standard_g3">#4F586B</color>
+    <color name="livekit_audio_effect_design_standard_g6">#C5CCDB</color>
+    <color name="livekit_audio_effect_design_standard_flowkit_white">#FFFFFF</color>
+    <color name="livekit_audio_effect_not_standard_blue_30_transparency">#4D4F586B</color>
+    <color name="livekit_audio_effect_not_standard_white">#D1D9EC</color>
+</resources>

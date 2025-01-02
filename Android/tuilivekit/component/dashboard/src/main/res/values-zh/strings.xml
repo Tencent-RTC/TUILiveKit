@@ -1,0 +1,16 @@
+<resources>
+    <string name="livekit_dashboard_loading">正在加载...</string>
+    <string name="livekit_dashboard_video_fps">"视频帧率"</string>
+    <string name="livekit_dashboard_video_resolution">"分辨率"</string>
+    <string name="livekit_dashboard_video_bitrate">"视频码率"</string>
+    <string name="livekit_dashboard_audio_bitrate">"音频码率"</string>
+    <string name="livekit_dashboard_title">仪表盘</string>
+    <string name="livekit_dashboard_video_info_title">视频信息</string>
+    <string name="livekit_dashboard_audio_info_title">音频信息</string>
+    <string name="livekit_dashboard_network_info_title">网络信息</string>
+    <string name="livekit_dashboard_media_info_title">媒体信息</string>
+    <string name="livekit_dashboard_local_user">本地用户</string>
+    <string name="livekit_dashboard_remote_user">远端用户</string>
+    <string name="livekit_dashboard_stream_type">流类型</string>
+    <string name="livekit_dashboard_audio_sample_rate">音频采样率</string>
+</resources>

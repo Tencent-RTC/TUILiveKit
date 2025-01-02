@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="livekit_barrage_design_standard_g2">#22262E</color>
+    <color name="livekit_barrage_design_standard_g7">#D5E0F2</color>
+    <color name="livekit_barrage_design_standard_flowkit_green">#29CC6A</color>
+    <color name="livekit_barrage_not_standard_40_g1">#660F1014</color>
+    <color name="livekit_barrage_g8">#FFF2F5FC</color>
+
+    <color name="livekit_barrage_item_back_color">#66000000</color>
+    <color name="livekit_barrage_level_back_color">#4D8EFF</color>
+    <color name="livekit_barrage_user_name_color">#FF80BEF6</color>
+    <color name="livekit_barrage_button_bg_line">#1AF2F5FC</color>
+</resources>

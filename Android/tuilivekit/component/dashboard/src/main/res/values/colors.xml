@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="livekit_dashboard_design_standard_g7">#D5E0F2</color>
+    <color name="livekit_dashboard_not_standard_black_1f">#1F000000</color>
+    <color name="livekit_dashboard_color_green">#47D4AB</color>
+    <color name="livekit_dashboard_color_pink">#F95F91</color>
+    <color name="livekit_dashboard_color_title">#99FFFFFF</color>
+</resources>

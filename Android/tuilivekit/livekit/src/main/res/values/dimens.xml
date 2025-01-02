@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="livekit_bottom_btn_size">36dp</dimen>
+    <dimen name="livekit_bottom_btn_radius">18dp</dimen>
+    <dimen name="livekit_anchor_info_height">32dp</dimen>
+    <dimen name="livekit_anchor_info_radius">16dp</dimen>
+    <dimen name="livekit_icon_size">24dp</dimen>
+    <dimen name="livekit_top_btn_size">24dp</dimen>
+    <dimen name="livekit_top_btn_radius">12dp</dimen>
+
+    <dimen name="livekit_float_view_width">110dp</dimen>
+    <dimen name="livekit_float_view_height">188dp</dimen>
+</resources>
