@@ -1,0 +1,10 @@
+<resources>
+    <string name="livekit_music">音乐</string>
+    <string name="livekit_music_cheerful">欢快</string>
+    <string name="livekit_music_melancholy">忧郁</string>
+    <string name="livekit_music_wonder_world">神奇世界</string>
+    <string name="livekit_music_tips_title">温馨提示</string>
+    <string name="livekit_musuic_delete_tips">确认要删除\"%s\"吗?</string>
+    <string name="livekit_music_cancel">取消</string>
+    <string name="livekit_music_confirm">确认</string>
+</resources>

@@ -54,7 +54,6 @@ public class CoGuestManager extends BaseManager {
         mVideoLiveService.getSeatList(new TUIRoomDefine.GetSeatListCallback() {
             @Override
             public void onSuccess(List<TUIRoomDefine.SeatInfo> list) {
-                initSeatList(list);
                 updateSelfSeatedState();
                 autoTakeSeatByOwner();
             }
@@ -453,18 +452,12 @@ public class CoGuestManager extends BaseManager {
                 mCoGuestState.coGuestStatus.set(CoGuestStatus.LINKING, false);
             }
         }
-        if (!seatedList.isEmpty()) {
-            mCoGuestState.connectedUserList.notifyDataChanged();
-        }
+
         for (TUIRoomDefine.SeatInfo seatInfo : leftList) {
             if (isSelfSeatInfo(seatInfo)) {
                 mCoGuestState.coGuestStatus.set(CoGuestStatus.NONE, false);
             }
         }
-        if (!leftList.isEmpty()) {
-            mCoGuestState.connectedUserList.notifyDataChanged();
-        }
-
         notifyConnectedUsersUpdated(seatList, seatedList, leftList);
         notifyUserConnectionExited(leftList);
 
@@ -496,6 +489,12 @@ public class CoGuestManager extends BaseManager {
 
     public void onKickedOffSeat(String userId) {
         notifyConnectionTerminated(userId);
+    }
+
+    public void onConnectSuccess() {
+        if (mUserState.selfInfo.userRole == TUIRoomDefine.Role.ROOM_OWNER) {
+            mVideoLiveService.takeSeat(REQUEST_DEFAULT_INDEX, REQUEST_TIMEOUT, null);
+        }
     }
 
     private void notifyConnectedUsersUpdated(List<TUIRoomDefine.SeatInfo> seatList,

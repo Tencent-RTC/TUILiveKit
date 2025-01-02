@@ -1,0 +1,21 @@
+<resources>
+    <string-array name="livekit_stream_category_list">
+        <item>日常聊天</item>
+        <item>颜值</item>
+        <item>知识教学</item>
+        <item>购物</item>
+        <item>音乐</item>
+    </string-array>
+    <string-array name="livekit_stream_privacy_status">
+        <item>公开</item>
+        <item>隐私</item>
+    </string-array>
+    <string-array name="livekit_video_resolution">
+        <item>低清</item>
+        <item>标清</item>
+        <item>高清</item>
+        <item>超清</item>
+    </string-array>
+</resources>
+
+

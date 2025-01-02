@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="livekit_audiencelist_design_standard_g2">#22262E</color>
+    <color name="livekit_audiencelist_design_standard_b1">#1C66E5</color>
+    <color name="livekit_audiencelist_design_standard_g7">#D5E0F2</color>
+    <color name="livekit_audiencelist_design_standard_white">#FFFFFF</color>
+    <color name="livekit_audiencelist_not_standard_40_g1">#660F1014</color>
+    <color name="livekit_audiencelist_not_standard_blue_30_transparency">#4D4F586B</color>
+</resources>

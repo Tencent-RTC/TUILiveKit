@@ -1,0 +1,37 @@
+<resources>
+    <string name="livekit_audio_effect">Audio</string>
+    <string name="livekit_ear_return">Ear return</string>
+    <string name="livekit_ear_return_volume">Ear return volume</string>
+    <string name="livekit_background_music">Background music</string>
+    <string name="livekit_select_music">Select music</string>
+    <string name="livekit_audio_settings">Audio settings</string>
+    <string name="livekit_music_volume">Music volume</string>
+    <string name="livekit_people_volume">Voice volume</string>
+    <string name="livekit_music_pitch">Music pitch</string>
+    <string name="livekit_change_voice">Voice change</string>
+    <string name="livekit_change_voice_none">Original voice</string>
+    <string name="livekit_change_voice_child">Naughty child</string>
+    <string name="livekit_change_voice_girl">Lori</string>
+    <string name="livekit_change_voice_uncle">Uncle</string>
+    <string name="livekit_change_voice_metal">Heavy metal</string>
+    <string name="livekit_change_voice_cold">Cold</string>
+    <string name="livekit_change_voice_foreign_language">Foreign language accent</string>
+    <string name="livekit_change_voice_trapped_beast">Trapped beast</string>
+    <string name="livekit_change_voice_fat_house">fat house</string>
+    <string name="livekit_change_voice_strong_current">Strong current</string>
+    <string name="livekit_change_voice_machinery">Heavy machinery</string>
+    <string name="livekit_change_voice_ethereal">Ethereal</string>
+    <string name="livekit_reverb">Reverb</string>
+    <string name="livekit_reverb_none">No effect</string>
+    <string name="livekit_reverb_karaoke">KTV</string>
+    <string name="livekit_reverb_small_room">Small room</string>
+    <string name="livekit_reverb_town_hall">Town Hall</string>
+    <string name="livekit_reverb_low">Low</string>
+    <string name="livekit_reverb_loud_and_loud">loud</string>
+    <string name="livekit_reverb_metallic_sound">Metallic sound</string>
+    <string name="livekit_reverb_metallic_magnetic">Magnetic</string>
+    <string name="livekit_reverb_metallic_ethereal">Ethereal</string>
+    <string name="livekit_reverb_metallic_recording_studio">Recording studio</string>
+    <string name="livekit_reverb_metallic_melodious">melodious</string>
+    <string name="livekit_reverb_metallic_recording_studio2">Recording Studio 2</string>
+</resources>

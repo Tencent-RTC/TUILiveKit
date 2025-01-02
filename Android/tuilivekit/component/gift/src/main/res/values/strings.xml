@@ -1,0 +1,5 @@
+<resources>
+    <string name="livekit_gift_me">Me</string>
+    <string name="livekit_sent">&#160;sent&#160;</string>
+    <string name="livekit_gift_give_gift">Give gift</string>
+</resources>

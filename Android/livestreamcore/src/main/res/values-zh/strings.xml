@@ -7,10 +7,13 @@
     <string name="livestreamcore_permission_camera_reason">需要访问您的相机权限，开启后用于视频互动等功能，在您使用美颜功能时，我们会对您实时拍摄的面部的像素信息进行实时智能识别，在识别过程中会实时收集您面部的像素信息，以为您提供更好的美颜效果。</string>
     <string name="livestreamcore_permission_mic_reason">需要访问您的麦克风权限，开启后用于视频互动等功能，并且开启后录制的视频才会有声音。</string>
     <string name="livestreamcore_permission_separator">、</string>
-    <string name="livestreamcore_permission_tips">请先打开%s权限</string>
-    <string name="livestreamcore_permission_title">%s申请获取%s权限</string>
+    <string name="livestreamcore_permission_tips">请先打开%1$s权限</string>
+    <string name="livestreamcore_permission_title">%1$s申请获取%2$s权限</string>
     <!-- Host Connection -->
     <string name="livestreamcore_cohost_conflict">主播连线中，无法发起连线</string>
     <string name="livestreamcore_cohost_room_full">连线房间已满，无法发起连线</string>
     <string name="livestreamcore_cohost_error">其他错误，无法发起连线</string>
+    <!-- Host Battle -->
+    <string name="livestreamcore_battle_error_conflict">主播正在PK中，无法发起PK</string>
+    <string name="livestreamcore_battle_error_other">其他错误，无法发起PK</string>
 </resources>

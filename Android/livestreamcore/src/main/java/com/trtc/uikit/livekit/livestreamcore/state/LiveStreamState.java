@@ -6,6 +6,7 @@ public class LiveStreamState {
     public MediaState   mediaState   = new MediaState();
     public CoHostState  coHostState  = new CoHostState();
     public CoGuestState coGuestState = new CoGuestState();
+    public BattleState  battleState  = new BattleState();
     public ViewState    viewState    = new ViewState();
 
     public void reset() {
@@ -14,6 +15,7 @@ public class LiveStreamState {
         userState.reset();
         mediaState.reset();
         coHostState.reset();
+        battleState.reset();
         viewState.reset();
     }
 }

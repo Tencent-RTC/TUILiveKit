@@ -1,6 +1,7 @@
 package com.trtc.uikit.livekit.livestreamcore.manager.api;
 
 import com.tencent.cloud.tuikit.engine.common.TUIVideoView;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveBattleManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveLayoutManager;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
@@ -19,6 +20,10 @@ public interface ILiveStream {
     void addLiveConnectionManagerObserver(TUILiveConnectionManager.Observer observer);
 
     void removeLiveConnectionManagerObserver(TUILiveConnectionManager.Observer observer);
+
+    void addLiveBattleManagerObserver(TUILiveBattleManager.Observer observer);
+
+    void removeLiveBattleManagerObserver(TUILiveBattleManager.Observer observer);
 
     void addLiveLayoutManagerObserver(TUILiveLayoutManager.Observer observer);
     
@@ -115,4 +120,16 @@ public interface ILiveStream {
     void disconnect(TUIRoomDefine.ActionCallback callback);
 
     void cancelConnectionRequest(List<String> list, TUIRoomDefine.ActionCallback callback);
+
+    /***************************************** Plugin - Battle ******************************************/
+    void requestBattle(TUILiveBattleManager.BattleConfig config, List<String> userIdList, int timeout,
+                       TUILiveBattleManager.BattleRequestCallback callback);
+
+    void cancelBattleRequest(String battleId, List<String> userIdList, TUIRoomDefine.ActionCallback callback);
+
+    void acceptBattle(String battleId, TUIRoomDefine.ActionCallback callback);
+
+    void rejectBattle(String battleId, TUIRoomDefine.ActionCallback callback);
+
+    void exitBattle(String battleId, TUIRoomDefine.ActionCallback callback);
 }

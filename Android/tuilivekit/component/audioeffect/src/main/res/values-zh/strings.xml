@@ -1,0 +1,37 @@
+<resources>
+    <string name="livekit_audio_effect">音效</string>
+    <string name="livekit_ear_return">耳返</string>
+    <string name="livekit_ear_return_volume">耳返音量</string>
+    <string name="livekit_background_music">背景音乐</string>
+    <string name="livekit_select_music">选择音乐</string>
+    <string name="livekit_audio_settings">音频设置</string>
+    <string name="livekit_music_volume">音乐音量</string>
+    <string name="livekit_people_volume">人声音量</string>
+    <string name="livekit_music_pitch">音乐升降调</string>
+    <string name="livekit_change_voice">变声</string>
+    <string name="livekit_change_voice_none">原声</string>
+    <string name="livekit_change_voice_child">熊孩子</string>
+    <string name="livekit_change_voice_girl">萝莉</string>
+    <string name="livekit_change_voice_uncle">大叔</string>
+    <string name="livekit_change_voice_metal">重金属</string>
+    <string name="livekit_change_voice_cold">感冒</string>
+    <string name="livekit_change_voice_foreign_language">外语腔</string>
+    <string name="livekit_change_voice_trapped_beast">困兽</string>
+    <string name="livekit_change_voice_fat_house">肥宅</string>
+    <string name="livekit_change_voice_strong_current">强电流</string>
+    <string name="livekit_change_voice_machinery">重机械</string>
+    <string name="livekit_change_voice_ethereal">空灵</string>
+    <string name="livekit_reverb">混响</string>
+    <string name="livekit_reverb_none">无效果</string>
+    <string name="livekit_reverb_karaoke">KTV</string>
+    <string name="livekit_reverb_small_room">小房间</string>
+    <string name="livekit_reverb_town_hall">大会堂</string>
+    <string name="livekit_reverb_low">低沉</string>
+    <string name="livekit_reverb_loud_and_loud">洪亮</string>
+    <string name="livekit_reverb_metallic_sound">金属声</string>
+    <string name="livekit_reverb_metallic_magnetic">磁性</string>
+    <string name="livekit_reverb_metallic_ethereal">空灵</string>
+    <string name="livekit_reverb_metallic_recording_studio">录音棚</string>
+    <string name="livekit_reverb_metallic_melodious">悠扬</string>
+    <string name="livekit_reverb_metallic_recording_studio2">录音棚2</string>
+</resources>

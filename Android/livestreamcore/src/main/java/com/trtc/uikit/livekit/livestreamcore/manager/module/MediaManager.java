@@ -54,6 +54,17 @@ public class MediaManager extends BaseManager {
         Map<String, Object> params = new HashMap<>();
         params.put("enable", enable);
         TUICore.callService("VideoAdvanceExtension", "enableUltimate", params);
+
+        if(enable){
+            enableBFrame(false);
+        }
+    }
+
+    public void enableBFrame(boolean enable) {
+        mMediaState.videoAdvanceSetting.isBFrameEnabled = enable;
+        Map<String, Object> params = new HashMap<>();
+        params.put("enable", enable);
+        TUICore.callService("VideoAdvanceExtension", "enableBFrame", params);
     }
 
     public void enableH265(boolean enable) {

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ll_root"
+    android:layout_width="wrap_content"
+    android:layout_height="32dp"
+    android:background="@drawable/livekit_anchor_live_info"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/iv_avatar"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="8dp"
+        android:padding="0.86dp"
+        android:src="@drawable/livekit_ic_avatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/ClickRoundedImageView"
+        app:strokeColor="@color/livekit_roominfo_not_standard_blue_d1"
+        app:strokeWidth="0.86dp" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="0dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="8dp"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:lines="1"
+        android:textColor="@color/livekit_roominfo_design_standard_g7" />
+
+    <FrameLayout
+        android:id="@+id/fl_follow_panel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_unfollow"
+            android:layout_width="46dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/livekit_live_info_button_unfollow"
+            android:gravity="center"
+            android:text="@string/livekit_roominfo_follow_anchor"
+            android:textColor="@color/livekit_roominfo_design_standard_g7"
+            android:textSize="10sp" />
+
+        <ImageView
+            android:id="@+id/iv_follow"
+            android:layout_width="46dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/livekit_room_info_follow_bg"
+            android:gravity="center"
+            android:paddingStart="14.5dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="14.5dp"
+            android:paddingBottom="4dp"
+            android:scaleType="center"
+            android:src="@drawable/livekit_followed_button_check" />
+
+    </FrameLayout>
+</LinearLayout>

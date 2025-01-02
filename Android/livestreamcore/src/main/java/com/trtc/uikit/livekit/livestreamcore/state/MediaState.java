@@ -20,6 +20,7 @@ public class MediaState {
         public boolean isVisible         = false;
         public boolean isUltimateEnabled = false;
         public boolean isH265Enabled     = false;
+        public boolean isBFrameEnabled   = false;
     }
 
 
