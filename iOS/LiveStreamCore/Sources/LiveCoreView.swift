@@ -608,7 +608,6 @@ extension LiveCoreView {
                         debugPrint("createCoGuestView: frame: \(liveView.frame), userId: \(userInfo.userId)")
                     }
                 } else {
-                    
                     let hasAudio = manager.userState.hasAudioStreamUserList.contains(userInfo.userId)
                     let coHostUser = LiveStreamConvert.convertToCoHostUser(userInfo: userInfo, roomId: manager.roomState.roomId, hasVideoStream: userInfo.hasVideoStream, hasAudioStream: hasAudio)
                     if let layoutWidgetsView = videoViewDelegate.createCoHostView(coHostUser: coHostUser) {
