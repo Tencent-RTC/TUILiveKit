@@ -74,7 +74,9 @@ class CoGuestView: UIView {
     private func initViewState() {
         avatarImageView.kf.setImage(with: URL(string: userInfo.avatarUrl),
                                     placeholder: UIImage.avatarPlaceholderImage)
-        if userInfo.userId == manager.userState.selfInfo.userId {
+        if userInfo.userId == manager.userState.selfInfo.userId  ||
+            (userInfo.userId == manager.roomState.ownerInfo.userId &&
+             manager.coGuestState.coGuestStatus == .none) {
             userInfoView.isHidden = true
         }
         let hasVideo = manager.userState.hasVideoStreamUserList.contains(userInfo.userId)
