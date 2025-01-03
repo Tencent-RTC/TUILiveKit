@@ -216,7 +216,7 @@
 "live.endLive.onBattle.alert.endBattle" = "End Battle";
 
 // MARK: - Error Toast
-
+"live.error.pushing" = "It's live, please try again later.";
 "live.error.success" = "Operation successful";
 "live.error.failed" = "Uncategorized common error";
 "live.error.freqLimit" = "Request frequency limited, please try again later";

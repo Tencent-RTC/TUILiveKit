@@ -109,6 +109,10 @@ extension TUILiveRoomAudienceViewController: FloatWindowDataSource {
     func getRoomId() -> String {
         roomId
     }
+    
+    func getOwnerId() -> String {
+        coreView.roomState.ownerInfo.userId
+    }
 
     func getCoreView() -> LiveCoreView {
         coreView

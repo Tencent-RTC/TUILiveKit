@@ -11,6 +11,7 @@ import LiveStreamCore
 
 protocol FloatWindowDataSource {
     func getRoomId() -> String
+    func getOwnerId() -> String
     // TODO: (gg) Need to consider the type of VoiceRoom's coreView
     func getCoreView() -> LiveCoreView
     func relayoutCoreView()
@@ -82,6 +83,11 @@ extension FloatWindow {
     func getCurrentRoomId() -> String? {
         guard let controller = controller else { return nil }
         return controller.getRoomId()
+    }
+    
+    func getRoomOwnerId() -> String? {
+        guard let controller = controller else { return nil }
+        return controller.getOwnerId()
     }
 }
 
