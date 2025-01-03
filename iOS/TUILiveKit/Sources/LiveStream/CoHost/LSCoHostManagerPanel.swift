@@ -247,9 +247,14 @@ extension LSCoHostManagerPanel: UITableViewDataSource {
                 connectionUserCell.updateUser(recommendedUsers[indexPath.row])
                 connectionUserCell.inviteEventClosure = { [weak self] user in
                     guard let self = self else { return }
-                    coreView?.requestCrossRoomConnection(roomId: user.roomId, timeOut: kCoHostTimeout, onSuccess: { [weak self] in
-                        guard let self = self else { return }
-                        manager.onRequestConnection(user: user)
+                    coreView?.requestCrossRoomConnection(roomId: user.roomId, timeOut: kCoHostTimeout, onSuccess: { [weak self] code in
+                        guard let self = self, let code = code else { return }
+                        if code == .success {
+                            manager.onRequestConnection(user: user)
+                        } else {
+                            let error = InternalError(error: code, message: "")
+                            manager.toastSubject.send(error.localizedMessage)
+                        }
                     }, onError: { [weak self] err, msg in
                         guard let self = self else { return }
                         let error = InternalError(error: err, message: msg)

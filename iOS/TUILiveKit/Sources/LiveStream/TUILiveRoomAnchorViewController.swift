@@ -14,19 +14,18 @@ import LiveStreamCore
 
 @objcMembers
 public class TUILiveRoomAnchorViewController: UIViewController {
+    
+    public var startLiveBlock:(()->Void)?
+    
     // MARK: - private property.
     private let manager = LiveStreamManager()
     private let routerManager: LSRouterManager = LSRouterManager()
     private var cancellableSet = Set<AnyCancellable>()
     
-    private lazy var coreView: LiveCoreView = {
-        let view = LiveCoreView()
-        return view
-    }()
+    private lazy var coreView = LiveCoreView()
 
     private let roomId: String
     private let needPrepare: Bool
-    public var startLiveBlock:(()->Void)?
     private lazy var routerCenter: LSRouterControlCenter = {
         let rootRoute: LSRoute = .anchor
         let routerCenter = LSRouterControlCenter(rootViewController: self, rootRoute: rootRoute, routerManager: routerManager, manager: manager, coreView: coreView)
@@ -77,7 +76,7 @@ public class TUILiveRoomAnchorViewController: UIViewController {
         view.backgroundColor = .black
         constructViewHierarchy()
         activateConstraints()
-        subscribeToast()
+        subscribeSubjects()
         enableSubscribeRouter(enable: true)
         if !needPrepare {
             anchorView.joinSelfCreatedRoom()
@@ -98,11 +97,13 @@ public class TUILiveRoomAnchorViewController: UIViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         UIApplication.shared.isIdleTimerDisabled = true
+        navigationController?.setNavigationBarHidden(true, animated: true)
     }
 
     public override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         UIApplication.shared.isIdleTimerDisabled = false
+        navigationController?.setNavigationBarHidden(false, animated: true)
     }
     
     public override var shouldAutorotate: Bool {
@@ -129,13 +130,21 @@ extension TUILiveRoomAnchorViewController {
         enable ? routerCenter.subscribeRouter() : routerCenter.unSubscribeRouter()
     }
     
-    private func subscribeToast() {
+    private func subscribeSubjects() {
         manager.toastSubject
             .receive(on: RunLoop.main)
             .sink { [weak self] message in
                 guard let self = self else { return }
                 view.makeToast(message)
             }.store(in: &cancellableSet)
+        
+        manager.floatWindowSubject
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in
+                guard let self = self else { return }
+                FloatWindow.shared.showFloatWindow(controller: self)
+            }
+            .store(in: &cancellableSet)
     }
 }
 
@@ -146,5 +155,19 @@ extension TUILiveRoomAnchorViewController: LSRouterViewProvider {
         } else {
             return nil
         }
+    }
+}
+
+extension TUILiveRoomAnchorViewController: FloatWindowDataSource {
+    func getRoomId() -> String {
+        roomId
+    }
+    
+    func getCoreView() -> LiveStreamCore.LiveCoreView {
+        coreView
+    }
+    
+    func relayoutCoreView() {
+        anchorView.relayoutCoreView()
     }
 }

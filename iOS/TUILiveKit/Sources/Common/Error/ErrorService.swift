@@ -78,6 +78,27 @@ extension TIMError: LocalizedError {
     }
 }
 
+extension TUIConnectionCode: LocalizedError {
+    var description: String {
+        switch self {
+        case .success:
+            return .localized("live.error.success")
+        case .roomNotExist:
+            return .localized("live.error.connection.notexit")
+        case .connecting:
+            return .localized("live.error.connection.connecting")
+        case .connectingOtherRoom:
+            return .localized("live.error.connection.connectingOtherRoom")
+        case .full:
+            return .localized("live.error.connection.full")
+        case .retry:
+            return .localized("live.error.connection.retry")
+        default:
+            return .localized("live.error.failed")
+        }
+    }
+}
+
 extension TUIError: LocalizedError {
     var description: String {
         switch self {

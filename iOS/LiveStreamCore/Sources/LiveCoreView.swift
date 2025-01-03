@@ -21,6 +21,13 @@ import TUICore
     }
     public weak var waitingCoGuestViewDelegate: WaitingCoGuestViewDelegate?
     
+    public var roomState: RoomState {
+        manager.roomState
+    }
+    public var userState: UserState {
+        manager.userState
+    }
+    
     public init() {
         super.init(frame: .zero)
         LCDataReporter.reportEventData(event: .panelShowLiveCoreView)
@@ -134,7 +141,7 @@ extension LiveCoreView {
     }
     
     public func requestCrossRoomConnection(roomId: String, timeOut: Int,
-                                    onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
+                                    onSuccess: @escaping ((TUIConnectionCode?) -> ()), onError: @escaping TUIErrorBlock) {
         manager.requestConnection(roomId: roomId, timeOut: timeOut, onSuccess: onSuccess, onError: onError)
     }
     
@@ -608,6 +615,7 @@ extension LiveCoreView {
                         debugPrint("createCoGuestView: frame: \(liveView.frame), userId: \(userInfo.userId)")
                     }
                 } else {
+                    
                     let hasAudio = manager.userState.hasAudioStreamUserList.contains(userInfo.userId)
                     let coHostUser = LiveStreamConvert.convertToCoHostUser(userInfo: userInfo, roomId: manager.roomState.roomId, hasVideoStream: userInfo.hasVideoStream, hasAudioStream: hasAudio)
                     if let layoutWidgetsView = videoViewDelegate.createCoHostView(coHostUser: coHostUser) {

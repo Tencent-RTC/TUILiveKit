@@ -7,8 +7,8 @@
 
 import RTCRoomEngine
 
-struct UserState {
-    var selfInfo: TUIUserInfo = TUIUserInfo()
+public struct UserState {
+    public var selfInfo: TUIUserInfo = TUIUserInfo()
     var hasAudioStreamUserList: Set<String> = []
     var hasVideoStreamUserList: Set<String> = []
 }

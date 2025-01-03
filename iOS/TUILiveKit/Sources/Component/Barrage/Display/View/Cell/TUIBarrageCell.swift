@@ -171,21 +171,20 @@ class TUIBarrageDefaultCell: UIView {
         barrageLabel.attributedText = getBarrageLabelAttributedText(barrage: barrage)
     }
 
-    func getBarrageLabelAttributedText(barrage: TUIBarrage)
-        -> NSMutableAttributedString {
-            let placeholderString = String(repeating: " ", count: isOwner ? 12 : 0)
+    func getBarrageLabelAttributedText(barrage: TUIBarrage) -> NSMutableAttributedString {
+        let placeholderString = String(repeating: " ", count: isOwner ? 12 : 0)
         let isNormal = isNormalMessage(barrage: barrage)
-        let userName = barrage.user.userName + (isNormal ? "：" : "")
+        let userName = (barrage.user.userName.isEmpty ? barrage.user.userId : barrage.user.userName) + (isNormal ? "：" : "")
         let userNameAttributes: [NSAttributedString.Key: Any] =
-            [.foregroundColor: UIColor.lightBlueColor, .font: UIFont.customFont(ofSize: 12, weight: .semibold)]
+        [.foregroundColor: UIColor.lightBlueColor, .font: UIFont.customFont(ofSize: 12, weight: .semibold)]
         let userNameAttributedText = NSMutableAttributedString(string: "\(placeholderString)\(userName)",
                                                                attributes: userNameAttributes)
-                 
+        
         let contentFont = UIFont.customFont(ofSize: 12, weight: .semibold)
         let contentAttributes: [NSAttributedString.Key: Any] =
-            [.font: contentFont]
+        [.font: contentFont]
         let contentAttributedText: NSMutableAttributedString = isNormal ? getBarrageContentAttributedText(content: barrage.content) :
-            NSMutableAttributedString(string: barrage.content, attributes: contentAttributes)
+        NSMutableAttributedString(string: barrage.content, attributes: contentAttributes)
         userNameAttributedText.append(contentAttributedText)
         return userNameAttributedText
     }

@@ -246,12 +246,14 @@ extension LiveStreamManager {
     }
     
     func requestConnection(roomId: String, timeOut: Int,
-                           onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
+                           onSuccess: @escaping ((TUIConnectionCode?) -> ()), onError: @escaping TUIErrorBlock) {
         LCDataReporter.reportEventData(event: .methodCallLiveStreamRequestCrossRoomConnection)
         Task {
             do {
-                try await context.coHostManager.requestConnection(roomId: roomId, timeout: timeOut)
-                asyncRunMainThread(onSuccess)
+                let code = try await context.coHostManager.requestConnection(roomId: roomId, timeout: timeOut)
+                DispatchQueue.main.async {
+                    onSuccess(code)
+                }
             } catch let LiveStreamCoreError.error(code, message) {
                 asyncRunMainThread(onError, code, message)
             }
