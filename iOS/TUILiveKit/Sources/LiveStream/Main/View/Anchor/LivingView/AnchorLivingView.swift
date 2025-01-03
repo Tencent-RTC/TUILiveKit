@@ -78,6 +78,13 @@ class AnchorLivingView: UIView {
         return view
     }()
     
+    private lazy var floatWindowButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setImage(.liveBundleImage("live_floatwindow_open_icon"), for: .normal)
+        button.addTarget(self, action: #selector(onFloatWindowButtonClick), for: .touchUpInside)
+        return button
+    }()
+    
     init(roomId: String, manager: LiveStreamManager, routerManager: LSRouterManager, coreView: LiveCoreView) {
         self.roomId = roomId
         self.manager = manager
@@ -160,6 +167,10 @@ class AnchorLivingView: UIView {
     func initLiveInfoView() {
         liveInfoView.initialize(roomId: roomId)
     }
+    
+    @objc func onFloatWindowButtonClick() {
+        manager.floatWindowSubject.send()
+    }
 }
 
 // MARK: Layout
@@ -175,6 +186,7 @@ extension AnchorLivingView {
         addSubview(bottomMenu)
         addSubview(floatView)
         addSubview(barrageSendView)
+        addSubview(floatWindowButton)
     }
     
     func updateRootViewOrientation(isPortrait: Bool) {
@@ -205,11 +217,18 @@ extension AnchorLivingView {
             make.top.equalToSuperview().inset((self.isPortrait ? 58 : 24).scale375Height())
         }
         
+        floatWindowButton.snp.makeConstraints { make in
+            make.trailing.equalTo(closeButton.snp.leading).offset(-8.scale375())
+            make.centerY.equalTo(closeButton)
+            make.width.equalTo(18.scale375Width())
+            make.height.equalTo(18.scale375Width())
+        }
+        
         audienceListView.snp.remakeConstraints { make in
             make.centerY.equalTo(closeButton)
             make.height.equalTo(24.scale375())
             make.width.equalTo(116.scale375())
-            make.trailing.equalTo(closeButton.snp.leading).offset(-4.scale375())
+            make.trailing.equalTo(floatWindowButton.snp.leading).offset(-4.scale375())
         }
         
         liveInfoView.snp.remakeConstraints { make in

@@ -40,18 +40,17 @@ class CoHostManager {
         modifyCoHostState(value: enable, keyPath: \CoHostState.enableConnection)
     }
     
-    func requestConnection(roomId: String, timeout: Int) async throws {
-        try checkCrossRoomConnection(roomId: roomId)
+    func requestConnection(roomId: String, timeout: Int) async throws -> TUIConnectionCode? {
         do {
+            try checkCrossRoomConnection(roomId: roomId)
             let map = try await service.requestConnection(roomIdList: [roomId], timeout: timeout, extensionInfo: "")
             let code = map[roomId]
             if code == .success {
                 let connectUser = TUIConnectionUser()
                 connectUser.roomId = roomId
                 addSendConnectionRequest(user: connectUser)
-            } else {
-                throw LiveStreamCoreError.error(code: .failed, message: "requestConnection failed")
             }
+            return code
         } catch let LiveStreamCoreError.error(code, message) {
             LiveStreamLog.error("\(#file)","\(#line)","leave:[code:\(code),message:\(message)]")
             throw LiveStreamCoreError.error(code: code, message: message)

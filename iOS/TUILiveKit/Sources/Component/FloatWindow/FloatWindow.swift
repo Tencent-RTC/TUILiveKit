@@ -7,7 +7,6 @@
 import SnapKit
 import Foundation
 import TUICore
-//import RTCCommon
 import LiveStreamCore
 
 protocol FloatWindowDataSource {
@@ -97,8 +96,11 @@ private extension FloatWindow {
     }
     
     func leaveRoom() {
-        coreView?.leaveLiveStream() {
-        } onError: { _, _ in
+        guard let coreView = coreView else { return }
+        if coreView.roomState.ownerInfo.userId == coreView.userState.selfInfo.userId {
+            coreView.stopLiveStream() {} onError: { _, _ in }
+        } else {
+            coreView.leaveLiveStream() {} onError: { _, _ in }
         }
     }
 }

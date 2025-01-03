@@ -100,8 +100,6 @@ extension LiveListRootView {
                 self.liveListCollectionView.es.stopLoadingMore()
             }
         }
-        
-        liveListCollectionView.es.startPullToRefresh()
     }
     
     func refreshRoomListData() {

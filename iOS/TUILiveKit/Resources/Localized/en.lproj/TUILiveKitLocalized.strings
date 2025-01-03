@@ -307,3 +307,9 @@
 "live.streamDashboard.audio.info" = "Audio Information";
 "live.streamDashboard.audio.sampleRate" = "SampleRate";
 "live.streamDashboard.audio.bitrate" = "Bitrate";
+
+"live.error.connection.notexit" = "The room you are invited to connect to does not exist";
+"live.error.connection.connecting" = "The room you are invited to connect to is already in the invitation list or is already connected.";
+"live.error.connection.connectingOtherRoom" = "The room you are invited to connect to is connected to another room.";
+"live.error.connection.full" = "The current maximum number of connected people has been reached.";
+"live.error.connection.retry" = "Internal error, it is recommended to try again.";

@@ -87,9 +87,15 @@ class AnchorView: UIView {
     func initData() {
         manager.update(liveStatus: .previewing)
     }
+    
+    func relayoutCoreView() {
+        addSubview(videoView)
+        videoView.snp.makeConstraints({ make in
+            make.edges.equalToSuperview()
+        })
+        sendSubviewToBack(videoView)
+    }
 }
-
-
 
 extension AnchorView {
     

@@ -12,14 +12,7 @@ import RTCRoomEngine
 
 public class TUILiveRoomAudienceViewController: UIViewController {
     
-    private lazy var audienceView: AudienceView = {
-        let view = AudienceView(roomId: roomId, manager: manager, routerManager: routerManager, coreView: coreView)
-        view.livingView.onButtonTap = { [weak self] in
-            guard let self = self else { return }
-            FloatWindow.shared.showFloatWindow(controller: self)
-        }
-        return view
-    }()
+    private lazy var audienceView = AudienceView(roomId: roomId, manager: manager, routerManager: routerManager, coreView: coreView)
     
     private let coreView = LiveCoreView()
     
@@ -61,7 +54,7 @@ public class TUILiveRoomAudienceViewController: UIViewController {
         subscribeRouter()
         constructViewHierarchy()
         activateConstraints()
-        subscribeToast()
+        subscribeSubjects()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -82,13 +75,21 @@ extension TUILiveRoomAudienceViewController {
         routerCenter.subscribeRouter()
     }
     
-    private func subscribeToast() {
+    private func subscribeSubjects() {
         manager.toastSubject
             .receive(on: RunLoop.main)
             .sink { [weak self] message in
                 guard let self = self else { return }
                 view.makeToast(message)
             }.store(in: &cancellableSet)
+        
+        manager.floatWindowSubject
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in
+                guard let self = self else { return }
+                FloatWindow.shared.showFloatWindow(controller: self)
+            }
+            .store(in: &cancellableSet)
     }
     
     private func constructViewHierarchy() {

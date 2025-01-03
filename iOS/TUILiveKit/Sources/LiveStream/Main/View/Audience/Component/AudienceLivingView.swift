@@ -12,7 +12,6 @@ import Combine
 import LiveStreamCore
 
 class AudienceLivingView: RTCBaseView {
-    var onButtonTap: (() -> Void)?
     // MARK: - private property.
     private let manager: LiveStreamManager
     private let routerManager: LSRouterManager
@@ -47,9 +46,7 @@ class AudienceLivingView: RTCBaseView {
     private lazy var floatWindowButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(.liveBundleImage("live_floatwindow_open_icon"), for: .normal)
-        button.isUserInteractionEnabled = true
-        button.addTarget(self, action: #selector(floatWindowButtonClick), for: .touchUpInside)
-        
+        button.addTarget(self, action: #selector(onFloatWindowButtonClick), for: .touchUpInside)
         return button
     }()
     
@@ -247,8 +244,8 @@ extension AudienceLivingView {
         }
     }
     
-    @objc func floatWindowButtonClick(){
-        onButtonTap?()
+    @objc func onFloatWindowButtonClick() {
+        manager.floatWindowSubject.send()
     }
 
     @objc func leaveButtonClick() {

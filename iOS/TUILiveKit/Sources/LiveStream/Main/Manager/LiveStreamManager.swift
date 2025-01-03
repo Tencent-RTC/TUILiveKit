@@ -19,6 +19,7 @@ class LiveStreamManager {
     
     public let toastSubject = PassthroughSubject<String, Never>()
     public let likeSubject = PassthroughSubject<Void, Never>()
+    public let floatWindowSubject = PassthroughSubject<Void, Never>()
     
     class Context {
         let service = LSRoomEngineService()

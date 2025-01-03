@@ -7,9 +7,9 @@
 
 import RTCRoomEngine
 
-struct RoomState {
-    var roomId: String = ""
-    var ownerInfo: TUIUserInfo = TUIUserInfo()
+public struct RoomState {
+    public var roomId: String = ""
+    public var ownerInfo: TUIUserInfo = TUIUserInfo()
     var maxCoGuestCount: Int = 0
     var liveStatus: LiveStatus = .none
 
