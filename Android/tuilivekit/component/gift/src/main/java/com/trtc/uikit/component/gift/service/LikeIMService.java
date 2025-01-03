@@ -9,10 +9,11 @@ import com.tencent.imsdk.v2.V2TIMGroupMemberInfo;
 import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMMessage;
 import com.tencent.imsdk.v2.V2TIMSimpleMsgListener;
-import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.tencent.qcloud.tuicore.TUILogin;
-import com.trtc.uikit.component.gift.store.model.LikeJson;
+import com.trtc.uikit.component.gift.store.GiftStore;
+import com.trtc.uikit.component.gift.store.LikeState;
 import com.trtc.uikit.component.gift.store.model.GiftUser;
+import com.trtc.uikit.component.gift.store.model.LikeJson;
 
 import java.lang.ref.WeakReference;
 
@@ -22,29 +23,16 @@ import java.lang.ref.WeakReference;
 public class LikeIMService {
     private static final String TAG = "LikeIMService";
 
-    private final String                 mRoomId;
-    private final ReceiveLikeMsgListener mReceiveLikeMsgListener;
-    private OnLikeMessageListener        mListener;
-
     private static final GsonNullStringAdapter mGsonNullStringAdapter = new GsonNullStringAdapter();
 
-    public LikeIMService(String roomId) {
-        this.mRoomId = roomId;
-        mReceiveLikeMsgListener = new ReceiveLikeMsgListener(new WeakReference<>(this));
-        initIMListener();
+    public LikeIMService() {
+        ReceiveLikeMsgListener listener = new ReceiveLikeMsgListener(new WeakReference<>(this));
+        V2TIMManager.getInstance().addSimpleMsgListener(listener);
     }
 
-
-    private void initIMListener() {
-        V2TIMManager.getInstance().addSimpleMsgListener(mReceiveLikeMsgListener);
-    }
-
-    public void unInitImListener() {
-        V2TIMManager.getInstance().removeSimpleMsgListener(mReceiveLikeMsgListener);
-    }
-
-    public void setListener(OnLikeMessageListener listener) {
-        this.mListener = listener;
+    public void likeByLocal(String roomId) {
+        LikeState state = GiftStore.sharedInstance().getLikeState(roomId);
+        state.mLikeAnimationTrigger.set(true);
     }
 
     private static class ReceiveLikeMsgListener extends V2TIMSimpleMsgListener {
@@ -60,20 +48,20 @@ public class LikeIMService {
                                              byte[] customData) {
             LikeIMService outerClass = mOuterClassReference.get();
             if (outerClass != null) {
-                if (groupID == null || !groupID.equals(mOuterClassReference.get().mRoomId)) {
+                if (groupID == null) {
                     return;
                 }
                 String customStr = new String(customData);
                 Log.i(TAG, " customData :" + customStr);
                 if (TextUtils.isEmpty(customStr)) {
-                    Log.i(TAG,  " onRecvGroupCustomMessage customData is empty");
+                    Log.i(TAG, " onRecvGroupCustomMessage customData is empty");
                     return;
                 }
                 try {
                     Gson gson = new Gson();
                     LikeJson json = gson.fromJson(customStr, LikeJson.class);
                     if (!GiftConstants.VALUE_VERSION.equals(json.version)) {
-                        Log.i(TAG,  " protocol version is not match, ignore msg.");
+                        Log.i(TAG, " protocol version is not match, ignore msg.");
                     }
                     if (GiftConstants.VALUE_BUSINESS_ID_LIKE.equals(json.businessID)) {
                         LikeJson.Data data = json.data;
@@ -84,9 +72,10 @@ public class LikeIMService {
                             likeSender.avatarUrl = data.sender.avatarUrl;
                             likeSender.level = data.sender.level;
                         }
-                        OnLikeMessageListener listener = outerClass.mListener;
-                        if (listener != null) {
-                            listener.onReceiveLikeMessage(likeSender);
+                        if (GiftStore.sharedInstance().hasCachedRoomId(groupID)) {
+                            LikeState state = GiftStore.sharedInstance().getLikeState(groupID);
+                            state.mLikeReceivedTotalCount.set(state.mLikeReceivedTotalCount.get() + 1);
+                            state.mLikeAnimationTrigger.set(true);
                         }
                     }
                 } catch (Exception e) {
@@ -96,25 +85,11 @@ public class LikeIMService {
         }
     }
 
-    public void sendGroupLikeMessage(final GiftCallBack.ActionCallBack callback) {
+    public void sendGroupLikeMessage(String roomId) {
         String data = getCusLikeMsgJsonStr();
-        Log.i(TAG,  " send like: " + data);
-        V2TIMManager.getInstance().sendGroupCustomMessage(data.getBytes(), mRoomId,
-                V2TIMMessage.V2TIM_PRIORITY_NORMAL, new V2TIMValueCallback<V2TIMMessage>() {
-                    @Override
-                    public void onError(int i, String s) {
-                        if (callback != null) {
-                            callback.onCallback(i, s);
-                        }
-                    }
-
-                    @Override
-                    public void onSuccess(V2TIMMessage v2TIMMessage) {
-                        if (callback != null) {
-                            callback.onCallback(0, "send group message success.");
-                        }
-                    }
-                });
+        Log.i(TAG, " send like: " + data);
+        V2TIMManager.getInstance().sendGroupCustomMessage(
+                data.getBytes(), roomId, V2TIMMessage.V2TIM_PRIORITY_NORMAL, null);
     }
 
     private static String getCusLikeMsgJsonStr() {
@@ -134,9 +109,5 @@ public class LikeIMService {
         sendJson.data = data;
         Gson gson = new GsonBuilder().registerTypeAdapter(String.class, mGsonNullStringAdapter).create();
         return gson.toJson(sendJson);
-    }
-
-    public interface OnLikeMessageListener {
-        void onReceiveLikeMessage(GiftUser sender);
     }
 }

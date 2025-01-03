@@ -32,21 +32,21 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.UserInfo;
 import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.tuikit.common.system.ContextProvider;
 import com.trtc.tuikit.common.ui.PopupDialog;
+import com.trtc.uikit.component.audiencelist.AudienceListView;
 import com.trtc.uikit.component.barrage.BarrageInputView;
 import com.trtc.uikit.component.barrage.BarrageStreamView;
 import com.trtc.uikit.component.barrage.store.model.Barrage;
 import com.trtc.uikit.component.gift.GiftPlayView;
 import com.trtc.uikit.component.gift.store.model.Gift;
 import com.trtc.uikit.component.gift.store.model.GiftUser;
+import com.trtc.uikit.component.music.MusicPanelView;
+import com.trtc.uikit.component.roominfo.RoomInfoView;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.component.audiencelist.AudienceListView;
 import com.trtc.uikit.livekit.component.floatwindow.service.FloatWindowManager;
 import com.trtc.uikit.livekit.component.gift.service.GiftCacheService;
 import com.trtc.uikit.livekit.component.gift.store.GiftStore;
 import com.trtc.uikit.livekit.component.gift.view.BarrageViewTypeDelegate;
 import com.trtc.uikit.livekit.component.gift.view.GiftBarrageAdapter;
-import com.trtc.uikit.component.music.MusicPanelView;
-import com.trtc.uikit.component.roominfo.RoomInfoView;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
 import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
 import com.trtc.uikit.livekit.livestream.manager.module.DashboardManager;
@@ -88,6 +88,7 @@ public class AnchorView extends BasicView {
     private       FrameLayout                            mLayoutPreview;
     private       FrameLayout                            mLayoutPushing;
     private       AnchorDashboardView                    mAnchorDashboardView;
+    private       View                                   mBackView;
     private       LiveInfoEditView                       mLiveInfoEditView;
     private       PreviewFunctionView                    mPreviewFunctionView;
     private       RelativeLayout                         mLayoutAnchorPreviewMask;
@@ -169,6 +170,7 @@ public class AnchorView extends BasicView {
         mLayoutPreview = findViewById(R.id.fl_preview);
         mLayoutPushing = findViewById(R.id.fl_pushing);
         mAnchorDashboardView = findViewById(R.id.anchor_dashboard_view);
+        mBackView = findViewById(R.id.iv_back);
         mLiveInfoEditView = findViewById(R.id.rl_live_info_edit_view);
         mPreviewFunctionView = findViewById(R.id.fl_preview_function);
         mLayoutAnchorPreviewMask = findViewById(R.id.rl_anchor_preview_mask);
@@ -190,8 +192,13 @@ public class AnchorView extends BasicView {
 
     @Override
     protected void refreshView() {
+        initBackView();
         initLiveCoreView();
         initComponentView();
+    }
+
+    private void initBackView() {
+        mBackView.setOnClickListener(v -> ((Activity) getContext()).finish());
     }
 
     private void initLiveCoreView() {
@@ -488,7 +495,6 @@ public class AnchorView extends BasicView {
     }
 
     private void initGiftPlayView() {
-        mGiftPlayView.init(mRoomState.roomId);
         GiftCacheService giftCacheService = GiftStore.getInstance().mGiftCacheService;
         mGiftPlayView.setListener(new GiftPlayView.TUIGiftPlayViewListener() {
             @Override
@@ -522,6 +528,7 @@ public class AnchorView extends BasicView {
                 });
             }
         });
+        mGiftPlayView.init(mRoomState.roomId);
     }
 
     @Override

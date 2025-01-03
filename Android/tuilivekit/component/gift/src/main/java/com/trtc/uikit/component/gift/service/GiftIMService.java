@@ -11,11 +11,15 @@ import com.tencent.imsdk.v2.V2TIMMessage;
 import com.tencent.imsdk.v2.V2TIMSimpleMsgListener;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.tencent.qcloud.tuicore.TUILogin;
+import com.trtc.uikit.component.gift.store.GiftSendData;
+import com.trtc.uikit.component.gift.store.GiftState;
+import com.trtc.uikit.component.gift.store.GiftStore;
 import com.trtc.uikit.component.gift.store.model.Gift;
 import com.trtc.uikit.component.gift.store.model.GiftJson;
 import com.trtc.uikit.component.gift.store.model.GiftUser;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 /**
  * Responsible for handling the messaging service for sending and receiving gifts
@@ -23,29 +27,16 @@ import java.lang.ref.WeakReference;
 public class GiftIMService {
     private static final String TAG = "GiftIMService";
 
-    private final String                 mRoomId;
-    private final ReceiveGiftMsgListener mReceiveGiftMsgListener;
-    private       OnGiftMessageListener  mListener;
-
     private static final GsonNullStringAdapter mGsonNullStringAdapter = new GsonNullStringAdapter();
 
-    public GiftIMService(String roomId) {
-        this.mRoomId = roomId;
-        mReceiveGiftMsgListener = new ReceiveGiftMsgListener(new WeakReference<>(this));
-        initIMListener();
-    }
-
-
-    private void initIMListener() {
+    public GiftIMService() {
+        ReceiveGiftMsgListener mReceiveGiftMsgListener = new ReceiveGiftMsgListener(new WeakReference<>(this));
         V2TIMManager.getInstance().addSimpleMsgListener(mReceiveGiftMsgListener);
     }
 
-    public void unInitImListener() {
-        V2TIMManager.getInstance().removeSimpleMsgListener(mReceiveGiftMsgListener);
-    }
-
-    public void setListener(OnGiftMessageListener listener) {
-        this.mListener = listener;
+    public void cleanGiftCacheList(String roomId) {
+        GiftState giftState = GiftStore.sharedInstance().getGiftState(roomId);
+        giftState.mGiftCacheList.get().clear();
     }
 
     private static class ReceiveGiftMsgListener extends V2TIMSimpleMsgListener {
@@ -61,7 +52,7 @@ public class GiftIMService {
                                              byte[] customData) {
             GiftIMService outerClass = mOuterClassReference.get();
             if (outerClass != null) {
-                if (groupID == null || !groupID.equals(mOuterClassReference.get().mRoomId)) {
+                if (groupID == null) {
                     return;
                 }
                 String customStr = new String(customData);
@@ -70,11 +61,11 @@ public class GiftIMService {
                     Log.i(TAG, "onRecvGroupCustomMessage customData is empty");
                     return;
                 }
-                receiveGift(customStr);
+                receiveGift(groupID, customStr);
             }
         }
 
-        private void receiveGift(String customStr) {
+        private void receiveGift(String roomId, String customStr) {
             try {
                 Gson gson = new Gson();
                 GiftJson json = gson.fromJson(customStr, GiftJson.class);
@@ -108,15 +99,16 @@ public class GiftIMService {
                         receiver.avatarUrl = data.receiver.avatarUrl;
                         receiver.level = data.receiver.level;
                     }
-                    int count = data.giftCount;
-                    GiftIMService outerClass = mOuterClassReference.get();
-                    if (outerClass == null) {
+                    GiftIMService service = mOuterClassReference.get();
+                    if (service == null) {
                         return;
                     }
-                    OnGiftMessageListener listener = outerClass.mListener;
-                    if (listener != null) {
-                        listener.onReceiveGiftMessage(gift, count, sender, receiver);
-                    }
+                    GiftSendData sendData = new GiftSendData();
+                    sendData.sender = sender;
+                    sendData.receiver = receiver;
+                    sendData.gift = gift;
+                    sendData.giftCount = data.giftCount;
+                    service.addGift(roomId, sendData);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -124,24 +116,30 @@ public class GiftIMService {
         }
     }
 
-    public void sendGroupGiftMessage(Gift gift, GiftUser receiver, int giftCount,
-                                     final GiftCallBack.ActionCallBack callback) {
+    public void sendGroupGiftMessage(String roomId, Gift gift, GiftUser receiver, int giftCount) {
         String data = getCusGiftMsgJsonStr(gift, receiver, giftCount);
         Log.i(TAG, "send gift: " + data);
-        V2TIMManager.getInstance().sendGroupCustomMessage(data.getBytes(), mRoomId,
+        V2TIMManager.getInstance().sendGroupCustomMessage(data.getBytes(), roomId,
                 V2TIMMessage.V2TIM_PRIORITY_NORMAL, new V2TIMValueCallback<V2TIMMessage>() {
                     @Override
                     public void onError(int i, String s) {
-                        if (callback != null) {
-                            callback.onCallback(i, s);
-                        }
+
                     }
 
                     @Override
                     public void onSuccess(V2TIMMessage v2TIMMessage) {
-                        if (callback != null) {
-                            callback.onCallback(0, "send group message success.");
-                        }
+                        final GiftUser sender = new GiftUser();
+                        sender.userId = TUILogin.getUserId();
+                        sender.userName = TUILogin.getNickName();
+                        sender.avatarUrl = TUILogin.getFaceUrl();
+                        sender.level = "0";
+
+                        GiftSendData sendData = new GiftSendData();
+                        sendData.sender = sender;
+                        sendData.receiver = receiver;
+                        sendData.gift = gift;
+                        sendData.giftCount = giftCount;
+                        addGift(roomId, sendData);
                     }
                 });
     }
@@ -183,7 +181,13 @@ public class GiftIMService {
         return gson.toJson(sendJson);
     }
 
-    public interface OnGiftMessageListener {
-        void onReceiveGiftMessage(Gift gift, int giftCount, GiftUser sender, GiftUser receiver);
+    private void addGift(String roomId, GiftSendData data) {
+        if (data == null || !GiftStore.sharedInstance().hasCachedRoomId(roomId)) {
+            return;
+        }
+        GiftState giftState = GiftStore.sharedInstance().getGiftState(roomId);
+        List<GiftSendData> list = giftState.mGiftCacheList.get();
+        list.add(data);
+        giftState.mGiftCacheList.set(list);
     }
 }

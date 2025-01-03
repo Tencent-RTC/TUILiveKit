@@ -11,7 +11,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.trtc.uikit.component.common.DataReporter;
 import com.trtc.uikit.component.gift.service.GiftConstants;
-import com.trtc.uikit.component.gift.service.GiftPresenter;
+import com.trtc.uikit.component.gift.store.GiftStore;
 import com.trtc.uikit.component.gift.store.model.Gift;
 import com.trtc.uikit.component.gift.store.model.GiftUser;
 import com.trtc.uikit.component.gift.view.GiftViewPagerManager;
@@ -30,7 +30,6 @@ public class GiftListPanelView extends ViewPager implements IGiftListPanelView {
     private List<View>           mGiftViewList;
     private Context              mContext;
     private String               mRoomId;
-    private GiftPresenter        mPresenter;
     private OnSendGiftListener   mOnSendGiftListener;
 
     public GiftListPanelView(Context context) {
@@ -73,12 +72,11 @@ public class GiftListPanelView extends ViewPager implements IGiftListPanelView {
 
     public void init(String groupId) {
         mRoomId = groupId;
-        mPresenter = new GiftPresenter(groupId);
     }
 
     @Override
     public void sendGift(Gift gift, int giftCount, GiftUser receiver) {
-        mPresenter.sendGroupGiftMessage(gift, receiver, giftCount);
+        GiftStore.sharedInstance().mGiftIMService.sendGroupGiftMessage(mRoomId, gift, receiver, giftCount);
         if (!TextUtils.isEmpty(gift.animationUrl)) {
             boolean isSvgGift = gift.animationUrl.toLowerCase().endsWith(".svga");
             int key = getReportKey(isSvgGift);

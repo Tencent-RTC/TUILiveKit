@@ -25,6 +25,7 @@ import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfo;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
 import com.trtc.tuikit.common.livedata.Observer;
+import com.trtc.uikit.component.common.StateCache;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.component.floatwindow.service.FloatWindowManager;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
@@ -127,6 +128,7 @@ public class TUILiveRoomAudienceFragment extends Fragment implements ITUINotific
             floatWindowManager.showFloatWindow();
             floatWindowManager.setWillOpenFloatWindow(false);
         } else {
+            StateCache.getInstance().remove(mRoomId);
             unInitLiveStreamManager();
         }
     }
