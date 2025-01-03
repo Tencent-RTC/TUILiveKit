@@ -124,6 +124,9 @@ extension TUILiveListViewController {
                         if FloatWindow.shared.getCurrentRoomId() == liveInfo.roomInfo.roomId {
                             FloatWindow.shared.resumeLive(atViewController: self.navigationController ?? self)
                             return
+                        } else if let ownerId = FloatWindow.shared.getRoomOwnerId(), ownerId == TUILogin.getUserID() {
+                            view.makeToast(.pushingToReturnText)
+                            return
                         } else {
                             FloatWindow.shared.releaseFloatWindow()
                         }
@@ -152,4 +155,5 @@ extension TUILiveListViewController {
 
 extension String {
     fileprivate static let liveTitleText = localized("live.room.list.live")
+    fileprivate static let pushingToReturnText = localized("live.error.pushing")
 }

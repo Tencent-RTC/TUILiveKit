@@ -216,6 +216,7 @@
 "live.endLive.onBattle.alert.endBattle" = "断开PK";
 
 // MARK: - Error Toast
+"live.error.pushing" = "正在直播中，请稍后再试。";
 "live.error.success" = "操作成功";
 "live.error.failed" = "操作错误";
 "live.error.freqLimit" = "请求被限频，请稍后重试";

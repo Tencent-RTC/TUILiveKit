@@ -163,6 +163,10 @@ extension TUILiveRoomAnchorViewController: FloatWindowDataSource {
         roomId
     }
     
+    func getOwnerId() -> String {
+        coreView.roomState.ownerInfo.userId
+    }
+    
     func getCoreView() -> LiveStreamCore.LiveCoreView {
         coreView
     }

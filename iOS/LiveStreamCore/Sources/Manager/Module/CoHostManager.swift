@@ -56,6 +56,7 @@ class CoHostManager {
             throw LiveStreamCoreError.error(code: code, message: message)
         } catch {
             assert(false, "unknown error, description:[:\(error.localizedDescription)]")
+            throw LiveStreamCoreError.error(code: .failed, message: error.localizedDescription)
         }
     }
     
