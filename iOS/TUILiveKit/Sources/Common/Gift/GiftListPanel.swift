@@ -13,7 +13,6 @@ import Combine
 
 protocol GiftListPanelDataSource {
     func getAnchorInfo() -> GiftUser
-    func getSendLikeSubject() -> PassthroughSubject<Void, Never>
 }
 
 struct GiftUser {
@@ -36,13 +35,6 @@ class GiftListPanel: UIView {
         self.roomId = roomId
         self.dataSource = dataSource
         super.init(frame: .zero)
-        
-        dataSource.getSendLikeSubject()
-            .sink { [weak self] in
-                guard let self = self else { return }
-                sendLike()
-            }
-            .store(in: &cancellableSet)
     }
 
     required init?(coder: NSCoder) {
@@ -121,13 +113,6 @@ class GiftListPanel: UIView {
     
     func sendGift(giftModel: TUIGift, giftCount: Int, receiver: TUIGiftUser, completion: @escaping (Bool, String) -> ()) {
         giftListView.sendGift(model: giftModel, giftCount: giftCount, receiver: receiver, completion: completion)
-    }
-    
-    func sendLike() {
-        giftListView.sendLike { [weak self] sender, isSuccess, message in
-            guard let self = self else { return }
-            TUIGiftStore.shared.likeDataMap.value = [roomId: TUILikeData(sender: sender)]
-        }
     }
 }
 

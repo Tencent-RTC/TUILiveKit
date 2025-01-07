@@ -152,13 +152,13 @@ class AudienceLivingView: RTCBaseView {
         
 #if RTCube_APPSTORE
         reportBtn.snp.makeConstraints({ make in
-            make.centerY.equalTo(showFloatWindowImageView)
-            make.right.equalTo(showFloatWindowImageView.snp.left).offset(-8)
+            make.centerY.equalTo(floatWindowButton)
+            make.right.equalTo(floatWindowButton.snp.left).offset(-8)
             make.width.height.equalTo(24.scale375Width())
         })
         audienceListView.snp.makeConstraints { make in
             make.trailing.equalTo(reportBtn.snp.leading).offset(-4.scale375Width())
-            make.centerY.equalTo(showFloatWindowImageView)
+            make.centerY.equalTo(floatWindowButton)
             make.height.equalTo(24.scale375())
             make.width.equalTo(116.scale375())
         }

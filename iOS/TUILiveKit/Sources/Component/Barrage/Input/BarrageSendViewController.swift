@@ -177,7 +177,7 @@ extension BarrageSendViewController {
         UIView.animate(withDuration: duration, delay: 0, options: animationOptions) { [weak self] in
             guard let self = self else { return }
             if isShow {
-                inputBarView.transform = CGAffineTransform(translationX: 0, y: emotionBoardViewHeight - frame.height)
+                inputBarView.transform = CGAffineTransform(translationX: 0, y: emotionBoardViewHeight + Bottom_SafeHeight - frame.height)
                 emotionBoardView.transform = CGAffineTransform(translationX: 0, y: CGRectGetHeight(emotionBoardView.frame))
             } else {
                 inputBarView.transform = .identity

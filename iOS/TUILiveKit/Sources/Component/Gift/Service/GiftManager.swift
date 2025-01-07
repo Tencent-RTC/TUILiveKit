@@ -50,17 +50,6 @@ extension GiftManager {
             }
         }
     }
-
-    func sendLike(completion: @escaping (TUIGiftUser, Int, String) -> ()) {
-        let sender = TUIGiftUser()
-        sender.userId = TUILogin.getUserID() ?? ""
-        sender.userName = TUILogin.getNickName() ?? ""
-        sender.avatarUrl = TUILogin.getFaceUrl() ?? DEFAULT_AVATAR
-        sender.level = "0"
-        imService.sendLikeMessage(sender: sender) { code, msg in
-            completion(sender, code, msg)
-        }
-    }
 }
 
 // MARK: TUIGiftIMServiceDelegate

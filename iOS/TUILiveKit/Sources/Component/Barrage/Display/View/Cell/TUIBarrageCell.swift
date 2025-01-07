@@ -83,7 +83,7 @@ class TUIBarrageDefaultCell: UIView {
     private lazy var barrageLabel: UILabel = {
         let label = UILabel()
         label.font = .customFont(ofSize: 12, weight: .semibold)
-        label.numberOfLines = 5
+        label.numberOfLines = 0
         label.textAlignment = .left
         label.lineBreakMode = .byTruncatingTail
         label.textColor = .white

@@ -293,10 +293,6 @@ extension VoiceRoomManager {
 }
 
 extension VoiceRoomManager: GiftListPanelDataSource {
-    func getSendLikeSubject() -> PassthroughSubject<Void, Never> {
-        likeSubject
-    }
-    
     func getAnchorInfo() -> GiftUser {
         let owner = roomState.ownerInfo
         let giftUser = GiftUser(userId: owner.userId, name: owner.name, avatarUrl: owner.avatarUrl)
