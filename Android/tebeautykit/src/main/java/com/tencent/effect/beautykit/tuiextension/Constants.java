@@ -8,6 +8,9 @@ public class Constants {
     public static final String METHOD_INIT_BEAUTY_KIT     = "initBeautyKit";
     public static final String METHOD_PROCESS_VIDEO_FRAME = "processVideoFrame";
     public static final String METHOD_DESTROY_BEAUTY_KIT  = "destroyBeautyKit";
+    public static final String METHOD_CHECK_RESOURCE      = "checkResource";
+    public static final String NOTIFY_START_ACTIVITY      = "onStartActivityNotifyEvent";
+    public static final String METHOD_ACTIVITY_RESULT     = "onActivityResult";
     public static final String PARAM_BEAUTY_PANEL         = "beautyPanel";
     public static final String PARAM_NAME_LICENSE_KEY     = "licenseKey";
     public static final String PARAM_NAME_LICENSE_URL     = "licenseUrl";

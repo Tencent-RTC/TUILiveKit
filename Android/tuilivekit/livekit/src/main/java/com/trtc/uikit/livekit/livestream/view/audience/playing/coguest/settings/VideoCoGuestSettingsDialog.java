@@ -42,6 +42,7 @@ public class VideoCoGuestSettingsDialog extends PopupDialog {
     private       VideoCoGuestSettingsAdapter mAdapter;
     private final LiveCoreView                mLiveStream;
     private final LiveStreamManager           mLiveManager;
+    private       boolean                     mNeedCloseCamera  = true;
     private final Observer<Integer>           mItemTypeListener = this::onSettingsPanelTypeChanged;
     private final Observer<Integer>           mBeautyListener   = this::onBeautyTypeChanged;
 
@@ -65,7 +66,6 @@ public class VideoCoGuestSettingsDialog extends PopupDialog {
         initApplyLinkMicButton();
 
         addObserver();
-        setOnDismissListener(dialog -> removeObserver());
         setView(view);
     }
 
@@ -81,6 +81,15 @@ public class VideoCoGuestSettingsDialog extends PopupDialog {
         mTextBeautyType = view.findViewById(R.id.beauty_tv_seek_bar_type);
     }
 
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        removeObserver();
+        if (mNeedCloseCamera) {
+            mLiveManager.getMediaManager().closeCamera();
+        }
+    }
+
     protected void addObserver() {
         mAdapter.mItemType.observe(mItemTypeListener);
     }
@@ -92,10 +101,11 @@ public class VideoCoGuestSettingsDialog extends PopupDialog {
     private void initApplyLinkMicButton() {
         mButtonApplyLinkMic.setOnClickListener(view -> {
             ToastUtil.toastShortMessageCenter(getContext().getString(R.string.livekit_toast_apply_link_mic));
+            mLiveManager.getCoGuestManager().enableAutoOpenCameraOnSeated(true);
             mLiveStream.requestIntraRoomConnection("", 60, true, new TUIRoomDefine.ActionCallback() {
                 @Override
                 public void onSuccess() {
-
+                    mNeedCloseCamera = false;
                 }
 
                 @Override
@@ -103,8 +113,6 @@ public class VideoCoGuestSettingsDialog extends PopupDialog {
                     ErrorHandler.onError(error);
                 }
             });
-
-            removeObserver();
             dismiss();
         });
     }
@@ -132,7 +140,7 @@ public class VideoCoGuestSettingsDialog extends PopupDialog {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 mTextBeautyLevel.setText(String.valueOf(progress));
-                switch (mAdapter.getCurrentBeautytype()) {
+                switch (mAdapter.getCurrentBeautyType()) {
                     case VideoCoGuestSettingsAdapter.ITEM_BEAUTY_SMOOTH:
                         mLiveManager.getMediaManager().setBeautyLevel(progress);
                         break;

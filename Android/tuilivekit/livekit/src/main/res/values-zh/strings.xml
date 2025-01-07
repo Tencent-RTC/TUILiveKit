@@ -135,6 +135,7 @@
     <string name="livekit_loading">正在加载...</string>
     <string name="livekit_no_more_data">没有更多数据了</string>
     <string name="livekit_no_room_tip">请先开启一个直播间</string>
+    <string name="livekit_exit_float_window_tip">正在直播中，请稍后再试。</string>
 
     <!-- Battle -->
     <string name="livekit_battle_wait_start">等待同意PK...</string>
@@ -182,6 +183,7 @@
     <string name="livekit_voiceroom_receive_seat_invitation">%1$s 向你发来上麦邀请</string>
     <string name="livekit_voiceroom_empty_view">麦位没有用户，去邀请</string>
     <string name="livekit_end_user">挂断</string>
+    <string name="livekit_user_id">ID: %1$s</string>
 
     <!-- Error Toast-->
     <string name="livekit_error_success">"操作成功"</string>

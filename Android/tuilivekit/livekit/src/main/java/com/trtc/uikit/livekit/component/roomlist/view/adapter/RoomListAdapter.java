@@ -20,10 +20,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfo;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.qcloud.tuicore.TUILogin;
+import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.component.floatwindow.service.FloatWindowManager;
 import com.trtc.uikit.livekit.component.roomlist.view.ListAudienceActivity;
+import com.trtc.uikit.livekit.livestream.state.RoomState;
+import com.trtc.uikit.livekit.livestream.state.UserState;
 import com.trtc.uikit.livekit.livestream.view.anchor.VideoLiveAnchorActivity;
 
 import java.util.ArrayList;
@@ -60,26 +63,43 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.ViewHo
                 mContext.getString(R.string.livekit_audience_count_in_room, liveInfo.viewCount));
         holder.mLayoutCoverBorder.setTag(liveInfo);
         holder.mLayoutCoverBorder.setOnClickListener((view) -> {
-            FloatWindowManager.getInstance().releaseFloatWindow();
             final LiveInfo info = (LiveInfo) view.getTag();
-            if (info.roomInfo != null && Objects.equals(info.roomInfo.ownerId, TUILogin.getUserId())
-                    && !info.roomInfo.roomId.startsWith("voice_")) {
-                Intent intent = new Intent(mContext, VideoLiveAnchorActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra(VideoLiveAnchorActivity.INTENT_KEY_ROOM_ID, info.roomInfo.roomId);
-                intent.putExtra(VideoLiveAnchorActivity.INTENT_KEY_NEED_CREATE, false);
-                mContext.startActivity(intent);
-            } else {
-                Intent intent = new Intent(mContext, ListAudienceActivity.class);
-                intent.putExtras(convertLiveInfoToBundle(info));
-                mContext.startActivity(intent);
+            FloatWindowManager floatWindowManager = FloatWindowManager.getInstance();
+            if (floatWindowManager.isShowingFloatWindow()) {
+                RoomState roomState = floatWindowManager.getLiveStreamManager().getRoomState();
+                UserState userState = floatWindowManager.getLiveStreamManager().getUserState();
+                if (TextUtils.equals(info.roomInfo.roomId, roomState.roomId)) {
+                    floatWindowManager.onClickFloatWindow();
+                    return;
+                }
+                if (userState.selfInfo.role.get() == TUIRoomDefine.Role.ROOM_OWNER) {
+                    ToastUtil.toastShortMessage(mContext.getString(R.string.livekit_exit_float_window_tip));
+                    return;
+                }
             }
+            floatWindowManager.releaseFloatWindow();
+            enterRoom(info);
         });
     }
 
     @Override
     public int getItemCount() {
         return mDataList.size();
+    }
+
+    private void enterRoom(LiveInfo info) {
+        if (info.roomInfo != null && Objects.equals(info.roomInfo.ownerId, TUILogin.getUserId())
+                && !info.roomInfo.roomId.startsWith("voice_")) {
+            Intent intent = new Intent(mContext, VideoLiveAnchorActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra(VideoLiveAnchorActivity.INTENT_KEY_ROOM_ID, info.roomInfo.roomId);
+            intent.putExtra(VideoLiveAnchorActivity.INTENT_KEY_NEED_CREATE, false);
+            mContext.startActivity(intent);
+        } else {
+            Intent intent = new Intent(mContext, ListAudienceActivity.class);
+            intent.putExtras(convertLiveInfoToBundle(info));
+            mContext.startActivity(intent);
+        }
     }
 
     private static Bundle convertLiveInfoToBundle(LiveInfo liveInfo) {

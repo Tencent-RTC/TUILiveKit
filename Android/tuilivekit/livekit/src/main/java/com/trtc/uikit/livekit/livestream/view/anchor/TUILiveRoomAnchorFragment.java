@@ -4,9 +4,11 @@ import static com.trtc.uikit.livekit.livestream.manager.Constants.EVENT_KEY_LIVE
 import static com.trtc.uikit.livekit.livestream.manager.Constants.EVENT_SUB_KEY_FINISH_ACTIVITY;
 import static com.trtc.uikit.livekit.livestream.manager.Constants.EVENT_SUB_KEY_START_VOICE_ROOM;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +22,6 @@ import androidx.fragment.app.Fragment;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfo;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
-import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.component.common.StateCache;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.component.floatwindow.service.FloatWindowManager;
@@ -28,20 +29,22 @@ import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
 import com.trtc.uikit.livekit.livestream.manager.module.RoomManager;
 import com.trtc.uikit.livekit.livestream.state.RoomState;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class TUILiveRoomAnchorFragment extends Fragment implements ITUINotification {
+    public static final String            KEY_EXTENSION_NAME     = "TEBeautyExtension";
+    public static final String            NOTIFY_START_ACTIVITY  = "onStartActivityNotifyEvent";
+    public static final String            METHOD_ACTIVITY_RESULT = "onActivityResult";
+    private final       String            mRoomID;
+    private final       LiveInfo          mLiveInfo;
+    private             RelativeLayout    mLayoutContainer;
+    private             AnchorView        mAnchorView;
+    private             LiveStreamManager mLiveManager;
+    private             RoomBehavior      mRoomBehavior          = RoomBehavior.CREATE_ROOM;
+    private final       Handler           mMainHandler           = new Handler(Looper.getMainLooper());
 
-    private final String                mRoomID;
-    private final LiveInfo              mLiveInfo;
-    private       RelativeLayout        mLayoutContainer;
-    private       AnchorView            mAnchorView;
-    private       LiveStreamManager     mLiveManager;
-    private       boolean               mOnDestroyFlag               = false;
-    private       RoomBehavior          mRoomBehavior                = RoomBehavior.CREATE_ROOM;
-    private final Observer<Boolean>     mGLContextCreateFlagObserver = this::onGLContextCreateFlag;
-    private final Handler               mMainHandler                 = new Handler(Looper.getMainLooper());
-    private final OnBackPressedCallback mBackPressedCallback         = new OnBackPressedCallback(true) {
+    private final OnBackPressedCallback mBackPressedCallback = new OnBackPressedCallback(true) {
         @Override
         public void handleOnBackPressed() {
             RoomState.LiveStatus liveStatus = mLiveManager.getRoomState().liveStatus.get();
@@ -71,7 +74,7 @@ public class TUILiveRoomAnchorFragment extends Fragment implements ITUINotificat
         initLiveStreamManager();
         TUICore.registerEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_START_VOICE_ROOM, this);
         TUICore.registerEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_FINISH_ACTIVITY, this);
-        mLiveManager.getBeautyState().glContextCreateFlag.observe(mGLContextCreateFlagObserver);
+        TUICore.registerEvent(KEY_EXTENSION_NAME, NOTIFY_START_ACTIVITY, this);
     }
 
     @Nullable
@@ -107,9 +110,18 @@ public class TUILiveRoomAnchorFragment extends Fragment implements ITUINotificat
             floatWindowManager.showFloatWindow();
             floatWindowManager.setWillOpenFloatWindow(false);
         } else {
-            StateCache.getInstance().remove(mRoomID);
             unInitLiveStreamManager();
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Map<String, Object> param = new HashMap<>();
+        param.put("requestCode", requestCode);
+        param.put("resultCode", resultCode);
+        param.put("data", data);
+        TUICore.callService(KEY_EXTENSION_NAME, METHOD_ACTIVITY_RESULT, param);
     }
 
     @Override
@@ -122,6 +134,15 @@ public class TUILiveRoomAnchorFragment extends Fragment implements ITUINotificat
                 if (roomId != null && roomId.equals(mRoomID)) {
                     requireActivity().finish();
                 }
+            }
+        }
+        if (TextUtils.equals(key, KEY_EXTENSION_NAME) && TextUtils.equals(subKey, NOTIFY_START_ACTIVITY)) {
+            Intent intent = (Intent) param.get("intent");
+            if (param.containsKey("requestCode")) {
+                int requestCode = (int) param.get("requestCode");
+                startActivityForResult(intent, requestCode);
+            } else {
+                startActivity(intent);
             }
         }
     }
@@ -145,24 +166,8 @@ public class TUILiveRoomAnchorFragment extends Fragment implements ITUINotificat
     }
 
     private void unInitLiveStreamManager() {
-        mOnDestroyFlag = true;
-        if (Boolean.TRUE.equals(mLiveManager.getBeautyState().glContextCreateFlag.get())) {
-            mLiveManager.destroyWithoutLiveService();
-        } else {
-            mLiveManager.getBeautyState().glContextCreateFlag.removeObserver(mGLContextCreateFlagObserver);
-            mLiveManager.destroy();
-        }
-    }
-
-    private void onGLContextCreateFlag(Boolean value) {
-        if (Boolean.FALSE.equals(value)) {
-            mMainHandler.post(() -> {
-                if (mOnDestroyFlag) {
-                    mLiveManager.getBeautyState().glContextCreateFlag.removeObserver(mGLContextCreateFlagObserver);
-                    mLiveManager.getLiveService().destroy();
-                }
-            });
-        }
+        StateCache.getInstance().remove(mRoomID);
+        mLiveManager.destroy();
     }
 
     public enum RoomBehavior {

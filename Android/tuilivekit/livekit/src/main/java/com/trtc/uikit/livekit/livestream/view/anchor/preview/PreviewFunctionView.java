@@ -3,16 +3,14 @@ package com.trtc.uikit.livekit.livestream.view.anchor.preview;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.trtc.tuikit.common.ui.PopupDialog;
-import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.component.audioeffect.AudioEffectPanel;
+import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.component.beauty.BeautyViewFactory;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
 import com.trtc.uikit.livekit.livestream.view.widgets.videosettings.VideoSettingsDialog;
@@ -20,8 +18,6 @@ import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
 public class PreviewFunctionView extends FrameLayout {
     private PopupDialog       mAudioEffectPanel;
-    private PopupDialog       mPopupDialog;
-    private View              mBeautyView;
     private LiveStreamManager mLiveManager;
     private LiveCoreView      mLiveCoreView;
 
@@ -53,22 +49,8 @@ public class PreviewFunctionView extends FrameLayout {
 
     private void initBeautyButton() {
         findViewById(R.id.iv_beauty).setOnClickListener(view -> {
-            if (mPopupDialog == null) {
-                mPopupDialog = new PopupDialog(getContext(), com.trtc.tuikit.common.R.style.TUICommonBottomDialogTheme);
-                mPopupDialog.setOnDismissListener(dialog -> {
-                    if (mBeautyView != null) {
-                        ViewGroup parentView = (ViewGroup) mBeautyView.getParent();
-                        if (parentView != null) {
-                            parentView.removeView(mBeautyView);
-                        }
-                    }
-                    mPopupDialog = null;
-                });
-                BeautyViewFactory beautyViewFactory = new BeautyViewFactory();
-                mBeautyView = beautyViewFactory.getBeautyView(getContext(), mLiveManager);
-            }
-            mPopupDialog.setView(mBeautyView);
-            mPopupDialog.show();
+            BeautyViewFactory beautyViewFactory = new BeautyViewFactory();
+            beautyViewFactory.showBeautyPanel(getContext(), mLiveManager);
         });
     }
 
@@ -87,7 +69,9 @@ public class PreviewFunctionView extends FrameLayout {
 
     private void initFlipButton() {
         findViewById(R.id.iv_flip).setOnClickListener(view -> {
-            mLiveManager.getMediaManager().switchCamera();
+            mLiveCoreView.getMediaManager().switchCamera();
+            mLiveManager.getMediaManager().setFrontCamera(
+                    mLiveCoreView.getMediaManager().mMediaState.isFrontCamera.get());
         });
     }
 

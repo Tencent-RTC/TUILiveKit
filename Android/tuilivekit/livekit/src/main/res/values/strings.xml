@@ -142,6 +142,7 @@
     <string name="livekit_loading">Loading...</string>
     <string name="livekit_no_more_data">There is no more data</string>
     <string name="livekit_no_room_tip">Please start a live room</string>
+    <string name="livekit_exit_float_window_tip">It\'s live, please try again later.</string>
 
     <!-- Battle -->
     <string name="livekit_battle_wait_start">Watting for battle...</string>

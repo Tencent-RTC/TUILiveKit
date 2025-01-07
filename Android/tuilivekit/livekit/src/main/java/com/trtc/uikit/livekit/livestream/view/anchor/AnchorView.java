@@ -160,7 +160,6 @@ public class AnchorView extends BasicView {
             mLiveCoreView.stopCamera();
             mLiveCoreView.stopMicrophone();
         }
-        mLiveManager.getMediaManager().clearEBeautyView();
         mLiveManager.getUserManager().clearEnterUserInfo();
     }
 

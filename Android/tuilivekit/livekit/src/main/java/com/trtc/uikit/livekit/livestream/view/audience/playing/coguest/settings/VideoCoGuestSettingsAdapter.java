@@ -39,20 +39,19 @@ public class VideoCoGuestSettingsAdapter extends RecyclerView.Adapter<VideoCoGue
     private final Context            mContext;
     private final List<SettingsItem> mSettingsItem          = new ArrayList<>();
     private final LiveStreamManager  mLiveManager;
-    private final LiveCoreView       mLiveStream;
+    private final LiveCoreView       mLiveCoreView;
     private       List<SettingsItem> mData;
     private       int                mCurrentBeautyPosition = -1;
     public        LiveData<Integer>  mItemType              = new LiveData<>(ITEM_TYPE_SETTINGS);
     public        LiveData<Integer>  mCurrentBeautyType     = new LiveData<>(-1);
     private       PopupDialog        mPopupDialog;
-    private       View               mBeautyView;
 
 
     @SuppressLint("NotifyDataSetChanged")
-    public VideoCoGuestSettingsAdapter(Context context, LiveStreamManager manager, LiveCoreView liveStream) {
+    public VideoCoGuestSettingsAdapter(Context context, LiveStreamManager manager, LiveCoreView liveCoreView) {
         mContext = context;
         mLiveManager = manager;
-        mLiveStream = liveStream;
+        mLiveCoreView = liveCoreView;
         initSettingsItem();
 
         mData = mSettingsItem;
@@ -70,11 +69,13 @@ public class VideoCoGuestSettingsAdapter extends RecyclerView.Adapter<VideoCoGue
         }));
         mSettingsItem.add(new SettingsItem(mContext.getString(R.string.livekit_video_settings_item_flip),
                 R.drawable.livekit_video_settings_flip, ITEM_SETTINGS_FLIP, view -> {
-            mLiveManager.getMediaManager().switchCamera();
+            mLiveCoreView.getMediaManager().switchCamera();
+            mLiveManager.getMediaManager().setFrontCamera(
+                    mLiveCoreView.getMediaManager().mMediaState.isFrontCamera.get());
         }));
     }
 
-    public int getCurrentBeautytype() {
+    public int getCurrentBeautyType() {
         return mCurrentBeautyType.get();
     }
 
@@ -88,26 +89,12 @@ public class VideoCoGuestSettingsAdapter extends RecyclerView.Adapter<VideoCoGue
 
     @SuppressLint("NotifyDataSetChanged")
     private void popUpBeautyPanel() {
-        if (mPopupDialog == null) {
-            mPopupDialog = new PopupDialog(mContext, com.trtc.tuikit.common.R.style.TUICommonBottomDialogTheme);
-            mPopupDialog.setOnDismissListener(dialog -> {
-                if (mBeautyView != null) {
-                    ViewGroup parentView = (ViewGroup) mBeautyView.getParent();
-                    if (parentView != null) {
-                        parentView.removeView(mBeautyView);
-                    }
-                }
-                mPopupDialog = null;
-            });
-            BeautyViewFactory beautyViewFactory = new BeautyViewFactory();
-            mBeautyView = beautyViewFactory.getBeautyView(mContext, mLiveManager);
-        }
-        mPopupDialog.setView(mBeautyView);
-        mPopupDialog.show();
+        BeautyViewFactory beautyViewFactory = new BeautyViewFactory();
+        beautyViewFactory.showBeautyPanel(mContext, mLiveManager);
     }
 
     private void showVideoSettingsDialog() {
-        VideoSettingsDialog videoSettingsDialog = new VideoSettingsDialog(mContext, mLiveStream);
+        VideoSettingsDialog videoSettingsDialog = new VideoSettingsDialog(mContext, mLiveCoreView);
         videoSettingsDialog.show();
     }
 

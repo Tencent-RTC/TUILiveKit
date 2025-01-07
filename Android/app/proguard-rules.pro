@@ -24,3 +24,6 @@
 
 -keep class com.tencent.** { *; }
 -keep class com.trtc.uikit.livekit.livestreamcore.** { *; }
+-keep class com.trtc.uikit.component.gift.store.model.** { *; }
+-keep class com.squareup.wire.** { *; }
+-keep class com.opensource.svgaplayer.proto.** { *; }

@@ -13,10 +13,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
 import com.trtc.tuikit.common.ui.PopupDialog;
-import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.component.audioeffect.AudioEffectPanel;
-import com.trtc.uikit.livekit.component.beauty.BeautyViewFactory;
 import com.trtc.uikit.component.dashboard.StreamDashboardDialog;
+import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.component.beauty.BeautyViewFactory;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
 import com.trtc.uikit.livekit.livestream.view.widgets.videosettings.VideoSettingsDialog;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
@@ -37,7 +37,6 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
     private final        SettingsPanelDialog mSettingsDialog;
     private              PopupDialog         mAudioEffectDialog;
     private              PopupDialog         mPopupDialog;
-    private              View                mBeautyView;
 
     public SettingsListAdapter(Context context, LiveStreamManager liveStreamManager,
                                LiveCoreView liveCoreView, SettingsPanelDialog dialog) {
@@ -135,22 +134,8 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
 
     private void showBeautyPanel() {
         mSettingsDialog.dismiss();
-        if (mPopupDialog == null) {
-            mPopupDialog = new PopupDialog(mContext, com.trtc.tuikit.common.R.style.TUICommonBottomDialogTheme);
-            mPopupDialog.setOnDismissListener(dialog -> {
-                if (mBeautyView != null) {
-                    ViewGroup parentView = (ViewGroup) mBeautyView.getParent();
-                    if (parentView != null) {
-                        parentView.removeView(mBeautyView);
-                    }
-                }
-                mPopupDialog = null;
-            });
-            BeautyViewFactory beautyViewFactory = new BeautyViewFactory();
-            mBeautyView = beautyViewFactory.getBeautyView(mContext, mLiveStreamManager);
-        }
-        mPopupDialog.setView(mBeautyView);
-        mPopupDialog.show();
+        BeautyViewFactory beautyViewFactory = new BeautyViewFactory();
+        beautyViewFactory.showBeautyPanel(mContext, mLiveStreamManager);
     }
 
     @Override
