@@ -54,11 +54,6 @@ public class LiveStreamManager {
     }
 
     public void destroy() {
-        destroyWithoutLiveService();
-        mLiveService.destroy();
-    }
-
-    public void destroyWithoutLiveService() {
         mLiveService.removeRoomEngineObserver(mRoomEngineObserver);
         mLiveService.removeLiveListManagerObserver(mLiveListManagerObserver);
         mRoomManager.destroy();
@@ -67,6 +62,7 @@ public class LiveStreamManager {
         mMediaManager.destroy();
         mCoHostManager.destroy();
         mBattleManager.destroy();
+        mLiveService.destroy();
     }
 
     public ILiveService getLiveService() {

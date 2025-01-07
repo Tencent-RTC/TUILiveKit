@@ -6,7 +6,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.text.TextUtils;
-import android.view.View;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.common.TUIVideoView;
@@ -17,7 +16,7 @@ import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.permission.PermissionCallback;
 import com.tencent.qcloud.tuicore.permission.PermissionRequester;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.component.beauty.TEBeautyService;
+import com.trtc.uikit.livekit.component.beauty.TEBeautyManager;
 import com.trtc.uikit.livekit.livestream.manager.api.ILiveService;
 import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestream.state.LiveState;
@@ -27,17 +26,14 @@ import java.util.List;
 
 public class MediaManager extends BaseManager {
     private static final String          TAG = "MediaManager";
-    private final        TEBeautyService mTEBeautyService;
 
     public MediaManager(LiveState state, ILiveService service) {
         super(state, service);
-        mTEBeautyService = new TEBeautyService(state, service.getTRTCCloud());
     }
 
     @Override
     public void destroy() {
         LiveStreamLog.info(TAG + " destroy");
-        mTEBeautyService.clearBeautyView();
     }
 
     public void setLocalVideoView(TUIVideoView view) {
@@ -71,10 +67,13 @@ public class MediaManager extends BaseManager {
         });
     }
 
-    public void switchCamera() {
-        boolean isFrontCamera = mMediaState.isFrontCamera.get();
-        mLiveService.switchCamera(!isFrontCamera);
-        mMediaState.isFrontCamera.set(!isFrontCamera);
+    public void closeCamera() {
+        mLiveService.closeLocalCamera();
+        mMediaState.isCameraOpened.set(false);
+    }
+
+    public void setFrontCamera(boolean isFrontCamera) {
+        mMediaState.isFrontCamera.set(isFrontCamera);
     }
 
     public void updateVideoQuality(TUIRoomDefine.VideoQuality quality) {
@@ -112,16 +111,7 @@ public class MediaManager extends BaseManager {
     }
 
     public void setCustomVideoProcess() {
-        mTEBeautyService.setCustomVideoProcess();
-        mTEBeautyService.initBeautyKit();
-    }
-
-    public View getTEBeautyView(Context context) {
-        return mTEBeautyService.getBeautyView(context);
-    }
-
-    public void clearEBeautyView() {
-        mTEBeautyService.clearBeautyView();
+        TEBeautyManager.getInstance().setCustomVideoProcess();
     }
 
     private void openLocalCameraByService() {

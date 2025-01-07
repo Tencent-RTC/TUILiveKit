@@ -24,16 +24,16 @@ android {
 }
 
 dependencies {
-    implementation project(':tuilivekit:component:common')
-    implementation project(':tuilivekit:component:barrage')
-    implementation project(':tuilivekit:component:gift')
-    implementation project(':tuilivekit:component:audioeffect')
-    implementation project(':tuilivekit:component:dashboard')
-    implementation project(':tuilivekit:component:audiencelist')
-    implementation project(':tuilivekit:component:music')
-    implementation project(':tuilivekit:component:roominfo')
-    api project(':livestreamcore')
-    api project(':voiceroomcore')
+    api project(':tuilivekit:component:common')
+    api project(':tuilivekit:component:barrage')
+    api project(':tuilivekit:component:gift')
+    api project(':tuilivekit:component:audioeffect')
+    api project(':tuilivekit:component:dashboard')
+    api project(':tuilivekit:component:audiencelist')
+    api project(':tuilivekit:component:music')
+    api project(':tuilivekit:component:roominfo')
+    api project(':tuilivekit:livestreamcore')
+    api project(':tuilivekit:voiceroomcore')
 
     api 'io.trtc.uikit:common:2.8.0.533'
     api 'androidx.appcompat:appcompat:1.3.1'

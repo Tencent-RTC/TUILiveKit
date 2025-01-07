@@ -9,6 +9,6 @@ include ':tuilivekit:component:audiencelist'
 include ':tuilivekit:component:dashboard'
 include ':tuilivekit:component:music'
 include ':tuilivekit:component:roominfo'
-include ':livestreamcore'
-include ':voiceroomcore'
+include ':tuilivekit:livestreamcore'
+include ':tuilivekit:voiceroomcore'
 

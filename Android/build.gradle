@@ -23,9 +23,6 @@ allprojects {
     repositories {
         flatDir {
             dirs project(':app').file('libs')
-            if (rootProject.getChildProjects().containsKey("tceffectplayer")) {
-                dirs rootProject.getChildProjects().get("tceffectplayer").file('libs')
-            }
         }
         google()
         mavenCentral()

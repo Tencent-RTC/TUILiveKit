@@ -23,6 +23,7 @@ public class ListAudienceActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.livekit_activity_list_audience);
         initStatusBar();
         Bundle liveBundle = getIntent().getExtras();

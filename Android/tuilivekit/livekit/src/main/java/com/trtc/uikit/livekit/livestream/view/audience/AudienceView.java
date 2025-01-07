@@ -30,23 +30,23 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.RoomInfo;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.UserInfo;
 import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.tuikit.common.system.ContextProvider;
+import com.trtc.uikit.component.audiencelist.AudienceListView;
 import com.trtc.uikit.component.barrage.BarrageInputView;
 import com.trtc.uikit.component.barrage.BarrageStreamView;
 import com.trtc.uikit.component.barrage.store.model.Barrage;
+import com.trtc.uikit.component.dashboard.StreamDashboardDialog;
 import com.trtc.uikit.component.gift.GiftPlayView;
 import com.trtc.uikit.component.gift.LikeButton;
 import com.trtc.uikit.component.gift.store.model.Gift;
 import com.trtc.uikit.component.gift.store.model.GiftUser;
+import com.trtc.uikit.component.roominfo.RoomInfoView;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.component.audiencelist.AudienceListView;
-import com.trtc.uikit.component.dashboard.StreamDashboardDialog;
 import com.trtc.uikit.livekit.component.floatwindow.service.FloatWindowManager;
 import com.trtc.uikit.livekit.component.gift.GiftButton;
 import com.trtc.uikit.livekit.component.gift.service.GiftCacheService;
 import com.trtc.uikit.livekit.component.gift.store.GiftStore;
 import com.trtc.uikit.livekit.component.gift.view.BarrageViewTypeDelegate;
 import com.trtc.uikit.livekit.component.gift.view.GiftBarrageAdapter;
-import com.trtc.uikit.component.roominfo.RoomInfoView;
 import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
 import com.trtc.uikit.livekit.livestream.manager.observer.LiveBattleManagerObserver;
 import com.trtc.uikit.livekit.livestream.manager.observer.LiveStreamObserver;
@@ -128,18 +128,26 @@ public class AudienceView extends BasicView {
     }
 
     private void initLiveCoreView() {
-        if (mLiveCoreView == null) {
-            mLiveCoreView = FloatWindowManager.getInstance().getCoreView();
-            if (mLiveCoreView == null) {
-                mLiveCoreView = new LiveCoreView(ContextProvider.getApplicationContext());
-                mLiveCoreView.registerConnectionObserver(new LiveStreamObserver(mLiveManager));
-                mLiveCoreView.registerBattleObserver(new LiveBattleManagerObserver(mLiveManager));
-            } else {
-                FloatWindowManager.getInstance().setCoreView(null);
-            }
-            FrameLayout frameLayout = findViewById(R.id.lsv_video_view_container);
-            frameLayout.addView(mLiveCoreView);
+        if (mLiveCoreView != null) {
+            return;
         }
+        FrameLayout frameLayout = findViewById(R.id.lsv_video_view_container);
+        mLiveCoreView = FloatWindowManager.getInstance().getCoreView();
+        if (mLiveCoreView == null) {
+            mLiveCoreView = new LiveCoreView(ContextProvider.getApplicationContext());
+            mLiveCoreView.registerConnectionObserver(new LiveStreamObserver(mLiveManager));
+            mLiveCoreView.registerBattleObserver(new LiveBattleManagerObserver(mLiveManager));
+            frameLayout.addView(mLiveCoreView);
+            setVideoViewAdapter();
+            joinLiveStream();
+        } else {
+            FloatWindowManager.getInstance().setCoreView(null);
+            frameLayout.addView(mLiveCoreView);
+            setVideoViewAdapter();
+        }
+    }
+
+    private void setVideoViewAdapter() {
         mLiveCoreView.setVideoViewAdapter(new LiveCoreViewDefine.VideoViewAdapter() {
             @Override
             public View createCoGuestView(UserInfo userInfo) {
@@ -196,7 +204,9 @@ public class AudienceView extends BasicView {
                 battleInfoView.updateView(userInfos);
             }
         });
+    }
 
+    private void joinLiveStream() {
         mUserManager.initSelfUserData();
         mLiveCoreView.joinLiveStream(mRoomState.roomId, new GetRoomInfoCallback() {
             @Override
@@ -446,6 +456,9 @@ public class AudienceView extends BasicView {
                 break;
             case LINKING:
                 mWaitingCoGuestPassView.setVisibility(GONE);
+                if (mLiveManager.getCoGuestState().openCameraOnCoGuest) {
+                    mLiveCoreView.startCamera(mLiveManager.getMediaState().isFrontCamera.get(), null);
+                }
                 stopCoGuest();
                 break;
             default:

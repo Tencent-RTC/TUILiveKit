@@ -30,6 +30,10 @@ public class CoGuestManager extends BaseManager {
     public void destroy() {
     }
 
+    public void enableAutoOpenCameraOnSeated(boolean enable) {
+        mCoGuestState.openCameraOnCoGuest = enable;
+    }
+
     public void getSeatList() {
         mLiveService.getSeatList(new TUIRoomDefine.GetSeatListCallback() {
             @Override

@@ -7,9 +7,11 @@ import static com.trtc.uikit.livekit.livestream.manager.Constants.EVENT_SUB_KEY_
 import static com.trtc.uikit.livekit.livestream.state.CoGuestState.CoGuestStatus.NONE;
 import static com.trtc.uikit.livekit.livestream.view.audience.AudienceView.AudienceViewStatus.DESTROY;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,17 +39,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TUILiveRoomAudienceFragment extends Fragment implements ITUINotification {
-
-    private       AudienceView            mAudienceView;
-    private       LiveStreamManager       mLiveManager;
-    private       CoGuestStatus           mCurrentCoGuestStatus;
-    private final String                  mRoomId;
-    private final LiveInfo                mLiveInfo;
-    private final Observer<CoGuestStatus> mCoGuestStatusObserver       = this::onCoGuestStatusChange;
-    private final Observer<Boolean>       mGLContextCreateFlagObserver = this::onGLContextCreateFlag;
-    private final Handler                 mMainHandler                 = new Handler(Looper.getMainLooper());
-    private       boolean                 mOnDestroyFlag               = false;
-    private final OnBackPressedCallback   mBackPressedCallback         = new OnBackPressedCallback(true) {
+    public static final String                  KEY_EXTENSION_NAME     = "TEBeautyExtension";
+    public static final String                  NOTIFY_START_ACTIVITY  = "onStartActivityNotifyEvent";
+    public static final String                  METHOD_ACTIVITY_RESULT = "onActivityResult";
+    private             AudienceView            mAudienceView;
+    private             LiveStreamManager       mLiveManager;
+    private             CoGuestStatus           mCurrentCoGuestStatus;
+    private final       String                  mRoomId;
+    private final       LiveInfo                mLiveInfo;
+    private final       Observer<CoGuestStatus> mCoGuestStatusObserver = this::onCoGuestStatusChange;
+    private final       Handler                 mMainHandler           = new Handler(Looper.getMainLooper());
+    private final       OnBackPressedCallback   mBackPressedCallback   = new OnBackPressedCallback(true) {
         @Override
         public void handleOnBackPressed() {
             RoomState.LiveStatus liveStatus = mLiveManager.getRoomState().liveStatus.get();
@@ -75,7 +77,7 @@ public class TUILiveRoomAudienceFragment extends Fragment implements ITUINotific
         initLiveStreamManager();
         addObserver();
         TUICore.registerEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_FINISH_ACTIVITY, this);
-        mLiveManager.getBeautyState().glContextCreateFlag.observe(mGLContextCreateFlagObserver);
+        TUICore.registerEvent(KEY_EXTENSION_NAME, NOTIFY_START_ACTIVITY, this);
     }
 
     @Nullable
@@ -128,7 +130,6 @@ public class TUILiveRoomAudienceFragment extends Fragment implements ITUINotific
             floatWindowManager.showFloatWindow();
             floatWindowManager.setWillOpenFloatWindow(false);
         } else {
-            StateCache.getInstance().remove(mRoomId);
             unInitLiveStreamManager();
         }
     }
@@ -147,24 +148,8 @@ public class TUILiveRoomAudienceFragment extends Fragment implements ITUINotific
     }
 
     private void unInitLiveStreamManager() {
-        mOnDestroyFlag = true;
-        if (Boolean.TRUE.equals(mLiveManager.getBeautyState().glContextCreateFlag.get())) {
-            mLiveManager.destroyWithoutLiveService();
-        } else {
-            mLiveManager.getBeautyState().glContextCreateFlag.removeObserver(mGLContextCreateFlagObserver);
-            mLiveManager.destroy();
-        }
-    }
-
-    private void onGLContextCreateFlag(Boolean value) {
-        if (Boolean.FALSE.equals(value)) {
-            mMainHandler.post(() -> {
-                if (mOnDestroyFlag) {
-                    mLiveManager.getBeautyState().glContextCreateFlag.removeObserver(mGLContextCreateFlagObserver);
-                    mLiveManager.getLiveService().destroy();
-                }
-            });
-        }
+        StateCache.getInstance().remove(mRoomId);
+        mLiveManager.destroy();
     }
 
     private void addObserver() {
@@ -193,6 +178,16 @@ public class TUILiveRoomAudienceFragment extends Fragment implements ITUINotific
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Map<String, Object> param = new HashMap<>();
+        param.put("requestCode", requestCode);
+        param.put("resultCode", resultCode);
+        param.put("data", data);
+        TUICore.callService(KEY_EXTENSION_NAME, METHOD_ACTIVITY_RESULT, param);
+    }
+
+    @Override
     public void onNotifyEvent(String key, String subKey, Map<String, Object> param) {
         if (EVENT_SUB_KEY_FINISH_ACTIVITY.equals(subKey)) {
             if (param == null) {
@@ -202,6 +197,15 @@ public class TUILiveRoomAudienceFragment extends Fragment implements ITUINotific
                 if (roomId != null && roomId.equals(mRoomId)) {
                     requireActivity().finish();
                 }
+            }
+        }
+        if (TextUtils.equals(key, KEY_EXTENSION_NAME) && TextUtils.equals(subKey, NOTIFY_START_ACTIVITY)) {
+            Intent intent = (Intent) param.get("intent");
+            if (param.containsKey("requestCode")) {
+                int requestCode = (int) param.get("requestCode");
+                startActivityForResult(intent, requestCode);
+            } else {
+                startActivity(intent);
             }
         }
     }
