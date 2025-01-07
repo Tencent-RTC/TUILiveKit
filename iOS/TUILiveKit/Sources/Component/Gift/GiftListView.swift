@@ -18,9 +18,6 @@ class GiftListView: UIView {
     
     private let roomId: String
     private lazy var manager = GiftManager(roomId: roomId)
-    private var sendLikeDate = Date(timeIntervalSinceNow: -1 * 60)
-    private var currentLikeCount: Int = 0
-    private var sendLikeWorkItem: DispatchWorkItem?
     private var giftDataSource: [TUIGift] = []
     private var currentSelectedCellIndex: IndexPath?
     
@@ -55,7 +52,6 @@ class GiftListView: UIView {
         self.roomId = roomId
         self.delegate = delegate
         super.init(frame: .zero)
-        sendLikeDate = Date(timeIntervalSinceNow: -1 * 60)
         setupUI()
     }
 
@@ -146,38 +142,6 @@ extension GiftListView {
         DataReporter.reportEventData(eventKey: getReportKey())
         manager.sendGift(model, receiver: receiver, giftCount: giftCount) { code, msg in
             completion(code == 0, msg)
-        }
-    }
-
-    func sendLike(completion: @escaping (_ sender: TUIGiftUser, _ isSuccess: Bool, _ message: String) -> ()) {
-        let maxLikeCount: Int = 20
-        let maxDuration: Double = 5
-        if currentLikeCount >= maxLikeCount {
-            manager.sendLike { sender, code, msg in
-                completion(sender, code == 0, msg)
-            }
-            currentLikeCount = 0
-            sendLikeDate = Date()
-            return
-        }
-        let duration = -sendLikeDate.timeIntervalSinceNow
-        if duration > maxDuration {
-            manager.sendLike { sender, code, msg in
-                completion(sender, code == 0, msg)
-            }
-            currentLikeCount = 0
-            sendLikeDate = Date()
-        } else {
-            currentLikeCount += 1
-            let sender = TUIGiftUser()
-            completion(sender, false, "send like by local.")
-            let delayInSeconds = maxDuration - duration
-            sendLikeWorkItem?.cancel()
-            let workItem = DispatchWorkItem { [weak self] in
-                self?.sendLike(completion: completion)
-            }
-            sendLikeWorkItem = workItem
-            DispatchQueue.main.asyncAfter(deadline: .now() + delayInSeconds, execute: workItem)
         }
     }
 }

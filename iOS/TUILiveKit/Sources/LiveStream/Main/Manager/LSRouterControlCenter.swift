@@ -237,6 +237,9 @@ extension LSRouterControlCenter {
             view = StreamDashboardPanel(roomId: manager.roomState.roomId,
                                         trtcCloud: TUIRoomEngine.sharedInstance().getTRTCCloud())
         case .beauty:
+            if BeautyView.checkIsNeedDownloadResource() {
+                return nil
+            }
             let beautyView = BeautyView()
             beautyView.backClosure = { [weak self] in
                 guard let self = self else { return }

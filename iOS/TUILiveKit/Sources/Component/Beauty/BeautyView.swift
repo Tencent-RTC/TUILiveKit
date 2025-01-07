@@ -20,6 +20,7 @@ let TUICore_TEBeautyService = "TUICore_TEBeautyService"
 let TUICore_TEBeautyService_SetLicense = "TUICore_TEBeautyService_SetLicense"
 let TUICore_TEBeautyService_LicenseUrl = "TUICore_TEBeautyService_LicenseUrl"
 let TUICore_TEBeautyService_LicenseKey = "TUICore_TEBeautyService_LicenseKey"
+let TUICore_TEBeautyService_CheckResource = "TUICore_TEBeautyService_CheckResource"
 let TUICore_TEBeautyService_ProcessVideoFrameWithTexture = "TUICore_TEBeautyService_ProcessVideoFrameWithTexture"
 let TUICore_TEBeautyService_ProcessVideoFrame_TextureId = "TUICore_TEBeautyService_ProcessVideoFrame_TextureId"
 let TUICore_TEBeautyService_ProcessVideoFrame_TextureWidth = "TUICore_TEBeautyService_ProcessVideoFrame_TextureWidth"
@@ -29,7 +30,7 @@ let TUICore_TEBeautyService_ProcessVideoFrame_PixelValue = "TUICore_TEBeautyServ
 let TUICore_TEBeautyService_SetPanelLevel = "TUICore_TEBeautyService_SetPanelLevel"
 let TUICore_TEBeautyService_PanelLevel = "TUICore_TEBeautyService_PanelLevel"
 
-class BeautyView: UIView, TRTCCloudDelegate {
+class BeautyView: UIView {
     var backClosure: (()->Void)?
     private var isAdvancedBeauty = false
     private let roomEngine: TUIRoomEngine
@@ -86,8 +87,8 @@ class BeautyView: UIView, TRTCCloudDelegate {
     
     private func getAdvancedBeautyPanel() -> UIView? {
         let beautyPanelList = TUICore.getExtensionList(TUICore_TEBeautyExtension_GetBeautyPanel,
-                                                       param: ["width":375.scale375(),
-                                                               "height":200.scale375Height(),])
+                                                       param: ["width":Screen_Width,
+                                                               "height":205.scale375Height(),])
         if beautyPanelList.count == 0 {
             return nil
         }
@@ -101,7 +102,6 @@ class BeautyView: UIView, TRTCCloudDelegate {
     
     private func addObserver() {
         if !isAdvancedBeauty { return }
-        trtcCloud.addDelegate(self)
         trtcCloud.setLocalVideoProcessDelegete(self, pixelFormat: ._NV12, bufferType: .pixelBuffer)
     }
     
@@ -113,6 +113,23 @@ class BeautyView: UIView, TRTCCloudDelegate {
     deinit {
         removeObserver()
         debugPrint("\(type(of: self)) deinit")
+    }
+}
+
+// MARK: Public
+extension BeautyView {
+    
+    public static func checkIsNeedDownloadResource() -> Bool {
+        if TUICore.getService(TUICore_TEBeautyService) != nil {
+            guard let fileExits = TUICore.callService(TUICore_TEBeautyService,
+                                                      method: TUICore_TEBeautyService_CheckResource,
+                                                      param: nil,
+                                                      resultCallback: nil) as? Bool else {
+                return false
+            }
+            return !fileExits
+        }
+        return false
     }
 }
 

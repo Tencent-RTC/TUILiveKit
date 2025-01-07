@@ -37,9 +37,6 @@ extension TUIGiftIMService {
     private func getGiftData(_ giftModel: TUIGift, sender: TUIGiftUser, receiver: TUIGiftUser, giftCount: Int) -> TUIGiftData {
         return TUIGiftData(gift:giftModel, giftCount: giftCount, sender: sender, receiver: receiver)
     }
-    private func getLikeData(sender: TUIGiftUser) -> TUILikeData{
-        return TUILikeData(sender: sender)
-    }
 
     func sendGiftMessage(_ giftModel: TUIGift, sender: TUIGiftUser, receiver: TUIGiftUser, giftCount: Int, callback: TUIGiftIMSendBlock) {
         do {
@@ -49,23 +46,6 @@ extension TUIGiftIMService {
             let data = try encoder.encode(giftWrapper)
             imManager?.sendGroupCustomMessage(data, to: roomId, priority: .PRIORITY_NORMAL) {
                 callback?(0, "send gift message success.")
-            } fail: { code, message in
-                debugPrint("sendGroupCustomMessage failed. code:\(code), message:\(message ?? "")")
-                callback?(Int(code), message ?? "")
-            }
-        } catch {
-            debugPrint("Encoding TUIBarrage failed. error:\(error)")
-        }
-    }
-
-    func sendLikeMessage(sender: TUIGiftUser,callback: TUIGiftIMSendBlock) {
-        do {
-            let likeData = getLikeData(sender: sender)
-            let likeWrapper = TUILikeWrapper(businessID: "TUIGift_like", data: likeData)
-            let encoder = JSONEncoder()
-            let data = try encoder.encode(likeWrapper)
-            imManager?.sendGroupCustomMessage(data, to: roomId, priority: .PRIORITY_NORMAL) {
-                callback?(0, "send like message success.")
             } fail: { code, message in
                 debugPrint("sendGroupCustomMessage failed. code:\(code), message:\(message ?? "")")
                 callback?(Int(code), message ?? "")

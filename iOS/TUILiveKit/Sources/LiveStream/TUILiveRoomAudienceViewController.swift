@@ -21,6 +21,7 @@ public class TUILiveRoomAudienceViewController: UIViewController {
     private let manager = LiveStreamManager()
     private let routerManager: LSRouterManager = LSRouterManager()
     private var cancellableSet = Set<AnyCancellable>()
+    private lazy var likeManager = LikeManager(roomId: roomId)
     private lazy var routerCenter: LSRouterControlCenter = {
         let rootRoute: LSRoute = .audience
         let routerCenter = LSRouterControlCenter(rootViewController: self, rootRoute: rootRoute, routerManager: routerManager, manager: manager, coreView: coreView)
@@ -88,6 +89,14 @@ extension TUILiveRoomAudienceViewController {
             .sink { [weak self] in
                 guard let self = self else { return }
                 FloatWindow.shared.showFloatWindow(controller: self)
+            }
+            .store(in: &cancellableSet)
+        
+        manager.likeSubject
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in
+                guard let self = self else { return }
+                likeManager.sendLike()
             }
             .store(in: &cancellableSet)
     }

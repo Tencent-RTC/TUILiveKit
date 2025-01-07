@@ -26,6 +26,7 @@ class VoiceRoomRootView: RTCBaseView {
     private let isOwner: Bool
     private let giftCacheService = TUIGiftStore.shared.giftCacheService
     private var cancellableSet = Set<AnyCancellable>()
+    private let likeManager: LikeManager
     
     private let backgroundImageView: UIImageView = {
         let backgroundImageView = UIImageView(frame: .zero)
@@ -91,6 +92,7 @@ class VoiceRoomRootView: RTCBaseView {
         self.manager = manager
         self.routerManager = routerManager
         self.isOwner = isCreate
+        self.likeManager = LikeManager(roomId: roomId)
         super.init(frame: frame)
         manager.update(roomId: roomId)
         if isCreate {
@@ -173,6 +175,7 @@ class VoiceRoomRootView: RTCBaseView {
         subscribeRoomState()
         subscribeUserState()
         subscribeSeatState()
+        subscribeSubject()
         muteMicrophoneButton.addTarget(self, action: #selector(muteMicrophoneButtonClick(sender:)), for: .touchUpInside)
     }
 }
@@ -431,6 +434,20 @@ extension VoiceRoomRootView {
                     linkStatus = .linking
                 }
                 manager.update(linkStatus: linkStatus)
+            }
+            .store(in: &cancellableSet)
+    }
+}
+
+// MARK: - SubscribeSubject
+
+extension VoiceRoomRootView {
+    private func subscribeSubject() {
+        manager.likeSubject
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in
+                guard let self = self else { return }
+                likeManager.sendLike()
             }
             .store(in: &cancellableSet)
     }

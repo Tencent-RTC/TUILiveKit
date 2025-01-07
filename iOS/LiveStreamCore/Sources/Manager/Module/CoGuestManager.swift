@@ -112,7 +112,7 @@ class CoGuestManager {
                     onUserConnectionAccepted(userId: userId)
                 }
                 if coGuestState.openCameraOnCoGuest {
-                    try? await context?.mediaManager.openLocalCamera(useFrontCamera: true)
+                    try? await context?.mediaManager.openLocalCamera(useFrontCamera: context?.mediaManager.mediaState.isFrontCamera ?? true)
                 }
                 try? await context?.mediaManager.openLocalMicrophone()
             case .rejected(userId: let userId):
@@ -316,6 +316,12 @@ extension CoGuestManager {
     private func updateSelfSeatedState() {
         if isSelfInSeat() {
             modifyCoGuestState(value: .linking, keyPath: \CoGuestState.coGuestStatus, isPublished: true)
+            Task {
+                guard let context = context else { return }
+                if coGuestState.openCameraOnCoGuest && !context.mediaManager.mediaState.isCameraOpened {
+                    try? await context.mediaManager.openLocalCamera(useFrontCamera: context.mediaManager.mediaState.isFrontCamera)
+                }
+            }
         }
     }
     

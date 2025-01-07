@@ -75,13 +75,13 @@ struct LSSeatInvitation: Codable {
 }
 
 struct LSSeatInfo: Codable {
-    var index: Int
-    var userId: String
-    var avatarUrl: String
-    var userName: String
-    var isLocked: Bool
-    var isVideoLocked: Bool
-    var isAudioLocked: Bool
+    var index: Int = -1
+    var userId: String = ""
+    var avatarUrl: String = ""
+    var userName: String = ""
+    var isLocked: Bool = false
+    var isVideoLocked: Bool = false
+    var isAudioLocked: Bool = false
     
     init(info: TUISeatInfo) {
         self.index = info.index
@@ -91,16 +91,6 @@ struct LSSeatInfo: Codable {
         self.isVideoLocked = info.isVideoLocked
         self.userName = info.userName ?? ""
         self.avatarUrl = info.avatarUrl ?? ""
-    }
-    
-    init() {
-        self.index = -1
-        self.userId = ""
-        self.isLocked = false
-        self.isVideoLocked = false
-        self.isAudioLocked = false
-        self.userName = ""
-        self.avatarUrl = ""
     }
     
     init(userInfo: TUIUserInfo) {
@@ -135,4 +125,3 @@ enum CoGuestStatus {
     case applying
     case linking
 }
-
