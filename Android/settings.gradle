@@ -1,3 +1,5 @@
 include ':app'
 include ':debug'
 include ':tuilivekit'
+include ':livestreamcore'
+include ':voiceroomcore'
