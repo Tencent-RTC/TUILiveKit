@@ -18,8 +18,9 @@ class LiveInfoView: UIView {
     var isOwner: Bool {
         state.selfUserId == state.ownerId
     }
-    private lazy var roomInfoPanelView = RoomInfoPanelView(service: service)
+    private lazy var roomInfoPanelView = RoomInfoPanelView(service: service, enableFollow: enableFollow)
     private var cancellableSet = Set<AnyCancellable>()
+    private let enableFollow: Bool
     
     private lazy var roomOwnerNameLabel: UILabel = {
         let view = UILabel()
@@ -55,6 +56,15 @@ class LiveInfoView: UIView {
         service.initRoomInfo(roomId: roomId)
     }
     
+    init(enableFollow: Bool = true, frame: CGRect = .zero) {
+        self.enableFollow = enableFollow
+        super.init(frame: frame)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     private var isViewReady = false
     override func didMoveToWindow() {
         super.didMoveToWindow()
@@ -68,7 +78,7 @@ class LiveInfoView: UIView {
     private func constructViewHierarchy() {
         addSubview(roomOwnerNameLabel)
         addSubview(imageView)
-        if !isOwner {
+        if !isOwner && enableFollow {
             addSubview(followButton)
         }
     }
@@ -90,7 +100,7 @@ class LiveInfoView: UIView {
             make.centerY.equalToSuperview()
             make.height.equalToSuperview()
         }
-        if !isOwner {
+        if !isOwner && enableFollow {
             followButton.snp.makeConstraints { make in
                 make.trailing.equalToSuperview().inset(8.scale375())
                 make.centerY.equalToSuperview()
@@ -169,6 +179,9 @@ class LiveInfoView: UIView {
     }
     
     private func updateFollowButtonVisibility(visible: Bool) {
+        if !enableFollow {
+            return
+        }
         if visible {
             addSubview(followButton)
             followButton.snp.remakeConstraints { make in

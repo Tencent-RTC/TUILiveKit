@@ -25,7 +25,7 @@ class AnchorLivingView: UIView {
     private let giftCacheService = TUIGiftStore.shared.giftCacheService
     
     private let liveInfoView: LiveInfoView = {
-        let view = LiveInfoView()
+        let view = LiveInfoView(enableFollow: VideoLiveKit.createInstance().enableFollow)
         view.mm_h = 32.scale375()
         view.backgroundColor = UIColor.g1.withAlphaComponent(0.4)
         view.layer.cornerRadius = view.mm_h * 0.5

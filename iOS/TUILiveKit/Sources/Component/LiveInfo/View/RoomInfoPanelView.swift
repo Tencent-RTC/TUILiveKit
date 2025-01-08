@@ -16,6 +16,7 @@ class RoomInfoPanelView: RTCBaseView {
     private var isOwner: Bool {
         state.ownerId == state.selfUserId
     }
+    private let enableFollow: Bool
     
     private lazy var imageView: UIImageView = {
         let imageView = UIImageView()
@@ -67,9 +68,10 @@ class RoomInfoPanelView: RTCBaseView {
         return button
     }()
     
-    init(service: RoomInfoService) {
+    init(service: RoomInfoService, enableFollow: Bool) {
         self.service = service
         self.state = service.state
+        self.enableFollow = enableFollow
         super.init(frame: .zero)
     }
     
@@ -89,8 +91,10 @@ class RoomInfoPanelView: RTCBaseView {
         addSubview(backgroundView)
         addSubview(titleLabel)
         addSubview(roomIdLabel)
-        addSubview(fansLabel)
-        if !isOwner {
+        if enableFollow {
+            addSubview(fansLabel)
+        }
+        if !isOwner && enableFollow {
             addSubview(followButton)
         }
         addSubview(imageView)
@@ -101,10 +105,14 @@ class RoomInfoPanelView: RTCBaseView {
             make.top.centerX.equalToSuperview()
             make.height.width.equalTo(55.scale375Width())
         }
+        var totalHeight = isOwner ? 159 : 212
+        if !enableFollow {
+            totalHeight = 132
+        }
         backgroundView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(29.scale375Height())
             make.leading.trailing.bottom.equalToSuperview()
-            make.height.equalTo(isOwner ? 159.scale375Height() : 212.scale375Height())
+            make.height.equalTo(totalHeight.scale375Height())
         }
         titleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(65.scale375Height())
@@ -116,12 +124,14 @@ class RoomInfoPanelView: RTCBaseView {
             make.centerX.equalToSuperview()
             make.height.equalTo(17.scale375Height())
         }
-        fansLabel.snp.makeConstraints { make in
-            make.top.equalTo(roomIdLabel.snp.bottom).offset(10.scale375Height())
-            make.leading.trailing.equalToSuperview()
-            make.height.equalTo(17.scale375Height())
+        if enableFollow {
+            fansLabel.snp.makeConstraints { make in
+                make.top.equalTo(roomIdLabel.snp.bottom).offset(10.scale375Height())
+                make.leading.trailing.equalToSuperview()
+                make.height.equalTo(17.scale375Height())
+            }
         }
-        if !isOwner {
+        if !isOwner && enableFollow {
             followButton.snp.makeConstraints { make in
                 make.top.equalTo(fansLabel.snp.bottom).offset(24.scale375Height())
                 make.leading.equalToSuperview().offset(15.scale375Width())
@@ -154,6 +164,9 @@ class RoomInfoPanelView: RTCBaseView {
     }
     
     private func updateFollowButtonVisibility(visible: Bool) {
+        if !enableFollow {
+            return
+        }
         if visible {
             addSubview(followButton)
             followButton.snp.makeConstraints { make in
