@@ -118,14 +118,6 @@ extension LSUserManager {
                 state.hasAudioStreamUserList.remove(userId)
             }
         }
-        if userId == userState.selfInfo.userId {
-            context?.mediaManager.update { mediaState in
-                mediaState.isMicrophoneMuted = !hasAudio
-                if hasAudio {
-                    mediaState.isMicrophoneOpened = true
-                }
-            }
-        }
     }
     
     func onUserVideoStateChanged(userId: String, streamType: TUIVideoStreamType, hasVideo: Bool, reason: TUIChangeReason) {
@@ -136,11 +128,6 @@ extension LSUserManager {
         } else {
             update { state in
                 state.hasVideoStreamUserList.remove(userId)
-            }
-        }
-        if userId == userState.selfInfo.userId {
-            context?.mediaManager.update { mediaState in
-                mediaState.isCameraOpened = hasVideo
             }
         }
     }

@@ -129,24 +129,12 @@ extension LiveStreamManager {
         context.mediaManager.subscribeState(selector)
     }
     
-    func switchCamera() {
-        context.mediaManager.switchCamera()
-    }
-    
-    func setCameraMirror() {
-        context.mediaManager.setCameraMirror()
-    }
-    
     func setLocalVideoView(_ view: UIView) {
         context.mediaManager.setLocalVideoView(view: view)
     }
     
-    func openLocalCamera() {
-        context.mediaManager.openLocalCamera()
-    }
-    
-    func closeLocalCamera() {
-        context.mediaManager.closeLocalCamera()
+    func onCameraOpened() {
+        context.mediaManager.onCameraOpened()
     }
     
     func updateVideoQuality(quality: TUIVideoQuality) {

@@ -61,8 +61,8 @@ class VideoLinkSettingPanel: RTCBaseView {
                                  normalImage: .liveBundleImage("live_video_setting_flip"),
                                  designConfig: designConfig,
                                  actionClosure: { [weak self] _ in
-            guard let self = self else { return }
-            self.manager.switchCamera()
+            guard let self = self, let coreView = coreView else { return }
+            coreView.startCamera(useFrontCamera: !coreView.mediaState.isFrontCamera) {} onError: { code, msg in }
         }))
         items.append(LSFeatureItem(normalTitle: .videoParametersText,
                                  normalImage: .liveBundleImage("live_setting_video_parameters"),
@@ -184,14 +184,22 @@ extension VideoLinkSettingPanel {
             .sink { [weak self] routeStack in
                 guard let self = self else { return }
                 if routeStack.last == .linkSetting {
-                    manager.setLocalVideoView(previewView)
-                    if !manager.mediaState.isCameraOpened {
-                        manager.openLocalCamera()
-                        needCloseCameraWhenViewDisappear = true
+                    guard let coreView = coreView else { return }
+                    if !coreView.mediaState.isCameraOpened {
+                        coreView.startCamera(useFrontCamera: coreView.mediaState.isFrontCamera) { [weak self] in
+                            guard let self = self else { return }
+                            manager.onCameraOpened()
+                            manager.setLocalVideoView(previewView)
+                            needCloseCameraWhenViewDisappear = true
+                        } onError: { [weak self] code, msg in
+                            guard let self = self else { return }
+                            let error = InternalError(error: code, message: msg)
+                            manager.toastSubject.send(error.localizedMessage)
+                        }
                     }
                 } else if !routeStack.contains(.linkSetting) {
                     if needCloseCameraWhenViewDisappear {
-                        manager.closeLocalCamera()
+                        coreView?.stopCamera()
                         needCloseCameraWhenViewDisappear = false
                     }
                 }

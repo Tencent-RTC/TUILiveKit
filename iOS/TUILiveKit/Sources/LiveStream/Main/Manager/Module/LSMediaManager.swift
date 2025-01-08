@@ -46,45 +46,9 @@ extension LSMediaManager {
         service.setLocalVideoView(view: view)
     }
     
-    func openLocalCamera() {
-        if mediaState.isCameraOpened {
-            LiveKitLog.info("\(#file)","\(#line)","camera is opened, no need to open again")
-            return
-        }
-        Task{
-            do {
-                try await service.openLocalCamera(isFront: mediaState.isFrontCamera, quality: mediaState.videoQuality)
-                update { state in
-                    state.isCameraOpened = true
-                }
-                initLivingConfig()
-            } catch let err {
-                toastSubject.send(err.localizedDescription)
-            }
-        }
-    }
-    
-    func closeLocalCamera() {
-        service.closeLocalCamera()
-        update { state in
-            state.isCameraOpened = false
-        }
-    }
-    
-    func switchCamera() {
-        let isFrontCamera = mediaState.isFrontCamera
-        service.switchCamera(frontCamera: !isFrontCamera)
-        update { state in
-            state.isFrontCamera = !isFrontCamera
-        }
-    }
-    
-    func setCameraMirror() {
-        let isMirror = mediaState.isMirror
-        service.setCameraMirror(enable: !isMirror)
-        update { state in
-            state.isMirror = !isMirror
-        }
+    func onCameraOpened() {
+        service.enableGravitySensor(enable: true)
+        service.setVideoResolutionMode(.portrait)
     }
     
     func updateVideoQuality(quality: TUIVideoQuality) {
@@ -96,13 +60,5 @@ extension LSMediaManager {
     
     func update(mediaState: LSMediaStateUpdateClosure) {
         observerState.update(reduce: mediaState)
-    }
-}
-
-// MARK: - Private
-extension LSMediaManager {
-    private func initLivingConfig() {
-        service.enableGravitySensor(enable: true)
-        service.setVideoResolutionMode(.portrait)
     }
 }

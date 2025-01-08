@@ -27,6 +27,9 @@ import TUICore
     public var userState: UserState {
         manager.userState
     }
+    public var mediaState: MediaState {
+        manager.mediaState
+    }
     
     public init() {
         super.init(frame: .zero)
