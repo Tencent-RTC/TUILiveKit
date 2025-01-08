@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.component.floatwindow.service.FloatWindowManager;
 import com.trtc.uikit.livekit.livestream.state.BattleState;
 import com.trtc.uikit.livekit.livestream.state.BattleState.BattleUser;
 import com.trtc.uikit.livekit.livestream.state.CoHostState;
@@ -41,6 +42,7 @@ public class BattleInfoView extends BasicView {
     private final Observer<Boolean>              mBattleStartObserver         = this::onBattleStartChange;
     private final Observer<Integer>              mDurationCountDownObserver   = this::onDurationCountDown;
     private final Observer<Boolean>              mBattleResultDisplayObserver = this::onResultDisplay;
+    private final Observer<Boolean>              mFloatWindowModeObserver     = this::onFloatWindowModeObserver;
 
     public BattleInfoView(@NonNull Context context) {
         this(context, null);
@@ -72,6 +74,7 @@ public class BattleInfoView extends BasicView {
         mBattleState.mBattledUsers.observe(mBattledListObserver);
         mBattleState.mDurationCountDown.observe(mDurationCountDownObserver);
         mBattleState.mIsOnDisplayResult.observe(mBattleResultDisplayObserver);
+        FloatWindowManager.getInstance().getStore().isShowingFloatWindow.observe(mFloatWindowModeObserver);
     }
 
     @Override
@@ -81,6 +84,7 @@ public class BattleInfoView extends BasicView {
         mBattleState.mBattledUsers.removeObserver(mBattledListObserver);
         mBattleState.mDurationCountDown.removeObserver(mDurationCountDownObserver);
         mBattleState.mIsOnDisplayResult.removeObserver(mBattleResultDisplayObserver);
+        FloatWindowManager.getInstance().getStore().isShowingFloatWindow.removeObserver(mFloatWindowModeObserver);
     }
 
     public void updateView(List<LiveCoreViewDefine.BattleUserViewModel> userInfos) {
@@ -97,6 +101,9 @@ public class BattleInfoView extends BasicView {
     }
 
     private void onBattleStart() {
+        if (FloatWindowManager.getInstance().isShowingFloatWindow()) {
+            return;
+        }
         mSingleBattleScoreView.setVisibility(GONE);
         setVisibility(VISIBLE);
         if (mUserState.selfInfo.role.get() == TUIRoomDefine.Role.ROOM_OWNER && !mBattleState.mIsShowingStartView) {
@@ -106,6 +113,9 @@ public class BattleInfoView extends BasicView {
     }
 
     private void onBattleEnd() {
+        if (FloatWindowManager.getInstance().isShowingFloatWindow()) {
+            return;
+        }
         setVisibility(VISIBLE);
         mBattleTimeView.setText(mContext.getString(R.string.livekit_battle_pk_end));
     }
@@ -205,6 +215,16 @@ public class BattleInfoView extends BasicView {
             onBattleStart();
         } else if (Boolean.FALSE.equals(start)) {
             onBattleEnd();
+        }
+    }
+
+    private void onFloatWindowModeObserver(Boolean isFloating) {
+        if (Boolean.TRUE.equals(isFloating)) {
+            setVisibility(GONE);
+        } else {
+            if (Boolean.TRUE.equals(mBattleState.mIsBattleRunning.get())) {
+                setVisibility(VISIBLE);
+            }
         }
     }
 }

@@ -60,6 +60,7 @@ public class BattleManager extends BaseManager {
                                   Map<String, TUILiveBattleManager.BattleCode> map) {
                 mBattleState.battleId = battleInfo.battleId;
                 List<String> sentBattleRequestList = mBattleState.sentBattleRequestList.get();
+                sentBattleRequestList.clear();
                 for (Map.Entry<String, TUILiveBattleManager.BattleCode> entry : map.entrySet()) {
                     String key = entry.getKey();
                     TUILiveBattleManager.BattleCode code = entry.getValue();

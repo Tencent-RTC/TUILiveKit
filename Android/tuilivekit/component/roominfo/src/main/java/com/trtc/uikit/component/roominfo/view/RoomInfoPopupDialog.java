@@ -31,6 +31,7 @@ public class RoomInfoPopupDialog extends PopupDialog {
     private       TextView                        mTextRoomId;
     private       ImageView                       mImageAvatar;
     private       TextView                        mTextFans;
+    private       View                            mFansLayout;
 
     public RoomInfoPopupDialog(Context context, RoomInfoService roomInfoService) {
         super(context);
@@ -59,6 +60,7 @@ public class RoomInfoPopupDialog extends PopupDialog {
         initAnchorNameView();
         initRoomIdView();
         initAvatarView();
+        initFansView();
         setView(view);
     }
 
@@ -68,6 +70,7 @@ public class RoomInfoPopupDialog extends PopupDialog {
         mTextRoomId = view.findViewById(R.id.tv_liveroom_id);
         mImageAvatar = view.findViewById(R.id.iv_avatar);
         mTextFans = view.findViewById(R.id.tv_fans);
+        mFansLayout = view.findViewById(R.id.ll_fans);
     }
 
     @Override
@@ -96,11 +99,23 @@ public class RoomInfoPopupDialog extends PopupDialog {
         ImageLoader.load(mContext, mImageAvatar, mRoomInfoState.ownerAvatarUrl.get(), R.drawable.livekit_ic_avatar);
     }
 
+    private void initFansView() {
+        if (mRoomInfoState.enableFollow) {
+            mFansLayout.setVisibility(View.VISIBLE);
+        } else {
+            mFansLayout.setVisibility(View.GONE);
+        }
+    }
+
     private void getFansNumber() {
         mRoomInfoService.getFansNumber();
     }
 
     private void refreshFollowButton() {
+        if (!mRoomInfoState.enableFollow) {
+            mButtonFollow.setVisibility(View.GONE);
+            return;
+        }
         if (mRoomInfoState.followingList.get().contains(mRoomInfoState.ownerId.get())) {
             mButtonFollow.setText(R.string.livekit_roominfo_unfollow_anchor);
             mButtonFollow.setBackgroundResource(R.drawable.livekit_live_info_detail_button_unfollow);
@@ -119,6 +134,9 @@ public class RoomInfoPopupDialog extends PopupDialog {
     }
 
     private void onHostChange(String ownerId) {
+        if (!mRoomInfoState.enableFollow) {
+            return;
+        }
         if (TextUtils.isEmpty(ownerId)) {
             return;
         }

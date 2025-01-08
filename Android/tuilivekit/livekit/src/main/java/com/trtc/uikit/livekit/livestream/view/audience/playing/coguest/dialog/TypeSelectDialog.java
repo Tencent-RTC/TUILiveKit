@@ -77,7 +77,6 @@ public class TypeSelectDialog extends PopupDialog {
 
     private void applyLinkMic(boolean openCamera) {
         ToastUtil.toastShortMessageCenter(getContext().getString(R.string.livekit_toast_apply_link_mic));
-        mLiveManager.getCoGuestManager().enableAutoOpenCameraOnSeated(openCamera);
         mLiveStream.requestIntraRoomConnection("", 60, openCamera, new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {

@@ -54,19 +54,30 @@ public class RoomInfoView extends FrameLayout {
         super(context, attrs, defStyleAttr);
         mContext = context;
         LayoutInflater.from(mContext).inflate(R.layout.livekit_room_info, this, true);
+        bindViewId();
     }
 
     public void init(String roomId) {
+        init(roomId, true);
+    }
+
+    public void init(String roomId, boolean enableFollow) {
         mRoomInfoService.initRoomInfo(roomId);
+        mRoomInfoState.enableFollow = enableFollow;
         reportData(roomId);
+        refreshView();
     }
 
     private void initView() {
-        bindViewId();
-
         initHostNameView();
         initHostAvatarView();
         initRoomInfoPanelView();
+    }
+
+    private void refreshView() {
+        if (!mRoomInfoState.enableFollow) {
+            mLayoutFollowPanel.setVisibility(GONE);
+        }
     }
 
     private void addObserver() {
@@ -124,6 +135,9 @@ public class RoomInfoView extends FrameLayout {
     }
 
     private void onHostIdChange(String ownerId) {
+        if (!mRoomInfoState.enableFollow) {
+            return;
+        }
         if (!TextUtils.isEmpty(ownerId) && !TextUtils.equals(mRoomInfoState.myUserId, ownerId)) {
             mLayoutFollowPanel.setVisibility(View.VISIBLE);
             mRoomInfoService.isFollow(ownerId);

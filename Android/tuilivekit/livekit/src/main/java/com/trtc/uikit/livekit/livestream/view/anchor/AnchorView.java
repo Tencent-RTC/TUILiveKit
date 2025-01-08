@@ -59,6 +59,7 @@ import com.trtc.uikit.livekit.livestream.state.RoomState;
 import com.trtc.uikit.livekit.livestream.state.RoomState.LiveStatus;
 import com.trtc.uikit.livekit.livestream.state.UserState;
 import com.trtc.uikit.livekit.livestream.view.BasicView;
+import com.trtc.uikit.livekit.livestream.view.VideoLiveKitImpl;
 import com.trtc.uikit.livekit.livestream.view.anchor.dashboard.AnchorDashboardView;
 import com.trtc.uikit.livekit.livestream.view.anchor.preview.LiveInfoEditView;
 import com.trtc.uikit.livekit.livestream.view.anchor.preview.PreviewFunctionView;
@@ -429,7 +430,8 @@ public class AnchorView extends BasicView {
     }
 
     private void initRoomInfoView() {
-        mRoomInfoView.init(mRoomState.roomId);
+        boolean enableFollow = VideoLiveKitImpl.createInstance(mContext).isEnableFollowFeature();
+        mRoomInfoView.init(mRoomState.roomId, enableFollow);
     }
 
     private void initBarrageInputView() {

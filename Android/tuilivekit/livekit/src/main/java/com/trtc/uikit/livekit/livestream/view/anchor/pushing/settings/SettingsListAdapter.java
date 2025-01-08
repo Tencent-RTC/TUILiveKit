@@ -11,7 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.component.audioeffect.AudioEffectPanel;
 import com.trtc.uikit.component.dashboard.StreamDashboardDialog;
@@ -99,13 +98,7 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
     }
 
     private void handleCameraFlip() {
-        boolean isFrontCamera = mLiveStreamManager.getMediaState().isFrontCamera.get();
-        switchCamera(!isFrontCamera);
-        mLiveStreamManager.getMediaState().isFrontCamera.set(!isFrontCamera);
-    }
-
-    private void switchCamera(boolean isFrontCamera) {
-        TUIRoomEngine.sharedInstance().switchCamera(isFrontCamera);
+        mLiveCoreView.getMediaManager().switchCamera();
     }
 
     private void showVideoParamsPanel() {

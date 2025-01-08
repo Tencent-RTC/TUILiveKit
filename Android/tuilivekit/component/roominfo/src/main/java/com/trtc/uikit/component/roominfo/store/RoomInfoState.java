@@ -7,6 +7,7 @@ import java.util.LinkedHashSet;
 public class RoomInfoState {
     public String                          myUserId       = "";
     public String                          roomId         = "";
+    public boolean                         enableFollow   = true;
     public LiveData<String>                ownerId        = new LiveData<>("");
     public LiveData<String>                ownerName      = new LiveData<>("");
     public LiveData<String>                ownerAvatarUrl = new LiveData<>("");
