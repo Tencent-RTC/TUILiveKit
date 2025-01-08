@@ -14,7 +14,6 @@ public class MediaState {
     public LiveData<Boolean>                    hasCameraPermission     = new LiveData<>(false);
     public LiveData<Boolean>                    isCameraOpened          = new LiveData<>(false);
     public LiveData<TUIRoomDefine.VideoQuality> videoQuality            = new LiveData<>(Q_1080P);
-    public LiveData<Boolean>                    isFrontCamera           = new LiveData<>(true);
 
     public void reset() {
         hasMicrophonePermission.set(false);
@@ -24,6 +23,5 @@ public class MediaState {
         hasCameraPermission.set(false);
         isCameraOpened.set(false);
         videoQuality.set(Q_1080P);
-        isFrontCamera.set(true);
     }
 }

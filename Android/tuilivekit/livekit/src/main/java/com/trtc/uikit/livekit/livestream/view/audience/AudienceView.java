@@ -54,6 +54,7 @@ import com.trtc.uikit.livekit.livestream.state.CoGuestState;
 import com.trtc.uikit.livekit.livestream.state.RoomState;
 import com.trtc.uikit.livekit.livestream.state.UserState;
 import com.trtc.uikit.livekit.livestream.view.BasicView;
+import com.trtc.uikit.livekit.livestream.view.VideoLiveKitImpl;
 import com.trtc.uikit.livekit.livestream.view.audience.dashboard.AudienceDashboardView;
 import com.trtc.uikit.livekit.livestream.view.audience.playing.coguest.CoGuestRequestFloatView;
 import com.trtc.uikit.livekit.livestream.view.audience.playing.coguest.dialog.CancelRequestDialog;
@@ -296,7 +297,8 @@ public class AudienceView extends BasicView {
     }
 
     private void initRoomInfoView() {
-        mRoomInfoView.init(mRoomState.roomId);
+        boolean enableFollow = VideoLiveKitImpl.createInstance(mContext).isEnableFollowFeature();
+        mRoomInfoView.init(mRoomState.roomId, enableFollow);
     }
 
     private void initBarrageStreamView() {
@@ -456,9 +458,6 @@ public class AudienceView extends BasicView {
                 break;
             case LINKING:
                 mWaitingCoGuestPassView.setVisibility(GONE);
-                if (mLiveManager.getCoGuestState().openCameraOnCoGuest) {
-                    mLiveCoreView.startCamera(mLiveManager.getMediaState().isFrontCamera.get(), null);
-                }
                 stopCoGuest();
                 break;
             default:

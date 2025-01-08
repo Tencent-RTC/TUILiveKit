@@ -13,4 +13,6 @@ public interface VideoLiveKit {
     void startLive(String roomId);
 
     void joinLive(String roomId);
+
+    void enableFollowFeature(boolean enable);
 }

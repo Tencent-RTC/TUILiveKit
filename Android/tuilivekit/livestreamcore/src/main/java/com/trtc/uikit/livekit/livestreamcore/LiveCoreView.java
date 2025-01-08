@@ -1118,10 +1118,10 @@ public class LiveCoreView extends FrameLayout {
 
                     @Override
                     public void onAccepted(String requestId, String userId) {
-                        if (!mCoGuestState.openCameraOnCoGuest) {
-                            addLocalVideoView();
+                        if (mCoGuestState.openCameraOnCoGuest) {
+                            startCamera(mMediaState.isFrontCamera.get(), null);
                         } else {
-                            startCamera(true, null);
+                            addLocalVideoView();
                         }
                         startMicrophone(null);
                         callbackUserConnectionAccepted(userId);

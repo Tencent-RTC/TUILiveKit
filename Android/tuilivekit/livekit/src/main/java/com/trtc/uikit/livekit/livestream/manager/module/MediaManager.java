@@ -40,10 +40,10 @@ public class MediaManager extends BaseManager {
         mLiveService.setLocalVideoView(view);
     }
 
-    public void openLocalCamera() {
+    public void openLocalCamera(boolean isFront) {
         boolean hasCameraPermission = mMediaState.hasCameraPermission.get();
         if (hasCameraPermission) {
-            openLocalCameraByService();
+            openLocalCameraByService(isFront);
             return;
         }
         LiveStreamLog.info(TAG + " requestPermissions:[]");
@@ -57,7 +57,7 @@ public class MediaManager extends BaseManager {
             public void onGranted() {
                 LiveStreamLog.info(TAG + " requestPermissions:[onGranted]");
                 mMediaState.hasCameraPermission.set(true);
-                openLocalCameraByService();
+                openLocalCameraByService(isFront);
             }
 
             @Override
@@ -70,10 +70,6 @@ public class MediaManager extends BaseManager {
     public void closeCamera() {
         mLiveService.closeLocalCamera();
         mMediaState.isCameraOpened.set(false);
-    }
-
-    public void setFrontCamera(boolean isFrontCamera) {
-        mMediaState.isFrontCamera.set(isFrontCamera);
     }
 
     public void updateVideoQuality(TUIRoomDefine.VideoQuality quality) {
@@ -114,12 +110,11 @@ public class MediaManager extends BaseManager {
         TEBeautyManager.getInstance().setCustomVideoProcess();
     }
 
-    private void openLocalCameraByService() {
+    private void openLocalCameraByService(boolean isFront) {
         if (mMediaState.isCameraOpened.get()) {
             LiveStreamLog.error(TAG + " camera is opened, no need to open again");
             return;
         }
-        boolean isFront = mMediaState.isFrontCamera.get();
         TUIRoomDefine.VideoQuality quality = mMediaState.videoQuality.get();
         mLiveService.openLocalCamera(isFront, quality, new TUIRoomDefine.ActionCallback() {
             @Override

@@ -104,13 +104,13 @@ public class BeautyListPanel extends BasicView {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 mTextBeautyLevel.setText(String.valueOf(progress));
                 switch (mBeautyListAdapter.mCurrentBeautyType.get()) {
-                    case VideoCoGuestSettingsAdapter.ITEM_BEAUTY_SMOOTH:
+                    case BeautyListAdapter.ITEM_BEAUTY_SMOOTH:
                         mMediaManager.setBeautyLevel(progress);
                         break;
-                    case VideoCoGuestSettingsAdapter.ITEM_BEAUTY_WHITENESS:
+                    case BeautyListAdapter.ITEM_BEAUTY_WHITENESS:
                         mMediaManager.setWhitenessLevel(progress);
                         break;
-                    case VideoCoGuestSettingsAdapter.ITEM_BEAUTY_RUDDY:
+                    case BeautyListAdapter.ITEM_BEAUTY_RUDDY:
                         mMediaManager.setRuddyLevel(progress);
                         break;
                     default:

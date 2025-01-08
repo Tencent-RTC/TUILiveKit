@@ -68,17 +68,12 @@ public class PreviewFunctionView extends FrameLayout {
     }
 
     private void initFlipButton() {
-        findViewById(R.id.iv_flip).setOnClickListener(view -> {
-            mLiveCoreView.getMediaManager().switchCamera();
-            mLiveManager.getMediaManager().setFrontCamera(
-                    mLiveCoreView.getMediaManager().mMediaState.isFrontCamera.get());
-        });
+        findViewById(R.id.iv_flip).setOnClickListener(view -> mLiveCoreView.getMediaManager().switchCamera());
     }
 
     private void initMirrorButton() {
         findViewById(R.id.iv_mirror).setOnClickListener(view -> {
-            VideoSettingsDialog videoSettingsDialog =
-                    new VideoSettingsDialog(getContext(), mLiveCoreView);
+            VideoSettingsDialog videoSettingsDialog = new VideoSettingsDialog(getContext(), mLiveCoreView);
             videoSettingsDialog.show();
         });
     }

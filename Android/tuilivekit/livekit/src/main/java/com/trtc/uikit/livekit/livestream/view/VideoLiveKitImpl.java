@@ -12,6 +12,7 @@ public class VideoLiveKitImpl implements VideoLiveKit {
 
     private static volatile VideoLiveKitImpl sInstance;
     private final           Context          mContext;
+    private                 boolean          mEnableFollowFeature = true;
 
     private VideoLiveKitImpl(Context context) {
         mContext = context.getApplicationContext();
@@ -43,5 +44,14 @@ public class VideoLiveKitImpl implements VideoLiveKit {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(VideoLiveAudienceActivity.INTENT_KEY_ROOM_ID, roomId);
         mContext.startActivity(intent);
+    }
+
+    @Override
+    public void enableFollowFeature(boolean enable) {
+        mEnableFollowFeature = enable;
+    }
+
+    public boolean isEnableFollowFeature() {
+        return mEnableFollowFeature;
     }
 }
