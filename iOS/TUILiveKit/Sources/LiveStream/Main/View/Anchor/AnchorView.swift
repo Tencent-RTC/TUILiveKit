@@ -326,11 +326,13 @@ extension AnchorView {
 }
 
 extension AnchorView : AnchorPrepareViewDelegate {
-    
     func prepareView(_ view: AnchorPrepareView, didClickStart button: UIButton) {
         createRoom()
     }
     
+    func prepareViewDidClickSwitchCamera() {
+        videoView.startCamera(useFrontCamera: !videoView.mediaState.isFrontCamera) {} onError: { code, msg in }
+    }
 }
 
 extension AnchorView: VideoViewDelegate {

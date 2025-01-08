@@ -287,7 +287,6 @@ class LiveStreamService: LiveStream {
         roomEngine.closeLocalCamera()
     }
     
-    
     func switchCamera(isFrontCamera: Bool) {
         roomEngine.getMediaDeviceManager().switchCamera(isFrontCamera)
     }

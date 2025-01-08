@@ -11,6 +11,7 @@ import TUICore
 
 protocol AnchorPrepareViewDelegate: AnyObject {
     func prepareView(_ view: AnchorPrepareView, didClickStart button: UIButton)
+    func prepareViewDidClickSwitchCamera()
 }
 
 class AnchorPrepareView: UIView {
@@ -307,7 +308,7 @@ extension AnchorPrepareView {
     }
     
     private func flipClick() {
-        manager.switchCamera()
+        delegate?.prepareViewDidClickSwitchCamera()
     }
 }
 

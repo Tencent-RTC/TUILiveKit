@@ -185,7 +185,7 @@ extension LiveRoomRootMenuDataCreator {
         
         var setting = LSButtonMenuInfo(normalIcon: "live_anchor_setting_icon")
         setting.tapAction = { sender in
-            let settingModel = self.generateAnchorSettingModel(manager: manager, routerManager: routerManager)
+            let settingModel = self.generateAnchorSettingModel(manager: manager, routerManager: routerManager, coreView: coreView)
             routerManager.router(action: .present(.featureSetting(settingModel)))
         }
         menus.append(setting)
@@ -222,7 +222,8 @@ extension LiveRoomRootMenuDataCreator {
     }
     
     func generateAnchorSettingModel(manager: LiveStreamManager,
-                                    routerManager: LSRouterManager) -> LSFeatureClickPanelModel {
+                                    routerManager: LSRouterManager,
+                                    coreView: LiveCoreView) -> LSFeatureClickPanelModel {
         let model = LSFeatureClickPanelModel()
         model.itemSize = CGSize(width: 56.scale375(), height: 76.scale375())
         model.itemDiff = 12.scale375()
@@ -253,8 +254,9 @@ extension LiveRoomRootMenuDataCreator {
         model.items.append(LSFeatureItem(normalTitle: .flipText,
                                        normalImage: .liveBundleImage("live_video_setting_flip"),
                                        designConfig: designConfig,
-                                       actionClosure: { _ in
-            manager.switchCamera()
+                                       actionClosure: { [weak coreView] _ in
+            guard let coreView = coreView else { return }
+            coreView.startCamera(useFrontCamera: !coreView.mediaState.isFrontCamera) {} onError: { code, msg in }
         }))
         model.items.append(LSFeatureItem(normalTitle: .videoParametersText,
                                        normalImage: .liveBundleImage("live_setting_video_parameters"),

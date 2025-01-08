@@ -116,31 +116,6 @@ extension LSRoomEngineService {
         roomEngine.setLocalVideoView(view: view)
     }
     
-    func openLocalCamera(isFront: Bool, quality: TUIVideoQuality) async throws {
-        return try await withCheckedThrowingContinuation { continuation in
-            roomEngine.openLocalCamera(isFront: isFront, quality: quality) {
-                continuation.resume()
-            } onError: { code, message in
-                continuation.resume(throwing: InternalError(error: code, message: message))
-            }
-        }
-    }
-    
-    func closeLocalCamera() {
-        roomEngine.closeLocalCamera()
-    }
-    
-    func switchCamera(frontCamera: Bool) {
-        roomEngine.getMediaDeviceManager().switchCamera(frontCamera)
-    }
-    
-    func setCameraMirror(enable: Bool) {
-        let params = TRTCRenderParams()
-        params.mirrorType = enable ? .enable : .disable
-        trtcCloud.setLocalRenderParams(params)
-        trtcCloud.setVideoEncoderMirror(enable)
-    }
-    
     func enableGravitySensor(enable: Bool) {
         roomEngine.enableGravitySensor(enable: enable)
     }
