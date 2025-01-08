@@ -20,6 +20,10 @@ public class VideoLiveKit: NSObject {
         return sharedInstance
     }
     
+    public func enableFollowFeature(_ enable: Bool) {
+        enableFollow = enable
+    }
+    
     public func startLive(roomId: String) {
         let viewController = TUILiveRoomAnchorViewController(roomId: roomId)
         viewController.modalPresentationStyle = .fullScreen
@@ -31,6 +35,8 @@ public class VideoLiveKit: NSObject {
         viewController.modalPresentationStyle = .fullScreen
         getRootController()?.present(viewController, animated: true)
     }
+    
+    var enableFollow: Bool = true
 }
 
 // MARK: - Private
