@@ -8,152 +8,140 @@
     android:focusableInTouchMode="true">
 
     <FrameLayout
-        android:id="@+id/lsv_video_view_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/livekit_design_standard_g1" />
-
-    <FrameLayout
-        android:id="@+id/rl_component_layout"
+        android:id="@+id/fl_playing"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <FrameLayout
-            android:id="@+id/fl_playing"
+        <com.trtc.uikit.component.barrage.BarrageStreamView
+            android:id="@+id/barrage_stream_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="212dp"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="56dp"
+            android:layout_marginBottom="70dp" />
 
-            <com.trtc.uikit.component.barrage.BarrageStreamView
-                android:id="@+id/barrage_stream_view"
-                android:layout_width="match_parent"
-                android:layout_height="212dp"
-                android:layout_gravity="bottom"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="56dp"
-                android:layout_marginBottom="70dp" />
+        <com.trtc.uikit.component.gift.GiftPlayView
+            android:id="@+id/gift_play_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
-            <com.trtc.uikit.component.gift.GiftPlayView
-                android:id="@+id/gift_play_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="142dp"
+            android:layout_gravity="top"
+            android:background="@drawable/livekit_live_room_living_top_mask" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="142dp"
-                android:layout_gravity="top"
-                android:background="@drawable/livekit_live_room_living_top_mask" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/livekit_live_room_living_bottom_mask" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_gravity="bottom"
-                android:background="@drawable/livekit_live_room_living_bottom_mask" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_function"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="25dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cl_function"
-                android:layout_width="match_parent"
+            <com.trtc.uikit.component.barrage.BarrageInputView
+                android:id="@+id/barrage_input_view"
+                android:layout_width="130dp"
                 android:layout_height="36dp"
-                android:layout_gravity="bottom"
-                android:layout_marginBottom="25dp">
-
-                <com.trtc.uikit.component.barrage.BarrageInputView
-                    android:id="@+id/barrage_input_view"
-                    android:layout_width="130dp"
-                    android:layout_height="36dp"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp"
-                    android:scaleType="centerCrop"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:id="@+id/iv_dashboard"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_marginEnd="8dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/livekit_function_dashboard"
-                    app:layout_constraintBottom_toBottomOf="@+id/barrage_input_view"
-                    app:layout_constraintEnd_toStartOf="@+id/btn_gift"
-                    tools:ignore="ContentDescription" />
-
-                <com.trtc.uikit.livekit.component.gift.GiftButton
-                    android:id="@+id/btn_gift"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_marginEnd="8dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/barrage_input_view"
-                    app:layout_constraintEnd_toStartOf="@+id/iv_co_guest" />
-
-                <ImageView
-                    android:id="@+id/iv_co_guest"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_marginEnd="8dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/livekit_function_link_default"
-                    app:layout_constraintBottom_toBottomOf="@+id/barrage_input_view"
-                    app:layout_constraintEnd_toStartOf="@+id/btn_like"
-                    tools:ignore="ContentDescription" />
-
-                <com.trtc.uikit.component.gift.LikeButton
-                    android:id="@+id/btn_like"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_marginEnd="20dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/barrage_input_view"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <com.trtc.uikit.livekit.livestream.view.audience.playing.coguest.CoGuestRequestFloatView
-                android:id="@+id/btn_waiting_pass"
-                android:layout_width="86dp"
-                android:layout_height="86dp"
-                android:layout_gravity="end"
-                android:layout_marginTop="120dp"
-                android:layout_marginEnd="8dp"
-                android:visibility="gone" />
-
-            <com.trtc.uikit.component.roominfo.RoomInfoView
-                android:id="@+id/room_info_view"
-                android:layout_width="155dp"
-                android:layout_height="32dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="57dp" />
-
-            <com.trtc.uikit.component.audiencelist.AudienceListView
-                android:id="@+id/audience_list_view"
-                android:layout_width="112dp"
-                android:layout_height="24dp"
-                android:layout_gravity="end"
-                android:layout_marginTop="61dp"
-                android:layout_marginEnd="80dp" />
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/iv_float_window"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="end"
-                android:layout_marginTop="61dp"
-                android:layout_marginEnd="48dp"
-                android:src="@drawable/livekit_float_window"
+                android:id="@+id/iv_dashboard"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="8dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/livekit_function_dashboard"
+                app:layout_constraintBottom_toBottomOf="@+id/barrage_input_view"
+                app:layout_constraintEnd_toStartOf="@+id/btn_gift"
                 tools:ignore="ContentDescription" />
 
-            <ImageView
-                android:id="@+id/iv_exit_room"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="end"
-                android:layout_marginTop="61dp"
-                android:layout_marginEnd="16dp"
-                android:src="@drawable/livekit_ic_audience_exit" />
-        </FrameLayout>
+            <com.trtc.uikit.livekit.component.gift.GiftButton
+                android:id="@+id/btn_gift"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/barrage_input_view"
+                app:layout_constraintEnd_toStartOf="@+id/iv_co_guest" />
 
-        <com.trtc.uikit.livekit.livestream.view.audience.dashboard.AudienceDashboardView
-            android:id="@+id/audience_dashboard_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            <ImageView
+                android:id="@+id/iv_co_guest"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="8dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/livekit_function_link_default"
+                app:layout_constraintBottom_toBottomOf="@+id/barrage_input_view"
+                app:layout_constraintEnd_toStartOf="@+id/btn_like"
+                tools:ignore="ContentDescription" />
+
+            <com.trtc.uikit.component.gift.LikeButton
+                android:id="@+id/btn_like"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="20dp"
+                app:layout_constraintBottom_toBottomOf="@+id/barrage_input_view"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.trtc.uikit.livekit.livestream.view.audience.playing.coguest.CoGuestRequestFloatView
+            android:id="@+id/btn_waiting_pass"
+            android:layout_width="86dp"
+            android:layout_height="86dp"
+            android:layout_gravity="end"
+            android:layout_marginTop="120dp"
+            android:layout_marginEnd="8dp"
             android:visibility="gone" />
+
+        <com.trtc.uikit.component.roominfo.RoomInfoView
+            android:id="@+id/room_info_view"
+            android:layout_width="155dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="57dp" />
+
+        <com.trtc.uikit.component.audiencelist.AudienceListView
+            android:id="@+id/audience_list_view"
+            android:layout_width="112dp"
+            android:layout_height="24dp"
+            android:layout_gravity="end"
+            android:layout_marginTop="61dp"
+            android:layout_marginEnd="80dp" />
+
+        <ImageView
+            android:id="@+id/iv_float_window"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="end"
+            android:layout_marginTop="61dp"
+            android:layout_marginEnd="48dp"
+            android:src="@drawable/livekit_float_window"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/iv_exit_room"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="end"
+            android:layout_marginTop="61dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/livekit_ic_audience_exit" />
     </FrameLayout>
+
+    <com.trtc.uikit.livekit.livestream.view.audience.dashboard.AudienceDashboardView
+        android:id="@+id/audience_dashboard_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 </FrameLayout>

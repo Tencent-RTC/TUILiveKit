@@ -6,6 +6,10 @@ import static com.trtc.uikit.livekit.component.gift.service.GiftConstants.GIFT_N
 import static com.trtc.uikit.livekit.component.gift.service.GiftConstants.GIFT_RECEIVER_USERNAME;
 import static com.trtc.uikit.livekit.component.gift.service.GiftConstants.GIFT_VIEW_TYPE;
 import static com.trtc.uikit.livekit.component.gift.service.GiftConstants.GIFT_VIEW_TYPE_1;
+import static com.trtc.uikit.livekit.livestream.manager.Constants.EVENT_KEY_LIVE_KIT;
+import static com.trtc.uikit.livekit.livestream.manager.Constants.EVENT_PARAMS_KEY_ENABLE_SLIDE;
+import static com.trtc.uikit.livekit.livestream.manager.Constants.EVENT_SUB_KEY_LINK_STATUS_CHANGE;
+import static com.trtc.uikit.livekit.livestream.state.CoGuestState.CoGuestStatus.LINKING;
 import static com.trtc.uikit.livekit.livestream.state.RoomState.LiveStatus.DASHBOARD;
 import static com.trtc.uikit.livekit.livestream.state.RoomState.LiveStatus.PLAYING;
 
@@ -24,12 +28,11 @@ import androidx.annotation.Nullable;
 import com.google.gson.Gson;
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveBattleManager;
-import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.GetRoomInfoCallback;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.RoomInfo;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.UserInfo;
+import com.tencent.qcloud.tuicore.TUICore;
 import com.trtc.tuikit.common.livedata.Observer;
-import com.trtc.tuikit.common.system.ContextProvider;
 import com.trtc.uikit.component.audiencelist.AudienceListView;
 import com.trtc.uikit.component.barrage.BarrageInputView;
 import com.trtc.uikit.component.barrage.BarrageStreamView;
@@ -47,6 +50,7 @@ import com.trtc.uikit.livekit.component.gift.service.GiftCacheService;
 import com.trtc.uikit.livekit.component.gift.store.GiftStore;
 import com.trtc.uikit.livekit.component.gift.view.BarrageViewTypeDelegate;
 import com.trtc.uikit.livekit.component.gift.view.GiftBarrageAdapter;
+import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
 import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
 import com.trtc.uikit.livekit.livestream.manager.observer.LiveBattleManagerObserver;
 import com.trtc.uikit.livekit.livestream.manager.observer.LiveStreamObserver;
@@ -68,7 +72,9 @@ import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine;
 import com.trtc.uikit.livekit.livestreamcore.common.utils.Logger;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @SuppressLint("ViewConstructor")
 public class AudienceView extends BasicView {
@@ -124,28 +130,55 @@ public class AudienceView extends BasicView {
 
     @Override
     protected void refreshView() {
-        initLiveCoreView();
         initComponentView();
     }
 
+    public void onViewDidSlideIn() {
+        mLiveManager.addObserver();
+        mLiveCoreView.joinLiveStream(mRoomState.roomId, new GetRoomInfoCallback() {
+            @Override
+            public void onSuccess(RoomInfo roomInfo) {
+                mRoomManager.updateRoomState(roomInfo);
+                mRoomState.liveStatus.set(PLAYING);
+            }
+
+            @Override
+            public void onError(TUICommonDefine.Error error, String message) {
+                ErrorHandler.onError(error);
+                removeAllViews();
+                if (mContext instanceof Activity) {
+                    ((Activity) mContext).finish();
+                }
+            }
+        });
+    }
+
+    public void onViewDidSlideOut() {
+        FloatWindowManager floatWindowManager = FloatWindowManager.getInstance();
+        if (floatWindowManager.isWillOpenFloatWindow() && FloatWindowManager.getInstance().getCoreView() == mLiveCoreView) {
+            floatWindowManager.setLiveStreamManager(mLiveManager);
+            floatWindowManager.showFloatWindow();
+            floatWindowManager.setWillOpenFloatWindow(false);
+            mLiveCoreView.removeView(this);
+        } else {
+            mLiveManager.removeObserver();
+            mLiveCoreView.leaveLiveStream(null);
+        }
+    }
+
     private void initLiveCoreView() {
-        if (mLiveCoreView != null) {
+        mLiveCoreView = (LiveCoreView) getParent();
+        if (mLiveCoreView == null) {
             return;
         }
-        FrameLayout frameLayout = findViewById(R.id.lsv_video_view_container);
-        mLiveCoreView = FloatWindowManager.getInstance().getCoreView();
-        if (mLiveCoreView == null) {
-            mLiveCoreView = new LiveCoreView(ContextProvider.getApplicationContext());
+        LiveCoreView floatCoreView = FloatWindowManager.getInstance().getCoreView();
+        if (floatCoreView != mLiveCoreView) {
             mLiveCoreView.registerConnectionObserver(new LiveStreamObserver(mLiveManager));
             mLiveCoreView.registerBattleObserver(new LiveBattleManagerObserver(mLiveManager));
-            frameLayout.addView(mLiveCoreView);
-            setVideoViewAdapter();
-            joinLiveStream();
         } else {
             FloatWindowManager.getInstance().setCoreView(null);
-            frameLayout.addView(mLiveCoreView);
-            setVideoViewAdapter();
         }
+        setVideoViewAdapter();
     }
 
     private void setVideoViewAdapter() {
@@ -207,26 +240,6 @@ public class AudienceView extends BasicView {
         });
     }
 
-    private void joinLiveStream() {
-        mUserManager.initSelfUserData();
-        mLiveCoreView.joinLiveStream(mRoomState.roomId, new GetRoomInfoCallback() {
-            @Override
-            public void onSuccess(RoomInfo roomInfo) {
-                mRoomManager.updateRoomState(roomInfo);
-                mRoomState.liveStatus.set(PLAYING);
-            }
-
-            @Override
-            public void onError(TUICommonDefine.Error error, String message) {
-                ErrorHandler.onError(error);
-                removeAllViews();
-                if (mContext instanceof Activity) {
-                    ((Activity) mContext).finish();
-                }
-            }
-        });
-    }
-
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -244,7 +257,7 @@ public class AudienceView extends BasicView {
     private void updatePlayingStatus() {
         mAudienceDashboardView.setVisibility(GONE);
         mLayoutPlaying.setVisibility(VISIBLE);
-        if (mCoGuestState.coGuestStatus.get() == CoGuestState.CoGuestStatus.LINKING) {
+        if (mCoGuestState.coGuestStatus.get() == LINKING) {
             stopCoGuest();
         } else {
             initCoGuestIcon();
@@ -299,6 +312,12 @@ public class AudienceView extends BasicView {
     private void initRoomInfoView() {
         boolean enableFollow = VideoLiveKitImpl.createInstance(mContext).isEnableFollowFeature();
         mRoomInfoView.init(mRoomState.roomId, enableFollow);
+    }
+
+    @Override
+    public void init(@NonNull LiveStreamManager liveStreamManager) {
+        super.init(liveStreamManager);
+        initLiveCoreView();
     }
 
     private void initBarrageStreamView() {
@@ -419,34 +438,31 @@ public class AudienceView extends BasicView {
         mUserState.enterUserInfo.removeObserver(mEnterUserObserver);
     }
 
-    public void updateStatus(AudienceViewStatus status) {
-        switch (status) {
-            case DESTROY:
-                destroy();
-                break;
-            default:
-                break;
+    public void destroy() {
+        RoomState.LiveStatus liveStatus = mLiveManager.getRoomState().liveStatus.get();
+        if (RoomState.LiveStatus.PLAYING != liveStatus) {
+            removeAllViews();
+            if (mContext instanceof Activity) {
+                ((Activity) mContext).finish();
+            }
+            return;
+        }
+        mLiveCoreView.leaveLiveStream(null);
+        removeAllViews();
+        if (mContext instanceof Activity) {
+            ((Activity) mContext).finish();
         }
     }
 
-    private void destroy() {
-        mLiveCoreView.leaveLiveStream(new TUIRoomDefine.ActionCallback() {
-            @Override
-            public void onSuccess() {
-                removeAllViews();
-                if (mContext instanceof Activity) {
-                    ((Activity) mContext).finish();
-                }
-            }
-
-            @Override
-            public void onError(TUICommonDefine.Error error, String message) {
-                ErrorHandler.onError(error);
-            }
-        });
-    }
-
     private void onLinkStatusChange(CoGuestState.CoGuestStatus linkStatus) {
+        Map<String, Object> params = new HashMap<>();
+        if (LINKING == linkStatus) {
+            params.put(EVENT_PARAMS_KEY_ENABLE_SLIDE, false);
+        } else {
+            params.put(EVENT_PARAMS_KEY_ENABLE_SLIDE, true);
+        }
+        TUICore.notifyEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_LINK_STATUS_CHANGE, params);
+
         switch (linkStatus) {
             case NONE:
                 mWaitingCoGuestPassView.setVisibility(GONE);
@@ -479,13 +495,5 @@ public class AudienceView extends BasicView {
             barrage.user.level = "0";
             mBarrageStreamView.insertBarrages(barrage);
         }
-    }
-
-    public enum AudienceViewStatus {
-        CREATE,
-        START_DISPLAY,
-        DISPLAY_COMPLETE,
-        END_DISPLAY,
-        DESTROY,
     }
 }

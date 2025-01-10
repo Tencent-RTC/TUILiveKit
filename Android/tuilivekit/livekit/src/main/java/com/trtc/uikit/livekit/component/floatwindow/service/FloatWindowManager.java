@@ -2,12 +2,14 @@ package com.trtc.uikit.livekit.component.floatwindow.service;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.gson.Gson;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomObserver;
+import com.trtc.tuikit.common.foregroundservice.VideoForegroundService;
 import com.trtc.tuikit.common.system.ContextProvider;
 import com.trtc.uikit.component.common.StateCache;
 import com.trtc.uikit.livekit.LiveIdentityGenerator;
@@ -143,7 +145,7 @@ public final class FloatWindowManager {
         String roomId = liveStreamManager.getRoomState().roomId;
         LiveIdentityGenerator.RoomType roomType = mRoomIdStrategy.getIDType(roomId);
         if (role == TUIRoomDefine.Role.GENERAL_USER) {
-            joinRoom(roomId);
+            joinRoom(liveStreamManager);
         } else if (role == TUIRoomDefine.Role.ROOM_OWNER) {
             if (roomType == LiveIdentityGenerator.RoomType.VOICE) {
                 VoiceRoomDefine.CreateRoomParams params = new VoiceRoomDefine.CreateRoomParams();
@@ -165,13 +167,21 @@ public final class FloatWindowManager {
         context.startActivity(intent);
     }
 
-    private void joinRoom(String roomId) {
-        LiveStreamLog.info(TAG + " joinRoom:" + roomId);
+    private void joinRoom(LiveStreamManager liveStreamManager) {
+        LiveStreamLog.info(TAG + " joinRoom:" + liveStreamManager.getRoomState().roomId);
         Context context = ContextProvider.getApplicationContext();
         Intent intent = new Intent(context, ListAudienceActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("roomId", roomId);
+        intent.putExtras(convertLiveInfoToBundle(liveStreamManager));
         context.startActivity(intent);
+    }
+
+    private Bundle convertLiveInfoToBundle (LiveStreamManager liveStreamManager){
+        Bundle liveBundle = new Bundle();
+        Bundle roomBundle = new Bundle();
+        roomBundle.putString("roomId", liveStreamManager.getRoomState().roomId);
+        liveBundle.putBundle("roomInfo", roomBundle);
+        return liveBundle;
     }
 
     private void startVoiceStream(String roomId, VoiceRoomDefine.CreateRoomParams params) {
@@ -223,11 +233,13 @@ public final class FloatWindowManager {
         }
         FloatWindow.getInstance().close();
         mStore.isShowingFloatWindow.set(false);
+        Context context = ContextProvider.getApplicationContext();
+        VideoForegroundService.stop(context);
     }
 
     private final TUIRoomObserver mRoomObserver = new TUIRoomObserver() {
         @Override
-        public void onRoomDismissed(String roomId) {
+        public void onRoomDismissed(String roomId, TUIRoomDefine.RoomDismissedReason reason) {
             dismissFloatWindow();
         }
 
