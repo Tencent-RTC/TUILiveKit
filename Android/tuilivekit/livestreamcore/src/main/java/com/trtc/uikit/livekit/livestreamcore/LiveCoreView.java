@@ -349,6 +349,9 @@ public class LiveCoreView extends FrameLayout {
 
     public void startPreviewLiveStream(String roomId, boolean isMuteAudio, TUIRoomDefine.PlayCallback callback) {
         LiveStreamView liveView = createRemoteLiveViewByUserId(getMixUserId(roomId));
+        if (mFreeLayout.indexOfChild(liveView) < 0) {
+            mFreeLayout.addView(liveView);
+        }
         mTUILiveListManager.startPreloadVideoStream(roomId, isMuteAudio, liveView.getTUIVideoView(),
                 new TUIRoomDefine.PlayCallback() {
                     @Override
@@ -375,9 +378,6 @@ public class LiveCoreView extends FrameLayout {
                         mFreeLayout.removeView(liveView);
                     }
                 });
-        if (mFreeLayout.indexOfChild(liveView) < 0) {
-            mFreeLayout.addView(liveView);
-        }
     }
 
     public void stopPreviewLiveStream(String roomId) {
