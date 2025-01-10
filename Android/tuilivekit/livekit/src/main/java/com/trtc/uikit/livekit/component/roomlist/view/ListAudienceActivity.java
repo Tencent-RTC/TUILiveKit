@@ -1,5 +1,7 @@
 package com.trtc.uikit.livekit.component.roomlist.view;
 
+import static com.trtc.uikit.livekit.voiceroom.view.TUIVoiceRoomFragment.RoomBehavior.JOIN;
+
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,13 +12,16 @@ import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
+import com.trtc.uikit.livekit.LiveIdentityGenerator;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.component.roomlist.TUILiveAudienceFragment;
+import com.trtc.uikit.livekit.livestream.view.audience.TUILiveRoomAudienceFragment;
+import com.trtc.uikit.livekit.voiceroom.view.TUIVoiceRoomFragment;
 
 public class ListAudienceActivity extends AppCompatActivity {
 
@@ -34,8 +39,13 @@ public class ListAudienceActivity extends AppCompatActivity {
         TUILiveListManager.LiveInfo liveInfo = convertBundleToLiveInfo(liveBundle);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        TUILiveAudienceFragment audienceFragment = new TUILiveAudienceFragment(liveInfo);
-        fragmentTransaction.add(R.id.fl_container, audienceFragment);
+        Fragment fragment;
+        if (LiveIdentityGenerator.getInstance().getIDType(liveInfo.roomInfo.roomId) == LiveIdentityGenerator.RoomType.VOICE) {
+            fragment = new TUIVoiceRoomFragment(liveInfo.roomInfo.roomId, JOIN, null);
+        } else {
+            fragment = new TUILiveRoomAudienceFragment(liveInfo);
+        }
+        fragmentTransaction.add(R.id.fl_container, fragment);
         fragmentTransaction.commit();
     }
 

@@ -39,7 +39,6 @@ public class LiveStreamImpl implements ILiveStream {
     @Override
     public void destroy() {
         Logger.info(mTag + " destroy");
-        TUIRoomEngine.destroySharedInstance();
     }
 
     @Override
