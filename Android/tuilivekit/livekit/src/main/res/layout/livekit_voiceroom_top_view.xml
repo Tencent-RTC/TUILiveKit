@@ -7,11 +7,19 @@
 
     <com.trtc.uikit.component.roominfo.RoomInfoView
         android:id="@+id/rl_room_info"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.trtc.uikit.component.audiencelist.AudienceListView
+        android:id="@+id/rl_audience_list"
+        android:layout_width="135dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/rl_room_info"
+        app:layout_constraintEnd_toStartOf="@id/iv_report"
+        app:layout_constraintTop_toTopOf="@id/rl_room_info" />
 
     <ImageView
         android:id="@+id/iv_report"
@@ -34,14 +42,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/rl_room_info"
         tools:ignore="ContentDescription" />
-
-
-    <com.trtc.uikit.component.audiencelist.AudienceListView
-        android:id="@+id/rl_audience_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/rl_room_info"
-        app:layout_constraintEnd_toStartOf="@id/iv_report"
-        app:layout_constraintTop_toTopOf="@id/rl_room_info" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

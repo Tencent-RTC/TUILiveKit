@@ -1,33 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="112dp"
+    android:layout_width="wrap_content"
     android:layout_height="24dp"
-    android:gravity="end|center_vertical"
-    android:maxWidth="112dp"
-    android:maxHeight="89dp"
-    android:orientation="horizontal">
+    android:gravity="end|center_vertical">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_audience_list"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_toStartOf="@id/ll_audience_count"
         android:layout_gravity="center_vertical|end"
-        android:layout_marginStart="2dp"
-        android:maxWidth="80dp"
         android:padding="0dp" />
 
     <LinearLayout
         android:id="@+id/ll_audience_count"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="1dp"
         android:background="@drawable/livekit_anchor_user_count_background"
         android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="4dp"
-        android:paddingEnd="2dp">
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/tv_audience_count"
@@ -46,4 +42,4 @@
             tools:ignore="ContentDescription" />
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>
