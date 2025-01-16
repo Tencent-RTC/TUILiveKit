@@ -48,6 +48,9 @@ class UserInfoCell: UICollectionViewCell {
 class AudienceListView: RTCBaseView {
     private let cellId = "TUIVideoSeatCell_Normal"
     
+    // Set this value to change max display count
+    private let displayAvatarCount = 3
+    
     // MARK: - private property.
     private let kMaxShowUserCount = 100
     private let service: AudienceListService = AudienceListService()
@@ -113,17 +116,20 @@ class AudienceListView: RTCBaseView {
     
     override func activateConstraints() {
         collectionView.snp.makeConstraints { make in
-            make.leading.centerY.height.equalToSuperview()
-            make.width.equalTo(84.scale375())
+            make.leading.top.bottom.equalToSuperview()
+            make.height.equalTo(24.scale375())
+            make.width.equalTo((displayAvatarCount * 24 + (displayAvatarCount - 1) * 4).scale375())
         }
         numberBackgroundView.snp.makeConstraints { make in
             make.leading.equalTo(collectionView.snp.trailing).offset(4.scale375())
             make.centerY.height.equalTo(collectionView)
             make.trailing.equalToSuperview()
         }
+        let numberMaxWidth = getMaxWidthFromLabel(numberLabel, maxText: "999999")
         numberLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(4.scale375())
             make.centerY.height.equalToSuperview()
+            make.width.lessThanOrEqualTo(numberMaxWidth)
             make.trailing.equalTo(imageView.snp.leading)
         }
         imageView.snp.makeConstraints { make in
@@ -131,6 +137,15 @@ class AudienceListView: RTCBaseView {
             make.centerY.equalToSuperview()
             make.width.height.equalTo(8.scale375())
         }
+    }
+    
+    private func getMaxWidthFromLabel(_ label: UILabel, maxText: String) -> CGFloat {
+        let tmpLabel = UILabel(frame: .zero)
+        tmpLabel.numberOfLines = 1
+        tmpLabel.font = label.font
+        tmpLabel.text = maxText
+        tmpLabel.sizeToFit()
+        return tmpLabel.frame.size.width
     }
     
     override func setupViewStyle() {

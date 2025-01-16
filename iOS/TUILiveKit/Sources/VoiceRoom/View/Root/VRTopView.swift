@@ -101,8 +101,6 @@ class VRTopView: UIView {
         liveInfoView.snp.remakeConstraints { make in
             make.centerY.equalToSuperview()
             make.height.equalTo(liveInfoView.mm_h)
-            make.width.greaterThanOrEqualTo(80.scale375())
-            make.width.lessThanOrEqualTo(375.scale375()*0.5)
             make.leading.equalToSuperview().inset(16.scale375())
             make.top.bottom.equalToSuperview()
         }
@@ -114,16 +112,14 @@ class VRTopView: UIView {
         })
         audienceListView.snp.remakeConstraints { make in
             make.centerY.equalTo(stopButton)
-            make.height.equalTo(24.scale375())
-            make.width.equalTo(116.scale375())
             make.trailing.equalTo(reportBtn.snp.leading).offset(-4.scale375())
+            make.leading.greaterThanOrEqualTo(liveInfoView.snp.trailing).offset(20.scale375())
         }
 #else
         audienceListView.snp.remakeConstraints { make in
             make.centerY.equalTo(stopButton)
-            make.height.equalTo(24.scale375())
-            make.width.equalTo(116.scale375())
             make.trailing.equalTo(stopButton.snp.leading).offset(-4.scale375())
+            make.leading.greaterThanOrEqualTo(liveInfoView.snp.trailing).offset(20.scale375())
         }
 #endif
         stopButton.snp.makeConstraints { make in
