@@ -149,7 +149,7 @@ class VoiceRoomRootView: RTCBaseView {
         }
         barrageDisplayView.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(16)
-            make.bottom.equalTo(bottomMenu.snp.top).offset(8)
+            make.bottom.equalTo(barrageButton.snp.top).offset(-20)
             make.width.equalTo(305.scale375())
             make.height.equalTo(212.scale375Height())
         }

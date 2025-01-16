@@ -123,7 +123,7 @@ class AudienceLivingView: RTCBaseView {
 
         barrageDisplayView.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(16)
-            make.bottom.equalTo(barrageSendView.snp.top).offset(-8.scale375Height())
+            make.bottom.equalTo(barrageSendView.snp.top).offset(-20.scale375Height())
             make.width.equalTo(305.scale375Width())
             make.height.equalTo(212.scale375Height())
         }
@@ -131,8 +131,6 @@ class AudienceLivingView: RTCBaseView {
         liveInfoView.snp.remakeConstraints { make in
             make.top.equalToSuperview().offset(54.scale375Height())
             make.height.equalTo(liveInfoView.frame.height)
-            make.width.greaterThanOrEqualTo(80.scale375())
-            make.width.lessThanOrEqualTo(375.scale375()*0.5)
             make.leading.equalToSuperview().inset(16.scale375())
         }
 
@@ -159,8 +157,7 @@ class AudienceLivingView: RTCBaseView {
         audienceListView.snp.makeConstraints { make in
             make.trailing.equalTo(reportBtn.snp.leading).offset(-4.scale375Width())
             make.centerY.equalTo(floatWindowButton)
-            make.height.equalTo(24.scale375())
-            make.width.equalTo(116.scale375())
+            make.leading.greaterThanOrEqualTo(liveInfoView.snp.trailing).offset(20.scale375())
         }
 #else
         audienceListView.snp.makeConstraints { make in
@@ -168,8 +165,7 @@ class AudienceLivingView: RTCBaseView {
                 .equalTo(floatWindowButton.snp.leading)
                 .offset(-4.scale375Width())
             make.centerY.equalTo(floatWindowButton)
-            make.height.equalTo(24.scale375())
-            make.width.equalTo(116.scale375())
+            make.leading.greaterThanOrEqualTo(liveInfoView.snp.trailing).offset(20.scale375())
         }
 #endif
 
@@ -206,7 +202,7 @@ class AudienceLivingView: RTCBaseView {
         audienceListView.initialize(roomId: manager.roomState.roomId)
     }
     
-    func  initLiveInfoView() {
+    func initLiveInfoView() {
         liveInfoView.initialize(roomId: manager.roomState.roomId)
     }
 }

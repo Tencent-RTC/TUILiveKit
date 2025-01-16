@@ -40,7 +40,7 @@ public final class LiveIdentityGenerator: NSObject {
         case .voice:
             return "voice_"
         case .unknown:
-            return "unknown_"
+            return ""
         }
     }
 }
