@@ -93,6 +93,8 @@ public class AudienceView extends BasicView {
     private       ImageView                            mImageFloatWindow;
     private       ImageView                            mImageExitRoom;
     private       CoGuestRequestFloatView              mWaitingCoGuestPassView;
+    private       ViewObserver                         mViewObserver;
+    private       boolean                              mIsLoading;
     private final Observer<RoomState.LiveStatus>       mLiveStatusChangeObserver = this::onLiveStatusChange;
     private final Observer<CoGuestState.CoGuestStatus> mLinkStatusObserver       = this::onLinkStatusChange;
     private final Observer<UserState.UserInfo>         mEnterUserObserver        = this::onEnterUserChange;
@@ -135,15 +137,19 @@ public class AudienceView extends BasicView {
 
     public void onViewDidSlideIn() {
         mLiveManager.addObserver();
+        mLayoutPlaying.setVisibility(GONE);
+        onViewLoading();
         mLiveCoreView.joinLiveStream(mRoomState.roomId, new GetRoomInfoCallback() {
             @Override
             public void onSuccess(RoomInfo roomInfo) {
                 mRoomManager.updateRoomState(roomInfo);
                 mRoomState.liveStatus.set(PLAYING);
+                onViewFinished();
             }
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
+                onViewFinished();
                 ErrorHandler.onError(error);
                 removeAllViews();
                 if (mContext instanceof Activity) {
@@ -151,6 +157,24 @@ public class AudienceView extends BasicView {
                 }
             }
         });
+    }
+
+    public void setViewObserver(ViewObserver observer) {
+        mViewObserver = observer;
+    }
+
+    private void onViewLoading() {
+        mIsLoading = true;
+        if (mViewObserver != null) {
+            mViewObserver.onLoading();
+        }
+    }
+
+    private void onViewFinished() {
+        mIsLoading = false;
+        if (mViewObserver != null) {
+            mViewObserver.onFinished();
+        }
     }
 
     public void onViewDidSlideOut() {
@@ -439,6 +463,9 @@ public class AudienceView extends BasicView {
     }
 
     public void destroy() {
+        if (mIsLoading) {
+            return;
+        }
         RoomState.LiveStatus liveStatus = mLiveManager.getRoomState().liveStatus.get();
         if (RoomState.LiveStatus.PLAYING != liveStatus) {
             removeAllViews();
@@ -495,5 +522,11 @@ public class AudienceView extends BasicView {
             barrage.user.level = "0";
             mBarrageStreamView.insertBarrages(barrage);
         }
+    }
+
+    public interface ViewObserver {
+        void onLoading();
+
+        void onFinished();
     }
 }

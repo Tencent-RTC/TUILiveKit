@@ -31,7 +31,10 @@ public class VideoLiveKitImpl implements VideoLiveKit {
 
     @Override
     public void startLive(String roomId) {
-        FloatWindowManager.getInstance().releaseFloatWindow();
+        FloatWindowManager floatWindowManager = FloatWindowManager.getInstance();
+        if (floatWindowManager.isShowingFloatWindow()) {
+            floatWindowManager.releaseFloatWindow();
+        }
         Intent intent = new Intent(mContext, VideoLiveAnchorActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(VideoLiveAnchorActivity.INTENT_KEY_ROOM_ID, roomId);

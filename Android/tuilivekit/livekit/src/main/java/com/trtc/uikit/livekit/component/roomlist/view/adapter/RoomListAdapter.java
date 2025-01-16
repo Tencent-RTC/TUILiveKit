@@ -77,7 +77,9 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.ViewHo
                     return;
                 }
             }
-            floatWindowManager.releaseFloatWindow();
+            if (floatWindowManager.isShowingFloatWindow()) {
+                floatWindowManager.releaseFloatWindow();
+            }
             enterRoom(info);
         });
     }

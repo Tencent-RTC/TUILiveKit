@@ -42,7 +42,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TUILiveRoomAudienceFragment extends Fragment implements ITUINotification {
+public class TUILiveRoomAudienceFragment extends Fragment implements ITUINotification, AudienceView.ViewObserver {
     private static final String TAG = "TUILiveRoomAudience";
 
     public static final String KEY_EXTENSION_NAME     = "TEBeautyExtension";
@@ -169,6 +169,7 @@ public class TUILiveRoomAudienceFragment extends Fragment implements ITUINotific
             @Override
             public void onViewDidSlideIn(View view) {
                 AudienceView audienceView = view.findViewById(mAudienceViewId);
+                audienceView.setViewObserver(TUILiveRoomAudienceFragment.this);
                 audienceView.onViewDidSlideIn();
                 mAudienceView = audienceView;
             }
@@ -184,6 +185,7 @@ public class TUILiveRoomAudienceFragment extends Fragment implements ITUINotific
             @Override
             public void onViewDidSlideOut(View view) {
                 AudienceView audienceView = view.findViewById(mAudienceViewId);
+                audienceView.setViewObserver(null);
                 audienceView.onViewDidSlideOut();
             }
 
@@ -287,6 +289,22 @@ public class TUILiveRoomAudienceFragment extends Fragment implements ITUINotific
     private void stopForegroundService() {
         Context context = ContextProvider.getApplicationContext();
         VideoForegroundService.stop(context);
+    }
+
+    @Override
+    public void onLoading() {
+        if (!mEnableSliding) {
+            return;
+        }
+        mLiveListViewPager.enableSliding(false);
+    }
+
+    @Override
+    public void onFinished() {
+        if (!mEnableSliding) {
+            return;
+        }
+        mLiveListViewPager.enableSliding(true);
     }
 }
 

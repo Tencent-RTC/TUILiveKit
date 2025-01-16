@@ -90,22 +90,28 @@ public class LiveListViewPager extends FrameLayout {
                 if (positionOffset <= 0) {
                     return;
                 }
-                if (mPositionOffset == -1) {
-                    mPositionOffset = positionOffset;
-                    return;
-                }
                 if (isSliding()) {
                     return;
                 }
-                if (position < mCurrentPosition && positionOffset < mPositionOffset) {
+                if (isSlideToPrevious(position, positionOffset)) {
                     onSlideToPrevious();
                 } else {
                     onSlideToNext();
                 }
+                mPositionOffset = positionOffset;
             }
         });
     }
 
+    private boolean isSlideToPrevious(int position, float positionOffset) {
+        if (position < mCurrentPosition) {
+            if (mPositionOffset == -1) {
+                return true;
+            }
+            return positionOffset < mPositionOffset;
+        }
+        return false;
+    }
 
     private boolean isSliding() {
         return mWillSlideInPosition != -1 || mWillSlideOutPosition != -1;
