@@ -30,6 +30,6 @@ dependencies {
     api "com.google.code.gson:gson:2.8.6"
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'com.github.yyued:SVGAPlayer-Android:2.6.1'
-    api 'io.trtc.uikit:common:2.8.0.533'
+    api 'io.trtc.uikit:common:2.8.0.587'
     api rootProject.getProperties().containsKey("imSdk") ? rootProject.ext.imSdk : "com.tencent.imsdk:imsdk-plus:latest.release"
 }
