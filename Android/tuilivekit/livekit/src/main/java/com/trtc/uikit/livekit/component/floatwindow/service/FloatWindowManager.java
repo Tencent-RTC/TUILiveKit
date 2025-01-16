@@ -2,6 +2,7 @@ package com.trtc.uikit.livekit.component.floatwindow.service;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -82,8 +83,13 @@ public final class FloatWindowManager {
             String roomId = liveStreamManager.getRoomState().roomId;
             StateCache.getInstance().remove(roomId);
             if (mCoreView != null) {
-                mCoreView.leaveLiveStream(null);
-                mCoreView.stopLiveStream(null);
+                String ownerId = liveStreamManager.getRoomState().ownerInfo.userId;
+                String selfId = liveStreamManager.getUserState().selfInfo.userId;
+                if (TextUtils.equals(ownerId, selfId)) {
+                    mCoreView.stopLiveStream(null);
+                } else {
+                    mCoreView.leaveLiveStream(null);
+                }
             }
             liveStreamManager.destroy();
             setLiveStreamManager(null);

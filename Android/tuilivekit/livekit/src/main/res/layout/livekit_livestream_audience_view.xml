@@ -117,18 +117,18 @@
 
             <com.trtc.uikit.component.roominfo.RoomInfoView
                 android:id="@+id/room_info_view"
-                android:layout_width="155dp"
+                android:layout_width="150dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="57dp" />
 
             <com.trtc.uikit.component.audiencelist.AudienceListView
                 android:id="@+id/audience_list_view"
-                android:layout_width="112dp"
+                android:layout_width="135dp"
                 android:layout_height="24dp"
                 android:layout_gravity="end"
                 android:layout_marginTop="61dp"
-                android:layout_marginEnd="80dp" />
+                android:layout_marginEnd="60dp" />
 
             <ImageView
                 android:id="@+id/iv_float_window"
@@ -136,7 +136,7 @@
                 android:layout_height="24dp"
                 android:layout_gravity="end"
                 android:layout_marginTop="61dp"
-                android:layout_marginEnd="48dp"
+                android:layout_marginEnd="34dp"
                 android:src="@drawable/livekit_float_window"
                 tools:ignore="ContentDescription" />
 
@@ -146,7 +146,7 @@
                 android:layout_height="24dp"
                 android:layout_gravity="end"
                 android:layout_marginTop="61dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="10dp"
                 android:src="@drawable/livekit_ic_audience_exit" />
         </FrameLayout>
 

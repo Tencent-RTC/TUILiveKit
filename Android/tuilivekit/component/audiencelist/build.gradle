@@ -28,5 +28,6 @@ dependencies {
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     api 'io.trtc.uikit:common:2.8.0.533'
+    api 'com.tencent.liteav.tuikit:tuicore:latest.release'
     api rootProject.getProperties().containsKey("roomEngineSdk") ? rootProject.ext.roomEngineSdk : "io.trtc.uikit:rtc_room_engine:latest.release"
 }

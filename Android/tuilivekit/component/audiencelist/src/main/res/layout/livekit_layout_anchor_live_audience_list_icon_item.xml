@@ -4,7 +4,7 @@
     android:id="@+id/rl_root"
     android:layout_width="24dp"
     android:layout_height="24dp"
-    android:layout_marginEnd="4dp"
+    android:layout_marginEnd="2dp"
     android:background="@drawable/livekit_anchor_user_count_background"
     android:gravity="start">
 

@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
+import com.tencent.qcloud.tuicore.util.ScreenUtil;
 import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.component.audiencelist.service.AudienceListObserver;
 import com.trtc.uikit.component.audiencelist.service.AudienceListService;
@@ -29,6 +31,7 @@ import java.util.LinkedHashSet;
 
 @SuppressLint("ViewConstructor")
 public class AudienceListView extends FrameLayout {
+    private static final int MAX_SHOW_AVATAR_COUNT                               = 3;
     private static final int ROOM_MAX_SHOW_USER_COUNT                            = 100;
     private static final int LIVEKIT_METRICS_PANEL_SHOW_LIVE_ROOM_AUDIENCE_LIST  = 190010;
     private static final int LIVEKIT_METRICS_PANEL_SHOW_VOICE_ROOM_AUDIENCE_LIST = 191009;
@@ -162,6 +165,12 @@ public class AudienceListView extends FrameLayout {
     }
 
     private void onAudienceListChange(LinkedHashSet<TUIRoomDefine.UserInfo> userInfo) {
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mRecycleAudienceList.getLayoutParams();
+        if (userInfo.size() <= MAX_SHOW_AVATAR_COUNT) {
+            params.width = RelativeLayout.LayoutParams.WRAP_CONTENT;
+        } else {
+            params.width = ScreenUtil.dip2px(78);
+        }
         mAdapter.updateData();
         setUserCount(mAudienceListState.audienceCount.get());
     }
@@ -182,6 +191,5 @@ public class AudienceListView extends FrameLayout {
         } else {
             DataReporter.reportEventData(LIVEKIT_METRICS_PANEL_SHOW_LIVE_ROOM_AUDIENCE_LIST);
         }
-
     }
 }
