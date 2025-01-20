@@ -1,0 +1,3922 @@
+{
+   "componentLevel": 240,
+   "madeIn": "LightStudio",
+   "root": {
+      "name": "3D模板",
+      "id": 1,
+      "components": [
+         {
+            "anchor": {
+               "bottom": -1,
+               "left": -1,
+               "right": 1,
+               "top": 1
+            },
+            "offset": {
+               "bottom": 0,
+               "left": 0,
+               "right": 0,
+               "top": 0
+            },
+            "pivot": {
+               "x": 0,
+               "y": 0
+            },
+            "ePinToEdge": 15,
+            "eFixSize": 0,
+            "eEditingMode": 1,
+            "position": {
+               "x": 0,
+               "y": 0,
+               "z": 0
+            },
+            "scale": {
+               "x": 1,
+               "y": 1,
+               "z": 1
+            },
+            "rotation": {
+               "w": 1,
+               "x": 0,
+               "y": 0,
+               "z": 0
+            },
+            "entityId": 1,
+            "componentID": 1001,
+            "type": "ScreenTransform",
+            "enabled": true,
+            "version": 4,
+            "objectEnabled": true
+         },
+         {
+            "coverTime": 1000000,
+            "entityId": 1,
+            "type": "PreferredCoverTime",
+            "version": 2,
+            "enabled": true,
+            "componentID": 1002
+         },
+         {
+            "enabled": true,
+            "entityId": 1,
+            "renderTargetKey": "RenderTarget",
+            "type": "Camera",
+            "version": 3,
+            "componentID": 1003
+         },
+         {
+            "type": "EntityIdentifier",
+            "name": "3D模板",
+            "id": 1,
+            "enabled": true
+         }
+      ],
+      "children": [
+         {
+            "id": 173,
+            "name": "Camera3D",
+            "children": [],
+            "enabled": true,
+            "version": 0,
+            "components": [
+               {
+                  "type": "BasicTransform",
+                  "position": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 1
+                  },
+                  "scale": {
+                     "x": 1,
+                     "y": 1,
+                     "z": 1
+                  },
+                  "rotation": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0,
+                     "w": 1
+                  },
+                  "eEuler": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "objectEnabled": true,
+                  "enabled": true,
+                  "entityId": 173,
+                  "componentID": 173001
+               },
+               {
+                  "clearColor": "#00000000",
+                  "componentID": 173002,
+                  "enabled": true,
+                  "entityId": 173,
+                  "far": 1000,
+                  "fov": 60,
+                  "fovType": "vertical",
+                  "near": 0.01,
+                  "projectionType": "perspective",
+                  "size": 0.2,
+                  "targetBufferFlags": "clearColor",
+                  "type": "Camera3DComponent",
+                  "renderTargetKey": "RenderTarget",
+                  "version": 2
+               },
+               {
+                  "bloom": {
+                     "enable": false,
+                     "levels": 6,
+                     "strength": 0.1
+                  },
+                  "colorGrading": {
+                     "cdl": {
+                        "offset": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "power": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "slope": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        }
+                     },
+                     "channelMixer": {
+                        "outBlue": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 1
+                        },
+                        "outGreen": {
+                           "x": 0,
+                           "y": 1,
+                           "z": 0
+                        },
+                        "outRed": {
+                           "x": 1,
+                           "y": 0,
+                           "z": 0
+                        }
+                     },
+                     "contrast": 1,
+                     "enable": true,
+                     "saturation": 1,
+                     "shadowMidHighlights": {
+                        "highlightsColor": "#FFFFFF00",
+                        "highlightsWeight": 0,
+                        "midtonesColor": "#FFFFFF00",
+                        "midtonesWeight": 0,
+                        "ranges": {
+                           "w": 1,
+                           "x": 0,
+                           "y": 0.333,
+                           "z": 0.55
+                        },
+                        "shadowsColor": "#FFFFFF00",
+                        "shadowsWeight": 0
+                     },
+                     "toneMapping": 3,
+                     "vibrance": 1,
+                     "whiteBalance": {
+                        "temperature": 1,
+                        "tint": 0.3
+                     }
+                  },
+                  "componentID": 173003,
+                  "enable": true,
+                  "enableDithering": false,
+                  "enableFXAA": false,
+                  "enableMSAA": false,
+                  "enableSSAO": false,
+                  "enabled": true,
+                  "entityId": 173,
+                  "type": "PostEffect3DComponent",
+                  "version": 48,
+                  "vignette": {
+                     "color": "#000000FF",
+                     "enable": false,
+                     "feather": 0.5,
+                     "midPoint": 0.5,
+                     "roundness": 0.5
+                  }
+               },
+               {
+                  "type": "EntityIdentifier",
+                  "name": "Camera3D",
+                  "id": 173,
+                  "enabled": true
+               }
+            ]
+         },
+         {
+            "id": 181,
+            "name": "Lighting",
+            "children": [
+               {
+                  "id": 183,
+                  "name": "Envmap",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "componentID": 183001,
+                        "eEuler": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "enabled": true,
+                        "entityId": 183,
+                        "objectEnabled": true,
+                        "position": {
+                           "x": 0,
+                           "y": 0.6499999761581421,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "type": "BasicTransform",
+                        "version": 25
+                     },
+                     {
+                        "componentID": 183002,
+                        "enabled": true,
+                        "entityId": 183,
+                        "envRotation": 304,
+                        "iblPath": "3a5d9d58-1984-4d6a-8fbc-5d6b8f730360",
+                        "innerAngle": 30,
+                        "intensity": 89.60000000000001,
+                        "irradiancePath": "e567e442-bc0d-48d4-ad8f-c0cce5ad6f4e",
+                        "lightColor": "#ffffffff",
+                        "lightType": 5,
+                        "outerAngle": 60,
+                        "radius": 4,
+                        "shadowConfig": {
+                           "castShadows": true,
+                           "shadowMapSize": 10
+                        },
+                        "skyBoxConfig": {
+                           "enableSkyBox": false,
+                           "skyBoxPath": ""
+                        },
+                        "type": "Light3DComponent",
+                        "version": 449
+                     },
+                     {
+                        "type": "EntityIdentifier",
+                        "name": "Envmap",
+                        "id": 183,
+                        "enabled": true
+                     }
+                  ]
+               },
+               {
+                  "id": 185,
+                  "name": "Light",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "componentID": 185001,
+                        "eEuler": {
+                           "x": -25,
+                           "y": 20,
+                           "z": -40
+                        },
+                        "enabled": true,
+                        "entityId": 185,
+                        "objectEnabled": true,
+                        "position": {
+                           "x": 0.15,
+                           "y": 0.55,
+                           "z": 0.15
+                        },
+                        "rotation": {
+                           "x": -0.2582801735941516,
+                           "y": 0.08640591477787642,
+                           "z": -0.36415774424680475,
+                           "w": 0.8906259075081142
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "type": "BasicTransform",
+                        "version": 12
+                     },
+                     {
+                        "componentID": 185002,
+                        "enabled": true,
+                        "entityId": 185,
+                        "envRotation": 0,
+                        "iblPath": "ce38e1ba-9e13-42f2-a491-b750578ffa87",
+                        "innerAngle": 30,
+                        "intensity": 40,
+                        "irradiancePath": "4903bd51-a2ec-4880-b9b9-3a624df646b4",
+                        "lightColor": "#ffffffff",
+                        "lightType": 1,
+                        "outerAngle": 60,
+                        "radius": 4,
+                        "shadowConfig": {
+                           "castShadows": false,
+                           "shadowMapSize": 10
+                        },
+                        "skyBoxConfig": {
+                           "enableSkyBox": false,
+                           "skyBoxPath": ""
+                        },
+                        "type": "Light3DComponent",
+                        "version": 11
+                     },
+                     {
+                        "type": "EntityIdentifier",
+                        "name": "Light",
+                        "id": 185,
+                        "enabled": true
+                     }
+                  ]
+               }
+            ],
+            "enabled": true,
+            "version": 0,
+            "components": [
+               {
+                  "type": "BasicTransform",
+                  "position": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "scale": {
+                     "x": 1,
+                     "y": 1,
+                     "z": 1
+                  },
+                  "rotation": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0,
+                     "w": 1
+                  },
+                  "eEuler": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "objectEnabled": true,
+                  "enabled": true,
+                  "entityId": 181,
+                  "componentID": 181001
+               },
+               {
+                  "type": "EntityIdentifier",
+                  "name": "Lighting",
+                  "id": 181,
+                  "enabled": true
+               }
+            ]
+         },
+         {
+            "id": 188,
+            "name": "3D人头",
+            "children": [
+               {
+                  "id": 233,
+                  "name": "XiKuangYanJing33(prefab)",
+                  "children": [
+                     {
+                        "id": 236,
+                        "name": "scenes",
+                        "children": [
+                           {
+                              "id": 238,
+                              "name": "Scene",
+                              "children": [
+                                 {
+                                    "id": 240,
+                                    "name": "XiKuangYanJing.001",
+                                    "children": [],
+                                    "enabled": true,
+                                    "version": 0,
+                                    "forbid": false,
+                                    "components": [
+                                       {
+                                          "componentID": 240001,
+                                          "enabled": true,
+                                          "entityId": 240,
+                                          "needReload": true,
+                                          "objectEnabled": true,
+                                          "paused": false,
+                                          "position": {
+                                             "x": 0,
+                                             "y": 0,
+                                             "z": 0
+                                          },
+                                          "rotation": {
+                                             "x": 0,
+                                             "y": 0,
+                                             "z": 0,
+                                             "w": 1
+                                          },
+                                          "scale": {
+                                             "x": 1,
+                                             "y": 1,
+                                             "z": 1
+                                          },
+                                          "type": "BasicTransform",
+                                          "visible": true,
+                                          "eEuler": {
+                                             "x": 0,
+                                             "y": 0,
+                                             "z": 0
+                                          }
+                                       },
+                                       {
+                                          "componentID": 240002,
+                                          "enabled": true,
+                                          "entityId": 240,
+                                          "layers": 1,
+                                          "needReload": true,
+                                          "paused": false,
+                                          "type": "LayerSetComponent"
+                                       },
+                                       {
+                                          "componentID": 240003,
+                                          "enabled": true,
+                                          "entityId": 240,
+                                          "meshIndex": 0,
+                                          "meshName": "网格",
+                                          "needReload": true,
+                                          "paused": false,
+                                          "primitiveConfigs": [
+                                             {
+                                                "castShadow": true,
+                                                "materialResourceKey": "2f59df0b-9304-4ec3-b731-f37c3f549944",
+                                                "meshResourceKey": "e4ef00fa-9790-46f4-bf19-0d5ee817f61a",
+                                                "primitiveIndex": 0,
+                                                "receiveShadow": true
+                                             }
+                                          ],
+                                          "skinned": false,
+                                          "type": "MeshRenderer3DComponent",
+                                          "version": 2
+                                       },
+                                       {
+                                          "type": "EntityIdentifier",
+                                          "name": "XiKuangYanJing.001",
+                                          "id": 240,
+                                          "enabled": true
+                                       }
+                                    ]
+                                 },
+                                 {
+                                    "id": 244,
+                                    "name": "jk",
+                                    "children": [],
+                                    "enabled": true,
+                                    "version": 0,
+                                    "forbid": false,
+                                    "components": [
+                                       {
+                                          "componentID": 244001,
+                                          "enabled": true,
+                                          "entityId": 244,
+                                          "needReload": true,
+                                          "objectEnabled": true,
+                                          "paused": false,
+                                          "position": {
+                                             "x": 0,
+                                             "y": 0,
+                                             "z": 0
+                                          },
+                                          "rotation": {
+                                             "x": 0,
+                                             "y": 0,
+                                             "z": 0,
+                                             "w": 1
+                                          },
+                                          "scale": {
+                                             "x": 1,
+                                             "y": 1,
+                                             "z": 1
+                                          },
+                                          "type": "BasicTransform",
+                                          "visible": true,
+                                          "eEuler": {
+                                             "x": 0,
+                                             "y": 0,
+                                             "z": 0
+                                          }
+                                       },
+                                       {
+                                          "componentID": 244002,
+                                          "enabled": true,
+                                          "entityId": 244,
+                                          "layers": 1,
+                                          "needReload": true,
+                                          "paused": false,
+                                          "type": "LayerSetComponent"
+                                       },
+                                       {
+                                          "componentID": 244003,
+                                          "enabled": true,
+                                          "entityId": 244,
+                                          "meshIndex": 1,
+                                          "meshName": "网格.001",
+                                          "needReload": true,
+                                          "paused": false,
+                                          "primitiveConfigs": [
+                                             {
+                                                "castShadow": true,
+                                                "materialResourceKey": "470b7f69-b871-4c9f-9f8d-f0c1cf162321",
+                                                "meshResourceKey": "824f9a83-5343-4685-8b7c-eb0ffd6715c3",
+                                                "primitiveIndex": 0,
+                                                "receiveShadow": true
+                                             }
+                                          ],
+                                          "skinned": false,
+                                          "type": "MeshRenderer3DComponent"
+                                       },
+                                       {
+                                          "type": "EntityIdentifier",
+                                          "name": "jk",
+                                          "id": 244,
+                                          "enabled": true
+                                       }
+                                    ]
+                                 }
+                              ],
+                              "enabled": true,
+                              "version": 0,
+                              "forbid": false,
+                              "components": [
+                                 {
+                                    "componentID": 238001,
+                                    "enabled": true,
+                                    "entityId": 238,
+                                    "needReload": true,
+                                    "objectEnabled": true,
+                                    "paused": false,
+                                    "position": {
+                                       "x": 0,
+                                       "y": 0,
+                                       "z": 0
+                                    },
+                                    "rotation": {
+                                       "x": 0,
+                                       "y": 0,
+                                       "z": 0,
+                                       "w": 1
+                                    },
+                                    "scale": {
+                                       "x": 1.0255081493992495,
+                                       "y": 1.0255081493992495,
+                                       "z": 1.0255081493992495
+                                    },
+                                    "type": "BasicTransform",
+                                    "visible": true,
+                                    "eEuler": {
+                                       "x": 0,
+                                       "y": 0,
+                                       "z": 0
+                                    },
+                                    "version": 2
+                                 },
+                                 {
+                                    "type": "EntityIdentifier",
+                                    "name": "Scene",
+                                    "id": 238,
+                                    "enabled": true
+                                 }
+                              ]
+                           }
+                        ],
+                        "enabled": true,
+                        "version": 0,
+                        "forbid": false,
+                        "components": [
+                           {
+                              "componentID": 236001,
+                              "enabled": true,
+                              "entityId": 236,
+                              "needReload": true,
+                              "objectEnabled": true,
+                              "paused": false,
+                              "position": {
+                                 "x": 0,
+                                 "y": 0,
+                                 "z": 0
+                              },
+                              "rotation": {
+                                 "x": 0,
+                                 "y": 0,
+                                 "z": 0,
+                                 "w": 1
+                              },
+                              "scale": {
+                                 "x": 1,
+                                 "y": 1,
+                                 "z": 1
+                              },
+                              "type": "BasicTransform",
+                              "visible": true,
+                              "eEuler": {
+                                 "x": 0,
+                                 "y": 0,
+                                 "z": 0
+                              }
+                           },
+                           {
+                              "type": "EntityIdentifier",
+                              "name": "scenes",
+                              "id": 236,
+                              "enabled": true
+                           }
+                        ]
+                     }
+                  ],
+                  "enabled": true,
+                  "version": 0,
+                  "forbid": true,
+                  "components": [
+                     {
+                        "componentID": 233001,
+                        "enabled": true,
+                        "entityId": 233,
+                        "needReload": true,
+                        "objectEnabled": true,
+                        "paused": false,
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "type": "BasicTransform",
+                        "visible": true,
+                        "eEuler": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        }
+                     },
+                     {
+                        "componentID": 233002,
+                        "enabled": true,
+                        "entityId": 233,
+                        "gltfResourceKey": "aeb43bf6-6044-4121-92da-a54ae6afb32d",
+                        "needReload": true,
+                        "paused": false,
+                        "type": "GlbRenderComponent"
+                     },
+                     {
+                        "type": "EntityIdentifier",
+                        "name": "XiKuangYanJing33(prefab)",
+                        "id": 233,
+                        "enabled": true
+                     }
+                  ]
+               }
+            ],
+            "enabled": true,
+            "version": 0,
+            "components": [
+               {
+                  "type": "BasicTransform",
+                  "position": {
+                     "x": 0,
+                     "y": 0.1,
+                     "z": 0
+                  },
+                  "scale": {
+                     "x": 1,
+                     "y": 1,
+                     "z": 1
+                  },
+                  "rotation": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0,
+                     "w": 1
+                  },
+                  "eEuler": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "objectEnabled": true,
+                  "enabled": true,
+                  "entityId": 188,
+                  "componentID": 188001
+               },
+               {
+                  "use3DMMHead": 0,
+                  "useCustom3DHead": false,
+                  "custom3DHead": "",
+                  "showUserHead": true,
+                  "faceIndex": [
+                     0
+                  ],
+                  "type": "Face3DComponent",
+                  "enabled": true,
+                  "entityId": 188,
+                  "componentID": 188002
+               },
+               {
+                  "type": "EntityIdentifier",
+                  "name": "3D人头",
+                  "id": 188,
+                  "enabled": true
+               }
+            ]
+         },
+         {
+            "id": 217,
+            "name": "音乐",
+            "children": [],
+            "enabled": true,
+            "version": 0,
+            "components": [
+               {
+                  "type": "ScreenTransform",
+                  "position": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "rotation": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0,
+                     "w": 1
+                  },
+                  "scale": {
+                     "x": 1,
+                     "y": 1,
+                     "z": 1
+                  },
+                  "eEuler": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "anchor": {
+                     "left": 0,
+                     "right": 0,
+                     "top": 0,
+                     "bottom": 0
+                  },
+                  "offset": {
+                     "left": -360,
+                     "right": 360,
+                     "top": 640,
+                     "bottom": -640
+                  },
+                  "pivot": {
+                     "x": 0,
+                     "y": 0
+                  },
+                  "ePinToEdge": 0,
+                  "eFixSize": 3,
+                  "eEditingMode": 0,
+                  "eKeepRatio": true,
+                  "objectEnabled": true,
+                  "enabled": true,
+                  "entityId": 217,
+                  "componentID": 217001
+               },
+               {
+                  "audioSourceType": 1,
+                  "componentID": 217002,
+                  "enabled": true,
+                  "entityId": 217,
+                  "speed": 1,
+                  "type": "AudioSource",
+                  "version": 10,
+                  "volume": 1,
+                  "volumeEffects": [],
+                  "src": "c35b28e7-cd8e-4e94-a067-5d5a44e0527c"
+               },
+               {
+                  "componentID": 217003,
+                  "duration": 16559999.999999998,
+                  "enabled": true,
+                  "endOffset": -2147483648,
+                  "entityId": 217,
+                  "loopCount": 0,
+                  "startOffset": 0,
+                  "type": "TimeOffset",
+                  "version": 2
+               },
+               {
+                  "type": "EntityIdentifier",
+                  "name": "音乐",
+                  "id": 217,
+                  "enabled": true
+               }
+            ]
+         },
+         {
+            "id": 5,
+            "name": "2D画板",
+            "children": [
+               {
+                  "id": 4,
+                  "name": "滤镜",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "type": "ScreenTransform",
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "eEuler": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "anchor": {
+                           "left": 0,
+                           "right": 0,
+                           "top": 0,
+                           "bottom": 0
+                        },
+                        "offset": {
+                           "left": -360,
+                           "right": 360,
+                           "top": 640,
+                           "bottom": -640
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 0,
+                        "eFixSize": 3,
+                        "eEditingMode": 0,
+                        "eKeepRatio": true,
+                        "objectEnabled": true,
+                        "enabled": true,
+                        "entityId": 4,
+                        "componentID": 4001
+                     },
+                     {
+                        "componentID": 4002,
+                        "enabled": true,
+                        "entityId": 4,
+                        "intensity": 0.6900000000000001,
+                        "src": "bffa890c-da8a-46a8-8ab1-6dbc25b7c698",
+                        "type": "LUTFilter",
+                        "version": 12
+                     },
+                     {
+                        "startOffset": 0,
+                        "duration": -2147483648,
+                        "endOffset": 0,
+                        "loopCount": -2147483648,
+                        "type": "TimeOffset",
+                        "enabled": true,
+                        "entityId": 4,
+                        "componentID": 4003,
+                        "version": null
+                     },
+                     {
+                        "type": "EntityIdentifier",
+                        "name": "滤镜",
+                        "id": 4,
+                        "enabled": true
+                     }
+                  ]
+               },
+               {
+                  "id": 8,
+                  "name": "脸妆",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "type": "ScreenTransform",
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "eEuler": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "anchor": {
+                           "left": 0,
+                           "right": 0,
+                           "top": 0,
+                           "bottom": 0
+                        },
+                        "offset": {
+                           "left": -360,
+                           "right": 360,
+                           "top": 640,
+                           "bottom": -640
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 0,
+                        "eFixSize": 3,
+                        "eEditingMode": 0,
+                        "eKeepRatio": true,
+                        "objectEnabled": true,
+                        "enabled": true,
+                        "entityId": 8,
+                        "componentID": 8001
+                     },
+                     {
+                        "componentID": 8002,
+                        "enabled": true,
+                        "entityId": 8,
+                        "faceExchangeImageDisableFaceCrop": true,
+                        "faceExchangeImageEnableOpacity": false,
+                        "faceImage": "aef7f335-36c3-47cd-b0c1-7e264e4c7963",
+                        "faceMask": "none",
+                        "facePointsFile": "",
+                        "facePointsOption": false,
+                        "maskImage": "",
+                        "type": "MakeupFaceV6",
+                        "visMethod": 0,
+                        "version": 2
+                     },
+                     {
+                        "alpha": 1,
+                        "componentID": 8003,
+                        "enabled": true,
+                        "entityId": 8,
+                        "mode": "multiply",
+                        "type": "BlendMode",
+                        "version": 2
+                     },
+                     {
+                        "alignPoints": [
+                           64
+                        ],
+                        "scalePivotPoint1": 0,
+                        "scalePivotPoint2": 18,
+                        "faceIndex": [
+                           0,
+                           1,
+                           2,
+                           3,
+                           4
+                        ],
+                        "isRefine": true,
+                        "isWaitFirstFrameDetect": false,
+                        "isAllFrameFaceDetect": false,
+                        "xAxisTrack": true,
+                        "yAxisTrack": true,
+                        "xAxisRotateTrack": true,
+                        "yAxisRotateTrack": true,
+                        "zAxisRotateTrack": true,
+                        "xAxisScale": true,
+                        "yAxisScale": true,
+                        "genderBinding": "female",
+                        "type": "FaceTracking",
+                        "enabled": true,
+                        "entityId": 8,
+                        "componentID": 8004
+                     },
+                     {
+                        "type": "EntityIdentifier",
+                        "name": "脸妆",
+                        "id": 8,
+                        "enabled": true
+                     }
+                  ]
+               },
+               {
+                  "id": 6,
+                  "name": "美瞳",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "type": "ScreenTransform",
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "eEuler": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "anchor": {
+                           "left": 0,
+                           "right": 0,
+                           "top": 0,
+                           "bottom": 0
+                        },
+                        "offset": {
+                           "left": -360,
+                           "right": 360,
+                           "top": 640,
+                           "bottom": -640
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 0,
+                        "eFixSize": 3,
+                        "eEditingMode": 0,
+                        "eKeepRatio": true,
+                        "objectEnabled": true,
+                        "enabled": true,
+                        "entityId": 6,
+                        "componentID": 6001
+                     },
+                     {
+                        "componentID": 6002,
+                        "enabled": true,
+                        "entityId": 6,
+                        "irisImage": "72afdffe-899d-467d-ba31-8791f5ec919f",
+                        "minVisibility": 0,
+                        "type": "MakeupIrisV6",
+                        "visMethod": 0,
+                        "version": 2
+                     },
+                     {
+                        "alpha": 0.36,
+                        "componentID": 6003,
+                        "enabled": true,
+                        "entityId": 6,
+                        "mode": "normal",
+                        "type": "BlendMode",
+                        "version": 19
+                     },
+                     {
+                        "alignPoints": [
+                           64
+                        ],
+                        "scalePivotPoint1": 0,
+                        "scalePivotPoint2": 18,
+                        "faceIndex": [
+                           0,
+                           1,
+                           2,
+                           3,
+                           4
+                        ],
+                        "isRefine": true,
+                        "isWaitFirstFrameDetect": false,
+                        "isAllFrameFaceDetect": false,
+                        "xAxisTrack": true,
+                        "yAxisTrack": true,
+                        "xAxisRotateTrack": true,
+                        "yAxisRotateTrack": true,
+                        "zAxisRotateTrack": true,
+                        "xAxisScale": true,
+                        "yAxisScale": true,
+                        "genderBinding": "female",
+                        "type": "FaceTracking",
+                        "enabled": true,
+                        "entityId": 6,
+                        "componentID": 6004
+                     },
+                     {
+                        "type": "EntityIdentifier",
+                        "name": "美瞳",
+                        "id": 6,
+                        "enabled": true
+                     }
+                  ]
+               },
+               {
+                  "id": 11,
+                  "name": "唇彩",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "type": "ScreenTransform",
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "eEuler": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "anchor": {
+                           "left": 0,
+                           "right": 0,
+                           "top": 0,
+                           "bottom": 0
+                        },
+                        "offset": {
+                           "left": -360,
+                           "right": 360,
+                           "top": 640,
+                           "bottom": -640
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 0,
+                        "eFixSize": 3,
+                        "eEditingMode": 0,
+                        "eKeepRatio": true,
+                        "objectEnabled": true,
+                        "enabled": true,
+                        "entityId": 11,
+                        "componentID": 11001
+                     },
+                     {
+                        "closeMouseMask": "",
+                        "componentID": 11002,
+                        "enabled": true,
+                        "entityId": 11,
+                        "lipsColor": "",
+                        "lipsImage": "966124fc-bafa-429c-96a6-72d64200f323",
+                        "lipsImageCrop": "cropImage/zc_crop.png",
+                        "lipsImageCropRect": {
+                           "bottom": 1420,
+                           "left": 622,
+                           "right": 918,
+                           "top": 1260
+                        },
+                        "lipsLut": "",
+                        "lipsMask": "",
+                        "lipsMaskCrop": "cropImage/zc_Mask_crop.png",
+                        "lipsMaskCropRect": {
+                           "bottom": 2047,
+                           "left": 0,
+                           "right": 1535,
+                           "top": 0
+                        },
+                        "lipsMaskEnum": 0,
+                        "lipsType": "Image",
+                        "minVisibility": 0,
+                        "openMouseMask": "",
+                        "type": "MakeupLipsV6",
+                        "visMethod": 0,
+                        "version": 2
+                     },
+                     {
+                        "alpha": 0.62,
+                        "componentID": 11003,
+                        "enabled": true,
+                        "entityId": 11,
+                        "mode": "multiply",
+                        "type": "BlendMode",
+                        "version": 33
+                     },
+                     {
+                        "alignPoints": [
+                           64
+                        ],
+                        "scalePivotPoint1": 0,
+                        "scalePivotPoint2": 18,
+                        "faceIndex": [
+                           0,
+                           1,
+                           2,
+                           3,
+                           4
+                        ],
+                        "isRefine": true,
+                        "isWaitFirstFrameDetect": false,
+                        "isAllFrameFaceDetect": false,
+                        "xAxisTrack": true,
+                        "yAxisTrack": true,
+                        "xAxisRotateTrack": true,
+                        "yAxisRotateTrack": true,
+                        "zAxisRotateTrack": true,
+                        "xAxisScale": true,
+                        "yAxisScale": true,
+                        "genderBinding": "female",
+                        "type": "FaceTracking",
+                        "enabled": true,
+                        "entityId": 11,
+                        "componentID": 11004
+                     },
+                     {
+                        "type": "EntityIdentifier",
+                        "name": "唇彩",
+                        "id": 11,
+                        "enabled": true
+                     }
+                  ]
+               },
+               {
+                  "id": 10,
+                  "name": "眼妆",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "type": "ScreenTransform",
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "eEuler": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "anchor": {
+                           "left": 0,
+                           "right": 0,
+                           "top": 0,
+                           "bottom": 0
+                        },
+                        "offset": {
+                           "left": -360,
+                           "right": 360,
+                           "top": 640,
+                           "bottom": -640
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 0,
+                        "eFixSize": 3,
+                        "eEditingMode": 0,
+                        "eKeepRatio": true,
+                        "objectEnabled": true,
+                        "enabled": true,
+                        "entityId": 10,
+                        "componentID": 10001
+                     },
+                     {
+                        "componentID": 10002,
+                        "cropRect": {
+                           "bottom": 110,
+                           "left": 180,
+                           "right": 200,
+                           "top": 446
+                        },
+                        "enabled": true,
+                        "entityId": 10,
+                        "eyeCropImageName": "",
+                        "eyeImageName": "0cd03468-511b-4ccf-94b4-456ce868544b",
+                        "minVisibility": 0,
+                        "type": "MakeupEyeV6",
+                        "visMethod": 0,
+                        "version": 2
+                     },
+                     {
+                        "alpha": 0.72,
+                        "componentID": 10003,
+                        "enabled": true,
+                        "entityId": 10,
+                        "mode": "multiply",
+                        "type": "BlendMode",
+                        "version": 4
+                     },
+                     {
+                        "alignPoints": [
+                           64
+                        ],
+                        "scalePivotPoint1": 0,
+                        "scalePivotPoint2": 18,
+                        "faceIndex": [
+                           0,
+                           1,
+                           2,
+                           3,
+                           4
+                        ],
+                        "isRefine": true,
+                        "isWaitFirstFrameDetect": false,
+                        "isAllFrameFaceDetect": false,
+                        "xAxisTrack": true,
+                        "yAxisTrack": true,
+                        "xAxisRotateTrack": true,
+                        "yAxisRotateTrack": true,
+                        "zAxisRotateTrack": true,
+                        "xAxisScale": true,
+                        "yAxisScale": true,
+                        "genderBinding": "female",
+                        "type": "FaceTracking",
+                        "enabled": true,
+                        "entityId": 10,
+                        "componentID": 10004
+                     },
+                     {
+                        "type": "EntityIdentifier",
+                        "name": "眼妆",
+                        "id": 10,
+                        "enabled": true
+                     }
+                  ]
+               },
+               {
+                  "id": 12,
+                  "name": "眼妆",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "type": "ScreenTransform",
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "eEuler": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "anchor": {
+                           "left": 0,
+                           "right": 0,
+                           "top": 0,
+                           "bottom": 0
+                        },
+                        "offset": {
+                           "left": -360,
+                           "right": 360,
+                           "top": 640,
+                           "bottom": -640
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 0,
+                        "eFixSize": 3,
+                        "eEditingMode": 0,
+                        "eKeepRatio": true,
+                        "objectEnabled": true,
+                        "enabled": true,
+                        "entityId": 12,
+                        "componentID": 12001
+                     },
+                     {
+                        "componentID": 12002,
+                        "cropRect": {
+                           "bottom": 110,
+                           "left": 180,
+                           "right": 200,
+                           "top": 446
+                        },
+                        "enabled": true,
+                        "entityId": 12,
+                        "eyeCropImageName": "",
+                        "eyeImageName": "03bb659f-6428-46c6-81b2-23a7b0c52d15",
+                        "minVisibility": 0,
+                        "type": "MakeupEyeV6",
+                        "visMethod": 0,
+                        "version": 2
+                     },
+                     {
+                        "alpha": 0.85,
+                        "componentID": 12003,
+                        "enabled": true,
+                        "entityId": 12,
+                        "mode": "screen",
+                        "type": "BlendMode",
+                        "version": 21
+                     },
+                     {
+                        "alignPoints": [
+                           64
+                        ],
+                        "scalePivotPoint1": 0,
+                        "scalePivotPoint2": 18,
+                        "faceIndex": [
+                           0,
+                           1,
+                           2,
+                           3,
+                           4
+                        ],
+                        "isRefine": true,
+                        "isWaitFirstFrameDetect": false,
+                        "isAllFrameFaceDetect": false,
+                        "xAxisTrack": true,
+                        "yAxisTrack": true,
+                        "xAxisRotateTrack": true,
+                        "yAxisRotateTrack": true,
+                        "zAxisRotateTrack": true,
+                        "xAxisScale": true,
+                        "yAxisScale": true,
+                        "genderBinding": "female",
+                        "type": "FaceTracking",
+                        "enabled": true,
+                        "entityId": 12,
+                        "componentID": 12004
+                     },
+                     {
+                        "type": "EntityIdentifier",
+                        "name": "眼妆",
+                        "id": 12,
+                        "enabled": true
+                     }
+                  ]
+               },
+               {
+                  "id": 226,
+                  "name": "前景贴纸",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "anchor": {
+                           "left": -0.6866708126036484,
+                           "right": -0.6866708126036484,
+                           "top": 0.1302909281716419,
+                           "bottom": 0.1302909281716419
+                        },
+                        "offset": {
+                           "left": -112.99906716417912,
+                           "right": 112.99906716417912,
+                           "top": 180,
+                           "bottom": -180
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 0,
+                        "eFixSize": 3,
+                        "eEditingMode": 0,
+                        "eKeepRatio": false,
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "objectEnabled": true,
+                        "entityId": 226,
+                        "componentID": 226001,
+                        "type": "ScreenTransform",
+                        "enabled": true,
+                        "version": 349
+                     },
+                     {
+                        "componentID": 226002,
+                        "enabled": true,
+                        "entityId": 226,
+                        "scaleMode": 2,
+                        "src": "9f05727d-9cce-4fc1-86c8-3f1eada24a04",
+                        "type": "Image",
+                        "version": 5
+                     },
+                     {
+                        "alpha": 1,
+                        "mode": "normal",
+                        "type": "BlendMode",
+                        "enabled": true,
+                        "entityId": 226,
+                        "componentID": 226003
+                     },
+                     {
+                        "startOffset": 0,
+                        "duration": 3000000,
+                        "endOffset": -2147483648,
+                        "loopCount": -1,
+                        "type": "TimeOffset",
+                        "enabled": true,
+                        "entityId": 226,
+                        "componentID": 226004,
+                        "version": 1
+                     },
+                     {
+                        "type": "EntityIdentifier",
+                        "name": "前景贴纸",
+                        "id": 226,
+                        "enabled": true
+                     }
+                  ]
+               },
+               {
+                  "id": 7,
+                  "name": "前景贴纸",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "type": "ScreenTransform",
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "eEuler": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "anchor": {
+                           "left": 0.6063432835820892,
+                           "right": 0.6063432835820892,
+                           "top": -0.23514750466417894,
+                           "bottom": -0.23514750466417894
+                        },
+                        "offset": {
+                           "left": -142.00093283582086,
+                           "right": 142.00093283582086,
+                           "top": 210.9981343283582,
+                           "bottom": -210.9981343283582
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 0,
+                        "eFixSize": 3,
+                        "eEditingMode": 0,
+                        "eKeepRatio": true,
+                        "objectEnabled": true,
+                        "enabled": true,
+                        "entityId": 7,
+                        "componentID": 7001,
+                        "version": 249
+                     },
+                     {
+                        "componentID": 7002,
+                        "enabled": true,
+                        "entityId": 7,
+                        "scaleMode": 2,
+                        "src": "6af9b9fc-1c04-476f-b27b-ef0255876b6e",
+                        "type": "Image",
+                        "version": 3
+                     },
+                     {
+                        "alpha": 1,
+                        "mode": "normal",
+                        "type": "BlendMode",
+                        "enabled": true,
+                        "entityId": 7,
+                        "componentID": 7003
+                     },
+                     {
+                        "startOffset": 0,
+                        "duration": 3000000,
+                        "endOffset": -2147483648,
+                        "loopCount": -1,
+                        "type": "TimeOffset",
+                        "enabled": true,
+                        "entityId": 7,
+                        "componentID": 7004,
+                        "version": null
+                     },
+                     {
+                        "type": "EntityIdentifier",
+                        "name": "前景贴纸",
+                        "id": 7,
+                        "enabled": true
+                     }
+                  ]
+               },
+               {
+                  "id": 9,
+                  "name": "前景贴纸",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "type": "ScreenTransform",
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "eEuler": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "anchor": {
+                           "left": 0.19931592039800985,
+                           "right": 0.19931592039800985,
+                           "top": -0.7079640858208958,
+                           "bottom": -0.7079640858208958
+                        },
+                        "offset": {
+                           "left": -238.00373134328353,
+                           "right": 238.00373134328353,
+                           "top": 143.00373134328362,
+                           "bottom": -143.00373134328362
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 0,
+                        "eFixSize": 3,
+                        "eEditingMode": 0,
+                        "eKeepRatio": true,
+                        "objectEnabled": true,
+                        "enabled": true,
+                        "entityId": 9,
+                        "componentID": 9001,
+                        "version": 271
+                     },
+                     {
+                        "componentID": 9002,
+                        "enabled": true,
+                        "entityId": 9,
+                        "scaleMode": 2,
+                        "src": "727eabdc-a88c-4646-be64-b9b1b4eeb1bc",
+                        "type": "Image",
+                        "version": 3
+                     },
+                     {
+                        "alpha": 1,
+                        "componentID": 9003,
+                        "enabled": true,
+                        "entityId": 9,
+                        "mode": "screen",
+                        "type": "BlendMode",
+                        "version": 2
+                     },
+                     {
+                        "startOffset": 0,
+                        "duration": 2250000,
+                        "endOffset": -2147483648,
+                        "loopCount": -1,
+                        "type": "TimeOffset",
+                        "enabled": true,
+                        "entityId": 9,
+                        "componentID": 9004,
+                        "version": null
+                     },
+                     {
+                        "type": "EntityIdentifier",
+                        "name": "前景贴纸",
+                        "id": 9,
+                        "enabled": true
+                     }
+                  ]
+               },
+               {
+                  "id": 13,
+                  "name": "前景贴纸",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "type": "ScreenTransform",
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "eEuler": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "anchor": {
+                           "left": 0.19143864013266998,
+                           "right": 0.19143864013266998,
+                           "top": -0.7152081389925374,
+                           "bottom": -0.7152081389925374
+                        },
+                        "offset": {
+                           "left": -237.99906716417908,
+                           "right": 237.99906716417908,
+                           "top": 142.99906716417908,
+                           "bottom": -142.99906716417908
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 0,
+                        "eFixSize": 3,
+                        "eEditingMode": 0,
+                        "eKeepRatio": true,
+                        "objectEnabled": true,
+                        "enabled": true,
+                        "entityId": 13,
+                        "componentID": 13001,
+                        "version": 318
+                     },
+                     {
+                        "componentID": 13002,
+                        "enabled": true,
+                        "entityId": 13,
+                        "scaleMode": 2,
+                        "src": "911ae251-ab63-42ae-b122-1e1418fb59cf",
+                        "type": "Image",
+                        "version": 3
+                     },
+                     {
+                        "alpha": 1,
+                        "componentID": 13003,
+                        "enabled": true,
+                        "entityId": 13,
+                        "mode": "screen",
+                        "type": "BlendMode",
+                        "version": 2
+                     },
+                     {
+                        "startOffset": 0,
+                        "duration": 750000,
+                        "endOffset": -2147483648,
+                        "loopCount": -1,
+                        "type": "TimeOffset",
+                        "enabled": true,
+                        "entityId": 13,
+                        "componentID": 13004,
+                        "version": null
+                     },
+                     {
+                        "type": "EntityIdentifier",
+                        "name": "前景贴纸",
+                        "id": 13,
+                        "enabled": true
+                     }
+                  ]
+               },
+               {
+                  "id": 250,
+                  "name": "流程管理",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "type": "ScreenTransform",
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "eEuler": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "anchor": {
+                           "left": 0,
+                           "right": 0,
+                           "top": 0,
+                           "bottom": 0
+                        },
+                        "offset": {
+                           "left": -360,
+                           "right": 360,
+                           "top": 640,
+                           "bottom": -640
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 0,
+                        "eFixSize": 3,
+                        "eEditingMode": 0,
+                        "eKeepRatio": true,
+                        "objectEnabled": true,
+                        "enabled": true,
+                        "entityId": 250,
+                        "componentID": 250001
+                     },
+                     {
+                        "type": "EntityIdentifier",
+                        "name": "流程管理",
+                        "id": 250
+                     },
+                     {
+                        "type": "Script",
+                        "entityId": 250,
+                        "scriptPath": "632b0f18-9284-4f54-a0c4-f19fcb376d1a",
+                        "enabled": true,
+                        "componentID": 99999
+                     }
+                  ]
+               }
+            ],
+            "enabled": true,
+            "version": 0,
+            "components": [
+               {
+                  "type": "ScreenTransform",
+                  "position": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "rotation": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0,
+                     "w": 1
+                  },
+                  "scale": {
+                     "x": 1,
+                     "y": 1,
+                     "z": 1
+                  },
+                  "eEuler": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "anchor": {
+                     "top": 1,
+                     "bottom": -1,
+                     "left": -1,
+                     "right": 1
+                  },
+                  "offset": {
+                     "top": 0,
+                     "bottom": 0,
+                     "left": 0,
+                     "right": 0
+                  },
+                  "pivot": {
+                     "x": 0,
+                     "y": 0
+                  },
+                  "ePinToEdge": 15,
+                  "eFixSize": 0,
+                  "eEditingMode": 1,
+                  "eKeepRatio": true,
+                  "objectEnabled": true,
+                  "enabled": true,
+                  "entityId": 5,
+                  "componentID": 5001
+               },
+               {
+                  "renderTargetKey": "RenderTarget",
+                  "type": "Camera",
+                  "enabled": true,
+                  "entityId": 5,
+                  "componentID": 5002
+               },
+               {
+                  "type": "EntityIdentifier",
+                  "name": "2D画板",
+                  "id": 5,
+                  "enabled": true
+               }
+            ]
+         },
+         {
+            "id": 24,
+            "name": "light.js",
+            "children": [],
+            "enabled": true,
+            "version": 0,
+            "components": [
+               {
+                  "type": "EntityIdentifier",
+                  "name": "light.js",
+                  "id": 24
+               },
+               {
+                  "type": "Script",
+                  "entityId": 24,
+                  "scriptPath": "6113cd76-2a37-4e59-b086-062d17f5dbd7",
+                  "enabled": true,
+                  "componentID": 99999
+               },
+               {
+                  "type": "ScreenTransform",
+                  "position": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "rotation": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0,
+                     "w": 1
+                  },
+                  "scale": {
+                     "x": 1,
+                     "y": 1,
+                     "z": 1
+                  },
+                  "eEuler": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "anchor": {
+                     "left": 0,
+                     "right": 0,
+                     "top": 0,
+                     "bottom": 0
+                  },
+                  "offset": {
+                     "left": -360,
+                     "right": 360,
+                     "top": 640,
+                     "bottom": -640
+                  },
+                  "pivot": {
+                     "x": 0,
+                     "y": 0
+                  },
+                  "ePinToEdge": 0,
+                  "eFixSize": 3,
+                  "eEditingMode": 0,
+                  "eKeepRatio": true,
+                  "objectEnabled": true,
+                  "enabled": true,
+                  "entityId": 24
+               }
+            ]
+         }
+      ]
+   },
+   "inputSources": {
+      "3a5d9d58-1984-4d6a-8fbc-5d6b8f730360": {
+         "type": "EnvMap_KTX",
+         "commandMap": {},
+         "key": "3a5d9d58-1984-4d6a-8fbc-5d6b8f730360",
+         "path": "Soft_4TubeBank_2BlackFlags_ibl.ktx",
+         "label": "Soft_4TubeBank_2BlackFlags_ibl.ktx"
+      },
+      "e567e442-bc0d-48d4-ad8f-c0cce5ad6f4e": {
+         "type": "EnvMap_SH",
+         "commandMap": {},
+         "key": "e567e442-bc0d-48d4-ad8f-c0cce5ad6f4e",
+         "path": "lebombo_default/lebombo_default_irradiance.sh",
+         "label": "lebombo_default_irradiance.sh"
+      },
+      "aeb43bf6-6044-4121-92da-a54ae6afb32d": {
+         "type": "modelFile_gltf",
+         "commandMap": {},
+         "key": "aeb43bf6-6044-4121-92da-a54ae6afb32d",
+         "path": "XiKuangYanJing33-gltf/XiKuangYanJing33.gltf",
+         "label": "XiKuangYanJing33.gltf"
+      },
+      "3dc27d57-26c4-4086-9ad8-10f1c999b17b": {
+         "type": "gltf_bin",
+         "commandMap": {},
+         "key": "3dc27d57-26c4-4086-9ad8-10f1c999b17b",
+         "path": "XiKuangYanJing33-gltf/XiKuangYanJing33_data.bin",
+         "label": "XiKuangYanJing33_data.bin"
+      },
+      "99cb25ad-c641-4e16-946c-f646b5f5f780": {
+         "type": "ImageData",
+         "commandMap": {},
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "LINEAR",
+            "minFilter": "LINEAR_MIPMAP_LINEAR",
+            "sRGB": true,
+            "samplerType": "SAMPLER_2D"
+         },
+         "key": "99cb25ad-c641-4e16-946c-f646b5f5f780",
+         "path": "XiKuangYanJing33-gltf/images/XiKuangYanJing33_img0.png",
+         "label": "XiKuangYanJing33_img0.png",
+         "actualSize": 246078,
+         "resolution": {
+            "height": 1024,
+            "width": 1024
+         }
+      },
+      "2f59df0b-9304-4ec3-b731-f37c3f549944": {
+         "type": "MaterialFileData",
+         "commandMap": {},
+         "rawMaterialConfigJson": {
+            "ao_enable_texture_": false,
+            "ao_index_": 0,
+            "ao_sampling_channel_": "r",
+            "ao_strength_": 1,
+            "base_color_enable_texture_": false,
+            "base_color_factor_": [
+               0.09019607843137255,
+               0.07058823529411765,
+               0.06666666666666667,
+               1
+            ],
+            "base_color_index_": 0,
+            "base_color_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": true,
+               "uri_": ""
+            },
+            "base_color_texture_premultiplied_": false,
+            "base_color_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "blending_": "opaque",
+            "clear_coat_enable_texture_": false,
+            "clear_coat_factor_": 0,
+            "clear_coat_index_": -1,
+            "clear_coat_normal_enable_texture_": false,
+            "clear_coat_normal_index_": -1,
+            "clear_coat_normal_scale_": 0,
+            "clear_coat_normal_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": false,
+               "uri_": ""
+            },
+            "clear_coat_normal_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "clear_coat_roughness_enable_texture_": false,
+            "clear_coat_roughness_factor_": 0,
+            "clear_coat_roughness_index_": -1,
+            "clear_coat_roughness_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": false,
+               "uri_": ""
+            },
+            "clear_coat_roughness_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "clear_coat_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": false,
+               "uri_": ""
+            },
+            "clear_coat_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "color_write_": true,
+            "culling_mode_": "back",
+            "depth_culling_": true,
+            "depth_write_": true,
+            "double_side_": false,
+            "emissive_enable_texture_": false,
+            "emissive_enable_texture_color_multiply_": true,
+            "emissive_factor_": [
+               0,
+               0,
+               0,
+               1,
+               1
+            ],
+            "emissive_index_": 0,
+            "emissive_strength_": 1,
+            "emissive_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": true,
+               "uri_": ""
+            },
+            "emissive_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "flipUV_": false,
+            "metallic_factor_": 0.88,
+            "metallic_roughness_enable_texture_": false,
+            "metallic_roughness_index_": 0,
+            "metallic_roughness_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": false,
+               "uri_": ""
+            },
+            "metallic_roughness_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "metallic_sampling_channel_": "b",
+            "normal_enable_g_reverse_": false,
+            "normal_enable_texture_": false,
+            "normal_index_": 0,
+            "normal_scale_": 1,
+            "normal_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": false,
+               "uri_": ""
+            },
+            "normal_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "occlusion_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": false,
+               "uri_": ""
+            },
+            "occlusion_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "roughness_factor_": 0.32,
+            "roughness_sampling_channel_": "g",
+            "shading_model_": "lit",
+            "specular_ambient_occlusion_": "simple",
+            "type_": "pbr",
+            "vertex_transform_": [
+               1,
+               0,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               0,
+               1
+            ]
+         },
+         "canEmit": true,
+         "materialType": "pbr",
+         "shader": {
+            "materialType": "pbr",
+            "baseColor": {
+               "value": "#171211ff",
+               "enableTexture": false,
+               "textureMapUri": "",
+               "texturePremultiplied": false,
+               "wrapModeU": "repeat",
+               "wrapModeV": "repeat",
+               "uvSet": 0
+            },
+            "metallicRoughnessAO": {
+               "enableTexture": false,
+               "textureMapUri": "",
+               "wrapModeU": "repeat",
+               "wrapModeV": "repeat",
+               "uvSet": 0,
+               "metallicFactor": 0.88,
+               "roughnessFactor": 0.32,
+               "metallicChannel": "b",
+               "roughnessChannel": "g",
+               "aoChannel": "r",
+               "aoStrength": 0
+            },
+            "normal": {
+               "enableTexture": false,
+               "textureMapUri": "",
+               "wrapModeU": "repeat",
+               "wrapModeV": "repeat",
+               "uvSet": 0,
+               "enableGReverse": false,
+               "scale": 1
+            },
+            "emissive": {
+               "value": "#000000ff",
+               "enableTexture": false,
+               "textureMapUri": "",
+               "wrapModeU": "repeat",
+               "wrapModeV": "repeat",
+               "uvSet": 0,
+               "enableTextureColorMultiply": true,
+               "strength": 1
+            },
+            "advance": {
+               "blending": "opaque",
+               "colorWrite": true,
+               "depthWrite": true,
+               "depthCulling": true,
+               "cullingMode": "back",
+               "doubleSide": false
+            }
+         },
+         "lastType": "pbr",
+         "key": "2f59df0b-9304-4ec3-b731-f37c3f549944",
+         "path": "pbr.material",
+         "label": "pbr.material"
+      },
+      "470b7f69-b871-4c9f-9f8d-f0c1cf162321": {
+         "type": "MaterialFileData",
+         "commandMap": {},
+         "rawMaterialConfigJson": {
+            "ao_enable_texture_": false,
+            "ao_index_": 0,
+            "ao_sampling_channel_": "r",
+            "ao_strength_": 1,
+            "base_color_enable_texture_": true,
+            "base_color_factor_": [
+               1,
+               1,
+               1,
+               1
+            ],
+            "base_color_index_": 0,
+            "base_color_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": true,
+               "uri_": "99cb25ad-c641-4e16-946c-f646b5f5f780"
+            },
+            "base_color_texture_premultiplied_": false,
+            "base_color_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "blending_": "fade",
+            "clear_coat_enable_texture_": false,
+            "clear_coat_factor_": 0,
+            "clear_coat_index_": -1,
+            "clear_coat_normal_enable_texture_": false,
+            "clear_coat_normal_index_": -1,
+            "clear_coat_normal_scale_": 0,
+            "clear_coat_normal_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": false,
+               "uri_": ""
+            },
+            "clear_coat_normal_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "clear_coat_roughness_enable_texture_": false,
+            "clear_coat_roughness_factor_": 0,
+            "clear_coat_roughness_index_": -1,
+            "clear_coat_roughness_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": false,
+               "uri_": ""
+            },
+            "clear_coat_roughness_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "clear_coat_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": false,
+               "uri_": ""
+            },
+            "clear_coat_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "color_write_": true,
+            "culling_mode_": "none",
+            "depth_culling_": true,
+            "depth_write_": true,
+            "double_side_": true,
+            "emissive_enable_texture_": false,
+            "emissive_enable_texture_color_multiply_": true,
+            "emissive_factor_": [
+               0,
+               0,
+               0,
+               1,
+               1
+            ],
+            "emissive_index_": 0,
+            "emissive_strength_": 1,
+            "emissive_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": true,
+               "uri_": ""
+            },
+            "emissive_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "flipUV_": false,
+            "metallic_factor_": 1,
+            "metallic_roughness_enable_texture_": false,
+            "metallic_roughness_index_": 0,
+            "metallic_roughness_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": false,
+               "uri_": ""
+            },
+            "metallic_roughness_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "metallic_sampling_channel_": "b",
+            "normal_enable_g_reverse_": false,
+            "normal_enable_texture_": false,
+            "normal_index_": 0,
+            "normal_scale_": 1,
+            "normal_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": false,
+               "uri_": ""
+            },
+            "normal_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "occlusion_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": false,
+               "uri_": ""
+            },
+            "occlusion_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "roughness_factor_": 0.5,
+            "roughness_sampling_channel_": "g",
+            "shading_model_": "lit",
+            "specular_ambient_occlusion_": "simple",
+            "type_": "pbr",
+            "vertex_transform_": [
+               1,
+               0,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               0,
+               1
+            ]
+         },
+         "canEmit": true,
+         "materialType": "pbr",
+         "shader": {
+            "materialType": "pbr",
+            "baseColor": {
+               "value": "#ffffffff",
+               "enableTexture": true,
+               "textureMapUri": "99cb25ad-c641-4e16-946c-f646b5f5f780",
+               "texturePremultiplied": false,
+               "wrapModeU": "repeat",
+               "wrapModeV": "repeat",
+               "uvSet": 0
+            },
+            "metallicRoughnessAO": {
+               "enableTexture": false,
+               "textureMapUri": "",
+               "wrapModeU": "repeat",
+               "wrapModeV": "repeat",
+               "uvSet": 0,
+               "metallicFactor": 1,
+               "roughnessFactor": 0.5,
+               "metallicChannel": "b",
+               "roughnessChannel": "g",
+               "aoChannel": "r",
+               "aoStrength": 0
+            },
+            "normal": {
+               "enableTexture": false,
+               "textureMapUri": "",
+               "wrapModeU": "repeat",
+               "wrapModeV": "repeat",
+               "uvSet": 0,
+               "enableGReverse": false,
+               "scale": 1
+            },
+            "emissive": {
+               "value": "#000000ff",
+               "enableTexture": false,
+               "textureMapUri": "",
+               "wrapModeU": "repeat",
+               "wrapModeV": "repeat",
+               "uvSet": 0,
+               "enableTextureColorMultiply": true,
+               "strength": 1
+            },
+            "advance": {
+               "blending": "fade",
+               "colorWrite": true,
+               "depthWrite": true,
+               "depthCulling": true,
+               "cullingMode": "none",
+               "doubleSide": true
+            }
+         },
+         "lastType": "pbr",
+         "key": "470b7f69-b871-4c9f-9f8d-f0c1cf162321",
+         "path": "XiKuangYanJing33-gltf/materials/Mat.Route666.material",
+         "label": "Mat.Route666.material"
+      },
+      "c35b28e7-cd8e-4e94-a067-5d5a44e0527c": {
+         "type": "AudioClipData",
+         "commandMap": {},
+         "loopCount": -1,
+         "path": "bgm.mp3",
+         "timeRange": {
+            "startTime": 0,
+            "duration": 16560000
+         },
+         "rhythmPath": "",
+         "key": "c35b28e7-cd8e-4e94-a067-5d5a44e0527c"
+      },
+      "6113cd76-2a37-4e59-b086-062d17f5dbd7": {
+         "type": "js",
+         "commandMap": {},
+         "key": "6113cd76-2a37-4e59-b086-062d17f5dbd7",
+         "path": "scripts/light.js",
+         "label": "light.js"
+      },
+      "632b0f18-9284-4f54-a0c4-f19fcb376d1a": {
+         "type": "js",
+         "commandMap": {},
+         "key": "632b0f18-9284-4f54-a0c4-f19fcb376d1a",
+         "path": "scripts/250.flow.js",
+         "label": "250.flow.js"
+      },
+      "RenderTarget": {
+         "type": "RenderTarget",
+         "commandMap": {},
+         "width": 0,
+         "height": 0,
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "NEAREST",
+            "minFilter": "NEAREST",
+            "sRGB": true,
+            "samplerType": "SAMPLER_2D"
+         },
+         "key": "RenderTarget",
+         "path": "RenderTarget.rdt",
+         "label": "RenderTarget.rdt",
+         "inputKey": "DeviceCameraTexture",
+         "input": "DeviceCameraTexture"
+      },
+      "DeviceCameraTexture": {
+         "type": "TextureData",
+         "commandMap": {},
+         "key": "DeviceCameraTexture",
+         "path": "DeviceCameraTexture.tex",
+         "label": "DeviceCameraTexture.tex"
+      },
+      "bffa890c-da8a-46a8-8ab1-6dbc25b7c698": {
+         "type": "ImageData",
+         "commandMap": {},
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "LINEAR",
+            "minFilter": "LINEAR_MIPMAP_LINEAR",
+            "sRGB": true,
+            "samplerType": "SAMPLER_2D"
+         },
+         "key": "bffa890c-da8a-46a8-8ab1-6dbc25b7c698",
+         "path": "郁金香.png",
+         "label": "郁金香.png",
+         "actualSize": 219654,
+         "resolution": {
+            "height": 512,
+            "width": 512
+         }
+      },
+      "aef7f335-36c3-47cd-b0c1-7e264e4c7963": {
+         "type": "ImageData",
+         "commandMap": {},
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "LINEAR",
+            "minFilter": "LINEAR_MIPMAP_LINEAR",
+            "sRGB": true,
+            "samplerType": "SAMPLER_2D"
+         },
+         "key": "aef7f335-36c3-47cd-b0c1-7e264e4c7963",
+         "path": "sh.png",
+         "label": "sh.png",
+         "actualSize": 262623,
+         "resolution": {
+            "height": 2048,
+            "width": 1536
+         }
+      },
+      "72afdffe-899d-467d-ba31-8791f5ec919f": {
+         "type": "ImageData",
+         "commandMap": {},
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "LINEAR",
+            "minFilter": "LINEAR_MIPMAP_LINEAR",
+            "sRGB": true,
+            "samplerType": "SAMPLER_2D"
+         },
+         "key": "72afdffe-899d-467d-ba31-8791f5ec919f",
+         "path": "mt.png",
+         "label": "mt.png",
+         "actualSize": 4277,
+         "resolution": {
+            "height": 125,
+            "width": 125
+         }
+      },
+      "966124fc-bafa-429c-96a6-72d64200f323": {
+         "type": "ImageData",
+         "commandMap": {},
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "LINEAR",
+            "minFilter": "LINEAR_MIPMAP_LINEAR",
+            "sRGB": true,
+            "samplerType": "SAMPLER_2D"
+         },
+         "key": "966124fc-bafa-429c-96a6-72d64200f323",
+         "path": "zc.png",
+         "label": "zc.png",
+         "actualSize": 12276,
+         "resolution": {
+            "height": 2048,
+            "width": 1536
+         }
+      },
+      "0cd03468-511b-4ccf-94b4-456ce868544b": {
+         "type": "ImageData",
+         "commandMap": {},
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "LINEAR",
+            "minFilter": "LINEAR_MIPMAP_LINEAR",
+            "sRGB": true,
+            "samplerType": "SAMPLER_2D"
+         },
+         "key": "0cd03468-511b-4ccf-94b4-456ce868544b",
+         "path": "yj.png",
+         "label": "yj.png",
+         "actualSize": 69176,
+         "resolution": {
+            "height": 2048,
+            "width": 1536
+         }
+      },
+      "03bb659f-6428-46c6-81b2-23a7b0c52d15": {
+         "type": "ImageData",
+         "commandMap": {},
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "LINEAR",
+            "minFilter": "LINEAR_MIPMAP_LINEAR",
+            "sRGB": true,
+            "samplerType": "SAMPLER_2D"
+         },
+         "key": "03bb659f-6428-46c6-81b2-23a7b0c52d15",
+         "path": "lp.png",
+         "label": "lp.png",
+         "actualSize": 18211,
+         "resolution": {
+            "height": 2048,
+            "width": 1536
+         }
+      },
+      "9f05727d-9cce-4fc1-86c8-3f1eada24a04": {
+         "type": "PAGFileData",
+         "commandMap": {},
+         "loopCount": 0,
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "NEAREST",
+            "minFilter": "NEAREST",
+            "sRGB": true,
+            "samplerType": "SAMPLER_2D"
+         },
+         "key": "9f05727d-9cce-4fc1-86c8-3f1eada24a04",
+         "path": "flower-left.pag",
+         "label": "flower-left.pag",
+         "timeRange": {
+            "startTime": 0,
+            "duration": 0
+         },
+         "duration": 3000000,
+         "resolution": {
+            "width": 226,
+            "height": 360
+         },
+         "frameRate": 12,
+         "hasAudio": false
+      },
+      "6af9b9fc-1c04-476f-b27b-ef0255876b6e": {
+         "type": "PAGFileData",
+         "commandMap": {},
+         "loopCount": 0,
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "NEAREST",
+            "minFilter": "NEAREST",
+            "sRGB": true,
+            "samplerType": "SAMPLER_2D"
+         },
+         "key": "6af9b9fc-1c04-476f-b27b-ef0255876b6e",
+         "path": "flower-right.pag",
+         "label": "flower-right.pag",
+         "timeRange": {
+            "startTime": 0,
+            "duration": 0
+         },
+         "duration": 3000000,
+         "resolution": {
+            "width": 284,
+            "height": 422
+         },
+         "frameRate": 12,
+         "hasAudio": false
+      },
+      "727eabdc-a88c-4646-be64-b9b1b4eeb1bc": {
+         "type": "PAGFileData",
+         "commandMap": {},
+         "loopCount": 0,
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "NEAREST",
+            "minFilter": "NEAREST",
+            "sRGB": true,
+            "samplerType": "SAMPLER_2D"
+         },
+         "key": "727eabdc-a88c-4646-be64-b9b1b4eeb1bc",
+         "path": "holiday-1.pag",
+         "label": "holiday-1.pag",
+         "timeRange": {
+            "startTime": 0,
+            "duration": 0
+         },
+         "duration": 2250000,
+         "resolution": {
+            "width": 476,
+            "height": 286
+         },
+         "frameRate": 12,
+         "hasAudio": false
+      },
+      "911ae251-ab63-42ae-b122-1e1418fb59cf": {
+         "type": "PAGFileData",
+         "commandMap": {},
+         "loopCount": 0,
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "NEAREST",
+            "minFilter": "NEAREST",
+            "sRGB": true,
+            "samplerType": "SAMPLER_2D"
+         },
+         "key": "911ae251-ab63-42ae-b122-1e1418fb59cf",
+         "path": "holiday-2.pag",
+         "label": "holiday-2.pag",
+         "timeRange": {
+            "startTime": 0,
+            "duration": 0
+         },
+         "duration": 750000,
+         "resolution": {
+            "width": 476,
+            "height": 286
+         },
+         "frameRate": 12,
+         "hasAudio": false
+      },
+      "d79b8d03-af71-45dc-bdd3-65193915d8aa": {
+         "type": "folder",
+         "commandMap": {},
+         "key": "d79b8d03-af71-45dc-bdd3-65193915d8aa",
+         "label": "root",
+         "path": "./"
+      },
+      "8e62a1ef-5015-41db-824d-b84d4baca415": {
+         "type": "default",
+         "commandMap": {},
+         "key": "8e62a1ef-5015-41db-824d-b84d4baca415",
+         "path": "imgui.ini",
+         "label": "imgui.ini"
+      },
+      "da64a8c1-6ce3-49b2-9799-5dc569cf2870": {
+         "type": "folder",
+         "commandMap": {},
+         "key": "da64a8c1-6ce3-49b2-9799-5dc569cf2870",
+         "label": "lebombo_default",
+         "path": "lebombo_default"
+      },
+      "ba3d4e62-48c9-434c-9d03-2a820c5b2f81": {
+         "type": "EnvMap_KTX",
+         "commandMap": {},
+         "key": "ba3d4e62-48c9-434c-9d03-2a820c5b2f81",
+         "path": "lebombo_default/lebombo_default_ibl.ktx",
+         "label": "lebombo_default_ibl.ktx"
+      },
+      "1774dc2f-2cfb-4cb3-a8df-5c48c7ad0f2f": {
+         "type": "EnvMap_KTX",
+         "commandMap": {},
+         "key": "1774dc2f-2cfb-4cb3-a8df-5c48c7ad0f2f",
+         "path": "lebombo_default/lebombo_default_skybox.ktx",
+         "label": "lebombo_default_skybox.ktx"
+      },
+      "a816ef66-b4c7-4a49-a02f-a1e9fcdde03b": {
+         "type": "AudioClipData",
+         "commandMap": {},
+         "loopCount": 0,
+         "key": "a816ef66-b4c7-4a49-a02f-a1e9fcdde03b",
+         "path": "lebombo_default/五一花花.mp3",
+         "label": "五一花花.mp3",
+         "timeRange": {
+            "startTime": 0,
+            "duration": 10344490
+         },
+         "duration": 10344490
+      },
+      "9f4e08cc-f0da-4aa5-93c5-fb23a4fdad0a": {
+         "type": "MaterialFileData",
+         "commandMap": {},
+         "rawMaterialConfigJson": {
+            "ao_enable_texture_": false,
+            "ao_index_": 0,
+            "ao_sampling_channel_": "r",
+            "ao_strength_": 1,
+            "base_color_enable_texture_": false,
+            "base_color_factor_": [
+               1,
+               1,
+               1,
+               1
+            ],
+            "base_color_index_": 0,
+            "base_color_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": true,
+               "uri_": ""
+            },
+            "base_color_texture_premultiplied_": false,
+            "base_color_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "blending_": "masked",
+            "clear_coat_enable_texture_": false,
+            "clear_coat_factor_": 0,
+            "clear_coat_index_": -1,
+            "clear_coat_normal_enable_texture_": false,
+            "clear_coat_normal_index_": -1,
+            "clear_coat_normal_scale_": 0,
+            "clear_coat_normal_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": false,
+               "uri_": ""
+            },
+            "clear_coat_normal_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "clear_coat_roughness_enable_texture_": false,
+            "clear_coat_roughness_factor_": 0,
+            "clear_coat_roughness_index_": -1,
+            "clear_coat_roughness_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": false,
+               "uri_": ""
+            },
+            "clear_coat_roughness_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "clear_coat_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": false,
+               "uri_": ""
+            },
+            "clear_coat_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "color_write_": false,
+            "culling_mode_": "back",
+            "depth_culling_": true,
+            "depth_write_": true,
+            "double_side_": false,
+            "emissive_enable_texture_": false,
+            "emissive_enable_texture_color_multiply_": true,
+            "emissive_factor_": [
+               0,
+               0,
+               0,
+               1,
+               1
+            ],
+            "emissive_index_": 0,
+            "emissive_strength_": 1,
+            "emissive_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": true,
+               "uri_": ""
+            },
+            "emissive_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "flipUV_": false,
+            "metallic_factor_": 1,
+            "metallic_roughness_enable_texture_": false,
+            "metallic_roughness_index_": 0,
+            "metallic_roughness_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": false,
+               "uri_": ""
+            },
+            "metallic_roughness_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "metallic_sampling_channel_": "b",
+            "normal_enable_g_reverse_": false,
+            "normal_enable_texture_": false,
+            "normal_index_": 0,
+            "normal_scale_": 1,
+            "normal_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": false,
+               "uri_": ""
+            },
+            "normal_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "occlusion_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": false,
+               "uri_": ""
+            },
+            "occlusion_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "roughness_factor_": 0,
+            "roughness_sampling_channel_": "g",
+            "shading_model_": "lit",
+            "specular_ambient_occlusion_": "simple",
+            "type_": "pbr",
+            "vertex_transform_": [
+               1,
+               0,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               0,
+               1
+            ]
+         },
+         "canEmit": true,
+         "materialType": "pbr",
+         "shader": {
+            "materialType": "pbr",
+            "baseColor": {
+               "value": "#ffffffff",
+               "enableTexture": false,
+               "textureMapUri": "",
+               "texturePremultiplied": false,
+               "wrapModeU": "repeat",
+               "wrapModeV": "repeat",
+               "uvSet": 0
+            },
+            "metallicRoughnessAO": {
+               "enableTexture": false,
+               "textureMapUri": "",
+               "wrapModeU": "repeat",
+               "wrapModeV": "repeat",
+               "uvSet": 0,
+               "metallicFactor": 1,
+               "roughnessFactor": 0,
+               "metallicChannel": "b",
+               "roughnessChannel": "g",
+               "aoChannel": "r",
+               "aoStrength": 0
+            },
+            "normal": {
+               "enableTexture": false,
+               "textureMapUri": "",
+               "wrapModeU": "repeat",
+               "wrapModeV": "repeat",
+               "uvSet": 0,
+               "enableGReverse": false,
+               "scale": 1
+            },
+            "emissive": {
+               "value": "#000000ff",
+               "enableTexture": false,
+               "textureMapUri": "",
+               "wrapModeU": "repeat",
+               "wrapModeV": "repeat",
+               "uvSet": 0,
+               "enableTextureColorMultiply": true,
+               "strength": 1
+            },
+            "advance": {
+               "blending": "masked",
+               "colorWrite": false,
+               "depthWrite": true,
+               "depthCulling": true,
+               "cullingMode": "back",
+               "doubleSide": false
+            }
+         },
+         "lastType": "pbr",
+         "key": "9f4e08cc-f0da-4aa5-93c5-fb23a4fdad0a",
+         "path": "pbr_1.material",
+         "label": "pbr_1.material"
+      },
+      "RenderTarget1": {
+         "type": "RenderTarget",
+         "commandMap": {},
+         "width": 0,
+         "height": 0,
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "NEAREST",
+            "minFilter": "NEAREST",
+            "sRGB": true,
+            "samplerType": "SAMPLER_2D"
+         },
+         "key": "RenderTarget1",
+         "path": "RenderTarget_camera_1.rdt",
+         "label": "RenderTarget_camera_1.rdt",
+         "inputKey": "",
+         "input": ""
+      },
+      "40cb7fb1-9775-467c-abf9-e6c2e8ceb1c4": {
+         "type": "folder",
+         "commandMap": {},
+         "key": "40cb7fb1-9775-467c-abf9-e6c2e8ceb1c4",
+         "label": "scripts",
+         "path": "scripts"
+      },
+      "b2daeadb-127f-4c5a-940e-85475885294f": {
+         "type": "folder",
+         "commandMap": {},
+         "key": "b2daeadb-127f-4c5a-940e-85475885294f",
+         "label": "XiKuangYanJing33-gltf",
+         "path": "XiKuangYanJing33-gltf"
+      },
+      "e770aa26-2616-44f7-b371-b0b9344f5262": {
+         "type": "folder",
+         "commandMap": {},
+         "key": "e770aa26-2616-44f7-b371-b0b9344f5262",
+         "label": "images",
+         "path": "XiKuangYanJing33-gltf/images"
+      },
+      "229869d2-5162-4656-95a9-d4efca5d58da": {
+         "type": "folder",
+         "commandMap": {},
+         "key": "229869d2-5162-4656-95a9-d4efca5d58da",
+         "label": "materials",
+         "path": "XiKuangYanJing33-gltf/materials"
+      },
+      "3e5c82fa-7cf5-42bf-b493-c665de1d0a25": {
+         "type": "MaterialFileData",
+         "commandMap": {},
+         "rawMaterialConfigJson": {
+            "ao_enable_texture_": false,
+            "ao_index_": -1,
+            "ao_sampling_channel_": "r",
+            "ao_strength_": 1,
+            "base_color_enable_texture_": false,
+            "base_color_factor_": [
+               0.27028611302375793,
+               0.27028611302375793,
+               0.27028611302375793,
+               1
+            ],
+            "base_color_index_": -1,
+            "base_color_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": true,
+               "uri_": ""
+            },
+            "base_color_texture_premultiplied_": false,
+            "base_color_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "blending_": "opaque",
+            "clear_coat_enable_texture_": false,
+            "clear_coat_factor_": 0,
+            "clear_coat_index_": -1,
+            "clear_coat_normal_enable_texture_": false,
+            "clear_coat_normal_index_": -1,
+            "clear_coat_normal_scale_": 0,
+            "clear_coat_normal_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": false,
+               "uri_": ""
+            },
+            "clear_coat_normal_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "clear_coat_roughness_enable_texture_": false,
+            "clear_coat_roughness_factor_": 0,
+            "clear_coat_roughness_index_": -1,
+            "clear_coat_roughness_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": false,
+               "uri_": ""
+            },
+            "clear_coat_roughness_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "clear_coat_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": false,
+               "uri_": ""
+            },
+            "clear_coat_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "color_write_": true,
+            "culling_mode_": "back",
+            "depth_culling_": true,
+            "depth_write_": true,
+            "double_side_": true,
+            "emissive_enable_texture_": false,
+            "emissive_enable_texture_color_multiply_": true,
+            "emissive_factor_": [
+               0,
+               0,
+               0,
+               1
+            ],
+            "emissive_index_": -1,
+            "emissive_strength_": 1,
+            "emissive_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": true,
+               "uri_": ""
+            },
+            "emissive_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "flipUV_": false,
+            "metallic_factor_": 0,
+            "metallic_roughness_enable_texture_": false,
+            "metallic_roughness_index_": -1,
+            "metallic_roughness_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": false,
+               "uri_": ""
+            },
+            "metallic_roughness_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "metallic_sampling_channel_": "b",
+            "normal_enable_g_reverse_": false,
+            "normal_enable_texture_": false,
+            "normal_index_": -1,
+            "normal_scale_": 1,
+            "normal_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": false,
+               "uri_": ""
+            },
+            "normal_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "occlusion_texture_bind_": {
+               "sampler_": {
+                  "compare_func": "le",
+                  "compare_mode_": "none",
+                  "mag_filter_": "linear",
+                  "min_filter_": "linear_mipmap_linear",
+                  "wrap_mode_r_": "repeat",
+                  "wrap_mode_s_": "repeat",
+                  "wrap_mode_t_": "repeat"
+               },
+               "srgb_": false,
+               "uri_": ""
+            },
+            "occlusion_uv_matrix_": [
+               1,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               1
+            ],
+            "roughness_factor_": 1,
+            "roughness_sampling_channel_": "g",
+            "shading_model_": "lit",
+            "specular_ambient_occlusion_": "simple",
+            "type_": "pbr",
+            "vertex_transform_": [
+               1,
+               0,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               0,
+               1,
+               0,
+               0,
+               0,
+               0,
+               1
+            ]
+         },
+         "canEmit": true,
+         "materialType": "pbr",
+         "shader": {
+            "materialType": "pbr",
+            "baseColor": {
+               "value": "#444444ff",
+               "enableTexture": false,
+               "textureMapUri": "",
+               "texturePremultiplied": false,
+               "wrapModeU": "repeat",
+               "wrapModeV": "repeat",
+               "uvSet": 0
+            },
+            "metallicRoughnessAO": {
+               "enableTexture": false,
+               "textureMapUri": "",
+               "wrapModeU": "repeat",
+               "wrapModeV": "repeat",
+               "uvSet": 0,
+               "metallicFactor": 0,
+               "roughnessFactor": 1,
+               "metallicChannel": "b",
+               "roughnessChannel": "g",
+               "aoChannel": "r",
+               "aoStrength": 0
+            },
+            "normal": {
+               "enableTexture": false,
+               "textureMapUri": "",
+               "wrapModeU": "repeat",
+               "wrapModeV": "repeat",
+               "uvSet": 0,
+               "enableGReverse": false,
+               "scale": 1
+            },
+            "emissive": {
+               "value": "#000000ff",
+               "enableTexture": false,
+               "textureMapUri": "",
+               "wrapModeU": "repeat",
+               "wrapModeV": "repeat",
+               "uvSet": 0,
+               "enableTextureColorMultiply": true,
+               "strength": 1
+            },
+            "advance": {
+               "blending": "opaque",
+               "colorWrite": true,
+               "depthWrite": true,
+               "depthCulling": true,
+               "cullingMode": "none",
+               "doubleSide": true
+            }
+         },
+         "lastType": "pbr",
+         "key": "3e5c82fa-7cf5-42bf-b493-c665de1d0a25",
+         "path": "XiKuangYanJing33-gltf/materials/Mat.head.material",
+         "label": "Mat.head.material"
+      },
+      "73085e68-38e3-4d1a-954f-3ba5d865899d": {
+         "type": "folder",
+         "commandMap": {},
+         "key": "73085e68-38e3-4d1a-954f-3ba5d865899d",
+         "label": "meshes",
+         "path": "XiKuangYanJing33-gltf/meshes"
+      },
+      "e4ef00fa-9790-46f4-bf19-0d5ee817f61a": {
+         "type": "mesh",
+         "commandMap": {},
+         "key": "e4ef00fa-9790-46f4-bf19-0d5ee817f61a",
+         "path": "XiKuangYanJing33-gltf/meshes/0_0.mesh",
+         "label": "0_0.mesh",
+         "triangleCount": 8768,
+         "verticesCount": 5719,
+         "meshSize": "230.00 KB",
+         "blendShapes": 0
+      },
+      "824f9a83-5343-4685-8b7c-eb0ffd6715c3": {
+         "type": "mesh",
+         "commandMap": {},
+         "key": "824f9a83-5343-4685-8b7c-eb0ffd6715c3",
+         "path": "XiKuangYanJing33-gltf/meshes/1_0.mesh",
+         "label": "1_0.mesh",
+         "triangleCount": 109,
+         "verticesCount": 116,
+         "meshSize": "4.00 KB",
+         "blendShapes": 0
+      },
+      "c2fb5c84-27d4-4925-af7c-7d3609eb6900": {
+         "type": "prefab",
+         "commandMap": {},
+         "key": "c2fb5c84-27d4-4925-af7c-7d3609eb6900",
+         "path": "XiKuangYanJing33-gltf/XiKuangYanJing33.prefab",
+         "label": "XiKuangYanJing33.prefab"
+      },
+      "39edb8cb-7eb4-4b6e-a6ea-be96e095b542": {
+         "type": "ImageData",
+         "commandMap": {},
+         "textureOptions": {
+            "wrapS": "REPEAT",
+            "wrapT": "REPEAT",
+            "magFilter": "LINEAR",
+            "minFilter": "LINEAR_MIPMAP_LINEAR",
+            "sRGB": true,
+            "samplerType": "SAMPLER_2D"
+         },
+         "key": "39edb8cb-7eb4-4b6e-a6ea-be96e095b542",
+         "path": "xr bd.png",
+         "label": "xr bd.png",
+         "actualSize": 146291,
+         "resolution": {
+            "height": 2048,
+            "width": 1536
+         }
+      },
+      "8ea45f32-0db3-4f94-8acb-0218ee7ac46c": {
+         "type": "default",
+         "commandMap": {},
+         "key": "8ea45f32-0db3-4f94-8acb-0218ee7ac46c",
+         "label": "yanjing.2021-05-31-13-22-43-636Z.bak",
+         "path": "yanjing.2021-05-31-13-22-43-636Z.bak"
+      }
+   },
+   "preset": {},
+   "properties": {
+      "layout": {
+         "width": 960,
+         "height": 1280
+      },
+      "boundsTrackerPlaceHolders": [],
+      "musicIDs": [],
+      "fonts": [],
+      "movieConfig": {
+         "sourceType": 2,
+         "minClipAssetCount": 1,
+         "maxClipAssetCount": 999,
+         "minImageDuration": 1000000,
+         "maxImageDuration": 10000000,
+         "minVideoDuration": 2000000,
+         "preferredCoverTime": 1000000,
+         "originVolume": 1,
+         "cropEvents": [],
+         "imageCropSpace": 0,
+         "videoCropSpace": -1,
+         "disableEventsWhileTransition": true
+      },
+      "materialConfigs": [],
+      "resourceIDs": []
+   },
+   "needStudioLibScript": true
+}

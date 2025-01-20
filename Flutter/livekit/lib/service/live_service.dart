@@ -118,4 +118,6 @@ abstract class ILiveService {
       {String? coverUrl, List<int>? categoryList, bool? isPublicVisible, int? activityStatus});
 
   TUILoginUserInfo getSelfInfo();
+
+  Future<int?>? enableCustomVideoProcess(bool bool);
 }
