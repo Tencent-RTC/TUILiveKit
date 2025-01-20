@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tencent_live_uikit/common/index.dart';
+import 'package:tencent_live_uikit/common/ui_component/beauty/xmagic/tebeauty_panel_widget.dart';
 
 import 'video_params_panel_widget.dart';
 
@@ -112,7 +113,7 @@ extension SettingsPanelWidgetStateLogicExtension on SettingsPanelWidgetState {
     switch (item.type) {
       case SettingsItemType.beauty:
         showWidget(
-          BeautyPanelWidget(liveController: liveController),
+          TEBeautyPanelWidget(liveController: liveController),
           barrierColor: LivekitColors.livekitDesignStandardTransparent,
         );
         break;

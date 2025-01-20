@@ -39,4 +39,8 @@ class Constants {
   static const int dataReportFramework = 1;
   static const int dataReportLanguageFlutter = 9;
   static int dataReportComponent = dataReportComponentLiveRoom;
+
+
+  static String licenseUrl = "";       // 替换美颜 LicenseUrl
+  static String licenseKey = "";       // 替换美颜 LicenseKey
 }

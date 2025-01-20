@@ -1,0 +1,141 @@
+{
+	"parts": [
+		{
+			"duration": 4.7,
+			"background": {
+				"type": 2,
+				"videoFile": "",
+				"videoAlphaType": 0,
+				"imageName": "",
+				"imageCount": 0,
+				"imageDuration": 0.0,
+				"aspectMode": 0,
+				"blendMode": 0
+			},
+			"cameraFrame": {
+				"scale": {
+					"0.0": 1.0,
+					"1.0": 1.0
+				},
+				"rotate": {
+					"0.0": 0,
+					"1.0": 0
+				},
+				"gridSettingFile": {
+					"0.0": "",
+					"1.0": ""
+				},
+				"gridType": {
+					"0.0": 0,
+					"1.0": 0
+				},
+				"gridMode": {
+					"0.0": 1,
+					"1.0": 1
+				},
+				"easeCurve": 0
+			},
+			"cover": {
+				"imageFile": "",
+				"aspectMode": 0,
+				"blendMode": 0
+			},
+			"foreground": {
+				"videoFile": "",
+				"videoAlphaType": 1,
+				"imageName": "",
+				"imageCount": 0,
+				"imageDuration": 0,
+				"aspectMode": 0,
+				"blendMode": 1
+			},
+			"filterEffect": {
+				"type": 0,
+				"fid": "",
+				"lutFile": ""
+			},
+			"finishTransition": {
+				"triggerType": 0,
+				"duration": 0.0,
+				"easeCurve": 2,
+				"transitionFunction": 0,
+				"maskVideoFile": "",
+				"maskVideoAlphaType": 0,
+				"maskImageName": "",
+				"maskImageCount": 0,
+				"maskImageDuration": 0.0,
+				"maskType": 1,
+				"blurRadius": 0.0
+			}
+		},
+		{
+			"duration": 18.3,
+			"background": {
+				"type": 2,
+				"videoFile": "",
+				"videoAlphaType": 0,
+				"imageName": "",
+				"imageCount": 0,
+				"imageDuration": 0.0,
+				"aspectMode": 0,
+				"blendMode": 0
+			},
+			"cameraFrame": {
+				"scale": {
+					"0.0": 1.0,
+					"1.0": 1.0
+				},
+				"rotate": {
+					"0.0": 0,
+					"1.0": 0
+				},
+				"gridSettingFile": {
+					"0.0": "",
+					"1.0": ""
+				},
+				"gridType": {
+					"0.0": 0,
+					"1.0": 0
+				},
+				"gridMode": {
+					"0.0": 1,
+					"1.0": 1
+				},
+				"easeCurve": 0
+			},
+			"cover": {
+				"imageFile": "",
+				"aspectMode": 0,
+				"blendMode": 0
+			},
+			"foreground": {
+				"videoFile": "",
+				"videoAlphaType": 1,
+				"imageName": "",
+				"imageCount": 0,
+				"imageDuration": 0,
+				"aspectMode": 0,
+				"blendMode": 1
+			},
+			"filterEffect": {
+				"type": 0,
+				"fid": "",
+				"lutFile": ""
+			},
+			"finishTransition": {
+				"triggerType": 0,
+				"duration": 0.0,
+				"easeCurve": 2,
+				"transitionFunction": 0,
+				"maskVideoFile": "",
+				"maskVideoAlphaType": 0,
+				"maskImageName": "",
+				"maskImageCount": 0,
+				"maskImageDuration": 0.0,
+				"maskType": 1,
+				"blurRadius": 0.0
+			}
+		}
+	],
+	"bgmAudio": ""
+}

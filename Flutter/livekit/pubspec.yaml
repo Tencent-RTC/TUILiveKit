@@ -25,12 +25,23 @@ dependencies:
   fluttertoast: ^8.2.10
   permission_handler: ^11.0.0
   cached_network_image: ^3.4.1
+
+  package_info_plus: ^8.1.2
+  shared_preferences: 2.1.1
+  path_provider: ^2.0.1
   # 添加 barrage 本地依赖
   barrage:
     path: ../barrage
   # 添加 gift 本地依赖
   gift:
     path: ../gift
+
+#  # 腾讯特效 - 美颜
+  tencent_effect_flutter:
+    git:
+      url: https://github.com/Tencent-RTC/TencentEffect_Flutter
+#  beauty:
+#    path: ../../../../beauty
 
 dev_dependencies:
   flutter_test:

@@ -1,0 +1,408 @@
+{
+   "name": "video_guifeiface",
+   "type": "empty",
+   "author": "",
+   "category": 1,
+   "scene": {
+      "id": 16,
+      "name": "video_guifeiface",
+      "children": [
+         {
+            "id": 17,
+            "name": "2D画板",
+            "children": [
+               {
+                  "id": 18,
+                  "name": "人脸形变",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "type": "ScreenTransform",
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "anchor": {
+                           "left": 0,
+                           "right": 0,
+                           "top": 0,
+                           "bottom": 0
+                        },
+                        "offset": {
+                           "left": -360,
+                           "right": 360,
+                           "top": 640,
+                           "bottom": -640
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 0,
+                        "eFixSize": 3,
+                        "eEditingMode": 0,
+                        "eKeepRatio": false,
+                        "enabled": true,
+                        "entityId": 18,
+                        "componentID": 4,
+                        "objectEnabled": true
+                     },
+                     {
+                        "alignPoints": [
+                           64
+                        ],
+                        "scalePivotPoint1": 0,
+                        "scalePivotPoint2": 18,
+                        "faceIndex": [
+                           0,
+                           1,
+                           2,
+                           3,
+                           4
+                        ],
+                        "isRefine": true,
+                        "isWaitFirstFrameDetect": false,
+                        "isAllFrameFaceDetect": false,
+                        "type": "FaceTracking",
+                        "enabled": true,
+                        "entityId": 18,
+                        "componentID": 7,
+                        "xAxisTrack": true,
+                        "yAxisTrack": true,
+                        "xAxisRotateTrack": true,
+                        "yAxisRotateTrack": true,
+                        "zAxisRotateTrack": true,
+                        "xAxisScale": true,
+                        "yAxisScale": true
+                     },
+                     {
+                        "componentID": 5,
+                        "enabled": true,
+                        "entityId": 18,
+                        "resourcePath": "a8c9b443-5df5-4d88-af26-36e5cb9fe5e3",
+                        "strength": 1,
+                        "type": "Liquefaction",
+                        "version": 9
+                     }
+                  ]
+               },
+               {
+                  "id": 20,
+                  "name": "音乐",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "type": "ScreenTransform",
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "anchor": {
+                           "left": 0,
+                           "right": 0,
+                           "top": 0,
+                           "bottom": 0
+                        },
+                        "offset": {
+                           "left": -360,
+                           "right": 360,
+                           "top": 640,
+                           "bottom": -640
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 0,
+                        "eFixSize": 3,
+                        "eEditingMode": 0,
+                        "eKeepRatio": false,
+                        "enabled": true,
+                        "entityId": 20,
+                        "componentID": 9,
+                        "objectEnabled": true
+                     },
+                     {
+                        "componentID": 10,
+                        "eAudioMeta": {
+                           "rhythmPath": "",
+                           "startTime": 0,
+                           "duration": 95860000,
+                           "enableRhythm": true
+                        },
+                        "eAudioType": 1,
+                        "eHasVolumeEffects": false,
+                        "eKey": "audioSource",
+                        "enabled": true,
+                        "entityId": 20,
+                        "speed": 1,
+                        "type": "AudioSource",
+                        "version": 13,
+                        "volume": 1,
+                        "volumeEffects": [
+                           {
+                              "duration": 2000000,
+                              "eAlignMode": 2,
+                              "end": 1,
+                              "endOffset": 0,
+                              "interpolationType": 1,
+                              "start": 1,
+                              "startOffset": 0
+                           }
+                        ],
+                        "ePath": "1c2ecb4f-e21d-4a8f-814e-d81d43d25685",
+                        "audioSourceType": 1
+                     }
+                  ]
+               },
+               {
+                  "id": 21,
+                  "name": "脚本",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "type": "ScreenTransform",
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "eEuler": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "anchor": {
+                           "left": 0,
+                           "right": 0,
+                           "top": 0,
+                           "bottom": 0
+                        },
+                        "offset": {
+                           "left": -360,
+                           "right": 360,
+                           "top": 640,
+                           "bottom": -640
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 0,
+                        "eFixSize": 3,
+                        "eEditingMode": 0,
+                        "eKeepRatio": true,
+                        "objectEnabled": true,
+                        "enabled": true,
+                        "entityId": 21,
+                        "componentID": 0
+                     },
+                     {
+                        "componentID": 6,
+                        "enabled": true,
+                        "entityId": 21,
+                        "scriptPath": "edc0f68c-db96-48d4-abe0-bb9c006bc2d6",
+                        "type": "Script",
+                        "version": 2
+                     }
+                  ]
+               }
+            ],
+            "enabled": true,
+            "version": 0,
+            "components": [
+               {
+                  "anchor": {
+                     "bottom": -1,
+                     "left": -1,
+                     "right": 1,
+                     "top": 1
+                  },
+                  "offset": {
+                     "bottom": 0,
+                     "left": 0,
+                     "right": 0,
+                     "top": 0
+                  },
+                  "pivot": {
+                     "x": 0,
+                     "y": 0
+                  },
+                  "ePinToEdge": 15,
+                  "eFixSize": 0,
+                  "eEditingMode": 1,
+                  "eKeepRatio": false,
+                  "position": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "scale": {
+                     "x": 1,
+                     "y": 1,
+                     "z": 1
+                  },
+                  "rotation": {
+                     "w": 1,
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "entityId": 17,
+                  "componentID": 2,
+                  "type": "ScreenTransform",
+                  "enabled": true,
+                  "version": 2,
+                  "objectEnabled": true
+               },
+               {
+                  "componentID": 3,
+                  "enabled": true,
+                  "entityId": 17,
+                  "renderTargetKey": "RenderTarget",
+                  "type": "Camera",
+                  "version": 2
+               }
+            ]
+         }
+      ],
+      "components": [
+         {
+            "anchor": {
+               "bottom": -1,
+               "left": -1,
+               "right": 1,
+               "top": 1
+            },
+            "offset": {
+               "bottom": 0,
+               "left": 0,
+               "right": 0,
+               "top": 0
+            },
+            "pivot": {
+               "x": 0,
+               "y": 0
+            },
+            "ePinToEdge": 15,
+            "eFixSize": 0,
+            "eEditingMode": 1,
+            "eKeepRatio": false,
+            "position": {
+               "x": 0,
+               "y": 0,
+               "z": 0
+            },
+            "scale": {
+               "x": 1,
+               "y": 1,
+               "z": 1
+            },
+            "rotation": {
+               "w": 0,
+               "x": 0,
+               "y": 0,
+               "z": 0
+            },
+            "entityId": 16,
+            "componentID": 1,
+            "type": "ScreenTransform",
+            "enabled": true,
+            "version": 2,
+            "objectEnabled": true
+         }
+      ],
+      "enabled": true,
+      "version": 0
+   },
+   "path": "/Users/kesenhu/Desktop/aekit_materials/repo/wesee/video_guifeiface/",
+   "resources": {
+      "items": [
+         {
+            "key": "1c2ecb4f-e21d-4a8f-814e-d81d43d25685",
+            "type": "AudioClipData",
+            "path": "bgm.mp3",
+            "label": "bgm.mp3",
+            "timeRange": {
+               "startTime": 0,
+               "duration": 95869388
+            },
+            "loopCount": 0
+         },
+         {
+            "key": "DeviceCameraTexture",
+            "type": "TextureData",
+            "path": "DeviceCameraTexture.tex",
+            "label": "DeviceCameraTexture.tex"
+         },
+         {
+            "key": "a8c9b443-5df5-4d88-af26-36e5cb9fe5e3",
+            "type": "JsonData",
+            "path": "params.json",
+            "label": "params.json"
+         },
+         {
+            "key": "RenderTarget",
+            "type": "RenderTarget",
+            "path": "RenderTarget.rdt",
+            "label": "RenderTarget.rdt",
+            "inputKey": "DeviceCameraTexture"
+         },
+         {
+            "key": "46d4b6bb-a7f9-4f12-8ec4-af60f4976d43",
+            "type": "default",
+            "path": "template.studio.周一 12月 28 2020.bak",
+            "label": "template.studio.周一 12月 28 2020.bak"
+         },
+         {
+            "key": "edc0f68c-db96-48d4-abe0-bb9c006bc2d6",
+            "type": "js",
+            "path": "close_basic_beauty.js",
+            "label": "close_basic_beauty.js"
+         }
+      ]
+   },
+   "componentLevel": 3,
+   "cloudResourceData": []
+}

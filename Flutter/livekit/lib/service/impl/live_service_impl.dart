@@ -368,6 +368,13 @@ class LiveServiceImpl implements ILiveService {
     return TUIRoomEngineImpl.getSelfInfo();
   }
 
+  @override
+  Future<int?> enableCustomVideoProcess(bool open) async {
+    ///开启美颜操作
+    TRTCCloud? trtcCloud = await TRTCCloud.sharedInstance();
+    return trtcCloud?.enableCustomVideoProcess(open);
+  }
+
   _createTRTCCloud() async {
     trtcCloud = await TRTCCloud.sharedInstance();
     beautyManager = trtcCloud?.getBeautyManager();

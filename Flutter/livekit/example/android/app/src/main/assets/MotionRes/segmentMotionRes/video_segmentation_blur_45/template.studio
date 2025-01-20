@@ -1,0 +1,623 @@
+{
+   "name": "video_303wink",
+   "author": "chenjialei",
+   "category": 1,
+   "scene": {
+      "id": 16,
+      "name": "video_303wink",
+      "children": [
+         {
+            "id": 19,
+            "name": "非美型占位节点",
+            "children": [],
+            "enabled": true,
+            "version": 0,
+            "forbid": true,
+            "canNotRemove": true,
+            "isFirstChildren": true,
+            "components": [
+               {
+                  "type": "ScreenTransform",
+                  "position": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "rotation": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0,
+                     "w": 1
+                  },
+                  "scale": {
+                     "x": 1,
+                     "y": 1,
+                     "z": 1,
+                     "eKeepRatio": true
+                  },
+                  "eEuler": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "anchor": {
+                     "left": 0,
+                     "right": 0,
+                     "top": 0,
+                     "bottom": 0
+                  },
+                  "offset": {
+                     "left": -360,
+                     "right": 360,
+                     "top": 640,
+                     "bottom": -640
+                  },
+                  "pivot": {
+                     "x": 0,
+                     "y": 0
+                  },
+                  "ePinToEdge": 0,
+                  "eFixSize": 3,
+                  "eEditingMode": 0,
+                  "eKeepRatio": true,
+                  "objectEnabled": true,
+                  "enabled": true,
+                  "entityId": 19,
+                  "componentID": 19001,
+                  "level": 1
+               },
+               {
+                  "beautyStatus": 1,
+                  "componentID": 19002,
+                  "enabled": true,
+                  "entityId": 19,
+                  "level": 280,
+                  "makeupStatus": 1,
+                  "smoothStatus": 0,
+                  "type": "BasicBeautyPlaceHolder",
+                  "version": 4
+               }
+            ]
+         },
+         {
+            "id": 17,
+            "name": "2D画板",
+            "children": [
+               {
+                  "id": 22,
+                  "name": "人物分割",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "type": "ScreenTransform",
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "anchor": {
+                           "left": 0,
+                           "right": 0,
+                           "top": 0,
+                           "bottom": 0
+                        },
+                        "offset": {
+                           "left": -360,
+                           "right": 360,
+                           "top": 640,
+                           "bottom": -640
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 0,
+                        "eFixSize": 3,
+                        "eEditingMode": 0,
+                        "eKeepRatio": false,
+                        "enabled": true,
+                        "entityId": 22,
+                        "componentID": 22001,
+                        "objectEnabled": true,
+                        "level": 1
+                     },
+                     {
+                        "componentID": 22002,
+                        "cutRange": [
+                           0,
+                           0,
+                           0,
+                           0
+                        ],
+                        "enabled": true,
+                        "entityId": 22,
+                        "maskResource": "0983e2b4-2c55-487e-a49f-efd241e5aba0",
+                        "renderTarget": "RenderTarget1",
+                        "strokeBorderType": "stroke",
+                        "strokeColor": "#ffffffff",
+                        "strokeEnable": false,
+                        "strokeGap": 0,
+                        "strokeSpeedLevel": 1,
+                        "strokeWidth": 12,
+                        "type": "Segmentation",
+                        "version": 19,
+                        "level": 230
+                     }
+                  ]
+               },
+               {
+                  "id": 18,
+                  "name": "后处理",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "type": "ScreenTransform",
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1,
+                           "eKeepRatio": true
+                        },
+                        "eEuler": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "anchor": {
+                           "left": 0,
+                           "right": 0,
+                           "top": 0,
+                           "bottom": 0
+                        },
+                        "offset": {
+                           "left": -360,
+                           "right": 360,
+                           "top": 640,
+                           "bottom": -640
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 0,
+                        "eFixSize": 3,
+                        "eEditingMode": 0,
+                        "eKeepRatio": true,
+                        "objectEnabled": true,
+                        "enabled": true,
+                        "entityId": 18,
+                        "componentID": 18001,
+                        "level": 1
+                     },
+                     {
+                        "src": "dc65c6f4-abff-44da-a4c3-71ca91b09449",
+                        "type": "PostEffect",
+                        "enabled": true,
+                        "entityId": 18,
+                        "componentID": 18002,
+                        "level": 280
+                     }
+                  ]
+               },
+               {
+                  "id": 20,
+                  "name": "分割前景",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "anchor": {
+                           "bottom": -1,
+                           "left": -1,
+                           "right": 1,
+                           "top": 1
+                        },
+                        "offset": {
+                           "bottom": 0,
+                           "left": 0,
+                           "right": 0,
+                           "top": 0
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 15,
+                        "eFixSize": 0,
+                        "eEditingMode": 1,
+                        "eKeepRatio": false,
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "rotation": {
+                           "w": 1,
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "entityId": 20,
+                        "componentID": 20001,
+                        "type": "ScreenTransform",
+                        "enabled": true,
+                        "version": 2,
+                        "objectEnabled": true,
+                        "level": 1
+                     },
+                     {
+                        "componentID": 20002,
+                        "enabled": true,
+                        "entityId": 20,
+                        "scaleMode": 3,
+                        "src": "RenderTarget1",
+                        "type": "Image",
+                        "version": 2,
+                        "level": 1
+                     },
+                     {
+                        "alpha": 1,
+                        "mode": "normal",
+                        "type": "BlendMode",
+                        "enabled": true,
+                        "entityId": 20,
+                        "componentID": 20003,
+                        "level": 2
+                     }
+                  ]
+               },
+               {
+                  "id": 21,
+                  "name": "美型占位节点",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "forbid": true,
+                  "canNotRemove": true,
+                  "components": [
+                     {
+                        "type": "ScreenTransform",
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1,
+                           "eKeepRatio": true
+                        },
+                        "eEuler": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "anchor": {
+                           "left": 0,
+                           "right": 0,
+                           "top": 0,
+                           "bottom": 0
+                        },
+                        "offset": {
+                           "left": -360,
+                           "right": 360,
+                           "top": 640,
+                           "bottom": -640
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 0,
+                        "eFixSize": 3,
+                        "eEditingMode": 0,
+                        "eKeepRatio": true,
+                        "objectEnabled": true,
+                        "enabled": true,
+                        "entityId": 21,
+                        "componentID": 21001,
+                        "level": 1
+                     },
+                     {
+                        "componentID": 21002,
+                        "enabled": true,
+                        "entityId": 21,
+                        "level": 280,
+                        "reshapeStatus": 1,
+                        "type": "BasicReshapePlaceHolder",
+                        "version": 2
+                     }
+                  ]
+               }
+            ],
+            "enabled": true,
+            "version": 0,
+            "components": [
+               {
+                  "anchor": {
+                     "bottom": -1,
+                     "left": -1,
+                     "right": 1,
+                     "top": 1
+                  },
+                  "offset": {
+                     "bottom": 0,
+                     "left": 0,
+                     "right": 0,
+                     "top": 0
+                  },
+                  "pivot": {
+                     "x": 0,
+                     "y": 0
+                  },
+                  "ePinToEdge": 15,
+                  "eFixSize": 0,
+                  "eEditingMode": 1,
+                  "eKeepRatio": false,
+                  "position": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "scale": {
+                     "x": 1,
+                     "y": 1,
+                     "z": 1
+                  },
+                  "rotation": {
+                     "w": 0,
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "entityId": 17,
+                  "componentID": 17001,
+                  "type": "ScreenTransform",
+                  "enabled": true,
+                  "version": 2,
+                  "objectEnabled": true,
+                  "level": 1
+               },
+               {
+                  "componentID": 17002,
+                  "enabled": true,
+                  "entityId": 17,
+                  "renderTargetKey": "RenderTarget",
+                  "type": "Camera",
+                  "version": 2,
+                  "level": 2
+               }
+            ]
+         }
+      ],
+      "components": [
+         {
+            "anchor": {
+               "bottom": -1,
+               "left": -1,
+               "right": 1,
+               "top": 1
+            },
+            "offset": {
+               "bottom": 0,
+               "left": 0,
+               "right": 0,
+               "top": 0
+            },
+            "pivot": {
+               "x": 0,
+               "y": 0
+            },
+            "ePinToEdge": 15,
+            "eFixSize": 0,
+            "eEditingMode": 1,
+            "eKeepRatio": false,
+            "position": {
+               "x": 0,
+               "y": 0,
+               "z": 0
+            },
+            "scale": {
+               "x": 1,
+               "y": 1,
+               "z": 1
+            },
+            "rotation": {
+               "w": 0,
+               "x": 0,
+               "y": 0,
+               "z": 0
+            },
+            "entityId": 16,
+            "componentID": 16001,
+            "type": "ScreenTransform",
+            "enabled": true,
+            "version": 28,
+            "objectEnabled": true,
+            "level": 1
+         },
+         {
+            "componentID": 16002,
+            "entityId": 16,
+            "type": "ExtraSetting",
+            "enabled": true,
+            "version": 1,
+            "enableRotation": true,
+            "resetWhenStartRecord": true,
+            "defaultCameraPosition": 0,
+            "supportCameraPosition": 0,
+            "sync3dRenderEnable": false,
+            "needVoiceDecibel": false,
+            "needAutoBeauty": false,
+            "enableDowngradeAsset": true,
+            "level": 4
+         }
+      ],
+      "enabled": true,
+      "version": 0
+   },
+   "resources": {
+      "items": [
+         {
+            "type": "folder",
+            "commandMap": {},
+            "key": "3ebb3336-06fa-49d1-aa4f-059eb0bf3e87",
+            "label": "root",
+            "path": "./",
+            "level": 2
+         },
+         {
+            "type": "segmentation/bg",
+            "commandMap": {},
+            "key": "0983e2b4-2c55-487e-a49f-efd241e5aba0",
+            "path": "BgSegmentation.bg",
+            "label": "BgSegmentation.bg",
+            "level": 2
+         },
+         {
+            "type": "TextureData",
+            "commandMap": {},
+            "key": "DeviceCameraTexture",
+            "path": "DeviceCameraTexture.tex",
+            "label": "DeviceCameraTexture.tex",
+            "level": 2
+         },
+         {
+            "type": "JsonData",
+            "commandMap": {},
+            "key": "e2e93543-196e-46a6-8ca0-11bc070dfe38",
+            "label": "material.json",
+            "path": "material.json",
+            "level": 2
+         },
+         {
+            "type": "PostEffectData",
+            "commandMap": {},
+            "postEffectOptions": {
+               "effectType": "blur",
+               "subEffectType": "1",
+               "effectStrength": 45,
+               "starMaxScale": 1,
+               "starMinScale": 0,
+               "starScalePeriod": 1000,
+               "blendMode": "screen",
+               "maxCorners": 20,
+               "minDistance": 5,
+               "filePaths": [],
+               "brightness": 0,
+               "contrast": 0,
+               "hue": 0,
+               "highlights": 0,
+               "sharpness": 0,
+               "shadows": 0,
+               "saturation": 0,
+               "temperature": 0
+            },
+            "key": "dc65c6f4-abff-44da-a4c3-71ca91b09449",
+            "label": "PostEffect.post",
+            "path": "PostEffect.post",
+            "existingType": "blur",
+            "level": 2
+         },
+         {
+            "type": "RenderTarget",
+            "commandMap": {},
+            "inputColor": "#ffffffff",
+            "sizeType": 0,
+            "compatibilityMode": true,
+            "depthType": "DEPTH24",
+            "textureOptions": {
+               "wrapS": "REPEAT",
+               "wrapT": "REPEAT",
+               "magFilter": "NEAREST",
+               "minFilter": "NEAREST",
+               "sRGB": true,
+               "samplerType": "SAMPLER_2D"
+            },
+            "width": 0,
+            "height": 0,
+            "key": "RenderTarget",
+            "path": "RenderTarget.rdt",
+            "label": "RenderTarget.rdt",
+            "inputKey": "DeviceCameraTexture",
+            "input": "DeviceCameraTexture",
+            "level": 2
+         },
+         {
+            "type": "RenderTarget",
+            "commandMap": {},
+            "inputColor": "#ffffffff",
+            "sizeType": 0,
+            "compatibilityMode": true,
+            "depthType": "DEPTH24",
+            "textureOptions": {
+               "wrapS": "REPEAT",
+               "wrapT": "REPEAT",
+               "magFilter": "NEAREST",
+               "minFilter": "NEAREST",
+               "sRGB": true,
+               "samplerType": "SAMPLER_2D"
+            },
+            "width": 0,
+            "height": 0,
+            "key": "RenderTarget1",
+            "path": "RenderTarget_1.rdt",
+            "label": "RenderTarget_1.rdt",
+            "inputKey": "DeviceCameraTexture",
+            "input": "DeviceCameraTexture",
+            "level": 2
+         },
+         {
+            "type": "default",
+            "commandMap": {},
+            "key": "dff483a1-20b7-4a3f-9d61-9eca43263195",
+            "label": "template.2021-12-09-08-23-48-950Z.bak",
+            "path": "template.2021-12-09-08-23-48-950Z.bak",
+            "level": 2
+         }
+      ]
+   },
+   "cloudResourceData": [],
+   "componentLevel": 280,
+   "path": "/Users/paddyjiang/git_projects/Tencent-Effect-Materials/MotionRes/segmentMotionRes/video_segmentation_blur_45/",
+   "updateTime": "2021-12-09 16:24:18"
+}

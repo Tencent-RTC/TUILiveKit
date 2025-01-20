@@ -15,6 +15,14 @@
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
+		A9F511AB2D2E7638004E5A9D /* 2dMotionRes.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A94046A22D2C3494000F7E83 /* 2dMotionRes.bundle */; };
+		A9F511AC2D2E7638004E5A9D /* 3dMotionRes.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A94046A32D2C3494000F7E83 /* 3dMotionRes.bundle */; };
+		A9F511AD2D2E7638004E5A9D /* ganMotionRes.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A94046A42D2C3494000F7E83 /* ganMotionRes.bundle */; };
+		A9F511AE2D2E7638004E5A9D /* handMotionRes.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A94046A52D2C3494000F7E83 /* handMotionRes.bundle */; };
+		A9F511AF2D2E7638004E5A9D /* lightMakeupRes.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A94046A62D2C3494000F7E83 /* lightMakeupRes.bundle */; };
+		A9F511B02D2E7638004E5A9D /* lut.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A94046A72D2C3494000F7E83 /* lut.bundle */; };
+		A9F511B12D2E7638004E5A9D /* makeupMotionRes.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A94046A82D2C3494000F7E83 /* makeupMotionRes.bundle */; };
+		A9F511B22D2E7638004E5A9D /* segmentMotionRes.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A94046A92D2C3494000F7E83 /* segmentMotionRes.bundle */; };
 		EAD01E3DF20F6E00BC148ABD /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF10A4E6803D8AC6E59D24B5 /* Pods_RunnerTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -61,6 +69,14 @@
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A94046A22D2C3494000F7E83 /* 2dMotionRes.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = 2dMotionRes.bundle; sourceTree = "<group>"; };
+		A94046A32D2C3494000F7E83 /* 3dMotionRes.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = 3dMotionRes.bundle; sourceTree = "<group>"; };
+		A94046A42D2C3494000F7E83 /* ganMotionRes.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ganMotionRes.bundle; sourceTree = "<group>"; };
+		A94046A52D2C3494000F7E83 /* handMotionRes.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = handMotionRes.bundle; sourceTree = "<group>"; };
+		A94046A62D2C3494000F7E83 /* lightMakeupRes.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = lightMakeupRes.bundle; sourceTree = "<group>"; };
+		A94046A72D2C3494000F7E83 /* lut.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = lut.bundle; sourceTree = "<group>"; };
+		A94046A82D2C3494000F7E83 /* makeupMotionRes.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = makeupMotionRes.bundle; sourceTree = "<group>"; };
+		A94046A92D2C3494000F7E83 /* segmentMotionRes.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = segmentMotionRes.bundle; sourceTree = "<group>"; };
 		A965779A8F0A7902F3FF3475 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		CF10A4E6803D8AC6E59D24B5 /* Pods_RunnerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RunnerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3DBE3D138D38690F34FAEE5 /* Pods-RunnerTests.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.profile.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.profile.xcconfig"; sourceTree = "<group>"; };
@@ -139,6 +155,7 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				A94046AA2D2C3494000F7E83 /* xmagic */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
 				97C146FD1CF9000F007C117D /* Assets.xcassets */,
 				97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */,
@@ -149,6 +166,21 @@
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 			);
 			path = Runner;
+			sourceTree = "<group>";
+		};
+		A94046AA2D2C3494000F7E83 /* xmagic */ = {
+			isa = PBXGroup;
+			children = (
+				A94046A22D2C3494000F7E83 /* 2dMotionRes.bundle */,
+				A94046A32D2C3494000F7E83 /* 3dMotionRes.bundle */,
+				A94046A42D2C3494000F7E83 /* ganMotionRes.bundle */,
+				A94046A52D2C3494000F7E83 /* handMotionRes.bundle */,
+				A94046A62D2C3494000F7E83 /* lightMakeupRes.bundle */,
+				A94046A72D2C3494000F7E83 /* lut.bundle */,
+				A94046A82D2C3494000F7E83 /* makeupMotionRes.bundle */,
+				A94046A92D2C3494000F7E83 /* segmentMotionRes.bundle */,
+			);
+			path = xmagic;
 			sourceTree = "<group>";
 		};
 		F9D6AB220213E90DC9EB98B6 /* Pods */ = {
@@ -260,6 +292,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9F511AB2D2E7638004E5A9D /* 2dMotionRes.bundle in Resources */,
+				A9F511AC2D2E7638004E5A9D /* 3dMotionRes.bundle in Resources */,
+				A9F511AD2D2E7638004E5A9D /* ganMotionRes.bundle in Resources */,
+				A9F511AE2D2E7638004E5A9D /* handMotionRes.bundle in Resources */,
+				A9F511AF2D2E7638004E5A9D /* lightMakeupRes.bundle in Resources */,
+				A9F511B02D2E7638004E5A9D /* lut.bundle in Resources */,
+				A9F511B12D2E7638004E5A9D /* makeupMotionRes.bundle in Resources */,
+				A9F511B22D2E7638004E5A9D /* segmentMotionRes.bundle in Resources */,
 				97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */,
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
@@ -676,6 +716,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = "";
@@ -688,7 +730,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.tencent.fx.livekit.demo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aby.livekit.demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = abyWildcardDev;

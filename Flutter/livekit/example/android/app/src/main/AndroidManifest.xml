@@ -4,6 +4,9 @@
         android:name="${applicationName}"
         android:icon="@drawable/app_ic_launcher"
         android:roundIcon="@drawable/app_ic_launcher">
+        <uses-native-library
+            android:name="libOpenCL.so"
+            android:required="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
