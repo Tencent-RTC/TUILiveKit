@@ -153,6 +153,8 @@ extension AudienceView {
             manager.updateOwnerUserInfo()
             manager.updateSelfUserInfo()
             manager.update(liveStatus: .playing)
+            livingView.initComponentView()
+            livingView.isHidden = false
         } onError: { [weak self] code, message in
             guard let self = self else { return }
             let error = InternalError(error: code, message: message)
