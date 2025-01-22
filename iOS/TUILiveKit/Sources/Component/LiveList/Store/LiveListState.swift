@@ -9,6 +9,7 @@ import Foundation
 import RTCRoomEngine
 
 struct LiveListResult {
+    var isFirstFetch: Bool = true
     var cursor: String = ""
     var liveInfoList: [TUILiveInfo] = []
 }

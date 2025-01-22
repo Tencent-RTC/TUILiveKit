@@ -17,5 +17,6 @@ let liveListReducer = Reducer<LiveListState>(
     ReduceOn(LiveListActions.updateLiveInfoList, reduce: { state, action in
         state.liveInfoListResult.cursor = action.payload.cursor
         state.liveInfoListResult.liveInfoList = action.payload.liveInfoList
+        state.liveInfoListResult.isFirstFetch = action.payload.isFirstFetch
     })
 )

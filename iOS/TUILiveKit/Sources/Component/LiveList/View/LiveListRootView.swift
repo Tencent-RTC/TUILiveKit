@@ -103,8 +103,6 @@ extension LiveListRootView {
     }
     
     func refreshRoomListData() {
-        liveListDataSource.removeAll()
-        liveListCollectionView.reloadData()
         store.dispatch(action: LiveListActions.getLiveInfoList(payload: ""))
     }
     
@@ -118,6 +116,9 @@ extension LiveListRootView {
                     self.liveListCollectionView.es.noticeNoMoreData()
                 } else {
                     self.liveListCollectionView.es.resetNoMoreData()
+                }
+                if result.isFirstFetch {
+                    self.liveListDataSource.removeAll()
                 }
                 self.liveListDataSource.append(contentsOf: result.liveInfoList)
                 self.liveListCollectionView.reloadData()
