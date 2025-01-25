@@ -10,9 +10,12 @@ import RTCRoomEngine
 
 class AudienceListObserver: NSObject, TUIRoomObserver {
     private let state: AudienceListState
+    private weak var service: AudienceListService?
+    private var lastFetchDate: Date?
     
-    init(state: AudienceListState) {
+    init(state: AudienceListState, service: AudienceListService) {
         self.state = state
+        self.service = service
     }
     
     func onRoomUserCountChanged(roomId: String, userCount: Int) {
@@ -22,10 +25,19 @@ class AudienceListObserver: NSObject, TUIRoomObserver {
     }
     
     func onRemoteUserEnterRoom(roomId: String, userInfo: TUIUserInfo) {
-        // TODO: How to deal with a large number of users
         guard userInfo.userId != state.ownerId else { return }
-        if !state.audienceList.contains(where: { $0.userId == userInfo.userId }) {
+        guard !state.audienceList.contains(where: { $0.userId == userInfo.userId }) else { return }
+        if state.audienceList.count < kMaxShowUserCount {
             state.audienceList.append(userInfo)
+        } else {
+            let current = Date()
+            if let last = lastFetchDate {
+                if last.timeIntervalSince(current) < 10 {
+                    return
+                }
+            }
+            lastFetchDate = current
+            service?.getUserList()
         }
     }
     

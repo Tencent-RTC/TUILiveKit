@@ -15,3 +15,4 @@ public class AudienceListState {
     @Published var audienceList: [TUIUserInfo] = []
 }
 
+let kMaxShowUserCount = 100

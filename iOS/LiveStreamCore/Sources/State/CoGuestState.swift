@@ -7,17 +7,19 @@
 
 import RTCRoomEngine
 
-struct CoGuestState {
-    var coGuestStatus: CoGuestStatus = .none
-    var connectedUserList: [TUISeatInfo] = []
-    var connectionRequestList: Set<TUIRequest> = []
-    var myRequestId: String = ""
-    var openCameraOnCoGuest: Bool = true
-    var enableConnection: Bool = true
+public struct CoGuestState: State {
+    public var coGuestStatus: CoGuestStatus = .none
+    public var connectedUserList: [TUISeatInfo] = []
+    public var connectionRequestList: Set<TUIRequest> = []
+    public var myRequestId: String = ""
+    public var openCameraOnCoGuest: Bool = true
+    public var enableConnection: Bool = true
     
-    enum CoGuestStatus {
+    public enum CoGuestStatus {
         case none
         case applying
         case linking
     }
+    
+    public init() {}
 }

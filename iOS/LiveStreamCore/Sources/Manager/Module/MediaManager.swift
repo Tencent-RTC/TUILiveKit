@@ -24,6 +24,7 @@ public class MediaManager {
     private let service: LiveStreamService
     
     private var localVideoViewObservation: NSKeyValueObservation? = nil
+    private var preloadUserId: String? = nil
     
     init(context: LiveStreamManager.Context) {
         self.context = context
@@ -53,8 +54,10 @@ public class MediaManager {
             try await context.service.openLocalCamera(isFront: useFrontCamera, quality: .quality1080P)
             initLivingConfig()
             modifyMediaState(value: true, keyPath: \MediaState.isCameraOpened, isPublished: true)
+            // Default automatic mode: Enable mirroring if the front camera is in use, disable mirroring if the rear camera is in use (only for mobile devices)
+            enableMirror(useFrontCamera, isPublished: true)
         } catch let LiveStreamCoreError.error(code, message) {
-            LiveStreamLog.error("\(#file)","\(#line)","leave:[code:\(code),message:\(message)]")
+            LiveStreamLog.error("\(#file)","\(#line)","openLocalCamera:[code:\(code),message:\(message)]")
             throw LiveStreamCoreError.error(code: code, message: message)
         } catch {
             assert(false, "unknown error, description:[:\(error.localizedDescription)]")
@@ -79,13 +82,18 @@ public class MediaManager {
         service.setRemoteVideoView(userId: userId, streamType: streamType, videoView: videoView)
     }
     
-    func startPlayRemoteVideo(userId: String, streamType: TUIVideoStreamType) async throws -> String {
-        do {
-            let result = try await service.startPlayRemoteVideo(userId: userId, streamType: streamType) { _ in }
-            return result
-        } catch let LiveStreamCoreError.playVideoError(userId, code, message) {
-            LiveStreamLog.error("\(#file)","\(#line)","leave:[code:\(code),message:\(message)]")
-            throw LiveStreamCoreError.playVideoError(userId: userId, code: code, message: message)
+    func startPlayRemoteVideo(userId: String,
+                              streamType: TUIVideoStreamType,
+                              onPlaying: TUIPlayOnPlayingBlock? = nil,
+                              onLoading: TUIPlayOnLoadingBlock? = nil,
+                              onError: TUIPlayOnErrorBlock? = nil) {
+        service.startPlayRemoteVideo(userId: userId, streamType: streamType) { userId in
+            onPlaying?(userId)
+        } onLoading: { userId in
+            onLoading?(userId)
+        } onError: { userId, code, message in
+            onError?(userId, code, message)
+            LiveStreamLog.error("\(#file)","\(#line)","startPlayRemoteVideo:[code:\(code),message:\(message)]")
         }
     }
     
@@ -99,7 +107,7 @@ public class MediaManager {
             try await service.openLocalMicrophone()
             modifyMediaState(value: true, keyPath: \MediaState.isMicrophoneOpened)
         } catch let LiveStreamCoreError.error(code, message) {
-            LiveStreamLog.error("\(#file)","\(#line)","leave:[code:\(code),message:\(message)]")
+            LiveStreamLog.error("\(#file)","\(#line)","openLocalMicrophone:[code:\(code),message:\(message)]")
             throw LiveStreamCoreError.error(code: code, message: message)
         } catch {
             assert(false, "unknown error, description:[:\(error.localizedDescription)]")
@@ -116,7 +124,7 @@ public class MediaManager {
             try await service.unMuteLocalAudio()
             modifyMediaState(value: false, keyPath: \MediaState.isMicrophoneMuted)
         } catch let LiveStreamCoreError.error(code, message) {
-            LiveStreamLog.error("\(#file)","\(#line)","leave:[code:\(code),message:\(message)]")
+            LiveStreamLog.error("\(#file)","\(#line)","unMuteLocalAudio:[code:\(code),message:\(message)]")
             throw LiveStreamCoreError.error(code: code, message: message)
         } catch {
             assert(false, "unknown error, description:[:\(error.localizedDescription)]")
@@ -141,6 +149,29 @@ public class MediaManager {
             mediaState.isFrontCamera = !isFrontCamera
         }
     }
+    
+    func startPreloadVideoStream(roomId: String, isMuteAudio: Bool, view: UIView,
+                                 onPlaying: @escaping TUIPlayOnPlayingBlock,
+                                 onLoading: @escaping TUIPlayOnLoadingBlock,
+                                 onError: @escaping TUIPlayOnErrorBlock) {
+        service.startPreloadVideoStream(roomId: roomId, isMuteAudio: isMuteAudio, view: view) { [weak self] userId in
+            guard let self = self else { return }
+            preloadUserId = userId
+            onPlaying(userId)
+        } onLoading: { userId in
+            onLoading(userId)
+        } onError: { userId, code, message in
+            onError(userId, code, message)
+        }
+    }
+    
+    func stopPreloadVideoStream(roomId: String) {
+        service.stopPreloadVideoStream(roomId: roomId)
+    }
+    
+    func muteRemoteAudioStream(_ userId: String, isMute: Bool) {
+        service.muteRemoteAudioStream(userId, isMute: isMute)
+    }
 }
 
 // MARK: - Video Advance Setting
@@ -161,11 +192,12 @@ extension MediaManager {
         modifyMediaState(value: encType, keyPath: \MediaState.videoEncParams.currentEncType)
     }
     
-    public func enableMirror(_ isMirror: Bool) {
+    public func enableMirror(_ isMirror: Bool, isPublished: Bool = false) {
         let params = TRTCRenderParams()
         params.mirrorType = isMirror ? .enable : .disable
         service.getTRTCCloud().setLocalRenderParams(params)
-        modifyMediaState(value: isMirror, keyPath: \MediaState.isMirrorEnabled)
+        service.getTRTCCloud().setVideoEncoderMirror(isMirror)
+        modifyMediaState(value: isMirror, keyPath: \MediaState.isMirrorEnabled, isPublished: isPublished)
     }
     
     public func enableAdvancedVisible(_ visible: Bool) {
@@ -244,6 +276,11 @@ extension MediaManager {
 
 // MARK: - Callback from other manager
 extension MediaManager {
+    func onJoinLiveSuccess() {
+        guard let preloadUserId = preloadUserId else { return }
+        muteRemoteAudioStream(preloadUserId, isMute: false)
+    }
+    
     func onSelfAudioStateChanged(hasAudio: Bool) {
         modifyMediaState(value: !hasAudio, keyPath: \MediaState.isMicrophoneMuted)
         if hasAudio {

@@ -33,6 +33,7 @@ class LiveStreamService: LiveStream {
     let connectionManager: TUILiveConnectionManager
     let battleManager: TUILiveBattleManager
     let layoutManager: TUILiveLayoutManager?
+    let liveListManager: TUILiveListManager?
     
     init() {
         roomEngine = TUIRoomEngine.sharedInstance()
@@ -40,6 +41,7 @@ class LiveStreamService: LiveStream {
         connectionManager = roomEngine.getLiveConnectionManager()
         battleManager = roomEngine.getLiveBattleManager()
         layoutManager = roomEngine.getExtension(extensionType: .liveLayoutManager) as? TUILiveLayoutManager
+        liveListManager = roomEngine.getExtension(extensionType: .liveListManager) as? TUILiveListManager
     }
 
     func destroy() {
@@ -303,15 +305,17 @@ class LiveStreamService: LiveStream {
         roomEngine.setRemoteVideoView(userId: userId, streamType: streamType, view: videoView)
     }
     
-    func startPlayRemoteVideo(userId: String, streamType: TUIVideoStreamType, onLoading: @escaping TUIPlayOnLoadingBlock) async throws -> String {
-        return try await withCheckedThrowingContinuation { continuation in
-            roomEngine.startPlayRemoteVideo(userId: userId, streamType: streamType) { userId in
-                continuation.resume(returning: userId)
-            } onLoading: { userId in
-                onLoading(userId)
-            } onError: { userId, code, message in
-                continuation.resume(throwing: LiveStreamCoreError.playVideoError(userId: userId, code: code, message: message))
-            }
+    func startPlayRemoteVideo(userId: String,
+                              streamType: TUIVideoStreamType,
+                              onPlaying: @escaping TUIPlayOnPlayingBlock,
+                              onLoading: @escaping TUIPlayOnLoadingBlock,
+                              onError: @escaping TUIPlayOnErrorBlock) {
+        roomEngine.startPlayRemoteVideo(userId: userId, streamType: streamType) { userId in
+            onPlaying(userId)
+        } onLoading: { userId in
+            onLoading(userId)
+        } onError: { userId, code, message in
+            onError(userId, code, message)
         }
     }
     
@@ -333,6 +337,10 @@ class LiveStreamService: LiveStream {
         }
     }
     
+    func muteRemoteAudioStream(_ userId: String, isMute: Bool) {
+        roomEngine.muteRemoteAudioStream(userId, isMute: isMute)
+    }
+    
     func enableGravitySensor(enable: Bool) {
         roomEngine.enableGravitySensor(enable: enable)
     }
@@ -343,6 +351,23 @@ class LiveStreamService: LiveStream {
     
     func setBeautyStyle(_ style: TXBeautyStyle) {
         trtcCloud.getBeautyManager().setBeautyStyle(style)
+    }
+    
+    func startPreloadVideoStream(roomId: String, isMuteAudio: Bool, view: UIView,
+                                 onPlaying: @escaping TUIPlayOnPlayingBlock,
+                                 onLoading: @escaping TUIPlayOnLoadingBlock,
+                                 onError: @escaping TUIPlayOnErrorBlock) {
+        liveListManager?.startPreloadVideoStream(roomId: roomId, isMuteAudio: isMuteAudio, view: view) { userId in
+            onPlaying(userId)
+        } onLoading: { userId in
+            onLoading(userId)
+        } onError: { userId, code, message in
+            onError(userId, code, message)
+        }
+    }
+    
+    func stopPreloadVideoStream(roomId: String) {
+        liveListManager?.stopPreloadVideoStream(roomId)
     }
     
     func callExperimentalAPI(jsonStr: String) {

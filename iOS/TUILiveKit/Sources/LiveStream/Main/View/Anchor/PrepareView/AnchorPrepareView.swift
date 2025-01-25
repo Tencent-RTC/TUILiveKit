@@ -10,6 +10,7 @@ import RTCCommon
 import TUICore
 
 protocol AnchorPrepareViewDelegate: AnyObject {
+    func prepareView(_ view: AnchorPrepareView, didClickBack button: UIButton)
     func prepareView(_ view: AnchorPrepareView, didClickStart button: UIButton)
     func prepareViewDidClickSwitchCamera()
 }
@@ -247,7 +248,7 @@ extension AnchorPrepareView {
     }
     
     @objc func backButtonClick() {
-        routerManager.router(action: .exit)
+        delegate?.prepareView(self, didClickBack: backButton)
     }
     
     @objc func startButtonClick() {

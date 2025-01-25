@@ -92,7 +92,7 @@ extension SeatGridView {
         Task {
             do {
                 let roomInfo = try await manager.create(roomInfo: roomInfo)
-                let _ = try await manager.takeSeat(index: 0, timeout: kSGDefaultTimeout)
+                let _ = try await manager.takeSeat(index: -1, timeout: kSGDefaultTimeout)
                 runOnMainThread { onSuccess(roomInfo) }
             } catch let SeatGridViewError.error(code, message) {
                 runOnMainThread { onError(code, message) }
@@ -347,7 +347,8 @@ extension SeatGridView: UICollectionViewDataSource, UICollectionViewDelegate {
     private func configureSeatView(view: SGSeatContainerCell, at indexPath: IndexPath) {
         let seatInfo = manager.seatState.seatList[indexPath.row]
         let customView = self.delegate?.seatGridView(self, createSeatView: seatInfo)
-        view.configure(with: SeatContainerCellModel(customView: customView, seatInfo: seatInfo))
+        let ownerId = manager.roomState.ownerId
+        view.configure(with: SeatContainerCellModel(customView: customView, seatInfo: seatInfo, ownerId: ownerId))
     }
     
     private func bindSeatViewClosure(view: SGSeatContainerCell) {
@@ -364,7 +365,8 @@ extension SeatGridView: UICollectionViewDataSource, UICollectionViewDelegate {
     private func bindSeatViewState(view: SGSeatContainerCell, at indexPath: IndexPath) {
         let seatInfoPublisher = manager.subscribeSeatState(StateSelector(keyPath: \SGSeatState.seatList))
             .map { seatList in
-                seatList[indexPath.row]
+                guard indexPath.row < seatList.count else { return TUISeatInfo() }
+                return seatList[indexPath.row]
             }.eraseToAnyPublisher()
         seatInfoPublisher
             .receive(on: RunLoop.main)

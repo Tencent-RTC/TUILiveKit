@@ -87,7 +87,6 @@ extension LSRoomManager {
         update { state in
             state.roomId = roomInfo.roomId
             state.createTime = roomInfo.createTime
-            state.roomId = roomInfo.roomId
             state.roomName = roomInfo.name
             state.ownerInfo.userId = roomInfo.ownerId
             state.ownerInfo.name = roomInfo.ownerName
@@ -107,8 +106,8 @@ extension LSRoomManager {
             modifyFlag = modifyFlag.union([.coverUrl, .publish, .category, .backgroundUrl])
             do {
                 try await service.syncLiveInfoToService(liveInfo: liveInfo, modifyFlag: modifyFlag)
-            } catch let err {
-                toastSubject.send(err.localizedDescription)
+            } catch let err as InternalError {
+                toastSubject.send(err.localizedMessage)
             }
         }
     }

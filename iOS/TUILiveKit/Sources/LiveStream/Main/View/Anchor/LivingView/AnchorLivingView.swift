@@ -121,6 +121,14 @@ class AnchorLivingView: UIView {
             .receive(on: RunLoop.main)
             .sink { [weak self] seatApplicationList in
                 guard let self = self else { return }
+                if manager.coreCoHostState.receivedConnectionRequest != nil || manager.coreCoHostState.sentConnectionRequestList.count > 0 {
+                    // If received connection request first, reject all linkmic auto.
+                    for seatApplication in seatApplicationList {
+                        manager.removeSeatApplication(userId: seatApplication.userId)
+                        coreView.respondIntraRoomConnection(userId: seatApplication.userId, isAccepted: false) {} onError: { _, _ in }
+                    }
+                    return
+                }
                 self.showLinkMicFloatView(isPresent: seatApplicationList.count > 0)
             }
             .store(in: &cancellableSet)
@@ -266,8 +274,9 @@ extension AnchorLivingView {
         lineConfig.lineColor = .g8
         
         let selfUserId = manager.userState.selfInfo.userId
-        let isSelfInConnection = manager.coHostState.connectedUsers.count > 1
-        let isSelfInBattle = manager.battleState.battleUsers.contains(where: { $0.userId == selfUserId }) && isSelfInConnection
+        let isSelfInCoGuestConnection = manager.coGuestState.connectedUserList.count > 1
+        let isSelfInCoHostConnection = manager.coHostState.connectedUsers.count > 1
+        let isSelfInBattle = manager.battleState.battleUsers.contains(where: { $0.userId == selfUserId }) && isSelfInCoHostConnection
         
         if isSelfInBattle {
             title = .endLiveOnBattleText
@@ -277,7 +286,7 @@ extension AnchorLivingView {
                 self.routerManager.router(action: .dismiss())
             })
             items.append(endBattleItem)
-        } else if isSelfInConnection {
+        } else if isSelfInCoHostConnection {
             title = .endLiveOnConnectionText
             let endConnectionItem = ActionItem(title: .endLiveDisconnectText, designConfig: lineConfig, actionClosure: { [weak self] _ in
                 guard let self = self else { return }
@@ -286,6 +295,8 @@ extension AnchorLivingView {
                 self.routerManager.router(action: .dismiss())
             })
             items.append(endConnectionItem)
+        } else if isSelfInCoGuestConnection {
+            title = .endLiveOnLinkMicText
         }
         
         let designConfig = ActionItemDesignConfig(lineWidth: 7, titleColor: .g2)
@@ -332,17 +343,6 @@ extension AnchorLivingView {
         addSubview(anchorEndView)
         anchorEndView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
-        }
-    }
-    
-    private func presentPopup(view: UIView) {
-        if let vc = WindowUtils.getCurrentWindowViewController() {
-            let menuContainerView = LSMenuContainerView(contentView: view)
-            menuContainerView.blackAreaClickClosure = {
-                vc.dismiss(animated: true)
-            }
-            let viewController = PopupViewController(contentView: menuContainerView)
-            vc.present(viewController, animated: true)
         }
     }
 }
@@ -430,7 +430,7 @@ fileprivate extension String {
     
     static let endLiveOnConnectionText = localized("live.endLive.onConnection.alert")
     static let endLiveDisconnectText = localized("live.endLive.onConnection.alert.disconnect")
-    static let endLiveOnLinkMicText = localized("live.endLive.onLinkMic.alert")
+    static let endLiveOnLinkMicText = localized("live.endLive.anchor.onLinkMic.alert")
     static let endLiveLinkMicDisconnectText = localized("live.endLive.onLinkMic.alert.disconnect")
     static let endLiveOnBattleText = localized("live.endLive.onBattle.alert")
     static let endLiveBattleText = localized("live.endLive.onBattle.alert.endBattle")
