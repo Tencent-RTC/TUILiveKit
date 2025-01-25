@@ -62,7 +62,12 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.ViewHo
         holder.mTextAudienceCountInfo.setText(
                 mContext.getString(R.string.livekit_audience_count_in_room, liveInfo.viewCount));
         holder.mLayoutCoverBorder.setTag(liveInfo);
+        holder.mLayoutCoverBorder.setEnabled(true);
         holder.mLayoutCoverBorder.setOnClickListener((view) -> {
+            if (!view.isEnabled()) {
+                return;
+            }
+            view.setEnabled(false);
             final LiveInfo info = (LiveInfo) view.getTag();
             FloatWindowManager floatWindowManager = FloatWindowManager.getInstance();
             if (floatWindowManager.isShowingFloatWindow()) {
@@ -77,7 +82,9 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.ViewHo
                     return;
                 }
             }
-            floatWindowManager.releaseFloatWindow();
+            if (floatWindowManager.isShowingFloatWindow()) {
+                floatWindowManager.releaseFloatWindow();
+            }
             enterRoom(info);
         });
     }

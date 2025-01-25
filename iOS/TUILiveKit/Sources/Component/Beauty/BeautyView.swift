@@ -102,12 +102,12 @@ class BeautyView: UIView {
     
     private func addObserver() {
         if !isAdvancedBeauty { return }
-        trtcCloud.setLocalVideoProcessDelegete(self, pixelFormat: ._NV12, bufferType: .pixelBuffer)
+        trtcCloud.setLocalVideoProcessDelegete(self, pixelFormat: ._32BGRA, bufferType: .pixelBuffer)
     }
     
     private func removeObserver() {
         if !isAdvancedBeauty { return }
-        trtcCloud.setLocalVideoProcessDelegete(nil, pixelFormat: ._NV12, bufferType: .pixelBuffer)
+        trtcCloud.setLocalVideoProcessDelegete(nil, pixelFormat: ._32BGRA, bufferType: .pixelBuffer)
     }
     
     deinit {

@@ -1,5 +1,7 @@
 <resources>
-    <string name="livekit_dashboard_loading">正在加载...</string>
+    <string name="livekit_dashboard_rtt">往返延时</string>
+    <string name="livekit_dashboard_down_loss">下行丢包率</string>
+    <string name="livekit_dashboard_up_loss">上行丢包率</string>
     <string name="livekit_dashboard_video_fps">"视频帧率"</string>
     <string name="livekit_dashboard_video_resolution">"分辨率"</string>
     <string name="livekit_dashboard_video_bitrate">"视频码率"</string>

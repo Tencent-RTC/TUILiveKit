@@ -16,10 +16,10 @@ protocol LSRouterViewProvider: NSObjectProtocol {
 }
 
 class LSRouterControlCenter {
-    private let coreView: LiveCoreView
+    private var coreView: LiveCoreView?
     private var rootRoute: LSRoute
     private var routerManager: LSRouterManager
-    private let manager: LiveStreamManager
+    private var manager: LiveStreamManager?
     
     weak var routerProvider: LSRouterViewProvider?
     private weak var rootViewController: UIViewController?
@@ -27,7 +27,7 @@ class LSRouterControlCenter {
     private var presentedRouteStack: [LSRoute] = []
     private var presentedViewControllerMap: [LSRoute: UIViewController] = [:]
 
-    init(rootViewController: UIViewController, rootRoute: LSRoute, routerManager: LSRouterManager, manager: LiveStreamManager, coreView: LiveCoreView) {
+    init(rootViewController: UIViewController, rootRoute: LSRoute, routerManager: LSRouterManager, manager: LiveStreamManager? = nil, coreView: LiveCoreView? = nil) {
         self.rootViewController = rootViewController
         self.rootRoute = rootRoute
         self.routerManager = routerManager
@@ -39,6 +39,13 @@ class LSRouterControlCenter {
     func updateRootRoute(rootRoute: LSRoute) {
         self.rootRoute = rootRoute
         routerManager.setRootRoute(route: rootRoute)
+    }
+    
+    func handleScrollToNewRoom(manager: LiveStreamManager, coreView: LiveCoreView, routerProvider: LSRouterViewProvider) {
+        self.manager = manager
+        self.coreView = coreView
+        self.routerProvider = routerProvider
+        self.presentedViewControllerMap.removeAll()
     }
     
     deinit {
@@ -181,6 +188,7 @@ extension LSRouterControlCenter {
 // MARK: - Default Route View
 extension LSRouterControlCenter {
     private func getRouteDefaultView(route: LSRoute) -> UIView? {
+        guard let coreView = coreView, let manager = manager else { return nil }
         var view: UIView?
         switch route {
         case .liveLinkControl:
@@ -261,7 +269,10 @@ extension LSRouterControlCenter {
 extension LSRouterControlCenter {
     private func isTempPanel(route: LSRoute) -> Bool {
         switch route {
-        case .battleCountdown(_), .alert(_), .videoSetting:
+        case .battleCountdown(_),
+                .alert(_),
+                .videoSetting,
+                .streamDashboard:
             return true
         default:
             return false
@@ -273,7 +284,9 @@ extension LSRouterControlCenter {
         case .beauty, .battleCountdown(_),
                 .featureSetting(_), .alert(_),
                 .streamDashboard,
-                .videoSetting:
+                .giftView,
+                .videoSetting,
+                .listMenu(_):
             return false
         default:
             return true

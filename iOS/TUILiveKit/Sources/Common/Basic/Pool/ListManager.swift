@@ -33,6 +33,10 @@ class ListManager<T> {
     }
     
     func insert(_ obj: T, at index: Int) {
+        if index >= count {
+            append(obj)
+            return
+        }
         totalCount += 1
         if count + 1 > maxLength {
             storage.removeFirst()

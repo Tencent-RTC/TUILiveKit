@@ -18,7 +18,8 @@ import com.trtc.uikit.livekit.voiceroom.state.RoomState;
 import com.trtc.uikit.livekit.voiceroom.view.BasicView;
 
 public class AnchorPreviewView extends BasicView {
-    private static final String FILE = "AnchorPreviewView";
+    private static final String  FILE    = "AnchorPreviewView";
+    private              boolean mIsExit = false;
 
     public AnchorPreviewView(@NonNull Context context) {
         this(context, null);
@@ -45,8 +46,16 @@ public class AnchorPreviewView extends BasicView {
     @Override
     protected void initView() {
         LayoutInflater.from(getContext()).inflate(R.layout.livekit_anchor_preview, this, true);
-        findViewById(R.id.iv_back).setOnClickListener((view -> ((Activity) mContext).onBackPressed()));
-        findViewById(R.id.btn_start_live).setOnClickListener((view) -> createRoom());
+        findViewById(R.id.iv_back).setOnClickListener((view -> {
+            mIsExit = true;
+            ((Activity) mContext).finish();
+        }));
+        findViewById(R.id.btn_start_live).setOnClickListener((view) -> {
+            if (view.isEnabled()) {
+                view.setEnabled(false);
+                createRoom();
+            }
+        });
     }
 
     @Override
@@ -77,6 +86,10 @@ public class AnchorPreviewView extends BasicView {
         mSeatGridView.startVoiceRoom(roomInfo, new TUIRoomDefine.GetRoomInfoCallback() {
             @Override
             public void onSuccess(TUIRoomDefine.RoomInfo roomInfo) {
+                if (mIsExit) {
+                    mSeatGridView.stopVoiceRoom(null);
+                    return;
+                }
                 Logger.info(FILE, " create room success");
                 mVoiceRoomManager.getRoomManager().updateRoomState(roomInfo);
                 mVoiceRoomManager.getRoomManager().updateLiveInfo();

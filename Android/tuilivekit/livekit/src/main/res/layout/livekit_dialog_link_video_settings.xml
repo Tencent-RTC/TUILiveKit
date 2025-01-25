@@ -17,26 +17,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tencent.cloud.tuikit.engine.common.TUIVideoView
-        android:id="@+id/preview_audience_video"
-        android:layout_width="328dp"
-        android:layout_height="328dp"
+    <com.trtc.uikit.livekit.component.floatwindow.view.RoundFrameLayout
+        android:id="@+id/fl_preview_audience_video"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title_link_audio_settings" />
+        app:layout_constraintTop_toBottomOf="@+id/title_link_audio_settings">
+
+        <com.tencent.cloud.tuikit.engine.common.TUIVideoView
+            android:id="@+id/preview_audience_video"
+            android:layout_width="328dp"
+            android:layout_height="328dp" />
+    </com.trtc.uikit.livekit.component.floatwindow.view.RoundFrameLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/video_settings_options"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toTopOf="@+id/btn_apply_link_mic"
+        android:layout_width="228dp"
+        android:layout_height="72dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/preview_audience_video" />
+        app:layout_constraintTop_toBottomOf="@+id/fl_preview_audience_video" />
 
     <Button
         android:id="@+id/btn_apply_link_mic"
@@ -56,6 +58,7 @@
         android:id="@+id/video_settings_apply_tips"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:text="@string/livekit_tips_apply_link_mic"
         android:textColor="@color/livekit_design_standard_g4"
         app:layout_constraintBottom_toTopOf="@+id/guideline"

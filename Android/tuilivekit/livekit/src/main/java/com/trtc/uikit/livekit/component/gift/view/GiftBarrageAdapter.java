@@ -97,8 +97,7 @@ public final class GiftBarrageAdapter implements BarrageItemAdapter {
             sb.setSpan(senderSpan, 0, sender.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
             String send = context.getString(R.string.livekit_sent);
             sb.append(send);
-            String receiver = String.valueOf(barrage.extInfo.get(GIFT_RECEIVER_USERNAME));
-            receiver = TextUtils.isEmpty(receiver) ? "" : receiver;
+            String receiver = barrage.extInfo.get(GIFT_RECEIVER_USERNAME) + "";
             sb.append(receiver);
             ForegroundColorSpan receiverSpan = new ForegroundColorSpan(senderSpan.getForegroundColor());
             sb.setSpan(receiverSpan, sb.length() - receiver.length(), sb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -108,11 +107,21 @@ public final class GiftBarrageAdapter implements BarrageItemAdapter {
                     GiftConstants.MESSAGE_COLOR[random.nextInt(GiftConstants.MESSAGE_COLOR.length)]);
             ForegroundColorSpan giftSpan = new ForegroundColorSpan(giftNameColor);
             sb.setSpan(giftSpan, sb.length() - giftName.length(), sb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-            String url = String.valueOf(barrage.extInfo.get(GIFT_ICON_URL));
-            ImageSpan imageSpan = new ImageSpan(defaultGiftIcon);
             sb.append(" ");
-            int start = sb.length() - 1;
-            sb.setSpan(imageSpan, sb.length() - 1, sb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+            final int giftIconSpanStart = sb.length() - 1;
+            ImageSpan imageSpan = new ImageSpan(defaultGiftIcon);
+            imageSpan.getDrawable().setBounds(defaultGiftIcon.getBounds());
+            sb.setSpan(imageSpan, giftIconSpanStart, giftIconSpanStart + 1, SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            String count = String.valueOf(barrage.extInfo.get(GIFT_COUNT));
+            sb.append("x").append(count).append("   ");
+            textView.setText(sb);
+
+            String url = String.valueOf(barrage.extInfo.get(GIFT_ICON_URL));
+            loadGiftIcon(url, sb, giftIconSpanStart, giftIconSpanStart + 1);
+        }
+
+        private void loadGiftIcon(String url, SpannableStringBuilder sb, int start, int end) {
             Glide.with(context)
                     .asBitmap()
                     .load(url)
@@ -121,7 +130,7 @@ public final class GiftBarrageAdapter implements BarrageItemAdapter {
                         public void onResourceReady(@NonNull Bitmap resource, Transition<? super Bitmap> transition) {
                             ImageSpan span = new ImageSpan(context, resource);
                             span.getDrawable().setBounds(defaultGiftIcon.getBounds());
-                            sb.setSpan(span, start, start + 1, SPAN_EXCLUSIVE_EXCLUSIVE);
+                            sb.setSpan(span, start, end, SPAN_EXCLUSIVE_EXCLUSIVE);
                             textView.setText(sb);
                         }
 
@@ -130,9 +139,6 @@ public final class GiftBarrageAdapter implements BarrageItemAdapter {
                             Log.e(TAG, "glide load failed: " + url);
                         }
                     });
-            String count = String.valueOf(barrage.extInfo.get(GIFT_COUNT));
-            sb.append("x").append(count);
-            textView.setText(sb);
         }
     }
 }

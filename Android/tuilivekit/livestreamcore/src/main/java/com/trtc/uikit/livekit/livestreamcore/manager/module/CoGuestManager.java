@@ -1,5 +1,7 @@
 package com.trtc.uikit.livekit.livestreamcore.manager.module;
 
+import static com.tencent.cloud.tuikit.engine.common.TUICommonDefine.Error.ALL_SEAT_OCCUPIED;
+
 import android.text.TextUtils;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
@@ -54,6 +56,7 @@ public class CoGuestManager extends BaseManager {
         mVideoLiveService.getSeatList(new TUIRoomDefine.GetSeatListCallback() {
             @Override
             public void onSuccess(List<TUIRoomDefine.SeatInfo> list) {
+                initSeatList(list);
                 updateSelfSeatedState();
                 autoTakeSeatByOwner();
             }
@@ -229,11 +232,29 @@ public class CoGuestManager extends BaseManager {
             return;
         }
         if (isAgree) {
-            acceptRequest(requestId, callback);
+            acceptRequest(requestId, new TUIRoomDefine.ActionCallback() {
+                @Override
+                public void onSuccess() {
+                    removeSeatApplication(requestId);
+                    if (callback != null) {
+                        callback.onSuccess();
+                    }
+                }
+
+                @Override
+                public void onError(TUICommonDefine.Error error, String s) {
+                    if (error != ALL_SEAT_OCCUPIED) {
+                        removeSeatApplication(requestId);
+                    }
+                    if (callback != null) {
+                        callback.onError(error, s);
+                    }
+                }
+            });
         } else {
             rejectRequest(requestId, callback);
+            removeSeatApplication(requestId);
         }
-        removeSeatApplication(requestId);
     }
 
     public void cancelGuestApplication(TUIRoomDefine.ActionCallback callback) {
@@ -492,9 +513,8 @@ public class CoGuestManager extends BaseManager {
     }
 
     public void onConnectSuccess() {
-        if (mUserState.selfInfo.userRole == TUIRoomDefine.Role.ROOM_OWNER) {
-            mVideoLiveService.takeSeat(REQUEST_DEFAULT_INDEX, REQUEST_TIMEOUT, null);
-        }
+        initConnectedGuestList();
+        initGuestApplicationList();
     }
 
     private void notifyConnectedUsersUpdated(List<TUIRoomDefine.SeatInfo> seatList,

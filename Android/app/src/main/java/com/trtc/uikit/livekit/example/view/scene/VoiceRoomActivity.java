@@ -8,16 +8,16 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.tencent.qcloud.tuicore.TUILogin;
-import com.trtc.tuikit.common.FullScreenActivity;
 import com.trtc.tuikit.common.util.ActivityLauncher;
-import com.trtc.uikit.livekit.voiceroom.VoiceRoomDefine;
-import com.trtc.uikit.livekit.voiceroom.VoiceRoomKit;
-import com.trtc.uikit.livekit.example.R;
-import com.trtc.uikit.livekit.example.store.AppStore;
 import com.trtc.uikit.livekit.LiveIdentityGenerator;
 import com.trtc.uikit.livekit.component.roomlist.TUILiveListFragment;
+import com.trtc.uikit.livekit.example.BaseActivity;
+import com.trtc.uikit.livekit.example.R;
+import com.trtc.uikit.livekit.example.store.AppStore;
+import com.trtc.uikit.livekit.voiceroom.VoiceRoomDefine;
+import com.trtc.uikit.livekit.voiceroom.VoiceRoomKit;
 
-public class VoiceRoomActivity extends FullScreenActivity {
+public class VoiceRoomActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +49,7 @@ public class VoiceRoomActivity extends FullScreenActivity {
     }
 
     private void initBackButton() {
-        findViewById(R.id.iv_back).setOnClickListener(v -> onBackPressed());
+        findViewById(R.id.iv_back).setOnClickListener(v -> finish());
     }
 
     private void initLiveListFragment() {

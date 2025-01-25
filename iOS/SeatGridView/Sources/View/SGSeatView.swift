@@ -18,12 +18,14 @@ class SGSeatView: UIView {
     private var userId: String {
         seatInfo.userId ?? ""
     }
+    private let ownerId: String
     private var isViewReady: Bool = false
     private var cancellableSet = Set<AnyCancellable>()
     private(set) var seatIndex: Int = -1
     
-    init(seatInfo: TUISeatInfo) {
+    init(seatInfo: TUISeatInfo, ownerId: String) {
         self.seatInfo = seatInfo
+        self.ownerId = ownerId
         super.init(frame: .zero)
         setupViewConfig()
     }
@@ -72,8 +74,6 @@ class SGSeatView: UIView {
         label.textColor = .g9
         label.textAlignment = .center
         label.numberOfLines = 1
-        label.adjustsFontSizeToFitWidth = true
-        label.minimumScaleFactor = 0.5
         return label
     }()
 
@@ -241,6 +241,7 @@ extension SGSeatView {
     private func toUserOnSeatStyle() {
         soundWaveView.isHidden = false
         seatImageView.isHidden = true
+        ownerImageView.isHidden = !isOwner()
         ownerImageView.snp.remakeConstraints { make in
             make.leading.equalToSuperview()
             make.trailing.equalTo(nameLabel.snp.leading).offset(-3)
@@ -253,5 +254,9 @@ extension SGSeatView {
             make.top.equalToSuperview()
             make.bottom.equalToSuperview()
         }
+    }
+    
+    private func isOwner() -> Bool {
+        return ownerId == seatInfo.userId
     }
 }

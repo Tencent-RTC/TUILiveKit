@@ -132,6 +132,10 @@ public class MediaManager extends BaseManager {
         mVideoLiveService.startPlayRemoteVideo(userId, streamType, callback);
     }
 
+    public void stopPlayRemoteVideo(String userId, TUIRoomDefine.VideoStreamType streamType) {
+        mVideoLiveService.stopPlayRemoteVideo(userId, streamType);
+    }
+
     public void openLocalMicrophone(TUIRoomDefine.ActionCallback callback) {
         boolean hasMicrophonePermission = mVideoLiveState.mediaState.hasMicrophonePermission.get();
         if (hasMicrophonePermission) {

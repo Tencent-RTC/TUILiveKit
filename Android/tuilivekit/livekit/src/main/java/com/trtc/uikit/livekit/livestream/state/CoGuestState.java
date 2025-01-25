@@ -20,7 +20,6 @@ public class CoGuestState {
     public LiveData<List<SeatInfo>>                 connectedUserList   = new LiveData<>(new CopyOnWriteArrayList<>());
     public LiveData<LinkedHashSet<SeatApplication>> requestCoGuestList  = new LiveData<>(new LinkedHashSet<>());
     public LiveData<CoGuestStatus>                  coGuestStatus       = new LiveData<>(NONE);
-    public boolean                                  openCameraOnCoGuest = true;
 
     public void reset() {
         connectedUserList.get().clear();

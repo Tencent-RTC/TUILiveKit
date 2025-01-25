@@ -5,4 +5,5 @@
     <color name="livekit_dashboard_color_green">#47D4AB</color>
     <color name="livekit_dashboard_color_pink">#F95F91</color>
     <color name="livekit_dashboard_color_title">#99FFFFFF</color>
+    <color name="livekit_dashboard_color_separator">#676A70</color>
 </resources>

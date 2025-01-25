@@ -177,6 +177,9 @@ class CoGuestManager {
             try await service.responseRemoteRequest(requestId: requestId, agree: isAgree)
             receivedInvitation = nil
         } catch let LiveStreamCoreError.error(code, message) {
+            if code != TUIError.allSeatOccupied {
+                receivedInvitation = nil
+            }
             LiveStreamLog.error("\(#file)","\(#line)","leave:[code:\(code),message:\(message)]")
             throw LiveStreamCoreError.error(code: code, message: message)
         } catch {

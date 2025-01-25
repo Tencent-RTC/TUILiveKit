@@ -20,7 +20,7 @@ class UserMemberCell: UITableViewCell {
             } else {
                 avatarImageView.image = .avatarPlaceholderImage
             }
-            nameLabel.text = user.userName
+            nameLabel.text = user.userName.isEmpty ? user.userId : user.userName
         }
     }
     

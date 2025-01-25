@@ -13,8 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.component.beauty.BeautyViewFactory;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
+import com.trtc.uikit.livekit.livestream.view.widgets.beauty.BeautyPanelDialog;
 import com.trtc.uikit.livekit.livestream.view.widgets.videosettings.VideoSettingsDialog;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
@@ -61,8 +61,8 @@ public class VideoCoGuestSettingsAdapter extends RecyclerView.Adapter<VideoCoGue
 
     @SuppressLint("NotifyDataSetChanged")
     private void popUpBeautyPanel() {
-        BeautyViewFactory beautyViewFactory = new BeautyViewFactory();
-        beautyViewFactory.showBeautyPanel(mContext, mLiveManager);
+        BeautyPanelDialog dialog = new BeautyPanelDialog(mContext, mLiveManager);
+        dialog.show();
     }
 
     private void showVideoSettingsDialog() {

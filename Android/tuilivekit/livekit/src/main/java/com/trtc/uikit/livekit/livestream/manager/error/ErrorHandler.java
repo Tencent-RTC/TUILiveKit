@@ -5,6 +5,7 @@ import static com.tencent.cloud.tuikit.engine.common.TUICommonDefine.Error.REPEA
 import static com.tencent.cloud.tuikit.engine.common.TUICommonDefine.Error.SEAT_NOT_SUPPORT_LINK_MIC;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.qcloud.tuicore.TUIConfig;
@@ -13,12 +14,16 @@ import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 
 public class ErrorHandler {
 
     private static final HashSet<TUICommonDefine.Error> INTERCEPT_TOAST_ONLY_PRINT_LOG = new HashSet<>(
             Arrays.asList(FREQ_LIMIT, REPEAT_OPERATION, SEAT_NOT_SUPPORT_LINK_MIC));
+
+    private static final HashSet<String> INTERCEPT_ERROR_CODE_MESSAGE = new HashSet<>(
+            Collections.singletonList("exceed frequency limit"));
 
     public static void onError(TUICommonDefine.Error error) {
         if (error == TUICommonDefine.Error.SUCCESS) {
@@ -33,6 +38,13 @@ public class ErrorHandler {
 
     public static void handleMessage(String message) {
         ToastUtil.toastShortMessage(message);
+    }
+
+    public static boolean interceptErrorCode(TUICommonDefine.Error error, String message) {
+        if (TUICommonDefine.Error.FAILED == error && !TextUtils.isEmpty(message)) {
+            return INTERCEPT_ERROR_CODE_MESSAGE.contains(message);
+        }
+        return false;
     }
 
     private static String convertToErrorMessage(TUICommonDefine.Error error) {

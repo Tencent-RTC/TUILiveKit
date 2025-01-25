@@ -25,10 +25,11 @@ class SGViewManager {
     }
     
     func setLayoutMode(layoutMode: SGLayoutMode, layoutConfig: SGSeatViewLayoutConfig?) {
+        let config: SGSeatViewLayoutConfig? = (layoutMode == .free) ? layoutConfig : getBuiltInLayoutConfig(layoutMode: layoutMode)
         observerState.update { viewState in
             viewState.layoutMode = layoutMode
-            guard let layoutConfig = layoutConfig else { return }
-            viewState.layoutConfig = layoutConfig
+            guard let config = config else { return }
+            viewState.layoutConfig = config
         }
     }
     
@@ -59,7 +60,23 @@ extension SGViewManager {
 
 // MARK: - SeatGridViewLayout
 extension SGViewManager {
-   
+    
+    private func getBuiltInLayoutConfig(layoutMode: SGLayoutMode) -> SGSeatViewLayoutConfig? {
+        guard let seatCount = context?.seatManager.seatState.seatList.count, seatCount > 0 else { return nil }
+        var layoutConfig: SGSeatViewLayoutConfig? = nil
+        switch layoutMode {
+        case .focus:
+            layoutConfig = getFocusLayoutConfig(seatCount: seatCount)
+        case .grid:
+            layoutConfig = getGridLayoutConfig(seatCount: seatCount)
+        case .vertical:
+            layoutConfig = getVerticalLayoutConfig(seatCount: seatCount)
+        case .free:
+            break
+        }
+        return layoutConfig
+    }
+
     private func getFocusLayoutConfig(seatCount: Int) -> SGSeatViewLayoutConfig {
         var rowConfigs: [SGSeatViewLayoutRowConfig] = []
         let seatSize = CGSize(width: 70, height: 105)

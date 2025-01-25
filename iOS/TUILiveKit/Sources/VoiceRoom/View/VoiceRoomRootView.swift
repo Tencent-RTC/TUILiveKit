@@ -27,6 +27,7 @@ class VoiceRoomRootView: RTCBaseView {
     private let giftCacheService = TUIGiftStore.shared.giftCacheService
     private var cancellableSet = Set<AnyCancellable>()
     private let likeManager: LikeManager
+    private var isExited: Bool = false
     
     private let backgroundImageView: UIImageView = {
         let backgroundImageView = UIImageView(frame: .zero)
@@ -117,8 +118,8 @@ class VoiceRoomRootView: RTCBaseView {
         addSubview(backgroundImageView)
         addSubview(backgroundGradientView)
         addSubview(barrageDisplayView)
-        addSubview(giftDisplayView)
         addSubview(seatGridView)
+        addSubview(giftDisplayView)
         addSubview(topView)
         addSubview(bottomMenu)
         addSubview(barrageButton)
@@ -238,6 +239,8 @@ extension VoiceRoomRootView {
         
         seatGridView.startVoiceRoom(roomInfo: roomInfo) { [weak self] roomInfo in
             guard let self = self else { return }
+            handleAbnormalExitedSence()
+            
             manager.update(ownerInfo: manager.userState.selfInfo)
             let liveInfo = TUILiveInfo()
             liveInfo.roomInfo.roomId = roomState.roomId
@@ -285,6 +288,18 @@ extension VoiceRoomRootView {
                             subKey: TUICore_PrivacyService_ROOM_STATE_EVENT_SUB_KEY_START,
                             object: nil,
                             param: nil)
+    }
+    
+    func onExit() {
+        isExited = true
+    }
+    
+    private func handleAbnormalExitedSence() {
+        if isExited {
+            seatGridView.stopVoiceRoom {
+            } onError: { code, message in
+            }
+        }
     }
     
     func initComponentView() {
@@ -496,6 +511,7 @@ extension VoiceRoomRootView: SeatGridViewObserver {
     }
     
     func onKickedOffSeat(userInfo: TUIUserInfo) {
+        manager.toastSubject.send(.onKickedOutOfSeatText)
     }
     
     func onUserAudioStateChanged(userInfo: TUIUserInfo, hasAudio: Bool, reason: TUIChangeReason) {
@@ -514,7 +530,7 @@ extension VoiceRoomRootView: SeatGridViewObserver {
             let alertInfo = VRAlertInfo(description: String.localizedReplace(.inviteLinkText, replace: "\(userInfo.userName)"),
                                         imagePath: userInfo.avatarUrl,
                                         cancelButtonInfo: (String.rejectText, .g3),
-                                        defaultButtonInfo: (String.acceptText, .b1)) { [weak self] _ in
+                                        defaultButtonInfo: (String.agreeText, .b1)) { [weak self] _ in
                 guard let self = self else { return }
                 self.seatGridView.responseRemoteRequest(userId: userInfo.userId, agree: false) { [weak self] in
                     guard let self = self else { return }
@@ -582,7 +598,10 @@ extension VoiceRoomRootView {
                 let inviteTakeSeat = ActionItem(title: String.inviteText, designConfig: designConfig())
                 inviteTakeSeat.actionClosure = { [weak self] _ in
                     guard let self = self else { return }
-                    routerManager.router(action: .present(.linkInviteControl(seatGridView, seat.index)))
+                    routerManager.router(action: .dismiss(.panel, completion: { [weak self] in
+                        guard let self = self else { return }
+                        routerManager.router(action: .present(.linkInviteControl(seatGridView, seat.index)))
+                    }))
                 }
                 menus.append(inviteTakeSeat)
             }
@@ -754,7 +773,7 @@ fileprivate extension String {
     static let confirmCloseText = localized("live.anchor.confirm.close")
     static let balanceInsufficientText = localized("live.balanceInsufficient")
     static let rejectText = localized("live.anchor.link.reject.title")
-    static let acceptText = localized("live.anchor.link.accept.title")
+    static let agreeText = localized("live.anchor.link.agree.title")
     static let inviteLinkText = localized("live.anchor.link.invite.desc.xxx")
     static let enterRoomFailedText = localized("live.alert.enterRoom.failed.title")
     static let operationFailedText = localized("live.operation.fail.xxx")
@@ -767,4 +786,5 @@ fileprivate extension String {
     static let takeSeatApplicationRejected = localized("live.seat.takeSeatApplicationRejected")
     static let takeSeatApplicationTimeout = localized("live.seat.takeSeatApplicationTimeout")
     static let repeatRequest = localized("live.error.repeat.requestId")
+    static let onKickedOutOfSeatText = localized("live.seat.kickedOutOfSeat")
 }

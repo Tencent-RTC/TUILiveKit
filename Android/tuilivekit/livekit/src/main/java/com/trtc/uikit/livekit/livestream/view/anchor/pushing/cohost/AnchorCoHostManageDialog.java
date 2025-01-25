@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +23,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
+import com.tencent.qcloud.tuicore.util.ScreenUtil;
 import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
@@ -143,10 +145,17 @@ public class AnchorCoHostManageDialog extends PopupDialog implements ITUINotific
     }
 
     private void initRefresh() {
+        updateRefreshLayoutHeight();
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
             initRecommendData();
             mSwipeRefreshLayout.setRefreshing(false);
         });
+    }
+
+    private void updateRefreshLayoutHeight() {
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mSwipeRefreshLayout.getLayoutParams();
+        params.height = ScreenUtil.getScreenHeight(getContext()) - ScreenUtil.dip2px(100);
+        mSwipeRefreshLayout.setLayoutParams(params);
     }
 
     private void initRecommendData() {

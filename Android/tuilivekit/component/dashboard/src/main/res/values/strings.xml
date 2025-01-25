@@ -1,5 +1,7 @@
 <resources>
-    <string name="livekit_dashboard_loading">Loading...</string>
+    <string name="livekit_dashboard_rtt">RTT</string>
+    <string name="livekit_dashboard_down_loss">DownLoss</string>
+    <string name="livekit_dashboard_up_loss">UpLoss</string>
     <string name="livekit_dashboard_video_fps">"Video FPS"</string>
     <string name="livekit_dashboard_video_resolution">Quality</string>
     <string name="livekit_dashboard_video_bitrate">"Video Bitrate"</string>

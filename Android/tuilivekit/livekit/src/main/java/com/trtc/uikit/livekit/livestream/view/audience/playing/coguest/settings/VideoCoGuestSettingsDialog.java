@@ -1,5 +1,7 @@
 package com.trtc.uikit.livekit.livestream.view.audience.playing.coguest.settings;
 
+import static com.trtc.uikit.livekit.livestream.state.CoGuestState.CoGuestStatus.APPLYING;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,9 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.common.TUIVideoView;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
+import com.tencent.qcloud.tuicore.util.ScreenUtil;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.component.floatwindow.view.RoundFrameLayout;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
 import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
@@ -23,6 +27,7 @@ import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 @SuppressLint("ViewConstructor")
 public class VideoCoGuestSettingsDialog extends PopupDialog {
 
+    private       RoundFrameLayout  mRoundFrameLayout;
     private       TUIVideoView      mPreviewVideoView;
     private       Button            mButtonApplyLinkMic;
     private       RecyclerView      mRecycleSettingsOption;
@@ -31,8 +36,7 @@ public class VideoCoGuestSettingsDialog extends PopupDialog {
     private       boolean           mNeedCloseCamera = true;
 
 
-    public VideoCoGuestSettingsDialog(@NonNull Context context, LiveStreamManager manager,
-                                      LiveCoreView liveStream) {
+    public VideoCoGuestSettingsDialog(@NonNull Context context, LiveStreamManager manager, LiveCoreView liveStream) {
         super(context);
         mLiveManager = manager;
         mLiveStream = liveStream;
@@ -46,6 +50,7 @@ public class VideoCoGuestSettingsDialog extends PopupDialog {
         initRecycleSettingsOption();
         initPreviewVideoView();
         initApplyLinkMicButton();
+        initRoundFrameLayout();
 
         setView(view);
     }
@@ -54,6 +59,7 @@ public class VideoCoGuestSettingsDialog extends PopupDialog {
         mPreviewVideoView = view.findViewById(R.id.preview_audience_video);
         mButtonApplyLinkMic = view.findViewById(R.id.btn_apply_link_mic);
         mRecycleSettingsOption = view.findViewById(R.id.video_settings_options);
+        mRoundFrameLayout = view.findViewById(R.id.fl_preview_audience_video);
     }
 
     @Override
@@ -64,13 +70,22 @@ public class VideoCoGuestSettingsDialog extends PopupDialog {
         }
     }
 
+    private void initRoundFrameLayout() {
+        mRoundFrameLayout.setRadius(ScreenUtil.dip2px(16));
+    }
+
     private void initApplyLinkMicButton() {
         mButtonApplyLinkMic.setOnClickListener(view -> {
+            if (!view.isEnabled()) {
+                return;
+            }
+            view.setEnabled(false);
             ToastUtil.toastShortMessageCenter(getContext().getString(R.string.livekit_toast_apply_link_mic));
             mLiveStream.requestIntraRoomConnection("", 60, true, new TUIRoomDefine.ActionCallback() {
                 @Override
                 public void onSuccess() {
                     mNeedCloseCamera = false;
+                    mLiveManager.getCoGuestManager().updateCoGuestStates(APPLYING);
                 }
 
                 @Override
@@ -89,7 +104,7 @@ public class VideoCoGuestSettingsDialog extends PopupDialog {
     }
 
     private void initRecycleSettingsOption() {
-        mRecycleSettingsOption.setLayoutManager(new GridLayoutManager(getContext(), 5));
+        mRecycleSettingsOption.setLayoutManager(new GridLayoutManager(getContext(), 3));
         VideoCoGuestSettingsAdapter adapter = new VideoCoGuestSettingsAdapter(getContext(), mLiveManager, mLiveStream);
         mRecycleSettingsOption.setAdapter(adapter);
     }

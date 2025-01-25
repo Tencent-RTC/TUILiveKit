@@ -7,5 +7,11 @@
             <corners android:radius="26dp" />
         </shape>
     </item>
+    <item android:state_enabled="false">
+        <shape android:shape="rectangle" android:useLevel="false">
+            <solid android:color="@color/livekit_design_standard_g3" />
+            <corners android:radius="26dp" />
+        </shape>
+    </item>
 </selector>
 

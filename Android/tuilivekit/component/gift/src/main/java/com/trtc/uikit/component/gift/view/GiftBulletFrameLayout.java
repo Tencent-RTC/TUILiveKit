@@ -80,9 +80,7 @@ public class GiftBulletFrameLayout extends FrameLayout implements Handler.Callba
             mTextSendUserName.setText(sender.userName);
         }
         if (!TextUtils.isEmpty(gift.giftName)) {
-            String tip = String.format("%s%s%sx%s", mContext.getString(R.string.livekit_sent),
-                    receiver.userName, gift.giftName, giftCount);
-            mTextGiftTitle.setText(tip);
+            mTextGiftTitle.setText(gift.giftName);
         }
         return true;
     }

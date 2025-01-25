@@ -51,8 +51,8 @@ extension LSCoGuestManager {
                         coGuestState.coGuestStatus = .linking
                     }
                 }
-            } catch let err {
-                toastSubject.send(err.localizedDescription)
+            } catch let err as InternalError {
+                toastSubject.send(err.localizedMessage)
             }
         }
     }
@@ -62,8 +62,8 @@ extension LSCoGuestManager {
             do {
                 let requestList = try await service.getSeatApplicationList()
                 initSeatApplicationList(list: requestList)
-            } catch let err {
-                toastSubject.send(err.localizedDescription)
+            } catch let err as InternalError {
+                toastSubject.send(err.localizedMessage)
             }
         }
     }

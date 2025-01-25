@@ -40,7 +40,7 @@
 "live.anchor.link.accept.title" = "接受";
 "live.anchor.link.hang.up.title" = "挂断";
 "live.anchor.link.control.desc" = "允许观众申请连麦";
-"live.anchor.link.invite.desc.xxx" = "xxx 邀请你上麦";
+"live.anchor.link.invite.desc.xxx" = "xxx 向你发来上麦邀请";
 "live.recent.online.audience" = "在线观众";
 "live.anchor.link.control.seat.count.xxx" = "当前麦位（xxx）";
 "live.anchor.link.control.request.count.xxx" = "连麦申请（xxx）";
@@ -69,7 +69,8 @@
 "live.anchor.more.set.nickname" = "隐藏观众昵称";
 "live.anchor.more.set.share" = "允许分享";
 "live.anchor.more.set.title" = "更多设置";
-"live.anchor.confirm.close" = "结束直播";
+"live.anchor.confirm.close" = "关闭直播间";
+"live.anchor.confirm.close.linkmic.force" = "结束连麦并退出";
 "live.beauty.title" = "一键美颜";
 "live.beauty.buffing" = "磨皮";
 "live.beauty.close" = "关闭";
@@ -210,10 +211,11 @@
 
 "live.endLive.onConnection.alert" = "当前处于连线状态，是否需要「断开连线」或「关闭直播间」";
 "live.endLive.onConnection.alert.disconnect" = "断开连线";
-"live.endLive.onLinkMic.alert" = "当前处于连麦状态，是否需要「断开连麦」或「关闭直播间」";
+"live.endLive.anchor.onLinkMic.alert" = "当前处于连麦状态，是否需要「关闭直播间」";
 "live.endLive.onLinkMic.alert.disconnect" = "断开连麦";
 "live.endLive.onBattle.alert" = "当前处于PK状态，是否需要「断开PK」或「关闭直播间」";
 "live.endLive.onBattle.alert.endBattle" = "断开PK";
+"live.endLive.audience.onLinkMic.alert" = "当前处于连麦状态，是否需要「断开连麦」或「直接退出直播间」";
 
 // MARK: - Error Toast
 "live.error.pushing" = "正在直播中，请稍后再试。";

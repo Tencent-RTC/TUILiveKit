@@ -7,8 +7,8 @@ import android.widget.ImageView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.trtc.tuikit.common.FullScreenActivity;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
+import com.trtc.uikit.livekit.example.BaseActivity;
 import com.trtc.uikit.livekit.example.R;
 import com.trtc.uikit.livekit.example.store.AppStore;
 import com.trtc.uikit.livekit.example.view.main.adapter.MainAdapter;
@@ -19,7 +19,7 @@ import com.trtc.uikit.livekit.example.view.me.MeActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends FullScreenActivity {
+public class MainActivity extends BaseActivity {
 
     private final List<MainItemData> mDataList = new ArrayList<>();
 

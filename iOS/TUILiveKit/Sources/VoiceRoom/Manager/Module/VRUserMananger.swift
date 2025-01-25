@@ -58,8 +58,8 @@ extension VRUserManager {
                 update { state in
                     state.userList = userList
                 }
-            } catch let err {
-                toastSubject.send(err.localizedDescription)
+            } catch let err as InternalError {
+                toastSubject.send(err.localizedMessage)
             }
         }
     }
@@ -84,8 +84,8 @@ extension VRUserManager {
                     try await service.unfollowUser(userId: user.userId)
                 }
                 updateFollowUserList(user: user, isFollow: isFollow)
-            } catch let err {
-                toastSubject.send(err.localizedDescription)
+            } catch let err as InternalError {
+                toastSubject.send(err.localizedMessage)
             }
         }
     }
@@ -99,8 +99,8 @@ extension VRUserManager {
                 user.userId = userId
                 let isFollow = type == .FOLLOW_TYPE_IN_MY_FOLLOWING_LIST || type == .FOLLOW_TYPE_IN_BOTH_FOLLOWERS_LIST
                 updateFollowUserList(user: user, isFollow: isFollow)
-            } catch let err {
-                toastSubject.send(err.localizedDescription)
+            } catch let err as InternalError {
+                toastSubject.send(err.localizedMessage)
             }
         }
     }

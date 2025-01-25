@@ -18,7 +18,6 @@ class VRSeatInvitationPanel: RTCBaseView {
     private var cancellableSet: Set<AnyCancellable> = []
     private var audienceTupleList: [(audienceInfo: VRUser, isInvited: Bool)] = []
     private let seatIndex: Int
-    @Published private var invitedUsers: Set<String> = []
     
     private let titleLabel: UILabel = {
         let label = UILabel(frame: .zero)
@@ -32,7 +31,7 @@ class VRSeatInvitationPanel: RTCBaseView {
         let label = UILabel(frame: .zero)
         label.textColor = .g7
         label.font = UIFont.customFont(ofSize: 16, weight: .medium)
-        label.text = .onlineAudienceTest
+        label.text = .onlineAudienceText
         return label
     }()
     
@@ -99,8 +98,9 @@ extension VRSeatInvitationPanel {
     private func subscribeUserListState() {
         let userListPublisher = manager.subscribeUserState(StateSelector(keyPath: \.userList))
         let seatListPublisher = manager.subscribeSeatState(StateSelector(keyPath: \.seatList))
+        let invitedUserIdsPublisher = manager.subscribeSeatState(StateSelector(keyPath: \.invitedUserIds))
         userListPublisher
-            .combineLatest(seatListPublisher, $invitedUsers)
+            .combineLatest(seatListPublisher, invitedUserIdsPublisher)
             .receive(on: RunLoop.main)
             .sink { [weak self] userList, seatList, invitedUsers in
                 guard let self = self else { return }
@@ -111,7 +111,7 @@ extension VRSeatInvitationPanel {
                 self.audienceTupleList = audienceList.filter { user in
                     !seatList.contains { $0.userId == user.userId }
                 }.map { audience in
-                    (audience, self.invitedUsers.contains(where: {$0 == audience.userId}))
+                    (audience, self.manager.seatState.invitedUserIds.contains(where: {$0 == audience.userId}))
                 }
                 self.tableView.reloadData()
             }
@@ -151,25 +151,27 @@ extension VRSeatInvitationPanel: UITableViewDataSource {
             inviteTakeSeatCell.updateUser(user: audienceTuple.audienceInfo)
             inviteTakeSeatCell.updateButtonView(isSelected: audienceTuple.isInvited)
             inviteTakeSeatCell.inviteEventClosure = { [weak self] user in
-                guard let self = self, !invitedUsers.contains(where: { $0 == user.userId}) else { return }
-                self.invitedUsers.insert(user.userId)
+                guard let self = self, !self.manager.seatState.invitedUserIds.contains(where: { $0 == user.userId}) else { return }
+                self.manager.onSentSeatInvitation(to: user.userId)
                 self.coreView?.takeUserOnSeatByAdmin(index: self.seatIndex,
                                                      timeout: kSGDefaultTimeout,
                                                      userId: user.userId) { [weak self] userInfo in
                     guard let self = self else { return }
-                    self.invitedUsers.remove(user.userId)
+                    self.manager.onRespondedSeatInvitation(of: user.userId)
                 } onRejected: { [weak self] userInfo in
                     guard let self = self else { return }
-                    self.invitedUsers.remove(user.userId)
+                    self.manager.onRespondedSeatInvitation(of: user.userId)
+                    self.manager.toastSubject.send(.inviteSeatCancelText)
                 } onCancelled: { [weak self] userInfo in
                     guard let self = self else { return }
-                    self.invitedUsers.remove(user.userId)
+                    self.manager.onRespondedSeatInvitation(of: user.userId)
                 } onTimeout: { [weak self] userInfo in
                     guard let self = self else { return }
-                    self.invitedUsers.remove(user.userId)
+                    self.manager.onRespondedSeatInvitation(of: user.userId)
+                    self.manager.toastSubject.send(.inviteSeatCancelText)
                 } onError: { [weak self] userInfo, code, message in
                     guard let self = self else { return }
-                    self.invitedUsers.remove(user.userId)
+                    self.manager.onRespondedSeatInvitation(of: user.userId)
                     guard let err = TUIError(rawValue: code) else { return }
                     let error = InternalError(error: err, message: message)
                     self.manager.toastSubject.send(error.localizedMessage)
@@ -183,7 +185,7 @@ extension VRSeatInvitationPanel: UITableViewDataSource {
                 guard let self = self else { return }
                 coreView?.cancelRequest(userId: user.userId) { [weak self] in
                     guard let self = self else { return }
-                    self.invitedUsers.remove(user.userId)
+                    self.manager.onRespondedSeatInvitation(of: user.userId)
                 } onError: { [weak self] code, message in
                     guard let self = self, let err = TUIError(rawValue: code) else { return }
                     let error = InternalError(error: err, message: message)
@@ -197,5 +199,6 @@ extension VRSeatInvitationPanel: UITableViewDataSource {
 
 fileprivate extension String {
     static let inviteText = localized("live.seat.invite")
-    static let onlineAudienceTest = localized("live.recent.online.audience")
+    static let onlineAudienceText = localized("live.recent.online.audience")
+    static let inviteSeatCancelText = localized("live.seat.inviteSeatCancel")
 }

@@ -19,7 +19,6 @@ class AudienceLivingView: RTCBaseView {
     
     private var cancellableSet = Set<AnyCancellable>()
     private let giftCacheService = TUIGiftStore.shared.giftCacheService
-    private lazy var roomIdPublisher = manager.subscribeRoomState(StateSelector(keyPath: \LSRoomState.roomId))
     private lazy var ownerInfoPublisher  = manager.subscribeRoomState(StateSelector(keyPath: \LSRoomState.ownerInfo))
     
     private let liveInfoView: LiveInfoView = {
@@ -210,15 +209,6 @@ class AudienceLivingView: RTCBaseView {
 extension AudienceLivingView {
 
     private func subscribeSeatSubject() {
-
-        roomIdPublisher
-            .receive(on: RunLoop.main)
-            .sink { [weak self] roomId in
-                guard let self = self else { return }
-                self.initComponentView()
-            }
-            .store(in: &cancellableSet)
-        
         ownerInfoPublisher
             .receive(on: RunLoop.main)
             .sink { [weak self] ownerInfo in
@@ -245,6 +235,36 @@ extension AudienceLivingView {
     }
 
     @objc func leaveButtonClick() {
+        if !manager.coGuestState.connectedUserList.contains(where: { $0.userId == manager.userState.selfInfo.userId }) {
+            leaveRoom()
+            return
+        }
+        var items: [ActionItem] = []
+        let lineConfig = ActionItemDesignConfig(lineWidth: 1, titleColor: .redColor)
+        lineConfig.backgroundColor = .white
+        lineConfig.lineColor = .g8
+        
+        let title: String = .endLiveOnLinkMicText
+        let endLinkMicItem = ActionItem(title: .endLiveLinkMicDisconnectText, designConfig: lineConfig, actionClosure: { [weak self] _ in
+            guard let self = self else { return }
+            coreView.terminateIntraRoomConnection()
+            routerManager.router(action: .dismiss())
+        })
+        items.append(endLinkMicItem)
+        
+        let designConfig = ActionItemDesignConfig(lineWidth: 7, titleColor: .g2)
+        designConfig.backgroundColor = .white
+        designConfig.lineColor = .g8
+        let endLiveItem = ActionItem(title: .confirmCloseText, designConfig: designConfig, actionClosure: { [weak self] _ in
+            guard let self = self else { return }
+            routerManager.router(action: .dismiss())
+            leaveRoom()
+        })
+        items.append(endLiveItem)
+        routerManager.router(action: .present(.listMenu(ActionPanelData(title: title, items: items))))
+    }
+    
+    func leaveRoom() {
         coreView.leaveLiveStream() { [weak self] in
             guard let self = self else { return }
             manager.resetAllState()
@@ -317,7 +337,6 @@ private extension String {
     static let chatPlaceHolderText = localized("live.audience.barrage.placeholder")
     static let cancelLinkMicRequestText = localized("live.audience.link.confirm.cancelLinkMicRequest")
     static let closeLinkMicText = localized("live.audience.link.confirm.closeLinkMic")
-    static let waitToLinkText = localized("live.audience.wait.link.tips")
     static let enterRoomFailedTitleText = localized("live.alert.enterRoom.failed.title")
     static let enterRoomFailedmessageText = localized("live.alert.enterRoom.failed.message.xxx")
     static let confirmText = localized("live.alert.confirm")
@@ -326,4 +345,7 @@ private extension String {
     static let timeoutTitleText = localized("live.alert.linkMic.timeout.title")
     static let operateFailedText = localized("live.operation.fail.xxx")
     static let meText = localized("live.barrage.me")
+    static let endLiveOnLinkMicText = localized("live.endLive.audience.onLinkMic.alert")
+    static let endLiveLinkMicDisconnectText = localized("live.endLive.onLinkMic.alert.disconnect")
+    static let confirmCloseText = localized("live.anchor.confirm.close.linkmic.force")
 }

@@ -39,7 +39,6 @@ public class LiveStreamImpl implements ILiveStream {
     @Override
     public void destroy() {
         Logger.info(mTag + " destroy");
-        TUIRoomEngine.destroySharedInstance();
     }
 
     @Override
@@ -609,6 +608,11 @@ public class LiveStreamImpl implements ILiveStream {
                 }
             }
         });
+    }
+
+    public void stopPlayRemoteVideo(String userId, TUIRoomDefine.VideoStreamType streamType) {
+        Logger.info(mTag + " stopPlayRemoteVideo:[userId:" + userId + "streamType:" + streamType + "]");
+        mTUIRoomEngine.stopPlayRemoteVideo(userId, streamType);
     }
 
     @Override

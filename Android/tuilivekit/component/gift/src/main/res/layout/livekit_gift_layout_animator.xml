@@ -8,18 +8,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/gift_bullet_group"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="120dp">
-
-        <LinearLayout
-            android:id="@+id/gift_bullet_group"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical" />
-
-    </RelativeLayout>
+        android:layout_height="220dp"
+        android:layout_marginBottom="300dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical" />
 
     <com.trtc.uikit.component.gift.view.like.GiftHeartLayout
         android:id="@+id/heart_layout"
@@ -27,7 +22,6 @@
         android:layout_height="200dp"
         android:focusable="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-         />
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

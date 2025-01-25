@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -13,7 +12,6 @@ import androidx.annotation.NonNull;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.component.floatwindow.service.FloatWindowManager;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
 import com.trtc.uikit.livekit.livestream.view.anchor.floatwindow.FloatViewAnchorView;
 import com.trtc.uikit.livekit.livestream.view.audience.floatwindow.FloatViewAudienceView;
@@ -22,7 +20,6 @@ import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 @SuppressLint("ViewConstructor")
 public class VideoFloatView extends FrameLayout {
 
-    private View      mCloseView;
     private ImageView mEnableVolume;
     private ImageView mEnableMic;
     private ImageView mEnableVideo;
@@ -45,7 +42,6 @@ public class VideoFloatView extends FrameLayout {
 
     private void initView() {
         LayoutInflater.from(mContext).inflate(R.layout.livekit_video_float_layout, this);
-        mCloseView = findViewById(R.id.iv_close);
         mEnableVolume = findViewById(R.id.iv_enable_volume);
         mEnableMic = findViewById(R.id.iv_enable_mic);
         mEnableVideo = findViewById(R.id.iv_enable_video);
@@ -60,7 +56,6 @@ public class VideoFloatView extends FrameLayout {
             videoView.init(mLiveStreamManager);
             frameLayout.addView(videoView);
         }
-        mCloseView.setOnClickListener(v -> FloatWindowManager.getInstance().releaseFloatWindow());
     }
 
     @Override
@@ -98,11 +93,9 @@ public class VideoFloatView extends FrameLayout {
 
     private void onRoleChanged(TUIRoomDefine.Role role) {
         if (role == TUIRoomDefine.Role.GENERAL_USER) {
-            mEnableVolume.setVisibility(VISIBLE);
             mEnableMic.setVisibility(GONE);
             mEnableVideo.setVisibility(GONE);
         } else {
-            mEnableVolume.setVisibility(GONE);
             mEnableMic.setVisibility(VISIBLE);
             mEnableVideo.setVisibility(VISIBLE);
         }

@@ -28,6 +28,7 @@ class LiveRoomRootMenuDataCreator {
                                         action: {
             manager.update(coGuestStatus: .applying)
             coreView.requestIntraRoomConnection(userId: "", timeOut: timeOutValue, openCamera: true) {
+                manager.toastSubject.send(.waitToLinkText)
             } onError: { code, message in
                 manager.update(coGuestStatus: .none)
                 let error = InternalError(error: code, message: message)
@@ -41,6 +42,7 @@ class LiveRoomRootMenuDataCreator {
                                         action: {
             manager.update(coGuestStatus: .applying)
             coreView.requestIntraRoomConnection(userId: "", timeOut: timeOutValue, openCamera: false) {
+                manager.toastSubject.send(.waitToLinkText)
             } onError: { code, message in
                 manager.update(coGuestStatus: .none)
                 let error = InternalError(error: code, message: message)
@@ -62,10 +64,8 @@ extension LiveRoomRootMenuDataCreator {
         var connection = LSButtonMenuInfo(normalIcon: "live_connection_icon")
         let selfUserId = manager.userState.selfInfo.userId
         connection.tapAction = { sender in
-            if manager.coGuestState.connectedUserList.count > 1 {
-                manager.toastSubject.send(.connectDisableText)
-            } else if manager.battleManager.state.battleUsers.contains(where: {$0.userId == selfUserId}){
-                manager.toastSubject.send(.connectDisableForBattleText)
+            if manager.coGuestState.connectedUserList.count > 1 || manager.battleManager.state.battleUsers.contains(where: {$0.userId == selfUserId}) {
+                return
             } else {
                 routerManager.router(action: .present(.connectionControl))
             }
@@ -102,7 +102,6 @@ extension LiveRoomRootMenuDataCreator {
                 let isOnDisplayResult = manager.battleState.isOnDisplayResult
                 let isSelfInConnection = manager.coHostManager.state.connectedUsers.contains(where: { $0.userId == selfUserId })
                 guard !isOnDisplayResult && isSelfInConnection else {
-                    manager.toastSubject.send(.battleDisableText)
                     return
                 }
                 let config = TUIBattleConfig()
@@ -165,7 +164,6 @@ extension LiveRoomRootMenuDataCreator {
         var linkMic = LSButtonMenuInfo(normalIcon: "live_link_icon")
         linkMic.tapAction = { sender in
             if manager.coHostManager.isCoHostConnecting() {
-                manager.toastSubject.send(.linkMicDisableTExt)
                 return
             }
             routerManager.router(action: .present(.liveLinkControl))
@@ -256,7 +254,7 @@ extension LiveRoomRootMenuDataCreator {
                                        designConfig: designConfig,
                                        actionClosure: { [weak coreView] _ in
             guard let coreView = coreView else { return }
-            coreView.startCamera(useFrontCamera: !coreView.mediaState.isFrontCamera) {} onError: { code, msg in }
+            coreView.startCamera(useFrontCamera: !manager.coreMediaState.isFrontCamera) {} onError: { code, msg in }
         }))
         model.items.append(LSFeatureItem(normalTitle: .videoParametersText,
                                        normalImage: .liveBundleImage("live_setting_video_parameters"),
@@ -294,20 +292,26 @@ extension LiveRoomRootMenuDataCreator {
         var linkMic = LSButtonMenuInfo(normalIcon: "live_link_icon", selectIcon: "live_linking_icon")
         linkMic.tapAction = { sender in
             if manager.coHostManager.isCoHostConnecting() {
-                manager.toastSubject.send(.linkMicDisableTExt)
                 return
             }
             if sender.isSelected {
-                coreView.cancelIntraRoomConnection(userId: "") {
-                    manager.update(coGuestStatus: .none)
-                } onError: { code, message in
-                    let error = InternalError(error: code, message: message)
-                    manager.toastSubject.send(error.localizedMessage)
+                let designConfig = ActionItemDesignConfig(lineWidth: 7, titleColor: .g2)
+                designConfig.backgroundColor = .white
+                designConfig.lineColor = .g8
+                let item = ActionItem(title: .cancelLinkMicRequestText, designConfig: designConfig) { _ in
+                    routerManager.router(action: .dismiss())
+                    coreView.cancelIntraRoomConnection(userId: "") {
+                        manager.update(coGuestStatus: .none)
+                    } onError: { code, message in
+                        let error = InternalError(error: code, message: message)
+                        manager.toastSubject.send(error.localizedMessage)
+                    }
                 }
+                routerManager.router(action: .present(.listMenu(ActionPanelData(items: [item]))))
             } else {
                 let isOnSeat = manager.coGuestState.connectedUserList.contains(where: { $0.userId == manager.userState.selfInfo.userId })
                 if isOnSeat {
-                    coreView.terminateIntraRoomConnection()
+                    self.confirmToTerminateCoGuest(routerManager: routerManager, coreView: coreView)
                 } else {
                     let data = LiveRoomRootMenuDataCreator().generateLinkTypeMenuData(manager: manager, routerManager: routerManager, coreView: coreView)
                     routerManager.router(action: .present(.linkType(data)))
@@ -319,19 +323,7 @@ extension LiveRoomRootMenuDataCreator {
                 .removeDuplicates()
                 .receive(on: RunLoop.main)
                 .sink { coGuestStatus in
-                    let imageName: String
-                    switch coGuestStatus {
-                    case .applying:
-                        button.isSelected = true
-                        imageName = "live_link_icon"
-                    case .linking:
-                        button.isSelected = false
-                        imageName = "live_linked_icon"
-                    case .none:
-                        button.isSelected = false
-                        imageName = "live_link_icon"
-                    }
-                    button.setImage(.liveBundleImage(imageName), for: .normal)
+                    self.onCoGuestStatusChanged(button: button, enable: true, coGuestStatus: manager.coGuestState.coGuestStatus)
                 }
                 .store(in: &cancellableSet)
             
@@ -340,8 +332,7 @@ extension LiveRoomRootMenuDataCreator {
                 .receive(on: RunLoop.main)
                 .sink { users in
                     let isConnecting = users.count > 0
-                    let imageName = isConnecting ? "live_link_disable_icon" : "live_link_icon"
-                    button.setImage(.liveBundleImage(imageName), for: .normal)
+                    self.onCoGuestStatusChanged(button: button, enable: !isConnecting, coGuestStatus: manager.coGuestState.coGuestStatus)
                 }
                 .store(in: &cancellableSet)
             
@@ -354,11 +345,44 @@ extension LiveRoomRootMenuDataCreator {
         menus.append(like)
         return menus
     }
+    
+    private func onCoGuestStatusChanged(button: UIButton, enable: Bool, coGuestStatus: CoGuestStatus) {
+        let imageName: String
+        var isSelected = false
+        
+        if enable {
+            isSelected = (coGuestStatus == .applying)
+            imageName = (coGuestStatus == .linking)
+                        ? "live_linked_icon"
+                        : "live_link_icon"
+        } else {
+            isSelected = false
+            imageName = "live_link_disable_icon"
+        }
+        
+        button.isSelected = isSelected
+        button.setImage(.liveBundleImage(imageName), for: .normal)
+    }
+    
+    private func confirmToTerminateCoGuest(routerManager: LSRouterManager, coreView: LiveCoreView) {
+        var items: [ActionItem] = []
+        let designConfig = ActionItemDesignConfig(lineWidth: 7, titleColor: .redColor)
+        designConfig.backgroundColor = .white
+        designConfig.lineColor = .g8
+        
+        let terminteGoGuestItem = ActionItem(title: .confirmTerminateCoGuestText, designConfig: designConfig, actionClosure: { _ in
+            coreView.terminateIntraRoomConnection()
+            routerManager.router(action: .routeTo(.audience))
+        })
+        items.append(terminteGoGuestItem)
+        routerManager.router(action: .present(.listMenu(ActionPanelData(items: items))))
+    }
 }
 
 private extension String {
     static let videoLinkRequestText = localized("live.audience.linkType.videoLinkRequest")
     static var audioLinkRequestText = localized("live.audience.linkType.audioLinkRequest")
+    static let waitToLinkText = localized("live.audience.wait.link.tips")
     static let beautyText = localized("live.anchor.setting.beauty")
     static let audioEffectsText = localized("live.anchor.setting.audio.effects")
     static let flipText = localized("live.anchor.setting.flip")
@@ -374,4 +398,6 @@ private extension String {
     static let alertCancelText = localized("live.alert.cancel")
     
     static let streamDashboardText = localized("live.streamDashboard.title")
+    static let cancelLinkMicRequestText = localized("live.audience.link.confirm.cancelLinkMicRequest")
+    static let confirmTerminateCoGuestText = localized("live.audience.link.confirm.closeLinkMic")
 }

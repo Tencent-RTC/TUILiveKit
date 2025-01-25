@@ -12,10 +12,6 @@
     <string name="livestreamcore_permission_separator">,</string>
     <string name="livestreamcore_permission_tips">Please turn on the %1$s permission first</string>
     <string name="livestreamcore_permission_title">%1$s applies for access to the %2$s</string>
-    <!-- Host Connection -->
-    <string name="livestreamcore_cohost_conflict">The host is currently co-hosting with other streamers.</string>
-    <string name="livestreamcore_cohost_room_full">The number of co-hosting has exceeded the maximum limit.</string>
-    <string name="livestreamcore_cohost_error">Other errors, cannot connect.</string>
     <!-- Host Battle -->
     <string name="livestreamcore_battle_error_conflict">The anchor is in the battle and cannot initiate the battle</string>
     <string name="livestreamcore_battle_error_other">The other error, cannot initiate the battle</string>

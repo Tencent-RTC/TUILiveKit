@@ -229,7 +229,12 @@ extension VRRouterControlCenter {
     }
     
     private func supportBlurView(route: VRRoute) -> Bool {
-        return true
+        switch route {
+        case .giftView:
+            return false
+        default:
+            return true
+        }
     }
     
     private func supportAnimation(route: VRRoute) -> Bool{

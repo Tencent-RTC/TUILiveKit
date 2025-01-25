@@ -32,4 +32,8 @@ public class VideoLiveAnchorActivity extends FullScreenActivity {
         fragmentTransaction.add(R.id.fl_container, anchorFragment);
         fragmentTransaction.commit();
     }
+
+    @Override
+    public void onBackPressed() {
+    }
 }

@@ -217,6 +217,7 @@ extension TUIVoiceRoomViewController: VoiceRoomPrepareViewDelegate {
     
     func prepareView(_ view: VoiceRoomPrepareView, didClickBack button: UIButton) {
         routerManager.router(action: .exit)
+        voiceRootView.onExit()
     }
 }
 

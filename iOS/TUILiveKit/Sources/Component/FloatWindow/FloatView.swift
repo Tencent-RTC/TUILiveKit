@@ -7,9 +7,11 @@
 
 import Foundation
 import SnapKit
+import LiveStreamCore
+import Combine
+import RTCCommon
 
 protocol FloatViewDelegate: AnyObject {
-    func onClose()
     func onResume()
 }
 
@@ -17,12 +19,7 @@ class FloatView: UIView {
     
     weak var delegate: FloatViewDelegate?
     
-    private let closeButton: UIButton = {
-        var button = UIButton(type: .custom)
-        button.setImage(.liveBundleImage("live_music_delete"), for: .normal)
-        button.isUserInteractionEnabled = true
-        return button
-    }()
+    private var cancellableSet: Set<AnyCancellable> = []
     
     private let gestureOverlayView: UIView = {
         let view = UIView()
@@ -33,6 +30,20 @@ class FloatView: UIView {
     
     
     private let contentView: UIView
+    
+    private let enableMicImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = .liveBundleImage("live_microphone_opened")
+        imageView.isHidden = true
+        return imageView
+    }()
+    
+    private let enableVideoImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = .liveBundleImage("live_video_opened")
+        imageView.isHidden = true
+        return imageView
+    }()
     
     private var margin : CGFloat = 10
     
@@ -73,8 +84,9 @@ class FloatView: UIView {
 
     private func constructViewHierarchy() {
         addSubview(contentView)
+        addSubview(enableMicImageView)
+        addSubview(enableVideoImageView)
         addSubview(gestureOverlayView)
-        addSubview(closeButton)
     }
     
     private func activateConstraints() {
@@ -82,13 +94,20 @@ class FloatView: UIView {
             make.size.equalToSuperview()
         }
         
-        gestureOverlayView.snp.makeConstraints{ make in
-            make.size.equalToSuperview()
+        enableMicImageView.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(23.scale375())
+            make.bottom.equalToSuperview().offset(-8.scale375Height())
+            make.size.equalTo(16.scale375())
         }
         
-        closeButton.snp.makeConstraints { make in
-            make.top.trailing.equalToSuperview().inset(5)
-            make.width.height.equalTo(20)
+        enableVideoImageView.snp.makeConstraints { make in
+            make.leading.equalTo(enableMicImageView.snp.trailing).offset(30.scale375())
+            make.bottom.equalTo(enableMicImageView.snp.bottom)
+            make.size.equalTo(16.scale375())
+        }
+        
+        gestureOverlayView.snp.makeConstraints{ make in
+            make.size.equalToSuperview()
         }
     }
     
@@ -101,7 +120,41 @@ class FloatView: UIView {
         
         tapGesture.require(toFail: panGesture)
         
-        closeButton.addTarget(self, action: #selector(closeButtonClick), for: .touchUpInside)
+        subscribeState()
+    }
+    
+    private func subscribeState() {
+        guard let coreView = contentView as? LiveCoreView else { return }
+        coreView.subscribeState(StateSelector(keyPath: \UserState.selfInfo.userRole))
+            .receive(on: RunLoop.main)
+            .sink { [weak self] role in
+                guard let self = self else { return }
+                if role == .generalUser {
+                    enableMicImageView.isHidden = true
+                    enableVideoImageView.isHidden = true
+                } else {
+                    enableMicImageView.isHidden = false
+                    enableVideoImageView.isHidden = false
+                }
+            }
+            .store(in: &cancellableSet)
+        
+        coreView.subscribeState(StateSelector(keyPath: \MediaState.isMicrophoneMuted))
+            .receive(on: RunLoop.main)
+            .sink { [weak self] muted in
+                guard let self = self else { return }
+                let imageImage = muted ? "live_microphone_closed" : "live_microphone_opened"
+                self.enableMicImageView.image = .liveBundleImage(imageImage)
+            }
+            .store(in: &cancellableSet)
+        
+        coreView.subscribeState(StateSelector(keyPath: \MediaState.isCameraOpened))
+            .receive(on: RunLoop.main)
+            .sink { [weak self] opened in
+                guard let self = self else { return }
+                let imageImage = opened ? "live_video_opened" : "live_video_closed"
+                self.enableVideoImageView.image = .liveBundleImage(imageImage)
+            }.store(in: &cancellableSet)
     }
     
     override func layoutSubviews() {
@@ -115,10 +168,6 @@ class FloatView: UIView {
     
     @objc private func handleTap() {
         delegate?.onResume()
-    }
-    
-    @objc private func closeButtonClick() {
-        delegate?.onClose()
     }
     
     @objc private func handlePan(_ gestureRecognizer: UIPanGestureRecognizer) {

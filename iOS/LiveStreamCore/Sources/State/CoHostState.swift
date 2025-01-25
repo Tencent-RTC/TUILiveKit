@@ -7,10 +7,12 @@
 
 import RTCRoomEngine
 
-struct CoHostState {
-    var connectedUserList: [TUIConnectionUser] = []
-    var sentConnectionRequestList: [TUIConnectionUser] = []
-    var receivedConnectionRequest: TUIConnectionUser? = nil
+public struct CoHostState: State {
+    public var connectedUserList: [TUIConnectionUser] = []
+    public var sentConnectionRequestList: [TUIConnectionUser] = []
+    public var receivedConnectionRequest: TUIConnectionUser? = nil
     
-    var enableConnection: Bool = true
+    public var enableConnection: Bool = true
+    
+    public init() {}
 }

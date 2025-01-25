@@ -127,6 +127,9 @@ extension TUILiveListViewController {
                         } else if let ownerId = FloatWindow.shared.getRoomOwnerId(), ownerId == TUILogin.getUserID() {
                             view.makeToast(.pushingToReturnText)
                             return
+                        } else if FloatWindow.shared.getIsLinking() {
+                            view.makeToast(.pushingToReturnText)
+                            return
                         } else {
                             FloatWindow.shared.releaseFloatWindow()
                         }

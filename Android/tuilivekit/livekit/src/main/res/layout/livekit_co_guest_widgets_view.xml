@@ -16,17 +16,34 @@
         android:visibility="gone"
         app:roundPercent="1" />
 
-    <TextView
-        android:id="@+id/tv_name"
+    <LinearLayout
+        android:id="@+id/ll_user_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
         android:layout_marginStart="10dp"
         android:layout_marginBottom="4dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:background="@drawable/livekit_user_name_background"
-        android:textColor="@color/livekit_design_standard_flowkit_white"
-        android:textSize="10sp"
-        android:visibility="gone"
-        tools:ignore="SmallSp" />
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/iv_mute_audio"
+            android:layout_width="12dp"
+            android:layout_height="16dp"
+            android:visibility="gone"
+            android:src="@drawable/livekit_audio_input" />
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/livekit_design_standard_flowkit_white"
+            android:textSize="10sp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            tools:ignore="SmallSp" />
+    </LinearLayout>
 </FrameLayout>
 

@@ -21,22 +21,22 @@ class SGMediaManager {
     
     func startMicrophone() async throws {
         try await self.service.openLocalMicrophone()
-        updateLocalMicrophone(isOpened: true)
+        onMicrophoneStart()
     }
     
     func stopMicrophone() {
         service.closeLocalMicrophone()
-        updateLocalAudio(isMuted: false)
+        onMicrophoneStop()
     }
     
     func muteMicrophone() {
         service.muteLocalAudio()
-        updateLocalAudio(isMuted: true)
+        onMicrophoneMute()
     }
     
     func unmuteMicrophone() async throws {
         try await self.service.unmuteLocalAudio()
-        updateLocalAudio(isMuted: false)
+        onMicrophoneUnmute()
     }
     
     deinit {
@@ -45,11 +45,19 @@ class SGMediaManager {
 }
 
 extension SGMediaManager {
-    private func updateLocalMicrophone(isOpened: Bool) {
-        mediaState.isMicrophoneOpened = isOpened
+    private func onMicrophoneStart() {
+        mediaState.isMicrophoneOpened = true
     }
     
-    private func updateLocalAudio(isMuted: Bool) {
-        mediaState.isMicrophoneMuted = isMuted
+    private func onMicrophoneStop() {
+        mediaState.isMicrophoneOpened = false
+    }
+    
+    private func onMicrophoneMute() {
+        mediaState.isMicrophoneMuted = true
+    }
+    
+    private func onMicrophoneUnmute() {
+        mediaState.isMicrophoneMuted = false
     }
 }

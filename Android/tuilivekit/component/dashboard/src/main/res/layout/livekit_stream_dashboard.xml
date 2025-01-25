@@ -16,22 +16,10 @@
         android:textSize="16sp"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/tv_loading"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="10dp"
-        android:gravity="center"
-        android:text="@string/livekit_dashboard_loading"
-        android:textColor="@color/livekit_dashboard_design_standard_g7"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-
     <LinearLayout
         android:id="@+id/ll_media_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:orientation="vertical">
 
         <TextView
@@ -60,13 +48,14 @@
                     android:id="@+id/tv_rtt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/livekit_dashboard_color_green"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="RTT"
+                    android:text="@string/livekit_dashboard_rtt"
                     android:textColor="@color/livekit_dashboard_color_title" />
             </LinearLayout>
 
@@ -81,13 +70,14 @@
                     android:id="@+id/tv_downLoss"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/livekit_dashboard_color_green"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="downLoss"
+                    android:text="@string/livekit_dashboard_down_loss"
                     android:textColor="@color/livekit_dashboard_color_title" />
             </LinearLayout>
 
@@ -102,13 +92,14 @@
                     android:id="@+id/tv_upLoss"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/livekit_dashboard_color_green"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="upLoss"
+                    android:text="@string/livekit_dashboard_up_loss"
                     android:textColor="@color/livekit_dashboard_color_title" />
             </LinearLayout>
         </LinearLayout>

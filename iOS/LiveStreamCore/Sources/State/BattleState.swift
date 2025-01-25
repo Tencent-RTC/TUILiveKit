@@ -7,9 +7,11 @@
 
 import RTCRoomEngine
 
-struct BattleState {
-    var isBattleStart: Bool = false
-    var battleId: String = ""
-    var sentBattleRequestList: [TUIBattleUser] = []
-    var battledUsers: [TUIBattleUser] = []
+public struct BattleState: State {
+    public var isBattleStart: Bool = false
+    public var battleId: String = ""
+    public var sentBattleRequestList: [TUIBattleUser] = []
+    public var battledUsers: [TUIBattleUser] = []
+    
+    public init() {}
 }

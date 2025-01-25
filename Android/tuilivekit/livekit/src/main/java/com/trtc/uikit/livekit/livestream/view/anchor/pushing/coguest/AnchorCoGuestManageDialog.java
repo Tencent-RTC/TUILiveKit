@@ -138,10 +138,11 @@ public class AnchorCoGuestManageDialog extends PopupDialog {
     @SuppressLint("StringFormatMatches")
     private void initMicUpTitleView() {
         if (mLiveManager.getCoGuestState().connectedUserList.get().size() > 1) {
+            int connectedUserSize = Math.max(mLiveManager.getRoomState().maxSeatCount.get() - 1, 0);
             mTextMicUpTitle.setVisibility(VISIBLE);
             mTextMicUpTitle.setText(getContext().getString(R.string.livekit_seat_list_title,
                     mLiveManager.getCoGuestState().connectedUserList.get().size() - 1,
-                    mLiveManager.getRoomState().maxSeatCount.get()));
+                    connectedUserSize));
         } else {
             mTextMicUpTitle.setVisibility(GONE);
         }

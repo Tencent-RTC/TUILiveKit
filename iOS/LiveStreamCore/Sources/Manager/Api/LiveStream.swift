@@ -83,20 +83,33 @@ protocol LiveStream {
 
     func setRemoteVideoView(userId: String, streamType: TUIVideoStreamType, videoView: UIView)
 
-    func startPlayRemoteVideo(userId: String, streamType: TUIVideoStreamType, onLoading: @escaping TUIPlayOnLoadingBlock) async throws -> String
+    func startPlayRemoteVideo(userId: String,
+                              streamType: TUIVideoStreamType,
+                              onPlaying: @escaping TUIPlayOnPlayingBlock,
+                              onLoading: @escaping TUIPlayOnLoadingBlock,
+                              onError: @escaping TUIPlayOnErrorBlock)
     
     func stopPlayRemoteVideo(userId: String, streamType: TUIVideoStreamType)
 
     func muteLocalAudio()
 
     func unMuteLocalAudio() async throws
+    
+    func muteRemoteAudioStream(_ userId: String, isMute: Bool)
 
     func enableGravitySensor(enable: Bool)
 
     func setVideoResolutionMode(_ resolutionMode: TUIResolutionMode)
 
     func setBeautyStyle(_ style: TXBeautyStyle)
-
+    
+    func startPreloadVideoStream(roomId: String, isMuteAudio: Bool, view: UIView,
+                                 onPlaying: @escaping TUIPlayOnPlayingBlock,
+                                 onLoading: @escaping TUIPlayOnLoadingBlock,
+                                 onError: @escaping TUIPlayOnErrorBlock)
+    
+    func stopPreloadVideoStream(roomId: String)
+    
     /****************************************** DATA REPORT *******************************************/
     func callExperimentalAPI(jsonStr: String)
 

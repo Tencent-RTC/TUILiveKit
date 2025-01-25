@@ -23,6 +23,7 @@ import com.tencent.trtc.TRTCCloud;
 import com.tencent.trtc.TRTCCloudDef;
 import com.trtc.uikit.livekit.livestream.manager.api.ILiveService;
 import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
+import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
 
 import java.util.List;
 
@@ -41,7 +42,6 @@ public class LiveServiceImpl implements ILiveService {
     @Override
     public void destroy() {
         LiveStreamLog.info(mTag + " destroy");
-        TUIRoomEngine.destroySharedInstance();
     }
 
     @Override
@@ -887,6 +887,9 @@ public class LiveServiceImpl implements ILiveService {
             @Override
             public void onError(TUICommonDefine.Error error, String s) {
                 LiveStreamLog.error(mTag + " fetchLiveList:[onError:[error:" + error + ",s:" + s + "]]");
+                if (ErrorHandler.interceptErrorCode(error, s)) {
+                    return;
+                }
                 if (callback != null) {
                     callback.onError(error, s);
                 }

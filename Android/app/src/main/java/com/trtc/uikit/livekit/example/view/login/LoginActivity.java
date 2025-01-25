@@ -16,8 +16,8 @@ import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.tencent.qcloud.tuikit.debug.GenerateTestUserSig;
 import com.trtc.uikit.livekit.example.BaseActivity;
 import com.trtc.uikit.livekit.example.R;
-import com.trtc.uikit.livekit.example.view.main.MainActivity;
 import com.trtc.uikit.livekit.example.store.AppStore;
+import com.trtc.uikit.livekit.example.view.main.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,6 @@ public class LoginActivity extends BaseActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         mEditUserId = findViewById(R.id.et_userId);
-
         findViewById(R.id.btn_login).setOnClickListener(v -> {
             String userId = mEditUserId.getText().toString().trim();
             login(userId);

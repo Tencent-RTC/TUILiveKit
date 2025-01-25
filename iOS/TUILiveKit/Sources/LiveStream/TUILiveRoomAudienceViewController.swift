@@ -9,35 +9,42 @@ import Combine
 import TUICore
 import LiveStreamCore
 import RTCRoomEngine
+import RTCCommon
 
 public class TUILiveRoomAudienceViewController: UIViewController {
     
-    private lazy var audienceView = AudienceView(roomId: roomId, manager: manager, routerManager: routerManager, coreView: coreView)
+    private lazy var sliderView: LiveListPagerView = {
+        let view = LiveListPagerView()
+        view.dataSource = self
+        view.delegate = self
+        return view
+    }()
     
-    private let coreView = LiveCoreView()
+    private weak var coreView: LiveCoreView?
     
     // MARK: - private property.
-    let roomId: String
-    private let manager = LiveStreamManager()
+    var roomId: String
     private let routerManager: LSRouterManager = LSRouterManager()
     private var cancellableSet = Set<AnyCancellable>()
-    private lazy var likeManager = LikeManager(roomId: roomId)
     private lazy var routerCenter: LSRouterControlCenter = {
         let rootRoute: LSRoute = .audience
-        let routerCenter = LSRouterControlCenter(rootViewController: self, rootRoute: rootRoute, routerManager: routerManager, manager: manager, coreView: coreView)
-        routerCenter.routerProvider = audienceView
+        let routerCenter = LSRouterControlCenter(rootViewController: self, rootRoute: rootRoute, routerManager: routerManager)
         return routerCenter
     }()
+    private var ownerId = ""
+    private var cursor = ""
+    private let fetchCount = 20
+    private var isFirstFetch = true
+    private var isFirstRoom = true
+    private var relayoutCoreViewClosure: () -> Void = {}
     
     public init(roomId: String) {
         self.roomId = roomId
-        manager.prepareRoomIdBeforeEnterRoom(roomId: roomId)
         super.init(nibName: nil, bundle: nil)
     }
     
     public init(liveInfo: TUILiveInfo) {
         self.roomId = liveInfo.roomInfo.roomId
-        manager.prepareLiveInfoBeforeEnterRoom(liveInfo: liveInfo)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -50,12 +57,20 @@ public class TUILiveRoomAudienceViewController: UIViewController {
         print("deinit \(type(of: self))")
     }
     
+    public func leaveLive(onSuccess: TUISuccessBlock?, onError: TUIErrorBlock?) {
+        coreView?.leaveLiveStream(onSuccess: {
+            onSuccess?()
+        }, onError: { code, message in
+            onError?(code, message)
+        })
+    }
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         subscribeRouter()
         constructViewHierarchy()
         activateConstraints()
-        subscribeSubjects()
+        view.backgroundColor = .black
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -76,38 +91,13 @@ extension TUILiveRoomAudienceViewController {
         routerCenter.subscribeRouter()
     }
     
-    private func subscribeSubjects() {
-        manager.toastSubject
-            .receive(on: RunLoop.main)
-            .sink { [weak self] message in
-                guard let self = self else { return }
-                view.makeToast(message)
-            }.store(in: &cancellableSet)
-        
-        manager.floatWindowSubject
-            .receive(on: RunLoop.main)
-            .sink { [weak self] in
-                guard let self = self else { return }
-                FloatWindow.shared.showFloatWindow(controller: self)
-            }
-            .store(in: &cancellableSet)
-        
-        manager.likeSubject
-            .receive(on: RunLoop.main)
-            .sink { [weak self] in
-                guard let self = self else { return }
-                likeManager.sendLike()
-            }
-            .store(in: &cancellableSet)
-    }
-    
     private func constructViewHierarchy() {
         view.backgroundColor = .g1
-        view.addSubview(audienceView)
+        view.addSubview(sliderView)
     }
     
     private func activateConstraints() {
-        audienceView.snp.remakeConstraints { make in
+        sliderView.snp.remakeConstraints { make in
             make.edges.equalToSuperview()
         }
     }
@@ -120,14 +110,121 @@ extension TUILiveRoomAudienceViewController: FloatWindowDataSource {
     }
     
     func getOwnerId() -> String {
-        coreView.roomState.ownerInfo.userId
+        ownerId
     }
 
     func getCoreView() -> LiveCoreView {
-        coreView
+        return coreView ?? LiveCoreView()
     }
     
     func relayoutCoreView() {
-        audienceView.relayoutCoreView()
+        relayoutCoreViewClosure()
+    }
+}
+
+extension TUILiveRoomAudienceViewController: LiveListViewDataSource {
+    public func fetchLiveList(completionHandler: @escaping LiveListCallback) {
+        guard cursor != "" || isFirstFetch else { return }
+        isFirstFetch = false
+        let liveListManager = TUIRoomEngine.sharedInstance().getExtension(extensionType: .liveListManager) as? TUILiveListManager
+        var resultList: [TUILiveInfo] = []
+        liveListManager?.fetchLiveList(cursor: cursor, count: fetchCount) { [weak self] cursor, list in
+            guard let self = self else { return }
+            self.cursor = cursor
+            if isFirstRoom {
+                let liveInfo = TUILiveInfo()
+                liveInfo.roomInfo.roomId = roomId
+                resultList.append(liveInfo)
+                isFirstRoom = false
+                let filteredList = list.filter { $0.roomInfo.roomId != self.roomId }
+                resultList.append(contentsOf: filteredList)
+            } else {
+                resultList.append(contentsOf: list)
+            }
+            completionHandler(resultList)
+        } onError: { [weak self] code, message in
+            guard let self = self else { return }
+            LiveKitLog.error("\(#file)","\(#line)","fetchLiveList:[onError:[code:\(code),message:\(message)]]")
+            let liveInfo = TUILiveInfo()
+            liveInfo.roomInfo.roomId = self.roomId
+            resultList.append(liveInfo)
+            completionHandler(resultList)
+        }
+    }
+}
+
+extension TUILiveRoomAudienceViewController: LiveListViewDelegate {
+    public func onCreateView(liveInfo: TUILiveInfo) -> UIView {
+        let audienceCell = AudienceSliderCell(roomId: liveInfo.roomInfo.roomId, routerManager: routerManager, routerCenter: routerCenter, audienceVC: self)
+        audienceCell.delegate = self
+        return audienceCell
+    }
+    
+    public func onViewWillSlideIn(view: UIView) {
+        if let view = view as? AudienceSliderCell {
+            view.onViewWillSlideIn()
+        }
+    }
+    
+    public func onViewDidSlideIn(view: UIView) {
+        if let view = view as? AudienceSliderCell {
+            view.onViewDidSlideIn()
+        }
+    }
+    
+    public func onViewSlideInCancelled(view: UIView) {
+        if let view = view as? AudienceSliderCell {
+            view.onViewSlideInCancelled()
+        }
+    }
+    
+    public func onViewWillSlideOut(view: UIView) {
+        if let view = view as? AudienceSliderCell {
+            view.onViewWillSlideOut()
+        }
+    }
+    
+    public func onViewDidSlideOut(view: UIView) {
+        if let view = view as? AudienceSliderCell {
+            view.onViewDidSlideOut()
+        }
+    }
+    
+    public func onViewSlideOutCancelled(view: UIView) {
+        if let view = view as? AudienceSliderCell {
+            view.onViewSlideOutCancelled()
+        }
+    }
+}
+
+extension TUILiveRoomAudienceViewController: AudienceListCellDelegate {
+    func handleScrollToNewRoom(roomId: String, ownerId: String, manager: LiveStreamManager,
+                               coreView: LiveCoreView, routerProvider: LSRouterViewProvider,
+                               relayoutCoreViewClosure: @escaping () -> Void) {
+        routerCenter.handleScrollToNewRoom(manager: manager, coreView: coreView, routerProvider: routerProvider)
+        self.roomId = roomId
+        self.ownerId = ownerId
+        self.coreView = coreView
+        self.relayoutCoreViewClosure = relayoutCoreViewClosure
+    }
+    
+    func showFloatWindow() {
+        FloatWindow.shared.showFloatWindow(controller: self)
+    }
+    
+    func showToast(message: String) {
+        view.makeToast(message)
+    }
+    
+    func disableScrolling() {
+        sliderView.disableScrolling()
+    }
+    
+    func enableScrolling() {
+        sliderView.enableScrolling()
+    }
+    
+    func scrollToNextPage() {
+        sliderView.scrollToNextPage()
     }
 }

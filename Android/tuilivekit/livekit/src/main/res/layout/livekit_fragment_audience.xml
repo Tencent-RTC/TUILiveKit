@@ -4,9 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/view_pager2"
-        android:orientation="vertical"
+    <com.trtc.uikit.livekit.livestreamcore.liveslider.LiveSliderView
+        android:id="@+id/live_slider_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </LinearLayout>

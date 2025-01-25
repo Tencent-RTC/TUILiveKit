@@ -10,62 +10,43 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        tools:ignore="UseCompoundDrawables">
 
-        <FrameLayout
-            android:id="@+id/iv_close"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true">
+        <ImageView
+            android:id="@+id/iv_enable_volume"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/livekit_volume_opened"
+            android:importantForAccessibility="no"
+            android:visibility="gone" />
 
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center"
-                android:background="@drawable/live_float_window_exit"
-                android:importantForAccessibility="no" />
-        </FrameLayout>
+        <ImageView
+            android:id="@+id/iv_enable_mic"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/livekit_microphone_opened"
+            android:importantForAccessibility="no" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="8dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            tools:ignore="UseCompoundDrawables">
+        <ImageView
+            android:id="@+id/iv_enable_video"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/livekit_video_opened"
+            android:importantForAccessibility="no" />
 
-            <ImageView
-                android:id="@+id/iv_enable_volume"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:background="@drawable/livekit_volume_opened"
-                android:importantForAccessibility="no" />
-
-            <ImageView
-                android:id="@+id/iv_enable_mic"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:background="@drawable/livekit_microphone_opened"
-                android:importantForAccessibility="no" />
-
-            <ImageView
-                android:id="@+id/iv_enable_video"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:background="@drawable/livekit_video_opened"
-                android:importantForAccessibility="no" />
-
-        </LinearLayout>
-    </RelativeLayout>
+    </LinearLayout>
 
 </com.trtc.uikit.livekit.component.floatwindow.view.RoundFrameLayout>

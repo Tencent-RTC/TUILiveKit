@@ -9,10 +9,6 @@
     <string name="livestreamcore_permission_separator">、</string>
     <string name="livestreamcore_permission_tips">请先打开%1$s权限</string>
     <string name="livestreamcore_permission_title">%1$s申请获取%2$s权限</string>
-    <!-- Host Connection -->
-    <string name="livestreamcore_cohost_conflict">主播连线中，无法发起连线</string>
-    <string name="livestreamcore_cohost_room_full">连线房间已满，无法发起连线</string>
-    <string name="livestreamcore_cohost_error">其他错误，无法发起连线</string>
     <!-- Host Battle -->
     <string name="livestreamcore_battle_error_conflict">主播正在PK中，无法发起PK</string>
     <string name="livestreamcore_battle_error_other">其他错误，无法发起PK</string>

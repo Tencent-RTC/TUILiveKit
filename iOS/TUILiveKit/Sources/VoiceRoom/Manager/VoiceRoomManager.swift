@@ -279,6 +279,14 @@ extension VoiceRoomManager {
         seatManager.fetchSeatApplicationList()
     }
     
+    func onSentSeatInvitation(to userId: String) {
+        seatManager.onSentSeatInvitation(to: userId)
+    }
+    
+    func onRespondedSeatInvitation(of userId: String) {
+        seatManager.onRespondedSeatInvitation(of: userId)
+    }
+    
     func addSeatUserInfo(_ info: TUIUserInfo) {
         seatManager.addSeatUserInfo(info)
     }

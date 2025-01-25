@@ -58,7 +58,7 @@ class SGSeatContainerCell: UICollectionViewCell {
             contentContainerView.addSubview(customView)
             isDefaultSeatView = false
         } else {
-            let defaultView = SGSeatView(seatInfo: seatInfo ?? TUISeatInfo())
+            let defaultView = SGSeatView(seatInfo: seatInfo ?? TUISeatInfo(), ownerId: model.ownerId)
             defaultView.frame = contentContainerView.bounds
             defaultView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
             contentContainerView.addSubview(defaultView)
@@ -109,9 +109,11 @@ class SGSeatContainerCell: UICollectionViewCell {
 class SeatContainerCellModel {
     let customView: UIView?
     let seatInfo: TUISeatInfo
+    let ownerId: String
     
-    init(customView: UIView?, seatInfo: TUISeatInfo) {
+    init(customView: UIView?, seatInfo: TUISeatInfo, ownerId: String) {
         self.customView = customView
         self.seatInfo = seatInfo
+        self.ownerId = ownerId
     }
 }

@@ -11,8 +11,8 @@ import androidx.annotation.Nullable;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.component.audioeffect.AudioEffectPanel;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.component.beauty.BeautyViewFactory;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
+import com.trtc.uikit.livekit.livestream.view.widgets.beauty.BeautyPanelDialog;
 import com.trtc.uikit.livekit.livestream.view.widgets.videosettings.VideoSettingsDialog;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
@@ -49,8 +49,8 @@ public class PreviewFunctionView extends FrameLayout {
 
     private void initBeautyButton() {
         findViewById(R.id.iv_beauty).setOnClickListener(view -> {
-            BeautyViewFactory beautyViewFactory = new BeautyViewFactory();
-            beautyViewFactory.showBeautyPanel(getContext(), mLiveManager);
+            BeautyPanelDialog dialog = new BeautyPanelDialog(getContext(), mLiveManager);
+            dialog.show();
         });
     }
 

@@ -38,10 +38,7 @@ extension LSCoHostServiceImpl: LSCoHostService {
                 return
             }
             listManager.fetchLiveList(cursor: cursor, count: count) { responseCursor, responseLiveList in
-                let liveList = responseLiveList.filter { info in
-                    return LiveIdentityGenerator.shared.getIDType(info.roomInfo.roomId) == .live
-                }
-                continuation.resume(returning: (responseCursor, liveList))
+                continuation.resume(returning: (responseCursor, responseLiveList))
             } onError: { error, message in
                 continuation.resume(throwing: InternalError(error: error, message: message))
             }

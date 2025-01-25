@@ -22,7 +22,7 @@ class AudienceListService {
         }
     }
     
-    private func getUserList() {
+    func getUserList() {
         TUIRoomEngine.sharedInstance().getUserList(nextSequence: 0) { [weak self] userInfoList, cursor in
             guard let self = self else { return }
             if !userInfoList.isEmpty {

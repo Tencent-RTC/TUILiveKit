@@ -7,6 +7,7 @@ import static com.trtc.uikit.livekit.voiceroom.api.Constants.EVENT_SUB_KEY_CLOSE
 import static com.trtc.uikit.livekit.voiceroom.api.Constants.EVENT_SUB_KEY_FINISH_ACTIVITY;
 import static com.trtc.uikit.livekit.voiceroom.api.Constants.EVENT_SUB_KEY_LINK_STATUS_CHANGE;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,18 +21,22 @@ import androidx.fragment.app.Fragment;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
+import com.trtc.tuikit.common.foregroundservice.AudioForegroundService;
 import com.trtc.tuikit.common.livedata.Observer;
+import com.trtc.tuikit.common.system.ContextProvider;
 import com.trtc.uikit.component.common.StateCache;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
 import com.trtc.uikit.livekit.voiceroom.state.RoomState;
 import com.trtc.uikit.livekit.voiceroom.state.SeatState;
+import com.trtc.uikit.livekit.voiceroomcore.common.utils.Logger;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 public class TUIVoiceRoomFragment extends Fragment implements ITUINotification {
+    private static final String TAG = "TUIVoiceRoomFragment";
 
     private       VoiceRoomRootView              mVoiceRoomRootView;
     private       VoiceRoomManager               mVoiceRoomManager;
@@ -65,6 +70,7 @@ public class TUIVoiceRoomFragment extends Fragment implements ITUINotification {
         mVoiceRoomManager.setRoomId(mRoomId);
         addObserver();
         TUICore.registerEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_FINISH_ACTIVITY, this);
+        startForegroundService();
     }
 
     @Nullable
@@ -111,6 +117,7 @@ public class TUIVoiceRoomFragment extends Fragment implements ITUINotification {
         TUICore.unRegisterEvent(this);
         StateCache.getInstance().remove(mRoomId);
         mVoiceRoomManager.destroy();
+        stopForegroundService();
     }
 
     private void addObserver() {
@@ -162,5 +169,21 @@ public class TUIVoiceRoomFragment extends Fragment implements ITUINotification {
         AUTO_CREATE,
         PREPARE_CREATE,
         JOIN
+    }
+
+
+    private void startForegroundService() {
+        Logger.info(TAG,"startForegroundService");
+        Context context = ContextProvider.getApplicationContext();
+        AudioForegroundService.start(context,
+                context.getString(context.getApplicationInfo().labelRes),
+                context.getString(com.trtc.uikit.livekit.voiceroomcore.R.string.voiceroomcore_app_running),
+                0);
+    }
+
+    private void stopForegroundService() {
+        Logger.info(TAG,"stopForegroundService");
+        Context context = ContextProvider.getApplicationContext();
+        AudioForegroundService.stop(context);
     }
 }

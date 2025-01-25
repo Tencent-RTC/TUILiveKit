@@ -44,9 +44,7 @@ class UserManager {
                 userState.hasVideoStreamUserList.insert(userId)
             }
             if !isSelf(userId: userId) {
-                Task {
-                    let _ = try await context.mediaManager.startPlayRemoteVideo(userId: userId, streamType: .cameraStream)
-                }
+                context.mediaManager.startPlayRemoteVideo(userId: userId, streamType: .cameraStream)
             }
         } else {
             observerState.update { userState in

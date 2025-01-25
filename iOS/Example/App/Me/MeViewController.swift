@@ -7,6 +7,7 @@
 
 import UIKit
 import TUICore
+import TUILiveKit
 
 class MeViewController: UIViewController {
     private var rootView: MeRootView = MeRootView()
@@ -81,21 +82,43 @@ extension MeViewController {
         let cancelAction = UIAlertAction(title: TUILiveKitAppLocalize("TUILiveKitApp.Main.cancel"),
                                          style: .cancel, handler: nil)
         let sureAction = UIAlertAction(title: TUILiveKitAppLocalize("TUILiveKitApp.Main.determine"),
-                                       style: .default) { (action) in
+                                       style: .default) { [weak self] (action) in
+            guard let self = self else { return }
             let appDelegate = UIApplication.shared.delegate as? AppDelegate
             appDelegate?.showLoginViewController()
-            TUILogin.logout {
-                debugPrint("logout success")
-            } fail: { code, msg in
-                debugPrint("logout error")
-            }
+            self.stopLive()
+            self.leaveLive()
         }
         alertVC.addAction(cancelAction)
         alertVC.addAction(sureAction)
         present(alertVC, animated: true, completion: nil)
-        
     }
     
+    private func stopLive() {
+        VideoLiveKit.createInstance().stopLive { [weak self] in
+            guard let self = self else { return }
+            self.logoutIM()
+        } onError: { code, message in
+            debugPrint("stopLive error, code:\(code), message:\(message)")
+        }
+    }
+    
+    private func leaveLive() {
+        VideoLiveKit.createInstance().leaveLive { [weak self] in
+            guard let self = self else { return }
+            self.logoutIM()
+        } onError: { code, message in
+            debugPrint("leaveLive error, code:\(code), message:\(message)")
+        }
+    }
+    
+    private func logoutIM() {
+        TUILogin.logout {
+            debugPrint("logout success")
+        } fail: { code, msg in
+            debugPrint("logout error")
+        }
+    }
 }
 
 // MARK: Notification

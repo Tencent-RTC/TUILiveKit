@@ -89,6 +89,10 @@ import RTCRoomEngine
 
 public typealias TUIBattleRequestBlock = (String, [TUIBattleUser]) -> Void
 
+public protocol State {
+    init()
+}
+
 // MARK: ------------- Private Notification -------------
 // MARK: - Room
 public let LiveCoreViewOnEnterRoomNotifyName: Notification.Name = Notification.Name("__kLiveCoreView_NotifyName_Room_EnterRoom__")

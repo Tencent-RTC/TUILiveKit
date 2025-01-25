@@ -60,7 +60,9 @@ public class AnchorCoGuestAdapter extends RecyclerView.Adapter<AnchorCoGuestAdap
                     R.drawable.livekit_ic_avatar);
         }
         holder.textHangUp.setTag(mData.get(position));
+        holder.textHangUp.setEnabled(true);
         holder.textHangUp.setOnClickListener((view) -> {
+            view.setEnabled(false);
             final CoGuestState.SeatInfo seatInfo = (CoGuestState.SeatInfo) view.getTag();
             mLiveStream.disconnectUser(seatInfo.userId.get(), new TUIRoomDefine.ActionCallback() {
                 @Override

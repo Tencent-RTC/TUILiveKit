@@ -59,8 +59,8 @@ extension LSUserManager {
                         state.userList.insert(liveUser)
                     }
                 }
-            } catch let err {
-                toastSubject.send(err.localizedDescription)
+            } catch let err as InternalError {
+                toastSubject.send(err.localizedMessage)
             }
         }
     }
@@ -76,8 +76,8 @@ extension LSUserManager {
                 update { state in
                     state.selfInfo.role = userInfo.userRole
                 }
-            } catch let err {
-                toastSubject.send(err.localizedDescription)
+            } catch let err as InternalError {
+                toastSubject.send(err.localizedMessage)
             }
         }
     }
@@ -95,14 +95,27 @@ extension LSUserManager {
                 context?.roomManager.update { roomState in
                     roomState.ownerInfo = LSUser(userInfo: ownerInfo)
                 }
-            } catch let err {
-                toastSubject.send(err.localizedDescription)
+            } catch let err as InternalError {
+                toastSubject.send(err.localizedMessage)
             }
         }
     }
     
     func update(userState: LSUserStateUpdateClosure) {
         observerState.update(reduce: userState)
+    }
+    
+    func initSelfUserData() {
+        let loginUserInfo = service.getSelfInfo()
+        update { state in
+            state.selfInfo.userId = loginUserInfo.userId
+            state.selfInfo.name = loginUserInfo.userName
+            state.selfInfo.avatarUrl = loginUserInfo.avatarUrl
+        }
+    }
+    
+    func getUserInfo(userId: String) async throws -> TUIUserInfo {
+        try await service.getUserInfo(userId: userId)
     }
 }
 
@@ -166,30 +179,19 @@ extension LSUserManager {
     
     func onUserInfoChanged(userInfo: TUIUserInfo, modifyFlag: TUIUserInfoModifyFlag) {
         update { state in
-            let userList = state.userList
+            var userList = state.userList
             if var user = userList.first(where: { $0.userId == userInfo.userId }) {
+                userList.remove(user)
                 if modifyFlag.contains(.userRole) {
                     user.role = userInfo.userRole
                 }
-                state.userList.remove(user)
-                state.userList.insert(user)
+                userList.insert(user)
+                state.userList = userList
             } else if state.selfInfo.userId == userInfo.userId {
                 if modifyFlag.contains(.userRole) {
                     state.selfInfo.role = userInfo.userRole
                 }
             }
-        }
-    }
-}
-
-// MARK: - Private
-extension LSUserManager {
-    private func initSelfUserData() {
-        let loginUserInfo = service.getSelfInfo()
-        update { state in
-            state.selfInfo.userId = loginUserInfo.userId
-            state.selfInfo.name = loginUserInfo.userName
-            state.selfInfo.avatarUrl = loginUserInfo.avatarUrl
         }
     }
 }

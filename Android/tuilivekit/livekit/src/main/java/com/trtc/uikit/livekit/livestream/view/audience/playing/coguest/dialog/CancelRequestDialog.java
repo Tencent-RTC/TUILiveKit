@@ -37,6 +37,10 @@ public class CancelRequestDialog extends PopupDialog {
         TextView textCancelCoGuest = view.findViewById(R.id.tv_cancel_co_guest);
         TextView textDismiss = view.findViewById(R.id.tv_dismiss);
         textCancelCoGuest.setOnClickListener(v -> {
+            if (!v.isEnabled()) {
+                return;
+            }
+            v.setEnabled(false);
             mLiveStream.cancelIntraRoomConnection("", new TUIRoomDefine.ActionCallback() {
                 @Override
                 public void onSuccess() {

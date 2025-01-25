@@ -48,18 +48,6 @@ class VRUserManagerPanel: RTCBaseView {
         return label
     }()
     
-    private let levelButton: UIButton = {
-        let button = UIButton()
-        button.layer.cornerRadius = 7.scale375Height()
-        button.titleLabel?.textColor = .flowKitWhite
-        button.isEnabled = false
-        let spacing: CGFloat = 2.scale375()
-        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -spacing / 2, bottom: 0, right: spacing / 2)
-        button.titleEdgeInsets = UIEdgeInsets(top: 0, left: spacing / 2, bottom: 0, right: -spacing / 2)
-        button.titleLabel?.font = UIFont(name: "PingFangSC-Regular", size: 12)
-        return button
-    }()
-    
     private let followButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = .b1
@@ -119,7 +107,6 @@ class VRUserManagerPanel: RTCBaseView {
         addSubview(avatarImageView)
         addSubview(userContentView)
         userContentView.addSubview(userNameLabel)
-        userContentView.addSubview(levelButton)
         userContentView.addSubview(userIdLabel)
         addSubview(followButton)
         if isOwner {
@@ -145,13 +132,6 @@ class VRUserManagerPanel: RTCBaseView {
             make.leading.equalToSuperview()
             make.top.equalToSuperview()
             make.width.lessThanOrEqualTo(150.scale375())
-        }
-        
-        levelButton.snp.makeConstraints { make in
-            make.leading.equalTo(userNameLabel.snp.trailing).offset(4.scale375())
-            make.trailing.equalToSuperview()
-            make.centerY.equalTo(userNameLabel.snp.centerY)
-            make.size.equalTo(CGSize(width: 30.scale375(), height: 14.scale375Height()))
         }
         
         userIdLabel.snp.makeConstraints { make in
@@ -184,7 +164,6 @@ class VRUserManagerPanel: RTCBaseView {
         avatarImageView.kf.setImage(with: URL(string: seatInfo.avatarUrl), placeholder: UIImage.avatarPlaceholderImage)
         userNameLabel.text = seatInfo.userName
         userIdLabel.text = "ID: " + seatInfo.userId
-        levelButton.setLevel()
     }
     
     deinit {

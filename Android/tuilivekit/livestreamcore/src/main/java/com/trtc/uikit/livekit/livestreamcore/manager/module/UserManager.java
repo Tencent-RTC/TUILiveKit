@@ -49,6 +49,10 @@ public class UserManager extends BaseManager {
         mVideoLiveState.userState.selfInfo.avatarUrl = loginUserInfo.avatarUrl;
     }
 
+    public boolean isSelf(String userId) {
+        return TextUtils.equals(userId, mVideoLiveState.userState.selfInfo.userId);
+    }
+
     private void updateLocalMicrophoneState(boolean hasAudio) {
         mVideoLiveState.mediaState.isMicrophoneMuted.set(!hasAudio);
         if (hasAudio) {
@@ -90,7 +94,7 @@ public class UserManager extends BaseManager {
         } else {
             mVideoLiveState.userState.hasVideoStreamUserList.remove(userId);
         }
-        if (userId.equals(mVideoLiveState.userState.selfInfo.userId)) {
+        if (isSelf(userId)) {
             updateLocalCameraState(hasVideo);
         }
 

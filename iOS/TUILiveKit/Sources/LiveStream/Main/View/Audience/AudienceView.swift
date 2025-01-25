@@ -43,9 +43,9 @@ class AudienceView: RTCBaseView {
         self.videoView = coreView
         super.init(frame: .zero)
         self.videoView.videoViewDelegate = self
-        self.videoView.waitingCoGuestViewDelegate = self
         self.videoView.registerConnectionObserver(observer: liveStreamObserver)
         self.videoView.registerBattleObserver(observer: battleObserver)
+        self.manager.prepareRoomIdBeforeEnterRoom(roomId: roomId)
     }
     
     required init?(coder: NSCoder) {
@@ -59,7 +59,7 @@ class AudienceView: RTCBaseView {
     }
     
     override func constructViewHierarchy() {
-        backgroundColor = .clear
+        backgroundColor = .black
         addSubview(videoView)
         addSubview(livingView)
         addSubview(dashboardView)
@@ -78,15 +78,7 @@ class AudienceView: RTCBaseView {
     }
     
     override func bindInteraction() {
-        prepareRoomState()
         subscribeRoomState()
-    }
-    
-    private func prepareRoomState() {
-        manager.update { roomState in
-            roomState.roomId = roomId
-        }
-        startDisplay()
     }
     
     func relayoutCoreView() {
@@ -146,12 +138,11 @@ extension AudienceView: LiveEndViewDelegate {
 }
 
 extension AudienceView {
-    func startDisplay() {
+    func joinLiveStream() {
         videoView.joinLiveStream(roomId: roomId) { [weak self] roomInfo in
             guard let self = self, let roomInfo = roomInfo else { return }
             manager.updateRoomState(roomInfo: roomInfo)
             manager.updateOwnerUserInfo()
-            manager.updateSelfUserInfo()
             manager.update(liveStatus: .playing)
             livingView.initComponentView()
             livingView.isHidden = false
@@ -159,6 +150,10 @@ extension AudienceView {
             guard let self = self else { return }
             let error = InternalError(error: code, message: message)
             self.manager.toastSubject.send(error.localizedMessage)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+                guard let self = self else { return }
+                routerManager.router(action: .exit)
+            }
         }
     }
 }
@@ -196,12 +191,6 @@ extension AudienceView: VideoViewDelegate {
         if let battleInfoView = battleContainerView as? BattleInfoView {
             battleInfoView.updateView(userInfos: userInfos)
         }
-    }
-}
-
-extension AudienceView: WaitingCoGuestViewDelegate {
-    func waitingCoGuestView() -> UIView? {
-        return WaitLinkMicAnimationView()
     }
 }
 

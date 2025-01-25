@@ -16,7 +16,7 @@ import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.permission.PermissionCallback;
 import com.tencent.qcloud.tuicore.permission.PermissionRequester;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.component.beauty.TEBeautyManager;
+import com.trtc.uikit.livekit.livestream.view.widgets.beauty.TEBeautyManager;
 import com.trtc.uikit.livekit.livestream.manager.api.ILiveService;
 import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestream.state.LiveState;

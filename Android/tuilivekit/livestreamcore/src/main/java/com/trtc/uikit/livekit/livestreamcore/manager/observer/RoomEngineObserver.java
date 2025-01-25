@@ -1,7 +1,5 @@
 package com.trtc.uikit.livekit.livestreamcore.manager.observer;
 
-import static com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.KickedOutOfRoomReason.BY_LOGGED_ON_OTHER_DEVICE;
-
 import com.google.gson.Gson;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomObserver;
@@ -20,7 +18,7 @@ public class RoomEngineObserver extends TUIRoomObserver {
     }
 
     @Override
-    public void onRoomDismissed(String roomId) {
+    public void onRoomDismissed(String roomId, TUIRoomDefine.RoomDismissedReason reason) {
         Logger.info(mTag + " onRoomDismissed:[roomId" + roomId + "]");
         mVideoLiveManager.getRoomManager().onRoomDismissed(roomId);
     }
@@ -50,15 +48,15 @@ public class RoomEngineObserver extends TUIRoomObserver {
     }
 
     @Override
-    public void onRequestProcessed(String requestId, String userId) {
-        Logger.info(mTag + " onRequestProcessed:[requestId:" + requestId + ",userId:" + userId + "]");
-        mVideoLiveManager.getCoGuestManager().onRequestProcessed(requestId, userId);
+    public void onRequestProcessed(TUIRoomDefine.Request request, TUIRoomDefine.UserInfo operateUser) {
+        Logger.info(mTag + " onRequestProcessed:[requestId:" + request.requestId + ",userId:" + operateUser.userId + "]");
+        mVideoLiveManager.getCoGuestManager().onRequestProcessed(request.requestId, operateUser.userId);
     }
 
     @Override
-    public void onKickedOffSeat(String userId) {
-        Logger.info(mTag + " onKickedOffSeat:[userId:" + userId + "]");
-        mVideoLiveManager.getCoGuestManager().onKickedOffSeat(userId);
+    public void onKickedOffSeat(int seatIndex, TUIRoomDefine.UserInfo operateUser) {
+        Logger.info(mTag + " onKickedOffSeat:[userId:" + operateUser.userId + "]");
+        mVideoLiveManager.getCoGuestManager().onKickedOffSeat(operateUser.userId);
     }
 
     @Override

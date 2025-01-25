@@ -11,6 +11,7 @@ import TUICore
 import RTCRoomEngine
 import Combine
 import LiveStreamCore
+import RTCCommon
 
 @objcMembers
 public class TUILiveRoomAnchorViewController: UIViewController {
@@ -18,7 +19,7 @@ public class TUILiveRoomAnchorViewController: UIViewController {
     public var startLiveBlock:(()->Void)?
     
     // MARK: - private property.
-    private let manager = LiveStreamManager()
+    private lazy var manager: LiveStreamManager = LiveStreamManager(provider: self)
     private let routerManager: LSRouterManager = LSRouterManager()
     private var cancellableSet = Set<AnyCancellable>()
     private lazy var likeManager = LikeManager(roomId: roomId)
@@ -56,6 +57,7 @@ public class TUILiveRoomAnchorViewController: UIViewController {
             liveInfo.isPublicVisible = manager.roomState.liveExtraInfo.liveMode == .public
             liveInfo.activityStatus = manager.roomState.liveExtraInfo.activeStatus
             liveInfo.categoryList = [NSNumber(value: manager.roomState.liveExtraInfo.category.rawValue)]
+            liveInfo.roomInfo.maxSeatCount = 9
             manager.prepareLiveInfoBeforeEnterRoom(liveInfo: liveInfo)
         }
     }
@@ -68,6 +70,14 @@ public class TUILiveRoomAnchorViewController: UIViewController {
         StateCache.shared.clear()
         MusicPanelStoreFactory.removeStore(roomId: roomId)
         print("deinit \(type(of: self))")
+    }
+    
+    public func stopLive(onSuccess: TUISuccessBlock?, onError: TUIErrorBlock?) {
+        coreView.stopLiveStream(onSuccess: {
+            onSuccess?()
+        }, onError: { code, message in
+            onError?(code, message)
+        })
     }
 
     public override func viewDidLoad() {
@@ -172,7 +182,7 @@ extension TUILiveRoomAnchorViewController: FloatWindowDataSource {
     }
     
     func getOwnerId() -> String {
-        coreView.roomState.ownerInfo.userId
+        manager.coreRoomState.ownerInfo.userId
     }
     
     func getCoreView() -> LiveStreamCore.LiveCoreView {
@@ -181,5 +191,15 @@ extension TUILiveRoomAnchorViewController: FloatWindowDataSource {
     
     func relayoutCoreView() {
         anchorView.relayoutCoreView()
+    }
+}
+
+extension TUILiveRoomAnchorViewController: LiveStreamManagerProvider {
+    func subscribeCoreViewState<State, Value>(_ selector: StateSelector<State, Value>) -> AnyPublisher<Value, Never> {
+        coreView.subscribeState(selector)
+    }
+    
+    func getCoreViewState<T>() -> T where T : State {
+        coreView.getState()
     }
 }

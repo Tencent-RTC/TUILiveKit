@@ -13,6 +13,8 @@ import LiveStreamCore
 import RTCCommon
 
 class AnchorView: UIView {
+    private var isExited: Bool = false
+    
     private let roomId: String
     private let manager: LiveStreamManager
     private let routerManager: LSRouterManager
@@ -57,11 +59,8 @@ class AnchorView: UIView {
     }
     
     deinit {
-        let liveStatus = manager.roomState.liveStatus
-        if liveStatus == .previewing {
-            videoView.stopCamera()
-            videoView.stopMicrophone()
-        }
+        videoView.stopCamera()
+        videoView.stopMicrophone()
         videoView.unregisterConnectionObserver(observer: liveStreamObserver)
         videoView.unregisterBattleObserver(observer: battleObserver)
         print("deinit \(type(of: self))")
@@ -165,6 +164,8 @@ extension AnchorView {
         roomInfo.maxSeatCount = manager.roomState.maxSeatCount
         videoView.startLiveStream(roomInfo: roomInfo) { [weak self] roomInfo in
             guard let self = self, let roomInfo = roomInfo else { return }
+            handleAbnormalExitedSence()
+            
             manager.update(liveStatus: .pushing)
             manager.updateRoomState(roomInfo: roomInfo)
             manager.syncLiveInfoToService()
@@ -212,10 +213,28 @@ extension AnchorView {
         }
     }
     
+    private func handleAbnormalExitedSence() {
+        if isExited {
+            videoView.stopLiveStream {
+            } onError: { code, message in
+            }
+        }
+    }
+    
     private func subscribeCoHostState() {
         coHostRequestPublisher.receive(on: RunLoop.main)
             .sink { [weak self] connectionRequest in
                 guard let self = self else { return }
+                if !manager.coreCoGuestState.connectionRequestList.isEmpty {
+                    // If received linkmic request first, reject connection auto.
+                    if let request = connectionRequest {
+                        videoView.respondToCrossRoomConnection(roomId: request.roomId, isAccepted: false) { [weak self] in
+                            guard let self = self else { return }
+                            manager.coHostManager.onReject()
+                        } onError: { _, _ in }
+                    }
+                    return
+                }
                 if let request = connectionRequest {
                     let alertInfo = LSAlertInfo(description: String.localizedReplace(.connectionInviteText, replace: "\(request.userName)"),
                                                 imagePath: request.avatarUrl,
@@ -280,13 +299,14 @@ extension AnchorView {
 extension AnchorView {
     private func onReceivedBattleRequestChanged(battleUser: BattleUser?) {
         guard let battleUser = battleUser else {
-            routerManager.router(action: .dismiss(.alert))
+            alertPanel?.dismiss()
             return
         }
         let alertInfo = LSAlertInfo(description: .localizedReplace(.battleInvitationText, replace: battleUser.userName),
                                     imagePath: battleUser.avatarUrl,
                                     cancelButtonInfo: (String.rejectText, .g3),
-                                    defaultButtonInfo: (String.acceptText, .b1)) { [weak self] _ in
+                                    defaultButtonInfo: (String.acceptText, .b1)) { [weak self] alertPanel in
+            alertPanel.dismiss()
             guard let self = self else { return }
             videoView.respondToBattle(battleId: manager.battleState.battleId, isAccepted: false, onSuccess: { [weak self] in
                 guard let self = self else { return }
@@ -295,8 +315,8 @@ extension AnchorView {
                 
             })
             
-            routerManager.router(action: .dismiss(.alert))
-        } defaultClosure: { [weak self] _ in
+        } defaultClosure: { [weak self] alertPanel in
+            alertPanel.dismiss()
             guard let self = self else { return }
             videoView.respondToBattle(battleId: manager.battleState.battleId, isAccepted: true, onSuccess: { [weak self] in
                 guard let self = self else { return }
@@ -304,9 +324,10 @@ extension AnchorView {
             }, onError: { _, _ in
                 
             })
-            routerManager.router(action: .dismiss(.alert))
         }
-        routerManager.router(action: .present(.alert(info: alertInfo)))
+        let alertPanel = LSAlertPanel(alertInfo: alertInfo)
+        alertPanel.show()
+        self.alertPanel = alertPanel
     }
     
     private func onInWaitingChanged(inWaiting: Bool) {
@@ -326,12 +347,17 @@ extension AnchorView {
 }
 
 extension AnchorView : AnchorPrepareViewDelegate {
+    func prepareView(_ view: AnchorPrepareView, didClickBack button: UIButton) {
+        routerManager.router(action: .exit)
+        isExited = true
+    }
+    
     func prepareView(_ view: AnchorPrepareView, didClickStart button: UIButton) {
         createRoom()
     }
     
     func prepareViewDidClickSwitchCamera() {
-        videoView.startCamera(useFrontCamera: !videoView.mediaState.isFrontCamera) {} onError: { code, msg in }
+        videoView.startCamera(useFrontCamera: !manager.coreMediaState.isFrontCamera) {} onError: { code, msg in }
     }
 }
 

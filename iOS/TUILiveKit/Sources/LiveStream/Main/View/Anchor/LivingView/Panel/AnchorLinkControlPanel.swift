@@ -79,7 +79,6 @@ class AnchorLinkControlPanel: UIView {
             .removeDuplicates()
             .sink { [weak self] seatApplicationList in
                 guard let self = self else { return }
-                debugPrint("jeremiah seatApplicationList: \(seatApplicationList)")
                 applyList = Array(seatApplicationList)
                 self.userListTableView.reloadData()
             }
@@ -259,12 +258,16 @@ extension AnchorLinkControlPanel: UITableViewDelegate {
         
         cell.respondEventClosure = { [weak self] seatApplication, isAccepted in
             guard let self = self else { return }
-            self.coreView?.respondIntraRoomConnection(userId: seatApplication.userId, isAccepted: isAccepted) {
+            self.coreView?.respondIntraRoomConnection(userId: seatApplication.userId, isAccepted: isAccepted) { [weak self] in
+                guard let self = self else { return }
                 self.manager.removeSeatApplication(userId: seatApplication.userId)
             } onError: { [weak self] code, message in
+                if code != TUIError.allSeatOccupied {
+                    self?.manager.removeSeatApplication(userId: seatApplication.userId)
+                }
                 guard let self = self else { return }
                 let error = InternalError(error: code, message: message)
-                self.manager.toastSubject.send(error.localizedMessage)
+                makeToast(error.localizedMessage)
             }
         }
         

@@ -39,9 +39,13 @@
     <string name="livekit_connect_failed">连线失败</string>
     <string name="livekit_connect_inviting">邀请中</string>
     <string name="livekit_connect_request_failed">请求失败</string>
-    <string name="livekit_connect_conflict">主播连线中，无法发起连线</string>
+    <string name="livekit_connect_request_rejected">连线申请被拒绝</string>
+    <string name="livekit_connect_conflict">被邀请连线的房间与其他房间连线中。</string>
     <string name="livekit_connection_room_full">连线房间已满，无法发起连线</string>
     <string name="livekit_connect_error">其他错误，无法发起连线</string>
+    <string name="livekit_anchor_end_link_tips">当前处于连麦状态，是否需要「关闭直播间」</string>
+    <string name="livekit_audience_end_link_tips">当前处于连麦状态，是否需要「断开连麦」或「关闭直播间」</string>
+    <string name="livekit_end_link">断开连麦</string>
     <string name="livekit_end_live">关闭直播间</string>
     <string name="livekit_end_pk_tips">当前处于PK状态，是否需要「断开PK」或「关闭直播间」</string>
     <string name="livekit_end_pk">断开 PK</string>
@@ -138,7 +142,7 @@
     <string name="livekit_exit_float_window_tip">正在直播中，请稍后再试。</string>
 
     <!-- Battle -->
-    <string name="livekit_battle_wait_start">等待同意PK...</string>
+    <string name="livekit_battle_wait_start">等待同意PK</string>
     <string name="livekit_battle_wait_stop">停止等待</string>
     <string name="livekit_battle_inviting">向你发来PK邀请</string>
     <string name="livekit_battle_inviter_cancel">取消了 PK，请尝试再次发起</string>

@@ -108,7 +108,7 @@ public class RoomListView extends FrameLayout {
                     if (lastItemPosition == mAdapter.getItemCount() - 1
                             && !TextUtils.isEmpty(mRoomListState.mFetchListCursor)) {
                         mRecyclerView.post(() -> mAdapter.setLoadState(LoadMoreAdapterWrapper.LOADING));
-                        mRoomListService.fetchLiveList(false);
+                        mRoomListService.fetchLiveList(false, null);
                     }
                 }
             }

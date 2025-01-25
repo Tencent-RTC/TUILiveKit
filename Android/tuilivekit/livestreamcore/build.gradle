@@ -27,8 +27,8 @@ android {
 }
 
 dependencies {
-    api 'com.tencent.liteav.tuikit:tuicore:latest.release'
-    api 'io.trtc.uikit:common:2.8.0.533'
+    api rootProject.getChildProjects().containsKey("tuicore") ? project(':tuicore') : "com.tencent.liteav.tuikit:tuicore:latest.release"
+    api rootProject.getProperties().containsKey("common") ? rootProject.ext.common : "io.trtc.uikit:common:2.8.0.634" 
     api rootProject.getProperties().containsKey("roomEngineSdk") ? rootProject.ext.roomEngineSdk : "io.trtc.uikit:rtc_room_engine:latest.release"
     api rootProject.getProperties().containsKey("liteavSdk") ? rootProject.ext.liteavSdk : "com.tencent.liteav:LiteAVSDK_Professional:latest.release"
     api rootProject.getProperties().containsKey("imSdk") ? rootProject.ext.imSdk : "com.tencent.imsdk:imsdk-plus:latest.release"

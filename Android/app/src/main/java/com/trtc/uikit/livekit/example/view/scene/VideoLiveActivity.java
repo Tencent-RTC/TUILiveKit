@@ -3,21 +3,24 @@ package com.trtc.uikit.livekit.example.view.scene;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
+import android.text.TextUtils;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.tencent.qcloud.tuicore.TUILogin;
-import com.trtc.tuikit.common.FullScreenActivity;
+import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.tuikit.common.util.ActivityLauncher;
-import com.trtc.uikit.livekit.livestream.VideoLiveKit;
+import com.trtc.uikit.livekit.LiveIdentityGenerator;
+import com.trtc.uikit.livekit.component.floatwindow.service.FloatWindowManager;
+import com.trtc.uikit.livekit.component.roomlist.TUILiveListFragment;
+import com.trtc.uikit.livekit.example.BaseActivity;
 import com.trtc.uikit.livekit.example.R;
 import com.trtc.uikit.livekit.example.store.AppStore;
-import com.trtc.uikit.livekit.LiveIdentityGenerator;
-import com.trtc.uikit.livekit.component.roomlist.TUILiveListFragment;
+import com.trtc.uikit.livekit.livestream.VideoLiveKit;
+import com.trtc.uikit.livekit.livestream.state.RoomState;
 
-public class VideoLiveActivity extends FullScreenActivity {
+public class VideoLiveActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +43,15 @@ public class VideoLiveActivity extends FullScreenActivity {
 
     private void initStartLiveView() {
         findViewById(R.id.iv_start).setOnClickListener(view -> {
+            FloatWindowManager floatWindowManager = FloatWindowManager.getInstance();
+            if (floatWindowManager.isShowingFloatWindow()) {
+                RoomState roomState = floatWindowManager.getLiveStreamManager().getRoomState();
+                if (TextUtils.equals(roomState.ownerInfo.userId, TUILogin.getUserId())) {
+                    ToastUtil.toastShortMessage(
+                            view.getContext().getString(com.trtc.uikit.livekit.R.string.livekit_exit_float_window_tip));
+                    return;
+                }
+            }
             LiveIdentityGenerator identityGenerator = LiveIdentityGenerator.getInstance();
             String roomId = identityGenerator.generateId(TUILogin.getUserId(), LiveIdentityGenerator.RoomType.LIVE);
             VideoLiveKit.createInstance(getApplicationContext()).startLive(roomId);
@@ -47,7 +59,7 @@ public class VideoLiveActivity extends FullScreenActivity {
     }
 
     private void initBackButton() {
-        findViewById(R.id.iv_back).setOnClickListener(v -> onBackPressed());
+        findViewById(R.id.iv_back).setOnClickListener(v -> finish());
     }
 
     private void initLiveListFragment() {

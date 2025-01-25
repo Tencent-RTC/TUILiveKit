@@ -88,7 +88,7 @@ public class SeatManager extends BaseManager {
         if (mSeatState.linkStatus.get() == SeatState.LinkStatus.LINKING) {
             return;
         }
-        mLiveService.takeSeat(0, 60, new TUIRoomDefine.RequestCallback() {
+        mLiveService.takeSeat(-1, 60, new TUIRoomDefine.RequestCallback() {
             @Override
             public void onAccepted(String requestId, String userId) {
                 mSeatState.linkStatus.set(SeatState.LinkStatus.LINKING, false);
