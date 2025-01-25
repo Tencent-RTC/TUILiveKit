@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:textColor="@color/livekit_design_standard_g2"
-            android:textSize="70sp"
+            android:textSize="40sp"
             android:textStyle="bold" />
 
         <TextView

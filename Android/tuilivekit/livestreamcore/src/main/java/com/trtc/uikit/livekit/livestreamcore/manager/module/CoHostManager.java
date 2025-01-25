@@ -1,20 +1,11 @@
 package com.trtc.uikit.livekit.livestreamcore.manager.module;
 
-import android.content.Context;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager.ConnectionUser;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
-import com.trtc.tuikit.common.system.ContextProvider;
-import com.trtc.uikit.livekit.livestreamcore.R;
-import com.trtc.uikit.livekit.livestreamcore.common.utils.Logger;
 import com.trtc.uikit.livekit.livestreamcore.manager.api.ILiveStream;
 import com.trtc.uikit.livekit.livestreamcore.state.CoHostState;
 import com.trtc.uikit.livekit.livestreamcore.state.LiveStreamState;
@@ -47,7 +38,7 @@ public class CoHostManager extends BaseManager {
     }
 
     public boolean isMixStreamUserId(String userId) {
-        String mixStreamIdSuffix =  "_feedback_" + mVideoLiveState.roomState.roomId;
+        String mixStreamIdSuffix = "_feedback_" + mVideoLiveState.roomState.roomId;
         return userId != null && userId.endsWith(mixStreamIdSuffix);
     }
 
@@ -61,7 +52,8 @@ public class CoHostManager extends BaseManager {
         return false;
     }
 
-    public void requestConnection(String roomId, int timeoutSeconds, TUIRoomDefine.ActionCallback callback) {
+    public void requestConnection(String roomId, int timeoutSeconds,
+                                  TUILiveConnectionManager.ConnectionRequestCallback callback) {
         mVideoLiveService.requestConnection(Collections.singletonList(roomId), timeoutSeconds, "",
                 new TUILiveConnectionManager.ConnectionRequestCallback() {
                     @Override
@@ -72,12 +64,10 @@ public class CoHostManager extends BaseManager {
                                 ConnectionUser connectionUser = new ConnectionUser();
                                 connectionUser.roomId = roomId;
                                 addSendConnectionRequest(connectionUser);
-                                if (callback != null) {
-                                    callback.onSuccess();
-                                }
-                            } else {
-                                ConnectionErrorHandler.onError(code);
                             }
+                        }
+                        if (callback != null) {
+                            callback.onSuccess(map);
                         }
                     }
 
@@ -265,45 +255,5 @@ public class CoHostManager extends BaseManager {
         void onCrossRoomConnectionTimeout(ConnectionUser inviter, ConnectionUser invitee);
 
         void onCrossRoomConnectionExited(ConnectionUser user);
-    }
-
-    private static class ConnectionErrorHandler {
-
-        public static void onError(TUILiveConnectionManager.ConnectionCode code) {
-            if (code == TUILiveConnectionManager.ConnectionCode.SUCCESS || code == null) {
-                return;
-            }
-            String message = convertToErrorMessage(code);
-            Logger.info("ConnectionErrorHandler :[code:" + code + ",message:" + message + "]");
-            showToast(message);
-        }
-
-        private static String convertToErrorMessage(TUILiveConnectionManager.ConnectionCode resultCode) {
-            Context context = ContextProvider.getApplicationContext();
-            switch (resultCode) {
-                case CONNECTING:
-                case CONNECTING_OTHER_ROOM:
-                    return context.getString(R.string.livestreamcore_cohost_conflict);
-                case CONNECTION_FULL:
-                    return context.getString(R.string.livestreamcore_cohost_room_full);
-                default:
-                    return context.getString(R.string.livestreamcore_cohost_error);
-            }
-        }
-
-        private static void showToast(String tips) {
-            Context context = ContextProvider.getApplicationContext();
-            View view = LayoutInflater.from(context).inflate(R.layout.livestreamcore_connection_toast, null, false);
-
-            TextView text = view.findViewById(R.id.tv_toast_text);
-            text.setText(tips);
-            ImageView image = view.findViewById(R.id.iv_toast_image);
-            image.setImageResource(R.drawable.livestreamcore_connection_toast_icon);
-
-            Toast toast = new Toast(view.getContext());
-            toast.setDuration(Toast.LENGTH_SHORT);
-            toast.setView(view);
-            toast.show();
-        }
     }
 }

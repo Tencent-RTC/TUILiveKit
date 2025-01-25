@@ -4,10 +4,9 @@ import static com.trtc.uikit.livekit.livestream.manager.Constants.EVENT_KEY_LIVE
 import static com.trtc.uikit.livekit.livestream.manager.Constants.EVENT_SUB_KEY_FINISH_ACTIVITY;
 import static com.trtc.uikit.livekit.livestream.manager.Constants.EVENT_SUB_KEY_START_VOICE_ROOM;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +21,8 @@ import androidx.fragment.app.Fragment;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfo;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
+import com.trtc.tuikit.common.foregroundservice.VideoForegroundService;
+import com.trtc.tuikit.common.system.ContextProvider;
 import com.trtc.uikit.component.common.StateCache;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.component.floatwindow.service.FloatWindowManager;
@@ -42,7 +43,6 @@ public class TUILiveRoomAnchorFragment extends Fragment implements ITUINotificat
     private             AnchorView        mAnchorView;
     private             LiveStreamManager mLiveManager;
     private             RoomBehavior      mRoomBehavior          = RoomBehavior.CREATE_ROOM;
-    private final       Handler           mMainHandler           = new Handler(Looper.getMainLooper());
 
     private final OnBackPressedCallback mBackPressedCallback = new OnBackPressedCallback(true) {
         @Override
@@ -75,6 +75,7 @@ public class TUILiveRoomAnchorFragment extends Fragment implements ITUINotificat
         TUICore.registerEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_START_VOICE_ROOM, this);
         TUICore.registerEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_FINISH_ACTIVITY, this);
         TUICore.registerEvent(KEY_EXTENSION_NAME, NOTIFY_START_ACTIVITY, this);
+        startForegroundService();
     }
 
     @Nullable
@@ -111,6 +112,7 @@ public class TUILiveRoomAnchorFragment extends Fragment implements ITUINotificat
             floatWindowManager.setWillOpenFloatWindow(false);
         } else {
             unInitLiveStreamManager();
+            stopForegroundService();
         }
     }
 
@@ -151,6 +153,7 @@ public class TUILiveRoomAnchorFragment extends Fragment implements ITUINotificat
         LiveStreamManager manager = FloatWindowManager.getInstance().getLiveStreamManager();
         if (manager == null) {
             mLiveManager = new LiveStreamManager();
+            mLiveManager.addObserver();
             mLiveManager.setRoomId(mRoomID);
             mLiveManager.getRoomManager().updateLiveInfo(mLiveInfo);
             mLiveManager.getMediaManager().setCustomVideoProcess();
@@ -173,5 +176,18 @@ public class TUILiveRoomAnchorFragment extends Fragment implements ITUINotificat
     public enum RoomBehavior {
         CREATE_ROOM,
         ENTER_ROOM,
+    }
+
+    private void startForegroundService() {
+        Context context = ContextProvider.getApplicationContext();
+        VideoForegroundService.start(context,
+                context.getString(context.getApplicationInfo().labelRes),
+                context.getString(R.string.livekit_app_running),
+                0);
+    }
+
+    private void stopForegroundService() {
+        Context context = ContextProvider.getApplicationContext();
+        VideoForegroundService.stop(context);
     }
 }

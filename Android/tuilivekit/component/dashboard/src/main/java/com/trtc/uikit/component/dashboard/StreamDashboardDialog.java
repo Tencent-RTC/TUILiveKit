@@ -33,7 +33,6 @@ public class StreamDashboardDialog extends PopupDialog {
     private       TextView                       mTextUpLoss;
     private       TextView                       mTextDownLoss;
     private       TextView                       mTextRtt;
-    private       TextView                       mTextLoading;
     private       LinearLayout                   mLayoutMediaInfo;
     private       StreamInfoAdapter              mAdapter;
     private       int                            mColorGreen;
@@ -53,6 +52,7 @@ public class StreamDashboardDialog extends PopupDialog {
         bindViewId(view);
         initMediaInfoRecyclerView();
         setTRTCListener();
+        updateNetworkStatistics(0, 0, 0);
         setView(view);
     }
 
@@ -62,7 +62,6 @@ public class StreamDashboardDialog extends PopupDialog {
         mTextUpLoss = view.findViewById(R.id.tv_upLoss);
         mRecyclerMediaInfo = view.findViewById(R.id.rv_media_info);
         mLayoutMediaInfo = view.findViewById(R.id.ll_media_info);
-        mTextLoading = view.findViewById(R.id.tv_loading);
         mColorGreen = mContext.getResources().getColor(R.color.livekit_dashboard_color_green);
         mColorPink = mContext.getResources().getColor(R.color.livekit_dashboard_color_pink);
     }
@@ -112,16 +111,7 @@ public class StreamDashboardDialog extends PopupDialog {
             @Override
             public void onNetworkStatisticsChange(int rtt, int upLoss, int downLoss) {
                 super.onNetworkStatisticsChange(rtt, upLoss, downLoss);
-                if (mLayoutMediaInfo.getVisibility() == View.GONE) {
-                    mLayoutMediaInfo.setVisibility(View.VISIBLE);
-                    mTextLoading.setVisibility(View.GONE);
-                }
-                mTextRtt.setText(String.format("%d ms", rtt));
-                mTextRtt.setTextColor(rtt > 100 ? mColorPink : mColorGreen);
-                mTextDownLoss.setText(String.format("%d%%", downLoss));
-                mTextDownLoss.setTextColor(downLoss > 10 ? mColorPink : mColorGreen);
-                mTextUpLoss.setText(String.format("%d%%", upLoss));
-                mTextUpLoss.setTextColor(upLoss > 10 ? mColorPink : mColorGreen);
+                updateNetworkStatistics(rtt, upLoss, downLoss);
             }
 
             @Override
@@ -136,6 +126,16 @@ public class StreamDashboardDialog extends PopupDialog {
                 mAdapter.updateRemoteVideoStatus(remoteArray);
             }
         });
+    }
+
+    @SuppressLint("DefaultLocale")
+    private void updateNetworkStatistics(int rtt, int upLoss, int downLoss) {
+        mTextRtt.setText(String.format("%dms", rtt));
+        mTextRtt.setTextColor(rtt > 100 ? mColorPink : mColorGreen);
+        mTextDownLoss.setText(String.format("%d%%", downLoss));
+        mTextDownLoss.setTextColor(downLoss > 10 ? mColorPink : mColorGreen);
+        mTextUpLoss.setText(String.format("%d%%", upLoss));
+        mTextUpLoss.setTextColor(upLoss > 10 ? mColorPink : mColorGreen);
     }
 
     private void addObserver() {

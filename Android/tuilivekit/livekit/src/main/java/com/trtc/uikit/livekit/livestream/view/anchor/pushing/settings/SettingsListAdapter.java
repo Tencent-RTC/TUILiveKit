@@ -15,8 +15,8 @@ import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.component.audioeffect.AudioEffectPanel;
 import com.trtc.uikit.component.dashboard.StreamDashboardDialog;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.component.beauty.BeautyViewFactory;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
+import com.trtc.uikit.livekit.livestream.view.widgets.beauty.BeautyPanelDialog;
 import com.trtc.uikit.livekit.livestream.view.widgets.videosettings.VideoSettingsDialog;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
@@ -127,8 +127,8 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
 
     private void showBeautyPanel() {
         mSettingsDialog.dismiss();
-        BeautyViewFactory beautyViewFactory = new BeautyViewFactory();
-        beautyViewFactory.showBeautyPanel(mContext, mLiveStreamManager);
+        BeautyPanelDialog dialog = new BeautyPanelDialog(mContext, mLiveStreamManager);
+        dialog.show();
     }
 
     @Override

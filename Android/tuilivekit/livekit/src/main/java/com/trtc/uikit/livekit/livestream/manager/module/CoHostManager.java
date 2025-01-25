@@ -9,6 +9,9 @@ import android.text.TextUtils;
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
+import com.tencent.qcloud.tuicore.util.ToastUtil;
+import com.trtc.tuikit.common.system.ContextProvider;
+import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.livestream.manager.api.ILiveService;
 import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
 import com.trtc.uikit.livekit.livestream.state.CoHostState;
@@ -80,6 +83,8 @@ public class CoHostManager extends BaseManager {
     public void onConnectionRequestReject(TUILiveConnectionManager.ConnectionUser invitee) {
         removeSendConnectionRequest(invitee.roomId);
         updateRecommendListStatus();
+        ToastUtil.toastShortMessage(ContextProvider.getApplicationContext().getResources()
+                .getString(R.string.livekit_connect_request_rejected));
     }
 
     public void onConnectionRequestTimeout(TUILiveConnectionManager.ConnectionUser inviter,

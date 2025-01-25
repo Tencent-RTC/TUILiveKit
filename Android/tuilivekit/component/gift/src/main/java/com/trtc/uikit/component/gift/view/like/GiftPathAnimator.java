@@ -73,6 +73,7 @@ public class GiftPathAnimator extends GiftAbstractPathAnimator {
         anim.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationEnd(Animation animation) {
+                child.setAlpha(0);
                 mHandler.post(() -> parent.removeView(child));
                 mCounter.decrementAndGet();
             }
@@ -101,7 +102,7 @@ public class GiftPathAnimator extends GiftAbstractPathAnimator {
             mDistance = mPm.getLength();
             mView = child;
             mRotation = rotation;
-            parent.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            parent.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
 
         @Override

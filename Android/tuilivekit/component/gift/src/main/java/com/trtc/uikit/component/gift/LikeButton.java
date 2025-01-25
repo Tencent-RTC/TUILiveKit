@@ -12,10 +12,8 @@ import com.trtc.uikit.component.gift.store.GiftStore;
 @SuppressLint("ViewConstructor")
 public class LikeButton extends FrameLayout {
     private              String mRoomId;
-    private              long   mSendLikeDate;
-    private              int    mCurrentLikeCount;
-    private static final int    mMaxLikeCount = 20;
-    private static final int    mMinDuration  = 5;
+    private              long   mSendLikeTime;
+    private static final int    MIN_SEND_DURATION_MS = 2000;
 
     public LikeButton(Context context) {
         this(context, null);
@@ -46,21 +44,10 @@ public class LikeButton extends FrameLayout {
 
     private void sendLike() {
         GiftStore.sharedInstance().mLikeIMService.likeByLocal(mRoomId);
-        if (mCurrentLikeCount >= mMaxLikeCount) {
-            sendLikeByService();
-        }
-        int duration = (int) (System.currentTimeMillis() / 1000 - mSendLikeDate);
-        if (duration >= mMinDuration) {
-            sendLikeByService();
-        } else {
-            mCurrentLikeCount += 1;
+        long duration = System.currentTimeMillis() - mSendLikeTime;
+        if (duration >= MIN_SEND_DURATION_MS) {
+            GiftStore.sharedInstance().mLikeIMService.sendGroupLikeMessage(mRoomId);
+            mSendLikeTime = System.currentTimeMillis();
         }
     }
-
-    private void sendLikeByService() {
-        GiftStore.sharedInstance().mLikeIMService.sendGroupLikeMessage(mRoomId);
-        mCurrentLikeCount = 0;
-        mSendLikeDate = System.currentTimeMillis() / 1000;
-    }
-
 }

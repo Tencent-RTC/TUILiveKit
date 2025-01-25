@@ -32,7 +32,6 @@ import java.util.LinkedHashSet;
 @SuppressLint("ViewConstructor")
 public class AudienceListView extends FrameLayout {
     private static final int MAX_SHOW_AVATAR_COUNT                               = 3;
-    private static final int ROOM_MAX_SHOW_USER_COUNT                            = 100;
     private static final int LIVEKIT_METRICS_PANEL_SHOW_LIVE_ROOM_AUDIENCE_LIST  = 190010;
     private static final int LIVEKIT_METRICS_PANEL_SHOW_VOICE_ROOM_AUDIENCE_LIST = 191009;
 
@@ -87,7 +86,7 @@ public class AudienceListView extends FrameLayout {
         initView();
         addObserver();
         mRoomEngine = TUIRoomEngine.sharedInstance();
-        mAudienceObserver = new AudienceListObserver(mAudienceListState);
+        mAudienceObserver = new AudienceListObserver(mAudienceListService);
         mRoomEngine.addObserver(mAudienceObserver);
     }
 
@@ -177,7 +176,7 @@ public class AudienceListView extends FrameLayout {
 
     @SuppressLint("SetTextI18n")
     private void setUserCount(int count) {
-        if (mAudienceListState.audienceList.get().size() > ROOM_MAX_SHOW_USER_COUNT) {
+        if (mAudienceListState.audienceCount.get() > AudienceListState.ROOM_MAX_SHOW_USER_COUNT) {
             mTextAudienceCount.setText("" + count);
         } else {
             mTextAudienceCount.setText("" + mAudienceListState.audienceList.get().size());

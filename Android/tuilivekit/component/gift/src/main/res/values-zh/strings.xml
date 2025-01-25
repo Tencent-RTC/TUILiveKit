@@ -1,5 +1,4 @@
 <resources>
     <string name="livekit_gift_me">我</string>
-    <string name="livekit_sent">送给</string>
     <string name="livekit_gift_give_gift">送出</string>
 </resources>

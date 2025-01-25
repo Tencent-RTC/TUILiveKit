@@ -22,10 +22,13 @@ import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
 import com.trtc.uikit.livekit.voiceroom.state.RoomState;
 import com.trtc.uikit.livekit.voiceroom.view.BasicView;
 
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 
 public class LiveInfoEditView extends BasicView {
+
+    private static final int MAX_INPUT_BYTE_LENGTH = 100;
 
     private       EditText                                    mEditRoomName;
     private       TextView                                    mTextStreamCategory;
@@ -72,8 +75,27 @@ public class LiveInfoEditView extends BasicView {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-                mVoiceRoomManager.getRoomManager().setRoomName(s.toString());
+            public void afterTextChanged(Editable editable) {
+                if (TextUtils.isEmpty(editable)) {
+                    return;
+                }
+                String newString = editable.toString();
+                if (!checkLength(editable.toString())) {
+                    for (int i = editable.length(); i > 0; i--) {
+                        String s = editable.subSequence(0, i).toString();
+                        if (checkLength(s)) {
+                            newString = s;
+                            mEditRoomName.setText(s);
+                            mEditRoomName.setSelection(s.length());
+                            break;
+                        }
+                    }
+                }
+                mVoiceRoomManager.getRoomManager().setRoomName(newString);
+            }
+
+            private boolean checkLength(String s) {
+                return s.getBytes(Charset.defaultCharset()).length <= MAX_INPUT_BYTE_LENGTH;
             }
         });
     }
