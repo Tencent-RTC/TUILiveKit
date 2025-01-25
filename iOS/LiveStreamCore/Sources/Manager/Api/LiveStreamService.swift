@@ -357,17 +357,17 @@ class LiveStreamService: LiveStream {
                                  onPlaying: @escaping TUIPlayOnPlayingBlock,
                                  onLoading: @escaping TUIPlayOnLoadingBlock,
                                  onError: @escaping TUIPlayOnErrorBlock) {
-        liveListManager?.startPreloadVideoStream(roomId: roomId, isMuteAudio: isMuteAudio, view: view) { userId in
-            onPlaying(userId)
-        } onLoading: { userId in
-            onLoading(userId)
-        } onError: { userId, code, message in
-            onError(userId, code, message)
-        }
+//        liveListManager?.startPreloadVideoStream(roomId: roomId, isMuteAudio: isMuteAudio, view: view) { userId in
+//            onPlaying(userId)
+//        } onLoading: { userId in
+//            onLoading(userId)
+//        } onError: { userId, code, message in
+//            onError(userId, code, message)
+//        }
     }
     
     func stopPreloadVideoStream(roomId: String) {
-        liveListManager?.stopPreloadVideoStream(roomId)
+//        liveListManager?.stopPreloadVideoStream(roomId)
     }
     
     func callExperimentalAPI(jsonStr: String) {
