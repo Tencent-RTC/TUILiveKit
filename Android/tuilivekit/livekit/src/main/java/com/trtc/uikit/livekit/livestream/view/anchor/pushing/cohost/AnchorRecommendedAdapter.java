@@ -14,15 +14,17 @@ import androidx.constraintlayout.utils.widget.ImageFilterView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
-import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
+import com.trtc.uikit.livekit.livestream.manager.error.ConnectionErrorHandler;
 import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
 import com.trtc.uikit.livekit.livestream.state.CoHostState;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class AnchorRecommendedAdapter extends RecyclerView.Adapter<AnchorRecommendedAdapter.RecommendViewHolder> {
@@ -98,15 +100,23 @@ public class AnchorRecommendedAdapter extends RecyclerView.Adapter<AnchorRecomme
     private void setConnectionClickListener(RecommendViewHolder holder, CoHostState.ConnectionUser recommendUser) {
         holder.textConnect.setOnClickListener(view -> {
             if (recommendUser.connectionStatus == CoHostState.ConnectionStatus.UNKNOWN) {
-                mLiveStream.requestCrossRoomConnection(recommendUser.roomId, 10, new TUIRoomDefine.ActionCallback() {
+                mLiveStream.requestCrossRoomConnection(recommendUser.roomId, 10,
+                        new TUILiveConnectionManager.ConnectionRequestCallback() {
                     @Override
-                    public void onSuccess() {
-                        for (CoHostState.ConnectionUser item :
-                                mLiveStreamManager.getCoHostState().recommendUsers.get()) {
-                            if (TextUtils.equals(item.roomId, recommendUser.roomId)) {
-                                item.connectionStatus = INVITING;
-                                mLiveStreamManager.getCoHostManager().addSendConnectionRequest(item);
-                                mLiveStreamManager.getCoHostState().recommendUsers.notifyDataChanged();
+                    public void onSuccess(Map<String, TUILiveConnectionManager.ConnectionCode> map) {
+                        if (map != null) {
+                            TUILiveConnectionManager.ConnectionCode code = map.get(recommendUser.roomId);
+                            if (code == TUILiveConnectionManager.ConnectionCode.SUCCESS) {
+                                for (CoHostState.ConnectionUser item :
+                                        mLiveStreamManager.getCoHostState().recommendUsers.get()) {
+                                    if (TextUtils.equals(item.roomId, recommendUser.roomId)) {
+                                        item.connectionStatus = INVITING;
+                                        mLiveStreamManager.getCoHostManager().addSendConnectionRequest(item);
+                                        mLiveStreamManager.getCoHostState().recommendUsers.notifyDataChanged();
+                                    }
+                                }
+                            } else {
+                                ConnectionErrorHandler.onError(code);
                             }
                         }
                     }

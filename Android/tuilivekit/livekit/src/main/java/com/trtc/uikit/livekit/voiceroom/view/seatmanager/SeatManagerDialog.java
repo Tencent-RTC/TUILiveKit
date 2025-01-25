@@ -212,7 +212,7 @@ public class SeatManagerDialog extends PopupDialog {
         mSeatGridView.updateRoomSeatMode(seatMode, new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
-
+                mVoiceRoomManager.getRoomManager().updateSeatMode(seatMode);
             }
 
             @Override

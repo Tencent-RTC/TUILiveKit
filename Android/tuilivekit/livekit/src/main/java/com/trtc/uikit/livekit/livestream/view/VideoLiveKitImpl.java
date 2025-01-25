@@ -3,6 +3,8 @@ package com.trtc.uikit.livekit.livestream.view;
 import android.content.Context;
 import android.content.Intent;
 
+import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
+import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
 import com.trtc.uikit.livekit.component.floatwindow.service.FloatWindowManager;
 import com.trtc.uikit.livekit.livestream.VideoLiveKit;
 import com.trtc.uikit.livekit.livestream.view.anchor.VideoLiveAnchorActivity;
@@ -31,7 +33,10 @@ public class VideoLiveKitImpl implements VideoLiveKit {
 
     @Override
     public void startLive(String roomId) {
-        FloatWindowManager.getInstance().releaseFloatWindow();
+        FloatWindowManager floatWindowManager = FloatWindowManager.getInstance();
+        if (floatWindowManager.isShowingFloatWindow()) {
+            floatWindowManager.releaseFloatWindow();
+        }
         Intent intent = new Intent(mContext, VideoLiveAnchorActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(VideoLiveAnchorActivity.INTENT_KEY_ROOM_ID, roomId);
@@ -44,6 +49,14 @@ public class VideoLiveKitImpl implements VideoLiveKit {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(VideoLiveAudienceActivity.INTENT_KEY_ROOM_ID, roomId);
         mContext.startActivity(intent);
+    }
+
+    @Override
+    public void stopLive(TUIRoomDefine.ActionCallback callback) {
+        TUIRoomEngine.sharedInstance().destroyRoom(callback);
+        if (FloatWindowManager.getInstance().isShowingFloatWindow()) {
+            FloatWindowManager.getInstance().releaseFloatWindow();
+        }
     }
 
     @Override

@@ -48,4 +48,8 @@ public class VoiceRoomActivity extends FullScreenActivity {
         fragmentTransaction.add(R.id.fl_container, voiceRoomFragment);
         fragmentTransaction.commit();
     }
+
+    @Override
+    public void onBackPressed() {
+    }
 }

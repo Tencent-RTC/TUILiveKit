@@ -56,12 +56,20 @@ public class TypeSelectDialog extends PopupDialog {
 
     private void initLinkAudioView() {
         mLayoutLinkAudio.setOnClickListener(view -> {
+            if (!view.isEnabled()) {
+                return;
+            }
+            view.setEnabled(false);
             applyLinkMic(false);
         });
     }
 
     private void initLinkVideoView() {
         mLayoutLinkVideo.setOnClickListener(view -> {
+            if (!view.isEnabled()) {
+                return;
+            }
+            view.setEnabled(false);
             applyLinkMic(true);
         });
     }

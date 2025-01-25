@@ -2,6 +2,7 @@ package com.trtc.uikit.livekit.livestream;
 
 import android.content.Context;
 
+import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.uikit.livekit.livestream.view.VideoLiveKitImpl;
 
 public interface VideoLiveKit {
@@ -13,6 +14,8 @@ public interface VideoLiveKit {
     void startLive(String roomId);
 
     void joinLive(String roomId);
+
+    void stopLive(TUIRoomDefine.ActionCallback callback);
 
     void enableFollowFeature(boolean enable);
 }

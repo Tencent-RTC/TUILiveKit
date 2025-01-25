@@ -85,6 +85,8 @@ public interface ILiveStream {
     void startPlayRemoteVideo(String userId, TUIRoomDefine.VideoStreamType streamType,
                               TUIRoomDefine.PlayCallback callback);
 
+    void stopPlayRemoteVideo(String userId, TUIRoomDefine.VideoStreamType streamType);
+
     void muteLocalAudio();
 
     void unMuteLocalAudio(TUIRoomDefine.ActionCallback callback);

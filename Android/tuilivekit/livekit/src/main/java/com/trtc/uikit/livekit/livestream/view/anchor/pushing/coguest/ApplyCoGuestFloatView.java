@@ -72,7 +72,12 @@ public class ApplyCoGuestFloatView extends BasicView {
 
     private void initRootView() {
         mLayoutRoot.setOnClickListener((view) -> {
+            if (!view.isEnabled()) {
+                return;
+            }
+            view.setEnabled(false);
             AnchorCoGuestManageDialog dialog = new AnchorCoGuestManageDialog(mContext, mLiveManager, mLiveStream);
+            dialog.setOnDismissListener(dialog1 -> view.setEnabled(true));
             dialog.show();
         });
     }

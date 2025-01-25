@@ -11,7 +11,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.SwitchCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.trtc.uikit.component.audioeffect.service.AudioEffectService;
@@ -164,17 +164,17 @@ public class AudioEffectPanel extends FrameLayout {
 
     private void initReverbView() {
         RecyclerView recyclerReverb = findViewById(R.id.rv_reverb);
-        recyclerReverb.setLayoutManager(
-                new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
         ReverbAdapter adapterReverb = new ReverbAdapter(mContext, mAudioEffectService);
+        int spanCount = adapterReverb.getItemCount();
+        recyclerReverb.setLayoutManager(new GridLayoutManager(mContext, spanCount));
         recyclerReverb.setAdapter(adapterReverb);
     }
 
     private void initChangeVoiceView() {
         RecyclerView recyclerChangeVoice = findViewById(R.id.rv_change_voice);
         ChangeVoiceAdapter adapterChangeVoice = new ChangeVoiceAdapter(mContext, mAudioEffectService);
-        recyclerChangeVoice.setLayoutManager(
-                new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
+        int spanCount = adapterChangeVoice.getItemCount();
+        recyclerChangeVoice.setLayoutManager(new GridLayoutManager(mContext, spanCount));
         recyclerChangeVoice.setAdapter(adapterChangeVoice);
     }
 

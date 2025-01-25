@@ -38,7 +38,8 @@
         android:gravity="center"
         android:text="lv20"
         android:textColor="@color/livekit_design_standard_flowkit_white"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/invite_button"
