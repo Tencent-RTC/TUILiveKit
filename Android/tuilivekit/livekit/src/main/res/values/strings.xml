@@ -43,9 +43,13 @@
     <string name="livekit_connect_failed">Failed to connect.</string>
     <string name="livekit_connect_inviting">Waiting</string>
     <string name="livekit_connect_error">Other errors, cannot connect.</string>
-    <string name="livekit_connect_conflict">The host is currently co-hosting with other streamers.</string>
+    <string name="livekit_connect_conflict">The room you are invited to connect to is connected to another room.</string>
     <string name="livekit_connection_room_full">The number of co-hosting has exceeded the maximum limit.</string>
     <string name="livekit_connect_request_failed">Request failed.</string>
+    <string name="livekit_connect_request_rejected">Connection application has been rejected</string>
+    <string name="livekit_end_link">End Co-guest</string>
+    <string name="livekit_anchor_end_link_tips">You are currently co-guesting with other streamers. Would you like to [End Live] ?</string>
+    <string name="livekit_audience_end_link_tips">You are currently co-guesting with other streamers. Would you like to[End Co-guest] or [End Live] ?</string>
     <string name="livekit_end_live">End Live</string>
     <string name="livekit_end_pk_tips">You are currently in PK mode. Would you like to  [End PK] or [End Live]
         ?</string>
@@ -137,7 +141,7 @@
     <string name="livekit_gift_balance_insufficient">Balance is insufficient</string>
     <string name="livekit_preview_video_live">Live Video</string>
     <string name="livekit_preview_voice_live">Live Voice</string>
-    <string name="livekit_audience_count_in_room">%1$d people are watching</string>
+    <string name="livekit_audience_count_in_room">%1$d people viewed</string>
     <string name="livekit_room_destroy">Broadcast has been ended</string>
     <string name="livekit_loading">Loading...</string>
     <string name="livekit_no_more_data">There is no more data</string>
@@ -145,7 +149,7 @@
     <string name="livekit_exit_float_window_tip">It\'s live, please try again later.</string>
 
     <!-- Battle -->
-    <string name="livekit_battle_wait_start">Watting for battle...</string>
+    <string name="livekit_battle_wait_start">Watting for battle</string>
     <string name="livekit_battle_wait_stop">Stop waiting</string>
     <string name="livekit_battle_inviting">invite you to battle together</string>
     <string name="livekit_battle_inviter_cancel">canceled battle, please try to initiate it again</string>
@@ -161,7 +165,7 @@
     <string name="livekit_common_this_live_data">Live data</string>
     <string name="livekit_common_live_duration">Duration</string>
     <string name="livekit_common_gift_income">Gift Income</string>
-    <string name="livekit_common_live_people_number">Total Viewers</string>
+    <string name="livekit_common_live_people_number">Total Views</string>
     <string name="livekit_common_message_count">Messages</string>
     <string name="livekit_common_send_gift_people_count">Gift givers</string>
     <string name="livekit_common_like_count">Likes</string>

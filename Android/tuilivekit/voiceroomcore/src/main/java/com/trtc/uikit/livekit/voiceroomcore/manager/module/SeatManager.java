@@ -1,5 +1,7 @@
 package com.trtc.uikit.livekit.voiceroomcore.manager.module;
 
+import static com.tencent.cloud.tuikit.engine.common.TUICommonDefine.Error.ALL_SEAT_OCCUPIED;
+
 import android.text.TextUtils;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
@@ -7,8 +9,8 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.uikit.livekit.voiceroomcore.SeatGridViewObserver;
 import com.trtc.uikit.livekit.voiceroomcore.VoiceRoomDefine;
 import com.trtc.uikit.livekit.voiceroomcore.common.utils.Logger;
-import com.trtc.uikit.livekit.voiceroomcore.manager.observer.SeatGridViewObserverManager;
 import com.trtc.uikit.livekit.voiceroomcore.manager.api.IVoiceRoomService;
+import com.trtc.uikit.livekit.voiceroomcore.manager.observer.SeatGridViewObserverManager;
 import com.trtc.uikit.livekit.voiceroomcore.state.SeatState;
 import com.trtc.uikit.livekit.voiceroomcore.state.VoiceRoomState;
 
@@ -301,11 +303,29 @@ public class SeatManager extends BaseManager {
             return;
         }
         if (agree) {
-            mService.acceptRequest(request.requestId, callback);
+            mService.acceptRequest(request.requestId, new TUIRoomDefine.ActionCallback() {
+                @Override
+                public void onSuccess() {
+                    mSeatState.seatApplicationMap.remove(userId);
+                    if (callback != null) {
+                        callback.onSuccess();
+                    }
+                }
+
+                @Override
+                public void onError(TUICommonDefine.Error error, String s) {
+                    if (error != ALL_SEAT_OCCUPIED) {
+                        mSeatState.seatApplicationMap.remove(userId);
+                    }
+                    if (callback != null) {
+                        callback.onError(error, s);
+                    }
+                }
+            });
         } else {
             mService.rejectRequest(request.requestId, callback);
+            mSeatState.seatApplicationMap.remove(userId);
         }
-        mSeatState.seatApplicationMap.remove(userId);
     }
 
     private void responseInvitation(boolean agree, TUIRoomDefine.ActionCallback callback) {

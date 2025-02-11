@@ -1,5 +1,7 @@
 package com.trtc.uikit.livekit.livestream.view.anchor.pushing.coguest;
 
+import static com.tencent.cloud.tuikit.engine.common.TUICommonDefine.Error.ALL_SEAT_OCCUPIED;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
@@ -60,7 +62,9 @@ public class AnchorApplyCoGuestAdapter extends RecyclerView.Adapter<AnchorApplyC
             ImageLoader.load(mContext, holder.imageHead, mData.get(position).avatarUrl, R.drawable.livekit_ic_avatar);
         }
         holder.textReject.setTag(mData.get(position));
+        holder.textReject.setEnabled(true);
         holder.textReject.setOnClickListener((view) -> {
+            view.setEnabled(false);
             final CoGuestState.SeatApplication seatApplication = (CoGuestState.SeatApplication) view.getTag();
             mLiveStream.respondIntraRoomConnection(seatApplication.userId, false, new TUIRoomDefine.ActionCallback() {
                 @Override
@@ -76,20 +80,27 @@ public class AnchorApplyCoGuestAdapter extends RecyclerView.Adapter<AnchorApplyC
         });
 
         holder.textAccept.setTag(mData.get(position));
+        holder.textAccept.setEnabled(true);
         holder.textAccept.setOnClickListener((view) -> {
+            view.setEnabled(false);
             final CoGuestState.SeatApplication seatApplication = (CoGuestState.SeatApplication) view.getTag();
             mLiveStream.respondIntraRoomConnection(seatApplication.userId, true, new TUIRoomDefine.ActionCallback() {
                 @Override
                 public void onSuccess() {
+                    mLiveManage.getCoGuestManager().removeSeatApplication(seatApplication.userId);
                 }
 
                 @Override
                 public void onError(TUICommonDefine.Error error, String message) {
+                    if (error == ALL_SEAT_OCCUPIED) {
+                        view.setEnabled(true);
+                    } else {
+                        mLiveManage.getCoGuestManager().removeSeatApplication(seatApplication.userId);
+                    }
                     ErrorHandler.onError(error);
                 }
             });
 
-            mLiveManage.getCoGuestManager().removeSeatApplication(seatApplication.userId);
         });
     }
 

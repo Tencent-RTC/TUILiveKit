@@ -136,7 +136,6 @@ public class TEBeautyExtension implements ITUIExtension, ITUIService {
         mPanelView.setTEPanelViewCallback(mTEPanelViewCallback);
         Log.i(TAG, "TEPanelView create, mBeautyKit = " + mBeautyKit);
         if (mBeautyKit != null) {
-            mPanelView.setLastParamList(mBeautyKit.exportInUseSDKParam());
             mPanelView.setupWithTEBeautyKit(mBeautyKit);
         }
         mPanelView.showView(mTEPanelViewCallback);

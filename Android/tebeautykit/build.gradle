@@ -36,7 +36,7 @@ dependencies {
 
     implementation 'com.tencent.mediacloud:TencentEffect_S1-07:latest.release'
 
-    implementation "com.tencent.liteav.tuikit:tuicore:latest.release"
+    implementation rootProject.getChildProjects().containsKey("tuicore") ? project(':tuicore') : "com.tencent.liteav.tuikit:tuicore:latest.release"
 
 
 }

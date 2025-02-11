@@ -54,7 +54,6 @@
                 android:layout_height="24dp"
                 android:background="@android:color/transparent"
                 android:gravity="start|center_vertical"
-                android:maxLength="20"
                 android:maxLines="1"
                 android:paddingEnd="20dp"
                 android:textColor="@color/livekit_design_standard_g8"

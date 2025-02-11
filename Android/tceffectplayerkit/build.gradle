@@ -27,5 +27,5 @@ android {
 dependencies {
     api 'com.tencent.mediacloud:TCMediaX:2.1.0.112'
     implementation 'com.tencent.mediacloud:TCEffectPlayer:2.1.0.112'
-    implementation "com.tencent.liteav.tuikit:tuicore:latest.release"
+    implementation rootProject.getChildProjects().containsKey("tuicore") ? project(':tuicore') : "com.tencent.liteav.tuikit:tuicore:latest.release"
 }

@@ -12,6 +12,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.material.imageview.ShapeableImageView;
+import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
+import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
+import com.tencent.cloud.tuikit.engine.room.TUIRoomObserver;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.component.common.DataReporter;
@@ -41,6 +44,15 @@ public class RoomInfoView extends FrameLayout {
     private final Observer<String>                mHostNickNameObserver = this::onHostNickNameChange;
     private final Observer<String>                mHostAvatarObserver   = this::onHostAvatarChange;
     private final Observer<LinkedHashSet<String>> mFollowStatusObserver = this::onFollowStatusChange;
+
+    private final TUIRoomObserver mRoomObserver = new TUIRoomObserver() {
+        @Override
+        public void onRoomDismissed(String roomId, TUIRoomDefine.RoomDismissedReason reason) {
+            if (mRoomInfoPopupDialog != null) {
+                mRoomInfoPopupDialog.dismiss();
+            }
+        }
+    };
 
     public RoomInfoView(Context context) {
         this(context, null);
@@ -81,6 +93,7 @@ public class RoomInfoView extends FrameLayout {
     }
 
     private void addObserver() {
+        TUIRoomEngine.sharedInstance().addObserver(mRoomObserver);
         mRoomInfoState.ownerId.observe(mHostIdObserver);
         mRoomInfoState.ownerName.observe(mHostNickNameObserver);
         mRoomInfoState.ownerAvatarUrl.observe(mHostAvatarObserver);
@@ -88,6 +101,7 @@ public class RoomInfoView extends FrameLayout {
     }
 
     private void removeObserver() {
+        TUIRoomEngine.sharedInstance().removeObserver(mRoomObserver);
         mRoomInfoState.ownerId.removeObserver(mHostIdObserver);
         mRoomInfoState.ownerName.removeObserver(mHostNickNameObserver);
         mRoomInfoState.ownerAvatarUrl.removeObserver(mHostAvatarObserver);

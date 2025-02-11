@@ -18,26 +18,7 @@ public class AudienceListService {
                     @Override
                     public void onSuccess(TUIRoomDefine.RoomInfo roomInfo) {
                         mAudienceListState.ownerId = roomInfo.ownerId;
-                        getAudienceList(new TUIRoomDefine.GetUserListCallback() {
-                            @Override
-                            public void onSuccess(TUIRoomDefine.UserListResult userListResult) {
-                                if (!userListResult.userInfoList.isEmpty()) {
-                                    mAudienceListState.audienceList.get().clear();
-                                    Set<TUIRoomDefine.UserInfo> userInfoSet = new LinkedHashSet<>();
-                                    for (TUIRoomDefine.UserInfo userInfo : userListResult.userInfoList) {
-                                        if (userInfo.userId.equals(mAudienceListState.ownerId)) {
-                                            continue;
-                                        }
-                                        userInfoSet.add(userInfo);
-                                    }
-                                    mAudienceListState.audienceList.addAll(userInfoSet);
-                                }
-                            }
-
-                            @Override
-                            public void onError(TUICommonDefine.Error error, String message) {
-                            }
-                        });
+                        getAudienceList();
                     }
 
                     @Override
@@ -47,7 +28,29 @@ public class AudienceListService {
                 });
     }
 
-    private void getAudienceList(TUIRoomDefine.GetUserListCallback callback) {
-        TUIRoomEngine.sharedInstance().getUserList((long) 0, callback);
+    public void getAudienceList() {
+        TUIRoomEngine.sharedInstance().getUserList(0, new TUIRoomDefine.GetUserListCallback() {
+            @Override
+            public void onSuccess(TUIRoomDefine.UserListResult userListResult) {
+                if (!userListResult.userInfoList.isEmpty()) {
+                    mAudienceListState.audienceList.get().clear();
+                    Set<TUIRoomDefine.UserInfo> userInfoSet = new LinkedHashSet<>();
+                    for (TUIRoomDefine.UserInfo userInfo : userListResult.userInfoList) {
+                        if (userInfo.userId.equals(mAudienceListState.ownerId)) {
+                            continue;
+                        }
+                        if (userInfoSet.size() >= AudienceListState.ROOM_MAX_SHOW_USER_COUNT) {
+                            break;
+                        }
+                        userInfoSet.add(userInfo);
+                    }
+                    mAudienceListState.audienceList.addAll(userInfoSet);
+                }
+            }
+
+            @Override
+            public void onError(TUICommonDefine.Error error, String message) {
+            }
+        });
     }
 }

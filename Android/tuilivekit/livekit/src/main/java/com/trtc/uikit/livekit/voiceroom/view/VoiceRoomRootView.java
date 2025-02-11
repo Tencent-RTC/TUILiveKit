@@ -11,6 +11,7 @@ import static com.trtc.uikit.livekit.voiceroom.api.Constants.GIFT_VIEW_TYPE;
 import static com.trtc.uikit.livekit.voiceroom.api.Constants.GIFT_VIEW_TYPE_1;
 import static com.trtc.uikit.livekit.voiceroom.view.TUIVoiceRoomFragment.RoomBehavior.JOIN;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
@@ -29,13 +30,13 @@ import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.tuikit.common.livedata.Observer;
-import com.trtc.uikit.component.gift.GiftPlayView;
-import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.component.barrage.BarrageStreamView;
 import com.trtc.uikit.component.barrage.store.model.Barrage;
-import com.trtc.uikit.livekit.component.gift.service.GiftCacheService;
+import com.trtc.uikit.component.gift.GiftPlayView;
 import com.trtc.uikit.component.gift.store.model.Gift;
 import com.trtc.uikit.component.gift.store.model.GiftUser;
+import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.component.gift.service.GiftCacheService;
 import com.trtc.uikit.livekit.component.gift.store.GiftStore;
 import com.trtc.uikit.livekit.component.gift.view.BarrageViewTypeDelegate;
 import com.trtc.uikit.livekit.component.gift.view.GiftBarrageAdapter;
@@ -78,6 +79,7 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
     private GiftPlayView      mGiftPlayView;
     private GiftCacheService  mGiftCacheService;
     private ConfirmDialog     mInvitationDialog;
+    private ExitConfirmDialog mExitConfirmDialog;
 
     private SeatGridViewCoreObserver mSeatGridViewCoreObserver;
 
@@ -272,14 +274,15 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
                 Barrage barrage = new Barrage();
                 barrage.content = "gift";
                 barrage.user.userId = sender.userId;
-                barrage.user.userName = sender.userName;
+                barrage.user.userName = TextUtils.isEmpty(sender.userName) ? sender.userId : sender.userName;
                 barrage.user.avatarUrl = sender.avatarUrl;
                 barrage.user.level = sender.level;
                 barrage.extInfo.put(GIFT_VIEW_TYPE, GIFT_VIEW_TYPE_1);
                 barrage.extInfo.put(GIFT_NAME, gift.giftName);
                 barrage.extInfo.put(GIFT_COUNT, giftCount);
                 barrage.extInfo.put(GIFT_ICON_URL, gift.imageUrl);
-                barrage.extInfo.put(GIFT_RECEIVER_USERNAME, receiver.userName);
+                barrage.extInfo.put(GIFT_RECEIVER_USERNAME,
+                        TextUtils.isEmpty(receiver.userName) ? receiver.userId : receiver.userName);
                 mBarrageStreamView.insertBarrages(barrage);
             }
 
@@ -301,18 +304,22 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
         mBarrageStreamView.setItemAdapter(GIFT_VIEW_TYPE_1, new GiftBarrageAdapter(mContext));
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void initAnchorEndView() {
         mLayoutEndViewContainer.removeAllViews();
         AnchorDashboardView anchorEndView = new AnchorDashboardView(mContext);
         anchorEndView.init(mVoiceRoomManager);
+        anchorEndView.setOnTouchListener((v, event) -> true);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         mLayoutEndViewContainer.addView(anchorEndView, layoutParams);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void initAudienceEndView() {
         mLayoutEndViewContainer.removeAllViews();
         AudienceDashboardView audienceEndView = new AudienceDashboardView(mContext);
         audienceEndView.init(mVoiceRoomManager);
+        audienceEndView.setOnTouchListener((v, event) -> true);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         mLayoutEndViewContainer.addView(audienceEndView, layoutParams);
     }
@@ -383,6 +390,9 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
                 Logger.error(FILE, " enter room failed, error: " + error + ", message: " + message);
                 ErrorLocalized.onError(error);
                 mVoiceRoomManager.getRoomManager().updateLiveStatus(RoomState.LiveStatus.NONE);
+                if (mContext instanceof Activity) {
+                    ((Activity) mContext).finish();
+                }
             }
         });
     }
@@ -434,7 +444,7 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
             Barrage barrage = new Barrage();
             barrage.content = mContext.getString(R.string.livekit_entered_room);
             barrage.user.userId = userInfo.userId;
-            barrage.user.userName = userInfo.name.get();
+            barrage.user.userName = TextUtils.isEmpty(userInfo.name.get()) ? userInfo.userId : userInfo.name.get();
             barrage.user.avatarUrl = userInfo.avatarUrl.get();
             barrage.user.level = "0";
             mBarrageStreamView.insertBarrages(barrage);
@@ -495,12 +505,14 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
         mBottomMenuView.setVisibility(GONE);
     }
 
-    private ExitConfirmDialog mExitConfirmDialog;
-
     @Override
     public void onNotifyEvent(String key, String subKey, Map<String, Object> param) {
         if (EVENT_SUB_KEY_CLOSE_VOICE_ROOM.equals(subKey)) {
-            showExitConfirmDialog();
+            if (mVoiceRoomManager.getUserState().selfInfo.role.get() == TUIRoomDefine.Role.ROOM_OWNER) {
+                showExitConfirmDialog();
+            } else {
+                exit();
+            }
         }
     }
 

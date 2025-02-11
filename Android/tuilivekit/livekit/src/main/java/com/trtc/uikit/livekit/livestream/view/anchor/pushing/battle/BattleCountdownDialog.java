@@ -17,12 +17,14 @@ import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public final class BattleCountdownDialog extends Dialog {
 
     private final LiveStreamManager mLiveStreamManager;
     private final LiveCoreView      mLiveCoreView;
     private       TextView          mCountdownView;
+    private       TextView          mTipView;
     private       int               mCountdownValue = BattleState.BATTLE_REQUEST_TIMEOUT;
 
     public BattleCountdownDialog(@NonNull Context context,
@@ -39,6 +41,7 @@ public final class BattleCountdownDialog extends Dialog {
         setCancelable(false);
         setCanceledOnTouchOutside(false);
         mCountdownView = findViewById(R.id.tv_countdown);
+        mTipView = findViewById(R.id.tv_tip);
         findViewById(R.id.tv_cancel).setOnClickListener(view -> cancelBattle());
         startCountdown();
     }
@@ -47,7 +50,8 @@ public final class BattleCountdownDialog extends Dialog {
         mCountdownView.post(new Runnable() {
             @Override
             public void run() {
-                mCountdownView.setText(String.valueOf(mCountdownValue));
+                mTipView.setText(formatTip());
+                mCountdownView.setText(formatTime(mCountdownValue));
                 mCountdownValue--;
                 if (mCountdownValue < 0) {
                     cancelBattle();
@@ -56,6 +60,25 @@ public final class BattleCountdownDialog extends Dialog {
                 mCountdownView.postDelayed(this, 1000);
             }
         });
+    }
+
+    private String formatTip() {
+        String tip = getContext().getString(R.string.livekit_battle_wait_start);
+        StringBuilder tipBuilder = new StringBuilder(tip);
+        for (int i = 0; i <= 2 - mCountdownValue % 3; i++) {
+            tipBuilder.append(".");
+        }
+        return tipBuilder.toString();
+    }
+
+    private String formatTime(int second) {
+        if (second <= 0) {
+            return "00:00";
+        } else if (second < 60) {
+            return String.format(Locale.getDefault(), "00:%02d", second % 60);
+        } else {
+            return String.format(Locale.getDefault(), "%02d:%02d", second / 60, second % 60);
+        }
     }
 
     private void cancelBattle() {
@@ -67,10 +90,11 @@ public final class BattleCountdownDialog extends Dialog {
             }
         }
         String battleId = mLiveStreamManager.getBattleState().mBattleId;
+        mLiveStreamManager.getBattleManager().onCanceledBattle();
         mLiveCoreView.cancelBattle(battleId, list, new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
-                mLiveStreamManager.getBattleManager().onCanceledBattle();
+
             }
 
             @Override
