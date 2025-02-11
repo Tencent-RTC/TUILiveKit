@@ -14,7 +14,6 @@ class SGRoomEngineObserver: NSObject, TUIRoomObserver {
     init(context: SeatGridViewManager.Context) {
         self.context = context
         super.init()
-        TUIRoomEngine.sharedInstance().addObserver(self)
     }
     
     func onRoomDismissed(roomId: String, reason: TUIRoomDismissedReason) {
@@ -110,7 +109,6 @@ class SGRoomEngineObserver: NSObject, TUIRoomObserver {
     }
     
     deinit {
-        TUIRoomEngine.sharedInstance().removeObserver(self)
         debugPrint("deinit:\(self)")
     }
 }

@@ -186,6 +186,7 @@ extension RoomManager {
     }
     
     private func onJoinLiveSuccess(roomInfo: TUIRoomInfo) {
+        context?.mediaManager.onJoinLiveSuccess()
         updateRoomState(roomInfo: roomInfo)
         modifyRoomState(value: .playing, keyPath: \RoomState.liveStatus, isPublished: true)
         if context?.userManager.userState.selfInfo.userId == roomInfo.ownerId {

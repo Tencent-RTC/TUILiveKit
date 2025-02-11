@@ -7,14 +7,14 @@
 
 import UIKit
 
-struct ViewInfo: Decodable, Equatable {
-    let x: CGFloat
-    let y: CGFloat
-    let width: CGFloat
-    let height: CGFloat
-    let zOrder: Int
-    let backgroundColor: String
-    let userId: String
+public struct ViewInfo: Decodable, Equatable {
+    public let x: CGFloat
+    public let y: CGFloat
+    public let width: CGFloat
+    public let height: CGFloat
+    public let zOrder: Int
+    public let backgroundColor: String
+    public let userId: String
     
     enum CodingKeys: String, CodingKey {
         case x = "x"
@@ -26,7 +26,7 @@ struct ViewInfo: Decodable, Equatable {
         case userId = "userId"
     }
 
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         x = try container.decode(CGFloat.self, forKey: .x)
         y = try container.decode(CGFloat.self, forKey: .y)
@@ -37,7 +37,7 @@ struct ViewInfo: Decodable, Equatable {
         userId = try container.decodeIfPresent(String.self, forKey: .userId) ?? ""
     }
     
-    init(x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat, zOrder: Int, backgroundColor: String, userId: String) {
+    public init(x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat, zOrder: Int, backgroundColor: String, userId: String) {
         self.x = x
         self.y = y
         self.width = width
@@ -55,7 +55,7 @@ struct LayoutInfo: Decodable {
 
 typealias LayoutConfig = [Int: LayoutInfo]
 
-struct VideoLayoutInfo: Decodable, Equatable {
+public struct VideoLayoutInfo: Decodable, Equatable {
     var layoutList: [ViewInfo]
     let canvas: VideoCanvasInfo
     let layoutType: Int
@@ -65,7 +65,7 @@ struct VideoLayoutInfo: Decodable, Equatable {
     }
 }
 
-struct VideoCanvasInfo: Decodable, Equatable {
+public struct VideoCanvasInfo: Decodable, Equatable {
     let width: CGFloat
     let height: CGFloat
     let backgroundColor: String

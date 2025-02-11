@@ -33,6 +33,7 @@ class StreamDashboardMediaCell: UICollectionViewCell {
         let label = UILabel(frame: .zero)
         label.font = .customFont(ofSize: 14, weight: .semibold)
         label.textColor = .g7
+        label.textAlignment = .center
         return label
     }()
     
@@ -137,7 +138,7 @@ extension StreamDashboardMediaCell {
             make.leading.trailing.equalToSuperview().inset(20)
         }
         titleLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
+            make.leading.trailing.equalToSuperview().inset(30)
             make.top.equalTo(10)
         }
         videoTitleLabel.snp.makeConstraints { make in

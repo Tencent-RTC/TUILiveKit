@@ -24,7 +24,7 @@ TODO: Add long description of the pod here.
   s.homepage         = 'https://github.com/originleeli@tencent.com/TEBeautyKit'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'originleeli@tencent.com' => 'originleeli@tencent.com' }
-  s.source           = { :http => 'https://liteav.sdk.qcloud.com/app/tuikit/download/release/1.0/TEBeautyKit.zip' }
+  s.source           = { :http => 'https://liteav.sdk.qcloud.com/app/tuikit/download/release/1.1/TEBeautyKit.zip' }
 
   s.ios.deployment_target = '13.0'
   s.static_framework = true

@@ -7,15 +7,17 @@
 
 import RTCRoomEngine
 
-public struct RoomState {
+public struct RoomState: State {
     public var roomId: String = ""
     public var ownerInfo: TUIUserInfo = TUIUserInfo()
-    var maxCoGuestCount: Int = 0
-    var liveStatus: LiveStatus = .none
+    public var maxCoGuestCount: Int = 0
+    public var liveStatus: LiveStatus = .none
 
-    enum LiveStatus {
+    public enum LiveStatus {
         case none
         case pushing
         case playing
     }
+    
+    public init() {}
 }

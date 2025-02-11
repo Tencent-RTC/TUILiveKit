@@ -184,18 +184,26 @@ class SGSeatManager {
     
     func responseRemoteRequest(userId: String, agree: Bool) async throws {
         var requestId = ""
+        var requestType: SGRequestType? = nil
         if let request = receivedApplicationMap[userId], !request.requestId.isEmpty {
             requestId = request.requestId
-            removeSeatApplication(userId: userId)
+            requestType = .applyToTakeSeat
         }
         if let request = receivedInvitation, !request.requestId.isEmpty {
             requestId = request.requestId
-            removeReceivedSeatInvitation()
+            requestType = .inviteToTakeSeat
         }
         guard !requestId.isEmpty else {
             throw SeatGridViewError.error(code: TUIError.failed.rawValue, message: "Invalid userId, don't find any Application or Invatation")
         }
-        try await service.responseRemoteRequest(requestId: requestId, agree: agree)
+        
+        do {
+            try await service.responseRemoteRequest(requestId: requestId, agree: agree)
+            guard let type = requestType else  { return }
+            type == .applyToTakeSeat ?  removeSeatApplication(userId: userId) : removeReceivedSeatInvitation()
+        } catch let SeatGridViewError.error(code, message) {
+            throw SeatGridViewError.error(code: code, message: message)
+        }
     }
     
     func cancelRequest(userId: String) async throws {

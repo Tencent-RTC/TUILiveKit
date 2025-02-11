@@ -61,8 +61,8 @@ class VideoLinkSettingPanel: RTCBaseView {
                                  normalImage: .liveBundleImage("live_video_setting_flip"),
                                  designConfig: designConfig,
                                  actionClosure: { [weak self] _ in
-            guard let self = self, let coreView = coreView else { return }
-            coreView.startCamera(useFrontCamera: !coreView.mediaState.isFrontCamera) {} onError: { code, msg in }
+            guard let self = self else { return }
+            coreView?.startCamera(useFrontCamera: !manager.coreMediaState.isFrontCamera) {} onError: { code, msg in }
         }))
         items.append(LSFeatureItem(normalTitle: .videoParametersText,
                                  normalImage: .liveBundleImage("live_setting_video_parameters"),
@@ -168,7 +168,9 @@ class VideoLinkSettingPanel: RTCBaseView {
 extension VideoLinkSettingPanel {
     @objc func requestLinkMicButtonClick(_ sender: LSFeatureItemButton) {
         manager.update(coGuestStatus: .applying)
-        coreView?.requestIntraRoomConnection(userId: "", timeOut: requestTimeOutValue, openCamera: true) {
+        coreView?.requestIntraRoomConnection(userId: "", timeOut: requestTimeOutValue, openCamera: true) { [weak self] in
+            guard let self = self else { return }
+            manager.toastSubject.send(.waitToLinkText)
         } onError: { [weak self] code, message in
             guard let self = self else { return }
             self.manager.update(coGuestStatus: .none)
@@ -185,8 +187,8 @@ extension VideoLinkSettingPanel {
                 guard let self = self else { return }
                 if routeStack.last == .linkSetting {
                     guard let coreView = coreView else { return }
-                    if !coreView.mediaState.isCameraOpened {
-                        coreView.startCamera(useFrontCamera: coreView.mediaState.isFrontCamera) { [weak self] in
+                    if !manager.coreMediaState.isCameraOpened {
+                        coreView.startCamera(useFrontCamera: manager.coreMediaState.isFrontCamera) { [weak self] in
                             guard let self = self else { return }
                             manager.onCameraOpened()
                             manager.setLocalVideoView(previewView)
@@ -218,4 +220,5 @@ private extension String {
     static let videoParametersText = localized("live.anchor.setting.video.parameters")
     static let flipText = localized("live.audience.videoLinkConfig.flip")
     static let operateFailedText = localized("live.operation.fail.xxx")
+    static let waitToLinkText = localized("live.audience.wait.link.tips")
 }

@@ -70,6 +70,7 @@
 "live.anchor.more.set.share" = "Allow sharing";
 "live.anchor.more.set.title" = "More settings";
 "live.anchor.confirm.close" = "End Live";
+"live.anchor.confirm.close.linkmic.force" = "End the live broadcast and exit";
 "live.beauty.title" = "One-click beauty";
 "live.beauty.buffing" = "Buffing";
 "live.beauty.close" = "Close";
@@ -180,7 +181,7 @@
 "live.anchor.live.data" = "Live data";
 "live.anchor.live.data.duration" = "Duration";
 "live.anchor.live.data.gift.income" = "Gift Income";
-"live.anchor.live.data.audience.count" = "Total Viewers";
+"live.anchor.live.data.audience.count" = "Total Views";
 "live.anchor.live.data.message.count" = "Messages";
 "live.anchor.live.data.gift.people.count" = "Gift givers";
 "live.anchor.live.data.like.count" = "Likes";
@@ -210,10 +211,11 @@
 
 "live.endLive.onConnection.alert" = "You are currently co-hosting with other streamers. Would you like to  [End Co-host] or [End Live] ?";
 "live.endLive.onConnection.alert.disconnect" = "End Co-host";
-"live.endLive.onLinkMic.alert" = "You are currently connecting with guests. Would you like to  [End Multi-guest] or [End Live] ?";
+"live.endLive.anchor.onLinkMic.alert" = "You are currently co-guesting with other streamers. Would you like to [End Live] ?";
 "live.endLive.onLinkMic.alert.disconnect" = "End Multi-guest";
 "live.endLive.onBattle.alert" = "You are currently battling with other streams. Would you like to  [End Battle] or [End Live] ?";
 "live.endLive.onBattle.alert.endBattle" = "End Battle";
+"live.endLive.audience.onLinkMic.alert" = "Currently in the live broadcast state, do you need to \"disconnect the live broadcast\" or \"directly exit the live broadcast room\"?";
 
 // MARK: - Error Toast
 "live.error.pushing" = "It's live, please try again later.";
@@ -280,7 +282,7 @@
 "live.room.list.loadingMore" = "Loading more";
 "live.room.list.noMoreData" = "There is no more data";
 "live.room.list.startLiveRoom" = "Please start a live room";
-"live.room.list.watching.xxx" = "xxx people are watching";
+"live.room.list.watching.xxx" = "xxx people viewed";
 
 "live.seat.takeSeatApplying" = "You have submitted a link mic request, please wait for the author approval";
 

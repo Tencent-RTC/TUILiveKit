@@ -56,8 +56,8 @@ extension VRSeatManager {
                 update { state in
                     state.seatList = res
                 }
-            } catch let err {
-                toastSubject.send(err.localizedDescription)
+            } catch let err as InternalError {
+                toastSubject.send(err.localizedMessage)
             }
         }
     }
@@ -70,8 +70,8 @@ extension VRSeatManager {
                 update { state in
                     state.seatApplicationList = list
                 }
-            } catch let err {
-                toastSubject.send(err.localizedDescription)
+            } catch let err as InternalError {
+                toastSubject.send(err.localizedMessage)
             }
         }
     }
@@ -87,6 +87,18 @@ extension VRSeatManager {
     func removeSeatUserInfo(_ info: TUIUserInfo) {
         update { seatState in
             seatState.seatApplicationList.removeAll(where: { $0.userId == info.userId })
+        }
+    }
+    
+    func onSentSeatInvitation(to userId: String) {
+        update { seatState in
+            seatState.invitedUserIds.insert(userId)
+        }
+    }
+    
+    func onRespondedSeatInvitation(of userId: String) {
+        update { seatState in
+            seatState.invitedUserIds.remove(userId)
         }
     }
     

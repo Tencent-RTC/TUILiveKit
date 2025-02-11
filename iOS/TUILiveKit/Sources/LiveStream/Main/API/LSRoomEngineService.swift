@@ -58,6 +58,21 @@ extension LSRoomEngineService {
             }
         }
     }
+    
+    func fetchLiveInfo(roomId: String) async throws -> TUILiveInfo {
+        return try await withCheckedThrowingContinuation { [weak self] continuation in
+            guard let self = self, let liveListManager = liveListManager else {
+                let error = InternalError(error: TUIError.failed, message: TUIError.failed.description)
+                continuation.resume(throwing: error)
+                return
+            }
+            liveListManager.getLiveInfo(roomId, onSuccess: { liveInfo in
+                continuation.resume(returning: liveInfo)
+            }, onError: { code, msg in
+                continuation.resume(throwing: InternalError(error: code, message: msg))
+            })
+        }
+    }
 }
 
 // MARK: - UserAPI

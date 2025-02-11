@@ -53,6 +53,12 @@ extension FloatWindow {
         self.floatView = floatView
         
         isShow = true
+        
+        floatView.isUserInteractionEnabled = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak floatView] in
+            floatView?.isUserInteractionEnabled = true
+        }
+        
         return true
     }
     
@@ -89,6 +95,11 @@ extension FloatWindow {
         guard let controller = controller else { return nil }
         return controller.getOwnerId()
     }
+    
+    func getIsLinking() -> Bool {
+        guard let coGuestState: CoGuestState = coreView?.getState() else { return false }
+        return coGuestState.coGuestStatus == .linking
+    }
 }
 
 // MARK: -------------- IMPL --------------
@@ -103,7 +114,9 @@ private extension FloatWindow {
     
     func leaveRoom() {
         guard let coreView = coreView else { return }
-        if coreView.roomState.ownerInfo.userId == coreView.userState.selfInfo.userId {
+        let roomState: RoomState = coreView.getState()
+        let userState: UserState = coreView.getState()
+        if roomState.ownerInfo.userId == userState.selfInfo.userId {
             coreView.stopLiveStream() {} onError: { _, _ in }
         } else {
             coreView.leaveLiveStream() {} onError: { _, _ in }
@@ -113,10 +126,6 @@ private extension FloatWindow {
 
 // MARK: - FloatViewDelegate
 extension FloatWindow: FloatViewDelegate {
-    func onClose() {
-        releaseFloatWindow()
-    }
-    
     func onResume() {
         if let nav = controller?.navigationController {
             resumeLive(atViewController: nav)

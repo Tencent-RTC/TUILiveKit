@@ -21,13 +21,13 @@ Pod::Spec.new do |spec|
   spec.dependency 'Kingfisher', '<= 6.3.1'
   spec.dependency 'SVGAPlayer', '~> 2.5.7'
   spec.dependency 'Protobuf', '~> 3.22.1'
-  spec.dependency 'RTCCommon', '>= 1.0.2'
+  spec.dependency 'RTCCommon', '>= 1.0.0'
   spec.dependency "ESPullToRefresh"
 
   spec.default_subspec = 'Professional'
   
   spec.subspec 'Professional' do |professional|
-    professional.dependency 'RTCRoomEngine/Professional', '>= 2.5.2'
+    professional.dependency 'RTCRoomEngine/Professional', '>= 2.9.0'
     professional.dependency 'SeatGridView/Professional'
     professional.dependency 'LiveStreamCore/Professional'
     professional.source_files = 'Sources/**/*', 'VideoLiveKit.swift', 'VoiceRoomKit.swift', 'VoiceRoomDefine.swift'
@@ -37,7 +37,7 @@ Pod::Spec.new do |spec|
   end
   
   spec.subspec 'TRTC' do |trtc|
-    trtc.dependency 'RTCRoomEngine/TRTC', '>= 2.5.2'
+    trtc.dependency 'RTCRoomEngine/TRTC', '>= 2.9.0'
     trtc.dependency 'SeatGridView/TRTC'
     trtc.dependency 'LiveStreamCore/TRTC'
     trtc.source_files = 'Sources/**/*', 'VideoLiveKit.swift', 'VoiceRoomKit.swift', 'VoiceRoomDefine.swift'

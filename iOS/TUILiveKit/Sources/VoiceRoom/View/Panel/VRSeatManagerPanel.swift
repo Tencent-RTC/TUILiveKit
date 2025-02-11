@@ -345,9 +345,6 @@ extension VRSeatManagerPanel: UITableViewDataSource {
                         self.manager.fetchSeatApplicationList()
                     } onError: { [weak self] code, message in
                         guard let self = self, let err = TUIError(rawValue: code) else { return }
-                        let userInfo = TUIUserInfo()
-                        userInfo.userId = seatApplication.userId
-                        manager.removeSeatUserInfo(userInfo)
                         let error = InternalError(error: err, message: message)
                         self.manager.toastSubject.send(error.localizedMessage)
                     }

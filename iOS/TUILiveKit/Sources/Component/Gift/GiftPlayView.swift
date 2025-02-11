@@ -159,7 +159,7 @@ extension GiftPlayView {
 extension GiftPlayView {
     private func showNormalAnimation(_ giftData: TUIGiftData) {
         DataReporter.reportEventData(eventKey: getReportKey())
-        let beginY = mm_h * 0.5
+        let beginY = mm_h * 0.3
         for view in subviews {
             if let bulletView = view as? TUIGiftBulletView {
                 UIView.animate(withDuration: 0.1) {

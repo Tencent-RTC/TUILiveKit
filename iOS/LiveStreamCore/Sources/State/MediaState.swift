@@ -7,7 +7,7 @@
 
 import RTCRoomEngine
 
-public struct MediaState {
+public struct MediaState: State {
     public var hasMicrophonePermission: Bool = false
     public var isMicrophoneOpened: Bool = false
     public var isMicrophoneMuted: Bool = true
@@ -18,6 +18,8 @@ public struct MediaState {
     
     public var isMirrorEnabled: Bool = false
     public var videoAdvanceSettings: VideoAdvanceSetting = VideoAdvanceSetting()
+    
+    public init() {}
 }
 
 public struct VideoEncParams {
