@@ -46,6 +46,7 @@ public class TUIVoiceRoomViewController: UIViewController {
     private let routerManager: VRRouterManager = VRRouterManager()
     private var needRestoreNavigationBarHiddenState: Bool = false
     private var cancellableSet = Set<AnyCancellable>()
+    private var isShowingRootView = false
     
     private lazy var routerCenter: VRRouterControlCenter = {
         let rootRoute: VRRoute = behavior == .join ? .audience : .anchor
@@ -134,6 +135,7 @@ public class TUIVoiceRoomViewController: UIViewController {
         voiceRootView.snp.makeConstraints { make in
             make.top.bottom.leading.trailing.equalToSuperview()
         }
+        isShowingRootView = true
     }
     
     private func showAnchorEndView(info: [String: Any]) {
@@ -217,6 +219,9 @@ extension TUIVoiceRoomViewController: VoiceRoomPrepareViewDelegate {
     
     func prepareView(_ view: VoiceRoomPrepareView, didClickBack button: UIButton) {
         routerManager.router(action: .exit)
+        if isShowingRootView {
+            voiceRootView.onExit()
+        }
     }
 }
 

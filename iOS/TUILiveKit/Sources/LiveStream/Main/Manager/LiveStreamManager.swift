@@ -9,11 +9,17 @@ import Foundation
 import Combine
 import RTCCommon
 import RTCRoomEngine
+import LiveStreamCore
 
 typealias LSRoomStateUpdateClosure = (inout LSRoomState) -> Void
 typealias LSUserStateUpdateClosure = (inout LSUserState) -> Void
 typealias LSMediaStateUpdateClosure = (inout LSMediaState) -> Void
 typealias LSCoGuestStateUpdateClosure = (inout LSCoGuestState) -> Void
+
+protocol LiveStreamManagerProvider: NSObject {
+    func getCoreViewState<T: State>() -> T
+    func subscribeCoreViewState<State, Value>(_ selector: StateSelector<State, Value>) -> AnyPublisher<Value, Never>
+}
 
 class LiveStreamManager {
     
@@ -24,6 +30,7 @@ class LiveStreamManager {
     class Context {
         let service = LSRoomEngineService()
         let coHostService = LSCoHostServiceImpl()
+        weak var provider: LiveStreamManagerProvider?
         
         private(set) lazy var roomManager = LSRoomManager(context: self)
         private(set) lazy var userManager = LSUserManager(context: self)
@@ -39,8 +46,9 @@ class LiveStreamManager {
         
         let toastSubject: PassthroughSubject<String, Never>
         
-        init(toastSubject: PassthroughSubject<String, Never>) {
+        init(provider: LiveStreamManagerProvider, toastSubject: PassthroughSubject<String, Never>) {
             self.toastSubject = toastSubject
+            self.provider = provider
             service.addEngineObserver(engineObserver)
             service.addLiveListManagerObserver(liveListObserver)
             coHostService.addConnectionObserver(coHostObserver)
@@ -55,8 +63,8 @@ class LiveStreamManager {
     
     private let context: Context
     
-    init() {
-        self.context = Context(toastSubject: toastSubject)
+    init(provider: LiveStreamManagerProvider) {
+        self.context = Context(provider: provider, toastSubject: toastSubject)
     }
     
     func resetAllState() {
@@ -64,6 +72,11 @@ class LiveStreamManager {
         context.userManager.resetState()
         context.mediaManager.resetState()
         context.coGuestManager.resetState()
+    }
+    
+    func subscribeCoreViewState<State, Value>(_ selector: StateSelector<State, Value>) -> AnyPublisher<Value, Never> {
+        guard let provider = context.provider else { return Empty<Value, Never>().eraseToAnyPublisher() }
+        return provider.subscribeCoreViewState(selector)
     }
 }
 
@@ -117,6 +130,21 @@ extension LiveStreamManager {
     func prepareRoomIdBeforeEnterRoom(roomId: String) {
         context.roomManager.update(roomId: roomId)
     }
+    
+    func fetchLiveInfo(roomId: String, onSuccess: @escaping ((_ liveInfo: TUILiveInfo)->()), onError: @escaping ((_ error: InternalError)->())) {
+        Task {
+            do {
+                let liveInfo = try await context.roomManager.fetchLiveInfo(roomId: roomId)
+                DispatchQueue.main.async {
+                    onSuccess(liveInfo)
+                }
+            } catch let err as InternalError {
+                DispatchQueue.main.async {
+                    onError(err)
+                }
+            }
+        }
+    }
 }
 
 // MARK: - Media API
@@ -166,6 +194,14 @@ extension LiveStreamManager {
     
     func updateSelfUserInfo() {
         context.userManager.updateSelfUserInfo()
+    }
+    
+    func initSelfUserData() {
+        context.userManager.initSelfUserData()
+    }
+    
+    func getUserInfo(userId: String) async throws -> TUIUserInfo {
+        try await context.userManager.getUserInfo(userId: userId)
     }
 }
 
@@ -259,5 +295,46 @@ extension LiveStreamManager: GiftListPanelDataSource {
         let owner = roomState.ownerInfo
         let giftUser = GiftUser(userId: owner.userId, name: owner.name, avatarUrl: owner.avatarUrl)
         return giftUser
+    }
+}
+
+extension LiveStreamManager {
+    var coreRoomState: RoomState {
+        context.coreRoomState
+    }
+    var coreUserState: UserState {
+        context.coreUserState
+    }
+    var coreMediaState: MediaState {
+        context.coreMediaState
+    }
+    var coreCoHostState: CoHostState {
+        context.coreCoHostState
+    }
+    var coreCoGuestState: CoGuestState {
+        context.coreCoGuestState
+    }
+}
+
+extension LiveStreamManager.Context {
+    var coreRoomState: RoomState {
+        guard let provider = provider else { return RoomState() }
+        return provider.getCoreViewState()
+    }
+    var coreUserState: UserState {
+        guard let provider = provider else { return UserState() }
+        return provider.getCoreViewState()
+    }
+    var coreMediaState: MediaState {
+        guard let provider = provider else { return MediaState() }
+        return provider.getCoreViewState()
+    }
+    var coreCoHostState: CoHostState {
+        guard let provider = provider else { return CoHostState() }
+        return provider.getCoreViewState()
+    }
+    var coreCoGuestState: CoGuestState {
+        guard let provider = provider else { return CoGuestState() }
+        return provider.getCoreViewState()
     }
 }

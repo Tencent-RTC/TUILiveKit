@@ -16,12 +16,13 @@ class UserStatusView: UIView {
     private var cancellableSet = Set<AnyCancellable>()
     private var muteAudio: Bool = true
     private var isViewReady: Bool = false
-    private var userInfo: LSUser
+    @Published private var userInfo: LSUser
     
     init(userInfo: LSUser, manager: LiveStreamManager) {
         self.userInfo = userInfo
         self.manager = manager
         super.init(frame: .zero)
+        getUserInfo()
     }
     
     required init?(coder: NSCoder) {
@@ -37,10 +38,21 @@ class UserStatusView: UIView {
         constructViewHierarchy()
         activateConstraints()
         subscribeState()
-        updateUserStatus()
+        subscribeUserInfo()
         backgroundColor = .g2.withAlphaComponent(0.4)
         layer.cornerRadius = 9
         layer.masksToBounds = true
+    }
+    
+    private func getUserInfo() {
+        Task {
+            do {
+                let info = try await manager.getUserInfo(userId: userInfo.userId)
+                userInfo = LSUser(userInfo: info)
+            } catch let err {
+                debugPrint("getUserInfoError: \(err.localizedDescription)")
+            }
+        }
     }
 
     private lazy var userNameLabel: UILabel = {
@@ -78,13 +90,18 @@ class UserStatusView: UIView {
             make.trailing.equalToSuperview().offset(-8)
         }
     }
-
-    func updateUserStatus() {
-        if !userInfo.name.isEmpty {
-            userNameLabel.text = userInfo.name
-        } else {
-            userNameLabel.text = userInfo.userId
-        }
+    
+    private func subscribeUserInfo() {
+        $userInfo
+            .receive(on: RunLoop.main)
+            .sink { [weak self] userInfo in
+                guard let self = self else { return }
+                if !userInfo.name.isEmpty {
+                    userNameLabel.text = userInfo.name
+                } else {
+                    userNameLabel.text = userInfo.userId
+                }
+            }.store(in: &cancellableSet)
     }
     
     private func updateAudioStatus() {

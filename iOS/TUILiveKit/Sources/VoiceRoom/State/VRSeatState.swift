@@ -12,6 +12,7 @@ struct VRSeatState: Encodable {
     var seatList: [VRSeatInfo] = []
     var seatApplicationList: [VRSeatApplication] = []
     var isApplyingToTakeSeat: Bool = false
+    var invitedUserIds: Set<String> = []
 }
 
 struct VRSeatApplication: Codable {

@@ -21,16 +21,6 @@ import TUICore
     }
     public weak var waitingCoGuestViewDelegate: WaitingCoGuestViewDelegate?
     
-    public var roomState: RoomState {
-        manager.roomState
-    }
-    public var userState: UserState {
-        manager.userState
-    }
-    public var mediaState: MediaState {
-        manager.mediaState
-    }
-    
     public init() {
         super.init(frame: .zero)
         LCDataReporter.reportEventData(event: .panelShowLiveCoreView)
@@ -196,6 +186,58 @@ extension LiveCoreView {
     public func unregisterBattleObserver(observer: BattleObserver) {
         manager.removerBattleObserver(observer)
     }
+    
+    public func startPreloadLiveStream(roomId: String,
+                                       isMuteAudio: Bool,
+                                       onPlaying: TUIPlayOnPlayingBlock? = nil,
+                                       onLoading: TUIPlayOnLoadingBlock? = nil,
+                                       onError: TUIPlayOnErrorBlock? = nil) {
+        startPreload(roomId: roomId, isMuteAudio: isMuteAudio, onPlaying: onPlaying, onLoading: onLoading, onError: onError)
+    }
+    
+    public func stopPreloadLiveStream(roomId: String) {
+        stopPreload(roomId: roomId)
+    }
+    
+    public func subscribeState<State, Value>(_ selector: StateSelector<State, Value>) -> AnyPublisher<Value, Never> {
+        if let sel = selector as? StateSelector<UserState, Value> {
+            return manager.subscribeUserState(sel)
+        } else if let sel = selector as? StateSelector<RoomState, Value> {
+            return manager.subscribeRoomState(sel)
+        } else if let sel = selector as? StateSelector<BattleState, Value> {
+            return manager.subscribeBattleState(sel)
+        } else if let sel = selector as? StateSelector<CoGuestState, Value> {
+            return manager.subscribeCoGuestState(sel)
+        } else if let sel = selector as? StateSelector<CoHostState, Value> {
+            return manager.subscribeCoHostState(sel)
+        } else if let sel = selector as? StateSelector<MediaState, Value> {
+            return manager.subscribeMediaState(sel)
+        } else if let sel = selector as? StateSelector<LayoutState, Value> {
+            return manager.subscribeLayoutState(sel)
+        }
+        assert(false, "Input failed State class")
+        return Empty<Value, Never>().eraseToAnyPublisher()
+    }
+    
+    public func getState<T: State>() -> T {
+        if let state = manager.userState as? T {
+            return state
+        } else if let state = manager.roomState as? T {
+            return state
+        } else if let state = manager.battleState as? T {
+            return state
+        } else if let state = manager.coGuestState as? T {
+            return state
+        } else if let state = manager.coHostState as? T {
+            return state
+        } else if let state = manager.mediaState as? T {
+            return state
+        } else if let state = manager.layoutState as? T {
+            return state
+        }
+        assert(false, "Input failed Template class")
+        return T()
+    }
 }
 
 extension LiveCoreView {
@@ -247,20 +289,20 @@ extension LiveCoreView {
             .removeDuplicates()
             .sink { [weak self] coGuestStatus in
                 guard let self = self else { return }
-                guard let waitingCoGuestViewDelegate = self.waitingCoGuestViewDelegate else { return }
                 switch coGuestStatus {
-                    case .applying:
-                        waitingCoGuestView = waitingCoGuestView ?? waitingCoGuestViewDelegate.waitingCoGuestView()
-                        self.liveStreamContainerView.addView(waitingCoGuestView ?? UIView())
-                    case .linking:
-                        self.manager.updateVideoLayout(layout: nil)
-                        guard let waitingCoGuestView = waitingCoGuestView else { return }
-                        self.liveStreamContainerView.removeView(waitingCoGuestView)
-                        self.waitingCoGuestView = nil
-                    case .none:
-                        guard let waitingCoGuestView = waitingCoGuestView else { return }
-                        self.liveStreamContainerView.removeView(waitingCoGuestView)
-                        self.waitingCoGuestView = nil
+                case .applying:
+                    guard let waitingCoGuestViewDelegate = self.waitingCoGuestViewDelegate else { return }
+                    waitingCoGuestView = waitingCoGuestView ?? waitingCoGuestViewDelegate.waitingCoGuestView()
+                    self.liveStreamContainerView.addView(waitingCoGuestView ?? UIView())
+                case .linking:
+                    self.manager.updateVideoLayout(layout: nil)
+                    guard let waitingCoGuestView = waitingCoGuestView else { return }
+                    self.liveStreamContainerView.removeView(waitingCoGuestView)
+                    self.waitingCoGuestView = nil
+                case .none:
+                    guard let waitingCoGuestView = waitingCoGuestView else { return }
+                    self.liveStreamContainerView.removeView(waitingCoGuestView)
+                    self.waitingCoGuestView = nil
                 }
             }
             .store(in: &cancellableSet)
@@ -361,8 +403,8 @@ extension LiveCoreView {
             return
         }
         let liveView = viewModel.getRemoteLiveViewByUserId(userId: userInfo.userId)
-        manager.setRemoteVideoView(userId: userInfo.userId, streamType: .cameraStream, view: liveView.videoView)
         if !liveStreamContainerView.containsView(liveView) {
+            manager.setRemoteVideoView(userId: userInfo.userId, streamType: .cameraStream, view: liveView.videoView)
             if let videoViewDelegate = videoViewDelegate,
                !userInfo.userId.hasSuffix(manager.context.roomManager.mixStreamIdSuffix) {
                 let coGuestWidgetsView = videoViewDelegate.createCoGuestView(userInfo: userInfo)
@@ -494,6 +536,39 @@ extension LiveCoreView {
         viewModel.setLayoutMode(layoutMode: layoutMode, layoutJson: layoutJson)
         guard let layoutConfig = viewModel.layoutConfig else { return }
         liveStreamContainerView.setLayoutConfig(layoutConfig: layoutConfig)
+    }
+    
+    private func startPreload(roomId: String,
+                              isMuteAudio: Bool,
+                              onPlaying: TUIPlayOnPlayingBlock? = nil,
+                              onLoading: TUIPlayOnLoadingBlock? = nil,
+                              onError: TUIPlayOnErrorBlock? = nil) {
+        let userInfo = TUIUserInfo()
+        let userId = getMixUserId(roomId: roomId)
+        userInfo.userId = userId
+        let preloadView = viewModel.getRemoteLiveViewByUserId(userId: userId)
+        manager.startPreloadVideoStream(roomId: roomId, isMuteAudio: isMuteAudio, view: preloadView) { [weak self] roomId in
+            onPlaying?(roomId)
+            guard let self = self else { return }
+            if !liveStreamContainerView.containsView(preloadView) {
+                liveStreamContainerView.addView(preloadView)
+            }
+        } onLoading: { roomId in
+            onLoading?(roomId)
+        } onError: { roomId, error, message in
+            onError?(roomId, error, message)
+        }
+    }
+    
+    private func stopPreload(roomId: String) {
+        let userInfo = TUIUserInfo()
+        userInfo.userId = getMixUserId(roomId: roomId)
+        removeCoGuestLiveView(userInfo: userInfo)
+        manager.stopPreloadVideoStream(roomId: roomId)
+    }
+    
+    private func getMixUserId(roomId: String) -> String {
+        return "livekit_" + String(TUILogin.getSdkAppID()) + "_feedback_" + roomId
     }
 }
 

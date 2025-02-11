@@ -98,5 +98,14 @@ extension CoHostView {
                 }
             }
             .store(in: &cancellableSet)
+        
+        manager.subscribeCoHostState(StateSelector(keyPath: \LSCoHostState.connectedUsers))
+            .receive(on: RunLoop.main)
+            .removeDuplicates()
+            .sink { [weak self] connectedUsers in
+                guard let self = self else { return }
+                self.isHidden = connectedUsers.isEmpty
+            }
+            .store(in: &cancellableSet)
     }
 }

@@ -12,7 +12,7 @@ import RTCCommon
 class LiveDataModel {
     let roomId: String
     let liveDuration:Int
-    let audienceCount:Int
+    var audienceCount:Int
     let messageCount:Int
     let giftIncome:Int
     let giftPeopleCount:Int
@@ -50,6 +50,10 @@ class AnchorEndView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    func updateAudienceCount(_ audienceCount: Int) {
+        liveDataModel.audienceCount = audienceCount
+        collectionView.reloadData()
+    }
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
@@ -67,6 +71,20 @@ class AnchorEndView: UIView {
         return button
     }()
 
+    private let cellID = "AnchorEndViewCellID"
+    private lazy var collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = 0
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.backgroundColor = .clear
+        collectionView.isScrollEnabled = false
+        collectionView.contentInsetAdjustmentBehavior = .never
+        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellID)
+        return collectionView
+    }()
     
     private lazy var contentBgView: UIView = {
         let content = UIView()
@@ -84,33 +102,27 @@ class AnchorEndView: UIView {
         return label
     }()
     
-    private lazy var liveDurationCell: UIView = {
-        let minutes = liveDataModel.liveDuration / 60
-        let remainingSeconds = liveDataModel.liveDuration % 60
-        let topStr = String(format: "%02d:%02d", minutes, remainingSeconds)
-        return createContentCell(topTitle: topStr, bottomTitle: .durationText)
-    }()
-    
-    private lazy var audienceCountCell: UIView = {
-        return createContentCell(topTitle: "\(liveDataModel.audienceCount)", bottomTitle: .audienceCountText)
-    }()
-    
-    private lazy var messageCountCell: UIView = {
-        return createContentCell(topTitle: "\(liveDataModel.messageCount)", bottomTitle: .messageCountText)
-    }()
-    
-    private lazy var giftIncomeCell: UIView = {
-        return createContentCell(topTitle: "\(liveDataModel.giftIncome)", bottomTitle: .giftIncomeText)
-    }()
-    
-    private lazy var giftPeopleCountCell: UIView = {
-        return createContentCell(topTitle: "\(liveDataModel.giftPeopleCount)", bottomTitle: .giftPeopleCountText)
-    }()
-    
-    private lazy var likeCountCell: UIView = {
-        return createContentCell(topTitle: "\(liveDataModel.likeCount)", bottomTitle: .likeCountText)
-    }()
-    
+    private func getTitleWithIndex(_ index: Int) -> (String, String) {
+        switch index {
+        case 0: // liveDurationCell
+            let minutes = liveDataModel.liveDuration / 60
+            let remainingSeconds = liveDataModel.liveDuration % 60
+            let topStr = String(format: "%02d:%02d", minutes, remainingSeconds)
+            return (topTitle: topStr, bottomTitle: .durationText)
+        case 1: // audienceCountCell
+            return (topTitle: "\(liveDataModel.audienceCount)", bottomTitle: .audienceCountText)
+        case 2: // messageCountCell
+            return (topTitle: "\(liveDataModel.messageCount)", bottomTitle: .messageCountText)
+        case 3: // giftIncomeCell
+            return (topTitle: "\(liveDataModel.giftIncome)", bottomTitle: .giftIncomeText)
+        case 4: // giftPeopleCountCell
+            return (topTitle: "\(liveDataModel.giftPeopleCount)", bottomTitle: .giftPeopleCountText)
+        case 5: // likeCountCell
+            return (topTitle: "\(liveDataModel.likeCount)", bottomTitle: .likeCountText)
+        default:
+            return ("", "")
+        }
+    }
 }
 
 // MARK: Layout
@@ -123,12 +135,7 @@ extension AnchorEndView {
         addSubview(closeButton)
         addSubview(contentBgView)
         contentBgView.addSubview(contentDescLabel)
-        contentBgView.addSubview(liveDurationCell)
-        contentBgView.addSubview(audienceCountCell)
-        contentBgView.addSubview(messageCountCell)
-        contentBgView.addSubview(giftIncomeCell)
-        contentBgView.addSubview(giftPeopleCountCell)
-        contentBgView.addSubview(likeCountCell)
+        contentBgView.addSubview(collectionView)
     }
 
     private func activateConstraints() {
@@ -157,46 +164,10 @@ extension AnchorEndView {
             make.top.equalToSuperview().inset(5.scale375Height())
         }
         
-        liveDurationCell.snp.makeConstraints { make in
-            make.height.equalTo(70.scale375Height())
-            make.width.equalToSuperview().multipliedBy(1.0/3.0)
-            make.leading.equalToSuperview()
+        collectionView.snp.makeConstraints { make in
+            make.height.equalTo((70*2).scale375Height())
+            make.leading.trailing.equalToSuperview()
             make.top.equalToSuperview().offset(20.scale375Height())
-        }
-        
-        audienceCountCell.snp.makeConstraints { make in
-            make.height.equalTo(70.scale375Height())
-            make.width.equalToSuperview().multipliedBy(1.0/3.0)
-            make.centerX.equalToSuperview()
-            make.top.equalToSuperview().offset(20.scale375Height())
-        }
-        
-        messageCountCell.snp.makeConstraints { make in
-            make.height.equalTo(70.scale375Height())
-            make.width.equalToSuperview().multipliedBy(1.0/3.0)
-            make.trailing.equalToSuperview()
-            make.top.equalToSuperview().offset(20.scale375Height())
-        }
-        
-        giftIncomeCell.snp.makeConstraints { make in
-            make.height.equalTo(70.scale375Height())
-            make.width.equalToSuperview().multipliedBy(1.0/3.0)
-            make.leading.equalToSuperview()
-            make.top.equalToSuperview().offset(90.scale375Height())
-        }
-        
-        giftPeopleCountCell.snp.makeConstraints { make in
-            make.height.equalTo(70.scale375Height())
-            make.width.equalToSuperview().multipliedBy(1.0/3.0)
-            make.centerX.equalToSuperview()
-            make.top.equalToSuperview().offset(90.scale375Height())
-        }
-        
-        likeCountCell.snp.makeConstraints { make in
-            make.height.equalTo(70.scale375Height())
-            make.width.equalToSuperview().multipliedBy(1.0/3.0)
-            make.trailing.equalToSuperview()
-            make.top.equalToSuperview().offset(90.scale375Height())
         }
     }
     
@@ -221,6 +192,30 @@ extension AnchorEndView {
         return stackView
     }
     
+}
+
+extension AnchorEndView: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 6
+    }
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath)
+        cell.contentView.subviews.forEach { $0.removeFromSuperview() }
+        cell.backgroundColor = .clear
+        cell.contentView.backgroundColor = .clear
+        
+        let titles = getTitleWithIndex(indexPath.item)
+        let view = createContentCell(topTitle: titles.0, bottomTitle: titles.1)
+        cell.contentView.addSubview(view)
+        view.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: collectionView.bounds.width / 3, height: 70.scale375Height())
+    }
 }
 
 // MARK: Action

@@ -40,11 +40,6 @@ class LiveStreamManager {
     
     init() {
         context = Context()
-        context.service.addRoomEngineObserver(context.roomEngineObserver)
-        context.service.addLiveConnectionManagerObserver(context.liveConnectionObserver)
-        context.service.addLiveBattleManagerObserver(context.liveBattleObserver)
-        context.service.addImObserver(context.imObserver)
-        context.service.addLiveLayoutManagerObserver(context.liveLayoutObserver)
     }
     
     func addObserver(_ observer: ConnectionObserver) {
@@ -53,6 +48,22 @@ class LiveStreamManager {
     
     func removerObserver(_ observer: ConnectionObserver) {
         context.observers.removeObserver(observer)
+    }
+    
+    func addEngineObserver() {
+        context.service.addRoomEngineObserver(context.roomEngineObserver)
+        context.service.addLiveConnectionManagerObserver(context.liveConnectionObserver)
+        context.service.addLiveBattleManagerObserver(context.liveBattleObserver)
+        context.service.addImObserver(context.imObserver)
+        context.service.addLiveLayoutManagerObserver(context.liveLayoutObserver)
+    }
+       
+    func removeEngineObserver() {
+        context.service.removeRoomEngineObserver(context.roomEngineObserver)
+        context.service.removeLiveConnectionManagerObserver(context.liveConnectionObserver)
+        context.service.removeLiveBattleManagerObserver(context.liveBattleObserver)
+        context.service.removeImObserver(context.imObserver)
+        context.service.removeLiveLayoutManagerObserver(context.liveLayoutObserver)
     }
     
     func addBattleObserver(_ observer: BattleObserver) {
@@ -83,11 +94,6 @@ class LiveStreamManager {
     
     deinit {
         debugPrint("deinit:\(self)")
-        context.service.removeRoomEngineObserver(context.roomEngineObserver)
-        context.service.removeLiveConnectionManagerObserver(context.liveConnectionObserver)
-        context.service.removeLiveBattleManagerObserver(context.liveBattleObserver)
-        context.service.removeImObserver(context.imObserver)
-        context.service.removeLiveLayoutManagerObserver(context.liveLayoutObserver)
     }
 }
 
@@ -103,6 +109,7 @@ extension LiveStreamManager {
     
     func startLive(roomInfo: TUIRoomInfo, onSuccess: @escaping TUIRoomInfoBlock, onError: @escaping TUIErrorBlock) {
         LCDataReporter.reportEventData(event: .methodCallLiveStreamCreateRoom)
+        addEngineObserver()
         Task {
             do {
                 let roomInfo = try await context.roomManager.startLive(roomInfo: roomInfo)
@@ -117,6 +124,7 @@ extension LiveStreamManager {
     
     func stopLive(onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
         LCDataReporter.reportEventData(event: .methodCallLiveStreamDestroyRoom)
+        removeEngineObserver()
         Task {
             do {
                 try await context.roomManager.stopLive()
@@ -129,6 +137,7 @@ extension LiveStreamManager {
     
     func joinLive(roomId: String, onSuccess: @escaping TUIRoomInfoBlock, onError: @escaping TUIErrorBlock) {
         LCDataReporter.reportEventData(event: .methodCallLiveStreamJoinRoom)
+        addEngineObserver()
         Task {
             do {
                 let roomInfo = try await context.roomManager.joinLive(roomId: roomId)
@@ -143,6 +152,7 @@ extension LiveStreamManager {
     
     func leaveLive(onSuccess: @escaping TUISuccessBlock, onError: @escaping TUIErrorBlock) {
         LCDataReporter.reportEventData(event: .methodCallLiveStreamLeaveRoom)
+        removeEngineObserver()
         Task {
             do {
                 try await context.roomManager.leaveLive()
@@ -425,14 +435,16 @@ extension LiveStreamManager {
         context.mediaManager.setRemoteVideoView(userId: userId, streamType: streamType, videoView: view)
     }
     
-    func startPlayRemoteVideo(userId: String, streamType: TUIVideoStreamType) {
-        Task {
-            let _ = try await context.mediaManager.startPlayRemoteVideo(userId: userId, streamType: streamType)
-        }
+    func startPreloadVideoStream(roomId: String, isMuteAudio: Bool, view: UIView,
+                                 onPlaying: @escaping TUIPlayOnPlayingBlock,
+                                 onLoading: @escaping TUIPlayOnLoadingBlock,
+                                 onError: @escaping TUIPlayOnErrorBlock) {
+        context.mediaManager.startPreloadVideoStream(roomId: roomId, isMuteAudio: isMuteAudio, view: view,
+                                                     onPlaying: onPlaying, onLoading: onLoading, onError: onError)
     }
     
-    func stopPlayRemoteVideo(userId: String, streamType: TUIVideoStreamType) {
-        context.mediaManager.stopPlayRemoteVideo(userId: userId, streamType: streamType)
+    func stopPreloadVideoStream(roomId: String) {
+        context.mediaManager.stopPreloadVideoStream(roomId: roomId)
     }
 }
 

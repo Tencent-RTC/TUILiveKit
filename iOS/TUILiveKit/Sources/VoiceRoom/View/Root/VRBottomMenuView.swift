@@ -330,12 +330,14 @@ extension VRBottomMenuView {
                     } onRejected: { [weak self] userInfo in
                         guard let self = self else { return }
                         self.handleApplicationState(isApplying: false)
+                        self.manager.toastSubject.send(.takeSeatApplicationRejected)
                     } onCancelled: { [weak self] userInfo in
                         guard let self = self else { return }
                         self.handleApplicationState(isApplying: false)
                     } onTimeout: { [weak self] userInfo in
                         guard let self = self else { return }
                         self.handleApplicationState(isApplying: false)
+                        self.manager.toastSubject.send(.takeSeatApplicationTimeout)
                     } onError: { [weak self] userInfo, code, message in
                         guard let self = self else { return }
                         self.handleApplicationState(isApplying: false)
@@ -385,4 +387,6 @@ private extension String {
     static let musicText = localized("live.category.music")
     static let audioEffectsText = localized("live.anchor.setting.audio.effects")
     static let repeatRequest = localized("live.error.repeat.requestId")
+    static let takeSeatApplicationRejected = localized("live.seat.takeSeatApplicationRejected")
+    static let takeSeatApplicationTimeout = localized("live.seat.takeSeatApplicationTimeout")
 }

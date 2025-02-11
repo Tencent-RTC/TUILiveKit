@@ -261,16 +261,16 @@ extension LSLiveInfoEditView: UITextFieldDelegate {
     func textField(_ textField: UITextField,
                    shouldChangeCharactersIn range: NSRange,
                    replacementString string: String) -> Bool {
-        let maxCount = 30
+        let maxCount = 100
         guard let textFieldText = textField.text,
               let rangeOfTextToReplace = Range(range, in: textFieldText) else {
             return false
         }
         let substringToReplace = textFieldText[rangeOfTextToReplace]
-        if substringToReplace.count > 0 && string.count == 0 {
+        if substringToReplace.utf8.count > 0 && string.utf8.count == 0 {
             return true
         }
-        let count = textFieldText.count - substringToReplace.count + string.count
+        let count = textFieldText.utf8.count - substringToReplace.utf8.count + string.utf8.count
 
         let res = count <= maxCount
         return res

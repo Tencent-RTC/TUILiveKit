@@ -22,11 +22,16 @@ class AudienceListService {
         }
     }
     
-    private func getUserList() {
+    func getUserList() {
         TUIRoomEngine.sharedInstance().getUserList(nextSequence: 0) { [weak self] userInfoList, cursor in
             guard let self = self else { return }
             if !userInfoList.isEmpty {
-                self.state.audienceList = userInfoList.filter{ $0.userId != self.state.ownerId }
+                var list = userInfoList.prefix(kMaxShowUserCount + 1)
+                list = list.filter{ $0.userId != self.state.ownerId }
+                if list.count > kMaxShowUserCount {
+                    list.removeLast()
+                }
+                self.state.audienceList = Array(list)
             }
         } onError: { code, message in
             

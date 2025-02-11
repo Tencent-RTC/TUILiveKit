@@ -17,20 +17,9 @@ class VRSeatControlCell: UITableViewCell {
         let label = UILabel(frame: .zero)
         label.font = UIFont.customFont(ofSize: 16)
         label.textColor = .grayColor
-        label.adjustsFontSizeToFitWidth = true
+        label.adjustsFontSizeToFitWidth = false
+        label.minimumScaleFactor = 1
         return label
-    }()
-    
-    let levelButton: UIButton = {
-        let button = UIButton()
-        button.layer.cornerRadius = 7.scale375Height()
-        button.titleLabel?.textColor = .flowKitWhite
-        button.isEnabled = false
-        let spacing: CGFloat = 2.scale375()
-        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -spacing / 2, bottom: 0, right: spacing / 2)
-        button.titleEdgeInsets = UIEdgeInsets(top: 0, left: spacing / 2, bottom: 0, right: -spacing / 2)
-        button.titleLabel?.font = UIFont(name: "PingFangSC-Regular", size: 12)
-        return button
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -62,7 +51,6 @@ class VRSeatControlCell: UITableViewCell {
     func constructViewHierarchy() {
         contentView.addSubview(avatarImageView)
         contentView.addSubview(userNameLabel)
-        contentView.addSubview(levelButton)
     }
     
     func activateConstraints() {
@@ -76,13 +64,6 @@ class VRSeatControlCell: UITableViewCell {
             make.centerY.equalToSuperview()
             make.leading.equalTo(avatarImageView.snp.trailing).offset(12.scale375())
             make.width.lessThanOrEqualTo(120.scale375())
-        }
-        
-        levelButton.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.leading.equalTo(userNameLabel.snp.trailing).offset(4.scale375())
-            make.width.equalTo(35.scale375())
-            make.height.equalTo(14.scale375Height())
         }
     }
     
@@ -159,7 +140,6 @@ class VRTheSeatCell: VRSeatControlCell {
         avatarImageView.kf.setImage(with: URL(string: seatInfo.avatarUrl), placeholder: UIImage.avatarPlaceholderImage)
         userNameLabel.text = seatInfo.userName
         seatIndexLabel.text = "\(seatInfo.index + 1)"
-        levelButton.setLevel()
     }
     
     @objc
@@ -218,14 +198,6 @@ class VRApplyTakeSeatCell: VRSeatControlCell {
         userNameLabel.snp.remakeConstraints { make in
             make.centerY.equalToSuperview()
             make.leading.equalTo(avatarImageView.snp.trailing).offset(12.scale375())
-            make.trailing.equalTo(levelButton.snp.leading).offset(-4.scale375())
-        }
-        
-        levelButton.snp.remakeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.leading.equalTo(userNameLabel.snp.trailing).offset(4.scale375())
-            make.width.equalTo(35.scale375())
-            make.height.equalTo(14.scale375Height())
             make.trailing.equalTo(approveButton.snp.leading).offset(-4.scale375())
         }
         
@@ -252,7 +224,6 @@ class VRApplyTakeSeatCell: VRSeatControlCell {
         self.seatApplication = seatApplication
         avatarImageView.kf.setImage(with: URL(string: seatApplication.avatarUrl), placeholder: UIImage.avatarPlaceholderImage)
         userNameLabel.text = seatApplication.userName
-        levelButton.setLevel()
     }
     
     @objc
@@ -275,6 +246,8 @@ class VRInviteTakeSeatCell: VRSeatControlCell {
     var inviteEventClosure: ((VRUser) -> Void)?
     var cancelEventClosure: ((VRUser) -> Void)?
     var user: VRUser?
+    var lastClickTime: Date?
+    let clickInterval = 0.5
     
     let inviteButton: UIButton = {
         let button = UIButton()
@@ -319,7 +292,6 @@ class VRInviteTakeSeatCell: VRSeatControlCell {
         self.user = user
         avatarImageView.kf.setImage(with: URL(string: user.avatarUrl), placeholder: UIImage.avatarPlaceholderImage)
         userNameLabel.text = user.name
-        levelButton.setLevel()
     }
     
     func updateButtonView(isSelected: Bool) {
@@ -331,6 +303,8 @@ class VRInviteTakeSeatCell: VRSeatControlCell {
     
     @objc
     private func inviteButtonClick(sender: UIButton) {
+        guard isClickable() else  { return }
+        
         if sender.isSelected {
             if let cancelEventClosure = cancelEventClosure, let user = user {
                 updateButtonView(isSelected: false)
@@ -342,6 +316,15 @@ class VRInviteTakeSeatCell: VRSeatControlCell {
                 inviteEventClosure(user)
             }
         }
+    }
+    
+    private func isClickable() -> Bool {
+        let now = Date()
+        if let lastClick = lastClickTime, now.timeIntervalSince(lastClick) < clickInterval {
+            return false
+        }
+        lastClickTime = now
+        return true
     }
 }
 

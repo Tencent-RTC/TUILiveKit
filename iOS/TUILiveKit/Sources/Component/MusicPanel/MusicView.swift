@@ -60,6 +60,9 @@ class MusicView: UIView {
     }
     
     deinit {
+        if let currentPlayMusic = self.store.selectCurrent(MusicPanelSelectors.getCurrentPlayMusic) {
+            self.store.dispatch(action: MusicPanelActions.stopPlayMusic(payload: currentPlayMusic))
+        }
         debugPrint("deinit \(type(of: self))")
     }
     

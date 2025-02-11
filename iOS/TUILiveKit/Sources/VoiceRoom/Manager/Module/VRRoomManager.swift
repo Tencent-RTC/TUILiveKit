@@ -296,6 +296,9 @@ extension VRRoomManager {
     func onRoomUserCountChanged(roomId: String, userCount: Int) {
         update(roomState: { state in
             state.userCount = userCount > 0 ? userCount - 1 : userCount
+            if userCount > state.liveExtraInfo.maxAudienceCount {
+                state.liveExtraInfo.maxAudienceCount = userCount - 1
+            }
         })
     }
     

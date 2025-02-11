@@ -1,0 +1,1055 @@
+{
+    "displayName":"贴纸",
+    "displayNameEn":"Motion",
+    "uiState":0,
+    "downloadPath":"MotionRes/",
+    "propertyList":[
+        {
+            "displayName":"2D贴纸",
+            "displayNameEn":"2D",
+            "downloadPath":"MotionRes/",
+            "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_keaituya.png",
+            "propertyList":[
+                {
+                    "displayName":"无",
+                    "displayNameEn":"None",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/beauty/none.png"
+                },
+                {
+                    "displayName":"可爱涂鸦",
+                    "displayNameEn":"Cute graffiti",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_keaituya.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/video_keaituya.zip"
+                },
+                {
+                    "displayName":"兔兔酱",
+                    "displayNameEn":"Bunny 1",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_tutujiang.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_tutujiang.zip"
+                },
+                {
+                    "displayName":"贵妃脸",
+                    "displayNameEn":"Round",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_guifeiface.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_guifeiface.zip"
+                },
+                {
+                    "displayName":"上学前后",
+                    "displayNameEn":"School",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_kaixueqianhou.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_kaixueqianhou.zip"
+                },
+                {
+                    "displayName":"萌萌熊",
+                    "displayNameEn":"Bear ears",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_mengmengxiong.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_mengmengxiong.zip"
+                },
+                {
+                    "displayName":"醉酒微醺",
+                    "displayNameEn":"Buzzed",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_zuijiuweixun.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_zuijiuweixun.zip"
+                },
+                {
+                    "displayName":"复古DV",
+                    "displayNameEn":"Retro DV",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_fugu_dv.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_fugu_dv.zip"
+                },
+                {
+                    "displayName":"毛毡发箍",
+                    "displayNameEn":"Band 1",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_nightgown.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_nightgown.zip"
+                },
+                {
+                    "displayName":"冰晶爱心",
+                    "displayNameEn":"Hearts 1",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_bingjingaixin.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_bingjingaixin.zip"
+                },
+                {
+                    "displayName":"日系少女",
+                    "displayNameEn":"Japanese",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_rixishaonv.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_rixishaonv.zip"
+                },
+                {
+                    "displayName":"C位出道",
+                    "displayNameEn":"Debut",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_chudao.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_chudao.zip"
+                },
+                {
+                    "displayName":"氛围切换",
+                    "displayNameEn":"Ambience",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_fenweiqiehuan.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_fenweiqiehuan.zip"
+                },
+                {
+                    "displayName":"上头了",
+                    "displayNameEn":"Fever",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_shangtoule.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_shangtoule.zip"
+                },
+                {
+                    "displayName":"可爱喵",
+                    "displayNameEn":"Kitty",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_heimaomi.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_heimaomi.zip"
+                },
+                {
+                    "displayName":"闪动爱心",
+                    "displayNameEn":"Hearts 4",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_boys.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_boys.zip"
+                },
+                {
+                    "displayName":"立体花朵",
+                    "displayNameEn":"Flowers",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_litihuaduo.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_litihuaduo.zip"
+                },
+                {
+                    "displayName":"包子脸",
+                    "displayNameEn":"Cute baozi",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_baozilian.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_baozilian.zip"
+                },
+                {
+                    "displayName":"恋恋草莓",
+                    "displayNameEn":"Strawberry",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_lianliancaomei.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_lianliancaomei.zip"
+                },
+                {
+                    "displayName":"元气贴纸",
+                    "displayNameEn":"Vigorous",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_xuanmeizhuang.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_xuanmeizhuang.zip"
+                },
+                {
+                    "displayName":"氛围康乃馨",
+                    "displayNameEn":"Carnations",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_kangnaixin.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_kangnaixin.zip"
+                },
+                {
+                    "displayName":"爱心烟花",
+                    "displayNameEn":"Fireworks",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_aixinyanhua.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_aixinyanhua.zip"
+                },
+                {
+                    "displayName":"童趣鸭鸭帽",
+                    "displayNameEn":"Duck cap",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_xiaohuangmao.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_xiaohuangmao.zip"
+                },
+                {
+                    "displayName":"小红星",
+                    "displayNameEn":"Little red",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_xiaohongxing.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_xiaohongxing.zip"
+                },
+                {
+                    "displayName":"小樱桃",
+                    "displayNameEn":"Cherry",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_cherries.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_cherries.zip"
+                },
+                {
+                    "displayName":"爱意满满",
+                    "displayNameEn":"Hearts 2",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_aiyimanman.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_aiyimanman.zip"
+                },
+                {
+                    "displayName":"炫彩霓虹",
+                    "displayNameEn":"Neon",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_xuancainihong.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_xuancainihong.zip"
+                },
+                {
+                    "displayName":"刘海发带",
+                    "displayNameEn":"Band 2",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_liuhaifadai.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_liuhaifadai.zip"
+                },
+                {
+                    "displayName":"甜心萌牛",
+                    "displayNameEn":"Cow horns",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_tianxinmengniiu.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_tianxinmengniiu.zip"
+                },
+                {
+                    "displayName":"卡哇伊小熊",
+                    "displayNameEn":"Cute bear",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_kawayixiaoxiong.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_kawayixiaoxiong.zip"
+                },
+                {
+                    "displayName":"双麻花",
+                    "displayNameEn":"Braids",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_shuangmahua.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_shuangmahua.zip"
+                },
+                {
+                    "displayName":"性感小丑",
+                    "displayNameEn":"Clown",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_xingganxiaochou.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_xingganxiaochou.zip"
+                },
+                {
+                    "displayName":"奶瓶面膜",
+                    "displayNameEn":"Mask",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_naipingmianmo.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_naipingmianmo.zip"
+                },
+                {
+                    "displayName":"气球派对",
+                    "displayNameEn":"Party",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_qiqiupaidui.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_qiqiupaidui.zip"
+                },
+                {
+                    "displayName":"表白",
+                    "displayNameEn":"Confession",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_biaobai.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_biaobai.zip"
+                },
+                {
+                    "displayName":"摇摇乐",
+                    "displayNameEn":"Shake",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_yaogunyue.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_yaogunyue.zip"
+                },
+                {
+                    "displayName":"像素宇宙",
+                    "displayNameEn":"Pixelated",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_xiangsuyuzhou.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_xiangsuyuzhou.zip"
+                },
+                {
+                    "displayName":"气泡水",
+                    "displayNameEn":"Soda pop",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_qipaoshui.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_qipaoshui.zip"
+                },
+                {
+                    "displayName":"波点女孩",
+                    "displayNameEn":"Band 3",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_otwogirl.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_otwogirl.zip"
+                },
+                {
+                    "displayName":"冬日恋歌",
+                    "displayNameEn":"Hearts 3",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_dongriliange.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_dongriliange.zip"
+                },
+                {
+                    "displayName":"恶搞双丸子",
+                    "displayNameEn":"Ugly bows",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_egaoshuangwanzi.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_egaoshuangwanzi.zip"
+                },
+                {
+                    "displayName":"动感墨镜",
+                    "displayNameEn":"Sunglasses",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_boom.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_boom.zip"
+                },
+                {
+                    "displayName":"小红花",
+                    "displayNameEn":"Red flowers",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_xiaohonghua.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_xiaohonghua.zip"
+                },
+                {
+                    "displayName":"日系雀斑妆",
+                    "displayNameEn":"Freckles",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_quebanzhuang.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_quebanzhuang.zip"
+                },
+                {
+                    "displayName":"冷冽冰瞳",
+                    "displayNameEn":"Cold eyes",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_lengliebingmo.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_lengliebingmo.zip"
+                },
+                {
+                    "displayName":"西瓜妆容",
+                    "displayNameEn":"Watermelon",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_w_watermelonmakeup.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_diejia_w_watermelonmakeup.zip"
+                },
+                {
+                    "displayName":"兔子发夹",
+                    "displayNameEn":"Bunny 2",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_tuzifajia.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_diejia_tuzifajia.zip"
+                },
+                {
+                    "displayName":"恐龙世界",
+                    "displayNameEn":"Dinosaur",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_w_dinosaurworld.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_diejia_w_dinosaurworld.zip"
+                },
+                {
+                    "displayName":"小狗面具",
+                    "displayNameEn":"Puppy",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_dogmask.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_diejia_dogmask.zip"
+                },
+                {
+                    "displayName":"钻石",
+                    "displayNameEn":"Diamond",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_dimonds.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_diejia_dimonds.zip"
+                },
+                {
+                    "displayName":"光影",
+                    "displayNameEn":"Future",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_guangying.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_guangying.zip"
+                },
+                {
+                    "displayName":"光斑",
+                    "displayNameEn":"Pink lights",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_guangban.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_guangban.zip"
+                },
+                {
+                    "displayName":"微光",
+                    "displayNameEn":"Shimmer",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_weiguang.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_weiguang.zip"
+                },
+                {
+                    "displayName":"流星闪",
+                    "displayNameEn":"Meteor flash",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_liuxingshan.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_liuxingshan.zip"
+                },
+                {
+                    "displayName":"流动效果",
+                    "displayNameEn":"Sparkle",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_liudongxg.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_liudongxg.zip"
+                },
+                {
+                    "displayName":"橘子猫",
+                    "displayNameEn":"Orange cat",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_orangecat.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_diejia_orangecat.zip"
+                },
+                {
+                    "displayName":"镜面",
+                    "displayNameEn":"Mirror",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_3geblur.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_3geblur.zip"
+                },
+                {
+                    "displayName":"欢度六一",
+                    "displayNameEn":"Happy Children\u0027sDay",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_61hair.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_61hair.zip"
+                },
+                {
+                    "displayName":"曝光相机",
+                    "displayNameEn":"Exposure camera",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_baoguangxiangji.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_baoguangxiangji.zip"
+                },
+                {
+                    "displayName":"变小孩",
+                    "displayNameEn":"Become a child",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_bianxiaohai1.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_bianxiaohai1.zip"
+                },
+                {
+                    "displayName":"大头特效",
+                    "displayNameEn":"Big head",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_bigHead.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_bigHead.zip"
+                },
+                {
+                    "displayName":"不会再快乐",
+                    "displayNameEn":"No happy",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_buhuizaikuaile.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_buhuizaikuaile.zip"
+                },
+                {
+                    "displayName":"雏菊",
+                    "displayNameEn":"Daisy",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_chuju.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_chuju.zip"
+                },
+                {
+                    "displayName":"恶魔特效",
+                    "displayNameEn":"Demon",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_demonshadow.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_demonshadow.zip"
+                },
+                {
+                    "displayName":"可爱小熊",
+                    "displayNameEn":"Cute bear2",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_cutebear.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_diejia_cutebear.zip"
+                },
+                {
+                    "displayName":"草莓熊",
+                    "displayNameEn":"Strawberry Bear",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_diamondxiaoxiong.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_diejia_diamondxiaoxiong.zip"
+                },
+                {
+                    "displayName":"雪花面膜",
+                    "displayNameEn":"Dimondsmask",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_dimondsmask.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_diejia_dimondsmask.zip"
+                },
+                {
+                    "displayName":"橘色猫咪",
+                    "displayNameEn":"Orange cat",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_orangecat.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_diejia_orangecat.zip"
+                },
+                {
+                    "displayName":"星光亮发",
+                    "displayNameEn":"Starry hair",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_oumeizhuang.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_diejia_oumeizhuang.zip"
+                },
+                {
+                    "displayName":"圣诞雪松",
+                    "displayNameEn":"Christmas cedar",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_shengdan_xuesong.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_diejia_shengdan_xuesong.zip"
+                },
+                {
+                    "displayName":"双马尾",
+                    "displayNameEn":"Double tail",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_shuangmawei.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_diejia_shuangmawei.zip"
+                },
+                {
+                    "displayName":"回到童年",
+                    "displayNameEn":"Childhood",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_StyleChild_twopag.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_diejia_StyleChild_twopag.zip"
+                },
+                {
+                    "displayName":"动感胶片",
+                    "displayNameEn":"Dynamic film",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_te_dongganjiaopian.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_diejia_te_dongganjiaopian.zip"
+                },
+                {
+                    "displayName":"复古相机",
+                    "displayNameEn":"Retro camera",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_te_fuguluxiangdai.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_diejia_te_fuguluxiangdai.zip"
+                },
+                {
+                    "displayName":"复古油画",
+                    "displayNameEn":"Vintage oil painting",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_te_fuguyouhua.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_diejia_te_fuguyouhua.zip"
+                },
+                {
+                    "displayName":"渐变染发",
+                    "displayNameEn":"Ombre hair dye",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_te_jianbianranfa.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_diejia_te_jianbianranfa.zip"
+                },
+                {
+                    "displayName":"漏光剪影",
+                    "displayNameEn":"Light leak silhouette",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_te_louguanglvjing.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_diejia_te_louguanglvjing.zip"
+                },
+                {
+                    "displayName":"爱心小熊",
+                    "displayNameEn":"Care Bears",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_tiezhixxiong.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_diejia_tiezhixxiong.zip"
+                },
+                {
+                    "displayName":"蝴蝶结",
+                    "displayNameEn":"Bow tie",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_w_lovemakeup.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_diejia_w_lovemakeup.zip"
+                },
+                {
+                    "displayName":"小丑面膜",
+                    "displayNameEn":"Clown mask",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_wsj_keaiguimianmo.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_diejia_wsj_keaiguimianmo.zip"
+                },
+                {
+                    "displayName":"保持可爱",
+                    "displayNameEn":"Stay cute",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_yuandan_banxieshi.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_diejia_yuandan_banxieshi.zip"
+                },
+                {
+                    "displayName":"发光猫",
+                    "displayNameEn":"Glow cat",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_GlowCat.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_GlowCat.zip"
+                },
+                {
+                    "displayName":"光斑",
+                    "displayNameEn":"Lightspot",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_guangban.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_guangban.zip"
+                },
+                {
+                    "displayName":"星光坠落",
+                    "displayNameEn":"Starlight falls",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_haircolor_dong.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_haircolor_dong.zip"
+                },
+                {
+                    "displayName":"欢度国庆",
+                    "displayNameEn":"Celebrate National Day",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_huanduguoqing.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_huanduguoqing.zip"
+                },
+                {
+                    "displayName":"流动星光",
+                    "displayNameEn":"Flowing starlight",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_liudongxg.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_liudongxg.zip"
+                },
+                {
+                    "displayName":"流星闪",
+                    "displayNameEn":"Meteor flash",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_liuxingshan.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_liuxingshan.zip"
+                },
+                {
+                    "displayName":"爱情泡泡",
+                    "displayNameEn":"Love bubble",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_lovebubble.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_lovebubble.zip"
+                },
+                {
+                    "displayName":"梦幻KTV",
+                    "displayNameEn":"Fantasy KTV",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_menghuanktv.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_menghuanktv.zip"
+                },
+                {
+                    "displayName":"黄色怪兽",
+                    "displayNameEn":"Yellow monster",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_mv_guaishouyellow.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_mv_guaishouyellow.zip"
+                },
+                {
+                    "displayName":"变有钱",
+                    "displayNameEn":"Rich",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_mv_rich.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_mv_rich.zip"
+                },
+                {
+                    "displayName":"夜精灵",
+                    "displayNameEn":"Nightelf",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_nightelf.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_nightelf.zip"
+                },
+                {
+                    "displayName":"折纸爱心",
+                    "displayNameEn":"Origami heart",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_qixi_zhezhiaixin.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_qixi_zhezhiaixin.zip"
+                },
+                {
+                    "displayName":"七夕啵啵",
+                    "displayNameEn":"Kisskiss",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_qixibobo.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_qixibobo.zip"
+                },
+                {
+                    "displayName":"三格涂鸦",
+                    "displayNameEn":"Graffiti",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_sangetuya.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_sangetuya.zip"
+                },
+                {
+                    "displayName":"眩晕",
+                    "displayNameEn":"Dizziness",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_shaonvdizzy.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_shaonvdizzy.zip"
+                },
+                {
+                    "displayName":"搞笑脸",
+                    "displayNameEn":"Funny face",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_shejiao_qinmidu.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_shejiao_qinmidu.zip"
+                },
+                {
+                    "displayName":"乖萌脸",
+                    "displayNameEn":"Cute face",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_shejiao_toutouxuexi.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_shejiao_toutouxuexi.zip"
+                },
+                {
+                    "displayName":"闪亮女孩",
+                    "displayNameEn":"Shiny girl",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_shinegirl.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_shinegirl.zip"
+                },
+                {
+                    "displayName":"丑萌小猪",
+                    "displayNameEn":"Ugly little pig",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_shinepig.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_shinepig.zip"
+                },
+                {
+                    "displayName":"闪亮珍珠夹",
+                    "displayNameEn":"Shiny pearl clip",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_shinypearlclip_new.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_shinypearlclip_new.zip"
+                },
+                {
+                    "displayName":"紫色猫咪",
+                    "displayNameEn":"Purple cat",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_sparkears.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_sparkears.zip"
+                },
+                {
+                    "displayName":"闪光猫咪",
+                    "displayNameEn":"Glitter cat",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_starear.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_starear.zip"
+                },
+                {
+                    "displayName":"日落",
+                    "displayNameEn":"Sunset2",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_sunlight.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_sunlight.zip"
+                },
+                {
+                    "displayName":"2023",
+                    "displayNameEn":"2023",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_te_2023chuangyizhuang.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_te_2023chuangyizhuang.zip"
+                },
+                {
+                    "displayName":"爱心装饰",
+                    "displayNameEn":"Love decoration",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_te_aixinzhuangshi.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_te_aixinzhuangshi.zip"
+                },
+                {
+                    "displayName":"唇印",
+                    "displayNameEn":"Lip print",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_te_chunyin.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_te_chunyin.zip"
+                },
+                {
+                    "displayName":"大眼大鼻",
+                    "displayNameEn":"Big eyes and big nose",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_te_dayandabi.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_te_dayandabi.zip"
+                },
+                {
+                    "displayName":"喜气洋洋",
+                    "displayNameEn":"Beaming",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_te_denglongzhuang.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_te_denglongzhuang.zip"
+                },
+                {
+                    "displayName":"反向双屏",
+                    "displayNameEn":"Reverse dual screen",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_te_fanxiangshuangping.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_te_fanxiangshuangping.zip"
+                },
+                {
+                    "displayName":"黑色相框",
+                    "displayNameEn":"Back photo frame",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_te_heisexiangkuang.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_te_heisexiangkuang.zip"
+                },
+                {
+                    "displayName":"怀旧相机",
+                    "displayNameEn":"Camera",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_te_huaijiuxiangji.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_te_huaijiuxiangji.zip"
+                },
+                {
+                    "displayName":"胡渣型男",
+                    "displayNameEn":"Beardedman",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_te_huzhaxingnan.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_te_huzhaxingnan.zip"
+                },
+                {
+                    "displayName":"蓝色滤镜",
+                    "displayNameEn":"Blue filter",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_te_landiaolvjing.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_te_landiaolvjing.zip"
+                },
+                {
+                    "displayName":"生气",
+                    "displayNameEn":"Angry",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_te_shengqi.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_te_shengqi.zip"
+                },
+                {
+                    "displayName":"幸运面膜",
+                    "displayNameEn":"Lucky mask",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_te_tianweimianmo.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_te_tianweimianmo.zip"
+                },
+                {
+                    "displayName":"歪嘴大小眼",
+                    "displayNameEn":"Crooked mouth",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_te_waizuidaxiaoyan.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_te_waizuidaxiaoyan.zip"
+                },
+                {
+                    "displayName":"星月神话",
+                    "displayNameEn":"Star moon",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_te_xingyueshenhua.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_te_xingyueshenhua.zip"
+                },
+                {
+                    "displayName":"一道光",
+                    "displayNameEn":"One light",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_te_yidaoguang.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_te_yidaoguang.zip"
+                },
+                {
+                    "displayName":"温暖天气",
+                    "displayNameEn":"Warm weather",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_tianqiwm.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_tianqiwm.zip"
+                },
+                {
+                    "displayName":"闪光兔兔",
+                    "displayNameEn":"Glitter bunny",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_twinklerabbit.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_twinklerabbit.zip"
+                },
+                {
+                    "displayName":"VCR",
+                    "displayNameEn":"VCR",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_vcr.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_vcr.zip"
+                },
+                {
+                    "displayName":"愉悦心情",
+                    "displayNameEn":"Happy mood",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_w_beautifulallday.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_w_beautifulallday.zip"
+                },
+                {
+                    "displayName":"时间打卡",
+                    "displayNameEn":"Timec lock",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_watermark_date_20220222.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_watermark_date_20220222.zip"
+                },
+                {
+                    "displayName":"文艺复古",
+                    "displayNameEn":"Literary retro",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_wenyifugulut.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_wenyifugulut.zip"
+                },
+                {
+                    "displayName":"甜心万圣节",
+                    "displayNameEn":"Sweetheart Halloween",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_wsj_w_sweethearthalloweeen.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_wsj_w_sweethearthalloweeen.zip"
+                },
+                {
+                    "displayName":"九宫格",
+                    "displayNameEn":"Yelang2",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_yelang2.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_yelang2.zip"
+                },
+                {
+                    "displayName":"中秋玉兔",
+                    "displayNameEn":"Mid-Autumn Rabbit",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_zhongqiuyutu.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_zhongqiuyutu.zip"
+                },
+                {
+                    "displayName":"南方金土豆",
+                    "displayNameEn":"Handsome potato",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_icon_shucaitiezhi.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_shucaitiezhi.zip"
+                },
+                {
+                    "displayName":"校园男神",
+                    "displayNameEn":"Handsome guy",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_icon_xiaoyuannanshen.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_xiaoyuannanshen.zip"
+                },
+                {
+                    "displayName":"炫酷闪电",
+                    "displayNameEn":"Cool lightning",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_icon_shandian.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_shandian.zip"
+                }
+            ]
+        },
+        {
+            "displayName":"3D贴纸",
+            "displayNameEn":"3D",
+            "downloadPath":"MotionRes/",
+            "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_zhixingmeigui.png",
+            "propertyList":[
+                {
+                    "displayName":"无",
+                    "displayNameEn":"None",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/beauty/none.png"
+                },
+                {
+                    "displayName":"知性玫瑰",
+                    "displayNameEn":"Glasses 1",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_zhixingmeigui.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/video_zhixingmeigui.zip"
+                },
+                {
+                    "displayName":"飞天猪猪",
+                    "displayNameEn":"Piggies",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_feitianzhuzhu.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_feitianzhuzhu.zip"
+                },
+                {
+                    "displayName":"国潮千玺",
+                    "displayNameEn":"Glasses 3",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_guochaoqianxi.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_guochaoqianxi.zip"
+                },
+                {
+                    "displayName":"锦鲤",
+                    "displayNameEn":"Luck",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_jinli.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_jinli.zip"
+                },
+                {
+                    "displayName":"马卡龙头套",
+                    "displayNameEn":"Helmet",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_makalongtoutao.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/4.0.0-fixed-motion/video_diejia_makalongtoutao.zip"
+                },
+                {
+                    "displayName":"熊爪",
+                    "displayNameEn":"Paws",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_xiongzhua.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/4.0.0-fixed-motion/video_diejia_xiongzhua.zip"
+                },
+                {
+                    "displayName":"童话脸",
+                    "displayNameEn":"Disney",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_tonghualian_twopag.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_diejia_tonghualian_twopag.zip"
+                },
+                {
+                    "displayName":"蝴蝶",
+                    "displayNameEn":"Butterfly 1",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_w_insbutterfly.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_diejia_w_insbutterfly.zip"
+                },
+                {
+                    "displayName":"弹弹发箍",
+                    "displayNameEn":"Band 4",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_tantanfagu.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_tantanfagu.zip"
+                },
+                {
+                    "displayName":"猫系女孩",
+                    "displayNameEn":"Black cat",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_maoxinvhai.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_maoxinvhai.zip"
+                },
+                {
+                    "displayName":"蝴蝶飞",
+                    "displayNameEn":"Butterfly 2",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_butterfly.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_diejia_butterfly.zip"
+                },
+                {
+                    "displayName":"抖抖鸭",
+                    "displayNameEn":"Duckies",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_yazi.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_yazi.zip"
+                },
+                {
+                    "displayName":"童话故事",
+                    "displayNameEn":"Fairy tale",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_tonghuagushi.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_tonghuagushi.zip"
+                },
+                {
+                    "displayName":"带走",
+                    "displayNameEn":"Octopus",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_w_takeitaway.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_w_takeitaway.zip"
+                },
+                {
+                    "displayName":"蘑菇头",
+                    "displayNameEn":"Mushroom",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_te_mogutou1.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_diejia_te_mogutou1.zip"
+                },
+                {
+                    "displayName":"小羊头套",
+                    "displayNameEn":"Lamb",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_xiaoyangtoutao.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/4.0.0-fixed-motion/video_diejia_xiaoyangtoutao.zip"
+                },
+                {
+                    "displayName":"童年泡泡糖",
+                    "displayNameEn":"Childish",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_bubblegum.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/video_bubblegum.zip"
+                },
+                {
+                    "displayName":"国漫画",
+                    "displayNameEn":"Chineseanime",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_guoman_hua.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_guoman_hua.zip"
+                },
+                {
+                    "displayName":"彩色泡泡",
+                    "displayNameEn":"Colorful bubbles",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_pigchuipaopao.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_diejia_pigchuipaopao.zip"
+                },
+                {
+                    "displayName":"彩色气球",
+                    "displayNameEn":"Colorful balloons",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_ballons.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_ballons.zip"
+                },
+                {
+                    "displayName":"金属耳环",
+                    "displayNameEn":"Metal earrings",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_chaoanvshen.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_chaoanvshen.zip"
+                },
+                {
+                    "displayName":"新潮眼镜",
+                    "displayNameEn":"Trendy glasses",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_chaonanyanjing.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_chaonanyanjing.zip"
+                },
+                {
+                    "displayName":"牛仔",
+                    "displayNameEn":"Cowboy",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_cowboy.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_cowboy.zip"
+                },
+                {
+                    "displayName":"绿色蝴蝶结",
+                    "displayNameEn":"Green bow",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_hudiejiedimonds.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_diejia_hudiejiedimonds.zip"
+                },
+                {
+                    "displayName":"可爱球球",
+                    "displayNameEn":"Cute ball",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_keaiqiuqiu.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_diejia_keaiqiuqiu.zip"
+                },
+                {
+                    "displayName":"草莓面膜",
+                    "displayNameEn":"Strawberry mask",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_te_caomeimianmo.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_diejia_te_caomeimianmo.zip"
+                },
+                {
+                    "displayName":"浪漫冰淇淋",
+                    "displayNameEn":"Romantic ice cream",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_diejia_tiantong.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_diejia_tiantong.zip"
+                },
+                {
+                    "displayName":"方形发夹",
+                    "displayNameEn":"Square hairpin",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_fangxingfajia.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_fangxingfajia.zip"
+                },
+                {
+                    "displayName":"口罩花",
+                    "displayNameEn":"Mask flower",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_kouzhaohua.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_kouzhaohua.zip"
+                },
+                {
+                    "displayName":"透明眼镜",
+                    "displayNameEn":"Glasses",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_toumingyanjing.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/4.0.0-fixed-motion/video_toumingyanjing.zip"
+                },
+                {
+                    "displayName":"粉色小猪",
+                    "displayNameEn":"Pink pig",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_icon_xiaozhu.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_xiaozhu.zip"
+                },
+                {
+                    "displayName":"头戴耳机",
+                    "displayNameEn":"Wearing headphones",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_icon_erji.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_erji.zip"
+                },
+                {
+                    "displayName":"黑框眼镜",
+                    "displayNameEn":"Black-framed glasses",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_icon_heikuangyanjing.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_yanjing.zip"
+                },
+                {
+                    "displayName":"飞天猫咪",
+                    "displayNameEn":"Flying cat",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_icon_maomi.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_xiaomao.zip"
+                },
+                {
+                    "displayName":"金属面罩",
+                    "displayNameEn":"Metal face mask",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_icon_jinshumianju.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_saibo.zip"
+                }   
+            ]
+        },
+        {
+            "displayName":"手势贴纸",
+            "displayNameEn":"Gesture sticker",
+            "downloadPath":"MotionRes/",
+            "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_sakuragirl.png",
+            "propertyList":[
+                {
+                    "displayName":"无",
+                    "displayNameEn":"None",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/beauty/none.png"
+                },
+                {
+                    "displayName":"樱花女孩",
+                    "displayNameEn":"Sakura",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_sakuragirl.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/video_sakuragirl.zip"
+                },
+                {
+                    "displayName":"手指泡泡",
+                    "displayNameEn":"Bubbles",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_shoushiwu.png",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/motion/video_shoushiwu.zip"
+                },
+                {
+                    "displayName":"浪漫比心",
+                    "displayNameEn":"Romanticlove",
+                    "resourceUri":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/demoMotion/encrypted_motion/new_motion/video_qingrenjiebixin.zip",
+                    "icon":"https://mediacloud-76607.gzc.vod.tencent-cloud.com/TencentEffect/RT_Cube/tencent_effect_icon/panel_icon/motions_icon/video_qingrenjiebixin.png"
+                }
+            ]
+        }
+    ]
+}

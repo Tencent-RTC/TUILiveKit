@@ -212,8 +212,8 @@ extension LiveInfoView {
     @objc func containerTapAction() {
         if let vc = WindowUtils.getCurrentWindowViewController() {
             let menuContainerView = MenuContainerView(contentView: roomInfoPanelView)
-            menuContainerView.blackAreaClickClosure = {
-                vc.dismiss(animated: true)
+            menuContainerView.blackAreaClickClosure = { [weak vc] in
+                vc?.dismiss(animated: true)
             }
             let viewController = PopupViewController(contentView: menuContainerView)
             vc.present(viewController, animated: true)

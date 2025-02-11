@@ -52,12 +52,11 @@ class AudienceListView: RTCBaseView {
     private let displayAvatarCount = 3
     
     // MARK: - private property.
-    private let kMaxShowUserCount = 100
     private let service: AudienceListService = AudienceListService()
     private var state: AudienceListState {
         service.state
     }
-    private lazy var observer: AudienceListObserver = AudienceListObserver(state: state)
+    private lazy var observer: AudienceListObserver = AudienceListObserver(state: state, service: service)
     private lazy var audienceListPanel = AudienceListPanelView(state: state)
     private var listUser: [TUIUserInfo] = []
     private var cancellableSet: Set<AnyCancellable> = []
@@ -126,10 +125,12 @@ class AudienceListView: RTCBaseView {
             make.trailing.equalToSuperview()
         }
         let numberMaxWidth = getMaxWidthFromLabel(numberLabel, maxText: "999999")
+        let numberMinWidth = getMaxWidthFromLabel(numberLabel, maxText: "0")
         numberLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(4.scale375())
             make.centerY.height.equalToSuperview()
             make.width.lessThanOrEqualTo(numberMaxWidth)
+            make.width.greaterThanOrEqualTo(numberMinWidth)
             make.trailing.equalTo(imageView.snp.leading)
         }
         imageView.snp.makeConstraints { make in
@@ -161,7 +162,7 @@ class AudienceListView: RTCBaseView {
                 self.listUser = audienceList
                 self.collectionView.reloadData()
                 
-                let count = audienceList.count > kMaxShowUserCount ? audienceCount : audienceList.count
+                let count = audienceCount > kMaxShowUserCount ? audienceCount : audienceList.count
                 self.updateUserCount(count: count)
             }
             .store(in: &cancellableSet)
@@ -205,11 +206,11 @@ extension AudienceListView {
     @objc func containerTapAction() {
         if let vc = WindowUtils.getCurrentWindowViewController() {
             let menuContainerView = MenuContainerView(contentView: audienceListPanel)
-            audienceListPanel.onBackButtonClickedClosure = {
-                vc.dismiss(animated: true)
+            audienceListPanel.onBackButtonClickedClosure = { [weak vc] in
+                vc?.dismiss(animated: true)
             }
-            menuContainerView.blackAreaClickClosure = {
-                vc.dismiss(animated: true)
+            menuContainerView.blackAreaClickClosure = { [weak vc] in
+                vc?.dismiss(animated: true)
             }
             let viewController = PopupViewController(contentView: menuContainerView)
             vc.present(viewController, animated: true)

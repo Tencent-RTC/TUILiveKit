@@ -99,24 +99,23 @@ class GenerateTestUserSig {
     }
     
     class func hmac(_ plainText: String) -> String? {
-        let cKey = SECRETKEY.cString(using: String.Encoding.ascii)
-        let cData = plainText.cString(using: String.Encoding.ascii)
+        let cKey = SECRETKEY.cString(using: .ascii)
+        let cData = plainText.cString(using: .ascii)
         
         let cKeyLen = SECRETKEY.lengthOfBytes(using: .ascii)
         let cDataLen = plainText.lengthOfBytes(using: .ascii)
         
         var cHMAC = [CUnsignedChar](repeating: 0, count: Int(CC_SHA256_DIGEST_LENGTH))
-        let pointer = cHMAC.withUnsafeMutableBufferPointer { (unsafeBufferPointer) in
-            return unsafeBufferPointer
+        cHMAC.withUnsafeMutableBufferPointer { (bufferPointer) in
+            CCHmac(CCHmacAlgorithm(kCCHmacAlgSHA256), cKey, cKeyLen, cData, cDataLen, bufferPointer.baseAddress)
         }
-        guard let cKey = cKey, let baseAddress = pointer.baseAddress else { return ""}
-        CCHmac(CCHmacAlgorithm(kCCHmacAlgSHA256), cKey, cKeyLen, cData, cDataLen, pointer.baseAddress)
-        let data = Data(bytes: baseAddress, count: cHMAC.count)
+       
+        let data = Data(cHMAC)
         return data.base64EncodedString(options: [])
     }
     
     class func base64URL(data: Data) -> String {
-        let result = data.base64EncodedString(options: Data.Base64EncodingOptions(rawValue: 0))
+        let result = data.base64EncodedString()
         var final = ""
         result.forEach { (char) in
             switch char {
