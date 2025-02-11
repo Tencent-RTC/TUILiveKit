@@ -1,4 +1,4 @@
-group = "com.tencent.cloud.tuikit.flutter.tuilivekit.tuilivekit"
+group = "com.tencent.cloud.tuikit.flutter.tuilivekit"
 version = "1.0"
 
 buildscript {
@@ -23,7 +23,7 @@ apply plugin: "com.android.library"
 
 android {
     if (project.android.hasProperty("namespace")) {
-        namespace = "com.tencent.cloud.tuikit.flutter.tuilivekit.tuilivekit"
+        namespace = "com.tencent.cloud.tuikit.flutter.tuilivekit"
     }
 
     compileSdk = 34

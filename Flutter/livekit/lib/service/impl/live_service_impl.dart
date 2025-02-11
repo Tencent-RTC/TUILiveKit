@@ -66,8 +66,6 @@ class LiveServiceImpl implements ILiveService {
   @override
   void destroy() {
     LiveKitLogger.info("$tag($hashCode) destroy:[]");
-    _destroyTRTCCloud();
-    _destroyTUIRoomEngine();
   }
 
   @override
@@ -384,13 +382,5 @@ class LiveServiceImpl implements ILiveService {
   _createIMManager() {
     imManager = V2TIMManager();
     friendshipManager = imManager.getFriendshipManager();
-  }
-
-  _destroyTRTCCloud() async {
-    await TRTCCloud.destroySharedInstance();
-  }
-
-  _destroyTUIRoomEngine() {
-    TUIRoomEngine.destroySharedInstance();
   }
 }
