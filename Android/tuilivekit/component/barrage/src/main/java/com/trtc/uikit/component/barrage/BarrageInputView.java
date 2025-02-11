@@ -6,6 +6,9 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 
+import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
+import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
+import com.tencent.cloud.tuikit.engine.room.TUIRoomObserver;
 import com.trtc.uikit.component.barrage.store.model.Barrage;
 import com.trtc.uikit.component.barrage.view.BarrageSendView;
 
@@ -14,6 +17,15 @@ public class BarrageInputView extends FrameLayout {
     private final Context         mContext;
     private       String          mRoomId;
     private       BarrageSendView mBarrageSendView;
+
+    private final TUIRoomObserver mRoomObserver = new TUIRoomObserver() {
+        @Override
+        public void onRoomDismissed(String roomId, TUIRoomDefine.RoomDismissedReason reason) {
+            if (mBarrageSendView != null) {
+                mBarrageSendView.dismiss();
+            }
+        }
+    };
 
     public BarrageInputView(Context context) {
         this(context, null);
@@ -41,6 +53,18 @@ public class BarrageInputView extends FrameLayout {
                 mBarrageSendView.show();
             }
         });
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        TUIRoomEngine.sharedInstance().addObserver(mRoomObserver);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        TUIRoomEngine.sharedInstance().removeObserver(mRoomObserver);
     }
 
     public void setOnSendListener(OnSendListener listener) {

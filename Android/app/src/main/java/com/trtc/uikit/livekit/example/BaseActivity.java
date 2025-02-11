@@ -27,4 +27,8 @@ public class BaseActivity extends FullScreenActivity {
         }
         return super.onTouchEvent(event);
     }
+
+    @Override
+    public void onBackPressed() {
+    }
 }

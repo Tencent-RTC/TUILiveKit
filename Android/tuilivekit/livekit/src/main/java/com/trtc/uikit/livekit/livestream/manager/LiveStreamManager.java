@@ -49,20 +49,26 @@ public class LiveStreamManager {
         mRoomEngineObserver = new RoomEngineObserver(this);
         mLiveListManagerObserver = new LiveListManagerObserver(this);
         mDashboardManager = new DashboardManager(mState, mLiveService);
+    }
+
+    public void addObserver() {
         mLiveService.addRoomEngineObserver(mRoomEngineObserver);
         mLiveService.addLiveListManagerObserver(mLiveListManagerObserver);
     }
 
-    public void destroy() {
+    public void removeObserver() {
         mLiveService.removeRoomEngineObserver(mRoomEngineObserver);
         mLiveService.removeLiveListManagerObserver(mLiveListManagerObserver);
+    }
+
+    public void destroy() {
+        removeObserver();
         mRoomManager.destroy();
         mCoGuestManager.destroy();
         mUserManager.destroy();
         mMediaManager.destroy();
         mCoHostManager.destroy();
         mBattleManager.destroy();
-        mLiveService.destroy();
     }
 
     public ILiveService getLiveService() {

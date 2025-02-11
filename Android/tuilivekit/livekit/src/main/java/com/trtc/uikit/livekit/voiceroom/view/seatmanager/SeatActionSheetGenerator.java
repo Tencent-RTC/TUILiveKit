@@ -47,6 +47,12 @@ public class SeatActionSheetGenerator {
         }
     }
 
+    public void destroy() {
+        if (mUserManagerDialog != null) {
+            mUserManagerDialog.dismiss();
+        }
+    }
+
     private List<ListMenuInfo> generaSeatManagerMenuInfo(TUIRoomDefine.SeatInfo seatInfo, UserState.UserInfo selfInfo) {
         List<ListMenuInfo> menuInfoList = new ArrayList<>();
         if (TextUtils.isEmpty(seatInfo.userId)) {

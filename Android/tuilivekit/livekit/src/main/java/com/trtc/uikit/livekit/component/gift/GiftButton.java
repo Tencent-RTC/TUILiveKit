@@ -7,6 +7,9 @@ import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
+import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
+import com.tencent.cloud.tuikit.engine.room.TUIRoomObserver;
 import com.trtc.uikit.livekit.R;
 
 @SuppressLint("ViewConstructor")
@@ -18,6 +21,15 @@ public final class GiftButton extends FrameLayout {
     public        String         mOwnerAvatarUrl;
     private       ImageView      mImageButton;
     private       GiftSendDialog mGiftSendDialog;
+
+    private final TUIRoomObserver mRoomObserver = new TUIRoomObserver() {
+        @Override
+        public void onRoomDismissed(String roomId, TUIRoomDefine.RoomDismissedReason reason) {
+            if (mGiftSendDialog != null) {
+                mGiftSendDialog.dismiss();
+            }
+        }
+    };
 
     public GiftButton(Context context) {
         this(context, null);
@@ -39,6 +51,18 @@ public final class GiftButton extends FrameLayout {
         mOwnerName = ownerName;
         mOwnerAvatarUrl = ownerAvatarUrl;
         initView();
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        TUIRoomEngine.sharedInstance().addObserver(mRoomObserver);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        TUIRoomEngine.sharedInstance().removeObserver(mRoomObserver);
     }
 
     private void initView() {

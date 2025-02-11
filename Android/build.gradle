@@ -38,4 +38,5 @@ ext {
     liteavSdk = "com.tencent.liteav:LiteAVSDK_Professional:latest.release"
     roomEngineSdk = "io.trtc.uikit:rtc_room_engine:latest.release"
     imSdk = "com.tencent.imsdk:imsdk-plus:latest.release"
+    common = "io.trtc.uikit:common:2.8.0.634"
 }

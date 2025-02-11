@@ -53,6 +53,7 @@ import com.trtc.uikit.livekit.livestream.manager.module.DashboardManager;
 import com.trtc.uikit.livekit.livestream.manager.observer.LiveBattleManagerObserver;
 import com.trtc.uikit.livekit.livestream.manager.observer.LiveStreamObserver;
 import com.trtc.uikit.livekit.livestream.state.BattleState;
+import com.trtc.uikit.livekit.livestream.state.CoGuestState;
 import com.trtc.uikit.livekit.livestream.state.CoHostState;
 import com.trtc.uikit.livekit.livestream.state.CoHostState.ConnectionUser;
 import com.trtc.uikit.livekit.livestream.state.RoomState;
@@ -112,10 +113,12 @@ public class AnchorView extends BasicView {
     private       StandardDialog                         mProcessBattleDialog;
     private       BattleCountdownDialog                  mBattleCountdownDialog;
     private       TUILiveRoomAnchorFragment.RoomBehavior mRoomBehavior;
+    private       boolean                                mIsExit                         = false;
     private final Observer<LiveStatus>                   mLiveStatusObserver             = this::onLiveStatusChange;
     private final Observer<ConnectionUser>               mReceivedConnectRequestObserver =
             this::onReceivedCoHostRequest;
     private final Observer<List<ConnectionUser>>         mConnectedObserver              = this::onConnectedUserChange;
+    private final Observer<List<CoGuestState.SeatInfo>>  mCoGuestUserObserver            = this::onCoGuestUserChange;
     private final Observer<Boolean>                      mBattleStartObserver            = this::onBattleStartChange;
     private final Observer<Boolean>                      mBattleResultDisplayObserver    = this::onBattleResultDisplay;
     private final Observer<UserState.UserInfo>           mEnterUserObserver              = this::onEnterUserChange;
@@ -141,17 +144,7 @@ public class AnchorView extends BasicView {
     }
 
     public void destroy() {
-        mLiveCoreView.stopLiveStream(new TUIRoomDefine.ActionCallback() {
-            @Override
-            public void onSuccess() {
-                mLiveManager.getRoomManager().updateLiveStatus(RoomState.LiveStatus.DASHBOARD);
-            }
-
-            @Override
-            public void onError(TUICommonDefine.Error error, String message) {
-                ErrorHandler.onError(error);
-            }
-        });
+        showLiveStreamEndDialog();
     }
 
     @Override
@@ -198,7 +191,10 @@ public class AnchorView extends BasicView {
     }
 
     private void initBackView() {
-        mBackView.setOnClickListener(v -> ((Activity) getContext()).finish());
+        mBackView.setOnClickListener(v -> {
+            mIsExit = true;
+            ((Activity) getContext()).finish();
+        });
     }
 
     private void initLiveCoreView() {
@@ -269,7 +265,8 @@ public class AnchorView extends BasicView {
             }
         });
 
-        mLiveCoreView.startCamera(true, null);
+        boolean isFrontCamera = mLiveCoreView.getMediaManager().mMediaState.isFrontCamera.get();
+        mLiveCoreView.startCamera(isFrontCamera, null);
         mLiveCoreView.startMicrophone(null);
         if (mRoomBehavior == TUILiveRoomAnchorFragment.RoomBehavior.ENTER_ROOM) {
             mLayoutPushing.setVisibility(VISIBLE);
@@ -313,7 +310,6 @@ public class AnchorView extends BasicView {
     private void initDashboardStatus() {
         DashboardManager dashboardManager = mLiveManager.getDashboardManager();
         dashboardManager.updateDuration(System.currentTimeMillis() - mRoomState.createTime);
-        dashboardManager.updateMaxViewersCount(mRoomState.maxAudienceCount);
         dashboardManager.updateLikeNumber(mGiftPlayView.getLikeCount());
         dashboardManager.updateMessageCount(mBarrageStreamView.getBarrageCount());
         mLayoutPushing.removeAllViews();
@@ -354,7 +350,12 @@ public class AnchorView extends BasicView {
 
     private void initSettingsPanel() {
         findViewById(R.id.v_settings).setOnClickListener(view -> {
+            if (!view.isEnabled()) {
+                return;
+            }
+            view.setEnabled(false);
             SettingsPanelDialog settingsPanelDialog = new SettingsPanelDialog(mContext, mLiveManager, mLiveCoreView);
+            settingsPanelDialog.setOnDismissListener(dialog -> view.setEnabled(true));
             settingsPanelDialog.show();
         });
     }
@@ -373,13 +374,24 @@ public class AnchorView extends BasicView {
 
     private void initStartLiveView() {
         mButtonStartLive.setOnClickListener((View view) -> {
+            if (!view.isEnabled()) {
+                return;
+            }
+            view.setEnabled(false);
             RoomInfo roomInfo = new RoomInfo();
             roomInfo.roomId = mRoomState.roomId;
             roomInfo.name = mRoomState.roomName.get();
+            roomInfo.maxSeatCount = 9;
             mUserManager.initSelfUserData();
+            mLayoutPreview.setVisibility(GONE);
+            mLayoutPushing.setVisibility(VISIBLE);
             mLiveCoreView.startLiveStream(roomInfo, new GetRoomInfoCallback() {
                 @Override
                 public void onSuccess(RoomInfo roomInfo) {
+                    if (mIsExit) {
+                        mLiveCoreView.stopLiveStream(null);
+                        return;
+                    }
                     mLiveManager.getRoomManager().updateLiveStatus(RoomState.LiveStatus.PUSHING);
                     mLiveManager.getRoomManager().updateRoomState(roomInfo);
                     mLiveManager.getRoomManager().updateLiveInfo();
@@ -395,6 +407,7 @@ public class AnchorView extends BasicView {
                 public void onError(TUICommonDefine.Error error, String message) {
                     ErrorHandler.onError(error);
                     mLiveManager.getRoomManager().updateLiveStatus(RoomState.LiveStatus.NONE);
+                    view.setEnabled(true);
                 }
             });
         });
@@ -446,7 +459,12 @@ public class AnchorView extends BasicView {
 
     private void initCoGuestView() {
         mViewCoGuest.setOnClickListener((view) -> {
+            if (!view.isEnabled()) {
+                return;
+            }
+            view.setEnabled(false);
             AnchorCoGuestManageDialog dialog = new AnchorCoGuestManageDialog(mContext, mLiveManager, mLiveCoreView);
+            dialog.setOnDismissListener(dialog1 -> view.setEnabled(true));
             dialog.show();
         });
     }
@@ -509,14 +527,15 @@ public class AnchorView extends BasicView {
                 Barrage barrage = new Barrage();
                 barrage.content = "gift";
                 barrage.user.userId = sender.userId;
-                barrage.user.userName = sender.userName;
+                barrage.user.userName = TextUtils.isEmpty(sender.userName) ? sender.userId : sender.userName;
                 barrage.user.avatarUrl = sender.avatarUrl;
                 barrage.user.level = sender.level;
                 barrage.extInfo.put(GIFT_VIEW_TYPE, GIFT_VIEW_TYPE_1);
                 barrage.extInfo.put(GIFT_NAME, gift.giftName);
                 barrage.extInfo.put(GIFT_COUNT, giftCount);
                 barrage.extInfo.put(GIFT_ICON_URL, gift.imageUrl);
-                barrage.extInfo.put(GIFT_RECEIVER_USERNAME, receiver.userName);
+                barrage.extInfo.put(GIFT_RECEIVER_USERNAME,
+                        TextUtils.isEmpty(receiver.userName) ? receiver.userId : receiver.userName);
                 mBarrageStreamView.insertBarrages(barrage);
             }
 
@@ -542,6 +561,7 @@ public class AnchorView extends BasicView {
         mBattleState.mIsInWaiting.observe(mInWaitingObserver);
         mBattleState.mIsOnDisplayResult.observe(mBattleResultDisplayObserver);
         mUserState.enterUserInfo.observe(mEnterUserObserver);
+        mCoGuestState.connectedUserList.observe(mCoGuestUserObserver);
     }
 
     @Override
@@ -554,13 +574,10 @@ public class AnchorView extends BasicView {
         mBattleState.mIsInWaiting.removeObserver(mInWaitingObserver);
         mBattleState.mIsOnDisplayResult.removeObserver(mBattleResultDisplayObserver);
         mUserState.enterUserInfo.removeObserver(mEnterUserObserver);
+        mCoGuestState.connectedUserList.removeObserver(mCoGuestUserObserver);
     }
 
     private void showLiveStreamEndDialog() {
-        mLiveManager.getDashboardManager().updateDuration(System.currentTimeMillis() - mRoomState.createTime);
-        mLiveManager.getDashboardManager().updateMaxViewersCount(mRoomState.maxAudienceCount);
-        mLiveManager.getDashboardManager().updateLikeNumber(mGiftPlayView.getLikeCount());
-        mLiveManager.getDashboardManager().updateMessageCount(mBarrageStreamView.getBarrageCount());
         EndLiveStreamDialog endLiveStreamDialog = new EndLiveStreamDialog(mContext, mLiveCoreView, mLiveManager);
         endLiveStreamDialog.show();
     }
@@ -620,7 +637,16 @@ public class AnchorView extends BasicView {
 
     @SuppressLint("NotifyDataSetChanged")
     private void onConnectedUserChange(List<ConnectionUser> connectedList) {
-        post(() -> enableView(mViewBattle, !connectedList.isEmpty()));
+        post(() -> {
+            enableView(mViewBattle, !connectedList.isEmpty());
+            enableView(mViewCoGuest, connectedList.isEmpty());
+        });
+    }
+
+    private void onCoGuestUserChange(List<CoGuestState.SeatInfo> seatList) {
+        post(() -> {
+            enableView(mViewCoHost, seatList.size() <= 1);
+        });
     }
 
     private void onReceivedBattleRequestChange(BattleState.BattleUser user) {
@@ -727,7 +753,7 @@ public class AnchorView extends BasicView {
             Barrage barrage = new Barrage();
             barrage.content = mContext.getString(R.string.livekit_entered_room);
             barrage.user.userId = userInfo.userId;
-            barrage.user.userName = userInfo.name.get();
+            barrage.user.userName = TextUtils.isEmpty(userInfo.name.get()) ? userInfo.userId : userInfo.name.get();
             barrage.user.avatarUrl = userInfo.avatarUrl.get();
             barrage.user.level = "32";
             mBarrageStreamView.insertBarrages(barrage);

@@ -14,10 +14,12 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
+import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
 import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
+import com.trtc.uikit.livekit.livestream.state.RoomState;
 import com.trtc.uikit.livekit.livestream.view.audience.playing.coguest.settings.VideoCoGuestSettingsDialog;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
@@ -28,6 +30,8 @@ public class TypeSelectDialog extends PopupDialog {
     private       ConstraintLayout  mLayoutLinkAudio;
     private final LiveCoreView      mLiveStream;
     private final LiveStreamManager mLiveManager;
+
+    private final Observer<RoomState.LiveStatus> mLiveStatusObserver = this::onLiveStateChanged;
 
     public TypeSelectDialog(@NonNull Context context, LiveStreamManager manager, LiveCoreView liveStream) {
         super(context);
@@ -48,6 +52,18 @@ public class TypeSelectDialog extends PopupDialog {
         setView(view);
     }
 
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mLiveManager.getRoomState().liveStatus.observe(mLiveStatusObserver);
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mLiveManager.getRoomState().liveStatus.removeObserver(mLiveStatusObserver);
+    }
+
     private void bindViewId(View view) {
         mImageLinkSettings = view.findViewById(R.id.iv_link_settings);
         mLayoutLinkVideo = view.findViewById(R.id.cl_link_video);
@@ -56,12 +72,20 @@ public class TypeSelectDialog extends PopupDialog {
 
     private void initLinkAudioView() {
         mLayoutLinkAudio.setOnClickListener(view -> {
+            if (!view.isEnabled()) {
+                return;
+            }
+            view.setEnabled(false);
             applyLinkMic(false);
         });
     }
 
     private void initLinkVideoView() {
         mLayoutLinkVideo.setOnClickListener(view -> {
+            if (!view.isEnabled()) {
+                return;
+            }
+            view.setEnabled(false);
             applyLinkMic(true);
         });
     }
@@ -89,5 +113,11 @@ public class TypeSelectDialog extends PopupDialog {
             }
         });
         dismiss();
+    }
+
+    private void onLiveStateChanged(RoomState.LiveStatus liveStatus) {
+        if (liveStatus == RoomState.LiveStatus.DASHBOARD) {
+            dismiss();
+        }
     }
 }

@@ -4,15 +4,11 @@ import static com.trtc.uikit.livekit.livestreamcore.state.RoomState.LiveStatus.N
 import static com.trtc.uikit.livekit.livestreamcore.state.RoomState.LiveStatus.PLAYING;
 import static com.trtc.uikit.livekit.livestreamcore.state.RoomState.LiveStatus.PUSHING;
 
-import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
-import com.trtc.tuikit.common.foregroundservice.VideoForegroundService;
-import com.trtc.tuikit.common.system.ContextProvider;
-import com.trtc.uikit.livekit.livestreamcore.R;
 import com.trtc.uikit.livekit.livestreamcore.common.Constants;
 import com.trtc.uikit.livekit.livestreamcore.common.utils.Logger;
 import com.trtc.uikit.livekit.livestreamcore.manager.api.ILiveStream;
@@ -68,7 +64,6 @@ public class RoomManager extends BaseManager {
                 mVideoLiveService.enterRoom(roomInfo.roomId, new TUIRoomDefine.GetRoomInfoCallback() {
                     @Override
                     public void onSuccess(TUIRoomDefine.RoomInfo roomInfo) {
-                        startForegroundService();
                         updateRoomState(roomInfo);
                         if (callback != null) {
                             callback.onSuccess(roomInfo);
@@ -102,10 +97,10 @@ public class RoomManager extends BaseManager {
             callback.onError(TUICommonDefine.Error.INVALID_PARAMETER, "roomId is empty");
             return;
         }
+        mVideoLiveState.roomState.roomId = roomId;
         mVideoLiveService.enterRoom(roomId, new TUIRoomDefine.GetRoomInfoCallback() {
             @Override
             public void onSuccess(TUIRoomDefine.RoomInfo roomInfo) {
-                startForegroundService();
                 updateRoomState(roomInfo);
                 mVideoLiveState.roomState.liveStatus.set(PLAYING);
                 if (callback != null) {
@@ -126,7 +121,6 @@ public class RoomManager extends BaseManager {
         mVideoLiveService.exitRoom(new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
-                stopForegroundService();
                 if (callback != null) {
                     callback.onSuccess();
                 }
@@ -146,7 +140,6 @@ public class RoomManager extends BaseManager {
         mVideoLiveService.destroyRoom(new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
-                stopForegroundService();
                 if (callback != null) {
                     callback.onSuccess();
                 }
@@ -194,21 +187,6 @@ public class RoomManager extends BaseManager {
 
     public interface RoomObserver {
         void onRoomDismissed(String roomId);
-    }
-
-    private void startForegroundService() {
-        Logger.info(TAG + " startForegroundService");
-        Context context = ContextProvider.getApplicationContext();
-        VideoForegroundService.start(context,
-                context.getString(context.getApplicationInfo().labelRes),
-                context.getString(R.string.livestreamcore_app_running),
-                0);
-    }
-
-    private void stopForegroundService() {
-        Logger.info(TAG + " stopForegroundService");
-        Context context = ContextProvider.getApplicationContext();
-        VideoForegroundService.stop(context);
     }
 
     private void enableUnlimitedRoom() {

@@ -26,7 +26,7 @@ public class RoomEngineObserver extends TUIRoomObserver {
     }
 
     @Override
-    public void onRoomDismissed(String roomId) {
+    public void onRoomDismissed(String roomId, TUIRoomDefine.RoomDismissedReason reason) {
         LiveStreamLog.info(mTag + " onRoomDismissed:[roomId" + roomId + "]");
         mLiveManager.getRoomManager().onLiveEnd(roomId);
     }
@@ -52,16 +52,6 @@ public class RoomEngineObserver extends TUIRoomObserver {
 
     public void onRequestCancelled(TUIRoomDefine.Request request, TUIRoomDefine.UserInfo operateUser) {
         LiveStreamLog.info(mTag + " onRequestCancelled:[request:" + request + ",operateUser:" + operateUser + "]");
-    }
-
-    @Override
-    public void onRequestProcessed(String requestId, String userId) {
-
-    }
-
-    @Override
-    public void onKickedOffSeat(String userId) {
-
     }
 
     @Override

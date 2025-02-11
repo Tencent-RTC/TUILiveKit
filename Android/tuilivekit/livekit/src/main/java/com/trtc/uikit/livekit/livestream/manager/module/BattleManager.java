@@ -195,6 +195,7 @@ public final class BattleManager extends BaseManager {
                                        TUILiveBattleManager.BattleUser invitee) {
         if (TextUtils.equals(inviter.userId, mUserState.selfInfo.userId)) {
             mBattleState.mSentBattleRequests.clear();
+            mBattleState.mIsInWaiting.set(false);
         } else {
             removeBattleRequestReceived();
             removeSentBattleRequest(invitee.userId);

@@ -17,26 +17,13 @@
         app:round="20dp" />
 
     <TextView
-        android:id="@+id/tv_seat_index"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/livekit_bg_seat_index"
-        android:gravity="center"
-        android:textColor="@android:color/white"
-        android:textSize="12sp"
-        tools:text="1" />
-
-    <TextView
         android:id="@+id/tv_name"
-        android:layout_width="wrap_content"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginStart="12dp"
         android:layout_toEndOf="@id/iv_head"
         android:ellipsize="end"
-        android:maxWidth="100dp"
         android:maxLines="1"
         android:textColor="@color/livekit_design_standard_g6"
         android:textSize="16sp" />

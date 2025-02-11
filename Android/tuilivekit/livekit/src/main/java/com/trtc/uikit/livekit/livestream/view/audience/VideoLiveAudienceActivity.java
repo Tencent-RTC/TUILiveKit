@@ -26,4 +26,8 @@ public class VideoLiveAudienceActivity extends FullScreenActivity {
         fragmentTransaction.add(R.id.fl_container, audienceFragment);
         fragmentTransaction.commit();
     }
+
+    @Override
+    public void onBackPressed() {
+    }
 }

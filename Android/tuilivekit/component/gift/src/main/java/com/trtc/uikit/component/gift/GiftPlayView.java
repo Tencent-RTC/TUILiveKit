@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.tencent.qcloud.tuicore.TUILogin;
 import com.trtc.tuikit.common.livedata.Observer;
@@ -208,8 +207,6 @@ public class GiftPlayView extends FrameLayout {
         }
         GiftBulletFrameLayout giftFrameLayout = new GiftBulletFrameLayout(mContext);
         mGiftBulletGroup.addView(giftFrameLayout);
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mGiftBulletGroup.getLayoutParams();
-        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         if (giftFrameLayout.setGift(model, giftCount, sender, receiver)) {
             giftFrameLayout.startAnimation();
         }

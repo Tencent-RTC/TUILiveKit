@@ -78,5 +78,9 @@ public class SeatGridViewCoreObserver extends SeatGridViewObserver {
     public void onRoomDismissed(String roomId) {
         Logger.info(FILE, "onRoomDismissed roomId: " + roomId);
         mVoiceRoomManager.getRoomManager().onRoomDismissed(roomId);
+        mSeatActionSheetGenerator.destroy();
+        if (mSeatActionSheetDialog != null) {
+            mSeatActionSheetDialog.dismiss();
+        }
     }
 }

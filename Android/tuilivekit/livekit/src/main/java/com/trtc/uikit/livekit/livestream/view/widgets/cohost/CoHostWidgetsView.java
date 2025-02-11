@@ -4,6 +4,8 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -28,9 +30,12 @@ import java.util.List;
 public class CoHostWidgetsView extends BasicView {
 
     private       ImageFilterView                 mImageAvatar;
+    private       LinearLayout                    mLayoutUserInfo;
     private       TextView                        mTextName;
+    private       ImageView                       mImageMuteAudio;
     private final CoHostWidgetsViewState          mState                          = new CoHostWidgetsViewState();
     private final Observer<LinkedHashSet<String>> mHasVideoStreamUserListObserver = this::onVideoStreamUserListChange;
+    private final Observer<LinkedHashSet<String>> mHasAudioStreamUserListObserver = this::onAudioStreamUserListChange;
     private final Observer<List<ConnectionUser>>  mConnectedUsersObserver         = this::onConnectedUsersChange;
     private final Observer<Boolean>               mFloatWindowModeObserver        = this::onFloatWindowModeObserver;
 
@@ -47,22 +52,21 @@ public class CoHostWidgetsView extends BasicView {
     }
 
     public void init(LiveStreamManager manager, LiveCoreViewDefine.CoHostUser userInfo) {
-        super.init(manager);
         mState.roomId = userInfo.connectionUser.roomId;
         mState.userId = userInfo.connectionUser.userId;
         mState.userName = userInfo.connectionUser.userName;
         mState.userAvatar = userInfo.connectionUser.avatarUrl;
         mState.hasVideoStream = userInfo.hasVideoStream;
-
+        super.init(manager);
         getUserInfo();
-        refreshView();
-        addObserver();
     }
 
     @Override
     protected void initView() {
         LayoutInflater.from(mContext).inflate(R.layout.livekit_co_guest_widgets_view, this, true);
         mImageAvatar = findViewById(R.id.iv_avatar);
+        mLayoutUserInfo = findViewById(R.id.ll_user_info);
+        mImageMuteAudio = findViewById(R.id.iv_mute_audio);
         mTextName = findViewById(R.id.tv_name);
     }
 
@@ -88,13 +92,17 @@ public class CoHostWidgetsView extends BasicView {
         });
     }
 
+    private void initMuteAudioView() {
+        boolean hasAudioStream = mUserState.hasAudioStreamUserList.get().contains(mState.userId);
+        mImageMuteAudio.setVisibility(hasAudioStream ? GONE : VISIBLE);
+    }
+
     private void initUserNameView() {
         if (mState.userId.equals(mUserState.selfInfo.userId) || (mState.userId.equals(mRoomState.ownerInfo.userId)
                 && !mCoHostManager.isConnected(mState.userId))) {
-            mTextName.setText("");
-            mTextName.setVisibility(GONE);
+            mLayoutUserInfo.setVisibility(GONE);
         } else {
-            mTextName.setVisibility(VISIBLE);
+            mLayoutUserInfo.setVisibility(VISIBLE);
             mTextName.setText(mState.userName);
         }
     }
@@ -117,6 +125,7 @@ public class CoHostWidgetsView extends BasicView {
     @Override
     protected void addObserver() {
         mUserState.hasVideoStreamUserList.observe(mHasVideoStreamUserListObserver);
+        mUserState.hasAudioStreamUserList.observe(mHasAudioStreamUserListObserver);
         mCoHostState.connectedUsers.observe(mConnectedUsersObserver);
         FloatWindowManager.getInstance().getStore().isShowingFloatWindow.observe(mFloatWindowModeObserver);
     }
@@ -124,6 +133,7 @@ public class CoHostWidgetsView extends BasicView {
     @Override
     protected void removeObserver() {
         mUserState.hasVideoStreamUserList.removeObserver(mHasVideoStreamUserListObserver);
+        mUserState.hasAudioStreamUserList.removeObserver(mHasAudioStreamUserListObserver);
         mCoHostState.connectedUsers.removeObserver(mConnectedUsersObserver);
         FloatWindowManager.getInstance().getStore().isShowingFloatWindow.removeObserver(mFloatWindowModeObserver);
     }
@@ -132,12 +142,22 @@ public class CoHostWidgetsView extends BasicView {
         initUserAvatarView();
     }
 
+    private void onAudioStreamUserListChange(LinkedHashSet<String> strings) {
+        initMuteAudioView();
+    }
+
     private void onConnectedUsersChange(List<ConnectionUser> connectionUsers) {
         initUserNameView();
+        updateVisibility();
     }
 
     private void onFloatWindowModeObserver(Boolean isFloating) {
-        if (Boolean.TRUE.equals(isFloating)) {
+        updateVisibility();
+    }
+
+    private void updateVisibility() {
+        if (Boolean.TRUE.equals(FloatWindowManager.getInstance().getStore().isShowingFloatWindow.get())
+                || mCoHostState.connectedUsers.get().isEmpty()) {
             setVisibility(GONE);
         } else {
             setVisibility(VISIBLE);

@@ -1,5 +1,7 @@
 package com.trtc.uikit.component.audiencelist.service;
 
+import static com.trtc.uikit.component.audiencelist.store.AudienceListState.FETCH_LIST_DURATION_MILLISECOND;
+
 import android.text.TextUtils;
 
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
@@ -11,10 +13,17 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 public class AudienceListObserver extends TUIRoomObserver {
+    protected AudienceListService mAudienceListService;
     protected AudienceListState mAudienceListState;
 
-    public AudienceListObserver(AudienceListState audienceListState) {
-        mAudienceListState = audienceListState;
+    public AudienceListObserver(AudienceListService audienceListService) {
+        mAudienceListService = audienceListService;
+        mAudienceListState = mAudienceListService.mAudienceListState;
+    }
+
+    @Override
+    public void onRoomDismissed(String roomId, TUIRoomDefine.RoomDismissedReason reason) {
+        mAudienceListState.isRoomDismissed.set(true);
     }
 
     @Override
@@ -39,7 +48,12 @@ public class AudienceListObserver extends TUIRoomObserver {
         audienceUser.userName = userInfo.userName;
         audienceUser.avatarUrl = userInfo.avatarUrl;
         audienceUser.userRole = userInfo.userRole;
-        mAudienceListState.audienceList.add(audienceUser);
+        if (mAudienceListState.audienceList.get().size() < AudienceListState.ROOM_MAX_SHOW_USER_COUNT) {
+            mAudienceListState.audienceList.add(audienceUser);
+        } else if (System.currentTimeMillis() - mAudienceListState.lastFetchTime > FETCH_LIST_DURATION_MILLISECOND){
+            mAudienceListState.lastFetchTime = System.currentTimeMillis();
+            mAudienceListService.getAudienceList();
+        }
     }
 
     @Override

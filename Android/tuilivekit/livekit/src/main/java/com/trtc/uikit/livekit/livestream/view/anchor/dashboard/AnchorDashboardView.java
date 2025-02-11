@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.livestream.view.BasicView;
 
@@ -24,6 +25,8 @@ public class AnchorDashboardView extends BasicView {
     private TextView  mTextGiftIncome;
     private TextView  mTextLikeCount;
     private ImageView mImageBack;
+
+    private final Observer<Integer> mViewersCountObserver = this::onViewersCountChange;
 
     public AnchorDashboardView(@NonNull Context context) {
         this(context, null);
@@ -39,10 +42,12 @@ public class AnchorDashboardView extends BasicView {
 
     @Override
     protected void addObserver() {
+        mLiveManager.getDashboardState().maxViewersCount.observe(mViewersCountObserver);
     }
 
     @Override
     protected void removeObserver() {
+        mLiveManager.getDashboardState().maxViewersCount.removeObserver(mViewersCountObserver);
     }
 
     @SuppressLint("DefaultLocale")
@@ -72,15 +77,18 @@ public class AnchorDashboardView extends BasicView {
         mTextDuration.setText(formatSecondsTo00((int) mDashboardState.duration / 1000));
     }
 
-    @SuppressLint("DefaultLocale")
     private void initViewersCountView() {
-        mTextViewersCount.setText(String.format("%d", mDashboardState.maxViewersCount));
+        updateViewersCountView(mDashboardState.maxViewersCount.get());
+    }
+
+    @SuppressLint("DefaultLocale")
+    private void updateViewersCountView(int count) {
+        mTextViewersCount.setText(String.format("%d", count));
     }
 
     @SuppressLint("DefaultLocale")
     private void initMessageInfoView() {
         mTextMessageCount.setText(String.format("%d", mDashboardState.messageCount));
-
     }
 
     @SuppressLint("DefaultLocale")
@@ -92,7 +100,6 @@ public class AnchorDashboardView extends BasicView {
     @SuppressLint("DefaultLocale")
     private void initLikeInfoView() {
         mTextLikeCount.setText(String.format("%d", mDashboardState.likeCount));
-
     }
 
     private void initBackView() {
@@ -120,5 +127,9 @@ public class AnchorDashboardView extends BasicView {
         } else {
             return "00:" + secondFormat;
         }
+    }
+
+    private void onViewersCountChange(int count) {
+        updateViewersCountView(count);
     }
 }
