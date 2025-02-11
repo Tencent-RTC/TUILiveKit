@@ -61,7 +61,7 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.tencent.cloud.tuikit.flutter.tuilivekit.tuilivekit
+        package: com.tencent.cloud.tuikit.flutter.tuilivekit
         pluginClass: TuilivekitPlugin
       ios:
         pluginClass: TuilivekitPlugin

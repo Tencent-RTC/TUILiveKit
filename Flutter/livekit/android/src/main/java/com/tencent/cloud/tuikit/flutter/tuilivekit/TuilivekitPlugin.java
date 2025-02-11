@@ -1,4 +1,4 @@
-package com.tencent.cloud.tuikit.flutter.tuilivekit.tuilivekit;
+package com.tencent.cloud.tuikit.flutter.tuilivekit;
 
 import android.content.Context;
 import android.util.Log;
