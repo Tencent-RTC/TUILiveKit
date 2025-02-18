@@ -7,6 +7,8 @@ import static com.trtc.uikit.livekit.livestream.state.RoomState.LiveStreamPrivac
 
 import android.text.TextUtils;
 
+import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfo;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveModifyFlag;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
@@ -15,6 +17,7 @@ import com.trtc.tuikit.common.system.ContextProvider;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.livestream.manager.api.ILiveService;
 import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
+import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
 import com.trtc.uikit.livekit.livestream.state.LiveState;
 import com.trtc.uikit.livekit.livestream.state.RoomState;
 
@@ -83,10 +86,18 @@ public class RoomManager extends BaseManager {
 
     public void updateRoomState(TUIRoomDefine.RoomInfo roomInfo) {
         mRoomState.createTime = roomInfo.createTime;
-        mRoomState.roomName.set(roomInfo.name, false);
-        mRoomState.ownerInfo.userId = roomInfo.ownerId;
-        mRoomState.ownerInfo.name.set(roomInfo.ownerName);
-        mRoomState.ownerInfo.avatarUrl.set(roomInfo.ownerAvatarUrl);
+        if (roomInfo.name != null) {
+            mRoomState.roomName.set(roomInfo.name, false);
+        }
+        if (roomInfo.ownerId != null) {
+            mRoomState.ownerInfo.userId = roomInfo.ownerId;
+        }
+        if (roomInfo.ownerName != null) {
+            mRoomState.ownerInfo.name.set(roomInfo.ownerName);
+        }
+        if (roomInfo.ownerAvatarUrl != null) {
+            mRoomState.ownerInfo.avatarUrl.set(roomInfo.ownerAvatarUrl);
+        }
         mRoomState.maxSeatCount.set(roomInfo.maxSeatCount, false);
     }
 
@@ -134,6 +145,20 @@ public class RoomManager extends BaseManager {
         flagList.add(LiveModifyFlag.CATEGORY);
         flagList.add(LiveModifyFlag.BACKGROUND_URL);
         mLiveService.setLiveInfo(liveInfo, flagList, null);
+    }
+
+    public void getLiveInfo(String roomId) {
+        mLiveService.getLiveInfo(roomId, new TUILiveListManager.LiveInfoCallback() {
+            @Override
+            public void onSuccess(LiveInfo liveInfo) {
+                updateLiveInfo(liveInfo);
+            }
+
+            @Override
+            public void onError(TUICommonDefine.Error error, String s) {
+                ErrorHandler.onError(error);
+            }
+        });
     }
 
     public void onRoomUserCountChanged(String roomId, int userCount) {
