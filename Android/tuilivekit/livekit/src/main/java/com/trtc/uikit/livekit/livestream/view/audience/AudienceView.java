@@ -149,6 +149,7 @@ public class AudienceView extends BasicView {
             @Override
             public void onSuccess(RoomInfo roomInfo) {
                 mRoomManager.updateRoomState(roomInfo);
+                mRoomManager.getLiveInfo(roomInfo.roomId);
                 mRoomState.liveStatus.set(PLAYING);
                 onViewFinished();
             }
