@@ -18,7 +18,7 @@ import router from '@/router';
 import { useRoute } from 'vue-router';
 import { Ref, ref, reactive, onMounted, onUnmounted } from 'vue';
 import i18n from '../locales/index';
-import { getLanguage, getTheme } from  '../utils/utils';
+import { getLanguage, getTheme, safelyParse } from  '../utils/utils';
 
 const route = useRoute();
 const givenRoomId: Ref<string> = ref((route.query.roomId) as string);
@@ -30,8 +30,9 @@ const userInfo = reactive({
 });
 
 
-function setTUILiveData(roomOption: Record<string, any>) {
+function setLiveRoomInfo(action: 'createLive', roomOption: Record<string, any>) {
   sessionStorage.setItem('tuiLive-roomInfo', JSON.stringify({
+    action,
     ...roomOption,
   }));
 }
@@ -59,7 +60,7 @@ async function generateRoomId(): Promise<string> {
  * Processing Click [Create Room]
 **/
 async function handleCreateLive(roomOption: Record<string, any>) {
-  setTUILiveData(roomOption);
+  setLiveRoomInfo('createLive',roomOption);
   const roomId = await generateRoomId();
   router.push({
     path: 'live',
@@ -73,7 +74,6 @@ async function handleCreateLive(roomOption: Record<string, any>) {
  * Processing Click [Enter Room]
 **/
 async function handleEnterLive(roomOption: Record<string, any>) {
-  setTUILiveData(roomOption);
   router.push({
     path: 'live',
     query: {
@@ -84,7 +84,7 @@ async function handleEnterLive(roomOption: Record<string, any>) {
 
 function handleUpdateUserName(userName: string) {
   try {
-    const currentUserInfo = JSON.parse(sessionStorage.getItem('tuiLive-userInfo') as string);
+    const currentUserInfo = safelyParse(sessionStorage.getItem('tuiLive-userInfo') as string);
     currentUserInfo.userName = userName;
     sessionStorage.setItem('tuiLive-userInfo', JSON.stringify(currentUserInfo));
   } catch (error) {
@@ -108,9 +108,9 @@ async function handleInit() {
   liveRoom.setTheme(getTheme() as ThemeOption);
   let currentUserInfo = null;
   if (sessionStorage.getItem('tuiLive-userInfo')) {
-    currentUserInfo = JSON.parse(sessionStorage.getItem('tuiLive-userInfo') as string);
+    currentUserInfo = safelyParse(sessionStorage.getItem('tuiLive-userInfo') as string);
   } else {
-    currentUserInfo = await getBasicInfo();
+    currentUserInfo = getBasicInfo();
     currentUserInfo && sessionStorage.setItem('tuiLive-userInfo', JSON.stringify(currentUserInfo));
   }
   userInfo.userId = currentUserInfo?.userId;
@@ -122,8 +122,7 @@ async function handleInit() {
     router.push({
       path: 'live',
       query: {
-        roomId: givenRoomId.value,
-        role: 'audience'
+        roomId: givenRoomId.value
       }
     })
   }
