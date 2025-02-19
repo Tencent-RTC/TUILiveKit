@@ -114,20 +114,19 @@ void login() async {
     return;
   }
   isLogin = true;
-  // 初始化
   var initResult = await TencentImSDKPlugin.v2TIMManager.initSDK(
     sdkAppID: GenerateTestUserSig.sdkAppId,
     loglevel: LogLevelEnum.V2TIM_LOG_INFO,
     listener: V2TimSDKListener(),
   );
-  debugPrint("BarrageManager init结果：${initResult.code}-${initResult.desc}");
+  debugPrint("BarrageManager init：${initResult.code}-${initResult.desc}");
 
   if (initResult.code == 0) {
     V2TimCallback imLoginResult = await TencentImSDKPlugin.v2TIMManager.login(
       userID: '1236666',
       userSig: GenerateTestUserSig.genTestSig('1236666'),
     );
-    debugPrint("BarrageManager im登陆结果：${imLoginResult.code}-${imLoginResult.desc}");
+    debugPrint("BarrageManager im：${imLoginResult.code}-${imLoginResult.desc}");
 
     var result = await TUIRoomEngine.login(
       GenerateTestUserSig.sdkAppId,
@@ -136,7 +135,6 @@ void login() async {
     );
     debugPrint("BarrageManager roomEngine login Result：${result.code}-${result.message}");
 
-    // 测试收礼物
     TUIRoomInfo roomInfo = TUIRoomInfo(roomId: "live_1236666");
     roomInfo.roomType = TUIRoomType.livingRoom;
     final createRoomResult = await TUIRoomEngine.sharedInstance().createRoom(roomInfo);

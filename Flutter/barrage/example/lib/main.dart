@@ -67,7 +67,7 @@ class MyApp extends StatelessWidget {
                         barrage.user = user;
                         displayController.insertMessage(barrage);
                       },
-                      child: const Text("发送礼物"),
+                      child: const Text("send gift"),
                     )),
               ],
             );
@@ -78,20 +78,19 @@ class MyApp extends StatelessWidget {
   }
 
   void login() async {
-    // 初始化
     var initResult = await TencentImSDKPlugin.v2TIMManager.initSDK(
-      sdkAppID: GenerateTestUserSig.sdkAppId, // 请替换为您的SDKAPPID
-      loglevel: LogLevelEnum.V2TIM_LOG_INFO, // 日志登记等级
-      listener: V2TimSDKListener(), // 事件监听器。使用弹幕聊天时，这里传空对象即可。
+      sdkAppID: GenerateTestUserSig.sdkAppId,
+      loglevel: LogLevelEnum.V2TIM_LOG_INFO,
+      listener: V2TimSDKListener(),
     );
-    debugPrint("BarrageManager init结果：${initResult.code}-${initResult.desc}");
+    debugPrint("BarrageManager init result：${initResult.code}-${initResult.desc}");
 
     if (initResult.code == 0) {
       V2TimCallback imLoginResult = await TencentImSDKPlugin.v2TIMManager.login(
         userID: '1236666',
         userSig: GenerateTestUserSig.genTestSig('1236666'),
       );
-      debugPrint("BarrageManager im登陆结果：${imLoginResult.code}-${imLoginResult.desc}");
+      debugPrint("BarrageManager im login result：${imLoginResult.code}-${imLoginResult.desc}");
 
       var result = await TUIRoomEngine.login(
         GenerateTestUserSig.sdkAppId,
@@ -114,7 +113,7 @@ class MyApp extends StatelessWidget {
 
         Barrage barrage = Barrage();
         barrage.user = barrageUser;
-        barrage.content = "进入房间";
+        barrage.content = "enter room";
         displayController.insertMessage(barrage);
       }));
     }
@@ -125,7 +124,7 @@ class GiftBarrageItemBuilder extends CustomBarrageBuilder {
   @override
   Widget buildWidget(BuildContext context, Barrage barrage) {
     return const Text(
-      "收到直播间礼物",
+      "receive gift",
       style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.red),
     );
   }
