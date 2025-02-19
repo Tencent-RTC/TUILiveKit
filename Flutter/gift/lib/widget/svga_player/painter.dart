@@ -131,7 +131,6 @@ class SVGAPainter extends CustomPainter {
 
     final bitmapPaint = Paint();
     bitmapPaint.filterQuality = filterQuality;
-    //解决bitmap锯齿问题
     bitmapPaint.isAntiAlias = true;
     bitmapPaint.color = Color.fromARGB(alpha, 0, 0, 0);
 
