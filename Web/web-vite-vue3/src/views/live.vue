@@ -6,19 +6,21 @@
 import { onMounted, onUnmounted } from 'vue';
 import { LiveMainView, liveRoom, RoomEvent, LanguageOption, ThemeOption } from '@tencentcloud/livekit-web-vue3';
 import { onBeforeRouteLeave, useRoute } from 'vue-router';
+import { getBasicInfo } from '@/config/basic-info-config';
 import router from '@/router';
 import i18n, { useI18n } from '../locales/index';
-import { getLanguage, getTheme } from '../utils/utils';
+import { getLanguage, getTheme, safelyParse } from '../utils/utils';
 
 const route = useRoute();
 const { t } = useI18n();
 const roomInfo = sessionStorage.getItem('tuiLive-roomInfo');
 const userInfo = sessionStorage.getItem('tuiLive-userInfo');
 const roomId = String(route.query.roomId);
+const isAnchor = safelyParse(roomInfo as string)?.action === 'createLive';
+let isExpectedJump = false;
+
 liveRoom.setLanguage(getLanguage() as LanguageOption);
 liveRoom.setTheme(getTheme() as ThemeOption);
-let isAnchor = String(route.query.role) !== 'audience';
-let isExpectedJump = false;
 
 if (!roomId) {
   router.push({ path: 'home' });
@@ -29,32 +31,48 @@ if (!roomId) {
 }
 
 async function handleAnchorInitLogic() {
-  const { isSeatEnabled, roomParam, hasCreated } = JSON.parse(roomInfo as string);
-  const { sdkAppId, userId, userSig, userName, avatarUrl } = JSON.parse(userInfo as string);
+  const { roomParam, hasCreated } = safelyParse(roomInfo as string);
+  const { sdkAppId, userId, userSig, userName, avatarUrl } = safelyParse(userInfo as string);
   try {
     await liveRoom.login({ sdkAppId, userId, userSig });
     await liveRoom.setSelfInfo({ userName, avatarUrl });
-    if (!hasCreated) {
+    if (hasCreated) {
+      await liveRoom.join(roomId, roomParam);
+    } else {
       await liveRoom.start(roomId, {
         roomName: `${userName || userId}`,
-        isSeatEnabled,
         ...roomParam,
       });
-      const newRoomInfo = { roomId, roomName: roomId, isSeatEnabled, roomParam, hasCreated: true };
+      const newRoomInfo = { roomId, roomName: userName || userId, roomParam, hasCreated: true };
       sessionStorage.setItem('tuiLive-roomInfo', JSON.stringify(newRoomInfo));
-    } else {
-      await liveRoom.join(roomId, roomParam);
     }
   } catch (error: any) {
-    sessionStorage.removeItem('tuiLive-currentUserInfo');
+    router.push({ path: 'home', query: { roomId } });
+    sessionStorage.removeItem('tuiLive-userInfo');
+    sessionStorage.removeItem('tuiLive-roomInfo');
   }
 }
 
-onMounted(async () => {
+async function handleAudienceInitLogic() {
+  try {
+    const currentUserInfo = JSON.stringify(getBasicInfo());
+    const { sdkAppId, userId, userSig, userName, avatarUrl } = safelyParse(currentUserInfo as string);
+    await liveRoom.login({ sdkAppId, userId, userSig });
+    await liveRoom.setSelfInfo({ userName, avatarUrl });
+    await liveRoom.join(roomId);
+    currentUserInfo && sessionStorage.setItem('tuiLive-userInfo', currentUserInfo);
+  } catch (error: any) {
+    router.push({ path: 'home', query: { roomId } });
+    sessionStorage.removeItem('tuiLive-userInfo');
+    sessionStorage.removeItem('tuiLive-roomInfo');
+  }
+}
+
+onMounted(() => {
   if (isAnchor) {
     handleAnchorInitLogic();
   } else {
-    await liveRoom.join(roomId);
+    handleAudienceInitLogic();
   }
 });
 
@@ -80,7 +98,7 @@ onBeforeRouteLeave((to: any, from: any, next: any) => {
 
 const backToPage = (page: string, shouldClearUserInfo: boolean) => {
   sessionStorage.removeItem('tuiLive-roomInfo');
-  shouldClearUserInfo && sessionStorage.removeItem('tuiLive-currentUserInfo');
+  shouldClearUserInfo && sessionStorage.removeItem('tuiLive-userInfo');
   goToPage(page);
 };
 const backToHome = () => backToPage('home', false);

@@ -1,4 +1,4 @@
-import { isInnerScene } from '../utils/constants';
+import { isNeedLogin } from '../utils/constants';
 import { isMobile } from '@tencentcloud/livekit-web-vue3/es/utils/environment';
 
 class VConsoleOutputLogsPlugin {
@@ -63,7 +63,7 @@ class VConsoleOutputLogsPlugin {
   };
 }
 
-if (isMobile && isInnerScene && !window.VConsole) {
+if (isMobile && !isNeedLogin && !window.VConsole) {
   const script = document.createElement('script');
   script.type = 'text/javascript';
   script.src = 'https://unpkg.com/vconsole@3.14.7/dist/vconsole.min.js';
