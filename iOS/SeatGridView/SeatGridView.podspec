@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
   s.dependency 'TUICore'
   s.dependency 'SnapKit'
   s.dependency 'RTCCommon', '>= 1.1.0'
-  s.dependency 'Kingfisher', '<= 6.3.1'
+  s.dependency 'Kingfisher'
   
   s.default_subspec = 'Professional'
   
