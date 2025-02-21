@@ -18,7 +18,7 @@ Pod::Spec.new do |spec|
 
   spec.dependency 'SnapKit'
   spec.dependency 'TUICore'
-  spec.dependency 'Kingfisher', '<= 6.3.1'
+  spec.dependency 'Kingfisher'
   spec.dependency 'SVGAPlayer', '~> 2.5.7'
   spec.dependency 'Protobuf', '~> 3.22.1'
   spec.dependency 'RTCCommon', '>= 1.0.0'
