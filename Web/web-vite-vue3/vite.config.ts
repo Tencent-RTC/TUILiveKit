@@ -37,10 +37,7 @@ export default defineConfig({
   server: {
     open: true,
     // Solve the problem of infinite page refresh after whistle proxy
-    hmr: {
-      protocol: 'ws',
-      host: '127.0.0.1',
-    },
+    hmr: true,
     proxy: {
       '/api': {
         target: 'https://service.trtc.qcloud.com',
