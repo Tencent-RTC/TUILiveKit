@@ -1,9 +1,9 @@
 <template>
-  <live-main-view></live-main-view>
+  <live-main-view :user-info="basicInfo"></live-main-view>
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue';
+import { onMounted, onUnmounted, reactive } from 'vue';
 import { LiveMainView, liveRoom, RoomEvent, LanguageOption, ThemeOption } from '@tencentcloud/livekit-web-vue3';
 import { onBeforeRouteLeave, useRoute } from 'vue-router';
 import { getBasicInfo } from '@/config/basic-info-config';
@@ -19,6 +19,12 @@ const roomId = String(route.query.roomId);
 const isAnchor = safelyParse(roomInfo as string)?.action === 'createLive';
 let isExpectedJump = false;
 
+const basicInfo = reactive({
+  userId: '',
+  userName: '',
+  avatarUrl: '',
+});
+
 liveRoom.setLanguage(getLanguage() as LanguageOption);
 liveRoom.setTheme(getTheme() as ThemeOption);
 
@@ -33,6 +39,7 @@ if (!roomId) {
 async function handleAnchorInitLogic() {
   const { roomParam, hasCreated } = safelyParse(roomInfo as string);
   const { sdkAppId, userId, userSig, userName, avatarUrl } = safelyParse(userInfo as string);
+  saveUserInfoToBasicInfo(userId, userName, avatarUrl);
   try {
     await liveRoom.login({ sdkAppId, userId, userSig });
     await liveRoom.setSelfInfo({ userName, avatarUrl });
@@ -57,6 +64,7 @@ async function handleAudienceInitLogic() {
   try {
     const currentUserInfo = JSON.stringify(getBasicInfo());
     const { sdkAppId, userId, userSig, userName, avatarUrl } = safelyParse(currentUserInfo as string);
+    saveUserInfoToBasicInfo(userId, userName, avatarUrl);
     await liveRoom.login({ sdkAppId, userId, userSig });
     await liveRoom.setSelfInfo({ userName, avatarUrl });
     await liveRoom.join(roomId);
@@ -66,6 +74,12 @@ async function handleAudienceInitLogic() {
     sessionStorage.removeItem('tuiLive-userInfo');
     sessionStorage.removeItem('tuiLive-roomInfo');
   }
+}
+
+function saveUserInfoToBasicInfo(userId: string, userName: string, userAvatar: string) {
+  basicInfo.userId = userId;
+  basicInfo.userName = userName;
+  basicInfo.avatarUrl = userAvatar;
 }
 
 onMounted(() => {
