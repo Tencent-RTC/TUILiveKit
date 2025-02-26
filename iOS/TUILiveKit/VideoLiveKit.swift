@@ -53,7 +53,6 @@ public class VideoLiveKit: NSObject {
             onSuccess?()
             return
         }
-
         vc.stopLive { [weak self] in
             guard let self = self else { return }
             onSuccess?()
@@ -75,17 +74,27 @@ public class VideoLiveKit: NSObject {
     
     @MainActor
     public func leaveLive(onSuccess: TUISuccessBlock?, onError: TUIErrorBlock?) {
-        if let vc = viewController as? TUILiveRoomAudienceViewController {
+        if FloatWindow.shared.isShowingFloatWindow() {
+            FloatWindow.shared.releaseFloatWindow()
+            onSuccess?()
+        } else if let vc = viewController as? TUILiveRoomAudienceViewController {
             vc.leaveLive { [weak self] in
                 guard let self = self else { return }
-                onSuccess?()
+                self.viewController?.dismiss(animated: true)
                 self.viewController = nil
+                onSuccess?()
             } onError: { code, message in
                 onError?(code, message)
             }
-        } else if FloatWindow.shared.isShowingFloatWindow() {
-            guard FloatWindow.shared.getRoomOwnerId() != TUILogin.getUserID() else { return }
-            FloatWindow.shared.releaseFloatWindow()
+        } else if let vc = viewController as? TUILiveRoomAnchorViewController  {
+            vc.getCoreView().leaveLiveStream { [weak self] in
+                guard let self = self else { return }
+                self.viewController?.dismiss(animated: true)
+                self.viewController = nil
+                onSuccess?()
+            } onError: { error, message in
+                onError?(error, message)
+            }
         } else {
             onSuccess?()
         }
