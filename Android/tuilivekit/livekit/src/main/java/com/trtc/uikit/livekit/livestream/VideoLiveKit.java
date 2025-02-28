@@ -13,9 +13,11 @@ public interface VideoLiveKit {
 
     void startLive(String roomId);
 
+    void stopLive(TUIRoomDefine.ActionCallback callback);
+
     void joinLive(String roomId);
 
-    void stopLive(TUIRoomDefine.ActionCallback callback);
+    void leaveLive(TUIRoomDefine.ActionCallback callback);
 
     void enableFollowFeature(boolean enable);
 }
