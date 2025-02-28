@@ -10,11 +10,17 @@ import com.trtc.uikit.livekit.livestream.VideoLiveKit;
 import com.trtc.uikit.livekit.livestream.view.anchor.VideoLiveAnchorActivity;
 import com.trtc.uikit.livekit.livestream.view.audience.VideoLiveAudienceActivity;
 
+import java.lang.ref.WeakReference;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 public class VideoLiveKitImpl implements VideoLiveKit {
 
     private static volatile VideoLiveKitImpl sInstance;
-    private final           Context          mContext;
-    private                 boolean          mEnableFollowFeature = true;
+
+    private final Context                                 mContext;
+    private final List<WeakReference<CallingAPIListener>> mCallingAPIListenerList = new CopyOnWriteArrayList<>();
+    private       boolean                                 mEnableFollowFeature    = true;
 
     private VideoLiveKitImpl(Context context) {
         mContext = context.getApplicationContext();
@@ -52,8 +58,18 @@ public class VideoLiveKitImpl implements VideoLiveKit {
     }
 
     @Override
+    public void leaveLive(TUIRoomDefine.ActionCallback callback) {
+        TUIRoomEngine.sharedInstance().exitRoom(true, callback);
+        notifyLeaveLive();
+        if (FloatWindowManager.getInstance().isShowingFloatWindow()) {
+            FloatWindowManager.getInstance().releaseFloatWindow();
+        }
+    }
+
+    @Override
     public void stopLive(TUIRoomDefine.ActionCallback callback) {
         TUIRoomEngine.sharedInstance().destroyRoom(callback);
+        notifyStopLive();
         if (FloatWindowManager.getInstance().isShowingFloatWindow()) {
             FloatWindowManager.getInstance().releaseFloatWindow();
         }
@@ -66,5 +82,43 @@ public class VideoLiveKitImpl implements VideoLiveKit {
 
     public boolean isEnableFollowFeature() {
         return mEnableFollowFeature;
+    }
+
+    public void addCallingAPIListener(CallingAPIListener listener) {
+        if (listener != null) {
+            mCallingAPIListenerList.add(new WeakReference<>(listener));
+        }
+    }
+
+    public void removeCallingAPIListener(CallingAPIListener listener) {
+        for (WeakReference<CallingAPIListener> listenerWeakReference : mCallingAPIListenerList) {
+            if (listenerWeakReference.get() == listener) {
+                mCallingAPIListenerList.remove(listenerWeakReference);
+            }
+        }
+    }
+
+    public interface CallingAPIListener {
+        void onLeaveLive();
+
+        void onStopLive();
+    }
+
+    private void notifyLeaveLive() {
+        for (WeakReference<CallingAPIListener> listenerWeakReference : mCallingAPIListenerList) {
+            CallingAPIListener callingAPIListener = listenerWeakReference.get();
+            if (callingAPIListener != null) {
+                callingAPIListener.onLeaveLive();
+            }
+        }
+    }
+
+    private void notifyStopLive() {
+        for (WeakReference<CallingAPIListener> listenerWeakReference : mCallingAPIListenerList) {
+            CallingAPIListener callingAPIListener = listenerWeakReference.get();
+            if (callingAPIListener != null) {
+                callingAPIListener.onStopLive();
+            }
+        }
     }
 }

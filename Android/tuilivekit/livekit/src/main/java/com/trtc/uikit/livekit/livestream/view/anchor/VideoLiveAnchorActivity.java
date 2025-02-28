@@ -12,8 +12,9 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.trtc.tuikit.common.FullScreenActivity;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.livestream.view.VideoLiveKitImpl;
 
-public class VideoLiveAnchorActivity extends FullScreenActivity {
+public class VideoLiveAnchorActivity extends FullScreenActivity implements VideoLiveKitImpl.CallingAPIListener {
 
     public static final String INTENT_KEY_ROOM_ID     = "intent_key_room_id";
     public static final String INTENT_KEY_NEED_CREATE = "intent_key_need_create";
@@ -31,9 +32,27 @@ public class VideoLiveAnchorActivity extends FullScreenActivity {
                 CREATE_ROOM : ENTER_ROOM);
         fragmentTransaction.add(R.id.fl_container, anchorFragment);
         fragmentTransaction.commit();
+
+        VideoLiveKitImpl.createInstance(getApplicationContext()).addCallingAPIListener(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        VideoLiveKitImpl.createInstance(getApplicationContext()).removeCallingAPIListener(this);
+        super.onDestroy();
     }
 
     @Override
     public void onBackPressed() {
+    }
+
+    @Override
+    public void onLeaveLive() {
+        finish();
+    }
+
+    @Override
+    public void onStopLive() {
+        finish();
     }
 }

@@ -9,8 +9,9 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.trtc.tuikit.common.FullScreenActivity;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.livestream.view.VideoLiveKitImpl;
 
-public class VideoLiveAudienceActivity extends FullScreenActivity {
+public class VideoLiveAudienceActivity extends FullScreenActivity implements VideoLiveKitImpl.CallingAPIListener {
 
     public static final String INTENT_KEY_ROOM_ID = "intent_key_room_id";
 
@@ -25,9 +26,27 @@ public class VideoLiveAudienceActivity extends FullScreenActivity {
         TUILiveRoomAudienceFragment audienceFragment = new TUILiveRoomAudienceFragment(roomId);
         fragmentTransaction.add(R.id.fl_container, audienceFragment);
         fragmentTransaction.commit();
+
+        VideoLiveKitImpl.createInstance(getApplicationContext()).addCallingAPIListener(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        VideoLiveKitImpl.createInstance(getApplicationContext()).removeCallingAPIListener(this);
+        super.onDestroy();
     }
 
     @Override
     public void onBackPressed() {
+    }
+
+    @Override
+    public void onLeaveLive() {
+        finish();
+    }
+
+    @Override
+    public void onStopLive() {
+        finish();
     }
 }
