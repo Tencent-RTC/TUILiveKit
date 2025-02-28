@@ -106,12 +106,12 @@ extension LSBattleManager {
     }
     
     func onBattleEnded(battleInfo: TUIBattleInfo) {
+        var battleUsers = battleInfo.inviteeList.map { user in
+            return BattleUser(user)
+        }
+        battleUsers.append(BattleUser(battleInfo.inviter))
+        sortedBattleUsersByScore(battleUsers: battleUsers)
         observableState.update { state in
-            var battleUsers = battleInfo.inviteeList.map { user in
-                return BattleUser(user)
-            }
-            battleUsers.append(BattleUser(battleInfo.inviter))
-            state.battleUsers = battleUsers
             state.durationCountDown = 0
             state.isOnDisplayResult = true
             state.isBattleRunning = false
@@ -207,18 +207,26 @@ extension LSBattleManager {
     private func sortedBattleUsersByScore(battleUsers: [BattleUser]) {
         guard !battleUsers.isEmpty else { return }
         observableState.update { state in
-            state.battleUsers = battleUsers
-                .sorted(by: { $0.score > $1.score })
-                .enumerated()
-                .map { (index, user) in
-                    var updatedUser = user
-                    if index > 0 && user.score == battleUsers[index - 1].score {
-                        updatedUser.ranking = battleUsers[index - 1].ranking
-                    } else {
-                        updatedUser.ranking = index + 1
-                    }
-                    return updatedUser
+            // 1. Sort with score
+            // 2. If the second and subsequent shares are the same, the ranking is the same as the previous one, otherwise it is equal to the current number + 1
+            var finalUsers: [BattleUser] = []
+            let sorted = battleUsers.sorted(by: { $0.score > $1.score })
+            for (index, user) in sorted.enumerated() {
+                var updatedUser = user
+                if index > 0 && user.score == sorted[index - 1].score {
+                    updatedUser.ranking = sorted[index - 1].ranking
+                } else {
+                    updatedUser.ranking = index + 1
                 }
+                for battleUser in state.battleUsers {
+                    if battleUser.userId == updatedUser.userId {
+                        updatedUser.rect = battleUser.rect
+                        break
+                    }
+                }
+                finalUsers.append(updatedUser)
+            }
+            state.battleUsers = finalUsers
         }
     }
 }
