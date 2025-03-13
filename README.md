@@ -17,6 +17,10 @@ _[简体中文](README-zh_CN.md) | English_
 - **Interactive Gifts**：We support custom gift animation display, custom settlement of fees, and other functions.
 
 
+## Before getting started
+
+This section shows you the prerequisites you need for building voice chat room.
+[![](./Preview/youtube/android-build-demo.png)](https://www.youtube.com/watch?v=z52EOUEgfgA)
 
 ## Getting Started
 
