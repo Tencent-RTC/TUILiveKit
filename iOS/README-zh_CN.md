@@ -72,5 +72,5 @@ ld: Undefined symbols:
        in TUITool.o
 clang: error: linker command failed with exit code 1 (use -v to see invocation)
 ```
-请参考：[常见问题](https://www.tencentcloud.com/zh/document/product/647/60048?lang=zh&pg=)
+请参考：[常见问题](https://trtc.io/zh/document/60048?platform=ios&product=live&menulabel=uikit)
 
