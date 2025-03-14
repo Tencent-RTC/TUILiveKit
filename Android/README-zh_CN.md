@@ -36,7 +36,7 @@ _简体中文 | [English](README.md)_
 
 ## 常见问题
 
-请参考：[常见问题](https://www.tencentcloud.com/zh/document/product/647/60043)
+请参考：[常见问题](https://trtc.io/zh/document/60043?platform=android&product=live&menulabel=uikit)
 
 #### 1.TUILiveKit 是否可以不引入 IM SDK，只使用 TRTC？
 ```

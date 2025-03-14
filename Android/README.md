@@ -40,7 +40,7 @@ Studio project to be synced, connect to a real device, and click **Run** to try 
 
 ## FAQs
 
-Please refer to: [FAQs](https://www.tencentcloud.com/document/product/647/60043?lang=en&pg=)
+Please refer to: [FAQs](https://trtc.io/document/60043?platform=android&product=live&menulabel=uikit)
 
 #### 1.Can TUILiveKit use TRTC without introducing IM SDK?
 ```
