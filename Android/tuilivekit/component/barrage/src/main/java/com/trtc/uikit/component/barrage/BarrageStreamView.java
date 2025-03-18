@@ -84,9 +84,6 @@ public class BarrageStreamView extends FrameLayout implements IBarrageDisplayVie
     }
 
     private void initState() {
-        if (mBarrageState != null) {
-            return;
-        }
         mBarrageState = BarrageStore.sharedInstance().getBarrageState(mRoomId);
         addObserver();
     }
