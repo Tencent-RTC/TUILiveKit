@@ -17,11 +17,11 @@ class LiveBattleObserver: NSObject, TUILiveBattleObserver {
     
     func onBattleStarted(battleInfo: TUIBattleInfo) {
         DispatchQueue.main.async { [weak self] in
-+           guard let self = self else { return }
-+           context?.observers.notifyBattleObservers(callback: { observer in
+            guard let self = self else { return }
+            context?.observers.notifyBattleObservers(callback: { observer in
                 observer.onBattleStarted(battleInfo: battleInfo)
             })
-+           context?.battleManager.onBattleStarted(battleInfo: battleInfo)
+            context?.battleManager.onBattleStarted(battleInfo: battleInfo)
         }
     }
     
