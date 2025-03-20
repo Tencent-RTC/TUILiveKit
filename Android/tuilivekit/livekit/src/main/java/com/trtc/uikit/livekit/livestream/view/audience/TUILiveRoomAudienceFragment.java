@@ -233,21 +233,21 @@ public class TUILiveRoomAudienceFragment extends Fragment implements ITUINotific
     }
 
     private void fetchLiveList(LiveListViewAdapter.LiveListCallback callback) {
+        Log.i(TAG, "fetchLiveList enableSliding:" + mEnableSliding);
         List<LiveInfo> list = new ArrayList<>();
-        if (!mEnableSliding) {
-            list.add(mLiveInfo);
-            if (callback != null) {
-                callback.onCompleted(list);
-            }
-            return;
-        }
-
         if (mIsFirstIniData) {
             list.add(mLiveInfo);
             if (callback != null) {
                 callback.onCompleted(list);
             }
             mIsFirstIniData = false;
+            return;
+        }
+
+        if (!mEnableSliding) {
+            if (callback != null) {
+                callback.onCompleted(list);
+            }
             return;
         }
 
