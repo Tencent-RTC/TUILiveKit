@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
   s.summary          = 'A plugin of TCEffectPlayer for TUILiveKit.'
   s.homepage         = 'https://github.com/Tencent-RTC/TUILiveKit'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'trtc.io' }
+  s.author           = 'trtc.io'
   s.source           = { :path => './' }
   s.ios.deployment_target = '13.0'
   s.static_framework = true
