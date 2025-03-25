@@ -71,14 +71,9 @@ public class GenerateTestUserSig {
      */
     private static final String SECRETKEY = "";
 
-    public static final  String MAGIC_LICENSE_URL = "";
+    public static final  String TENCENT_EFFECT_LICENSE_URL = "";
 
-    public static final  String MAGIC_LICENSE_KEY = "";
-
-    public static final String TC_EFFECT_PLAYER_LICENSE_URL = "";
-
-    public static final String TC_EFFECT_PLAYER_LICENSE_KEY = "";
-
+    public static final  String TENCENT_EFFECT_LICENSE_KEY = "";
 
     /**
      * Calculating UserSig
