@@ -27,3 +27,8 @@
 -keep class com.trtc.uikit.component.gift.store.model.** { *; }
 -keep class com.squareup.wire.** { *; }
 -keep class com.opensource.svgaplayer.proto.** { *; }
+
+-keep class com.tcmediax.** { *; }
+-keep class com.tencent.** { *; }
+-keep class com.tencent.xmagic.** { *; }
+-keep class androidx.exifinterface.** {*;}

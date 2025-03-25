@@ -1,6 +1,7 @@
 package com.tencent.tcmediax.tceffectplayerkit.core;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.tencent.qcloud.tuicore.interfaces.ITUIService;
@@ -69,6 +70,11 @@ public class TUIEffectPlayerService implements ITUIService {
             if (mCallback != null) {
                 mCallback.onServiceCallback(i, "", null);
             }
+        }
+
+        @Override
+        public void onPlayEvent(int i, Bundle bundle) {
+
         }
     }
 }
