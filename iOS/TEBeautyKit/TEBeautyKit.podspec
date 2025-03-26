@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'TEBeautyKit'
-  s.version          = '1.0.0'
+  s.version          = '1.3.0'
   s.summary          = 'A short description of TEBeautyKit.'
 
 # This description is used to generate tags and improve search results.
@@ -24,7 +24,7 @@ TODO: Add long description of the pod here.
   s.homepage         = 'https://github.com/originleeli@tencent.com/TEBeautyKit'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'originleeli@tencent.com' => 'originleeli@tencent.com' }
-  s.source           = { :http => 'https://liteav.sdk.qcloud.com/app/tuikit/download/release/1.1/TEBeautyKit.zip' }
+  s.source           = { :http => 'https://liteav.sdk.qcloud.com/app/tuikit/download/release/1.3/TEBeautyKit.zip' }
 
   s.ios.deployment_target = '13.0'
   s.static_framework = true
