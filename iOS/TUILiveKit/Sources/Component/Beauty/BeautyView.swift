@@ -29,9 +29,11 @@ let TUICore_TEBeautyService_ProcessVideoFrameWithPixelData = "TUICore_TEBeautySe
 let TUICore_TEBeautyService_ProcessVideoFrame_PixelValue = "TUICore_TEBeautyService_ProcessVideoFrame_PixelValue"
 let TUICore_TEBeautyService_SetPanelLevel = "TUICore_TEBeautyService_SetPanelLevel"
 let TUICore_TEBeautyService_PanelLevel = "TUICore_TEBeautyService_PanelLevel"
+let TUICore_TEBeautyService_CachedBeautyEffect = "TUICore_TEBeautyService_CachedBeautyEffect"
 
 class BeautyView: UIView {
     var backClosure: (()->Void)?
+    var resetBeautyEffectForAdvancedBeauty = true
     private var isAdvancedBeauty = false
     private let roomEngine: TUIRoomEngine
     private lazy var trtcCloud = roomEngine.getTRTCCloud()
@@ -50,6 +52,9 @@ class BeautyView: UIView {
     private var isViewReady = false
     override func didMoveToWindow() {
         super.didMoveToWindow()
+        if isAdvancedBeauty && self.window == nil {
+            TUICore.callService(TUICore_TEBeautyService, method: TUICore_TEBeautyService_CachedBeautyEffect, param: nil)
+        }
         guard !isViewReady else { return }
         constructViewHierarchy()
         activateConstraints()
@@ -70,8 +75,7 @@ class BeautyView: UIView {
     }
     
     private func activateConstraints() {
-        beautyPanel.snp.makeConstraints { [weak self] make in
-            guard let self = self else { return }
+        beautyPanel.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
     }
@@ -88,7 +92,8 @@ class BeautyView: UIView {
     private func getAdvancedBeautyPanel() -> UIView? {
         let beautyPanelList = TUICore.getExtensionList(TUICore_TEBeautyExtension_GetBeautyPanel,
                                                        param: ["width":Screen_Width,
-                                                               "height":205.scale375Height(),])
+                                                               "height":205.scale375Height(),
+                                                               "resetBeautyEffect":resetBeautyEffectForAdvancedBeauty])
         if beautyPanelList.count == 0 {
             return nil
         }
