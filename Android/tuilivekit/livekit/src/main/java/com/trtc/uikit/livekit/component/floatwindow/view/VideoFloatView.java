@@ -8,9 +8,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Observer;
 
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
-import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
 import com.trtc.uikit.livekit.livestream.view.anchor.floatwindow.FloatViewAnchorView;
@@ -61,17 +61,17 @@ public class VideoFloatView extends FrameLayout {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mLiveStreamManager.getUserState().selfInfo.role.observe(mRoleObserver);
-        mLiveStreamManager.getMediaState().isMicrophoneMuted.observe(mMicrophoneMutedObserver);
-        mLiveStreamManager.getMediaState().isCameraOpened.observe(mCameraOpenedObserver);
+        mLiveStreamManager.getUserState().selfInfo.role.observeForever(mRoleObserver);
+        mCoreView.getCoreState().mediaState.isMicrophoneMuted.observeForever(mMicrophoneMutedObserver);
+        mCoreView.getCoreState().mediaState.isCameraOpened.observeForever(mCameraOpenedObserver);
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mLiveStreamManager.getUserState().selfInfo.role.removeObserver(mRoleObserver);
-        mLiveStreamManager.getMediaState().isMicrophoneMuted.removeObserver(mMicrophoneMutedObserver);
-        mLiveStreamManager.getMediaState().isCameraOpened.removeObserver(mCameraOpenedObserver);
+        mCoreView.getCoreState().mediaState.isMicrophoneMuted.removeObserver(mMicrophoneMutedObserver);
+        mCoreView.getCoreState().mediaState.isCameraOpened.removeObserver(mCameraOpenedObserver);
     }
 
     @Override
@@ -85,7 +85,7 @@ public class VideoFloatView extends FrameLayout {
     private boolean isOwner() {
         LiveStreamManager liveStreamManager = mLiveStreamManager;
         if (liveStreamManager != null) {
-            TUIRoomDefine.Role role = liveStreamManager.getUserState().selfInfo.role.get();
+            TUIRoomDefine.Role role = liveStreamManager.getUserState().selfInfo.role.getValue();
             return role == TUIRoomDefine.Role.ROOM_OWNER;
         }
         return false;

@@ -11,11 +11,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.utils.widget.ImageFilterView;
+import androidx.lifecycle.Observer;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
-import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.component.floatwindow.service.FloatWindowManager;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
@@ -24,20 +24,20 @@ import com.trtc.uikit.livekit.livestream.state.RoomState;
 import com.trtc.uikit.livekit.livestream.view.BasicView;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine;
 
-import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class CoHostWidgetsView extends BasicView {
 
-    private       ImageFilterView                 mImageAvatar;
-    private       LinearLayout                    mLayoutUserInfo;
-    private       TextView                        mTextName;
-    private       ImageView                       mImageMuteAudio;
-    private final CoHostWidgetsViewState          mState                          = new CoHostWidgetsViewState();
-    private final Observer<LinkedHashSet<String>> mHasVideoStreamUserListObserver = this::onVideoStreamUserListChange;
-    private final Observer<LinkedHashSet<String>> mHasAudioStreamUserListObserver = this::onAudioStreamUserListChange;
-    private final Observer<List<ConnectionUser>>  mConnectedUsersObserver         = this::onConnectedUsersChange;
-    private final Observer<Boolean>               mFloatWindowModeObserver        = this::onFloatWindowModeObserver;
+    private       ImageFilterView                mImageAvatar;
+    private       LinearLayout                   mLayoutUserInfo;
+    private       TextView                       mTextName;
+    private       ImageView                      mImageMuteAudio;
+    private final CoHostWidgetsViewState         mState                          = new CoHostWidgetsViewState();
+    private final Observer<Set<String>>          mHasVideoStreamUserListObserver = this::onVideoStreamUserListChange;
+    private final Observer<Set<String>>          mHasAudioStreamUserListObserver = this::onAudioStreamUserListChange;
+    private final Observer<List<ConnectionUser>> mConnectedUsersObserver         = this::onConnectedUsersChange;
+    private final Observer<Boolean>              mFloatWindowModeObserver        = this::onFloatWindowModeObserver;
 
     public CoHostWidgetsView(@NonNull Context context) {
         this(context, null);
@@ -93,7 +93,7 @@ public class CoHostWidgetsView extends BasicView {
     }
 
     private void initMuteAudioView() {
-        boolean hasAudioStream = mUserState.hasAudioStreamUserList.get().contains(mState.userId);
+        boolean hasAudioStream = mLiveManager.getCoreState().userState.hasAudioStreamUserList.getValue().contains(mState.userId);
         mImageMuteAudio.setVisibility(hasAudioStream ? GONE : VISIBLE);
     }
 
@@ -112,8 +112,8 @@ public class CoHostWidgetsView extends BasicView {
         if (TextUtils.isEmpty(userId)) {
             return;
         }
-        boolean hasVideoStream = mUserState.hasVideoStreamUserList.get().contains(userId) || mState.hasVideoStream;
-        boolean isPreview = RoomState.LiveStatus.PREVIEWING == mRoomState.liveStatus.get();
+        boolean hasVideoStream = mLiveManager.getCoreState().userState.hasVideoStreamUserList.getValue().contains(userId) || mState.hasVideoStream;
+        boolean isPreview = RoomState.LiveStatus.PREVIEWING == mRoomState.liveStatus.getValue();
         if (isPreview || hasVideoStream) {
             mImageAvatar.setVisibility(GONE);
         } else {
@@ -124,25 +124,25 @@ public class CoHostWidgetsView extends BasicView {
 
     @Override
     protected void addObserver() {
-        mUserState.hasVideoStreamUserList.observe(mHasVideoStreamUserListObserver);
-        mUserState.hasAudioStreamUserList.observe(mHasAudioStreamUserListObserver);
-        mCoHostState.connectedUsers.observe(mConnectedUsersObserver);
-        FloatWindowManager.getInstance().getStore().isShowingFloatWindow.observe(mFloatWindowModeObserver);
+        mLiveManager.getCoreState().userState.hasVideoStreamUserList.observeForever(mHasVideoStreamUserListObserver);
+        mLiveManager.getCoreState().userState.hasAudioStreamUserList.observeForever(mHasAudioStreamUserListObserver);
+        mCoHostState.connectedUsers.observeForever(mConnectedUsersObserver);
+        FloatWindowManager.getInstance().getStore().isShowingFloatWindow.observeForever(mFloatWindowModeObserver);
     }
 
     @Override
     protected void removeObserver() {
-        mUserState.hasVideoStreamUserList.removeObserver(mHasVideoStreamUserListObserver);
-        mUserState.hasAudioStreamUserList.removeObserver(mHasAudioStreamUserListObserver);
+        mLiveManager.getCoreState().userState.hasVideoStreamUserList.removeObserver(mHasVideoStreamUserListObserver);
+        mLiveManager.getCoreState().userState.hasAudioStreamUserList.removeObserver(mHasAudioStreamUserListObserver);
         mCoHostState.connectedUsers.removeObserver(mConnectedUsersObserver);
         FloatWindowManager.getInstance().getStore().isShowingFloatWindow.removeObserver(mFloatWindowModeObserver);
     }
 
-    private void onVideoStreamUserListChange(LinkedHashSet<String> strings) {
+    private void onVideoStreamUserListChange(Set<String> strings) {
         initUserAvatarView();
     }
 
-    private void onAudioStreamUserListChange(LinkedHashSet<String> strings) {
+    private void onAudioStreamUserListChange(Set<String> strings) {
         initMuteAudioView();
     }
 
@@ -156,8 +156,8 @@ public class CoHostWidgetsView extends BasicView {
     }
 
     private void updateVisibility() {
-        if (Boolean.TRUE.equals(FloatWindowManager.getInstance().getStore().isShowingFloatWindow.get())
-                || mCoHostState.connectedUsers.get().isEmpty()) {
+        if (Boolean.TRUE.equals(FloatWindowManager.getInstance().getStore().isShowingFloatWindow.getValue())
+                || mCoHostState.connectedUsers.getValue().isEmpty()) {
             setVisibility(GONE);
         } else {
             setVisibility(VISIBLE);

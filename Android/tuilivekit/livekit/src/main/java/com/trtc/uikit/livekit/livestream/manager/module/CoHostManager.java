@@ -12,8 +12,9 @@ import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.tuikit.common.system.ContextProvider;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.ErrorLocalized;
 import com.trtc.uikit.livekit.livestream.manager.api.ILiveService;
-import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
+import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestream.state.CoHostState;
 import com.trtc.uikit.livekit.livestream.state.LiveState;
 
@@ -30,15 +31,17 @@ public class CoHostManager extends BaseManager {
     }
 
     public List<CoHostState.ConnectionUser> getRecommendedList() {
-        return mCoHostState.recommendUsers.get();
+        return mCoHostState.recommendUsers.getValue();
     }
 
     public void addSendConnectionRequest(CoHostState.ConnectionUser user) {
-        mCoHostState.sentConnectionRequests.add(user);
+        mCoHostState.sentConnectionRequests.getValue().add(user);
+        mCoHostState.sentConnectionRequests.setValue(mCoHostState.sentConnectionRequests.getValue());
     }
 
     public void cleanConnectedUsers() {
-        mCoHostState.connectedUsers.clear();
+        mCoHostState.connectedUsers.getValue().clear();
+        mCoHostState.connectedUsers.setValue(mCoHostState.connectedUsers.getValue());
     }
 
     public void fetchLiveList() {
@@ -50,14 +53,15 @@ public class CoHostManager extends BaseManager {
                     }
 
                     @Override
-                    public void onError(TUICommonDefine.Error error, String s) {
-                        ErrorHandler.onError(error);
+                    public void onError(TUICommonDefine.Error error, String message) {
+                        LiveStreamLog.error(TAG + " fetchLiveList failed:error:" + error + ",errorCode:" + error.getValue() + "message:" + message);
+                        ErrorLocalized.onError(error);
                     }
                 });
     }
 
     public boolean isConnected(String roomId) {
-        for (CoHostState.ConnectionUser connectionUser : mCoHostState.connectedUsers.get()) {
+        for (CoHostState.ConnectionUser connectionUser : mCoHostState.connectedUsers.getValue()) {
             if (TextUtils.equals(connectionUser.roomId, roomId)) {
                 return true;
             }
@@ -84,7 +88,7 @@ public class CoHostManager extends BaseManager {
         removeSendConnectionRequest(invitee.roomId);
         updateRecommendListStatus();
         ToastUtil.toastShortMessage(ContextProvider.getApplicationContext().getResources()
-                .getString(R.string.livekit_connect_request_rejected));
+                .getString(R.string.live_connect_request_rejected));
     }
 
     public void onConnectionRequestTimeout(TUILiveConnectionManager.ConnectionUser inviter,
@@ -102,7 +106,7 @@ public class CoHostManager extends BaseManager {
     }
 
     private void updateRecommendedList(List<TUILiveConnectionManager.ConnectionUser> connectedList) {
-        List<CoHostState.ConnectionUser> recommendList = mCoHostState.recommendUsers.get();
+        List<CoHostState.ConnectionUser> recommendList = mCoHostState.recommendUsers.getValue();
         Iterator<CoHostState.ConnectionUser> iterator = recommendList.iterator();
         while (iterator.hasNext()) {
             CoHostState.ConnectionUser recommendInfo = iterator.next();
@@ -112,32 +116,33 @@ public class CoHostManager extends BaseManager {
                 }
             }
         }
-        mCoHostState.recommendUsers.notifyDataChanged();
+        mCoHostState.recommendUsers.setValue(mCoHostState.recommendUsers.getValue());
     }
 
     private void updateConnectedUsers(List<CoHostState.ConnectionUser> connectedList) {
-        mCoHostState.connectedUsers.get().clear();
-        mCoHostState.connectedUsers.addAll(connectedList);
+        mCoHostState.connectedUsers.getValue().clear();
+        mCoHostState.connectedUsers.getValue().addAll(connectedList);
+        mCoHostState.connectedUsers.setValue(mCoHostState.connectedUsers.getValue());
     }
 
     private void removeSendConnectionRequest(String inviteeRoomId) {
         Iterator<CoHostState.ConnectionUser> iterator =
-                mCoHostState.sentConnectionRequests.get().listIterator();
+                mCoHostState.sentConnectionRequests.getValue().listIterator();
         while (iterator.hasNext()) {
             CoHostState.ConnectionUser user = iterator.next();
             if (TextUtils.equals(user.roomId, inviteeRoomId)) {
                 iterator.remove();
             }
         }
-        mCoHostState.sentConnectionRequests.notifyDataChanged();
+        mCoHostState.sentConnectionRequests.setValue(mCoHostState.sentConnectionRequests.getValue());
     }
 
     private void addReceivedConnectionRequest(CoHostState.ConnectionUser inviter) {
-        mCoHostState.receivedConnectionRequest.set(inviter);
+        mCoHostState.receivedConnectionRequest.setValue(inviter);
     }
 
     public void removeReceivedConnectionRequest() {
-        mCoHostState.receivedConnectionRequest.set(null);
+        mCoHostState.receivedConnectionRequest.setValue(null);
     }
 
     private List<CoHostState.ConnectionUser> convertWithStatus(
@@ -155,9 +160,9 @@ public class CoHostManager extends BaseManager {
     private void addLiveToRecommendList(TUILiveListManager.LiveInfoListResult result,
                                         List<CoHostState.ConnectionUser> list) {
 
-        for (CoHostState.ConnectionUser user : mCoHostState.recommendUsers.get()) {
+        for (CoHostState.ConnectionUser user : mCoHostState.recommendUsers.getValue()) {
             boolean isInviting = false;
-            for (CoHostState.ConnectionUser requestUser : mCoHostState.sentConnectionRequests.get()) {
+            for (CoHostState.ConnectionUser requestUser : mCoHostState.sentConnectionRequests.getValue()) {
                 if (user.roomId.equals(requestUser.roomId)) {
                     user.connectionStatus = INVITING;
                     isInviting = true;
@@ -181,7 +186,7 @@ public class CoHostManager extends BaseManager {
     }
 
     private boolean isInviting(String roomId) {
-        for (CoHostState.ConnectionUser inviteUser : mCoHostState.sentConnectionRequests.get()) {
+        for (CoHostState.ConnectionUser inviteUser : mCoHostState.sentConnectionRequests.getValue()) {
             if (TextUtils.equals(inviteUser.roomId, roomId)) {
                 return true;
             }
@@ -190,9 +195,9 @@ public class CoHostManager extends BaseManager {
     }
 
     private void updateRecommendListStatus() {
-        for (CoHostState.ConnectionUser user : mCoHostState.recommendUsers.get()) {
+        for (CoHostState.ConnectionUser user : mCoHostState.recommendUsers.getValue()) {
             boolean isInviting = false;
-            for (CoHostState.ConnectionUser requestUser : mCoHostState.sentConnectionRequests.get()) {
+            for (CoHostState.ConnectionUser requestUser : mCoHostState.sentConnectionRequests.getValue()) {
                 if (user.roomId.equals(requestUser.roomId)) {
                     user.connectionStatus = INVITING;
                     isInviting = true;
@@ -203,11 +208,11 @@ public class CoHostManager extends BaseManager {
                 user.connectionStatus = UNKNOWN;
             }
         }
-        mCoHostState.recommendUsers.notifyDataChanged();
+        mCoHostState.recommendUsers.setValue(mCoHostState.recommendUsers.getValue());
     }
 
     private void handlerFetchLiveListSuccess(TUILiveListManager.LiveInfoListResult result) {
-        List<CoHostState.ConnectionUser> list = mCoHostState.recommendUsers.get();
+        List<CoHostState.ConnectionUser> list = mCoHostState.recommendUsers.getValue();
 
         if (TextUtils.isEmpty(mCoHostState.recommendedCursor)) {
             list.clear();
@@ -216,7 +221,7 @@ public class CoHostManager extends BaseManager {
         addLiveToRecommendList(result, list);
 
         mCoHostState.recommendedCursor = result.cursor;
-        mCoHostState.recommendUsers.set(list);
+        mCoHostState.recommendUsers.setValue(list);
     }
 
 }

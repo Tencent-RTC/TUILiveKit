@@ -4,9 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Observer;
 
 import com.tencent.qcloud.tuicore.util.ToastUtil;
-import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.livestream.state.BattleState.BattleUser;
 import com.trtc.uikit.livekit.livestream.state.CoHostState.ConnectionUser;
@@ -36,8 +36,8 @@ public class FloatViewAnchorView extends BasicView {
 
     @Override
     protected void addObserver() {
-        mCoHostState.receivedConnectionRequest.observe(mReceivedConnectRequestObserver);
-        mBattleState.mReceivedBattleRequest.observe(mReceivedBattleRequestObserver);
+        mCoHostState.receivedConnectionRequest.observeForever(mReceivedConnectRequestObserver);
+        mBattleState.mReceivedBattleRequest.observeForever(mReceivedBattleRequestObserver);
     }
 
     @Override
@@ -48,14 +48,14 @@ public class FloatViewAnchorView extends BasicView {
 
     private void onReceivedConnectRequestChange(ConnectionUser receivedConnectionRequest) {
         if (receivedConnectionRequest != null) {
-            String resId = getResources().getString(R.string.livekit_float_window_received_connection_invitation);
+            String resId = getResources().getString(R.string.live_float_window_received_connection_invitation);
             ToastUtil.toastShortMessage(resId);
         }
     }
 
     private void onReceivedBattleRequestChange(BattleUser user) {
         if (user != null) {
-            String resId = getResources().getString(R.string.livekit_float_window_received_battle_invitation);
+            String resId = getResources().getString(R.string.live_float_window_received_battle_invitation);
             ToastUtil.toastShortMessage(resId);
         }
     }

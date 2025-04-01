@@ -1,8 +1,8 @@
 package com.trtc.uikit.livekit.voiceroom.manager.module;
 
 import static com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.KickedOutOfRoomReason.BY_LOGGED_ON_OTHER_DEVICE;
-import static com.trtc.uikit.livekit.voiceroom.api.Constants.EVENT_KEY_LIVE_KIT;
-import static com.trtc.uikit.livekit.voiceroom.api.Constants.EVENT_SUB_KEY_FINISH_ACTIVITY;
+import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.EVENT_KEY_LIVE_KIT;
+import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.EVENT_SUB_KEY_FINISH_ACTIVITY;
 
 import android.text.TextUtils;
 
@@ -16,22 +16,20 @@ import com.tencent.qcloud.tuicore.TUIConfig;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.voiceroom.api.IVoiceRoom;
-import com.trtc.uikit.livekit.voiceroom.api.Logger;
-import com.trtc.uikit.livekit.voiceroom.manager.error.ErrorLocalized;
+import com.trtc.uikit.livekit.common.ErrorLocalized;
+import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
+import com.trtc.uikit.livekit.voiceroom.manager.api.IVoiceRoom;
+import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
 import com.trtc.uikit.livekit.voiceroom.state.RoomState;
 import com.trtc.uikit.livekit.voiceroom.state.VoiceRoomState;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class RoomManager extends BaseManager {
     private static final String FILE = "RoomManager";
-
-    private final List<String> mCategoryList = new ArrayList<>();
 
     public RoomManager(VoiceRoomState state, IVoiceRoom service) {
         super(state, service);
@@ -46,14 +44,14 @@ public class RoomManager extends BaseManager {
         Logger.info(FILE, " initCreateRoomState roomId [roomId: " + roomId + ", roomName:" + roomName + ", "
                 + "seatMode:" + seatMode + ", maxSeatCount:" + maxSeatCount + "]");
         mRoomState.roomId = roomId;
-        mRoomState.roomName.set(roomName);
-        mRoomState.seatMode.set(seatMode);
-        mRoomState.maxSeatCount.set(maxSeatCount);
+        mRoomState.roomName.setValue(roomName);
+        mRoomState.seatMode.setValue(seatMode);
+        mRoomState.maxSeatCount.setValue(maxSeatCount);
         mRoomState.createTime = System.currentTimeMillis();
         mRoomState.ownerInfo.userId = mUserState.selfInfo.userId;
-        mRoomState.ownerInfo.name.set(mUserState.selfInfo.name.get());
-        mRoomState.ownerInfo.avatarUrl.set(mUserState.selfInfo.avatarUrl.get());
-        mUserState.selfInfo.role.set(TUIRoomDefine.Role.ROOM_OWNER);
+        mRoomState.ownerInfo.name.setValue(mUserState.selfInfo.name.getValue());
+        mRoomState.ownerInfo.avatarUrl.setValue(mUserState.selfInfo.avatarUrl.getValue());
+        mUserState.selfInfo.role.setValue(TUIRoomDefine.Role.ROOM_OWNER);
     }
 
     public void updateRoomState(TUIRoomDefine.RoomInfo roomInfo) {
@@ -64,35 +62,27 @@ public class RoomManager extends BaseManager {
         LiveInfo liveInfo = new LiveInfo();
         liveInfo.roomInfo = new TUIRoomDefine.RoomInfo();
         liveInfo.roomInfo.roomId = mRoomState.roomId;
-        liveInfo.coverUrl = mRoomState.coverURL.get();
-        liveInfo.backgroundUrl = mRoomState.backgroundURL.get();
-        liveInfo.isPublicVisible = RoomState.LiveStreamPrivacyStatus.PUBLIC == mRoomState.liveExtraInfo.liveMode.get();
-        String category = mRoomState.liveExtraInfo.category.get();
-        for (int i = 0; i < mCategoryList.size(); i++) {
-            String item = mCategoryList.get(i);
-            if (TextUtils.equals(item, category) && RoomState.LiveCategory.getCategory(i) != null) {
-                liveInfo.categoryList = Collections.singletonList(i);
-                break;
-            }
-        }
+        liveInfo.coverUrl = mRoomState.coverURL.getValue();
+        liveInfo.backgroundUrl = mRoomState.backgroundURL.getValue();
+        liveInfo.isPublicVisible =
+                RoomState.LiveStreamPrivacyStatus.PUBLIC == mRoomState.liveExtraInfo.liveMode.getValue();
         List<LiveModifyFlag> flagList = new ArrayList<>();
         flagList.add(LiveModifyFlag.COVER_URL);
         flagList.add(LiveModifyFlag.PUBLISH);
-        flagList.add(LiveModifyFlag.CATEGORY);
         flagList.add(LiveModifyFlag.BACKGROUND_URL);
         mLiveService.setLiveInfo(liveInfo, flagList, null);
     }
 
     public void updateLiveStatus(RoomState.LiveStatus status) {
-        mRoomState.liveStatus.set(status);
+        mRoomState.liveStatus.setValue(status);
     }
 
     public void getLiveInfo(String roomId) {
         mLiveService.getLiveInfo(roomId, new TUILiveListManager.LiveInfoCallback() {
             @Override
             public void onSuccess(LiveInfo liveInfo) {
-                mRoomState.coverURL.set(liveInfo.coverUrl, false);
-                mRoomState.backgroundURL.set(liveInfo.backgroundUrl, false);
+                mRoomState.coverURL.setValue(liveInfo.coverUrl);
+                mRoomState.backgroundURL.setValue(liveInfo.backgroundUrl);
             }
 
             @Override
@@ -103,7 +93,7 @@ public class RoomManager extends BaseManager {
     }
 
     public void clearLiveState() {
-        mRoomState.liveStatus.set(RoomState.LiveStatus.NONE);
+        mRoomState.liveStatus.setValue(RoomState.LiveStatus.NONE);
     }
 
     public void updateMessageCount(int messageCount) {
@@ -123,22 +113,22 @@ public class RoomManager extends BaseManager {
     }
 
     public void setRoomName(String roomName) {
-        mRoomState.roomName.set(roomName, false);
+        mRoomState.roomName.setValue(roomName);
     }
 
     public void setCoverURL(String url) {
-        mRoomState.coverURL.set(url, false);
+        mRoomState.coverURL.setValue(url);
     }
 
     public void setBackgroundURL(String backgroundURL) {
         if (TextUtils.isEmpty(backgroundURL)) {
             return;
         }
-        if (backgroundURL.equals(mRoomState.backgroundURL.get())) {
+        if (backgroundURL.equals(mRoomState.backgroundURL.getValue())) {
             return;
         }
-        if (mRoomState.liveStatus.get() == RoomState.LiveStatus.PREVIEWING) {
-            mRoomState.backgroundURL.set(backgroundURL, false);
+        if (mRoomState.liveStatus.getValue() == RoomState.LiveStatus.PREVIEWING) {
+            mRoomState.backgroundURL.setValue(backgroundURL);
             return;
         }
 
@@ -151,40 +141,28 @@ public class RoomManager extends BaseManager {
         mLiveService.setLiveInfo(liveInfo, flagList, new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
-                mRoomState.backgroundURL.set(backgroundURL, false);
+                mRoomState.backgroundURL.setValue(backgroundURL);
             }
 
             @Override
-            public void onError(TUICommonDefine.Error error, String s) {
+            public void onError(TUICommonDefine.Error error, String message) {
+                LiveStreamLog.error(FILE + " setLiveInfo failed:error:" + error + ",errorCode:" + error.getValue() +
+                        "message:" + message);
                 ErrorLocalized.onError(error);
             }
         });
     }
 
     public String getDefaultRoomName() {
-        if (TextUtils.isEmpty(mUserState.selfInfo.name.get())) {
+        if (TextUtils.isEmpty(mUserState.selfInfo.name.getValue())) {
             return mUserState.selfInfo.userId;
         } else {
-            return mUserState.selfInfo.name.get();
+            return mUserState.selfInfo.name.getValue();
         }
-    }
-
-    public void setLiveCategoryList(List<String> list) {
-        if (mCategoryList.isEmpty()) {
-            mCategoryList.addAll(list);
-        }
-    }
-
-    public List<String> getLiveCategoryList() {
-        return mCategoryList;
-    }
-
-    public void setLiveCategory(String category) {
-        mRoomState.liveExtraInfo.category.set(category);
     }
 
     public void updateSeatMode(TUIRoomDefine.SeatMode seatMode) {
-        mRoomState.seatMode.set(seatMode, false);
+        mRoomState.seatMode.setValue(seatMode);
     }
 
     public boolean isOwner() {
@@ -197,7 +175,7 @@ public class RoomManager extends BaseManager {
 
     public void onRoomUserCountChanged(String roomId, int userCount) {
         if (userCount > 0) {
-            mRoomState.userCount.set(userCount - 1);
+            mRoomState.userCount.setValue(userCount - 1);
             if (userCount > mRoomState.liveExtraInfo.maxAudienceCount) {
                 mRoomState.liveExtraInfo.maxAudienceCount = userCount - 1;
             }
@@ -214,10 +192,10 @@ public class RoomManager extends BaseManager {
     private void onLiveInfoChanged(TUILiveListManager.LiveModifyFlag flag, TUILiveListManager.LiveInfo liveInfo) {
         switch (flag) {
             case COVER_URL:
-                mRoomState.coverURL.set(liveInfo.coverUrl, false);
+                mRoomState.coverURL.setValue(liveInfo.coverUrl);
                 break;
             case BACKGROUND_URL:
-                mRoomState.backgroundURL.set(liveInfo.backgroundUrl, false);
+                mRoomState.backgroundURL.setValue(liveInfo.backgroundUrl);
                 break;
             default:
                 break;
@@ -229,7 +207,7 @@ public class RoomManager extends BaseManager {
         Logger.info(FILE, "onKickedOutOfRoom:[roomId:" + roomId + ",reason:" + reason + ",message:"
                 + message + "]");
         if (reason != null && BY_LOGGED_ON_OTHER_DEVICE != reason) {
-            ErrorLocalized.handleMessage(message);
+            ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(R.string.live_kicked_out_of_room_by_owner));
             Map<String, Object> params = new HashMap<>();
             params.put("roomId", roomId);
             TUICore.notifyEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_FINISH_ACTIVITY, params);
@@ -237,7 +215,7 @@ public class RoomManager extends BaseManager {
     }
 
     public void onRoomDismissed(String roomId) {
-        ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(R.string.livekit_room_destroy));
+        ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(R.string.live_room_destroy));
         updateLiveStatus(RoomState.LiveStatus.DASHBOARD);
     }
 }

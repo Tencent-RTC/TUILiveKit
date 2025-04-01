@@ -11,22 +11,22 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.utils.widget.ImageFilterView;
+import androidx.lifecycle.Observer;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
-import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.voiceroom.api.Logger;
+import com.trtc.uikit.livekit.common.ErrorLocalized;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
-import com.trtc.uikit.livekit.voiceroom.manager.error.ErrorLocalized;
+import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
 import com.trtc.uikit.livekit.voiceroom.state.SeatState;
 import com.trtc.uikit.livekit.voiceroom.state.UserState;
 import com.trtc.uikit.livekit.voiceroomcore.SeatGridView;
 
-import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class UserManagerDialog extends PopupDialog {
     private static final String FILE = "UserManagerDialog";
@@ -46,8 +46,9 @@ public class UserManagerDialog extends PopupDialog {
     private ImageView       mImageFollowIcon;
     private View            mUserControllerView;
 
-    private final Observer<Boolean>                           isAudioLockedObserver    = this::updateAudioLockState;
-    private final Observer<LinkedHashSet<UserState.UserInfo>> mMyFollowingUserObserver = this::onMyFollowingUserChanged;
+    private final Observer<Boolean>                 isAudioLockedObserver    = this::updateAudioLockState;
+    private final Observer<String>                  userIdObserver           = this::updateUserIdState;
+    private final Observer<Set<UserState.UserInfo>> mMyFollowingUserObserver = this::onMyFollowingUserChanged;
 
     public UserManagerDialog(@NonNull Context context, VoiceRoomManager voiceRoomManager, SeatGridView seatGridView) {
         super(context);
@@ -64,14 +65,14 @@ public class UserManagerDialog extends PopupDialog {
         if (seatIndex == -1) {
             return;
         }
-        List<SeatState.SeatInfo> seatList = mVoiceRoomManager.getSeatState().seatList.get();
+        List<SeatState.SeatInfo> seatList = mVoiceRoomManager.getSeatState().seatList.getValue();
         if (seatIndex >= seatList.size()) {
             return;
         }
         mSeatInfo = seatList.get(seatIndex);
         if (mSeatInfo != null) {
             updateSeatInfoView();
-            mVoiceRoomManager.getUserManager().checkFollowType(mSeatInfo.userId.get());
+            mVoiceRoomManager.getUserManager().checkFollowType(mSeatInfo.userId.getValue());
         }
     }
 
@@ -95,7 +96,8 @@ public class UserManagerDialog extends PopupDialog {
         rootView.findViewById(R.id.hand_up).setOnClickListener(v -> hangup());
         rootView.findViewById(R.id.mute_container).setOnClickListener(v -> muteSeatAudio());
         mUserControllerView.setVisibility(
-                mVoiceRoomManager.getUserState().selfInfo.role.get() == TUIRoomDefine.Role.ROOM_OWNER ? VISIBLE : GONE);
+                mVoiceRoomManager.getUserState().selfInfo.role.getValue() == TUIRoomDefine.Role.ROOM_OWNER ? VISIBLE
+                        : GONE);
     }
 
     private void bindViewId(View rootView) {
@@ -113,28 +115,30 @@ public class UserManagerDialog extends PopupDialog {
         if (mSeatInfo == null) {
             return;
         }
-        if (TextUtils.isEmpty(mSeatInfo.userId.get())) {
+        if (TextUtils.isEmpty(mSeatInfo.userId.getValue())) {
             return;
         }
-        String avatarUrl = mSeatInfo.avatarUrl.get();
+        String avatarUrl = mSeatInfo.avatarUrl.getValue();
         if (TextUtils.isEmpty(avatarUrl)) {
             mImageHeadView.setImageResource(R.drawable.livekit_ic_avatar);
         } else {
             ImageLoader.load(mContext, mImageHeadView, avatarUrl, R.drawable.livekit_ic_avatar);
         }
-        mUserNameText.setText(mSeatInfo.name.get());
-        mUserIdText.setText(mContext.getString(R.string.livekit_user_id, mSeatInfo.userId.get()));
-        updateAudioLockState(mSeatInfo.isAudioLocked.get());
+        mUserNameText.setText(mSeatInfo.name.getValue());
+        mUserIdText.setText(mContext.getString(R.string.live_user_id, mSeatInfo.userId.getValue()));
+        updateAudioLockState(mSeatInfo.isAudioLocked.getValue());
     }
 
     private void addObserver() {
-        mVoiceRoomManager.getUserState().myFollowingUserList.observe(mMyFollowingUserObserver);
-        mSeatInfo.isAudioLocked.observe(isAudioLockedObserver);
+        mVoiceRoomManager.getUserState().myFollowingUserList.observeForever(mMyFollowingUserObserver);
+        mSeatInfo.isAudioLocked.observeForever(isAudioLockedObserver);
+        mSeatInfo.userId.observeForever(userIdObserver);
     }
 
     private void removeObserver() {
-        mVoiceRoomManager.getUserState().myFollowingUserList.removeObserver(mMyFollowingUserObserver);
+        mVoiceRoomManager.getUserState().myFollowingUserList.observeForever(mMyFollowingUserObserver);
         mSeatInfo.isAudioLocked.removeObserver(isAudioLockedObserver);
+        mSeatInfo.userId.removeObserver(userIdObserver);
     }
 
     private void hangup() {
@@ -147,20 +151,20 @@ public class UserManagerDialog extends PopupDialog {
             if (mSeatInfo == null) {
                 return;
             }
-            if (mVoiceRoomManager.getUserState().myFollowingUserList.get().contains(
-                    new UserState.UserInfo(mSeatInfo.userId.get()))) {
-                mVoiceRoomManager.getUserManager().unfollow(mSeatInfo.userId.get());
+            if (mVoiceRoomManager.getUserState().myFollowingUserList.getValue().contains(
+                    new UserState.UserInfo(mSeatInfo.userId.getValue()))) {
+                mVoiceRoomManager.getUserManager().unfollow(mSeatInfo.userId.getValue());
             } else {
-                mVoiceRoomManager.getUserManager().follow(mSeatInfo.userId.get());
+                mVoiceRoomManager.getUserManager().follow(mSeatInfo.userId.getValue());
             }
         });
     }
 
-    private void onMyFollowingUserChanged(LinkedHashSet<UserState.UserInfo> followUsers) {
+    private void onMyFollowingUserChanged(Set<UserState.UserInfo> followUsers) {
         if (mSeatInfo == null) {
             return;
         }
-        if (followUsers.contains(new UserState.UserInfo(mSeatInfo.userId.get()))) {
+        if (followUsers.contains(new UserState.UserInfo(mSeatInfo.userId.getValue()))) {
             mTextUnfollow.setVisibility(GONE);
             mImageFollowIcon.setVisibility(VISIBLE);
         } else {
@@ -174,8 +178,8 @@ public class UserManagerDialog extends PopupDialog {
             return;
         }
         TUIRoomDefine.SeatLockParams params = new TUIRoomDefine.SeatLockParams();
-        params.lockAudio = !mSeatInfo.isAudioLocked.get();
-        params.lockSeat = mSeatInfo.isLocked.get();
+        params.lockAudio = !mSeatInfo.isAudioLocked.getValue();
+        params.lockSeat = mSeatInfo.isLocked.getValue();
         mSeatGridView.lockSeat(mSeatInfo.index, params, new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
@@ -191,10 +195,16 @@ public class UserManagerDialog extends PopupDialog {
     private void updateAudioLockState(boolean isAudioLocked) {
         if (isAudioLocked) {
             mIvMute.setImageResource(R.drawable.livekit_ic_unmute_microphone);
-            mTvMute.setText(R.string.livekit_cvoiceroom_unmuted_seat);
+            mTvMute.setText(R.string.live_voiceroom_unmuted_seat);
         } else {
             mIvMute.setImageResource(R.drawable.livekit_ic_mute_microphone);
-            mTvMute.setText(R.string.livekit_voiceroom_mute_seat);
+            mTvMute.setText(R.string.live_voiceroom_mute_seat);
+        }
+    }
+
+    private void updateUserIdState(String userId) {
+        if (TextUtils.isEmpty(userId)) {
+            dismiss();
         }
     }
 
@@ -202,7 +212,7 @@ public class UserManagerDialog extends PopupDialog {
         if (mSeatInfo == null) {
             return;
         }
-        mSeatGridView.kickUserOffSeatByAdmin(mSeatInfo.userId.get(), new TUIRoomDefine.ActionCallback() {
+        mSeatGridView.kickUserOffSeatByAdmin(mSeatInfo.userId.getValue(), new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
             }

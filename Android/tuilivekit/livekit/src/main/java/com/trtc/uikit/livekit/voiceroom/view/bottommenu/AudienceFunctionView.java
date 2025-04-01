@@ -1,8 +1,11 @@
 package com.trtc.uikit.livekit.voiceroom.view.bottommenu;
 
+import static com.trtc.uikit.livekit.common.ErrorLocalized.LIVE_SERVER_ERROR_ALREADY_ON_THE_MIC_QUEUE;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
@@ -11,18 +14,18 @@ import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.qcloud.tuicore.TUIConfig;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
-import com.trtc.tuikit.common.livedata.Observer;
-import com.trtc.uikit.component.gift.LikeButton;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.component.gift.GiftButton;
-import com.trtc.uikit.livekit.voiceroom.api.Logger;
+import com.trtc.uikit.livekit.common.ErrorLocalized;
+import com.trtc.uikit.livekit.component.gift.LikeButton;
+import com.trtc.uikit.livekit.component.gift.access.GiftButton;
+import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
-import com.trtc.uikit.livekit.voiceroom.manager.error.ErrorLocalized;
 import com.trtc.uikit.livekit.voiceroom.state.SeatState;
 import com.trtc.uikit.livekit.voiceroom.view.BasicView;
 import com.trtc.uikit.livekit.voiceroomcore.VoiceRoomDefine;
@@ -62,7 +65,7 @@ public class AudienceFunctionView extends BasicView {
 
     @Override
     protected void addObserver() {
-        mSeatState.linkStatus.observe(mLinkStateObserver);
+        mSeatState.linkStatus.observeForever(mLinkStateObserver);
     }
 
     @Override
@@ -72,8 +75,8 @@ public class AudienceFunctionView extends BasicView {
 
     private void initGiftButton() {
         GiftButton giftButton = new GiftButton(mContext);
-        giftButton.init(mRoomState.roomId, mRoomState.ownerInfo.userId, mRoomState.ownerInfo.name.get(),
-                mRoomState.ownerInfo.avatarUrl.get());
+        giftButton.init(mRoomState.roomId, mRoomState.ownerInfo.userId, mRoomState.ownerInfo.name.getValue(),
+                mRoomState.ownerInfo.avatarUrl.getValue());
         giftButton.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.MATCH_PARENT));
         RelativeLayout container = findViewById(R.id.rl_gift);
@@ -91,12 +94,12 @@ public class AudienceFunctionView extends BasicView {
 
     private void initTakeButton() {
         mTakeSeatButton.setOnClickListener(v -> {
-            switch (mSeatState.linkStatus.get()) {
+            switch (mSeatState.linkStatus.getValue()) {
                 case LINKING:
                     leaveSeat();
                     break;
                 case APPLYING:
-                    cancelSeatApplication();
+                    cancelSeatApplication(v);
                     break;
                 default:
                     takeSeat();
@@ -106,6 +109,9 @@ public class AudienceFunctionView extends BasicView {
     }
 
     private void takeSeat() {
+       if (mSeatState.linkStatus.getValue() == SeatState.LinkStatus.APPLYING) {
+           return;
+       }
         mSeatGridView.takeSeat(-1, 60, new VoiceRoomDefine.RequestCallback() {
             @Override
             public void onAccepted(TUIRoomDefine.UserInfo userInfo) {
@@ -116,7 +122,7 @@ public class AudienceFunctionView extends BasicView {
             public void onRejected(TUIRoomDefine.UserInfo userInfo) {
                 mSeatManager.updateLinkState(SeatState.LinkStatus.NONE);
                 ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(
-                        R.string.livekit_voiceroom_take_seat_rejected));
+                        R.string.live_voiceroom_take_seat_rejected));
             }
 
             @Override
@@ -128,13 +134,13 @@ public class AudienceFunctionView extends BasicView {
             public void onTimeout(TUIRoomDefine.UserInfo userInfo) {
                 mSeatManager.updateLinkState(SeatState.LinkStatus.NONE);
                 ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(
-                        R.string.livekit_voiceroom_take_seat_timeout));
+                        R.string.live_voiceroom_take_seat_timeout));
             }
 
             @Override
             public void onError(TUIRoomDefine.UserInfo userInfo, TUICommonDefine.Error error, String message) {
                 Logger.error(FILE, "takeSeat failed,error:" + error + ",message:" + message);
-                if (error != TUICommonDefine.Error.REQUEST_ID_REPEAT) {
+                if (error != TUICommonDefine.Error.REQUEST_ID_REPEAT && error.getValue() != LIVE_SERVER_ERROR_ALREADY_ON_THE_MIC_QUEUE) {
                     mSeatManager.updateLinkState(SeatState.LinkStatus.NONE);
                 }
                 ErrorLocalized.onError(error);
@@ -158,17 +164,20 @@ public class AudienceFunctionView extends BasicView {
         });
     }
 
-    private void cancelSeatApplication() {
+    private void cancelSeatApplication(View view) {
+        view.setEnabled(false);
         mSeatGridView.cancelRequest("", new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
                 mSeatManager.updateLinkState(SeatState.LinkStatus.NONE);
+                view.setEnabled(true);
             }
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
                 Logger.error(FILE, "cancelRequest failed,error:" + error + ",message:" + message);
                 ErrorLocalized.onError(error);
+                view.setEnabled(true);
             }
         });
     }

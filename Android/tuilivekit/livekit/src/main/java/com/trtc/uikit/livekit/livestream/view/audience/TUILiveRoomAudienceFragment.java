@@ -28,13 +28,15 @@ import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
 import com.trtc.tuikit.common.foregroundservice.VideoForegroundService;
 import com.trtc.tuikit.common.system.ContextProvider;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.ErrorLocalized;
 import com.trtc.uikit.livekit.component.floatwindow.service.FloatWindowManager;
 import com.trtc.uikit.livekit.component.liveListviewpager.LiveListViewAdapter;
 import com.trtc.uikit.livekit.component.liveListviewpager.LiveListViewPager;
 import com.trtc.uikit.livekit.component.roomlist.service.RoomListService;
 import com.trtc.uikit.livekit.component.roomlist.store.RoomListState;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
-import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
+import com.trtc.uikit.livekit.livestream.manager.observer.LiveBattleManagerObserver;
+import com.trtc.uikit.livekit.livestream.manager.observer.LiveStreamObserver;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
 import java.util.ArrayList;
@@ -73,7 +75,8 @@ public class TUILiveRoomAudienceFragment extends Fragment implements ITUINotific
 
     public TUILiveRoomAudienceFragment(LiveInfo liveInfo) {
         mLiveInfo = liveInfo;
-        mRoomListState.mLiveList.add(liveInfo);
+        mRoomListState.mLiveList.getValue().add(liveInfo);
+        mRoomListState.mLiveList.setValue(mRoomListState.mLiveList.getValue());
     }
 
     public TUILiveRoomAudienceFragment(String roomId) {
@@ -84,7 +87,8 @@ public class TUILiveRoomAudienceFragment extends Fragment implements ITUINotific
         firstLiveInfo.coverUrl = DEFAULT_COVER_URL;
         firstLiveInfo.isPublicVisible = true;
         mLiveInfo = firstLiveInfo;
-        mRoomListState.mLiveList.add(firstLiveInfo);
+        mRoomListState.mLiveList.getValue().add(firstLiveInfo);
+        mRoomListState.mLiveList.setValue(mRoomListState.mLiveList.getValue());
     }
 
     @Override
@@ -204,6 +208,8 @@ public class TUILiveRoomAudienceFragment extends Fragment implements ITUINotific
         if (liveStreamManager != null && TextUtils.equals(liveStreamManager.getRoomState().roomId,
                 liveInfo.roomInfo.roomId)) {
             liveCoreView = FloatWindowManager.getInstance().getCoreView();
+            FloatWindowManager.getInstance().setCoreView(null);
+            FloatWindowManager.getInstance().setLiveStreamManager(null);
         } else {
             liveStreamManager = new LiveStreamManager();
             liveStreamManager.setRoomId(liveInfo.roomInfo.roomId);
@@ -212,6 +218,10 @@ public class TUILiveRoomAudienceFragment extends Fragment implements ITUINotific
         }
         if (liveCoreView == null) {
             liveCoreView = new LiveCoreView(ContextProvider.getApplicationContext());
+            LiveCoreView coreView = liveCoreView;
+            liveStreamManager.setCoreStateProvider(coreView::getCoreState);
+            liveCoreView.registerConnectionObserver(new LiveStreamObserver(liveStreamManager));
+            liveCoreView.registerBattleObserver(new LiveBattleManagerObserver(liveStreamManager));
         }
         AudienceView audienceView = new AudienceView(requireActivity());
         audienceView.setId(mAudienceViewId);
@@ -270,7 +280,7 @@ public class TUILiveRoomAudienceFragment extends Fragment implements ITUINotific
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
                 Log.e(TAG, "fetchLiveList onError:" + error + ",message:" + message);
-                ErrorHandler.onError(error);
+                ErrorLocalized.onError(error);
                 if (callback != null) {
                     callback.onCompleted(list);
                 }
@@ -282,7 +292,7 @@ public class TUILiveRoomAudienceFragment extends Fragment implements ITUINotific
         Context context = ContextProvider.getApplicationContext();
         VideoForegroundService.start(context,
                 context.getString(context.getApplicationInfo().labelRes),
-                context.getString(R.string.livekit_app_running),
+                context.getString(R.string.live_app_running),
                 0);
     }
 

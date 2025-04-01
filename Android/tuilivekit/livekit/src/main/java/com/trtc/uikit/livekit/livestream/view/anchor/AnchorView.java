@@ -1,11 +1,14 @@
 package com.trtc.uikit.livekit.livestream.view.anchor;
 
-import static com.trtc.uikit.livekit.component.gift.service.GiftConstants.GIFT_COUNT;
-import static com.trtc.uikit.livekit.component.gift.service.GiftConstants.GIFT_ICON_URL;
-import static com.trtc.uikit.livekit.component.gift.service.GiftConstants.GIFT_NAME;
-import static com.trtc.uikit.livekit.component.gift.service.GiftConstants.GIFT_RECEIVER_USERNAME;
-import static com.trtc.uikit.livekit.component.gift.service.GiftConstants.GIFT_VIEW_TYPE;
-import static com.trtc.uikit.livekit.component.gift.service.GiftConstants.GIFT_VIEW_TYPE_1;
+import static com.trtc.uikit.livekit.component.gift.access.service.GiftConstants.GIFT_COUNT;
+import static com.trtc.uikit.livekit.component.gift.access.service.GiftConstants.GIFT_ICON_URL;
+import static com.trtc.uikit.livekit.component.gift.access.service.GiftConstants.GIFT_NAME;
+import static com.trtc.uikit.livekit.component.gift.access.service.GiftConstants.GIFT_RECEIVER_USERNAME;
+import static com.trtc.uikit.livekit.component.gift.access.service.GiftConstants.GIFT_VIEW_TYPE;
+import static com.trtc.uikit.livekit.component.gift.access.service.GiftConstants.GIFT_VIEW_TYPE_1;
+import static com.trtc.uikit.livekit.livestream.manager.Constants.EVENT_KEY_LIVE_KIT;
+import static com.trtc.uikit.livekit.livestream.manager.Constants.EVENT_PARAMS_KEY_USER_INFO;
+import static com.trtc.uikit.livekit.livestream.manager.Constants.EVENT_SUB_KEY_SHOW_CO_GUEST_MANAGE_VIEW;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -21,6 +24,7 @@ import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 
 import com.google.gson.Gson;
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
@@ -29,26 +33,28 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.GetRoomInfoCallback;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.RoomInfo;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.UserInfo;
-import com.trtc.tuikit.common.livedata.Observer;
+import com.tencent.qcloud.tuicore.TUICore;
+import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
 import com.trtc.tuikit.common.system.ContextProvider;
-import com.trtc.tuikit.common.ui.PopupDialog;
-import com.trtc.uikit.component.audiencelist.AudienceListView;
 import com.trtc.uikit.component.barrage.BarrageInputView;
 import com.trtc.uikit.component.barrage.BarrageStreamView;
 import com.trtc.uikit.component.barrage.store.model.Barrage;
-import com.trtc.uikit.component.gift.GiftPlayView;
-import com.trtc.uikit.component.gift.store.model.Gift;
-import com.trtc.uikit.component.gift.store.model.GiftUser;
-import com.trtc.uikit.component.music.MusicPanelView;
-import com.trtc.uikit.component.roominfo.RoomInfoView;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.Constants;
+import com.trtc.uikit.livekit.common.ErrorLocalized;
+import com.trtc.uikit.livekit.common.utils.LiveCoreLogger;
+import com.trtc.uikit.livekit.component.audiencelist.AudienceListView;
 import com.trtc.uikit.livekit.component.floatwindow.service.FloatWindowManager;
-import com.trtc.uikit.livekit.component.gift.service.GiftCacheService;
-import com.trtc.uikit.livekit.component.gift.store.GiftStore;
-import com.trtc.uikit.livekit.component.gift.view.BarrageViewTypeDelegate;
-import com.trtc.uikit.livekit.component.gift.view.GiftBarrageAdapter;
+import com.trtc.uikit.livekit.component.gift.GiftPlayView;
+import com.trtc.uikit.livekit.component.gift.access.service.GiftCacheService;
+import com.trtc.uikit.livekit.component.gift.access.store.GiftStore;
+import com.trtc.uikit.livekit.component.gift.access.view.BarrageViewTypeDelegate;
+import com.trtc.uikit.livekit.component.gift.access.view.GiftBarrageAdapter;
+import com.trtc.uikit.livekit.component.gift.store.model.Gift;
+import com.trtc.uikit.livekit.component.gift.store.model.GiftUser;
+import com.trtc.uikit.livekit.component.roominfo.RoomInfoView;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
-import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
+import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestream.manager.module.DashboardManager;
 import com.trtc.uikit.livekit.livestream.manager.observer.LiveBattleManagerObserver;
 import com.trtc.uikit.livekit.livestream.manager.observer.LiveStreamObserver;
@@ -56,6 +62,7 @@ import com.trtc.uikit.livekit.livestream.state.BattleState;
 import com.trtc.uikit.livekit.livestream.state.CoGuestState;
 import com.trtc.uikit.livekit.livestream.state.CoHostState;
 import com.trtc.uikit.livekit.livestream.state.CoHostState.ConnectionUser;
+import com.trtc.uikit.livekit.livestream.state.MediaState;
 import com.trtc.uikit.livekit.livestream.state.RoomState;
 import com.trtc.uikit.livekit.livestream.state.RoomState.LiveStatus;
 import com.trtc.uikit.livekit.livestream.state.UserState;
@@ -68,23 +75,30 @@ import com.trtc.uikit.livekit.livestream.view.anchor.pushing.EndLiveStreamDialog
 import com.trtc.uikit.livekit.livestream.view.anchor.pushing.battle.AnchorEndBattleDialog;
 import com.trtc.uikit.livekit.livestream.view.anchor.pushing.battle.BattleCountdownDialog;
 import com.trtc.uikit.livekit.livestream.view.anchor.pushing.coguest.AnchorCoGuestManageDialog;
+import com.trtc.uikit.livekit.livestream.view.anchor.pushing.coguest.AnchorManagerDialog;
 import com.trtc.uikit.livekit.livestream.view.anchor.pushing.coguest.ApplyCoGuestFloatView;
 import com.trtc.uikit.livekit.livestream.view.anchor.pushing.cohost.AnchorCoHostManageDialog;
 import com.trtc.uikit.livekit.livestream.view.anchor.pushing.cohost.StandardDialog;
 import com.trtc.uikit.livekit.livestream.view.anchor.pushing.settings.SettingsPanelDialog;
+import com.trtc.uikit.livekit.livestream.view.anchor.pushing.usermanage.UserManagerDialog;
 import com.trtc.uikit.livekit.livestream.view.widgets.battle.BattleInfoView;
 import com.trtc.uikit.livekit.livestream.view.widgets.battle.BattleMemberInfoView;
 import com.trtc.uikit.livekit.livestream.view.widgets.coguest.CoGuestWidgetsView;
 import com.trtc.uikit.livekit.livestream.view.widgets.cohost.CoHostWidgetsView;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine;
-import com.trtc.uikit.livekit.livestreamcore.common.utils.Logger;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @SuppressLint("ViewConstructor")
-public class AnchorView extends BasicView {
+public class AnchorView extends BasicView implements ITUINotification {
+    private static final String TAG = "AnchorView";
 
     private       LiveCoreView                           mLiveCoreView;
     private       FrameLayout                            mLayoutPreview;
@@ -107,24 +121,33 @@ public class AnchorView extends BasicView {
     private       BarrageInputView                       mBarrageInputView;
     private       BarrageStreamView                      mBarrageStreamView;
     private       GiftPlayView                           mGiftPlayView;
-    private       PopupDialog                            mMusicPanelDialog;
     private       ApplyCoGuestFloatView                  mApplyCoGuestFloatView;
     private       StandardDialog                         mProcessConnectionDialog;
     private       StandardDialog                         mProcessBattleDialog;
     private       BattleCountdownDialog                  mBattleCountdownDialog;
+    private       AnchorManagerDialog                    mAnchorManagerDialog;
+    private       UserManagerDialog                      mUserManagerDialog;
     private       TUILiveRoomAnchorFragment.RoomBehavior mRoomBehavior;
     private       boolean                                mIsExit                         = false;
-    private final Observer<LiveStatus>                   mLiveStatusObserver             = this::onLiveStatusChange;
+    private       boolean                                mUseCachedCoreView;
+    private final Observer<LiveStatus>                   mLiveStatusObserver             =
+            this::onLiveStatusChange;
     private final Observer<ConnectionUser>               mReceivedConnectRequestObserver =
             this::onReceivedCoHostRequest;
-    private final Observer<List<ConnectionUser>>         mConnectedObserver              = this::onConnectedUserChange;
-    private final Observer<List<CoGuestState.SeatInfo>>  mCoGuestUserObserver            = this::onCoGuestUserChange;
-    private final Observer<Boolean>                      mBattleStartObserver            = this::onBattleStartChange;
-    private final Observer<Boolean>                      mBattleResultDisplayObserver    = this::onBattleResultDisplay;
-    private final Observer<UserState.UserInfo>           mEnterUserObserver              = this::onEnterUserChange;
+    private final Observer<List<ConnectionUser>>         mConnectedObserver              =
+            this::onConnectedUserChange;
+    private final Observer<List<CoGuestState.SeatInfo>>  mCoGuestUserObserver            =
+            this::onCoGuestUserChange;
+    private final Observer<Boolean>                      mBattleStartObserver            =
+            this::onBattleStartChange;
+    private final Observer<Boolean>                      mBattleResultDisplayObserver    =
+            this::onBattleResultDisplay;
+    private final Observer<UserState.UserInfo>           mEnterUserObserver              =
+            this::onEnterUserChange;
     private final Observer<BattleState.BattleUser>       mReceivedBattleRequestObserver  =
             this::onReceivedBattleRequestChange;
-    private final Observer<Boolean>                      mInWaitingObserver              = this::onInWaitingChange;
+    private final Observer<Boolean>                      mInWaitingObserver              =
+            this::onInWaitingChange;
 
     public AnchorView(@NonNull Context context) {
         this(context, null);
@@ -141,6 +164,10 @@ public class AnchorView extends BasicView {
     public void init(LiveStreamManager liveStreamManager, TUILiveRoomAnchorFragment.RoomBehavior behavior) {
         mRoomBehavior = behavior;
         init(liveStreamManager);
+    }
+
+    public LiveCoreViewDefine.CoreState getCoreState() {
+        return mLiveCoreView.getCoreState();
     }
 
     public void destroy() {
@@ -181,6 +208,16 @@ public class AnchorView extends BasicView {
         mRoomInfoView = findViewById(R.id.room_info_view);
         mApplyCoGuestFloatView = findViewById(R.id.rl_apply_link_audience);
         mGiftPlayView = findViewById(R.id.gift_play_view);
+
+        mLiveCoreView = FloatWindowManager.getInstance().getCoreView();
+        if (mLiveCoreView == null) {
+            mLiveCoreView = new LiveCoreView(ContextProvider.getApplicationContext());
+        } else {
+            mUseCachedCoreView = true;
+            FloatWindowManager.getInstance().setCoreView(null);
+        }
+        FrameLayout frameLayout = findViewById(R.id.lsv_video_view_container);
+        frameLayout.addView(mLiveCoreView);
     }
 
     @Override
@@ -197,31 +234,48 @@ public class AnchorView extends BasicView {
         });
     }
 
+    private void showCoGuestManageDialog(UserInfo userInfo) {
+        if (mRoomState.liveStatus.getValue() == RoomState.LiveStatus.PREVIEWING) {
+            return;
+        }
+
+        if (userInfo == null) {
+            return;
+        }
+        if (TextUtils.isEmpty(userInfo.userId)) {
+            return;
+        }
+
+        if (mAnchorManagerDialog == null) {
+            mAnchorManagerDialog = new AnchorManagerDialog(mContext, mLiveManager, mLiveCoreView);
+        }
+        mAnchorManagerDialog.init(userInfo);
+        mAnchorManagerDialog.show();
+    }
+
     private void initLiveCoreView() {
-        if (mLiveCoreView == null) {
-            mLiveCoreView = FloatWindowManager.getInstance().getCoreView();
-            if (mLiveCoreView == null) {
-                mLiveCoreView = new LiveCoreView(ContextProvider.getApplicationContext());
-                mLiveCoreView.registerConnectionObserver(new LiveStreamObserver(mLiveManager));
-                mLiveCoreView.registerBattleObserver(new LiveBattleManagerObserver(mLiveManager));
-            } else {
-                FloatWindowManager.getInstance().setCoreView(null);
-            }
-            FrameLayout frameLayout = findViewById(R.id.lsv_video_view_container);
-            frameLayout.addView(mLiveCoreView);
+        setComponent();
+        if (!mUseCachedCoreView) {
+            mLiveCoreView.registerConnectionObserver(new LiveStreamObserver(mLiveManager));
+            mLiveCoreView.registerBattleObserver(new LiveBattleManagerObserver(mLiveManager));
         }
         mLiveCoreView.setVideoViewAdapter(new LiveCoreViewDefine.VideoViewAdapter() {
             @Override
             public View createCoGuestView(UserInfo userInfo) {
                 CoGuestWidgetsView coGuestWidgetsView = new CoGuestWidgetsView(getContext());
                 coGuestWidgetsView.init(mLiveManager, userInfo);
+                coGuestWidgetsView.setOnClickListener(v -> {
+                    Map<String, Object> params = new HashMap<>();
+                    params.put(EVENT_PARAMS_KEY_USER_INFO, userInfo);
+                    TUICore.notifyEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_SHOW_CO_GUEST_MANAGE_VIEW, params);
+                });
                 return coGuestWidgetsView;
             }
 
             @Override
             public void updateCoGuestView(View coGuestView, UserInfo userInfo,
                                           List<LiveCoreViewDefine.UserInfoModifyFlag> modifyFlag) {
-                Logger.info("Anchor initLiveCoreView updateCoGuestView: userInfo = " + new Gson().toJson(userInfo)
+                LiveCoreLogger.info("Anchor initLiveCoreView updateCoGuestView: userInfo = " + new Gson().toJson(userInfo)
                         + ",modifyFlag = " + new Gson().toJson(modifyFlag) + ",coGuestView = " + coGuestView);
             }
 
@@ -235,7 +289,7 @@ public class AnchorView extends BasicView {
             @Override
             public void updateCoHostView(View coHostView, LiveCoreViewDefine.CoHostUser coHostUser,
                                          List<LiveCoreViewDefine.UserInfoModifyFlag> modifyFlag) {
-                Logger.info("Anchor initLiveCoreView updateCoHostView: coHostUser = " + new Gson().toJson(coHostUser)
+                LiveCoreLogger.info("Anchor initLiveCoreView updateCoHostView: coHostUser = " + new Gson().toJson(coHostUser)
                         + ",modifyFlag = " + new Gson().toJson(modifyFlag) + ",coHostView = " + coHostView);
             }
 
@@ -265,9 +319,18 @@ public class AnchorView extends BasicView {
             }
         });
 
-        boolean isFrontCamera = mLiveCoreView.getMediaManager().mMediaState.isFrontCamera.get();
-        mLiveCoreView.startCamera(isFrontCamera, null);
-        mLiveCoreView.startMicrophone(null);
+        boolean isFrontCamera = Boolean.TRUE.equals(mLiveCoreView.getCoreState().mediaState.isFrontCamera.getValue());
+        mLiveCoreView.startCamera(isFrontCamera, new TUIRoomDefine.ActionCallback() {
+            @Override
+            public void onSuccess() {
+                mLiveCoreView.startMicrophone(null);
+            }
+
+            @Override
+            public void onError(TUICommonDefine.Error error, String message) {
+                mLiveCoreView.startMicrophone(null);
+            }
+        });
         if (mRoomBehavior == TUILiveRoomAnchorFragment.RoomBehavior.ENTER_ROOM) {
             mLayoutPushing.setVisibility(VISIBLE);
             mUserManager.initSelfUserData();
@@ -280,14 +343,11 @@ public class AnchorView extends BasicView {
                     mUserManager.getAudienceList();
                     mUserManager.updateOwnerUserInfo();
                     mCoGuestManager.getSeatList();
-                    if (mUserState.selfInfo.role.get() == TUIRoomDefine.Role.ROOM_OWNER) {
-                        mCoGuestManager.getSeatApplicationList();
-                    }
                 }
 
                 @Override
                 public void onError(TUICommonDefine.Error error, String message) {
-                    ErrorHandler.onError(error);
+                    ErrorLocalized.onError(error);
                     removeAllViews();
                     if (mContext instanceof Activity) {
                         ((Activity) mContext).finish();
@@ -297,12 +357,23 @@ public class AnchorView extends BasicView {
         }
     }
 
+    private void setComponent() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("api", "component");
+            jsonObject.put("component", Constants.DATA_REPORT_COMPONENT_LIVE_ROOM);
+            LiveCoreView.callExperimentalAPI(jsonObject.toString());
+        } catch (JSONException e) {
+            LiveCoreLogger.error("dataReport:" + e);
+        }
+    }
+
     private void initComponentView() {
-        if (mRoomState.liveStatus.get() == RoomState.LiveStatus.PREVIEWING) {
+        if (mRoomState.liveStatus.getValue() == RoomState.LiveStatus.PREVIEWING) {
             initPreviewStatus();
-        } else if (mRoomState.liveStatus.get() == RoomState.LiveStatus.PUSHING) {
+        } else if (mRoomState.liveStatus.getValue() == RoomState.LiveStatus.PUSHING) {
             initPushingStatus();
-        } else if (mRoomState.liveStatus.get() == RoomState.LiveStatus.DASHBOARD) {
+        } else if (mRoomState.liveStatus.getValue() == RoomState.LiveStatus.DASHBOARD) {
             initDashboardStatus();
         }
     }
@@ -343,7 +414,6 @@ public class AnchorView extends BasicView {
         initCoHostView();
         initBattleView();
         initSettingsPanel();
-        initMusicView();
         initApplyCoGuestFloatView();
         initGiftPlayView();
     }
@@ -360,18 +430,6 @@ public class AnchorView extends BasicView {
         });
     }
 
-    private void initMusicView() {
-        findViewById(R.id.v_music).setOnClickListener(view -> {
-            if (mMusicPanelDialog == null) {
-                mMusicPanelDialog = new PopupDialog(mContext);
-                MusicPanelView musicListPanelView = new MusicPanelView(mContext);
-                musicListPanelView.init(mRoomState.roomId);
-                mMusicPanelDialog.setView(musicListPanelView);
-            }
-            mMusicPanelDialog.show();
-        });
-    }
-
     private void initStartLiveView() {
         mButtonStartLive.setOnClickListener((View view) -> {
             if (!view.isEnabled()) {
@@ -380,7 +438,7 @@ public class AnchorView extends BasicView {
             view.setEnabled(false);
             RoomInfo roomInfo = new RoomInfo();
             roomInfo.roomId = mRoomState.roomId;
-            roomInfo.name = mRoomState.roomName.get();
+            roomInfo.name = mRoomState.roomName.getValue();
             roomInfo.maxSeatCount = 9;
             mUserManager.initSelfUserData();
             mLayoutPreview.setVisibility(GONE);
@@ -398,14 +456,12 @@ public class AnchorView extends BasicView {
                     mUserManager.getAudienceList();
                     mUserManager.updateOwnerUserInfo();
                     mCoGuestManager.getSeatList();
-                    if (mUserState.selfInfo.role.get() == TUIRoomDefine.Role.ROOM_OWNER) {
-                        mCoGuestManager.getSeatApplicationList();
-                    }
                 }
 
                 @Override
                 public void onError(TUICommonDefine.Error error, String message) {
-                    ErrorHandler.onError(error);
+                    LiveStreamLog.error(TAG + " startLiveStream failed:error:" + error + ",errorCode:" + error.getValue() + "message:" + message);
+                    ErrorLocalized.onError(error);
                     mLiveManager.getRoomManager().updateLiveStatus(RoomState.LiveStatus.NONE);
                     view.setEnabled(true);
                 }
@@ -423,6 +479,13 @@ public class AnchorView extends BasicView {
 
     private void initAudienceListView() {
         mAudienceListView.init(mRoomState.roomId);
+        mAudienceListView.setOnUserItemClickListener(userInfo -> {
+            if (mUserManagerDialog == null) {
+                mUserManagerDialog = new UserManagerDialog(mContext, mLiveManager);
+            }
+            mUserManagerDialog.init(userInfo);
+            mUserManagerDialog.show();
+        });
     }
 
     private void initEndLiveStreamView() {
@@ -455,6 +518,20 @@ public class AnchorView extends BasicView {
         mBarrageStreamView.init(mRoomState.roomId, mRoomState.ownerInfo.userId);
         mBarrageStreamView.setItemTypeDelegate(new BarrageViewTypeDelegate());
         mBarrageStreamView.setItemAdapter(GIFT_VIEW_TYPE_1, new GiftBarrageAdapter(mContext));
+        mBarrageStreamView.setOnMessageClickListener(userInfo -> {
+            if (TextUtils.isEmpty(userInfo.userId)) {
+                return;
+            }
+            if (userInfo.userId.equals(mUserState.selfInfo.userId)) {
+                return;
+            }
+
+            if (mUserManagerDialog == null) {
+                mUserManagerDialog = new UserManagerDialog(mContext, mLiveManager);
+            }
+            mUserManagerDialog.init(userInfo);
+            mUserManagerDialog.show();
+        });
     }
 
     private void initCoGuestView() {
@@ -478,13 +555,13 @@ public class AnchorView extends BasicView {
 
     private void initBattleView() {
         mViewBattle.setOnClickListener(view -> {
-            if (Boolean.TRUE.equals(mBattleState.mIsBattleRunning.get())) {
+            if (Boolean.TRUE.equals(mBattleState.mIsBattleRunning.getValue())) {
                 AnchorEndBattleDialog dialog = new AnchorEndBattleDialog(mContext, mLiveManager, mLiveCoreView);
                 dialog.show();
             } else {
                 List<String> list = new ArrayList<>();
                 String selfId = mLiveManager.getUserState().selfInfo.userId;
-                for (CoHostState.ConnectionUser user : mCoHostState.connectedUsers.get()) {
+                for (CoHostState.ConnectionUser user : mCoHostState.connectedUsers.getValue()) {
                     if (!user.userId.equals(selfId)) {
                         list.add(user.userId);
                     }
@@ -501,8 +578,9 @@ public class AnchorView extends BasicView {
                             }
 
                             @Override
-                            public void onError(TUICommonDefine.Error error, String s) {
-                                ErrorHandler.onError(error);
+                            public void onError(TUICommonDefine.Error error, String message) {
+                                LiveStreamLog.error(TAG + " requestBattle failed:error:" + error + ",errorCode:" + error.getValue() + "message:" + message);
+                                ErrorLocalized.onError(error);
                             }
                         });
             }
@@ -529,7 +607,6 @@ public class AnchorView extends BasicView {
                 barrage.user.userId = sender.userId;
                 barrage.user.userName = TextUtils.isEmpty(sender.userName) ? sender.userId : sender.userName;
                 barrage.user.avatarUrl = sender.avatarUrl;
-                barrage.user.level = sender.level;
                 barrage.extInfo.put(GIFT_VIEW_TYPE, GIFT_VIEW_TYPE_1);
                 barrage.extInfo.put(GIFT_NAME, gift.giftName);
                 barrage.extInfo.put(GIFT_COUNT, giftCount);
@@ -553,15 +630,16 @@ public class AnchorView extends BasicView {
 
     @Override
     protected void addObserver() {
-        mRoomState.liveStatus.observe(mLiveStatusObserver);
-        mCoHostState.connectedUsers.observe(mConnectedObserver);
-        mCoHostState.receivedConnectionRequest.observe(mReceivedConnectRequestObserver);
-        mBattleState.mReceivedBattleRequest.observe(mReceivedBattleRequestObserver);
-        mBattleState.mIsBattleRunning.observe(mBattleStartObserver);
-        mBattleState.mIsInWaiting.observe(mInWaitingObserver);
-        mBattleState.mIsOnDisplayResult.observe(mBattleResultDisplayObserver);
-        mUserState.enterUserInfo.observe(mEnterUserObserver);
-        mCoGuestState.connectedUserList.observe(mCoGuestUserObserver);
+        mRoomState.liveStatus.observeForever(mLiveStatusObserver);
+        mCoHostState.connectedUsers.observeForever(mConnectedObserver);
+        mCoHostState.receivedConnectionRequest.observeForever(mReceivedConnectRequestObserver);
+        mBattleState.mReceivedBattleRequest.observeForever(mReceivedBattleRequestObserver);
+        mBattleState.mIsBattleRunning.observeForever(mBattleStartObserver);
+        mBattleState.mIsInWaiting.observeForever(mInWaitingObserver);
+        mBattleState.mIsOnDisplayResult.observeForever(mBattleResultDisplayObserver);
+        mUserState.enterUserInfo.observeForever(mEnterUserObserver);
+        mCoGuestState.connectedUserList.observeForever(mCoGuestUserObserver);
+        TUICore.registerEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_SHOW_CO_GUEST_MANAGE_VIEW, this);
     }
 
     @Override
@@ -575,6 +653,7 @@ public class AnchorView extends BasicView {
         mBattleState.mIsOnDisplayResult.removeObserver(mBattleResultDisplayObserver);
         mUserState.enterUserInfo.removeObserver(mEnterUserObserver);
         mCoGuestState.connectedUserList.removeObserver(mCoGuestUserObserver);
+        TUICore.unRegisterEvent(this);
     }
 
     private void showLiveStreamEndDialog() {
@@ -594,7 +673,7 @@ public class AnchorView extends BasicView {
             return;
         }
         String content = receivedConnectionRequest.userName
-                + getContext().getString(R.string.livekit_connect_inviting_append);
+                + getContext().getString(R.string.live_connect_inviting_append);
         showConnectionRequestDialog(content, receivedConnectionRequest.avatarUrl, receivedConnectionRequest.roomId);
     }
 
@@ -603,14 +682,14 @@ public class AnchorView extends BasicView {
         mProcessConnectionDialog.setContent(content);
         mProcessConnectionDialog.setAvatar(avatarUrl);
 
-        String rejectText = getContext().getString(R.string.livekit_reject);
+        String rejectText = getContext().getString(R.string.live_reject);
         mProcessConnectionDialog.setNegativeText(rejectText, negativeView -> {
             mLiveCoreView.respondToCrossRoomConnection(roomId, false, null);
             mCoHostManager.removeReceivedConnectionRequest();
             mProcessConnectionDialog.dismiss();
         });
 
-        String receiveText = getContext().getString(R.string.livekit_receive);
+        String receiveText = getContext().getString(R.string.live_receive);
         mProcessConnectionDialog.setPositiveText(receiveText, positiveView -> {
             mLiveCoreView.respondToCrossRoomConnection(roomId, true, null);
             mCoHostManager.removeReceivedConnectionRequest();
@@ -640,12 +719,21 @@ public class AnchorView extends BasicView {
         post(() -> {
             enableView(mViewBattle, !connectedList.isEmpty());
             enableView(mViewCoGuest, connectedList.isEmpty());
+            MediaState.VideoEncParams.VideoEncType targetEncType = connectedList.size() >= 2
+                    ? MediaState.VideoEncParams.VideoEncType.SMALL
+                    : MediaState.VideoEncParams.VideoEncType.BIG;
+            mLiveManager.getMediaManager().changeVideoEncParams(targetEncType);
         });
     }
 
     private void onCoGuestUserChange(List<CoGuestState.SeatInfo> seatList) {
         post(() -> {
             enableView(mViewCoHost, seatList.size() <= 1);
+
+            MediaState.VideoEncParams.VideoEncType targetEncType = seatList.size() >= 2
+                    ? MediaState.VideoEncParams.VideoEncType.SMALL
+                    : MediaState.VideoEncParams.VideoEncType.BIG;
+            mLiveManager.getMediaManager().changeVideoEncParams(targetEncType);
         });
     }
 
@@ -657,12 +745,12 @@ public class AnchorView extends BasicView {
         if (user == null) {
             return;
         }
-        String content = user.userName + " " + getContext().getString(R.string.livekit_battle_inviting);
+        String content = user.userName + " " + getContext().getString(R.string.live_battle_inviting);
         mProcessBattleDialog = new StandardDialog(getContext());
         mProcessBattleDialog.setContent(content);
         mProcessBattleDialog.setAvatar(user.avatarUrl);
 
-        String rejectText = getContext().getString(R.string.livekit_reject);
+        String rejectText = getContext().getString(R.string.live_reject);
         mProcessBattleDialog.setNegativeText(rejectText, negativeView -> {
             mProcessBattleDialog.dismiss();
             mProcessBattleDialog = null;
@@ -673,13 +761,14 @@ public class AnchorView extends BasicView {
                 }
 
                 @Override
-                public void onError(TUICommonDefine.Error error, String s) {
-
+                public void onError(TUICommonDefine.Error error, String message) {
+                    LiveStreamLog.error(TAG + " respondToBattle failed:error:" + error + ",errorCode:" + error.getValue() + "message:" + message);
+                    ErrorLocalized.onError(error);
                 }
             });
         });
 
-        String receiveText = getContext().getString(R.string.livekit_receive);
+        String receiveText = getContext().getString(R.string.live_receive);
         mProcessBattleDialog.setPositiveText(receiveText, positiveView -> {
             mProcessBattleDialog.dismiss();
             mProcessBattleDialog = null;
@@ -690,8 +779,9 @@ public class AnchorView extends BasicView {
                 }
 
                 @Override
-                public void onError(TUICommonDefine.Error error, String s) {
-
+                public void onError(TUICommonDefine.Error error, String message) {
+                    LiveStreamLog.error(TAG + " respondToBattle failed:error:" + error + ",errorCode:" + error.getValue() + "message:" + message);
+                    ErrorLocalized.onError(error);
                 }
             });
         });
@@ -723,7 +813,7 @@ public class AnchorView extends BasicView {
     private void onBattleStartChange(Boolean started) {
         if (Boolean.TRUE.equals(started)) {
             mViewBattle.setBackgroundResource(R.drawable.livekit_function_battle_exit);
-            for (BattleState.BattleUser user : mBattleState.mBattledUsers.get()) {
+            for (BattleState.BattleUser user : mBattleState.mBattledUsers.getValue()) {
                 if (TextUtils.equals(mUserState.selfInfo.userId, user.userId)) {
                     enableView(mViewCoHost, false);
                     break;
@@ -751,12 +841,20 @@ public class AnchorView extends BasicView {
     private void onEnterUserChange(UserState.UserInfo userInfo) {
         if (userInfo != null && mBarrageStreamView != null) {
             Barrage barrage = new Barrage();
-            barrage.content = mContext.getString(R.string.livekit_entered_room);
+            barrage.content = mContext.getString(R.string.live_entered_room);
             barrage.user.userId = userInfo.userId;
-            barrage.user.userName = TextUtils.isEmpty(userInfo.name.get()) ? userInfo.userId : userInfo.name.get();
-            barrage.user.avatarUrl = userInfo.avatarUrl.get();
-            barrage.user.level = "32";
+            barrage.user.userName = TextUtils.isEmpty(userInfo.name.getValue()) ? userInfo.userId :
+                    userInfo.name.getValue();
+            barrage.user.avatarUrl = userInfo.avatarUrl.getValue();
             mBarrageStreamView.insertBarrages(barrage);
+        }
+    }
+
+    @Override
+    public void onNotifyEvent(String key, String subKey, Map<String, Object> param) {
+        if (TextUtils.equals(subKey, EVENT_SUB_KEY_SHOW_CO_GUEST_MANAGE_VIEW)) {
+            UserInfo userInfo = (UserInfo)param.get(EVENT_PARAMS_KEY_USER_INFO);
+            showCoGuestManageDialog(userInfo);
         }
     }
 }

@@ -10,7 +10,9 @@ import androidx.annotation.NonNull;
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.ErrorLocalized;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
+import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestream.state.BattleState;
 import com.trtc.uikit.livekit.livestream.state.CoHostState;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
@@ -54,7 +56,7 @@ public final class BattleCountdownDialog extends Dialog {
                 mCountdownView.setText(formatTime(mCountdownValue));
                 mCountdownValue--;
                 if (mCountdownValue < 0) {
-                    cancelBattle();
+                    dismiss();
                     return;
                 }
                 mCountdownView.postDelayed(this, 1000);
@@ -63,7 +65,7 @@ public final class BattleCountdownDialog extends Dialog {
     }
 
     private String formatTip() {
-        String tip = getContext().getString(R.string.livekit_battle_wait_start);
+        String tip = getContext().getString(R.string.live_battle_wait_start);
         StringBuilder tipBuilder = new StringBuilder(tip);
         for (int i = 0; i <= 2 - mCountdownValue % 3; i++) {
             tipBuilder.append(".");
@@ -84,7 +86,7 @@ public final class BattleCountdownDialog extends Dialog {
     private void cancelBattle() {
         List<String> list = new ArrayList<>();
         String selfId = mLiveStreamManager.getUserState().selfInfo.userId;
-        for (CoHostState.ConnectionUser user : mLiveStreamManager.getCoHostState().connectedUsers.get()) {
+        for (CoHostState.ConnectionUser user : mLiveStreamManager.getCoHostState().connectedUsers.getValue()) {
             if (!user.userId.equals(selfId)) {
                 list.add(user.userId);
             }
@@ -98,8 +100,10 @@ public final class BattleCountdownDialog extends Dialog {
             }
 
             @Override
-            public void onError(TUICommonDefine.Error error, String s) {
-
+            public void onError(TUICommonDefine.Error error, String message) {
+                LiveStreamLog.error("BattleCountdownDialog" + " cancelBattle failed:error:" + error + "," +
+                        "errorCode:" + error.getValue() + "message:" + message);
+                ErrorLocalized.onError(error);
             }
         });
     }

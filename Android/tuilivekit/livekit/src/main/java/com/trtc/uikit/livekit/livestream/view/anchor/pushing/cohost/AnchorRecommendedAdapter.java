@@ -17,9 +17,10 @@ import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.ErrorLocalized;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
+import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestream.manager.error.ConnectionErrorHandler;
-import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
 import com.trtc.uikit.livekit.livestream.state.CoHostState;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
@@ -39,7 +40,7 @@ public class AnchorRecommendedAdapter extends RecyclerView.Adapter<AnchorRecomme
         mContext = context;
         mLiveStreamManager = liveStreamManager;
         mLiveStream = liveStream;
-        initData(mLiveStreamManager.getCoHostState().recommendUsers.get());
+        initData(mLiveStreamManager.getCoHostState().recommendUsers.getValue());
     }
 
     @NonNull
@@ -89,10 +90,10 @@ public class AnchorRecommendedAdapter extends RecyclerView.Adapter<AnchorRecomme
 
     private void setConnectionStatus(RecommendViewHolder holder, CoHostState.ConnectionUser recommendUser) {
         if (recommendUser.connectionStatus == CoHostState.ConnectionStatus.INVITING) {
-            holder.textConnect.setText(R.string.livekit_connect_inviting);
+            holder.textConnect.setText(R.string.live_connect_inviting);
             holder.textConnect.setAlpha(0.5f);
         } else {
-            holder.textConnect.setText(R.string.livekit_start_connection);
+            holder.textConnect.setText(R.string.live_start_connection);
             holder.textConnect.setAlpha(1f);
         }
     }
@@ -102,30 +103,33 @@ public class AnchorRecommendedAdapter extends RecyclerView.Adapter<AnchorRecomme
             if (recommendUser.connectionStatus == CoHostState.ConnectionStatus.UNKNOWN) {
                 mLiveStream.requestCrossRoomConnection(recommendUser.roomId, 10,
                         new TUILiveConnectionManager.ConnectionRequestCallback() {
-                    @Override
-                    public void onSuccess(Map<String, TUILiveConnectionManager.ConnectionCode> map) {
-                        if (map != null) {
-                            TUILiveConnectionManager.ConnectionCode code = map.get(recommendUser.roomId);
-                            if (code == TUILiveConnectionManager.ConnectionCode.SUCCESS) {
-                                for (CoHostState.ConnectionUser item :
-                                        mLiveStreamManager.getCoHostState().recommendUsers.get()) {
-                                    if (TextUtils.equals(item.roomId, recommendUser.roomId)) {
-                                        item.connectionStatus = INVITING;
-                                        mLiveStreamManager.getCoHostManager().addSendConnectionRequest(item);
-                                        mLiveStreamManager.getCoHostState().recommendUsers.notifyDataChanged();
+                            @Override
+                            public void onSuccess(Map<String, TUILiveConnectionManager.ConnectionCode> map) {
+                                if (map != null) {
+                                    TUILiveConnectionManager.ConnectionCode code = map.get(recommendUser.roomId);
+                                    if (code == TUILiveConnectionManager.ConnectionCode.SUCCESS) {
+                                        for (CoHostState.ConnectionUser item :
+                                                mLiveStreamManager.getCoHostState().recommendUsers.getValue()) {
+                                            if (TextUtils.equals(item.roomId, recommendUser.roomId)) {
+                                                item.connectionStatus = INVITING;
+                                                mLiveStreamManager.getCoHostManager().addSendConnectionRequest(item);
+                                                mLiveStreamManager.getCoHostState().recommendUsers.setValue(
+                                                        mLiveStreamManager.getCoHostState().recommendUsers.getValue());
+                                            }
+                                        }
+                                    } else {
+                                        ConnectionErrorHandler.onError(code);
                                     }
                                 }
-                            } else {
-                                ConnectionErrorHandler.onError(code);
                             }
-                        }
-                    }
 
-                    @Override
-                    public void onError(TUICommonDefine.Error error, String message) {
-                        ErrorHandler.onError(error);
-                    }
-                });
+                            @Override
+                            public void onError(TUICommonDefine.Error error, String message) {
+                                ErrorLocalized.onError(error);
+                                LiveStreamLog.error("AnchorRecommendedAdapter" + " requestCrossRoomConnection " +
+                                        "failed:error:" + error + "," + "errorCode:" + error.getValue() + "message:" + message);
+                            }
+                        });
             }
         });
     }

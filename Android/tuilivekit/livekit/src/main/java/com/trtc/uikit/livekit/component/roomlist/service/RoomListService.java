@@ -9,14 +9,17 @@ import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfo;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfoListCallback;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfoListResult;
+import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
+import com.trtc.uikit.livekit.common.ErrorLocalized;
 import com.trtc.uikit.livekit.component.roomlist.store.RoomListState;
-import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
+import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RoomListService {
+    private static String TAG = "RoomListService";
 
     private static final int           FETCH_LIST_COUNT = 20;
     public final         RoomListState mRoomListState   = new RoomListState();
@@ -25,14 +28,29 @@ public class RoomListService {
     }
 
     public void refreshFetchList() {
+        if (Boolean.TRUE.equals(mRoomListState.mRefreshStatus.getValue())) {
+            LiveStreamLog.warn(TAG + " refreshFetchList, This operation is repeated");
+            return;
+        }
         mRoomListState.mFetchListCursor = "";
-        mRoomListState.mRefreshStatus.set(true);
+        mRoomListState.mRefreshStatus.setValue(true);
         fetchLiveList(false, null);
     }
 
     public void fetchLiveList(boolean checkFirstExist, LiveListCallback callback) {
-        if (!mRoomListState.mRefreshStatus.get()) {
-            mRoomListState.mRefreshStatus.set(true);
+        TUIRoomDefine.LoginUserInfo userInfo = TUIRoomEngine.getSelfInfo();
+        if (userInfo == null || TextUtils.isEmpty(userInfo.userId)) {
+            LiveStreamLog.warn(TAG + " TUIRoomEngine login first");
+            mRoomListState.mLiveList.setValue(mRoomListState.mLiveList.getValue());
+            mRoomListState.mLoadStatus.setValue(false);
+            mRoomListState.mRefreshStatus.setValue(false);
+            if (callback != null) {
+                callback.onSuccess(mRoomListState.mLiveList.getValue());
+            }
+            return;
+        }
+        if (Boolean.FALSE.equals(mRoomListState.mRefreshStatus.getValue())) {
+            mRoomListState.mRefreshStatus.setValue(true);
         }
         String cursor = mRoomListState.mFetchListCursor;
         TUIRoomEngine engine = TUIRoomEngine.sharedInstance();
@@ -41,7 +59,8 @@ public class RoomListService {
         manager.fetchLiveList(cursor, FETCH_LIST_COUNT, new LiveInfoListCallback() {
             @Override
             public void onSuccess(LiveInfoListResult result) {
-                List<LiveInfo> list = mRoomListState.mLiveList.get();
+                LiveStreamLog.info(TAG + " fetchLiveList onSuccess. result.liveInfoList.size:" + result.liveInfoList.size());
+                List<LiveInfo> list = mRoomListState.mLiveList.getValue();
                 LiveInfo firstInfo = list.isEmpty() ? null : list.get(0);
                 if (TextUtils.isEmpty(cursor)) {
                     list.clear();
@@ -59,23 +78,22 @@ public class RoomListService {
                     resultList.add(liveInfo);
                 }
                 mRoomListState.mFetchListCursor = result.cursor;
-                mRoomListState.mLiveList.set(list);
-                mRoomListState.mLoadStatus.set(false);
-                mRoomListState.mRefreshStatus.set(false);
+                mRoomListState.mLiveList.setValue(list);
+                mRoomListState.mLoadStatus.setValue(false);
+                mRoomListState.mRefreshStatus.setValue(false);
                 if (callback != null) {
                     callback.onSuccess(resultList);
                 }
             }
 
             @Override
-            public void onError(TUICommonDefine.Error error, String s) {
-                mRoomListState.mLoadStatus.set(false);
-                mRoomListState.mRefreshStatus.set(false);
-                if (ErrorHandler.interceptErrorCode(error, s)) {
-                    return;
-                }
+            public void onError(TUICommonDefine.Error error, String message) {
+                mRoomListState.mLoadStatus.setValue(false);
+                mRoomListState.mRefreshStatus.setValue(false);
+                LiveStreamLog.error(TAG + " fetchLiveList failed:error:" + error + ",errorCode:" + error.getValue() + ",message:" + message);
+                ErrorLocalized.onError(error);
                 if (callback != null) {
-                    callback.onError(error, s);
+                    callback.onError(error, message);
                 }
             }
         });

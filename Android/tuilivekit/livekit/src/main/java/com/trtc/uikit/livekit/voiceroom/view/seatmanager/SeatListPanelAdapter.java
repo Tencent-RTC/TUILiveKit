@@ -16,9 +16,9 @@ import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.voiceroom.api.Logger;
+import com.trtc.uikit.livekit.common.ErrorLocalized;
+import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
-import com.trtc.uikit.livekit.voiceroom.manager.error.ErrorLocalized;
 import com.trtc.uikit.livekit.voiceroom.state.SeatState;
 import com.trtc.uikit.livekit.voiceroomcore.SeatGridView;
 
@@ -51,23 +51,23 @@ public class SeatListPanelAdapter extends RecyclerView.Adapter<SeatListPanelAdap
 
     @Override
     public void onBindViewHolder(@NonNull SeatListPanelAdapter.LinkMicViewHolder holder, int position) {
-        if (TextUtils.isEmpty(mData.get(position).name.get())) {
-            holder.textName.setText(mData.get(position).userId.get());
+        if (TextUtils.isEmpty(mData.get(position).name.getValue())) {
+            holder.textName.setText(mData.get(position).userId.getValue());
         } else {
-            holder.textName.setText(mData.get(position).name.get());
+            holder.textName.setText(mData.get(position).name.getValue());
         }
 
-        if (TextUtils.isEmpty(mData.get(position).avatarUrl.get())) {
+        if (TextUtils.isEmpty(mData.get(position).avatarUrl.getValue())) {
             holder.imageHead.setImageResource(R.drawable.livekit_ic_avatar);
         } else {
-            ImageLoader.load(mContext, holder.imageHead, mData.get(position).avatarUrl.get(),
+            ImageLoader.load(mContext, holder.imageHead, mData.get(position).avatarUrl.getValue(),
                     R.drawable.livekit_ic_avatar);
         }
         holder.textSeatIndex.setText(String.valueOf(mData.get(position).index + 1));
         holder.textHangUp.setTag(mData.get(position));
         holder.textHangUp.setOnClickListener((view) -> {
             final SeatState.SeatInfo seatInfo = (SeatState.SeatInfo) view.getTag();
-            mSeatGridView.kickUserOffSeatByAdmin(seatInfo.userId.get(), new TUIRoomDefine.ActionCallback() {
+            mSeatGridView.kickUserOffSeatByAdmin(seatInfo.userId.getValue(), new TUIRoomDefine.ActionCallback() {
                 @Override
                 public void onSuccess() {
 
@@ -85,9 +85,9 @@ public class SeatListPanelAdapter extends RecyclerView.Adapter<SeatListPanelAdap
     private void initData() {
         mData.clear();
         String selfUserId = mVoiceRoomManager.getUserState().selfInfo.userId;
-        List<SeatState.SeatInfo> seatList = mVoiceRoomManager.getSeatState().seatList.get();
+        List<SeatState.SeatInfo> seatList = mVoiceRoomManager.getSeatState().seatList.getValue();
         for (SeatState.SeatInfo seatInfo : seatList) {
-            String userId = seatInfo.userId.get();
+            String userId = seatInfo.userId.getValue();
             if (TextUtils.isEmpty(userId)) {
                 continue;
             }

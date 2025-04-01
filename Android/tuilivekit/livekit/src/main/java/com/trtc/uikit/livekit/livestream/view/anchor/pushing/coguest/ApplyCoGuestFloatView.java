@@ -11,29 +11,29 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 
+import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
-import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
-import com.trtc.uikit.livekit.livestream.state.CoGuestState;
 import com.trtc.uikit.livekit.livestream.view.BasicView;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
-import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @SuppressLint("ViewConstructor")
 public class ApplyCoGuestFloatView extends BasicView {
 
-    private       LinearLayout                                          mLayoutRoot;
-    private       ImageView                                             mImageFirstApplyLinkAudience;
-    private       ImageView                                             mImageSecondApplyLinkAudience;
-    private       RelativeLayout                                        mLayoutSecondApplyLinkAudience;
-    private       RelativeLayout                                        mLayoutEllipsis;
-    private       TextView                                              mTextApplyLinkAudienceCount;
-    private       LiveCoreView                                          mLiveStream;
-    private final Observer<LinkedHashSet<CoGuestState.SeatApplication>> mApplyLinkAudienceListObserver =
+    private       LinearLayout                          mLayoutRoot;
+    private       ImageView                             mImageFirstApplyLinkAudience;
+    private       ImageView                             mImageSecondApplyLinkAudience;
+    private       RelativeLayout                        mLayoutSecondApplyLinkAudience;
+    private       RelativeLayout                        mLayoutEllipsis;
+    private       TextView                              mTextApplyLinkAudienceCount;
+    private       LiveCoreView                          mLiveStream;
+    private final Observer<Set<TUIRoomDefine.UserInfo>> mApplyLinkAudienceListObserver =
             this::onApplyLinkAudienceListChange;
 
     public ApplyCoGuestFloatView(@NonNull Context context) {
@@ -49,8 +49,8 @@ public class ApplyCoGuestFloatView extends BasicView {
     }
 
     public void init(LiveStreamManager manager, LiveCoreView liveStream) {
-        super.init(manager);
         mLiveStream = liveStream;
+        super.init(manager);
     }
 
     @Override
@@ -84,23 +84,23 @@ public class ApplyCoGuestFloatView extends BasicView {
 
     @Override
     protected void addObserver() {
-        mCoGuestState.requestCoGuestList.observe(mApplyLinkAudienceListObserver);
+        mLiveStream.getCoreState().coGuestState.applicantList.observeForever(mApplyLinkAudienceListObserver);
     }
 
     @Override
     protected void removeObserver() {
-        mCoGuestState.requestCoGuestList.removeObserver(mApplyLinkAudienceListObserver);
+        mLiveStream.getCoreState().coGuestState.applicantList.removeObserver(mApplyLinkAudienceListObserver);
     }
 
     private void initApplyLinkAudienceListView() {
-        LinkedHashSet<CoGuestState.SeatApplication> seatApplicationList = mCoGuestState.requestCoGuestList.get();
+        Set<TUIRoomDefine.UserInfo> seatApplicationList = mLiveStream.getCoreState().coGuestState.applicantList.getValue();
         if (!seatApplicationList.isEmpty()) {
             setVisibility(VISIBLE);
         } else {
             setVisibility(GONE);
         }
 
-        final CopyOnWriteArrayList<CoGuestState.SeatApplication> applyLinkAudienceList =
+        final CopyOnWriteArrayList<TUIRoomDefine.UserInfo> applyLinkAudienceList =
                 new CopyOnWriteArrayList<>(seatApplicationList);
         if (seatApplicationList.size() == 1) {
             mLayoutSecondApplyLinkAudience.setVisibility(GONE);
@@ -124,11 +124,11 @@ public class ApplyCoGuestFloatView extends BasicView {
         } else {
             setVisibility(GONE);
         }
-        mTextApplyLinkAudienceCount.setText(mContext.getString(R.string.livekit_link_mic_down_title_popup,
+        mTextApplyLinkAudienceCount.setText(mContext.getString(R.string.live_seat_application_title,
                 seatApplicationList.size()));
     }
 
-    private void onApplyLinkAudienceListChange(LinkedHashSet<CoGuestState.SeatApplication> seatApplications) {
+    private void onApplyLinkAudienceListChange(Set<TUIRoomDefine.UserInfo> applicantList) {
         initApplyLinkAudienceListView();
     }
 }

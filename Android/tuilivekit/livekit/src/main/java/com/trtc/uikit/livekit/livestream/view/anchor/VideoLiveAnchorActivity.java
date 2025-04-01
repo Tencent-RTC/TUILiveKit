@@ -3,6 +3,8 @@ package com.trtc.uikit.livekit.livestream.view.anchor;
 import static com.trtc.uikit.livekit.livestream.view.anchor.TUILiveRoomAnchorFragment.RoomBehavior.CREATE_ROOM;
 import static com.trtc.uikit.livekit.livestream.view.anchor.TUILiveRoomAnchorFragment.RoomBehavior.ENTER_ROOM;
 
+import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.WindowManager;
 
@@ -20,8 +22,18 @@ public class VideoLiveAnchorActivity extends FullScreenActivity implements Video
     public static final String INTENT_KEY_NEED_CREATE = "intent_key_need_create";
 
     @Override
+    protected void attachBaseContext(Context context) {
+        super.attachBaseContext(context);
+        if (context != null) {
+            Configuration configuration = context.getResources().getConfiguration();
+            configuration.fontScale = 1;
+            applyOverrideConfiguration(configuration);
+        }
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(null);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         String roomId = getIntent().getStringExtra(INTENT_KEY_ROOM_ID);
         boolean needCreateRoom = getIntent().getBooleanExtra(INTENT_KEY_NEED_CREATE, true);

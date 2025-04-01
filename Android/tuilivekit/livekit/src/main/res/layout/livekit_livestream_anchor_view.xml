@@ -67,7 +67,7 @@
                 android:layout_marginEnd="24dp"
                 android:layout_marginBottom="60dp"
                 android:background="@drawable/livekit_round_button_background"
-                android:text="@string/livekit_start_live"
+                android:text="@string/live_start_live"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"
                 android:textSize="20sp" />
@@ -87,7 +87,7 @@
                 android:layout_marginEnd="56dp"
                 android:layout_marginBottom="70dp" />
 
-            <com.trtc.uikit.component.gift.GiftPlayView
+            <com.trtc.uikit.livekit.component.gift.GiftPlayView
                 android:id="@+id/gift_play_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
@@ -162,12 +162,6 @@
                         android:layout_height="32dp"
                         android:layout_marginEnd="8dp"
                         android:background="@drawable/livekit_function_settings" />
-
-                    <View
-                        android:id="@+id/v_music"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:background="@drawable/livekit_function_music" />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -180,14 +174,14 @@
                 android:layout_marginEnd="8dp"
                 android:visibility="gone" />
 
-            <com.trtc.uikit.component.roominfo.RoomInfoView
+            <com.trtc.uikit.livekit.component.roominfo.RoomInfoView
                 android:id="@+id/room_info_view"
                 android:layout_width="150dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="57dp" />
 
-            <com.trtc.uikit.component.audiencelist.AudienceListView
+            <com.trtc.uikit.livekit.component.audiencelist.AudienceListView
                 android:id="@+id/audience_list_view"
                 android:layout_width="135dp"
                 android:layout_height="24dp"

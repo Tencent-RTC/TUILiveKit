@@ -11,17 +11,17 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
-import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.voiceroom.api.Logger;
+import com.trtc.uikit.livekit.common.ErrorLocalized;
+import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
-import com.trtc.uikit.livekit.voiceroom.manager.error.ErrorLocalized;
 import com.trtc.uikit.livekit.voiceroom.state.SeatState;
 import com.trtc.uikit.livekit.voiceroomcore.SeatGridView;
 
@@ -81,7 +81,7 @@ public class SeatManagerDialog extends PopupDialog {
         View rootView = View.inflate(mContext, R.layout.livekit_voiceroom_seat_manager_panel, null);
         setView(rootView);
         bindViewId(rootView);
-        mTvTitle.setText(R.string.livekit_link_mic_manager);
+        mTvTitle.setText(R.string.live_link_mic_manager);
         mInviteButton.setOnClickListener(v -> showSeatInvitationPanel());
         showBackButton();
         showEndButton();
@@ -102,9 +102,9 @@ public class SeatManagerDialog extends PopupDialog {
     }
 
     private void addObserver() {
-        mVoiceRoomManager.getSeatState().seatList.observe(mSeatListObserver);
-        mVoiceRoomManager.getSeatState().seatApplicationList.observe(mSeatApplicationListObserver);
-        mVoiceRoomManager.getRoomState().seatMode.observe(mSeatModeObserver);
+        mVoiceRoomManager.getSeatState().seatList.observeForever(mSeatListObserver);
+        mVoiceRoomManager.getSeatState().seatApplicationList.observeForever(mSeatApplicationListObserver);
+        mVoiceRoomManager.getRoomState().seatMode.observeForever(mSeatModeObserver);
     }
 
     private void removeObserver() {
@@ -144,18 +144,18 @@ public class SeatManagerDialog extends PopupDialog {
     }
 
     private void initSeatApplicationTitleView() {
-        if (!mVoiceRoomManager.getSeatState().seatApplicationList.get().isEmpty()) {
+        if (!mVoiceRoomManager.getSeatState().seatApplicationList.getValue().isEmpty()) {
             mSeatApplicationTitle.setVisibility(VISIBLE);
         } else {
             mSeatApplicationTitle.setVisibility(View.GONE);
         }
-        mSeatApplicationTitle.setText(mContext.getString(R.string.livekit_seat_application_title,
-                mVoiceRoomManager.getSeatState().seatApplicationList.get().size()));
+        mSeatApplicationTitle.setText(mContext.getString(R.string.live_seat_application_title,
+                mVoiceRoomManager.getSeatState().seatApplicationList.getValue().size()));
     }
 
 
     private void initNeedRequest() {
-        boolean needRequest = mVoiceRoomManager.getRoomState().seatMode.get() == TUIRoomDefine.SeatMode.APPLY_TO_TAKE;
+        boolean needRequest = mVoiceRoomManager.getRoomState().seatMode.getValue() == TUIRoomDefine.SeatMode.APPLY_TO_TAKE;
         mSwitchNeedRequest.setChecked(needRequest);
         mSwitchNeedRequest.setOnCheckedChangeListener((compoundButton, enable) -> onSeatModeClicked(enable));
     }
@@ -167,8 +167,8 @@ public class SeatManagerDialog extends PopupDialog {
             mSeatListTitle.setVisibility(View.GONE);
         } else {
             mSeatListTitle.setVisibility(VISIBLE);
-            mSeatListTitle.setText(mContext.getString(R.string.livekit_seat_list_title, seatList.size()
-                    , mVoiceRoomManager.getRoomState().maxSeatCount.get() - 1));
+            mSeatListTitle.setText(mContext.getString(R.string.live_seat_list_title, seatList.size()
+                    , mVoiceRoomManager.getRoomState().maxSeatCount.getValue() - 1));
         }
     }
 
@@ -198,7 +198,7 @@ public class SeatManagerDialog extends PopupDialog {
     private void updateEmptyView() {
         List<SeatState.SeatInfo> seatList = mSeatListPanelAdapter.getData();
         LinkedHashSet<SeatState.SeatApplication> seatApplicationList =
-                mVoiceRoomManager.getSeatState().seatApplicationList.get();
+                mVoiceRoomManager.getSeatState().seatApplicationList.getValue();
         if (seatList.isEmpty() && seatApplicationList.isEmpty()) {
             mEmptyView.setVisibility(VISIBLE);
         } else {

@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:gravity="center"
-        android:text="@string/livekit_battle_end_pk"
+        android:text="@string/live_battle_end_pk"
         android:textColor="@color/livekit_not_standard_red"
         android:textSize="16sp" />
 
@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:gravity="center"
-        android:text="@string/livekit_cancel"
+        android:text="@string/live_cancel"
         android:textColor="@color/livekit_design_standard_g2"
         android:textSize="16sp" />
 </LinearLayout>

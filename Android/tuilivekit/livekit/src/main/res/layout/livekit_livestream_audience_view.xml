@@ -22,7 +22,7 @@
             android:layout_marginEnd="56dp"
             android:layout_marginBottom="70dp" />
 
-        <com.trtc.uikit.component.gift.GiftPlayView
+        <com.trtc.uikit.livekit.component.gift.GiftPlayView
             android:id="@+id/gift_play_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
@@ -68,7 +68,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/btn_gift"
                 tools:ignore="ContentDescription" />
 
-            <com.trtc.uikit.livekit.component.gift.GiftButton
+            <com.trtc.uikit.livekit.component.gift.access.GiftButton
                 android:id="@+id/btn_gift"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
@@ -87,7 +87,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/btn_like"
                 tools:ignore="ContentDescription" />
 
-            <com.trtc.uikit.component.gift.LikeButton
+            <com.trtc.uikit.livekit.component.gift.LikeButton
                 android:id="@+id/btn_like"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
@@ -106,14 +106,14 @@
             android:layout_marginEnd="8dp"
             android:visibility="gone" />
 
-        <com.trtc.uikit.component.roominfo.RoomInfoView
+        <com.trtc.uikit.livekit.component.roominfo.RoomInfoView
             android:id="@+id/room_info_view"
             android:layout_width="150dp"
             android:layout_height="32dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="57dp" />
 
-        <com.trtc.uikit.component.audiencelist.AudienceListView
+        <com.trtc.uikit.livekit.component.audiencelist.AudienceListView
             android:id="@+id/audience_list_view"
             android:layout_width="135dp"
             android:layout_height="24dp"

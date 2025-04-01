@@ -42,7 +42,7 @@ public class StreamPrivacyStatusPicker extends PopupDialog {
 
     private void initListItemClickListener() {
         mListView.setOnItemClickListener((parent, view, position, id) -> {
-            mRoomState.liveExtraInfo.liveMode.set(RoomState.LiveStreamPrivacyStatus.values()[position]);
+            mRoomState.liveExtraInfo.liveMode.setValue(RoomState.LiveStreamPrivacyStatus.values()[position]);
             dismiss();
         });
     }

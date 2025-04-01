@@ -13,30 +13,27 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 
 import com.trtc.tuikit.common.imageloader.ImageLoader;
-import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.voiceroom.api.Constants;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
+import com.trtc.uikit.livekit.voiceroom.manager.api.Constants;
 import com.trtc.uikit.livekit.voiceroom.state.RoomState;
 import com.trtc.uikit.livekit.voiceroom.view.BasicView;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.List;
 
 public class LiveInfoEditView extends BasicView {
 
     private static final int MAX_INPUT_BYTE_LENGTH = 100;
 
     private       EditText                                    mEditRoomName;
-    private       TextView                                    mTextStreamCategory;
     private       TextView                                    mTextStreamPrivacyStatus;
     private       ImageView                                   mImageStreamCover;
     private       StreamPresetImagePicker                     mStreamPresetImagePicker;
     private final Observer<String>                            mLiveCoverObserver         = this::onLiveCoverChanged;
-    private final Observer<String>                            mLiveCategoryObserver      = this::onLiveCategoryChanged;
     private final Observer<RoomState.LiveStreamPrivacyStatus> mLivePrivacyStatusObserver =
             this::onLivePrivacyStatusChange;
 
@@ -57,9 +54,7 @@ public class LiveInfoEditView extends BasicView {
         LayoutInflater.from(getContext()).inflate(R.layout.livekit_layout_anchor_preview_live_info_edit,
                 this, true);
         initLivePrivacyStatusPicker();
-        initLiveTypePicker();
         mImageStreamCover = findViewById(R.id.iv_cover);
-        mTextStreamCategory = findViewById(R.id.tv_stream_category);
         mTextStreamPrivacyStatus = findViewById(R.id.tv_stream_privacy_status);
         mEditRoomName = findViewById(R.id.et_stream_name);
         mEditRoomName.addTextChangedListener(new TextWatcher() {
@@ -109,33 +104,27 @@ public class LiveInfoEditView extends BasicView {
 
     @Override
     protected void addObserver() {
-        mRoomState.coverURL.observe(mLiveCoverObserver);
-        mRoomState.liveExtraInfo.category.observe(mLiveCategoryObserver);
-        mRoomState.liveExtraInfo.liveMode.observe(mLivePrivacyStatusObserver);
+        mRoomState.coverURL.observeForever(mLiveCoverObserver);
+        mRoomState.liveExtraInfo.liveMode.observeForever(mLivePrivacyStatusObserver);
     }
 
     @Override
     protected void removeObserver() {
         mRoomState.coverURL.removeObserver(mLiveCoverObserver);
-        mRoomState.liveExtraInfo.category.removeObserver(mLiveCategoryObserver);
         mRoomState.liveExtraInfo.liveMode.removeObserver(mLivePrivacyStatusObserver);
     }
 
     private void initLiveCoverPicker() {
-        List<String> dataList = getDataList(getContext());
-        mVoiceRoomManager.getRoomManager().setLiveCategoryList(dataList);
-        mVoiceRoomManager.getRoomManager().setLiveCategory(dataList.get(0));
-        mTextStreamCategory.setText(mRoomState.liveExtraInfo.category.get());
         View coverSettingsLayout = findViewById(R.id.fl_cover_edit);
-        ImageLoader.load(mContext, mImageStreamCover, mRoomState.coverURL.get(),
+        ImageLoader.load(mContext, mImageStreamCover, mRoomState.coverURL.getValue(),
                 R.drawable.livekit_live_stream_default_cover);
         coverSettingsLayout.setOnClickListener(view -> {
             if (mStreamPresetImagePicker == null) {
                 StreamPresetImagePicker.Config config = new StreamPresetImagePicker.Config();
-                config.title = mContext.getString(R.string.livekit_titile_preset_cover);
-                config.confirmButtonText = mContext.getString(R.string.livekit_set_as_cover);
+                config.title = mContext.getString(R.string.live_titile_preset_cover);
+                config.confirmButtonText = mContext.getString(R.string.live_set_as_cover);
                 config.data = Arrays.asList(Constants.COVER_URL_LIST);
-                config.currentImageUrl = mRoomState.coverURL.get();
+                config.currentImageUrl = mRoomState.coverURL.getValue();
                 mStreamPresetImagePicker = new StreamPresetImagePicker(mContext, config);
                 mStreamPresetImagePicker.setOnConfirmListener(imageUrl
                         -> mVoiceRoomManager.getRoomManager().setCoverURL(imageUrl));
@@ -150,13 +139,6 @@ public class LiveInfoEditView extends BasicView {
         mVoiceRoomManager.getRoomManager().setRoomName(roomName);
     }
 
-    private void initLiveTypePicker() {
-        findViewById(R.id.ll_stream_category).setOnClickListener(view -> {
-            StreamCategoryPicker picker = new StreamCategoryPicker(mContext, mVoiceRoomManager);
-            picker.show();
-        });
-    }
-
     private void initLivePrivacyStatusPicker() {
         findViewById(R.id.ll_stream_privacy_status).setOnClickListener(view -> {
             StreamPrivacyStatusPicker picker = new StreamPrivacyStatusPicker(mContext, mVoiceRoomManager);
@@ -168,19 +150,7 @@ public class LiveInfoEditView extends BasicView {
         ImageLoader.load(mContext, mImageStreamCover, coverURL, R.drawable.livekit_live_stream_default_cover);
     }
 
-    private void onLiveCategoryChanged(String category) {
-        if (TextUtils.isEmpty(category)) {
-            mTextStreamCategory.setText(mContext.getString(R.string.livekit_stream_categories_default));
-        } else {
-            mTextStreamCategory.setText(category);
-        }
-    }
-
     private void onLivePrivacyStatusChange(RoomState.LiveStreamPrivacyStatus status) {
         mTextStreamPrivacyStatus.setText(status.resId);
-    }
-
-    private List<String> getDataList(Context context) {
-        return Arrays.asList(context.getResources().getStringArray(R.array.livekit_stream_category_list));
     }
 }

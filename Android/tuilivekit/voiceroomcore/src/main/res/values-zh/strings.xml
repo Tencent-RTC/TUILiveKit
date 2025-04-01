@@ -1,8 +1,0 @@
-<resources>
-    <string name="voiceroomcore_permission_mic_reason">需要访问您的麦克风权限，开启后用于视频互动等功能，并且开启后录制的视频才会有声音。</string>
-    <string name="voiceroomcore_permission_microphone">麦克风</string>
-    <string name="voiceroomcore_permission_tips">请先打开%1$s权限</string>
-    <string name="voiceroomcore_permission_title">%1$s申请获取%2$s权限</string>
-    <string name="voiceroomcore_permission_separator">、</string>
-    <string name="voiceroomcore_app_running">运行中</string>
-</resources>

@@ -18,19 +18,19 @@ import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.ErrorLocalized;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
-import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
-import com.trtc.uikit.livekit.livestream.state.CoGuestState;
+import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class AnchorApplyCoGuestAdapter extends RecyclerView.Adapter<AnchorApplyCoGuestAdapter.ApplyLinkMicViewHolder> {
 
-    private final LiveStreamManager                                  mLiveManage;
-    private final LiveCoreView                                       mLiveStream;
-    private final Context                                            mContext;
-    private final CopyOnWriteArrayList<CoGuestState.SeatApplication> mData = new CopyOnWriteArrayList<>();
+    private final LiveStreamManager                            mLiveManage;
+    private final LiveCoreView                                 mLiveStream;
+    private final Context                                      mContext;
+    private final CopyOnWriteArrayList<TUIRoomDefine.UserInfo> mData = new CopyOnWriteArrayList<>();
 
     public AnchorApplyCoGuestAdapter(Context context, LiveStreamManager manager,
                                      LiveCoreView liveStream) {
@@ -65,39 +65,37 @@ public class AnchorApplyCoGuestAdapter extends RecyclerView.Adapter<AnchorApplyC
         holder.textReject.setEnabled(true);
         holder.textReject.setOnClickListener((view) -> {
             view.setEnabled(false);
-            final CoGuestState.SeatApplication seatApplication = (CoGuestState.SeatApplication) view.getTag();
-            mLiveStream.respondIntraRoomConnection(seatApplication.userId, false, new TUIRoomDefine.ActionCallback() {
+            final TUIRoomDefine.UserInfo userInfo = (TUIRoomDefine.UserInfo) view.getTag();
+            mLiveStream.respondIntraRoomConnection(userInfo.userId, false, new TUIRoomDefine.ActionCallback() {
                 @Override
                 public void onSuccess() {
                 }
 
                 @Override
                 public void onError(TUICommonDefine.Error error, String message) {
-                    ErrorHandler.onError(error);
+                    ErrorLocalized.onError(error);
                 }
             });
-            mLiveManage.getCoGuestManager().removeSeatApplication(seatApplication.userId);
         });
 
         holder.textAccept.setTag(mData.get(position));
         holder.textAccept.setEnabled(true);
         holder.textAccept.setOnClickListener((view) -> {
             view.setEnabled(false);
-            final CoGuestState.SeatApplication seatApplication = (CoGuestState.SeatApplication) view.getTag();
-            mLiveStream.respondIntraRoomConnection(seatApplication.userId, true, new TUIRoomDefine.ActionCallback() {
+            final TUIRoomDefine.UserInfo userInfo = (TUIRoomDefine.UserInfo) view.getTag();
+            mLiveStream.respondIntraRoomConnection(userInfo.userId, true, new TUIRoomDefine.ActionCallback() {
                 @Override
                 public void onSuccess() {
-                    mLiveManage.getCoGuestManager().removeSeatApplication(seatApplication.userId);
                 }
 
                 @Override
                 public void onError(TUICommonDefine.Error error, String message) {
                     if (error == ALL_SEAT_OCCUPIED) {
                         view.setEnabled(true);
-                    } else {
-                        mLiveManage.getCoGuestManager().removeSeatApplication(seatApplication.userId);
                     }
-                    ErrorHandler.onError(error);
+                    ErrorLocalized.onError(error);
+                    LiveStreamLog.error("AnchorApplyCoGuestAdapter" + " respondIntraRoomConnection failed:error:" + error + "," +
+                            "errorCode:" + error.getValue() + "message:" + message);
                 }
             });
 
@@ -106,7 +104,7 @@ public class AnchorApplyCoGuestAdapter extends RecyclerView.Adapter<AnchorApplyC
 
     private void initData() {
         mData.clear();
-        mData.addAll(mLiveManage.getCoGuestState().requestCoGuestList.get());
+        mData.addAll(mLiveManage.getCoreState().coGuestState.applicantList.getValue());
     }
 
     @SuppressLint("NotifyDataSetChanged")

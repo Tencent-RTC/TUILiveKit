@@ -17,11 +17,13 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
 public class VideoSettingsDialog extends PopupDialog {
     private static final int                                  BITRATE_STEP = 100;
     private final        Context                              mContext;
+    private final        LiveStreamManager                    mLiveManager;
     private final        LiveCoreView                         mLiveCoreView;
     private final        BitrateRange                         mBitrateRange;
     private              SeekBar                              mSbBitrate;
@@ -37,12 +39,14 @@ public class VideoSettingsDialog extends PopupDialog {
     private              SwitchCompat                         mSwitchUltimate;
     private              SwitchCompat                         mSwitchHevc;
 
-    public VideoSettingsDialog(Context context, LiveCoreView liveCoreView) {
+
+    public VideoSettingsDialog(Context context, LiveCoreView liveCoreView, LiveStreamManager manager) {
         super(context, com.trtc.tuikit.common.R.style.TUICommonBottomDialogTheme);
         mContext = context;
         mLiveCoreView = liveCoreView;
+        mLiveManager = manager;
         mBitrateRange = new BitrateRange();
-        mVideoEncoderParams = mLiveCoreView.getMediaManager().mMediaState.videoEncParams.getCurrentEnc();
+        mVideoEncoderParams = manager.getMediaState().videoEncParams.getCurrentEnc();
         initView();
     }
 
@@ -75,31 +79,31 @@ public class VideoSettingsDialog extends PopupDialog {
     }
 
     private void initMirror() {
-        mSwitchMirror.setChecked(mLiveCoreView.getMediaManager().mMediaState.isMirror.get());
-        mSwitchMirror.setOnClickListener(v -> mLiveCoreView.getMediaManager().enableMirror(mSwitchMirror.isChecked()));
+        mSwitchMirror.setChecked(Boolean.TRUE.equals(mLiveCoreView.getCoreState().mediaState.isMirrorEnabled.getValue()));
+        mSwitchMirror.setOnClickListener(v -> mLiveCoreView.enableMirror(mSwitchMirror.isChecked()));
     }
 
     private void initUltimate() {
-        boolean ultimateVideoVisible = mLiveCoreView.getMediaManager().mMediaState.videoAdvanceSetting.isVisible;
+        boolean ultimateVideoVisible = mLiveManager.getMediaState().videoAdvanceSetting.isVisible;
         mSwitchUltimate.setVisibility(ultimateVideoVisible ? View.VISIBLE : View.GONE);
-        mSwitchUltimate.setChecked(mLiveCoreView.getMediaManager().mMediaState.videoAdvanceSetting.isUltimateEnabled);
+        mSwitchUltimate.setChecked(mLiveManager.getMediaState().videoAdvanceSetting.isUltimateEnabled);
         mSwitchUltimate.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            mLiveCoreView.getMediaManager().enableUltimate(isChecked);
+            mLiveManager.getMediaManager().enableUltimate(isChecked);
         });
     }
 
     private void initHevc() {
-        boolean hevcVisible = mLiveCoreView.getMediaManager().mMediaState.videoAdvanceSetting.isVisible;
+        boolean hevcVisible = mLiveManager.getMediaState().videoAdvanceSetting.isVisible;
         mSwitchHevc.setVisibility(hevcVisible ? View.VISIBLE : View.GONE);
-        mSwitchHevc.setChecked(mLiveCoreView.getMediaManager().mMediaState.videoAdvanceSetting.isH265Enabled);
+        mSwitchHevc.setChecked(mLiveManager.getMediaState().videoAdvanceSetting.isH265Enabled);
         mSwitchHevc.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            mLiveCoreView.getMediaManager().enableH265(isChecked);
+            mLiveManager.getMediaManager().enableH265(isChecked);
         });
     }
 
     void initTitle() {
         mTextTitle.setOnLongClickListener(v -> {
-            mLiveCoreView.getMediaManager().enableAdvancedVisible(true);
+            mLiveManager.getMediaManager().enableAdvancedVisible(true);
             mSwitchUltimate.setVisibility(View.VISIBLE);
             mSwitchHevc.setVisibility(View.VISIBLE);
             return false;
@@ -152,20 +156,17 @@ public class VideoSettingsDialog extends PopupDialog {
     public void initBitrateRange() {
         switch (mVideoEncoderParams.videoResolution) {
             case Q_1080P:
-                mBitrateRange.mMinBitrate = 1000;
-                mBitrateRange.mMaxBitrate = 10000;
+                mBitrateRange.mMinBitrate = 1800;
+                mBitrateRange.mMaxBitrate = 4000;
                 break;
             case Q_720P:
-                mBitrateRange.mMinBitrate = 500;
-                mBitrateRange.mMaxBitrate = 6000;
-                break;
             case Q_540P:
-                mBitrateRange.mMinBitrate = 100;
-                mBitrateRange.mMaxBitrate = 2000;
+                mBitrateRange.mMinBitrate = 900;
+                mBitrateRange.mMaxBitrate = 1800;
                 break;
             case Q_360P:
-                mBitrateRange.mMinBitrate = 100;
-                mBitrateRange.mMaxBitrate = 1500;
+                mBitrateRange.mMinBitrate = 300;
+                mBitrateRange.mMaxBitrate = 900;
                 break;
             default:
                 break;
@@ -218,7 +219,7 @@ public class VideoSettingsDialog extends PopupDialog {
     }
 
     private void updateVideoEncParams() {
-        mLiveCoreView.getMediaManager().updateVideoQualityEx(mVideoEncoderParams);
+        mLiveManager.getMediaManager().updateVideoQualityEx(mVideoEncoderParams);
     }
 
     private void showResolutionDialog() {
@@ -260,13 +261,13 @@ public class VideoSettingsDialog extends PopupDialog {
     private void updateResolutionView() {
         TUIRoomDefine.VideoQuality videoResolution = mVideoEncoderParams.videoResolution;
         if (videoResolution == Q_1080P) {
-            mTextVideoResolution.setText(mContext.getString(R.string.livekit_resolution_1080p));
+            mTextVideoResolution.setText(mContext.getString(R.string.live_resolution_1080p));
         } else if (videoResolution == Q_720P) {
-            mTextVideoResolution.setText(mContext.getString(R.string.livekit_resolution_720p));
+            mTextVideoResolution.setText(mContext.getString(R.string.live_resolution_720p));
         } else if (videoResolution == Q_540P) {
-            mTextVideoResolution.setText(mContext.getString(R.string.livekit_resolution_540p));
+            mTextVideoResolution.setText(mContext.getString(R.string.live_resolution_540p));
         } else {
-            mTextVideoResolution.setText(mContext.getString(R.string.livekit_resolution_360p));
+            mTextVideoResolution.setText(mContext.getString(R.string.live_resolution_360p));
         }
     }
 }

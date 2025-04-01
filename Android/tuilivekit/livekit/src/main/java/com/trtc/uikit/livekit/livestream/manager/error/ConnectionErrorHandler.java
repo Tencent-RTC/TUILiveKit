@@ -10,7 +10,7 @@ import android.widget.Toast;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager;
 import com.trtc.tuikit.common.system.ContextProvider;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.livestreamcore.common.utils.Logger;
+import com.trtc.uikit.livekit.common.utils.LiveCoreLogger;
 
 public class ConnectionErrorHandler {
 
@@ -19,7 +19,7 @@ public class ConnectionErrorHandler {
             return;
         }
         String message = convertToErrorMessage(code);
-        Logger.info("ConnectionErrorHandler :[code:" + code + ",message:" + message + "]");
+        LiveCoreLogger.info("ConnectionErrorHandler :[code:" + code + ",message:" + message + "]");
         showToast(message);
     }
 
@@ -28,22 +28,22 @@ public class ConnectionErrorHandler {
         switch (resultCode) {
             case CONNECTING:
             case CONNECTING_OTHER_ROOM:
-                return context.getString(R.string.livekit_connect_conflict);
+                return context.getString(R.string.live_connect_conflict);
             case CONNECTION_FULL:
-                return context.getString(R.string.livekit_connection_room_full);
+                return context.getString(R.string.live_connection_room_full);
             default:
-                return context.getString(R.string.livekit_connect_error);
+                return context.getString(R.string.live_connect_error);
         }
     }
 
     private static void showToast(String tips) {
         Context context = ContextProvider.getApplicationContext();
-        View view = LayoutInflater.from(context).inflate(com.trtc.uikit.livekit.livestreamcore.R.layout.livestreamcore_connection_toast, null, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.livekit_connection_toast, null, false);
 
-        TextView text = view.findViewById(com.trtc.uikit.livekit.livestreamcore.R.id.tv_toast_text);
+        TextView text = view.findViewById(R.id.tv_toast_text);
         text.setText(tips);
-        ImageView image = view.findViewById(com.trtc.uikit.livekit.livestreamcore.R.id.iv_toast_image);
-        image.setImageResource(com.trtc.uikit.livekit.livestreamcore.R.drawable.livestreamcore_connection_toast_icon);
+        ImageView image = view.findViewById(R.id.iv_toast_image);
+        image.setImageResource(R.drawable.livekit_connection_toast_icon);
 
         Toast toast = new Toast(view.getContext());
         toast.setDuration(Toast.LENGTH_SHORT);

@@ -2,6 +2,8 @@ package com.trtc.uikit.livekit.component.roomlist.view;
 
 import static com.trtc.uikit.livekit.voiceroom.view.TUIVoiceRoomFragment.RoomBehavior.JOIN;
 
+import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,8 +28,18 @@ import com.trtc.uikit.livekit.voiceroom.view.TUIVoiceRoomFragment;
 public class ListAudienceActivity extends AppCompatActivity {
 
     @Override
+    protected void attachBaseContext(Context context) {
+        super.attachBaseContext(context);
+        if (context != null) {
+            Configuration configuration = context.getResources().getConfiguration();
+            configuration.fontScale = 1;
+            applyOverrideConfiguration(configuration);
+        }
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(null);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.livekit_activity_list_audience);
         initStatusBar();

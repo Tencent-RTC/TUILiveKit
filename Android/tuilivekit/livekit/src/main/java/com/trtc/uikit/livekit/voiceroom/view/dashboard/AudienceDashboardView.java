@@ -10,9 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.utils.widget.ImageFilterView;
+import androidx.lifecycle.Observer;
 
 import com.trtc.tuikit.common.imageloader.ImageLoader;
-import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
 import com.trtc.uikit.livekit.voiceroom.state.UserState;
@@ -63,18 +63,18 @@ public class AudienceDashboardView extends BasicView {
     public void init(@NonNull VoiceRoomManager voiceRoomManager) {
         super.init(voiceRoomManager);
         UserState.UserInfo ownerInfo = mRoomState.ownerInfo;
-        mTextName.setText(TextUtils.isEmpty(ownerInfo.name.get()) ? ownerInfo.userId : ownerInfo.name.get());
-        if (TextUtils.isEmpty(ownerInfo.avatarUrl.get())) {
+        mTextName.setText(TextUtils.isEmpty(ownerInfo.name.getValue()) ? ownerInfo.userId : ownerInfo.name.getValue());
+        if (TextUtils.isEmpty(ownerInfo.avatarUrl.getValue())) {
             mImageHead.setImageResource(R.drawable.livekit_ic_avatar);
         } else {
-            ImageLoader.load(mContext, mImageHead, ownerInfo.avatarUrl.get(), R.drawable.livekit_ic_avatar);
+            ImageLoader.load(mContext, mImageHead, ownerInfo.avatarUrl.getValue(), R.drawable.livekit_ic_avatar);
         }
     }
 
     @Override
     protected void addObserver() {
-        mRoomState.ownerInfo.name.observe(mOwnerNameObserver);
-        mRoomState.ownerInfo.avatarUrl.observe(mOwnerAvatarObserver);
+        mRoomState.ownerInfo.name.observeForever(mOwnerNameObserver);
+        mRoomState.ownerInfo.avatarUrl.observeForever(mOwnerAvatarObserver);
     }
 
     @Override

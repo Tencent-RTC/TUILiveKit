@@ -10,6 +10,7 @@ import com.trtc.uikit.livekit.livestream.manager.module.DashboardManager;
 import com.trtc.uikit.livekit.livestream.manager.module.MediaManager;
 import com.trtc.uikit.livekit.livestream.manager.module.RoomManager;
 import com.trtc.uikit.livekit.livestream.manager.module.UserManager;
+import com.trtc.uikit.livekit.livestream.manager.observer.IMFriendshipListener;
 import com.trtc.uikit.livekit.livestream.manager.observer.LiveListManagerObserver;
 import com.trtc.uikit.livekit.livestream.manager.observer.RoomEngineObserver;
 import com.trtc.uikit.livekit.livestream.state.BattleState;
@@ -21,6 +22,7 @@ import com.trtc.uikit.livekit.livestream.state.LiveState;
 import com.trtc.uikit.livekit.livestream.state.MediaState;
 import com.trtc.uikit.livekit.livestream.state.RoomState;
 import com.trtc.uikit.livekit.livestream.state.UserState;
+import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine.CoreState;
 
 public class LiveStreamManager {
     private final String                  mTag = "LiveStreamManager[" + hashCode() + "]";
@@ -35,6 +37,8 @@ public class LiveStreamManager {
     private final ILiveService            mLiveService;
     private final RoomEngineObserver      mRoomEngineObserver;
     private final LiveListManagerObserver mLiveListManagerObserver;
+    private final IMFriendshipListener    mIMFriendshipListener;
+    private       CoreStateProvider       mCoreStateProvider;
 
     public LiveStreamManager() {
         mState = new LiveState();
@@ -48,17 +52,20 @@ public class LiveStreamManager {
         mBattleManager = new BattleManager(mState, mLiveService);
         mRoomEngineObserver = new RoomEngineObserver(this);
         mLiveListManagerObserver = new LiveListManagerObserver(this);
+        mIMFriendshipListener = new IMFriendshipListener(this);
         mDashboardManager = new DashboardManager(mState, mLiveService);
     }
 
     public void addObserver() {
         mLiveService.addRoomEngineObserver(mRoomEngineObserver);
         mLiveService.addLiveListManagerObserver(mLiveListManagerObserver);
+        mLiveService.addFriendListener(mIMFriendshipListener);
     }
 
     public void removeObserver() {
         mLiveService.removeRoomEngineObserver(mRoomEngineObserver);
         mLiveService.removeLiveListManagerObserver(mLiveListManagerObserver);
+        mLiveService.removeFriendListener(mIMFriendshipListener);
     }
 
     public void destroy() {
@@ -139,9 +146,21 @@ public class LiveStreamManager {
         return mState.beautyState;
     }
 
+    public CoreState getCoreState() {
+        return mCoreStateProvider.getCoreState();
+    }
+
+    public void setCoreStateProvider(CoreStateProvider provider) {
+        mCoreStateProvider = provider;
+    }
+
     public void setRoomId(String roomId) {
         getRoomState().roomId = roomId;
         LiveStreamLog.info(mTag + " setRoomId:[mRoomId=" + roomId + ",mLiveService:" + mLiveService.hashCode()
                 + ",mLiveObserver:" + mRoomEngineObserver.hashCode() + "]");
+    }
+
+    public interface CoreStateProvider {
+        CoreState getCoreState();
     }
 }

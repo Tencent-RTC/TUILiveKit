@@ -1,15 +1,15 @@
 package com.trtc.uikit.livekit.livestream.state;
 
-import com.trtc.tuikit.common.livedata.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 public class BeautyState {
-    public LiveData<Integer> smoothLevel         = new LiveData<>(0);
-    public LiveData<Integer> whitenessLevel      = new LiveData<>(0);
-    public LiveData<Integer> ruddyLevel          = new LiveData<>(0);
+    public MutableLiveData<Integer> smoothLevel    = new MutableLiveData<>(0);
+    public MutableLiveData<Integer> whitenessLevel = new MutableLiveData<>(0);
+    public MutableLiveData<Integer> ruddyLevel     = new MutableLiveData<>(0);
 
     public void reset() {
-        smoothLevel.set(0);
-        whitenessLevel.set(0);
-        ruddyLevel.set(0);
+        smoothLevel.setValue(0);
+        whitenessLevel.setValue(0);
+        ruddyLevel.setValue(0);
     }
 }

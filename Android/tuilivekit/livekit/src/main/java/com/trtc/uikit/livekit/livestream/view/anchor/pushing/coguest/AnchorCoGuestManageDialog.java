@@ -10,35 +10,36 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.trtc.tuikit.common.livedata.Observer;
+import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
 import com.trtc.uikit.livekit.livestream.state.CoGuestState;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
-import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 @SuppressLint("ViewConstructor")
 public class AnchorCoGuestManageDialog extends PopupDialog {
 
-    private       TextView                                              mTextMicUpTitle;
-    private       TextView                                              mTextMicDownTitle;
-    private       ImageView                                             mImageBack;
-    private       View                                                  mViewSeparation;
-    private       RecyclerView                                          mRecyclerLinkAudienceView;
-    private       RecyclerView                                          mRecyclerApplyLinkAudienceView;
-    private       AnchorCoGuestAdapter                                  mAnchorLinkMicAdapter;
-    private       AnchorApplyCoGuestAdapter                             mAnchorApplyLinkMicAdapter;
-    private final LiveCoreView                                          mLiveStream;
-    private final LiveStreamManager                                     mLiveManager;
-    private final Observer<List<CoGuestState.SeatInfo>>                 mLinkAudienceListObserver      =
+    private       TextView                              mTextMicUpTitle;
+    private       TextView                              mTextMicDownTitle;
+    private       ImageView                             mImageBack;
+    private       View                                  mViewSeparation;
+    private       RecyclerView                          mRecyclerLinkAudienceView;
+    private       RecyclerView                          mRecyclerApplyLinkAudienceView;
+    private       AnchorCoGuestAdapter                  mAnchorLinkMicAdapter;
+    private       AnchorApplyCoGuestAdapter             mAnchorApplyLinkMicAdapter;
+    private final LiveCoreView                          mLiveStream;
+    private final LiveStreamManager                     mLiveManager;
+    private final Observer<List<CoGuestState.SeatInfo>> mLinkAudienceListObserver      =
             this::onLinkAudienceListChange;
-    private final Observer<LinkedHashSet<CoGuestState.SeatApplication>> mApplyLinkAudienceListObserver =
+    private final Observer<Set<TUIRoomDefine.UserInfo>> mApplyLinkAudienceListObserver =
             this::onApplyLinkAudienceListChange;
 
     public AnchorCoGuestManageDialog(Context context, LiveStreamManager manager,
@@ -64,8 +65,8 @@ public class AnchorCoGuestManageDialog extends PopupDialog {
     }
 
     private void initViewSeparation() {
-        if (!mLiveManager.getCoGuestState().requestCoGuestList.get().isEmpty()
-                && mLiveManager.getCoGuestState().connectedUserList.get().size() > 1) {
+        if (!mLiveManager.getCoreState().coGuestState.applicantList.getValue().isEmpty()
+                && mLiveManager.getCoGuestState().connectedUserList.getValue().size() > 1) {
             mViewSeparation.setVisibility(VISIBLE);
         } else {
             mViewSeparation.setVisibility(GONE);
@@ -86,13 +87,13 @@ public class AnchorCoGuestManageDialog extends PopupDialog {
     }
 
     protected void addObserver() {
-        mLiveManager.getCoGuestState().connectedUserList.observe(mLinkAudienceListObserver);
-        mLiveManager.getCoGuestState().requestCoGuestList.observe(mApplyLinkAudienceListObserver);
+        mLiveManager.getCoGuestState().connectedUserList.observeForever(mLinkAudienceListObserver);
+        mLiveManager.getCoreState().coGuestState.applicantList.observeForever(mApplyLinkAudienceListObserver);
     }
 
     protected void removeObserver() {
         mLiveManager.getCoGuestState().connectedUserList.removeObserver(mLinkAudienceListObserver);
-        mLiveManager.getCoGuestState().requestCoGuestList.removeObserver(mApplyLinkAudienceListObserver);
+        mLiveManager.getCoreState().coGuestState.applicantList.removeObserver(mApplyLinkAudienceListObserver);
     }
 
     private void bindViewId(View view) {
@@ -126,22 +127,22 @@ public class AnchorCoGuestManageDialog extends PopupDialog {
     }
 
     private void initMicDownTitleView() {
-        if (!mLiveManager.getCoGuestState().requestCoGuestList.get().isEmpty()) {
+        if (!mLiveManager.getCoreState().coGuestState.applicantList.getValue().isEmpty()) {
             mTextMicDownTitle.setVisibility(VISIBLE);
         } else {
             mTextMicDownTitle.setVisibility(GONE);
         }
-        mTextMicDownTitle.setText(getContext().getString(R.string.livekit_seat_application_title,
-                mLiveManager.getCoGuestState().requestCoGuestList.get().size()));
+        mTextMicDownTitle.setText(getContext().getString(R.string.live_seat_application_title,
+                mLiveManager.getCoreState().coGuestState.applicantList.getValue().size()));
     }
 
     @SuppressLint("StringFormatMatches")
     private void initMicUpTitleView() {
-        if (mLiveManager.getCoGuestState().connectedUserList.get().size() > 1) {
-            int connectedUserSize = Math.max(mLiveManager.getRoomState().maxSeatCount.get() - 1, 0);
+        if (mLiveManager.getCoGuestState().connectedUserList.getValue().size() > 1) {
+            int connectedUserSize = Math.max(mLiveManager.getCoreState().roomState.maxCoGuestCount.getValue() - 1, 0);
             mTextMicUpTitle.setVisibility(VISIBLE);
-            mTextMicUpTitle.setText(getContext().getString(R.string.livekit_seat_list_title,
-                    mLiveManager.getCoGuestState().connectedUserList.get().size() - 1,
+            mTextMicUpTitle.setText(getContext().getString(R.string.live_seat_list_title,
+                    mLiveManager.getCoGuestState().connectedUserList.getValue().size() - 1,
                     connectedUserSize));
         } else {
             mTextMicUpTitle.setVisibility(GONE);
@@ -154,7 +155,7 @@ public class AnchorCoGuestManageDialog extends PopupDialog {
         mAnchorLinkMicAdapter.updateData();
     }
 
-    private void onApplyLinkAudienceListChange(LinkedHashSet<CoGuestState.SeatApplication> seatApplications) {
+    private void onApplyLinkAudienceListChange(Set<TUIRoomDefine.UserInfo> applicantList) {
         initMicDownTitleView();
         initViewSeparation();
         mAnchorApplyLinkMicAdapter.updateData();

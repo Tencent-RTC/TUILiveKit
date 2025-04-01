@@ -48,7 +48,7 @@ public class EndLiveStreamDialog extends PopupDialog {
     }
 
     private void initTitleView() {
-        String tips = getContext().getString(R.string.livekit_audience_end_link_tips);
+        String tips = getContext().getString(R.string.live_audience_end_link_tips);
         TextView titleView = addItemView();
         titleView.setTextSize(12);
         titleView.setText(tips);
@@ -59,7 +59,7 @@ public class EndLiveStreamDialog extends PopupDialog {
         TextView itemView = addItemView();
         int color = mContext.getResources().getColor(R.color.livekit_not_standard_red);
         itemView.setTextColor(color);
-        itemView.setText(getContext().getString(R.string.livekit_end_link));
+        itemView.setText(getContext().getString(R.string.live_end_link));
         itemView.setOnClickListener(v -> {
             mLiveStream.terminateIntraRoomConnection();
             mLiveStreamManager.getCoGuestManager().updateCoGuestStates(NONE);
@@ -70,7 +70,7 @@ public class EndLiveStreamDialog extends PopupDialog {
 
     private void initExitRoomItem() {
         TextView itemView = addItemView();
-        itemView.setText(getContext().getString(R.string.livekit_end_live));
+        itemView.setText(getContext().getString(R.string.live_end_live));
         itemView.setOnClickListener(v -> {
             mLiveStream.leaveLiveStream(null);
             dismiss();
@@ -83,7 +83,7 @@ public class EndLiveStreamDialog extends PopupDialog {
 
     private void initCancelItem() {
         TextView itemView = addItemView();
-        itemView.setText(getContext().getString(R.string.livekit_cancel));
+        itemView.setText(getContext().getString(R.string.live_cancel));
         itemView.setOnClickListener(v -> dismiss());
     }
 

@@ -2,20 +2,22 @@ package com.trtc.uikit.livekit.livestream.view.widgets.beauty;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.trtc.tuikit.common.livedata.Observer;
+import com.tencent.qcloud.tuicore.util.ScreenUtil;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.livestream.view.BasicView;
-import com.trtc.uikit.livekit.livestream.view.audience.playing.coguest.settings.VideoCoGuestSettingsAdapter;
 
 @SuppressLint("ViewConstructor")
 public class BeautyListPanel extends BasicView {
@@ -55,10 +57,9 @@ public class BeautyListPanel extends BasicView {
         initBeautySeekBar();
     }
 
-
     @Override
     protected void addObserver() {
-        mBeautyListAdapter.mCurrentBeautyType.observe(mBeautyListener);
+        mBeautyListAdapter.mCurrentBeautyType.observeForever(mBeautyListener);
     }
 
     @Override
@@ -72,27 +73,27 @@ public class BeautyListPanel extends BasicView {
     }
 
     public void enableSmooth() {
-        final int currentProgress = mBeautyState.smoothLevel.get();
+        final int currentProgress = mBeautyState.smoothLevel.getValue();
         setSeekBarVisibility(VISIBLE);
-        mTextBeautyType.setText(R.string.livekit_beauty_item_smooth);
+        mTextBeautyType.setText(R.string.live_beauty_item_smooth);
         mBeautySeekBar.setMax(9);
         mBeautySeekBar.setProgress(currentProgress);
         mTextBeautyLevel.setText(String.valueOf(mBeautySeekBar.getProgress()));
     }
 
     public void enableWhiteness() {
-        final int currentProgress = mBeautyState.whitenessLevel.get();
+        final int currentProgress = mBeautyState.whitenessLevel.getValue();
         setSeekBarVisibility(VISIBLE);
-        mTextBeautyType.setText(R.string.livekit_beauty_item_whiteness);
+        mTextBeautyType.setText(R.string.live_beauty_item_whiteness);
         mBeautySeekBar.setMax(9);
         mBeautySeekBar.setProgress(currentProgress);
         mTextBeautyLevel.setText(String.valueOf(mBeautySeekBar.getProgress()));
     }
 
     public void enableRuddy() {
-        final int currentProgress = mBeautyState.ruddyLevel.get();
+        final int currentProgress = mBeautyState.ruddyLevel.getValue();
         setSeekBarVisibility(VISIBLE);
-        mTextBeautyType.setText(R.string.livekit_beauty_item_ruddy);
+        mTextBeautyType.setText(R.string.live_beauty_item_ruddy);
         mBeautySeekBar.setMax(9);
         mBeautySeekBar.setProgress(currentProgress);
         mTextBeautyLevel.setText(String.valueOf(mBeautySeekBar.getProgress()));
@@ -103,7 +104,7 @@ public class BeautyListPanel extends BasicView {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 mTextBeautyLevel.setText(String.valueOf(progress));
-                switch (mBeautyListAdapter.mCurrentBeautyType.get()) {
+                switch (mBeautyListAdapter.mCurrentBeautyType.getValue()) {
                     case BeautyListAdapter.ITEM_BEAUTY_SMOOTH:
                         mMediaManager.setBeautyLevel(progress);
                         break;
@@ -131,8 +132,21 @@ public class BeautyListPanel extends BasicView {
     }
 
     private void initBeautyList() {
-        mRecycleBeautyList.setLayoutManager(new GridLayoutManager(mContext, 5));
         mBeautyListAdapter = new BeautyListAdapter(mContext);
+        final int spanCount = mBeautyListAdapter.getItemCount();
+        mRecycleBeautyList.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
+        int screenWidth = ScreenUtil.getScreenWidth(getContext());
+        int itemWidth = ScreenUtil.dip2px(56);
+        int spanSpace0 = (screenWidth - spanCount * itemWidth) / (spanCount);
+        int spanSpace1 = (screenWidth - spanCount * itemWidth) / (spanCount + 1);
+        mRecycleBeautyList.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view,
+                                       @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+                int position = parent.getChildLayoutPosition(view) % spanCount;
+                outRect.left = (1 + position) * spanSpace1 - position * spanSpace0;
+            }
+        });
         mRecycleBeautyList.setAdapter(mBeautyListAdapter);
     }
 

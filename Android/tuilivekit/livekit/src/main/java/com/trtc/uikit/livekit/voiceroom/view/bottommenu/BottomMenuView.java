@@ -11,14 +11,14 @@ import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
-import com.trtc.tuikit.common.livedata.Observer;
-import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.component.barrage.BarrageInputView;
+import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.ErrorLocalized;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
-import com.trtc.uikit.livekit.voiceroom.manager.error.ErrorLocalized;
 import com.trtc.uikit.livekit.voiceroom.state.SeatState;
 import com.trtc.uikit.livekit.voiceroom.view.BasicView;
 import com.trtc.uikit.livekit.voiceroomcore.SeatGridView;
@@ -55,21 +55,21 @@ public class BottomMenuView extends BasicView {
 
     @Override
     protected void addObserver() {
-        mSeatState.linkStatus.observe(mLinkStateObserver);
-        mMediaState.isMicrophoneMuted.observe(mMicrophoneMutedObserver);
+        mSeatState.linkStatus.observeForever(mLinkStateObserver);
+        mSeatGridView.getCoreState().mediaState.isMicrophoneMuted.observeForever(mMicrophoneMutedObserver);
     }
 
     @Override
     protected void removeObserver() {
         mSeatState.linkStatus.removeObserver(mLinkStateObserver);
-        mMediaState.isMicrophoneMuted.removeObserver(mMicrophoneMutedObserver);
+        mSeatGridView.getCoreState().mediaState.isMicrophoneMuted.removeObserver(mMicrophoneMutedObserver);
     }
 
     @Override
     public void init(@NonNull VoiceRoomManager voiceRoomManager, SeatGridView seatGridView) {
         super.init(voiceRoomManager, seatGridView);
         BasicView functionView;
-        if (mUserState.selfInfo.role.get() == TUIRoomDefine.Role.ROOM_OWNER) {
+        if (mUserState.selfInfo.role.getValue() == TUIRoomDefine.Role.ROOM_OWNER) {
             functionView = new AnchorFunctionView(mContext);
         } else {
             functionView = new AudienceFunctionView(mContext);
@@ -87,12 +87,12 @@ public class BottomMenuView extends BasicView {
     }
 
     private void onMicrophoneButtonClick() {
-        boolean isMicrophoneOpened = mMediaState.isMicrophoneOpened.get();
+        boolean isMicrophoneOpened = Boolean.TRUE.equals(mSeatGridView.getCoreState().mediaState.isMicrophoneOpened.getValue());
         if (!isMicrophoneOpened) {
             openLocalMicrophone();
             return;
         }
-        if (mMediaState.isMicrophoneMuted.get()) {
+        if (Boolean.TRUE.equals(mSeatGridView.getCoreState().mediaState.isMicrophoneMuted.getValue())) {
             unMuteMicrophone();
         } else {
             muteMicrophone();
@@ -103,7 +103,7 @@ public class BottomMenuView extends BasicView {
         mSeatGridView.startMicrophone(new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
-                mMediaManager.updateMicrophoneOpenState(true);
+
             }
 
             @Override
@@ -115,14 +115,12 @@ public class BottomMenuView extends BasicView {
 
     private void muteMicrophone() {
         mSeatGridView.muteMicrophone();
-        mMediaManager.updateMicrophoneMuteState(true);
     }
 
     private void unMuteMicrophone() {
         mSeatGridView.unmuteMicrophone(new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
-                mMediaManager.updateMicrophoneMuteState(false);
             }
 
             @Override

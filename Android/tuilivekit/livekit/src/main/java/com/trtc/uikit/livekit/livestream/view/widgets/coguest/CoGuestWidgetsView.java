@@ -12,11 +12,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.utils.widget.ImageFilterView;
+import androidx.lifecycle.Observer;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
-import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.component.floatwindow.service.FloatWindowManager;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
@@ -25,19 +25,19 @@ import com.trtc.uikit.livekit.livestream.state.CoGuestState.CoGuestStatus;
 import com.trtc.uikit.livekit.livestream.state.RoomState;
 import com.trtc.uikit.livekit.livestream.view.BasicView;
 
-import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class CoGuestWidgetsView extends BasicView {
 
-    private       ImageFilterView                 mImageAvatar;
-    private       LinearLayout                    mLayoutUserInfo;
-    private       TextView                        mTextName;
-    private       ImageView                       mImageMuteAudio;
-    private final CoGuestWidgetsViewState         mState                          = new CoGuestWidgetsViewState();
-    private final Observer<LinkedHashSet<String>> mHasVideoStreamUserListObserver = this::onVideoStreamUserListChange;
-    private final Observer<LinkedHashSet<String>> mHasAudioStreamUserListObserver = this::onAudioStreamUserListChange;
-    private final Observer<CoGuestStatus>         mCoGuestStatusObserver          = this::onCoGuestStatusChange;
-    private final Observer<Boolean>               mFloatWindowModeObserver        = this::onFloatWindowModeObserver;
+    private       ImageFilterView         mImageAvatar;
+    private       LinearLayout            mLayoutUserInfo;
+    private       TextView                mTextName;
+    private       ImageView               mImageMuteAudio;
+    private final CoGuestWidgetsViewState mState                          = new CoGuestWidgetsViewState();
+    private final Observer<Set<String>>   mHasVideoStreamUserListObserver = this::onVideoStreamUserListChange;
+    private final Observer<Set<String>>   mHasAudioStreamUserListObserver = this::onAudioStreamUserListChange;
+    private final Observer<CoGuestStatus> mCoGuestStatusObserver          = this::onCoGuestStatusChange;
+    private final Observer<Boolean>       mFloatWindowModeObserver        = this::onFloatWindowModeObserver;
 
     public CoGuestWidgetsView(@NonNull Context context) {
         this(context, null);
@@ -92,13 +92,13 @@ public class CoGuestWidgetsView extends BasicView {
     }
 
     private void initMuteAudioView() {
-        boolean hasAudioStream = mUserState.hasAudioStreamUserList.get().contains(mState.userId);
+        boolean hasAudioStream = mLiveManager.getCoreState().userState.hasAudioStreamUserList.getValue().contains(mState.userId);
         mImageMuteAudio.setVisibility(hasAudioStream ? GONE : VISIBLE);
     }
 
     private void initUserNameView() {
         if (mState.userId.equals(mUserState.selfInfo.userId) || (mState.userId.equals(mRoomState.ownerInfo.userId)
-                && mCoGuestState.coGuestStatus.get() == CoGuestState.CoGuestStatus.NONE)) {
+                && mCoGuestState.coGuestStatus.getValue() == CoGuestState.CoGuestStatus.NONE)) {
             mLayoutUserInfo.setVisibility(GONE);
         } else {
             mLayoutUserInfo.setVisibility(VISIBLE);
@@ -111,8 +111,8 @@ public class CoGuestWidgetsView extends BasicView {
         if (TextUtils.isEmpty(userId)) {
             return;
         }
-        boolean hasVideoStream = mUserState.hasVideoStreamUserList.get().contains(userId);
-        boolean isPreview = RoomState.LiveStatus.PREVIEWING == mRoomState.liveStatus.get();
+        boolean hasVideoStream = mLiveManager.getCoreState().userState.hasVideoStreamUserList.getValue().contains(userId);
+        boolean isPreview = RoomState.LiveStatus.PREVIEWING == mRoomState.liveStatus.getValue();
         if (isPreview || hasVideoStream || mState.hasVideoStream) {
             mImageAvatar.setVisibility(GONE);
         } else {
@@ -123,26 +123,26 @@ public class CoGuestWidgetsView extends BasicView {
 
     @Override
     protected void addObserver() {
-        mUserState.hasVideoStreamUserList.observe(mHasVideoStreamUserListObserver);
-        mUserState.hasAudioStreamUserList.observe(mHasAudioStreamUserListObserver);
-        mCoGuestState.coGuestStatus.observe(mCoGuestStatusObserver);
-        FloatWindowManager.getInstance().getStore().isShowingFloatWindow.observe(mFloatWindowModeObserver);
+        mLiveManager.getCoreState().userState.hasVideoStreamUserList.observeForever(mHasVideoStreamUserListObserver);
+        mLiveManager.getCoreState().userState.hasAudioStreamUserList.observeForever(mHasAudioStreamUserListObserver);
+        mCoGuestState.coGuestStatus.observeForever(mCoGuestStatusObserver);
+        FloatWindowManager.getInstance().getStore().isShowingFloatWindow.observeForever(mFloatWindowModeObserver);
     }
 
     @Override
     protected void removeObserver() {
-        mUserState.hasVideoStreamUserList.removeObserver(mHasVideoStreamUserListObserver);
-        mUserState.hasAudioStreamUserList.removeObserver(mHasAudioStreamUserListObserver);
+        mLiveManager.getCoreState().userState.hasVideoStreamUserList.removeObserver(mHasVideoStreamUserListObserver);
+        mLiveManager.getCoreState().userState.hasAudioStreamUserList.removeObserver(mHasAudioStreamUserListObserver);
         mCoGuestState.coGuestStatus.removeObserver(mCoGuestStatusObserver);
         FloatWindowManager.getInstance().getStore().isShowingFloatWindow.removeObserver(mFloatWindowModeObserver);
     }
 
-    private void onVideoStreamUserListChange(LinkedHashSet<String> strings) {
+    private void onVideoStreamUserListChange(Set<String> strings) {
         Log.i("CoGuestWidgetsView", "onVideoStreamUserListChange, userId=" + mState.userId + ", strings=" + strings);
         initUserAvatarView();
     }
 
-    private void onAudioStreamUserListChange(LinkedHashSet<String> strings) {
+    private void onAudioStreamUserListChange(Set<String> strings) {
         Log.i("CoGuestWidgetsView", "onAudioStreamUserListChange, userId=" + mState.userId + ", strings=" + strings);
         initMuteAudioView();
     }

@@ -25,8 +25,8 @@ public class SettingsDialog extends PopupDialog {
     private void initView() {
         View rootView = View.inflate(mContext, R.layout.livekit_voiceroom_settings_panel, null);
         RecyclerView recycleSettingsList = rootView.findViewById(R.id.rv_settings_list);
-        recycleSettingsList.setLayoutManager(new GridLayoutManager(mContext, SettingsListAdapter.ITEM_COUNT));
         SettingsListAdapter adapter = new SettingsListAdapter(mContext, mVoiceRoomManager);
+        recycleSettingsList.setLayoutManager(new GridLayoutManager(mContext, adapter.getItemCount()));
         recycleSettingsList.addItemDecoration(new SettingsListAdapter.SpaceItemDecoration(mContext));
         recycleSettingsList.setAdapter(adapter);
         setView(rootView);

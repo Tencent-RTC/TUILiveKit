@@ -1,8 +1,6 @@
 package com.trtc.uikit.livekit.livestream.manager.api.impl;
 
 import static com.tencent.cloud.tuikit.engine.common.TUICommonDefine.ExtensionType.LIVE_LIST_MANAGER;
-import static com.tencent.trtc.TRTCCloudDef.TRTC_VIDEO_MIRROR_TYPE_DISABLE;
-import static com.tencent.trtc.TRTCCloudDef.TRTC_VIDEO_MIRROR_TYPE_ENABLE;
 
 import com.google.gson.Gson;
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
@@ -16,22 +14,21 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomObserver;
 import com.tencent.imsdk.v2.V2TIMFollowInfo;
 import com.tencent.imsdk.v2.V2TIMFollowOperationResult;
 import com.tencent.imsdk.v2.V2TIMFollowTypeCheckResult;
+import com.tencent.imsdk.v2.V2TIMFriendshipListener;
 import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.trtc.TRTCCloud;
-import com.tencent.trtc.TRTCCloudDef;
 import com.trtc.uikit.livekit.livestream.manager.api.ILiveService;
 import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
-import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
 
 import java.util.List;
 
 public class LiveServiceImpl implements ILiveService {
-    private final String               mTag = "LiveServiceImpl[" + hashCode() + "]";
-    private final TUIRoomEngine        mTUIRoomEngine;
-    private final TRTCCloud            mTRTCCloud;
-    private final TUILiveListManager   mTUILiveListManager;
+    private final String             mTag = "LiveServiceImpl[" + hashCode() + "]";
+    private final TUIRoomEngine      mTUIRoomEngine;
+    private final TRTCCloud          mTRTCCloud;
+    private final TUILiveListManager mTUILiveListManager;
 
     public LiveServiceImpl() {
         mTUIRoomEngine = TUIRoomEngine.sharedInstance();
@@ -66,6 +63,18 @@ public class LiveServiceImpl implements ILiveService {
     public void removeLiveListManagerObserver(TUILiveListManager.Observer observer) {
         LiveStreamLog.info(mTag + " removeLiveListManagerObserver:[observer:" + observer.hashCode() + "]");
         mTUILiveListManager.removeObserver(observer);
+    }
+
+    @Override
+    public void addFriendListener(V2TIMFriendshipListener listener) {
+        LiveStreamLog.info(mTag + " addFriendListener:[listener:" + listener.hashCode() + "]");
+        V2TIMManager.getFriendshipManager().addFriendListener(listener);
+    }
+
+    @Override
+    public void removeFriendListener(V2TIMFriendshipListener listener) {
+        LiveStreamLog.info(mTag + " removeFriendListener:[observer:" + listener.hashCode() + "]");
+        V2TIMManager.getFriendshipManager().removeFriendListener(listener);
     }
 
     /****************************************** Room Business *******************************************/
@@ -571,76 +580,51 @@ public class LiveServiceImpl implements ILiveService {
         mTRTCCloud.muteAllRemoteAudio(isMute);
     }
 
+    @Override
+    public void disableSendingMessageByAdmin(String userId, boolean isDisable, TUIRoomDefine.ActionCallback callback) {
+        LiveStreamLog.info(mTag + " disableSendingMessageByAdmin:[userId:" + userId + ",isDisable:" + isDisable + "]");
+        mTUIRoomEngine.disableSendingMessageByAdmin(userId, isDisable, new TUIRoomDefine.ActionCallback() {
+            @Override
+            public void onSuccess() {
+                LiveStreamLog.info(mTag + " disableSendingMessageByAdmin:[onSuccess]");
+                if (callback != null) {
+                    callback.onSuccess();
+                }
+            }
+
+            @Override
+            public void onError(TUICommonDefine.Error error, String message) {
+                LiveStreamLog.error(mTag + " disableSendingMessageByAdmin:[onError:[error:" + error + ",message:" + message + "]]");
+                if (callback != null) {
+                    callback.onError(error, message);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void kickRemoteUserOutOfRoom(String userId, TUIRoomDefine.ActionCallback callback) {
+        LiveStreamLog.info(mTag + " kickRemoteUserOutOfRoom:[userId:" + userId + "]");
+        mTUIRoomEngine.kickRemoteUserOutOfRoom(userId, new TUIRoomDefine.ActionCallback() {
+            @Override
+            public void onSuccess() {
+                LiveStreamLog.info(mTag + " kickRemoteUserOutOfRoom:[onSuccess]");
+                if (callback != null) {
+                    callback.onSuccess();
+                }
+            }
+
+            @Override
+            public void onError(TUICommonDefine.Error error, String message) {
+                LiveStreamLog.error(mTag + " kickRemoteUserOutOfRoom:[onError:[error:" + error + ",message:" + message + "]]");
+                if (callback != null) {
+                    callback.onError(error, message);
+                }
+            }
+        });
+    }
+
     /****************************************** Media Business *******************************************/
-    @Override
-    public void openLocalMicrophone(TUIRoomDefine.ActionCallback callback) {
-        LiveStreamLog.info(mTag + " openLocalMicrophone:[]");
-        mTUIRoomEngine.openLocalMicrophone(TUIRoomDefine.AudioQuality.DEFAULT, new TUIRoomDefine.ActionCallback() {
-            @Override
-            public void onSuccess() {
-                LiveStreamLog.info(mTag + " openLocalMicrophone:[onSuccess]");
-                if (callback != null) {
-                    callback.onSuccess();
-                }
-            }
-
-            @Override
-            public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(mTag + " openLocalMicrophone:[onError:[error:" + error + ",message:" + message +
-                        "]]");
-                if (callback != null) {
-                    callback.onError(error, message);
-                }
-            }
-        });
-    }
-
-    @Override
-    public void openLocalCamera(boolean isFront, TUIRoomDefine.VideoQuality quality,
-                                TUIRoomDefine.ActionCallback callback) {
-        LiveStreamLog.info(mTag + " openLocalCamera:[isFront:" + isFront + "quality:" + quality + "]");
-        mTUIRoomEngine.openLocalCamera(isFront, quality, new TUIRoomDefine.ActionCallback() {
-            @Override
-            public void onSuccess() {
-                LiveStreamLog.info(mTag + " openLocalCamera:[onSuccess]");
-                if (callback != null) {
-                    callback.onSuccess();
-                }
-            }
-
-            @Override
-            public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(mTag + " openLocalCamera:[onError:[error:" + error + ",message:" + message + "]]");
-                if (callback != null) {
-                    callback.onError(error, message);
-                }
-            }
-        });
-    }
-
-    @Override
-    public void closeLocalCamera() {
-        LiveStreamLog.info(mTag + " closeLocalCamera:[]");
-        mTUIRoomEngine.closeLocalCamera();
-    }
-
-    @Override
-    public void setCameraMirror(boolean isMirror) {
-        LiveStreamLog.info(mTag + " setVideoEncoderMirror:[isMirror:" + isMirror + "]");
-        TRTCCloudDef.TRTCRenderParams trtcRenderParams = new TRTCCloudDef.TRTCRenderParams();
-        trtcRenderParams.mirrorType = isMirror ? TRTC_VIDEO_MIRROR_TYPE_ENABLE : TRTC_VIDEO_MIRROR_TYPE_DISABLE;
-        LiveStreamLog.info(mTag + " setLocalRenderParams:[trtcRenderParams:" + new Gson().toJson(trtcRenderParams) +
-                "]");
-        mTRTCCloud.setLocalRenderParams(trtcRenderParams);
-        mTRTCCloud.setVideoEncoderMirror(isMirror);
-    }
-
-    @Override
-    public void switchCamera(boolean isFrontCamera) {
-        LiveStreamLog.info(mTag + " switchCamera:[isFrontCamera:" + isFrontCamera + "]");
-        mTUIRoomEngine.switchCamera(isFrontCamera);
-    }
-
     @Override
     public void setLocalVideoView(TUIVideoView videoView) {
         LiveStreamLog.info(mTag + " setLocalVideoView:[videoView:" + videoView + "]");
@@ -718,6 +702,12 @@ public class LiveServiceImpl implements ILiveService {
     public void enableGravitySensor(boolean enable) {
         LiveStreamLog.info(mTag + " enableGravitySensor:[enable:" + enable + "]");
         mTUIRoomEngine.enableGravitySensor(enable);
+    }
+
+    @Override
+    public void updateVideoQualityEx(TUIRoomDefine.RoomVideoEncoderParams videoEncParam) {
+        LiveStreamLog.info(mTag + " updateVideoQualityEx:[videoEncParam:" + videoEncParam + "]");
+        mTUIRoomEngine.updateVideoQualityEx(TUIRoomDefine.VideoStreamType.CAMERA_STREAM, videoEncParam);
     }
 
     @Override
@@ -887,9 +877,6 @@ public class LiveServiceImpl implements ILiveService {
             @Override
             public void onError(TUICommonDefine.Error error, String s) {
                 LiveStreamLog.error(mTag + " fetchLiveList:[onError:[error:" + error + ",s:" + s + "]]");
-                if (ErrorHandler.interceptErrorCode(error, s)) {
-                    return;
-                }
                 if (callback != null) {
                     callback.onError(error, s);
                 }

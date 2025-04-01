@@ -14,8 +14,8 @@ import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.ErrorLocalized;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
-import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
 public class CancelRequestDialog extends PopupDialog {
@@ -49,7 +49,7 @@ public class CancelRequestDialog extends PopupDialog {
 
                 @Override
                 public void onError(TUICommonDefine.Error error, String message) {
-                    ErrorHandler.onError(error);
+                    ErrorLocalized.onError(error);
                 }
             });
             dismiss();

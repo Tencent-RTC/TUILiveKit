@@ -9,6 +9,7 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomObserver;
 import com.tencent.imsdk.v2.V2TIMFollowInfo;
 import com.tencent.imsdk.v2.V2TIMFollowOperationResult;
 import com.tencent.imsdk.v2.V2TIMFollowTypeCheckResult;
+import com.tencent.imsdk.v2.V2TIMFriendshipListener;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.tencent.trtc.TRTCCloud;
 
@@ -24,6 +25,10 @@ public interface ILiveService {
     void addLiveListManagerObserver(TUILiveListManager.Observer observer);
 
     void removeLiveListManagerObserver(TUILiveListManager.Observer observer);
+
+    void addFriendListener(V2TIMFriendshipListener observer);
+
+    void removeFriendListener(V2TIMFriendshipListener observer);
 
     /****************************************** Room Business *******************************************/
     void start(TUIRoomDefine.RoomInfo roomInfo, TUIRoomDefine.GetRoomInfoCallback callback);
@@ -71,18 +76,11 @@ public interface ILiveService {
 
     void muteAllRemoteAudio(boolean isMute);
 
+    void disableSendingMessageByAdmin(String userId, boolean isDisable, TUIRoomDefine.ActionCallback callback);
+
+    void kickRemoteUserOutOfRoom(String userId, TUIRoomDefine.ActionCallback callback);
 
     /****************************************** Media Business *******************************************/
-    void openLocalMicrophone(TUIRoomDefine.ActionCallback callback);
-
-    void openLocalCamera(boolean isFront, TUIRoomDefine.VideoQuality quality,
-                         TUIRoomDefine.ActionCallback callback);
-
-    void closeLocalCamera();
-
-    void setCameraMirror(boolean isMirror);
-
-    void switchCamera(boolean isFrontCamera);
 
     void setLocalVideoView(TUIVideoView view);
 
@@ -96,6 +94,8 @@ public interface ILiveService {
     void unMuteLocalAudio(TUIRoomDefine.ActionCallback callback);
 
     void enableGravitySensor(boolean enable);
+
+    void updateVideoQualityEx(TUIRoomDefine.RoomVideoEncoderParams videoEncParam);
 
     void updateVideoQuality(TUIRoomDefine.VideoQuality quality);
 

@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,21 +17,19 @@ import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.qcloud.tuicore.TUIConfig;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
-import com.trtc.tuikit.common.livedata.LiveMapObserver;
-import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.voiceroom.api.Logger;
+import com.trtc.uikit.livekit.common.ErrorLocalized;
+import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
-import com.trtc.uikit.livekit.voiceroom.manager.error.ErrorLocalized;
 import com.trtc.uikit.livekit.voiceroom.state.SeatState;
 import com.trtc.uikit.livekit.voiceroom.state.UserState;
 import com.trtc.uikit.livekit.voiceroomcore.SeatGridView;
 import com.trtc.uikit.livekit.voiceroomcore.VoiceRoomDefine;
 
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class SeatInvitationDialog extends PopupDialog {
     private static final String FILE = "SeatInvitationDialog";
@@ -46,8 +45,8 @@ public class SeatInvitationDialog extends PopupDialog {
     private SeatInvitationAdapter mSeatInvitationAdapter;
     private int                   mInvitationIndex = -1;
 
-    private final Observer<LinkedHashSet<UserState.UserInfo>> mAudienceListObserver = this::onAudienceListChanged;
-    private final Observer<List<SeatState.SeatInfo>>          mSeatListObserver     = this::updateSeatListView;
+    private final Observer<Set<UserState.UserInfo>>  mAudienceListObserver = this::onAudienceListChanged;
+    private final Observer<List<SeatState.SeatInfo>> mSeatListObserver     = this::updateSeatListView;
 
     public SeatInvitationDialog(@NonNull Context context, VoiceRoomManager voiceRoomManager,
                                 SeatGridView seatGridView) {
@@ -74,16 +73,16 @@ public class SeatInvitationDialog extends PopupDialog {
         View rootView = View.inflate(mContext, R.layout.livekit_voiceroom_seat_invite_panel, null);
         setView(rootView);
         bindViewId(rootView);
-        mTvTitle.setText(R.string.livekit_voiceroom_invite);
-        setTitle(mContext.getString(R.string.livekit_voiceroom_invite));
+        mTvTitle.setText(R.string.live_voiceroom_invite);
+        setTitle(mContext.getString(R.string.live_voiceroom_invite));
         showBackButton();
         initSeatListView();
     }
 
     private void addObserver() {
-        mVoiceRoomManager.getUserState().userList.observe(mAudienceListObserver);
-        mVoiceRoomManager.getSeatState().sentSeatInvitationMap.observe(mSentSeatInvitationMap);
-        mVoiceRoomManager.getSeatState().seatList.observe(mSeatListObserver);
+        mVoiceRoomManager.getUserState().userList.observeForever(mAudienceListObserver);
+        mVoiceRoomManager.getSeatState().sentSeatInvitationMap.observeForever(mSentSeatInvitationMap);
+        mVoiceRoomManager.getSeatState().seatList.observeForever(mSeatListObserver);
     }
 
     private void removeObserver() {
@@ -115,7 +114,7 @@ public class SeatInvitationDialog extends PopupDialog {
         mSeatInvitationListView.setAdapter(mSeatInvitationAdapter);
     }
 
-    private void onAudienceListChanged(LinkedHashSet<UserState.UserInfo> userInfoList) {
+    private void onAudienceListChanged(Set<UserState.UserInfo> userInfoList) {
         mSeatInvitationAdapter.updateData();
     }
 
@@ -150,7 +149,7 @@ public class SeatInvitationDialog extends PopupDialog {
             public void onRejected(TUIRoomDefine.UserInfo userInfo) {
                 mVoiceRoomManager.getSeatManager().removeSentSeatInvitation(userId);
                 ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(
-                        R.string.livekit_voiceroom_invite_seat_canceled));
+                        R.string.live_voiceroom_invite_seat_canceled));
 
             }
 
@@ -163,7 +162,7 @@ public class SeatInvitationDialog extends PopupDialog {
             public void onTimeout(TUIRoomDefine.UserInfo userInfo) {
                 mVoiceRoomManager.getSeatManager().removeSentSeatInvitation(userId);
                 ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(
-                        R.string.livekit_voiceroom_invite_seat_canceled));
+                        R.string.live_voiceroom_invite_seat_canceled));
             }
 
             @Override
@@ -179,22 +178,11 @@ public class SeatInvitationDialog extends PopupDialog {
         }
     }
 
-    private final LiveMapObserver<String, SeatState.SeatInvitation> mSentSeatInvitationMap =
-            new LiveMapObserver<String, SeatState.SeatInvitation>() {
-                @SuppressLint("NotifyDataSetChanged")
-                @Override
-                public void onDataChanged(Map<String, SeatState.SeatInvitation> map) {
-                    mSeatInvitationAdapter.notifyDataSetChanged();
-                }
-
-                @Override
-                public void onItemChanged(String key, SeatState.SeatInvitation seatInvitation) {
-                    mSeatInvitationAdapter.updateSentSeatInvitationState(seatInvitation.userId);
-                }
-
-                @Override
-                public void onItemRemoved(String key, SeatState.SeatInvitation seatInvitation) {
-                    mSeatInvitationAdapter.updateSentSeatInvitationState(seatInvitation.userId);
-                }
-            };
+    private final Observer<Map<String, SeatState.SeatInvitation>> mSentSeatInvitationMap = new Observer<Map<String, SeatState.SeatInvitation>>() {
+        @SuppressLint("NotifyDataSetChanged")
+        @Override
+        public void onChanged(Map<String, SeatState.SeatInvitation> stringSeatInvitationMap) {
+            mSeatInvitationAdapter.notifyDataSetChanged();
+        }
+    };
 }

@@ -9,6 +9,9 @@ import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMMessage;
 import com.tencent.imsdk.v2.V2TIMSimpleMsgListener;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
+import com.tencent.qcloud.tuicore.util.ToastUtil;
+import com.trtc.tuikit.common.system.ContextProvider;
+import com.trtc.uikit.component.barrage.R;
 import com.trtc.uikit.component.barrage.store.BarrageState;
 import com.trtc.uikit.component.barrage.store.BarrageStore;
 import com.trtc.uikit.component.barrage.store.model.Barrage;
@@ -17,6 +20,8 @@ import java.util.List;
 
 public class BarrageIMService {
     private static final String TAG = "BarrageIMService";
+
+    private static final int ERROR_CODE_DISABLE_MESSAGE = 10017;
 
     private int mMaxBarrageCount = 1000;
 
@@ -34,7 +39,7 @@ public class BarrageIMService {
         if (TextUtils.isEmpty(barrage.content)) {
             return;
         }
-        V2TIMManager.getInstance().sendGroupTextMessage(barrage.content, roomId, V2TIMMessage.V2TIM_PRIORITY_HIGH,
+        V2TIMManager.getInstance().sendGroupTextMessage(barrage.content, roomId, V2TIMMessage.V2TIM_PRIORITY_LOW,
                 new V2TIMValueCallback<V2TIMMessage>() {
                     @Override
                     public void onSuccess(V2TIMMessage v2TIMMessage) {
@@ -43,8 +48,12 @@ public class BarrageIMService {
                     }
 
                     @Override
-                    public void onError(int i, String s) {
-                        Log.i(TAG, "sendGroupTextMessage error " + i + " errorMessage:" + s);
+                    public void onError(int code, String s) {
+                        Log.i(TAG, "sendGroupTextMessage error " + code + " errorMessage:" + s);
+                        if (code == ERROR_CODE_DISABLE_MESSAGE) {
+                            ToastUtil.toastShortMessage(ContextProvider.getApplicationContext().getResources()
+                                    .getString(R.string.live_barrage_disable_message_by_admin));
+                        }
                     }
                 });
     }
@@ -54,8 +63,8 @@ public class BarrageIMService {
             return;
         }
         BarrageState barrageState = BarrageStore.sharedInstance().getBarrageState(roomId);
-        List<Barrage> list = barrageState.mBarrageCacheList.get();
-        int count = barrageState.mBarrageTotalCount.get();
+        List<Barrage> list = barrageState.mBarrageCacheList.getValue();
+        int count = barrageState.mBarrageTotalCount.getValue();
         for (Barrage barrage : barrages) {
             if (barrage != null) {
                 list.add(barrage);
@@ -65,8 +74,8 @@ public class BarrageIMService {
         if (list.size() > mMaxBarrageCount) {
             list.subList(0, list.size() - mMaxBarrageCount).clear();
         }
-        barrageState.mBarrageTotalCount.set(count);
-        barrageState.mBarrageCacheList.set(list);
+        barrageState.mBarrageTotalCount.setValue(count);
+        barrageState.mBarrageCacheList.setValue(list);
     }
 
     private class SimpleListener extends V2TIMSimpleMsgListener {
@@ -83,7 +92,6 @@ public class BarrageIMService {
             barrage.user.userId = sender.getUserID();
             barrage.user.userName = sender.getNickName();
             barrage.user.avatarUrl = sender.getFaceUrl();
-            barrage.user.level = "32";
             insertBarrages(groupID, barrage);
         }
     }

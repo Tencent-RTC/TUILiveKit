@@ -48,7 +48,7 @@ public class VideoLiveActivity extends BaseActivity {
                 RoomState roomState = floatWindowManager.getLiveStreamManager().getRoomState();
                 if (TextUtils.equals(roomState.ownerInfo.userId, TUILogin.getUserId())) {
                     ToastUtil.toastShortMessage(
-                            view.getContext().getString(com.trtc.uikit.livekit.R.string.livekit_exit_float_window_tip));
+                            view.getContext().getString(com.trtc.uikit.livekit.R.string.live_exit_float_window_tip));
                     return;
                 }
             }

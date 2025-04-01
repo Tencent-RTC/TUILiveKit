@@ -6,7 +6,6 @@ import static com.tencent.imsdk.base.ThreadUtils.runOnUiThread;
 
 import android.content.Context;
 import android.content.Intent;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -39,10 +38,7 @@ public class TEBeautyExtension implements ITUIExtension, ITUIService {
         @Override
         public void onClickCustomSeg(TEUIProperty uiProperty) {
             mCustomProperty = uiProperty;
-            Intent intentToPickPic = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
-            intentToPickPic.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, AppConfig.PICK_CONTENT_ALL);
             Map<String, Object> param = new HashMap<>();
-            param.put("intent", intentToPickPic);
             param.put("requestCode", AppConfig.TE_CHOOSE_PHOTO_SEG_CUSTOM);
             TUICore.notifyEvent(Constants.KEY_EXTENSION_NAME, Constants.NOTIFY_START_ACTIVITY, param);
         }

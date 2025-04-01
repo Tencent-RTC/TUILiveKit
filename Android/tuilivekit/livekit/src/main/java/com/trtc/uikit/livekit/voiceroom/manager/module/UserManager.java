@@ -12,9 +12,11 @@ import com.tencent.imsdk.v2.V2TIMFollowInfo;
 import com.tencent.imsdk.v2.V2TIMFollowOperationResult;
 import com.tencent.imsdk.v2.V2TIMFollowTypeCheckResult;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
-import com.trtc.uikit.livekit.voiceroom.api.IVoiceRoom;
-import com.trtc.uikit.livekit.voiceroom.api.Logger;
-import com.trtc.uikit.livekit.voiceroom.manager.error.ErrorLocalized;
+import com.tencent.qcloud.tuicore.util.ToastUtil;
+import com.trtc.uikit.livekit.common.ErrorLocalized;
+import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
+import com.trtc.uikit.livekit.voiceroom.manager.api.IVoiceRoom;
+import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
 import com.trtc.uikit.livekit.voiceroom.state.UserState;
 import com.trtc.uikit.livekit.voiceroom.state.VoiceRoomState;
 
@@ -41,7 +43,7 @@ public class UserManager extends BaseManager {
             @Override
             public void onSuccess(TUIRoomDefine.UserListResult userListResult) {
                 if (!userListResult.userInfoList.isEmpty()) {
-                    mUserState.userList.get().clear();
+                    mUserState.userList.getValue().clear();
                     Set<UserState.UserInfo> userInfoSet = new LinkedHashSet<>();
                     for (TUIRoomDefine.UserInfo userInfo : userListResult.userInfoList) {
                         if (userInfo.userId.equals(mRoomState.ownerInfo.userId)) {
@@ -56,7 +58,7 @@ public class UserManager extends BaseManager {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                Logger.error(FILE, "getAudienceList,error:" + error + ",message:" + message);
+                Logger.error(FILE, "getUserList,error:" + error + ",message:" + message);
                 ErrorLocalized.onError(error);
             }
         });
@@ -72,7 +74,7 @@ public class UserManager extends BaseManager {
             return;
         }
         if (ownerId.equals(mUserState.selfInfo.userId)) {
-            mUserState.selfInfo.role.set(TUIRoomDefine.Role.ROOM_OWNER);
+            mUserState.selfInfo.role.setValue(TUIRoomDefine.Role.ROOM_OWNER);
         }
         mLiveService.getUserInfo(ownerId, new TUIRoomDefine.GetUserInfoCallback() {
             @Override
@@ -82,6 +84,8 @@ public class UserManager extends BaseManager {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
+                LiveStreamLog.error(FILE + " getUserInfo failed:error:" + error + ",errorCode:" + error.getValue() +
+                        "message:" + message);
                 ErrorLocalized.onError(error);
             }
         });
@@ -93,14 +97,15 @@ public class UserManager extends BaseManager {
         mLiveService.followUser(userIDList, new V2TIMValueCallback<List<V2TIMFollowOperationResult>>() {
             @Override
             public void onSuccess(List<V2TIMFollowOperationResult> v2TIMFollowOperationResults) {
-                mUserState.myFollowingUserList.add(new UserState.UserInfo(userId));
+                mUserState.myFollowingUserList.getValue().add(new UserState.UserInfo(userId));
+                mUserState.myFollowingUserList.setValue(mUserState.myFollowingUserList.getValue());
                 getFansCount();
-                ErrorLocalized.onError(TUICommonDefine.Error.SUCCESS);
             }
 
             @Override
             public void onError(int code, String desc) {
-                ErrorLocalized.onError(TUICommonDefine.Error.FAILED);
+                LiveStreamLog.error(FILE + " followUser failed:errorCode:" + "message:" + desc);
+                ToastUtil.toastShortMessage(code + "," + desc);
             }
         });
     }
@@ -111,14 +116,15 @@ public class UserManager extends BaseManager {
         mLiveService.unfollowUser(userIDList, new V2TIMValueCallback<List<V2TIMFollowOperationResult>>() {
             @Override
             public void onSuccess(List<V2TIMFollowOperationResult> v2TIMFollowOperationResults) {
-                mUserState.myFollowingUserList.remove(new UserState.UserInfo(userId));
+                mUserState.myFollowingUserList.getValue().remove(new UserState.UserInfo(userId));
+                mUserState.myFollowingUserList.setValue(mUserState.myFollowingUserList.getValue());
                 getFansCount();
-                ErrorLocalized.onError(TUICommonDefine.Error.SUCCESS);
             }
 
             @Override
             public void onError(int code, String desc) {
-                ErrorLocalized.onError(TUICommonDefine.Error.FAILED);
+                LiveStreamLog.error(FILE + " unfollowUser failed:errorCode:" + "message:" + desc);
+                ToastUtil.toastShortMessage(code + "," + desc);
             }
         });
     }
@@ -137,15 +143,18 @@ public class UserManager extends BaseManager {
                     UserState.UserInfo userInfo = new UserState.UserInfo(result.getUserID());
                     if (V2TIM_FOLLOW_TYPE_IN_MY_FOLLOWING_LIST == result.getFollowType()
                             || V2TIM_FOLLOW_TYPE_IN_BOTH_FOLLOWERS_LIST == result.getFollowType()) {
-                        mUserState.myFollowingUserList.add(userInfo);
+                        mUserState.myFollowingUserList.getValue().add(userInfo);
                     } else {
-                        mUserState.myFollowingUserList.remove(userInfo);
+                        mUserState.myFollowingUserList.getValue().remove(userInfo);
                     }
+                    mUserState.myFollowingUserList.setValue(mUserState.myFollowingUserList.getValue());
                 }
             }
 
             @Override
             public void onError(int code, String desc) {
+                LiveStreamLog.error(FILE + " checkFollowType failed:errorCode:" + "message:" + desc);
+                ToastUtil.toastShortMessage(code + "," + desc);
             }
         });
     }
@@ -159,13 +168,15 @@ public class UserManager extends BaseManager {
                 if (v2TIMFollowInfos != null && !v2TIMFollowInfos.isEmpty()) {
                     V2TIMFollowInfo result = v2TIMFollowInfos.get(0);
                     if (result != null) {
-                        mRoomState.ownerInfo.fansCount.set(result.getFollowersCount());
+                        mRoomState.ownerInfo.fansCount.setValue(result.getFollowersCount());
                     }
                 }
             }
 
             @Override
             public void onError(int code, String desc) {
+                LiveStreamLog.error(FILE + " getUserFollowInfo failed:errorCode:" + "message:" + desc);
+                ToastUtil.toastShortMessage(code + "," + desc);
             }
         });
     }
@@ -173,8 +184,8 @@ public class UserManager extends BaseManager {
     private void initSelfUserData() {
         TUIRoomDefine.LoginUserInfo loginUserInfo = TUIRoomEngine.getSelfInfo();
         mUserState.selfInfo.userId = loginUserInfo.userId;
-        mUserState.selfInfo.name.set(loginUserInfo.userName);
-        mUserState.selfInfo.avatarUrl.set(loginUserInfo.avatarUrl);
+        mUserState.selfInfo.name.setValue(loginUserInfo.userName);
+        mUserState.selfInfo.avatarUrl.setValue(loginUserInfo.avatarUrl);
     }
 
     public void onRemoteUserEnterRoom(String roomId, TUIRoomDefine.UserInfo userInfo) {

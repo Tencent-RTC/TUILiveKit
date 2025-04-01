@@ -8,8 +8,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 
-import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.component.floatwindow.service.FloatWindowManager;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
@@ -84,11 +84,11 @@ public class BattleMemberInfoView extends BasicView {
 
     @Override
     protected void addObserver() {
-        mCoHostState.connectedUsers.observe(mConnectionListObserver);
-        mBattleState.mIsBattleRunning.observe(mBattleStartObserver);
-        mBattleState.mBattledUsers.observe(mBattledListObserver);
-        mBattleState.mIsOnDisplayResult.observe(mBattleResultDisplayObserver);
-        FloatWindowManager.getInstance().getStore().isShowingFloatWindow.observe(mFloatWindowModeObserver);
+        mCoHostState.connectedUsers.observeForever(mConnectionListObserver);
+        mBattleState.mIsBattleRunning.observeForever(mBattleStartObserver);
+        mBattleState.mBattledUsers.observeForever(mBattledListObserver);
+        mBattleState.mIsOnDisplayResult.observeForever(mBattleResultDisplayObserver);
+        FloatWindowManager.getInstance().getStore().isShowingFloatWindow.observeForever(mFloatWindowModeObserver);
     }
 
     @Override
@@ -128,25 +128,25 @@ public class BattleMemberInfoView extends BasicView {
     }
 
     private void onConnectedListChange(List<CoHostState.ConnectionUser> connectionUsers) {
-        onBattleScoreChanged(mBattleState.mBattledUsers.get());
+        onBattleScoreChanged(mBattleState.mBattledUsers.getValue());
     }
 
     private void onBattleScoreChanged(List<BattleUser> battleUsers) {
         if (FloatWindowManager.getInstance().isShowingFloatWindow()) {
             return;
         }
-        if (battleUsers.isEmpty() || mCoHostState.connectedUsers.get().isEmpty()) {
+        if (battleUsers.isEmpty() || mCoHostState.connectedUsers.getValue().isEmpty()) {
             mBattleManager.resetOnDisplayResult();
             return;
         }
         final Map<String, BattleUser> battleUserMap = new HashMap<>();
-        for (BattleUser user : mBattleState.mBattledUsers.get()) {
+        for (BattleUser user : mBattleState.mBattledUsers.getValue()) {
             battleUserMap.put(user.userId, user);
         }
         // single battle: only 2 users in connecting and battling (1v1 battle)
         final Map<String, BattleUser> singleBattleUserMap = new HashMap<>();
-        if (mCoHostState.connectedUsers.get().size() == 2) {
-            for (ConnectionUser connectionUser : mCoHostState.connectedUsers.get()) {
+        if (mCoHostState.connectedUsers.getValue().size() == 2) {
+            for (ConnectionUser connectionUser : mCoHostState.connectedUsers.getValue()) {
                 BattleUser battleUser = battleUserMap.get(connectionUser.userId);
                 if (battleUser != null) {
                     singleBattleUserMap.put(battleUser.userId, battleUser);
@@ -178,17 +178,17 @@ public class BattleMemberInfoView extends BasicView {
     }
 
     private void onBattleEnd() {
-        if (mCoHostState.connectedUsers.get().isEmpty()) {
+        if (mCoHostState.connectedUsers.getValue().isEmpty()) {
             return;
         }
         final Map<String, BattleUser> battleUserMap = new HashMap<>();
-        for (BattleUser user : mBattleState.mBattledUsers.get()) {
+        for (BattleUser user : mBattleState.mBattledUsers.getValue()) {
             battleUserMap.put(user.userId, user);
         }
         // single battle: only 2 users in connecting and battling (1v1 battle)
         final Map<String, BattleUser> singleBattleUserMap = new HashMap<>();
-        if (mCoHostState.connectedUsers.get().size() == 2) {
-            for (ConnectionUser connectionUser : mCoHostState.connectedUsers.get()) {
+        if (mCoHostState.connectedUsers.getValue().size() == 2) {
+            for (ConnectionUser connectionUser : mCoHostState.connectedUsers.getValue()) {
                 BattleUser battleUser = battleUserMap.get(connectionUser.userId);
                 if (battleUser != null) {
                     singleBattleUserMap.put(battleUser.userId, battleUser);

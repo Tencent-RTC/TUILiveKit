@@ -24,11 +24,11 @@ public class ExitConfirmDialog extends PopupDialog {
         View view = View.inflate(getContext(), R.layout.livekit_voiceroom_exit_confirm, null);
         setView(view);
         TextView textCancel = view.findViewById(R.id.tv_cancel);
-        textCancel.setText(getContext().getString(R.string.livekit_cancel));
+        textCancel.setText(getContext().getString(R.string.live_cancel));
         textCancel.setOnClickListener(v -> dismiss());
 
         TextView confirmText = view.findViewById(R.id.confirm_text);
-        confirmText.setText(getContext().getString(R.string.livekit_end_live));
+        confirmText.setText(getContext().getString(R.string.live_end_live));
         confirmText.setOnClickListener(v -> {
             dismiss();
             mOnConfirmListener.onConfirm();

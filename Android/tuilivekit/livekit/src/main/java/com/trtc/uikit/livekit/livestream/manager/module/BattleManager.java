@@ -33,13 +33,15 @@ public final class BattleManager extends BaseManager {
 
     public void onRequestBattle(String battleId, List<String> requestedUserIdList) {
         mBattleState.mBattleId = battleId;
-        mBattleState.mIsInWaiting.set(true);
-        mBattleState.mSentBattleRequests.addAll(requestedUserIdList);
+        mBattleState.mIsInWaiting.setValue(true);
+        mBattleState.mSentBattleRequests.getValue().addAll(requestedUserIdList);
+        mBattleState.mSentBattleRequests.setValue(mBattleState.mSentBattleRequests.getValue());
     }
 
     public void onCanceledBattle() {
-        mBattleState.mIsInWaiting.set(false);
-        mBattleState.mSentBattleRequests.clear();
+        mBattleState.mIsInWaiting.setValue(false);
+        mBattleState.mSentBattleRequests.getValue().clear();
+        mBattleState.mSentBattleRequests.setValue(mBattleState.mSentBattleRequests.getValue());
     }
 
     public void onResponseBattle() {
@@ -52,13 +54,13 @@ public final class BattleManager extends BaseManager {
 
     public void resetOnDisplayResult() {
         mMainHandler.removeCallbacksAndMessages(null);
-        if (Boolean.TRUE.equals(mBattleState.mIsOnDisplayResult.get())) {
-            mBattleState.mIsOnDisplayResult.set(false);
+        if (Boolean.TRUE.equals(mBattleState.mIsOnDisplayResult.getValue())) {
+            mBattleState.mIsOnDisplayResult.setValue(false);
         }
     }
 
     public boolean isBattleDraw() {
-        List<BattleState.BattleUser> list = mBattleState.mBattledUsers.get();
+        List<BattleState.BattleUser> list = mBattleState.mBattledUsers.getValue();
         if (list.isEmpty()) {
             return false;
         }
@@ -68,35 +70,35 @@ public final class BattleManager extends BaseManager {
     }
 
     public void onBattleStarted(TUILiveBattleManager.BattleInfo battleInfo) {
-        if (Boolean.TRUE.equals(mBattleState.mIsBattleRunning.get())) {
+        if (Boolean.TRUE.equals(mBattleState.mIsBattleRunning.getValue())) {
             return;
         }
         mBattleState.mBattleId = battleInfo.battleId;
         mBattleState.mBattleConfig.copy(battleInfo.config);
         int duration = (int) (battleInfo.config.duration + battleInfo.startTime - System.currentTimeMillis() / 1000);
-        mBattleState.mDurationCountDown.set(duration);
+        mBattleState.mDurationCountDown.setValue(duration);
         mMainHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                int t = mBattleState.mDurationCountDown.get();
+                int t = mBattleState.mDurationCountDown.getValue();
                 if (t > 0) {
-                    mBattleState.mDurationCountDown.set(t - 1);
+                    mBattleState.mDurationCountDown.setValue(t - 1);
                     mMainHandler.postDelayed(this, 1000);
                 }
             }
         }, 1000);
         List<TUILiveBattleManager.BattleUser> users = new ArrayList<>(battleInfo.inviteeList);
         users.add(battleInfo.inviter);
-        List<BattleState.BattleUser> list = mBattleState.mBattledUsers.get();
+        List<BattleState.BattleUser> list = mBattleState.mBattledUsers.getValue();
         for (TUILiveBattleManager.BattleUser user : users) {
             BattleState.BattleUser battleUser = new BattleState.BattleUser(user);
             battleUser.score = user.score;
             list.add(battleUser);
         }
         sortBattleUsersByScore(list);
-        mBattleState.mIsInWaiting.set(false);
-        mBattleState.mIsBattleRunning.set(true);
-        mBattleState.mBattledUsers.set(list);
+        mBattleState.mIsInWaiting.setValue(false);
+        mBattleState.mIsBattleRunning.setValue(true);
+        mBattleState.mBattledUsers.setValue(list);
         mBattleState.mIsShowingStartView = true;
     }
 
@@ -105,10 +107,11 @@ public final class BattleManager extends BaseManager {
         mBattleState.mIsShowingStartView = false;
         mBattleState.mBattleId = "";
         mBattleState.mBattleConfig.reset();
-        mBattleState.mSentBattleRequests.clear();
+        mBattleState.mSentBattleRequests.getValue().clear();
+        mBattleState.mSentBattleRequests.setValue(mBattleState.mSentBattleRequests.getValue());
         List<TUILiveBattleManager.BattleUser> users = new ArrayList<>(battleInfo.inviteeList);
         users.add(battleInfo.inviter);
-        List<BattleState.BattleUser> list = mBattleState.mBattledUsers.get();
+        List<BattleState.BattleUser> list = mBattleState.mBattledUsers.getValue();
         for (TUILiveBattleManager.BattleUser user : users) {
             for (BattleState.BattleUser battleUser : list) {
                 if (battleUser.userId.equals(user.userId)) {
@@ -118,25 +121,25 @@ public final class BattleManager extends BaseManager {
             }
         }
         sortBattleUsersByScore(list);
-        mBattleState.mBattledUsers.set(list);
-        mBattleState.mIsBattleRunning.set(false);
+        mBattleState.mBattledUsers.setValue(list);
+        mBattleState.mIsBattleRunning.setValue(false);
         mMainHandler.removeCallbacksAndMessages(null);
-        if (mCoHostState.connectedUsers.get().isEmpty()) {
-            mBattleState.mIsOnDisplayResult.set(false);
+        if (mCoHostState.connectedUsers.getValue().isEmpty()) {
+            mBattleState.mIsOnDisplayResult.setValue(false);
             mBattleState.reset();
             return;
         }
-        mBattleState.mIsOnDisplayResult.set(true);
+        mBattleState.mIsOnDisplayResult.setValue(true);
         mMainHandler.postDelayed(
                 () -> {
-                    mBattleState.mIsOnDisplayResult.set(false);
+                    mBattleState.mIsOnDisplayResult.setValue(false);
                     mBattleState.reset();
                 },
                 BattleState.BATTLE_END_INFO_DURATION * 1000);
     }
 
     public void onBattleScoreChanged(List<TUILiveBattleManager.BattleUser> users) {
-        List<BattleState.BattleUser> list = mBattleState.mBattledUsers.get();
+        List<BattleState.BattleUser> list = mBattleState.mBattledUsers.getValue();
         for (TUILiveBattleManager.BattleUser user : users) {
             for (BattleState.BattleUser battleUser : list) {
                 if (battleUser.userId.equals(user.userId)) {
@@ -146,11 +149,11 @@ public final class BattleManager extends BaseManager {
             }
         }
         sortBattleUsersByScore(list);
-        mBattleState.mBattledUsers.set(list);
+        mBattleState.mBattledUsers.setValue(list);
     }
 
     public void onUserExitBattle(TUILiveBattleManager.BattleUser user) {
-        List<BattleState.BattleUser> users = mBattleState.mBattledUsers.get();
+        List<BattleState.BattleUser> users = mBattleState.mBattledUsers.getValue();
         BattleState.BattleUser exitUser = null;
         for (BattleState.BattleUser battleUser : users) {
             if (battleUser.userId.equals(user.userId)) {
@@ -164,19 +167,19 @@ public final class BattleManager extends BaseManager {
         if (exitUser != null) {
             users.remove(exitUser);
             sortBattleUsersByScore(users);
-            mBattleState.mBattledUsers.set(users);
+            mBattleState.mBattledUsers.setValue(users);
         }
     }
 
     public void onBattleRequestReceived(String battleId, TUILiveBattleManager.BattleUser inviter) {
         mBattleState.mBattleId = battleId;
-        mBattleState.mReceivedBattleRequest.set(new BattleState.BattleUser(inviter));
+        mBattleState.mReceivedBattleRequest.setValue(new BattleState.BattleUser(inviter));
     }
 
     public void onBattleRequestCancelled(TUILiveBattleManager.BattleUser inviter) {
         removeBattleRequestReceived();
         Context context = ContextProvider.getApplicationContext();
-        String toast = inviter.userName + " " + context.getString(R.string.livekit_battle_inviter_cancel);
+        String toast = inviter.userName + " " + context.getString(R.string.live_battle_inviter_cancel);
         showToast(toast);
     }
 
@@ -187,19 +190,22 @@ public final class BattleManager extends BaseManager {
     public void onBattleRequestReject(TUILiveBattleManager.BattleUser invitee) {
         removeSentBattleRequest(invitee.userId);
         Context context = ContextProvider.getApplicationContext();
-        String toast = invitee.userName + " " + context.getString(R.string.livekit_battle_invitee_reject);
+        String toast = invitee.userName + " " + context.getString(R.string.live_battle_invitee_reject);
         showToast(toast);
     }
 
     public void onBattleRequestTimeout(TUILiveBattleManager.BattleUser inviter,
                                        TUILiveBattleManager.BattleUser invitee) {
         if (TextUtils.equals(inviter.userId, mUserState.selfInfo.userId)) {
-            mBattleState.mSentBattleRequests.clear();
-            mBattleState.mIsInWaiting.set(false);
+            mBattleState.mSentBattleRequests.getValue().clear();
+            mBattleState.mSentBattleRequests.setValue(mBattleState.mSentBattleRequests.getValue());
+            mBattleState.mIsInWaiting.setValue(false);
         } else {
             removeBattleRequestReceived();
             removeSentBattleRequest(invitee.userId);
         }
+        Context context = ContextProvider.getApplicationContext();
+        showToast(context.getString(R.string.live_battle_invitation_timeout));
     }
 
     @Override
@@ -228,11 +234,11 @@ public final class BattleManager extends BaseManager {
     }
 
     private void removeBattleRequestReceived() {
-        mBattleState.mReceivedBattleRequest.set(null);
+        mBattleState.mReceivedBattleRequest.setValue(null);
     }
 
     private void removeSentBattleRequest(String userId) {
-        List<String> sendRequests = mBattleState.mSentBattleRequests.get();
+        List<String> sendRequests = mBattleState.mSentBattleRequests.getValue();
         Iterator<String> iterator = sendRequests.iterator();
         while (iterator.hasNext()) {
             String sendUserId = iterator.next();
@@ -242,9 +248,9 @@ public final class BattleManager extends BaseManager {
             }
         }
         if (sendRequests.isEmpty()) {
-            mBattleState.mIsInWaiting.set(false);
+            mBattleState.mIsInWaiting.setValue(false);
         }
-        mBattleState.mSentBattleRequests.set(sendRequests);
+        mBattleState.mSentBattleRequests.setValue(sendRequests);
     }
 
 

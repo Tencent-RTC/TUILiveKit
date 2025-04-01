@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.core.widget.NestedScrollView;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -24,7 +25,6 @@ import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
 import com.tencent.qcloud.tuicore.util.ScreenUtil;
-import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
@@ -86,8 +86,8 @@ public class AnchorCoHostManageDialog extends PopupDialog implements ITUINotific
     }
 
     protected void addObserver() {
-        mLiveManager.getCoHostState().recommendUsers.observe(mRecommendObserver);
-        mLiveManager.getCoHostState().connectedUsers.observe(mConnectedObserver);
+        mLiveManager.getCoHostState().recommendUsers.observeForever(mRecommendObserver);
+        mLiveManager.getCoHostState().connectedUsers.observeForever(mConnectedObserver);
         TUICore.registerEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_REQUEST_CONNECTION, this);
     }
 
@@ -113,7 +113,7 @@ public class AnchorCoHostManageDialog extends PopupDialog implements ITUINotific
     @SuppressLint("NotifyDataSetChanged")
     private void onConnectedUserChange(List<CoHostState.ConnectionUser> connectedList) {
         mTextDisconnect.post(() -> {
-            if (mLiveManager.getCoHostState().connectedUsers.get().isEmpty()) {
+            if (mLiveManager.getCoHostState().connectedUsers.getValue().isEmpty()) {
                 mTextDisconnect.setVisibility(GONE);
                 mTextConnectedTitle.setVisibility(GONE);
             } else {
@@ -121,10 +121,10 @@ public class AnchorCoHostManageDialog extends PopupDialog implements ITUINotific
                 mTextConnectedTitle.setVisibility(VISIBLE);
                 mTextConnectedTitle.setVisibility(VISIBLE);
                 mTextConnectedTitle.setText(
-                        String.format(getContext().getString(R.string.livekit_connection_list_title),
-                                mLiveManager.getCoHostState().connectedUsers.get().size() - 1));
+                        String.format(getContext().getString(R.string.live_connection_list_title),
+                                mLiveManager.getCoHostState().connectedUsers.getValue().size() - 1));
             }
-            mAnchorConnectedAdapter.updateData(mLiveManager.getCoHostState().connectedUsers.get());
+            mAnchorConnectedAdapter.updateData(mLiveManager.getCoHostState().connectedUsers.getValue());
             mAnchorConnectedAdapter.notifyDataSetChanged();
         });
     }
@@ -163,7 +163,7 @@ public class AnchorCoHostManageDialog extends PopupDialog implements ITUINotific
     }
 
     private void initRecommendTitle() {
-        if (mLiveManager.getCoHostState().recommendUsers.get().isEmpty()) {
+        if (mLiveManager.getCoHostState().recommendUsers.getValue().isEmpty()) {
             mTextRecommendTitle.setVisibility(GONE);
         } else {
             mTextRecommendTitle.setVisibility(VISIBLE);
@@ -187,14 +187,14 @@ public class AnchorCoHostManageDialog extends PopupDialog implements ITUINotific
 
     private void showDisconnectDialog() {
         StandardDialog dialog = new StandardDialog(getContext());
-        dialog.setContent(getContext().getString(R.string.livekit_disconnect_tips));
+        dialog.setContent(getContext().getString(R.string.live_disconnect_tips));
         dialog.setAvatar(null);
 
-        dialog.setNegativeText(getContext().getString(R.string.livekit_disconnect_cancel),
+        dialog.setNegativeText(getContext().getString(R.string.live_disconnect_cancel),
                 negativeView -> {
                     dialog.dismiss();
                 });
-        dialog.setPositiveText(getContext().getString(R.string.livekit_end_connect), positiveView -> {
+        dialog.setPositiveText(getContext().getString(R.string.live_end_connect), positiveView -> {
             dialog.dismiss();
             disconnect();
         });
@@ -223,13 +223,13 @@ public class AnchorCoHostManageDialog extends PopupDialog implements ITUINotific
         switch (resultCode) {
             case CONNECTING:
             case CONNECTING_OTHER_ROOM:
-                showConnectionToast(getContext().getString(R.string.livekit_connect_conflict));
+                showConnectionToast(getContext().getString(R.string.live_connect_conflict));
                 break;
             case CONNECTION_FULL:
-                showConnectionToast(getContext().getString(R.string.livekit_connection_room_full));
+                showConnectionToast(getContext().getString(R.string.live_connection_room_full));
                 break;
             default:
-                showConnectionToast(getContext().getString(R.string.livekit_connect_error));
+                showConnectionToast(getContext().getString(R.string.live_connect_error));
                 break;
         }
     }

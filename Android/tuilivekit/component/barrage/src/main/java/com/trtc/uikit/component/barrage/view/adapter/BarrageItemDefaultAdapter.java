@@ -10,17 +10,18 @@ import android.graphics.drawable.Drawable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
+import android.text.style.ForegroundColorSpan;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
+import com.trtc.uikit.component.barrage.BarrageStreamView;
 import com.trtc.uikit.component.barrage.R;
 import com.trtc.uikit.component.barrage.service.IEmojiResource;
 import com.trtc.uikit.component.barrage.store.BarrageStore;
@@ -29,16 +30,21 @@ import com.trtc.uikit.component.barrage.view.EmojiSpan;
 
 public final class BarrageItemDefaultAdapter implements BarrageItemAdapter {
 
-    private final Context        mContext;
-    private final String         mOwnerId;
-    private final LayoutInflater mLayoutInflater;
-    private final IEmojiResource mEmojiResource;
+    private final Context                                  mContext;
+    private final String                                   mOwnerId;
+    private final LayoutInflater                           mLayoutInflater;
+    private final IEmojiResource                           mEmojiResource;
+    private       BarrageStreamView.OnMessageClickListener mOnMessageClickListener;
 
     public BarrageItemDefaultAdapter(Context context, String ownerId) {
         this.mContext = context;
         this.mOwnerId = ownerId;
         this.mEmojiResource = BarrageStore.sharedInstance().mEmojiResource;
         this.mLayoutInflater = LayoutInflater.from(context);
+    }
+
+    public void setOnMessageClickListener(BarrageStreamView.OnMessageClickListener listener) {
+        mOnMessageClickListener = listener;
     }
 
     @NonNull
@@ -52,52 +58,26 @@ public final class BarrageItemDefaultAdapter implements BarrageItemAdapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position, Barrage barrage) {
         final ViewHolder viewHolder = (ViewHolder) holder;
-        int level = getLevel(barrage);
-        viewHolder.imageLevel.setImageResource(getLevelDrawable(level));
-        viewHolder.layoutLevelBackground.setBackgroundResource(getLevelBackground(level));
-        viewHolder.textLevel.setText("" + level);
+        viewHolder.textMsgContent.setOnClickListener(v -> {
+            if (mOnMessageClickListener != null) {
+                TUIRoomDefine.UserInfo userInfo = new TUIRoomDefine.UserInfo();
+                userInfo.userId = barrage.user.userId;
+                userInfo.userName = barrage.user.userName;
+                userInfo.avatarUrl = barrage.user.avatarUrl;
+                mOnMessageClickListener.onMessageClick(userInfo);
+            }
+        });
         int fontSize = getFontSize(viewHolder.textMsgContent);
         if (TextUtils.equals(mOwnerId, barrage.user.userId)) {
             viewHolder.textAnchorFlag.setVisibility(View.VISIBLE);
             String placeHolder = getSpacesStringByDP(viewHolder.textMsgContent);
             viewHolder.textMsgContent.setText(viewHolder.getMessageBuilder(barrage, fontSize, placeHolder));
+            viewHolder.textMsgContent.setTextColor(mContext.getResources().getColor(R.color.livekit_barrage_g8));
             viewHolder.textMsgContent.setMovementMethod(LinkMovementMethod.getInstance());
         } else {
             viewHolder.textAnchorFlag.setVisibility(View.GONE);
             viewHolder.textMsgContent.setText(viewHolder.getMessageBuilder(barrage, fontSize, ""));
-        }
-    }
-
-    private int getLevel(Barrage barrage) {
-        try {
-            int level = Integer.parseInt(barrage.user.level);
-            return Math.max(level, 0);
-        } catch (Exception e) {
-            return 0;
-        }
-    }
-
-    private int getLevelDrawable(int level) {
-        if (level <= 30) {
-            return R.drawable.livekit_barrage_ic_level1;
-        } else if (level <= 60) {
-            return R.drawable.livekit_barrage_ic_level2;
-        } else if (level <= 90) {
-            return R.drawable.livekit_barrage_ic_level3;
-        } else {
-            return R.drawable.livekit_barrage_ic_level4;
-        }
-    }
-
-    private int getLevelBackground(int level) {
-        if (level <= 30) {
-            return R.drawable.livekit_barrage_bg_leve1;
-        } else if (level <= 60) {
-            return R.drawable.livekit_barrage_bg_leve2;
-        } else if (level <= 90) {
-            return R.drawable.livekit_barrage_bg_leve3;
-        } else {
-            return R.drawable.livekit_barrage_bg_leve4;
+            viewHolder.textMsgContent.setTextColor(mContext.getResources().getColor(R.color.livekit_barrage_user_name_color));
         }
     }
 
@@ -122,11 +102,8 @@ public final class BarrageItemDefaultAdapter implements BarrageItemAdapter {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView     textMsgContent;
-        private TextView     textLevel;
-        private ImageView    imageLevel;
-        private TextView     textAnchorFlag;
-        private LinearLayout layoutLevelBackground;
+        private TextView textMsgContent;
+        private TextView textAnchorFlag;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -135,23 +112,31 @@ public final class BarrageItemDefaultAdapter implements BarrageItemAdapter {
 
         private void initView(View itemView) {
             textMsgContent = itemView.findViewById(R.id.tv_msg_content);
-            textLevel = itemView.findViewById(R.id.tv_level);
-            imageLevel = itemView.findViewById(R.id.iv_level);
             textAnchorFlag = itemView.findViewById(R.id.tv_anchor_flag);
-            layoutLevelBackground = itemView.findViewById(R.id.ll_level_background);
         }
 
         public SpannableStringBuilder getMessageBuilder(final Barrage barrage, final int fontSize,
                                                         final String placeHolder) {
             String userName = TextUtils.isEmpty(barrage.user.userName) ? barrage.user.userId : barrage.user.userName;
             userName = TextUtils.isEmpty(userName) ? "" : userName;
-            String result = "";
+            String userNameSplicing = "";
+            SpannableStringBuilder builder = new SpannableStringBuilder();
+            int userNameColor = mContext.getResources().getColor(R.color.livekit_barrage_user_name_color);
             if (TextUtils.isEmpty(placeHolder)) {
-                result = userName + ": " + barrage.content;
+                userNameSplicing = userName + ": ";
             } else {
-                result = placeHolder + userName + ": " + barrage.content;
+                userNameSplicing = placeHolder + userName + ": ";
             }
-            SpannableStringBuilder builder = new SpannableStringBuilder(result);
+            builder.append(userNameSplicing);
+            ForegroundColorSpan userNameSpan = new ForegroundColorSpan(userNameColor);
+            builder.setSpan(userNameSpan, 0, userNameSplicing.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            builder.append(barrage.content);
+            int contentColor = mContext.getResources().getColor(R.color.livekit_barrage_g8);
+            ForegroundColorSpan contentSpan = new ForegroundColorSpan(contentColor);
+            builder.setSpan(contentSpan, builder.length() - barrage.content.length(), builder.length(),
+                    SPAN_EXCLUSIVE_EXCLUSIVE);
+
             Rect rect = new Rect(0, 0, fontSize, fontSize);
             processEmojiSpan(builder, mEmojiResource, rect, fontSize);
             return builder;

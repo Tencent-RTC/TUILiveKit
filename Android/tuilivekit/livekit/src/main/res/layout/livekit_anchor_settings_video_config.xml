@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginVertical="10dp"
         android:gravity="center"
-        android:text="@string/livekit_video_params"
+        android:text="@string/live_video_params"
         android:textColor="@color/livekit_design_standard_g7"
         android:textSize="16sp"
         android:textStyle="bold" />
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:text="@string/livekit_settings_video_config"
+        android:text="@string/live_settings_video_config"
         android:textColor="@color/livekit_design_standard_g7"
         android:textSize="14sp" />
 
@@ -45,7 +45,7 @@
                 android:id="@+id/tv_resolution"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/livekit_video_resolution"
+                android:text="@string/live_video_resolution"
                 android:textColor="@color/livekit_design_standard_g7"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -91,7 +91,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/livekit_video_bitrate"
+                android:text="@string/live_video_bitrate"
                 android:textColor="@color/livekit_design_standard_g7"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -125,7 +125,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
-                android:text="@string/livekit_video_fps"
+                android:text="@string/live_video_fps"
                 android:textColor="@color/livekit_design_standard_g7"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -156,7 +156,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginVertical="15dp"
-        android:text="@string/livekit_more_settings"
+        android:text="@string/live_more_settings"
         android:textColor="@color/livekit_design_standard_g7"
         android:textSize="14sp" />
 
@@ -173,7 +173,7 @@
             android:id="@+id/sc_mirror"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/livekit_video_settings_item_mirror"
+            android:text="@string/live_video_settings_item_mirror"
             android:textColor="@color/livekit_design_standard_g7"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -185,7 +185,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:text="@string/livekit_video_ultimate"
+            android:text="@string/live_video_ultimate"
             android:textColor="@color/livekit_design_standard_g7"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -198,7 +198,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:text="@string/livekit_video_hevc"
+            android:text="@string/live_video_hevc"
             android:textColor="@color/livekit_design_standard_g7"
             android:textSize="16sp"
             android:textStyle="bold"

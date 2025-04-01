@@ -18,12 +18,14 @@
 
     <application>
         <activity
+            android:allowBackup="false"
             android:name=".component.roomlist.view.ListAudienceActivity"
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar"
             android:windowSoftInputMode="adjustNothing"
+            tools:replace="android:allowBackup"
             tools:ignore="DiscouragedApi" />
 
         <activity
@@ -44,6 +46,7 @@
             android:name=".voiceroom.view.VoiceRoomActivity"
             android:exported="false"
             android:launchMode="standard"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
     </application>
 

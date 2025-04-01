@@ -11,9 +11,9 @@ import androidx.annotation.Nullable;
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.voiceroom.api.Logger;
+import com.trtc.uikit.livekit.common.ErrorLocalized;
+import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
-import com.trtc.uikit.livekit.voiceroom.manager.error.ErrorLocalized;
 import com.trtc.uikit.livekit.voiceroom.state.RoomState;
 import com.trtc.uikit.livekit.voiceroom.view.BasicView;
 
@@ -80,9 +80,9 @@ public class AnchorPreviewView extends BasicView {
         roomInfo.roomType = TUIRoomDefine.RoomType.LIVE;
         roomInfo.isSeatEnabled = true;
         roomInfo.roomId = mVoiceRoomManager.getRoomState().roomId;
-        roomInfo.name = mVoiceRoomManager.getRoomState().roomName.get();
-        roomInfo.maxSeatCount = mVoiceRoomManager.getRoomState().maxSeatCount.get();
-        roomInfo.seatMode = mVoiceRoomManager.getRoomState().seatMode.get();
+        roomInfo.name = mVoiceRoomManager.getRoomState().roomName.getValue();
+        roomInfo.maxSeatCount = mVoiceRoomManager.getRoomState().maxSeatCount.getValue();
+        roomInfo.seatMode = mVoiceRoomManager.getRoomState().seatMode.getValue();
         mSeatGridView.startVoiceRoom(roomInfo, new TUIRoomDefine.GetRoomInfoCallback() {
             @Override
             public void onSuccess(TUIRoomDefine.RoomInfo roomInfo) {

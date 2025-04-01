@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:includeFontPadding="false"
-            android:text="@string/livekit_battle_connecting"
+            android:text="@string/live_battle_connecting"
             android:textSize="12sp"
             android:visibility="gone" />
     </LinearLayout>

@@ -82,7 +82,7 @@ public class CoGuestRequestFloatView extends FrameLayout {
             if (mDotCount > MAX_DOT_COUNT) {
                 mDotCount = 1;
             }
-            StringBuilder text = new StringBuilder(getContext().getString(R.string.livekit_waiting_pass));
+            StringBuilder text = new StringBuilder(getContext().getString(R.string.live_waiting_pass));
             for (int i = 0; i < mDotCount; i++) {
                 text.append(".");
             }

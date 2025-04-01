@@ -53,9 +53,9 @@ public class LoadMoreAdapterWrapper extends RecyclerView.Adapter<RecyclerView.Vi
         if (holder instanceof FootViewHolder) {
             FootViewHolder footViewHolder = (FootViewHolder) holder;
             if (adapter.getItemCount() == 0) {
-                footViewHolder.tvNoMoreData.setText(R.string.livekit_no_room_tip);
+                footViewHolder.tvNoMoreData.setText(R.string.live_no_room_tip);
             } else {
-                footViewHolder.tvNoMoreData.setText(R.string.livekit_no_more_data);
+                footViewHolder.tvNoMoreData.setText(R.string.live_no_more_data);
             }
             switch (loadState) {
                 case LOADING:

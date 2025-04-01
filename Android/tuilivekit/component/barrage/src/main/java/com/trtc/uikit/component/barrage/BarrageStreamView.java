@@ -12,12 +12,14 @@ import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.trtc.tuikit.common.livedata.Observer;
+import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.uikit.component.barrage.service.BarrageConstants;
 import com.trtc.uikit.component.barrage.service.BarrageIMService;
+import com.trtc.uikit.component.barrage.service.DataReporter;
 import com.trtc.uikit.component.barrage.store.BarrageState;
 import com.trtc.uikit.component.barrage.store.BarrageStore;
 import com.trtc.uikit.component.barrage.store.model.Barrage;
@@ -26,7 +28,6 @@ import com.trtc.uikit.component.barrage.view.adapter.BarrageItemAdapter;
 import com.trtc.uikit.component.barrage.view.adapter.BarrageItemDefaultAdapter;
 import com.trtc.uikit.component.barrage.view.adapter.BarrageItemTypeDelegate;
 import com.trtc.uikit.component.barrage.view.adapter.BarrageMsgListAdapter;
-import com.trtc.uikit.component.common.DataReporter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,7 @@ import java.util.List;
 public class BarrageStreamView extends FrameLayout implements IBarrageDisplayView {
     private static final String TAG                             = "BarrageStreamView";
     private static final int    BARRAGE_LIST_UPDATE_DURATION_MS = 250;
+    private static final int    SMOOTH_SCROLL_COUNT_MAX         = 100;
 
     private final Context               mContext;
     private       TextView              mTextNotice;
@@ -45,6 +47,9 @@ public class BarrageStreamView extends FrameLayout implements IBarrageDisplayVie
     private final BarrageIMService      mService;
     private       long                  mTimestampOnLastUpdate = 0;
     private       BarrageState          mBarrageState;
+
+    private boolean                   mSmoothScroll = true;
+    private BarrageItemDefaultAdapter mBarrageItemDefaultAdapter;
 
     private final Runnable                mUpdateViewTask      = this::notifyDataSetChanged;
     private final Observer<List<Barrage>> mBarrageListObserver = this::onBarrageListChanged;
@@ -66,7 +71,9 @@ public class BarrageStreamView extends FrameLayout implements IBarrageDisplayVie
 
     public void init(String roomId, String ownerId) {
         mRoomId = roomId;
-        mAdapter.setItemAdapter(0, new BarrageItemDefaultAdapter(mContext, ownerId));
+        BarrageStore.sharedInstance().init(roomId, ownerId);
+        mBarrageItemDefaultAdapter = new BarrageItemDefaultAdapter(mContext, ownerId);
+        mAdapter.setItemAdapter(0, mBarrageItemDefaultAdapter);
         initState();
         reportData();
     }
@@ -83,13 +90,22 @@ public class BarrageStreamView extends FrameLayout implements IBarrageDisplayVie
         mService.setMaxBarrageCount(count);
     }
 
+    public void setOnMessageClickListener(OnMessageClickListener listener) {
+        if (mBarrageItemDefaultAdapter != null) {
+            mBarrageItemDefaultAdapter.setOnMessageClickListener(listener);
+        }
+    }
+
     private void initState() {
+        if (mBarrageState != null) {
+            return;
+        }
         mBarrageState = BarrageStore.sharedInstance().getBarrageState(mRoomId);
         addObserver();
     }
 
     private void addObserver() {
-        mBarrageState.mBarrageCacheList.observe(mBarrageListObserver);
+        mBarrageState.mBarrageCacheList.observeForever(mBarrageListObserver);
     }
 
     private void removeObserver() {
@@ -134,6 +150,7 @@ public class BarrageStreamView extends FrameLayout implements IBarrageDisplayVie
         if (mMsgList == null) {
             return;
         }
+        mSmoothScroll = barrages.size() - mMsgList.size() < SMOOTH_SCROLL_COUNT_MAX;
         mMsgList.clear();
         mMsgList.addAll(barrages);
         removeCallbacks(mUpdateViewTask);
@@ -145,14 +162,19 @@ public class BarrageStreamView extends FrameLayout implements IBarrageDisplayVie
     }
 
     public int getBarrageCount() {
-        return mBarrageState == null ? 0 : mBarrageState.mBarrageTotalCount.get();
+        return mBarrageState == null ? 0 : mBarrageState.mBarrageTotalCount.getValue();
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private void notifyDataSetChanged() {
         mTimestampOnLastUpdate = System.currentTimeMillis();
         mAdapter.notifyDataSetChanged();
-        mRecyclerMsg.smoothScrollToPosition(mAdapter.getItemCount());
+        int targetPosition = Math.max(0, mAdapter.getItemCount() - 1);
+        if (mSmoothScroll) {
+            mRecyclerMsg.smoothScrollToPosition(targetPosition);
+        } else {
+            mRecyclerMsg.scrollToPosition(targetPosition);
+        }
     }
 
     private void reportData() {
@@ -162,5 +184,9 @@ public class BarrageStreamView extends FrameLayout implements IBarrageDisplayVie
             key = BarrageConstants.LIVEKIT_METRICS_PANEL_SHOW_VOICE_ROOM_BARRAGE_SHOW;
         }
         DataReporter.reportEventData(key);
+    }
+
+    public interface OnMessageClickListener {
+        void onMessageClick(TUIRoomDefine.UserInfo userInfo);
     }
 }

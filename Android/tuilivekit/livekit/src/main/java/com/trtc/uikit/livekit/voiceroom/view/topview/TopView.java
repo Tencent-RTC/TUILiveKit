@@ -12,9 +12,9 @@ import androidx.annotation.Nullable;
 
 import com.tencent.qcloud.tuicore.TUICore;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.component.audiencelist.AudienceListView;
-import com.trtc.uikit.component.roominfo.RoomInfoView;
-import com.trtc.uikit.livekit.voiceroom.api.Constants;
+import com.trtc.uikit.livekit.component.audiencelist.AudienceListView;
+import com.trtc.uikit.livekit.component.roominfo.RoomInfoView;
+import com.trtc.uikit.livekit.voiceroom.manager.api.Constants;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
 import com.trtc.uikit.livekit.voiceroom.view.BasicView;
 

@@ -1,6 +1,7 @@
 package com.trtc.uikit.livekit.example;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.View;
@@ -10,6 +11,16 @@ import android.widget.EditText;
 import com.trtc.tuikit.common.FullScreenActivity;
 
 public class BaseActivity extends FullScreenActivity {
+
+    @Override
+    protected void attachBaseContext(Context context) {
+        super.attachBaseContext(context);
+        if (context != null) {
+            Configuration configuration = context.getResources().getConfiguration();
+            configuration.fontScale = 1;
+            applyOverrideConfiguration(configuration);
+        }
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {

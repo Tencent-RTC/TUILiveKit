@@ -10,9 +10,8 @@ import androidx.annotation.Nullable;
 
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.component.audioeffect.AudioEffectPanel;
-import com.trtc.uikit.component.music.MusicPanelView;
-import com.trtc.uikit.livekit.voiceroom.api.Constants;
+import com.trtc.uikit.livekit.component.audioeffect.AudioEffectPanel;
+import com.trtc.uikit.livekit.voiceroom.manager.api.Constants;
 import com.trtc.uikit.livekit.voiceroom.view.BasicView;
 
 import java.util.Arrays;
@@ -20,7 +19,6 @@ import java.util.Arrays;
 public class AnchorPreviewFunctionView extends BasicView {
     private SettingsDialog          mSettingsDialog;
     private PopupDialog             mAudioEffectPanel;
-    private PopupDialog             mMusicPanel;
     private StreamPresetImagePicker mStreamPresetImagePicker;
 
     public AnchorPreviewFunctionView(@NonNull Context context) {
@@ -39,7 +37,6 @@ public class AnchorPreviewFunctionView extends BasicView {
     protected void initView() {
         LayoutInflater.from(getContext()).inflate(R.layout.livekit_voiceroom_anchor_preview_function, this, true);
         initBackgroundImageButton();
-        initBackgroundMusicButton();
         initAudioEffectButton();
         initSettingsButton();
     }
@@ -58,10 +55,10 @@ public class AnchorPreviewFunctionView extends BasicView {
         findViewById(R.id.iv_bg_image).setOnClickListener(view -> {
             if (mStreamPresetImagePicker == null) {
                 StreamPresetImagePicker.Config config = new StreamPresetImagePicker.Config();
-                config.title = mContext.getString(R.string.livekit_settings_bg_image);
-                config.confirmButtonText = mContext.getString(R.string.livekit_set_as_background);
+                config.title = mContext.getString(R.string.live_settings_bg_image);
+                config.confirmButtonText = mContext.getString(R.string.live_set_as_background);
                 config.data = Arrays.asList(Constants.BACKGROUND_THUMB_URL_LIST);
-                config.currentImageUrl = transferThumbUrlFromImage(mRoomState.backgroundURL.get());
+                config.currentImageUrl = transferThumbUrlFromImage(mRoomState.backgroundURL.getValue());
                 mStreamPresetImagePicker = new StreamPresetImagePicker(mContext, config);
                 mStreamPresetImagePicker.setOnConfirmListener(imageUrl
                         -> mVoiceRoomManager.getRoomManager().setBackgroundURL(
@@ -81,18 +78,6 @@ public class AnchorPreviewFunctionView extends BasicView {
                 mAudioEffectPanel.setView(audioEffectPanel);
             }
             mAudioEffectPanel.show();
-        });
-    }
-
-    private void initBackgroundMusicButton() {
-        findViewById(R.id.iv_bg_music).setOnClickListener(view -> {
-            if (mMusicPanel == null) {
-                mMusicPanel = new PopupDialog(mContext);
-                MusicPanelView musicListPanelView = new MusicPanelView(mContext);
-                musicListPanelView.init(mRoomState.roomId);
-                mMusicPanel.setView(musicListPanelView);
-            }
-            mMusicPanel.show();
         });
     }
 

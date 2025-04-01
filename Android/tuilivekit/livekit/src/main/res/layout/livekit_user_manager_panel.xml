@@ -66,7 +66,7 @@
                     android:layout_gravity="center_vertical"
                     android:background="@drawable/livekit_user_manager_unfollow_bg"
                     android:gravity="center"
-                    android:text="@string/livekit_follow_anchor"
+                    android:text="@string/live_follow_anchor"
                     android:textColor="@android:color/white"
                     android:textSize="14sp"
                     android:visibility="gone" />
@@ -120,7 +120,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="4dp"
                     android:singleLine="true"
-                    android:text="@string/livekit_voiceroom_mute_seat"
+                    android:text="@string/live_voiceroom_mute_seat"
                     android:textColor="@color/livekit_bottom_panel_text"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -148,7 +148,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="4dp"
                     android:singleLine="true"
-                    android:text="@string/livekit_end_user"
+                    android:text="@string/live_end_user"
                     android:textColor="@color/livekit_bottom_panel_text"
                     android:textSize="12sp" />
             </LinearLayout>
