@@ -60,7 +60,7 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.ViewHo
         holder.mTextRoomName.setText(TextUtils.isEmpty(roomInfo.name) ? roomInfo.roomId : roomInfo.name);
         holder.mTextAnchorName.setText(TextUtils.isEmpty(roomInfo.ownerName) ? roomInfo.ownerId : roomInfo.ownerName);
         holder.mTextAudienceCountInfo.setText(
-                mContext.getString(R.string.livekit_audience_count_in_room, liveInfo.viewCount));
+                mContext.getString(R.string.live_audience_count_in_room, liveInfo.viewCount));
         holder.mLayoutCoverBorder.setTag(liveInfo);
         holder.mLayoutCoverBorder.setEnabled(true);
         holder.mLayoutCoverBorder.setOnClickListener((view) -> {
@@ -77,8 +77,8 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.ViewHo
                     floatWindowManager.onClickFloatWindow();
                     return;
                 }
-                if (userState.selfInfo.role.get() == TUIRoomDefine.Role.ROOM_OWNER) {
-                    ToastUtil.toastShortMessage(mContext.getString(R.string.livekit_exit_float_window_tip));
+                if (userState.selfInfo.role.getValue() == TUIRoomDefine.Role.ROOM_OWNER) {
+                    ToastUtil.toastShortMessage(mContext.getString(R.string.live_exit_float_window_tip));
                     return;
                 }
             }

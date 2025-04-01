@@ -16,9 +16,9 @@ import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.voiceroom.api.Logger;
+import com.trtc.uikit.livekit.common.ErrorLocalized;
+import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
-import com.trtc.uikit.livekit.voiceroom.manager.error.ErrorLocalized;
 import com.trtc.uikit.livekit.voiceroom.state.SeatState;
 import com.trtc.uikit.livekit.voiceroomcore.SeatGridView;
 
@@ -39,7 +39,7 @@ public class SeatApplicationAdapter extends RecyclerView.Adapter<SeatApplication
         mVoiceRoomManager = voiceRoomManager;
         mSeatGridView = seatGridView;
         mSeatState = voiceRoomManager.getSeatState();
-        mData = new ArrayList<>(mSeatState.seatApplicationList.get());
+        mData = new ArrayList<>(mSeatState.seatApplicationList.getValue());
     }
 
     @NonNull
@@ -85,7 +85,7 @@ public class SeatApplicationAdapter extends RecyclerView.Adapter<SeatApplication
     @SuppressLint("NotifyDataSetChanged")
     public void updateData() {
         mData.clear();
-        mData.addAll(mSeatState.seatApplicationList.get());
+        mData.addAll(mSeatState.seatApplicationList.getValue());
         notifyDataSetChanged();
     }
 

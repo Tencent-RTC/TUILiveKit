@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="120dp"
-        android:text="@string/livekit_live_has_stop"
+        android:text="@string/live_live_has_stop"
         android:textColor="@color/livekit_design_standard_flowkit_white"
         android:textSize="20sp"
         tools:ignore="RelativeOverlap" />

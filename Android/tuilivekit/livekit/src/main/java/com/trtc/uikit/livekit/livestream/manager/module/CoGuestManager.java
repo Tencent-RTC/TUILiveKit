@@ -11,19 +11,29 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.UserInfo;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.tuikit.common.system.ContextProvider;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.ErrorLocalized;
 import com.trtc.uikit.livekit.livestream.manager.api.ILiveService;
-import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
+import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestream.state.CoGuestState;
 import com.trtc.uikit.livekit.livestream.state.LiveState;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CoGuestManager extends BaseManager {
     private static final String TAG = "CoGuestManager";
 
+    private Map<String, TUIRoomDefine.SeatInfo> seatInfoMap = new HashMap<>();
+
     public CoGuestManager(LiveState state, ILiveService service) {
         super(state, service);
+    }
+
+    public enum MediaDevice {
+        MICROPHONE,
+        CAMERA
     }
 
     @Override
@@ -43,35 +53,45 @@ public class CoGuestManager extends BaseManager {
                     userList.add(user);
                 }
                 initSeatList(userList);
-                mCoGuestState.connectedUserList.notifyDataChanged();
+                mCoGuestState.connectedUserList.setValue(mCoGuestState.connectedUserList.getValue());
                 updateSelfSeatedState();
             }
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                ErrorHandler.onError(error);
+                LiveStreamLog.error(TAG + " getUserList failed:error:" + error + ",errorCode:" + error.getValue() +
+                        "message:" + message);
+                ErrorLocalized.onError(error);
             }
         });
     }
 
-    public void getSeatApplicationList() {
-        mLiveService.getSeatApplicationList(new TUIRoomDefine.RequestListCallback() {
+    public void disableUserMediaDevice(String userId, MediaDevice device) {
+        TUIRoomDefine.SeatInfo seatInfo = seatInfoMap.get(userId);
+        if (seatInfo == null) {
+            return;
+        }
+        boolean isAudioLocked = seatInfo.isAudioLocked;
+        boolean isVideoLocked = seatInfo.isVideoLocked;
+        TUIRoomDefine.SeatLockParams params = new TUIRoomDefine.SeatLockParams();
+        if (device == MediaDevice.CAMERA) {
+            params.lockVideo = !isVideoLocked;
+            params.lockAudio = isAudioLocked;
+        } else {
+            params.lockAudio = !isAudioLocked;
+            params.lockVideo = isVideoLocked;
+        }
+        mLiveService.lockSeat(seatInfo.index, params, new TUIRoomDefine.ActionCallback() {
             @Override
-            public void onSuccess(List<TUIRoomDefine.Request> list) {
-                List<UserInfo> userList = new ArrayList<>();
-                for (TUIRoomDefine.Request request : list) {
-                    UserInfo liveUser = new UserInfo();
-                    liveUser.userId = request.userId;
-                    liveUser.userName = request.userName;
-                    liveUser.avatarUrl = request.avatarUrl;
-                    userList.add(liveUser);
-                }
-                initSeatApplicationList(userList);
+            public void onSuccess() {
+                LiveStreamLog.info(TAG + " lockSeat:[success]");
             }
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                ErrorHandler.onError(error);
+                LiveStreamLog.error(TAG + " lockSeat failed:error:" + error + ",errorCode:" + error.getValue() +
+                        "message:" + message);
+                ErrorLocalized.onError(error);
             }
         });
     }
@@ -86,34 +106,23 @@ public class CoGuestManager extends BaseManager {
             seatInfo.updateState(info);
             newList.add(seatInfo);
         }
-        mCoGuestState.connectedUserList.get().clear();
-        mCoGuestState.connectedUserList.addAll(newList);
-    }
-
-    private void initSeatApplicationList(List<UserInfo> list) {
-        mCoGuestState.requestCoGuestList.get().clear();
-        List<CoGuestState.SeatApplication> newList = new ArrayList<>();
-        for (UserInfo liveUser : list) {
-            CoGuestState.SeatApplication application = new CoGuestState.SeatApplication(liveUser.userId);
-            application.updateState(liveUser);
-            newList.add(application);
-        }
-        mCoGuestState.requestCoGuestList.addAll(newList);
+        mCoGuestState.connectedUserList.getValue().clear();
+        mCoGuestState.connectedUserList.getValue().addAll(newList);
+        mCoGuestState.connectedUserList.setValue(mCoGuestState.connectedUserList.getValue());
     }
 
     private void updateSelfSeatedState() {
         if (isSelfInSeat()) {
-            mCoGuestState.coGuestStatus.set(LINKING, false);
+            mCoGuestState.coGuestStatus.setValue(LINKING);
         }
     }
-
 
     private boolean isSelfInSeat() {
         String selfUserId = mUserState.selfInfo.userId;
         if (TextUtils.isEmpty(mUserState.selfInfo.userId)) {
             return false;
         }
-        return mCoGuestState.connectedUserList.get().contains(new CoGuestState.SeatInfo(selfUserId));
+        return mCoGuestState.connectedUserList.getValue().contains(new CoGuestState.SeatInfo(selfUserId));
     }
 
     private boolean isSelfSeatInfo(UserInfo seatInfo) {
@@ -123,19 +132,8 @@ public class CoGuestManager extends BaseManager {
         return mUserState.selfInfo.userId.equals(seatInfo.userId);
     }
 
-    private void addSeatApplication(UserInfo inviter) {
-        CoGuestState.SeatApplication seatApplication = new CoGuestState.SeatApplication(inviter.userId);
-        seatApplication.updateState(inviter);
-        mCoGuestState.requestCoGuestList.add(seatApplication);
-    }
-
-    public void removeSeatApplication(String userId) {
-        CoGuestState.SeatApplication application = new CoGuestState.SeatApplication(userId);
-        mCoGuestState.requestCoGuestList.remove(application);
-    }
-
     public void updateCoGuestStates(CoGuestState.CoGuestStatus linkStatus) {
-        mCoGuestState.coGuestStatus.set(linkStatus, false);
+        mCoGuestState.coGuestStatus.setValue(linkStatus);
     }
 
     /******************************************  Observer *******************************************/
@@ -144,52 +142,96 @@ public class CoGuestManager extends BaseManager {
         initSeatList(userList);
         for (UserInfo seatInfo : joinList) {
             if (isSelfSeatInfo(seatInfo)) {
-                mCoGuestState.coGuestStatus.set(LINKING, false);
+                mCoGuestState.coGuestStatus.setValue(LINKING);
             }
         }
         if (!joinList.isEmpty()) {
-            mCoGuestState.connectedUserList.notifyDataChanged();
+            mCoGuestState.connectedUserList.setValue(mCoGuestState.connectedUserList.getValue());
         }
         for (UserInfo seatInfo : leaveList) {
             if (isSelfSeatInfo(seatInfo)) {
-                mCoGuestState.coGuestStatus.set(NONE, false);
+                mCoGuestState.coGuestStatus.setValue(NONE);
             }
         }
         if (!leaveList.isEmpty()) {
-            mCoGuestState.connectedUserList.notifyDataChanged();
+            mCoGuestState.connectedUserList.setValue(mCoGuestState.connectedUserList.getValue());
         }
     }
 
-    public void onRequestReceived(UserInfo inviter) {
-        addSeatApplication(inviter);
+    public void onSeatLockStateChanged(List<TUIRoomDefine.SeatInfo> seatList) {
+        seatInfoMap.clear();
+        for (TUIRoomDefine.SeatInfo seatInfo : seatList) {
+            if (TextUtils.isEmpty(seatInfo.userId)) {
+                continue;
+            }
+
+            seatInfoMap.put(seatInfo.userId, seatInfo);
+            if (seatInfo.isAudioLocked) {
+                mCoGuestState.lockAudioUserList.getValue().add(seatInfo.userId);
+            } else {
+                mCoGuestState.lockAudioUserList.getValue().remove(seatInfo.userId);
+            }
+            mCoGuestState.lockAudioUserList.setValue(mCoGuestState.lockAudioUserList.getValue());
+            if (seatInfo.isVideoLocked) {
+                mCoGuestState.lockVideoUserList.getValue().add(seatInfo.userId);
+            } else {
+                mCoGuestState.lockVideoUserList.getValue().remove(seatInfo.userId);
+            }
+            mCoGuestState.lockVideoUserList.setValue(mCoGuestState.lockVideoUserList.getValue());
+            updateSelfMediaDeviceState(seatInfo);
+        }
+    }
+
+    private void updateSelfMediaDeviceState(TUIRoomDefine.SeatInfo seatInfo) {
+        if (seatInfo == null) {
+            return;
+        }
+        if (TextUtils.isEmpty(seatInfo.userId)) {
+            return;
+        }
+        if (!seatInfo.userId.equals(mUserState.selfInfo.userId)) {
+            return;
+        }
+        boolean isAudioLocked = seatInfo.isAudioLocked;
+        boolean isVideoLocked = seatInfo.isVideoLocked;
+        if (isAudioLocked != mMediaState.isAudioLocked.getValue()) {
+            mMediaState.isAudioLocked.setValue(isAudioLocked);
+            ToastUtil.toastShortMessage(ContextProvider.getApplicationContext().getResources()
+                    .getString(isAudioLocked ? R.string.live_mute_audio_by_master :
+                            R.string.live_un_mute_audio_by_master));
+        }
+        if (isVideoLocked != mMediaState.isVideoLocked.getValue()) {
+            mMediaState.isVideoLocked.setValue(isVideoLocked);
+            ToastUtil.toastShortMessage(ContextProvider.getApplicationContext().getResources()
+                    .getString(isVideoLocked ? R.string.live_mute_video_by_owner :
+                            R.string.live_un_mute_video_by_master));
+        }
     }
 
     public void onRequestCancelled(UserInfo inviter) {
-        removeSeatApplication(inviter.userId);
-
-        mCoGuestState.coGuestStatus.set(NONE, false);
+        mCoGuestState.coGuestStatus.setValue(NONE);
     }
 
     public void onKickedOffSeat() {
         ToastUtil.toastShortMessage(ContextProvider.getApplicationContext().getResources()
-                .getString(R.string.livekit_voiceroom_kicked_out_of_seat));
+                .getString(R.string.live_voiceroom_kicked_out_of_seat));
     }
 
     public void onUserConnectionAccepted(String userId) {
         if (!mRoomState.ownerInfo.userId.equals(mUserState.selfInfo.userId)) {
-            mCoGuestState.coGuestStatus.set(LINKING, false);
+            mCoGuestState.coGuestStatus.setValue(LINKING);
         }
     }
 
     public void onUserConnectionRejected(String userId) {
-        mCoGuestState.coGuestStatus.set(NONE, false);
+        mCoGuestState.coGuestStatus.setValue(NONE);
         ToastUtil.toastShortMessage(ContextProvider.getApplicationContext().getResources()
-                .getString(R.string.livekit_voiceroom_take_seat_rejected));
+                .getString(R.string.live_voiceroom_take_seat_rejected));
     }
 
     public void onUserConnectionTimeout(String userId) {
-        mCoGuestState.coGuestStatus.set(NONE, false);
+        mCoGuestState.coGuestStatus.setValue(NONE);
         ToastUtil.toastShortMessage(ContextProvider.getApplicationContext().getResources()
-                .getString(R.string.livekit_voiceroom_take_seat_timeout));
+                .getString(R.string.live_voiceroom_take_seat_timeout));
     }
 }

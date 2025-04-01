@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="RoundedImageView">
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="RoundedImageView" tools:keep="@style/RoundedImageView">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">12dp</item>
     </style>
@@ -16,7 +16,7 @@
         <item name="cornerSizeTopRight">8dp</item>
     </style>
 
-    <style name="CustomTextAppearance" parent="TextAppearance.Design.Tab">
+    <style name="CustomTextAppearance" parent="TextAppearance.Design.Tab" tools:keep="@style/CustomTextAppearance">
         <item name="textAllCaps">false</item>
     </style>
 

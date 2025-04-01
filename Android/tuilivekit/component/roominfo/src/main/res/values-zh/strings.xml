@@ -1,6 +1,0 @@
-<resources>
-    <string name="livekit_roominfo_follow_anchor">关注</string>
-    <string name="livekit_roominfo_unfollow_anchor">取消关注</string>
-    <string name="livekit_roominfo_liveroom_id">直播房间ID：</string>
-    <string name="livekit_roominfo_fan_count">粉丝</string>
-</resources>

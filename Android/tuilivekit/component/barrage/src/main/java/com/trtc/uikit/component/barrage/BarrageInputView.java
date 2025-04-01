@@ -9,6 +9,7 @@ import android.widget.FrameLayout;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomObserver;
+import com.trtc.uikit.component.barrage.store.BarrageStore;
 import com.trtc.uikit.component.barrage.store.model.Barrage;
 import com.trtc.uikit.component.barrage.view.BarrageSendView;
 
@@ -43,6 +44,7 @@ public class BarrageInputView extends FrameLayout {
 
     public void init(String roomId) {
         mRoomId = roomId;
+        BarrageStore.sharedInstance().init(roomId, "");
         initView();
     }
 

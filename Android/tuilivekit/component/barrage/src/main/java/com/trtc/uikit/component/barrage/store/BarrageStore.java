@@ -3,18 +3,15 @@ package com.trtc.uikit.component.barrage.store;
 import com.trtc.uikit.component.barrage.service.BarrageIMService;
 import com.trtc.uikit.component.barrage.service.IEmojiResource;
 import com.trtc.uikit.component.barrage.store.model.DefaultEmojiResource;
-import com.trtc.uikit.component.common.StateCache;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class BarrageStore {
-    private static BarrageStore sInstance;
-
-    private static final String STATE_KEY = "key_state_barrage";
-
-    public final IEmojiResource   mEmojiResource;
-    public final BarrageIMService mBarrageIMService;
+    private static BarrageStore              sInstance;
+    public final   IEmojiResource            mEmojiResource;
+    public final   BarrageIMService          mBarrageIMService;
+    public final   Map<String, BarrageState> mBarrageStateMap = new HashMap<>();
 
     public static BarrageStore sharedInstance() {
         if (sInstance == null) {
@@ -32,23 +29,31 @@ public class BarrageStore {
         mBarrageIMService = new BarrageIMService();
     }
 
-    public BarrageState getBarrageState(String roomId) {
-        StateCache stateCache = StateCache.getInstance();
-        Map<String, Object> map = stateCache.get(roomId);
-        if (map == null) {
-            map = new HashMap<>();
-            stateCache.set(roomId, map);
-        }
-        BarrageState state = (BarrageState) map.get(STATE_KEY);
+    public void init(String roomId, String ownerId) {
+        BarrageState state = mBarrageStateMap.get(roomId);
         if (state == null) {
             state = new BarrageState();
-            map.put(STATE_KEY, state);
+            state.mRoomId = roomId;
+            mBarrageStateMap.put(roomId, state);
         }
-        return state;
+        state.mOwnerId = ownerId;
+    }
+
+    public void unInit(String roomId) {
+        mBarrageStateMap.remove(roomId);
     }
 
     public boolean hasCachedRoomId(String roomId) {
-        StateCache stateCache = StateCache.getInstance();
-        return stateCache.get(roomId) != null;
+        return mBarrageStateMap.containsKey(roomId);
+    }
+
+    public BarrageState getBarrageState(String roomId) {
+        BarrageState barrageState = mBarrageStateMap.get(roomId);
+        if (barrageState == null) {
+            barrageState = new BarrageState();
+            barrageState.mRoomId = roomId;
+            mBarrageStateMap.put(roomId, barrageState);
+        }
+        return barrageState;
     }
 }

@@ -11,9 +11,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfo;
+import com.trtc.uikit.livekit.common.utils.LiveCoreLogger;
 import com.trtc.uikit.livekit.component.floatwindow.service.FloatWindowManager;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
-import com.trtc.uikit.livekit.livestreamcore.common.utils.Logger;
 
 public class LiveListFragment extends Fragment {
     private static final String              TAG = "LiveListFragment";
@@ -102,7 +102,7 @@ public class LiveListFragment extends Fragment {
             LiveCoreView liveCoreView = (LiveCoreView) rootView;
             FloatWindowManager floatWindowManager = FloatWindowManager.getInstance();
             if (floatWindowManager.isWillOpenFloatWindow() && liveCoreView == floatWindowManager.getCoreView()) {
-                Logger.info(TAG + " float window is show");
+                LiveCoreLogger.info(TAG + " float window is show");
                 return;
             }
 

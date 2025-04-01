@@ -14,20 +14,18 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 
 import com.trtc.tuikit.common.imageloader.ImageLoader;
-import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
 import com.trtc.uikit.livekit.livestream.state.RoomState;
 import com.trtc.uikit.livekit.livestream.state.RoomState.LiveStreamPrivacyStatus;
-import com.trtc.uikit.livekit.livestream.view.anchor.preview.dialog.StreamCategoryPicker;
 import com.trtc.uikit.livekit.livestream.view.anchor.preview.dialog.StreamPresetImagePicker;
 import com.trtc.uikit.livekit.livestream.view.anchor.preview.dialog.StreamPrivacyStatusPicker;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.List;
 
 public class LiveInfoEditView extends FrameLayout {
 
@@ -48,14 +46,12 @@ public class LiveInfoEditView extends FrameLayout {
             "https://liteav-test-1252463788.cos.ap-guangzhou.myqcloud.com/voice_room/voice_room_cover12.png",};
 
     private       EditText                          mEditRoomName;
-    private       TextView                          mTextStreamCategory;
     private       TextView                          mTextStreamPrivacyStatus;
     private       ImageView                         mImageStreamCover;
     private       StreamPresetImagePicker           mStreamPresetImagePicker;
     private       LiveStreamManager                 mLiveManager;
     private       RoomState                         mRoomState;
     private final Observer<String>                  mLiveCoverObserver         = this::onLiveCoverChange;
-    private final Observer<String>                  mLiveCategoryObserver      = this::onLiveCategoryChange;
     private final Observer<LiveStreamPrivacyStatus> mLivePrivacyStatusObserver = this::onLivePrivacyStatusChange;
 
     public LiveInfoEditView(@NonNull Context context) {
@@ -85,14 +81,12 @@ public class LiveInfoEditView extends FrameLayout {
 
         initLiveNameEditText();
         initLiveCoverPicker();
-        initLiveTypePicker();
         initLivePrivacyStatusPicker();
     }
 
     protected void addObserver() {
-        mRoomState.coverURL.observe(mLiveCoverObserver);
-        mRoomState.category.observe(mLiveCategoryObserver);
-        mRoomState.liveMode.observe(mLivePrivacyStatusObserver);
+        mRoomState.coverURL.observeForever(mLiveCoverObserver);
+        mRoomState.liveMode.observeForever(mLivePrivacyStatusObserver);
     }
 
     @Override
@@ -106,32 +100,26 @@ public class LiveInfoEditView extends FrameLayout {
             return;
         }
         mRoomState.coverURL.removeObserver(mLiveCoverObserver);
-        mRoomState.category.removeObserver(mLiveCategoryObserver);
         mRoomState.liveMode.removeObserver(mLivePrivacyStatusObserver);
     }
 
     private void bindViewId() {
         mImageStreamCover = findViewById(R.id.iv_cover);
         mEditRoomName = findViewById(R.id.et_stream_name);
-        mTextStreamCategory = findViewById(R.id.tv_stream_category);
         mTextStreamPrivacyStatus = findViewById(R.id.tv_stream_privacy_status);
     }
 
     private void initLiveCoverPicker() {
-        List<String> dataList = getDataList(getContext());
-        mLiveManager.getRoomManager().setLiveCategoryList(dataList);
-        mLiveManager.getRoomManager().setLiveCategory(dataList.get(0));
-        mTextStreamCategory.setText(mRoomState.category.get());
         View coverSettingsLayout = findViewById(R.id.fl_cover_edit);
-        ImageLoader.load(getContext(), mImageStreamCover, mRoomState.coverURL.get(),
+        ImageLoader.load(getContext(), mImageStreamCover, mRoomState.coverURL.getValue(),
                 R.drawable.livekit_live_stream_default_cover);
         coverSettingsLayout.setOnClickListener(view -> {
             if (mStreamPresetImagePicker == null) {
                 StreamPresetImagePicker.Config config = new StreamPresetImagePicker.Config();
-                config.title = getContext().getString(R.string.livekit_titile_preset_cover);
-                config.confirmButtonText = getContext().getString(R.string.livekit_set_as_cover);
+                config.title = getContext().getString(R.string.live_titile_preset_cover);
+                config.confirmButtonText = getContext().getString(R.string.live_set_as_cover);
                 config.data = Arrays.asList(COVER_URL_LIST);
-                config.currentImageUrl = mRoomState.coverURL.get();
+                config.currentImageUrl = mRoomState.coverURL.getValue();
                 mStreamPresetImagePicker = new StreamPresetImagePicker(getContext(), config);
                 mStreamPresetImagePicker.setOnItemClickListener(imageUrl
                         -> mLiveManager.getRoomManager().setCoverURL(imageUrl));
@@ -182,13 +170,6 @@ public class LiveInfoEditView extends FrameLayout {
         });
     }
 
-    private void initLiveTypePicker() {
-        findViewById(R.id.ll_stream_category).setOnClickListener(view -> {
-            StreamCategoryPicker picker = new StreamCategoryPicker(getContext(), mLiveManager);
-            picker.show();
-        });
-    }
-
     private void initLivePrivacyStatusPicker() {
         findViewById(R.id.ll_stream_privacy_status).setOnClickListener(view -> {
             StreamPrivacyStatusPicker picker = new StreamPrivacyStatusPicker(getContext(), mLiveManager);
@@ -200,19 +181,7 @@ public class LiveInfoEditView extends FrameLayout {
         ImageLoader.load(getContext(), mImageStreamCover, coverURL, R.drawable.livekit_live_stream_default_cover);
     }
 
-    private void onLiveCategoryChange(String category) {
-        if (TextUtils.isEmpty(category)) {
-            mTextStreamCategory.setText(getContext().getString(R.string.livekit_stream_categories_default));
-        } else {
-            mTextStreamCategory.setText(category);
-        }
-    }
-
     private void onLivePrivacyStatusChange(LiveStreamPrivacyStatus status) {
         mTextStreamPrivacyStatus.setText(status.resId);
-    }
-
-    private List<String> getDataList(Context context) {
-        return Arrays.asList(context.getResources().getStringArray(R.array.livekit_stream_category_list));
     }
 }

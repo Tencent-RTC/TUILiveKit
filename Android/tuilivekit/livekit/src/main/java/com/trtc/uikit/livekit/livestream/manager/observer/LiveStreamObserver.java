@@ -33,14 +33,12 @@ public class LiveStreamObserver implements ConnectionObserver {
     @Override
     public void onUserConnectionRequest(UserInfo inviterUser) {
         LiveStreamLog.info(mTag + " onUserConnectionRequest:[inviterUser:" + new Gson().toJson(inviterUser) + "]");
-        mLiveManager.getCoGuestManager().onRequestReceived(inviterUser);
     }
 
     @Override
     public void onUserConnectionCancelled(UserInfo inviterUser) {
         LiveStreamLog.info(mTag + " onUserConnectionCancelled:[inviterUser:" + inviterUser + "]");
         mLiveManager.getCoGuestManager().onRequestCancelled(inviterUser);
-
     }
 
     @Override

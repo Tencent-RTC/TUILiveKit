@@ -1,5 +1,7 @@
 package com.trtc.uikit.livekit.voiceroom.view;
 
+import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -18,8 +20,18 @@ public class VoiceRoomActivity extends FullScreenActivity {
     public static final String INTENT_KEY_IS_RESUME          = "intent_key_is_resume";
 
     @Override
+    protected void attachBaseContext(Context context) {
+        super.attachBaseContext(context);
+        if (context != null) {
+            Configuration configuration = context.getResources().getConfiguration();
+            configuration.fontScale = 1;
+            applyOverrideConfiguration(configuration);
+        }
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(null);
         setContentView(R.layout.livekit_activity_video_live_audience);
 
         String roomId = getIntent().getStringExtra(INTENT_KEY_ROOM_ID);

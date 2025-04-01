@@ -64,16 +64,16 @@ public class AudienceDashboardView extends BasicView {
 
     private void initUserAvatarView() {
 
-        if (TextUtils.isEmpty(mRoomState.ownerInfo.avatarUrl.get())) {
+        if (TextUtils.isEmpty(mRoomState.ownerInfo.avatarUrl.getValue())) {
             mImageHead.setImageResource(R.drawable.livekit_ic_avatar);
         } else {
-            ImageLoader.load(mContext, mImageHead, mRoomState.ownerInfo.avatarUrl.get(), R.drawable.livekit_ic_avatar);
+            ImageLoader.load(mContext, mImageHead, mRoomState.ownerInfo.avatarUrl.getValue(), R.drawable.livekit_ic_avatar);
         }
     }
 
     private void initUserNameView() {
-        mTextName.setText(TextUtils.isEmpty(mRoomState.ownerInfo.name.get()) ? mRoomState.ownerInfo.userId :
-                mRoomState.ownerInfo.name.get());
+        mTextName.setText(TextUtils.isEmpty(mRoomState.ownerInfo.name.getValue()) ? mRoomState.ownerInfo.userId :
+                mRoomState.ownerInfo.name.getValue());
     }
 
 

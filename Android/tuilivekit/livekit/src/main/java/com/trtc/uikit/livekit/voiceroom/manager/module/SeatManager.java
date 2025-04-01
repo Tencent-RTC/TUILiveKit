@@ -7,9 +7,10 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.qcloud.tuicore.TUIConfig;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.voiceroom.api.IVoiceRoom;
-import com.trtc.uikit.livekit.voiceroom.api.Logger;
-import com.trtc.uikit.livekit.voiceroom.manager.error.ErrorLocalized;
+import com.trtc.uikit.livekit.common.ErrorLocalized;
+import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
+import com.trtc.uikit.livekit.voiceroom.manager.api.IVoiceRoom;
+import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
 import com.trtc.uikit.livekit.voiceroom.state.SeatState;
 import com.trtc.uikit.livekit.voiceroom.state.UserState;
 import com.trtc.uikit.livekit.voiceroom.state.VoiceRoomState;
@@ -35,85 +36,90 @@ public class SeatManager extends BaseManager {
             @Override
             public void onSuccess(List<TUIRoomDefine.SeatInfo> list) {
                 updateSeatList(list);
-                mSeatState.seatList.notifyDataChanged();
+                mSeatState.seatList.setValue(mSeatState.seatList.getValue());
                 updateSelfSeatedState();
                 autoTakeSeatByOwner();
             }
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                Logger.error(FILE, "getSeatList, error: " + error + ", message: " + message);
+                LiveStreamLog.error(FILE + " getSeatList failed:error:" + error + ",errorCode:" + error.getValue() +
+                        "message:" + message);
                 ErrorLocalized.onError(error);
             }
         });
     }
 
     public void updateLinkState(SeatState.LinkStatus linkStatus) {
-        mSeatState.linkStatus.set(linkStatus, false);
+        mSeatState.linkStatus.setValue(linkStatus);
     }
 
     public void removeSentSeatInvitation(String userId) {
-        mSeatState.sentSeatInvitationMap.remove(userId);
+        mSeatState.sentSeatInvitationMap.getValue().remove(userId);
+        mSeatState.sentSeatInvitationMap.setValue(mSeatState.sentSeatInvitationMap.getValue());
     }
 
     public void removeSeatApplication(String userId) {
         SeatState.SeatApplication application = new SeatState.SeatApplication(userId);
-        mSeatState.seatApplicationList.remove(application);
+        mSeatState.seatApplicationList.getValue().remove(application);
+        mSeatState.seatApplicationList.setValue(mSeatState.seatApplicationList.getValue());
     }
 
     public void addSentSeatInvitation(UserState.UserInfo userInfo) {
         SeatState.SeatInvitation seatInvitation = new SeatState.SeatInvitation(userInfo.userId);
         seatInvitation.updateState(userInfo);
-        mSeatState.sentSeatInvitationMap.put(userInfo.userId, seatInvitation);
+        mSeatState.sentSeatInvitationMap.getValue().put(userInfo.userId, seatInvitation);
+        mSeatState.sentSeatInvitationMap.setValue(mSeatState.sentSeatInvitationMap.getValue());
     }
 
     public void removeReceivedSeatInvitation() {
-        SeatState.SeatInvitation seatInvitation = mSeatState.receivedSeatInvitation.get();
+        SeatState.SeatInvitation seatInvitation = mSeatState.receivedSeatInvitation.getValue();
         if (!TextUtils.isEmpty(seatInvitation.userId)) {
-            mSeatState.receivedSeatInvitation.get().reset();
-            mSeatState.receivedSeatInvitation.notifyDataChanged();
+            mSeatState.receivedSeatInvitation.getValue().reset();
+            mSeatState.receivedSeatInvitation.setValue(mSeatState.receivedSeatInvitation.getValue());
         }
     }
 
     private void updateSelfSeatedState() {
         if (isSelfInSeat()) {
-            mSeatState.linkStatus.set(SeatState.LinkStatus.LINKING, false);
+            mSeatState.linkStatus.setValue(SeatState.LinkStatus.LINKING);
         }
     }
 
     private void autoTakeSeatByOwner() {
-        if (mUserState.selfInfo.role.get() != TUIRoomDefine.Role.ROOM_OWNER) {
+        if (mUserState.selfInfo.role.getValue() != TUIRoomDefine.Role.ROOM_OWNER) {
             return;
         }
-        if (mSeatState.linkStatus.get() == SeatState.LinkStatus.LINKING) {
+        if (mSeatState.linkStatus.getValue() == SeatState.LinkStatus.LINKING) {
             return;
         }
         mLiveService.takeSeat(-1, 60, new TUIRoomDefine.RequestCallback() {
             @Override
             public void onAccepted(String requestId, String userId) {
-                mSeatState.linkStatus.set(SeatState.LinkStatus.LINKING, false);
+                mSeatState.linkStatus.setValue(SeatState.LinkStatus.LINKING);
             }
 
             @Override
             public void onRejected(String requestId, String userId, String message) {
-                mSeatState.linkStatus.set(SeatState.LinkStatus.NONE, false);
+                mSeatState.linkStatus.setValue(SeatState.LinkStatus.NONE);
             }
 
             @Override
             public void onCancelled(String requestId, String userId) {
-                mSeatState.linkStatus.set(SeatState.LinkStatus.NONE, false);
+                mSeatState.linkStatus.setValue(SeatState.LinkStatus.NONE);
             }
 
             @Override
             public void onTimeout(String requestId, String userId) {
-                mSeatState.linkStatus.set(SeatState.LinkStatus.NONE, false);
+                mSeatState.linkStatus.setValue(SeatState.LinkStatus.NONE);
             }
 
             @Override
             public void onError(String requestId, String userId, TUICommonDefine.Error error, String message) {
-                Logger.error(FILE, "takeSeat,error:" + error + ",message:" + message);
+                LiveStreamLog.error(FILE + " takeSeat failed:error:" + error + ",errorCode:" + error.getValue() +
+                        "message:" + message);
                 ErrorLocalized.onError(error);
-                mSeatState.linkStatus.set(SeatState.LinkStatus.NONE, false);
+                mSeatState.linkStatus.setValue(SeatState.LinkStatus.NONE);
             }
         });
     }
@@ -123,7 +129,7 @@ public class SeatManager extends BaseManager {
         if (TextUtils.isEmpty(mUserState.selfInfo.userId)) {
             return false;
         }
-        return mSeatState.seatList.get().contains(new SeatState.SeatInfo(selfUserId));
+        return mSeatState.seatList.getValue().contains(new SeatState.SeatInfo(selfUserId));
     }
 
     private boolean isSelfSeatInfo(TUIRoomDefine.SeatInfo seatInfo) {
@@ -136,13 +142,14 @@ public class SeatManager extends BaseManager {
     private void addSeatApplication(TUIRoomDefine.UserInfo userInfo) {
         SeatState.SeatApplication seatApplication = new SeatState.SeatApplication(userInfo.userId);
         seatApplication.updateState(userInfo);
-        mSeatState.seatApplicationList.add(seatApplication);
+        mSeatState.seatApplicationList.getValue().add(seatApplication);
+        mSeatState.seatApplicationList.setValue(mSeatState.seatApplicationList.getValue());
     }
 
     private void addReceivedSeatInvitation(TUIRoomDefine.UserInfo userInfo) {
         SeatState.SeatInvitation seatInvitation = new SeatState.SeatInvitation(userInfo.userId);
         seatInvitation.updateState(userInfo);
-        mSeatState.receivedSeatInvitation.set(seatInvitation);
+        mSeatState.receivedSeatInvitation.setValue(seatInvitation);
     }
 
     public void initSeatList(int maxSeatCount) {
@@ -152,8 +159,9 @@ public class SeatManager extends BaseManager {
             seatInfo.index = i;
             list.add(seatInfo);
         }
-        mSeatState.seatList.get().clear();
-        mSeatState.seatList.addAll(list);
+        mSeatState.seatList.getValue().clear();
+        mSeatState.seatList.getValue().addAll(list);
+        mSeatState.seatList.setValue(mSeatState.seatList.getValue());
     }
 
     private void initSeatList(List<TUIRoomDefine.SeatInfo> list) {
@@ -163,17 +171,18 @@ public class SeatManager extends BaseManager {
             seatInfo.updateState(info);
             newList.add(seatInfo);
         }
-        mSeatState.seatList.get().clear();
-        mSeatState.seatList.addAll(newList);
+        mSeatState.seatList.getValue().clear();
+        mSeatState.seatList.getValue().addAll(newList);
+        mSeatState.seatList.setValue(mSeatState.seatList.getValue());
     }
 
     public void updateSeatList(List<TUIRoomDefine.SeatInfo> list) {
-        if (list.size() != mSeatState.seatList.get().size()) {
+        if (list.size() != mSeatState.seatList.getValue().size()) {
             initSeatList(list);
             return;
         }
         for (int i = 0; i < list.size(); i++) {
-            SeatState.SeatInfo oldSeatInfo = mSeatState.seatList.get().get(i);
+            SeatState.SeatInfo oldSeatInfo = mSeatState.seatList.getValue().get(i);
             TUIRoomDefine.SeatInfo newSeatInfo = list.get(i);
             if (oldSeatInfo == null || newSeatInfo == null) {
                 continue;
@@ -186,21 +195,21 @@ public class SeatManager extends BaseManager {
     public void onSeatListChanged(List<TUIRoomDefine.SeatInfo> seatList, List<TUIRoomDefine.SeatInfo> seatedList,
                                   List<TUIRoomDefine.SeatInfo> leftList) {
         updateSeatList(seatList);
+        for (TUIRoomDefine.SeatInfo seatInfo : leftList) {
+            if (isSelfSeatInfo(seatInfo)) {
+                mSeatState.linkStatus.setValue(SeatState.LinkStatus.NONE);
+            }
+        }
         for (TUIRoomDefine.SeatInfo seatInfo : seatedList) {
             if (isSelfSeatInfo(seatInfo)) {
-                mSeatState.linkStatus.set(SeatState.LinkStatus.LINKING, false);
+                mSeatState.linkStatus.setValue(SeatState.LinkStatus.LINKING);
             }
         }
         if (!seatedList.isEmpty()) {
-            mSeatState.seatList.notifyDataChanged();
-        }
-        for (TUIRoomDefine.SeatInfo seatInfo : leftList) {
-            if (isSelfSeatInfo(seatInfo)) {
-                mSeatState.linkStatus.set(SeatState.LinkStatus.NONE, false);
-            }
+            mSeatState.seatList.setValue(mSeatState.seatList.getValue());
         }
         if (!leftList.isEmpty()) {
-            mSeatState.seatList.notifyDataChanged();
+            mSeatState.seatList.setValue(mSeatState.seatList.getValue());
         }
     }
 
@@ -232,6 +241,6 @@ public class SeatManager extends BaseManager {
 
     public void onKickedOffSeat(TUIRoomDefine.UserInfo userInfo) {
         ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(
-                R.string.livekit_voiceroom_kicked_out_of_seat));
+                R.string.live_voiceroom_kicked_out_of_seat));
     }
 }

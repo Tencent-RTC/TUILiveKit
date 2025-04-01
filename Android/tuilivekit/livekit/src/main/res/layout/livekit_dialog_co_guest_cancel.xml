@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="62dp"
         android:gravity="center"
-        android:text="@string/livekit_text_cancel_link_mic_apply"
+        android:text="@string/live_text_cancel_link_mic_apply"
         android:textColor="@color/livekit_not_standard_red"
         android:textSize="16sp" />
 

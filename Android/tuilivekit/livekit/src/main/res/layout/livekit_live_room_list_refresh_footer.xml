@@ -16,7 +16,7 @@
         android:id="@+id/tv_loading_data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/livekit_loading"
+        android:text="@string/live_loading"
         app:layout_constraintBottom_toTopOf="@id/tv_no_more_data"
         app:layout_constraintTop_toTopOf="@id/pb_progress_bar"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -26,7 +26,7 @@
         android:id="@+id/tv_no_more_data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/livekit_no_more_data"
+        android:text="@string/live_no_more_data"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />

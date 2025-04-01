@@ -12,9 +12,10 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomObserver;
 import com.trtc.tuikit.common.foregroundservice.VideoForegroundService;
 import com.trtc.tuikit.common.system.ContextProvider;
-import com.trtc.uikit.component.common.StateCache;
+import com.trtc.uikit.component.barrage.store.BarrageStore;
 import com.trtc.uikit.livekit.LiveIdentityGenerator;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.component.audioeffect.store.AudioEffectStore;
 import com.trtc.uikit.livekit.component.floatwindow.core.FloatWindow;
 import com.trtc.uikit.livekit.component.floatwindow.core.FloatWindowObserver;
 import com.trtc.uikit.livekit.component.floatwindow.store.FloatWindowStore;
@@ -83,7 +84,9 @@ public final class FloatWindowManager {
         LiveStreamManager liveStreamManager = mLiveStreamManager;
         if (liveStreamManager != null) {
             String roomId = liveStreamManager.getRoomState().roomId;
-            StateCache.getInstance().remove(roomId);
+            com.trtc.uikit.livekit.component.gift.store.GiftStore.sharedInstance().unInit(roomId);
+            AudioEffectStore.sharedInstance().unInit();
+            BarrageStore.sharedInstance().unInit(roomId);
             if (mCoreView != null) {
                 String ownerId = liveStreamManager.getRoomState().ownerInfo.userId;
                 String selfId = liveStreamManager.getUserState().selfInfo.userId;
@@ -147,17 +150,14 @@ public final class FloatWindowManager {
             return;
         }
         LiveIdentityGenerator mRoomIdStrategy = LiveIdentityGenerator.getInstance();
-        TUIRoomDefine.Role role = liveStreamManager.getUserState().selfInfo.role.get();
+        TUIRoomDefine.Role role = liveStreamManager.getUserState().selfInfo.role.getValue();
         String roomId = liveStreamManager.getRoomState().roomId;
         LiveIdentityGenerator.RoomType roomType = mRoomIdStrategy.getIDType(roomId);
         if (role == TUIRoomDefine.Role.GENERAL_USER) {
             joinRoom(liveStreamManager);
         } else if (role == TUIRoomDefine.Role.ROOM_OWNER) {
             if (roomType == LiveIdentityGenerator.RoomType.VOICE) {
-                VoiceRoomDefine.CreateRoomParams params = new VoiceRoomDefine.CreateRoomParams();
-                params.roomName = liveStreamManager.getRoomState().roomName.get();
-                params.maxAnchorCount = liveStreamManager.getRoomState().maxSeatCount.get();
-                startVoiceStream(roomId, params);
+                LiveStreamLog.warn(TAG + " resumeLive error: not support voice room");
             } else {
                 startLiveStream(roomId);
             }
@@ -222,7 +222,7 @@ public final class FloatWindowManager {
         }
         FloatWindow.getInstance().setView(view);
         FloatWindow.getInstance().show();
-        mStore.isShowingFloatWindow.set(true);
+        mStore.isShowingFloatWindow.setValue(true);
     }
 
     private void dismissFloatWindow() {
@@ -238,7 +238,7 @@ public final class FloatWindowManager {
             }
         }
         FloatWindow.getInstance().close();
-        mStore.isShowingFloatWindow.set(false);
+        mStore.isShowingFloatWindow.setValue(false);
         Context context = ContextProvider.getApplicationContext();
         VideoForegroundService.stop(context);
     }

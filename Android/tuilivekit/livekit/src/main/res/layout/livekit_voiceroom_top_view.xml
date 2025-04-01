@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.trtc.uikit.component.roominfo.RoomInfoView
+    <com.trtc.uikit.livekit.component.roominfo.RoomInfoView
         android:id="@+id/rl_room_info"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
@@ -13,7 +13,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.trtc.uikit.component.audiencelist.AudienceListView
+    <com.trtc.uikit.livekit.component.audiencelist.AudienceListView
         android:id="@+id/rl_audience_list"
         android:layout_width="135dp"
         android:layout_height="wrap_content"

@@ -10,4 +10,19 @@
 
     <dimen name="livekit_float_view_width">110dp</dimen>
     <dimen name="livekit_float_view_height">188dp</dimen>
+
+    <dimen name="livekit_gift_text_size_large">18sp</dimen>
+    <dimen name="livekit_gift_text_size_middle">14sp</dimen>
+    <dimen name="livekit_gift_small_image_size">30dp</dimen>
+    <dimen name="livekit_gift_small_image_left_margin">20dp</dimen>
+    <dimen name="livekit_gift_large_image_left_margin">10dp</dimen>
+    <dimen name="livekit_gift_btn_size">52dp</dimen>
+    <dimen name="livekit_gift_heart_anim_bezier_x_rand">50.0dp</dimen>
+    <dimen name="livekit_gift_heart_anim_length">100.0dp</dimen>
+    <dimen name="livekit_gift_heart_anim_length_rand">350.0dp</dimen>
+    <dimen name="livekit_gift_space_select_pk_rv">20dp</dimen>
+    <dimen name="livekit_gift_item_title_size">16sp</dimen>
+
+    <integer name="livekit_gift_heart_anim_duration">1000</integer>
+    <integer name="livekit_gift_heart_anim_bezier_factor">6</integer>
 </resources>

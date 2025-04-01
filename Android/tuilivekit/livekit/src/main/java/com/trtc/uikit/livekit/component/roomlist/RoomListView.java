@@ -8,11 +8,11 @@ import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.component.roomlist.service.RoomListService;
 import com.trtc.uikit.livekit.component.roomlist.store.RoomListState;
@@ -60,9 +60,7 @@ public class RoomListView extends FrameLayout {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-
         initView();
-        refreshRoomList();
         addObserver();
     }
 
@@ -73,8 +71,8 @@ public class RoomListView extends FrameLayout {
     }
 
     private void addObserver() {
-        mRoomListState.mRefreshStatus.observe(mRefreshStatusObserver);
-        mRoomListState.mLoadStatus.observe(mLoadStatusObserver);
+        mRoomListState.mRefreshStatus.observeForever(mRefreshStatusObserver);
+        mRoomListState.mLoadStatus.observeForever(mLoadStatusObserver);
     }
 
 
@@ -95,7 +93,7 @@ public class RoomListView extends FrameLayout {
         GridLayoutManager layoutManager = new GridLayoutManager(mContext, 2, GridLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.addItemDecoration(new RoomListAdapter.GridDividerItemDecoration(mContext));
-        RoomListAdapter adapter = new RoomListAdapter(mContext, mRoomListState.mLiveList.get());
+        RoomListAdapter adapter = new RoomListAdapter(mContext, mRoomListState.mLiveList.getValue());
         mAdapter = new LoadMoreAdapterWrapper(adapter);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {

@@ -1,6 +1,6 @@
 package com.trtc.uikit.livekit.voiceroom.manager.module;
 
-import com.trtc.uikit.livekit.voiceroom.api.IVoiceRoom;
+import com.trtc.uikit.livekit.voiceroom.manager.api.IVoiceRoom;
 import com.trtc.uikit.livekit.voiceroom.state.MediaState;
 import com.trtc.uikit.livekit.voiceroom.state.RoomState;
 import com.trtc.uikit.livekit.voiceroom.state.SeatState;

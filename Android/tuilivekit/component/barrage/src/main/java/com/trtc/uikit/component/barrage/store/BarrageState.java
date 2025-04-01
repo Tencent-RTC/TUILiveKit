@@ -1,12 +1,15 @@
 package com.trtc.uikit.component.barrage.store;
 
-import com.trtc.tuikit.common.livedata.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
 import com.trtc.uikit.component.barrage.store.model.Barrage;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class BarrageState {
-    public final LiveData<Integer>       mBarrageTotalCount = new LiveData<>(0);
-    public final LiveData<List<Barrage>> mBarrageCacheList  = new LiveData<>(new ArrayList<>());
+    public       String                         mRoomId            = "";
+    public       String                         mOwnerId           = "";
+    public final MutableLiveData<Integer>       mBarrageTotalCount = new MutableLiveData<>(0);
+    public final MutableLiveData<List<Barrage>> mBarrageCacheList  = new MutableLiveData<>(new ArrayList<>());
 }

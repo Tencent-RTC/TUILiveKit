@@ -50,7 +50,7 @@
         android:layout_marginEnd="24dp"
         android:background="@drawable/livekit_selector_item_invite_user"
         android:gravity="center"
-        android:text="@string/livekit_voiceroom_invite"
+        android:text="@string/live_voiceroom_invite"
         android:textColor="@color/livekit_design_standard_flowkit_white"
         android:textSize="12sp"
         tools:ignore="RelativeOverlap" />

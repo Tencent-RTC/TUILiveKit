@@ -16,7 +16,9 @@ import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.ErrorLocalized;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
+import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestream.state.CoGuestState;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
@@ -47,16 +49,16 @@ public class AnchorCoGuestAdapter extends RecyclerView.Adapter<AnchorCoGuestAdap
 
     @Override
     public void onBindViewHolder(@NonNull LinkMicViewHolder holder, int position) {
-        if (TextUtils.isEmpty(mData.get(position).name.get())) {
-            holder.textName.setText(mData.get(position).userId.get());
+        if (TextUtils.isEmpty(mData.get(position).name.getValue())) {
+            holder.textName.setText(mData.get(position).userId.getValue());
         } else {
-            holder.textName.setText(mData.get(position).name.get());
+            holder.textName.setText(mData.get(position).name.getValue());
         }
 
-        if (TextUtils.isEmpty(mData.get(position).avatarUrl.get())) {
+        if (TextUtils.isEmpty(mData.get(position).avatarUrl.getValue())) {
             holder.imageHead.setImageResource(R.drawable.livekit_ic_avatar);
         } else {
-            ImageLoader.load(mContext, holder.imageHead, mData.get(position).avatarUrl.get(),
+            ImageLoader.load(mContext, holder.imageHead, mData.get(position).avatarUrl.getValue(),
                     R.drawable.livekit_ic_avatar);
         }
         holder.textHangUp.setTag(mData.get(position));
@@ -64,7 +66,7 @@ public class AnchorCoGuestAdapter extends RecyclerView.Adapter<AnchorCoGuestAdap
         holder.textHangUp.setOnClickListener((view) -> {
             view.setEnabled(false);
             final CoGuestState.SeatInfo seatInfo = (CoGuestState.SeatInfo) view.getTag();
-            mLiveStream.disconnectUser(seatInfo.userId.get(), new TUIRoomDefine.ActionCallback() {
+            mLiveStream.disconnectUser(seatInfo.userId.getValue(), new TUIRoomDefine.ActionCallback() {
                 @Override
                 public void onSuccess() {
 
@@ -72,7 +74,9 @@ public class AnchorCoGuestAdapter extends RecyclerView.Adapter<AnchorCoGuestAdap
 
                 @Override
                 public void onError(TUICommonDefine.Error error, String message) {
-
+                    ErrorLocalized.onError(error);
+                    LiveStreamLog.error("AnchorCoGuestAdapter" + " disconnectUser failed:error:" + error + "," +
+                            "errorCode:" + error.getValue() + "message:" + message);
                 }
             });
         });
@@ -80,10 +84,10 @@ public class AnchorCoGuestAdapter extends RecyclerView.Adapter<AnchorCoGuestAdap
 
     private void initData() {
         mData.clear();
-        mData.addAll(mLiveManager.getCoGuestState().connectedUserList.get());
+        mData.addAll(mLiveManager.getCoGuestState().connectedUserList.getValue());
 
         CoGuestState.SeatInfo selfSeatInfo = new CoGuestState.SeatInfo();
-        selfSeatInfo.userId.set(mLiveManager.getUserState().selfInfo.userId);
+        selfSeatInfo.userId.setValue(mLiveManager.getUserState().selfInfo.userId);
         mData.remove(selfSeatInfo);
     }
 

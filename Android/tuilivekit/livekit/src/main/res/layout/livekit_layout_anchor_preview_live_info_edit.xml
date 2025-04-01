@@ -28,7 +28,7 @@
             android:layout_gravity="bottom|center_horizontal"
             android:background="@drawable/livekit_anchor_cover_text_bg"
             android:gravity="center"
-            android:text="@string/livekit_edit_cover"
+            android:text="@string/live_edit_cover"
             android:textColor="@color/livekit_design_standard_g7"
             android:textSize="12sp" />
 
@@ -87,52 +87,6 @@
             android:background="@color/livekit_design_standard_g5_20_transparency" />
 
         <LinearLayout
-            android:id="@+id/ll_stream_category"
-            android:layout_width="wrap_content"
-            android:layout_height="22dp"
-            android:layout_marginTop="12dp"
-            android:gravity="center_vertical|left"
-            android:orientation="horizontal"
-            tools:ignore="RtlHardcoded">
-
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_gravity="center_vertical"
-                android:background="@drawable/livekit_live_stream_category"
-                android:importantForAccessibility="no" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="4dp"
-                android:gravity="center"
-                android:text="@string/livekit_stream_categories"
-                android:textColor="@color/livekit_design_standard_g7"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/tv_stream_category"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:maxLines="1"
-                android:textColor="@color/livekit_design_standard_g7"
-                android:textSize="14sp" />
-
-            <ImageView
-                android:id="@+id/iv_stream_category_arrow"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_gravity="center_vertical"
-                android:background="@drawable/livekit_small_arrow"
-                android:importantForAccessibility="no" />
-
-        </LinearLayout>
-
-        <LinearLayout
             android:id="@+id/ll_stream_privacy_status"
             android:layout_width="wrap_content"
             android:layout_height="22dp"
@@ -154,7 +108,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="4dp"
                 android:gravity="center"
-                android:text="@string/livekit_stream_privacy_status"
+                android:text="@string/live_stream_privacy_status"
                 android:textColor="@color/livekit_design_standard_g7"
                 android:textSize="14sp" />
 
@@ -165,7 +119,7 @@
                 android:layout_gravity="center_vertical"
                 android:gravity="center"
                 android:maxLines="1"
-                android:text="@string/livekit_stream_privacy_status_default"
+                android:text="@string/live_stream_privacy_status_default"
                 android:textColor="@color/livekit_design_standard_g7"
                 android:textSize="14sp" />
 

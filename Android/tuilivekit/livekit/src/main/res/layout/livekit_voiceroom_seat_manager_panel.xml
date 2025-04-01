@@ -33,7 +33,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="5dp"
-                    android:text="@string/livekit_voiceroom_need_agree"
+                    android:text="@string/live_voiceroom_need_agree"
                     android:textColor="@color/livekit_design_standard_g7"
                     android:textSize="16sp" />
 
@@ -64,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
-                android:text="@string/livekit_seat_list_title"
+                android:text="@string/live_seat_list_title"
                 android:textColor="@color/livekit_design_standard_g7"
                 android:textSize="16sp" />
 
@@ -82,7 +82,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="24dp"
-                android:text="@string/livekit_seat_application_title"
+                android:text="@string/live_seat_application_title"
                 android:textColor="@color/livekit_design_standard_g7"
                 android:textSize="16sp" />
 
@@ -109,7 +109,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="@string/livekit_voiceroom_empty_view"
+                    android:text="@string/live_voiceroom_empty_view"
                     android:textColor="@color/livekit_design_standard_g5"
                     android:textSize="16sp" />
 
@@ -120,7 +120,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="24dp"
                     android:background="@drawable/livekit_round_button_background"
-                    android:text="@string/livekit_voiceroom_invite"
+                    android:text="@string/live_voiceroom_invite"
                     android:textAllCaps="false"
                     android:textColor="@android:color/white"
                     android:textSize="20sp"

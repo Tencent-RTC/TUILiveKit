@@ -1,9 +1,8 @@
 <resources>
-    <string name="livekit_barrage_text_hint">聊聊吧~</string>
-    <string name="livekit_barrage_input_hint">请输入弹幕</string>
-    <string name="livekit_barrage_btn_send">发送</string>
-    <string name="livekit_barrage_me">我</string>
-    <string name="livekit_barrage_agree">同意</string>
-    <string name="livekit_barrage_warning_not_empty">输入不能为空</string>
-    <string name="livekit_barrage_anchor">主播</string>
+    <string name="live_barrage_text_hint">聊聊吧~</string>
+    <string name="live_barrage_btn_send">发送</string>
+    <string name="live_barrage_agree">同意</string>
+    <string name="live_barrage_warning_not_empty">输入不能为空</string>
+    <string name="live_barrage_anchor">主播</string>
+    <string name="live_barrage_disable_message_by_admin">当前房间内，您已被禁言</string>
 </resources>

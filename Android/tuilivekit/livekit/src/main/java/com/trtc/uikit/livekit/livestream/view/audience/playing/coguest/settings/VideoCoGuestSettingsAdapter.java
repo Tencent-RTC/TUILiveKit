@@ -45,17 +45,18 @@ public class VideoCoGuestSettingsAdapter extends RecyclerView.Adapter<VideoCoGue
     }
 
     private void initSettingsItem() {
-        mSettingsItem.add(new SettingsItem(mContext.getString(R.string.livekit_video_settings_item_beauty),
+        mSettingsItem.add(new SettingsItem(mContext.getString(R.string.live_video_settings_item_beauty),
                 R.drawable.livekit_video_settings_beauty, ITEM_SETTINGS_BEAUTY, view -> {
             popUpBeautyPanel();
         }));
-        mSettingsItem.add(new SettingsItem(mContext.getString(R.string.livekit_video_config),
+        mSettingsItem.add(new SettingsItem(mContext.getString(R.string.live_video_config),
                 R.drawable.livekit_settings_item_video_params, ITEM_SETTINGS_VIDEO, view -> {
             showVideoSettingsDialog();
         }));
-        mSettingsItem.add(new SettingsItem(mContext.getString(R.string.livekit_video_settings_item_flip),
+        mSettingsItem.add(new SettingsItem(mContext.getString(R.string.live_video_settings_item_flip),
                 R.drawable.livekit_video_settings_flip, ITEM_SETTINGS_FLIP, view -> {
-            mLiveCoreView.getMediaManager().switchCamera();
+            boolean isFront = Boolean.TRUE.equals(mLiveCoreView.getCoreState().mediaState.isFrontCamera.getValue());
+            mLiveCoreView.switchCamera(!isFront);
         }));
     }
 
@@ -66,7 +67,7 @@ public class VideoCoGuestSettingsAdapter extends RecyclerView.Adapter<VideoCoGue
     }
 
     private void showVideoSettingsDialog() {
-        VideoSettingsDialog videoSettingsDialog = new VideoSettingsDialog(mContext, mLiveCoreView);
+        VideoSettingsDialog videoSettingsDialog = new VideoSettingsDialog(mContext, mLiveCoreView, mLiveManager);
         videoSettingsDialog.show();
     }
 

@@ -53,7 +53,7 @@
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="60dp"
         android:background="@drawable/livekit_round_button_background"
-        android:text="@string/livekit_start_live"
+        android:text="@string/live_start_live"
         android:textAllCaps="false"
         android:textColor="@android:color/white"
         android:textFontWeight="700"

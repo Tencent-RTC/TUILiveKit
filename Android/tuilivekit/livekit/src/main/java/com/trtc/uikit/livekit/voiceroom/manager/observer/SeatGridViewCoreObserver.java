@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.View;
 
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
-import com.trtc.uikit.livekit.voiceroom.api.Logger;
+import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
 import com.trtc.uikit.livekit.voiceroom.view.seatmanager.ListMenuInfo;
 import com.trtc.uikit.livekit.voiceroom.view.seatmanager.SeatActionSheetDialog;
@@ -47,7 +47,6 @@ public class SeatGridViewCoreObserver extends SeatGridViewObserver {
     public void onUserAudioStateChanged(TUIRoomDefine.UserInfo userInfo, boolean hasAudio,
                                         TUIRoomDefine.ChangeReason reason) {
         Logger.info(FILE, "onUserAudioStateChanged: " + userInfo.userId + ",hasAudio:" + hasAudio);
-        mVoiceRoomManager.getMediaManager().onUserAudioStateChanged(userInfo, hasAudio, reason);
     }
 
     @Override

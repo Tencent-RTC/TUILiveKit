@@ -19,15 +19,15 @@ import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
 import com.trtc.uikit.livekit.voiceroom.state.SeatState;
 import com.trtc.uikit.livekit.voiceroom.state.UserState;
 
-import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SeatInvitationAdapter extends RecyclerView.Adapter<SeatInvitationAdapter.ViewHolder> {
 
-    private final Context          mContext;
-    private final VoiceRoomManager mVoiceRoomManager;
-    private final SeatState        mSeatState;
+    private final Context                                  mContext;
+    private final VoiceRoomManager                         mVoiceRoomManager;
+    private final SeatState                                mSeatState;
     private       OnInviteButtonClickListener              mOnInviteButtonClickListener;
     private final CopyOnWriteArrayList<UserState.UserInfo> mData = new CopyOnWriteArrayList<>();
 
@@ -40,8 +40,8 @@ public class SeatInvitationAdapter extends RecyclerView.Adapter<SeatInvitationAd
 
     private void initData() {
         mData.clear();
-        LinkedHashSet<UserState.UserInfo> audienceList = mVoiceRoomManager.getUserState().userList.get();
-        List<SeatState.SeatInfo> seatList = mSeatState.seatList.get();
+        Set<UserState.UserInfo> audienceList = mVoiceRoomManager.getUserState().userList.getValue();
+        List<SeatState.SeatInfo> seatList = mSeatState.seatList.getValue();
         for (UserState.UserInfo userInfo : audienceList) {
             if (seatList.contains(new SeatState.SeatInfo(userInfo.userId))) {
                 continue;
@@ -65,24 +65,24 @@ public class SeatInvitationAdapter extends RecyclerView.Adapter<SeatInvitationAd
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         UserState.UserInfo userInfo = mData.get(position);
-        if (TextUtils.isEmpty(userInfo.avatarUrl.get())) {
+        if (TextUtils.isEmpty(userInfo.avatarUrl.getValue())) {
             holder.imageHead.setImageResource(R.drawable.livekit_ic_avatar);
         } else {
-            ImageLoader.load(mContext, holder.imageHead, userInfo.avatarUrl.get(), R.drawable.livekit_ic_avatar);
+            ImageLoader.load(mContext, holder.imageHead, userInfo.avatarUrl.getValue(), R.drawable.livekit_ic_avatar);
         }
 
-        if (TextUtils.isEmpty(userInfo.name.get())) {
+        if (TextUtils.isEmpty(userInfo.name.getValue())) {
             holder.textName.setText(userInfo.userId);
         } else {
-            holder.textName.setText(userInfo.name.get());
+            holder.textName.setText(userInfo.name.getValue());
         }
-        if (mSeatState.sentSeatInvitationMap.get().containsKey(userInfo.userId)) {
+        if (mSeatState.sentSeatInvitationMap.getValue().containsKey(userInfo.userId)) {
             holder.inviteButton.setSelected(true);
-            holder.inviteButton.setText(R.string.livekit_cancel);
+            holder.inviteButton.setText(R.string.live_cancel);
             holder.inviteButton.setTextColor(mContext.getResources().getColor(R.color.livekit_not_standard_red));
         } else {
             holder.inviteButton.setSelected(false);
-            holder.inviteButton.setText(R.string.livekit_voiceroom_invite);
+            holder.inviteButton.setText(R.string.live_voiceroom_invite);
             holder.inviteButton.setTextColor(Color.WHITE);
         }
         holder.inviteButton.setOnClickListener(v -> {

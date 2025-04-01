@@ -7,15 +7,13 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 
-import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
 import com.trtc.uikit.livekit.voiceroom.state.SeatState;
 import com.trtc.uikit.livekit.voiceroom.view.BasicView;
 import com.trtc.uikit.livekit.voiceroom.view.seatmanager.SeatManagerDialog;
 import com.trtc.uikit.livekit.voiceroom.view.settings.SettingsDialog;
-import com.trtc.uikit.livekit.voiceroomcore.SeatGridView;
 
 import java.util.LinkedHashSet;
 
@@ -49,7 +47,7 @@ public class AnchorFunctionView extends BasicView {
 
     @Override
     protected void addObserver() {
-        mSeatState.seatApplicationList.observe(mSeatApplicationListObserver);
+        mSeatState.seatApplicationList.observeForever(mSeatApplicationListObserver);
     }
 
     @Override

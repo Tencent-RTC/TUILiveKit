@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,12 +18,11 @@ import com.tencent.cloud.tuikit.engine.common.TUIVideoView;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.qcloud.tuicore.util.ScreenUtil;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
-import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.ErrorLocalized;
 import com.trtc.uikit.livekit.component.floatwindow.view.RoundFrameLayout;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
-import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
 import com.trtc.uikit.livekit.livestream.state.RoomState;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
@@ -68,7 +68,7 @@ public class VideoCoGuestSettingsDialog extends PopupDialog {
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mLiveManager.getRoomState().liveStatus.observe(mLiveStatusObserver);
+        mLiveManager.getRoomState().liveStatus.observeForever(mLiveStatusObserver);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class VideoCoGuestSettingsDialog extends PopupDialog {
         super.onDetachedFromWindow();
         mLiveManager.getRoomState().liveStatus.removeObserver(mLiveStatusObserver);
         if (mNeedCloseCamera) {
-            mLiveManager.getMediaManager().closeCamera();
+            mLiveStream.stopCamera();
         }
     }
 
@@ -90,7 +90,7 @@ public class VideoCoGuestSettingsDialog extends PopupDialog {
                 return;
             }
             view.setEnabled(false);
-            ToastUtil.toastShortMessageCenter(getContext().getString(R.string.livekit_toast_apply_link_mic));
+            ToastUtil.toastShortMessageCenter(getContext().getString(R.string.live_toast_apply_link_mic));
             mLiveStream.requestIntraRoomConnection("", 60, true, new TUIRoomDefine.ActionCallback() {
                 @Override
                 public void onSuccess() {
@@ -100,7 +100,7 @@ public class VideoCoGuestSettingsDialog extends PopupDialog {
 
                 @Override
                 public void onError(TUICommonDefine.Error error, String message) {
-                    ErrorHandler.onError(error);
+                    ErrorLocalized.onError(error);
                 }
             });
             dismiss();
@@ -109,8 +109,18 @@ public class VideoCoGuestSettingsDialog extends PopupDialog {
 
     private void initPreviewVideoView() {
         mLiveManager.getMediaManager().setLocalVideoView(mPreviewVideoView);
-        boolean isFront = mLiveStream.getMediaManager().mMediaState.isFrontCamera.get();
-        mLiveManager.getMediaManager().openLocalCamera(isFront);
+        boolean isFront = Boolean.TRUE.equals(mLiveStream.getCoreState().mediaState.isFrontCamera.getValue());
+        mLiveStream.startCamera(isFront, new TUIRoomDefine.ActionCallback() {
+            @Override
+            public void onSuccess() {
+                mLiveStream.startMicrophone(null);
+            }
+
+            @Override
+            public void onError(TUICommonDefine.Error error, String message) {
+                mLiveStream.startMicrophone(null);
+            }
+        });
     }
 
     private void initRecycleSettingsOption() {

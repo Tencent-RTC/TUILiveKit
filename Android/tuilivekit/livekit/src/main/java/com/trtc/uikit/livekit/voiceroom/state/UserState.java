@@ -3,31 +3,31 @@ package com.trtc.uikit.livekit.voiceroom.state;
 import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
+import androidx.lifecycle.MutableLiveData;
 
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
-import com.trtc.tuikit.common.livedata.LiveData;
 
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
 public class UserState {
-    public UserInfo                          selfInfo            = new UserInfo();
-    public LiveData<LinkedHashSet<UserInfo>> userList            = new LiveData<>(new LinkedHashSet<>());
-    public LiveData<LinkedHashSet<UserInfo>> myFollowingUserList = new LiveData<>(new LinkedHashSet<>());
-    public LiveData<UserInfo>                enterUserInfo       = new LiveData<>();
-
+    public UserInfo                       selfInfo            = new UserInfo();
+    public MutableLiveData<Set<UserInfo>> userList            = new MutableLiveData<>(new LinkedHashSet<>());
+    public MutableLiveData<Set<UserInfo>> myFollowingUserList = new MutableLiveData<>(new LinkedHashSet<>());
+    public MutableLiveData<UserInfo>      enterUserInfo       = new MutableLiveData<>();
 
     public void reset() {
-        userList.get().clear();
-        myFollowingUserList.get().clear();
+        userList.getValue().clear();
+        myFollowingUserList.getValue().clear();
     }
 
     public void addUserList(Set<UserInfo> list) {
         if (list == null || list.isEmpty()) {
             return;
         }
-        userList.addAll(list);
+        userList.getValue().addAll(list);
+        userList.setValue(userList.getValue());
     }
 
     public void addUser(TUIRoomDefine.UserInfo userInfo) {
@@ -38,8 +38,9 @@ public class UserState {
             return;
         }
         UserInfo info = new UserInfo(userInfo);
-        enterUserInfo.set(info);
-        userList.add(new UserInfo(userInfo));
+        enterUserInfo.setValue(info);
+        userList.getValue().add(new UserInfo(userInfo));
+        userList.setValue(userList.getValue());
     }
 
     public void removeUser(TUIRoomDefine.UserInfo userInfo) {
@@ -49,15 +50,16 @@ public class UserState {
         if (TextUtils.isEmpty(userInfo.userId)) {
             return;
         }
-        userList.remove(new UserInfo(userInfo.userId));
+        userList.getValue().remove(new UserInfo(userInfo.userId));
+        userList.setValue(userList.getValue());
     }
 
     public static class UserInfo {
-        public String                       userId    = "";
-        public LiveData<String>             name      = new LiveData<>("");
-        public LiveData<String>             avatarUrl = new LiveData<>("");
-        public LiveData<TUIRoomDefine.Role> role      = new LiveData<>(TUIRoomDefine.Role.GENERAL_USER);
-        public LiveData<Long>               fansCount = new LiveData<>(0L);
+        public String                              userId    = "";
+        public MutableLiveData<String>             name      = new MutableLiveData<>("");
+        public MutableLiveData<String>             avatarUrl = new MutableLiveData<>("");
+        public MutableLiveData<TUIRoomDefine.Role> role      = new MutableLiveData<>(TUIRoomDefine.Role.GENERAL_USER);
+        public MutableLiveData<Long>               fansCount = new MutableLiveData<>(0L);
 
         public UserInfo() {
         }
@@ -85,9 +87,9 @@ public class UserState {
 
         public void updateState(TUIRoomDefine.UserInfo userInfo) {
             this.userId = userInfo.userId;
-            this.name.set(userInfo.userName);
-            this.avatarUrl.set(userInfo.avatarUrl);
-            this.role.set(userInfo.userRole);
+            this.name.setValue(userInfo.userName);
+            this.avatarUrl.setValue(userInfo.avatarUrl);
+            this.role.setValue(userInfo.userRole);
         }
     }
 }

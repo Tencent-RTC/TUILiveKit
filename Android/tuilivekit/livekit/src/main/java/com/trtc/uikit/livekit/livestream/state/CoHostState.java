@@ -1,25 +1,25 @@
 package com.trtc.uikit.livekit.livestream.state;
 
 import androidx.annotation.Nullable;
+import androidx.lifecycle.MutableLiveData;
 
 import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
-import com.trtc.tuikit.common.livedata.LiveData;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CoHostState {
-    public       String                         recommendedCursor         = "";
-    public final LiveData<List<ConnectionUser>> recommendUsers            = new LiveData<>(new ArrayList<>());
-    public final LiveData<List<ConnectionUser>> connectedUsers            = new LiveData<>(new ArrayList<>());
-    public final LiveData<List<ConnectionUser>> sentConnectionRequests    =
-            new LiveData<>(new ArrayList<>());
-    public final LiveData<ConnectionUser>       receivedConnectionRequest = new LiveData<>();
+    public       String                                recommendedCursor         = "";
+    public final MutableLiveData<List<ConnectionUser>> recommendUsers            = new MutableLiveData<>(new ArrayList<>());
+    public final MutableLiveData<List<ConnectionUser>> connectedUsers            = new MutableLiveData<>(new ArrayList<>());
+    public final MutableLiveData<List<ConnectionUser>> sentConnectionRequests    =
+            new MutableLiveData<>(new ArrayList<>());
+    public final MutableLiveData<ConnectionUser>       receivedConnectionRequest = new MutableLiveData<>();
 
     public void reset() {
-        recommendUsers.get().clear();
-        connectedUsers.get().clear();
+        recommendUsers.getValue().clear();
+        connectedUsers.getValue().clear();
     }
 
     public enum ConnectionStatus {

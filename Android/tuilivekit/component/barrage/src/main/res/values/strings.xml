@@ -1,9 +1,8 @@
 <resources>
-    <string name="livekit_barrage_text_hint">Let\'s talk</string>
-    <string name="livekit_barrage_input_hint">Please enter barrage</string>
-    <string name="livekit_barrage_btn_send">Send</string>
-    <string name="livekit_barrage_me">Me</string>
-    <string name="livekit_barrage_agree">Agree</string>
-    <string name="livekit_barrage_warning_not_empty">"input can't be empty!"</string>
-    <string name="livekit_barrage_anchor">Anchor</string>
+    <string name="live_barrage_text_hint">Let\'s talk</string>
+    <string name="live_barrage_btn_send">Send</string>
+    <string name="live_barrage_agree">Agree</string>
+    <string name="live_barrage_warning_not_empty">input can\'t be empty!</string>
+    <string name="live_barrage_anchor">Anchor</string>    
+    <string name="live_barrage_disable_message_by_admin">You have been muted in the current room</string>
 </resources>

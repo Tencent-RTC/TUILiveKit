@@ -25,11 +25,11 @@ import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.uikit.component.barrage.BarrageInputView;
 import com.trtc.uikit.component.barrage.R;
 import com.trtc.uikit.component.barrage.service.BarrageConstants;
+import com.trtc.uikit.component.barrage.service.DataReporter;
 import com.trtc.uikit.component.barrage.service.IEmojiResource;
 import com.trtc.uikit.component.barrage.store.BarrageStore;
 import com.trtc.uikit.component.barrage.store.model.Barrage;
 import com.trtc.uikit.component.barrage.view.util.OnDecorViewListener;
-import com.trtc.uikit.component.common.DataReporter;
 
 public class BarrageSendView extends Dialog implements IBarrageSendView, OnDecorViewListener.OnKeyboardCallback {
     private static final String  FILE_NAME           = "keyboard.common";
@@ -143,8 +143,9 @@ public class BarrageSendView extends Dialog implements IBarrageSendView, OnDecor
         }
         String message = mEditText.getText().toString().trim();
         if (TextUtils.isEmpty(message)) {
-            ToastUtil.toastLongMessage(mContext.getString(R.string.livekit_barrage_warning_not_empty));
+            ToastUtil.toastLongMessage(mContext.getString(R.string.live_barrage_warning_not_empty));
         } else {
+            mEditText.setText("");
             Barrage barrage = createBarrageModel(message);
             sendBarrage(barrage);
             dismiss();
@@ -186,7 +187,6 @@ public class BarrageSendView extends Dialog implements IBarrageSendView, OnDecor
         layoutParams.height = 0;
         mBottomPlaceholder.setLayoutParams(layoutParams);
         mInputMethodManager.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
-        mEditText.setText("");
         if (mOnGlobalLayoutListener != null) {
             mOnGlobalLayoutListener.clear();
         }
@@ -256,7 +256,6 @@ public class BarrageSendView extends Dialog implements IBarrageSendView, OnDecor
         barrage.user.userName = TUILogin.getNickName();
         barrage.user.userId = TUILogin.getUserId();
         barrage.user.avatarUrl = TUILogin.getFaceUrl();
-        barrage.user.level = "66";
         return barrage;
     }
 

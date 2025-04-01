@@ -1,8 +1,8 @@
 package com.trtc.uikit.livekit.voiceroom.manager;
 
-import com.trtc.uikit.livekit.voiceroom.api.IVoiceRoom;
-import com.trtc.uikit.livekit.voiceroom.api.Logger;
-import com.trtc.uikit.livekit.voiceroom.api.impl.VoiceRoomImpl;
+import com.trtc.uikit.livekit.voiceroom.manager.api.IVoiceRoom;
+import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
+import com.trtc.uikit.livekit.voiceroom.manager.api.impl.VoiceRoomImpl;
 import com.trtc.uikit.livekit.voiceroom.manager.module.MediaManager;
 import com.trtc.uikit.livekit.voiceroom.manager.module.RoomManager;
 import com.trtc.uikit.livekit.voiceroom.manager.module.SeatManager;
@@ -14,6 +14,7 @@ import com.trtc.uikit.livekit.voiceroom.state.RoomState;
 import com.trtc.uikit.livekit.voiceroom.state.SeatState;
 import com.trtc.uikit.livekit.voiceroom.state.UserState;
 import com.trtc.uikit.livekit.voiceroom.state.VoiceRoomState;
+import com.trtc.uikit.livekit.voiceroomcore.VoiceRoomDefine.CoreState;
 
 public class VoiceRoomManager {
     private static final String FILE = "VoiceRoomManager";
@@ -27,6 +28,7 @@ public class VoiceRoomManager {
 
     private final RoomEngineObserver      mRoomEngineObserver;
     private final LiveListManagerObserver mLiveListManagerObserver;
+    private       CoreStateProvider       mCoreStateProvider;
 
     public VoiceRoomManager() {
         mState = new VoiceRoomState();
@@ -95,5 +97,17 @@ public class VoiceRoomManager {
         getRoomState().roomId = roomId;
         Logger.info(FILE, " setRoomId:[mRoomId=" + roomId + ",mLiveService:" + ",mLiveObserver:"
                 + mRoomEngineObserver.hashCode() + "]");
+    }
+
+    public CoreState getCoreState() {
+        return mCoreStateProvider.getCoreState();
+    }
+
+    public void setCoreStateProvider(CoreStateProvider provider) {
+        mCoreStateProvider = provider;
+    }
+
+    public interface CoreStateProvider {
+        CoreState getCoreState();
     }
 }

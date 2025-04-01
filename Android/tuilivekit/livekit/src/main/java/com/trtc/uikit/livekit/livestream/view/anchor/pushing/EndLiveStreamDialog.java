@@ -17,8 +17,9 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.qcloud.tuicore.util.ScreenUtil;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.ErrorLocalized;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
-import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
+import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestream.state.RoomState;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
@@ -58,25 +59,25 @@ public class EndLiveStreamDialog extends PopupDialog {
     }
 
     private boolean isInCoGuest() {
-        return mLiveStreamManager.getCoGuestState().connectedUserList.get().size() > 1;
+        return mLiveStreamManager.getCoGuestState().connectedUserList.getValue().size() > 1;
     }
 
     private boolean isInCoHost() {
-        return !mLiveStreamManager.getCoHostState().connectedUsers.get().isEmpty();
+        return !mLiveStreamManager.getCoHostState().connectedUsers.getValue().isEmpty();
     }
 
     private boolean isInBattle() {
-        return Boolean.TRUE.equals(mLiveStreamManager.getBattleState().mIsBattleRunning.get());
+        return Boolean.TRUE.equals(mLiveStreamManager.getBattleState().mIsBattleRunning.getValue());
     }
 
     private void initTitleView() {
         String tips = "";
         if (isInCoGuest()) {
-            tips = getContext().getString(R.string.livekit_anchor_end_link_tips);
+            tips = getContext().getString(R.string.live_anchor_end_link_tips);
         } else if (isInCoHost()) {
-            tips = getContext().getString(R.string.livekit_end_connection_tips);
+            tips = getContext().getString(R.string.live_end_connection_tips);
             if (isInBattle()) {
-                tips = getContext().getString(R.string.livekit_end_pk_tips);
+                tips = getContext().getString(R.string.live_end_pk_tips);
             }
         }
         if (TextUtils.isEmpty(tips)) {
@@ -92,7 +93,7 @@ public class EndLiveStreamDialog extends PopupDialog {
         TextView itemView = addItemView();
         int color = mContext.getResources().getColor(R.color.livekit_not_standard_red);
         itemView.setTextColor(color);
-        itemView.setText(getContext().getString(R.string.livekit_end_pk));
+        itemView.setText(getContext().getString(R.string.live_end_pk));
         itemView.setOnClickListener(v -> {
             String battleId = mLiveStreamManager.getBattleState().mBattleId;
             mLiveStream.terminateBattle(battleId, new TUIRoomDefine.ActionCallback() {
@@ -102,8 +103,9 @@ public class EndLiveStreamDialog extends PopupDialog {
                 }
 
                 @Override
-                public void onError(TUICommonDefine.Error error, String s) {
-
+                public void onError(TUICommonDefine.Error error, String message) {
+                    LiveStreamLog.error("EndLiveStreamDialog" + " terminateBattle " +
+                            "failed:error:" + error + "," + "errorCode:" + error.getValue() + "message:" + message);
                 }
             });
             dismiss();
@@ -115,7 +117,7 @@ public class EndLiveStreamDialog extends PopupDialog {
         TextView itemView = addItemView();
         int color = mContext.getResources().getColor(R.color.livekit_not_standard_red);
         itemView.setTextColor(color);
-        itemView.setText(getContext().getString(R.string.livekit_end_connection));
+        itemView.setText(getContext().getString(R.string.live_end_connection));
         itemView.setOnClickListener(v -> {
             mLiveStream.terminateCrossRoomConnection();
             mLiveStreamManager.getCoHostManager().cleanConnectedUsers();
@@ -126,7 +128,7 @@ public class EndLiveStreamDialog extends PopupDialog {
 
     private void initExitRoomItem() {
         TextView itemView = addItemView();
-        itemView.setText(getContext().getString(R.string.livekit_end_live));
+        itemView.setText(getContext().getString(R.string.live_end_live));
         itemView.setOnClickListener(v -> {
             if (!v.isEnabled()) {
                 return;
@@ -145,9 +147,12 @@ public class EndLiveStreamDialog extends PopupDialog {
                 }
 
                 @Override
-                public void onError(TUICommonDefine.Error error, String s) {
+                public void onError(TUICommonDefine.Error error, String message) {
+                    LiveStreamLog.error("EndLiveStreamDialog" + " getLiveInfo " +
+                            "failed:error:" + error + "," + "errorCode:" + error.getValue() + "message:" + message);
                     if (checkActivityStatus()) {
                         stopLiveStream();
+                        ErrorLocalized.onError(error);
                     }
                 }
             });
@@ -170,8 +175,10 @@ public class EndLiveStreamDialog extends PopupDialog {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
+                LiveStreamLog.error("EndLiveStreamDialog" + " stopLiveStream " +
+                        "failed:error:" + error + "," + "errorCode:" + error.getValue() + "message:" + message);
                 if (checkActivityStatus()) {
-                    ErrorHandler.handleMessage(message);
+                    ErrorLocalized.onError(error);
                 }
             }
         });
@@ -179,7 +186,7 @@ public class EndLiveStreamDialog extends PopupDialog {
 
     private void initCancelItem() {
         TextView itemView = addItemView();
-        itemView.setText(getContext().getString(R.string.livekit_cancel));
+        itemView.setText(getContext().getString(R.string.live_cancel));
         itemView.setOnClickListener(v -> dismiss());
     }
 
@@ -187,7 +194,8 @@ public class EndLiveStreamDialog extends PopupDialog {
         View view = new View(mContext);
         int color = mContext.getResources().getColor(R.color.livekit_design_standard_g8);
         view.setBackgroundColor(color);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                height);
         mRootLayout.addView(view, params);
     }
 

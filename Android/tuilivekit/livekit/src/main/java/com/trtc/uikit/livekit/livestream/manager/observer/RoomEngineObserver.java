@@ -1,6 +1,5 @@
 package com.trtc.uikit.livekit.livestream.manager.observer;
 
-import static com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.KickedOutOfRoomReason.BY_LOGGED_ON_OTHER_DEVICE;
 import static com.trtc.uikit.livekit.livestream.manager.Constants.EVENT_KEY_LIVE_KIT;
 import static com.trtc.uikit.livekit.livestream.manager.Constants.EVENT_SUB_KEY_FINISH_ACTIVITY;
 
@@ -8,11 +7,10 @@ import com.google.gson.Gson;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomObserver;
 import com.tencent.qcloud.tuicore.TUICore;
+import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
 import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
-import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +41,7 @@ public class RoomEngineObserver extends TUIRoomObserver {
                                   List<TUIRoomDefine.SeatInfo> leftList) {
         LiveStreamLog.info(mTag + " onSeatListChanged:[seatList:" + new Gson().toJson(seatList)
                 + ",seatedList:" + new Gson().toJson(seatedList) + ",leftList:" + new Gson().toJson(leftList) + "]");
+        mLiveManager.getCoGuestManager().onSeatLockStateChanged(seatList);
     }
 
     @Override
@@ -58,7 +57,6 @@ public class RoomEngineObserver extends TUIRoomObserver {
     public void onUserAudioStateChanged(String userId, boolean hasAudio, TUIRoomDefine.ChangeReason reason) {
         LiveStreamLog.info(mTag + " onUserAudioStateChanged:[userId:" + userId + ",hasAudio:" + hasAudio
                 + ",reason:" + reason + "]");
-        mLiveManager.getUserManager().onUserAudioStateChanged(userId, hasAudio, reason);
     }
 
     @Override
@@ -66,7 +64,6 @@ public class RoomEngineObserver extends TUIRoomObserver {
             , TUIRoomDefine.ChangeReason reason) {
         LiveStreamLog.info(mTag + " onUserVideoStateChanged:[userId:" + userId + ",hasVideo:" + hasVideo + ",reason:"
                 + reason + "]");
-        mLiveManager.getUserManager().onUserVideoStateChanged(userId, streamType, hasVideo, reason);
     }
 
     @Override
@@ -89,7 +86,7 @@ public class RoomEngineObserver extends TUIRoomObserver {
     @Override
     public void onKickedOffLine(String message) {
         LiveStreamLog.info(mTag + " onKickedOffLine:[message:" + message + "]");
-        ErrorHandler.handleMessage(message);
+        ToastUtil.toastShortMessage(message);
         TUICore.notifyEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_FINISH_ACTIVITY, null);
     }
 
@@ -97,12 +94,7 @@ public class RoomEngineObserver extends TUIRoomObserver {
     public void onKickedOutOfRoom(String roomId, TUIRoomDefine.KickedOutOfRoomReason reason, String message) {
         LiveStreamLog.info(mTag + " onKickedOutOfRoom:[roomId:" + roomId + ",reason:" + reason + ",message:"
                 + message + "]");
-        if (reason != null && BY_LOGGED_ON_OTHER_DEVICE != reason) {
-            ErrorHandler.handleMessage(message);
-            Map<String, Object> params = new HashMap<>();
-            params.put("roomId", roomId);
-            TUICore.notifyEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_FINISH_ACTIVITY, params);
-        }
+        mLiveManager.getRoomManager().onKickedOutOfRoom(roomId, reason);
     }
 
     @Override
@@ -110,5 +102,12 @@ public class RoomEngineObserver extends TUIRoomObserver {
         LiveStreamLog.info(mTag + "onUserInfoChanged:[userInfo:" + new Gson().toJson(userInfo)
                 + ", modifyFlag:" + new Gson().toJson(modifyFlag));
         mLiveManager.getUserManager().onUserInfoChanged(userInfo, modifyFlag);
+    }
+
+    @Override
+    public void onSendMessageForUserDisableChanged(String roomId, String userId, boolean isDisable) {
+        LiveStreamLog.info(mTag + " onSendMessageForUserDisableChanged:[roomId:" + roomId + ",userId:" + userId + "," +
+                "isDisable:" + isDisable + "]");
+        mLiveManager.getUserManager().onSendMessageForUserDisableChanged(roomId, userId, isDisable);
     }
 }

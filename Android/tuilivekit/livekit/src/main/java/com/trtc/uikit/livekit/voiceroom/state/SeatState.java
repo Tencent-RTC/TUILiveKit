@@ -4,33 +4,32 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.MutableLiveData;
 
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
-import com.trtc.tuikit.common.livedata.LiveData;
-import com.trtc.tuikit.common.livedata.LiveMapData;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SeatState {
-    public LiveData<LinkStatus>                     linkStatus             = new LiveData<>(LinkStatus.NONE);
-    public LiveData<List<SeatInfo>>                 seatList               =
-            new LiveData<>(new CopyOnWriteArrayList<>());
-    public LiveData<LinkedHashSet<SeatApplication>> seatApplicationList    =
-            new LiveData<>(new LinkedHashSet<>());
-    public LiveMapData<String, SeatInvitation>      sentSeatInvitationMap  = new LiveMapData<>(new HashMap<>());
-    public LiveData<SeatInvitation>                 receivedSeatInvitation = new LiveData<>(new SeatInvitation(""));
+    public MutableLiveData<LinkStatus>                     linkStatus             = new MutableLiveData<>(LinkStatus.NONE);
+    public MutableLiveData<List<SeatInfo>>                 seatList               =
+            new MutableLiveData<>(new CopyOnWriteArrayList<>());
+    public MutableLiveData<LinkedHashSet<SeatApplication>> seatApplicationList    =
+            new MutableLiveData<>(new LinkedHashSet<>());
+    public MutableLiveData<Map<String, SeatInvitation>>    sentSeatInvitationMap  = new MutableLiveData<>(new HashMap<>());
+    public MutableLiveData<SeatInvitation>                 receivedSeatInvitation = new MutableLiveData<>(new SeatInvitation(""));
 
     public void reset() {
-        linkStatus.set(LinkStatus.NONE);
-        seatList.get().clear();
-        seatApplicationList.get().clear();
-        sentSeatInvitationMap.get().clear();
-        receivedSeatInvitation.get().reset();
+        linkStatus.setValue(LinkStatus.NONE);
+        seatList.getValue().clear();
+        seatApplicationList.getValue().clear();
+        sentSeatInvitationMap.getValue().clear();
+        receivedSeatInvitation.getValue().reset();
     }
 
     @NonNull
@@ -38,15 +37,15 @@ public class SeatState {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("{");
-        for (SeatInfo seatInfo : seatList.get()) {
+        for (SeatInfo seatInfo : seatList.getValue()) {
             builder.append("[");
             builder.append(seatInfo.index);
             builder.append(",");
-            builder.append(seatInfo.userId.get());
+            builder.append(seatInfo.userId.getValue());
             builder.append(",");
-            builder.append(seatInfo.isLocked.get() ? "1" : "0");
+            builder.append(seatInfo.isLocked.getValue() ? "1" : "0");
             builder.append(",");
-            builder.append(seatInfo.isAudioLocked.get() ? "1" : "0");
+            builder.append(seatInfo.isAudioLocked.getValue() ? "1" : "0");
             builder.append("]");
         }
         builder.append("}");
@@ -60,19 +59,19 @@ public class SeatState {
     }
 
     public static class SeatInfo {
-        public int               index         = 0;
-        public LiveData<String>  userId        = new LiveData<>("");
-        public LiveData<String>  name          = new LiveData<>("");
-        public LiveData<String>  avatarUrl     = new LiveData<>("");
-        public LiveData<Boolean> isLocked      = new LiveData<>(false);
-        public LiveData<Boolean> isAudioLocked = new LiveData<>(false);
-        public LiveData<Boolean> isVideoLocked = new LiveData<>(false);
+        public int                      index         = 0;
+        public MutableLiveData<String>  userId        = new MutableLiveData<>("");
+        public MutableLiveData<String>  name          = new MutableLiveData<>("");
+        public MutableLiveData<String>  avatarUrl     = new MutableLiveData<>("");
+        public MutableLiveData<Boolean> isLocked      = new MutableLiveData<>(false);
+        public MutableLiveData<Boolean> isAudioLocked = new MutableLiveData<>(false);
+        public MutableLiveData<Boolean> isVideoLocked = new MutableLiveData<>(false);
 
         public SeatInfo() {
         }
 
         public SeatInfo(String userId) {
-            this.userId.set(userId);
+            this.userId.setValue(userId);
         }
 
         @NonNull
@@ -80,50 +79,50 @@ public class SeatState {
         public String toString() {
             return "SeatInfo{"
                     + "index=" + index
-                    + ", userId=" + userId.get()
-                    + ", isLocked=" + (isLocked.get() ? "1" : "0")
-                    + ", isAudioLocked=" + (isAudioLocked.get() ? "1" : "0")
-                    + ", isVideoLocked=" + (isVideoLocked.get() ? "1" : "0")
+                    + ", userId=" + userId.getValue()
+                    + ", isLocked=" + (isLocked.getValue() ? "1" : "0")
+                    + ", isAudioLocked=" + (isAudioLocked.getValue() ? "1" : "0")
+                    + ", isVideoLocked=" + (isVideoLocked.getValue() ? "1" : "0")
                     + '}';
         }
 
         @Override
         public boolean equals(@Nullable Object obj) {
             if (obj instanceof SeatInfo) {
-                return this.userId.get().equals(((SeatInfo) obj).userId.get());
+                return this.userId.getValue().equals(((SeatInfo) obj).userId.getValue());
             }
             return false;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(userId.get());
+            return Objects.hash(userId.getValue());
         }
 
         public void updateState(TUIRoomDefine.SeatInfo seatInfo) {
             this.index = seatInfo.index;
-            this.userId.set(seatInfo.userId, false);
+            this.userId.setValue(seatInfo.userId);
             if (!TextUtils.isEmpty(seatInfo.userName)) {
-                this.name.set(seatInfo.userName, false);
+                this.name.setValue(seatInfo.userName);
             } else {
-                this.name.set(this.userId.get(), false);
+                this.name.setValue(this.userId.getValue());
             }
-            this.avatarUrl.set(seatInfo.avatarUrl, false);
-            this.isLocked.set(seatInfo.isLocked, false);
-            this.isAudioLocked.set(seatInfo.isAudioLocked, false);
+            this.avatarUrl.setValue(seatInfo.avatarUrl);
+            this.isLocked.setValue(seatInfo.isLocked);
+            this.isAudioLocked.setValue(seatInfo.isAudioLocked);
         }
 
         public void updateState(SeatInfo newSeatInfo) {
             this.index = newSeatInfo.index;
-            this.userId.set(newSeatInfo.userId.get());
-            if (!TextUtils.isEmpty(newSeatInfo.name.get())) {
-                this.name.set(newSeatInfo.name.get(), false);
+            this.userId.setValue(newSeatInfo.userId.getValue());
+            if (!TextUtils.isEmpty(newSeatInfo.name.getValue())) {
+                this.name.setValue(newSeatInfo.name.getValue());
             } else {
-                this.name.set(this.userId.get(), false);
+                this.name.setValue(this.userId.getValue());
             }
-            this.avatarUrl.set(newSeatInfo.avatarUrl.get(), false);
-            this.isLocked.set(newSeatInfo.isLocked.get(), false);
-            this.isAudioLocked.set(newSeatInfo.isAudioLocked.get(), false);
+            this.avatarUrl.setValue(newSeatInfo.avatarUrl.getValue());
+            this.isLocked.setValue(newSeatInfo.isLocked.getValue());
+            this.isAudioLocked.setValue(newSeatInfo.isAudioLocked.getValue());
         }
     }
 
@@ -189,9 +188,9 @@ public class SeatState {
         }
 
         public void updateState(UserState.UserInfo userInfo) {
-            this.avatarUrl = userInfo.avatarUrl.get();
-            if (!TextUtils.isEmpty(userInfo.name.get())) {
-                this.userName = userInfo.name.get();
+            this.avatarUrl = userInfo.avatarUrl.getValue();
+            if (!TextUtils.isEmpty(userInfo.name.getValue())) {
+                this.userName = userInfo.name.getValue();
             } else {
                 this.userName = userInfo.userId;
             }

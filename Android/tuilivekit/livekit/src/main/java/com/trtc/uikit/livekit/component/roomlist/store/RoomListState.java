@@ -1,15 +1,16 @@
 package com.trtc.uikit.livekit.component.roomlist.store;
 
+import androidx.lifecycle.MutableLiveData;
+
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfo;
-import com.trtc.tuikit.common.livedata.LiveData;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RoomListState {
 
-    public final LiveData<List<LiveInfo>> mLiveList        = new LiveData<>(new ArrayList<>());
-    public final LiveData<Boolean>        mRefreshStatus   = new LiveData<>(false);
-    public final LiveData<Boolean>        mLoadStatus      = new LiveData<>(false);
-    public       String                   mFetchListCursor = "";
+    public final MutableLiveData<List<LiveInfo>> mLiveList        = new MutableLiveData<>(new ArrayList<>());
+    public final MutableLiveData<Boolean>        mRefreshStatus   = new MutableLiveData<>(false);
+    public final MutableLiveData<Boolean>        mLoadStatus      = new MutableLiveData<>(false);
+    public       String                          mFetchListCursor = "";
 }

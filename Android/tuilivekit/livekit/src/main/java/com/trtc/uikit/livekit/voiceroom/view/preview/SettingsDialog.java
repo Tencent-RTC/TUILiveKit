@@ -2,13 +2,12 @@ package com.trtc.uikit.livekit.voiceroom.view.preview;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.lifecycle.Observer;
 
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
-import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
@@ -48,7 +47,7 @@ public class SettingsDialog extends PopupDialog {
     }
 
     protected void addObserver() {
-        mVoiceRoomManager.getRoomState().seatMode.observe(mSeatModeObserver);
+        mVoiceRoomManager.getRoomState().seatMode.observeForever(mSeatModeObserver);
     }
 
     protected void removeObserver() {

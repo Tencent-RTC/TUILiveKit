@@ -9,9 +9,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
-import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.component.floatwindow.service.FloatWindowManager;
 import com.trtc.uikit.livekit.livestream.state.BattleState;
@@ -69,12 +69,12 @@ public class BattleInfoView extends BasicView {
 
     @Override
     protected void addObserver() {
-        mCoHostState.connectedUsers.observe(mConnectionListObserver);
-        mBattleState.mIsBattleRunning.observe(mBattleStartObserver);
-        mBattleState.mBattledUsers.observe(mBattledListObserver);
-        mBattleState.mDurationCountDown.observe(mDurationCountDownObserver);
-        mBattleState.mIsOnDisplayResult.observe(mBattleResultDisplayObserver);
-        FloatWindowManager.getInstance().getStore().isShowingFloatWindow.observe(mFloatWindowModeObserver);
+        mCoHostState.connectedUsers.observeForever(mConnectionListObserver);
+        mBattleState.mIsBattleRunning.observeForever(mBattleStartObserver);
+        mBattleState.mBattledUsers.observeForever(mBattledListObserver);
+        mBattleState.mDurationCountDown.observeForever(mDurationCountDownObserver);
+        mBattleState.mIsOnDisplayResult.observeForever(mBattleResultDisplayObserver);
+        FloatWindowManager.getInstance().getStore().isShowingFloatWindow.observeForever(mFloatWindowModeObserver);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class BattleInfoView extends BasicView {
     }
 
     public void updateView(List<LiveCoreViewDefine.BattleUserViewModel> userInfos) {
-        List<BattleState.BattleUser> battledUsers = mBattleState.mBattledUsers.get();
+        List<BattleState.BattleUser> battledUsers = mBattleState.mBattledUsers.getValue();
         for (LiveCoreViewDefine.BattleUserViewModel model : userInfos) {
             for (BattleState.BattleUser battleUser : battledUsers) {
                 if (TextUtils.equals(battleUser.userId, model.battleUser.userId)) {
@@ -106,7 +106,7 @@ public class BattleInfoView extends BasicView {
         }
         mSingleBattleScoreView.setVisibility(GONE);
         setVisibility(VISIBLE);
-        if (mUserState.selfInfo.role.get() == TUIRoomDefine.Role.ROOM_OWNER && !mBattleState.mIsShowingStartView) {
+        if (mUserState.selfInfo.role.getValue() == TUIRoomDefine.Role.ROOM_OWNER && !mBattleState.mIsShowingStartView) {
             mBattleStartView.setVisibility(VISIBLE);
             postDelayed(() -> mBattleStartView.setVisibility(GONE), 1000);
         }
@@ -117,11 +117,11 @@ public class BattleInfoView extends BasicView {
             return;
         }
         setVisibility(VISIBLE);
-        mBattleTimeView.setText(mContext.getString(R.string.livekit_battle_pk_end));
+        mBattleTimeView.setText(mContext.getString(R.string.live_battle_pk_end));
     }
 
     private void onBattleScoreChanged() {
-        List<BattleUser> users = mBattleState.mBattledUsers.get();
+        List<BattleUser> users = mBattleState.mBattledUsers.getValue();
         if (users.isEmpty()) {
             return;
         }
@@ -131,8 +131,8 @@ public class BattleInfoView extends BasicView {
         }
         // single battle: only 2 users in connecting and battling (1v1 battle)
         final Map<String, BattleUser> singleBattleUserMap = new HashMap<>();
-        if (mCoHostState.connectedUsers.get().size() == 2) {
-            for (CoHostState.ConnectionUser connectionUser : mCoHostState.connectedUsers.get()) {
+        if (mCoHostState.connectedUsers.getValue().size() == 2) {
+            for (CoHostState.ConnectionUser connectionUser : mCoHostState.connectedUsers.getValue()) {
                 BattleUser battleUser = battleUserMap.get(connectionUser.userId);
                 if (battleUser != null) {
                     singleBattleUserMap.put(battleUser.userId, battleUser);
@@ -177,7 +177,7 @@ public class BattleInfoView extends BasicView {
 
     private void onResultDisplay(Boolean display) {
         if (Boolean.TRUE.equals(display)) {
-            for (BattleUser battleUser : mBattleState.mBattledUsers.get()) {
+            for (BattleUser battleUser : mBattleState.mBattledUsers.getValue()) {
                 if (battleUser.userId.equals(mRoomState.ownerInfo.userId)) {
                     BattleResultType type = mBattleManager.isBattleDraw()
                             ? BattleResultType.DRAW
@@ -199,11 +199,11 @@ public class BattleInfoView extends BasicView {
     }
 
     private void onConnectedListChange(List<CoHostState.ConnectionUser> connectionUsers) {
-        onBattleScoreChanged(mBattleState.mBattledUsers.get());
+        onBattleScoreChanged(mBattleState.mBattledUsers.getValue());
     }
 
     private void onBattleScoreChanged(List<BattleState.BattleUser> battleUsers) {
-        if (battleUsers.isEmpty() || mCoHostState.connectedUsers.get().isEmpty()) {
+        if (battleUsers.isEmpty() || mCoHostState.connectedUsers.getValue().isEmpty()) {
             mBattleManager.resetOnDisplayResult();
             return;
         }
@@ -222,7 +222,7 @@ public class BattleInfoView extends BasicView {
         if (Boolean.TRUE.equals(isFloating)) {
             setVisibility(GONE);
         } else {
-            if (Boolean.TRUE.equals(mBattleState.mIsBattleRunning.get())) {
+            if (Boolean.TRUE.equals(mBattleState.mIsBattleRunning.getValue())) {
                 setVisibility(VISIBLE);
             }
         }

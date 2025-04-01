@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:gravity="center"
-        android:text="@string/livekit_resolution_1080p"
+        android:text="@string/live_resolution_1080p"
         android:textColor="@color/livekit_design_standard_g7"
         android:textSize="16sp" />
 
@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:gravity="center"
-        android:text="@string/livekit_resolution_720p"
+        android:text="@string/live_resolution_720p"
         android:textColor="@color/livekit_design_standard_g7"
         android:textSize="16sp" />
 
@@ -39,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:gravity="center"
-        android:text="@string/livekit_resolution_540p"
+        android:text="@string/live_resolution_540p"
         android:textColor="@color/livekit_design_standard_g7"
         android:textSize="16sp" />
 
@@ -53,7 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:gravity="center"
-        android:text="@string/livekit_resolution_360p"
+        android:text="@string/live_resolution_360p"
         android:textColor="@color/livekit_design_standard_g7"
         android:textSize="16sp" />
 

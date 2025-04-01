@@ -1,15 +1,15 @@
 package com.trtc.uikit.livekit.voiceroom.manager.observer;
 
-import static com.trtc.uikit.livekit.voiceroom.api.Constants.EVENT_KEY_LIVE_KIT;
-import static com.trtc.uikit.livekit.voiceroom.api.Constants.EVENT_SUB_KEY_FINISH_ACTIVITY;
+import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.EVENT_KEY_LIVE_KIT;
+import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.EVENT_SUB_KEY_FINISH_ACTIVITY;
 
 import com.google.gson.Gson;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomObserver;
 import com.tencent.qcloud.tuicore.TUICore;
-import com.trtc.uikit.livekit.voiceroom.api.Logger;
+import com.tencent.qcloud.tuicore.util.ToastUtil;
+import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
-import com.trtc.uikit.livekit.voiceroom.manager.error.ErrorLocalized;
 
 import java.util.List;
 
@@ -51,7 +51,7 @@ public class RoomEngineObserver extends TUIRoomObserver {
     @Override
     public void onKickedOffLine(String message) {
         Logger.info(FILE, " onKickedOffLine:[message:" + message + "]");
-        ErrorLocalized.handleMessage(message);
+        ToastUtil.toastShortMessage(message);
         TUICore.notifyEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_FINISH_ACTIVITY, null);
     }
 }

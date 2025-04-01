@@ -9,8 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.trtc.tuikit.common.ui.PopupDialog;
-import com.trtc.uikit.component.audioeffect.AudioEffectPanel;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.component.audioeffect.AudioEffectPanel;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
 import com.trtc.uikit.livekit.livestream.view.widgets.beauty.BeautyPanelDialog;
 import com.trtc.uikit.livekit.livestream.view.widgets.videosettings.VideoSettingsDialog;
@@ -68,12 +68,15 @@ public class PreviewFunctionView extends FrameLayout {
     }
 
     private void initFlipButton() {
-        findViewById(R.id.iv_flip).setOnClickListener(view -> mLiveCoreView.getMediaManager().switchCamera());
+        findViewById(R.id.iv_flip).setOnClickListener(view -> {
+            boolean isFront = Boolean.TRUE.equals(mLiveCoreView.getCoreState().mediaState.isFrontCamera.getValue());
+            mLiveCoreView.switchCamera(!isFront);
+        });
     }
 
     private void initMirrorButton() {
         findViewById(R.id.iv_mirror).setOnClickListener(view -> {
-            VideoSettingsDialog videoSettingsDialog = new VideoSettingsDialog(getContext(), mLiveCoreView);
+            VideoSettingsDialog videoSettingsDialog = new VideoSettingsDialog(getContext(), mLiveCoreView, mLiveManager);
             videoSettingsDialog.show();
         });
     }

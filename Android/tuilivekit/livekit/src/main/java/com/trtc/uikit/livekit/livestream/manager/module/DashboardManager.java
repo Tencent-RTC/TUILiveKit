@@ -20,7 +20,7 @@ public class DashboardManager extends BaseManager {
     }
 
     public void updateMaxViewersCount(int count) {
-        mDashboardState.maxViewersCount.set(count);
+        mDashboardState.maxViewersCount.setValue(count);
     }
 
     public void updateGiftIncome(int giftIncome) {

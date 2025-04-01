@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ll_gift_root"
+    android:layout_width="match_parent"
+    android:layout_height="115dp"
+    android:clickable="true"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/iv_gift_icon"
+        android:layout_width="74dp"
+        android:layout_height="74dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="8dp"
+        app:round="5dp"/>
+
+    <TextView
+        android:id="@+id/tv_gift_name"
+        android:layout_width="wrap_content"
+        android:layout_height="17dp"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/livekit_design_standard_flowkit_white"
+        android:textSize="12sp"/>
+
+    <TextView
+        android:id="@+id/tv_gift_price"
+        android:layout_width="wrap_content"
+        android:layout_height="14dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/livekit_design_standard_flowkit_white"
+        android:textSize="10sp"/>
+
+    <Button
+        android:id="@+id/btn_give_gift"
+        android:layout_width="74dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/live_gift_give_gift"
+        android:textSize="12sp"
+        android:textAllCaps="false"
+        android:textColor="@color/livekit_design_standard_flowkit_white"
+        android:background="@drawable/livekit_bg_gift_give"
+        android:visibility="gone"/>
+
+</LinearLayout>

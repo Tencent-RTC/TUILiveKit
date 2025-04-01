@@ -1,11 +1,11 @@
 package com.trtc.uikit.livekit.voiceroom.view;
 
-import static com.trtc.uikit.livekit.voiceroom.api.Constants.DEFAULT_MAX_SEAT_COUNT;
-import static com.trtc.uikit.livekit.voiceroom.api.Constants.EVENT_KEY_LIVE_KIT;
-import static com.trtc.uikit.livekit.voiceroom.api.Constants.EVENT_PARAMS_KEY_ENABLE_SLIDE;
-import static com.trtc.uikit.livekit.voiceroom.api.Constants.EVENT_SUB_KEY_CLOSE_VOICE_ROOM;
-import static com.trtc.uikit.livekit.voiceroom.api.Constants.EVENT_SUB_KEY_FINISH_ACTIVITY;
-import static com.trtc.uikit.livekit.voiceroom.api.Constants.EVENT_SUB_KEY_LINK_STATUS_CHANGE;
+import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.DEFAULT_MAX_SEAT_COUNT;
+import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.EVENT_KEY_LIVE_KIT;
+import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.EVENT_PARAMS_KEY_ENABLE_SLIDE;
+import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.EVENT_SUB_KEY_CLOSE_VOICE_ROOM;
+import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.EVENT_SUB_KEY_FINISH_ACTIVITY;
+import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.EVENT_SUB_KEY_LINK_STATUS_CHANGE;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -17,19 +17,20 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
 import com.trtc.tuikit.common.foregroundservice.AudioForegroundService;
-import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.tuikit.common.system.ContextProvider;
-import com.trtc.uikit.component.common.StateCache;
+import com.trtc.uikit.component.barrage.store.BarrageStore;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.utils.VoiceCoreLogger;
+import com.trtc.uikit.livekit.component.audioeffect.store.AudioEffectStore;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
 import com.trtc.uikit.livekit.voiceroom.state.RoomState;
 import com.trtc.uikit.livekit.voiceroom.state.SeatState;
-import com.trtc.uikit.livekit.voiceroomcore.common.utils.Logger;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -48,7 +49,7 @@ public class TUIVoiceRoomFragment extends Fragment implements ITUINotification {
     private final OnBackPressedCallback          mBackPressedCallback = new OnBackPressedCallback(true) {
         @Override
         public void handleOnBackPressed() {
-            RoomState.LiveStatus liveStatus = mVoiceRoomManager.getRoomState().liveStatus.get();
+            RoomState.LiveStatus liveStatus = mVoiceRoomManager.getRoomState().liveStatus.getValue();
             if (RoomState.LiveStatus.PUSHING == liveStatus || RoomState.LiveStatus.PLAYING == liveStatus) {
                 TUICore.notifyEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_CLOSE_VOICE_ROOM, null);
             } else {
@@ -78,6 +79,7 @@ public class TUIVoiceRoomFragment extends Fragment implements ITUINotification {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.livekit_voiceroom_fragment_main, container, false);
         mVoiceRoomRootView = contentView.findViewById(R.id.root_view);
+        mVoiceRoomManager.setCoreStateProvider(() -> mVoiceRoomRootView.getCoreState());
         mVoiceRoomRootView.init(mVoiceRoomManager, mRoomBehavior, mRoomParams);
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), mBackPressedCallback);
         return contentView;
@@ -115,14 +117,16 @@ public class TUIVoiceRoomFragment extends Fragment implements ITUINotification {
         super.onDestroy();
         removeObserver();
         TUICore.unRegisterEvent(this);
-        StateCache.getInstance().remove(mRoomId);
+        com.trtc.uikit.livekit.component.gift.store.GiftStore.sharedInstance().unInit(mRoomId);
+        AudioEffectStore.sharedInstance().unInit();
+        BarrageStore.sharedInstance().unInit(mRoomId);
         mVoiceRoomManager.destroy();
         stopForegroundService();
     }
 
     private void addObserver() {
         if (mVoiceRoomManager != null) {
-            mVoiceRoomManager.getSeatState().linkStatus.observe(mLinkStatusObserver);
+            mVoiceRoomManager.getSeatState().linkStatus.observeForever(mLinkStatusObserver);
         }
     }
 
@@ -173,16 +177,16 @@ public class TUIVoiceRoomFragment extends Fragment implements ITUINotification {
 
 
     private void startForegroundService() {
-        Logger.info(TAG,"startForegroundService");
+        VoiceCoreLogger.info(TAG, "startForegroundService");
         Context context = ContextProvider.getApplicationContext();
         AudioForegroundService.start(context,
                 context.getString(context.getApplicationInfo().labelRes),
-                context.getString(com.trtc.uikit.livekit.voiceroomcore.R.string.voiceroomcore_app_running),
+                context.getString(R.string.live_app_running),
                 0);
     }
 
     private void stopForegroundService() {
-        Logger.info(TAG,"stopForegroundService");
+        VoiceCoreLogger.info(TAG, "stopForegroundService");
         Context context = ContextProvider.getApplicationContext();
         AudioForegroundService.stop(context);
     }

@@ -10,15 +10,16 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.Observer;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
-import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.ErrorLocalized;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
-import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
+import com.trtc.uikit.livekit.livestream.state.MediaState;
 import com.trtc.uikit.livekit.livestream.state.RoomState;
 import com.trtc.uikit.livekit.livestream.view.audience.playing.coguest.settings.VideoCoGuestSettingsDialog;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
@@ -55,7 +56,7 @@ public class TypeSelectDialog extends PopupDialog {
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mLiveManager.getRoomState().liveStatus.observe(mLiveStatusObserver);
+        mLiveManager.getRoomState().liveStatus.observeForever(mLiveStatusObserver);
     }
 
     @Override
@@ -85,6 +86,7 @@ public class TypeSelectDialog extends PopupDialog {
             if (!view.isEnabled()) {
                 return;
             }
+            mLiveManager.getMediaManager().changeVideoEncParams(MediaState.VideoEncParams.VideoEncType.SMALL);
             view.setEnabled(false);
             applyLinkMic(true);
         });
@@ -92,6 +94,7 @@ public class TypeSelectDialog extends PopupDialog {
 
     private void initLinkSettingsView() {
         mImageLinkSettings.setOnClickListener(view -> {
+            mLiveManager.getMediaManager().changeVideoEncParams(MediaState.VideoEncParams.VideoEncType.SMALL);
             VideoCoGuestSettingsDialog settingsDialog = new VideoCoGuestSettingsDialog(getContext(), mLiveManager,
                     mLiveStream);
             settingsDialog.show();
@@ -100,7 +103,7 @@ public class TypeSelectDialog extends PopupDialog {
     }
 
     private void applyLinkMic(boolean openCamera) {
-        ToastUtil.toastShortMessageCenter(getContext().getString(R.string.livekit_toast_apply_link_mic));
+        ToastUtil.toastShortMessageCenter(getContext().getString(R.string.live_toast_apply_link_mic));
         mLiveStream.requestIntraRoomConnection("", 60, openCamera, new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
@@ -109,7 +112,7 @@ public class TypeSelectDialog extends PopupDialog {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                ErrorHandler.onError(error);
+                ErrorLocalized.onError(error);
             }
         });
         dismiss();

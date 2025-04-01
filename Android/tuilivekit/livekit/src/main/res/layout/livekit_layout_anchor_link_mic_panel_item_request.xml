@@ -51,7 +51,7 @@
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
         android:gravity="center"
-        android:text="@string/livekit_reject"
+        android:text="@string/live_reject"
         android:textSize="12sp"
         android:textColor="@color/livekit_design_standard_b1"
         android:background="@drawable/livekit_link_mic_reject_background"/>
@@ -64,7 +64,7 @@
         android:layout_centerVertical="true"
         android:layout_toStartOf="@+id/tv_reject"
         android:gravity="center"
-        android:text="@string/livekit_accept"
+        android:text="@string/live_accept"
         android:textSize="12sp"
         android:textColor="@color/livekit_design_standard_flowkit_white"
         android:background="@drawable/livekit_link_mic_accept_background"/>

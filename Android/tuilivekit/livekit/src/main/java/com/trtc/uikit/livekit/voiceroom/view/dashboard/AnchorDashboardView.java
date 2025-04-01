@@ -40,7 +40,7 @@ public class AnchorDashboardView extends BasicView {
         super.init(voiceRoomManager);
         TextView textDuration = findViewById(R.id.tv_duration);
         textDuration.setText(formatSecondsTo00(
-                (int) (System.currentTimeMillis() - mVoiceRoomManager.getRoomState().createTime) / 1000));
+                (long) (System.currentTimeMillis() - mVoiceRoomManager.getRoomState().createTime) / 1000));
 
         TextView textViewers = findViewById(R.id.tv_viewers);
         textViewers.setText(String.format("%d", mVoiceRoomManager.getRoomState().liveExtraInfo.maxAudienceCount));
@@ -73,13 +73,13 @@ public class AnchorDashboardView extends BasicView {
     protected void removeObserver() {
     }
 
-    private String formatSecondsTo00(int timeSeconds) {
-        int second = timeSeconds % 60;
-        int minuteTemp = timeSeconds / 60;
+    private String formatSecondsTo00(long timeSeconds) {
+        int second = (int) (timeSeconds % 60);
+        long minuteTemp = timeSeconds / 60;
         String secondFormat = second >= 10 ? (second + "") : ("0" + second);
         if (minuteTemp > 0) {
-            int minute = minuteTemp % 60;
-            int hour = minuteTemp / 60;
+            int minute = (int) (minuteTemp % 60);
+            long hour = minuteTemp / 60;
             String s = minute >= 10 ? (minute + "") : ("0" + minute);
             if (hour > 0) {
                 return (hour >= 10 ? (hour + "") : ("0" + hour)) + ":" + s + ":" + secondFormat;

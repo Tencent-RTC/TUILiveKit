@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="323dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@drawable/common_bg_confirm_dialog">
+
+    <TextView
+        android:id="@+id/content"
+        android:minHeight="84dp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:textColor="@color/livekit_design_standard_g1"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@id/horizontal_divider"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/horizontal_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginBottom="48dp"
+        android:background="@color/livekit_design_standard_g7"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <View
+        android:id="@+id/vertical_divider"
+        android:layout_width="1px"
+        android:layout_height="48dp"
+        android:background="@color/livekit_design_standard_g7"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <Button
+        android:id="@+id/btn_negative"
+        android:layout_width="0dp"
+        android:layout_height="54dp"
+        android:background="@android:color/transparent"
+        android:text="@android:string/cancel"
+        android:textColor="@color/livekit_confirm_dialog"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/btn_positive"
+        app:layout_constraintTop_toBottomOf="@+id/horizontal_divider" />
+
+    <Button
+        android:id="@+id/btn_positive"
+        android:textStyle="bold"
+        android:layout_width="0dp"
+        android:layout_height="54dp"
+        android:background="@android:color/transparent"
+        android:text="@android:string/ok"
+        android:textColor="@color/livekit_not_standard_red"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintLeft_toRightOf="@id/btn_negative"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/horizontal_divider" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

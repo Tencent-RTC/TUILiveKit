@@ -8,9 +8,9 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.qcloud.tuicore.TUIConfig;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.voiceroom.api.Logger;
+import com.trtc.uikit.livekit.common.ErrorLocalized;
+import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
-import com.trtc.uikit.livekit.voiceroom.manager.error.ErrorLocalized;
 import com.trtc.uikit.livekit.voiceroom.manager.module.SeatManager;
 import com.trtc.uikit.livekit.voiceroom.state.SeatState;
 import com.trtc.uikit.livekit.voiceroom.state.UserState;
@@ -40,7 +40,7 @@ public class SeatActionSheetGenerator {
 
     public List<ListMenuInfo> generate(TUIRoomDefine.SeatInfo seatInfo) {
         UserState.UserInfo selfInfo = mVoiceRoomManager.getUserState().selfInfo;
-        if (selfInfo.role.get() == TUIRoomDefine.Role.ROOM_OWNER) {
+        if (selfInfo.role.getValue() == TUIRoomDefine.Role.ROOM_OWNER) {
             return generaSeatManagerMenuInfo(seatInfo, selfInfo);
         } else {
             return generaSeatGeneraUserMenuInfo(seatInfo, selfInfo);
@@ -57,13 +57,13 @@ public class SeatActionSheetGenerator {
         List<ListMenuInfo> menuInfoList = new ArrayList<>();
         if (TextUtils.isEmpty(seatInfo.userId)) {
             if (!seatInfo.isLocked) {
-                ListMenuInfo inviteUser = new ListMenuInfo(mContext.getString(R.string.livekit_voiceroom_invite), () ->
+                ListMenuInfo inviteUser = new ListMenuInfo(mContext.getString(R.string.live_voiceroom_invite), () ->
                         showSeatInvitationPanel(seatInfo.index));
                 menuInfoList.add(inviteUser);
             }
             ListMenuInfo lockSeat = new ListMenuInfo(seatInfo.isLocked
-                    ? mContext.getString(R.string.livekit_voiceroom_unlock)
-                    : mContext.getString(R.string.livekit_voiceroom_lock), () -> lockSeat(seatInfo));
+                    ? mContext.getString(R.string.live_voiceroom_unlock)
+                    : mContext.getString(R.string.live_voiceroom_lock), () -> lockSeat(seatInfo));
             menuInfoList.add(lockSeat);
             return menuInfoList;
         }
@@ -82,12 +82,12 @@ public class SeatActionSheetGenerator {
         }
 
         if (TextUtils.isEmpty(seatInfo.userId)) {
-            if (mVoiceRoomManager.getSeatState().linkStatus.get() == SeatState.LinkStatus.LINKING) {
-                ListMenuInfo moveSeat = new ListMenuInfo(mContext.getString(R.string.livekit_voiceroom_take_seat),
+            if (mVoiceRoomManager.getSeatState().linkStatus.getValue() == SeatState.LinkStatus.LINKING) {
+                ListMenuInfo moveSeat = new ListMenuInfo(mContext.getString(R.string.live_voiceroom_take_seat),
                         () -> moveToSeat(seatInfo.index));
                 menuInfoList.add(moveSeat);
             } else {
-                ListMenuInfo takeSeat = new ListMenuInfo(mContext.getString(R.string.livekit_voiceroom_take_seat),
+                ListMenuInfo takeSeat = new ListMenuInfo(mContext.getString(R.string.live_voiceroom_take_seat),
                         () -> takeSeat(seatInfo.index));
                 menuInfoList.add(takeSeat);
             }
@@ -134,7 +134,7 @@ public class SeatActionSheetGenerator {
             public void onRejected(TUIRoomDefine.UserInfo userInfo) {
                 mSeatManager.updateLinkState(SeatState.LinkStatus.NONE);
                 ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(
-                        R.string.livekit_voiceroom_take_seat_rejected));
+                        R.string.live_voiceroom_take_seat_rejected));
             }
 
             @Override
@@ -146,7 +146,7 @@ public class SeatActionSheetGenerator {
             public void onTimeout(TUIRoomDefine.UserInfo userInfo) {
                 mSeatManager.updateLinkState(SeatState.LinkStatus.NONE);
                 ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(
-                        R.string.livekit_voiceroom_take_seat_timeout));
+                        R.string.live_voiceroom_take_seat_timeout));
             }
 
             @Override
@@ -171,6 +171,7 @@ public class SeatActionSheetGenerator {
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
                 Logger.error(FILE, "moveToSeat failed,error:" + error + ",message:" + message);
+                ErrorLocalized.onError(error);
             }
         });
     }

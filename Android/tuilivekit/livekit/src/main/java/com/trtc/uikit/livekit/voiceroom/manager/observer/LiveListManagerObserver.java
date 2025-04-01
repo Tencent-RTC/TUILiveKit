@@ -2,7 +2,7 @@ package com.trtc.uikit.livekit.voiceroom.manager.observer;
 
 import com.google.gson.Gson;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
-import com.trtc.uikit.livekit.voiceroom.api.Logger;
+import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
 
 import java.util.List;

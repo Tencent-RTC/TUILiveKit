@@ -1,6 +1,6 @@
 package com.trtc.uikit.livekit.voiceroom.view.settings;
 
-import static com.trtc.uikit.livekit.voiceroom.api.Constants.BACKGROUND_THUMB_URL_LIST;
+import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.BACKGROUND_THUMB_URL_LIST;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -19,8 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.component.audioeffect.AudioEffectPanel;
-import com.trtc.uikit.component.music.MusicPanelView;
+import com.trtc.uikit.livekit.component.audioeffect.AudioEffectPanel;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
 import com.trtc.uikit.livekit.voiceroom.state.RoomState;
 import com.trtc.uikit.livekit.voiceroom.view.preview.StreamPresetImagePicker;
@@ -30,17 +29,14 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapter.ViewHolder> {
-    public static final  int                ITEM_COUNT             = 3;
     private static final int                ITEM_TYPE_BGM_IMAGE    = 0;
-    private static final int                ITEM_TYPE_MUSIC        = 1;
-    private static final int                ITEM_TYPE_AUDIO_EFFECT = 2;
+    private static final int                ITEM_TYPE_AUDIO_EFFECT = 1;
     private final        List<SettingsItem> mData                  = new ArrayList<>();
-    private final Context          mContext;
-    private final VoiceRoomManager mVoiceRoomManager;
-    private final RoomState        mRoomState;
+    private final        Context            mContext;
+    private final        VoiceRoomManager   mVoiceRoomManager;
+    private final        RoomState          mRoomState;
 
     private PopupDialog             mAudioEffectPanel;
-    private PopupDialog             mMusicPanel;
     private StreamPresetImagePicker mStreamPresetImagePicker;
 
 
@@ -52,11 +48,9 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
     }
 
     private void initData() {
-        mData.add(new SettingsItem(mContext.getString(R.string.livekit_settings_bg_image)
+        mData.add(new SettingsItem(mContext.getString(R.string.live_settings_bg_image)
                 , R.drawable.livekit_setting_bg_image, ITEM_TYPE_BGM_IMAGE));
-        mData.add(new SettingsItem(mContext.getString(R.string.livekit_music)
-                , R.drawable.livekit_settings_music, ITEM_TYPE_MUSIC));
-        mData.add(new SettingsItem(mContext.getString(R.string.livekit_audio_effect)
+        mData.add(new SettingsItem(mContext.getString(R.string.live_audio_effect)
                 , R.drawable.livekit_settings_audio_effect, ITEM_TYPE_AUDIO_EFFECT));
     }
 
@@ -79,9 +73,6 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
                 case ITEM_TYPE_BGM_IMAGE:
                     showBGMImagePanel();
                     break;
-                case ITEM_TYPE_MUSIC:
-                    showMusicListPanel();
-                    break;
                 case ITEM_TYPE_AUDIO_EFFECT:
                     showAudioEffectPanel();
                     break;
@@ -95,16 +86,6 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
     @Override
     public int getItemCount() {
         return mData.size();
-    }
-
-    private void showMusicListPanel() {
-        if (mMusicPanel == null) {
-            mMusicPanel = new PopupDialog(mContext);
-            MusicPanelView musicPanelView = new MusicPanelView(mContext);
-            musicPanelView.init(mRoomState.roomId);
-            mMusicPanel.setView(musicPanelView);
-        }
-        mMusicPanel.show();
     }
 
     private void showAudioEffectPanel() {
@@ -122,10 +103,10 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
     private void showBGMImagePanel() {
         if (mStreamPresetImagePicker == null) {
             StreamPresetImagePicker.Config config = new StreamPresetImagePicker.Config();
-            config.title = mContext.getString(R.string.livekit_settings_bg_image);
-            config.confirmButtonText = mContext.getString(R.string.livekit_set_as_background);
+            config.title = mContext.getString(R.string.live_settings_bg_image);
+            config.confirmButtonText = mContext.getString(R.string.live_set_as_background);
             config.data = Arrays.asList(BACKGROUND_THUMB_URL_LIST);
-            config.currentImageUrl = transferThumbUrlFromImage(mRoomState.backgroundURL.get());
+            config.currentImageUrl = transferThumbUrlFromImage(mRoomState.backgroundURL.getValue());
             mStreamPresetImagePicker = new StreamPresetImagePicker(mContext, config);
             mStreamPresetImagePicker.setOnConfirmListener(imageUrl
                     -> {

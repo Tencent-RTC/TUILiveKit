@@ -50,7 +50,7 @@
         android:layout_marginEnd="24dp"
         android:background="@drawable/livekit_link_mic_hang_up_background"
         android:gravity="center"
-        android:text="@string/livekit_hang_up"
+        android:text="@string/live_hang_up"
         android:textColor="@color/livekit_not_standard_red"
         android:textSize="12sp" />
 </RelativeLayout>

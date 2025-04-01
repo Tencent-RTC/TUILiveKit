@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 
-import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.livestream.view.BasicView;
 
@@ -42,7 +42,7 @@ public class AnchorDashboardView extends BasicView {
 
     @Override
     protected void addObserver() {
-        mLiveManager.getDashboardState().maxViewersCount.observe(mViewersCountObserver);
+        mLiveManager.getDashboardState().maxViewersCount.observeForever(mViewersCountObserver);
     }
 
     @Override
@@ -74,11 +74,11 @@ public class AnchorDashboardView extends BasicView {
     }
 
     private void initDurationView() {
-        mTextDuration.setText(formatSecondsTo00((int) mDashboardState.duration / 1000));
+        mTextDuration.setText(formatSecondsTo00((long) mDashboardState.duration / 1000));
     }
 
     private void initViewersCountView() {
-        updateViewersCountView(mDashboardState.maxViewersCount.get());
+        updateViewersCountView(mDashboardState.maxViewersCount.getValue());
     }
 
     @SuppressLint("DefaultLocale")
@@ -111,13 +111,13 @@ public class AnchorDashboardView extends BasicView {
         });
     }
 
-    private String formatSecondsTo00(int timeSeconds) {
-        int second = timeSeconds % 60;
-        int minuteTemp = timeSeconds / 60;
+    private String formatSecondsTo00(long timeSeconds) {
+        int second = (int) (timeSeconds % 60);
+        long minuteTemp = timeSeconds / 60;
         String secondFormat = second >= 10 ? (second + "") : ("0" + second);
         if (minuteTemp > 0) {
-            int minute = minuteTemp % 60;
-            int hour = minuteTemp / 60;
+            int minute = (int) (minuteTemp % 60);
+            long hour = minuteTemp / 60;
             String s = minute >= 10 ? (minute + "") : ("0" + minute);
             if (hour > 0) {
                 return (hour >= 10 ? (hour + "") : ("0" + hour)) + ":" + s + ":" + secondFormat;
