@@ -4,13 +4,14 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted, reactive } from 'vue';
-import { LiveMainView, liveRoom, RoomEvent, LanguageOption, ThemeOption } from '@tencentcloud/livekit-web-vue3';
+import { LiveMainView, liveRoom, RoomEvent, LanguageOption, ThemeOption, TuiMessage } from '@tencentcloud/livekit-web-vue3';
 import { onBeforeRouteLeave, useRoute } from 'vue-router';
 import { getBasicInfo } from '@/config/basic-info-config';
 import router from '@/router';
 import i18n, { useI18n } from '../locales/index';
 import { getLanguage, getTheme, safelyParse } from '../utils/utils';
 
+const logger = console;
 const route = useRoute();
 const { t } = useI18n();
 const roomInfo = sessionStorage.getItem('tuiLive-roomInfo');
@@ -37,10 +38,10 @@ if (!roomId) {
 }
 
 async function handleAnchorInitLogic() {
-  const { roomParam, hasCreated } = safelyParse(roomInfo as string);
-  const { sdkAppId, userId, userSig, userName, avatarUrl } = safelyParse(userInfo as string);
-  saveUserInfoToBasicInfo(userId, userName, avatarUrl);
   try {
+    const { roomParam, hasCreated } = safelyParse(roomInfo as string);
+    const { sdkAppId, userId, userSig, userName, avatarUrl } = safelyParse(userInfo as string);
+    saveUserInfoToBasicInfo(userId, userName, avatarUrl);
     await liveRoom.login({ sdkAppId, userId, userSig });
     await liveRoom.setSelfInfo({ userName, avatarUrl });
     if (hasCreated) {
@@ -54,7 +55,13 @@ async function handleAnchorInitLogic() {
       sessionStorage.setItem('tuiLive-roomInfo', JSON.stringify(newRoomInfo));
     }
   } catch (error: any) {
-    router.push({ path: 'home', query: { roomId } });
+    logger.error(error);
+    TuiMessage({
+      message: t('Failed to enter the room.'),
+      type: 'error',
+    })
+    isExpectedJump = true;
+    router.replace('home');
     sessionStorage.removeItem('tuiLive-userInfo');
     sessionStorage.removeItem('tuiLive-roomInfo');
   }
@@ -70,7 +77,13 @@ async function handleAudienceInitLogic() {
     await liveRoom.join(roomId);
     currentUserInfo && sessionStorage.setItem('tuiLive-userInfo', currentUserInfo);
   } catch (error: any) {
-    router.push({ path: 'home', query: { roomId } });
+    logger.error(error);
+    TuiMessage({
+      message: t('Failed to enter the room.'),
+      type: 'error',
+    })
+    isExpectedJump = true;
+    router.replace('home');
     sessionStorage.removeItem('tuiLive-userInfo');
     sessionStorage.removeItem('tuiLive-roomInfo');
   }

@@ -32,5 +32,6 @@ export default {
   'Failed to enter the meeting': '进入会议失败',
   'Failed to enter the room.': '进入房间失败！',
   'This action causes the room to be exited, does it continue?': '该操作会导致退出房间，是否继续？',
-  'This action causes the room to be disbanded, does it continue?': '该操作会导致解散房间，是否继续？'
+  'This action causes the room to be disbanded, does it continue?': '该操作会导致解散房间，是否继续？',
+  'The room dose not exist, please check and try again.': '房间不存在，请核对后重试',
 };
