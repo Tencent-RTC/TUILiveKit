@@ -43,7 +43,7 @@ dependencies {
     api rootProject.getProperties().containsKey("roomEngineSdk") ? rootProject.ext.roomEngineSdk : "io.trtc.uikit:rtc_room_engine:3.0.0.685"
     api rootProject.getProperties().containsKey("liteavSdk") ? rootProject.ext.liteavSdk : "com.tencent.liteav:LiteAVSDK_Professional:12.4.0.17372"
     api rootProject.getProperties().containsKey("imSdk") ? rootProject.ext.imSdk : "com.tencent.imsdk:imsdk-plus:8.5.6864"
-    api rootProject.getProperties().containsKey("liveStreamCore") ? rootProject.ext.liveStreamCore : "com.tencent.imsdk:imsdk-plus:3.0.0.639"
+    api rootProject.getProperties().containsKey("liveStreamCore") ? rootProject.ext.liveStreamCore : "io.trtc.uikit:live-stream-core:3.0.0.649"
 
     if (projects.contains("tceffectplayerkit")) {
         api project(':tceffectplayerkit')
