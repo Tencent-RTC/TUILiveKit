@@ -19,5 +19,9 @@ extension String {
     static func localizedReplace(_ origin: String, replace: String) -> String {
         return origin.replacingOccurrences(of: "xxx", with: replace)
     }
+    
+    static func localizedReplaceTwoCharacter(origin: String, firstReplace: String, secondReplace: String) -> String {
+        return localizedReplace(origin, replace: firstReplace).replacingOccurrences(of: "yyy", with: secondReplace)
+    }
 }
 

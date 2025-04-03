@@ -7,9 +7,12 @@
 
 import UIKit
 import RTCCommon
+import RTCRoomEngine
+import Combine
 
 protocol BarrageStreamViewDelegate: AnyObject {
     func barrageDisplayView(_ barrageDisplayView: BarrageStreamView, createCustomCell barrage: TUIBarrage) -> UIView?
+    func onBarrageClicked(user: TUIUserInfo)
 }
 
 class BarrageStreamView: UIView {
@@ -23,10 +26,12 @@ class BarrageStreamView: UIView {
     // Max count of dataSource, default is 1000
     private let dataSource = ListManager<TUIBarrage>(maxLength: 1000)
     private var reloadWorkItem: DispatchWorkItem?
+    private var cancellableSet = Set<AnyCancellable>()
 
     private lazy var barrageTableView: UITableView = {
         let view = UITableView(frame: self.bounds, style: .plain)
         view.dataSource = self
+        view.delegate = self
         view.showsVerticalScrollIndicator = false
         view.backgroundColor = .clear
         view.separatorStyle = .none
@@ -60,6 +65,7 @@ class BarrageStreamView: UIView {
         guard !isViewReady else { return }
         constructViewHierarchy()
         activateConstraints()
+        bindInteraction()
         isViewReady = true
     }
 
@@ -75,6 +81,24 @@ class BarrageStreamView: UIView {
     
     func getBarrageCount() -> Int {
         dataSource.totalCount
+    }
+    
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        let view = super.hitTest(point, with: event)
+        if view == self || view == barrageTableView {
+            return nil
+        }
+        return view
+    }
+    
+    func bindInteraction() {
+        BarrageManager.shared.sendBarrageSubject
+            .receive(on: RunLoop.main)
+            .sink { [weak self] barrage in
+                guard let self = self else { return }
+                insertBarrages([barrage])
+            }
+            .store(in: &cancellableSet)
     }
 }
 
@@ -95,6 +119,17 @@ extension BarrageStreamView: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dataSource.count
+    }
+}
+
+extension BarrageStreamView: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let barrageUser = dataSource.reverse(index: indexPath.row)?.user else { return }
+        let user = TUIUserInfo()
+        user.userId = barrageUser.userId
+        user.userName = barrageUser.userName
+        user.avatarUrl = barrageUser.avatarUrl
+        delegate?.onBarrageClicked(user: user)
     }
 }
 

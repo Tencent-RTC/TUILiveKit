@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import SeatGridView
+import LiveStreamCore
 
 enum VRDismissType {
     case panel
@@ -30,7 +30,6 @@ enum VRRoute {
     case userControl(_ coreView: SeatGridView, _ user: VRSeatInfo)
     case featureSetting(_ settingModel: VRFeatureClickPanelModel)
     case listMenu(_ data: ActionPanelData)
-    case musicList
     case audioEffect
     case giftView
     case systemImageSelection(_ imageType: VRImageType)
@@ -46,7 +45,6 @@ extension VRRoute: Equatable {
                 (.roomInfo,.roomInfo),
                 (.recentViewer,.recentViewer),
                 (.voiceLinkControl,.voiceLinkControl),
-                (.musicList,.musicList),
                 (.audioEffect,.audioEffect),
                 (.giftView, .giftView),
                 (.prepareSetting, .prepareSetting),
@@ -71,7 +69,6 @@ extension VRRoute: Equatable {
                 (.userControl, _),
                 (.featureSetting, _),
                 (.listMenu, _),
-                (.musicList, _),
                 (.audioEffect, _),
                 (.giftView, _),
                 (.systemImageSelection, _),
@@ -109,8 +106,6 @@ extension VRRoute: Hashable {
                     result += item.id.uuidString
                 }
                 return result
-            case .musicList:
-                return "musicList"
             case .audioEffect:
                 return "audioEffect"
             case .giftView:

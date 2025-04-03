@@ -10,15 +10,16 @@ import TUICore
 import Combine
 import RTCRoomEngine
 import RTCCommon
+import LiveStreamCore
 
 class UserStatusView: UIView {
     private let manager: LiveStreamManager
     private var cancellableSet = Set<AnyCancellable>()
     private var muteAudio: Bool = true
     private var isViewReady: Bool = false
-    @Published private var userInfo: LSUser
+    @Published private var userInfo: TUIUserInfo
     
-    init(userInfo: LSUser, manager: LiveStreamManager) {
+    init(userInfo: TUIUserInfo, manager: LiveStreamManager) {
         self.userInfo = userInfo
         self.manager = manager
         super.init(frame: .zero)
@@ -48,13 +49,13 @@ class UserStatusView: UIView {
         Task {
             do {
                 let info = try await manager.getUserInfo(userId: userInfo.userId)
-                userInfo = LSUser(userInfo: info)
-            } catch let err {
-                debugPrint("getUserInfoError: \(err.localizedDescription)")
+                userInfo = info
+            } catch let err as InternalError {
+                debugPrint("getUserInfoError: \(err.localizedMessage)")
             }
         }
     }
-
+    
     private lazy var userNameLabel: UILabel = {
         let user = UILabel()
         user.textColor = .white
@@ -65,7 +66,7 @@ class UserStatusView: UIView {
         addSubview(user)
         return user
     }()
-
+    
     private lazy var voiceMuteImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = .liveBundleImage("live_audio_mute_icon")
@@ -76,14 +77,14 @@ class UserStatusView: UIView {
         addSubview(userNameLabel)
         addSubview(voiceMuteImageView)
     }
-
+    
     private func activateConstraints() {
         voiceMuteImageView.snp.remakeConstraints { make in
             make.leading.equalToSuperview().offset(8)
             make.width.height.equalTo(muteAudio ? 14 : 0)
             make.centerY.equalToSuperview()
         }
-
+        
         userNameLabel.snp.remakeConstraints { make in
             make.leading.equalTo(voiceMuteImageView.snp.trailing).offset(muteAudio ? 2 : 0)
             make.centerY.equalToSuperview()
@@ -96,8 +97,8 @@ class UserStatusView: UIView {
             .receive(on: RunLoop.main)
             .sink { [weak self] userInfo in
                 guard let self = self else { return }
-                if !userInfo.name.isEmpty {
-                    userNameLabel.text = userInfo.name
+                if !userInfo.userName.isEmpty {
+                    userNameLabel.text = userInfo.userName
                 } else {
                     userNameLabel.text = userInfo.userId
                 }
@@ -113,7 +114,7 @@ class UserStatusView: UIView {
 extension UserStatusView {
     
     func subscribeState() {
-        manager.subscribeUserState(StateSelector(keyPath: \LSUserState.hasAudioStreamUserList))
+        manager.subscribeCoreViewState(StateSelector(keyPath: \UserState.hasAudioStreamUserList))
             .receive(on: RunLoop.main)
             .removeDuplicates()
             .sink { [weak self] userIdList in

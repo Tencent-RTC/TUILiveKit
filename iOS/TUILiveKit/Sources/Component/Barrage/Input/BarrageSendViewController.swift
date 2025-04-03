@@ -8,10 +8,6 @@
 import UIKit
 import Combine
 
-protocol BarrageSendViewControllerDelegate: AnyObject {
-    func barrageSendViewControllerOnSendBarrage(_ barrage: TUIBarrage)
-}
-
 class BarrageSendViewController: UIViewController {
     
     enum InputState {
@@ -23,9 +19,7 @@ class BarrageSendViewController: UIViewController {
     private let roomId: String
     private var cancellableSet = Set<AnyCancellable>()
     private let manager: BarrageInputManager
-    
-    weak var delegate: BarrageSendViewControllerDelegate?
-    
+        
     private lazy var inputBarView: InputBarView = {
         let inputBarView = InputBarView()
         inputBarView.delegate = self
@@ -96,14 +90,14 @@ class BarrageSendViewController: UIViewController {
             .receive(on: RunLoop.main)
             .sink { [weak self] msg in
                 guard let self = self else { return }
-                view.makeToast(msg)
+                makeToast(msg: msg)
             }
             .store(in: &cancellableSet)
-        manager.sendBarrageSubject
+        BarrageManager.shared.roomDismissedSubject
             .receive(on: RunLoop.main)
-            .sink { [weak self] barrage in
-                guard let self = self else { return }
-                delegate?.barrageSendViewControllerOnSendBarrage(barrage)
+            .sink { [weak self] dismissedRoomId in
+                guard let self = self, roomId == dismissedRoomId else { return }
+                dismiss(animated: true)
             }
             .store(in: &cancellableSet)
         
@@ -135,6 +129,13 @@ class BarrageSendViewController: UIViewController {
         backgroundView.snp.makeConstraints { make in
             make.leading.trailing.bottom.equalToSuperview()
             make.top.equalTo(inputBarView)
+        }
+    }
+    
+    private func makeToast(msg: String) {
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let keyWindow = windowScene.windows.first(where: { $0.isKeyWindow }) {
+            keyWindow.makeToast(msg)
         }
     }
 }

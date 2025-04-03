@@ -54,7 +54,7 @@ class BeautyService {
             roomEngine.openLocalCamera(isFront: true, quality: .quality1080P) {
                 continuation.resume()
             } onError: { code, message in
-                continuation.resume(throwing: InternalError(error: code, message: message))
+                continuation.resume(throwing: InternalError(code: code.rawValue, message: message))
             }
         }
     }

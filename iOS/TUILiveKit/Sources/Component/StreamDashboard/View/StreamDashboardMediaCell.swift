@@ -268,15 +268,15 @@ class StreamDashboardMediaItemCell: UITableViewCell {
 
 fileprivate extension String {
     
-    static let localText = localized("live.streamDashboard.video.local")
-    static let remoteText = localized("live.streamDashboard.video.remote")
+    static let localText = localized("Local User")
+    static let remoteText = localized("Remote User")
     
-    static let videoText = localized("live.streamDashboard.video.info")
-    static let videoResolutionText = localized("live.streamDashboard.video.resolution")
-    static let videoBitrateText = localized("live.streamDashboard.video.bitrate")
-    static let videoFrameRateText = localized("live.streamDashboard.video.frameRate")
+    static let videoText = localized("Video Information")
+    static let videoResolutionText = localized("Resolution")
+    static let videoBitrateText = localized("Video Bitrate")
+    static let videoFrameRateText = localized("Video FPS")
     
-    static let audioText = localized("live.streamDashboard.audio.info")
-    static let audioSampleRateText = localized("live.streamDashboard.audio.sampleRate")
-    static let audioBitrateText = localized("live.streamDashboard.audio.bitrate")
+    static let audioText = localized("Audio Information")
+    static let audioSampleRateText = localized("Audio Sample Rate")
+    static let audioBitrateText = localized("Audio Bitrate")
 }

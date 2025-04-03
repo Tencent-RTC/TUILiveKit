@@ -77,11 +77,11 @@ extension MeViewController {
     
     @objc private func logout() {
         let alertVC = UIAlertController(title:
-         TUILiveKitAppLocalize("TUILiveKitApp.Main.areyousureloginout"), message: nil,
+         TUILiveKitAppLocalize("Are you sure you want to log out?"), message: nil,
          preferredStyle: .alert)
-        let cancelAction = UIAlertAction(title: TUILiveKitAppLocalize("TUILiveKitApp.Main.cancel"),
+        let cancelAction = UIAlertAction(title: TUILiveKitAppLocalize("Cancel"),
                                          style: .cancel, handler: nil)
-        let sureAction = UIAlertAction(title: TUILiveKitAppLocalize("TUILiveKitApp.Main.determine"),
+        let sureAction = UIAlertAction(title: TUILiveKitAppLocalize("Yes"),
                                        style: .default) { [weak self] (action) in
             guard let self = self else { return }
             let appDelegate = UIApplication.shared.delegate as? AppDelegate

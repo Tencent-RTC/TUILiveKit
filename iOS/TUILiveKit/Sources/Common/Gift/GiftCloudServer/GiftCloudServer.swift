@@ -10,15 +10,13 @@ import TUICore
 import RTCCommon
 
 class GiftCloudServer: IGiftCloudServer {
-    private var balance = 500
 
     func rechargeBalance(callback: @escaping (TUIGiftServerError, Int) -> Void) {
-        balance += 100
-        callback(.noError, balance)
+        
     }
 
     func queryBalance(callback: @escaping (TUIGiftServerError, Int) -> Void) {
-        callback(.noError, balance)
+        
     }
 
     func queryGiftInfoList(callback: @escaping (TUIGiftServerError, [TUIGift]) -> Void) {
@@ -50,18 +48,7 @@ class GiftCloudServer: IGiftCloudServer {
                   giftModel: TUIGift,
                   giftCount: Int,
                   callback: @escaping (TUIGiftServerError, Int) -> Void) {
-        guard giftCount > 0 else {
-            callback(.paramError, balance)
-            return
-        }
-
-        let newBalance = balance - giftCount * giftModel.price
-        if newBalance >= 0 {
-            balance = newBalance
-            callback(.noError, newBalance)
-        } else {
-            callback(.balanceInsufficient, balance)
-        }
+        
     }
     
     private func initTUIGifts(giftList: [Any]) -> [TUIGift] {

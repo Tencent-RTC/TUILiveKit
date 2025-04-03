@@ -292,7 +292,7 @@ class EmotionBoardView: UIView {
 
     lazy var deleteButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "live_barrage_delete", in: Bundle.liveBundle, compatibleWith: nil), for: .normal)
+        button.setImage(.liveBundleImage("live_barrage_delete"), for: .normal)
         button.addTarget(self, action: #selector(didSelectDeleteButton), for: .touchUpInside)
         button.layer.cornerRadius = 4
         button.backgroundColor = .white

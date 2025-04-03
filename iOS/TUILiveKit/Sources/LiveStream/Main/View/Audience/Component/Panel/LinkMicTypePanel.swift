@@ -16,10 +16,12 @@ class LinkMicTypePanel: UIView {
 
     let data: [LinkMicTypeCellData]
     let routerManager: LSRouterManager
+    let manager: LiveStreamManager
     
-    init(data: [LinkMicTypeCellData], routerManager: LSRouterManager) {
+    init(data: [LinkMicTypeCellData], routerManager: LSRouterManager, manager: LiveStreamManager) {
         self.data = data
         self.routerManager = routerManager
+        self.manager = manager
         super.init(frame: .zero)
     }
     
@@ -124,6 +126,7 @@ extension LinkMicTypePanel {
 
 extension LinkMicTypePanel {
     @objc func videoSettingImageViewAction() {
+        manager.mediaManager.changeVideoEncParams(encType: .small)
         routerManager.router(action: .present(.linkSetting))
     }
 }
@@ -156,18 +159,18 @@ extension LinkMicTypePanel: UITableViewDataSource {
 
 private extension String {
     static var linkTypeTitleText: String {
-        localized("live.audience.linkType.title")
+        localized("Choose Link Mode")
     }
 
     static var linkTypeTipsText: String {
-        localized("live.audience.linkType.tips")
+        localized("connect upon host's approval")
     }
 
     static var videoLinkRequestText: String {
-        localized("live.audience.linkType.videoLinkRequest")
+        localized("Apply for video link")
     }
 
     static var audioLinkRequestText: String {
-        localized("live.audience.linkType.audioLinkRequest")
+        localized("Apply for audio link")
     }
 }

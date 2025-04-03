@@ -24,13 +24,13 @@ class VRRoomService: BaseServiceProtocol {
             guard let self = self else { return }
             self.roomEngine.fetchRoomInfo { roomInfo in
                 guard let roomInfo = roomInfo else {
-                    let error = InternalError(error: TUIError.failed, message: "fetch room info fail.")
+                    let error = InternalError(code: ErrorService.generalErrorCode, message: "fetch room info fail.")
                     continuation.resume(throwing: error)
                     return
                 }
                 continuation.resume(returning: roomInfo)
             } onError: { err, message in
-                let error = InternalError(error: err, message: message)
+                let error = InternalError(code: err.rawValue, message: message)
                 continuation.resume(throwing: error)
             }
         }
@@ -43,12 +43,12 @@ class VRRoomService: BaseServiceProtocol {
                 if let user = userInfo {
                     continuation.resume(returning: VRUser(userInfo: user))
                 } else {
-                    let error = InternalError(error: TUIError.userNotExist, message: TUIError.userNotExist.description)
+                    let error = InternalError(error: LiveError.userNotExist, message: LiveError.userNotExist.description)
                     continuation.resume(throwing: error)
                 }
                 
             } onError: { error, message in
-                let error = InternalError(error: error, message: message)
+                let error = InternalError(code: error.rawValue, message: message)
                 continuation.resume(throwing: error)
             }
 
@@ -58,14 +58,14 @@ class VRRoomService: BaseServiceProtocol {
     func fetchLiveInfo(roomId: String) async throws -> TUILiveInfo {
         return try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self, let liveListManager = roomEngine.getExtension(extensionType: .liveListManager) as? TUILiveListManager else {
-                let error = InternalError(error: TUIError.failed, message: TUIError.failed.description)
+                let error = InternalError(code: ErrorService.generalErrorCode, message: "get LiveListManager error")
                 continuation.resume(throwing: error)
                 return
             }
             liveListManager.getLiveInfo(roomId) { liveInfo in
                 continuation.resume(returning: liveInfo)
             } onError: { error, message in
-                let error = InternalError(error: error, message: message)
+                let error = InternalError(code: error.rawValue, message: message)
                 continuation.resume(throwing: error)
             }
         }
@@ -74,7 +74,7 @@ class VRRoomService: BaseServiceProtocol {
     func setLiveInfo(liveInfo: TUILiveInfo, modifyFlag: TUILiveModifyFlag) async throws {
         return try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self, let liveListManager = roomEngine.getExtension(extensionType: .liveListManager) as? TUILiveListManager else {
-                let error = InternalError(error: TUIError.failed, message: TUIError.failed.description)
+                let error = InternalError(code: ErrorService.generalErrorCode, message: "get LiveListManager error")
                 continuation.resume(throwing: error)
                 return
             }
@@ -82,7 +82,7 @@ class VRRoomService: BaseServiceProtocol {
             liveListManager.setLiveInfo(liveInfo, modifyFlag: modifyFlag) {
                 continuation.resume()
             } onError: { error, message in
-                let error = InternalError(error: error, message: message)
+                let error = InternalError(code: error.rawValue, message: message)
                 continuation.resume(throwing: error)
             }
         }
@@ -95,7 +95,7 @@ class VRRoomService: BaseServiceProtocol {
             self.roomEngine.updateRoomSeatModeByAdmin(mode) {
                 continuation.resume()
             } onError: { err, message in
-                let error = InternalError(error: err, message: message)
+                let error = InternalError(code: err.rawValue, message: message)
                 continuation.resume(throwing: error)
             }
         }

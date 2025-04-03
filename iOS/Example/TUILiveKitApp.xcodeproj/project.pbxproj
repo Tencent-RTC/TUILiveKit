@@ -25,6 +25,7 @@
 		470EB6C4266A46F80072071F /* LaunchImage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 470EB6C0266A46F80072071F /* LaunchImage@2x.png */; };
 		470EB6C7266A47050072071F /* LaunchScreen_en.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 470EB6C5266A47050072071F /* LaunchScreen_en.storyboard */; };
 		4795D41B265F4A6200C82562 /* GenerateTestUserSig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4795D41A265F4A6200C82562 /* GenerateTestUserSig.swift */; };
+		583596D82D7B1D3500BEC375 /* TUILiveKitAppLocalized.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 583596D72D7B1D3500BEC375 /* TUILiveKitAppLocalized.xcstrings */; };
 		A917D53F2C22789400F9C310 /* MeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A917D53E2C22789400F9C310 /* MeViewController.swift */; };
 		A917D5412C2278A600F9C310 /* MeRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A917D5402C2278A600F9C310 /* MeRootView.swift */; };
 		A917D5432C2282FA00F9C310 /* IMManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A917D5422C2282FA00F9C310 /* IMManager.swift */; };
@@ -40,10 +41,9 @@
 		A9BC40712AB43DE4008AD131 /* UserAgreementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BC40662AB43DE4008AD131 /* UserAgreementViewController.swift */; };
 		A9BC40722AB43DE4008AD131 /* LayoutDefine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BC40672AB43DE4008AD131 /* LayoutDefine.swift */; };
 		A9DD617E2CF968F000D4BAF0 /* LayoutTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DD617C2CF968F000D4BAF0 /* LayoutTestViewController.swift */; };
-		BD3BA6D28DB6203C280AC8A9 /* Pods_TUILiveKitApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D97B79F59C2263839B21BAD1 /* Pods_TUILiveKitApp.framework */; };
-		C11E26272B0B0B8300674403 /* TUILiveKitAppLocalized.strings in Resources */ = {isa = PBXBuildFile; fileRef = C11E26202B0B0B8300674403 /* TUILiveKitAppLocalized.strings */; };
 		C11E26282B0B0B8300674403 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C11E26222B0B0B8300674403 /* InfoPlist.strings */; };
 		C11E26292B0B0B8300674403 /* TUILiveKitAppLocalized.swift in Sources */ = {isa = PBXBuildFile; fileRef = C11E26262B0B0B8300674403 /* TUILiveKitAppLocalized.swift */; };
+		CE1257C2F52958776702FE41 /* Pods_TUILiveKitApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85ED6BC58723B389A3F09C20 /* Pods_TUILiveKitApp.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,6 +51,7 @@
 		047F81F02CB77E5C0079BA02 /* VideoLiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoLiveViewController.swift; sourceTree = "<group>"; };
 		04B9468B2CB51EB80052D0F2 /* MainCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCollectionCell.swift; sourceTree = "<group>"; };
 		04B9468F2CB52F8B0052D0F2 /* MainItemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainItemModel.swift; sourceTree = "<group>"; };
+		280028A651ECA453A8558409 /* Pods-TUILiveKitApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TUILiveKitApp.release.xcconfig"; path = "Target Support Files/Pods-TUILiveKitApp/Pods-TUILiveKitApp.release.xcconfig"; sourceTree = "<group>"; };
 		40DD29E5264395FF00DC4BA8 /* TUILiveKitApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TUILiveKitApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		40DD29E8264395FF00DC4BA8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		40DD29EA264395FF00DC4BA8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -67,8 +68,9 @@
 		470EB6C0266A46F80072071F /* LaunchImage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LaunchImage@2x.png"; sourceTree = "<group>"; };
 		470EB6C6266A47050072071F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen_en.storyboard; sourceTree = "<group>"; };
 		4795D41A265F4A6200C82562 /* GenerateTestUserSig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenerateTestUserSig.swift; sourceTree = "<group>"; };
-		5C23A9FAFDF3CD75F7652EBE /* Pods-TUILiveKitApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TUILiveKitApp.debug.xcconfig"; path = "Target Support Files/Pods-TUILiveKitApp/Pods-TUILiveKitApp.debug.xcconfig"; sourceTree = "<group>"; };
-		9744BB898A52545DF69E9D4A /* Pods-TUILiveKitApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TUILiveKitApp.release.xcconfig"; path = "Target Support Files/Pods-TUILiveKitApp/Pods-TUILiveKitApp.release.xcconfig"; sourceTree = "<group>"; };
+		4A5F6CD9FDD7555D3C923F4B /* Pods-TUILiveKitApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TUILiveKitApp.debug.xcconfig"; path = "Target Support Files/Pods-TUILiveKitApp/Pods-TUILiveKitApp.debug.xcconfig"; sourceTree = "<group>"; };
+		583596D72D7B1D3500BEC375 /* TUILiveKitAppLocalized.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = TUILiveKitAppLocalized.xcstrings; sourceTree = "<group>"; };
+		85ED6BC58723B389A3F09C20 /* Pods_TUILiveKitApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TUILiveKitApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A917D53E2C22789400F9C310 /* MeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeViewController.swift; sourceTree = "<group>"; };
 		A917D5402C2278A600F9C310 /* MeRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeRootView.swift; sourceTree = "<group>"; };
 		A917D5422C2282FA00F9C310 /* IMManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMManager.swift; sourceTree = "<group>"; };
@@ -90,12 +92,9 @@
 		A9BC40662AB43DE4008AD131 /* UserAgreementViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserAgreementViewController.swift; sourceTree = "<group>"; };
 		A9BC40672AB43DE4008AD131 /* LayoutDefine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayoutDefine.swift; sourceTree = "<group>"; };
 		A9DD617C2CF968F000D4BAF0 /* LayoutTestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutTestViewController.swift; sourceTree = "<group>"; };
-		C11E26212B0B0B8300674403 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/TUILiveKitAppLocalized.strings"; sourceTree = "<group>"; };
 		C11E26232B0B0B8300674403 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
-		C11E26242B0B0B8300674403 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/TUILiveKitAppLocalized.strings; sourceTree = "<group>"; };
 		C11E26252B0B0B8300674403 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C11E26262B0B0B8300674403 /* TUILiveKitAppLocalized.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TUILiveKitAppLocalized.swift; sourceTree = "<group>"; };
-		D97B79F59C2263839B21BAD1 /* Pods_TUILiveKitApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TUILiveKitApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,7 +102,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BD3BA6D28DB6203C280AC8A9 /* Pods_TUILiveKitApp.framework in Frameworks */,
+				CE1257C2F52958776702FE41 /* Pods_TUILiveKitApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -212,8 +211,8 @@
 		58BA93C23A1C7D88E48A09BE /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				5C23A9FAFDF3CD75F7652EBE /* Pods-TUILiveKitApp.debug.xcconfig */,
-				9744BB898A52545DF69E9D4A /* Pods-TUILiveKitApp.release.xcconfig */,
+				4A5F6CD9FDD7555D3C923F4B /* Pods-TUILiveKitApp.debug.xcconfig */,
+				280028A651ECA453A8558409 /* Pods-TUILiveKitApp.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -227,7 +226,7 @@
 				A9ACBFF32C49F1C30047F980 /* TCMediaX.framework */,
 				A9ACBFF12C49F1B70047F980 /* TCEffectPlayer.framework */,
 				A9ACBFEF2C49F1A90047F980 /* libtcpag.framework */,
-				D97B79F59C2263839B21BAD1 /* Pods_TUILiveKitApp.framework */,
+				85ED6BC58723B389A3F09C20 /* Pods_TUILiveKitApp.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -316,9 +315,9 @@
 		C11E261F2B0B0B8300674403 /* Localized */ = {
 			isa = PBXGroup;
 			children = (
-				C11E26202B0B0B8300674403 /* TUILiveKitAppLocalized.strings */,
 				C11E26222B0B0B8300674403 /* InfoPlist.strings */,
 				C11E26262B0B0B8300674403 /* TUILiveKitAppLocalized.swift */,
+				583596D72D7B1D3500BEC375 /* TUILiveKitAppLocalized.xcstrings */,
 			);
 			path = Localized;
 			sourceTree = "<group>";
@@ -330,12 +329,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 40DD29F92643960000DC4BA8 /* Build configuration list for PBXNativeTarget "TUILiveKitApp" */;
 			buildPhases = (
-				5D5AF9A1AC8D64162E140A76 /* [CP] Check Pods Manifest.lock */,
+				69ED46A8468D4F1C43A299B7 /* [CP] Check Pods Manifest.lock */,
 				40DD29E1264395FF00DC4BA8 /* Sources */,
 				40DD29E2264395FF00DC4BA8 /* Frameworks */,
 				40DD29E3264395FF00DC4BA8 /* Resources */,
-				1B6EDC8196055C9EB9BB89CC /* [CP] Embed Pods Frameworks */,
-				5A33F831A4F9C1210FE071DE /* [CP] Copy Pods Resources */,
+				F9269C2952D99607DC8CEBA2 /* [CP] Embed Pods Frameworks */,
+				DAE8BFDFE908EF7AB9D3954A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -387,11 +386,11 @@
 				40DD29F5264395FF00DC4BA8 /* LaunchScreen.storyboard in Resources */,
 				470EB6C3266A46F80072071F /* LaunchImage_en@2x.png in Resources */,
 				40DD29F2264395FF00DC4BA8 /* Assets.xcassets in Resources */,
-				C11E26272B0B0B8300674403 /* TUILiveKitAppLocalized.strings in Resources */,
 				470EB6C2266A46F80072071F /* LaunchImage_en@3x.png in Resources */,
 				470EB6C7266A47050072071F /* LaunchScreen_en.storyboard in Resources */,
 				470EB6C1266A46F80072071F /* LaunchImage@3x.png in Resources */,
 				40DD29F0264395FF00DC4BA8 /* Main.storyboard in Resources */,
+				583596D82D7B1D3500BEC375 /* TUILiveKitAppLocalized.xcstrings in Resources */,
 				470EB6C4266A46F80072071F /* LaunchImage@2x.png in Resources */,
 				C11E26282B0B0B8300674403 /* InfoPlist.strings in Resources */,
 			);
@@ -400,41 +399,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		1B6EDC8196055C9EB9BB89CC /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-TUILiveKitApp/Pods-TUILiveKitApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-TUILiveKitApp/Pods-TUILiveKitApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TUILiveKitApp/Pods-TUILiveKitApp-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		5A33F831A4F9C1210FE071DE /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-TUILiveKitApp/Pods-TUILiveKitApp-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-TUILiveKitApp/Pods-TUILiveKitApp-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TUILiveKitApp/Pods-TUILiveKitApp-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		5D5AF9A1AC8D64162E140A76 /* [CP] Check Pods Manifest.lock */ = {
+		69ED46A8468D4F1C43A299B7 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -454,6 +419,40 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DAE8BFDFE908EF7AB9D3954A /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TUILiveKitApp/Pods-TUILiveKitApp-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TUILiveKitApp/Pods-TUILiveKitApp-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TUILiveKitApp/Pods-TUILiveKitApp-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F9269C2952D99607DC8CEBA2 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TUILiveKitApp/Pods-TUILiveKitApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TUILiveKitApp/Pods-TUILiveKitApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TUILiveKitApp/Pods-TUILiveKitApp-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -517,15 +516,6 @@
 				470EB6C6266A47050072071F /* Base */,
 			);
 			name = LaunchScreen_en.storyboard;
-			sourceTree = "<group>";
-		};
-		C11E26202B0B0B8300674403 /* TUILiveKitAppLocalized.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				C11E26212B0B0B8300674403 /* zh-Hans */,
-				C11E26242B0B0B8300674403 /* en */,
-			);
-			name = TUILiveKitAppLocalized.strings;
 			sourceTree = "<group>";
 		};
 		C11E26222B0B0B8300674403 /* InfoPlist.strings */ = {
@@ -658,7 +648,7 @@
 		};
 		40DD29FA2643960000DC4BA8 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5C23A9FAFDF3CD75F7652EBE /* Pods-TUILiveKitApp.debug.xcconfig */;
+			baseConfigurationReference = 4A5F6CD9FDD7555D3C923F4B /* Pods-TUILiveKitApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -764,7 +754,7 @@
 		};
 		40DD29FB2643960000DC4BA8 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9744BB898A52545DF69E9D4A /* Pods-TUILiveKitApp.release.xcconfig */;
+			baseConfigurationReference = 280028A651ECA453A8558409 /* Pods-TUILiveKitApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

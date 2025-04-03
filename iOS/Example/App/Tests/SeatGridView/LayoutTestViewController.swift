@@ -7,7 +7,7 @@
 
 import UIKit
 import SnapKit
-import SeatGridView
+import LiveStreamCore
 
 public class LayoutTestViewController: UIViewController {
     
@@ -26,7 +26,7 @@ public class LayoutTestViewController: UIViewController {
     
     let defaultLayoutLabel: UILabel = {
         let label = UILabel()
-        label.text = localizeReplaceOneCharacter(origin: TUILiveKitAppLocalize("TUILiveKitApp.Test.SeatGridView.universalLayout.xxx"), xxx_replace: "Grid")
+        label.text = localizeReplaceOneCharacter(origin: TUILiveKitAppLocalize("Unviersal：xxx"), xxx_replace: "Grid")
         label.textColor = .black
         label.font = UIFont.boldSystemFont(ofSize: 14)
         return label
@@ -34,7 +34,7 @@ public class LayoutTestViewController: UIViewController {
     
     let seatCountLabel: UILabel = {
         let label = UILabel()
-        label.text = TUILiveKitAppLocalize("TUILiveKitApp.Test.SeatGridView.seatCount")
+        label.text = TUILiveKitAppLocalize("SeatCount")
         label.textColor = .black
         label.font = UIFont.boldSystemFont(ofSize: 14)
         return label
@@ -104,7 +104,7 @@ public class LayoutTestViewController: UIViewController {
         
         for i in 0..<freeLayoutInputViews.count {
             view.addSubview(freeLayoutInputViews[i])
-            freeLayoutInputViews[i].rowLabel.text = localizeReplaceOneCharacter(origin: TUILiveKitAppLocalize("TUILiveKitApp.Test.SeatGridView.line.xxx"),
+            freeLayoutInputViews[i].rowLabel.text = localizeReplaceOneCharacter(origin: TUILiveKitAppLocalize("line xxx"),
                                                                                 xxx_replace: "\(i+1)")
             freeLayoutInputViews[i].countTextFiled.text = "\(freeLayoutDefaultCount[i])"
             freeLayoutInputViews[i].spacingTextFiled.text = "10"
@@ -203,14 +203,15 @@ public class LayoutTestViewController: UIViewController {
             default:
                 break
         }
-        defaultLayoutLabel.text = localizeReplaceOneCharacter(origin: TUILiveKitAppLocalize("TUILiveKitApp.Test.SeatGridView.universalLayout.xxx"),
+        defaultLayoutLabel.text = localizeReplaceOneCharacter(origin: TUILiveKitAppLocalize("Unviersal：xxx"),
                                                               xxx_replace: layoutTypeText)
     }
     
     @objc private func freeLayoutButtonClick() {
         let freeLayoutConfig = getFreeLayoutConfig()
         seatGridView.setLayoutMode(layoutMode: .free, layoutConfig: freeLayoutConfig)
-        defaultLayoutLabel.text = localizeReplaceOneCharacter(origin: TUILiveKitAppLocalize("TUILiveKitApp.Test.SeatGridView.universalLayout.xxx"),
+
+        defaultLayoutLabel.text = localizeReplaceOneCharacter(origin: TUILiveKitAppLocalize("Unviersal：xxx"),
                                                               xxx_replace: "")
     }
 }

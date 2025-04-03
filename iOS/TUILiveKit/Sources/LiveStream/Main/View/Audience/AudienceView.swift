@@ -29,11 +29,22 @@ class AudienceView: RTCBaseView {
     }()
     
     lazy var dashboardView: AudienceEndView = {
-        let roomOwner = manager.roomState.ownerInfo
-        let view = AudienceEndView(roomId: roomId, avatarUrl: roomOwner.avatarUrl, userName: roomOwner.name)
+        let roomOwner = manager.coreRoomState.ownerInfo
+        let view = AudienceEndView(roomId: roomId, avatarUrl: roomOwner.avatarUrl, userName: roomOwner.userName)
         view.delegate = self
         view.isHidden = true
         return view
+    }()
+    
+    lazy var coverBgView: UIImageView = {
+        let imageView = UIImageView(frame: .zero)
+        let effect = UIBlurEffect(style: .light)
+        let blurView = UIVisualEffectView(effect: effect)
+        imageView.addSubview(blurView)
+        blurView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        return imageView
     }()
     
     init(roomId: String, manager: LiveStreamManager, routerManager: LSRouterManager, coreView: LiveCoreView) {
@@ -60,12 +71,16 @@ class AudienceView: RTCBaseView {
     
     override func constructViewHierarchy() {
         backgroundColor = .black
+        addSubview(coverBgView)
         addSubview(videoView)
         addSubview(livingView)
         addSubview(dashboardView)
     }
     
     override func activateConstraints() {
+        coverBgView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
         videoView.snp.makeConstraints({ make in
             make.edges.equalToSuperview()
         })
@@ -79,6 +94,8 @@ class AudienceView: RTCBaseView {
     
     override func bindInteraction() {
         subscribeRoomState()
+        subscribeMediaState()
+        subscribeSubject()
     }
     
     func relayoutCoreView() {
@@ -87,30 +104,93 @@ class AudienceView: RTCBaseView {
             make.edges.equalToSuperview()
         })
         sendSubviewToBack(videoView)
+        sendSubviewToBack(coverBgView)
     }
 }
 
 extension AudienceView {
     private func subscribeRoomState() {
-        manager.subscribeRoomState(StateSelector(keyPath: \LSRoomState.liveStatus))
+        manager.subscribeState(StateSelector(keyPath: \LSRoomState.liveStatus))
             .receive(on: RunLoop.main)
             .sink { [weak self] status in
                 guard let self = self else { return }
                 switch status {
-                    case .none,.previewing:
-                        // TODO: - mute all?
-                        break
                     case .finished:
                         routeToAudienceView()
                         showEndView()
-                    case .playing:
-                        self.didEnterRoom()
-                        break
-                    case .pushing:
-                        break
+                    default: break
                 }
             }
             .store(in: &cancellableSet)
+        
+        manager.subscribeCoreViewState(StateSelector(keyPath: \RoomState.ownerInfo.userName))
+            .receive(on: RunLoop.main)
+            .removeDuplicates()
+            .sink { [weak self] userName in
+                guard let self = self, !userName.isEmpty else { return }
+                dashboardView.update(userName: userName)
+            }
+            .store(in: &cancellableSet)
+        
+        manager.subscribeCoreViewState(StateSelector(keyPath: \RoomState.ownerInfo.avatarUrl))
+            .receive(on: RunLoop.main)
+            .removeDuplicates()
+            .sink { [weak self] avatarUrl in
+                guard let self = self, !avatarUrl.isEmpty else { return }
+                dashboardView.update(avatarUrl: avatarUrl)
+            }
+            .store(in: &cancellableSet)
+        
+        manager.subscribeState(StateSelector(keyPath: \LSRoomState.coverURL))
+            .receive(on: RunLoop.main)
+            .removeDuplicates()
+            .sink { [weak self] url in
+                guard let self = self else { return }
+                coverBgView.kf.setImage(with: URL(string: url))
+            }
+            .store(in: &cancellableSet)
+    }
+    
+    private func subscribeMediaState() {
+        manager.subscribeState(StateSelector(keyPath: \LSMediaState.isAudioLocked))
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] isAudioLocked in
+                guard let self = self, manager.coGuestState.coGuestStatus == .linking else { return }
+                manager.toastSubject.send(isAudioLocked ? .mutedAudioText : .unmutedAudioText)
+            }
+            .store(in: &cancellableSet)
+        
+        
+        manager.subscribeState(StateSelector(keyPath: \LSMediaState.isVideoLocked))
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] isVideoLocked in
+                guard let self = self, manager.coGuestState.coGuestStatus == .linking else { return }
+                manager.toastSubject.send(isVideoLocked ? .mutedVideoText : .unmutedVideoText)
+            }
+            .store(in: &cancellableSet)
+        
+        manager.subscribeState(StateSelector(keyPath: \LSCoGuestState.coGuestStatus))
+            .removeDuplicates()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] coGuestStatus in
+                guard let self = self else { return }
+                manager.onCoGuestStatusChanged(status: coGuestStatus)
+            }
+            .store(in: &cancellableSet)
+    }
+    
+    private func subscribeSubject() {
+        manager.kickedOutSubject
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in
+                guard let self = self else { return }
+                routeToAudienceView()
+                onKickedByAdmin()
+            }.store(in: &cancellableSet)
     }
     
     private func routeToAudienceView() {
@@ -118,20 +198,22 @@ extension AudienceView {
     }
     
     private func showEndView() {
-        dashboardView.update(avatarUrl: manager.roomState.ownerInfo.avatarUrl,
-                             userName: manager.roomState.ownerInfo.name)
         dashboardView.isHidden = false
     }
     
-    private func didEnterRoom() {
-        manager.fetchSeatList()
+    private func onKickedByAdmin() {
+        manager.toastSubject.send(.kickedOutText)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+            guard let self = self else { return }
+            routerManager.router(action: .exit)
+        }
     }
 }
 
 extension AudienceView: LSRouterViewProvider {
     func getRouteView(route: LSRoute) -> UIView? {
         if route == .videoSetting {
-            return VideoSettingPanel(routerManager: routerManager, mediaManager: videoView.mediaManager)
+            return VideoSettingPanel(routerManager: routerManager, manager: manager, coreView: videoView)
         }
         else {
             return nil
@@ -150,15 +232,13 @@ extension AudienceView {
     func joinLiveStream() {
         videoView.joinLiveStream(roomId: roomId) { [weak self] roomInfo in
             guard let self = self, let roomInfo = roomInfo else { return }
-            manager.updateRoomState(roomInfo: roomInfo)
-            manager.updateOwnerUserInfo()
-            manager.update(liveStatus: .playing)
+            manager.onJoinLive(roomInfo: roomInfo)
             livingView.initComponentView()
             livingView.isHidden = false
         } onError: { [weak self] code, message in
             guard let self = self else { return }
-            let error = InternalError(error: code, message: message)
-            self.manager.toastSubject.send(error.localizedMessage)
+            let error = InternalError(code: code.rawValue, message: message)
+            manager.onError(error)
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
                 guard let self = self else { return }
                 routerManager.router(action: .exit)
@@ -169,7 +249,7 @@ extension AudienceView {
 
 extension AudienceView: VideoViewDelegate {
     func createCoGuestView(userInfo: TUIUserInfo) -> UIView? {
-        return CoGuestView(userInfo: userInfo, manager: manager)
+        return CoGuestView(userInfo: userInfo, manager: manager, routerManager: routerManager)
     }
     
     func updateCoGuestView(coGuestView: UIView, userInfo: TUIUserInfo, modifyFlag: LiveStreamCore.UserInfoModifyFlag) {
@@ -203,6 +283,10 @@ extension AudienceView: VideoViewDelegate {
     }
 }
 
-extension String {
-    fileprivate static let enterRoomFailedMessageText = localized("live.alert.enterRoom.failed.message.xxx")
+fileprivate extension String {
+    static let kickedOutText = localized("You have been kicked out of the room by the anchor")
+    static let mutedAudioText = localized("The anchor has muted you")
+    static let unmutedAudioText = localized("The anchor has unmuted you")
+    static let mutedVideoText = localized("The anchor disabled your video")
+    static let unmutedVideoText = localized("The anchor enabled your video")
 }

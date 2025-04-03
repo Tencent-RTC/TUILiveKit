@@ -132,6 +132,6 @@ extension TUIGiftView {
 
 private extension String {
     static var sendOut = {
-        localized("live.giftView.sendOut")
+        localized("Send Out")
     }()
 }

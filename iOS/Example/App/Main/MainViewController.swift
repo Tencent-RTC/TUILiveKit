@@ -7,7 +7,7 @@
 
 import UIKit
 import TUICore
-import SeatGridView
+import LiveStreamCore
 
 class AppNavigationController: UINavigationController {
     override init(rootViewController: UIViewController) {
@@ -185,8 +185,8 @@ extension MainViewController: UICollectionViewDelegateFlowLayout {
 
 // MARK: - Localized String
 private extension String {
-    static let videoLiveTitle = TUILiveKitAppLocalize("TUILiveKitApp.Main.video")
-    static let videoLiveDesc = TUILiveKitAppLocalize("TUILiveKitApp.Main.video.desc")
-    static let voiceRoomTitle = TUILiveKitAppLocalize("TUILiveKitApp.Main.audio")
-    static let voiceRoomDesc = TUILiveKitAppLocalize("TUILiveKitApp.Main.audio.desc")
+    static let videoLiveTitle = TUILiveKitAppLocalize("Video Live")
+    static let videoLiveDesc = TUILiveKitAppLocalize("Live preview/Beauty filters/Multi-host")
+    static let voiceRoomTitle = TUILiveKitAppLocalize("Voice Room")
+    static let voiceRoomDesc = TUILiveKitAppLocalize("High audio quality/Large room/Smooth mic on/off")
 }

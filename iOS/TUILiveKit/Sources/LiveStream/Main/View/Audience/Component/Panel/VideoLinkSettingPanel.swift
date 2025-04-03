@@ -62,7 +62,7 @@ class VideoLinkSettingPanel: RTCBaseView {
                                  designConfig: designConfig,
                                  actionClosure: { [weak self] _ in
             guard let self = self else { return }
-            coreView?.startCamera(useFrontCamera: !manager.coreMediaState.isFrontCamera) {} onError: { code, msg in }
+            coreView?.switchCamera(isFront: !manager.coreMediaState.isFrontCamera)
         }))
         items.append(LSFeatureItem(normalTitle: .videoParametersText,
                                  normalImage: .liveBundleImage("live_setting_video_parameters"),
@@ -167,15 +167,15 @@ class VideoLinkSettingPanel: RTCBaseView {
 // MARK: Action
 extension VideoLinkSettingPanel {
     @objc func requestLinkMicButtonClick(_ sender: LSFeatureItemButton) {
-        manager.update(coGuestStatus: .applying)
+        manager.onStartRequestIntraRoomConnection()
         coreView?.requestIntraRoomConnection(userId: "", timeOut: requestTimeOutValue, openCamera: true) { [weak self] in
             guard let self = self else { return }
             manager.toastSubject.send(.waitToLinkText)
         } onError: { [weak self] code, message in
             guard let self = self else { return }
-            self.manager.update(coGuestStatus: .none)
-            let error = InternalError(error: code, message: message)
-            self.manager.toastSubject.send(error.localizedMessage)
+            manager.onRequestIntraRoomConnectionFailed()
+            let error = InternalError(code: code.rawValue, message: message)
+            manager.onError(error)
         }
         routerManager.router(action: .routeTo(.audience))
     }
@@ -190,13 +190,12 @@ extension VideoLinkSettingPanel {
                     if !manager.coreMediaState.isCameraOpened {
                         coreView.startCamera(useFrontCamera: manager.coreMediaState.isFrontCamera) { [weak self] in
                             guard let self = self else { return }
-                            manager.onCameraOpened()
-                            manager.setLocalVideoView(previewView)
+                            manager.onCameraOpened(localVideoView: previewView)
                             needCloseCameraWhenViewDisappear = true
                         } onError: { [weak self] code, msg in
                             guard let self = self else { return }
-                            let error = InternalError(error: code, message: msg)
-                            manager.toastSubject.send(error.localizedMessage)
+                            let error = InternalError(code: code.rawValue, message: msg)
+                            manager.onError(error)
                         }
                     }
                 } else if !routeStack.contains(.linkSetting) {
@@ -211,14 +210,11 @@ extension VideoLinkSettingPanel {
 }
 
 private extension String {
-    static let videoLinkConfigTitleText = localized("live.audience.videoLinkConfig.title")
-    static let requestText = localized("live.audience.videoLinkConfig.request")
-    static let videoLinkConfigTipsText = localized("live.audience.videoLinkConfig.tips")
-    static let beautyText = localized("live.audience.videoLinkConfig.beauty")
-    static let makeupText = localized("live.audience.videoLinkConfig.makeup")
-    static let filterText = localized("live.audience.videoLinkConfig.filter")
-    static let videoParametersText = localized("live.anchor.setting.video.parameters")
-    static let flipText = localized("live.audience.videoLinkConfig.flip")
-    static let operateFailedText = localized("live.operation.fail.xxx")
-    static let waitToLinkText = localized("live.audience.wait.link.tips")
+    static let videoLinkConfigTitleText = localized("Adjust the video link screen")
+    static let requestText = localized("Apply for link mic")
+    static let videoLinkConfigTipsText = localized("The screen effect will automatically take effect after connecting")
+    static let beautyText = localized("Beauty")
+    static let videoParametersText = localized("Video Config")
+    static let flipText = localized("Flip")
+    static let waitToLinkText = localized("You have submitted a link mic request, please wait for the author approval")
 }

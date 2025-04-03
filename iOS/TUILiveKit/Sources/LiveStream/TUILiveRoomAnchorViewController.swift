@@ -23,7 +23,24 @@ public class TUILiveRoomAnchorViewController: UIViewController {
     private let routerManager: LSRouterManager = LSRouterManager()
     private var cancellableSet = Set<AnyCancellable>()
     private lazy var likeManager = LikeManager(roomId: roomId)
-    private lazy var coreView = LiveCoreView()
+    private lazy var coreView: LiveCoreView = {
+        func setComponent() {
+            do {
+                let jsonObject: [String: Any] = [
+                    "api": "component",
+                    "component": 21
+                ]
+                let jsonData = try JSONSerialization.data(withJSONObject: jsonObject, options: [])
+                if let jsonString = String(data: jsonData, encoding: .utf8) {
+                    LiveCoreView.callExperimentalAPI(jsonString)
+                }
+            } catch {
+                LiveKitLog.error("\(#file)","\(#line)", "dataReport: \(error.localizedDescription)")
+            }
+        }
+        setComponent()
+        return LiveCoreView()
+    }()
 
     private let roomId: String
     private let needPrepare: Bool
@@ -68,7 +85,6 @@ public class TUILiveRoomAnchorViewController: UIViewController {
     
     deinit {
         StateCache.shared.clear()
-        MusicPanelStoreFactory.removeStore(roomId: roomId)
         print("deinit \(type(of: self))")
     }
     
@@ -169,7 +185,7 @@ extension TUILiveRoomAnchorViewController {
 extension TUILiveRoomAnchorViewController: LSRouterViewProvider {
     func getRouteView(route: LSRoute) -> UIView? {
         if route == .videoSetting {
-            return VideoSettingPanel(routerManager: routerManager, mediaManager: coreView.mediaManager)
+            return VideoSettingPanel(routerManager: routerManager, manager: manager, coreView: coreView)
         } else {
             return nil
         }
@@ -191,6 +207,10 @@ extension TUILiveRoomAnchorViewController: FloatWindowDataSource {
     
     func relayoutCoreView() {
         anchorView.relayoutCoreView()
+    }
+    
+    func getIsLinking() -> Bool {
+        manager.coGuestState.coGuestStatus == .linking
     }
 }
 

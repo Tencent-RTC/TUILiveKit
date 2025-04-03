@@ -17,9 +17,9 @@ public enum LiveStreamPrivacyStatus: NSInteger, CaseIterable {
     func getString() -> String {
         switch self {
         case .public:
-            return .localized("live.mode.public")
+            return .localized("Public")
         case .privacy:
-            return .localized("live.mode.privacy")
+            return .localized("Privacy")
         }
     }
 }
@@ -36,15 +36,15 @@ public enum LiveStreamCategory: NSInteger, CaseIterable {
     func getString() -> String {
         switch self {
         case .chat:
-            return .localized("live.category.chat")
+            return .localized("Daily chat")
         case .beauty:
-            return .localized("live.category.beauty")
+            return .localized("Beauty")
         case .teach:
-            return .localized("live.category.teach")
+            return .localized("Knowledge Teaching")
         case .shopping:
-            return .localized("live.category.shopping")
+            return .localized("Shopping")
         case .music:
-            return .localized("live.category.music")
+            return .localized("Music")
         }
     }
 }

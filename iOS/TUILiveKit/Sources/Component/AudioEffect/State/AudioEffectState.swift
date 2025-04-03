@@ -30,7 +30,6 @@ struct AudioEffectState {
     var isEarMonitorOpened: Bool = false
     var earMonitorVolume: Int = 100
     
-    var musicVolume: Int = 60
     var microphoneVolume: Int = 100
     var voicePitch: Double = 0.0
     

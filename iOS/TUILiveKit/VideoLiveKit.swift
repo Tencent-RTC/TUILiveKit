@@ -112,5 +112,5 @@ extension VideoLiveKit {
 }
 
 extension String {
-    fileprivate static let pushingToReturnText = localized("live.error.pushing")
+    fileprivate static let pushingToReturnText = localized("It's live, please try again later.")
 }

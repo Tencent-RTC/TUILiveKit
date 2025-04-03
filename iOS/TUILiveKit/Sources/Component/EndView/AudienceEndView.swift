@@ -107,14 +107,17 @@ class AudienceEndView: UIView {
         delegate?.onCloseButtonClick()
     }
     
-    func update(avatarUrl: String, userName: String) {
+    func update(avatarUrl: String) {
         imageView.kf.setImage(with: URL(string: avatarUrl))
+    }
+    
+    func update(userName: String) {
         nameLabel.text = userName
     }
 }
 
 private extension String {
     static var titleText: String {
-        localized("live.audience.mask.title")
+        localized("Live broadcast has ended")
     }
 }

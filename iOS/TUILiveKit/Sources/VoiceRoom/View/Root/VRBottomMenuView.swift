@@ -9,7 +9,7 @@ import UIKit
 import RTCCommon
 import SnapKit
 import Combine
-import SeatGridView
+import LiveStreamCore
 import RTCRoomEngine
 
 class VRBottomMenuView: UIView {
@@ -25,6 +25,7 @@ class VRBottomMenuView: UIView {
     private let maxMenuButtonNumber = 5
     private let buttonWidth: CGFloat = 36.0
     private let buttonSpacing: CGFloat = 6.0
+    private var isPending: Bool = false
     
     var menus = [VRButtonMenuInfo]()
     
@@ -258,13 +259,6 @@ extension VRBottomMenuView {
             guard let self = self else { return }
             self.routerManager.router(action: .present(.systemImageSelection(.background)))
         }))
-        model.items.append(VRFeatureItem(normalTitle: .musicText,
-                                       normalImage: .liveBundleImage("live_setting_music_icon"),
-                                       designConfig: designConfig,
-                                         actionClosure: { [weak self] _ in
-            guard let self = self else { return }
-            self.routerManager.router(action: .present(.musicList))
-        }))
         model.items.append(VRFeatureItem(normalTitle: .audioEffectsText,
                                        normalImage: .liveBundleImage("live_setting_audio_effects"),
                                        designConfig: designConfig,
@@ -293,17 +287,19 @@ extension VRBottomMenuView {
         
         var linkMic = VRButtonMenuInfo(normalIcon: "live_voice_room_link_icon", selectIcon: "live_voice_room_linking_icon")
         linkMic.tapAction = { [weak self] sender in
-            guard let self = self else { return }
+            guard let self = self, !isPending else { return }
             let selfUserId = manager.userState.selfInfo.userId
             let isApplying = manager.seatState.isApplyingToTakeSeat
             if isApplying {
+                isPending = true
                 coreView.cancelRequest(userId: selfUserId) { [weak self] in
                     guard let self = self else { return }
+                    isPending = false
                     self.handleApplicationState(isApplying: false)
                 } onError: { [weak self] code, message in
                     guard let self = self else { return }
-                    guard let err = TUIError(rawValue: code) else { return }
-                    let error = InternalError(error: err, message: message)
+                    isPending = false
+                    let error = InternalError(code: code, message: message)
                     self.manager.toastSubject.send(error.localizedMessage)
                 }
             } else {
@@ -312,8 +308,7 @@ extension VRBottomMenuView {
                     coreView.leaveSeat {
                     } onError: { [weak self] code, message in
                         guard let self = self else { return }
-                        guard let err = TUIError(rawValue: code) else { return }
-                        let error = InternalError(error: err, message: message)
+                        let error = InternalError(code: code, message: message)
                         self.manager.toastSubject.send(error.localizedMessage)
                     }
 
@@ -340,9 +335,11 @@ extension VRBottomMenuView {
                         self.manager.toastSubject.send(.takeSeatApplicationTimeout)
                     } onError: { [weak self] userInfo, code, message in
                         guard let self = self else { return }
-                        self.handleApplicationState(isApplying: false)
+                        if code != LiveError.requestIdRepeat.rawValue && code != LiveError.alreadyOnTheSeatQueue.rawValue {
+                            self.handleApplicationState(isApplying: false)
+                        }
                         guard let err = TUIError(rawValue: code) else { return }
-                        let error = InternalError(error: err, message: message)
+                        let error = InternalError(code: code, message: message)
                         self.manager.toastSubject.send(error.localizedMessage)
                     }
                     handleApplicationState(isApplying: true)
@@ -383,10 +380,9 @@ extension VRBottomMenuView {
 }
 
 private extension String {
-    static let backgroundText = localized("live.anchor.setting.background")
-    static let musicText = localized("live.category.music")
-    static let audioEffectsText = localized("live.anchor.setting.audio.effects")
-    static let repeatRequest = localized("live.error.repeat.requestId")
-    static let takeSeatApplicationRejected = localized("live.seat.takeSeatApplicationRejected")
-    static let takeSeatApplicationTimeout = localized("live.seat.takeSeatApplicationTimeout")
+    static let backgroundText = localized("Background")
+    static let audioEffectsText = localized("Audio")
+    static let repeatRequest = localized("Signal request repetition")
+    static let takeSeatApplicationRejected = localized("Take seat application has been rejected")
+    static let takeSeatApplicationTimeout = localized("Take seat application timeout")
 }

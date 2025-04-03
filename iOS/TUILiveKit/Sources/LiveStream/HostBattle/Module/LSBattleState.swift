@@ -18,7 +18,6 @@ struct LSBattleState {
     
     var battleId: String = ""
     var battleUsers: [BattleUser] = []
-    var sentBattleRequest: [TUIBattleUser] = []
     var receivedBattleRequest: LSReceivedBattleRequest?
     var durationCountDown: Int = 0
     var battleConfig: BattleConfig = BattleConfig()
@@ -28,18 +27,6 @@ struct LSBattleState {
     var isShowingStartView: Bool = false
     var isBattleRunning: Bool = false
     var isOnDisplayResult: Bool = false
-    
-    var inviteeIdList: [String] {
-        sentBattleRequest.map { $0.userId }
-    }
-    
-    mutating func addSentBattleRequest(user: TUIBattleUser) {
-        sentBattleRequest.append(user)
-    }
-    
-    mutating func clearSentBattleRequest() {
-        sentBattleRequest.removeAll()
-    }
 }
 
 struct BattleUser: Codable {

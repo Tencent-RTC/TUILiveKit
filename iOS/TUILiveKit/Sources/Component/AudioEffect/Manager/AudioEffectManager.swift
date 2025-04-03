@@ -11,7 +11,6 @@ import Combine
 import RTCRoomEngine
 
 protocol AudioEffectManagerInterface {
-    func setMusicVolume(_ volume: Int)
     func setMicrophoneVolume(_ volume: Int)
     func setVoiceEarMonitorVolume(_ volume: Int)
     
@@ -48,13 +47,6 @@ extension AudioEffectManager: AudioEffectMenuDateGenerator {
 
 // MARK: - AudioEffectManagerInterface
 extension AudioEffectManager {
-    func setMusicVolume(_ volume: Int) {
-        service.setMusicVolume(volume)
-        update { state in
-            state.musicVolume = volume
-        }
-    }
-    
     func setMicrophoneVolume(_ volume: Int) {
         service.setMicrophoneVolume(volume)
         update { state in

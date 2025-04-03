@@ -9,6 +9,8 @@ import SnapKit
 import UIKit
 import Combine
 import RTCCommon
+import RTCRoomEngine
+import LiveStreamCore
 
 class LinkMicAnchorFloatView: UIView {
     private let manager: LiveStreamManager
@@ -16,7 +18,7 @@ class LinkMicAnchorFloatView: UIView {
     private var cancellableSet = Set<AnyCancellable>()
     
 
-    private var applyList: [LSSeatApplication] = []
+    private var applyList: [TUIUserInfo] = []
     lazy var tipsLabel: UILabel = {
         let label = UILabel()
         label.textColor = .flowKitWhite
@@ -66,7 +68,7 @@ class LinkMicAnchorFloatView: UIView {
     }
 
     private func subscribeSeatState() {
-        manager.subscribeCoGuestState(StateSelector(keyPath: \LSCoGuestState.requestCoGuestList))
+        manager.subscribeCoreViewState(StateSelector(keyPath: \CoGuestState.applicantList))
             .receive(on: RunLoop.main)
             .sink { [weak self] applyList in
                 guard let self = self else { return }
@@ -138,12 +140,9 @@ extension LinkMicAnchorFloatView: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UserImageCell.cellReuseIdentifier, for: indexPath) as! UserImageCell
         
         if indexPath.row < 2 {
-            let apply = applyList[indexPath.row]
-            var user = LSUser()
-            user.avatarUrl = apply.avatarUrl
-            cell.user = user
+            cell.user = applyList[indexPath.row]
         } else {
-            let user = LSUser()
+            let user = TUIUserInfo()
             cell.user = user
             cell.setImage(image: .liveBundleImage("live_more_audience_icon"))
         }
@@ -161,6 +160,6 @@ extension LinkMicAnchorFloatView {
 
 private extension String {
     static var applyLinkMicCount: String {
-        localized("live.audience.link.float.applyLinkMicCount.xxx")
+        localized("Link Application(xxx)")
     }
 }

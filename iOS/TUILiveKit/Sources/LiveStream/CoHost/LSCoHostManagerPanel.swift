@@ -11,15 +11,16 @@ import Combine
 import TUICore
 import ESPullToRefresh
 import LiveStreamCore
+import RTCRoomEngine
 
 class LSCoHostManagerPanel: RTCBaseView {
     
     private let kCoHostTimeout = 10
     private var cancellableSet: Set<AnyCancellable> = []
     
-    private lazy var recommendedUsers: [ConnectionUser] = []
-    private lazy var connectedUsers: [ConnectionUser] = []
-    private lazy var sendRequests: [ConnectionUser] = []
+    private lazy var recommendedUsers: [TUIConnectionUser] = []
+    private lazy var connectedUsers: [TUIConnectionUser] = []
+    private lazy var sendRequests: [TUIConnectionUser] = []
     private let manager: LSCoHostManager
     private weak var coreView: LiveCoreView?
     
@@ -139,10 +140,11 @@ extension LSCoHostManagerPanel {
     }
     
     private func subscribeConnectionState() {
+        guard let coreView = coreView else { return }
         let connectedUsersSelector = StateSelector(keyPath: \LSCoHostState.connectedUsers)
         let connectedUsersPublisher = manager.subscribeCoHostState(connectedUsersSelector)
-        let sendRequestsSelector = StateSelector(keyPath: \LSCoHostState.sentConnectionRequests)
-        let sendRequestsPublisher = manager.subscribeCoHostState(sendRequestsSelector)
+        let sendRequestsSelector = StateSelector(keyPath: \CoHostState.sentConnectionRequestList)
+        let sendRequestsPublisher = coreView.subscribeState(sendRequestsSelector)
         let recommendedUsersSelector = StateSelector(keyPath: \LSCoHostState.recommendedUsers)
         let recommendedUsersPublisher = manager.subscribeCoHostState(recommendedUsersSelector)
         
@@ -194,7 +196,7 @@ extension LSCoHostManagerPanel {
         } defaultClosure: { [weak self] alertPanel in
             guard let self = self else { return }
             coreView?.terminateCrossRoomConnection()
-            manager.update(connectedUser: [])
+            manager.onCrossRoomConnectionTerminated()
             alertPanel.dismiss()
         }
         let alertPanel = LSAlertPanel(alertInfo: alertInfo)
@@ -253,12 +255,12 @@ extension LSCoHostManagerPanel: UITableViewDataSource {
                             manager.onRequestConnection(user: user)
                         } else {
                             let error = InternalError(error: code, message: "")
-                            manager.toastSubject.send(error.localizedMessage)
+                            manager.onError(error)
                         }
                     }, onError: { [weak self] err, msg in
                         guard let self = self else { return }
-                        let error = InternalError(error: err, message: msg)
-                        manager.toastSubject.send(error.localizedMessage)
+                        let error = InternalError(code: err.rawValue, message: msg)
+                        manager.onError(error)
                     })
                 }
             }
@@ -268,12 +270,12 @@ extension LSCoHostManagerPanel: UITableViewDataSource {
 }
 
 fileprivate extension String {
-    static let connectionTitleText = localized("live.connection.title")
-    static let connectedTitleText = localized("live.connection.connected")
-    static let recommendedTitleText = localized("live.connection.recommended.list")
-    static let disconnectText = localized("live.connection.disconnect")
+    static let connectionTitleText = localized("Co-host")
+    static let connectedTitleText = localized("Connecting")
+    static let recommendedTitleText = localized("Suggested Hosts")
+    static let disconnectText = localized("End Co-host")
     
-    static let disconnectAlertText = localized("live.connection.disconnect.alert")
-    static let disconnectAlertCancelText = localized("live.alert.cancel")
-    static let disconnectAlertDisconnectText = localized("live.connection.disconnect.alert.disconnect")
+    static let disconnectAlertText = localized("Are you sure you want to disconnect from other streamers?")
+    static let disconnectAlertCancelText = localized("Cancel")
+    static let disconnectAlertDisconnectText = localized("End Co-host")
 }

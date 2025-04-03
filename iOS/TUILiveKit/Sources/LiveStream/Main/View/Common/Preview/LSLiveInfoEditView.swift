@@ -142,9 +142,7 @@ class LSLiveInfoEditView: UIView {
     private func initialize() {
         let roomName = manager.getDefaultRoomName()
         inputTextField.text = roomName
-        manager.update { roomState in
-            roomState.roomName = roomName
-        }
+        manager.onSetRoomName(roomName)
     }
 }
 
@@ -223,8 +221,8 @@ extension LSLiveInfoEditView {
             }
             let item = ActionItem(title: category.getString(), designConfig: config, actionClosure: { [weak self] _ in
                 guard let self = self else { return }
-                self.manager.update(roomCategory: category)
-                self.routerManager.router(action: .dismiss())
+                manager.onSetCategory(category)
+                routerManager.router(action: .dismiss())
             })
             items.append(item)
         }
@@ -245,8 +243,8 @@ extension LSLiveInfoEditView {
             }
             let item = ActionItem(title: mode.getString(), designConfig: config, actionClosure: { [weak self] _ in
                 guard let self = self else { return }
-                self.manager.update(roomPrivacy: mode)
-                self.routerManager.router(action: .dismiss())
+                manager.onSetRoomPrivacy(mode)
+                routerManager.router(action: .dismiss())
             })
             items.append(item)
         }
@@ -287,15 +285,13 @@ extension LSLiveInfoEditView: UITextFieldDelegate {
             roomName = name
         }
         textField.text = roomName
-        manager.update { roomState in
-            roomState.roomName = roomName
-        }
+        manager.onSetRoomName(roomName)
     }
 }
 
 extension LSLiveInfoEditView {
     private func subscribeRoomState() {
-        manager.subscribeRoomState(StateSelector(keyPath: \LSRoomState.coverURL))
+        manager.subscribeState(StateSelector(keyPath: \LSRoomState.coverURL))
             .receive(on: RunLoop.main)
             .sink { [weak self] url in
                 guard let self = self else { return }
@@ -305,7 +301,7 @@ extension LSLiveInfoEditView {
             }
             .store(in: &cancellableSet)
         
-        manager.subscribeRoomState(StateSelector(keyPath: \LSRoomState.liveExtraInfo.category))
+        manager.subscribeState(StateSelector(keyPath: \LSRoomState.liveExtraInfo.category))
             .receive(on: RunLoop.main)
             .sink { [weak self] category in
                 guard let self = self else { return }
@@ -315,7 +311,7 @@ extension LSLiveInfoEditView {
             }
             .store(in: &cancellableSet)
         
-        manager.subscribeRoomState(StateSelector(keyPath: \LSRoomState.liveExtraInfo.liveMode))
+        manager.subscribeState(StateSelector(keyPath: \LSRoomState.liveExtraInfo.liveMode))
             .receive(on: RunLoop.main)
             .sink { [weak self] mode in
                 guard let self = self else { return }
@@ -328,8 +324,8 @@ extension LSLiveInfoEditView {
 }
 
 private extension String {
-    static let editCoverTitle = localized("live.edit.cover.title")
-    static let editPlaceholderText = localized("live.edit.placeholder.text")
-    static let categoryText = localized("live.category.xxx")
-    static let modeText = localized("live.mode.xxx")
+    static let editCoverTitle = localized("Modify the cover")
+    static let editPlaceholderText = localized("Please enter room name")
+    static let categoryText = localized("Live Category:xxx")
+    static let modeText = localized("Live Mode:xxx")
 }

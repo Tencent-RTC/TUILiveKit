@@ -96,5 +96,5 @@ extension VideoLiveViewController {
 
 
 fileprivate extension String {
-    static let videoLiveTitle = TUILiveKitAppLocalize("TUILiveKitApp.Main.video")
+    static let videoLiveTitle = TUILiveKitAppLocalize("Video Live")
 }

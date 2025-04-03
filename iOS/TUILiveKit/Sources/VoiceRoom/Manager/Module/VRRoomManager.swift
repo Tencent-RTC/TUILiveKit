@@ -69,8 +69,8 @@ extension VRRoomManager {
                     state.createTime = roomInfo.createTime
                     state.maxSeatCount = roomInfo.maxSeatCount
                 }
-            } catch let error {
-                toastSubject.send(error.localizedDescription)
+            } catch let error as InternalError {
+                toastSubject.send(error.localizedMessage)
             }
         }
     }
@@ -91,8 +91,8 @@ extension VRRoomManager {
                     state.liveExtraInfo.liveMode = liveInfo.isPublicVisible ? .public : .privacy
                     state.backgroundURL = liveInfo.backgroundUrl
                 }
-            } catch let error {
-                toastSubject.send(error.localizedDescription)
+            } catch let error as InternalError {
+                toastSubject.send(error.localizedMessage)
             }
         }
     }
@@ -105,8 +105,8 @@ extension VRRoomManager {
                 update { state in
                     state.ownerInfo = user
                 }
-            } catch let error {
-                toastSubject.send(error.localizedDescription)
+            } catch let error as InternalError {
+                toastSubject.send(error.localizedMessage)
             }
         }
     }
@@ -119,8 +119,8 @@ extension VRRoomManager {
                 update { state in
                     state.seatMode = mode
                 }
-            } catch let error {
-                toastSubject.send(error.localizedDescription)
+            } catch let error as InternalError {
+                toastSubject.send(error.localizedMessage)
             }
         }
     }
@@ -159,8 +159,8 @@ extension VRRoomManager {
                         state.backgroundURL = liveInfo.backgroundUrl
                     }
                 }
-            } catch let error {
-                toastSubject.send(error.localizedDescription)
+            } catch let error as InternalError {
+                toastSubject.send(error.localizedMessage)
             }
         }
     }

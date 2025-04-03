@@ -8,6 +8,7 @@
 import UIKit
 import Combine
 import RTCCommon
+import RTCRoomEngine
 import LiveStreamCore
 
 public enum BattleResultType {
@@ -17,12 +18,12 @@ public enum BattleResultType {
 }
 
 class BattleInfoView: RTCBaseView {
-    private lazy var battleIdPublisher = manager.subscribeBattleState(StateSelector(keyPath: \LSBattleState.battleId))
-    private lazy var connectedUsersPublisher = manager.subscribeCoHostState(StateSelector(keyPath: \LSCoHostState.connectedUsers))
-    private lazy var battleUsersPublisher = manager.subscribeBattleState(StateSelector(keyPath: \LSBattleState.battleUsers))
-    private lazy var isBattleRunningPublisher = manager.subscribeBattleState(StateSelector(keyPath: \LSBattleState.isBattleRunning))
-    private lazy var durationCountDownPublisher = manager.subscribeBattleState(StateSelector(keyPath: \LSBattleState.durationCountDown))
-    private lazy var isOnDisplayResultPublisher = manager.subscribeBattleState(StateSelector(keyPath: \LSBattleState.isOnDisplayResult))
+    private lazy var battleIdPublisher = manager.subscribeState(StateSelector(keyPath: \LSBattleState.battleId))
+    private lazy var connectedUsersPublisher = manager.subscribeState(StateSelector(keyPath: \LSCoHostState.connectedUsers))
+    private lazy var battleUsersPublisher = manager.subscribeState(StateSelector(keyPath: \LSBattleState.battleUsers))
+    private lazy var isBattleRunningPublisher = manager.subscribeState(StateSelector(keyPath: \LSBattleState.isBattleRunning))
+    private lazy var durationCountDownPublisher = manager.subscribeState(StateSelector(keyPath: \LSBattleState.durationCountDown))
+    private lazy var isOnDisplayResultPublisher = manager.subscribeState(StateSelector(keyPath: \LSBattleState.isOnDisplayResult))
     
     private var battleState: LSBattleState {
         manager.battleState
@@ -38,7 +39,7 @@ class BattleInfoView: RTCBaseView {
     private var cancellableSet: Set<AnyCancellable> = []
     
     private var ownerId: String {
-        manager.roomState.ownerInfo.userId
+        manager.coreRoomState.ownerInfo.userId
     }
     
     init(manager: LiveStreamManager, routerManager: LSRouterManager, isOwner: Bool, coreView: LiveCoreView) {
@@ -48,6 +49,7 @@ class BattleInfoView: RTCBaseView {
         self.coreView = coreView
         super.init(frame: .zero)
         backgroundColor = .clear
+        self.isUserInteractionEnabled = false
     }
     
     private lazy var singleBattleScoreView: SingleBattleScoreView = {
@@ -79,7 +81,7 @@ class BattleInfoView: RTCBaseView {
     
     private lazy var battleClockButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "live_battle_clock_icon"), for: .normal)
+        button.setImage(.liveBundleImage("live_battle_clock_icon"), for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.textAlignment = .center
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16)
@@ -199,13 +201,13 @@ class BattleInfoView: RTCBaseView {
             .store(in: &cancellableSet)
     }
     
-    private func onConnectedUsersChanged(connectionUsers: [ConnectionUser]) {
+    private func onConnectedUsersChanged(connectionUsers: [TUIConnectionUser]) {
         onBattleScoreChanged(battleUsers: battleState.battleUsers)
     }
     
     private func onBattleScoreChanged(battleUsers: [BattleUser]) {
         guard !battleState.battleUsers.isEmpty && !coHostState.connectedUsers.isEmpty else {
-            manager.battleManager.resetBattleId()
+            manager.onBattleExited()
             return
         }
         onBattleScoreChanged()
@@ -313,8 +315,5 @@ class BattleInfoView: RTCBaseView {
 }
 
 private extension String {
-    static let battleEndText = localized("live.battle.end")
-    static let battleInvitationText = localized("live.battle.invitation.desc.xxx")
-    static let rejectText = localized("live.alert.refuse")
-    static let acceptText = localized("live.anchor.link.accept.title")
-}
+    static let battleEndText = localized("PK End")
+    }

@@ -6,9 +6,11 @@
 //
 
 import ImSDK_Plus
+import RTCRoomEngine
 
 class BarrageInputService {
     let roomId: String
+    
     private var imManager: V2TIMManager {
         V2TIMManager.sharedInstance()
     }
@@ -20,15 +22,10 @@ class BarrageInputService {
     func sendBarrage(_ barrage: TUIBarrage) async throws {
         return try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self else { return }
-            imManager.sendGroupTextMessage(barrage.content, to: roomId, priority: .PRIORITY_NORMAL) {
+            imManager.sendGroupTextMessage(barrage.content, to: roomId, priority: .PRIORITY_LOW) {
                 continuation.resume()
             } fail: { code, message in
-                if let err = TIMError(rawValue: Int(code)) {
-                    let error = InternalError(error: err, message: message ?? "")
-                    continuation.resume(throwing: error)
-                } else {
-                    continuation.resume(throwing: NSError(domain: message ?? "", code: Int(code)))
-                }
+                continuation.resume(throwing: InternalError(code: Int(code), message: message ?? ""))
             }
         }
     }

@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import RTCRoomEngine
 
 class UserLinkCell: LinkMicBaseCell {
-    var kickoffEventClosure: ((LSSeatInfo) -> Void)?
+    var kickoffEventClosure: ((TUISeatInfo) -> Void)?
     
     private lazy var hangUpButton: UIButton = {
         let view = UIButton(type: .system)
@@ -90,6 +91,6 @@ extension UserLinkCell {
 
 private extension String {
     static var anchorHangUpTitle: String {
-        localized("live.anchor.link.hang.up.title")
+        localized("End")
     }
 }

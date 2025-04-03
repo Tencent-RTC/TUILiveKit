@@ -9,6 +9,7 @@ import Foundation
 import RTCCommon
 import RTCRoomEngine
 import Combine
+import LiveStreamCore
 
 typealias BattleStateUpdateClosure = (inout LSBattleState) -> Void
 
@@ -16,6 +17,9 @@ class LSBattleManager {
     var observableState = ObservableState<LSBattleState>(initialState: LSBattleState())
     var state: LSBattleState {
         observableState.state
+    }
+    var coreBattleState: BattleState {
+        context?.coreBattleState ?? BattleState()
     }
     
     private typealias Context = LiveStreamManager.Context
@@ -49,14 +53,13 @@ extension LSBattleManager {
         observableState.update { state in
             state.battleId = battleId
             state.isInWaiting = true
-            state.sentBattleRequest = battleUserList
         }
     }
     
     func onCanceledBattle() {
         observableState.update { state in
             state.isInWaiting = false
-            state.clearSentBattleRequest()
+            state.battleId = ""
         }
     }
     
@@ -66,9 +69,9 @@ extension LSBattleManager {
         }
     }
     
-    func onExitBattle() {
+    func onBattleExited() {
         observableState.update { state in
-            state.clearSentBattleRequest()
+            state.battleId = ""
         }
     }
     
@@ -76,12 +79,6 @@ extension LSBattleManager {
         let battleUsers = state.battleUsers
         guard let firstUser = battleUsers.first, let lastUser = battleUsers.last else { return false }
         return firstUser.ranking == lastUser.ranking
-    }
-    
-    func resetBattleId() {
-        observableState.update { state in
-            state.battleId = ""
-        }
     }
 }
 
@@ -174,7 +171,6 @@ extension LSBattleManager {
 //                guard state.sentBattleRequest.inviteeIdList.isEmpty else { return }
 //                state.isInWaiting = false
 //            }
-            state.sentBattleRequest.removeAll { $0.userId == invitee.userId }
             state.isInWaiting = false
             context?.toastSubject.send(.battleInvitationTimeoutText)
         }
@@ -182,8 +178,7 @@ extension LSBattleManager {
     
     func onBattleRequestAccept(battleId: String, inviter: TUIBattleUser, invitee: TUIBattleUser) {
         observableState.update { state in
-            state.sentBattleRequest.removeAll { $0.userId == invitee.userId }
-            if state.sentBattleRequest.isEmpty {
+            if coreBattleState.inviteeList.isEmpty {
                 state.isInWaiting = false
             }
         }
@@ -191,8 +186,7 @@ extension LSBattleManager {
     
     func onBattleRequestReject(battleId: String, inviter: TUIBattleUser, invitee: TUIBattleUser) {
         observableState.update { state in
-            state.sentBattleRequest.removeAll { $0.userId == invitee.userId }
-            if state.sentBattleRequest.isEmpty {
+            if coreBattleState.inviteeList.isEmpty {
                 state.isInWaiting = false
             }
         }
@@ -259,8 +253,7 @@ extension LSBattleManager {
 
 // MARK: Localized String
 private extension String {
-    static let battleDisableText = localized("live.error.battleDisable.unconnected")
-    static let battleInviterCancelledText = localized("live.battle.invitation.cancelled.xxx")
-    static let battleInvitationRejectText = localized("live.battle.invitation.reject.xxx")
-    static let battleInvitationTimeoutText = localized("live.battle.invitation.timeout")
+    static let battleInviterCancelledText = localized("xxx canceled battle, please try to initiate it again")
+    static let battleInvitationRejectText = localized("xxx rejected battle")
+    static let battleInvitationTimeoutText = localized("Battle request has been timeout")
 }

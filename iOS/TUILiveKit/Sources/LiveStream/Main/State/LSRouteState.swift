@@ -7,6 +7,7 @@
 
 import Foundation
 import LiveStreamCore
+import RTCRoomEngine
 
 struct LSRouterState {
     var routeStack: [LSRoute] = []
@@ -33,12 +34,10 @@ enum LSRoute {
     case liveLinkControl
     case connectionControl
     case linkInviteControl(_ index: Int)
-    case userControl(_ user: LSSeatInfo)
     case linkType(_ data: [LinkMicTypeCellData])
     case linkSetting
     case featureSetting(_ settingModel: LSFeatureClickPanelModel)
     case listMenu(_ data: ActionPanelData)
-    case musicList
     case audioEffect
     case beauty
     case videoSetting
@@ -48,6 +47,7 @@ enum LSRoute {
     case battleCountdown(_ countdownTime: TimeInterval)
     case alert(info: LSAlertInfo)
     case streamDashboard
+    case userManagement(_ user: TUIUserInfo, type: UserManagePanelType)
 }
 
 extension LSRoute: Equatable {
@@ -61,7 +61,6 @@ extension LSRoute: Equatable {
                 (.connectionControl,.connectionControl),
                 (.linkType, .linkType),
                 (.linkSetting, .linkSetting),
-                (.musicList,.musicList),
                 (.audioEffect,.audioEffect),
                 (.beauty, .beauty),
                 (.videoSetting,.videoSetting),
@@ -77,10 +76,10 @@ extension LSRoute: Equatable {
                 return l == r
             case let (.linkInviteControl(l), .linkInviteControl(r)):
                 return l == r
-            case let (.userControl(l), .userControl(r)):
-                return l == r
             case let (.battleCountdown(l), .battleCountdown(r)):
                 return l == r
+            case let (.userManagement(l1, l2), .userManagement(r1, r2)):
+                return l1 == r1 && l2 == r2
             case (.anchor, _),
                 (.audience, _),
                 (.roomInfo, _),
@@ -88,12 +87,10 @@ extension LSRoute: Equatable {
                 (.liveLinkControl, _),
                 (.connectionControl, _),
                 (.linkInviteControl, _),
-                (.userControl, _),
                 (.linkType, _),
                 (.linkSetting, _),
                 (.featureSetting, _),
                 (.listMenu, _),
-                (.musicList, _),
                 (.audioEffect, _),
                 (.beauty, _),
                 (.videoSetting, _),
@@ -102,7 +99,8 @@ extension LSRoute: Equatable {
                 (.prepareSetting, _),
                 (.battleCountdown, _),
                 (.alert, _),
-                (.streamDashboard, _):
+                (.streamDashboard, _),
+                (.userManagement, _):
                 return false
             default:
                 break
@@ -127,8 +125,6 @@ extension LSRoute: Hashable {
                 return "connectionControl"
             case .linkInviteControl(let index):
                 return "linkInviteControl \(index)"
-            case .userControl(let seatInfo):
-                return "linkInviteControl \(seatInfo.userId)"
             case .linkType:
                 return "linkType"
             case .linkSetting:
@@ -141,8 +137,6 @@ extension LSRoute: Hashable {
                     result += item.id.uuidString
                 }
                 return result
-            case .musicList:
-                return "musicList"
             case .audioEffect:
                 return "audioEffect"
             case .beauty:
@@ -161,6 +155,8 @@ extension LSRoute: Hashable {
                 return "alert \(alertInfo.description)"
             case .streamDashboard:
                 return "streamDashboard"
+            case .userManagement(let user, let type):
+                return "userManagement \(user.userId) type: \(type)"
         }
     }
     

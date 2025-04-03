@@ -10,6 +10,7 @@ import UIKit
 import RTCCommon
 import Combine
 import LiveStreamCore
+import RTCRoomEngine
 
 class AudienceLivingView: RTCBaseView {
     // MARK: - private property.
@@ -19,7 +20,7 @@ class AudienceLivingView: RTCBaseView {
     
     private var cancellableSet = Set<AnyCancellable>()
     private let giftCacheService = TUIGiftStore.shared.giftCacheService
-    private lazy var ownerInfoPublisher  = manager.subscribeRoomState(StateSelector(keyPath: \LSRoomState.ownerInfo))
+    private lazy var ownerInfoPublisher  = manager.subscribeCoreViewState(StateSelector(keyPath: \RoomState.ownerInfo))
     
     private let liveInfoView: LiveInfoView = {
         let view = LiveInfoView(enableFollow: VideoLiveKit.createInstance().enableFollow)
@@ -62,7 +63,6 @@ class AudienceLivingView: RTCBaseView {
         view.layer.borderWidth = 0.5
         view.layer.cornerRadius = 18.scale375Height()
         view.layer.masksToBounds = true
-        view.delegate = self
         return view
     }()
 
@@ -80,7 +80,7 @@ class AudienceLivingView: RTCBaseView {
 
     private lazy var barrageDisplayView: BarrageStreamView = {
         let roomId = manager.roomState.roomId
-        let ownerId = manager.roomState.ownerInfo.userId
+        let ownerId = manager.coreRoomState.ownerInfo.userId
         let view = BarrageStreamView(roomId: roomId)
         view.delegate = self
         return view
@@ -226,7 +226,7 @@ extension AudienceLivingView {
     private func clickReport() {
         let selector = NSSelectorFromString("showReportAlertWithRoomId:ownerId:")
         if responds(to: selector) {
-            perform(selector, with: manager.roomState.roomId, with: manager.roomState.ownerInfo.userId)
+            perform(selector, with: manager.roomState.roomId, with: manager.coreRoomState.ownerInfo.userId)
         }
     }
     
@@ -235,7 +235,8 @@ extension AudienceLivingView {
     }
 
     @objc func leaveButtonClick() {
-        if !manager.coGuestState.connectedUserList.contains(where: { $0.userId == manager.userState.selfInfo.userId }) {
+        let selfUserId = manager.coreUserState.selfInfo.userId
+        if !manager.coreCoGuestState.seatList.contains(where: { $0.userId == selfUserId }) {
             leaveRoom()
             return
         }
@@ -267,10 +268,15 @@ extension AudienceLivingView {
     func leaveRoom() {
         coreView.leaveLiveStream() { [weak self] in
             guard let self = self else { return }
-            manager.resetAllState()
+            manager.onLeaveLive()
         } onError: { _, _ in
         }
         routerManager.router(action: .exit)
+    }
+    
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        let view = super.hitTest(point, with: event)
+        return view == self ? nil : view
     }
 }
 
@@ -280,6 +286,11 @@ extension AudienceLivingView: BarrageStreamViewDelegate {
             return nil
         }
         return CustomBarrageCell(barrage: barrage)
+    }
+    
+    func onBarrageClicked(user: TUIUserInfo) {
+        if user.userId == manager.coreUserState.selfInfo.userId { return }
+        routerManager.router(action: .present(.userManagement(user, type: .userInfo)))
     }
 }
 
@@ -316,36 +327,22 @@ extension AudienceLivingView: GiftPlayViewDelegate {
 
 extension AudienceLivingView: LinkMicAudienceFloatViewDelegate {
     func cancelApplication() {
+        manager.onStartCancelIntraRoomConnection()
         coreView.cancelIntraRoomConnection(userId: "") { [weak self] in
             guard let self = self else { return }
-            self.manager.update(coGuestStatus: .none)
+            manager.onCancelIntraRoomConnection()
         } onError: { [weak self] code, message in
             guard let self = self else { return }
-            let error = InternalError(error: code, message: message)
-            self.manager.toastSubject.send(error.localizedMessage)
+            manager.onCancelIntraRoomConnection()
+            let error = InternalError(code: code.rawValue, message: message)
+            manager.onError(error)
         }
     }
 }
 
-extension AudienceLivingView: BarrageInputViewDelegate {
-    func barrageInputViewOnSendBarrage(_ barrage: TUIBarrage) {
-        barrageDisplayView.insertBarrages([barrage])
-    }
-}
-
 private extension String {
-    static let chatPlaceHolderText = localized("live.audience.barrage.placeholder")
-    static let cancelLinkMicRequestText = localized("live.audience.link.confirm.cancelLinkMicRequest")
-    static let closeLinkMicText = localized("live.audience.link.confirm.closeLinkMic")
-    static let enterRoomFailedTitleText = localized("live.alert.enterRoom.failed.title")
-    static let enterRoomFailedmessageText = localized("live.alert.enterRoom.failed.message.xxx")
-    static let confirmText = localized("live.alert.confirm")
-    static let rejectedTitleText = localized("live.alert.linkMic.rejected.title")
-    static let knownText = localized("live.alert.known")
-    static let timeoutTitleText = localized("live.alert.linkMic.timeout.title")
-    static let operateFailedText = localized("live.operation.fail.xxx")
-    static let meText = localized("live.barrage.me")
-    static let endLiveOnLinkMicText = localized("live.endLive.audience.onLinkMic.alert")
-    static let endLiveLinkMicDisconnectText = localized("live.endLive.onLinkMic.alert.disconnect")
-    static let confirmCloseText = localized("live.anchor.confirm.close.linkmic.force")
+    static let meText = localized("Me")
+    static let endLiveOnLinkMicText = localized("You are currently co-guesting with other streamers. Would you like to [End Co-guest] or [Exit Live] ?")
+    static let endLiveLinkMicDisconnectText = localized("End Co-guest")
+    static let confirmCloseText = localized("Exit Live")
 }

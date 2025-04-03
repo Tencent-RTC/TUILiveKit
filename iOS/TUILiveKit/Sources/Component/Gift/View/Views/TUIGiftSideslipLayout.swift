@@ -42,16 +42,14 @@ class TUIGiftSideslipLayout: UICollectionViewFlowLayout {
         let pageCellCount = cellRowCount * rows
         let page = indexPath.item / pageCellCount
         let index = indexPath.item % pageCellCount
-        let indexRow = index % rows
-        var x: CGFloat = CGFloat(index / rows) * (itemSize.width + midDiff) + beginDiff
+        let indexRow = index / cellRowCount
+        let indexColumn = index % cellRowCount
+
+        var x: CGFloat = CGFloat(indexColumn) * (itemSize.width + midDiff) + beginDiff
         x += CGFloat(page) * (collectionView?.mm_w ?? 0)
-        var y: CGFloat = 0
-        if indexRow != 0 {
-            y = itemSize.height
-            attribute.frame = CGRect(x: x, y: y, width: itemSize.width, height: itemSize.height)
-        } else {
-            attribute.frame = CGRect(x: x, y: y, width: itemSize.width, height: itemSize.height)
-        }
+        var y: CGFloat = CGFloat(indexRow) * itemSize.height
+
+        attribute.frame = CGRect(x: x, y: y, width: itemSize.width, height: itemSize.height)
         return attribute
     }
 

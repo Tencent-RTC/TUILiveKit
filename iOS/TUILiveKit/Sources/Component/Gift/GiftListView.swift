@@ -138,10 +138,10 @@ extension GiftListView: UICollectionViewDataSource {
 }
 
 extension GiftListView {
-    func sendGift(model: TUIGift, giftCount: Int, receiver: TUIGiftUser, completion: @escaping (_ isSuccess: Bool, _ message: String) -> ()) {
+    func sendGift(model: TUIGift, giftCount: Int, receiver: TUIGiftUser, completion: TUIGiftIMSendBlock) {
         DataReporter.reportEventData(eventKey: getReportKey())
         manager.sendGift(model, receiver: receiver, giftCount: giftCount) { code, msg in
-            completion(code == 0, msg)
+            completion?(code, msg)
         }
     }
 }

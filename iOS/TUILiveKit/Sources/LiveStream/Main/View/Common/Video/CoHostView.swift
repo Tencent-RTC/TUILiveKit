@@ -37,12 +37,10 @@ class CoHostView: UIView {
         activateConstraints()
         initViewState()
         subscribeState()
+        self.isUserInteractionEnabled = false
     }
     
-    private lazy var userInfoView: UserStatusView = {
-        let view = UserStatusView(userInfo: LSUser(coHostUser: coHostUser), manager: manager)
-        return view
-    }()
+    private lazy var userInfoView = UserStatusView(userInfo: TUIUserInfo(coHostUser: coHostUser), manager: manager)
     
     private lazy var avatarImageView: UIImageView = {
         let imageView = UIImageView(frame: .zero)
@@ -72,21 +70,20 @@ class CoHostView: UIView {
     }
     
     private func initViewState() {
-        if coHostUser.connectionUser.userId == manager.userState.selfInfo.userId {
+        if coHostUser.connectionUser.userId == manager.coreUserState.selfInfo.userId {
             userInfoView.isHidden = true
         }
         avatarImageView.kf.setImage(with: URL(string: coHostUser.connectionUser.avatarUrl),
                                     placeholder: UIImage.avatarPlaceholderImage)
-        let hasVideo = manager.userState.hasVideoStreamUserList.contains(coHostUser.connectionUser.userId)
+        let hasVideo = manager.coreUserState.hasVideoStreamUserList.contains(coHostUser.connectionUser.userId)
         let isPreview = manager.roomState.liveStatus == .previewing
         avatarImageView.isHidden = hasVideo || isPreview || coHostUser.hasVideoStream
     }
 }
 
 extension CoHostView {
-    
     func subscribeState() {
-        manager.subscribeUserState(StateSelector(keyPath: \LSUserState.hasVideoStreamUserList))
+        manager.subscribeCoreViewState(StateSelector(keyPath: \UserState.hasVideoStreamUserList))
             .receive(on: RunLoop.main)
             .removeDuplicates()
             .sink { [weak self] userIdList in
@@ -99,7 +96,7 @@ extension CoHostView {
             }
             .store(in: &cancellableSet)
         
-        manager.subscribeCoHostState(StateSelector(keyPath: \LSCoHostState.connectedUsers))
+        manager.subscribeState(StateSelector(keyPath: \LSCoHostState.connectedUsers))
             .receive(on: RunLoop.main)
             .removeDuplicates()
             .sink { [weak self] connectedUsers in

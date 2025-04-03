@@ -28,11 +28,11 @@ class VRUserService: BaseServiceProtocol {
                 if let user = userInfo {
                     continuation.resume(returning: VRUser(userInfo: user))
                 } else {
-                    let error = InternalError(error: TUIError.userNotExist, message: TUIError.userNotExist.description)
+                    let error = InternalError(error: LiveError.userNotExist, message: LiveError.userNotExist.description)
                     continuation.resume(throwing: error)
                 }
             } onError: { err, message in
-                let error = InternalError(error: err, message: message)
+                let error = InternalError(code: err.rawValue, message: message)
                 continuation.resume(throwing: error)
             }
         }
@@ -48,7 +48,7 @@ class VRUserService: BaseServiceProtocol {
                 }
                 continuation.resume(returning: userList)
             } onError: { error, message in
-                let error = InternalError(error: error, message: message)
+                let error = InternalError(code: error.rawValue, message: message)
                 continuation.resume(throwing: error)
             }
         }
@@ -61,7 +61,7 @@ class VRUserService: BaseServiceProtocol {
             imManager.followUser([userId]) { result in
                 continuation.resume()
             } fail: { err, message in
-                let error = InternalError(error: TIMError.invalidUserId, message: TIMError.invalidUserId.description)
+                let error = InternalError(code: Int(err), message: message ?? "")
                 continuation.resume(throwing: error)
             }
         }
@@ -74,7 +74,7 @@ class VRUserService: BaseServiceProtocol {
             imManager.unfollowUser([userId]) { result in
                 continuation.resume()
             } fail: { err, message in
-                let error = InternalError(error: TIMError.invalidUserId, message: TIMError.invalidUserId.description)
+                let error = InternalError(code: Int(err), message: message ?? "")
                 continuation.resume(throwing: error)
             }
         }
@@ -87,7 +87,7 @@ class VRUserService: BaseServiceProtocol {
                 guard let followType = result?.first?.followType else { return }
                 continuation.resume(returning: followType)
             }, fail: { err, message in
-                let error = InternalError(error: TIMError.invalidUserId, message: TIMError.invalidUserId.description)
+                let error = InternalError(code: Int(err), message: message ?? "")
                 continuation.resume(throwing: error)
             })
         }

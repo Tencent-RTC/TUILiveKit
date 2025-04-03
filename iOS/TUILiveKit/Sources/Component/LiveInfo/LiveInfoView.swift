@@ -21,6 +21,7 @@ class LiveInfoView: UIView {
     private lazy var roomInfoPanelView = RoomInfoPanelView(service: service, enableFollow: enableFollow)
     private var cancellableSet = Set<AnyCancellable>()
     private let enableFollow: Bool
+    private weak var popupViewController: UIViewController?
     
     private lazy var roomOwnerNameLabel: UILabel = {
         let view = UILabel()
@@ -172,6 +173,14 @@ class LiveInfoView: UIView {
                 self.checkIsFollow(userId: ownerId)
             }
             .store(in: &cancellableSet)
+        state.roomDismissedSubject
+            .receive(on: RunLoop.main)
+            .sink { [weak self] dismissedRoomId in
+                guard let self = self, dismissedRoomId == state.roomId else { return }
+                popupViewController?.dismiss(animated: true)
+                popupViewController = nil
+            }
+            .store(in: &cancellableSet)
     }
     
     private func checkIsFollow(userId: String) {
@@ -211,17 +220,20 @@ class LiveInfoView: UIView {
 extension LiveInfoView {
     @objc func containerTapAction() {
         if let vc = WindowUtils.getCurrentWindowViewController() {
+            popupViewController = vc
             let menuContainerView = MenuContainerView(contentView: roomInfoPanelView)
-            menuContainerView.blackAreaClickClosure = { [weak vc] in
-                vc?.dismiss(animated: true)
+            menuContainerView.blackAreaClickClosure = { [weak self] in
+                guard let self = self else { return }
+                popupViewController?.dismiss(animated: true)
+                popupViewController = nil
             }
             let viewController = PopupViewController(contentView: menuContainerView)
-            vc.present(viewController, animated: true)
+            popupViewController?.present(viewController, animated: true)
         }
     }
 }
 
 
 fileprivate extension String {
-    static let followText = localized("live.user.follow")
+    static let followText = localized("Follow")
 }

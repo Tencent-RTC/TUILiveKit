@@ -102,6 +102,6 @@ extension WaitLinkMicAnimationView {
 
 private extension String {
     static var waitLinkMicDesc: String {
-        localized("live.audience.wait.link.mic.desc.xxx")
+        localized("Waiting for link xxx")
     }
 }

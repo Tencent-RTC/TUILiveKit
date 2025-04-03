@@ -320,10 +320,8 @@ extension DefaultBeautyPanel {
 }
 
 private extension String {
-    static let titleText = localized("live.beauty.title")
-    static let buffingText = localized("live.beauty.buffing")
-    static let closeText = localized("live.beauty.close")
-    static let whitenessText = localized("live.beauty.whiteness")
-    static let ruddyText = localized("live.beauty.ruddy")
-    static let operateFailedText = localized("live.operation.fail.xxx")
-}
+    static let titleText = localized("One-click beauty")
+    static let buffingText = localized("Microdermabrasion")
+    static let whitenessText = localized("Whitening")
+    static let ruddyText = localized("Rosy")
+    }

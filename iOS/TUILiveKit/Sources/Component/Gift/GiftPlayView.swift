@@ -321,5 +321,5 @@ extension GiftPlayView {
 }
 
 private extension String {
-    static var playFailedText = localized("live.error.failed")
+    static var playFailedText = localized("Temporarily Unclassified General Error")
 }

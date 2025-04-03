@@ -89,7 +89,6 @@ public class TUIVoiceRoomViewController: UIViewController {
     
     deinit {
         UIApplication.shared.isIdleTimerDisabled = false
-        MusicPanelStoreFactory.removeStore(roomId: roomId)
         cancellableSet.forEach { $0.cancel() }
         cancellableSet.removeAll()
         StateCache.shared.clear()

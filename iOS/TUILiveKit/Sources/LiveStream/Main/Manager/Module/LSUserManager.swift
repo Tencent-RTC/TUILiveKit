@@ -9,6 +9,7 @@ import Foundation
 import RTCCommon
 import RTCRoomEngine
 import Combine
+import LiveStreamCore
 
 class LSUserManager {
     private let observerState = ObservableState<LSUserState>(initialState: LSUserState())
@@ -18,7 +19,6 @@ class LSUserManager {
     
     private typealias Context = LiveStreamManager.Context
     private weak var context: Context?
-    private let toastSubject: PassthroughSubject<String, Never>
     private let service: LSRoomEngineService
     
     private let volumnCanHearMinLimit = 25
@@ -26,125 +26,55 @@ class LSUserManager {
     init(context: LiveStreamManager.Context) {
         self.context = context
         self.service = context.service
-        self.toastSubject = context.toastSubject
-        initSelfUserData()
-    }
-    
-    func resetState() {
-        update { state in
-            state = LSUserState()
-        }
-    }
-}
-
-extension LSUserManager {
-    func subscribeState<Value>(_ selector: StateSelector<LSUserState, Value>) -> AnyPublisher<Value, Never> {
-        return observerState.subscribe(selector)
     }
 }
 
 // MARK: - Interface
 extension LSUserManager {
-    func fetchAudienceList() {
+    func onStartLive() {
         Task {
             do {
                 let userList = try await service.getUserList()
                 update { state in
                     state.userList.removeAll()
                     for userInfo in userList {
-                        if userInfo.userId == context?.roomManager.roomState.ownerInfo.userId {
+                        if userInfo.userId == context?.coreRoomState.ownerInfo.userId {
                             continue
                         }
-                        let liveUser = LSUser(userInfo: userInfo)
-                        state.userList.insert(liveUser)
+                        state.userList.insert(userInfo)
                     }
                 }
             } catch let err as InternalError {
-                toastSubject.send(err.localizedMessage)
+                context?.toastSubject.send(err.localizedMessage)
             }
         }
     }
     
-    func muteAllRemoteAudio(isMute: Bool) {
-        service.muteAllRemoteAudio(isMute: isMute)
-    }
-    
-    func updateSelfUserInfo() {
-        Task {
-            do {
-                let userInfo = try await service.getUserInfo(userId: userState.selfInfo.userId)
-                update { state in
-                    state.selfInfo.role = userInfo.userRole
-                }
-            } catch let err as InternalError {
-                toastSubject.send(err.localizedMessage)
-            }
-        }
-    }
-    
-    func updateOwnerUserInfo() {
-        guard let ownerId = context?.roomManager.roomState.ownerInfo.userId, !ownerId.isEmpty else { return }
-        if ownerId == userState.selfInfo.userId {
-            update { state in
-                state.selfInfo.role = .roomOwner
-            }
-        }
-        Task {
-            do {
-                let ownerInfo = try await service.getUserInfo(userId: ownerId)
-                context?.roomManager.update { roomState in
-                    roomState.ownerInfo = LSUser(userInfo: ownerInfo)
-                }
-            } catch let err as InternalError {
-                toastSubject.send(err.localizedMessage)
-            }
-        }
-    }
-    
-    func update(userState: LSUserStateUpdateClosure) {
-        observerState.update(reduce: userState)
-    }
-    
-    func initSelfUserData() {
-        let loginUserInfo = service.getSelfInfo()
+    func onLeaveLive() {
         update { state in
-            state.selfInfo.userId = loginUserInfo.userId
-            state.selfInfo.name = loginUserInfo.userName
-            state.selfInfo.avatarUrl = loginUserInfo.avatarUrl
+            state = LSUserState()
         }
     }
     
     func getUserInfo(userId: String) async throws -> TUIUserInfo {
         try await service.getUserInfo(userId: userId)
     }
+    
+    func onDisableSendingMessageBtnClicked(userId: String, isDisable: Bool) async throws {
+        try await service.disableSendingMessageByAdmin(userId: userId, isDisable: isDisable)
+    }
+    
+    func onKicedOutBtnClicked(userId: String) async throws {
+        try await service.kickRemoteUserOutOfRoom(userId: userId)
+    }
+    
+    func subscribeState<Value>(_ selector: StateSelector<LSUserState, Value>) -> AnyPublisher<Value, Never> {
+        return observerState.subscribe(selector)
+    }
 }
 
 // MARK: - Observer
 extension LSUserManager {
-    func onUserAudioStateChanged(userId: String, hasAudio: Bool, reason: TUIChangeReason) {
-        if hasAudio {
-            update { state in
-                state.hasAudioStreamUserList.insert(userId)
-            }
-        } else {
-            update { state in
-                state.hasAudioStreamUserList.remove(userId)
-            }
-        }
-    }
-    
-    func onUserVideoStateChanged(userId: String, streamType: TUIVideoStreamType, hasVideo: Bool, reason: TUIChangeReason) {
-        if hasVideo {
-            update { state in
-                state.hasVideoStreamUserList.insert(userId)
-            }
-        } else {
-            update { state in
-                state.hasVideoStreamUserList.remove(userId)
-            }
-        }
-    }
-    
     func onUserVoiceVolumeChanged(volumeMap: [String: NSNumber]) {
         for (userId, volume) in volumeMap {
             if volume.intValue > volumnCanHearMinLimit {
@@ -160,38 +90,43 @@ extension LSUserManager {
     }
     
     func onRemoteUserEnterRoom(roomId: String, userInfo: TUIUserInfo) {
-        if userInfo.userId == context?.roomManager.roomState.ownerInfo.userId {
+        if userInfo.userId == context?.coreRoomState.ownerInfo.userId {
             return
         }
-        let user = LSUser(userInfo: userInfo)
         update { state in
-            state.enterUserInfo = user
-            state.userList.insert(user)
+            state.userList.insert(userInfo)
         }
     }
     
     func onRemoteUserLeaveRoom(roomId: String, userInfo: TUIUserInfo) {
-        let user = LSUser(userInfo: userInfo)
         update { state in
-            state.userList.remove(user)
+            state.userList.remove(userInfo)
         }
     }
     
     func onUserInfoChanged(userInfo: TUIUserInfo, modifyFlag: TUIUserInfoModifyFlag) {
         update { state in
-            var userList = state.userList
-            if var user = userList.first(where: { $0.userId == userInfo.userId }) {
-                userList.remove(user)
+            if let user = state.userList.first(where: { $0.userId == userInfo.userId }) {
                 if modifyFlag.contains(.userRole) {
-                    user.role = userInfo.userRole
-                }
-                userList.insert(user)
-                state.userList = userList
-            } else if state.selfInfo.userId == userInfo.userId {
-                if modifyFlag.contains(.userRole) {
-                    state.selfInfo.role = userInfo.userRole
+                    user.userRole = userInfo.userRole
                 }
             }
         }
     }
+    
+    func OnSendMessageForUserDisableChanged(roomId: String, userId: String, isDisable muted: Bool) {
+        guard roomId == context?.coreRoomState.roomId, userId == context?.coreUserState.selfInfo.userId else { return }
+        context?.toastSubject.send(muted ? .messageDisabledText : .messageEnabledText)
+    }
+}
+
+extension LSUserManager {
+    private func update(userState: LSUserStateUpdateClosure) {
+        observerState.update(reduce: userState)
+    }
+}
+
+fileprivate extension String {
+    static let messageDisabledText = localized("You have been muted in the current room")
+    static let messageEnabledText =  localized("You have been unmuted in the current room")
 }

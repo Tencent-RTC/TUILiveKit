@@ -26,94 +26,90 @@ class LSRoomManager {
         self.service = context.service
         self.toastSubject = context.toastSubject
     }
-    
-    func resetState() {
-        update { state in
-            state = LSRoomState()
-        }
-    }
-}
-
-extension LSRoomManager {
-    func subscribeState<Value>(_ selector: StateSelector<LSRoomState, Value>) -> AnyPublisher<Value, Never> {
-        return observerState.subscribe(selector)
-    }
 }
 
 // MARK: - Interface
 extension LSRoomManager {
-    func update(roomId: String) {
+    func prepareLiveInfoBeforeEnterRoom(liveInfo: TUILiveInfo) {
+        updateLiveInfo(liveInfo: liveInfo)
+    }
+    
+    func prepareRoomIdBeforeEnterRoom(roomId: String) {
         update { state in
             state.roomId = roomId
         }
     }
     
-    func update(roomState: LSRoomStateUpdateClosure) {
-        observerState.update(reduce: roomState)
+    func onPreviewing() {
+        update(liveStatus: .previewing)
     }
     
-    func update(liveStatus: LiveStatus) {
-        observerState.update { state in
-            state.liveStatus = liveStatus
+    func onStartLive(isJoinSelf: Bool, roomInfo: TUIRoomInfo) {
+        update(liveStatus: .pushing)
+        updateRoomState(roomInfo: roomInfo)
+        if !isJoinSelf {
+            syncLiveInfoToService()
         }
     }
     
-    func update(roomCategory: LiveStreamCategory) {
-        observerState.update { state in
-            state.liveExtraInfo.category = roomCategory
-        }
+    func onJoinLive(roomInfo: TUIRoomInfo) {
+        updateRoomState(roomInfo: roomInfo)
+        update(liveStatus: .playing)
     }
     
-    func update(roomPrivacy: LiveStreamPrivacyStatus) {
-        observerState.update { state in
-            state.liveExtraInfo.liveMode = roomPrivacy
-        }
+    func onStopLive() {
+        update(liveStatus: .finished)
     }
     
-    func update(roomCoverUrl: String) {
-        observerState.update { state in
-            state.coverURL = roomCoverUrl
+    func onLeaveLive() {
+        update { state in
+            state = LSRoomState()
         }
     }
     
     func getDefaultRoomName() -> String {
         guard let context = context else { return "" }
-        return context.userManager.userState.selfInfo.name.isEmpty ?
-        context.userManager.userState.selfInfo.userId :
-        context.userManager.userState.selfInfo.name
-    }
-    
-    func updateRoomState(roomInfo: TUIRoomInfo) {
-        update { state in
-            state.roomId = roomInfo.roomId
-            state.createTime = roomInfo.createTime
-            state.roomName = roomInfo.name
-            state.ownerInfo.userId = roomInfo.ownerId
-            state.ownerInfo.name = roomInfo.ownerName
-            state.ownerInfo.avatarUrl = roomInfo.ownerAvatarUrl
-            state.maxSeatCount = roomInfo.maxSeatCount
-        }
-    }
-    
-    func syncLiveInfoToService() {
-        let liveInfo = TUILiveInfo()
-        liveInfo.roomInfo.roomId = roomState.roomId
-        liveInfo.coverUrl = roomState.coverURL
-        liveInfo.isPublicVisible = roomState.liveExtraInfo.liveMode == .public
-        liveInfo.categoryList = [NSNumber(value: roomState.liveExtraInfo.category.rawValue)]
-        Task {
-            var modifyFlag: TUILiveModifyFlag = []
-            modifyFlag = modifyFlag.union([.coverUrl, .publish, .category, .backgroundUrl])
-            do {
-                try await service.syncLiveInfoToService(liveInfo: liveInfo, modifyFlag: modifyFlag)
-            } catch let err as InternalError {
-                toastSubject.send(err.localizedMessage)
-            }
-        }
+        let selfInfo = context.coreUserState.selfInfo
+        return selfInfo.userName.isEmpty ? selfInfo.userId : selfInfo.userName
     }
     
     func fetchLiveInfo(roomId: String) async throws -> TUILiveInfo {
         try await service.fetchLiveInfo(roomId: roomId)
+    }
+    
+    func onSetRoomName(_ name: String) {
+        update { state in
+            state.roomName = name
+        }
+    }
+    
+    func onSetCategory(_ category: LiveStreamCategory) {
+        update { state in
+            state.liveExtraInfo.category = category
+        }
+    }
+    
+    func onSetRoomPrivacy(_ mode: LiveStreamPrivacyStatus) {
+        update { state in
+            state.liveExtraInfo.liveMode = mode
+        }
+    }
+    
+    func onSetRoomCoverUrl(_ url: String) {
+        update { state in
+            state.coverURL = url
+        }
+    }
+    
+    func onReceiveGift(price: Int, senderUserId: String) {
+        update { state in
+            state.liveExtraInfo.giftIncome += price
+            state.liveExtraInfo.giftPeopleSet.insert(senderUserId)
+        }
+    }
+    
+    func subscribeState<Value>(_ selector: StateSelector<LSRoomState, Value>) -> AnyPublisher<Value, Never> {
+        return observerState.subscribe(selector)
     }
 }
 
@@ -123,6 +119,10 @@ extension LSRoomManager {
         update { state in
             state.liveStatus = .finished
         }
+    }
+    
+    func onKickedOutOfRoom(roomId: String, reason: TUIKickedOutOfRoomReason, message: String) {
+        context?.kickedOutSubject.send()
     }
     
     func onRoomUserCountChanged(roomId: String, userCount: Int) {
@@ -143,9 +143,44 @@ extension LSRoomManager {
 
 // MARK: - Private functions
 extension LSRoomManager {
-    func updateLiveInfo(liveInfo: TUILiveInfo,
-                        updateRoomInfo: Bool = true,
-                        modifyFlag: TUILiveModifyFlag = [.activityStatus, .category, .publish, .coverUrl]) {
+    private func update(roomState: LSRoomStateUpdateClosure) {
+        observerState.update(reduce: roomState)
+    }
+    
+    private func update(liveStatus: LiveStatus) {
+        update { state in
+            state.liveStatus = liveStatus
+        }
+    }
+    
+    private func updateRoomState(roomInfo: TUIRoomInfo) {
+        update { state in
+            state.roomId = roomInfo.roomId
+            state.createTime = roomInfo.createTime
+            state.roomName = roomInfo.name
+        }
+    }
+    
+    private func syncLiveInfoToService() {
+        let liveInfo = TUILiveInfo()
+        liveInfo.roomInfo.roomId = roomState.roomId
+        liveInfo.coverUrl = roomState.coverURL
+        liveInfo.isPublicVisible = roomState.liveExtraInfo.liveMode == .public
+        liveInfo.categoryList = [NSNumber(value: roomState.liveExtraInfo.category.rawValue)]
+        Task {
+            var modifyFlag: TUILiveModifyFlag = []
+            modifyFlag = modifyFlag.union([.coverUrl, .publish, .category, .backgroundUrl])
+            do {
+                try await service.syncLiveInfoToService(liveInfo: liveInfo, modifyFlag: modifyFlag)
+            } catch let err as InternalError {
+                toastSubject.send(err.localizedMessage)
+            }
+        }
+    }
+    
+    private func updateLiveInfo(liveInfo: TUILiveInfo,
+                                updateRoomInfo: Bool = true,
+                                modifyFlag: TUILiveModifyFlag = [.activityStatus, .category, .publish, .coverUrl]) {
         if updateRoomInfo {
             updateRoomState(roomInfo: liveInfo.roomInfo)
         }

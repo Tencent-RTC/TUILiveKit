@@ -9,9 +9,11 @@ import UIKit
 import TUICore
 import Combine
 import RTCCommon
+import RTCRoomEngine
+import LiveStreamCore
 
 class UserImageCell: UICollectionViewCell {
-    var user: LSUser? {
+    var user: TUIUserInfo? {
         didSet {
             if let url = URL(string: user?.avatarUrl ?? "") {
                 avatarImageView.kf.setImage(with: url, placeholder: UIImage.avatarPlaceholderImage)
@@ -75,7 +77,7 @@ class LinkMicAudienceFloatView: UIView {
     }
     
     private func subscribeViewState() {
-        manager.subscribeCoGuestState(StateSelector(keyPath: \LSCoGuestState.coGuestStatus))
+        manager.subscribeState(StateSelector(keyPath: \LSCoGuestState.coGuestStatus))
             .receive(on: RunLoop.main)
             .sink { [weak self] status in
                 self?.isHidden = status != .applying
@@ -91,7 +93,7 @@ class LinkMicAudienceFloatView: UIView {
         constructViewHierarchy()
         activateConstraints()
         updateView()
-        manager.subscribeUserState(StateSelector(keyPath: \LSUserState.userList))
+        manager.subscribeState(StateSelector(keyPath: \LSUserState.userList))
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in
                 guard let self = self else { return }
@@ -199,7 +201,7 @@ extension LinkMicAudienceFloatView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UserImageCell.cellReuseIdentifier,
                                                       for: indexPath) as! UserImageCell
-        cell.user = manager.userState.selfInfo
+        cell.user = manager.coreUserState.selfInfo
         return cell
     }
 }
@@ -239,9 +241,9 @@ extension LinkMicAudienceFloatView {
 
 private extension String {
     static var toBePassedText: String {
-        localized("live.audience.link.float.toBePassed.xxx")
+        localized("Waitingxxx")
     }
     static var cancelLinkMicRequestText = {
-        localized("live.audience.link.confirm.cancelLinkMicRequest")
+        localized("Cancel application for link mic")
     }()
 }

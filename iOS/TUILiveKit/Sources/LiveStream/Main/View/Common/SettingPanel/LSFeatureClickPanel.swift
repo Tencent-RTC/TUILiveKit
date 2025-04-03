@@ -34,6 +34,7 @@ struct LSFeatureItem {
     var selectedTitle: String?
     var selectedImage: UIImage?
     var isSelected: Bool
+    var isDisabled: Bool
     var designConfig: LSFeatureItemDesignConfig
     var actionClosure: ((LSFeatureItemButton)->Void)?
     
@@ -42,6 +43,7 @@ struct LSFeatureItem {
          selectedTitle: String? = nil,
          selectedImage: UIImage? = nil,
          isSelected: Bool = false,
+         isDisabled: Bool = false,
          designConfig: LSFeatureItemDesignConfig = LSFeatureItemDesignConfig(),
          actionClosure: ((LSFeatureItemButton)->Void)? = nil) {
         self.normalTitle = normalTitle
@@ -49,6 +51,7 @@ struct LSFeatureItem {
         self.selectedTitle = selectedTitle
         self.selectedImage = selectedImage
         self.isSelected = isSelected
+        self.isDisabled = isDisabled
         self.designConfig = designConfig
         self.actionClosure = actionClosure
     }
@@ -133,6 +136,8 @@ class LSFeatureItemButton: UIControl {
         isSelected = item.isSelected
         buttonTitle.textColor = item.designConfig.titileColor
         buttonTitle.font = item.designConfig.titleFont
+        self.alpha = item.isDisabled ? 0.5 : 1
+        self.isEnabled = !item.isDisabled
 
         switch item.designConfig.type {
         case .singleImage:

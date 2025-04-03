@@ -16,6 +16,8 @@ typealias LSUserStateUpdateClosure = (inout LSUserState) -> Void
 typealias LSMediaStateUpdateClosure = (inout LSMediaState) -> Void
 typealias LSCoGuestStateUpdateClosure = (inout LSCoGuestState) -> Void
 
+typealias InternalErrorBlock = (_ error: InternalError) -> Void
+
 protocol LiveStreamManagerProvider: NSObject {
     func getCoreViewState<T: State>() -> T
     func subscribeCoreViewState<State, Value>(_ selector: StateSelector<State, Value>) -> AnyPublisher<Value, Never>
@@ -26,6 +28,7 @@ class LiveStreamManager {
     public let toastSubject = PassthroughSubject<String, Never>()
     public let likeSubject = PassthroughSubject<Void, Never>()
     public let floatWindowSubject = PassthroughSubject<Void, Never>()
+    public let kickedOutSubject = PassthroughSubject<Void, Never>()
     
     class Context {
         let service = LSRoomEngineService()
@@ -45,9 +48,11 @@ class LiveStreamManager {
         private(set) lazy var coHostObserver = LSCoHostObserver(context: self)
         
         let toastSubject: PassthroughSubject<String, Never>
+        let kickedOutSubject: PassthroughSubject<Void, Never>
         
-        init(provider: LiveStreamManagerProvider, toastSubject: PassthroughSubject<String, Never>) {
+        init(provider: LiveStreamManagerProvider, toastSubject: PassthroughSubject<String, Never>, kickedOutSubject: PassthroughSubject<Void, Never>) {
             self.toastSubject = toastSubject
+            self.kickedOutSubject = kickedOutSubject
             self.provider = provider
             service.addEngineObserver(engineObserver)
             service.addLiveListManagerObserver(liveListObserver)
@@ -62,76 +67,96 @@ class LiveStreamManager {
     }
     
     private let context: Context
+    private var cancellableSet: Set<AnyCancellable> = []
     
     init(provider: LiveStreamManagerProvider) {
-        self.context = Context(provider: provider, toastSubject: toastSubject)
-    }
-    
-    func resetAllState() {
-        context.roomManager.resetState()
-        context.userManager.resetState()
-        context.mediaManager.resetState()
-        context.coGuestManager.resetState()
-    }
-    
-    func subscribeCoreViewState<State, Value>(_ selector: StateSelector<State, Value>) -> AnyPublisher<Value, Never> {
-        guard let provider = context.provider else { return Empty<Value, Never>().eraseToAnyPublisher() }
-        return provider.subscribeCoreViewState(selector)
+        self.context = Context(provider: provider, toastSubject: toastSubject, kickedOutSubject: kickedOutSubject)
     }
 }
 
-// MARK: - Room API
+// MARK: - Common
 extension LiveStreamManager {
-    var roomState: LSRoomState {
-        context.roomManager.roomState
+    func onError(_ error: InternalError) {
+        toastSubject.send(error.localizedMessage)
     }
     
-    func subscribeRoomState<Value>(_ selector: StateSelector<LSRoomState, Value>) -> AnyPublisher<Value, Never> {
-        context.roomManager.subscribeState(selector)
+    func onCameraOpened(localVideoView: UIView) {
+        context.mediaManager.onCameraOpened()
+        context.mediaManager.setLocalVideoView(view: localVideoView)
     }
     
-    func getDefaultRoomName() -> String {
-        return context.roomManager.getDefaultRoomName()
+    func onReceiveGift(price: Int, senderUserId: String) {
+        context.roomManager.onReceiveGift(price: price, senderUserId: senderUserId)
     }
-    
-    func syncLiveInfoToService() {
-        context.roomManager.syncLiveInfoToService()
-    }
-    
-    func updateRoomState(roomInfo: TUIRoomInfo) {
-        context.roomManager.updateRoomState(roomInfo: roomInfo)
-    }
-    
-    func update(roomState: LSRoomStateUpdateClosure) {
-        context.roomManager.update(roomState: roomState)
-        context.coHostManager.update(currentRoomId: context.roomManager.roomState.roomId)
-    }
-    
-    func update(liveStatus: LiveStatus) {
-        context.roomManager.update(liveStatus: liveStatus)
-    }
-    
-    func update(roomCategory: LiveStreamCategory) {
-        context.roomManager.update(roomCategory: roomCategory)
-    }
-    
-    func update(roomPrivacy status: LiveStreamPrivacyStatus) {
-        context.roomManager.update(roomPrivacy: status)
-    }
-    
-    func update(roomCoverUrl: String) {
-        context.roomManager.update(roomCoverUrl: roomCoverUrl)
-    }
-    
+}
+
+// MARK: - Anchor
+extension LiveStreamManager {
     func prepareLiveInfoBeforeEnterRoom(liveInfo: TUILiveInfo) {
-        context.roomManager.updateLiveInfo(liveInfo: liveInfo)
+        context.roomManager.prepareLiveInfoBeforeEnterRoom(liveInfo: liveInfo)
     }
     
     func prepareRoomIdBeforeEnterRoom(roomId: String) {
-        context.roomManager.update(roomId: roomId)
+        context.roomManager.prepareRoomIdBeforeEnterRoom(roomId: roomId)
     }
     
-    func fetchLiveInfo(roomId: String, onSuccess: @escaping ((_ liveInfo: TUILiveInfo)->()), onError: @escaping ((_ error: InternalError)->())) {
+    func onSetRoomName(_ name: String) {
+        context.roomManager.onSetRoomName(name)
+    }
+    
+    func onSetCategory(_ category: LiveStreamCategory) {
+        context.roomManager.onSetCategory(category)
+    }
+    
+    func onSetRoomPrivacy(_ mode: LiveStreamPrivacyStatus) {
+        context.roomManager.onSetRoomPrivacy(mode)
+    }
+    
+    func onSetRoomCoverUrl(_ url: String) {
+        context.roomManager.onSetRoomCoverUrl(url)
+    }
+    
+    func onPreviewing() {
+        context.roomManager.onPreviewing()
+    }
+    
+    func onStartLive(isJoinSelf: Bool, roomInfo: TUIRoomInfo) {
+        context.roomManager.onStartLive(isJoinSelf: isJoinSelf, roomInfo: roomInfo)
+        context.userManager.onStartLive()
+    }
+    
+    func onStopLive() {
+        context.roomManager.onStopLive()
+    }
+    
+    func onCoHostConnectUserChanged(connectUserList: [TUIConnectionUser]) {
+        context.mediaManager.changeVideoEncParams(encType: connectUserList.count > 1 ? .small : .big)
+    }
+    
+    func onCoGuestConnectUserChanged(connectUserList: [TUIUserInfo]) {
+        context.mediaManager.changeVideoEncParams(encType: connectUserList.count > 1 ? .small : .big)
+    }
+    
+    // Cross room
+    func onCrossRoomConnectionTerminated() {
+        context.coHostManager.onCrossRoomConnectionTerminated()
+    }
+    
+    // Battle
+    func onRequestBattle(battleId: String, battleUserList: [TUIBattleUser]) {
+        context.battleManager.onRequestBattle(battleId: battleId, battleUserList: battleUserList)
+    }
+    
+    func onResponseBattle() {
+        context.battleManager.onResponseBattle()
+    }
+    
+    func onBattleExited() {
+        context.battleManager.onBattleExited()
+    }
+    
+    // Other
+    func fetchLiveInfo(roomId: String, onSuccess: @escaping ((_ liveInfo: TUILiveInfo)->()), onError: @escaping InternalErrorBlock) {
         Task {
             do {
                 let liveInfo = try await context.roomManager.fetchLiveInfo(roomId: roomId)
@@ -145,156 +170,173 @@ extension LiveStreamManager {
             }
         }
     }
-}
-
-// MARK: - Media API
-extension LiveStreamManager {
-    var mediaState: LSMediaState {
-        context.mediaManager.mediaState
-    }
-    
-    func subscribeMediaState<Value>(_ selector: StateSelector<LSMediaState, Value>) -> AnyPublisher<Value, Never> {
-        context.mediaManager.subscribeState(selector)
-    }
-    
-    func setLocalVideoView(_ view: UIView) {
-        context.mediaManager.setLocalVideoView(view: view)
-    }
-    
-    func onCameraOpened() {
-        context.mediaManager.onCameraOpened()
-    }
-    
-    func updateVideoQuality(quality: TUIVideoQuality) {
-        context.mediaManager.updateVideoQuality(quality: quality)
-    }
-}
-
-// MARK: - User API
-extension LiveStreamManager {
-    var userState: LSUserState {
-        context.userManager.userState
-    }
-    
-    func subscribeUserState<Value>(_ selector: StateSelector<LSUserState, Value>) -> AnyPublisher<Value, Never> {
-        context.userManager.subscribeState(selector)
-    }
-    
-    func fetchAudienceList() {
-        context.userManager.fetchAudienceList()
-    }
-    
-    func muteAllRemoteAudio(isMute: Bool) {
-        context.userManager.muteAllRemoteAudio(isMute: isMute)
-    }
-    
-    func updateOwnerUserInfo() {
-        context.userManager.updateOwnerUserInfo()
-    }
-    
-    func updateSelfUserInfo() {
-        context.userManager.updateSelfUserInfo()
-    }
-    
-    func initSelfUserData() {
-        context.userManager.initSelfUserData()
-    }
     
     func getUserInfo(userId: String) async throws -> TUIUserInfo {
         try await context.userManager.getUserInfo(userId: userId)
     }
+    
+    func onDisableSendingMessageBtnClicked(userId: String, isDisable: Bool, onSuccess: @escaping TUISuccessBlock, onError: @escaping InternalErrorBlock) {
+        Task {
+            do {
+                try await context.userManager.onDisableSendingMessageBtnClicked(userId: userId, isDisable: isDisable)
+                DispatchQueue.main.async {
+                    onSuccess()
+                }
+            } catch let err as InternalError {
+                DispatchQueue.main.async {
+                    onError(err)
+                }
+            }
+        }
+    }
+    
+    func onKickedOutBtnClicked(userId: String, onSuccess: @escaping TUISuccessBlock, onError: @escaping InternalErrorBlock) {
+        Task {
+            do {
+                try await context.userManager.onKicedOutBtnClicked(userId: userId)
+                DispatchQueue.main.async {
+                    onSuccess()
+                }
+            } catch let err as InternalError {
+                DispatchQueue.main.async {
+                    onError(err)
+                }
+            }
+        }
+    }
+    
+    func onLockMediaStatusBtnClicked(userId: String, lockParams: TUISeatLockParams, onSuccess: @escaping TUISuccessBlock, onError: @escaping InternalErrorBlock) {
+        Task {
+            do {
+                try await context.coGuestManager.onLockMediaStatusBtnClicked(userId: userId, lockParams: lockParams)
+                DispatchQueue.main.async {
+                    onSuccess()
+                }
+            } catch let err as InternalError {
+                DispatchQueue.main.async {
+                    onError(err)
+                }
+            }
+        }
+    }
 }
 
-// MARK: - CoGuest API
+// MARK: - Audience
 extension LiveStreamManager {
-    var coGuestState: LSCoGuestState {
-        context.coGuestManager.coGuestState
+    func onJoinLive(roomInfo: TUIRoomInfo) {
+        context.roomManager.onJoinLive(roomInfo: roomInfo)
     }
     
-    func subscribeCoGuestState<Value>(_ selector: StateSelector<LSCoGuestState, Value>) -> AnyPublisher<Value, Never> {
-        context.coGuestManager.subscribeState(selector)
+    func onLeaveLive() {
+        context.roomManager.onLeaveLive()
+        context.userManager.onLeaveLive()
+        context.mediaManager.onLeaveLive()
     }
     
-    func fetchSeatList() {
-        context.coGuestManager.fetchSeatList()
+    func onStartRequestIntraRoomConnection() {
+        context.coGuestManager.onStartRequestIntraRoomConnection()
     }
     
-    func fetchSeatApplicationList() {
-        context.coGuestManager.fetchSeatApplicationList()
+    func onRequestIntraRoomConnectionFailed() {
+        context.coGuestManager.onRequestIntraRoomConnectionFailed()
     }
     
-    func removeSeatApplication(userId: String) {
-        context.coGuestManager.removeSeatApplication(userId: userId)
+    func onStartCancelIntraRoomConnection() {
+        context.coGuestManager.onStartCancelIntraRoomConnection()
     }
     
-    func update(coGuestStatus: CoGuestStatus) {
-        context.coGuestManager.update(coGuestStatus: coGuestStatus)
+    func onCancelIntraRoomConnection() {
+        context.coGuestManager.onCancelIntraRoomConnection()
     }
     
-    func onSeatListChanged(userList: [TUIUserInfo], joinList: [TUIUserInfo], leaveList: [TUIUserInfo]) {
-        context.coGuestManager.onSeatListChanged(userList: userList, joinList: joinList, leaveList: leaveList)
+    func onCoGuestStatusChanged(status: LSCoGuestState.CoGuestStatus) {
+        if status == .linking {
+            context.mediaManager.changeVideoEncParams(encType: .small)
+        }
     }
-    
-    func onRequestReceived(inviter: TUIUserInfo) {
-        context.coGuestManager.onRequestReceived(inviter: inviter)
-    }
-    
-    func onRequestCancelled(inviter: TUIUserInfo) {
-        context.coGuestManager.onRequestCancelled(inviter: inviter)
-    }
-    
-    func onUserConnectionAccepted(userId: String) {
-        context.coGuestManager.onUserConnectionAccepted(userId: userId)
-    }
-    
+}
+
+// MARK: - Observer
+extension LiveStreamManager {
     func onUserConnectionRejected(userId: String) {
+        toastSubject.send(.takeSeatApplicationRejected)
         context.coGuestManager.onUserConnectionRejected(userId: userId)
     }
     
     func onUserConnectionTimeout(userId: String) {
+        toastSubject.send(.takeSeatApplicationTimeout)
         context.coGuestManager.onUserConnectionTimeout(userId: userId)
     }
     
     func onKickedOffSeat() {
+        toastSubject.send(.kickedOutOfSeat)
         context.coGuestManager.onKickedOffSeat()
+    }
+    
+    func onConnectionUserListChanged(list: [TUIConnectionUser]) {
+        context.coHostManager.onConnectionUserListChanged(list: list)
     }
 }
 
-// MARK: - CoHost API
+// MARK: - Tools
 extension LiveStreamManager {
+    // State
+    var roomState: LSRoomState {
+        context.roomManager.roomState
+    }
+    var mediaState: LSMediaState {
+        context.mediaManager.mediaState
+    }
+    var userState: LSUserState {
+        context.userManager.userState
+    }
+    var coGuestState: LSCoGuestState {
+        context.coGuestManager.coGuestState
+    }
+    var battleState: LSBattleState {
+        context.battleManager.state
+    }
     var coHostState: LSCoHostState {
         context.coHostManager.state
     }
     
-    func subscribeCoHostState<Value>(_ selector: StateSelector<LSCoHostState, Value>) -> AnyPublisher<Value, Never> {
-        context.coHostManager.subscribeCoHostState(selector)
-    }
-    
+    // Manager
     var coHostManager: LSCoHostManager {
         context.coHostManager
     }
-    
     var battleManager: LSBattleManager {
         context.battleManager
     }
-}
-
-// MARK: - Battle API
-extension LiveStreamManager {
-    var battleState: LSBattleState {
-        context.battleManager.state
+    var mediaManager: LSMediaManager {
+        context.mediaManager
     }
     
-    func subscribeBattleState<Value>(_ selector: StateSelector<LSBattleState, Value>) -> AnyPublisher<Value, Never> {
-        context.battleManager.subscribeState(selector)
+    // Other
+    func getDefaultRoomName() -> String {
+        return context.roomManager.getDefaultRoomName()
     }
-}
-
-extension LiveStreamManager: GiftListPanelDataSource {
-    func getAnchorInfo() -> GiftUser {
-        let owner = roomState.ownerInfo
-        let giftUser = GiftUser(userId: owner.userId, name: owner.name, avatarUrl: owner.avatarUrl)
-        return giftUser
+    
+    func subscribeState<State, Value>(_ selector: StateSelector<State, Value>) -> AnyPublisher<Value, Never> {
+        if let sel = selector as? StateSelector<LSUserState, Value> {
+            return context.userManager.subscribeState(sel)
+        } else if let sel = selector as? StateSelector<LSRoomState, Value> {
+            return context.roomManager.subscribeState(sel)
+        } else if let sel = selector as? StateSelector<LSBattleState, Value> {
+            return context.battleManager.subscribeState(sel)
+        } else if let sel = selector as? StateSelector<LSCoHostState, Value> {
+            return context.coHostManager.subscribeCoHostState(sel)
+        } else if let sel = selector as? StateSelector<LSMediaState, Value> {
+            return context.mediaManager.subscribeState(sel)
+        } else if let sel = selector as? StateSelector<LSCoGuestState, Value> {
+            return context.coGuestManager.subscribeState(sel)
+        }
+        assert(false, "Not impl")
+        return Empty<Value, Never>().eraseToAnyPublisher()
+    }
+    
+    func subscribeCoreViewState<State, Value>(_ selector: StateSelector<State, Value>) -> AnyPublisher<Value, Never> {
+        guard let provider = context.provider else { return Empty<Value, Never>().eraseToAnyPublisher() }
+        return provider.subscribeCoreViewState(selector)
     }
 }
 
@@ -313,6 +355,9 @@ extension LiveStreamManager {
     }
     var coreCoGuestState: CoGuestState {
         context.coreCoGuestState
+    }
+    var coreBattleState: BattleState {
+        context.coreBattleState
     }
 }
 
@@ -337,4 +382,22 @@ extension LiveStreamManager.Context {
         guard let provider = provider else { return CoGuestState() }
         return provider.getCoreViewState()
     }
+    var coreBattleState: BattleState {
+        guard let provider = provider else { return BattleState() }
+        return provider.getCoreViewState()
+    }
+}
+
+extension LiveStreamManager: GiftListPanelProvider {
+    func getAnchorInfo() -> GiftUser {
+        let owner = coreRoomState.ownerInfo
+        let giftUser = GiftUser(userId: owner.userId, name: owner.userName, avatarUrl: owner.avatarUrl)
+        return giftUser
+    }
+}
+
+fileprivate extension String {
+    static let takeSeatApplicationRejected = localized("Take seat application has been rejected")
+    static let takeSeatApplicationTimeout = localized("Take seat application timeout")
+    static let kickedOutOfSeat = localized("Kicked out of seat by room owner")
 }

@@ -227,6 +227,6 @@ extension ActionPanel: UITableViewDataSource {
 
 private extension String {
     static var cancelText = {
-        localized("live.audience.link.confirm.cancel")
+        localized("Cancel")
     }()
 }

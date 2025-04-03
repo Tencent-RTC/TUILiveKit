@@ -10,6 +10,7 @@ import TUICore
 import RTCCommon
 import Combine
 import LiveStreamCore
+import RTCRoomEngine
 
 class AnchorLivingView: UIView {
     
@@ -39,8 +40,12 @@ class AnchorLivingView: UIView {
         return view
     }()
     
-    private let audienceListView: AudienceListView = {
+    private lazy var audienceListView: AudienceListView = {
         let view = AudienceListView()
+        view.onUserManageButtonClicked = { [weak self] userId in
+            guard let self = self else { return }
+            routerManager.router(action: .present(.userManagement(userId, type: .messageAndKickOut)))
+        }
         return view
     }()
     
@@ -56,7 +61,7 @@ class AnchorLivingView: UIView {
     }()
     
     private lazy var barrageDisplayView: BarrageStreamView = {
-        let ownerId = manager.roomState.ownerInfo.userId
+        let ownerId = manager.coreRoomState.ownerInfo.userId
         let view = BarrageStreamView(roomId: roomId)
         view.delegate = self
         return view
@@ -74,7 +79,6 @@ class AnchorLivingView: UIView {
         view.layer.borderWidth = 0.5
         view.layer.cornerRadius = 18.scale375Height()
         view.backgroundColor = .g1.withAlphaComponent(0.4)
-        view.delegate = self
         return view
     }()
     
@@ -98,6 +102,11 @@ class AnchorLivingView: UIView {
     }
     
     deinit {
+        if manager.roomState.liveStatus == .pushing {
+            coreView.stopLiveStream() {
+            } onError: { _, _ in
+            }
+        }
         print("deinit \(type(of: self))")
     }
     
@@ -117,14 +126,13 @@ class AnchorLivingView: UIView {
     }
     
     private func subscribeState() {
-        manager.subscribeCoGuestState(StateSelector(keyPath: \LSCoGuestState.requestCoGuestList))
+        manager.subscribeCoreViewState(StateSelector(keyPath: \CoGuestState.applicantList))
             .receive(on: RunLoop.main)
             .sink { [weak self] seatApplicationList in
                 guard let self = self else { return }
                 if manager.coreCoHostState.receivedConnectionRequest != nil || manager.coreCoHostState.sentConnectionRequestList.count > 0 {
                     // If received connection request first, reject all linkmic auto.
                     for seatApplication in seatApplicationList {
-                        manager.removeSeatApplication(userId: seatApplication.userId)
                         coreView.respondIntraRoomConnection(userId: seatApplication.userId, isAccepted: false) {} onError: { _, _ in }
                     }
                     return
@@ -132,8 +140,7 @@ class AnchorLivingView: UIView {
                 self.showLinkMicFloatView(isPresent: seatApplicationList.count > 0)
             }
             .store(in: &cancellableSet)
-        
-        manager.subscribeRoomState(StateSelector(keyPath: \LSRoomState.ownerInfo))
+        manager.subscribeCoreViewState(StateSelector(keyPath: \RoomState.ownerInfo))
             .receive(on: RunLoop.main)
             .sink { [weak self] ownerInfo in
                 guard let self = self else { return }
@@ -141,8 +148,9 @@ class AnchorLivingView: UIView {
             }
             .store(in: &cancellableSet)
         
-        manager.subscribeRoomState(StateSelector(keyPath: \LSRoomState.liveStatus))
+        manager.subscribeState(StateSelector(keyPath: \LSRoomState.liveStatus))
             .receive(on: RunLoop.main)
+            .removeDuplicates()
             .sink { [weak self] status in
                 guard let self = self else { return }
                 switch status {
@@ -178,6 +186,11 @@ class AnchorLivingView: UIView {
     
     @objc func onFloatWindowButtonClick() {
         manager.floatWindowSubject.send()
+    }
+    
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        let view = super.hitTest(point, with: event)
+        return view == self ? nil : view
     }
 }
 
@@ -273,8 +286,8 @@ extension AnchorLivingView {
         lineConfig.backgroundColor = .white
         lineConfig.lineColor = .g8
         
-        let selfUserId = manager.userState.selfInfo.userId
-        let isSelfInCoGuestConnection = manager.coGuestState.connectedUserList.count > 1
+        let selfUserId = manager.coreUserState.selfInfo.userId
+        let isSelfInCoGuestConnection = manager.coreCoGuestState.connectedUserList.count > 1
         let isSelfInCoHostConnection = manager.coHostState.connectedUsers.count > 1
         let isSelfInBattle = manager.battleState.battleUsers.contains(where: { $0.userId == selfUserId }) && isSelfInCoHostConnection
         
@@ -291,7 +304,7 @@ extension AnchorLivingView {
             let endConnectionItem = ActionItem(title: .endLiveDisconnectText, designConfig: lineConfig, actionClosure: { [weak self] _ in
                 guard let self = self else { return }
                 coreView.terminateCrossRoomConnection()
-                manager.coHostManager.update(connectedUser: [])
+                manager.onCrossRoomConnectionTerminated()
                 self.routerManager.router(action: .dismiss())
             })
             items.append(endConnectionItem)
@@ -349,11 +362,11 @@ extension AnchorLivingView {
     func stopLiveStream() {
         coreView.stopLiveStream() { [weak self] in
             guard let self = self else { return }
-            manager.update(liveStatus: .finished)
+            manager.onStopLive()
         } onError: { [weak self] code, message in
             guard let self = self else { return }
-            let error = InternalError(error: code, message: message)
-            self.manager.toastSubject.send(error.localizedMessage)
+            let error = InternalError(code: code.rawValue, message: message)
+            manager.onError(error)
         }
     }
 }
@@ -380,17 +393,18 @@ extension AnchorLivingView: BarrageStreamViewDelegate {
         }
         return CustomBarrageCell(barrage: barrage)
     }
-}
 
+    func onBarrageClicked(user: TUIUserInfo) {
+        if user.userId == manager.coreUserState.selfInfo.userId { return }
+        routerManager.router(action: .present(.userManagement(user, type: .messageAndKickOut)))
+    }
+}
 
 extension AnchorLivingView: GiftPlayViewDelegate {
     func giftPlayView(_ giftPlayView: GiftPlayView, onReceiveGift gift: TUIGift, giftCount: Int, sender: TUIGiftUser, receiver: TUIGiftUser) {
-        let selfUserId = manager.userState.selfInfo.userId
+        let selfUserId = manager.coreUserState.selfInfo.userId
         if selfUserId == receiver.userId {
-            manager.update { state in
-                state.liveExtraInfo.giftIncome += gift.price * giftCount
-                state.liveExtraInfo.giftPeopleSet.insert(sender.userId)
-            }
+            manager.onReceiveGift(price: gift.price * giftCount, senderUserId: sender.userId)
         }
         
         let barrage = TUIBarrage()
@@ -428,21 +442,13 @@ extension AnchorLivingView: LiveEndViewDelegate {
     }
 }
 
-extension AnchorLivingView: BarrageInputViewDelegate {
-    func barrageInputViewOnSendBarrage(_ barrage: TUIBarrage) {
-        barrageDisplayView.insertBarrages([barrage])
-    }
-}
-
 fileprivate extension String {
-    static let confirmCloseText = localized("live.anchor.confirm.close")
-    static let sendText = localized("live.giftView.sendOut")
-    static let meText = localized("live.barrage.me")
+    static let confirmCloseText = localized("End Live")
+    static let meText = localized("Me")
     
-    static let endLiveOnConnectionText = localized("live.endLive.onConnection.alert")
-    static let endLiveDisconnectText = localized("live.endLive.onConnection.alert.disconnect")
-    static let endLiveOnLinkMicText = localized("live.endLive.anchor.onLinkMic.alert")
-    static let endLiveLinkMicDisconnectText = localized("live.endLive.onLinkMic.alert.disconnect")
-    static let endLiveOnBattleText = localized("live.endLive.onBattle.alert")
-    static let endLiveBattleText = localized("live.endLive.onBattle.alert.endBattle")
+    static let endLiveOnConnectionText = localized("You are currently co-hosting with other streamers. Would you like to [End Co-host] or [End Live] ?")
+    static let endLiveDisconnectText = localized("End Co-host")
+    static let endLiveOnLinkMicText = localized("You are currently co-guesting with other streamers. Would you like to [End Live] ?")
+    static let endLiveOnBattleText = localized("You are currently in PK mode. Would you like to  [End PK] or [End Live] ?")
+    static let endLiveBattleText = localized("End PK")
 }

@@ -166,7 +166,7 @@ extension RenamePanel {
 // MARK: Localized String
 
 private extension String {
-    static let nameText = TUILiveKitAppLocalize("TUILiveKitApp.Main.Name")
-    static let saveText = TUILiveKitAppLocalize("TUILiveKitApp.Main.Save")
-    static let operateSuccessText = TUILiveKitAppLocalize("TUILiveKitApp.Main.Operate.Success")
+    static let nameText = TUILiveKitAppLocalize("Name")
+    static let saveText = TUILiveKitAppLocalize("Save")
+    static let operateSuccessText = TUILiveKitAppLocalize("Operate Success")
 }

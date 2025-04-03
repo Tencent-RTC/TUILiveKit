@@ -8,45 +8,45 @@
 import Foundation
 
 extension String {
-    static let audioEffectTitleText: String = localized("live.music.title")
+    static let audioEffectTitleText: String = localized("Audio")
     
-    static var voiceEarMonitorText: String = localized("live.music.voiceEarMonitor")
+    static var voiceEarMonitorText: String = localized("Ear Monitor")
     
-    static let voiceEarMonitorVolumeText: String = localized("live.music.voiceEarMonitorVolume")
+    static let voiceEarMonitorVolumeText: String = localized("Ear Monitor Volume")
     
-    static var backgroundMusicText: String = localized("live.category.music")
+    static var backgroundMusicText: String = localized("Music")
     
-    static var chooseMusicText: String = localized("live.music.chooseMusic")
+    static var chooseMusicText: String = localized("Choose Music")
     
-    static var audioSettingText: String = localized("live.music.audioSetting")
+    static var audioSettingText: String = localized("Audio settings")
     
-    static var musicVolumeText: String = localized("live.music.musicVolume")
+    static var musicVolumeText: String = localized("Music volume")
     
-    static var microphoneVolumeText: String = localized("live.music.voiceVolume")
+    static var microphoneVolumeText: String = localized("Voice volume")
     
-    static var voicePitchText: String = localized("live.music.musicPitch")
+    static var voicePitchText: String = localized("Music Pitch")
     
-    static var changerText: String = localized("live.music.changer")
+    static var changerText: String = localized("Voice changer")
     
-    static var reverbText: String = localized("live.music.reverb")
+    static var reverbText: String = localized("Reverb")
     
-    static var originVoiceText: String = localized("live.music.changer.none")
+    static var originVoiceText: String = localized("Original")
     
-    static var childText: String = localized("live.music.changer.child")
+    static var childText: String = localized("Naughty child")
+
+    static var girlText: String = localized("Loli")
     
-    static var girlText: String = localized("live.music.changer.girl")
+    static var uncleText: String = localized("Uncle")
     
-    static var uncleText: String = localized("live.music.changer.uncle")
+    static var etherealText: String = localized("Ethereal")
     
-    static var etherealText: String = localized("live.music.changer.ethereal")
+    static var withoutEffectText: String = localized("No effect")
     
-    static var withoutEffectText: String = localized("live.music.reverb.none")
+    static var karaokeText: String = localized("KTV")
     
-    static var karaokeText: String = localized("live.music.reverb.karaoke")
+    static var metalText: String = localized("Metallic sound")
     
-    static var metalText: String = localized("live.music.reverb.metal")
-    
-    static var lowText: String = localized("live.music.reverb.low")
-    
-    static var loudText: String = localized("live.music.reverb.loud")
+    static var lowText: String = localized("Low")
+
+    static var loudText: String = localized("Loud")
 }

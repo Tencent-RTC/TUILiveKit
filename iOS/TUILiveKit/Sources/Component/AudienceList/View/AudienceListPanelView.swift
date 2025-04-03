@@ -12,6 +12,7 @@ import RTCRoomEngine
 
 class AudienceListPanelView: UIView {
     var onBackButtonClickedClosure: (() -> Void)?
+    var onUserManageButtonClicked: ((TUIUserInfo) -> Void)? 
     private let state: AudienceListState
     private var cancellableSet = Set<AnyCancellable>()
     private var isPortrait: Bool = {
@@ -41,7 +42,7 @@ class AudienceListPanelView: UIView {
         tableView.separatorStyle = .none
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(UserMemberCell.self, forCellReuseIdentifier: UserMemberCell.cellReuseIdentifier)
+        tableView.register(AudienceMemberCell.self, forCellReuseIdentifier: AudienceMemberCell.cellReuseIdentifier)
         return tableView
     }()
     
@@ -129,10 +130,11 @@ extension AudienceListPanelView: UITableViewDelegate {
     internal func tableView(_ tableView: UITableView,
                             cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: UserMemberCell.cellReuseIdentifier, for: indexPath)
-        if let cell = cell as? UserMemberCell,
+        let cell = tableView.dequeueReusableCell(withIdentifier: AudienceMemberCell.cellReuseIdentifier, for: indexPath)
+        if let cell = cell as? AudienceMemberCell,
             indexPath.row < listUser.count {
             cell.user = listUser[indexPath.row]
+            cell.onUserManageButtonClicked = onUserManageButtonClicked
         }
         return cell
     }
@@ -143,6 +145,6 @@ extension AudienceListPanelView: UITableViewDelegate {
 }
 
 fileprivate extension String {
-    static let onlineAudience = localized("live.recent.online.audience")
+    static let onlineAudience = localized("Online audience")
 }
 

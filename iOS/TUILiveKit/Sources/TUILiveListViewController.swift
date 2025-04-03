@@ -60,7 +60,7 @@ public class TUILiveListViewController: UIViewController {
     
     private func initNavigationItemTitleView() {
         let backBtn = UIButton(type: .custom)
-        backBtn.setImage(UIImage(named: "live_back"), for: .normal)
+        backBtn.setImage(.liveBundleImage("live_back"), for: .normal)
         backBtn.addTarget(self, action: #selector(backBtnClick), for: .touchUpInside)
         backBtn.sizeToFit()
         let backItem = UIBarButtonItem(customView: backBtn)
@@ -79,7 +79,7 @@ public class TUILiveListViewController: UIViewController {
         self.navigationItem.titleView = titleView
         
         let helpBtn = UIButton(type: .custom)
-        helpBtn.setImage(UIImage(named: "help_small"), for: .normal)
+        helpBtn.setImage(.liveBundleImage("help_small"), for: .normal)
         helpBtn.addTarget(self, action: #selector(helpBtnClick), for: .touchUpInside)
         helpBtn.sizeToFit()
         let rightItem = UIBarButtonItem(customView: helpBtn)
@@ -95,7 +95,11 @@ public class TUILiveListViewController: UIViewController {
 extension TUILiveListViewController {
     @objc
     private func backBtnClick(sender: UIButton) {
-        liveListStore.dispatch(action: LiveListNavigatorActions.navigatorTo(payload: .exit))
+        if let nav = navigationController {
+            nav.popViewController(animated: true)
+        } else {
+            dismiss(animated: true)
+        }
     }
     
     @objc
@@ -115,13 +119,11 @@ extension TUILiveListViewController {
             .sink { [weak self] router in
                 guard let self = self else { return }
                 switch router {
-                case .exit:
-                    self.navigationController?.popViewController(animated: true)
                 case .main:
                     break
                 case let .toLive(liveInfo):
                     if FloatWindow.shared.isShowingFloatWindow() {
-                        if FloatWindow.shared.getCurrentRoomId() == liveInfo.roomInfo.roomId {
+                        if FloatWindow.shared.getCurrentRoomId() == liveInfo.roomId {
                             FloatWindow.shared.resumeLive(atViewController: self.navigationController ?? self)
                             return
                         } else if let ownerId = FloatWindow.shared.getRoomOwnerId(), ownerId == TUILogin.getUserID() {
@@ -134,20 +136,23 @@ extension TUILiveListViewController {
                             FloatWindow.shared.releaseFloatWindow()
                         }
                     }
-                    let roomType = LiveIdentityGenerator.shared.getIDType(liveInfo.roomInfo.roomId)
-                    let isOwner = liveInfo.roomInfo.ownerId == TUILogin.getUserID()
+                    let roomType = LiveIdentityGenerator.shared.getIDType(liveInfo.roomId)
+                    let isOwner = liveInfo.ownerId == TUILogin.getUserID()
                     switch roomType {
                     case .voice:
-                        let vc = TUIVoiceRoomViewController(roomId: liveInfo.roomInfo.roomId, behavior: isOwner ? .autoCreate : .join)
-                        self.navigationController?.pushViewController(vc, animated: true)
+                        let vc = TUIVoiceRoomViewController(roomId: liveInfo.roomId, behavior: isOwner ? .autoCreate : .join)
+                        vc.modalPresentationStyle = .overFullScreen
+                        present(vc, animated: true)
                     default:
                         // How to determine room type without roomId
                         if isOwner {
-                            let vc = TUILiveRoomAnchorViewController(roomId: liveInfo.roomInfo.roomId, needPrepare: false)
-                            self.navigationController?.pushViewController(vc, animated: true)
+                            let vc = TUILiveRoomAnchorViewController(roomId: liveInfo.roomId, needPrepare: false)
+                            vc.modalPresentationStyle = .overFullScreen
+                            present(vc, animated: true)
                         } else {
-                            let vc = TUILiveRoomAudienceViewController(liveInfo: liveInfo)
-                            self.navigationController?.pushViewController(vc, animated: true)
+                            let vc = TUILiveRoomAudienceViewController(roomId: liveInfo.roomId)
+                            vc.modalPresentationStyle = .overFullScreen
+                            present(vc, animated: true)
                         }
                     }
                 }
@@ -157,6 +162,6 @@ extension TUILiveListViewController {
 }
 
 extension String {
-    fileprivate static let liveTitleText = localized("live.room.list.live")
-    fileprivate static let pushingToReturnText = localized("live.error.pushing")
+    fileprivate static let liveTitleText = localized("Live Video")
+    fileprivate static let pushingToReturnText = localized("It's live, please try again later.")
 }

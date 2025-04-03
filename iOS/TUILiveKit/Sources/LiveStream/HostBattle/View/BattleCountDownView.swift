@@ -136,7 +136,8 @@ class LSBattleCountDownView: UIView {
     }
     
     @objc private func cancelButtonClick() {
-        coreView?.cancelBattle(battleId: manager.state.battleId, userIdList: manager.state.inviteeIdList, onSuccess: { [weak self] in
+        let inviteeIdList = manager.coreBattleState.inviteeList.map { $0.userId }
+        coreView?.cancelBattle(battleId: manager.state.battleId, userIdList: inviteeIdList, onSuccess: { [weak self] in
             guard let self = self else { return }
             self.manager.onCanceledBattle()
         }, onError: { _, _ in
@@ -214,6 +215,6 @@ class CountdownTimer {
 }
 
 private extension String {
-    static let waitForBattleText: String = localized("live.battle.request.wait.xxx")
-    static let cancelText: String = localized("live.battle.request.cancel")
+    static let waitForBattleText: String = localized("Waiting for battlexxx")
+    static let cancelText: String = localized("Cancel")
 }

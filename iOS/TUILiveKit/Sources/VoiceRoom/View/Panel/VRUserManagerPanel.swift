@@ -9,7 +9,7 @@ import UIKit
 import RTCCommon
 import Combine
 import RTCRoomEngine
-import SeatGridView
+import LiveStreamCore
 
 class VRUserManagerPanel: RTCBaseView {
     private let manager: VoiceRoomManager
@@ -198,10 +198,14 @@ extension VRUserManagerPanel {
     
     private func subscribeSeatInfoState() {
         manager.subscribeSeatState(StateSelector(keyPath: \.seatList))
+            .removeDuplicates()
             .receive(on: RunLoop.main)
             .sink { [weak self] seatInfoList in
                 guard let self = self else { return }
                 self.seatInfo = seatInfoList[seatInfo.index]
+                if seatInfo.userId.isEmpty {
+                    routerManager.router(action: .dismiss())
+                }
             }
             .store(in: &cancellableSet)
     }
@@ -226,8 +230,8 @@ extension VRUserManagerPanel {
         coreView?.lockSeat(index: seatInfo.index, lockMode: lockSeat) {
             
         } onError: { [weak self] code, message in
-            guard let self = self, let err = TUIError(rawValue: code) else { return }
-            let error = InternalError(error: err, message: message)
+            guard let self = self else { return }
+            let error = InternalError(code: code, message: message)
             self.manager.toastSubject.send(error.localizedMessage)
         }
     }
@@ -236,8 +240,8 @@ extension VRUserManagerPanel {
     private func kickoffClick() {
         coreView?.kickUserOffSeatByAdmin(userId: seatInfo.userId) {
         } onError: { [weak self] code, message in
-            guard let self = self, let err = TUIError(rawValue: code) else { return }
-            let error = InternalError(error: err, message: message)
+            guard let self = self else { return }
+            let error = InternalError(code: code, message: message)
             self.manager.toastSubject.send(error.localizedMessage)
         }
         routerManager.router(action: .dismiss())
@@ -245,8 +249,8 @@ extension VRUserManagerPanel {
 }
 
 fileprivate extension String {
-    static let followText = localized("live.user.follow")
-    static let muteText = localized("live.seat.mute")
-    static let unmuteText = localized("live.seat.unmute")
-    static let kickoffText = localized("live.anchor.link.hang.up.title")
+    static let followText = localized("Follow")
+    static let muteText = localized("Mute")
+    static let unmuteText = localized("Unmute")
+    static let kickoffText = localized("End")
 }

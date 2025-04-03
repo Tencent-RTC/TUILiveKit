@@ -64,7 +64,7 @@ class LoginViewController: UIViewController {
             let vc = RegisterViewController()
             navigationController?.pushViewController(vc, animated: true)
         } else {
-            self.view.makeToast(TUILiveKitAppLocalize("TUILiveKitApp.Login.loginsuccess"))
+            self.view.makeToast(TUILiveKitAppLocalize("Logged in"))
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 let appDelegate = UIApplication.shared.delegate as? AppDelegate
                 appDelegate?.showMainViewController()

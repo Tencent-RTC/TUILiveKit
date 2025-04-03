@@ -21,8 +21,6 @@ class LSCoHostObserver: NSObject, TUILiveConnectionObserver {
     }
     
     func onConnectionRequestCancelled(inviter: TUIConnectionUser) {
-        guard let context = self.context else { return }
-        context.coHostManager.onConnectionRequestCancelled(inviter: inviter)
     }
     
     func onConnectionRequestAccept(invitee: TUIConnectionUser) {

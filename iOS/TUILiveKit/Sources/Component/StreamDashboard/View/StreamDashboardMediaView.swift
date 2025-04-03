@@ -120,5 +120,5 @@ extension StreamDashboardMediaView: UICollectionViewDataSource {
 }
 
 fileprivate extension String {
-    static let mediaText = localized("live.streamDashboard.media.info")
+    static let mediaText = localized("Media Information")
 }

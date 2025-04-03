@@ -15,7 +15,7 @@ class LiveListRootView: UIView {
     private var store: LiveListStore
     
     private var cancellableSet = Set<AnyCancellable>()
-    private var liveListDataSource: [TUILiveInfo] = []
+    private var liveListDataSource: [LiveInfo] = []
     
     lazy var liveListCollectionView: UICollectionView = {
         let horizontalSpacing = 8.0
@@ -149,10 +149,9 @@ extension LiveListRootView: UICollectionViewDelegate {
 }
 
 extension String {
-    static let pullToRefreshText = localized("live.room.list.pullToRefresh")
-    static let releaseToRefreshText = localized("live.room.list.releaseToRefresh")
-    static let loadingText = localized("live.room.list.loading")
-    static let loadingMoreText = localized("live.room.list.loadingMore")
-    static let noMoreDataText = localized("live.room.list.noMoreData")
-    static let startLiveRoomText = localized("live.room.list.startLiveRoom")
+    static let pullToRefreshText = localized("Pull to refresh")
+    static let releaseToRefreshText = localized("Release to refresh")
+    static let loadingText = localized("Loading...")
+    static let loadingMoreText = localized("Loading more")
+    static let noMoreDataText = localized("There is no more data")
 }

@@ -52,15 +52,11 @@ class LikeManager {
                 let likeWrapper = TUILikeWrapper(businessID: "TUIGift_like", data: likeData)
                 let encoder = JSONEncoder()
                 let data = try encoder.encode(likeWrapper)
-                V2TIMManager.sharedInstance().sendGroupCustomMessage(data, to: roomId, priority: .PRIORITY_NORMAL) {
+                V2TIMManager.sharedInstance().sendGroupCustomMessage(data, to: roomId, priority: .PRIORITY_LOW) {
                     continuation.resume()
                 } fail: { code, message in
                     debugPrint("sendGroupCustomMessage failed. code:\(code), message:\(message ?? "")")
-                    guard let err = TIMError(rawValue: Int(code)) else {
-                        continuation.resume(throwing: InternalError(error: TIMError.failed, message: ""))
-                        return
-                    }
-                    continuation.resume(throwing: InternalError(error: err, message: message ?? ""))
+                    continuation.resume(throwing: InternalError(code: Int(code), message: message ?? ""))
                 }
             } catch let err {
                 continuation.resume(throwing: err)

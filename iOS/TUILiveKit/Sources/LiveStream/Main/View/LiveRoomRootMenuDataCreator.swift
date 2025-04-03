@@ -26,13 +26,14 @@ class LiveRoomRootMenuDataCreator {
         data.append(LinkMicTypeCellData(image: .liveBundleImage("live_link_video"),
                                         text: .videoLinkRequestText,
                                         action: {
-            manager.update(coGuestStatus: .applying)
+            manager.mediaManager.changeVideoEncParams(encType: .small)
+            manager.onStartRequestIntraRoomConnection()
             coreView.requestIntraRoomConnection(userId: "", timeOut: timeOutValue, openCamera: true) {
                 manager.toastSubject.send(.waitToLinkText)
             } onError: { code, message in
-                manager.update(coGuestStatus: .none)
-                let error = InternalError(error: code, message: message)
+                let error = InternalError(code: code.rawValue, message: message)
                 manager.toastSubject.send(error.localizedMessage)
+                manager.onRequestIntraRoomConnectionFailed()
             }
             routerManager.router(action: .dismiss())
         }))
@@ -40,13 +41,13 @@ class LiveRoomRootMenuDataCreator {
         data.append(LinkMicTypeCellData(image: .liveBundleImage("live_link_audio"),
                                         text: .audioLinkRequestText,
                                         action: {
-            manager.update(coGuestStatus: .applying)
+            manager.onStartRequestIntraRoomConnection()
             coreView.requestIntraRoomConnection(userId: "", timeOut: timeOutValue, openCamera: false) {
                 manager.toastSubject.send(.waitToLinkText)
             } onError: { code, message in
-                manager.update(coGuestStatus: .none)
-                let error = InternalError(error: code, message: message)
+                let error = InternalError(code: code.rawValue, message: message)
                 manager.toastSubject.send(error.localizedMessage)
+                manager.onRequestIntraRoomConnectionFailed()
             }
             routerManager.router(action: .dismiss())
         }))
@@ -62,9 +63,9 @@ extension LiveRoomRootMenuDataCreator {
     func ownerBottomMenu(manager: LiveStreamManager, routerManager: LSRouterManager, coreView: LiveCoreView) -> [LSButtonMenuInfo] {
         var menus: [LSButtonMenuInfo] = []
         var connection = LSButtonMenuInfo(normalIcon: "live_connection_icon")
-        let selfUserId = manager.userState.selfInfo.userId
+        let selfUserId = manager.coreUserState.selfInfo.userId
         connection.tapAction = { sender in
-            if manager.coGuestState.connectedUserList.count > 1 || manager.battleManager.state.battleUsers.contains(where: {$0.userId == selfUserId}) {
+            if manager.coreCoGuestState.connectedUserList.count > 1 || manager.battleState.battleUsers.contains(where: {$0.userId == selfUserId}) {
                 return
             } else {
                 routerManager.router(action: .present(.connectionControl))
@@ -72,15 +73,15 @@ extension LiveRoomRootMenuDataCreator {
         }
         
         connection.bindStateClosure = { button, cancellableSet in
-            func updateButton(_ button: LSMenuButton, battleUsers: [BattleUser], connectedUserList: [LSSeatInfo]) {
+            func updateButton(_ button: LSMenuButton, battleUsers: [BattleUser], connectedUserList: [TUIUserInfo]) {
                 let isBattle = battleUsers.contains(where: {$0.userId == selfUserId})
                 let isCoGuestConnected = connectedUserList.count > 1
                 let imageName = isBattle || isCoGuestConnected ? "live_connection_disable_icon" : "live_connection_icon"
                 button.setImage(.liveBundleImage(imageName), for: .normal)
             }
             
-            let connectedUserListPublisher = manager.subscribeCoGuestState(StateSelector(keyPath: \LSCoGuestState.connectedUserList))
-            let battleUsersPublisher = manager.battleManager.subscribeState(StateSelector(keyPath: \LSBattleState.battleUsers))
+            let connectedUserListPublisher = manager.subscribeCoreViewState(StateSelector(keyPath: \CoGuestState.connectedUserList))
+            let battleUsersPublisher = manager.subscribeState(StateSelector(keyPath: \LSBattleState.battleUsers))
             connectedUserListPublisher
                 .removeDuplicates()
                 .combineLatest(battleUsersPublisher.removeDuplicates())
@@ -94,13 +95,13 @@ extension LiveRoomRootMenuDataCreator {
         
         var battle = LSButtonMenuInfo(normalIcon: "live_battle_icon")
         battle.tapAction = { sender in
-            let selfUserId = manager.userState.selfInfo.userId
+            let selfUserId = manager.coreUserState.selfInfo.userId
             let isSelfInBattle = manager.battleState.battleUsers.contains(where: { $0.userId == selfUserId })
             if isSelfInBattle {
                 self.confirmToExitBattle(manager: manager, routerManager: routerManager, coreView: coreView)
             } else {
                 let isOnDisplayResult = manager.battleState.isOnDisplayResult
-                let isSelfInConnection = manager.coHostManager.state.connectedUsers.contains(where: { $0.userId == selfUserId })
+                let isSelfInConnection = manager.coHostState.connectedUsers.contains(where: { $0.userId == selfUserId })
                 guard !isOnDisplayResult && isSelfInConnection else {
                     return
                 }
@@ -108,20 +109,21 @@ extension LiveRoomRootMenuDataCreator {
                 config.duration = battleDuration
                 config.needResponse = true
                 config.extensionInfo = ""
-                
-                let requestUserIds = manager.coHostState.connectedUsers.map { $0.userId }
+                let requestUserIds = manager.coHostState.connectedUsers
+                    .filter { $0.userId != selfUserId }
+                    .map { $0.userId }
                 coreView.requestBattle(config: config, userIdList: requestUserIds, timeout: battleRequestTimeout) { (battleId, battleUserList) in
-                    manager.battleManager.onRequestBattle(battleId: battleId, battleUserList: battleUserList)
+                    manager.onRequestBattle(battleId: battleId, battleUserList: battleUserList)
                 } onError: { _, _ in
                     
                 }
             }
         }
         battle.bindStateClosure = { button, cancellableSet in
-            let selfUserId = manager.userState.selfInfo.userId
-            let battleUsersPublisher = manager.subscribeBattleState(StateSelector(keyPath: \LSBattleState.battleUsers))
-            let connectedUsersPublisher = manager.subscribeCoHostState(StateSelector(keyPath: \LSCoHostState.connectedUsers))
-            let displayResultPublisher = manager.subscribeBattleState(StateSelector(keyPath: \LSBattleState.isOnDisplayResult))
+            let selfUserId = manager.coreUserState.selfInfo.userId
+            let battleUsersPublisher = manager.subscribeState(StateSelector(keyPath: \LSBattleState.battleUsers))
+            let connectedUsersPublisher = manager.subscribeState(StateSelector(keyPath: \LSCoHostState.connectedUsers))
+            let displayResultPublisher = manager.subscribeState(StateSelector(keyPath: \LSBattleState.isOnDisplayResult))
           
             battleUsersPublisher
                 .removeDuplicates()
@@ -163,14 +165,13 @@ extension LiveRoomRootMenuDataCreator {
         
         var linkMic = LSButtonMenuInfo(normalIcon: "live_link_icon")
         linkMic.tapAction = { sender in
-            if manager.coHostManager.isCoHostConnecting() {
+            if !manager.coHostState.connectedUsers.isEmpty {
                 return
             }
             routerManager.router(action: .present(.liveLinkControl))
         }
         linkMic.bindStateClosure = { button, cancellableSet in
-            let selector = StateSelector(keyPath: \LSCoHostState.connectedUsers)
-            manager.coHostManager.subscribeCoHostState(selector)
+            manager.subscribeState(StateSelector(keyPath: \LSCoHostState.connectedUsers))
                 .map { !$0.isEmpty }
                 .receive(on: RunLoop.main)
                 .sink { isConnecting in
@@ -187,12 +188,6 @@ extension LiveRoomRootMenuDataCreator {
             routerManager.router(action: .present(.featureSetting(settingModel)))
         }
         menus.append(setting)
-        
-        var music = LSButtonMenuInfo(normalIcon: "live_anchor_music_icon")
-        music.tapAction = { sender in
-            routerManager.router(action: .present(.musicList))
-        }
-        menus.append(music)
         return menus
     }
     
@@ -208,7 +203,6 @@ extension LiveRoomRootMenuDataCreator {
                 routerManager.router(action: .routeTo(.anchor))
             } defaultClosure: { alertPanel in
                 coreView.terminateBattle(battleId: manager.battleState.battleId) {
-                    manager.battleManager.onExitBattle()
                 } onError: { _, _ in
                 }
                 routerManager.router(action: .routeTo(.anchor))
@@ -254,7 +248,7 @@ extension LiveRoomRootMenuDataCreator {
                                        designConfig: designConfig,
                                        actionClosure: { [weak coreView] _ in
             guard let coreView = coreView else { return }
-            coreView.startCamera(useFrontCamera: !manager.coreMediaState.isFrontCamera) {} onError: { code, msg in }
+            coreView.switchCamera(isFront: !manager.coreMediaState.isFrontCamera)
         }))
         model.items.append(LSFeatureItem(normalTitle: .videoParametersText,
                                        normalImage: .liveBundleImage("live_setting_video_parameters"),
@@ -291,7 +285,7 @@ extension LiveRoomRootMenuDataCreator {
         menus.append(gift)
         var linkMic = LSButtonMenuInfo(normalIcon: "live_link_icon", selectIcon: "live_linking_icon")
         linkMic.tapAction = { sender in
-            if manager.coHostManager.isCoHostConnecting() {
+            if !manager.coHostState.connectedUsers.isEmpty {
                 return
             }
             if sender.isSelected {
@@ -300,16 +294,18 @@ extension LiveRoomRootMenuDataCreator {
                 designConfig.lineColor = .g8
                 let item = ActionItem(title: .cancelLinkMicRequestText, designConfig: designConfig) { _ in
                     routerManager.router(action: .dismiss())
+                    manager.onStartCancelIntraRoomConnection()
                     coreView.cancelIntraRoomConnection(userId: "") {
-                        manager.update(coGuestStatus: .none)
+                        manager.onCancelIntraRoomConnection()
                     } onError: { code, message in
-                        let error = InternalError(error: code, message: message)
+                        let error = InternalError(code: code.rawValue, message: message)
+                        manager.onCancelIntraRoomConnection()
                         manager.toastSubject.send(error.localizedMessage)
                     }
                 }
                 routerManager.router(action: .present(.listMenu(ActionPanelData(items: [item]))))
             } else {
-                let isOnSeat = manager.coGuestState.connectedUserList.contains(where: { $0.userId == manager.userState.selfInfo.userId })
+                let isOnSeat = manager.coreCoGuestState.seatList.contains(where: { $0.userId == manager.coreUserState.selfInfo.userId })
                 if isOnSeat {
                     self.confirmToTerminateCoGuest(routerManager: routerManager, coreView: coreView)
                 } else {
@@ -319,7 +315,7 @@ extension LiveRoomRootMenuDataCreator {
             }
         }
         linkMic.bindStateClosure = { button, cancellableSet in
-            manager.subscribeCoGuestState(StateSelector(keyPath: \LSCoGuestState.coGuestStatus))
+            manager.subscribeState(StateSelector(keyPath: \LSCoGuestState.coGuestStatus))
                 .removeDuplicates()
                 .receive(on: RunLoop.main)
                 .sink { coGuestStatus in
@@ -327,7 +323,7 @@ extension LiveRoomRootMenuDataCreator {
                 }
                 .store(in: &cancellableSet)
             
-            manager.subscribeCoHostState(StateSelector(keyPath: \LSCoHostState.connectedUsers))
+            manager.subscribeState(StateSelector(keyPath: \LSCoHostState.connectedUsers))
                 .removeDuplicates()
                 .receive(on: RunLoop.main)
                 .sink { users in
@@ -346,7 +342,7 @@ extension LiveRoomRootMenuDataCreator {
         return menus
     }
     
-    private func onCoGuestStatusChanged(button: UIButton, enable: Bool, coGuestStatus: CoGuestStatus) {
+    private func onCoGuestStatusChanged(button: UIButton, enable: Bool, coGuestStatus: LSCoGuestState.CoGuestStatus) {
         let imageName: String
         var isSelected = false
         
@@ -380,24 +376,18 @@ extension LiveRoomRootMenuDataCreator {
 }
 
 private extension String {
-    static let videoLinkRequestText = localized("live.audience.linkType.videoLinkRequest")
-    static var audioLinkRequestText = localized("live.audience.linkType.audioLinkRequest")
-    static let waitToLinkText = localized("live.audience.wait.link.tips")
-    static let beautyText = localized("live.anchor.setting.beauty")
-    static let audioEffectsText = localized("live.anchor.setting.audio.effects")
-    static let flipText = localized("live.anchor.setting.flip")
-    static let videoParametersText = localized("live.anchor.setting.video.parameters")
-    static let moreSettingText = localized("live.anchor.setting.more.setting")
+    static let videoLinkRequestText = localized("Apply for video link")
+    static var audioLinkRequestText = localized("Apply for audio link")
+    static let waitToLinkText = localized("You have submitted a link mic request, please wait for the author approval")
+    static let beautyText = localized("Beauty")
+    static let audioEffectsText = localized("Audio")
+    static let flipText = localized("Flip")
+    static let videoParametersText = localized("Video Config")
+    static let confirmEndBattleText = localized("End PK")
+    static let endBattleAlertText = localized("Are you sure you want to end the battle? The current result will be the final result after the end")
+    static let alertCancelText = localized("Cancel")
     
-    static let connectDisableText = localized("live.error.connectionDisable.linkMic")
-    static let connectDisableForBattleText = localized("live.error.connectionDisable.battle")
-    static let linkMicDisableTExt = localized("live.error.linkMicDisable.connecting")
-    static let battleDisableText = localized("live.error.battleDisable.unconnected")
-    static let confirmEndBattleText = localized("live.battle.confirm.end")
-    static let endBattleAlertText = localized("live.battle.end.alert")
-    static let alertCancelText = localized("live.alert.cancel")
-    
-    static let streamDashboardText = localized("live.streamDashboard.title")
-    static let cancelLinkMicRequestText = localized("live.audience.link.confirm.cancelLinkMicRequest")
-    static let confirmTerminateCoGuestText = localized("live.audience.link.confirm.closeLinkMic")
+    static let streamDashboardText = localized("Dashboard")
+    static let cancelLinkMicRequestText = localized("Cancel application for link mic")
+    static let confirmTerminateCoGuestText = localized("End Link")
 }

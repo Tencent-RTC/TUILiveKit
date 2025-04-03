@@ -143,26 +143,6 @@ extension AudioEffectDataProvider: AudioEffectMenuDateGenerator {
     private func secondSectionMenus() -> [SettingItem] {
         guard let manager = manager else { return [] }
         var secondSection:[SettingItem] = []
-        var musicVolume = SliderItem(title: .musicVolumeText)
-        musicVolume.min = 0
-        musicVolume.max = 100
-        musicVolume.currentValue = Float(manager.state.musicVolume)
-        musicVolume.valueDidChanged = { [weak self] value in
-            guard let self = self else { return }
-            self.manager?.setMusicVolume(Int(value))
-        }
-        musicVolume.subscribeState = { [weak self] cell, cancellableSet in
-            guard let self = self else { return }
-            self.manager?.subscribeState(StateSelector(keyPath: \.musicVolume))
-                .receive(on: DispatchQueue.main)
-                .sink { [weak cell] value in
-                    guard let sliderCell = cell else { return }
-                    sliderCell.configSlider.value = Float(value)
-                    sliderCell.valueLabel.text = "\(value)"
-                }
-                .store(in: &cancellableSet)
-        }
-        secondSection.append(musicVolume)
         var microphoneVolume = SliderItem(title: .microphoneVolumeText)
         microphoneVolume.min = 0
         microphoneVolume.max = 100

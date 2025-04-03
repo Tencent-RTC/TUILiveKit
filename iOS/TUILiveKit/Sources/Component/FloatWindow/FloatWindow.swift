@@ -12,6 +12,7 @@ import LiveStreamCore
 protocol FloatWindowDataSource {
     func getRoomId() -> String
     func getOwnerId() -> String
+    func getIsLinking() -> Bool
     // TODO: (gg) Need to consider the type of VoiceRoom's coreView
     func getCoreView() -> LiveCoreView
     func relayoutCoreView()
@@ -66,13 +67,7 @@ extension FloatWindow {
     func resumeLive(atViewController: UIViewController) -> Bool {
         guard isShow, let controller = controller else { return false }
         controller.relayoutCoreView()
-        if let nav = controller.navigationController, nav == atViewController {
-            nav.pushViewController(controller, animated: true)
-        } else if let nav = atViewController as? UINavigationController {
-            nav.pushViewController(controller, animated: true)
-        } else {
-            atViewController.present(controller, animated: true)
-        }
+        TUITool.applicationKeywindow().rootViewController?.present(controller, animated: true)
         dismiss()
         return true
     }
@@ -97,8 +92,8 @@ extension FloatWindow {
     }
     
     func getIsLinking() -> Bool {
-        guard let coGuestState: CoGuestState = coreView?.getState() else { return false }
-        return coGuestState.coGuestStatus == .linking
+        guard let controller = controller else { return false }
+        return controller.getIsLinking()
     }
 }
 

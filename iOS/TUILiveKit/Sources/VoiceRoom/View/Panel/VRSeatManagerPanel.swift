@@ -8,7 +8,7 @@
 import UIKit
 import RTCCommon
 import Combine
-import SeatGridView
+import LiveStreamCore
 import RTCRoomEngine
 
 class VRSeatManagerPanel: RTCBaseView {
@@ -62,20 +62,14 @@ class VRSeatManagerPanel: RTCBaseView {
     }()
     
     private lazy var onTheSeatHeaderLabel: UILabel = {
-        let label = UILabel(frame: CGRect(x: 24.scale375(),
-                                          y: 0, 
-                                          width: (tableView.frame.width - 20).scale375Height(),
-                                          height: 30.scale375()))
+        let label = UILabel(frame: .zero)
         label.textColor = .g7
         label.font = .customFont(ofSize: 16, weight: .medium)
         return label
     }()
     
     private lazy var applySeatHeaderLabel: UILabel = {
-        let label = UILabel(frame: CGRect(x: 24.scale375(),
-                                          y: 0,
-                                          width: (tableView.frame.width - 20).scale375Height(),
-                                          height: 30.scale375()))
+        let label = UILabel(frame: .zero)
         label.textColor = .g7
         label.font = .customFont(ofSize: 16, weight: .medium)
         return label
@@ -283,9 +277,19 @@ extension VRSeatManagerPanel: UITableViewDelegate {
         headerView.backgroundColor = .clear
         if section == 0 && onTheSeatList.count > 0 {
             headerView.addSubview(onTheSeatHeaderLabel)
-        } 
+            onTheSeatHeaderLabel.snp.makeConstraints { make in
+                make.leading.equalToSuperview().offset(24.scale375())
+                make.trailing.equalToSuperview().offset(-24.scale375())
+                make.top.bottom.equalToSuperview()
+            }
+        }
         if section == 1 && applySeatList.count > 0 {
             headerView.addSubview(applySeatHeaderLabel)
+            applySeatHeaderLabel.snp.makeConstraints { make in
+                make.leading.equalToSuperview().offset(24.scale375())
+                make.trailing.equalToSuperview().offset(-24.scale375())
+                make.top.bottom.equalToSuperview()
+            }
         }
         return headerView
     }
@@ -327,8 +331,8 @@ extension VRSeatManagerPanel: UITableViewDataSource {
                     guard let self = self else { return }
                     self.coreView?.kickUserOffSeatByAdmin(userId: seatInfo.userId) {
                     } onError: { [weak self] code, message in
-                        guard let self = self, let err = TUIError(rawValue: code) else { return }
-                        let error = InternalError(error: err, message: message)
+                        guard let self = self else { return }
+                        let error = InternalError(code: code, message: message)
                         self.manager.toastSubject.send(error.localizedMessage)
                     }
                 }
@@ -344,8 +348,8 @@ extension VRSeatManagerPanel: UITableViewDataSource {
                         guard let self = self else { return }
                         self.manager.fetchSeatApplicationList()
                     } onError: { [weak self] code, message in
-                        guard let self = self, let err = TUIError(rawValue: code) else { return }
-                        let error = InternalError(error: err, message: message)
+                        guard let self = self else { return }
+                        let error = InternalError(code: code, message: message)
                         self.manager.toastSubject.send(error.localizedMessage)
                     }
                 }
@@ -356,11 +360,11 @@ extension VRSeatManagerPanel: UITableViewDataSource {
                         guard let self = self else { return }
                         self.manager.fetchSeatApplicationList()
                     } onError: { [weak self] code, message in
-                        guard let self = self, let err = TUIError(rawValue: code) else { return }
+                        guard let self = self else { return }
                         let userInfo = TUIUserInfo()
                         userInfo.userId = seatApplication.userId
                         manager.removeSeatUserInfo(userInfo)
-                        let error = InternalError(error: err, message: message)
+                        let error = InternalError(code: code, message: message)
                         self.manager.toastSubject.send(error.localizedMessage)
                     }
                 }
@@ -371,10 +375,10 @@ extension VRSeatManagerPanel: UITableViewDataSource {
 }
 
 fileprivate extension String {
-    static let seatControlTitleText = localized("live.anchor.link.control.title")
-    static let needRequestText = localized("live.anchor.setting.need.request")
-    static let onSeatListText = localized("live.anchor.link.control.onSeatList.xxx")
-    static let applySeatListText = localized("live.anchor.link.control.applySeatList.xxx")
-    static let inviteText = localized("live.seat.invite")
-    static let inviteAudienceText = localized("live.seat.inviteAudience")
+    static let seatControlTitleText = localized("Link Management")
+    static let needRequestText = localized("Require owner's consent to speak")
+    static let onSeatListText = localized("On Seat List (xxx)")
+    static let applySeatListText = localized("Application List (xxx)")
+    static let inviteText = localized("Invite")
+    static let inviteAudienceText = localized("No users in the seat, go to invite")
 }
