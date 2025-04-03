@@ -1,4 +1,4 @@
-import 'package:tencent_live_uikit/platform/index.dart';
+import 'package:tencent_live_uikit/common/platform/index.dart';
 
 enum LiveKitLoggerLevel { info, warning, error }
 

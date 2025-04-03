@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:tencent_live_uikit_example/generated/l10n.dart';
 import 'package:tencent_live_uikit_example/src/service/app_manager.dart';
 import 'package:tencent_live_uikit_example/src/store/app_store.dart';
-import 'package:tencent_live_uikit_example/src/view/main/main_widget.dart';
+
+import '../main/main_widget.dart';
 
 class ProfileWidget extends StatefulWidget {
   const ProfileWidget({super.key});
@@ -49,10 +50,14 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                 Column(
                   children: [
                     SizedBox(
-                        width: _calculateTextWidth(S.current.app_trtc, const TextStyle(fontSize: 32)) >
+                        width: _calculateTextWidth(S.current.app_trtc,
+                                    const TextStyle(fontSize: 32)) >
                                 (MediaQuery.of(context).size.width - 70 - 10)
-                            ? _calculateTextWidth(S.current.app_trtc, const TextStyle(fontSize: 32)) / 2
-                            : _calculateTextWidth(S.current.app_trtc, const TextStyle(fontSize: 32)),
+                            ? _calculateTextWidth(S.current.app_trtc,
+                                    const TextStyle(fontSize: 32)) /
+                                2
+                            : _calculateTextWidth(S.current.app_trtc,
+                                const TextStyle(fontSize: 32)),
                         child: Text(
                           S.current.app_trtc,
                           maxLines: 3,
@@ -92,16 +97,19 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                   const SizedBox(width: 10),
                   Text(
                     S.current.app_nick_name,
-                    style: const TextStyle(fontSize: 16, fontStyle: FontStyle.normal, color: Colors.black),
+                    style: const TextStyle(
+                        fontSize: 16,
+                        fontStyle: FontStyle.normal,
+                        color: Colors.black),
                   ),
                   const SizedBox(width: 10),
                   SizedBox(
                     width: MediaQuery.of(context).size.width - 200,
                     child: TextField(
                       autofocus: true,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: InputBorder.none,
-                        labelStyle: const TextStyle(fontSize: 16),
+                        labelStyle: TextStyle(fontSize: 16),
                       ),
                       onChanged: ((value) => AppStore.userName.value = value),
                     ),
@@ -116,12 +124,17 @@ class _ProfileWidgetState extends State<ProfileWidget> {
               child: ElevatedButton(
                 onPressed: () => _isButtonEnabled ? _setUserInfo() : null,
                 style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(const Color(0xff056DF6)),
-                  shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
+                  backgroundColor:
+                      WidgetStateProperty.all(const Color(0xff056DF6)),
+                  shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15))),
                 ),
                 child: Text(S.current.app_confirm,
                     style: const TextStyle(
-                        fontSize: 16, fontStyle: FontStyle.normal, fontWeight: FontWeight.w500, color: Colors.white)),
+                        fontSize: 16,
+                        fontStyle: FontStyle.normal,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white)),
               ),
             )
           ],
@@ -141,7 +154,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     _isButtonEnabled = false;
     if (AppStore.userName.value.isNotEmpty) {
       int index = Random().nextInt(_userAvatarArray.length);
-      var result = await AppManager.setSelfInfo(_userAvatarArray[index], AppStore.userName.value);
+      var result = await AppManager.setSelfInfo(
+          _userAvatarArray[index], AppStore.userName.value);
       if (result.code == 0) {
         _enterMainWidget();
       } else {
@@ -165,7 +179,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(S.current.app_login_fail),
-          content: Text("result.code:${result.code}, result.message: ${result.message}？"),
+          content: Text(
+              "result.code:${result.code}, result.message: ${result.message}？"),
           actions: [
             TextButton(
               onPressed: () {

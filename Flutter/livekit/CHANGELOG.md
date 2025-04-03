@@ -1,16 +1,30 @@
-## 2.2.3
+# TUILiveKit
+
+## 3.0.0
+
 ### New Features
+
+- Android & iOS: Supoorts voice chat room scene
+
+## 2.2.3
+
+### New Features
+
 - Android & iOS: Supports sending bullet messages
 - Android & iOS: Supports displaying bullet messages
 - Android & iOS: Supports inserting local bullet messages into bullet message display components
-- Android & iOS: Supports custom bullet messages in bullet message display components
+- Android & iOS: Supports custom bullet messages in bullet message display components.
 
 ## 2.2.2
+
 ### New Features
+
 - Android&iOS: Supports play screen shared stream.
 
 ## 2.2.1
+
 ### New Features
+
 - Android&iOS: Supports HD live broadcast.
 - Android&iOS: Supports live broadcast.
 - Android&iOS: Supports viewer connection.

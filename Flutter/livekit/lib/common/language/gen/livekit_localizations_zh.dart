@@ -1,607 +1,723 @@
 import 'livekit_localizations.dart';
 
+// ignore_for_file: type=lint
+
 /// The translations for Chinese (`zh`).
 class LiveKitLocalizationsZh extends LiveKitLocalizations {
   LiveKitLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
-  String get livekit_error_success => '操作成功';
+  String get live_client_error_success => '操作成功';
 
   @override
-  String get livekit_error_failed => '操作错误';
+  String get live_client_error_failed => '暂未归类的通用错误';
 
   @override
-  String get livekit_error_freqLimit => '请求被限频，请稍后重试';
+  String get live_client_error_freq_limit => '请求被限频，请稍后重试';
 
   @override
-  String get livekit_error_repeat_operation => '重复操作';
+  String get live_client_error_repeat_operation => '重复操作';
 
   @override
-  String get livekit_error_sdkAppId_notFound =>
-      '未找到 SDKAppID，请在腾讯云视立方 SDK[控制台](https://console_cloud_tencent_com/vcube/project/manage)确认应用信息';
+  String get live_client_error_sdk_app_id_not_found =>
+      '未找到 SDKAppID，请在 腾讯云视立方 SDK 控制台 确认应用信息';
 
   @override
-  String get livekit_error_invalidParameter => '调用 API 时，传入的参数不合法，检查入参是否合法';
+  String get live_client_error_invalid_parameter =>
+      '调用 API 时，传入的参数不合法，检查入参是否合法';
 
   @override
-  String get livekit_error_sdkNotInitialized => '未登录,请调用 Login 接口';
+  String get live_client_error_sdk_not_initialized => '未登录,请调用 Login 接口';
 
   @override
-  String get livekit_error_permissionDenied => '获取权限失败，当前未授权音/视频权限，请查看是否开启设备权限';
+  String get live_client_error_permission_denied =>
+      '获取权限失败，当前未授权音/视频权限，请查看是否开启设备权限';
 
   @override
-  String get livekit_error_requirePayment => '检查云服务账户是否正常';
+  String get live_client_error_require_payment =>
+      '该功能需要开通额外的套餐，请在 腾讯云视立方 SDK 控制台 按需开通对应套餐';
 
   @override
-  String get livekit_error_cameraStartFail => '系统问题，打开摄像头失败。检查摄像头设备是否正常';
+  String get live_client_error_camera_start_fail => '系统问题，打开摄像头失败。检查摄像头设备是否正常';
 
   @override
-  String get livekit_error_cameraNotAuthorized => '摄像头没有系统授权, 检查系统授权';
+  String get live_client_error_camera_not_authorized => '摄像头没有系统授权, 检查系统授权';
 
   @override
-  String get livekit_error_cameraOccupied => '摄像头被占用，检查是否有其他进程使用摄像头';
+  String get live_client_error_camera_occupied => '摄像头被占用，检查是否有其他进程使用摄像头';
 
   @override
-  String get livekit_error_cameraDeviceEmpty => '当前无摄像头设备，请插入摄像头设备解决该问题';
+  String get live_client_error_camera_device_empty => '当前无摄像头设备，请插入摄像头设备解决该问题';
 
   @override
-  String get livekit_error_microphoneStartFail => '系统问题，打开麦克风失败。检查麦克风设备是否正常';
+  String get live_client_error_microphone_start_fail =>
+      '系统问题，打开麦克风失败。检查麦克风设备是否正常';
 
   @override
-  String get livekit_error_microphoneNotAuthorized => '麦克风没有系统授权，检查系统授权';
+  String get live_client_error_microphone_not_authorized => '麦克风没有系统授权，检查系统授权';
 
   @override
-  String get livekit_error_microphoneOccupied => '麦克风被占用';
+  String get live_client_error_microphone_occupied => '麦克风被占用';
 
   @override
-  String get livekit_error_microphoneDeviceEmpty => '当前无麦克风设备';
+  String get live_client_error_microphone_device_empty => '当前无麦克风设备';
 
   @override
-  String get livekit_error_getScreenSharingTargetFailed =>
+  String get live_client_error_get_screen_sharing_target_failed =>
       '获取屏幕分享源（屏幕和窗口）失败，检查屏幕录制权限';
 
   @override
-  String get livekit_error_startScreenSharingFailed =>
+  String get live_client_error_start_screen_sharing_failed =>
       '开启屏幕分享失败，检查房间内是否有人正在屏幕分享';
 
   @override
-  String get livekit_error_roomId_notExist => '进房时房间不存在，或许已被解散';
+  String get live_client_error_operation_invalid_before_enter_room =>
+      '需要进房后才可使用此功能';
 
   @override
-  String get livekit_error_operation_invalid_beforeEnterRoom => '需要进房后才可使用此功能';
+  String get live_client_error_exit_not_supported_for_room_owner =>
+      '房主不支持退房操作，房主只能解散房间';
 
   @override
-  String get livekit_error_exitNotSupported_forRoomOwner => '请转让房主后再退房';
-
-  @override
-  String get livekit_error_operation_notSupported_inCurrentRoomType =>
+  String get live_client_error_operation_not_supported_in_current_room_type =>
       '当前房间类型下不支持该操作';
 
   @override
-  String get livekit_error_operation_notSupported_inCurrentSpeechMode =>
-      '当前发言模式下不支持该操作';
+  String get live_client_error_room_id_invalid =>
+      '创建房间 ID 非法，自定义 ID 必须为可打印 ASCII 字符（0x20-0x7e），最长48个字节';
 
   @override
-  String get livekit_error_roomId_invalid =>
-      '创建房间 ID 非法，自定义 ID 必须为可打印 ASCII 字符（0x20-0x7e），最长 48 个字节';
+  String get live_client_error_room_name_invalid =>
+      '房间名称非法，名称最长30字节，字符编码必须是 UTF-8 ，如果包含中文';
 
   @override
-  String get livekit_error_roomId_occupied => '房间 ID 已被使用，请选择别的房间 ID';
+  String get live_client_error_already_in_other_room =>
+      '当前用户已在别的房间内，单个 roomEngine 实例只支持用户进入一个房间，如果要进入不同的房间请先退房或者使用新的 roomEngine 实例';
 
   @override
-  String get livekit_error_roomName_invalid =>
-      '房间名称非法，名称最长 30 字节，字符编码必须是 UTF-8，如果包含中文';
+  String get live_client_error_user_not_exist => '用户不存在';
 
   @override
-  String get livekit_error_already_in_OtherRoom => '当前用户已在别的房间内，需要先退房才能加入新的房间';
+  String get live_client_error_user_need_owner_permission => '需要房主权限才能操作';
 
   @override
-  String get livekit_error_userNotExist => '用户不存在';
+  String get live_client_error_user_need_admin_permission => '需要房主或者管理员权限才能操作';
 
   @override
-  String get livekit_error_userNotEntered => '用户不在当前房间内';
+  String get live_client_error_request_no_permission => '信令请求无权限，例如取消非自己发起的邀请';
 
   @override
-  String get livekit_error_user_need_OwnerPermission => '需要房主权限才能操作';
+  String get live_client_error_request_id_invalid => '信令请求 ID 无效或已经被处理过';
 
   @override
-  String get livekit_error_user_need_AdminPermission => '需要房主或者管理员权限才能操作';
+  String get live_client_error_request_id_repeat => '信令请求重复';
 
   @override
-  String get livekit_error_request_noPermission => '信令请求无权限，例如取消非自己发起的邀请';
+  String get live_client_error_max_seat_count_limit => '最大麦位超出套餐包数量限制';
 
   @override
-  String get livekit_error_requestId_invalid => '信令请求 ID 无效或已经被处理过';
+  String get live_client_error_seat_index_not_exist => '麦位编号不存在';
 
   @override
-  String get livekit_error_repeat_requestId => '信令请求重复';
+  String get live_client_error_open_microphone_need_seat_unlock => '当前麦位音频被锁';
 
   @override
-  String get livekit_error_conflict_requestId => '信令请求冲突';
-
-  @override
-  String get livekit_error_max_seat_count_limit => '最大麦位超出套餐包数量限制';
-
-  @override
-  String get livekit_error_already_in_seat => '当前用户已经在麦位上';
-
-  @override
-  String get livekit_error_seat_occupied => '当前麦位已经有人了';
-
-  @override
-  String get livekit_error_seat_locked => '当前麦位被锁';
-
-  @override
-  String get livekit_error_seat_index_not_exist => '麦位编号不存在';
-
-  @override
-  String get livekit_error_user_not_in_seat => '当前用户没有在麦上';
-
-  @override
-  String get livekit_error_all_seat_occupied => '上麦人数已满';
-
-  @override
-  String get livekit_error_seat_not_support_link_mic => '不支持连麦';
-
-  @override
-  String get livekit_error_open_microphone_need_seat_unlock =>
-      '当前麦位音频被锁，需要解锁后才能打开麦克风';
-
-  @override
-  String get livekit_error_open_microphone_need_permission_from_admin =>
+  String get live_client_error_open_microphone_need_permission_from_admin =>
       '需要向房主或管理员申请后打开麦克风';
 
   @override
-  String get livekit_error_open_camera_need_seat_unlock =>
-      '当前麦位视频被锁，需要解锁后才能打开摄像头';
+  String get live_client_error_open_camera_need_seat_unlock =>
+      '当前麦位视频被锁, 需要由房主解锁麦位后，才能打开摄像头';
 
   @override
-  String get livekit_error_open_camera_need_permission_from_admin =>
+  String get live_client_error_open_camera_need_permission_from_admin =>
       '需要向房主或管理员申请后打开摄像头';
 
   @override
-  String get livekit_error_open_screen_share_need_seat_unlock =>
-      '当前麦位屏幕分享被锁，需要解锁后才能打开屏幕分享';
+  String get live_client_error_open_screen_share_need_seat_unlock =>
+      '当前麦位视频被锁, 需要由房主解锁麦位后，才能打开屏幕分享';
 
   @override
-  String get livekit_error_open_screen_share_need_permission_from_admin =>
+  String get live_client_error_open_screen_share_need_permission_from_admin =>
       '需要向房主或管理员申请后打开屏幕分享';
 
   @override
-  String get livekit_error_send_message_disabled_for_all => '当前房间已开启全员禁言';
+  String get live_client_error_send_message_disabled_for_all => '当前房间已开启全员禁言';
 
   @override
-  String get livekit_error_send_message_disabled_for_current => '当前房间内，您已被禁言';
+  String get live_client_error_send_message_disabled_for_current =>
+      '当前房间内，您已被禁言';
 
   @override
-  String get livekit_take_seat_rejected => '上麦申请被拒绝';
+  String get live_client_error_room_not_support_preloading => '当前房间不支持预加载';
 
   @override
-  String get livekit_room_destroy => '直播已结束';
+  String get live_server_error_system_internal_error => '服务器内部错误，请重试';
 
   @override
-  String get livekit_kicked_out_of_seat => '被主持人踢下麦位';
+  String get live_server_error_param_illegal => '请参数非法，请根据错误描述检查请求是否正确';
 
   @override
-  String get livekit_take_seat_timeout => '上麦申请超时';
+  String get live_server_error_room_id_exists => '房间 ID 已被使用，请选择别的房间 ID';
 
   @override
-  String get livekit_anchor => '主播';
+  String get live_server_error_room_does_not_exist => '房间不存在，或者曾经存在过，但是目前已经被解散';
 
   @override
-  String get livekit_audience => '观众';
+  String get live_server_error_not_a_room_member => '非房间成员';
 
   @override
-  String get livekit_edit_cover => '修改封面';
+  String get live_server_error_insufficient_operation_permissions => '操作权限不足';
 
   @override
-  String get livekit_stream_categories => '直播分类：';
+  String get live_server_error_no_payment_information => '无付费信息，需在控制台购买套餐包';
 
   @override
-  String get livekit_stream_privacy_status => '直播模式：';
+  String get live_server_error_room_is_full => '房间成员已满';
 
   @override
-  String get livekit_stream_privacy_status_public => '公开';
+  String get live_server_error_tag_quantity_exceeds_upper_limit => '标签数量超上限';
 
   @override
-  String get livekit_stream_privacy_status_privacy => '隐私';
+  String get live_server_error_room_id_has_been_used =>
+      '房间 ID 已被使用，并且操作者为房主，可以直接使用';
 
   @override
-  String get livekit_stream_categories_daily_chat => '日常聊天';
+  String get live_server_error_room_id_has_been_occupied_by_chat =>
+      '房间 ID 已被 IM 占用，可以换一个房间 ID 使用，或者先通过 IM 接口解散该群';
 
   @override
-  String get livekit_stream_categories_appearance => '颜值';
+  String get live_server_error_creating_rooms_exceeds_the_frequency_limit =>
+      '频率超过限制，例如创建房间超过频率超限，同一房间 ID， 1秒内只能创建一次';
 
   @override
-  String get livekit_stream_categories_knowledge_teaching => '知识教学';
+  String get live_server_error_exceeds_the_upper_limit =>
+      '超过付费上限，例如麦位数，pk场次房间数量等超过付费限制';
 
   @override
-  String get livekit_stream_categories_shopping => '购物';
+  String get live_server_error_invalid_room_type => '无效的房间类型';
 
   @override
-  String get livekit_stream_categories_music => '音乐';
+  String get live_server_error_this_member_has_been_banned => '该成员已经被封禁';
 
   @override
-  String get livekit_function_item_beauty => '美颜';
+  String get live_server_error_this_member_has_been_muted => '该成员已经被禁言';
 
   @override
-  String get livekit_function_item_music => '音乐';
+  String get live_server_error_requires_password => '当前房间需要密码才能进入';
 
   @override
-  String get livekit_function_item_flip => '翻转';
+  String get live_server_error_room_entry_password_error => '进房密码错误';
 
   @override
-  String get livekit_function_item_mirror => '镜像';
+  String get live_server_error_room_admin_quantity_exceeds_the_upper_limit =>
+      '管理员数量超过上限';
 
   @override
-  String get livekit_start_live => '开始直播';
+  String get live_server_error_signal_request_conflict => '信令请求冲突';
 
   @override
-  String get livekit_preset_cover => '系统图库';
+  String get live_server_error_mic_seat_is_locked => '麦位已锁定，可以尝试换一个麦位';
 
   @override
-  String get livekit_set_as_cover => '设为封面';
+  String get live_server_error_seat_is_already_occupied => '当前麦位已经有人了';
 
   @override
-  String get livekit_stream_type => '直播分类';
+  String get live_server_error_already_on_the_mic_queue => '已经处于排麦状态';
 
   @override
-  String get livekit_stream_id => '直播间号';
+  String get live_server_error_already_on_the_mic => '已经处于麦上状态';
 
   @override
-  String get livekit_barrage_input_hint => '请输入弹幕';
+  String get live_server_error_not_on_the_mic_queue => '没有在排麦列表中';
 
   @override
-  String get livekit_barrage_btn_send => '发送';
+  String get live_server_error_the_seats_are_all_taken => '麦位已满';
 
   @override
-  String get livekit_barrage_me => '我';
+  String get live_server_error_not_on_the_mic_seat => '未在麦上';
 
   @override
-  String get livekit_barrage_agree => '同意';
+  String get live_server_error_user_is_already_on_the_mic_seat => '已经有用户在麦位上';
 
   @override
-  String get livekit_barrage_warning_not_empty => '输入不能为空';
+  String get live_server_error_room_does_not_support_mic_ability => '该房间不支持连麦';
 
   @override
-  String get livekit_settings => '设置';
+  String get live_server_error_the_seat_list_is_empty => '连麦列表为空';
 
   @override
-  String get livekit_audio_effect => '音效';
+  String get live_server_error_connection_does_not_exist => '当前连线不存在或结束';
 
   @override
-  String get livekit_more_settings => '更多设置';
+  String get live_server_error_room_is_in_connection => '该房间已经在连线中';
 
   @override
-  String get livekit_video_params => '视频参数';
+  String get live_server_error_there_is_a_pending_connection_request =>
+      '该房间存在待处理的连线请求';
 
   @override
-  String get livekit_video_config => '视频参数';
+  String get live_server_error_is_connecting_with_other_rooms => '当前房间与其他房间连线中';
 
   @override
-  String get livekit_link => '连麦';
+  String get live_server_error_has_exceeded_the_limit_in_connection_or_battle =>
+      '超过连线和 battle 房间数量上限';
 
   @override
-  String get livekit_pk => '主播PK';
+  String get live_server_error_creating_connections_too_frequent =>
+      '短时间内连线过于频繁，稍等一会再试';
 
   @override
-  String get livekit_send_gift => '送礼物';
+  String get live_server_error_battle_does_not_exist_or_has_ended =>
+      '该场次 battle 不存在或已结束';
 
   @override
-  String get livekit_like => '点赞';
+  String get live_server_error_no_rooms_in_the_battle_is_valid =>
+      '发起的 battle 里没有一个有效的房间';
 
   @override
-  String get livekit_comment => '评论';
+  String get live_server_error_creating_battles_too_frequently =>
+      '短时间内频繁发起 battle, 稍等一会再试';
 
   @override
-  String get livekit_hidden_audience_nickname => '隐藏观众昵称';
+  String get live_server_error_the_room_is_not_in_the_battle =>
+      '该房间已经不在 battle 中';
 
   @override
-  String get livekit_allow_share => '允许分享';
+  String get live_server_error_in_other_battle => '该房间处于其他的 battle 场次中';
 
   @override
-  String get livekit_waiting_pass => '待通过';
+  String get live_server_error_there_is_a_pending_battle_request =>
+      '该房间存在待处理的 battle 请求';
 
   @override
-  String get livekit_gift_give_gift => '送出';
+  String
+      get live_server_error_is_not_allowed_to_cancel_battle_for_room_in_battle =>
+          '该房间处于 battle 中';
 
   @override
-  String get livekit_gift_title => '礼物';
+  String get live_server_error_not_started_yet => '该 battle 场次还未开始';
 
   @override
-  String get livekit_gift_me => '我';
+  String get live_server_error_battle_session_has_ended => '该 battle 场次已经结束';
 
   @override
-  String get livekit_music => '音乐';
+  String get live_server_error_metadata_number_of_keys_exceeds_the_limit =>
+      '房间 meta 数据中的 key 数量超过上限';
 
   @override
-  String get livekit_music_cheerful => '欢快';
+  String get live_server_error_metadata_size_of_value_exceeds_the_limit =>
+      '房间 meta 数据中单个 key 对应的 val 超过最大字节数限制';
 
   @override
-  String get livekit_music_melancholy => '忧郁';
+  String get live_server_error_metadata_total_size_exceeds_the_limit =>
+      '房间 meta数据中所有 key 对应的 val 总和超过最大字节数限制';
 
   @override
-  String get livekit_music_wonder_world => '神奇世界';
+  String get live_server_error_metadata_no_valid_keys =>
+      '删除房间 meta 数据时候，被删除的 key 没有一个存在';
 
   @override
-  String get livekit_clarity => '清晰度';
+  String
+      get live_server_error_metadata_the_size_of_key_exceeds_the_maximum_byte_limit =>
+          '房间 meta 数据中的 key 大小超过了最大字节数限制';
 
   @override
-  String get livekit_fps => '帧率';
+  String get live_voiceroom_take_seat_rejected => '上麦申请被拒绝';
 
   @override
-  String get livekit_ear_return => '耳返';
+  String get live_room_destroy => '直播已结束';
 
   @override
-  String get livekit_ear_return_volume => '耳返音量';
+  String get live_voiceroom_kicked_out_of_seat => '被主持人踢下麦位';
 
   @override
-  String get livekit_background_music => '背景音乐';
+  String get live_voiceroom_take_seat_timeout => '上麦申请超时';
 
   @override
-  String get livekit_select_music => '选择音乐';
+  String get live_edit_cover => '修改封面';
 
   @override
-  String get livekit_audio_settings => '音频设置';
+  String get live_stream_categories => '直播分类：';
 
   @override
-  String get livekit_music_volume => '音乐音量';
+  String get live_stream_privacy_status => '直播模式：';
 
   @override
-  String get livekit_people_volume => '人声音量';
+  String get live_stream_privacy_status_default => '公开';
 
   @override
-  String get livekit_music_pitch => '音乐升降调';
+  String get live_stream_privacy_status_privacy => '隐私';
 
   @override
-  String get livekit_change_voice => '变声';
+  String get live_stream_categories_default => '日常聊天';
 
   @override
-  String get livekit_change_voice_none => '原声';
+  String get live_stream_categories_beauty => '颜值';
 
   @override
-  String get livekit_change_voice_child => '熊孩子';
+  String get live_stream_categories_teach => '知识教学';
 
   @override
-  String get livekit_change_voice_girl => '萝莉';
+  String get live_stream_categories_shopping => '购物';
 
   @override
-  String get livekit_change_voice_uncle => '大叔';
+  String get live_music => '音乐';
 
   @override
-  String get livekit_change_voice_metal => '重金属';
+  String get live_video_settings_item_beauty => '美颜';
 
   @override
-  String get livekit_change_voice_cold => '感冒';
+  String get live_video_settings_item_flip => '翻转';
 
   @override
-  String get livekit_change_voice_foreign_language => '外语腔';
+  String get live_video_settings_item_mirror => '镜像';
 
   @override
-  String get livekit_change_voice_trapped_beast => '困兽';
+  String get live_start_live => '开始直播';
 
   @override
-  String get livekit_change_voice_fat_house => '肥宅';
+  String get live_preset_cover => '系统图库';
 
   @override
-  String get livekit_change_voice_strong_current => '强电流';
+  String get live_set_as_cover => '设为封面';
 
   @override
-  String get livekit_change_voice_machinery => '重机械';
+  String get live_barrage_btn_send => '发送';
 
   @override
-  String get livekit_change_voice_ethereal => '空灵';
+  String get live_gift_me => '我';
 
   @override
-  String get livekit_reverb => '混响';
+  String get live_barrage_agree => '同意';
 
   @override
-  String get livekit_reverb_none => '无效果';
+  String get live_barrage_warning_not_empty => '输入不能为空';
 
   @override
-  String get livekit_reverb_karaoke => 'KTV';
+  String get live_settings => '设置';
 
   @override
-  String get livekit_reverb_small_room => '小房间';
+  String get live_audio_effect => '音效';
 
   @override
-  String get livekit_reverb_town_hall => '大会堂';
+  String get live_more_settings => '更多设置';
 
   @override
-  String get livekit_reverb_low => '低沉';
+  String get live_video_params => '视频参数';
 
   @override
-  String get livekit_reverb_loud_and_loud => '洪亮';
+  String get live_video_config => '视频参数';
 
   @override
-  String get livekit_reverb_metallic_sound => '金属声';
+  String get live_link => '连麦';
 
   @override
-  String get livekit_reverb_metallic_magnetic => '磁性';
+  String get live_like => '点赞';
 
   @override
-  String get livekit_reverb_metallic_ethereal => '空灵';
+  String get live_waiting_pass => '待通过';
 
   @override
-  String get livekit_reverb_metallic_recording_studio => '录音棚';
+  String get live_gift_give_gift => '送出';
 
   @override
-  String get livekit_reverb_metallic_melodious => '悠扬';
+  String get live_gift_title => '礼物';
 
   @override
-  String get livekit_reverb_metallic_recording_studio2 => '录音棚2';
+  String get live_music_cheerful => '欢快';
 
   @override
-  String get livekit_tips_title => '温馨提示';
+  String get live_music_melancholy => '忧郁';
 
   @override
-  String get livekit_confirm_delete_tips => '确认要删除\"%s\"吗?';
+  String get live_music_wonder_world => '神奇世界';
 
   @override
-  String get livekit_cancel => '取消';
+  String get live_clarity => '清晰度';
 
   @override
-  String get livekit_confirm => '确认';
+  String get live_ear_return => '耳返';
 
   @override
-  String get livekit_waiting_link => '等待连麦';
+  String get live_ear_return_volume => '耳返音量';
 
   @override
-  String get livekit_live_room_list => '直播';
+  String get live_choose_music => '选择音乐';
 
   @override
-  String get livekit_live_has_stop => '直播已结束';
+  String get live_audio_settings => '音频设置';
 
   @override
-  String get livekit_sent => '送给';
+  String get live_music_volume => '音乐音量';
 
   @override
-  String get livekit_entered_room => '进入房间';
+  String get live_people_volume => '人声音量';
 
   @override
-  String get livekit_who_live_room => '的直播间';
+  String get live_invalid_userId => '非法的userId';
 
   @override
-  String get livekit_gift_balance => '余额';
+  String get live_music_pitch => '音乐升降调';
 
   @override
-  String get livekit_gift_recharge => '充值';
+  String get live_change_voice => '变声';
 
   @override
-  String get livekit_gift_balance_insufficient => '余额不足';
+  String get live_change_voice_none => '原声';
 
   @override
-  String get livekit_preview_video_live => '视频直播';
+  String get live_change_voice_child => '熊孩子';
 
   @override
-  String get livekit_preview_voice_live => '语音直播';
+  String get live_change_voice_girl => '萝莉';
 
   @override
-  String get livekit_audience_count_in_room => '%d人正在观看';
+  String get live_change_voice_uncle => '大叔';
 
   @override
-  String get livekit_loading => '正在加载...';
+  String get live_change_voice_ethereal => '空灵';
 
   @override
-  String get livekit_no_more_data => '没有更多数据了';
+  String get live_reverb => '混响';
 
   @override
-  String get livekit_no_room_tip => '请先开启一个直播间';
+  String get live_reverb_none => '无效果';
 
   @override
-  String get livekit_common_this_live_data => '本场直播数据';
+  String get live_reverb_karaoke => 'KTV';
 
   @override
-  String get livekit_common_live_duration => '直播时长';
+  String get live_reverb_low => '低沉';
 
   @override
-  String get livekit_common_gift_income => '礼物收入';
+  String get live_reverb_loud_and_loud => '洪亮';
 
   @override
-  String get livekit_common_live_people_number => '观看人数';
+  String get live_reverb_metallic_sound => '金属声';
 
   @override
-  String get livekit_common_message_count => '消息数量';
+  String get live_reverb_metallic_ethereal => '空灵';
 
   @override
-  String get livekit_common_send_gift_people_count => '送礼人数';
+  String get live_music_tips_title => '温馨提示';
 
   @override
-  String get livekit_common_like_count => '点赞数量';
+  String get live_confirm_delete_tips => '确认要删除\"%s\"吗?';
 
   @override
-  String get livekit_anchor_audience_list_panel_title => '在线观众';
+  String get live_cancel => '取消';
 
   @override
-  String get livekit_follow_anchor => '关注';
+  String get live_music_confirm => '确认';
 
   @override
-  String get livekit_unfollow_anchor => '取消关注';
+  String get live_waiting_link => '等待连麦';
 
   @override
-  String get livekit_live_room_id => '直播房间ID: ';
+  String get live_live_has_stop => '直播已结束';
 
   @override
-  String get livekit_fan_count => '粉丝';
+  String get live_sent => '送给';
 
   @override
-  String get livekit_beauty_panel_title => '一键美颜';
+  String get live_entered_room => '进入房间';
 
   @override
-  String get livekit_beauty_item_none => '关闭';
+  String get live_gift_balance => '余额';
 
   @override
-  String get livekit_beauty_item_smooth => '磨皮';
+  String get live_gift_recharge => '充值';
 
   @override
-  String get livekit_beauty_item_whiteness => '美白';
+  String get live_gift_balance_insufficient => '余额不足';
 
   @override
-  String get livekit_beauty_item_ruddy => '红润';
+  String get live_audience_count_in_room => '%d人看过';
 
   @override
-  String get livekit_resolution_360p => '低清';
+  String get live_no_room_tip => '请先开启一个直播间';
 
   @override
-  String get livekit_resolution_540p => '标清';
+  String get live_common_this_live_data => '本场直播数据';
 
   @override
-  String get livekit_resolution_720p => '高清';
+  String get live_common_live_duration => '直播时长';
 
   @override
-  String get livekit_resolution_1080p => '超清';
+  String get live_common_gift_income => '礼物收入';
 
   @override
-  String get livekit_enable_audience_request_link => '允许观众申请连麦';
+  String get live_common_live_people_number => '累计观看';
 
   @override
-  String get livekit_link_mic_up_title => '当前麦位';
+  String get live_common_message_count => '消息数量';
 
   @override
-  String get livekit_link_mic_down_title => '连麦申请';
+  String get live_common_send_gift_people_count => '送礼人数';
 
   @override
-  String get livekit_link_mic_down_title_popup => '连麦申请';
+  String get live_common_like_count => '点赞数量';
 
   @override
-  String get livekit_title_link_mic_selector => '选择连麦方式';
+  String get live_anchor_audience_list_panel_title => '在线观众';
 
   @override
-  String get livekit_text_link_mic_selector => '选择连麦方式，主播同意后接通';
+  String get live_follow_anchor => '关注';
 
   @override
-  String get livekit_text_link_mic_video => '申请视频连麦';
+  String get live_unfollow_anchor => '取消关注';
 
   @override
-  String get livekit_text_link_mic_audio => '申请语音连麦';
+  String get live_room_info_liveroom_id => '直播房间ID: ';
 
   @override
-  String get livekit_text_cancel_link_mic_apply => '取消连麦申请';
+  String get live_fan_count => '粉丝';
 
   @override
-  String get livekit_text_close_link_mic => '结束连麦';
+  String get live_beauty_panel_title => '一键美颜';
 
   @override
-  String get livekit_link_mic_manager => '连麦管理';
+  String get live_beauty_item_none => '关闭';
 
   @override
-  String get livekit_hang_up => '挂断';
+  String get live_beauty_item_smooth => '磨皮';
 
   @override
-  String get livekit_accept => '同意';
+  String get live_beauty_item_whiteness => '美白';
 
   @override
-  String get livekit_reject => '拒绝';
+  String get live_beauty_item_ruddy => '红润';
 
   @override
-  String get livekit_toast_apply_link_mic => '你提交了连麦申请，请等待主播同意';
+  String get live_resolution_360p => '低清';
 
   @override
-  String get livekit_title_link_video_settings => '调整视频连麦画面';
+  String get live_resolution_540p => '标清';
 
   @override
-  String get livekit_btn_apply_link_mic => '申请连麦';
+  String get live_resolution_720p => '高清';
 
   @override
-  String get livekit_tips_apply_link_mic => '接通后画面效果将自动生效';
+  String get live_resolution_1080p => '超清';
+
+  @override
+  String get live_link_mic_up_title => '当前麦位';
+
+  @override
+  String get live_link_mic_down_title => '连麦申请';
+
+  @override
+  String get live_link_mic_down_title_popup => '连麦申请';
+
+  @override
+  String get live_title_link_mic_selector => '选择连麦方式';
+
+  @override
+  String get live_text_link_mic_selector => '选择连麦方式，主播同意后接通';
+
+  @override
+  String get live_text_link_mic_video => '申请视频连麦';
+
+  @override
+  String get live_text_link_mic_audio => '申请语音连麦';
+
+  @override
+  String get live_text_cancel_link_mic_apply => '取消连麦申请';
+
+  @override
+  String get live_text_close_link_mic => '结束连麦';
+
+  @override
+  String get live_link_mic_manager => '连麦管理';
+
+  @override
+  String get live_hang_up => '挂断';
+
+  @override
+  String get live_accept => '同意';
+
+  @override
+  String get live_reject => '拒绝';
+
+  @override
+  String get live_toast_apply_link_mic => '你提交了连麦申请，请等待主播同意';
+
+  @override
+  String get live_title_link_video_settings => '调整视频连麦画面';
+
+  @override
+  String get live_btn_apply_link_mic => '申请连麦';
+
+  @override
+  String get live_tips_apply_link_mic => '接通后画面效果将自动生效';
+
+  @override
+  String get live_settings_bg_image => '背景';
+
+  @override
+  String get live_set_as_background => '设为背景';
+
+  @override
+  String get live_voiceroom_need_agree => '上麦需要房主同意';
+
+  @override
+  String get live_failed_to_enter_room => '进房失败';
+
+  @override
+  String get live_voiceroom_invite => '邀请';
+
+  @override
+  String get live_application_list => '申请列表';
+
+  @override
+  String get live_on_seat_list => '麦上列表';
+
+  @override
+  String get live_seat_management => '麦控';
+
+  @override
+  String get live_voiceroom_empty_view => '麦位没有用户，去邀请';
+
+  @override
+  String get live_voiceroom_invite_seat_canceled => '上麦邀请已被取消';
+
+  @override
+  String get live_voiceroom_lock => '锁定麦位';
+
+  @override
+  String get live_voiceroom_unlock => '解锁麦位';
+
+  @override
+  String get live_voiceroom_mute_seat => '静音';
+
+  @override
+  String get live_voiceroom_unmuted_seat => '解除静音';
+
+  @override
+  String get live_end_user => '挂断';
+
+  @override
+  String get live_voiceroom_take_seat => '上麦';
+
+  @override
+  String get live_end_live => '关闭直播间';
+
+  @override
+  String get live_voiceroom_receive_seat_invitation => '向你发来上麦邀请';
+
+  @override
+  String get live_room_has_been_dismissed => '房间已被解散';
+
+  @override
+  String get live_app_running => '运行中';
+
+  @override
+  String get live_audience_end_link_tips => '当前处于连麦状态，是否需要「断开连麦」或「退出直播间」';
+
+  @override
+  String get live_end_link => '断开连麦';
+
+  @override
+  String get live_exit_live => '退出直播间';
 }

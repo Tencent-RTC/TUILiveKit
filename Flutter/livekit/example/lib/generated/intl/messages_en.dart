@@ -20,31 +20,43 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
+  static String m0(xxx) => "${xxx} Broadcast";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "app_anchor": MessageLookupByLibrary.simpleMessage("Anchor"),
-        "app_audience": MessageLookupByLibrary.simpleMessage("Audience"),
-        "app_cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
-        "app_confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
-        "app_enter_nickname":
-            MessageLookupByLibrary.simpleMessage("Enter your user nickname"),
-        "app_enter_user_id":
-            MessageLookupByLibrary.simpleMessage("Please enter your UserID"),
-        "app_fans_count": MessageLookupByLibrary.simpleMessage("Fans"),
-        "app_follow_count": MessageLookupByLibrary.simpleMessage("Likes"),
-        "app_live": MessageLookupByLibrary.simpleMessage("Live"),
-        "app_login": MessageLookupByLibrary.simpleMessage("Login"),
-        "app_login_fail": MessageLookupByLibrary.simpleMessage("Login failed"),
-        "app_logout": MessageLookupByLibrary.simpleMessage("Logout"),
-        "app_me": MessageLookupByLibrary.simpleMessage("Me"),
-        "app_next": MessageLookupByLibrary.simpleMessage("Continue"),
-        "app_nick_name": MessageLookupByLibrary.simpleMessage("Nickname"),
-        "app_room_id": MessageLookupByLibrary.simpleMessage("Room ID"),
-        "app_save": MessageLookupByLibrary.simpleMessage("Save"),
-        "app_set_nickname": MessageLookupByLibrary.simpleMessage("Name"),
-        "app_tencent_cloud":
-            MessageLookupByLibrary.simpleMessage("Tencent Cloud"),
-        "app_trtc": MessageLookupByLibrary.simpleMessage("Tencent RTC"),
-        "app_user_id": MessageLookupByLibrary.simpleMessage("User ID")
-      };
+    "app_anchor": MessageLookupByLibrary.simpleMessage("Anchor"),
+    "app_audience": MessageLookupByLibrary.simpleMessage("Audience"),
+    "app_broadcast": m0,
+    "app_cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+    "app_confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
+    "app_enter_nickname": MessageLookupByLibrary.simpleMessage(
+      "Enter your user nickname",
+    ),
+    "app_enter_user_id": MessageLookupByLibrary.simpleMessage(
+      "Please enter your UserID",
+    ),
+    "app_fans_count": MessageLookupByLibrary.simpleMessage("Fans"),
+    "app_follow_count": MessageLookupByLibrary.simpleMessage("Likes"),
+    "app_live": MessageLookupByLibrary.simpleMessage("Live"),
+    "app_login": MessageLookupByLibrary.simpleMessage("Login"),
+    "app_login_fail": MessageLookupByLibrary.simpleMessage("Login failed"),
+    "app_logout": MessageLookupByLibrary.simpleMessage("Logout"),
+    "app_me": MessageLookupByLibrary.simpleMessage("Me"),
+    "app_next": MessageLookupByLibrary.simpleMessage("Continue"),
+    "app_nick_name": MessageLookupByLibrary.simpleMessage("Nickname"),
+    "app_room_id": MessageLookupByLibrary.simpleMessage("Room ID"),
+    "app_save": MessageLookupByLibrary.simpleMessage("Save"),
+    "app_set_nickname": MessageLookupByLibrary.simpleMessage("Name"),
+    "app_tencent_cloud": MessageLookupByLibrary.simpleMessage("Tencent Cloud"),
+    "app_trtc": MessageLookupByLibrary.simpleMessage("Tencent RTC"),
+    "app_user_id": MessageLookupByLibrary.simpleMessage("User ID"),
+    "app_video": MessageLookupByLibrary.simpleMessage("Living"),
+    "app_video_description": MessageLookupByLibrary.simpleMessage(
+      "Live preview/Beauty filters/Multi-hostK",
+    ),
+    "app_voice": MessageLookupByLibrary.simpleMessage("Voice"),
+    "app_voice_description": MessageLookupByLibrary.simpleMessage(
+      "High audio quality/Large room/Smooth mic on/off",
+    ),
+  };
 }

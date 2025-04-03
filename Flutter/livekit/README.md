@@ -1,61 +1,166 @@
-# Live UIKit for Flutter Quickstart
+# TUILiveKit
 
 _English | [简体中文](README-zh_CN.md)_
 
-<img src="https://qcloudimg.tencent-cloud.cn/raw/ec034fc6e4cf42cae579d32f5ab434a1.png" align="left" width=65 height=65>TUILiveKit is an interactive live streaming UI component launched by Tencent Cloud. By integrating this component, you can add interactive live streaming features to your app with just a few lines of code. It supports features such as interactive co-hosting, chat barrage, heartbeats, interactive gifts, and sound effects transformation.
+<img src="https://qcloudimg.tencent-cloud.cn/raw/ec034fc6e4cf42cae579d32f5ab434a1.png" align="left" width=65 height=65>
 
-## Before getting started
+TUILiveKit is a real-time interactive live streaming component that includes features such as host streaming, audience viewing, bullet chat, likes and gifts, audience management, and co-hosting management. It is suitable for live streaming scenarios such as entertainment, e-commerce, and education. By integrating TUILiveKit, you can add all the above live streaming features to your application in just three steps and launch your business quickly within 30 minutes.
 
-This section shows you the prerequisites you need for testing Live for Flutter example.
-
-### Requirements
+## Environment Preparation
 
 ### Flutter
-- Flutter 3.22.0 or later.
-- Dart version 3.4.0 or higher.
+
+- Flutter 3.27.4 or higher.
+- Dart 3.6.2 or higher.
 
 ### Android
-- Android Studio 3.5 or later.
-- Android devices 5.0 or later.
+
+- Android Studio 3.5 or higher.
+- Android devices with Android 5.0 or higher.
 
 ### iOS
-- Xcode 13.0 or later.
-- Please ensure that your project has a valid developer signature set.
 
-## Getting started
+- Xcode 15.0 or higher.
+- Ensure your project has a valid developer signature.
 
-If you would like to try the sample app specifically fit to your usage, you can do so by following the steps below.
+## Getting Started
 
-### Create an application.
+### Add Dependencies
 
-1. Go to the [Application management](https://console.trtc.io/app) page in the TRTC console, select **Create Application**, enter an application name such as `TUIKitDemo`, and click **Confirm**.
-2. Click **Application Information** on the right of the application, note the `SDKAppID` and key:
-   - SDKAppID: A number in parentheses after 'TUIKitDemo'.
-   - SDKSecretKey: Click **Copy SDKSecretKey**.
+Follow the documentation to add the `tencent_live_uikit` package as a dependency in your `pubspec.yaml` file ([Installation Guide](https://pub.flutter-io.cn/packages/tencent_live_uikit/install)).
 
-### Build and run the example
+### Activate Services
 
-#### 1. Clone this repository
+To use the interactive live streaming features, ensure that you have activated the service.
 
+1. **Activate the Service**  
+   You can activate the service and obtain your `SDKAppID` and `SDKSecretKey` in the [Console](https://trtc.io/document/60033?platform=flutter&product=live&menulabel=uikit).
+
+2. **Configure SDKAppID and SDKSecretKey**  
+   Open the `example/lib/debug/generate_test_user_sig.dart` file and fill in the obtained `SDKAppID` and `SDKSecretKey`:
+
+   ```dart
+   static int sdkAppId = 0; // Replace with your SDKAppID
+   static String secretKey = ''; // Replace with your SDKSecretKey
+   ```
+
+## Example Experience
+
+After configuring the `SDKAppID` and `SDKSecretKey`, you can directly run the example project to experience the features.  
+> For a better experience, it is recommended to prepare two mobile devices: one for the host to start the live stream and the other for the audience to watch or listen.
+
+## Quick Integration
+
+### Configure Routing and Internationalization
+
+```dart
+return MaterialApp(
+   navigatorObservers: TUILiveKitNavigatorObserver.instance,
+   localizationsDelegates: [
+      ...LiveKitLocalizations.localizationsDelegates,
+      ...BarrageLocalizations.localizationsDelegates,
+      ...GiftLocalizations.localizationsDelegates,
+   ],
+   supportedLocales: [
+      ...LiveKitLocalizations.supportedLocales,
+      ...BarrageLocalizations.supportedLocales,
+      ...GiftLocalizations.supportedLocales
+   ],
+   //...
+);
 ```
-git clone https://github.com/Tencent-RTC/TUILiveKit.git
+
+### Login
+
+Before using the interactive live streaming features, ensure that you have completed the initialization by executing the following login code.
+
+```dart
+import 'package:tencent_live_uikit/tencent_live_uikit.dart';
+
+final int sdkAppId = 'replace with your sdkAppId';
+final String userId = 'replace with your userId';
+final String userSig = 'replace with your userSig';
+
+await TUILogin.instance.login(
+   sdkAppId,
+   userId,
+   userSig,
+   TUICallback(onSuccess: () async {
+      debugPrint("TUILogin login success");
+   }, onError: (code, message) {
+      debugPrint("TUILogin login fail, {code:$code, message:$message}");
+   }));
 ```
 
-#### 2. Open the TUILiveKit/Flutter project through Android Studio
+> - **sdkAppId**: You can obtain it from the [Console](https://trtc.io/document/60033?platform=flutter&product=live&menulabel=uikit) after activating the service.  
+> - **userSig**: Generate it using the [UserSig Guide](https://trtc.io/document/35166?platform=flutter&product=live&menulabel=uikit).
 
-#### 3. Set SDKAppID and SDKSecretKey
+### Host Streaming Page Integration
 
-Open the Flutter/example/lib/debug/generate_test_user_sig.dart files, will be submitted to apply for access to the corresponding SDKAppID and SDKSecretKey fill in among them:
+You can use the `Navigator.push` method to navigate to the host streaming page.
 
+For video streaming, refer to the following code:
+
+```dart
+import 'package:tencent_live_uikit/tencent_live_uikit.dart';
+
+Navigator.push(context, MaterialPageRoute(
+   builder: (context) {
+      final String userId = 'replace with your userId';
+      final String roomId = LiveIdentityGenerator.instance.generateId(userId, RoomType.live);
+      return TUILiveRoomAnchorWidget(roomId: roomId);
+   }));
 ```
-static int sdkAppId = 0;
-static String secretKey = '';
+
+For audio chat room streaming, refer to the following code:
+
+```dart
+import 'package:tencent_live_uikit/tencent_live_uikit.dart';
+
+Navigator.push(context, MaterialPageRoute(
+   builder: (context) {
+      final String userId = 'replace with your userId';
+      final String roomId = LiveIdentityGenerator.instance.generateId(userId, RoomType.live);
+      final params = RoomParams();
+      params.maxSeatCount = 10; // Set the number of seats (maximum value depends on your subscription plan).
+      return TUIVoiceRoomWidget(
+                              roomId: roomId,
+                              behavior: RoomBehavior.prepareCreate,
+                              params: params);
+   }));
 ```
 
-#### 4. Build and run the example application on Simulator or iOS devices
+> The maximum value of `maxSeatCount` can be found in the [Multi-guests in Package Details](https://trtc.io/document/59407?platform=flutter&product=live&menulabel=uikit#658e2423-30d2-45e2-91b8-128b2730b072).
 
-## Making your first live
+### Live Room List Page Integration
 
-1. Use two mobile phones (A and B) to log in to the application using a string of user ids. If you log in to the application for the first time, you need to add a user name
-2. The user on mobile phone A clicks the "Start Live" button to initiate live broadcast
-3. You can pull down to refresh the room list on mobile phone B, and click to enter the live broadcast room to watch the live broadcast
+The live room list page displays ongoing video live streams and audio chat rooms. You can click on any room to join as an audience member and watch or listen.  
+You can use the `Navigator.push` method to navigate to the live room list page.  
+Reference code:
+
+```dart
+Navigator.push(context, MaterialPageRoute(
+   builder: (context) {
+      return Scaffold(
+         body: SafeArea(child: LiveListWidget()));
+   }));
+```
+
+You can also directly add the live room list page as a child widget in your existing page.  
+Reference code:
+
+```dart
+// Single child widget, using Container as an example
+Container(
+   child: LiveListWidget()
+)
+
+// Multiple child widget, using Column as an example
+Column(
+   children: [LiveListWidget()]
+)
+```
+
+## Feedback and Support
+
+If you have any questions or feedback, please contact us at: <info_rtc@tencent.com>.
