@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:tencent_live_uikit/common/index.dart';
 import 'package:tencent_live_uikit/tencent_live_uikit.dart';
 import 'package:tencent_live_uikit_example/generated/l10n.dart';
 import 'package:tencent_live_uikit_example/src/view/index.dart';
-import 'package:barrage/barrage.dart';
-import 'package:gift/gift.dart';
 
 void main() {
   runApp(const MyApp());
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
   ));
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 }
 
 class MyApp extends StatefulWidget {
@@ -29,8 +29,12 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    S.load(View.of(context).platformDispatcher.locale);
+    S.load(View
+        .of(context)
+        .platformDispatcher
+        .locale);
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
         navigatorObservers: [
           TUILiveKitNavigatorObserver.instance
         ],
@@ -45,7 +49,8 @@ class _MyAppState extends State<MyApp> {
           ...BarrageLocalizations.supportedLocales,
           ...GiftLocalizations.supportedLocales,
         ],
-        builder: (context, child) => Scaffold(
+        builder: (context, child) =>
+            Scaffold(
               resizeToAvoidBottomInset: false,
               body: GestureDetector(
                 onTap: () {

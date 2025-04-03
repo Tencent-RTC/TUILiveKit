@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tencent_live_uikit/common/index.dart';
-import 'package:tencent_live_uikit/manager/live_controller.dart';
+import 'package:tencent_live_uikit/live_stream/manager/live_controller.dart';
 
 abstract class BasicWidget<T extends State> extends StatefulWidget {
   final LiveController liveController;
@@ -54,7 +54,7 @@ void showWidget(BasicWidget widget, {Color? barrierColor}) {
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
         ),
-        color: LivekitColors.livekitDesignStandardG2,
+        color: LiveColors.designStandardG2,
       ),
       child: widget,
     ),

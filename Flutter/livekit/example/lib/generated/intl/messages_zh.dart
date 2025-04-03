@@ -20,29 +20,39 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'zh';
 
+  static String m0(xxx) => "${xxx} 开直播";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "app_anchor": MessageLookupByLibrary.simpleMessage("主播"),
-        "app_audience": MessageLookupByLibrary.simpleMessage("观众"),
-        "app_cancel": MessageLookupByLibrary.simpleMessage("取消"),
-        "app_confirm": MessageLookupByLibrary.simpleMessage("确定"),
-        "app_enter_nickname": MessageLookupByLibrary.simpleMessage("请输入你的用户昵称"),
-        "app_enter_user_id":
-            MessageLookupByLibrary.simpleMessage("请输入您的UserID"),
-        "app_fans_count": MessageLookupByLibrary.simpleMessage("粉丝"),
-        "app_follow_count": MessageLookupByLibrary.simpleMessage("关注"),
-        "app_live": MessageLookupByLibrary.simpleMessage("直播"),
-        "app_login": MessageLookupByLibrary.simpleMessage("登录"),
-        "app_login_fail": MessageLookupByLibrary.simpleMessage("登录失败"),
-        "app_logout": MessageLookupByLibrary.simpleMessage("登出"),
-        "app_me": MessageLookupByLibrary.simpleMessage("我"),
-        "app_next": MessageLookupByLibrary.simpleMessage("继续"),
-        "app_nick_name": MessageLookupByLibrary.simpleMessage("昵称"),
-        "app_room_id": MessageLookupByLibrary.simpleMessage("房间ID"),
-        "app_save": MessageLookupByLibrary.simpleMessage("保存"),
-        "app_set_nickname": MessageLookupByLibrary.simpleMessage("设置昵称"),
-        "app_tencent_cloud": MessageLookupByLibrary.simpleMessage("腾讯云"),
-        "app_trtc": MessageLookupByLibrary.simpleMessage("腾讯云音视频"),
-        "app_user_id": MessageLookupByLibrary.simpleMessage("用户ID")
-      };
+    "app_anchor": MessageLookupByLibrary.simpleMessage("主播"),
+    "app_audience": MessageLookupByLibrary.simpleMessage("观众"),
+    "app_broadcast": m0,
+    "app_cancel": MessageLookupByLibrary.simpleMessage("取消"),
+    "app_confirm": MessageLookupByLibrary.simpleMessage("确定"),
+    "app_enter_nickname": MessageLookupByLibrary.simpleMessage("请输入你的用户昵称"),
+    "app_enter_user_id": MessageLookupByLibrary.simpleMessage("请输入您的UserID"),
+    "app_fans_count": MessageLookupByLibrary.simpleMessage("粉丝"),
+    "app_follow_count": MessageLookupByLibrary.simpleMessage("关注"),
+    "app_live": MessageLookupByLibrary.simpleMessage("直播"),
+    "app_login": MessageLookupByLibrary.simpleMessage("登录"),
+    "app_login_fail": MessageLookupByLibrary.simpleMessage("登录失败"),
+    "app_logout": MessageLookupByLibrary.simpleMessage("登出"),
+    "app_me": MessageLookupByLibrary.simpleMessage("我"),
+    "app_next": MessageLookupByLibrary.simpleMessage("继续"),
+    "app_nick_name": MessageLookupByLibrary.simpleMessage("昵称"),
+    "app_room_id": MessageLookupByLibrary.simpleMessage("房间ID"),
+    "app_save": MessageLookupByLibrary.simpleMessage("保存"),
+    "app_set_nickname": MessageLookupByLibrary.simpleMessage("设置昵称"),
+    "app_tencent_cloud": MessageLookupByLibrary.simpleMessage("腾讯云"),
+    "app_trtc": MessageLookupByLibrary.simpleMessage("腾讯云音视频"),
+    "app_user_id": MessageLookupByLibrary.simpleMessage("用户ID"),
+    "app_video": MessageLookupByLibrary.simpleMessage("在线直播"),
+    "app_video_description": MessageLookupByLibrary.simpleMessage(
+      "开播预览·智能美颜·连麦PK",
+    ),
+    "app_voice": MessageLookupByLibrary.simpleMessage("语聊房"),
+    "app_voice_description": MessageLookupByLibrary.simpleMessage(
+      "高音质·大房间·平滑上下麦",
+    ),
+  };
 }

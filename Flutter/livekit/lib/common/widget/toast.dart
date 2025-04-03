@@ -4,7 +4,7 @@ import 'package:tencent_live_uikit/common/resources/index.dart';
 
 Future<bool?> makeToast({
   required String msg,
-  Color backgroundColor = LivekitColors.livekitBlack80Transparency,
+  Color backgroundColor = LiveColors.black80Transparency,
   Color textColor = Colors.white,
 }) {
   return Fluttertoast.showToast(

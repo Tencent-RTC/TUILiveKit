@@ -21,12 +21,37 @@ class _MeWidgetState extends State<MeWidget> {
 
     return SizedBox(
       width: _screenWidth,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [_initUserAvatarWidget(), _initUserNameWidget(), _initFollowWidget()],
+      child: Stack(
+        children: [
+          _initTopBackgroundWidget(),
+          Positioned(
+            top: 80,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                _initUserAvatarWidget(),
+                _initUserNameWidget(),
+                _initFollowWidget()
+              ],
+            ),
+          ),
+        ],
       ),
     );
+  }
+
+  _initTopBackgroundWidget() {
+    return SizedBox(
+        width: _screenWidth,
+        height: 200,
+        child: Image.asset(
+          'assets/app_top_background.png',
+          fit: BoxFit.fill,
+        ));
   }
 
   _initUserAvatarWidget() {
@@ -43,9 +68,12 @@ class _MeWidgetState extends State<MeWidget> {
               ),
               child: ClipOval(
                 child: Image(
-                  image: NetworkImage(AppStore.userAvatar.isNotEmpty ? AppStore.userAvatar : AppStore.defaultAvatar),
+                  image: NetworkImage(AppStore.userAvatar.isNotEmpty
+                      ? AppStore.userAvatar
+                      : AppStore.defaultAvatar),
                   fit: BoxFit.cover,
-                  errorBuilder: (ctx, err, stackTrace) => Image.asset('assets/people.webp'),
+                  errorBuilder: (ctx, err, stackTrace) =>
+                      Image.asset('assets/people.webp'),
                 ),
               )),
         ));
@@ -62,8 +90,13 @@ class _MeWidgetState extends State<MeWidget> {
             valueListenable: AppStore.userName,
             builder: (BuildContext context, String value, Widget? child) {
               return Text(
-                AppStore.userName.value.isNotEmpty ? AppStore.userName.value : AppStore.userId,
-                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w500, color: Color(0xFF0F1014)),
+                AppStore.userName.value.isNotEmpty
+                    ? AppStore.userName.value
+                    : AppStore.userId,
+                style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFF0F1014)),
               );
             },
           ),
@@ -124,7 +157,9 @@ class _MeWidgetState extends State<MeWidget> {
           return CupertinoAlertDialog(
             title: Text(S.current.app_login),
             actions: [
-              CupertinoDialogAction(child: Text(S.current.app_cancel), onPressed: () => Navigator.of(context).pop()),
+              CupertinoDialogAction(
+                  child: Text(S.current.app_cancel),
+                  onPressed: () => Navigator.of(context).pop()),
               CupertinoDialogAction(
                   child: Text(S.current.app_confirm),
                   onPressed: () {
@@ -156,7 +191,8 @@ extension _MeWidgetStateLogicExtension on _MeWidgetState {
 
   _logout() {
     Navigator.of(context).pop();
-    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (widget) {
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (widget) {
       return const LoginWidget();
     }), (route) => false);
   }

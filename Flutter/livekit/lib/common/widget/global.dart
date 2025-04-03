@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tencent_live_uikit/tencent_live_uikit.dart';
+import 'package:tencent_live_uikit/live_navigator_observer.dart';
 
 class Global {
   static GlobalKey<NavigatorState> navigatorKey = GlobalKey();

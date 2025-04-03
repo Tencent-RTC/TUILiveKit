@@ -19,5 +19,10 @@
   "app_follow_count": "Likes",
   "app_fans_count": "Fans",
   "app_set_nickname": "Name",
-  "app_save": "Save"
+  "app_save": "Save",
+  "app_video": "Living",
+  "app_video_description": "Live preview/Beauty filters/Multi-hostK",
+  "app_voice": "Voice",
+  "app_voice_description": "High audio quality/Large room/Smooth mic on/off",
+  "app_broadcast": "{xxx} Broadcast"
 }

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tencent_live_uikit/common/index.dart';
 import 'package:tencent_live_uikit_example/generated/l10n.dart';
@@ -23,13 +22,9 @@ class _UpdateNicknameWidgetState extends State<UpdateNicknameWidget> {
     _controller.text = AppStore.userName.value;
   }
 
-
   @override
   Widget build(BuildContext context) {
-    _screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
+    _screenWidth = MediaQuery.of(context).size.width;
 
     return SizedBox(
       width: _screenWidth,
@@ -37,7 +32,11 @@ class _UpdateNicknameWidgetState extends State<UpdateNicknameWidget> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: [_initTitleWidget(), _initInputNameWidget(), _initSubmitWidget()],
+        children: [
+          _initTitleWidget(),
+          _initInputNameWidget(),
+          _initSubmitWidget()
+        ],
       ),
     );
   }
@@ -67,7 +66,10 @@ class _UpdateNicknameWidgetState extends State<UpdateNicknameWidget> {
           Center(
             child: Text(
               S.current.app_set_nickname,
-              style: const TextStyle(color: Color(0xFF0F1014), fontWeight: FontWeight.w500, fontSize: 16),
+              style: const TextStyle(
+                  color: Color(0xFF0F1014),
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16),
             ),
           ),
         ],
@@ -79,10 +81,7 @@ class _UpdateNicknameWidgetState extends State<UpdateNicknameWidget> {
     return Container(
       margin: const EdgeInsets.only(left: 30, top: 32, right: 30),
       padding: const EdgeInsets.only(left: 10),
-      width: MediaQuery
-          .of(context)
-          .size
-          .width - 60,
+      width: MediaQuery.of(context).size.width - 60,
       height: 52,
       decoration: BoxDecoration(
         color: Colors.transparent,
@@ -94,10 +93,7 @@ class _UpdateNicknameWidgetState extends State<UpdateNicknameWidget> {
         mainAxisSize: MainAxisSize.max,
         children: [
           SizedBox(
-            width: MediaQuery
-                .of(context)
-                .size
-                .width - 150,
+            width: MediaQuery.of(context).size.width - 150,
             child: TextField(
               controller: _controller,
               decoration: const InputDecoration(
@@ -130,22 +126,29 @@ class _UpdateNicknameWidgetState extends State<UpdateNicknameWidget> {
     return Container(
         width: 335,
         height: 48,
-        margin: const EdgeInsets.only(top: 350,),
+        margin: const EdgeInsets.only(
+          top: 350,
+        ),
         child: ElevatedButton(
             onPressed: () => _updateNickname(),
             style: ButtonStyle(
               backgroundColor: WidgetStateProperty.all(const Color(0xff056DF6)),
-              shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(24))),
+              shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24))),
             ),
             child: Text(
               S.current.app_save,
               style: const TextStyle(
-                  fontSize: 16, fontStyle: FontStyle.normal, fontWeight: FontWeight.w500, color: Colors.white),
+                  fontSize: 16,
+                  fontStyle: FontStyle.normal,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white),
             )));
   }
 }
 
-extension _UpdateNicknameWidgetStateLogicExtension on _UpdateNicknameWidgetState {
+extension _UpdateNicknameWidgetStateLogicExtension
+    on _UpdateNicknameWidgetState {
   void _clearInput() {
     _controller.text = "";
   }
@@ -158,7 +161,8 @@ extension _UpdateNicknameWidgetStateLogicExtension on _UpdateNicknameWidgetState
       makeToast(msg: S.current.app_enter_nickname);
       return;
     }
-    final result = await AppManager.setSelfInfo(AppStore.userAvatar, _inputNickname);
+    final result =
+        await AppManager.setSelfInfo(AppStore.userAvatar, _inputNickname);
     if (result.code == 0) {
       Navigator.of(context).pop();
     }

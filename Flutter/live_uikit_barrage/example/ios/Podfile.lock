@@ -1,0 +1,86 @@
+PODS:
+  - Flutter (1.0.0)
+  - HydraAsync (2.0.6)
+  - integration_test (0.0.1):
+    - Flutter
+  - live_uikit_barrage (0.0.1):
+    - Flutter
+  - path_provider_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - rtc_room_engine (2.9.3):
+    - Flutter
+    - RTCRoomEngine/Professional (= 2.9.3)
+  - RTCRoomEngine/Professional (2.9.3):
+    - TXIMSDK_Plus_iOS_XCFramework (>= 8.1.6116)
+    - TXLiteAVSDK_Professional (>= 12.2.16956)
+  - tencent_cloud_chat_sdk (8.0.0):
+    - Flutter
+    - HydraAsync
+    - TXIMSDK_Plus_iOS_XCFramework (= 8.5.6864)
+  - tencent_cloud_uikit_core (0.0.1):
+    - Flutter
+  - tencent_trtc_cloud (10.7):
+    - Flutter
+    - TXCustomBeautyProcesserPlugin (= 1.0.2)
+    - TXLiteAVSDK_Professional (~> 12.3.16995)
+  - TXCustomBeautyProcesserPlugin (1.0.2)
+  - TXIMSDK_Plus_iOS_XCFramework (8.5.6864)
+  - TXLiteAVSDK_Professional (12.3.16995):
+    - TXLiteAVSDK_Professional/Professional (= 12.3.16995)
+  - TXLiteAVSDK_Professional/Professional (12.3.16995)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - integration_test (from `.symlinks/plugins/integration_test/ios`)
+  - live_uikit_barrage (from `.symlinks/plugins/live_uikit_barrage/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+  - rtc_room_engine (from `.symlinks/plugins/rtc_room_engine/ios`)
+  - tencent_cloud_chat_sdk (from `.symlinks/plugins/tencent_cloud_chat_sdk/ios`)
+  - tencent_cloud_uikit_core (from `.symlinks/plugins/tencent_cloud_uikit_core/ios`)
+  - tencent_trtc_cloud (from `.symlinks/plugins/tencent_trtc_cloud/ios`)
+
+SPEC REPOS:
+  trunk:
+    - HydraAsync
+    - RTCRoomEngine
+    - TXCustomBeautyProcesserPlugin
+    - TXIMSDK_Plus_iOS_XCFramework
+    - TXLiteAVSDK_Professional
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  integration_test:
+    :path: ".symlinks/plugins/integration_test/ios"
+  live_uikit_barrage:
+    :path: ".symlinks/plugins/live_uikit_barrage/ios"
+  path_provider_foundation:
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
+  rtc_room_engine:
+    :path: ".symlinks/plugins/rtc_room_engine/ios"
+  tencent_cloud_chat_sdk:
+    :path: ".symlinks/plugins/tencent_cloud_chat_sdk/ios"
+  tencent_cloud_uikit_core:
+    :path: ".symlinks/plugins/tencent_cloud_uikit_core/ios"
+  tencent_trtc_cloud:
+    :path: ".symlinks/plugins/tencent_trtc_cloud/ios"
+
+SPEC CHECKSUMS:
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  HydraAsync: 8d589bd725b0224f899afafc9a396327405f8063
+  integration_test: 4a889634ef21a45d28d50d622cf412dc6d9f586e
+  live_uikit_barrage: 802347020bcceb9a0ac6a6a81002e55e4c6588e4
+  path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
+  rtc_room_engine: 79a3390d496b74c3014a99b61816c76e849bc626
+  RTCRoomEngine: d4c91af68172c066ecc8a1d105d3fd3475cf6dbc
+  tencent_cloud_chat_sdk: f60b13e08e8aa0c1efb4e1929e100fdba0f4c7b1
+  tencent_cloud_uikit_core: 137e8ae40882b1929508e688182b2818708cc078
+  tencent_trtc_cloud: cdc34fd1954e0a693bb4e0085ed30667fa4a7484
+  TXCustomBeautyProcesserPlugin: 099393b941cb40eda12b3a80bf6c0319957b1cfd
+  TXIMSDK_Plus_iOS_XCFramework: 0353712b504d2206ce0f4d94b0eb3357673e1cfe
+  TXLiteAVSDK_Professional: 6e8fa18eeb0e52e6bbbcd97bab9ec9fbdc828df3
+
+PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
+
+COCOAPODS: 1.16.2

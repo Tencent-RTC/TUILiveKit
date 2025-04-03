@@ -19,5 +19,10 @@
   "app_follow_count": "关注",
   "app_fans_count": "粉丝",
   "app_set_nickname": "设置昵称",
-  "app_save": "保存"
+  "app_save": "保存",
+  "app_video": "在线直播",
+  "app_video_description": "开播预览·智能美颜·连麦PK",
+  "app_voice": "语聊房",
+  "app_voice_description": "高音质·大房间·平滑上下麦",
+  "app_broadcast": "{xxx} 开直播"
 }

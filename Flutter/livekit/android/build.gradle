@@ -40,6 +40,8 @@ android {
     dependencies {
         testImplementation("junit:junit:4.13.2")
         testImplementation("org.mockito:mockito-core:5.0.0")
+        api "io.trtc.uikit:common:2.8.0.634"
+        api "com.tencent.liteav.tuikit:tuicore:latest.release"
     }
 
     testOptions {

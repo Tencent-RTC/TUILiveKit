@@ -8,6 +8,8 @@ import 'package:intl/intl.dart' as intl;
 import 'livekit_localizations_en.dart';
 import 'livekit_localizations_zh.dart';
 
+// ignore_for_file: type=lint
+
 /// Callers can lookup localized strings with an instance of LiveKitLocalizations
 /// returned by `LiveKitLocalizations.of(context)`.
 ///
@@ -97,1181 +99,1357 @@ abstract class LiveKitLocalizations {
     Locale('zh')
   ];
 
-  /// No description provided for @livekit_error_success.
+  /// No description provided for @live_client_error_success.
   ///
   /// In en, this message translates to:
   /// **'Operation successful'**
-  String get livekit_error_success;
+  String get live_client_error_success;
 
-  /// No description provided for @livekit_error_failed.
+  /// No description provided for @live_client_error_failed.
   ///
   /// In en, this message translates to:
-  /// **'Uncategorized common error'**
-  String get livekit_error_failed;
+  /// **'Temporarily Unclassified General Error'**
+  String get live_client_error_failed;
 
-  /// No description provided for @livekit_error_freqLimit.
+  /// No description provided for @live_client_error_freq_limit.
   ///
   /// In en, this message translates to:
-  /// **'Request frequency limited, please try again later'**
-  String get livekit_error_freqLimit;
+  /// **'Request Rate Limited, Please Try Again Later'**
+  String get live_client_error_freq_limit;
 
-  /// No description provided for @livekit_error_repeat_operation.
+  /// No description provided for @live_client_error_repeat_operation.
   ///
   /// In en, this message translates to:
-  /// **'Duplicate operation'**
-  String get livekit_error_repeat_operation;
+  /// **'Repeat Operation'**
+  String get live_client_error_repeat_operation;
 
-  /// No description provided for @livekit_error_sdkAppId_notFound.
+  /// No description provided for @live_client_error_sdk_app_id_not_found.
   ///
   /// In en, this message translates to:
-  /// **'SDKAppID not found, please confirm the application information in the Tencent Cloud Video Cube SDK Console'**
-  String get livekit_error_sdkAppId_notFound;
+  /// **'Not Found SDKAppID, Please Confirm Application Info in TRTC Console'**
+  String get live_client_error_sdk_app_id_not_found;
 
-  /// No description provided for @livekit_error_invalidParameter.
+  /// No description provided for @live_client_error_invalid_parameter.
   ///
   /// In en, this message translates to:
-  /// **'Illegal parameters were passed when calling the API, check if the input parameters are valid'**
-  String get livekit_error_invalidParameter;
+  /// **'Passing illegal parameters when calling API, check if the parameters are legal'**
+  String get live_client_error_invalid_parameter;
 
-  /// No description provided for @livekit_error_sdkNotInitialized.
+  /// No description provided for @live_client_error_sdk_not_initialized.
   ///
   /// In en, this message translates to:
-  /// **'Not logged in, please call the Login interface'**
-  String get livekit_error_sdkNotInitialized;
+  /// **'Not Logged In, Please Call Login API'**
+  String get live_client_error_sdk_not_initialized;
 
-  /// No description provided for @livekit_error_permissionDenied.
+  /// No description provided for @live_client_error_permission_denied.
   ///
   /// In en, this message translates to:
-  /// **'Permission acquisition failed, currently unauthorized for audio/video permissions, please check if device permissions are enabled'**
-  String get livekit_error_permissionDenied;
+  /// **'Failed to Obtain Permission, Unauthorized Audio/Video Permission, Please Check if Device Permission is Enabled'**
+  String get live_client_error_permission_denied;
 
-  /// No description provided for @livekit_error_requirePayment.
+  /// No description provided for @live_client_error_require_payment.
   ///
   /// In en, this message translates to:
-  /// **'Check if the cloud service account is normal'**
-  String get livekit_error_requirePayment;
+  /// **'This feature requires an additional package. Please activate the corresponding package as needed in the TRTC Console'**
+  String get live_client_error_require_payment;
 
-  /// No description provided for @livekit_error_cameraStartFail.
+  /// No description provided for @live_client_error_camera_start_fail.
   ///
   /// In en, this message translates to:
-  /// **'System issue, failed to open the camera_ Check if the camera device is working properly'**
-  String get livekit_error_cameraStartFail;
+  /// **'System Issue, Failed to Open Camera. Check if Camera Device is Normal'**
+  String get live_client_error_camera_start_fail;
 
-  /// No description provided for @livekit_error_cameraNotAuthorized.
+  /// No description provided for @live_client_error_camera_not_authorized.
   ///
   /// In en, this message translates to:
-  /// **'Camera not authorized by the system, check system authorization'**
-  String get livekit_error_cameraNotAuthorized;
+  /// **'Camera has No System Authorization, Check System Authorization'**
+  String get live_client_error_camera_not_authorized;
 
-  /// No description provided for @livekit_error_cameraOccupied.
+  /// No description provided for @live_client_error_camera_occupied.
   ///
   /// In en, this message translates to:
-  /// **'Camera is occupied, check if other processes are using the camera'**
-  String get livekit_error_cameraOccupied;
+  /// **'Camera is Occupied, Check if Other Process is Using Camera'**
+  String get live_client_error_camera_occupied;
 
-  /// No description provided for @livekit_error_cameraDeviceEmpty.
+  /// No description provided for @live_client_error_camera_device_empty.
   ///
   /// In en, this message translates to:
-  /// **'No camera device available, please insert a camera device to resolve this issue'**
-  String get livekit_error_cameraDeviceEmpty;
+  /// **'No Camera Device Currently, Please Insert Camera Device to Solve the Problem'**
+  String get live_client_error_camera_device_empty;
 
-  /// No description provided for @livekit_error_microphoneStartFail.
+  /// No description provided for @live_client_error_microphone_start_fail.
   ///
   /// In en, this message translates to:
-  /// **'System issue, failed to open the microphone_ Check if the microphone device is working properly'**
-  String get livekit_error_microphoneStartFail;
+  /// **'System Issue, Failed to Open Mic. Check if Mic Device is Normal'**
+  String get live_client_error_microphone_start_fail;
 
-  /// No description provided for @livekit_error_microphoneNotAuthorized.
+  /// No description provided for @live_client_error_microphone_not_authorized.
   ///
   /// In en, this message translates to:
-  /// **'Microphone not authorized by the system, check system authorization'**
-  String get livekit_error_microphoneNotAuthorized;
+  /// **'Mic has No System Authorization, Check System Authorization'**
+  String get live_client_error_microphone_not_authorized;
 
-  /// No description provided for @livekit_error_microphoneOccupied.
+  /// No description provided for @live_client_error_microphone_occupied.
   ///
   /// In en, this message translates to:
-  /// **'Microphone is occupied'**
-  String get livekit_error_microphoneOccupied;
+  /// **'Mic is Occupied'**
+  String get live_client_error_microphone_occupied;
 
-  /// No description provided for @livekit_error_microphoneDeviceEmpty.
+  /// No description provided for @live_client_error_microphone_device_empty.
   ///
   /// In en, this message translates to:
-  /// **'No microphone device available'**
-  String get livekit_error_microphoneDeviceEmpty;
+  /// **'No Mic Device Currently'**
+  String get live_client_error_microphone_device_empty;
 
-  /// No description provided for @livekit_error_getScreenSharingTargetFailed.
+  /// No description provided for @live_client_error_get_screen_sharing_target_failed.
   ///
   /// In en, this message translates to:
   /// **'Failed to get screen sharing source (screen and window), check screen recording permissions'**
-  String get livekit_error_getScreenSharingTargetFailed;
+  String get live_client_error_get_screen_sharing_target_failed;
 
-  /// No description provided for @livekit_error_startScreenSharingFailed.
+  /// No description provided for @live_client_error_start_screen_sharing_failed.
   ///
   /// In en, this message translates to:
-  /// **'Failed to start screen sharing, check if someone else is screen sharing in the room'**
-  String get livekit_error_startScreenSharingFailed;
+  /// **'Failed to Enable Screen Sharing, Check if Someone is Already Screen Sharing in the Room'**
+  String get live_client_error_start_screen_sharing_failed;
 
-  /// No description provided for @livekit_error_roomId_notExist.
+  /// No description provided for @live_client_error_operation_invalid_before_enter_room.
   ///
   /// In en, this message translates to:
-  /// **'The room does not exist when entering, it may have been disbanded'**
-  String get livekit_error_roomId_notExist;
+  /// **'This Feature Can Only Be Used After Entering the Room'**
+  String get live_client_error_operation_invalid_before_enter_room;
 
-  /// No description provided for @livekit_error_operation_invalid_beforeEnterRoom.
+  /// No description provided for @live_client_error_exit_not_supported_for_room_owner.
   ///
   /// In en, this message translates to:
-  /// **'This feature can only be used after entering the room'**
-  String get livekit_error_operation_invalid_beforeEnterRoom;
+  /// **'Room Owner Does Not Support Leaving the Room, Room Owner Can Only Close the Room'**
+  String get live_client_error_exit_not_supported_for_room_owner;
 
-  /// No description provided for @livekit_error_exitNotSupported_forRoomOwner.
+  /// No description provided for @live_client_error_operation_not_supported_in_current_room_type.
   ///
   /// In en, this message translates to:
-  /// **'Please transfer the room owner before leaving the room'**
-  String get livekit_error_exitNotSupported_forRoomOwner;
+  /// **'This Operation is Not Supported in the Current Room Type'**
+  String get live_client_error_operation_not_supported_in_current_room_type;
 
-  /// No description provided for @livekit_error_operation_notSupported_inCurrentRoomType.
+  /// No description provided for @live_client_error_room_id_invalid.
   ///
   /// In en, this message translates to:
-  /// **'This operation is not supported in the current room type'**
-  String get livekit_error_operation_notSupported_inCurrentRoomType;
+  /// **'Illegal Custom Room ID, Must Be Printable ASCII Characters (0x20-0x7e), Up to 48 Bytes Long'**
+  String get live_client_error_room_id_invalid;
 
-  /// No description provided for @livekit_error_operation_notSupported_inCurrentSpeechMode.
+  /// No description provided for @live_client_error_room_name_invalid.
   ///
   /// In en, this message translates to:
-  /// **'This operation is not supported in the current speaking mode'**
-  String get livekit_error_operation_notSupported_inCurrentSpeechMode;
+  /// **'Illegal Room Name, Maximum 30 Bytes, Must Be UTF-8 Encoding if Contains Chinese Characters'**
+  String get live_client_error_room_name_invalid;
 
-  /// No description provided for @livekit_error_roomId_invalid.
+  /// No description provided for @live_client_error_already_in_other_room.
   ///
   /// In en, this message translates to:
-  /// **'Invalid room ID created, custom ID must be printable ASCII characters (0x20-0x7e), up to 48 bytes'**
-  String get livekit_error_roomId_invalid;
+  /// **'User is Already in Another Room, Single RoomEngine Instance Only Supports User Entering One Room, To Enter Different Room, Please Leave the Room or Use New RoomEngine Instance'**
+  String get live_client_error_already_in_other_room;
 
-  /// No description provided for @livekit_error_roomId_occupied.
-  ///
-  /// In en, this message translates to:
-  /// **'Room ID already in use, please choose another room ID'**
-  String get livekit_error_roomId_occupied;
-
-  /// No description provided for @livekit_error_roomName_invalid.
-  ///
-  /// In en, this message translates to:
-  /// **'Invalid room name, the name can be up to 30 bytes, and the character encoding must be UTF-8 if it contains Chinese'**
-  String get livekit_error_roomName_invalid;
-
-  /// No description provided for @livekit_error_already_in_OtherRoom.
-  ///
-  /// In en, this message translates to:
-  /// **'The current user is already in another room, you need to leave the room before joining a new one'**
-  String get livekit_error_already_in_OtherRoom;
-
-  /// No description provided for @livekit_error_userNotExist.
+  /// No description provided for @live_client_error_user_not_exist.
   ///
   /// In en, this message translates to:
   /// **'User is not exist'**
-  String get livekit_error_userNotExist;
+  String get live_client_error_user_not_exist;
 
-  /// No description provided for @livekit_error_userNotEntered.
+  /// No description provided for @live_client_error_user_need_owner_permission.
   ///
   /// In en, this message translates to:
-  /// **'User is not in the current room'**
-  String get livekit_error_userNotEntered;
+  /// **'Room Owner Permission Required for Operation'**
+  String get live_client_error_user_need_owner_permission;
 
-  /// No description provided for @livekit_error_user_need_OwnerPermission.
+  /// No description provided for @live_client_error_user_need_admin_permission.
   ///
   /// In en, this message translates to:
-  /// **'Requires room owner permission to operate'**
-  String get livekit_error_user_need_OwnerPermission;
+  /// **'Room Owner or Administrator Permission Required for Operation'**
+  String get live_client_error_user_need_admin_permission;
 
-  /// No description provided for @livekit_error_user_need_AdminPermission.
+  /// No description provided for @live_client_error_request_no_permission.
   ///
   /// In en, this message translates to:
-  /// **'Requires room owner or administrator permission to operate'**
-  String get livekit_error_user_need_AdminPermission;
+  /// **'No Permission for Signaling Request, e.g. Canceling an Invite Not Initiated by Yourself'**
+  String get live_client_error_request_no_permission;
 
-  /// No description provided for @livekit_error_request_noPermission.
+  /// No description provided for @live_client_error_request_id_invalid.
   ///
   /// In en, this message translates to:
-  /// **'No permission for signaling request, such as canceling an invitation that was not initiated by oneself'**
-  String get livekit_error_request_noPermission;
+  /// **'Signaling Request ID is Invalid or Has Been Processed'**
+  String get live_client_error_request_id_invalid;
 
-  /// No description provided for @livekit_error_requestId_invalid.
+  /// No description provided for @live_client_error_request_id_repeat.
   ///
   /// In en, this message translates to:
-  /// **'Invalid signaling request ID or has already been processed'**
-  String get livekit_error_requestId_invalid;
+  /// **'Signal request repetition'**
+  String get live_client_error_request_id_repeat;
 
-  /// No description provided for @livekit_error_repeat_requestId.
+  /// No description provided for @live_client_error_max_seat_count_limit.
   ///
   /// In en, this message translates to:
-  /// **'Duplicate signaling request'**
-  String get livekit_error_repeat_requestId;
+  /// **'Maximum Seat Exceeds Package Quantity Limit'**
+  String get live_client_error_max_seat_count_limit;
 
-  /// No description provided for @livekit_error_conflict_requestId.
+  /// No description provided for @live_client_error_seat_index_not_exist.
   ///
   /// In en, this message translates to:
-  /// **'Conflicting signaling request'**
-  String get livekit_error_conflict_requestId;
+  /// **'Seat Serial Number Does Not Exist'**
+  String get live_client_error_seat_index_not_exist;
 
-  /// No description provided for @livekit_error_max_seat_count_limit.
+  /// No description provided for @live_client_error_open_microphone_need_seat_unlock.
   ///
   /// In en, this message translates to:
-  /// **'Maximum number of seats exceeds the package limit'**
-  String get livekit_error_max_seat_count_limit;
+  /// **'Current Seat Audio is Locked'**
+  String get live_client_error_open_microphone_need_seat_unlock;
 
-  /// No description provided for @livekit_error_already_in_seat.
+  /// No description provided for @live_client_error_open_microphone_need_permission_from_admin.
   ///
   /// In en, this message translates to:
-  /// **'The current user is already on the seat'**
-  String get livekit_error_already_in_seat;
+  /// **'Need to Apply to Room Owner or Administrator to Open Mic'**
+  String get live_client_error_open_microphone_need_permission_from_admin;
 
-  /// No description provided for @livekit_error_seat_occupied.
+  /// No description provided for @live_client_error_open_camera_need_seat_unlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Seat Video is Locked, Need Room Owner to Unlock Mic Seat Before Opening Camera'**
+  String get live_client_error_open_camera_need_seat_unlock;
+
+  /// No description provided for @live_client_error_open_camera_need_permission_from_admin.
+  ///
+  /// In en, this message translates to:
+  /// **'Need to Apply to Room Owner or Administrator to Open Camera'**
+  String get live_client_error_open_camera_need_permission_from_admin;
+
+  /// No description provided for @live_client_error_open_screen_share_need_seat_unlock.
+  ///
+  /// In en, this message translates to:
+  /// **'The current microphone position video is locked and needs to be unlocked by the room owner before screen sharing can be enabled'**
+  String get live_client_error_open_screen_share_need_seat_unlock;
+
+  /// No description provided for @live_client_error_open_screen_share_need_permission_from_admin.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen sharing needs to be enabled after applying to the room owner or administrator'**
+  String get live_client_error_open_screen_share_need_permission_from_admin;
+
+  /// No description provided for @live_client_error_send_message_disabled_for_all.
+  ///
+  /// In en, this message translates to:
+  /// **'All Members Muted in the Current Room'**
+  String get live_client_error_send_message_disabled_for_all;
+
+  /// No description provided for @live_client_error_send_message_disabled_for_current.
+  ///
+  /// In en, this message translates to:
+  /// **'You Have Been Muted in the Current Room'**
+  String get live_client_error_send_message_disabled_for_current;
+
+  /// No description provided for @live_client_error_room_not_support_preloading.
+  ///
+  /// In en, this message translates to:
+  /// **'The current room does not support preloading'**
+  String get live_client_error_room_not_support_preloading;
+
+  /// No description provided for @live_server_error_system_internal_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Server internal error, please retry'**
+  String get live_server_error_system_internal_error;
+
+  /// No description provided for @live_server_error_param_illegal.
+  ///
+  /// In en, this message translates to:
+  /// **'The parameter is illegal. Check whether the request is correct according to the error description'**
+  String get live_server_error_param_illegal;
+
+  /// No description provided for @live_server_error_room_id_exists.
+  ///
+  /// In en, this message translates to:
+  /// **'The room ID already exists. Please select another room ID'**
+  String get live_server_error_room_id_exists;
+
+  /// No description provided for @live_server_error_room_does_not_exist.
+  ///
+  /// In en, this message translates to:
+  /// **'The room does not exist, or it once existed but has now been dissolved'**
+  String get live_server_error_room_does_not_exist;
+
+  /// No description provided for @live_server_error_not_a_room_member.
+  ///
+  /// In en, this message translates to:
+  /// **'Not a room member'**
+  String get live_server_error_not_a_room_member;
+
+  /// No description provided for @live_server_error_insufficient_operation_permissions.
+  ///
+  /// In en, this message translates to:
+  /// **'Insufficient operation permissions'**
+  String get live_server_error_insufficient_operation_permissions;
+
+  /// No description provided for @live_server_error_no_payment_information.
+  ///
+  /// In en, this message translates to:
+  /// **'No payment information, you need to purchase a package in the console'**
+  String get live_server_error_no_payment_information;
+
+  /// No description provided for @live_server_error_room_is_full.
+  ///
+  /// In en, this message translates to:
+  /// **'The room is full'**
+  String get live_server_error_room_is_full;
+
+  /// No description provided for @live_server_error_tag_quantity_exceeds_upper_limit.
+  ///
+  /// In en, this message translates to:
+  /// **'Tag quantity Exceeds Upper limit'**
+  String get live_server_error_tag_quantity_exceeds_upper_limit;
+
+  /// No description provided for @live_server_error_room_id_has_been_used.
+  ///
+  /// In en, this message translates to:
+  /// **'The room ID has been used, and the operator is the room owner, it can be used directly'**
+  String get live_server_error_room_id_has_been_used;
+
+  /// No description provided for @live_server_error_room_id_has_been_occupied_by_chat.
+  ///
+  /// In en, this message translates to:
+  /// **'The room ID has been occupied by Chat. You can use a different room ID or dissolve the group first'**
+  String get live_server_error_room_id_has_been_occupied_by_chat;
+
+  /// No description provided for @live_server_error_creating_rooms_exceeds_the_frequency_limit.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating rooms exceeds the frequency limit, the same room ID can only be created once within 1 second'**
+  String get live_server_error_creating_rooms_exceeds_the_frequency_limit;
+
+  /// No description provided for @live_server_error_exceeds_the_upper_limit.
+  ///
+  /// In en, this message translates to:
+  /// **'Exceeds the upper limit, for example, the number of microphone seats, the number of PK match rooms, etc., exceeds the payment limit'**
+  String get live_server_error_exceeds_the_upper_limit;
+
+  /// No description provided for @live_server_error_invalid_room_type.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid room type'**
+  String get live_server_error_invalid_room_type;
+
+  /// No description provided for @live_server_error_this_member_has_been_banned.
+  ///
+  /// In en, this message translates to:
+  /// **'This member has been banned'**
+  String get live_server_error_this_member_has_been_banned;
+
+  /// No description provided for @live_server_error_this_member_has_been_muted.
+  ///
+  /// In en, this message translates to:
+  /// **'This member has been muted'**
+  String get live_server_error_this_member_has_been_muted;
+
+  /// No description provided for @live_server_error_requires_password.
+  ///
+  /// In en, this message translates to:
+  /// **'The current room requires a password for entry'**
+  String get live_server_error_requires_password;
+
+  /// No description provided for @live_server_error_room_entry_password_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Room Entry Password Error'**
+  String get live_server_error_room_entry_password_error;
+
+  /// No description provided for @live_server_error_room_admin_quantity_exceeds_the_upper_limit.
+  ///
+  /// In en, this message translates to:
+  /// **'The admin quantity exceeds the upper limit'**
+  String get live_server_error_room_admin_quantity_exceeds_the_upper_limit;
+
+  /// No description provided for @live_server_error_signal_request_conflict.
+  ///
+  /// In en, this message translates to:
+  /// **'Signal request conflict'**
+  String get live_server_error_signal_request_conflict;
+
+  /// No description provided for @live_server_error_mic_seat_is_locked.
+  ///
+  /// In en, this message translates to:
+  /// **'The seat is locked. You can try another seat'**
+  String get live_server_error_mic_seat_is_locked;
+
+  /// No description provided for @live_server_error_seat_is_already_occupied.
   ///
   /// In en, this message translates to:
   /// **'The current seat is already occupied'**
-  String get livekit_error_seat_occupied;
+  String get live_server_error_seat_is_already_occupied;
 
-  /// No description provided for @livekit_error_seat_locked.
+  /// No description provided for @live_server_error_already_on_the_mic_queue.
   ///
   /// In en, this message translates to:
-  /// **'The current seat is locked'**
-  String get livekit_error_seat_locked;
+  /// **'Already on the seat queue'**
+  String get live_server_error_already_on_the_mic_queue;
 
-  /// No description provided for @livekit_error_seat_index_not_exist.
+  /// No description provided for @live_server_error_already_on_the_mic.
   ///
   /// In en, this message translates to:
-  /// **'Seat number does not exist'**
-  String get livekit_error_seat_index_not_exist;
+  /// **'Already on the seat'**
+  String get live_server_error_already_on_the_mic;
 
-  /// No description provided for @livekit_error_user_not_in_seat.
+  /// No description provided for @live_server_error_not_on_the_mic_queue.
   ///
   /// In en, this message translates to:
-  /// **'The current user is not on the seat'**
-  String get livekit_error_user_not_in_seat;
+  /// **'Not on the seat queue'**
+  String get live_server_error_not_on_the_mic_queue;
 
-  /// No description provided for @livekit_error_all_seat_occupied.
+  /// No description provided for @live_server_error_the_seats_are_all_taken.
   ///
   /// In en, this message translates to:
-  /// **'All seats are full'**
-  String get livekit_error_all_seat_occupied;
+  /// **'The seats are all taken'**
+  String get live_server_error_the_seats_are_all_taken;
 
-  /// No description provided for @livekit_error_seat_not_support_link_mic.
+  /// No description provided for @live_server_error_not_on_the_mic_seat.
   ///
   /// In en, this message translates to:
-  /// **'Does not support linking microphones'**
-  String get livekit_error_seat_not_support_link_mic;
+  /// **'Not on the seat'**
+  String get live_server_error_not_on_the_mic_seat;
 
-  /// No description provided for @livekit_error_open_microphone_need_seat_unlock.
+  /// No description provided for @live_server_error_user_is_already_on_the_mic_seat.
   ///
   /// In en, this message translates to:
-  /// **'The current seat audio is locked, you need to unlock it before opening the microphone'**
-  String get livekit_error_open_microphone_need_seat_unlock;
+  /// **'The user is already on the seat'**
+  String get live_server_error_user_is_already_on_the_mic_seat;
 
-  /// No description provided for @livekit_error_open_microphone_need_permission_from_admin.
+  /// No description provided for @live_server_error_room_does_not_support_mic_ability.
   ///
   /// In en, this message translates to:
-  /// **'You need to apply to the room owner or administrator before opening the microphone'**
-  String get livekit_error_open_microphone_need_permission_from_admin;
+  /// **'The room does not support seat ability'**
+  String get live_server_error_room_does_not_support_mic_ability;
 
-  /// No description provided for @livekit_error_open_camera_need_seat_unlock.
+  /// No description provided for @live_server_error_the_seat_list_is_empty.
   ///
   /// In en, this message translates to:
-  /// **'The current seat video is locked, you need to unlock it before opening the camera'**
-  String get livekit_error_open_camera_need_seat_unlock;
+  /// **'The seat list is empty'**
+  String get live_server_error_the_seat_list_is_empty;
 
-  /// No description provided for @livekit_error_open_camera_need_permission_from_admin.
+  /// No description provided for @live_server_error_connection_does_not_exist.
   ///
   /// In en, this message translates to:
-  /// **'You need to apply to the room owner or administrator before opening the camera'**
-  String get livekit_error_open_camera_need_permission_from_admin;
+  /// **'The current connection does not exist or has ended'**
+  String get live_server_error_connection_does_not_exist;
 
-  /// No description provided for @livekit_error_open_screen_share_need_seat_unlock.
+  /// No description provided for @live_server_error_room_is_in_connection.
   ///
   /// In en, this message translates to:
-  /// **'The current seat screen sharing is locked, you need to unlock it before opening the screen sharing'**
-  String get livekit_error_open_screen_share_need_seat_unlock;
+  /// **'The room is already in connection'**
+  String get live_server_error_room_is_in_connection;
 
-  /// No description provided for @livekit_error_open_screen_share_need_permission_from_admin.
+  /// No description provided for @live_server_error_there_is_a_pending_connection_request.
   ///
   /// In en, this message translates to:
-  /// **'You need to apply to the room owner or administrator before opening the screen sharing'**
-  String get livekit_error_open_screen_share_need_permission_from_admin;
+  /// **'There is a pending connection request for this room'**
+  String get live_server_error_there_is_a_pending_connection_request;
 
-  /// No description provided for @livekit_error_send_message_disabled_for_all.
+  /// No description provided for @live_server_error_is_connecting_with_other_rooms.
   ///
   /// In en, this message translates to:
-  /// **'All users are muted in the current room'**
-  String get livekit_error_send_message_disabled_for_all;
+  /// **'The current room is connecting with other rooms'**
+  String get live_server_error_is_connecting_with_other_rooms;
 
-  /// No description provided for @livekit_error_send_message_disabled_for_current.
+  /// No description provided for @live_server_error_has_exceeded_the_limit_in_connection_or_battle.
   ///
   /// In en, this message translates to:
-  /// **'You have been muted in the current room'**
-  String get livekit_error_send_message_disabled_for_current;
+  /// **'The room number has exceeded the limit in connection or battle'**
+  String get live_server_error_has_exceeded_the_limit_in_connection_or_battle;
 
-  /// No description provided for @livekit_take_seat_rejected.
+  /// No description provided for @live_server_error_creating_connections_too_frequent.
+  ///
+  /// In en, this message translates to:
+  /// **'creating connections too frequent in a short time. Wait a moment and try again'**
+  String get live_server_error_creating_connections_too_frequent;
+
+  /// No description provided for @live_server_error_battle_does_not_exist_or_has_ended.
+  ///
+  /// In en, this message translates to:
+  /// **'The battle does not exist or has ended'**
+  String get live_server_error_battle_does_not_exist_or_has_ended;
+
+  /// No description provided for @live_server_error_no_rooms_in_the_battle_is_valid.
+  ///
+  /// In en, this message translates to:
+  /// **'None of the rooms in the battle is valid'**
+  String get live_server_error_no_rooms_in_the_battle_is_valid;
+
+  /// No description provided for @live_server_error_creating_battles_too_frequently.
+  ///
+  /// In en, this message translates to:
+  /// **'creating battles too frequently. Wait a moment and try again'**
+  String get live_server_error_creating_battles_too_frequently;
+
+  /// No description provided for @live_server_error_the_room_is_not_in_the_battle.
+  ///
+  /// In en, this message translates to:
+  /// **'The room isn‘t in the battle'**
+  String get live_server_error_the_room_is_not_in_the_battle;
+
+  /// No description provided for @live_server_error_in_other_battle.
+  ///
+  /// In en, this message translates to:
+  /// **'The room is already in other battle'**
+  String get live_server_error_in_other_battle;
+
+  /// No description provided for @live_server_error_there_is_a_pending_battle_request.
+  ///
+  /// In en, this message translates to:
+  /// **'There is a pending battle request for this room'**
+  String get live_server_error_there_is_a_pending_battle_request;
+
+  /// No description provided for @live_server_error_is_not_allowed_to_cancel_battle_for_room_in_battle.
+  ///
+  /// In en, this message translates to:
+  /// **'It\'s not allowed to cancel battle for room in battle'**
+  String
+      get live_server_error_is_not_allowed_to_cancel_battle_for_room_in_battle;
+
+  /// No description provided for @live_server_error_not_started_yet.
+  ///
+  /// In en, this message translates to:
+  /// **'The battle has not started yet'**
+  String get live_server_error_not_started_yet;
+
+  /// No description provided for @live_server_error_battle_session_has_ended.
+  ///
+  /// In en, this message translates to:
+  /// **'The battle session has ended'**
+  String get live_server_error_battle_session_has_ended;
+
+  /// No description provided for @live_server_error_metadata_number_of_keys_exceeds_the_limit.
+  ///
+  /// In en, this message translates to:
+  /// **'The number of keys in the room\'s Metadata exceeds the limit'**
+  String get live_server_error_metadata_number_of_keys_exceeds_the_limit;
+
+  /// No description provided for @live_server_error_metadata_size_of_value_exceeds_the_limit.
+  ///
+  /// In en, this message translates to:
+  /// **'The size of value in the room\'s Metadata exceeds the maximum byte limit'**
+  String get live_server_error_metadata_size_of_value_exceeds_the_limit;
+
+  /// No description provided for @live_server_error_metadata_total_size_exceeds_the_limit.
+  ///
+  /// In en, this message translates to:
+  /// **'The total size of all value in the room\'s Metadata exceeds the maximum byte limit'**
+  String get live_server_error_metadata_total_size_exceeds_the_limit;
+
+  /// No description provided for @live_server_error_metadata_no_valid_keys.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no valid keys when delete metadata'**
+  String get live_server_error_metadata_no_valid_keys;
+
+  /// No description provided for @live_server_error_metadata_the_size_of_key_exceeds_the_maximum_byte_limit.
+  ///
+  /// In en, this message translates to:
+  /// **'The size of key in the room\'s Metadata exceeds the maximum byte limit'**
+  String
+      get live_server_error_metadata_the_size_of_key_exceeds_the_maximum_byte_limit;
+
+  /// No description provided for @live_voiceroom_take_seat_rejected.
   ///
   /// In en, this message translates to:
   /// **'Take seat application has been rejected'**
-  String get livekit_take_seat_rejected;
+  String get live_voiceroom_take_seat_rejected;
 
-  /// No description provided for @livekit_room_destroy.
+  /// No description provided for @live_room_destroy.
   ///
   /// In en, this message translates to:
   /// **'Broadcast has been ended'**
-  String get livekit_room_destroy;
+  String get live_room_destroy;
 
-  /// No description provided for @livekit_kicked_out_of_seat.
+  /// No description provided for @live_voiceroom_kicked_out_of_seat.
   ///
   /// In en, this message translates to:
   /// **'Kicked out of seat by room owner'**
-  String get livekit_kicked_out_of_seat;
+  String get live_voiceroom_kicked_out_of_seat;
 
-  /// No description provided for @livekit_take_seat_timeout.
+  /// No description provided for @live_voiceroom_take_seat_timeout.
   ///
   /// In en, this message translates to:
   /// **'Take seat application timeout'**
-  String get livekit_take_seat_timeout;
+  String get live_voiceroom_take_seat_timeout;
 
-  /// No description provided for @livekit_anchor.
+  /// No description provided for @live_edit_cover.
   ///
   /// In en, this message translates to:
-  /// **'Anchor'**
-  String get livekit_anchor;
+  /// **'Modify the cover'**
+  String get live_edit_cover;
 
-  /// No description provided for @livekit_audience.
-  ///
-  /// In en, this message translates to:
-  /// **'Audience'**
-  String get livekit_audience;
-
-  /// No description provided for @livekit_edit_cover.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit'**
-  String get livekit_edit_cover;
-
-  /// No description provided for @livekit_stream_categories.
+  /// No description provided for @live_stream_categories.
   ///
   /// In en, this message translates to:
   /// **'Live type:'**
-  String get livekit_stream_categories;
+  String get live_stream_categories;
 
-  /// No description provided for @livekit_stream_privacy_status.
+  /// No description provided for @live_stream_privacy_status.
   ///
   /// In en, this message translates to:
   /// **'Live mode:'**
-  String get livekit_stream_privacy_status;
+  String get live_stream_privacy_status;
 
-  /// No description provided for @livekit_stream_privacy_status_public.
+  /// No description provided for @live_stream_privacy_status_default.
   ///
   /// In en, this message translates to:
   /// **'Public'**
-  String get livekit_stream_privacy_status_public;
+  String get live_stream_privacy_status_default;
 
-  /// No description provided for @livekit_stream_privacy_status_privacy.
+  /// No description provided for @live_stream_privacy_status_privacy.
   ///
   /// In en, this message translates to:
   /// **'Privacy'**
-  String get livekit_stream_privacy_status_privacy;
+  String get live_stream_privacy_status_privacy;
 
-  /// No description provided for @livekit_stream_categories_daily_chat.
+  /// No description provided for @live_stream_categories_default.
   ///
   /// In en, this message translates to:
   /// **'Daily chat'**
-  String get livekit_stream_categories_daily_chat;
+  String get live_stream_categories_default;
 
-  /// No description provided for @livekit_stream_categories_appearance.
-  ///
-  /// In en, this message translates to:
-  /// **'Appearance'**
-  String get livekit_stream_categories_appearance;
-
-  /// No description provided for @livekit_stream_categories_knowledge_teaching.
-  ///
-  /// In en, this message translates to:
-  /// **'Knowledge teaching'**
-  String get livekit_stream_categories_knowledge_teaching;
-
-  /// No description provided for @livekit_stream_categories_shopping.
-  ///
-  /// In en, this message translates to:
-  /// **'Shopping'**
-  String get livekit_stream_categories_shopping;
-
-  /// No description provided for @livekit_stream_categories_music.
-  ///
-  /// In en, this message translates to:
-  /// **'Music'**
-  String get livekit_stream_categories_music;
-
-  /// No description provided for @livekit_function_item_beauty.
+  /// No description provided for @live_stream_categories_beauty.
   ///
   /// In en, this message translates to:
   /// **'Beauty'**
-  String get livekit_function_item_beauty;
+  String get live_stream_categories_beauty;
 
-  /// No description provided for @livekit_function_item_music.
+  /// No description provided for @live_stream_categories_teach.
+  ///
+  /// In en, this message translates to:
+  /// **'Knowledge teaching'**
+  String get live_stream_categories_teach;
+
+  /// No description provided for @live_stream_categories_shopping.
+  ///
+  /// In en, this message translates to:
+  /// **'Shopping'**
+  String get live_stream_categories_shopping;
+
+  /// No description provided for @live_music.
   ///
   /// In en, this message translates to:
   /// **'Music'**
-  String get livekit_function_item_music;
+  String get live_music;
 
-  /// No description provided for @livekit_function_item_flip.
+  /// No description provided for @live_video_settings_item_beauty.
+  ///
+  /// In en, this message translates to:
+  /// **'Beauty'**
+  String get live_video_settings_item_beauty;
+
+  /// No description provided for @live_video_settings_item_flip.
   ///
   /// In en, this message translates to:
   /// **'Flip'**
-  String get livekit_function_item_flip;
+  String get live_video_settings_item_flip;
 
-  /// No description provided for @livekit_function_item_mirror.
+  /// No description provided for @live_video_settings_item_mirror.
   ///
   /// In en, this message translates to:
   /// **'Mirror'**
-  String get livekit_function_item_mirror;
+  String get live_video_settings_item_mirror;
 
-  /// No description provided for @livekit_start_live.
+  /// No description provided for @live_start_live.
   ///
   /// In en, this message translates to:
   /// **'Go live'**
-  String get livekit_start_live;
+  String get live_start_live;
 
-  /// No description provided for @livekit_preset_cover.
+  /// No description provided for @live_preset_cover.
   ///
   /// In en, this message translates to:
   /// **'Preset Images'**
-  String get livekit_preset_cover;
+  String get live_preset_cover;
 
-  /// No description provided for @livekit_set_as_cover.
+  /// No description provided for @live_set_as_cover.
   ///
   /// In en, this message translates to:
   /// **'Set as cover'**
-  String get livekit_set_as_cover;
+  String get live_set_as_cover;
 
-  /// No description provided for @livekit_stream_type.
-  ///
-  /// In en, this message translates to:
-  /// **'Live categories'**
-  String get livekit_stream_type;
-
-  /// No description provided for @livekit_stream_id.
-  ///
-  /// In en, this message translates to:
-  /// **'Stream Id'**
-  String get livekit_stream_id;
-
-  /// No description provided for @livekit_barrage_input_hint.
-  ///
-  /// In en, this message translates to:
-  /// **'Please enter barrage'**
-  String get livekit_barrage_input_hint;
-
-  /// No description provided for @livekit_barrage_btn_send.
+  /// No description provided for @live_barrage_btn_send.
   ///
   /// In en, this message translates to:
   /// **'Send'**
-  String get livekit_barrage_btn_send;
+  String get live_barrage_btn_send;
 
-  /// No description provided for @livekit_barrage_me.
+  /// No description provided for @live_gift_me.
   ///
   /// In en, this message translates to:
   /// **'Me'**
-  String get livekit_barrage_me;
+  String get live_gift_me;
 
-  /// No description provided for @livekit_barrage_agree.
+  /// No description provided for @live_barrage_agree.
   ///
   /// In en, this message translates to:
   /// **'Agree'**
-  String get livekit_barrage_agree;
+  String get live_barrage_agree;
 
-  /// No description provided for @livekit_barrage_warning_not_empty.
+  /// No description provided for @live_barrage_warning_not_empty.
   ///
   /// In en, this message translates to:
   /// **'input can\'t be empty!'**
-  String get livekit_barrage_warning_not_empty;
+  String get live_barrage_warning_not_empty;
 
-  /// No description provided for @livekit_settings.
+  /// No description provided for @live_settings.
   ///
   /// In en, this message translates to:
   /// **'Settings'**
-  String get livekit_settings;
+  String get live_settings;
 
-  /// No description provided for @livekit_audio_effect.
+  /// No description provided for @live_audio_effect.
   ///
   /// In en, this message translates to:
   /// **'Audio'**
-  String get livekit_audio_effect;
+  String get live_audio_effect;
 
-  /// No description provided for @livekit_more_settings.
+  /// No description provided for @live_more_settings.
   ///
   /// In en, this message translates to:
-  /// **'More Config'**
-  String get livekit_more_settings;
+  /// **'More settings'**
+  String get live_more_settings;
 
-  /// No description provided for @livekit_video_params.
+  /// No description provided for @live_video_params.
   ///
   /// In en, this message translates to:
   /// **'Video Config'**
-  String get livekit_video_params;
+  String get live_video_params;
 
-  /// No description provided for @livekit_video_config.
+  /// No description provided for @live_video_config.
   ///
   /// In en, this message translates to:
   /// **'Video'**
-  String get livekit_video_config;
+  String get live_video_config;
 
-  /// No description provided for @livekit_link.
+  /// No description provided for @live_link.
   ///
   /// In en, this message translates to:
-  /// **'LINK'**
-  String get livekit_link;
+  /// **'Link'**
+  String get live_link;
 
-  /// No description provided for @livekit_pk.
+  /// No description provided for @live_like.
   ///
   /// In en, this message translates to:
-  /// **'Anchor PK'**
-  String get livekit_pk;
+  /// **'Like'**
+  String get live_like;
 
-  /// No description provided for @livekit_send_gift.
-  ///
-  /// In en, this message translates to:
-  /// **'Send a Gift'**
-  String get livekit_send_gift;
-
-  /// No description provided for @livekit_like.
-  ///
-  /// In en, this message translates to:
-  /// **'like'**
-  String get livekit_like;
-
-  /// No description provided for @livekit_comment.
-  ///
-  /// In en, this message translates to:
-  /// **'Comment'**
-  String get livekit_comment;
-
-  /// No description provided for @livekit_hidden_audience_nickname.
-  ///
-  /// In en, this message translates to:
-  /// **'Hide audience nickname'**
-  String get livekit_hidden_audience_nickname;
-
-  /// No description provided for @livekit_allow_share.
-  ///
-  /// In en, this message translates to:
-  /// **'Allow sharing'**
-  String get livekit_allow_share;
-
-  /// No description provided for @livekit_waiting_pass.
+  /// No description provided for @live_waiting_pass.
   ///
   /// In en, this message translates to:
   /// **'Waiting'**
-  String get livekit_waiting_pass;
+  String get live_waiting_pass;
 
-  /// No description provided for @livekit_gift_give_gift.
+  /// No description provided for @live_gift_give_gift.
   ///
   /// In en, this message translates to:
-  /// **'Give gift'**
-  String get livekit_gift_give_gift;
+  /// **'Send Out'**
+  String get live_gift_give_gift;
 
-  /// No description provided for @livekit_gift_title.
+  /// No description provided for @live_gift_title.
   ///
   /// In en, this message translates to:
   /// **'Gift'**
-  String get livekit_gift_title;
+  String get live_gift_title;
 
-  /// No description provided for @livekit_gift_me.
-  ///
-  /// In en, this message translates to:
-  /// **'Me'**
-  String get livekit_gift_me;
-
-  /// No description provided for @livekit_music.
-  ///
-  /// In en, this message translates to:
-  /// **'Music'**
-  String get livekit_music;
-
-  /// No description provided for @livekit_music_cheerful.
+  /// No description provided for @live_music_cheerful.
   ///
   /// In en, this message translates to:
   /// **'Cheerful'**
-  String get livekit_music_cheerful;
+  String get live_music_cheerful;
 
-  /// No description provided for @livekit_music_melancholy.
+  /// No description provided for @live_music_melancholy.
   ///
   /// In en, this message translates to:
   /// **'Melancholy'**
-  String get livekit_music_melancholy;
+  String get live_music_melancholy;
 
-  /// No description provided for @livekit_music_wonder_world.
+  /// No description provided for @live_music_wonder_world.
   ///
   /// In en, this message translates to:
-  /// **'Wonder World'**
-  String get livekit_music_wonder_world;
+  /// **'Magical World'**
+  String get live_music_wonder_world;
 
-  /// No description provided for @livekit_clarity.
+  /// No description provided for @live_clarity.
   ///
   /// In en, this message translates to:
   /// **'Clarity'**
-  String get livekit_clarity;
+  String get live_clarity;
 
-  /// No description provided for @livekit_fps.
+  /// No description provided for @live_ear_return.
   ///
   /// In en, this message translates to:
-  /// **'FPS'**
-  String get livekit_fps;
+  /// **'Ear Monitor'**
+  String get live_ear_return;
 
-  /// No description provided for @livekit_ear_return.
+  /// No description provided for @live_ear_return_volume.
   ///
   /// In en, this message translates to:
-  /// **'Ear return'**
-  String get livekit_ear_return;
+  /// **'Ear Monitor volume'**
+  String get live_ear_return_volume;
 
-  /// No description provided for @livekit_ear_return_volume.
+  /// No description provided for @live_choose_music.
   ///
   /// In en, this message translates to:
-  /// **'Ear return volume'**
-  String get livekit_ear_return_volume;
+  /// **'Choose Music'**
+  String get live_choose_music;
 
-  /// No description provided for @livekit_background_music.
-  ///
-  /// In en, this message translates to:
-  /// **'Background music'**
-  String get livekit_background_music;
-
-  /// No description provided for @livekit_select_music.
-  ///
-  /// In en, this message translates to:
-  /// **'Select music'**
-  String get livekit_select_music;
-
-  /// No description provided for @livekit_audio_settings.
+  /// No description provided for @live_audio_settings.
   ///
   /// In en, this message translates to:
   /// **'Audio settings'**
-  String get livekit_audio_settings;
+  String get live_audio_settings;
 
-  /// No description provided for @livekit_music_volume.
+  /// No description provided for @live_music_volume.
   ///
   /// In en, this message translates to:
   /// **'Music volume'**
-  String get livekit_music_volume;
+  String get live_music_volume;
 
-  /// No description provided for @livekit_people_volume.
+  /// No description provided for @live_people_volume.
   ///
   /// In en, this message translates to:
   /// **'Voice volume'**
-  String get livekit_people_volume;
+  String get live_people_volume;
 
-  /// No description provided for @livekit_music_pitch.
+  /// No description provided for @live_invalid_userId.
+  ///
+  /// In en, this message translates to:
+  /// **'invalid UserId'**
+  String get live_invalid_userId;
+
+  /// No description provided for @live_music_pitch.
   ///
   /// In en, this message translates to:
   /// **'Music pitch'**
-  String get livekit_music_pitch;
+  String get live_music_pitch;
 
-  /// No description provided for @livekit_change_voice.
+  /// No description provided for @live_change_voice.
   ///
   /// In en, this message translates to:
-  /// **'Voice change'**
-  String get livekit_change_voice;
+  /// **'Voice changer'**
+  String get live_change_voice;
 
-  /// No description provided for @livekit_change_voice_none.
+  /// No description provided for @live_change_voice_none.
   ///
   /// In en, this message translates to:
-  /// **'Original voice'**
-  String get livekit_change_voice_none;
+  /// **'Original'**
+  String get live_change_voice_none;
 
-  /// No description provided for @livekit_change_voice_child.
+  /// No description provided for @live_change_voice_child.
   ///
   /// In en, this message translates to:
   /// **'Naughty child'**
-  String get livekit_change_voice_child;
+  String get live_change_voice_child;
 
-  /// No description provided for @livekit_change_voice_girl.
+  /// No description provided for @live_change_voice_girl.
   ///
   /// In en, this message translates to:
-  /// **'Lori'**
-  String get livekit_change_voice_girl;
+  /// **'Loli'**
+  String get live_change_voice_girl;
 
-  /// No description provided for @livekit_change_voice_uncle.
+  /// No description provided for @live_change_voice_uncle.
   ///
   /// In en, this message translates to:
   /// **'Uncle'**
-  String get livekit_change_voice_uncle;
+  String get live_change_voice_uncle;
 
-  /// No description provided for @livekit_change_voice_metal.
-  ///
-  /// In en, this message translates to:
-  /// **'Heavy metal'**
-  String get livekit_change_voice_metal;
-
-  /// No description provided for @livekit_change_voice_cold.
-  ///
-  /// In en, this message translates to:
-  /// **'Cold'**
-  String get livekit_change_voice_cold;
-
-  /// No description provided for @livekit_change_voice_foreign_language.
-  ///
-  /// In en, this message translates to:
-  /// **'Foreign language accent'**
-  String get livekit_change_voice_foreign_language;
-
-  /// No description provided for @livekit_change_voice_trapped_beast.
-  ///
-  /// In en, this message translates to:
-  /// **'Trapped beast'**
-  String get livekit_change_voice_trapped_beast;
-
-  /// No description provided for @livekit_change_voice_fat_house.
-  ///
-  /// In en, this message translates to:
-  /// **'fat house'**
-  String get livekit_change_voice_fat_house;
-
-  /// No description provided for @livekit_change_voice_strong_current.
-  ///
-  /// In en, this message translates to:
-  /// **'Strong current'**
-  String get livekit_change_voice_strong_current;
-
-  /// No description provided for @livekit_change_voice_machinery.
-  ///
-  /// In en, this message translates to:
-  /// **'Heavy machinery'**
-  String get livekit_change_voice_machinery;
-
-  /// No description provided for @livekit_change_voice_ethereal.
+  /// No description provided for @live_change_voice_ethereal.
   ///
   /// In en, this message translates to:
   /// **'Ethereal'**
-  String get livekit_change_voice_ethereal;
+  String get live_change_voice_ethereal;
 
-  /// No description provided for @livekit_reverb.
+  /// No description provided for @live_reverb.
   ///
   /// In en, this message translates to:
   /// **'Reverb'**
-  String get livekit_reverb;
+  String get live_reverb;
 
-  /// No description provided for @livekit_reverb_none.
+  /// No description provided for @live_reverb_none.
   ///
   /// In en, this message translates to:
   /// **'No effect'**
-  String get livekit_reverb_none;
+  String get live_reverb_none;
 
-  /// No description provided for @livekit_reverb_karaoke.
+  /// No description provided for @live_reverb_karaoke.
   ///
   /// In en, this message translates to:
   /// **'KTV'**
-  String get livekit_reverb_karaoke;
+  String get live_reverb_karaoke;
 
-  /// No description provided for @livekit_reverb_small_room.
-  ///
-  /// In en, this message translates to:
-  /// **'Small room'**
-  String get livekit_reverb_small_room;
-
-  /// No description provided for @livekit_reverb_town_hall.
-  ///
-  /// In en, this message translates to:
-  /// **'Town Hall'**
-  String get livekit_reverb_town_hall;
-
-  /// No description provided for @livekit_reverb_low.
+  /// No description provided for @live_reverb_low.
   ///
   /// In en, this message translates to:
   /// **'Low'**
-  String get livekit_reverb_low;
+  String get live_reverb_low;
 
-  /// No description provided for @livekit_reverb_loud_and_loud.
+  /// No description provided for @live_reverb_loud_and_loud.
   ///
   /// In en, this message translates to:
-  /// **'loud'**
-  String get livekit_reverb_loud_and_loud;
+  /// **'Loud'**
+  String get live_reverb_loud_and_loud;
 
-  /// No description provided for @livekit_reverb_metallic_sound.
+  /// No description provided for @live_reverb_metallic_sound.
   ///
   /// In en, this message translates to:
   /// **'Metallic sound'**
-  String get livekit_reverb_metallic_sound;
+  String get live_reverb_metallic_sound;
 
-  /// No description provided for @livekit_reverb_metallic_magnetic.
-  ///
-  /// In en, this message translates to:
-  /// **'Magnetic'**
-  String get livekit_reverb_metallic_magnetic;
-
-  /// No description provided for @livekit_reverb_metallic_ethereal.
+  /// No description provided for @live_reverb_metallic_ethereal.
   ///
   /// In en, this message translates to:
   /// **'Ethereal'**
-  String get livekit_reverb_metallic_ethereal;
+  String get live_reverb_metallic_ethereal;
 
-  /// No description provided for @livekit_reverb_metallic_recording_studio.
-  ///
-  /// In en, this message translates to:
-  /// **'Recording studio'**
-  String get livekit_reverb_metallic_recording_studio;
-
-  /// No description provided for @livekit_reverb_metallic_melodious.
-  ///
-  /// In en, this message translates to:
-  /// **'melodious'**
-  String get livekit_reverb_metallic_melodious;
-
-  /// No description provided for @livekit_reverb_metallic_recording_studio2.
-  ///
-  /// In en, this message translates to:
-  /// **'Recording Studio 2'**
-  String get livekit_reverb_metallic_recording_studio2;
-
-  /// No description provided for @livekit_tips_title.
+  /// No description provided for @live_music_tips_title.
   ///
   /// In en, this message translates to:
   /// **'Warm Tips'**
-  String get livekit_tips_title;
+  String get live_music_tips_title;
 
-  /// No description provided for @livekit_confirm_delete_tips.
+  /// No description provided for @live_confirm_delete_tips.
   ///
   /// In en, this message translates to:
   /// **'Are you sure you want to delete \"%s\"?'**
-  String get livekit_confirm_delete_tips;
+  String get live_confirm_delete_tips;
 
-  /// No description provided for @livekit_cancel.
+  /// No description provided for @live_cancel.
   ///
   /// In en, this message translates to:
   /// **'Cancel'**
-  String get livekit_cancel;
+  String get live_cancel;
 
-  /// No description provided for @livekit_confirm.
+  /// No description provided for @live_music_confirm.
   ///
   /// In en, this message translates to:
   /// **'Confirm'**
-  String get livekit_confirm;
+  String get live_music_confirm;
 
-  /// No description provided for @livekit_waiting_link.
+  /// No description provided for @live_waiting_link.
   ///
   /// In en, this message translates to:
-  /// **'Waiting Linking'**
-  String get livekit_waiting_link;
+  /// **'Waiting for link'**
+  String get live_waiting_link;
 
-  /// No description provided for @livekit_live_room_list.
-  ///
-  /// In en, this message translates to:
-  /// **'Live'**
-  String get livekit_live_room_list;
-
-  /// No description provided for @livekit_live_has_stop.
+  /// No description provided for @live_live_has_stop.
   ///
   /// In en, this message translates to:
   /// **'Live broadcast has ended'**
-  String get livekit_live_has_stop;
+  String get live_live_has_stop;
 
-  /// No description provided for @livekit_sent.
+  /// No description provided for @live_sent.
   ///
   /// In en, this message translates to:
-  /// **' sent '**
-  String get livekit_sent;
+  /// **'Sent'**
+  String get live_sent;
 
-  /// No description provided for @livekit_entered_room.
+  /// No description provided for @live_entered_room.
   ///
   /// In en, this message translates to:
   /// **'Entered room'**
-  String get livekit_entered_room;
+  String get live_entered_room;
 
-  /// No description provided for @livekit_who_live_room.
-  ///
-  /// In en, this message translates to:
-  /// **' Live Room'**
-  String get livekit_who_live_room;
-
-  /// No description provided for @livekit_gift_balance.
+  /// No description provided for @live_gift_balance.
   ///
   /// In en, this message translates to:
   /// **'Balance'**
-  String get livekit_gift_balance;
+  String get live_gift_balance;
 
-  /// No description provided for @livekit_gift_recharge.
+  /// No description provided for @live_gift_recharge.
   ///
   /// In en, this message translates to:
   /// **'Recharge'**
-  String get livekit_gift_recharge;
+  String get live_gift_recharge;
 
-  /// No description provided for @livekit_gift_balance_insufficient.
+  /// No description provided for @live_gift_balance_insufficient.
   ///
   /// In en, this message translates to:
-  /// **'Balance is insufficient'**
-  String get livekit_gift_balance_insufficient;
+  /// **'Insufficient balance, please recharge.'**
+  String get live_gift_balance_insufficient;
 
-  /// No description provided for @livekit_preview_video_live.
+  /// No description provided for @live_audience_count_in_room.
   ///
   /// In en, this message translates to:
-  /// **'Live Video'**
-  String get livekit_preview_video_live;
+  /// **'%d people viewed'**
+  String get live_audience_count_in_room;
 
-  /// No description provided for @livekit_preview_voice_live.
-  ///
-  /// In en, this message translates to:
-  /// **'Live Voice'**
-  String get livekit_preview_voice_live;
-
-  /// No description provided for @livekit_audience_count_in_room.
-  ///
-  /// In en, this message translates to:
-  /// **'%d people are watching'**
-  String get livekit_audience_count_in_room;
-
-  /// No description provided for @livekit_loading.
-  ///
-  /// In en, this message translates to:
-  /// **'Loading...'**
-  String get livekit_loading;
-
-  /// No description provided for @livekit_no_more_data.
-  ///
-  /// In en, this message translates to:
-  /// **'There is no more data'**
-  String get livekit_no_more_data;
-
-  /// No description provided for @livekit_no_room_tip.
+  /// No description provided for @live_no_room_tip.
   ///
   /// In en, this message translates to:
   /// **'Please start a live room'**
-  String get livekit_no_room_tip;
+  String get live_no_room_tip;
 
-  /// No description provided for @livekit_common_this_live_data.
+  /// No description provided for @live_common_this_live_data.
   ///
   /// In en, this message translates to:
   /// **'Live data'**
-  String get livekit_common_this_live_data;
+  String get live_common_this_live_data;
 
-  /// No description provided for @livekit_common_live_duration.
+  /// No description provided for @live_common_live_duration.
   ///
   /// In en, this message translates to:
   /// **'Duration'**
-  String get livekit_common_live_duration;
+  String get live_common_live_duration;
 
-  /// No description provided for @livekit_common_gift_income.
+  /// No description provided for @live_common_gift_income.
   ///
   /// In en, this message translates to:
   /// **'Gift Income'**
-  String get livekit_common_gift_income;
+  String get live_common_gift_income;
 
-  /// No description provided for @livekit_common_live_people_number.
+  /// No description provided for @live_common_live_people_number.
   ///
   /// In en, this message translates to:
-  /// **'Total Viewers'**
-  String get livekit_common_live_people_number;
+  /// **'Total Views'**
+  String get live_common_live_people_number;
 
-  /// No description provided for @livekit_common_message_count.
+  /// No description provided for @live_common_message_count.
   ///
   /// In en, this message translates to:
   /// **'Messages'**
-  String get livekit_common_message_count;
+  String get live_common_message_count;
 
-  /// No description provided for @livekit_common_send_gift_people_count.
+  /// No description provided for @live_common_send_gift_people_count.
   ///
   /// In en, this message translates to:
   /// **'Gift givers'**
-  String get livekit_common_send_gift_people_count;
+  String get live_common_send_gift_people_count;
 
-  /// No description provided for @livekit_common_like_count.
+  /// No description provided for @live_common_like_count.
   ///
   /// In en, this message translates to:
   /// **'Likes'**
-  String get livekit_common_like_count;
+  String get live_common_like_count;
 
-  /// No description provided for @livekit_anchor_audience_list_panel_title.
+  /// No description provided for @live_anchor_audience_list_panel_title.
   ///
   /// In en, this message translates to:
   /// **'Online audience'**
-  String get livekit_anchor_audience_list_panel_title;
+  String get live_anchor_audience_list_panel_title;
 
-  /// No description provided for @livekit_follow_anchor.
+  /// No description provided for @live_follow_anchor.
   ///
   /// In en, this message translates to:
   /// **'Follow'**
-  String get livekit_follow_anchor;
+  String get live_follow_anchor;
 
-  /// No description provided for @livekit_unfollow_anchor.
+  /// No description provided for @live_unfollow_anchor.
   ///
   /// In en, this message translates to:
-  /// **'unfollow'**
-  String get livekit_unfollow_anchor;
+  /// **'Unfollow'**
+  String get live_unfollow_anchor;
 
-  /// No description provided for @livekit_live_room_id.
+  /// No description provided for @live_room_info_liveroom_id.
   ///
   /// In en, this message translates to:
   /// **'Live Room ID:'**
-  String get livekit_live_room_id;
+  String get live_room_info_liveroom_id;
 
-  /// No description provided for @livekit_fan_count.
+  /// No description provided for @live_fan_count.
   ///
   /// In en, this message translates to:
   /// **'Fans'**
-  String get livekit_fan_count;
+  String get live_fan_count;
 
-  /// No description provided for @livekit_beauty_panel_title.
+  /// No description provided for @live_beauty_panel_title.
   ///
   /// In en, this message translates to:
   /// **'One-click beauty'**
-  String get livekit_beauty_panel_title;
+  String get live_beauty_panel_title;
 
-  /// No description provided for @livekit_beauty_item_none.
+  /// No description provided for @live_beauty_item_none.
   ///
   /// In en, this message translates to:
   /// **'Close'**
-  String get livekit_beauty_item_none;
+  String get live_beauty_item_none;
 
-  /// No description provided for @livekit_beauty_item_smooth.
+  /// No description provided for @live_beauty_item_smooth.
   ///
   /// In en, this message translates to:
   /// **'Smooth'**
-  String get livekit_beauty_item_smooth;
+  String get live_beauty_item_smooth;
 
-  /// No description provided for @livekit_beauty_item_whiteness.
+  /// No description provided for @live_beauty_item_whiteness.
   ///
   /// In en, this message translates to:
   /// **'Whiteness'**
-  String get livekit_beauty_item_whiteness;
+  String get live_beauty_item_whiteness;
 
-  /// No description provided for @livekit_beauty_item_ruddy.
+  /// No description provided for @live_beauty_item_ruddy.
   ///
   /// In en, this message translates to:
   /// **'Ruddy'**
-  String get livekit_beauty_item_ruddy;
+  String get live_beauty_item_ruddy;
 
-  /// No description provided for @livekit_resolution_360p.
+  /// No description provided for @live_resolution_360p.
   ///
   /// In en, this message translates to:
   /// **'LD'**
-  String get livekit_resolution_360p;
+  String get live_resolution_360p;
 
-  /// No description provided for @livekit_resolution_540p.
+  /// No description provided for @live_resolution_540p.
   ///
   /// In en, this message translates to:
   /// **'SD'**
-  String get livekit_resolution_540p;
+  String get live_resolution_540p;
 
-  /// No description provided for @livekit_resolution_720p.
+  /// No description provided for @live_resolution_720p.
   ///
   /// In en, this message translates to:
   /// **'HD'**
-  String get livekit_resolution_720p;
+  String get live_resolution_720p;
 
-  /// No description provided for @livekit_resolution_1080p.
+  /// No description provided for @live_resolution_1080p.
   ///
   /// In en, this message translates to:
   /// **'Ultra HD'**
-  String get livekit_resolution_1080p;
+  String get live_resolution_1080p;
 
-  /// No description provided for @livekit_enable_audience_request_link.
-  ///
-  /// In en, this message translates to:
-  /// **'Allow viewers to apply for continuous microphone'**
-  String get livekit_enable_audience_request_link;
-
-  /// No description provided for @livekit_link_mic_up_title.
+  /// No description provided for @live_link_mic_up_title.
   ///
   /// In en, this message translates to:
   /// **'Current wheat position'**
-  String get livekit_link_mic_up_title;
+  String get live_link_mic_up_title;
 
-  /// No description provided for @livekit_link_mic_down_title.
+  /// No description provided for @live_link_mic_down_title.
   ///
   /// In en, this message translates to:
   /// **'Apply for continuous wheat'**
-  String get livekit_link_mic_down_title;
+  String get live_link_mic_down_title;
 
-  /// No description provided for @livekit_link_mic_down_title_popup.
+  /// No description provided for @live_link_mic_down_title_popup.
   ///
   /// In en, this message translates to:
   /// **'Requesting'**
-  String get livekit_link_mic_down_title_popup;
+  String get live_link_mic_down_title_popup;
 
-  /// No description provided for @livekit_title_link_mic_selector.
+  /// No description provided for @live_title_link_mic_selector.
   ///
   /// In en, this message translates to:
   /// **'Choose Link Mode'**
-  String get livekit_title_link_mic_selector;
+  String get live_title_link_mic_selector;
 
-  /// No description provided for @livekit_text_link_mic_selector.
+  /// No description provided for @live_text_link_mic_selector.
   ///
   /// In en, this message translates to:
   /// **'connect upon host\\\'s approval'**
-  String get livekit_text_link_mic_selector;
+  String get live_text_link_mic_selector;
 
-  /// No description provided for @livekit_text_link_mic_video.
+  /// No description provided for @live_text_link_mic_video.
   ///
   /// In en, this message translates to:
   /// **'Apply for video link'**
-  String get livekit_text_link_mic_video;
+  String get live_text_link_mic_video;
 
-  /// No description provided for @livekit_text_link_mic_audio.
+  /// No description provided for @live_text_link_mic_audio.
   ///
   /// In en, this message translates to:
   /// **'Apply for audio link'**
-  String get livekit_text_link_mic_audio;
+  String get live_text_link_mic_audio;
 
-  /// No description provided for @livekit_text_cancel_link_mic_apply.
+  /// No description provided for @live_text_cancel_link_mic_apply.
   ///
   /// In en, this message translates to:
   /// **'Cancel application for link mic'**
-  String get livekit_text_cancel_link_mic_apply;
+  String get live_text_cancel_link_mic_apply;
 
-  /// No description provided for @livekit_text_close_link_mic.
+  /// No description provided for @live_text_close_link_mic.
   ///
   /// In en, this message translates to:
   /// **'End the link mic'**
-  String get livekit_text_close_link_mic;
+  String get live_text_close_link_mic;
 
-  /// No description provided for @livekit_link_mic_manager.
+  /// No description provided for @live_link_mic_manager.
   ///
   /// In en, this message translates to:
   /// **'Link Management'**
-  String get livekit_link_mic_manager;
+  String get live_link_mic_manager;
 
-  /// No description provided for @livekit_hang_up.
+  /// No description provided for @live_hang_up.
   ///
   /// In en, this message translates to:
   /// **'Hang Up'**
-  String get livekit_hang_up;
+  String get live_hang_up;
 
-  /// No description provided for @livekit_accept.
+  /// No description provided for @live_accept.
   ///
   /// In en, this message translates to:
   /// **'Accept'**
-  String get livekit_accept;
+  String get live_accept;
 
-  /// No description provided for @livekit_reject.
+  /// No description provided for @live_reject.
   ///
   /// In en, this message translates to:
   /// **'Reject'**
-  String get livekit_reject;
+  String get live_reject;
 
-  /// No description provided for @livekit_toast_apply_link_mic.
+  /// No description provided for @live_toast_apply_link_mic.
   ///
   /// In en, this message translates to:
   /// **'You have submitted a link mic request, please wait for the author approval'**
-  String get livekit_toast_apply_link_mic;
+  String get live_toast_apply_link_mic;
 
-  /// No description provided for @livekit_title_link_video_settings.
+  /// No description provided for @live_title_link_video_settings.
   ///
   /// In en, this message translates to:
   /// **'Adjust the video link mic screen'**
-  String get livekit_title_link_video_settings;
+  String get live_title_link_video_settings;
 
-  /// No description provided for @livekit_btn_apply_link_mic.
+  /// No description provided for @live_btn_apply_link_mic.
   ///
   /// In en, this message translates to:
   /// **'Apply for link mic'**
-  String get livekit_btn_apply_link_mic;
+  String get live_btn_apply_link_mic;
 
-  /// No description provided for @livekit_tips_apply_link_mic.
+  /// No description provided for @live_tips_apply_link_mic.
   ///
   /// In en, this message translates to:
   /// **'The screen effect will automatically take effect after connecting'**
-  String get livekit_tips_apply_link_mic;
+  String get live_tips_apply_link_mic;
+
+  /// No description provided for @live_settings_bg_image.
+  ///
+  /// In en, this message translates to:
+  /// **'Background'**
+  String get live_settings_bg_image;
+
+  /// No description provided for @live_set_as_background.
+  ///
+  /// In en, this message translates to:
+  /// **'Set as Background'**
+  String get live_set_as_background;
+
+  /// No description provided for @live_voiceroom_need_agree.
+  ///
+  /// In en, this message translates to:
+  /// **'Require owner\'s consent to speak'**
+  String get live_voiceroom_need_agree;
+
+  /// No description provided for @live_failed_to_enter_room.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to enter room'**
+  String get live_failed_to_enter_room;
+
+  /// No description provided for @live_voiceroom_invite.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite'**
+  String get live_voiceroom_invite;
+
+  /// No description provided for @live_application_list.
+  ///
+  /// In en, this message translates to:
+  /// **'Application List'**
+  String get live_application_list;
+
+  /// No description provided for @live_on_seat_list.
+  ///
+  /// In en, this message translates to:
+  /// **'On Seat List'**
+  String get live_on_seat_list;
+
+  /// No description provided for @live_seat_management.
+  ///
+  /// In en, this message translates to:
+  /// **'Seat'**
+  String get live_seat_management;
+
+  /// No description provided for @live_voiceroom_empty_view.
+  ///
+  /// In en, this message translates to:
+  /// **'No users in the seat, go to invite.'**
+  String get live_voiceroom_empty_view;
+
+  /// No description provided for @live_voiceroom_invite_seat_canceled.
+  ///
+  /// In en, this message translates to:
+  /// **'Seat invitation has been canceled'**
+  String get live_voiceroom_invite_seat_canceled;
+
+  /// No description provided for @live_voiceroom_lock.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock Seat'**
+  String get live_voiceroom_lock;
+
+  /// No description provided for @live_voiceroom_unlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock Seat'**
+  String get live_voiceroom_unlock;
+
+  /// No description provided for @live_voiceroom_mute_seat.
+  ///
+  /// In en, this message translates to:
+  /// **'Mute'**
+  String get live_voiceroom_mute_seat;
+
+  /// No description provided for @live_voiceroom_unmuted_seat.
+  ///
+  /// In en, this message translates to:
+  /// **'Unmute'**
+  String get live_voiceroom_unmuted_seat;
+
+  /// No description provided for @live_end_user.
+  ///
+  /// In en, this message translates to:
+  /// **'End'**
+  String get live_end_user;
+
+  /// No description provided for @live_voiceroom_take_seat.
+  ///
+  /// In en, this message translates to:
+  /// **'Take Seat'**
+  String get live_voiceroom_take_seat;
+
+  /// No description provided for @live_end_live.
+  ///
+  /// In en, this message translates to:
+  /// **'End Live'**
+  String get live_end_live;
+
+  /// No description provided for @live_voiceroom_receive_seat_invitation.
+  ///
+  /// In en, this message translates to:
+  /// **' invites you to take seat.'**
+  String get live_voiceroom_receive_seat_invitation;
+
+  /// No description provided for @live_room_has_been_dismissed.
+  ///
+  /// In en, this message translates to:
+  /// **'Room has been dismissed'**
+  String get live_room_has_been_dismissed;
+
+  /// No description provided for @live_app_running.
+  ///
+  /// In en, this message translates to:
+  /// **'Running'**
+  String get live_app_running;
+
+  /// No description provided for @live_audience_end_link_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'You are currently co-guesting with other streamers. Would you like to [End Co-guest] or [Exit Live] ?'**
+  String get live_audience_end_link_tips;
+
+  /// No description provided for @live_end_link.
+  ///
+  /// In en, this message translates to:
+  /// **'End Co-guest'**
+  String get live_end_link;
+
+  /// No description provided for @live_exit_live.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit Live'**
+  String get live_exit_live;
 }
 
 class _LiveKitLocalizationsDelegate
