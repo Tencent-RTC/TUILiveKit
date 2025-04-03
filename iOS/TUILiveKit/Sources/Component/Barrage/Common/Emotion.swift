@@ -11,7 +11,7 @@ class Emotion: Equatable {
     let identifier: String
     let displayName: String
     var image: UIImage {
-        UIImage(named: identifier, in: Bundle.liveBundle, compatibleWith: nil) ?? UIImage()
+        .liveBundleImage(identifier) ?? UIImage()
     }
 
     init(identifier: String, displayName: String) {

@@ -11,7 +11,7 @@ import SnapKit
 import TUICore
 import RTCCommon
 import RTCRoomEngine
-import SeatGridView
+import LiveStreamCore
 
 protocol VoiceRoomRootViewDelegate: AnyObject {
     func rootView(_ view: VoiceRoomRootView, showEndView endInfo: [String:Any], isAnchor: Bool)
@@ -46,16 +46,30 @@ class VoiceRoomRootView: RTCBaseView {
     }()
     
     private lazy var seatGridView: SeatGridView = {
-        let view = SeatGridView()
-        return view
+        func setComponent() {
+            do {
+                let jsonObject: [String: Any] = [
+                    "api": "component",
+                    "component": 22
+                ]
+                let jsonData = try JSONSerialization.data(withJSONObject: jsonObject, options: [])
+                if let jsonString = String(data: jsonData, encoding: .utf8) {
+                    SeatGridView.callExperimentalAPI(jsonString)
+                }
+            } catch {
+                LiveKitLog.error("\(#file)","\(#line)", "dataReport: \(error.localizedDescription)")
+            }
+        }
+        setComponent()
+        return SeatGridView()
     }()
     
     private lazy var bottomMenu = VRBottomMenuView(manager: manager, routerManager: routerManager, coreView: seatGridView, isOwner: isOwner)
     
     private let muteMicrophoneButton: UIButton = {
         let button = UIButton(frame: .zero)
-        button.setImage(UIImage(named: "live_open_mic_icon", in: .liveBundle, with: nil), for: .normal)
-        button.setImage(UIImage(named: "live_close_mic_icon", in: .liveBundle, with: nil), for: .selected)
+        button.setImage(.liveBundleImage("live_open_mic_icon"), for: .normal)
+        button.setImage(.liveBundleImage("live_close_mic_icon"), for: .selected)
         button.layer.borderColor = UIColor.g3.withAlphaComponent(0.3).cgColor
         button.layer.borderWidth = 1
         button.layer.cornerRadius = 16.scale375Height()
@@ -69,7 +83,6 @@ class VoiceRoomRootView: RTCBaseView {
         view.layer.borderWidth = 1
         view.layer.cornerRadius = 18.scale375Height()
         view.backgroundColor = .clear
-        view.delegate = self
         return view
     }()
     
@@ -198,8 +211,7 @@ extension VoiceRoomRootView {
             }, onError: { [weak self] code, message in
                 guard let self = self else { return }
                 manager.update(microphoneMuted: true)
-                guard let err = TUIError(rawValue: code) else { return }
-                let error = InternalError(error: err, message: message)
+                let error = InternalError(code: code, message: message)
                 makeToast(error.localizedMessage)
             })
         }
@@ -214,8 +226,8 @@ extension VoiceRoomRootView {
                 // Seat muted will pops up in unmuteMicrophone, so no processing is needed here
                 return
             }
-            guard let self = self, let err = TUIError(rawValue: code) else { return }
-            let error = InternalError(error: err, message: message)
+            guard let self = self else { return }
+            let error = InternalError(code: code, message: message)
             makeToast(error.localizedMessage)
         }
     }
@@ -316,6 +328,10 @@ extension VoiceRoomRootView {
     private func routeToAudienceView() {
         routerManager.router(action: .routeTo(.audience))
     }
+    
+    private func routeToAnchorView() {
+        routerManager.router(action: .routeTo(.anchor))
+    }
 }
 
 // MARK: - EndView
@@ -326,8 +342,8 @@ extension VoiceRoomRootView {
             guard let self = self else { return }
             manager.update(microphoneOpened: false)
         } onError: { [weak self] code, message in
-            guard let self = self, let err = TUIError(rawValue: code) else { return }
-            let error = InternalError(error: err, message: message)
+            guard let self = self else { return }
+            let error = InternalError(code: code, message: message)
             manager.toastSubject.send(error.localizedMessage)
         }
         
@@ -481,27 +497,9 @@ extension VoiceRoomRootView: VRTopViewDelegate {
         switch event {
         case .stop:
             if isOwner {
-                let designConfig = ActionItemDesignConfig(lineWidth: 7, titleColor: .g2)
-                designConfig.backgroundColor = .white
-                designConfig.lineColor = .g8
-                let item = ActionItem(title: .confirmCloseText, designConfig: designConfig, actionClosure: { [weak self] _ in
-                    guard let self = self else { return }
-                    manager.update(linkStatus: .none)
-                    self.showAnchorEndView()
-                    self.routerManager.router(action: .dismiss())
-                })
-                routerManager.router(action: .present(.listMenu(ActionPanelData(items: [item]))))
+                anchorStopButtonClick()
             } else {
-                manager.update(linkStatus: .none)
-                seatGridView.leaveVoiceRoom { [weak self] in
-                    guard let self = self else { return }
-                    manager.resetAllState()
-                } onError: { [weak self] code, message in
-                    guard let self = self, let err = TUIError(rawValue: code) else { return }
-                    let error = InternalError(error: err, message: message)
-                    manager.toastSubject.send(error.localizedMessage)
-                }
-                routerManager.router(action: .exit)
+                audienceLeaveButtonClick()
             }
         case .roomInfo:
             routerManager.router(action: .present(.roomInfo))
@@ -509,11 +507,83 @@ extension VoiceRoomRootView: VRTopViewDelegate {
             routerManager.router(action: .present(.recentViewer))
         }
     }
+    
+    private func anchorStopButtonClick() {
+        let designConfig = ActionItemDesignConfig(lineWidth: 7, titleColor: .g2)
+        designConfig.backgroundColor = .white
+        designConfig.lineColor = .g8
+        let item = ActionItem(title: .confirmCloseText, designConfig: designConfig, actionClosure: { [weak self] _ in
+            guard let self = self else { return }
+            manager.update(linkStatus: .none)
+            self.showAnchorEndView()
+            self.routerManager.router(action: .dismiss())
+        })
+        routerManager.router(action: .present(.listMenu(ActionPanelData(items: [item]))))
+    }
+    
+    private func audienceLeaveButtonClick() {
+        let selfUserId = manager.userState.selfInfo.userId
+        if !manager.seatState.seatList.contains(where: { $0.userId == selfUserId }) {
+            leaveRoom()
+            routerManager.router(action: .exit)
+            return
+        }
+        var items: [ActionItem] = []
+        let lineConfig = ActionItemDesignConfig(lineWidth: 1, titleColor: .redColor)
+        lineConfig.backgroundColor = .white
+        lineConfig.lineColor = .g8
+        
+        let title: String = .exitLiveOnLinkMicText
+        let endLinkMicItem = ActionItem(title: .exitLiveLinkMicDisconnectText, designConfig: lineConfig, actionClosure: { [weak self] _ in
+            guard let self = self else { return }
+            seatGridView.leaveSeat {
+            } onError: { [weak self] code, message in
+                guard let self = self else { return }
+                let error = InternalError(code: code, message: message)
+                manager.toastSubject.send(error.localizedMessage)
+            }
+
+            routerManager.router(action: .dismiss())
+        })
+        items.append(endLinkMicItem)
+        
+        let designConfig = ActionItemDesignConfig(lineWidth: 7, titleColor: .g2)
+        designConfig.backgroundColor = .white
+        designConfig.lineColor = .g8
+        let endLiveItem = ActionItem(title: .exitLiveText, designConfig: designConfig, actionClosure: { [weak self] _ in
+            guard let self = self else { return }
+            leaveRoom()
+            routerManager.router(action: .dismiss())
+            routerManager.router(action: .exit)
+        })
+        items.append(endLiveItem)
+        routerManager.router(action: .present(.listMenu(ActionPanelData(title: title, items: items))))
+    }
+    
+    private func leaveRoom() {
+        manager.update(linkStatus: .none)
+        seatGridView.leaveVoiceRoom { [weak self] in
+            guard let self = self else { return }
+            manager.resetAllState()
+        } onError: { [weak self] code, message in
+            guard let self = self else { return }
+            let error = InternalError(code: code, message: message)
+            manager.toastSubject.send(error.localizedMessage)
+        }
+    }
 }
 
 // MARK: - SeatGridViewObserver
 extension VoiceRoomRootView: SeatGridViewObserver {
     func onKickedOutOfRoom(roomId: String, reason: TUIKickedOutOfRoomReason, message: String) {
+        guard reason != .byLoggedOnOtherDevice else { return }
+        let isOwner = manager.userState.selfInfo.userId == manager.roomState.ownerInfo.userId
+        isOwner ? routeToAnchorView() : routeToAudienceView()
+        manager.toastSubject.send(.kickedOutText)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+            guard let self = self else { return }
+            routerManager.router(action: .exit)
+        }
     }
     
     func onKickedOffSeat(userInfo: TUIUserInfo) {
@@ -545,8 +615,7 @@ extension VoiceRoomRootView: SeatGridViewObserver {
                 } onError: { [weak self] code, message in
                     guard let self = self else { return }
                     self.routerManager.router(action: .dismiss(.alert))
-                    guard let err = TUIError(rawValue: code) else { return }
-                    let error = InternalError(error: err, message: message)
+                    let error = InternalError(code: code, message: message)
                     manager.toastSubject.send(error.localizedMessage)
                 }
             } defaultClosure: { [weak self] _ in
@@ -557,8 +626,7 @@ extension VoiceRoomRootView: SeatGridViewObserver {
                 } onError: { [weak self] code, message in
                     guard let self = self else { return }
                     self.routerManager.router(action: .dismiss(.alert))
-                    guard let err = TUIError(rawValue: code) else { return }
-                    let error = InternalError(error: err, message: message)
+                    let error = InternalError(code: code, message: message)
                     manager.toastSubject.send(error.localizedMessage)
                 }
             }
@@ -670,8 +738,8 @@ extension VoiceRoomRootView {
             guard let self = self else { return }
             makeToast(.operationSuccessful)
         } onError: { [weak self] code, message in
-            guard let self = self, let err = TUIError(rawValue: code) else { return }
-            let error = InternalError(error: err, message: message)
+            guard let self = self else { return }
+            let error = InternalError(code: code, message: message)
             manager.toastSubject.send(error.localizedMessage)
         }
     }
@@ -698,8 +766,7 @@ extension VoiceRoomRootView {
         } onError: { [weak self] userInfo, code, message in
             guard let self = self else { return }
             handleApplicationState(isApplying: false)
-            guard let err = TUIError(rawValue: code) else { return }
-            let error = InternalError(error: err, message: message)
+            let error = InternalError(code: code, message: message)
             makeToast(error.localizedMessage)
         }
         handleApplicationState(isApplying: true)
@@ -709,8 +776,7 @@ extension VoiceRoomRootView {
         seatGridView.moveToSeat(index: index) {
         } onError: { [weak self] code, message in
             guard let self = self else { return }
-            guard let err = TUIError(rawValue: code) else { return }
-            let error = InternalError(error: err, message: message)
+            let error = InternalError(code: code, message: message)
             makeToast(error.localizedMessage)
         }
     }
@@ -728,6 +794,9 @@ extension VoiceRoomRootView: BarrageStreamViewDelegate {
             return nil
         }
         return CustomBarrageCell(barrage: barrage)
+    }
+    
+    func onBarrageClicked(user: TUIUserInfo) {
     }
 }
 
@@ -768,30 +837,25 @@ extension VoiceRoomRootView: GiftPlayViewDelegate {
     }
 }
 
-extension VoiceRoomRootView: BarrageInputViewDelegate {
-    func barrageInputViewOnSendBarrage(_ barrage: TUIBarrage) {
-        barrageDisplayView.insertBarrages([barrage])
-    }
-}
-
 // MARK: - String
 fileprivate extension String {
-    static let meText = localized("live.barrage.me")
-    static let confirmCloseText = localized("live.anchor.confirm.close")
-    static let balanceInsufficientText = localized("live.balanceInsufficient")
-    static let rejectText = localized("live.anchor.link.reject.title")
-    static let agreeText = localized("live.anchor.link.agree.title")
-    static let inviteLinkText = localized("live.anchor.link.invite.desc.xxx")
-    static let enterRoomFailedText = localized("live.alert.enterRoom.failed.title")
-    static let operationFailedText = localized("live.operation.fail.xxx")
-    static let inviteText = localized("live.seat.invite")
-    static let lockSeat = localized("live.seat.lockSeat")
-    static let takeSeat = localized("live.seat.takeSeat")
-    static let unLockSeat = localized("live.seat.unLockSeat")
-    static let operationSuccessful = localized("live.error.success")
-    static let takeSeatSuccess = localized("live.seat.takeSeatSuccess")
-    static let takeSeatApplicationRejected = localized("live.seat.takeSeatApplicationRejected")
-    static let takeSeatApplicationTimeout = localized("live.seat.takeSeatApplicationTimeout")
-    static let repeatRequest = localized("live.error.repeat.requestId")
-    static let onKickedOutOfSeatText = localized("live.seat.kickedOutOfSeat")
+    static let meText = localized("Me")
+    static let confirmCloseText = localized("End Live")
+    static let rejectText = localized("Reject")
+    static let agreeText = localized("Agree")
+    static let inviteLinkText = localized("xxx invites you to take seat")
+    static let enterRoomFailedText = localized("Failed to enter room")
+    static let inviteText = localized("Invite")
+    static let lockSeat = localized("Lock Seat")
+    static let takeSeat = localized("Take Seat")
+    static let unLockSeat = localized("Unlock Seat")
+    static let operationSuccessful = localized("Operation Successful")
+    static let takeSeatApplicationRejected = localized("Take seat application has been rejected")
+    static let takeSeatApplicationTimeout = localized("Take seat application timeout")
+    static let repeatRequest = localized("Signal request repetition")
+    static let onKickedOutOfSeatText = localized("Kicked out of seat by room owner")
+    static let exitLiveOnLinkMicText = localized("You are currently co-guesting with other streamers. Would you like to [End Co-guest] or [Exit Live] ?")
+    static let exitLiveLinkMicDisconnectText = localized("End Co-guest")
+    static let exitLiveText = localized("Exit Live")
+    static let kickedOutText = localized("You have been kicked out of the room by the anchor")
 }

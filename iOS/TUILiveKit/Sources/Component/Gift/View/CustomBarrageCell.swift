@@ -78,7 +78,7 @@ class CustomBarrageCell: UIView {
             [.foregroundColor: UIColor.lightBlueColor, .font: UIFont.customFont(ofSize: 12, weight: .semibold)]
         let mutableAttributedString = NSMutableAttributedString(string: userName, attributes: userNameAttributes)
         
-        let sendAttributedText = NSAttributedString(string: " " + .sendText, attributes: [.foregroundColor: UIColor.white])
+        let sendAttributedText = NSAttributedString(string: " " + .sendText + " ", attributes: [.foregroundColor: UIColor.white])
         mutableAttributedString.append(sendAttributedText)
         
         let colors: [UIColor] = [.red, .blue, .yellow]
@@ -140,5 +140,5 @@ extension CustomBarrageCell {
 }
 
 private extension String {
-    static let sendText = localized("live.customBarrageCell.send")
+    static let sendText = localized("Sent")
 }

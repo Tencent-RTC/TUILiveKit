@@ -109,6 +109,10 @@ class LSAlertPanel: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        // Avoid triggering other's touchesBegan
+    }
+    
     func show() {
         WindowUtils.getCurrentWindowViewController()?.view.addSubview(self)
     }
@@ -242,5 +246,5 @@ extension LSAlertPanel {
 }
 
 fileprivate extension String {
-    static let confirmText = localized("live.alert.confirm")
+    static let confirmText = localized("Confirm")
 }

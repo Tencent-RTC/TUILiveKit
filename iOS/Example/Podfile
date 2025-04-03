@@ -12,10 +12,7 @@ target 'TUILiveKitApp' do
   pod 'Alamofire'
   # Local Library
   pod 'TUILiveKit', :path => '../TUILiveKit'
-  pod 'RTCCommon', '>= 1.0.2'
-  pod 'SeatGridView', :path => '../SeatGridView/SeatGridView.podspec'
-  pod 'LiveStreamCore', :path => '../LiveStreamCore/LiveStreamCore.podspec'
-  
+  pod 'RTCCommon', '>= 1.2.1'
 end
 
 post_install do |installer|

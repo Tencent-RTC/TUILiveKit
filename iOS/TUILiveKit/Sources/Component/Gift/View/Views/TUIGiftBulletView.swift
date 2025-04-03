@@ -205,6 +205,6 @@ extension TUIGiftBulletView: CAAnimationDelegate {
 
 private extension String {
     static var meText = {
-        localized("live.giftView.me")
+        localized("Me")
     }()
 }

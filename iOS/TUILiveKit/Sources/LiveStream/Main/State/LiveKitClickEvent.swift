@@ -17,13 +17,13 @@ enum BeautyTypeEvent {
     func getString() -> String {
         switch self {
         case .closeClick:
-            return .localized("live.beauty.close")
+            return .localized("turn off")
         case .buffingClick:
-            return .localized("live.beauty.buffing")
+            return .localized("Microdermabrasion")
         case .whitenessClick:
-            return .localized("live.beauty.whiteness")
+            return .localized("Whitening")
         case .ruddyClick:
-            return .localized("live.beauty.ruddy")
+            return .localized("Rosy")
         }
     }
 

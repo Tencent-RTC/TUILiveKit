@@ -46,6 +46,7 @@ class UserInfoCell: UICollectionViewCell {
 }
 
 class AudienceListView: RTCBaseView {
+    var onUserManageButtonClicked: ((TUIUserInfo) -> Void)?
     private let cellId = "TUIVideoSeatCell_Normal"
     
     // Set this value to change max display count
@@ -60,6 +61,7 @@ class AudienceListView: RTCBaseView {
     private lazy var audienceListPanel = AudienceListPanelView(state: state)
     private var listUser: [TUIUserInfo] = []
     private var cancellableSet: Set<AnyCancellable> = []
+    private weak var popupViewController: UIViewController?
     
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -167,9 +169,18 @@ class AudienceListView: RTCBaseView {
             }
             .store(in: &cancellableSet)
         
+        state.roomDismissedSubject
+            .receive(on: RunLoop.main)
+            .sink { [weak self] dismissedRoomId in
+                guard let self = self, dismissedRoomId == state.roomId else { return }
+                popupViewController?.dismiss(animated: true)
+                popupViewController = nil
+            }.store(in: &cancellableSet)
+        
         let tap = UITapGestureRecognizer(target: self, action: #selector(containerTapAction))
         addGestureRecognizer(tap)
         isUserInteractionEnabled = true
+        audienceListPanel.onUserManageButtonClicked = onUserManageButtonClicked
     }
     
     deinit {
@@ -178,6 +189,16 @@ class AudienceListView: RTCBaseView {
     
     private func updateUserCount(count: Int) {
         numberLabel.text = "\(count)"
+        numberLabel.sizeToFit()
+        let maxWidth = getMaxWidthFromLabel(numberLabel, maxText: "999999")
+        let currentWidth = numberLabel.frame.size.width
+        numberLabel.snp.remakeConstraints { make in
+            make.leading.equalToSuperview().offset(4.scale375())
+            make.centerY.height.equalToSuperview()
+            make.trailing.equalTo(imageView.snp.leading)
+            make.width.equalTo(min(maxWidth, currentWidth))
+        }
+        superview?.layoutIfNeeded()
     }
 }
 
@@ -205,15 +226,20 @@ extension AudienceListView: UICollectionViewDataSource {
 extension AudienceListView {
     @objc func containerTapAction() {
         if let vc = WindowUtils.getCurrentWindowViewController() {
+            popupViewController = vc
             let menuContainerView = MenuContainerView(contentView: audienceListPanel)
-            audienceListPanel.onBackButtonClickedClosure = { [weak vc] in
-                vc?.dismiss(animated: true)
+            audienceListPanel.onBackButtonClickedClosure = { [weak self] in
+                guard let self = self else { return }
+                popupViewController?.dismiss(animated: true)
+                popupViewController = nil
             }
-            menuContainerView.blackAreaClickClosure = { [weak vc] in
-                vc?.dismiss(animated: true)
+            menuContainerView.blackAreaClickClosure = { [weak self] in
+                guard let self = self else { return }
+                popupViewController?.dismiss(animated: true)
+                popupViewController = nil
             }
             let viewController = PopupViewController(contentView: menuContainerView)
-            vc.present(viewController, animated: true)
+            popupViewController?.present(viewController, animated: true)
         }
     }
 }

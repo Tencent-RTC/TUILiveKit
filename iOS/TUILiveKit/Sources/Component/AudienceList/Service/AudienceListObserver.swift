@@ -44,4 +44,8 @@ class AudienceListObserver: NSObject, TUIRoomObserver {
     func onRemoteUserLeaveRoom(roomId: String, userInfo: TUIUserInfo) {
         state.audienceList.removeAll(where: { $0.userId == userInfo.userId })
     }
+    
+    func onRoomDismissed(roomId: String, reason: TUIRoomDismissedReason) {
+        state.roomDismissedSubject.send(roomId)
+    }
 }

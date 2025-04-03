@@ -52,7 +52,7 @@ extension VRRoomEngineObserver: TUIRoomObserver {
         if errorCode == .success {
             return
         }
-        let error = InternalError(error: errorCode, message: message)
+        let error = InternalError(code: errorCode.rawValue, message: message)
         context?.toastSubject.send(error.localizedMessage)
     }
     

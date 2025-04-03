@@ -13,7 +13,6 @@ class BarrageInputManager {
     private let service: BarrageInputService
     
     let toastSubject = PassthroughSubject<String, Never>()
-    let sendBarrageSubject = PassthroughSubject<TUIBarrage, Never>()
     
     init(roomId: String) {
         self.roomId = roomId
@@ -31,9 +30,9 @@ class BarrageInputManager {
         Task {
             do {
                 try await service.sendBarrage(barrage)
-                sendBarrageSubject.send(barrage)
-            } catch let err {
-                toastSubject.send(err.localizedDescription)
+                BarrageManager.shared.sendBarrageSubject.send(barrage)
+            } catch let err as InternalError {
+                toastSubject.send(err.localizedMessage)
             }
         }
     }

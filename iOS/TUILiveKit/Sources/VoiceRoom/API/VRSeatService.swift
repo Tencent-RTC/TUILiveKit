@@ -27,7 +27,7 @@ class VRSeatService: BaseServiceProtocol {
                 continuation.resume(returning: seatList)
             } onError: { err, message in
                 LiveKitLog.error("\(#file)", "\(#line)", "getSeatList[onError:[error:\(err) message:\(message)]]")
-                let error = InternalError(error: err, message: message)
+                let error = InternalError(code: err.rawValue, message: message)
                 continuation.resume(throwing: error)
             }
         }
@@ -46,7 +46,7 @@ class VRSeatService: BaseServiceProtocol {
                 continuation.resume(returning: result)
             } onError: { err, message in
                 LiveKitLog.error("\(#file)", "\(#line)", "getSeatApplicationList[onError:[error:\(err) message:\(message)]]")
-                let error = InternalError(error: err, message: message)
+                let error = InternalError(code: err.rawValue, message: message)
                 continuation.resume(throwing: error)
             }
         }

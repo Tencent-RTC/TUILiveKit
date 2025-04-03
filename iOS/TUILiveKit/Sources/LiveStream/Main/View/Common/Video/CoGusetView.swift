@@ -10,17 +10,22 @@ import Kingfisher
 import Combine
 import RTCRoomEngine
 import RTCCommon
+import LiveStreamCore
 
 class CoGuestView: UIView {
     private let manager: LiveStreamManager
+    private let routerManager: LSRouterManager
     private var cancellableSet = Set<AnyCancellable>()
     private var isViewReady: Bool = false
     private var userInfo: TUIUserInfo
     
-    init(userInfo: TUIUserInfo, manager: LiveStreamManager) {
+    init(userInfo: TUIUserInfo, manager: LiveStreamManager, routerManager: LSRouterManager) {
         self.userInfo = userInfo
         self.manager = manager
+        self.routerManager = routerManager
         super.init(frame: .zero)
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+        addGestureRecognizer(tapGestureRecognizer)
     }
     
     required init?(coder: NSCoder) {
@@ -39,10 +44,7 @@ class CoGuestView: UIView {
         initViewState()
     }
     
-    private lazy var userInfoView: UserStatusView = {
-        let view = UserStatusView(userInfo: LSUser(userInfo: userInfo), manager: manager)
-        return view
-    }()
+    private lazy var userInfoView = UserStatusView(userInfo: userInfo, manager: manager)
     
     private lazy var avatarImageView: UIImageView = {
         let imageView = UIImageView(frame: .zero)
@@ -74,21 +76,29 @@ class CoGuestView: UIView {
     private func initViewState() {
         avatarImageView.kf.setImage(with: URL(string: userInfo.avatarUrl),
                                     placeholder: UIImage.avatarPlaceholderImage)
-        if userInfo.userId == manager.userState.selfInfo.userId  ||
-            (userInfo.userId == manager.roomState.ownerInfo.userId &&
+        if userInfo.userId == manager.coreUserState.selfInfo.userId  ||
+            (userInfo.userId == manager.coreRoomState.ownerInfo.userId &&
              manager.coGuestState.coGuestStatus == .none) {
             userInfoView.isHidden = true
         }
-        let hasVideo = manager.userState.hasVideoStreamUserList.contains(userInfo.userId)
+        let hasVideo = manager.coreUserState.hasVideoStreamUserList.contains(userInfo.userId)
         let isPreview = manager.roomState.liveStatus == .previewing
         avatarImageView.isHidden = hasVideo || isPreview || userInfo.hasVideoStream
+    }
+    
+    @objc private func handleTap() {
+        let isSelfOwner = manager.coreUserState.selfInfo.userRole == .roomOwner
+        let isSelfView = userInfo.userId == manager.coreUserState.selfInfo.userId
+        let isOnlyUserOnSeat = manager.coreCoGuestState.connectedUserList.count == 1
+        if !isSelfOwner && isOnlyUserOnSeat && !isSelfView { return }
+        let type: UserManagePanelType = !isSelfOwner && !isSelfView ? .userInfo : .mediaAndSeat
+        routerManager.router(action: .present(.userManagement(userInfo, type: type)))
     }
 }
 
 extension CoGuestView {
-    
     func subscribeState() {
-        manager.subscribeUserState(StateSelector(keyPath: \LSUserState.hasVideoStreamUserList))
+        manager.subscribeCoreViewState(StateSelector(keyPath: \UserState.hasVideoStreamUserList))
             .receive(on: RunLoop.main)
             .removeDuplicates()
             .sink { [weak self] userIdList in
@@ -102,4 +112,3 @@ extension CoGuestView {
             .store(in: &cancellableSet)
     }
 }
-

@@ -89,5 +89,5 @@ private extension VRSettingPanel {
 }
 
 private extension String {
-    static let settingTitleText: String = localized("live.anchor.setting.title")
+    static let settingTitleText: String = localized("Settings")
 }

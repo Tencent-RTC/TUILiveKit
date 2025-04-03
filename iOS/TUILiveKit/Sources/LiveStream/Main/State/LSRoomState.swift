@@ -10,11 +10,9 @@ import RTCRoomEngine
 struct LSRoomState {
     var roomId: String = ""
     var createTime: UInt = 0
-    var ownerInfo: LSUser = LSUser()
     var roomName: String = ""
     var coverURL: String = Constants.URL.defaultCover
     var userCount: Int = 0
-    var maxSeatCount: Int = 0
     var liveStatus: LiveStatus = .none
     var liveExtraInfo: LiveExtraInfo = LiveExtraInfo()
     

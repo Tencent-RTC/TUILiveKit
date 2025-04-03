@@ -36,13 +36,16 @@ class LiveListService: BaseServiceProtocol {
         return Future<LiveListResult, InternalError> { [weak self] promise in
             guard let self = self else { return }
             guard let listManager = roomEngine.getExtension(extensionType: .liveListManager) as? TUILiveListManager else {
-                promise(.failure(InternalError(error:TUIError.failed, message: "getRoomListFailed")))
-                return 
+                promise(.failure(InternalError(code: ErrorService.generalErrorCode, message: "get LiveListManager error")))
+                return
             }
-            listManager.fetchLiveList(cursor: cursor, count: count) { resCursor, liveInfoList in
+            listManager.fetchLiveList(cursor: cursor, count: count) { resCursor, tuiLiveInfoList in
+                let liveInfoList = tuiLiveInfoList.map { tuiLiveInfo in
+                    LiveInfo(tuiLiveInfo: tuiLiveInfo)
+                }
                 promise(.success((LiveListResult(isFirstFetch:cursor.isEmpty, cursor: resCursor, liveInfoList: liveInfoList))))
             } onError: { error, message in
-                promise(.failure(InternalError(error: error, message: message)))
+                promise(.failure(InternalError(code: error.rawValue, message: message)))
             }
         }.eraseToAnyPublisher()
     }

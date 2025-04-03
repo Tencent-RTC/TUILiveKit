@@ -19,8 +19,8 @@ class AnchorLinkControlPanel: UIView {
     private var isPortrait: Bool = {
         WindowUtils.isPortrait
     }()
-    private var linkingList: [LSSeatInfo] = []
-    private var applyList: [LSSeatApplication] = []
+    private var linkingList: [TUISeatInfo] = []
+    private var applyList: [TUIUserInfo] = []
     private lazy var backButton: UIButton = {
         let view = UIButton(type: .system)
         view.setBackgroundImage(.liveBundleImage("live_back_icon"), for: .normal)
@@ -74,7 +74,7 @@ class AnchorLinkControlPanel: UIView {
     }
 
     private func subscribeSeatState() {
-        manager.subscribeCoGuestState(StateSelector(keyPath: \LSCoGuestState.requestCoGuestList))
+        manager.subscribeCoreViewState(StateSelector(keyPath: \CoGuestState.applicantList))
             .receive(on: RunLoop.main)
             .removeDuplicates()
             .sink { [weak self] seatApplicationList in
@@ -83,12 +83,13 @@ class AnchorLinkControlPanel: UIView {
                 self.userListTableView.reloadData()
             }
             .store(in: &cancellable)
-        manager.subscribeCoGuestState(StateSelector(keyPath: \LSCoGuestState.connectedUserList))
+        manager.subscribeCoreViewState(StateSelector(keyPath: \CoGuestState.seatList))
             .receive(on: RunLoop.main)
             .removeDuplicates()
             .sink { [weak self] seatList in
                 guard let self = self else { return }
-                linkingList = seatList.filter { !$0.userId.isEmpty && $0.userId != self.manager.userState.selfInfo.userId }
+                let selfUserId = manager.coreUserState.selfInfo.userId
+                linkingList = seatList.filter { $0.userId?.isEmpty == false && $0.userId != selfUserId }
                 userListTableView.reloadData()
             }
             .store(in: &cancellable)
@@ -187,9 +188,8 @@ extension AnchorLinkControlPanel: UITableViewDelegate {
         headerView.backgroundColor = .g2
         let label = UILabel(frame: CGRect(x: 24, y: 0, width: headerView.frame.width , height: headerView.frame.height))
         if section == 0 {
-            let maxSeatCount = manager.roomState.maxSeatCount
-            label.text = .localizedReplace(.anchorLinkControlSeatCount,
-                                          replace: "\(linkingList.count)/\(max(maxSeatCount,1) - 1)")
+            let maxSeatCount = manager.coreRoomState.maxCoGuestCount
+            label.text = .localizedReplaceTwoCharacter(origin: .anchorLinkControlSeatCount, firstReplace: String(linkingList.count), secondReplace: String(max(maxSeatCount,1) - 1))
         } else if section == 1 {
             label.text = .localizedReplace(.anchorLinkControlRequestCount,
                                           replace: "\(applyList.count)")
@@ -236,12 +236,12 @@ extension AnchorLinkControlPanel: UITableViewDelegate {
         }
         
         cell.kickoffEventClosure = { [weak self] seatInfo in
-            guard let self = self else { return }
-            self.coreView?.disconnectUser(userId: seatInfo.userId) {
+            guard let self = self, let userId = seatInfo.userId else { return }
+            self.coreView?.disconnectUser(userId: userId) {
             } onError: { [weak self] code, message in
-                   guard let self = self else { return }
-                   let error = InternalError(error: code, message: message)
-                   self.manager.toastSubject.send(error.localizedMessage)
+                guard let self = self else { return }
+                let error = InternalError(code: code.rawValue, message: message)
+                manager.onError(error)
             }
         }
         
@@ -258,16 +258,12 @@ extension AnchorLinkControlPanel: UITableViewDelegate {
         
         cell.respondEventClosure = { [weak self] seatApplication, isAccepted in
             guard let self = self else { return }
-            self.coreView?.respondIntraRoomConnection(userId: seatApplication.userId, isAccepted: isAccepted) { [weak self] in
-                guard let self = self else { return }
-                self.manager.removeSeatApplication(userId: seatApplication.userId)
+            self.coreView?.respondIntraRoomConnection(userId: seatApplication.userId, isAccepted: isAccepted) {
             } onError: { [weak self] code, message in
-                if code != TUIError.allSeatOccupied {
-                    self?.manager.removeSeatApplication(userId: seatApplication.userId)
-                }
                 guard let self = self else { return }
-                let error = InternalError(error: code, message: message)
+                let error = InternalError(code: code.rawValue, message: message)
                 makeToast(error.localizedMessage)
+                manager.onError(error)
             }
         }
         
@@ -278,19 +274,19 @@ extension AnchorLinkControlPanel: UITableViewDelegate {
 
 private extension String {
     static var anchorLinkControlTitle: String {
-        localized("live.anchor.link.control.title")
+        localized("Link Management")
     }
 
     static var anchorLinkControlDesc: String {
-        localized("live.anchor.link.control.desc")
+        localized("Allow viewers to apply for continuous microphone")
     }
     
     static var anchorLinkControlSeatCount: String {
-        localized("live.anchor.link.control.seat.count.xxx")
+        localized("Current Mic (xxx/yyy)")
     }
     
     static var anchorLinkControlRequestCount: String {
-        localized("live.anchor.link.control.request.count.xxx")
+        localized("Link Application(xxx)")
     }
     
 }

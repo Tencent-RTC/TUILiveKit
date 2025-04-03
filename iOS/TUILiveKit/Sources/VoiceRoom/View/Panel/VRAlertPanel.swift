@@ -236,5 +236,5 @@ extension VRAlertPanel {
 
 
 fileprivate extension String {
-    static let confirmText = localized("live.alert.confirm")
+    static let confirmText = localized("Confirm")
 }

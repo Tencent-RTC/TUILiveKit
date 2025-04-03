@@ -8,7 +8,7 @@ import UIKit
 import RTCRoomEngine
 import Combine
 import RTCCommon
-import SeatGridView
+import LiveStreamCore
 
 protocol VoiceRoomPrepareViewDelegate: AnyObject {
     func prepareView(_ view: VoiceRoomPrepareView, didClickStart button: UIButton)
@@ -65,13 +65,6 @@ class VoiceRoomPrepareView: RTCBaseView {
                                        actionClosure: { [weak self] _ in
             guard let self = self else { return }
             self.routerManager.router(action: .present(.systemImageSelection(.background)))
-        }))
-        model.items.append(VRFeatureItem(normalTitle: .musicText,
-                                       normalImage: .liveBundleImage("live_prepare_music_icon"),
-                                       designConfig: designConfig,
-                                       actionClosure: { [weak self] _ in
-            guard let self = self else { return }
-            self.routerManager.router(action: .present(.musicList))
         }))
         model.items.append(VRFeatureItem(normalTitle: .audioEffectsText,
                                        normalImage: .liveBundleImage("live_prepare_audio_icon"),
@@ -266,11 +259,8 @@ extension VoiceRoomPrepareView {
 }
 
 private extension String {
-    static let startText = localized("live.start.living.title")
-    static let categoryText = localized("live.category.xxx")
-    static let modeText = localized("live.mode.xxx")
-    static let backgroundText: String = localized("live.anchor.setting.background")
-    static let musicText: String = localized("live.category.music")
-    static let audioEffectsText: String = localized("live.anchor.setting.audio.effects")
-    static let settingText: String = localized("live.anchor.setting.title")
+    static let startText = localized("Go live")
+    static let backgroundText: String = localized("Background")
+    static let audioEffectsText: String = localized("Audio")
+    static let settingText: String = localized("Settings")
 }

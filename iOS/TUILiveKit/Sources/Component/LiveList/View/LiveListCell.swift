@@ -27,7 +27,7 @@ class LiveListCell: UICollectionViewCell {
     
     lazy var watchingIcon: UIImageView = {
         let icon = UIImageView(frame: .zero)
-        icon.image = UIImage(named: "watching", in: Bundle.liveBundle, compatibleWith: nil)
+        icon.image = .liveBundleImage("watching")
         return icon
     }()
     
@@ -128,16 +128,16 @@ extension LiveListCell {
 }
 
 extension LiveListCell {
-    func updateView(liveInfo: TUILiveInfo) {
-        let placeholderImage = UIImage(named: "live_edit_info_default_cover_image", in: .liveBundle, with: nil)
+    func updateView(liveInfo: LiveInfo) {
+        let placeholderImage = UIImage.liveBundleImage("live_edit_info_default_cover_image")
         roomCoverIcon.sd_setImage(with: URL(string: liveInfo.coverUrl), placeholderImage: placeholderImage)
         watchingLabel.text = String.localizedReplace(.watching, replace: "\(liveInfo.viewCount)")
-        roomNameLabel.text = liveInfo.roomInfo.name.count > 0 ?  liveInfo.roomInfo.name : liveInfo.roomInfo.roomId
-        roomOwnerIcon.sd_setImage(with: URL(string: liveInfo.roomInfo.ownerAvatarUrl), placeholderImage: placeholderImage)
-        roomOwnerNameLabel.text = liveInfo.roomInfo.ownerName
+        roomNameLabel.text = liveInfo.name.count > 0 ?  liveInfo.name : liveInfo.roomId
+        roomOwnerIcon.sd_setImage(with: URL(string: liveInfo.ownerAvatarUrl), placeholderImage: placeholderImage)
+        roomOwnerNameLabel.text = liveInfo.ownerName
     }
 }
 
 extension String {
-    static let watching = localized("live.room.list.watching.xxx")
+    static let watching = localized("xxx people viewed")
 }

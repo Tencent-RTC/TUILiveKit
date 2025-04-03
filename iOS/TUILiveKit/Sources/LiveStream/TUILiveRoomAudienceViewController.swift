@@ -120,6 +120,12 @@ extension TUILiveRoomAudienceViewController: FloatWindowDataSource {
     func relayoutCoreView() {
         relayoutCoreViewClosure()
     }
+    
+    func getIsLinking() -> Bool {
+        guard let coGuestState: CoGuestState = coreView?.getState(),
+              let userState: UserState = coreView?.getState() else { return false }
+        return !coGuestState.seatList.filter({ $0.userId == userState.selfInfo.userId }).isEmpty
+    }
 }
 
 extension TUILiveRoomAudienceViewController: LiveListViewDataSource {
@@ -127,26 +133,33 @@ extension TUILiveRoomAudienceViewController: LiveListViewDataSource {
         guard cursor != "" || isFirstFetch else { return }
         isFirstFetch = false
         let liveListManager = TUIRoomEngine.sharedInstance().getExtension(extensionType: .liveListManager) as? TUILiveListManager
-        var resultList: [TUILiveInfo] = []
+        var resultList: [LiveInfo] = []
         liveListManager?.fetchLiveList(cursor: cursor, count: fetchCount) { [weak self] cursor, list in
             guard let self = self else { return }
             self.cursor = cursor
             if isFirstRoom {
-                let liveInfo = TUILiveInfo()
-                liveInfo.roomInfo.roomId = roomId
+                var liveInfo = LiveInfo()
+                liveInfo.roomId = roomId
                 resultList.append(liveInfo)
                 isFirstRoom = false
-                let filteredList = list.filter { $0.roomInfo.roomId != self.roomId }
+                let filteredList = list.filter { tuiLiveInfo in
+                    tuiLiveInfo.roomInfo.roomId != self.roomId
+                }.map { tuiLiveInfo in
+                    LiveInfo(tuiLiveInfo: tuiLiveInfo)
+                }
                 resultList.append(contentsOf: filteredList)
             } else {
-                resultList.append(contentsOf: list)
+                let liveInfoList = list.map { tuiLiveInfo in
+                    LiveInfo(tuiLiveInfo: tuiLiveInfo)
+                }
+                resultList.append(contentsOf: liveInfoList)
             }
             completionHandler(resultList)
         } onError: { [weak self] code, message in
             guard let self = self else { return }
             LiveKitLog.error("\(#file)","\(#line)","fetchLiveList:[onError:[code:\(code),message:\(message)]]")
-            let liveInfo = TUILiveInfo()
-            liveInfo.roomInfo.roomId = self.roomId
+            var liveInfo = LiveInfo()
+            liveInfo.roomId = self.roomId
             resultList.append(liveInfo)
             completionHandler(resultList)
         }
@@ -154,8 +167,8 @@ extension TUILiveRoomAudienceViewController: LiveListViewDataSource {
 }
 
 extension TUILiveRoomAudienceViewController: LiveListViewDelegate {
-    public func onCreateView(liveInfo: TUILiveInfo) -> UIView {
-        let audienceCell = AudienceSliderCell(roomId: liveInfo.roomInfo.roomId, routerManager: routerManager, routerCenter: routerCenter, audienceVC: self)
+    public func onCreateView(liveInfo: LiveInfo) -> UIView {
+        let audienceCell = AudienceSliderCell(roomId: liveInfo.roomId, routerManager: routerManager, routerCenter: routerCenter, audienceVC: self)
         audienceCell.delegate = self
         return audienceCell
     }

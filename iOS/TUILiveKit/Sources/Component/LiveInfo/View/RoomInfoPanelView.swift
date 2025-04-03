@@ -235,10 +235,8 @@ class RoomInfoPanelView: RTCBaseView {
 // MARK: Action
 
 fileprivate extension String {
-    static let roomIdText = localized("live.roomId.xxx")
-    static let fansCountText = localized("live.fans.count.xxx")
-    static let followText = localized("live.user.follow")
-    static let unfollowText = localized("live.user.unfollow")
-    static let copyTitle = localized("live.room.info.copy.title")
-    static let copySuccessToast = localized("live.room.info.copy.success.title")
-}
+    static let roomIdText = localized("Live Room ID: xxx")
+    static let fansCountText = localized("xxx Fans")
+    static let followText = localized("Follow")
+    static let unfollowText = localized("Unfollow")
+    }

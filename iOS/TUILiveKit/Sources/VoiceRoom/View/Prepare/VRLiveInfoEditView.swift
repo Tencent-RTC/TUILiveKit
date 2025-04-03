@@ -316,8 +316,8 @@ extension VRLiveInfoEditView {
 }
 
 private extension String {
-    static let editCoverTitle = localized("live.edit.cover.title")
-    static let editPlaceholderText = localized("live.edit.placeholder.text")
-    static let categoryText = localized("live.category.xxx")
-    static let modeText = localized("live.mode.xxx")
+    static let editCoverTitle = localized("Modify the cover")
+    static let editPlaceholderText = localized("Please enter room name")
+    static let categoryText = localized("Live Category:xxx")
+    static let modeText = localized("Live Mode:xxx")
 }

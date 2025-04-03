@@ -143,6 +143,6 @@ extension VRPrepareSettingPanel: UITableViewDelegate {
 }
 
 fileprivate extension String {
-    static let settingText: String = localized("live.anchor.setting.title")
-    static let needRequestText: String = localized("live.anchor.setting.need.request")
+    static let settingText: String = localized("Settings")
+    static let needRequestText: String = localized("Require owner's consent to speak")
 }

@@ -20,19 +20,15 @@ class LiveStreamObserver: NSObject {
 
 extension LiveStreamObserver: ConnectionObserver {
     func onConnectedUsersUpdated(userList: [TUIUserInfo], joinList: [TUIUserInfo], leaveList: [TUIUserInfo]) {
-        manager.onSeatListChanged(userList: userList, joinList: joinList, leaveList: leaveList)
     }
     
     func onUserConnectionRequest(inviterUser: TUIUserInfo) {
-        manager.onRequestReceived(inviter: inviterUser)
     }
     
     func onUserConnectionCancelled(inviterUser: TUIUserInfo) {
-        manager.onRequestCancelled(inviter: inviterUser)
     }
     
     func onUserConnectionAccepted(userInfo: TUIUserInfo) {
-        manager.onUserConnectionAccepted(userId: userInfo.userId)
     }
     
     func onUserConnectionRejected(userInfo: TUIUserInfo) {
@@ -52,7 +48,7 @@ extension LiveStreamObserver: ConnectionObserver {
     }
     
     func onConnectedRoomsUpdated(hostUserList: [TUIConnectionUser]) {
-        manager.coHostManager.onConnectionUserListChanged(list: hostUserList)
+        manager.onConnectionUserListChanged(list: hostUserList)
     }
     
     func onCrossRoomConnectionRequest(hostUser: TUIConnectionUser) {

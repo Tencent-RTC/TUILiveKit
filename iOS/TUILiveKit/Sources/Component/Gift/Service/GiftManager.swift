@@ -31,7 +31,7 @@ class GiftManager {
 // MARK: Send Msg
 
 extension GiftManager {
-    func sendGift(_ giftModel: TUIGift, receiver: TUIGiftUser, giftCount: Int, completion: @escaping (Int, String) -> ()) {
+    func sendGift(_ giftModel: TUIGift, receiver: TUIGiftUser, giftCount: Int, completion: TUIGiftIMSendBlock) {
         let sender = TUIGiftUser()
         sender.userId = TUILogin.getUserID() ?? ""
         sender.userName = TUILogin.getNickName() ?? ""
@@ -42,7 +42,7 @@ extension GiftManager {
                                    receiver: receiver,
                                    giftCount: giftCount) { [weak self] code, msg in
             guard let self = self else { return }
-            completion(code, msg)
+            completion?(code, msg)
             if code == 0 {
                 let giftData = TUIGiftData(gift: giftModel, giftCount: giftCount, sender: sender, receiver: receiver)
                 giftData.sender.userName = .meText
@@ -66,6 +66,6 @@ extension GiftManager: TUIGiftIMServiceDelegate {
 
 private extension String {
     static var meText: String {
-        localized("live.barrage.me")
+        localized("Me")
     }
 }

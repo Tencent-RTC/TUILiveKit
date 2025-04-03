@@ -211,15 +211,6 @@ extension LoginRootView: UITextFieldDelegate {
 // MARK: - internationalization string
 
 fileprivate extension String {
-    static let titleText = TUILiveKitAppLocalize("TUILiveKitApp.Login.tencentcloud")
-    static let phoneNumPlaceholderText = TUILiveKitAppLocalize("TUILiveKitApp.Login.enterphonenumber")
-    static let verifyCodePlaceholderText = TUILiveKitAppLocalize("TUILiveKitApp.Login.enterverificationcode")
-    static let getVerifyCodeText = TUILiveKitAppLocalize("TUILiveKitApp.Login.getverificationcode")
-    static let loginText = TUILiveKitAppLocalize("TUILiveKitApp.login")
-    static let tuicallkitIntroduceText = TUILiveKitAppLocalize("TUILiveKitApp.Login.Introduce")
-    static let tuicallkitPlatformText = TUILiveKitAppLocalize("TUILiveKitApp.Login.Platform")
-    static let buyText = TUILiveKitAppLocalize("TUILiveKitApp.Login.Purchase")
-    static let accessText = TUILiveKitAppLocalize("TUILiveKitApp.Login.Access")
-    static let apiText = TUILiveKitAppLocalize("TUILiveKitApp.Login.APIDocumentation")
-    static let problemText = TUILiveKitAppLocalize("TUILiveKitApp.Login.Problem")
+    static let loginText = TUILiveKitAppLocalize("Log In")
+    static let titleText = TUILiveKitAppLocalize("Tencent Real-Time Communication")
 }

@@ -2,7 +2,7 @@
 //  LSCoGuestManager.swift
 //  TUILiveKit
 //
-//  Created by jeremiawang on 2024/11/21.
+//  Created by jeremiawang on 2025/3/7.
 //
 
 import Foundation
@@ -18,200 +18,115 @@ class LSCoGuestManager {
     
     private typealias Context = LiveStreamManager.Context
     private weak var context: Context?
-    private let toastSubject: PassthroughSubject<String, Never>
     private let service: LSRoomEngineService
     
     init(context: LiveStreamManager.Context) {
         self.context = context
         self.service = context.service
-        self.toastSubject = context.toastSubject
-    }
-    
-    func resetState() {
-        update { coGuestState in
-            coGuestState = LSCoGuestState()
-        }
     }
 }
 
 extension LSCoGuestManager {
+    private func update(coGuestState: LSCoGuestStateUpdateClosure) {
+        observerState.update(reduce: coGuestState)
+    }
+}
+
+// MARK: - Interface
+extension LSCoGuestManager {
+    func onLockMediaStatusBtnClicked(userId: String, lockParams: TUISeatLockParams) async throws {
+        if let seatIndex = context?.coreCoGuestState.seatList.first(where: { $0.userId == userId })?.index {
+            try await service.lockSeatByAdmin(seatIndex: seatIndex, lockParams: lockParams)
+        } else {
+            throw InternalError(error: LiveError.userNotInSeat, message: LiveError.userNotInSeat.description)
+        }
+    }
+    
+    func onStartRequestIntraRoomConnection() {
+        observerState.update { state in
+            state.coGuestStatus = .applying
+        }
+    }
+    
+    func onRequestIntraRoomConnectionFailed() {
+        observerState.update { state in
+            state.coGuestStatus = .none
+        }
+    }
+    
+    func onUserConnectionRejected(userId: String) {
+        observerState.update { state in
+            state.coGuestStatus = .none
+        }
+    }
+    
+    func onUserConnectionTimeout(userId: String) {
+        observerState.update { state in
+            state.coGuestStatus = .none
+        }
+    }
+    
+    func onKickedOffSeat() {
+        observerState.update { state in
+            state.coGuestStatus = .none
+        }
+    }
+    
+    func onStartCancelIntraRoomConnection() {
+        observerState.update { state in
+            state.coGuestStatus = .none
+        }
+    }
+    
+    func onCancelIntraRoomConnection() {
+        observerState.update { state in
+            state.coGuestStatus = .none
+        }
+    }
+    
     func subscribeState<Value>(_ selector: StateSelector<LSCoGuestState, Value>) -> AnyPublisher<Value, Never> {
         return observerState.subscribe(selector)
     }
 }
 
-extension LSCoGuestManager {
-    func fetchSeatList() {
-        Task {
-            do {
-                let seatList = try await service.getSeatList()
-                initSeatList(seatList: seatList)
-                if isSelfInSeat() {
-                    update{ coGuestState in
-                        coGuestState.coGuestStatus = .linking
-                    }
-                }
-            } catch let err as InternalError {
-                toastSubject.send(err.localizedMessage)
-            }
-        }
-    }
-    
-    func fetchSeatApplicationList() {
-        Task {
-            do {
-                let requestList = try await service.getSeatApplicationList()
-                initSeatApplicationList(list: requestList)
-            } catch let err as InternalError {
-                toastSubject.send(err.localizedMessage)
-            }
-        }
-    }
-    
-    func removeSeatApplication(userId: String) {
-        update { coGuestState in
-            if let requestToRemove = coGuestState.requestCoGuestList.first(where: { $0.userId == userId }) {
-                coGuestState.requestCoGuestList.remove(requestToRemove)
-            }
-        }
-    }
-    
-    func update(coGuestState: LSCoGuestStateUpdateClosure) {
-        observerState.update(reduce: coGuestState)
-    }
-    
-    func update(coGuestStatus: CoGuestStatus) {
-        observerState.update { state in
-            state.coGuestStatus = coGuestStatus
-        }
-    }
-}
-
 // MARK: - Observer
 extension LSCoGuestManager {
-    func onSeatListChanged(userList: [TUIUserInfo], joinList: [TUIUserInfo], leaveList: [TUIUserInfo]) {
-        initSeatList(userList: userList)
-        if joinList.first(where: { isSelfInfo(userId: $0.userId) }) != nil {
-            update { coGuestState in
-                coGuestState.coGuestStatus = .linking
-            }
+    func onSeatListChanged(seatList: [TUISeatInfo], seated seatedList: [TUISeatInfo], left leftList: [TUISeatInfo]) {
+        updateCoGuestStatusBySeatList(seatList: seatList)
+        updateMediaLockStatus(seatList: seatList)
+        if !leftList.filter({ $0.userId == context?.coreUserState.selfInfo.userId }).isEmpty {
+            context?.mediaManager.onSelfLeaveSeat()
         }
-        if leaveList.first(where: { isSelfInfo(userId: $0.userId) }) != nil {
-            update { coGuestState in
-                coGuestState.coGuestStatus = .none
-            }
-        }
-    }
-    
-    func onRequestReceived(inviter: TUIUserInfo) {
-        addSeatApplication(inviter: inviter)
-    }
-    
-    func onRequestCancelled(inviter: TUIUserInfo) {
-        removeSeatApplication(userId: inviter.userId)
-        update{ coGuestState in
-            coGuestState.coGuestStatus = .none
-        }
-    }
-    
-    func onUserConnectionAccepted(userId: String) {
-        guard let context = context else { return }
-        let ownerId = context.roomManager.roomState.ownerInfo.userId
-        let selfId = context.userManager.userState.selfInfo.userId
-        if ownerId != selfId {
-            update{ coGuestState in
-                coGuestState.coGuestStatus = .linking
-            }
-        }
-    }
-    
-    func onUserConnectionRejected(userId: String) {
-        update{ coGuestState in
-            coGuestState.coGuestStatus = .none
-        }
-        toastSubject.send(.takeSeatApplicationRejected)
-    }
-    
-    func onUserConnectionTimeout(userId: String) {
-        update{ coGuestState in
-            coGuestState.coGuestStatus = .none
-        }
-        toastSubject.send(.takeSeatApplicationTimeout)
-    }
-    
-    func onKickedOffSeat() {
-        toastSubject.send(.kickedOutOfSeat)
     }
 }
 
 // MARK: - Private
 extension LSCoGuestManager {
-    private func initSeatList(seatList: [TUISeatInfo]) {
-        var newList: [LSSeatInfo] = []
-
-        for info in seatList {
-            guard let userId = info.userId, !userId.isEmpty else {
-                continue
+    private func updateCoGuestStatusBySeatList(seatList: [TUISeatInfo]) {
+        let isLinking = !seatList.filter { $0.userId == context?.coreUserState.selfInfo.userId }.isEmpty
+        observerState.update { state in
+            state.coGuestStatus = isLinking ? .linking : .none
+        }
+    }
+    
+    private func updateMediaLockStatus(seatList: [TUISeatInfo]) {
+        for seatInfo in seatList {
+            guard let userId = seatInfo.userId, !userId.isEmpty else { continue }
+            update { state in
+                if seatInfo.isAudioLocked {
+                    state.lockAudioUserList.insert(userId)
+                } else {
+                    state.lockAudioUserList.remove(userId)
+                }
+                if seatInfo.isVideoLocked {
+                    state.lockVideoUserList.insert(userId)
+                } else {
+                    state.lockVideoUserList.remove(userId)
+                }
             }
-            let seatInfo = LSSeatInfo(info: info)
-            newList.append(seatInfo)
-        }
-        
-        update { coGuestState in
-            coGuestState.connectedUserList = newList
-        }
-    }
-    
-    private func initSeatList(userList: [TUIUserInfo]) {
-        var newList: [LSSeatInfo] = []
-
-        for info in userList {
-            guard !info.userId.isEmpty else {
-                continue
+            if userId == context?.coreUserState.selfInfo.userId {
+                context?.mediaManager.onSelfMediaDeviceStateChanged(seatInfo: seatInfo)
             }
-            let seatInfo = LSSeatInfo(userInfo: info)
-            newList.append(seatInfo)
-        }
-        
-        update { coGuestState in
-            coGuestState.connectedUserList = newList
         }
     }
-    
-    private func initSeatApplicationList(list: [TUIRequest]) {
-        var newList: [LSSeatApplication] = []
-
-        for request in list {
-            let seatInfo = LSSeatApplication(request: request)
-            newList.append(seatInfo)
-        }
-        
-        update { coGuestState in
-            coGuestState.requestCoGuestList = Set(newList)
-        }
-    }
-    
-    private func addSeatApplication(inviter: TUIUserInfo) {
-        let seatApplication = LSSeatApplication(userInfo: inviter)
-        update { coGuestState in
-            coGuestState.requestCoGuestList.insert(seatApplication)
-        }
-    }
-    
-    private func isSelfInSeat() -> Bool {
-        guard let context = context else { return false }
-        let selfUserId = context.userManager.userState.selfInfo.userId
-        return coGuestState.connectedUserList.contains{ $0.userId == selfUserId }
-    }
-    
-    private func isSelfInfo(userId: String) -> Bool {
-        guard let context = context else { return false }
-        return context.userManager.userState.selfInfo.userId == userId
-    }
-}
-
-fileprivate extension String {
-    static let takeSeatApplicationRejected = localized("live.seat.takeSeatApplicationRejected")
-    static let takeSeatApplicationTimeout = localized("live.seat.takeSeatApplicationTimeout")
-    static let kickedOutOfSeat = localized("live.seat.kickedOutOfSeat")
 }

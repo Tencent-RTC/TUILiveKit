@@ -68,8 +68,8 @@ extension BeautyManager: BeautyManagerInterface {
         Task {
             do {
                 try await service.openLocalCamera()
-            } catch let err {
-                debugPrint("openLocalCamera error: \(err.localizedDescription)")
+            } catch let err as InternalError {
+                debugPrint("openLocalCamera error: \(err.localizedMessage)")
             }
         }
     }

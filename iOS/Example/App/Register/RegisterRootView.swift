@@ -260,7 +260,7 @@ extension RegisterRootView : UITextFieldDelegate {
 
 /// MARK: - internationalization string
 fileprivate extension String {
-    static let nicknamePlaceholderText = TUILiveKitAppLocalize("TUILiveKitApp.Login.enterusername")
-    static let descText = TUILiveKitAppLocalize("TUILiveKitApp.Login.limit20count")
-    static let registText = TUILiveKitAppLocalize("TUILiveKitApp.Login.register")
+    static let nicknamePlaceholderText = TUILiveKitAppLocalize("Enter a userId")
+    static let descText = TUILiveKitAppLocalize("Chinese characters, letters, numbers and underscores, 1 – 20 words")
+    static let registText = TUILiveKitAppLocalize("Register")
 }

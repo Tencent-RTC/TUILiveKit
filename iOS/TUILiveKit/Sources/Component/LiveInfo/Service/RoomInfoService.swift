@@ -11,9 +11,9 @@ import ImSDK_Plus
 import TUICore
 
 class RoomInfoService: NSObject {
-    public let state = RoomInfoState()
+    let state = RoomInfoState()
     
-    public func initRoomInfo(roomId: String) {
+    func initRoomInfo(roomId: String) {
         state.roomId = roomId
         state.selfUserId = TUILogin.getUserID() ?? ""
         TUIRoomEngine.sharedInstance().fetchRoomInfo { [weak self] roomInfo in
@@ -25,9 +25,10 @@ class RoomInfoService: NSObject {
             debugPrint("[RoomInfo] initRoomInfo failed, error:\(code), message:\(message)")
         }
         V2TIMManager.sharedInstance().addFriendListener(listener: self)
+        TUIRoomEngine.sharedInstance().addObserver(self)
     }
     
-    public func getFansNumber() {
+    func getFansNumber() {
         V2TIMManager.sharedInstance().getUserFollowInfo([state.ownerId]) { [weak self] followInfoList in
             guard let self = self, let followInfo = followInfoList?.first else { return }
             self.state.fansNumber = Int(followInfo.followersCount)
@@ -36,7 +37,7 @@ class RoomInfoService: NSObject {
         }
     }
     
-    public func isFollow(userId: String) {
+    func isFollow(userId: String) {
         let userInfo = TUIUserInfo()
         userInfo.userId = userId
         V2TIMManager.sharedInstance().checkFollowType([state.ownerId]) { [weak self] checkResultList in
@@ -53,7 +54,7 @@ class RoomInfoService: NSObject {
         }
     }
     
-    public func followUser(userId: String) {
+    func followUser(userId: String) {
         let userInfo = TUIUserInfo()
         userInfo.userId = userId
         V2TIMManager.sharedInstance().followUser([userId]) { [weak self] followResultList in
@@ -67,7 +68,7 @@ class RoomInfoService: NSObject {
         }
     }
     
-    public func unfollowUser(userId: String) {
+    func unfollowUser(userId: String) {
         V2TIMManager.sharedInstance().unfollowUser([userId]) { [weak self] followResultList in
             guard let self = self, let result = followResultList?.first else { return }
             if result.resultCode == 0 {
@@ -88,5 +89,11 @@ extension RoomInfoService: V2TIMFriendshipListener {
     // owner listen to this callback
     func onMyFollowersListChanged(userInfoList: [V2TIMUserFullInfo], isAdd: Bool) {
         isFollow(userId: state.ownerId)
+    }
+}
+
+extension RoomInfoService: TUIRoomObserver {
+    func onRoomDismissed(roomId: String, reason: TUIRoomDismissedReason) {
+        state.roomDismissedSubject.send(roomId)
     }
 }

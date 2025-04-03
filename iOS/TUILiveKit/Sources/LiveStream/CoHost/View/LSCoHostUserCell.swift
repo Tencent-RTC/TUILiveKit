@@ -6,12 +6,13 @@
 //
 
 import Foundation
+import RTCRoomEngine
 
 class LSCoHostUserCell: UITableViewCell {
     static let identifier = "LSCoHostUserCell"
 
-    private var connectionUser:ConnectionUser?
-    var inviteEventClosure: ((ConnectionUser) -> Void)?
+    private var connectionUser:TUIConnectionUser?
+    var inviteEventClosure: ((TUIConnectionUser) -> Void)?
     
     let avatarImageView: UIImageView = {
         let imageView = UIImageView(frame: .zero)
@@ -22,7 +23,6 @@ class LSCoHostUserCell: UITableViewCell {
         let label = UILabel(frame: .zero)
         label.font = UIFont.customFont(ofSize: 16)
         label.textColor = .grayColor
-        label.adjustsFontSizeToFitWidth = true
         return label
     }()
     
@@ -112,7 +112,7 @@ class LSCoHostUserCell: UITableViewCell {
         inviteButton.addTarget(self, action: #selector(inviteButtonClick(sender:)), for: .touchUpInside)
     }
     
-    func updateUser(_ user: ConnectionUser) {
+    func updateUser(_ user: TUIConnectionUser) {
         self.connectionUser = user
         avatarImageView.kf.setImage(with: URL(string: user.avatarUrl), placeholder: UIImage.avatarPlaceholderImage)
         userNameLabel.text = user.userName
@@ -140,6 +140,6 @@ extension LSCoHostUserCell {
 }
 
 fileprivate extension String {
-    static let inviteText = localized("live.connection.request")
-    static let invitingTest = localized("live.connection.inviting")
+    static let inviteText = localized("Invite")
+    static let invitingTest = localized("Waiting")
 }

@@ -8,13 +8,14 @@
 import UIKit
 import RTCCommon
 import Combine
+import RTCRoomEngine
 
 class BattleMemberInfoView: RTCBaseView {
-    private lazy var battleIdPublisher = manager.subscribeBattleState(StateSelector(keyPath: \LSBattleState.battleId))
-    private lazy var connectedUserPublisher = manager.subscribeCoHostState(StateSelector(keyPath: \LSCoHostState.connectedUsers))
-    private lazy var isBattleRunningPublisher = manager.subscribeBattleState(StateSelector(keyPath: \LSBattleState.isBattleRunning))
-    private lazy var battleUsersPublisher = manager.subscribeBattleState(StateSelector(keyPath: \LSBattleState.battleUsers))
-    private lazy var isOnDisplayResultPublisher = manager.subscribeBattleState(StateSelector(keyPath: \LSBattleState.isOnDisplayResult))
+    private lazy var battleIdPublisher = manager.subscribeState(StateSelector(keyPath: \LSBattleState.battleId))
+    private lazy var connectedUserPublisher = manager.subscribeState(StateSelector(keyPath: \LSCoHostState.connectedUsers))
+    private lazy var isBattleRunningPublisher = manager.subscribeState(StateSelector(keyPath: \LSBattleState.isBattleRunning))
+    private lazy var battleUsersPublisher = manager.subscribeState(StateSelector(keyPath: \LSBattleState.battleUsers))
+    private lazy var isOnDisplayResultPublisher = manager.subscribeState(StateSelector(keyPath: \LSBattleState.isOnDisplayResult))
     
     private let manager: LiveStreamManager
     private var userId: String
@@ -166,13 +167,13 @@ class BattleMemberInfoView: RTCBaseView {
             .store(in: &cancellableSet)
     }
     
-    private func onConnectedListChanged(connectionUsers: [ConnectionUser]) {
+    private func onConnectedListChanged(connectionUsers: [TUIConnectionUser]) {
         onBattleScoreChanged(battleUsers: battleState.battleUsers)
     }
     
     private func onBattleScoreChanged(battleUsers: [BattleUser]) {
         guard !battleUsers.isEmpty && !coHostState.connectedUsers.isEmpty else {
-            manager.battleManager.resetBattleId()
+            manager.onBattleExited()
             return
         }
         var battleUserMap: [String: BattleUser] = [:]
@@ -192,6 +193,10 @@ class BattleMemberInfoView: RTCBaseView {
         
         let isSingleBattle = singleBattleUserMap.count == 2
         isSingleBattle ? reset() : setData(user: battleUserMap[userId])
+    }
+    
+    private func isInBattle(battleUsers: [BattleUser]) -> Bool {
+        !battleUsers.isEmpty && !coHostState.connectedUsers.isEmpty
     }
 
     private func onBattleStartChanged(start: Bool) {
@@ -258,5 +263,5 @@ class BattleMemberInfoView: RTCBaseView {
 }
 
 private extension String {
-    static let connectingText = localized("live.connection.connecting")
+    static let connectingText = localized("Connecting")
 }

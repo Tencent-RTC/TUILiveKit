@@ -8,7 +8,7 @@
 import RTCCommon
 import Combine
 import TUICore
-import SeatGridView
+import LiveStreamCore
 import RTCRoomEngine
 
 class VRSeatInvitationPanel: RTCBaseView {
@@ -173,7 +173,7 @@ extension VRSeatInvitationPanel: UITableViewDataSource {
                     guard let self = self else { return }
                     self.manager.onRespondedSeatInvitation(of: user.userId)
                     guard let err = TUIError(rawValue: code) else { return }
-                    let error = InternalError(error: err, message: message)
+                    let error = InternalError(code: err.rawValue, message: message)
                     self.manager.toastSubject.send(error.localizedMessage)
                 }
                 
@@ -188,7 +188,7 @@ extension VRSeatInvitationPanel: UITableViewDataSource {
                     self.manager.onRespondedSeatInvitation(of: user.userId)
                 } onError: { [weak self] code, message in
                     guard let self = self, let err = TUIError(rawValue: code) else { return }
-                    let error = InternalError(error: err, message: message)
+                    let error = InternalError(code: err.rawValue, message: message)
                     self.manager.toastSubject.send(error.localizedMessage)
                 }
             }
@@ -198,7 +198,7 @@ extension VRSeatInvitationPanel: UITableViewDataSource {
 }
 
 fileprivate extension String {
-    static let inviteText = localized("live.seat.invite")
-    static let onlineAudienceText = localized("live.recent.online.audience")
-    static let inviteSeatCancelText = localized("live.seat.inviteSeatCancel")
+    static let inviteText = localized("Invite")
+    static let onlineAudienceText = localized("Online audience")
+    static let inviteSeatCancelText = localized("Seat invitation has been canceled")
 }

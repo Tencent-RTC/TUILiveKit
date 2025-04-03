@@ -32,15 +32,15 @@ extension LSCoHostServiceImpl: LSCoHostService {
     
     func fetchRecommendedList(cursor: String, count: Int) async throws -> (String, [TUILiveInfo]) {
         return try await withUnsafeThrowingContinuation { [weak self] continuation  in
-            guard let self = self else { return }
-            guard let listManager = roomEngine.getExtension(extensionType: .liveListManager) as? TUILiveListManager else {
-                continuation.resume(throwing: InternalError(error:TUIError.failed, message: String.localized("live.error.failed")))
+            guard let self = self, let listManager = roomEngine.getExtension(extensionType: .liveListManager) as? TUILiveListManager else {
+                continuation.resume(throwing: InternalError(code: ErrorService.generalErrorCode,
+                                                            message: "get LiveListManager error"))
                 return
             }
             listManager.fetchLiveList(cursor: cursor, count: count) { responseCursor, responseLiveList in
                 continuation.resume(returning: (responseCursor, responseLiveList))
             } onError: { error, message in
-                continuation.resume(throwing: InternalError(error: error, message: message))
+                continuation.resume(throwing: InternalError(code: error.rawValue, message: message))
             }
         }
     }

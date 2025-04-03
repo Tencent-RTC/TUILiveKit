@@ -66,6 +66,6 @@ extension BarrageDisplayManager: TUIRoomObserver {
 }
 
 private extension String {
-    static let comingText: String = localized("live.barrage.coming")
+    static let comingText: String = localized("Entered room")
 }
 

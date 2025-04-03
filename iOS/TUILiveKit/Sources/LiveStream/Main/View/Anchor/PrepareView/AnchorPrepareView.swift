@@ -314,11 +314,9 @@ extension AnchorPrepareView {
 }
 
 private extension String {
-    static let startLivingTitle: String = localized("live.start.living.title")
-    static let portraitTitle: String = localized("live.portrait.title")
-    static let landscapeTitle: String = localized("live.landscape.title")
-    static let beautyText: String = localized("live.anchor.setting.beauty")
-    static let audioText: String = localized("live.anchor.setting.audio.effects")
-    static let flipText: String = localized("live.anchor.setting.flip")
-    static let videoSettingText: String = localized("live.anchor.setting.title")
+    static let startLivingTitle: String = localized("Go live")
+    static let beautyText: String = localized("Beauty")
+    static let audioText: String = localized("Audio")
+    static let flipText: String = localized("Flip")
+    static let videoSettingText: String = localized("Settings")
 }

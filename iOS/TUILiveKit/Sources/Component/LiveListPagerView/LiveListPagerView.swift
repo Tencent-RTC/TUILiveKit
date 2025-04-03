@@ -9,12 +9,12 @@ import SnapKit
 import RTCRoomEngine
 
 public protocol LiveListViewDataSource: AnyObject {
-    typealias LiveListCallback = ([TUILiveInfo]) -> Void
+    typealias LiveListCallback = ([LiveInfo]) -> Void
     func fetchLiveList(completionHandler: @escaping LiveListCallback)
 }
 
 public protocol LiveListViewDelegate: AnyObject {
-    func onCreateView(liveInfo: TUILiveInfo) -> UIView
+    func onCreateView(liveInfo: LiveInfo) -> UIView
     
     func onViewWillSlideIn(view: UIView)
     func onViewDidSlideIn(view: UIView)
@@ -30,7 +30,7 @@ public class LiveListPagerView: UIView {
     
     private var isViewReady = false
     private var currentPage = 0
-    private var liveList: [TUILiveInfo] = []
+    private var liveList: [LiveInfo] = []
     private var willDisplayPage: IndexPath? = nil
     private let cellReuseIdentifier = "LiveListCell"
     private var isFetchingLiveList = false

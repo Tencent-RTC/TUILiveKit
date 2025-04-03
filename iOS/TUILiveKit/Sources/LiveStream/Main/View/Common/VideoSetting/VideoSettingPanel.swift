@@ -14,16 +14,18 @@ import TUICore
 
 class VideoSettingPanel: UIView {
     
-    private let mediaManager: MediaManager
+    private let manager: LiveStreamManager
     private let routerManager: LSRouterManager
     private var cancellableSet: Set<AnyCancellable> = []
+    private weak var coreView: LiveCoreView?
     
     private var videoEncParams: TUIRoomVideoEncoderParams = TUIRoomVideoEncoderParams()
     
-    init(routerManager: LSRouterManager, mediaManager: MediaManager) {
-        self.mediaManager = mediaManager
+    init(routerManager: LSRouterManager, manager: LiveStreamManager, coreView: LiveCoreView) {
+        self.manager = manager
         self.routerManager = routerManager
-        self.videoEncParams = mediaManager.mediaState.videoEncParams.currentEnc
+        self.videoEncParams = manager.mediaState.videoEncParams.currentEnc
+        self.coreView = coreView
         super.init(frame: .zero)
         self.initDataSource()
     }
@@ -163,13 +165,13 @@ extension VideoSettingPanel {
     
     private func initMoreDataSource() {
         let mirrorItem = VideoSettingSwitchItem(title: .mirrorText,
-                                                isOn: mediaManager.mediaState.isMirrorEnabled,
+                                                isOn: manager.coreMediaState.isMirrorEnabled,
                                                 action: { [weak self] isOn in
             guard let self = self else { return }
-            self.mediaManager.enableMirror(isOn)
+            coreView?.enableMirror(enable: isOn)
         })
         moreDataSource.append(mirrorItem)
-        if mediaManager.mediaState.videoAdvanceSettings.isVisible {
+        if manager.mediaState.videoAdvanceSettings.isVisible {
             addUltimateItem()
             addH265Item()
         }
@@ -191,10 +193,10 @@ extension VideoSettingPanel {
     @discardableResult
     private func addUltimateItem() -> IndexPath {
         let ultimateItem = VideoSettingSwitchItem(title: .ultimateText,
-                                                  isOn: mediaManager.mediaState.videoAdvanceSettings.isUltimateEnabled,
+                                                  isOn: manager.mediaState.videoAdvanceSettings.isUltimateEnabled,
                                                   action: { [weak self] enable in
             guard let self = self else { return }
-            self.mediaManager.enableUltimate(enable)
+            manager.mediaManager.enableUltimate(enable)
         })
         moreDataSource.append(ultimateItem)
         return IndexPath(item: moreDataSource.count-1, section: 1)
@@ -203,10 +205,10 @@ extension VideoSettingPanel {
     @discardableResult
     private func addH265Item() -> IndexPath {
         let h265Item = VideoSettingSwitchItem(title: "H265",
-                                              isOn: mediaManager.mediaState.videoAdvanceSettings.isH265Enabled,
+                                              isOn: manager.mediaState.videoAdvanceSettings.isH265Enabled,
                                               action: { [weak self] enable in
             guard let self = self else { return }
-            self.mediaManager.enableH265(enable)
+            manager.mediaManager.enableH265(enable)
         })
         moreDataSource.append(h265Item)
         return IndexPath(item: moreDataSource.count-1, section: 1)
@@ -259,15 +261,15 @@ extension VideoSettingPanel {
     private func getBitrateScope(from resolution: TUIVideoQuality) -> (minValue: Int, maxValue:Int) {
         switch resolution {
         case .quality1080P:
-            return (1000, 10000)
+            return (1800, 4000)
         case .quality720P:
-            return (500, 6000)
+            return (900, 1800)
         case .quality540P:
-            return (100, 2000)
+            return (900, 1800)
         case .quality360P:
-            return (100, 1500)
+            return (300, 900)
         default:
-            return (1000, 10000)
+            return (1800, 4000)
         }
     }
 }
@@ -276,7 +278,7 @@ extension VideoSettingPanel {
 extension VideoSettingPanel {
     
     private func updateVideoEncParams() {
-        mediaManager.updateVideoEncParams(videoEncParams)
+        manager.mediaManager.updateVideoEncParams(videoEncParams)
     }
 }
 
@@ -285,10 +287,10 @@ extension VideoSettingPanel {
     
     @objc
     private func enableAdvancedVideo() {
-        guard !mediaManager.mediaState.videoAdvanceSettings.isVisible else {
+        guard !manager.mediaManager.mediaState.videoAdvanceSettings.isVisible else {
             return
         }
-        mediaManager.enableAdvancedVisible(true)
+        manager.mediaManager.enableAdvancedVisible(true)
         reloadMoreSettings()
     }
 }
@@ -376,19 +378,19 @@ private extension TUIVideoQuality {
 
 fileprivate extension String {
     static var settingTitleText: String {
-        localized("live.anchor.setting.video.parameters")
+        localized("Video Config")
     }
     
     static var sharpnessText: String {
-        localized("live.anchor.setting.video.sharpness")
+        localized("Clarity")
     }
     
-    static let ultimateText = localized("live.anchor.setting.video.ultimate")
-    static let resolutionText = localized("live.anchor.setting.video.resolution")
-    static let fpsText = localized("live.anchor.setting.video.fps")
-    static let videoBitrateText = localized("live.anchor.setting.video.bitrate")
-    static let mirrorText = localized("live.anchor.setting.mirror")
-    static let moreSettingText = localized("live.anchor.setting.more.setting")
+    static let ultimateText = localized("Ultimate-Video")
+    static let resolutionText = localized("Video Resolution")
+    static let fpsText = localized("Video FPS")
+    static let videoBitrateText = localized("Video Bitrate")
+    static let mirrorText = localized("Mirror")
+    static let moreSettingText = localized("More settings")
     
     // MARK: - Video Advance API Extension
     static let TUICore_VideoAdvanceService = "TUICore_VideoAdvanceService"

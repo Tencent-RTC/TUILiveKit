@@ -173,7 +173,7 @@ extension LSSystemImageSelectionPanel {
             backButtonClickClosure?()
             return
         }
-        manager.update(roomCoverUrl: newImageUrlString)
+        manager.onSetRoomCoverUrl(newImageUrlString)
         backButtonClickClosure?()
     }
 }
@@ -207,7 +207,7 @@ extension LSSystemImageSelectionPanel: UICollectionViewDelegateFlowLayout,
 }
 
 private extension String {
-    static let coverTitleText = localized("live.anchor.cover.image.selection.title")
-    static let coverConfirmText = localized("live.anchor.cover.image.selection.confirm")
+    static let coverTitleText = localized("Cover")
+    static let coverConfirmText = localized("Set as cover")
 }
 

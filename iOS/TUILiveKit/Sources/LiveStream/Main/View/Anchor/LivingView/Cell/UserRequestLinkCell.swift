@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import RTCRoomEngine
 
 class UserRequestLinkCell: LinkMicBaseCell {
-    var respondEventClosure: ((LSSeatApplication, Bool) -> Void)?
+    var respondEventClosure: ((TUIUserInfo, Bool) -> Void)?
     
     private lazy var acceptButton: UIButton = {
         let view = UIButton(type: .system)
@@ -119,11 +120,11 @@ extension UserRequestLinkCell {
 
 private extension String {
     static var anchorLinkAgreeTitle: String {
-        localized("live.anchor.link.agree.title")
+        localized("Agree")
     }
     
     static var anchorLinkRejectTitle: String {
-        localized("live.anchor.link.reject.title")
+        localized("Reject")
     }
 
 }

@@ -197,9 +197,6 @@ extension LSRouterControlCenter {
             view = LSCoHostManagerPanel(manager: manager.coHostManager, coreView: coreView)
         case .featureSetting(let settingPanelModel):
             view = LSSettingPanel(settingPanelModel: settingPanelModel)
-        case .musicList:
-            view = MusicView(roomId: manager.roomState.roomId,
-                             trtcCloud: TUIRoomEngine.sharedInstance().getTRTCCloud())
         case .audioEffect:
             let audioEffect = AudioEffectView()
             audioEffect.backButtonClickClosure = { [weak self] _ in
@@ -208,7 +205,7 @@ extension LSRouterControlCenter {
             }
             view = audioEffect
         case .linkType(let data):
-            view = LinkMicTypePanel(data: data, routerManager: routerManager)
+            view = LinkMicTypePanel(data: data, routerManager: routerManager, manager: manager)
         case .listMenu(let data):
             let actionPanel = ActionPanel(panelData: data)
             actionPanel.cancelActionClosure = { [weak self] in
@@ -255,9 +252,15 @@ extension LSRouterControlCenter {
             }
             view = beautyView
         case .giftView:
-            let giftPanel = GiftListPanel(roomId: manager.roomState.roomId, dataSource: manager)
+            let giftPanel = GiftListPanel(roomId: manager.roomState.roomId, provider: manager)
             giftPanel.setGiftList(TUIGiftStore.shared.giftList)
             view = giftPanel
+        case .userManagement(let user, let type):
+            if type == .userInfo {
+                view = UserInfoPanelView(user: user, manager: manager)
+            } else {
+                view = UserManagePanelView(user: user, manager: manager, routerManager: routerManager, coreView: coreView, type: type)
+            }
         default:
             break
         }
@@ -272,7 +275,8 @@ extension LSRouterControlCenter {
         case .battleCountdown(_),
                 .alert(_),
                 .videoSetting,
-                .streamDashboard:
+                .streamDashboard,
+                .userManagement(_, _):
             return true
         default:
             return false
@@ -286,7 +290,8 @@ extension LSRouterControlCenter {
                 .streamDashboard,
                 .giftView,
                 .videoSetting,
-                .listMenu(_):
+                .listMenu(_),
+                .userManagement(_, _):
             return false
         default:
             return true

@@ -65,7 +65,7 @@ class RegisterViewController: UIViewController {
 
 /// MARK: - internationalization string
 fileprivate extension String {
-    static let titleText = TUILiveKitAppLocalize("TUILiveKitApp.Login.register")
-    static let registerSuccessText = TUILiveKitAppLocalize("TUILiveKitApp.Login.registersuccess")
+    static let titleText = TUILiveKitAppLocalize("Register")
+    static let registerSuccessText = TUILiveKitAppLocalize("Registered successfully")
 }
 

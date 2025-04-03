@@ -177,8 +177,6 @@ extension VRRouterControlCenter {
             view = VRUserManagerPanel(manager: manager, routerMangear: routerManager, coreView: coreView, seatInfo: seatInfo)
         case .featureSetting(let settingPanelModel):
             view = VRSettingPanel(settingPanelModel: settingPanelModel)
-        case .musicList:
-            view = MusicView(roomId: manager.roomState.roomId,trtcCloud: TUIRoomEngine.sharedInstance().getTRTCCloud())
         case .audioEffect:
             let audioEffect = AudioEffectView()
             audioEffect.backButtonClickClosure = { [weak self] _ in
@@ -207,7 +205,7 @@ extension VRRouterControlCenter {
         case .alert(let info):
             view = VRAlertPanel(alertInfo: info)
         case .giftView:
-            let giftPanel = GiftListPanel(roomId: manager.roomState.roomId, dataSource: manager)
+            let giftPanel = GiftListPanel(roomId: manager.roomState.roomId, provider: manager)
             giftPanel.setGiftList(TUIGiftStore.shared.giftList)
             view = giftPanel
         default:
@@ -221,7 +219,7 @@ extension VRRouterControlCenter {
 extension VRRouterControlCenter {
     private func isTempPanel(route: VRRoute) -> Bool {
         switch route {
-        case .alert(_):
+        case .alert(_), .userControl(_, _):
             return true
         default:
             return false

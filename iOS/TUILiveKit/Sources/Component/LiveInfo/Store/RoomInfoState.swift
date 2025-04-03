@@ -7,6 +7,7 @@
 
 import Foundation
 import RTCRoomEngine
+import Combine
 
 class RoomInfoState {
     var selfUserId: String = ""
@@ -16,4 +17,5 @@ class RoomInfoState {
     @Published var ownerAvatarUrl: String = ""
     @Published var fansNumber: Int = 0
     @Published var followingList: Set<TUIUserInfo> = []
+    let roomDismissedSubject = PassthroughSubject<String, Never>()
 }

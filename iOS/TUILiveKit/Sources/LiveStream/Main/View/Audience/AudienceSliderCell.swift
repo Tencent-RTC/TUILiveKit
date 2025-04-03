@@ -27,7 +27,24 @@ class AudienceSliderCell: UIView {
     private weak var routerCenter: LSRouterControlCenter?
     private weak var audienceVC: (UIViewController & FloatWindowDataSource)?
     
-    private let coreView = LiveCoreView()
+    private lazy var coreView: LiveCoreView = {
+        func setComponent() {
+            do {
+                let jsonObject: [String: Any] = [
+                    "api": "component",
+                    "component": 21
+                ]
+                let jsonData = try JSONSerialization.data(withJSONObject: jsonObject, options: [])
+                if let jsonString = String(data: jsonData, encoding: .utf8) {
+                    LiveCoreView.callExperimentalAPI(jsonString)
+                }
+            } catch {
+                LiveKitLog.error("\(#file)","\(#line)", "dataReport: \(error.localizedDescription)")
+            }
+        }
+        setComponent()
+        return LiveCoreView()
+    }()
     private lazy var manager = LiveStreamManager(provider: self)
     private let routerManager: LSRouterManager
     private lazy var likeManager = LikeManager(roomId: roomId)
@@ -63,11 +80,11 @@ class AudienceSliderCell: UIView {
     
     func onViewWillSlideIn() {
         audienceView.livingView.isHidden = true
-        coreView.startPreloadLiveStream(roomId: roomId, isMuteAudio: true)
+        coreView.startPreviewLiveStream(roomId: roomId, isMuteAudio: true)
     }
 
     func onViewDidSlideIn() {
-        manager.initSelfUserData()
+//        manager.initSelfUserData()
         enterRoom()
     }
     
@@ -79,9 +96,10 @@ class AudienceSliderCell: UIView {
     
     func onViewDidSlideOut() {
         if !FloatWindow.shared.isShowingFloatWindow() {
-            coreView.stopPreloadLiveStream(roomId: roomId)
+            coreView.stopPreviewLiveStream(roomId: roomId)
             coreView.leaveLiveStream() { [weak self] in
-                self?.manager.resetAllState()
+                guard let self = self else { return }
+                manager.onLeaveLive()
             } onError: { _, _ in
             }
         }
@@ -143,7 +161,7 @@ extension AudienceSliderCell {
     }
     
     private func subscribeState() {
-        manager.subscribeCoGuestState(StateSelector(keyPath: \LSCoGuestState.coGuestStatus))
+        manager.subscribeState(StateSelector(keyPath: \LSCoGuestState.coGuestStatus))
             .removeDuplicates()
             .receive(on: RunLoop.main)
             .sink { [weak self] coGuestStatus in

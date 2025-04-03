@@ -22,14 +22,23 @@ class LSCoHostManager {
     private var listCount = 20
     private let service: LSCoHostService
     private typealias Context = LiveStreamManager.Context
+    private weak var context: Context?
+    
     init(context: LiveStreamManager.Context) {
+        self.context = context
         self.service = context.coHostService
         self.toastSubject = context.toastSubject
         self.observableState = ObservableState(initialState: LSCoHostState())
+        observableState.update { state in
+            state.currentRoomId = context.roomManager.roomState.roomId
+        }
     }
-    
-    func subscribeCoHostState<Value>(_ selector: StateSelector<LSCoHostState, Value>) -> AnyPublisher<Value, Never> {
-        return observableState.subscribe(selector)
+}
+
+// MARK: - Common
+extension LSCoHostManager {
+    func onError(_ error: InternalError) {
+        toastSubject.send(error.localizedMessage)
     }
     
     func isCoHostConnecting() -> Bool {
@@ -37,6 +46,7 @@ class LSCoHostManager {
     }
     
     func fetchRecommendedList(cursor: String = "") {
+        guard let context = context else { return }
         Task {
             do {
                 let cursor = state.recommendedListCursor
@@ -47,16 +57,16 @@ class LSCoHostManager {
                     if cursor.isEmpty {
                         state.recommendedUsers.removeAll()
                     }
-                    let recommendedUsers: [ConnectionUser] = liveList.map { liveInfo in
+                    let recommendedUsers: [TUIConnectionUser] = liveList.map { liveInfo in
                         let isConnected = state.connectedUsers.contains(where: { $0.roomId == liveInfo.roomInfo.roomId })
                         if !isConnected {
-                            var user = ConnectionUser(liveInfo)
-                            if state.sentConnectionRequests.contains(where: { $0.roomId == user.roomId }) {
+                            let user = TUIConnectionUser(liveInfo)
+                            if context.coreCoHostState.sentConnectionRequestList.contains(where: { $0.roomId == user.roomId }) {
                                 user.connectionStatus = .inviting
                             }
                             return user
                         } else {
-                            return ConnectionUser()
+                            return TUIConnectionUser()
                         }
                     }.filter { !$0.roomId.isEmpty }
                     state.recommendedUsers.append(contentsOf: recommendedUsers)
@@ -67,10 +77,21 @@ class LSCoHostManager {
         }
     }
     
-    func onRequestConnection(user: ConnectionUser) {
+    func subscribeCoHostState<Value>(_ selector: StateSelector<LSCoHostState, Value>) -> AnyPublisher<Value, Never> {
+        return observableState.subscribe(selector)
+    }
+}
+
+// MARK: - Anchor
+extension LSCoHostManager {
+    func onCrossRoomConnectionTerminated() {
+        update(connectedUser: [])
+    }
+    
+    func onRequestConnection(user: TUIConnectionUser) {
         for recommendedUser in state.recommendedUsers {
             if recommendedUser.roomId == user.roomId {
-                var useUser = recommendedUser
+                let useUser = recommendedUser
                 useUser.connectionStatus = .inviting
                 observableState.update { state in
                     state.addSentConnectionRequest(useUser)
@@ -78,41 +99,15 @@ class LSCoHostManager {
             }
         }
     }
-    
-    func onAccept() {
-        observableState.update { state in
-            state.receivedConnectionRequest = nil
-        }
-    }
-    
-    func onReject() {
-        observableState.update { state in
-            state.receivedConnectionRequest = nil
-        }
-    }
 }
 
-extension LSCoHostManager {
-    func update(connectedUser: [ConnectionUser]) {
-        observableState.update { state in
-            state.connectedUsers = connectedUser
-        }
-    }
-    
-    func update(currentRoomId: String) {
-        observableState.update { state in
-            state.currentRoomId = currentRoomId
-        }
-    }
-}
-
+// MARK: - Observer
 extension LSCoHostManager {
     func onConnectionUserListChanged(list: [TUIConnectionUser]) {
         observableState.update { state in
             let users = list.map { user in
-                var connectionUser = ConnectionUser(user)
-                connectionUser.connectionStatus = .connected
-                return connectionUser
+                user.connectionStatus = .connected
+                return user
             }
             state.updateConnectedUserList(users)
         }
@@ -120,15 +115,7 @@ extension LSCoHostManager {
     
     func onConnectionRequestReceived(inviter: TUIConnectionUser, inviteeList: [TUIConnectionUser], extensionInfo: String) {
         observableState.update { state in
-            var inviter = ConnectionUser(inviter)
             inviter.connectionStatus = .inviting
-            state.receivedConnectionRequest = inviter
-        }
-    }
-    
-    func onConnectionRequestCancelled(inviter: TUIConnectionUser) {
-        observableState.update { state in
-            state.receivedConnectionRequest = nil
         }
     }
     
@@ -143,8 +130,6 @@ extension LSCoHostManager {
         observableState.update { state in
             if inviter.roomId == state.currentRoomId {
                 state.removeSentConnectionRequest(invitee.roomId)
-            } else {
-                state.receivedConnectionRequest = nil
             }
         }
     }
@@ -154,12 +139,19 @@ extension LSCoHostManager {
         observableState.update { state in
             state.removeSentConnectionRequest(roomId)
         }
+        toastSubject.send(.requestRejectedText)
+    }
+}
+
+// MARK: - Private functions
+extension LSCoHostManager {
+    private func update(connectedUser: [TUIConnectionUser]) {
+        observableState.update { state in
+            state.connectedUsers = connectedUser
+        }
     }
 }
 
 fileprivate extension String {
-    static let operationSuccessful = localized("live.error.success")
-    
-    static let errorConnectionDisableText = localized("live.error.connectionDisable.connecting")
-    static let errorConnectionMaxLimitText = localized("live.error.connectionDisable.maxLimit")
+    static let requestRejectedText = localized("Connection application has been rejected")
 }

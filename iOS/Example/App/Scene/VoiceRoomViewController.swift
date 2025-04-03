@@ -97,5 +97,5 @@ extension VoiceRoomViewController {
 
 
 fileprivate extension String {
-    static let voiceRoomTitle = TUILiveKitAppLocalize("TUILiveKitApp.Main.audio")
+    static let voiceRoomTitle = TUILiveKitAppLocalize("Voice Room")
 }

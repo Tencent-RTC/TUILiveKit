@@ -15,10 +15,6 @@ import Combine
 #endif
 
 class AudioEffectService: AudioEffectManagerInterface {
-    func setMusicVolume(_ volume: Int) {
-        audioEffectManager.setAllMusicVolume(volume)
-    }
-    
     func setMicrophoneVolume(_ volume: Int) {
         audioEffectManager.setVoiceVolume(volume)
     }
@@ -56,7 +52,6 @@ extension AudioEffectService {
         service.setVoiceEarMonitorEnable(false)
         service.setVoiceEarMonitorVolume(100)
         
-        service.setMusicVolume(60)
         service.setMicrophoneVolume(100)
         
         service.setChangerType(.none)

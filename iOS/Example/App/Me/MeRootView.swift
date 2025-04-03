@@ -141,6 +141,6 @@ extension MeRootView {
 // MARK: Localized String
 
 private extension String {
-    static let likesText = TUILiveKitAppLocalize("TUILiveKitApp.Main.Likes")
-    static let fansText = TUILiveKitAppLocalize("TUILiveKitApp.Main.Fans")
+    static let likesText = TUILiveKitAppLocalize("Likes")
+    static let fansText = TUILiveKitAppLocalize("Fans")
 }

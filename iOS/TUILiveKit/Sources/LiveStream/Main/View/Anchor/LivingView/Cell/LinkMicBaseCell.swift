@@ -7,15 +7,16 @@
 
 import UIKit
 import Combine
+import RTCRoomEngine
 
 class LinkMicBaseCell: UITableViewCell {
     var cancellableSet: Set<AnyCancellable> = []
-    var seatInfo: LSSeatInfo? {
+    var seatInfo: TUISeatInfo? {
         didSet {
             guard let seatInfo = seatInfo else {
                 return
             }
-            if let url = URL(string: seatInfo.avatarUrl) {
+            if let avatarUrl = seatInfo.avatarUrl, let url = URL(string: avatarUrl) {
                 avatarImageView.kf.setImage(with: url,placeholder: UIImage.avatarPlaceholderImage)
             } else {
                 avatarImageView.image = .avatarPlaceholderImage
@@ -23,7 +24,7 @@ class LinkMicBaseCell: UITableViewCell {
             nameLabel.text = seatInfo.userName
         }
     }
-    var seatApplication: LSSeatApplication? {
+    var seatApplication: TUIUserInfo? {
         didSet {
             guard let seatApplication = seatApplication else {
                 return

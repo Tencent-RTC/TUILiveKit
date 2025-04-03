@@ -218,8 +218,8 @@ fileprivate class StreamDashboardNetItemView: UIView {
 }
 
 fileprivate extension String {
-    static let netText = localized("live.streamDashboard.net.info")
-    static let rttText = localized("live.streamDashboard.net.RTT")
-    static let downLossText = localized("live.streamDashboard.net.downLoss")
-    static let upLossText = localized("live.streamDashboard.net.upLoss")
+    static let netText = localized("Network Information")
+    static let rttText = localized("RTT")
+    static let downLossText = localized("DownLoss")
+    static let upLossText = localized("UpLoss")
 }

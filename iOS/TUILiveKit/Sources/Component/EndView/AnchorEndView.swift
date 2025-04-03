@@ -228,34 +228,34 @@ extension AnchorEndView {
 
 private extension String {
     static var titleText: String {
-        localized("live.audience.mask.title")
+        localized("Live broadcast has ended")
     }
     
     static var contentDestText: String {
-        localized("live.anchor.live.data")
+        localized("Live data")
     }
     
     static var durationText: String {
-        localized("live.anchor.live.data.duration")
+        localized("Duration")
     }
     
     static var giftIncomeText: String {
-        localized("live.anchor.live.data.gift.income")
+        localized("Gift Income")
     }
     
     static var audienceCountText: String {
-        localized("live.anchor.live.data.audience.count")
+        localized("Total Views")
     }
     
     static var messageCountText: String {
-        localized("live.anchor.live.data.message.count")
+        localized("Messages")
     }
     
     static var giftPeopleCountText: String {
-        localized("live.anchor.live.data.gift.people.count")
+        localized("Gift givers")
     }
     
     static var likeCountText: String {
-        localized("live.anchor.live.data.like.count")
+        localized("Likes")
     }
 }

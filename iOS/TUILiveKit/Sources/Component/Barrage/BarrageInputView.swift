@@ -9,14 +9,8 @@ import TUICore
 import UIKit
 import RTCCommon
 
-protocol BarrageInputViewDelegate: AnyObject {
-    func barrageInputViewOnSendBarrage(_ barrage: TUIBarrage)
-}
-
 class BarrageInputView: UIView {
-    
-    weak var delegate: BarrageInputViewDelegate?
-    
+        
     private let roomId: String
     private var defaultView: UIView = {
         let view = UIView()
@@ -26,7 +20,7 @@ class BarrageInputView: UIView {
 
     private lazy var emojiView: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(named: "live_emoji_icon", in: Bundle.liveBundle, compatibleWith: nil)
+        view.image = .liveBundleImage("live_emoji_icon")
         view.isUserInteractionEnabled = false
         return view
     }()
@@ -68,14 +62,7 @@ class BarrageInputView: UIView {
         
         let vc = BarrageSendViewController(roomId: roomId)
         vc.modalPresentationStyle = .overFullScreen
-        vc.delegate = self
         WindowUtils.getCurrentWindowViewController()?.present(vc, animated: true)
-    }
-}
-
-extension BarrageInputView: BarrageSendViewControllerDelegate {
-    func barrageSendViewControllerOnSendBarrage(_ barrage: TUIBarrage) {
-        delegate?.barrageInputViewOnSendBarrage(barrage)
     }
 }
 
@@ -123,5 +110,5 @@ extension BarrageInputView {
 }
 
 private extension String {
-    static let chatText = localized("live.audience.barrage.placeholder")
+    static let chatText = localized("Let's talk")
 }

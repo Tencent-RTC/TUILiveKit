@@ -104,5 +104,5 @@ extension TCEffectAnimationView {
 }
 
 private extension String {
-    static let isNotMp4FileText = localized("live.gift.animation.isNotMP4File")
+    static let isNotMp4FileText = localized("animation is not MP4 resource file")
 }

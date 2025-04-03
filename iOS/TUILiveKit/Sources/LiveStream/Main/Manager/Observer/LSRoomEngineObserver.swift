@@ -25,14 +25,6 @@ extension LSRoomEngineObserver: TUIRoomObserver {
         context?.roomManager.onRoomUserCountChanged(roomId: roomId, userCount: userCount)
     }
     
-    func onUserAudioStateChanged(userId: String, hasAudio: Bool, reason: TUIChangeReason) {
-        context?.userManager.onUserAudioStateChanged(userId: userId, hasAudio: hasAudio, reason: reason)
-    }
-    
-    func onUserVideoStateChanged(userId: String, streamType: TUIVideoStreamType, hasVideo: Bool, reason: TUIChangeReason) {
-        context?.userManager.onUserVideoStateChanged(userId: userId, streamType: streamType, hasVideo: hasVideo, reason: reason)
-    }
-    
     func onUserVoiceVolumeChanged(volumeMap: [String: NSNumber]) {
         context?.userManager.onUserVoiceVolumeChanged(volumeMap: volumeMap)
     }
@@ -50,10 +42,18 @@ extension LSRoomEngineObserver: TUIRoomObserver {
     }
     
     func onKickedOutOfRoom(roomId: String, reason: TUIKickedOutOfRoomReason, message: String) {
-        context?.roomManager.onLiveEnd()
+        context?.roomManager.onKickedOutOfRoom(roomId: roomId, reason: reason, message: message)
     }
     
     func onUserInfoChanged(userInfo: TUIUserInfo, modifyFlag: TUIUserInfoModifyFlag) {
         context?.userManager.onUserInfoChanged(userInfo: userInfo, modifyFlag: modifyFlag)
+    }
+    
+    func onSeatListChanged(seatList: [TUISeatInfo], seated seatedList: [TUISeatInfo], left leftList: [TUISeatInfo]) {
+        context?.coGuestManager.onSeatListChanged(seatList: seatList, seated: seatedList, left: leftList)
+    }
+    
+    func OnSendMessageForUserDisableChanged(roomId: String, userId: String, isDisable muted: Bool) {
+        context?.userManager.OnSendMessageForUserDisableChanged(roomId: roomId, userId: userId, isDisable: muted)
     }
 }

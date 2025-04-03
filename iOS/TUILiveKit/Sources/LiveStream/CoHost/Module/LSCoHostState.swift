@@ -8,39 +8,31 @@
 import Foundation
 import RTCRoomEngine
 
-struct LSCoHostState: Encodable {
+struct LSCoHostState {
     var currentRoomId: String = ""
-    var connectedUsers: [ConnectionUser] = []
+    var connectedUsers: [TUIConnectionUser] = []
     
-    var sentConnectionRequests: [ConnectionUser] = []
-    var receivedConnectionRequest: ConnectionUser?
-    
-    var recommendedUsers: [ConnectionUser] = []
+    var recommendedUsers: [TUIConnectionUser] = []
     var recommendedListCursor: String = ""
     
-    mutating func updateConnectedUserList(_ connectedUserList: [ConnectionUser]){
+    mutating func updateConnectedUserList(_ connectedUserList: [TUIConnectionUser]){
         connectedUsers = connectedUserList
         for user in connectedUsers {
             recommendedUsers.removeAll(where: {$0.roomId == user.roomId})
         }
     }
 
-    mutating func addSentConnectionRequest(_ invitee: ConnectionUser) {
-        if !sentConnectionRequests.contains(where: {$0.roomId == invitee.roomId}) {
-            sentConnectionRequests.append(invitee)
-        }
+    mutating func addSentConnectionRequest(_ invitee: TUIConnectionUser) {
         if let index = recommendedUsers.firstIndex(where: {$0.roomId == invitee.roomId}) {
             recommendedUsers[index].connectionStatus = .inviting
         }
     }
     
     mutating func removeSentConnectionRequest(_ inviteeRoomId: String) {
-        sentConnectionRequests.removeAll(where: {$0.roomId == inviteeRoomId})
         if let index = recommendedUsers.firstIndex(where: {$0.roomId == inviteeRoomId}) {
             recommendedUsers[index].connectionStatus = .none
         }
     }
-    
 }
 
 enum TUIConnectionStatus: Int {
@@ -49,51 +41,27 @@ enum TUIConnectionStatus: Int {
     case connected
 }
 
-struct ConnectionUser: Codable {
-    var roomId: String
-
-    var userId: String
-    var avatarUrl: String
-    var userName: String
-    
-    var joinConnectionTime: UInt = 0
-    var connectionStatus: TUIConnectionStatus = .none
-    var connectionExtensionInfo: String = ""
-    
-    init() {
-        roomId = ""
-        userId = ""
-        avatarUrl = ""
-        userName = ""
-    }
-    
-    init(_ connectionUser: TUIConnectionUser, connectionCode:TUIConnectionCode = .unknown) {
-        self.roomId = connectionUser.roomId
-        self.userId = connectionUser.userId
-        self.userName = connectionUser.userName
-        self.avatarUrl = connectionUser.avatarUrl
-        if connectionCode == .connecting {
-            self.connectionStatus = .inviting
+private var connectionStatusKey: UInt = 0
+extension TUIConnectionUser {
+    var connectionStatus: TUIConnectionStatus {
+        get {
+            return objc_getAssociatedObject(self, &connectionStatusKey) as? TUIConnectionStatus ?? .none
+        }
+        set {
+            objc_setAssociatedObject(self, &connectionStatusKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
-    
-    init(_ liveInfo: TUILiveInfo) {
+}
+
+extension TUIConnectionUser {
+    convenience init(_ liveInfo: TUILiveInfo) {
+        self.init()
         self.roomId = liveInfo.roomInfo.roomId
         self.userId = liveInfo.roomInfo.ownerId
         self.userName = liveInfo.roomInfo.ownerName
         self.avatarUrl = liveInfo.roomInfo.ownerAvatarUrl
         self.joinConnectionTime = 0
     }
-}
-
-extension ConnectionUser: Equatable {}
-
-extension ConnectionUser: Hashable {
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(roomId)
-    }
-    
 }
 
 extension TUIConnectionStatus: Codable {

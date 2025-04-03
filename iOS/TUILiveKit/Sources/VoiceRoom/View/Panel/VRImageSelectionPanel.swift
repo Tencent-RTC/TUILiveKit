@@ -234,10 +234,10 @@ extension VRImageSelectionPanel: UICollectionViewDelegateFlowLayout,
 }
 
 private extension String {
-    static let coverTitleText = localized("live.anchor.cover.image.selection.title")
-    static let coverConfirmText = localized("live.anchor.cover.image.selection.confirm")
-    static let backgroundTitleText = localized("live.anchor.background.image.selection.title")
-    static let backgroundConfirmText = localized("live.anchor.background.image.selection.confirm")
+    static let coverTitleText = localized("Cover")
+    static let coverConfirmText = localized("Set as cover")
+    static let backgroundTitleText = localized("Background")
+    static let backgroundConfirmText = localized("Set as background")
 }
 
 
