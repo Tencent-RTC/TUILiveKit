@@ -48,6 +48,12 @@
             android:launchMode="standard"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
+
+        <provider
+            android:name="com.trtc.uikit.livekit.component.login.LiveKitInitializer"
+            android:authorities="${applicationId}.LiveKitInitializer"
+            android:enabled="true"
+            android:exported="false" />
     </application>
 
 </manifest>
