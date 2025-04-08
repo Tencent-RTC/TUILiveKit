@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
     <corners android:radius="8dp" />
-    <solid android:color="@color/livekit_design_standard_g1_20_transparency" />
+    <solid android:color="@color/common_design_standard_g1_20_transparency" />
 </shape>

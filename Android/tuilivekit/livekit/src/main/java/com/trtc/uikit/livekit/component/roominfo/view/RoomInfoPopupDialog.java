@@ -55,7 +55,7 @@ public class RoomInfoPopupDialog extends PopupDialog {
     }
 
     private void initView() {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.livekit_room_info_detail_view, null);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.room_info_detail_panel, null);
         bindViewId(view);
 
         initAnchorNameView();
@@ -98,7 +98,7 @@ public class RoomInfoPopupDialog extends PopupDialog {
 
     private void initAvatarView() {
         ImageLoader.load(mContext, mImageAvatar, mRoomInfoState.ownerAvatarUrl.getValue(),
-                R.drawable.livekit_ic_avatar);
+                R.drawable.room_info_default_avatar);
     }
 
     private void initFansView() {
@@ -119,11 +119,11 @@ public class RoomInfoPopupDialog extends PopupDialog {
             return;
         }
         if (mRoomInfoState.followingList.getValue().contains(mRoomInfoState.ownerId.getValue())) {
-            mButtonFollow.setText(R.string.live_unfollow_anchor);
-            mButtonFollow.setBackgroundResource(R.drawable.livekit_live_info_detail_button_unfollow);
+            mButtonFollow.setText(R.string.common_unfollow_anchor);
+            mButtonFollow.setBackgroundResource(R.drawable.room_info_detail_button_unfollow);
         } else {
-            mButtonFollow.setText(R.string.live_follow_anchor);
-            mButtonFollow.setBackgroundResource(R.drawable.livekit_live_info_button_follow);
+            mButtonFollow.setText(R.string.common_follow_anchor);
+            mButtonFollow.setBackgroundResource(R.drawable.room_info_button_follow);
         }
     }
 

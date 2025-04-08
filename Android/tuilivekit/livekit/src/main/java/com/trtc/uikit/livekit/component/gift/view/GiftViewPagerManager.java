@@ -38,7 +38,7 @@ public class GiftViewPagerManager {
                               int columns, int rows) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         @SuppressLint("InflateParams")
-        View layout = inflater.inflate(R.layout.livekit_gift_layout_gift_panel, null);
+        View layout = inflater.inflate(R.layout.gift_layout_gift_panel, null);
         RecyclerView recyclerView = (RecyclerView) layout.findViewById(R.id.chart_face_gv);
         GridLayoutManager girdLayoutManager = new GridLayoutManager(context, columns);
         recyclerView.setLayoutManager(girdLayoutManager);

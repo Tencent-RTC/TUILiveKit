@@ -12,14 +12,12 @@ import com.tencent.imsdk.v2.V2TIMSimpleMsgListener;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
-import com.trtc.uikit.livekit.common.ErrorLocalized;
 import com.trtc.uikit.livekit.component.gift.store.GiftSendData;
 import com.trtc.uikit.livekit.component.gift.store.GiftState;
 import com.trtc.uikit.livekit.component.gift.store.GiftStore;
 import com.trtc.uikit.livekit.component.gift.store.model.Gift;
 import com.trtc.uikit.livekit.component.gift.store.model.GiftJson;
 import com.trtc.uikit.livekit.component.gift.store.model.GiftUser;
-import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -124,7 +122,7 @@ public class GiftIMService {
                 V2TIMMessage.V2TIM_PRIORITY_NORMAL, new V2TIMValueCallback<V2TIMMessage>() {
                     @Override
                     public void onError(int error, String message) {
-                        LiveStreamLog.error(TAG + " sendGroupCustomMessage failed:errorCode:" + "message:" + message);
+                        Log.e(TAG, "sendGroupCustomMessage failed:errorCode:" + error + ",message:" + message);
                         ToastUtil.toastShortMessage(error + "," + message);
                     }
 

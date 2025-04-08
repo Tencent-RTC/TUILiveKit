@@ -29,8 +29,8 @@
             android:layout_height="20dp"
             android:layout_below="@+id/iv_beauty"
             android:gravity="center_horizontal"
-            android:text="@string/live_video_settings_item_beauty"
-            android:textColor="@color/livekit_not_standard_white_e7"
+            android:text="@string/common_video_settings_item_beauty"
+            android:textColor="@color/common_not_standard_white_e7"
             android:textSize="12sp" />
     </RelativeLayout>
 
@@ -54,8 +54,8 @@
             android:layout_height="20dp"
             android:layout_below="@+id/iv_audio_effect"
             android:gravity="center_horizontal"
-            android:text="@string/live_audio_effect"
-            android:textColor="@color/livekit_not_standard_white_e7"
+            android:text="@string/common_audio_effect"
+            android:textColor="@color/common_not_standard_white_e7"
             android:textSize="12sp" />
     </RelativeLayout>
 
@@ -79,8 +79,8 @@
             android:layout_height="20dp"
             android:layout_below="@+id/iv_flip"
             android:gravity="center_horizontal"
-            android:text="@string/live_video_settings_item_flip"
-            android:textColor="@color/livekit_not_standard_white_e7"
+            android:text="@string/common_video_settings_item_flip"
+            android:textColor="@color/common_not_standard_white_e7"
             android:textSize="12sp" />
     </RelativeLayout>
 
@@ -104,8 +104,8 @@
             android:layout_height="20dp"
             android:layout_below="@+id/iv_mirror"
             android:gravity="center_horizontal"
-            android:text="@string/live_settings"
-            android:textColor="@color/livekit_not_standard_white_e7"
+            android:text="@string/common_settings"
+            android:textColor="@color/common_not_standard_white_e7"
             android:textSize="12sp" />
 
     </RelativeLayout>

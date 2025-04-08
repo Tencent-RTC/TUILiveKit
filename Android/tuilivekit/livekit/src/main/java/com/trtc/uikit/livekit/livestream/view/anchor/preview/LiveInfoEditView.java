@@ -116,8 +116,8 @@ public class LiveInfoEditView extends FrameLayout {
         coverSettingsLayout.setOnClickListener(view -> {
             if (mStreamPresetImagePicker == null) {
                 StreamPresetImagePicker.Config config = new StreamPresetImagePicker.Config();
-                config.title = getContext().getString(R.string.live_titile_preset_cover);
-                config.confirmButtonText = getContext().getString(R.string.live_set_as_cover);
+                config.title = getContext().getString(R.string.common_titile_preset_cover);
+                config.confirmButtonText = getContext().getString(R.string.common_set_as_cover);
                 config.data = Arrays.asList(COVER_URL_LIST);
                 config.currentImageUrl = mRoomState.coverURL.getValue();
                 mStreamPresetImagePicker = new StreamPresetImagePicker(getContext(), config);

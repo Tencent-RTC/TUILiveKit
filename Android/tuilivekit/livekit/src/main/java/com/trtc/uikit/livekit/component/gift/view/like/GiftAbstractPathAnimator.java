@@ -87,18 +87,18 @@ public abstract class GiftAbstractPathAnimator {
             config.initY = (int) typedArray.getDimension(R.styleable.LiveKitGiftHeartLayout_initY,
                     y);
             config.xRand = (int) typedArray.getDimension(R.styleable.LiveKitGiftHeartLayout_xRand,
-                    res.getDimensionPixelOffset(R.dimen.livekit_gift_heart_anim_bezier_x_rand));
+                    res.getDimensionPixelOffset(R.dimen.gift_heart_anim_bezier_x_rand));
             config.animLength = (int) typedArray.getDimension(R.styleable.LiveKitGiftHeartLayout_animLength,
-                    res.getDimensionPixelOffset(R.dimen.livekit_gift_heart_anim_length));
+                    res.getDimensionPixelOffset(R.dimen.gift_heart_anim_length));
             config.animLengthRand = (int) typedArray.getDimension(R.styleable.LiveKitGiftHeartLayout_animLengthRand,
-                    res.getDimensionPixelOffset(R.dimen.livekit_gift_heart_anim_length_rand));
+                    res.getDimensionPixelOffset(R.dimen.gift_heart_anim_length_rand));
             config.bezierFactor = typedArray.getInteger(R.styleable.LiveKitGiftHeartLayout_bezierFactor,
-                    res.getInteger(R.integer.livekit_gift_heart_anim_bezier_factor));
+                    res.getInteger(R.integer.gift_heart_anim_bezier_factor));
             config.xPointFactor = pointX;
             config.heartWidth = heartWidth;
             config.heartHeight = heartHeight;
             config.animDuration = typedArray.getInteger(R.styleable.LiveKitGiftHeartLayout_anim_duration,
-                    res.getInteger(R.integer.livekit_gift_heart_anim_duration));
+                    res.getInteger(R.integer.gift_heart_anim_duration));
             return config;
         }
 

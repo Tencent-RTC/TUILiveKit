@@ -16,15 +16,15 @@ import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.component.roominfo.store.RoomInfoState;
-import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RoomInfoService {
-    private static final String TAG = "RoomInfoService";
-    public RoomInfoState mRoomInfoState = new RoomInfoState();
+    private static final LiveKitLogger LOGGER         = LiveKitLogger.getComponentLogger("RoomInfoService");
+    public               RoomInfoState mRoomInfoState = new RoomInfoState();
 
     public RoomInfoService() {
         V2TIMManager.getFriendshipManager().addFriendListener(new V2TIMFriendshipListener() {
@@ -56,7 +56,8 @@ public class RoomInfoService {
 
                     @Override
                     public void onError(TUICommonDefine.Error error, String message) {
-                        LiveStreamLog.error(TAG + " fetchRoomInfo failed:error:" + error + ",errorCode:" + error.getValue() + "message:" + message);
+                        LOGGER.error("fetchRoomInfo failed:error:" + error + ",errorCode:" + error.getValue() +
+                                "message:" + message);
                         ErrorLocalized.onError(error);
                     }
                 });
@@ -80,7 +81,7 @@ public class RoomInfoService {
 
                     @Override
                     public void onError(int code, String desc) {
-                        LiveStreamLog.error(TAG + " getUserFollowInfo failed:errorCode:" + "message:" + desc);
+                        LOGGER.error("getUserFollowInfo failed:errorCode:" + "message:" + desc);
                         ToastUtil.toastShortMessage(code + "," + desc);
                     }
                 });
@@ -110,7 +111,7 @@ public class RoomInfoService {
 
                     @Override
                     public void onError(int code, String desc) {
-                        LiveStreamLog.error(TAG + " checkFollowType failed:errorCode:" + "message:" + desc);
+                        LOGGER.error("checkFollowType failed:errorCode:" + "message:" + desc);
                         ToastUtil.toastShortMessage(code + "," + desc);
                     }
 
@@ -129,7 +130,7 @@ public class RoomInfoService {
 
                     @Override
                     public void onError(int code, String desc) {
-                        LiveStreamLog.error(TAG + " followUser failed:errorCode:" + "message:" + desc);
+                        LOGGER.error("followUser failed:errorCode:" + "message:" + desc);
                         ToastUtil.toastShortMessage(code + "," + desc);
                     }
                 });
@@ -147,7 +148,7 @@ public class RoomInfoService {
 
                     @Override
                     public void onError(int code, String desc) {
-                        LiveStreamLog.error(TAG + " unfollowUser failed:errorCode:" + "message:" + desc);
+                        LOGGER.error("unfollowUser failed:errorCode:" + "message:" + desc);
                         ToastUtil.toastShortMessage(code + "," + desc);
                     }
                 });

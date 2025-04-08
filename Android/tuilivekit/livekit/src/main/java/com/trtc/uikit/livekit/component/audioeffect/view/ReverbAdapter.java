@@ -37,22 +37,22 @@ public class ReverbAdapter extends RecyclerView.Adapter<ReverbAdapter.ViewHolder
 
     private void initData() {
         mData = new ArrayList<>();
-        mData.add(new ReverbItem(mContext.getString(R.string.live_reverb_none),
-                R.drawable.livekit_select_none, TXVoiceReverbType.TXLiveVoiceReverbType_0));
-        mData.add(new ReverbItem(mContext.getString(R.string.live_reverb_karaoke),
-                R.drawable.livekit_reverb_ktv, TXVoiceReverbType.TXLiveVoiceReverbType_1));
-        mData.add(new ReverbItem(mContext.getString(R.string.live_reverb_metallic_sound),
-                R.drawable.livekit_reverb_metallic_sound, TXVoiceReverbType.TXLiveVoiceReverbType_6));
-        mData.add(new ReverbItem(mContext.getString(R.string.live_reverb_low),
-                R.drawable.livekit_reverb_low, TXVoiceReverbType.TXLiveVoiceReverbType_4));
-        mData.add(new ReverbItem(mContext.getString(R.string.live_reverb_loud_and_loud),
-                R.drawable.livekit_reverb_loud_and_loud, TXVoiceReverbType.TXLiveVoiceReverbType_5));
+        mData.add(new ReverbItem(mContext.getString(R.string.common_reverb_none),
+                R.drawable.audio_effect_select_none, TXVoiceReverbType.TXLiveVoiceReverbType_0));
+        mData.add(new ReverbItem(mContext.getString(R.string.common_reverb_karaoke),
+                R.drawable.audio_effect_reverb_ktv, TXVoiceReverbType.TXLiveVoiceReverbType_1));
+        mData.add(new ReverbItem(mContext.getString(R.string.common_reverb_metallic_sound),
+                R.drawable.audio_effect_reverb_metallic_sound, TXVoiceReverbType.TXLiveVoiceReverbType_6));
+        mData.add(new ReverbItem(mContext.getString(R.string.common_reverb_low),
+                R.drawable.audio_effect_reverb_low, TXVoiceReverbType.TXLiveVoiceReverbType_4));
+        mData.add(new ReverbItem(mContext.getString(R.string.common_reverb_loud_and_loud),
+                R.drawable.audio_effect_reverb_loud_and_loud, TXVoiceReverbType.TXLiveVoiceReverbType_5));
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.livekit_anchor_settings_panel_item,
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.audio_effect_layout_reverb_item,
                 parent, false);
         return new ViewHolder(itemView);
     }
@@ -63,10 +63,10 @@ public class ReverbAdapter extends RecyclerView.Adapter<ReverbAdapter.ViewHolder
         holder.textTitle.setText(reverbItem.title);
         holder.imageIcon.setImageResource(reverbItem.icon);
         if (reverbItem.type == mAudioEffectState.reverbType.getValue()) {
-            holder.imageIcon.setBackgroundResource(R.drawable.livekit_settings_item_select_background);
+            holder.imageIcon.setBackgroundResource(R.drawable.audio_effect_settings_item_select_background);
             mSelectedPosition = mData.indexOf(reverbItem);
         } else {
-            holder.imageIcon.setBackgroundResource(R.drawable.livekit_settings_item_not_select_background);
+            holder.imageIcon.setBackgroundResource(R.drawable.audio_effect_settings_item_not_select_background);
         }
         holder.layoutRoot.setOnClickListener(view -> {
             int index = holder.getBindingAdapterPosition();

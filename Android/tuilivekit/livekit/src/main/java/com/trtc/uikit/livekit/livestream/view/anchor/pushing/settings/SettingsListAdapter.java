@@ -47,15 +47,15 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
     }
 
     private void initData() {
-        mData.add(new SettingsItem(mContext.getString(R.string.live_video_settings_item_beauty)
+        mData.add(new SettingsItem(mContext.getString(R.string.common_video_settings_item_beauty)
                 , R.drawable.livekit_settings_item_beauty, ITEM_TYPE_BEAUTY));
-        mData.add(new SettingsItem(mContext.getString(R.string.live_audio_effect)
+        mData.add(new SettingsItem(mContext.getString(R.string.common_audio_effect)
                 , R.drawable.livekit_settings_audio_effect, ITEM_TYPE_AUDIO_EFFECT));
-        mData.add(new SettingsItem(mContext.getString(R.string.live_video_settings_item_flip)
+        mData.add(new SettingsItem(mContext.getString(R.string.common_video_settings_item_flip)
                 , R.drawable.livekit_settings_item_flip, ITEM_TYPE_FLIP));
-        mData.add(new SettingsItem(mContext.getString(R.string.live_video_config)
+        mData.add(new SettingsItem(mContext.getString(R.string.common_video_config)
                 , R.drawable.livekit_settings_item_video_params, ITEM_TYPE_VIDEO_PARAMS));
-        mData.add(new SettingsItem(mContext.getString(R.string.live_dashboard_title)
+        mData.add(new SettingsItem(mContext.getString(R.string.common_dashboard_title)
                 , R.drawable.livekit_settings_dashboard, ITEM_TYPE_DASHBOARD));
     }
 

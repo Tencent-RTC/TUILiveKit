@@ -55,8 +55,8 @@ public class GiftHeartLayout extends RelativeLayout {
     }
 
     private void findViewById(Context context) {
-        LayoutInflater.from(context).inflate(R.layout.livekit_gift_heart_layout, this);
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.livekit_gift_ic_like_png);
+        LayoutInflater.from(context).inflate(R.layout.gift_layout_heart_layout, this);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.gift_ic_like_png);
         mBitmapHeight = bitmap.getWidth();
         mBitmapWidth = bitmap.getHeight();
         mTextHeight = sp2px(getContext(), 20) + mBitmapHeight / 2;
@@ -106,9 +106,9 @@ public class GiftHeartLayout extends RelativeLayout {
     }
 
     private static final int[]      mDrawableIds = new int[]{
-            R.drawable.livekit_gift_heart0, R.drawable.livekit_gift_heart1, R.drawable.livekit_gift_heart2,
-            R.drawable.livekit_gift_heart3, R.drawable.livekit_gift_heart4, R.drawable.livekit_gift_heart5,
-            R.drawable.livekit_gift_heart6, R.drawable.livekit_gift_heart7, R.drawable.livekit_gift_heart8,};
+            R.drawable.gift_heart0, R.drawable.gift_heart1, R.drawable.gift_heart2,
+            R.drawable.gift_heart3, R.drawable.gift_heart4, R.drawable.gift_heart5,
+            R.drawable.gift_heart6, R.drawable.gift_heart7, R.drawable.gift_heart8,};
     private final SecureRandom      mRandom = new SecureRandom();
     private        BitmapDrawable[] mHeartsDrawable;
 

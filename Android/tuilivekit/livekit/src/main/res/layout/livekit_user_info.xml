@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="36dp"
             android:gravity="center"
-            android:textColor="@color/livekit_design_standard_g7"
+            android:textColor="@color/common_design_standard_g7"
             android:textSize="16sp" />
 
         <LinearLayout
@@ -41,8 +41,8 @@
                 android:id="@+id/tv_user_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/live_user_id"
-                android:textColor="@color/livekit_not_standard_grey"
+                android:text="@string/common_user_id"
+                android:textColor="@color/common_not_standard_grey"
                 android:textSize="12sp" />
         </LinearLayout>
 
@@ -57,14 +57,14 @@
                 android:id="@+id/tv_fans"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/livekit_not_standard_grey"
+                android:textColor="@color/common_not_standard_grey"
                 android:textSize="12sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/live_fan_count"
-                android:textColor="@color/livekit_not_standard_grey"
+                android:text="@string/common_fan_count"
+                android:textColor="@color/common_not_standard_grey"
                 android:textSize="12sp" />
 
         </LinearLayout>
@@ -76,7 +76,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="18dp"
             android:background="@drawable/livekit_user_info_button_follow"
-            android:text="@string/live_follow_anchor"
+            android:text="@string/common_follow_anchor"
             android:textAllCaps="false"
             android:textColor="@color/common_color_white"
             android:textSize="16sp" />
@@ -98,7 +98,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/ClickRoundedImageView"
-        app:strokeColor="@color/livekit_not_standard_blue_d1"
+        app:strokeColor="@color/common_not_standard_blue_d1"
         app:strokeWidth="0.86dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

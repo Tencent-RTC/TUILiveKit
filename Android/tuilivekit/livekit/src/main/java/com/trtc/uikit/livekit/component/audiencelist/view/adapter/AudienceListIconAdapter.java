@@ -36,16 +36,17 @@ public class AudienceListIconAdapter extends RecyclerView.Adapter<AudienceListIc
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.livekit_layout_anchor_live_audience_list_icon_item, parent, false);
+                R.layout.audience_list_layout_icon_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         if (TextUtils.isEmpty(mData.get(position).avatarUrl)) {
-            holder.imageHead.setImageResource(R.drawable.livekit_ic_avatar);
+            holder.imageHead.setImageResource(R.drawable.audience_list_default_avatar);
         } else {
-            ImageLoader.load(mContext, holder.imageHead, mData.get(position).avatarUrl, R.drawable.livekit_ic_avatar);
+            ImageLoader.load(mContext, holder.imageHead, mData.get(position).avatarUrl,
+                    R.drawable.audience_list_default_avatar);
         }
     }
 

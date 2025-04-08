@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="60dp"
-    android:background="@color/livekit_design_standard_g2"
+    android:background="@color/common_design_standard_g2"
     android:gravity="start">
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
@@ -24,7 +24,7 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="12dp"
         android:layout_toEndOf="@id/iv_head"
-        android:textColor="@color/livekit_design_standard_g7"
+        android:textColor="@color/common_design_standard_g7"
         android:textSize="16sp" />
 
     <TextView
@@ -37,7 +37,7 @@
         android:background="@drawable/livekit_audience_list_panel_level_background"
         android:gravity="center"
         android:text="lv20"
-        android:textColor="@color/livekit_design_standard_flowkit_white"
+        android:textColor="@color/common_design_standard_flowkit_white"
         android:textSize="12sp"
         android:visibility="gone" />
 
@@ -50,8 +50,8 @@
         android:layout_marginEnd="24dp"
         android:background="@drawable/livekit_selector_item_invite_user"
         android:gravity="center"
-        android:text="@string/live_voiceroom_invite"
-        android:textColor="@color/livekit_design_standard_flowkit_white"
+        android:text="@string/common_voiceroom_invite"
+        android:textColor="@color/common_design_standard_flowkit_white"
         android:textSize="12sp"
         tools:ignore="RelativeOverlap" />
 </RelativeLayout>

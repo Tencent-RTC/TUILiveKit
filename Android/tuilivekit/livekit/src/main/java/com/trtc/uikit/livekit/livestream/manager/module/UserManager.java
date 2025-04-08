@@ -299,10 +299,10 @@ public class UserManager extends BaseManager {
         }
         if (isDisable) {
             ToastUtil.toastShortMessage(ContextProvider.getApplicationContext().getResources()
-                    .getString(R.string.live_send_message_disabled));
+                    .getString(R.string.common_send_message_disabled));
         } else {
             ToastUtil.toastShortMessage(ContextProvider.getApplicationContext().getResources()
-                    .getString(R.string.live_send_message_enable));
+                    .getString(R.string.common_send_message_enable));
         }
     }
 }

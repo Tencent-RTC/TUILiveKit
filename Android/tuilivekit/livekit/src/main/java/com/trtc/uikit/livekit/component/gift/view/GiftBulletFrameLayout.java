@@ -56,7 +56,7 @@ public class GiftBulletFrameLayout extends FrameLayout {
     }
 
     private void initView() {
-        View rootView = mLayoutInflater.inflate(R.layout.livekit_gift_bullet, this);
+        View rootView = mLayoutInflater.inflate(R.layout.gift_layout_bullet, this);
         mGiftGroup = rootView.findViewById(R.id.gift_group);
         mImageGiftIcon = rootView.findViewById(R.id.iv_gift_icon);
         mImageSendUserIcon = rootView.findViewById(R.id.iv_send_user_icon);
@@ -88,10 +88,10 @@ public class GiftBulletFrameLayout extends FrameLayout {
         }
         this.setVisibility(View.VISIBLE);
         if (!TextUtils.isEmpty(mGiftImageAnimationInfo.giftImageUrl)) {
-            ImageLoader.loadImage(mContext, mImageGiftIcon, mGiftImageAnimationInfo.giftImageUrl, R.drawable.livekit_gift_ic_avatar);
+            ImageLoader.loadImage(mContext, mImageGiftIcon, mGiftImageAnimationInfo.giftImageUrl, R.drawable.gift_default_avatar);
         }
         if (!TextUtils.isEmpty(mGiftImageAnimationInfo.senderAvatarUrl)) {
-            ImageLoader.loadImage(mContext, mImageSendUserIcon, mGiftImageAnimationInfo.senderAvatarUrl, R.drawable.livekit_gift_ic_avatar);
+            ImageLoader.loadImage(mContext, mImageSendUserIcon, mGiftImageAnimationInfo.senderAvatarUrl, R.drawable.gift_default_avatar);
         }
     }
 

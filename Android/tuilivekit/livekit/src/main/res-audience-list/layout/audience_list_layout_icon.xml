@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="24dp"
+    android:gravity="end|center_vertical">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_audience_list"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_toStartOf="@id/ll_audience_count"
+        android:layout_gravity="center_vertical|end"
+        android:padding="0dp" />
+
+    <LinearLayout
+        android:id="@+id/ll_audience_count"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="1dp"
+        android:background="@drawable/audience_list_user_count_background"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_audience_count"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:textColor="@color/common_design_standard_g7"
+            android:textFontWeight="500"
+            android:textSize="10sp"
+            tools:ignore="SmallSp,UnusedAttribute,UseCompatTextViewDrawableXml" />
+
+        <ImageView
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:src="@drawable/audience_list_count_arrow"
+            tools:ignore="ContentDescription" />
+    </LinearLayout>
+
+</RelativeLayout>

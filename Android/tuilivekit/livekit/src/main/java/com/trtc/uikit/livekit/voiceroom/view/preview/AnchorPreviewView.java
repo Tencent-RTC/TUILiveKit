@@ -3,6 +3,7 @@ package com.trtc.uikit.livekit.voiceroom.view.preview;
 import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 
 import androidx.annotation.NonNull;
@@ -10,12 +11,18 @@ import androidx.annotation.Nullable;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
+import com.tencent.qcloud.tuicore.TUIConstants;
+import com.tencent.qcloud.tuicore.TUICore;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
 import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
 import com.trtc.uikit.livekit.voiceroom.state.RoomState;
 import com.trtc.uikit.livekit.voiceroom.view.BasicView;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class AnchorPreviewView extends BasicView {
     private static final String  FILE    = "AnchorPreviewView";
@@ -97,6 +104,7 @@ public class AnchorPreviewView extends BasicView {
                 mVoiceRoomManager.getUserManager().updateOwnerUserInfo();
                 mVoiceRoomManager.getSeatManager().getSeatList();
                 mVoiceRoomManager.getRoomManager().updateLiveStatus(RoomState.LiveStatus.PUSHING);
+                showAlertUserLiveTips();
             }
 
             @Override
@@ -105,5 +113,16 @@ public class AnchorPreviewView extends BasicView {
                 ErrorLocalized.onError(error);
             }
         });
+    }
+
+    private void showAlertUserLiveTips() {
+        try {
+            Map<String, Object> map = new HashMap<>();
+            map.put(TUIConstants.Privacy.PARAM_DIALOG_CONTEXT, Objects.requireNonNull(getContext()));
+            TUICore.notifyEvent(TUIConstants.Privacy.EVENT_ROOM_STATE_CHANGED,
+                    TUIConstants.Privacy.EVENT_SUB_KEY_ROOM_STATE_START, map);
+        } catch (Exception e) {
+            Log.d(FILE, "showAlertUserLiveTips exception:" + e.getMessage());
+        }
     }
 }

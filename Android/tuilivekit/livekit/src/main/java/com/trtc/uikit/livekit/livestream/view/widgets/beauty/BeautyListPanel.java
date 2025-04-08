@@ -75,7 +75,7 @@ public class BeautyListPanel extends BasicView {
     public void enableSmooth() {
         final int currentProgress = mBeautyState.smoothLevel.getValue();
         setSeekBarVisibility(VISIBLE);
-        mTextBeautyType.setText(R.string.live_beauty_item_smooth);
+        mTextBeautyType.setText(R.string.common_beauty_item_smooth);
         mBeautySeekBar.setMax(9);
         mBeautySeekBar.setProgress(currentProgress);
         mTextBeautyLevel.setText(String.valueOf(mBeautySeekBar.getProgress()));
@@ -84,7 +84,7 @@ public class BeautyListPanel extends BasicView {
     public void enableWhiteness() {
         final int currentProgress = mBeautyState.whitenessLevel.getValue();
         setSeekBarVisibility(VISIBLE);
-        mTextBeautyType.setText(R.string.live_beauty_item_whiteness);
+        mTextBeautyType.setText(R.string.common_beauty_item_whiteness);
         mBeautySeekBar.setMax(9);
         mBeautySeekBar.setProgress(currentProgress);
         mTextBeautyLevel.setText(String.valueOf(mBeautySeekBar.getProgress()));
@@ -93,7 +93,7 @@ public class BeautyListPanel extends BasicView {
     public void enableRuddy() {
         final int currentProgress = mBeautyState.ruddyLevel.getValue();
         setSeekBarVisibility(VISIBLE);
-        mTextBeautyType.setText(R.string.live_beauty_item_ruddy);
+        mTextBeautyType.setText(R.string.common_beauty_item_ruddy);
         mBeautySeekBar.setMax(9);
         mBeautySeekBar.setProgress(currentProgress);
         mTextBeautyLevel.setText(String.valueOf(mBeautySeekBar.getProgress()));

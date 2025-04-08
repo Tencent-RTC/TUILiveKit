@@ -26,7 +26,7 @@ public class LikeButton extends FrameLayout {
 
     public LikeButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        LayoutInflater.from(context).inflate(R.layout.livekit_gift_like_button, this);
+        LayoutInflater.from(context).inflate(R.layout.gift_layout_like_button, this);
         initView();
     }
 

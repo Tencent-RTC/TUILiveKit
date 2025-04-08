@@ -124,7 +124,7 @@ public class UserManagerDialog extends PopupDialog {
         if (TextUtils.isEmpty(mUserInfo.userId)) {
             return;
         }
-        mUserIdText.setText(mContext.getString(R.string.live_user_id, mUserInfo.userId));
+        mUserIdText.setText(mContext.getString(R.string.common_user_id, mUserInfo.userId));
         String name = TextUtils.isEmpty(mUserInfo.name.getValue()) ? mUserInfo.userId : mUserInfo.name.getValue();
         mUserNameText.setText(name);
         if (TextUtils.isEmpty(mUserInfo.avatarUrl.getValue())) {
@@ -137,10 +137,10 @@ public class UserManagerDialog extends PopupDialog {
     private void updateDisableMessageButton(boolean isMessageDisabled) {
         if (isMessageDisabled) {
             mIvDisableMessage.setImageResource(R.drawable.livekit_ic_disable_message);
-            mTvDisableMessage.setText(R.string.live_enable_message);
+            mTvDisableMessage.setText(R.string.common_enable_message);
         } else {
             mIvDisableMessage.setImageResource(R.drawable.livekit_ic_enable_message);
-            mTvDisableMessage.setText(R.string.live_disable_message);
+            mTvDisableMessage.setText(R.string.common_disable_message);
         }
     }
 
@@ -173,8 +173,8 @@ public class UserManagerDialog extends PopupDialog {
             mConfirmDialog = new ConfirmDialog(mContext);
         }
         String name = TextUtils.isEmpty(mUserInfo.name.getValue()) ? mUserInfo.userId : mUserInfo.name.getValue();
-        mConfirmDialog.setContent(mContext.getString(R.string.live_kick_user_confirm_message, name));
-        mConfirmDialog.setPositiveText(mContext.getString(R.string.live_kick_out_of_room));
+        mConfirmDialog.setContent(mContext.getString(R.string.common_kick_user_confirm_message, name));
+        mConfirmDialog.setPositiveText(mContext.getString(R.string.common_kick_out_of_room));
         mConfirmDialog.setPositiveListener(v -> {
             mLiveStreamManager.getUserManager().kickRemoteUserOutOfRoom(mUserInfo.userId);
             dismiss();

@@ -25,7 +25,7 @@
         android:layout_toEndOf="@id/iv_head"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/livekit_design_standard_g6"
+        android:textColor="@color/common_design_standard_g6"
         android:textSize="16sp" />
 
     <TextView
@@ -38,7 +38,7 @@
         android:background="@drawable/livekit_audience_list_panel_level_background"
         android:gravity="center"
         android:text="lv20"
-        android:textColor="@color/livekit_design_standard_flowkit_white"
+        android:textColor="@color/common_design_standard_flowkit_white"
         android:textSize="10sp" />
 
     <TextView
@@ -50,7 +50,7 @@
         android:layout_marginEnd="24dp"
         android:background="@drawable/livekit_link_mic_hang_up_background"
         android:gravity="center"
-        android:text="@string/live_hang_up"
-        android:textColor="@color/livekit_not_standard_red"
+        android:text="@string/common_hang_up"
+        android:textColor="@color/common_not_standard_red"
         android:textSize="12sp" />
 </RelativeLayout>

@@ -21,8 +21,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="@string/live_settings"
-                android:textColor="@color/livekit_design_standard_g7"
+                android:text="@string/common_settings"
+                android:textColor="@color/common_design_standard_g7"
                 android:textSize="16sp" />
         </RelativeLayout>
 

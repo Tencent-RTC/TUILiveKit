@@ -13,7 +13,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="6dp"
-        android:background="@color/livekit_design_standard_g8" />
+        android:background="@color/common_design_standard_g8" />
 
     <TextView
         android:id="@+id/text_cancel"
@@ -22,6 +22,6 @@
         android:paddingTop="20dp"
         android:gravity="center_horizontal"
         android:text="@string/cancel"
-        android:textColor="@color/livekit_design_standard_g2"
+        android:textColor="@color/common_design_standard_g2"
         android:textSize="18sp" />
 </LinearLayout>

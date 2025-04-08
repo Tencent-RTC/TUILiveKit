@@ -132,7 +132,7 @@ public class AnchorCoGuestManageDialog extends PopupDialog {
         } else {
             mTextMicDownTitle.setVisibility(GONE);
         }
-        mTextMicDownTitle.setText(getContext().getString(R.string.live_seat_application_title,
+        mTextMicDownTitle.setText(getContext().getString(R.string.common_seat_application_title,
                 mLiveManager.getCoreState().coGuestState.applicantList.getValue().size()));
     }
 
@@ -141,7 +141,7 @@ public class AnchorCoGuestManageDialog extends PopupDialog {
         if (mLiveManager.getCoGuestState().connectedUserList.getValue().size() > 1) {
             int connectedUserSize = Math.max(mLiveManager.getCoreState().roomState.maxCoGuestCount.getValue() - 1, 0);
             mTextMicUpTitle.setVisibility(VISIBLE);
-            mTextMicUpTitle.setText(getContext().getString(R.string.live_seat_list_title,
+            mTextMicUpTitle.setText(getContext().getString(R.string.common_seat_list_title,
                     mLiveManager.getCoGuestState().connectedUserList.getValue().size() - 1,
                     connectedUserSize));
         } else {

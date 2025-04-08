@@ -207,7 +207,7 @@ public class RoomManager extends BaseManager {
         Logger.info(FILE, "onKickedOutOfRoom:[roomId:" + roomId + ",reason:" + reason + ",message:"
                 + message + "]");
         if (reason != null && BY_LOGGED_ON_OTHER_DEVICE != reason) {
-            ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(R.string.live_kicked_out_of_room_by_owner));
+            ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(R.string.common_kicked_out_of_room_by_owner));
             Map<String, Object> params = new HashMap<>();
             params.put("roomId", roomId);
             TUICore.notifyEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_FINISH_ACTIVITY, params);
@@ -215,7 +215,7 @@ public class RoomManager extends BaseManager {
     }
 
     public void onRoomDismissed(String roomId) {
-        ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(R.string.live_room_destroy));
+        ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(R.string.common_room_destroy));
         updateLiveStatus(RoomState.LiveStatus.DASHBOARD);
     }
 }

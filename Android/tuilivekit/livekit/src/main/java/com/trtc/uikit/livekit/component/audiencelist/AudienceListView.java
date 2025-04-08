@@ -67,7 +67,7 @@ public class AudienceListView extends FrameLayout {
     public AudienceListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
-        LayoutInflater.from(mContext).inflate(R.layout.livekit_layout_anchor_live_audience_list_icon, this,
+        LayoutInflater.from(mContext).inflate(R.layout.audience_list_layout_icon, this,
                 true);
     }
 

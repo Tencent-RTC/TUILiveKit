@@ -137,7 +137,7 @@ public class AnchorManagerDialog extends PopupDialog {
             ImageLoader.load(mContext, mImageHeadView, avatarUrl, R.drawable.livekit_ic_avatar);
         }
         mUserNameText.setText(mUserInfo.userName);
-        mUserIdText.setText(mContext.getString(R.string.live_user_id, mUserInfo.userId));
+        mUserIdText.setText(mContext.getString(R.string.common_user_id, mUserInfo.userId));
         updateMediaDeviceButton();
     }
 
@@ -247,8 +247,8 @@ public class AnchorManagerDialog extends PopupDialog {
 
 
         if (isAdmin()) {
-            mConfirmDialog.setContent(mContext.getString(R.string.live_disconnect_tips));
-            mConfirmDialog.setPositiveText(mContext.getString(R.string.live_disconnection));
+            mConfirmDialog.setContent(mContext.getString(R.string.common_disconnect_tips));
+            mConfirmDialog.setPositiveText(mContext.getString(R.string.common_disconnection));
             mConfirmDialog.setPositiveListener(v -> {
                 mLiveCoreView.disconnectUser(mUserInfo.userId, new TUIRoomDefine.ActionCallback() {
                     @Override
@@ -269,8 +269,8 @@ public class AnchorManagerDialog extends PopupDialog {
         }
 
         if (isSelfUser()) {
-            mConfirmDialog.setContent(mContext.getString(R.string.live_terminate_room_connection_message));
-            mConfirmDialog.setPositiveText(mContext.getString(R.string.live_disconnection));
+            mConfirmDialog.setContent(mContext.getString(R.string.common_terminate_room_connection_message));
+            mConfirmDialog.setPositiveText(mContext.getString(R.string.common_disconnection));
             mConfirmDialog.setPositiveListener(v -> {
                 mLiveCoreView.terminateIntraRoomConnection();
                 mLiveStreamManager.getCoGuestManager().updateCoGuestStates(NONE);
@@ -372,7 +372,7 @@ public class AnchorManagerDialog extends PopupDialog {
                 mIvAudio.setAlpha(BUTTON_ENABLE_ALPHA);
                 mIvAudio.setImageResource(isAudioLocked ? R.drawable.livekit_ic_disable_audio :
                         R.drawable.livekit_ic_unmute_audio);
-                mTvAudio.setText(isAudioLocked ? R.string.live_enable_audio : R.string.live_disable_audio);
+                mTvAudio.setText(isAudioLocked ? R.string.common_enable_audio : R.string.common_disable_audio);
             }
             return;
         }
@@ -381,7 +381,7 @@ public class AnchorManagerDialog extends PopupDialog {
             mAudioContainer.setEnabled(false);
             mIvAudio.setAlpha(BUTTON_DISABLE_ALPHA);
             mIvAudio.setImageResource(R.drawable.livekit_ic_mute_audio);
-            mTvAudio.setText(R.string.live_unmute_audio);
+            mTvAudio.setText(R.string.common_unmute_audio);
             return;
         }
 
@@ -391,10 +391,10 @@ public class AnchorManagerDialog extends PopupDialog {
                 Boolean.TRUE.equals(mLiveCoreView.getCoreState().mediaState.isMicrophoneMuted.getValue());
         if (isMicrophoneMuted) {
             mIvAudio.setImageResource(R.drawable.livekit_ic_mute_audio);
-            mTvAudio.setText(R.string.live_unmute_audio);
+            mTvAudio.setText(R.string.common_unmute_audio);
         } else {
             mIvAudio.setImageResource(R.drawable.livekit_ic_unmute_audio);
-            mTvAudio.setText(R.string.live_mute_audio);
+            mTvAudio.setText(R.string.common_mute_audio);
         }
     }
 
@@ -407,7 +407,7 @@ public class AnchorManagerDialog extends PopupDialog {
                 mIvVideo.setAlpha(BUTTON_ENABLE_ALPHA);
                 mIvVideo.setImageResource(isVideoLocked ? R.drawable.livekit_ic_disable_video :
                         R.drawable.livekit_ic_start_video);
-                mTvVideo.setText(isVideoLocked ? R.string.live_enable_video : R.string.live_disable_video);
+                mTvVideo.setText(isVideoLocked ? R.string.common_enable_video : R.string.common_disable_video);
             }
             return;
         }
@@ -417,7 +417,7 @@ public class AnchorManagerDialog extends PopupDialog {
             mVideoContainer.setEnabled(false);
             mIvVideo.setAlpha(BUTTON_DISABLE_ALPHA);
             mIvVideo.setImageResource(R.drawable.livekit_ic_stop_video);
-            mTvVideo.setText(R.string.live_start_video);
+            mTvVideo.setText(R.string.common_start_video);
             mFlipCameraContainer.setVisibility(GONE);
             return;
         }
@@ -426,11 +426,11 @@ public class AnchorManagerDialog extends PopupDialog {
         mIvVideo.setAlpha(BUTTON_ENABLE_ALPHA);
         if (isCameraOpened) {
             mIvVideo.setImageResource(R.drawable.livekit_ic_start_video);
-            mTvVideo.setText(R.string.live_stop_video);
+            mTvVideo.setText(R.string.common_stop_video);
             mFlipCameraContainer.setVisibility(VISIBLE);
         } else {
             mIvVideo.setImageResource(R.drawable.livekit_ic_stop_video);
-            mTvVideo.setText(R.string.live_start_video);
+            mTvVideo.setText(R.string.common_start_video);
             mFlipCameraContainer.setVisibility(GONE);
         }
     }

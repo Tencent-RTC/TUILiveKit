@@ -103,7 +103,7 @@ public class TypeSelectDialog extends PopupDialog {
     }
 
     private void applyLinkMic(boolean openCamera) {
-        ToastUtil.toastShortMessageCenter(getContext().getString(R.string.live_toast_apply_link_mic));
+        ToastUtil.toastShortMessageCenter(getContext().getString(R.string.common_toast_apply_link_mic));
         mLiveStream.requestIntraRoomConnection("", 60, openCamera, new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {

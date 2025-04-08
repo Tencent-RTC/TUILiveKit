@@ -13,8 +13,8 @@
         android:layout_height="wrap_content"
         android:layout_marginVertical="10dp"
         android:gravity="center"
-        android:text="@string/live_video_params"
-        android:textColor="@color/livekit_design_standard_g7"
+        android:text="@string/common_video_params"
+        android:textColor="@color/common_design_standard_g7"
         android:textSize="16sp"
         android:textStyle="bold" />
 
@@ -23,15 +23,15 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:text="@string/live_settings_video_config"
-        android:textColor="@color/livekit_design_standard_g7"
+        android:text="@string/common_settings_video_config"
+        android:textColor="@color/common_design_standard_g7"
         android:textSize="14sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:background="@drawable/livekit_anchor_audio_effect_background"
+        android:background="@drawable/audio_effect_background"
         android:orientation="vertical"
         android:padding="15dp">
 
@@ -45,8 +45,8 @@
                 android:id="@+id/tv_resolution"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/live_video_resolution"
-                android:textColor="@color/livekit_design_standard_g7"
+                android:text="@string/common_video_resolution"
+                android:textColor="@color/common_design_standard_g7"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -68,7 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="12dp"
-                android:textColor="@color/livekit_design_standard_g7"
+                android:textColor="@color/common_design_standard_g7"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/iv_resolution_expand"
@@ -80,7 +80,7 @@
             android:layout_height="0.5dp"
             android:layout_marginTop="13dp"
             android:layout_marginEnd="10dp"
-            android:background="@color/livekit_design_standard_g3" />
+            android:background="@color/common_design_standard_g3" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -91,8 +91,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/live_video_bitrate"
-                android:textColor="@color/livekit_design_standard_g7"
+                android:text="@string/common_video_bitrate"
+                android:textColor="@color/common_design_standard_g7"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -104,7 +104,7 @@
                 android:layout_weight="1"
                 android:gravity="end"
                 android:text="5000kpbs"
-                android:textColor="@color/livekit_design_standard_g7"
+                android:textColor="@color/common_design_standard_g7"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -113,8 +113,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:progressDrawable="@drawable/livekit_seekbar_progress"
-            android:thumb="@drawable/livekit_seekbar_thumb" />
+            android:progressDrawable="@drawable/audio_effect_seekbar_progress"
+            android:thumb="@drawable/audio_effect_seekbar_thumb" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -125,8 +125,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
-                android:text="@string/live_video_fps"
-                android:textColor="@color/livekit_design_standard_g7"
+                android:text="@string/common_video_fps"
+                android:textColor="@color/common_design_standard_g7"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -139,7 +139,7 @@
                 android:layout_weight="1"
                 android:gravity="end"
                 android:text="30"
-                android:textColor="@color/livekit_design_standard_g7"
+                android:textColor="@color/common_design_standard_g7"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -148,23 +148,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:progressDrawable="@drawable/livekit_seekbar_progress"
-            android:thumb="@drawable/livekit_seekbar_thumb" />
+            android:progressDrawable="@drawable/audio_effect_seekbar_progress"
+            android:thumb="@drawable/audio_effect_seekbar_thumb" />
     </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginVertical="15dp"
-        android:text="@string/live_more_settings"
-        android:textColor="@color/livekit_design_standard_g7"
+        android:text="@string/common_more_settings"
+        android:textColor="@color/common_design_standard_g7"
         android:textSize="14sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:background="@drawable/livekit_anchor_audio_effect_background"
+        android:background="@drawable/audio_effect_background"
         android:orientation="vertical"
         android:paddingHorizontal="15dp"
         android:paddingVertical="10dp">
@@ -173,37 +173,37 @@
             android:id="@+id/sc_mirror"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/live_video_settings_item_mirror"
-            android:textColor="@color/livekit_design_standard_g7"
+            android:text="@string/common_video_settings_item_mirror"
+            android:textColor="@color/common_design_standard_g7"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:thumbTint="@color/livekit_switch_thumb_bg"
-            app:trackTint="@color/livekit_switch_track_bg" />
+            app:thumbTint="@color/audio_effect_switch_thumb_bg"
+            app:trackTint="@color/audio_effect_switch_track_bg" />
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/sc_ultimate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:text="@string/live_video_ultimate"
-            android:textColor="@color/livekit_design_standard_g7"
+            android:text="@string/common_video_ultimate"
+            android:textColor="@color/common_design_standard_g7"
             android:textSize="16sp"
             android:textStyle="bold"
             android:visibility="gone"
-            app:thumbTint="@color/livekit_switch_thumb_bg"
-            app:trackTint="@color/livekit_switch_track_bg" />
+            app:thumbTint="@color/audio_effect_switch_thumb_bg"
+            app:trackTint="@color/audio_effect_switch_track_bg" />
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/sc_hevc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:text="@string/live_video_hevc"
-            android:textColor="@color/livekit_design_standard_g7"
+            android:text="@string/common_video_hevc"
+            android:textColor="@color/common_design_standard_g7"
             android:textSize="16sp"
             android:textStyle="bold"
             android:visibility="gone"
-            app:thumbTint="@color/livekit_switch_thumb_bg"
-            app:trackTint="@color/livekit_switch_track_bg" />
+            app:thumbTint="@color/audio_effect_switch_thumb_bg"
+            app:trackTint="@color/audio_effect_switch_track_bg" />
     </LinearLayout>
 </LinearLayout>

@@ -179,7 +179,7 @@ public final class BattleManager extends BaseManager {
     public void onBattleRequestCancelled(TUILiveBattleManager.BattleUser inviter) {
         removeBattleRequestReceived();
         Context context = ContextProvider.getApplicationContext();
-        String toast = inviter.userName + " " + context.getString(R.string.live_battle_inviter_cancel);
+        String toast = inviter.userName + " " + context.getString(R.string.common_battle_inviter_cancel);
         showToast(toast);
     }
 
@@ -190,7 +190,7 @@ public final class BattleManager extends BaseManager {
     public void onBattleRequestReject(TUILiveBattleManager.BattleUser invitee) {
         removeSentBattleRequest(invitee.userId);
         Context context = ContextProvider.getApplicationContext();
-        String toast = invitee.userName + " " + context.getString(R.string.live_battle_invitee_reject);
+        String toast = invitee.userName + " " + context.getString(R.string.common_battle_invitee_reject);
         showToast(toast);
     }
 
@@ -205,7 +205,7 @@ public final class BattleManager extends BaseManager {
             removeSentBattleRequest(invitee.userId);
         }
         Context context = ContextProvider.getApplicationContext();
-        showToast(context.getString(R.string.live_battle_invitation_timeout));
+        showToast(context.getString(R.string.common_battle_invitation_timeout));
     }
 
     @Override

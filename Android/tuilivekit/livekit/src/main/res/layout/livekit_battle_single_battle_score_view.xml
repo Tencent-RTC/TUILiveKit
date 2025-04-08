@@ -15,7 +15,7 @@
         android:includeFontPadding="false"
         android:textSize="12sp"
         android:textColor="@color/white"
-        android:background="@color/livekit_design_standard_b1" />
+        android:background="@color/common_design_standard_b1" />
 
     <View
         android:id="@+id/v_divider"

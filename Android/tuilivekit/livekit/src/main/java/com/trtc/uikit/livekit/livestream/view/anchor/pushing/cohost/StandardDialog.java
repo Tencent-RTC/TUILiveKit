@@ -30,7 +30,7 @@ public class StandardDialog extends Dialog {
     public StandardDialog(@NonNull Context context) {
         super(context);
         Objects.requireNonNull(getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        mPositiveTextColor = context.getResources().getColor(R.color.livekit_design_standard_b1);
+        mPositiveTextColor = context.getResources().getColor(R.color.common_design_standard_b1);
     }
 
     public void setContent(String content) {

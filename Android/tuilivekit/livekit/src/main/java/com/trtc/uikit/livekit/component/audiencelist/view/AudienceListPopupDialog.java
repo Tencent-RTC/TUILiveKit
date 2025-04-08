@@ -45,7 +45,7 @@ public class AudienceListPopupDialog extends PopupDialog {
     }
 
     protected void initView() {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.livekit_layout_audience_list_panel, null);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.audience_list_layout_panel, null);
 
         bindViewId(view);
         initImageBackView();

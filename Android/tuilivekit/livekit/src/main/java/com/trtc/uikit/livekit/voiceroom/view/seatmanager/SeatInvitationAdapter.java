@@ -78,11 +78,11 @@ public class SeatInvitationAdapter extends RecyclerView.Adapter<SeatInvitationAd
         }
         if (mSeatState.sentSeatInvitationMap.getValue().containsKey(userInfo.userId)) {
             holder.inviteButton.setSelected(true);
-            holder.inviteButton.setText(R.string.live_cancel);
-            holder.inviteButton.setTextColor(mContext.getResources().getColor(R.color.livekit_not_standard_red));
+            holder.inviteButton.setText(R.string.common_cancel);
+            holder.inviteButton.setTextColor(mContext.getResources().getColor(R.color.common_not_standard_red));
         } else {
             holder.inviteButton.setSelected(false);
-            holder.inviteButton.setText(R.string.live_voiceroom_invite);
+            holder.inviteButton.setText(R.string.common_voiceroom_invite);
             holder.inviteButton.setTextColor(Color.WHITE);
         }
         holder.inviteButton.setOnClickListener(v -> {

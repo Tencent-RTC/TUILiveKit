@@ -261,13 +261,13 @@ public class VideoSettingsDialog extends PopupDialog {
     private void updateResolutionView() {
         TUIRoomDefine.VideoQuality videoResolution = mVideoEncoderParams.videoResolution;
         if (videoResolution == Q_1080P) {
-            mTextVideoResolution.setText(mContext.getString(R.string.live_resolution_1080p));
+            mTextVideoResolution.setText(mContext.getString(R.string.common_resolution_1080p));
         } else if (videoResolution == Q_720P) {
-            mTextVideoResolution.setText(mContext.getString(R.string.live_resolution_720p));
+            mTextVideoResolution.setText(mContext.getString(R.string.common_resolution_720p));
         } else if (videoResolution == Q_540P) {
-            mTextVideoResolution.setText(mContext.getString(R.string.live_resolution_540p));
+            mTextVideoResolution.setText(mContext.getString(R.string.common_resolution_540p));
         } else {
-            mTextVideoResolution.setText(mContext.getString(R.string.live_resolution_360p));
+            mTextVideoResolution.setText(mContext.getString(R.string.common_resolution_360p));
         }
     }
 }

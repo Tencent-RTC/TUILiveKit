@@ -73,11 +73,11 @@ public class EndLiveStreamDialog extends PopupDialog {
     private void initTitleView() {
         String tips = "";
         if (isInCoGuest()) {
-            tips = getContext().getString(R.string.live_anchor_end_link_tips);
+            tips = getContext().getString(R.string.common_anchor_end_link_tips);
         } else if (isInCoHost()) {
-            tips = getContext().getString(R.string.live_end_connection_tips);
+            tips = getContext().getString(R.string.common_end_connection_tips);
             if (isInBattle()) {
-                tips = getContext().getString(R.string.live_end_pk_tips);
+                tips = getContext().getString(R.string.common_end_pk_tips);
             }
         }
         if (TextUtils.isEmpty(tips)) {
@@ -91,9 +91,9 @@ public class EndLiveStreamDialog extends PopupDialog {
 
     private void initExitBattleItem() {
         TextView itemView = addItemView();
-        int color = mContext.getResources().getColor(R.color.livekit_not_standard_red);
+        int color = mContext.getResources().getColor(R.color.common_not_standard_red);
         itemView.setTextColor(color);
-        itemView.setText(getContext().getString(R.string.live_end_pk));
+        itemView.setText(getContext().getString(R.string.common_end_pk));
         itemView.setOnClickListener(v -> {
             String battleId = mLiveStreamManager.getBattleState().mBattleId;
             mLiveStream.terminateBattle(battleId, new TUIRoomDefine.ActionCallback() {
@@ -115,9 +115,9 @@ public class EndLiveStreamDialog extends PopupDialog {
 
     private void initExitCoHostItem() {
         TextView itemView = addItemView();
-        int color = mContext.getResources().getColor(R.color.livekit_not_standard_red);
+        int color = mContext.getResources().getColor(R.color.common_not_standard_red);
         itemView.setTextColor(color);
-        itemView.setText(getContext().getString(R.string.live_end_connection));
+        itemView.setText(getContext().getString(R.string.common_end_connection));
         itemView.setOnClickListener(v -> {
             mLiveStream.terminateCrossRoomConnection();
             mLiveStreamManager.getCoHostManager().cleanConnectedUsers();
@@ -128,7 +128,7 @@ public class EndLiveStreamDialog extends PopupDialog {
 
     private void initExitRoomItem() {
         TextView itemView = addItemView();
-        itemView.setText(getContext().getString(R.string.live_end_live));
+        itemView.setText(getContext().getString(R.string.common_end_live));
         itemView.setOnClickListener(v -> {
             if (!v.isEnabled()) {
                 return;
@@ -186,13 +186,13 @@ public class EndLiveStreamDialog extends PopupDialog {
 
     private void initCancelItem() {
         TextView itemView = addItemView();
-        itemView.setText(getContext().getString(R.string.live_cancel));
+        itemView.setText(getContext().getString(R.string.common_cancel));
         itemView.setOnClickListener(v -> dismiss());
     }
 
     private void addSplitLine(int height) {
         View view = new View(mContext);
-        int color = mContext.getResources().getColor(R.color.livekit_design_standard_g8);
+        int color = mContext.getResources().getColor(R.color.common_design_standard_g8);
         view.setBackgroundColor(color);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 height);
@@ -201,7 +201,7 @@ public class EndLiveStreamDialog extends PopupDialog {
 
     private TextView addItemView() {
         TextView textView = new TextView(mContext);
-        int color = mContext.getResources().getColor(R.color.livekit_design_standard_g2);
+        int color = mContext.getResources().getColor(R.color.common_design_standard_g2);
         textView.setTextColor(color);
         textView.setTextSize(16);
         textView.setGravity(Gravity.CENTER);

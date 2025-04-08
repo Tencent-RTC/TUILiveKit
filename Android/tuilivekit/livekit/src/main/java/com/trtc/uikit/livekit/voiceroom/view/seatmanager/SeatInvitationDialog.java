@@ -73,8 +73,8 @@ public class SeatInvitationDialog extends PopupDialog {
         View rootView = View.inflate(mContext, R.layout.livekit_voiceroom_seat_invite_panel, null);
         setView(rootView);
         bindViewId(rootView);
-        mTvTitle.setText(R.string.live_voiceroom_invite);
-        setTitle(mContext.getString(R.string.live_voiceroom_invite));
+        mTvTitle.setText(R.string.common_voiceroom_invite);
+        setTitle(mContext.getString(R.string.common_voiceroom_invite));
         showBackButton();
         initSeatListView();
     }
@@ -149,7 +149,7 @@ public class SeatInvitationDialog extends PopupDialog {
             public void onRejected(TUIRoomDefine.UserInfo userInfo) {
                 mVoiceRoomManager.getSeatManager().removeSentSeatInvitation(userId);
                 ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(
-                        R.string.live_voiceroom_invite_seat_canceled));
+                        R.string.common_voiceroom_invite_seat_canceled));
 
             }
 
@@ -162,7 +162,7 @@ public class SeatInvitationDialog extends PopupDialog {
             public void onTimeout(TUIRoomDefine.UserInfo userInfo) {
                 mVoiceRoomManager.getSeatManager().removeSentSeatInvitation(userId);
                 ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(
-                        R.string.live_voiceroom_invite_seat_canceled));
+                        R.string.common_voiceroom_invite_seat_canceled));
             }
 
             @Override

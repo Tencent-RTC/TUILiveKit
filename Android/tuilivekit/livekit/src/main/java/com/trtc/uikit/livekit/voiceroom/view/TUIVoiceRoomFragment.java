@@ -181,7 +181,7 @@ public class TUIVoiceRoomFragment extends Fragment implements ITUINotification {
         Context context = ContextProvider.getApplicationContext();
         AudioForegroundService.start(context,
                 context.getString(context.getApplicationInfo().labelRes),
-                context.getString(R.string.live_app_running),
+                context.getString(R.string.common_app_running),
                 0);
     }
 

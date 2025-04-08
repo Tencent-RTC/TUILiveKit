@@ -71,10 +71,11 @@
         android:id="@+id/tv_apply_link_audience_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:maxLines="1"
         android:layout_gravity="center"
         android:layout_marginTop="3dp"
         android:gravity="center"
         android:padding="0dp"
-        android:textColor="@color/livekit_design_standard_flowkit_white"
-        android:textSize="14sp" />
+        android:textColor="@color/common_design_standard_flowkit_white"
+        android:textSize="13sp" />
 </LinearLayout>

@@ -68,7 +68,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/btn_gift"
                 tools:ignore="ContentDescription" />
 
-            <com.trtc.uikit.livekit.component.gift.access.GiftButton
+            <com.trtc.uikit.livekit.component.giftaccess.GiftButton
                 android:id="@+id/btn_gift"
                 android:layout_width="32dp"
                 android:layout_height="32dp"

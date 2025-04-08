@@ -117,7 +117,7 @@ public class BattleInfoView extends BasicView {
             return;
         }
         setVisibility(VISIBLE);
-        mBattleTimeView.setText(mContext.getString(R.string.live_battle_pk_end));
+        mBattleTimeView.setText(mContext.getString(R.string.common_battle_pk_end));
     }
 
     private void onBattleScoreChanged() {

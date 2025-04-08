@@ -26,8 +26,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="@string/live_titile_preset_cover"
-            android:textColor="@color/livekit_design_standard_g7"
+            android:text="@string/common_titile_preset_cover"
+            android:textColor="@color/common_design_standard_g7"
             android:textSize="20sp" />
     </RelativeLayout>
 
@@ -50,8 +50,8 @@
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="33dp"
         android:background="@drawable/livekit_button_background"
-        android:text="@string/live_set_as_cover"
+        android:text="@string/common_set_as_cover"
         android:textAllCaps="false"
-        android:textColor="@color/livekit_design_standard_flowkit_white"
+        android:textColor="@color/common_design_standard_flowkit_white"
         android:textSize="20sp" />
 </LinearLayout>

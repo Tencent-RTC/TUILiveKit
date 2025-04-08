@@ -138,10 +138,10 @@ public class UserInfoDialog extends PopupDialog {
     private void refreshFollowButton() {
         if (mLiveStreamManager.getUserState().myFollowingUserList.getValue().contains(
                 new UserState.UserInfo(mUserInfo.userId))) {
-            mButtonFollow.setText(R.string.live_unfollow_anchor);
+            mButtonFollow.setText(R.string.common_unfollow_anchor);
             mButtonFollow.setBackgroundResource(R.drawable.livekit_user_info_detail_button_unfollow);
         } else {
-            mButtonFollow.setText(R.string.live_follow_anchor);
+            mButtonFollow.setText(R.string.common_follow_anchor);
             mButtonFollow.setBackgroundResource(R.drawable.livekit_user_info_button_follow);
         }
         getFansNumber();

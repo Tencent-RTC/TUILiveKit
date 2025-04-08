@@ -90,10 +90,10 @@ public class AnchorRecommendedAdapter extends RecyclerView.Adapter<AnchorRecomme
 
     private void setConnectionStatus(RecommendViewHolder holder, CoHostState.ConnectionUser recommendUser) {
         if (recommendUser.connectionStatus == CoHostState.ConnectionStatus.INVITING) {
-            holder.textConnect.setText(R.string.live_connect_inviting);
+            holder.textConnect.setText(R.string.common_connect_inviting);
             holder.textConnect.setAlpha(0.5f);
         } else {
-            holder.textConnect.setText(R.string.live_start_connection);
+            holder.textConnect.setText(R.string.common_start_connection);
             holder.textConnect.setAlpha(1f);
         }
     }

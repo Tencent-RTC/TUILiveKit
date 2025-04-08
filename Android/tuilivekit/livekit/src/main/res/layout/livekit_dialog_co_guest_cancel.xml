@@ -10,14 +10,14 @@
         android:layout_width="match_parent"
         android:layout_height="62dp"
         android:gravity="center"
-        android:text="@string/live_text_cancel_link_mic_apply"
-        android:textColor="@color/livekit_not_standard_red"
+        android:text="@string/common_text_cancel_link_mic_apply"
+        android:textColor="@color/common_not_standard_red"
         android:textSize="16sp" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="7dp"
-        android:background="@color/livekit_not_standard_blue_30_transparency" />
+        android:background="@color/common_not_standard_blue_30_transparency" />
 
     <TextView
         android:id="@+id/tv_dismiss"
@@ -25,7 +25,7 @@
         android:layout_height="62dp"
         android:gravity="center"
         android:text="@string/cancel"
-        android:textColor="@color/livekit_design_standard_g7"
+        android:textColor="@color/common_design_standard_g7"
         android:textSize="16sp" />
 
 </LinearLayout>

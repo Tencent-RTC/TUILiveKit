@@ -31,4 +31,5 @@
     <string name="app_main_item_video_live_sub">开播预览·智能美颜·连麦PK</string>
     <string name="app_main_item_voice_room">语聊房</string>
     <string name="app_main_item_voice_room_sub">高音质·大房间·平滑上下麦</string>
+    <string name="app_exit_float_window_tip">正在直播中，请稍后再试。</string>
 </resources>

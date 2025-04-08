@@ -197,14 +197,14 @@ public class CoGuestManager extends BaseManager {
         if (isAudioLocked != mMediaState.isAudioLocked.getValue()) {
             mMediaState.isAudioLocked.setValue(isAudioLocked);
             ToastUtil.toastShortMessage(ContextProvider.getApplicationContext().getResources()
-                    .getString(isAudioLocked ? R.string.live_mute_audio_by_master :
-                            R.string.live_un_mute_audio_by_master));
+                    .getString(isAudioLocked ? R.string.common_mute_audio_by_master :
+                            R.string.common_un_mute_audio_by_master));
         }
         if (isVideoLocked != mMediaState.isVideoLocked.getValue()) {
             mMediaState.isVideoLocked.setValue(isVideoLocked);
             ToastUtil.toastShortMessage(ContextProvider.getApplicationContext().getResources()
-                    .getString(isVideoLocked ? R.string.live_mute_video_by_owner :
-                            R.string.live_un_mute_video_by_master));
+                    .getString(isVideoLocked ? R.string.common_mute_video_by_owner :
+                            R.string.common_un_mute_video_by_master));
         }
     }
 
@@ -214,7 +214,7 @@ public class CoGuestManager extends BaseManager {
 
     public void onKickedOffSeat() {
         ToastUtil.toastShortMessage(ContextProvider.getApplicationContext().getResources()
-                .getString(R.string.live_voiceroom_kicked_out_of_seat));
+                .getString(R.string.common_voiceroom_kicked_out_of_seat));
     }
 
     public void onUserConnectionAccepted(String userId) {
@@ -226,12 +226,12 @@ public class CoGuestManager extends BaseManager {
     public void onUserConnectionRejected(String userId) {
         mCoGuestState.coGuestStatus.setValue(NONE);
         ToastUtil.toastShortMessage(ContextProvider.getApplicationContext().getResources()
-                .getString(R.string.live_voiceroom_take_seat_rejected));
+                .getString(R.string.common_voiceroom_take_seat_rejected));
     }
 
     public void onUserConnectionTimeout(String userId) {
         mCoGuestState.coGuestStatus.setValue(NONE);
         ToastUtil.toastShortMessage(ContextProvider.getApplicationContext().getResources()
-                .getString(R.string.live_voiceroom_take_seat_timeout));
+                .getString(R.string.common_voiceroom_take_seat_timeout));
     }
 }

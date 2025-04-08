@@ -57,13 +57,13 @@ public class SeatActionSheetGenerator {
         List<ListMenuInfo> menuInfoList = new ArrayList<>();
         if (TextUtils.isEmpty(seatInfo.userId)) {
             if (!seatInfo.isLocked) {
-                ListMenuInfo inviteUser = new ListMenuInfo(mContext.getString(R.string.live_voiceroom_invite), () ->
+                ListMenuInfo inviteUser = new ListMenuInfo(mContext.getString(R.string.common_voiceroom_invite), () ->
                         showSeatInvitationPanel(seatInfo.index));
                 menuInfoList.add(inviteUser);
             }
             ListMenuInfo lockSeat = new ListMenuInfo(seatInfo.isLocked
-                    ? mContext.getString(R.string.live_voiceroom_unlock)
-                    : mContext.getString(R.string.live_voiceroom_lock), () -> lockSeat(seatInfo));
+                    ? mContext.getString(R.string.common_voiceroom_unlock)
+                    : mContext.getString(R.string.common_voiceroom_lock), () -> lockSeat(seatInfo));
             menuInfoList.add(lockSeat);
             return menuInfoList;
         }
@@ -83,11 +83,11 @@ public class SeatActionSheetGenerator {
 
         if (TextUtils.isEmpty(seatInfo.userId)) {
             if (mVoiceRoomManager.getSeatState().linkStatus.getValue() == SeatState.LinkStatus.LINKING) {
-                ListMenuInfo moveSeat = new ListMenuInfo(mContext.getString(R.string.live_voiceroom_take_seat),
+                ListMenuInfo moveSeat = new ListMenuInfo(mContext.getString(R.string.common_voiceroom_take_seat),
                         () -> moveToSeat(seatInfo.index));
                 menuInfoList.add(moveSeat);
             } else {
-                ListMenuInfo takeSeat = new ListMenuInfo(mContext.getString(R.string.live_voiceroom_take_seat),
+                ListMenuInfo takeSeat = new ListMenuInfo(mContext.getString(R.string.common_voiceroom_take_seat),
                         () -> takeSeat(seatInfo.index));
                 menuInfoList.add(takeSeat);
             }
@@ -134,7 +134,7 @@ public class SeatActionSheetGenerator {
             public void onRejected(TUIRoomDefine.UserInfo userInfo) {
                 mSeatManager.updateLinkState(SeatState.LinkStatus.NONE);
                 ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(
-                        R.string.live_voiceroom_take_seat_rejected));
+                        R.string.common_voiceroom_take_seat_rejected));
             }
 
             @Override
@@ -146,7 +146,7 @@ public class SeatActionSheetGenerator {
             public void onTimeout(TUIRoomDefine.UserInfo userInfo) {
                 mSeatManager.updateLinkState(SeatState.LinkStatus.NONE);
                 ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(
-                        R.string.live_voiceroom_take_seat_timeout));
+                        R.string.common_voiceroom_take_seat_timeout));
             }
 
             @Override
