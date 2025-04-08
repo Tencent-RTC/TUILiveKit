@@ -65,7 +65,7 @@ public final class BattleCountdownDialog extends Dialog {
     }
 
     private String formatTip() {
-        String tip = getContext().getString(R.string.live_battle_wait_start);
+        String tip = getContext().getString(R.string.common_battle_wait_start);
         StringBuilder tipBuilder = new StringBuilder(tip);
         for (int i = 0; i <= 2 - mCountdownValue % 3; i++) {
             tipBuilder.append(".");

@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="60dp"
-    android:background="@color/livekit_design_standard_g2"
+    android:background="@color/common_design_standard_g2"
     android:gravity="start">
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
@@ -28,7 +28,7 @@
         android:textSize="16sp"
         android:maxLines="1"
         android:ellipsize="end"
-        android:textColor="@color/livekit_design_standard_g7" />
+        android:textColor="@color/common_design_standard_g7" />
 
     <TextView
         android:id="@+id/tv_level"
@@ -40,7 +40,7 @@
         android:gravity="center"
         android:text="lv20"
         android:textSize="12sp"
-        android:textColor="@color/livekit_design_standard_flowkit_white"
+        android:textColor="@color/common_design_standard_flowkit_white"
         android:background="@drawable/livekit_audience_list_panel_level_background"/>
 
     <TextView
@@ -51,9 +51,9 @@
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
         android:gravity="center"
-        android:text="@string/live_reject"
+        android:text="@string/common_reject"
         android:textSize="12sp"
-        android:textColor="@color/livekit_design_standard_b1"
+        android:textColor="@color/common_design_standard_b1"
         android:background="@drawable/livekit_link_mic_reject_background"/>
 
     <TextView
@@ -64,9 +64,9 @@
         android:layout_centerVertical="true"
         android:layout_toStartOf="@+id/tv_reject"
         android:gravity="center"
-        android:text="@string/live_accept"
+        android:text="@string/common_accept"
         android:textSize="12sp"
-        android:textColor="@color/livekit_design_standard_flowkit_white"
+        android:textColor="@color/common_design_standard_flowkit_white"
         android:background="@drawable/livekit_link_mic_accept_background"/>
 
     <View
@@ -75,5 +75,5 @@
         android:layout_marginRight="24dp"
         android:layout_alignStart="@id/tv_name"
         android:layout_alignParentBottom="true"
-        android:background="@color/livekit_not_standard_blue_30_transparency" />
+        android:background="@color/common_not_standard_blue_30_transparency" />
 </RelativeLayout>

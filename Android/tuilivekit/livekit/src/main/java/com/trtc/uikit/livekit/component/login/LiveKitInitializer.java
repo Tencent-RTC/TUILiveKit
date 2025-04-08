@@ -18,9 +18,11 @@ import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
 import com.trtc.tuikit.common.system.ContextProvider;
-import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 
 public final class LiveKitInitializer extends ContentProvider {
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getComponentLogger("LiveKitInitializer");
+
     private final ITUINotification mNotification = (key, subKey, param) -> {
         if (TUIConstants.TUILogin.EVENT_LOGIN_STATE_CHANGED.equals(key)
                 && TUIConstants.TUILogin.EVENT_SUB_KEY_USER_LOGIN_SUCCESS.equals(subKey)
@@ -30,13 +32,12 @@ public final class LiveKitInitializer extends ContentProvider {
                         @Override
                         public void onSuccess() {
                             Context context = TUIConfig.getAppContext();
-                            LiveStreamLog.info("serviceInitializer login:[Success]");
+                            LOGGER.info("serviceInitializer login:[Success]");
                         }
 
                         @Override
                         public void onError(TUICommonDefine.Error error, String message) {
-                            LiveStreamLog.error("serviceInitializer login:[Error:" + error + ",message:" + message +
-                                    "]");
+                            LOGGER.error("serviceInitializer login:[Error:" + error + ",message:" + message + "]");
                         }
                     });
         }
@@ -55,12 +56,12 @@ public final class LiveKitInitializer extends ContentProvider {
                     TUILogin.getUserSig(), new TUIRoomDefine.ActionCallback() {
                         @Override
                         public void onSuccess() {
-                            LiveStreamLog.info("RoomEngine login:[Success]");
+                            LOGGER.info("RoomEngine login:[Success]");
                         }
 
                         @Override
                         public void onError(TUICommonDefine.Error error, String message) {
-                            LiveStreamLog.error("RoomEngine login : [onError:[error:" + error + ",message:" + message
+                            LOGGER.error("RoomEngine login : [onError:[error:" + error + ",message:" + message
                                     + "]]");
                         }
                     });

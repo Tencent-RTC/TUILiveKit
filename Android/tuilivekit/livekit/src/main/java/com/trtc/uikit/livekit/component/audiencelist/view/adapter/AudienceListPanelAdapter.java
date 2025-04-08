@@ -43,7 +43,7 @@ public class AudienceListPanelAdapter extends RecyclerView.Adapter<AudienceListP
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.livekit_layout_anchor_live_audience_list_panel_item, parent, false);
+                R.layout.audience_list_layout_panel_item, parent, false);
         return new ViewHolder(view);
     }
 
@@ -55,10 +55,10 @@ public class AudienceListPanelAdapter extends RecyclerView.Adapter<AudienceListP
             }
         });
         if (TextUtils.isEmpty(mData.get(position).avatarUrl)) {
-            holder.imageHead.setImageResource(R.drawable.livekit_ic_avatar);
+            holder.imageHead.setImageResource(R.drawable.audience_list_default_avatar);
         } else {
             ImageLoader.load(mContext, holder.imageHead, mData.get(position).avatarUrl,
-                    R.drawable.livekit_ic_avatar);
+                    R.drawable.audience_list_default_avatar);
         }
 
         if (TextUtils.isEmpty(mData.get(position).userName)) {

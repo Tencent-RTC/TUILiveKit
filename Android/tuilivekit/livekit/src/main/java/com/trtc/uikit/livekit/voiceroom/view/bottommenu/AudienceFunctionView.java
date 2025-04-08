@@ -23,7 +23,7 @@ import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
 import com.trtc.uikit.livekit.component.gift.LikeButton;
-import com.trtc.uikit.livekit.component.gift.access.GiftButton;
+import com.trtc.uikit.livekit.component.giftaccess.GiftButton;
 import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
 import com.trtc.uikit.livekit.voiceroom.state.SeatState;
@@ -122,7 +122,7 @@ public class AudienceFunctionView extends BasicView {
             public void onRejected(TUIRoomDefine.UserInfo userInfo) {
                 mSeatManager.updateLinkState(SeatState.LinkStatus.NONE);
                 ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(
-                        R.string.live_voiceroom_take_seat_rejected));
+                        R.string.common_voiceroom_take_seat_rejected));
             }
 
             @Override
@@ -134,7 +134,7 @@ public class AudienceFunctionView extends BasicView {
             public void onTimeout(TUIRoomDefine.UserInfo userInfo) {
                 mSeatManager.updateLinkState(SeatState.LinkStatus.NONE);
                 ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(
-                        R.string.live_voiceroom_take_seat_timeout));
+                        R.string.common_voiceroom_take_seat_timeout));
             }
 
             @Override

@@ -39,9 +39,9 @@ public class StreamInfoAdapter extends RecyclerView.Adapter<StreamInfoAdapter.Vi
         StreamDashboardUserState streamDashboardUserState = mDataList.get(position);
         String title;
         if (streamDashboardUserState.isLocal) {
-            title = mContext.getString(R.string.live_dashboard_local_user);
+            title = mContext.getString(R.string.common_dashboard_local_user);
         } else {
-            title = mContext.getString(R.string.live_dashboard_remote_user) + " : " + streamDashboardUserState.userId;
+            title = mContext.getString(R.string.common_dashboard_remote_user) + " : " + streamDashboardUserState.userId;
         }
         holder.mTextUserId.setText(title);
         holder.mTextVideoResolution.setText(streamDashboardUserState.videoResolution);

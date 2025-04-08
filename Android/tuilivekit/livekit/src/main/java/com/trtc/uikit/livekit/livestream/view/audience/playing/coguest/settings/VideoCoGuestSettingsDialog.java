@@ -90,7 +90,7 @@ public class VideoCoGuestSettingsDialog extends PopupDialog {
                 return;
             }
             view.setEnabled(false);
-            ToastUtil.toastShortMessageCenter(getContext().getString(R.string.live_toast_apply_link_mic));
+            ToastUtil.toastShortMessageCenter(getContext().getString(R.string.common_toast_apply_link_mic));
             mLiveStream.requestIntraRoomConnection("", 60, true, new TUIRoomDefine.ActionCallback() {
                 @Override
                 public void onSuccess() {

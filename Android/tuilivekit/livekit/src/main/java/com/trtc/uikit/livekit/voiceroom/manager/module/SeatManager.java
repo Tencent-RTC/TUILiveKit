@@ -241,6 +241,6 @@ public class SeatManager extends BaseManager {
 
     public void onKickedOffSeat(TUIRoomDefine.UserInfo userInfo) {
         ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(
-                R.string.live_voiceroom_kicked_out_of_seat));
+                R.string.common_voiceroom_kicked_out_of_seat));
     }
 }

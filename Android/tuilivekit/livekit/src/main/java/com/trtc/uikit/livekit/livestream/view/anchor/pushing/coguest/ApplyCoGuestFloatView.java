@@ -124,7 +124,7 @@ public class ApplyCoGuestFloatView extends BasicView {
         } else {
             setVisibility(GONE);
         }
-        mTextApplyLinkAudienceCount.setText(mContext.getString(R.string.live_seat_application_title,
+        mTextApplyLinkAudienceCount.setText(mContext.getString(R.string.common_seat_application_title,
                 seatApplicationList.size()));
     }
 

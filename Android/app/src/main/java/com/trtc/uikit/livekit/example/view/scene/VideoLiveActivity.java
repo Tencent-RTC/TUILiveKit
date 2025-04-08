@@ -11,7 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.tuikit.common.util.ActivityLauncher;
-import com.trtc.uikit.livekit.LiveIdentityGenerator;
+import com.trtc.uikit.livekit.common.LiveIdentityGenerator;
 import com.trtc.uikit.livekit.component.floatwindow.service.FloatWindowManager;
 import com.trtc.uikit.livekit.component.roomlist.TUILiveListFragment;
 import com.trtc.uikit.livekit.example.BaseActivity;
@@ -48,7 +48,7 @@ public class VideoLiveActivity extends BaseActivity {
                 RoomState roomState = floatWindowManager.getLiveStreamManager().getRoomState();
                 if (TextUtils.equals(roomState.ownerInfo.userId, TUILogin.getUserId())) {
                     ToastUtil.toastShortMessage(
-                            view.getContext().getString(com.trtc.uikit.livekit.R.string.live_exit_float_window_tip));
+                            view.getContext().getString(R.string.app_exit_float_window_tip));
                     return;
                 }
             }

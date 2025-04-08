@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/livekit_design_standard_g2">
+    android:background="@color/common_design_standard_g2">
 
     <ImageView
         android:id="@+id/iv_back"
@@ -21,8 +21,8 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="120dp"
-        android:text="@string/live_live_has_stop"
-        android:textColor="@color/livekit_design_standard_flowkit_white"
+        android:text="@string/common_live_has_stop"
+        android:textColor="@color/common_design_standard_flowkit_white"
         android:textSize="20sp"
         tools:ignore="RelativeOverlap" />
 
@@ -42,8 +42,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:layout_marginTop="5dp"
-            android:text="@string/live_common_this_live_data"
-            android:textColor="@color/livekit_design_standard_flowkit_white"
+            android:text="@string/common_common_this_live_data"
+            android:textColor="@color/common_design_standard_flowkit_white"
             android:textSize="14sp"
             tools:ignore="RelativeOverlap" />
 
@@ -65,7 +65,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="15dp"
-                    android:textColor="@color/livekit_design_standard_flowkit_white"
+                    android:textColor="@color/common_design_standard_flowkit_white"
                     android:textSize="12sp"
                     tools:ignore="RelativeOverlap" />
 
@@ -74,8 +74,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="2dp"
-                    android:text="@string/live_common_live_duration"
-                    android:textColor="@color/livekit_design_standard_g5"
+                    android:text="@string/common_common_live_duration"
+                    android:textColor="@color/common_design_standard_g5"
                     android:textSize="12sp"
                     tools:ignore="RelativeOverlap" />
 
@@ -93,7 +93,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="15dp"
-                    android:textColor="@color/livekit_design_standard_flowkit_white"
+                    android:textColor="@color/common_design_standard_flowkit_white"
                     android:textSize="12sp"
                     tools:ignore="RelativeOverlap" />
 
@@ -102,8 +102,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="2dp"
-                    android:text="@string/live_common_live_people_number"
-                    android:textColor="@color/livekit_design_standard_g5"
+                    android:text="@string/common_common_live_people_number"
+                    android:textColor="@color/common_design_standard_g5"
                     android:textSize="12sp"
                     tools:ignore="RelativeOverlap" />
             </LinearLayout>
@@ -120,7 +120,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="15dp"
-                    android:textColor="@color/livekit_design_standard_flowkit_white"
+                    android:textColor="@color/common_design_standard_flowkit_white"
                     android:textSize="12sp"
                     tools:ignore="RelativeOverlap" />
 
@@ -129,8 +129,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="2dp"
-                    android:text="@string/live_common_message_count"
-                    android:textColor="@color/livekit_design_standard_g5"
+                    android:text="@string/common_common_message_count"
+                    android:textColor="@color/common_design_standard_g5"
                     android:textSize="12sp"
                     tools:ignore="RelativeOverlap" />
             </LinearLayout>
@@ -155,7 +155,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="15dp"
-                    android:textColor="@color/livekit_design_standard_flowkit_white"
+                    android:textColor="@color/common_design_standard_flowkit_white"
                     android:textSize="12sp"
                     tools:ignore="RelativeOverlap" />
 
@@ -164,8 +164,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="2dp"
-                    android:text="@string/live_common_gift_income"
-                    android:textColor="@color/livekit_design_standard_g5"
+                    android:text="@string/common_common_gift_income"
+                    android:textColor="@color/common_design_standard_g5"
                     android:textSize="12sp"
                     tools:ignore="RelativeOverlap" />
             </LinearLayout>
@@ -182,7 +182,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="15dp"
-                    android:textColor="@color/livekit_design_standard_flowkit_white"
+                    android:textColor="@color/common_design_standard_flowkit_white"
                     android:textSize="12sp"
                     tools:ignore="RelativeOverlap" />
 
@@ -191,8 +191,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="2dp"
-                    android:text="@string/live_common_send_gift_people_count"
-                    android:textColor="@color/livekit_design_standard_g5"
+                    android:text="@string/common_common_send_gift_people_count"
+                    android:textColor="@color/common_design_standard_g5"
                     android:textSize="12sp"
                     tools:ignore="RelativeOverlap" />
             </LinearLayout>
@@ -209,7 +209,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="15dp"
-                    android:textColor="@color/livekit_design_standard_flowkit_white"
+                    android:textColor="@color/common_design_standard_flowkit_white"
                     android:textSize="12sp"
                     tools:ignore="RelativeOverlap" />
 
@@ -218,8 +218,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="2dp"
-                    android:text="@string/live_common_like_count"
-                    android:textColor="@color/livekit_design_standard_g5"
+                    android:text="@string/common_common_like_count"
+                    android:textColor="@color/common_design_standard_g5"
                     android:textSize="12sp"
                     tools:ignore="RelativeOverlap" />
             </LinearLayout>

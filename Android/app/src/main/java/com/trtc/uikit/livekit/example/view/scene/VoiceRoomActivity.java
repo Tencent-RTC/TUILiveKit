@@ -9,7 +9,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.tencent.qcloud.tuicore.TUILogin;
 import com.trtc.tuikit.common.util.ActivityLauncher;
-import com.trtc.uikit.livekit.LiveIdentityGenerator;
+import com.trtc.uikit.livekit.common.LiveIdentityGenerator;
 import com.trtc.uikit.livekit.component.roomlist.TUILiveListFragment;
 import com.trtc.uikit.livekit.example.BaseActivity;
 import com.trtc.uikit.livekit.example.R;

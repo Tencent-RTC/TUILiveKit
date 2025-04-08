@@ -179,7 +179,7 @@ public class RoomManager extends BaseManager {
 
     public void onLiveEnd(String roomId) {
         ToastUtil.toastShortMessage(ContextProvider.getApplicationContext().getResources()
-                .getString(R.string.live_room_destroy));
+                .getString(R.string.common_room_destroy));
         updateLiveStatus(DASHBOARD);
     }
 
@@ -188,7 +188,7 @@ public class RoomManager extends BaseManager {
             return;
         }
         if (reason != null && BY_LOGGED_ON_OTHER_DEVICE != reason) {
-            ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(R.string.live_kicked_out_of_room_by_owner));
+            ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(R.string.common_kicked_out_of_room_by_owner));
             Map<String, Object> params = new HashMap<>();
             params.put("roomId", roomId);
             TUICore.notifyEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_FINISH_ACTIVITY, params);

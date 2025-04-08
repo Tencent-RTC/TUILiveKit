@@ -81,7 +81,7 @@ public class SeatManagerDialog extends PopupDialog {
         View rootView = View.inflate(mContext, R.layout.livekit_voiceroom_seat_manager_panel, null);
         setView(rootView);
         bindViewId(rootView);
-        mTvTitle.setText(R.string.live_link_mic_manager);
+        mTvTitle.setText(R.string.common_link_mic_manager);
         mInviteButton.setOnClickListener(v -> showSeatInvitationPanel());
         showBackButton();
         showEndButton();
@@ -149,7 +149,7 @@ public class SeatManagerDialog extends PopupDialog {
         } else {
             mSeatApplicationTitle.setVisibility(View.GONE);
         }
-        mSeatApplicationTitle.setText(mContext.getString(R.string.live_seat_application_title,
+        mSeatApplicationTitle.setText(mContext.getString(R.string.common_seat_application_title,
                 mVoiceRoomManager.getSeatState().seatApplicationList.getValue().size()));
     }
 
@@ -167,7 +167,7 @@ public class SeatManagerDialog extends PopupDialog {
             mSeatListTitle.setVisibility(View.GONE);
         } else {
             mSeatListTitle.setVisibility(VISIBLE);
-            mSeatListTitle.setText(mContext.getString(R.string.live_seat_list_title, seatList.size()
+            mSeatListTitle.setText(mContext.getString(R.string.common_seat_list_title, seatList.size()
                     , mVoiceRoomManager.getRoomState().maxSeatCount.getValue() - 1));
         }
     }

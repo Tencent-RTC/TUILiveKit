@@ -16,7 +16,7 @@ public class BeautyPanelDialog extends PopupDialog {
         View beautyView = null;
         if (TEBeautyManager.getInstance().isSupportTEBeauty()) {
             beautyView = new TEBeautyView(getContext());
-            beautyView.setBackgroundResource(R.color.livekit_design_standard_g1);
+            beautyView.setBackgroundResource(R.color.common_design_standard_g1);
         } else {
             beautyView = new BeautyListPanel(getContext());
             ((BeautyListPanel) beautyView).init(liveStreamManager);

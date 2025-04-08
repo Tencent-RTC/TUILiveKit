@@ -201,7 +201,7 @@ public class TUILiveRoomAnchorFragment extends Fragment implements ITUINotificat
         Context context = ContextProvider.getApplicationContext();
         VideoForegroundService.start(context,
                 context.getString(context.getApplicationInfo().labelRes),
-                context.getString(R.string.live_app_running),
+                context.getString(R.string.common_app_running),
                 0);
     }
 

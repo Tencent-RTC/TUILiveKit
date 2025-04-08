@@ -56,8 +56,8 @@ public class RoomState {
     }
 
     public enum LiveStreamPrivacyStatus {
-        PUBLIC(R.string.live_stream_privacy_status_default),
-        PRIVACY(R.string.live_stream_privacy_status_privacy);
+        PUBLIC(R.string.common_stream_privacy_status_default),
+        PRIVACY(R.string.common_stream_privacy_status_privacy);
 
         public final int resId;
 

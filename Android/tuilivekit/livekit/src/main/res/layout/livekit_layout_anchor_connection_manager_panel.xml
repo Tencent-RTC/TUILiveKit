@@ -17,8 +17,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="@string/live_connection"
-            android:textColor="@color/livekit_design_standard_g7"
+            android:text="@string/common_connection"
+            android:textColor="@color/common_design_standard_g7"
             android:textSize="16sp" />
 
         <TextView
@@ -30,8 +30,8 @@
             android:drawableStart="@drawable/livekit_connection_exit"
             android:drawablePadding="5dp"
             android:gravity="center_vertical"
-            android:text="@string/live_disconnection"
-            android:textColor="@color/livekit_not_standard_red"
+            android:text="@string/common_disconnection"
+            android:textColor="@color/common_not_standard_red"
             android:textSize="14sp"
             android:visibility="gone" />
     </RelativeLayout>
@@ -61,8 +61,8 @@
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="20dp"
                     android:visibility="gone"
-                    android:text="@string/live_connection_list_title"
-                    android:textColor="@color/livekit_design_standard_g7"
+                    android:text="@string/common_connection_list_title"
+                    android:textColor="@color/common_design_standard_g7"
                     android:textSize="14sp" />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -78,8 +78,8 @@
                     android:layout_height="24dp"
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="20dp"
-                    android:text="@string/live_recommended_list"
-                    android:textColor="@color/livekit_design_standard_g7"
+                    android:text="@string/common_recommended_list"
+                    android:textColor="@color/common_design_standard_g7"
                     android:textSize="14sp" />
 
                 <androidx.recyclerview.widget.RecyclerView

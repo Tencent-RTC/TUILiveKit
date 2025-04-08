@@ -24,7 +24,7 @@ import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.component.floatwindow.service.FloatWindowManager;
-import com.trtc.uikit.livekit.component.roomlist.view.ListAudienceActivity;
+import com.trtc.uikit.livekit.component.liveListviewpager.ListAudienceActivity;
 import com.trtc.uikit.livekit.livestream.state.RoomState;
 import com.trtc.uikit.livekit.livestream.state.UserState;
 import com.trtc.uikit.livekit.livestream.view.anchor.VideoLiveAnchorActivity;
@@ -45,7 +45,7 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.ViewHo
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.livekit_adapter_item_room_list,
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.room_list_layout_adapter_item_room_list,
                 parent, false);
         return new ViewHolder(view);
     }
@@ -54,13 +54,14 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         LiveInfo liveInfo = mDataList.get(position);
         TUIRoomDefine.RoomInfo roomInfo = liveInfo.roomInfo;
-        ImageLoader.load(mContext, holder.mImageCover, liveInfo.coverUrl, R.drawable.livekit_live_stream_default_cover);
+        ImageLoader.load(mContext, holder.mImageCover, liveInfo.coverUrl,
+                R.drawable.room_list_default_cover);
         ImageLoader.load(mContext, holder.mImageAvatar, roomInfo.ownerAvatarUrl,
-                R.drawable.livekit_live_stream_default_cover);
+                R.drawable.room_list_default_cover);
         holder.mTextRoomName.setText(TextUtils.isEmpty(roomInfo.name) ? roomInfo.roomId : roomInfo.name);
         holder.mTextAnchorName.setText(TextUtils.isEmpty(roomInfo.ownerName) ? roomInfo.ownerId : roomInfo.ownerName);
         holder.mTextAudienceCountInfo.setText(
-                mContext.getString(R.string.live_audience_count_in_room, liveInfo.viewCount));
+                mContext.getString(R.string.common_audience_count_in_room, liveInfo.viewCount));
         holder.mLayoutCoverBorder.setTag(liveInfo);
         holder.mLayoutCoverBorder.setEnabled(true);
         holder.mLayoutCoverBorder.setOnClickListener((view) -> {
@@ -78,7 +79,7 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.ViewHo
                     return;
                 }
                 if (userState.selfInfo.role.getValue() == TUIRoomDefine.Role.ROOM_OWNER) {
-                    ToastUtil.toastShortMessage(mContext.getString(R.string.live_exit_float_window_tip));
+                    ToastUtil.toastShortMessage(mContext.getString(R.string.common_exit_float_window_tip));
                     return;
                 }
             }

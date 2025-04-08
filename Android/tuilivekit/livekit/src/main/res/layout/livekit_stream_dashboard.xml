@@ -11,8 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_marginVertical="10dp"
         android:gravity="center"
-        android:text="@string/live_dashboard_title"
-        android:textColor="@color/livekit_design_standard_g7"
+        android:text="@string/common_dashboard_title"
+        android:textColor="@color/common_design_standard_g7"
         android:textSize="16sp"
         android:textStyle="bold" />
 
@@ -27,8 +27,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="20dp"
-            android:text="@string/live_dashboard_network_info_title"
-            android:textColor="@color/livekit_design_standard_g7"
+            android:text="@string/common_dashboard_network_info_title"
+            android:textColor="@color/common_design_standard_g7"
             android:textSize="14sp"
             android:textStyle="bold" />
 
@@ -48,15 +48,15 @@
                     android:id="@+id/tv_rtt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/livekit_not_standard_green_47"
+                    android:textColor="@color/common_not_standard_green_47"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/live_dashboard_rtt"
-                    android:textColor="@color/livekit_not_standard_white_99_transparency" />
+                    android:text="@string/common_dashboard_rtt"
+                    android:textColor="@color/common_not_standard_white_99_transparency" />
             </LinearLayout>
 
             <LinearLayout
@@ -70,15 +70,15 @@
                     android:id="@+id/tv_downLoss"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/livekit_not_standard_green_47"
+                    android:textColor="@color/common_not_standard_green_47"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/live_dashboard_down_loss"
-                    android:textColor="@color/livekit_not_standard_white_99_transparency" />
+                    android:text="@string/common_dashboard_down_loss"
+                    android:textColor="@color/common_not_standard_white_99_transparency" />
             </LinearLayout>
 
             <LinearLayout
@@ -92,15 +92,15 @@
                     android:id="@+id/tv_upLoss"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/livekit_not_standard_green_47"
+                    android:textColor="@color/common_not_standard_green_47"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/live_dashboard_up_loss"
-                    android:textColor="@color/livekit_not_standard_white_99_transparency" />
+                    android:text="@string/common_dashboard_up_loss"
+                    android:textColor="@color/common_not_standard_white_99_transparency" />
             </LinearLayout>
         </LinearLayout>
 
@@ -109,8 +109,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="20dp"
-            android:text="@string/live_dashboard_media_info_title"
-            android:textColor="@color/livekit_design_standard_g7"
+            android:text="@string/common_dashboard_media_info_title"
+            android:textColor="@color/common_design_standard_g7"
             android:textSize="14sp"
             android:textStyle="bold" />
 

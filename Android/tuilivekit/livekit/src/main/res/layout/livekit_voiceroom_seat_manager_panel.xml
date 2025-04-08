@@ -33,8 +33,8 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="5dp"
-                    android:text="@string/live_voiceroom_need_agree"
-                    android:textColor="@color/livekit_design_standard_g7"
+                    android:text="@string/common_voiceroom_need_agree"
+                    android:textColor="@color/common_design_standard_g7"
                     android:textSize="16sp" />
 
                 <androidx.appcompat.widget.SwitchCompat
@@ -46,8 +46,8 @@
                     android:layout_toEndOf="@id/need_request"
                     android:background="@null"
                     android:checked="false"
-                    app:thumbTint="@color/livekit_switch_thumb_bg"
-                    app:trackTint="@color/livekit_switch_track_bg" />
+                    app:thumbTint="@color/audio_effect_switch_thumb_bg"
+                    app:trackTint="@color/audio_effect_switch_track_bg" />
             </RelativeLayout>
 
             <View
@@ -56,7 +56,7 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
-                android:background="@color/livekit_view_line" />
+                android:background="@color/common_view_line" />
 
             <TextView
                 android:id="@+id/seat_list_title"
@@ -64,8 +64,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
-                android:text="@string/live_seat_list_title"
-                android:textColor="@color/livekit_design_standard_g7"
+                android:text="@string/common_seat_list_title"
+                android:textColor="@color/common_design_standard_g7"
                 android:textSize="16sp" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -82,8 +82,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="24dp"
-                android:text="@string/live_seat_application_title"
-                android:textColor="@color/livekit_design_standard_g7"
+                android:text="@string/common_seat_application_title"
+                android:textColor="@color/common_design_standard_g7"
                 android:textSize="16sp" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -109,8 +109,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="@string/live_voiceroom_empty_view"
-                    android:textColor="@color/livekit_design_standard_g5"
+                    android:text="@string/common_voiceroom_empty_view"
+                    android:textColor="@color/common_design_standard_g5"
                     android:textSize="16sp" />
 
                 <Button
@@ -120,7 +120,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="24dp"
                     android:background="@drawable/livekit_round_button_background"
-                    android:text="@string/live_voiceroom_invite"
+                    android:text="@string/common_voiceroom_invite"
                     android:textAllCaps="false"
                     android:textColor="@android:color/white"
                     android:textSize="20sp"

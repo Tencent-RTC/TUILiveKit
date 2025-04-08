@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rl_root"
+    android:layout_width="24dp"
+    android:layout_height="24dp"
+    android:layout_marginEnd="2dp"
+    android:background="@drawable/audience_list_user_count_background"
+    android:gravity="start">
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/iv_head"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/audience_list_default_avatar"
+        app:round="11dp" />
+</RelativeLayout>

@@ -36,10 +36,10 @@ import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.Constants;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
 import com.trtc.uikit.livekit.component.gift.GiftPlayView;
-import com.trtc.uikit.livekit.component.gift.access.service.GiftCacheService;
-import com.trtc.uikit.livekit.component.gift.access.store.GiftStore;
-import com.trtc.uikit.livekit.component.gift.access.view.BarrageViewTypeDelegate;
-import com.trtc.uikit.livekit.component.gift.access.view.GiftBarrageAdapter;
+import com.trtc.uikit.livekit.component.giftaccess.service.GiftCacheService;
+import com.trtc.uikit.livekit.component.giftaccess.store.GiftStore;
+import com.trtc.uikit.livekit.component.giftaccess.view.BarrageViewTypeDelegate;
+import com.trtc.uikit.livekit.component.giftaccess.view.GiftBarrageAdapter;
 import com.trtc.uikit.livekit.component.gift.store.model.Gift;
 import com.trtc.uikit.livekit.component.gift.store.model.GiftUser;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
@@ -461,7 +461,7 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
     private void onEnterUserChange(UserState.UserInfo userInfo) {
         if (userInfo != null && mBarrageStreamView != null) {
             Barrage barrage = new Barrage();
-            barrage.content = mContext.getString(R.string.live_entered_room);
+            barrage.content = mContext.getString(R.string.common_entered_room);
             barrage.user.userId = userInfo.userId;
             barrage.user.userName = TextUtils.isEmpty(userInfo.name.getValue()) ? userInfo.userId :
                     userInfo.name.getValue();
@@ -484,13 +484,13 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
         if (mInvitationDialog == null) {
             mInvitationDialog = new ConfirmDialog(mContext);
         }
-        mInvitationDialog.setPositiveText(mContext.getString(R.string.live_accept),
+        mInvitationDialog.setPositiveText(mContext.getString(R.string.common_accept),
                 v -> responseSeatInvitation(seatInvitation.userId, true));
 
-        mInvitationDialog.setNegativeText(mContext.getString(R.string.live_reject),
+        mInvitationDialog.setNegativeText(mContext.getString(R.string.common_reject),
                 v -> responseSeatInvitation(seatInvitation.userId, false));
         mInvitationDialog.setHeadIconUrl(seatInvitation.avatarUrl);
-        mInvitationDialog.setContent(mContext.getString(R.string.live_voiceroom_receive_seat_invitation,
+        mInvitationDialog.setContent(mContext.getString(R.string.common_voiceroom_receive_seat_invitation,
                 seatInvitation.userName));
         mInvitationDialog.show();
     }

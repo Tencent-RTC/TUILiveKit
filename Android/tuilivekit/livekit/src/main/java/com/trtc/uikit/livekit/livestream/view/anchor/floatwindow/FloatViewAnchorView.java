@@ -48,14 +48,14 @@ public class FloatViewAnchorView extends BasicView {
 
     private void onReceivedConnectRequestChange(ConnectionUser receivedConnectionRequest) {
         if (receivedConnectionRequest != null) {
-            String resId = getResources().getString(R.string.live_float_window_received_connection_invitation);
+            String resId = getResources().getString(R.string.common_float_window_received_connection_invitation);
             ToastUtil.toastShortMessage(resId);
         }
     }
 
     private void onReceivedBattleRequestChange(BattleUser user) {
         if (user != null) {
-            String resId = getResources().getString(R.string.live_float_window_received_battle_invitation);
+            String resId = getResources().getString(R.string.common_float_window_received_battle_invitation);
             ToastUtil.toastShortMessage(resId);
         }
     }

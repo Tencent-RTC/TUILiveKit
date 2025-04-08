@@ -37,22 +37,22 @@ public class ChangeVoiceAdapter extends RecyclerView.Adapter<ChangeVoiceAdapter.
 
     private void initData() {
         mData = new ArrayList<>();
-        mData.add(new ChangeVoiceItem(mContext.getString(R.string.live_change_voice_none),
-                R.drawable.livekit_select_none, TXVoiceChangerType.TXLiveVoiceChangerType_0));
-        mData.add(new ChangeVoiceItem(mContext.getString(R.string.live_change_voice_child),
-                R.drawable.livekit_change_voice_child, TXVoiceChangerType.TXLiveVoiceChangerType_1));
-        mData.add(new ChangeVoiceItem(mContext.getString(R.string.live_change_voice_girl),
-                R.drawable.livekit_change_voice_girl, TXVoiceChangerType.TXLiveVoiceChangerType_2));
-        mData.add(new ChangeVoiceItem(mContext.getString(R.string.live_change_voice_uncle),
-                R.drawable.livekit_change_voice_uncle, TXVoiceChangerType.TXLiveVoiceChangerType_3));
-        mData.add(new ChangeVoiceItem(mContext.getString(R.string.live_change_voice_ethereal),
-                R.drawable.livekit_change_voice_ethereal, TXVoiceChangerType.TXLiveVoiceChangerType_11));
+        mData.add(new ChangeVoiceItem(mContext.getString(R.string.common_change_voice_none),
+                R.drawable.audio_effect_select_none, TXVoiceChangerType.TXLiveVoiceChangerType_0));
+        mData.add(new ChangeVoiceItem(mContext.getString(R.string.common_change_voice_child),
+                R.drawable.audio_effect_change_voice_child, TXVoiceChangerType.TXLiveVoiceChangerType_1));
+        mData.add(new ChangeVoiceItem(mContext.getString(R.string.common_change_voice_girl),
+                R.drawable.audio_effect_change_voice_girl, TXVoiceChangerType.TXLiveVoiceChangerType_2));
+        mData.add(new ChangeVoiceItem(mContext.getString(R.string.common_change_voice_uncle),
+                R.drawable.audio_effect_change_voice_uncle, TXVoiceChangerType.TXLiveVoiceChangerType_3));
+        mData.add(new ChangeVoiceItem(mContext.getString(R.string.common_change_voice_ethereal),
+                R.drawable.audio_effect_change_voice_ethereal, TXVoiceChangerType.TXLiveVoiceChangerType_11));
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.livekit_anchor_settings_panel_item,
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.audio_effect_layout_change_voice_item,
                 parent, false);
         return new ViewHolder(itemView);
     }
@@ -63,10 +63,10 @@ public class ChangeVoiceAdapter extends RecyclerView.Adapter<ChangeVoiceAdapter.
         holder.textTitle.setText(changeVoiceItem.title);
         holder.imageIcon.setImageResource(changeVoiceItem.icon);
         if (changeVoiceItem.type == mAudioEffectState.changerType.getValue()) {
-            holder.imageIcon.setBackgroundResource(R.drawable.livekit_settings_item_select_background);
+            holder.imageIcon.setBackgroundResource(R.drawable.audio_effect_settings_item_select_background);
             mSelectedPosition = mData.indexOf(changeVoiceItem);
         } else {
-            holder.imageIcon.setBackgroundResource(R.drawable.livekit_settings_item_not_select_background);
+            holder.imageIcon.setBackgroundResource(R.drawable.audio_effect_settings_item_not_select_background);
         }
         holder.layoutRoot.setOnClickListener(view -> {
             int index = holder.getBindingAdapterPosition();

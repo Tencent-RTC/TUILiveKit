@@ -22,8 +22,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="@string/live_anchor_audience_list_panel_title"
-            android:textColor="@color/livekit_design_standard_g7"
+            android:text="@string/common_anchor_audience_list_panel_title"
+            android:textColor="@color/common_design_standard_g7"
             android:textSize="16sp" />
 
     </RelativeLayout>

@@ -36,7 +36,7 @@ public class GiftPanelAdapter extends RecyclerView.Adapter<GiftPanelAdapter.View
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.livekit_gift_panel_recycle_item, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.gift_layout_panel_recycle_item, parent, false);
         return new ViewHolder(view);
     }
 
@@ -51,8 +51,8 @@ public class GiftPanelAdapter extends RecyclerView.Adapter<GiftPanelAdapter.View
         holder.mTextGiftPrice.setVisibility(mSelectedPosition == position ? View.GONE : View.VISIBLE);
         holder.mBtnGiveGift.setVisibility(mSelectedPosition == position ? View.VISIBLE : View.GONE);
         int giftIconBackResId = mSelectedPosition == position
-                ? R.drawable.livekit_gift_icon_selected_bg
-                : R.drawable.livekit_gift_icon_normal_bg;
+                ? R.drawable.gift_icon_selected_bg
+                : R.drawable.gift_icon_normal_bg;
         holder.mImageGift.setBackgroundResource(giftIconBackResId);
         holder.itemView.setOnClickListener(view -> {
             int preSelectedPosition = mSelectedPosition;

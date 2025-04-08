@@ -33,19 +33,19 @@ public class RoomListView extends FrameLayout {
     public RoomListView(@NonNull Context context) {
         super(context);
         mContext = context;
-        LayoutInflater.from(mContext).inflate(R.layout.livekit_live_room_list_view, this, true);
+        LayoutInflater.from(mContext).inflate(R.layout.room_list_layout_list_view, this, true);
     }
 
     public RoomListView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
-        LayoutInflater.from(mContext).inflate(R.layout.livekit_live_room_list_view, this, true);
+        LayoutInflater.from(mContext).inflate(R.layout.room_list_layout_list_view, this, true);
     }
 
     public RoomListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
-        LayoutInflater.from(mContext).inflate(R.layout.livekit_live_room_list_view, this, true);
+        LayoutInflater.from(mContext).inflate(R.layout.room_list_layout_list_view, this, true);
     }
 
     protected void initView() {
@@ -83,7 +83,7 @@ public class RoomListView extends FrameLayout {
 
     private void initSwipeRefreshLayout() {
         mSwipeRefreshLayout = findViewById(R.id.sfl_cover);
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.livekit_design_standard_g5);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.common_design_standard_g5);
         mSwipeRefreshLayout.setOnRefreshListener(this::refreshRoomList);
     }
 

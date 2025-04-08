@@ -121,7 +121,7 @@ public class AnchorCoHostManageDialog extends PopupDialog implements ITUINotific
                 mTextConnectedTitle.setVisibility(VISIBLE);
                 mTextConnectedTitle.setVisibility(VISIBLE);
                 mTextConnectedTitle.setText(
-                        String.format(getContext().getString(R.string.live_connection_list_title),
+                        String.format(getContext().getString(R.string.common_connection_list_title),
                                 mLiveManager.getCoHostState().connectedUsers.getValue().size() - 1));
             }
             mAnchorConnectedAdapter.updateData(mLiveManager.getCoHostState().connectedUsers.getValue());
@@ -187,14 +187,14 @@ public class AnchorCoHostManageDialog extends PopupDialog implements ITUINotific
 
     private void showDisconnectDialog() {
         StandardDialog dialog = new StandardDialog(getContext());
-        dialog.setContent(getContext().getString(R.string.live_disconnect_tips));
+        dialog.setContent(getContext().getString(R.string.common_disconnect_tips));
         dialog.setAvatar(null);
 
-        dialog.setNegativeText(getContext().getString(R.string.live_disconnect_cancel),
+        dialog.setNegativeText(getContext().getString(R.string.common_disconnect_cancel),
                 negativeView -> {
                     dialog.dismiss();
                 });
-        dialog.setPositiveText(getContext().getString(R.string.live_end_connect), positiveView -> {
+        dialog.setPositiveText(getContext().getString(R.string.common_end_connect), positiveView -> {
             dialog.dismiss();
             disconnect();
         });
@@ -223,13 +223,13 @@ public class AnchorCoHostManageDialog extends PopupDialog implements ITUINotific
         switch (resultCode) {
             case CONNECTING:
             case CONNECTING_OTHER_ROOM:
-                showConnectionToast(getContext().getString(R.string.live_connect_conflict));
+                showConnectionToast(getContext().getString(R.string.common_connect_conflict));
                 break;
             case CONNECTION_FULL:
-                showConnectionToast(getContext().getString(R.string.live_connection_room_full));
+                showConnectionToast(getContext().getString(R.string.common_connection_room_full));
                 break;
             default:
-                showConnectionToast(getContext().getString(R.string.live_connect_error));
+                showConnectionToast(getContext().getString(R.string.common_connect_error));
                 break;
         }
     }

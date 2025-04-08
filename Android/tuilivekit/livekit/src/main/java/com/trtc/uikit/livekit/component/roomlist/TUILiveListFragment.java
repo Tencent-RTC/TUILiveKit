@@ -19,7 +19,7 @@ public class TUILiveListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View contentView = inflater.inflate(R.layout.livekit_fragment_room_list, container, false);
+        View contentView = inflater.inflate(R.layout.room_list_layout_fragment_live_list, container, false);
         mLayoutContainer = contentView.findViewById(R.id.rl_container);
         if (mRoomListView == null && getActivity() != null) {
             mRoomListView = new RoomListView(getActivity());

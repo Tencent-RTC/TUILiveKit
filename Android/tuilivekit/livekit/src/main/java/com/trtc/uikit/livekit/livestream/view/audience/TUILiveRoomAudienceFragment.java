@@ -52,7 +52,7 @@ public class TUILiveRoomAudienceFragment extends Fragment implements ITUINotific
     public static final String METHOD_ACTIVITY_RESULT = "onActivityResult";
 
     private final LiveInfo          mLiveInfo;
-    private final boolean           mEnableSliding  = false;
+    private final boolean           mEnableSliding  = true;
     private       LiveListViewPager mLiveListViewPager;
     private       AudienceView      mAudienceView;
     private final int               mAudienceViewId = View.generateViewId();
@@ -292,7 +292,7 @@ public class TUILiveRoomAudienceFragment extends Fragment implements ITUINotific
         Context context = ContextProvider.getApplicationContext();
         VideoForegroundService.start(context,
                 context.getString(context.getApplicationInfo().labelRes),
-                context.getString(R.string.live_app_running),
+                context.getString(R.string.common_app_running),
                 0);
     }
 

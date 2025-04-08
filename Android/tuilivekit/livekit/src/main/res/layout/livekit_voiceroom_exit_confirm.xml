@@ -11,21 +11,21 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:gravity="center"
-        android:text="@string/live_end_live"
-        android:textColor="@color/livekit_design_standard_g2"
+        android:text="@string/common_end_live"
+        android:textColor="@color/common_design_standard_g2"
         android:textSize="16sp" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="7dp"
-        android:background="@color/livekit_design_standard_g8" />
+        android:background="@color/common_design_standard_g8" />
 
     <TextView
         android:id="@+id/tv_cancel"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:gravity="center"
-        android:text="@string/live_cancel"
-        android:textColor="@color/livekit_design_standard_g2"
+        android:text="@string/common_cancel"
+        android:textColor="@color/common_design_standard_g2"
         android:textSize="16sp" />
 </LinearLayout>

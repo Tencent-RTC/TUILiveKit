@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="60dp"
-    android:background="@color/livekit_design_standard_g2"
+    android:background="@color/common_design_standard_g2"
     android:gravity="start">
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
@@ -25,7 +25,7 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="12dp"
         android:layout_toEndOf="@id/iv_head"
-        android:textColor="@color/livekit_design_standard_g6"
+        android:textColor="@color/common_design_standard_g6"
         android:textSize="16sp" />
 
     <TextView
@@ -37,8 +37,8 @@
         android:layout_marginEnd="24dp"
         android:background="@drawable/livekit_link_mic_reject_background"
         android:gravity="center"
-        android:text="@string/live_reject"
-        android:textColor="@color/livekit_design_standard_b1"
+        android:text="@string/common_reject"
+        android:textColor="@color/common_design_standard_b1"
         android:textSize="12sp" />
 
     <TextView
@@ -50,7 +50,7 @@
         android:layout_toStartOf="@+id/tv_reject"
         android:background="@drawable/livekit_link_mic_accept_background"
         android:gravity="center"
-        android:text="@string/live_accept"
-        android:textColor="@color/livekit_design_standard_flowkit_white"
+        android:text="@string/common_accept"
+        android:textColor="@color/common_design_standard_flowkit_white"
         android:textSize="12sp" />
 </RelativeLayout>

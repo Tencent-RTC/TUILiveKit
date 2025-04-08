@@ -2,7 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <stroke
         android:width="2dp"
-        android:color="@color/livekit_not_standard_white_20_transparency" />
-    <solid android:color="@color/livekit_design_standard_g2" />
+        android:color="@color/common_not_standard_white_20_transparency" />
+    <solid android:color="@color/common_design_standard_g2" />
     <corners android:radius="18dp" />
 </shape>

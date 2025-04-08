@@ -1,11 +1,11 @@
 package com.trtc.uikit.livekit.livestream.view.audience;
 
-import static com.trtc.uikit.livekit.component.gift.access.service.GiftConstants.GIFT_COUNT;
-import static com.trtc.uikit.livekit.component.gift.access.service.GiftConstants.GIFT_ICON_URL;
-import static com.trtc.uikit.livekit.component.gift.access.service.GiftConstants.GIFT_NAME;
-import static com.trtc.uikit.livekit.component.gift.access.service.GiftConstants.GIFT_RECEIVER_USERNAME;
-import static com.trtc.uikit.livekit.component.gift.access.service.GiftConstants.GIFT_VIEW_TYPE;
-import static com.trtc.uikit.livekit.component.gift.access.service.GiftConstants.GIFT_VIEW_TYPE_1;
+import static com.trtc.uikit.livekit.component.giftaccess.service.GiftConstants.GIFT_COUNT;
+import static com.trtc.uikit.livekit.component.giftaccess.service.GiftConstants.GIFT_ICON_URL;
+import static com.trtc.uikit.livekit.component.giftaccess.service.GiftConstants.GIFT_NAME;
+import static com.trtc.uikit.livekit.component.giftaccess.service.GiftConstants.GIFT_RECEIVER_USERNAME;
+import static com.trtc.uikit.livekit.component.giftaccess.service.GiftConstants.GIFT_VIEW_TYPE;
+import static com.trtc.uikit.livekit.component.giftaccess.service.GiftConstants.GIFT_VIEW_TYPE_1;
 import static com.trtc.uikit.livekit.livestream.manager.Constants.EVENT_KEY_LIVE_KIT;
 import static com.trtc.uikit.livekit.livestream.manager.Constants.EVENT_PARAMS_KEY_ENABLE_SLIDE;
 import static com.trtc.uikit.livekit.livestream.manager.Constants.EVENT_PARAMS_KEY_USER_INFO;
@@ -46,16 +46,15 @@ import com.trtc.uikit.livekit.common.Constants;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
 import com.trtc.uikit.livekit.common.utils.LiveCoreLogger;
 import com.trtc.uikit.livekit.component.audiencelist.AudienceListView;
-import com.trtc.uikit.livekit.component.audioeffect.store.AudioEffectStore;
 import com.trtc.uikit.livekit.component.dashboard.StreamDashboardDialog;
 import com.trtc.uikit.livekit.component.floatwindow.service.FloatWindowManager;
 import com.trtc.uikit.livekit.component.gift.GiftPlayView;
 import com.trtc.uikit.livekit.component.gift.LikeButton;
-import com.trtc.uikit.livekit.component.gift.access.GiftButton;
-import com.trtc.uikit.livekit.component.gift.access.service.GiftCacheService;
-import com.trtc.uikit.livekit.component.gift.access.store.GiftStore;
-import com.trtc.uikit.livekit.component.gift.access.view.BarrageViewTypeDelegate;
-import com.trtc.uikit.livekit.component.gift.access.view.GiftBarrageAdapter;
+import com.trtc.uikit.livekit.component.giftaccess.GiftButton;
+import com.trtc.uikit.livekit.component.giftaccess.service.GiftCacheService;
+import com.trtc.uikit.livekit.component.giftaccess.store.GiftStore;
+import com.trtc.uikit.livekit.component.giftaccess.view.BarrageViewTypeDelegate;
+import com.trtc.uikit.livekit.component.giftaccess.view.GiftBarrageAdapter;
 import com.trtc.uikit.livekit.component.gift.store.model.Gift;
 import com.trtc.uikit.livekit.component.gift.store.model.GiftUser;
 import com.trtc.uikit.livekit.component.roominfo.RoomInfoView;
@@ -214,7 +213,6 @@ public class AudienceView extends BasicView implements ITUINotification {
             mLiveCoreView.leaveLiveStream(null);
             mLiveManager.getState().reset();
             BarrageStore.sharedInstance().unInit(mLiveManager.getRoomState().roomId);
-            AudioEffectStore.sharedInstance().unInit();
             com.trtc.uikit.livekit.component.gift.store.GiftStore.sharedInstance().unInit(mLiveManager.getRoomState().roomId);
         }
     }
@@ -590,7 +588,7 @@ public class AudienceView extends BasicView implements ITUINotification {
     private void onEnterUserChange(UserState.UserInfo userInfo) {
         if (userInfo != null && mBarrageStreamView != null) {
             Barrage barrage = new Barrage();
-            barrage.content = mContext.getString(R.string.live_entered_room);
+            barrage.content = mContext.getString(R.string.common_entered_room);
             barrage.user.userId = userInfo.userId;
             barrage.user.userName = TextUtils.isEmpty(userInfo.name.getValue()) ? userInfo.userId :
                     userInfo.name.getValue();

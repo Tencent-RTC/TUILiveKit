@@ -4,15 +4,16 @@ import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.component.audiencelist.store.AudienceListState;
-import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class AudienceListService {
-    private static final String            TAG                = "AudienceListService";
-    public final         AudienceListState mAudienceListState = new AudienceListState();
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getComponentLogger("AudienceListService");
+
+    public final AudienceListState mAudienceListState = new AudienceListState();
 
     public void initRoomInfo(String roomId) {
         mAudienceListState.roomId = roomId;
@@ -26,7 +27,8 @@ public class AudienceListService {
 
                     @Override
                     public void onError(TUICommonDefine.Error error, String message) {
-                        LiveStreamLog.error(TAG + " fetchRoomInfo failed:error:" + error + ",errorCode:" + error.getValue() + "message:" + message);
+                        LOGGER.error("fetchRoomInfo failed:error:" + error + ",errorCode:" + error.getValue() +
+                                "message:" + message);
                         ErrorLocalized.onError(error);
                     }
                 });
@@ -55,7 +57,8 @@ public class AudienceListService {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(TAG + " getUserList failed:error:" + error + ",errorCode:" + error.getValue() + "message:" + message);
+                LOGGER.error("getUserList failed:error:" + error + ",errorCode:" + error.getValue() +
+                        "message:" + message);
                 ErrorLocalized.onError(error);
             }
         });

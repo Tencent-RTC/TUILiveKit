@@ -48,7 +48,7 @@ public class EndLiveStreamDialog extends PopupDialog {
     }
 
     private void initTitleView() {
-        String tips = getContext().getString(R.string.live_audience_end_link_tips);
+        String tips = getContext().getString(R.string.common_audience_end_link_tips);
         TextView titleView = addItemView();
         titleView.setTextSize(12);
         titleView.setText(tips);
@@ -57,9 +57,9 @@ public class EndLiveStreamDialog extends PopupDialog {
 
     private void initExitCoGuestItem() {
         TextView itemView = addItemView();
-        int color = mContext.getResources().getColor(R.color.livekit_not_standard_red);
+        int color = mContext.getResources().getColor(R.color.common_not_standard_red);
         itemView.setTextColor(color);
-        itemView.setText(getContext().getString(R.string.live_end_link));
+        itemView.setText(getContext().getString(R.string.common_end_link));
         itemView.setOnClickListener(v -> {
             mLiveStream.terminateIntraRoomConnection();
             mLiveStreamManager.getCoGuestManager().updateCoGuestStates(NONE);
@@ -70,7 +70,7 @@ public class EndLiveStreamDialog extends PopupDialog {
 
     private void initExitRoomItem() {
         TextView itemView = addItemView();
-        itemView.setText(getContext().getString(R.string.live_end_live));
+        itemView.setText(getContext().getString(R.string.common_end_live));
         itemView.setOnClickListener(v -> {
             mLiveStream.leaveLiveStream(null);
             dismiss();
@@ -83,13 +83,13 @@ public class EndLiveStreamDialog extends PopupDialog {
 
     private void initCancelItem() {
         TextView itemView = addItemView();
-        itemView.setText(getContext().getString(R.string.live_cancel));
+        itemView.setText(getContext().getString(R.string.common_cancel));
         itemView.setOnClickListener(v -> dismiss());
     }
 
     private void addSplitLine(int height) {
         View view = new View(mContext);
-        int color = mContext.getResources().getColor(R.color.livekit_design_standard_g8);
+        int color = mContext.getResources().getColor(R.color.common_design_standard_g8);
         view.setBackgroundColor(color);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height);
         mRootLayout.addView(view, params);
@@ -97,7 +97,7 @@ public class EndLiveStreamDialog extends PopupDialog {
 
     private TextView addItemView() {
         TextView textView = new TextView(mContext);
-        int color = mContext.getResources().getColor(R.color.livekit_design_standard_g2);
+        int color = mContext.getResources().getColor(R.color.common_design_standard_g2);
         textView.setTextColor(color);
         textView.setTextSize(16);
         textView.setGravity(Gravity.CENTER);

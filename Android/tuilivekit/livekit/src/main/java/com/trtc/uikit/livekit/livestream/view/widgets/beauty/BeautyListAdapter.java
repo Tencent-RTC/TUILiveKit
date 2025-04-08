@@ -35,13 +35,13 @@ public class BeautyListAdapter extends RecyclerView.Adapter<BeautyListAdapter.Vi
     }
 
     private void initData() {
-        mData.add(new BeautyItem(mContext.getString(R.string.live_beauty_item_close),
+        mData.add(new BeautyItem(mContext.getString(R.string.common_beauty_item_close),
                 R.drawable.livekit_beauty_item_close, ITEM_BEAUTY_CLOSE, null));
-        mData.add(new BeautyItem(mContext.getString(R.string.live_beauty_item_smooth),
+        mData.add(new BeautyItem(mContext.getString(R.string.common_beauty_item_smooth),
                 R.drawable.livekit_beauty_item_smooth, ITEM_BEAUTY_SMOOTH, null));
-        mData.add(new BeautyItem(mContext.getString(R.string.live_beauty_item_whiteness),
+        mData.add(new BeautyItem(mContext.getString(R.string.common_beauty_item_whiteness),
                 R.drawable.livekit_beauty_item_whiteness, ITEM_BEAUTY_WHITENESS, null));
-        mData.add(new BeautyItem(mContext.getString(R.string.live_beauty_item_ruddy),
+        mData.add(new BeautyItem(mContext.getString(R.string.common_beauty_item_ruddy),
                 R.drawable.livekit_beauty_item_ruddy, ITEM_BEAUTY_RUDDY, null));
     }
 

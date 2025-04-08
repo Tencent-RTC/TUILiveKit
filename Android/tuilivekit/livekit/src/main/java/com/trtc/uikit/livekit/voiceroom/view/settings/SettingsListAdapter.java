@@ -48,9 +48,9 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
     }
 
     private void initData() {
-        mData.add(new SettingsItem(mContext.getString(R.string.live_settings_bg_image)
+        mData.add(new SettingsItem(mContext.getString(R.string.common_settings_bg_image)
                 , R.drawable.livekit_setting_bg_image, ITEM_TYPE_BGM_IMAGE));
-        mData.add(new SettingsItem(mContext.getString(R.string.live_audio_effect)
+        mData.add(new SettingsItem(mContext.getString(R.string.common_audio_effect)
                 , R.drawable.livekit_settings_audio_effect, ITEM_TYPE_AUDIO_EFFECT));
     }
 
@@ -103,8 +103,8 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
     private void showBGMImagePanel() {
         if (mStreamPresetImagePicker == null) {
             StreamPresetImagePicker.Config config = new StreamPresetImagePicker.Config();
-            config.title = mContext.getString(R.string.live_settings_bg_image);
-            config.confirmButtonText = mContext.getString(R.string.live_set_as_background);
+            config.title = mContext.getString(R.string.common_settings_bg_image);
+            config.confirmButtonText = mContext.getString(R.string.common_set_as_background);
             config.data = Arrays.asList(BACKGROUND_THUMB_URL_LIST);
             config.currentImageUrl = transferThumbUrlFromImage(mRoomState.backgroundURL.getValue());
             mStreamPresetImagePicker = new StreamPresetImagePicker(mContext, config);

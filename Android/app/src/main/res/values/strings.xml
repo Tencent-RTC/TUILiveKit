@@ -28,4 +28,5 @@
     <string name="app_main_item_video_live_sub">Live preview/Beauty filters/Multi-host</string>
     <string name="app_main_item_voice_room">Voice Room</string>
     <string name="app_main_item_voice_room_sub">High audio quality/Large room/Smooth mic on/off</string>
+    <string name="app_exit_float_window_tip">It\'s live, please try again later.</string>
 </resources>

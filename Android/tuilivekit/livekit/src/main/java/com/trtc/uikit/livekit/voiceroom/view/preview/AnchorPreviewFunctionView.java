@@ -55,8 +55,8 @@ public class AnchorPreviewFunctionView extends BasicView {
         findViewById(R.id.iv_bg_image).setOnClickListener(view -> {
             if (mStreamPresetImagePicker == null) {
                 StreamPresetImagePicker.Config config = new StreamPresetImagePicker.Config();
-                config.title = mContext.getString(R.string.live_settings_bg_image);
-                config.confirmButtonText = mContext.getString(R.string.live_set_as_background);
+                config.title = mContext.getString(R.string.common_settings_bg_image);
+                config.confirmButtonText = mContext.getString(R.string.common_set_as_background);
                 config.data = Arrays.asList(Constants.BACKGROUND_THUMB_URL_LIST);
                 config.currentImageUrl = transferThumbUrlFromImage(mRoomState.backgroundURL.getValue());
                 mStreamPresetImagePicker = new StreamPresetImagePicker(mContext, config);

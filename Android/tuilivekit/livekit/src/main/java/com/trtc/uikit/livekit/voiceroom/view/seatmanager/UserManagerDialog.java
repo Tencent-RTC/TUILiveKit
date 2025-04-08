@@ -125,7 +125,7 @@ public class UserManagerDialog extends PopupDialog {
             ImageLoader.load(mContext, mImageHeadView, avatarUrl, R.drawable.livekit_ic_avatar);
         }
         mUserNameText.setText(mSeatInfo.name.getValue());
-        mUserIdText.setText(mContext.getString(R.string.live_user_id, mSeatInfo.userId.getValue()));
+        mUserIdText.setText(mContext.getString(R.string.common_user_id, mSeatInfo.userId.getValue()));
         updateAudioLockState(mSeatInfo.isAudioLocked.getValue());
     }
 
@@ -195,10 +195,10 @@ public class UserManagerDialog extends PopupDialog {
     private void updateAudioLockState(boolean isAudioLocked) {
         if (isAudioLocked) {
             mIvMute.setImageResource(R.drawable.livekit_ic_unmute_microphone);
-            mTvMute.setText(R.string.live_voiceroom_unmuted_seat);
+            mTvMute.setText(R.string.common_voiceroom_unmuted_seat);
         } else {
             mIvMute.setImageResource(R.drawable.livekit_ic_mute_microphone);
-            mTvMute.setText(R.string.live_voiceroom_mute_seat);
+            mTvMute.setText(R.string.common_voiceroom_mute_seat);
         }
     }
 

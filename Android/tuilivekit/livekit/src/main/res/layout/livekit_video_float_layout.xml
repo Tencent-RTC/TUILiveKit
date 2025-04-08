@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/livekit_float_view_width"
     android:layout_height="@dimen/livekit_float_view_height"
-    android:background="@color/livekit_color_float_Window_bg">
+    android:background="@color/common_color_float_Window_bg">
 
     <FrameLayout
         android:id="@+id/fl_video_grid_container"

@@ -47,7 +47,7 @@ public class AudioEffectPanel extends FrameLayout {
     public AudioEffectPanel(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
-        LayoutInflater.from(mContext).inflate(R.layout.livekit_anchor_settings_audio_effect_panel, this, true);
+        LayoutInflater.from(mContext).inflate(R.layout.audio_effect_layout_settings_panel, this, true);
     }
 
     public void init(String roomId) {

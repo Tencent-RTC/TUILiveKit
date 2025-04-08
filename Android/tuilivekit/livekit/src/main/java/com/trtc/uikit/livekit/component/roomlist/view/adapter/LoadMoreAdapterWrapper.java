@@ -41,7 +41,7 @@ public class LoadMoreAdapterWrapper extends RecyclerView.Adapter<RecyclerView.Vi
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == TYPE_FOOTER) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.livekit_live_room_list_refresh_footer, parent, false);
+                    .inflate(R.layout.room_list_layout_refresh_footer, parent, false);
             return new FootViewHolder(view);
         } else {
             return adapter.onCreateViewHolder(parent, viewType);
@@ -53,9 +53,9 @@ public class LoadMoreAdapterWrapper extends RecyclerView.Adapter<RecyclerView.Vi
         if (holder instanceof FootViewHolder) {
             FootViewHolder footViewHolder = (FootViewHolder) holder;
             if (adapter.getItemCount() == 0) {
-                footViewHolder.tvNoMoreData.setText(R.string.live_no_room_tip);
+                footViewHolder.tvNoMoreData.setText(R.string.common_no_room_tip);
             } else {
-                footViewHolder.tvNoMoreData.setText(R.string.live_no_more_data);
+                footViewHolder.tvNoMoreData.setText(R.string.common_no_more_data);
             }
             switch (loadState) {
                 case LOADING:

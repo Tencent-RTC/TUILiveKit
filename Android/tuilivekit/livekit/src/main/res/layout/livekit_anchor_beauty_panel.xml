@@ -14,8 +14,8 @@
         android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:text="@string/live_beauty_panel_title"
-        android:textColor="@color/livekit_design_standard_g7"
+        android:text="@string/common_beauty_panel_title"
+        android:textColor="@color/common_design_standard_g7"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -52,7 +52,7 @@
             tools:text=""
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
-            android:textColor="@color/livekit_design_standard_flowkit_white"
+            android:textColor="@color/common_design_standard_flowkit_white"
             android:textSize="12sp" />
 
         <SeekBar
@@ -79,7 +79,7 @@
             android:paddingEnd="5dp"
             android:visibility="gone"
             tools:text="6"
-            android:textColor="@color/livekit_design_standard_flowkit_white"
+            android:textColor="@color/common_design_standard_flowkit_white"
             android:textSize="12sp" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

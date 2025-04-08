@@ -16,6 +16,6 @@
         android:id="@+id/tv_toast_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/livekit_not_standard_purple_6a"
+        android:textColor="@color/common_not_standard_purple_6a"
         android:textSize="14sp" />
 </LinearLayout>

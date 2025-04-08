@@ -5,7 +5,7 @@
     android:id="@+id/fl_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/livekit_design_standard_transparent">
+    android:background="@color/common_design_standard_transparent">
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/iv_avatar"
@@ -39,7 +39,7 @@
             android:id="@+id/tv_name"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/livekit_design_standard_flowkit_white"
+            android:textColor="@color/common_design_standard_flowkit_white"
             android:textSize="10sp"
             android:maxLines="1"
             android:ellipsize="end"

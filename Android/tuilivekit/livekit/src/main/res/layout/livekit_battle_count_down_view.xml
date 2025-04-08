@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:textColor="@color/livekit_design_standard_g2"
+            android:textColor="@color/common_design_standard_g2"
             android:textSize="40sp"
             android:textStyle="bold" />
 
@@ -28,8 +28,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_countdown"
             android:gravity="center_horizontal"
-            android:text="@string/live_battle_wait_start"
-            android:textColor="@color/livekit_design_standard_g3"
+            android:text="@string/common_battle_wait_start"
+            android:textColor="@color/common_design_standard_g3"
             android:textSize="12sp" />
 
         <TextView
@@ -39,7 +39,7 @@
             android:layout_below="@id/tv_tip"
             android:layout_marginTop="10dp"
             android:gravity="center_horizontal"
-            android:text="@string/live_battle_wait_stop"
+            android:text="@string/common_battle_wait_stop"
             android:textColor="#FFE5395C"
             android:textSize="12sp" />
     </RelativeLayout>

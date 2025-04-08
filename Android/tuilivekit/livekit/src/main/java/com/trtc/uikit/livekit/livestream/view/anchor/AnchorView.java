@@ -1,11 +1,11 @@
 package com.trtc.uikit.livekit.livestream.view.anchor;
 
-import static com.trtc.uikit.livekit.component.gift.access.service.GiftConstants.GIFT_COUNT;
-import static com.trtc.uikit.livekit.component.gift.access.service.GiftConstants.GIFT_ICON_URL;
-import static com.trtc.uikit.livekit.component.gift.access.service.GiftConstants.GIFT_NAME;
-import static com.trtc.uikit.livekit.component.gift.access.service.GiftConstants.GIFT_RECEIVER_USERNAME;
-import static com.trtc.uikit.livekit.component.gift.access.service.GiftConstants.GIFT_VIEW_TYPE;
-import static com.trtc.uikit.livekit.component.gift.access.service.GiftConstants.GIFT_VIEW_TYPE_1;
+import static com.trtc.uikit.livekit.component.giftaccess.service.GiftConstants.GIFT_COUNT;
+import static com.trtc.uikit.livekit.component.giftaccess.service.GiftConstants.GIFT_ICON_URL;
+import static com.trtc.uikit.livekit.component.giftaccess.service.GiftConstants.GIFT_NAME;
+import static com.trtc.uikit.livekit.component.giftaccess.service.GiftConstants.GIFT_RECEIVER_USERNAME;
+import static com.trtc.uikit.livekit.component.giftaccess.service.GiftConstants.GIFT_VIEW_TYPE;
+import static com.trtc.uikit.livekit.component.giftaccess.service.GiftConstants.GIFT_VIEW_TYPE_1;
 import static com.trtc.uikit.livekit.livestream.manager.Constants.EVENT_KEY_LIVE_KIT;
 import static com.trtc.uikit.livekit.livestream.manager.Constants.EVENT_PARAMS_KEY_USER_INFO;
 import static com.trtc.uikit.livekit.livestream.manager.Constants.EVENT_SUB_KEY_SHOW_CO_GUEST_MANAGE_VIEW;
@@ -15,6 +15,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -33,6 +34,7 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.GetRoomInfoCallback;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.RoomInfo;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.UserInfo;
+import com.tencent.qcloud.tuicore.TUIConstants;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
 import com.trtc.tuikit.common.system.ContextProvider;
@@ -46,10 +48,10 @@ import com.trtc.uikit.livekit.common.utils.LiveCoreLogger;
 import com.trtc.uikit.livekit.component.audiencelist.AudienceListView;
 import com.trtc.uikit.livekit.component.floatwindow.service.FloatWindowManager;
 import com.trtc.uikit.livekit.component.gift.GiftPlayView;
-import com.trtc.uikit.livekit.component.gift.access.service.GiftCacheService;
-import com.trtc.uikit.livekit.component.gift.access.store.GiftStore;
-import com.trtc.uikit.livekit.component.gift.access.view.BarrageViewTypeDelegate;
-import com.trtc.uikit.livekit.component.gift.access.view.GiftBarrageAdapter;
+import com.trtc.uikit.livekit.component.giftaccess.service.GiftCacheService;
+import com.trtc.uikit.livekit.component.giftaccess.store.GiftStore;
+import com.trtc.uikit.livekit.component.giftaccess.view.BarrageViewTypeDelegate;
+import com.trtc.uikit.livekit.component.giftaccess.view.GiftBarrageAdapter;
 import com.trtc.uikit.livekit.component.gift.store.model.Gift;
 import com.trtc.uikit.livekit.component.gift.store.model.GiftUser;
 import com.trtc.uikit.livekit.component.roominfo.RoomInfoView;
@@ -95,6 +97,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @SuppressLint("ViewConstructor")
 public class AnchorView extends BasicView implements ITUINotification {
@@ -456,6 +459,7 @@ public class AnchorView extends BasicView implements ITUINotification {
                     mUserManager.getAudienceList();
                     mUserManager.updateOwnerUserInfo();
                     mCoGuestManager.getSeatList();
+                    showAlertUserLiveTips();
                 }
 
                 @Override
@@ -467,6 +471,17 @@ public class AnchorView extends BasicView implements ITUINotification {
                 }
             });
         });
+    }
+
+    private void showAlertUserLiveTips() {
+        try {
+            Map<String, Object> map = new HashMap<>();
+            map.put(TUIConstants.Privacy.PARAM_DIALOG_CONTEXT, Objects.requireNonNull(getContext()));
+            TUICore.notifyEvent(TUIConstants.Privacy.EVENT_ROOM_STATE_CHANGED,
+                    TUIConstants.Privacy.EVENT_SUB_KEY_ROOM_STATE_START, map);
+        } catch (Exception e) {
+            Log.d(TAG, "showAlertUserLiveTips exception:" + e.getMessage());
+        }
     }
 
     private void initLiveInfoEditView() {
@@ -673,7 +688,7 @@ public class AnchorView extends BasicView implements ITUINotification {
             return;
         }
         String content = receivedConnectionRequest.userName
-                + getContext().getString(R.string.live_connect_inviting_append);
+                + getContext().getString(R.string.common_connect_inviting_append);
         showConnectionRequestDialog(content, receivedConnectionRequest.avatarUrl, receivedConnectionRequest.roomId);
     }
 
@@ -682,14 +697,14 @@ public class AnchorView extends BasicView implements ITUINotification {
         mProcessConnectionDialog.setContent(content);
         mProcessConnectionDialog.setAvatar(avatarUrl);
 
-        String rejectText = getContext().getString(R.string.live_reject);
+        String rejectText = getContext().getString(R.string.common_reject);
         mProcessConnectionDialog.setNegativeText(rejectText, negativeView -> {
             mLiveCoreView.respondToCrossRoomConnection(roomId, false, null);
             mCoHostManager.removeReceivedConnectionRequest();
             mProcessConnectionDialog.dismiss();
         });
 
-        String receiveText = getContext().getString(R.string.live_receive);
+        String receiveText = getContext().getString(R.string.common_receive);
         mProcessConnectionDialog.setPositiveText(receiveText, positiveView -> {
             mLiveCoreView.respondToCrossRoomConnection(roomId, true, null);
             mCoHostManager.removeReceivedConnectionRequest();
@@ -745,12 +760,12 @@ public class AnchorView extends BasicView implements ITUINotification {
         if (user == null) {
             return;
         }
-        String content = user.userName + " " + getContext().getString(R.string.live_battle_inviting);
+        String content = user.userName + " " + getContext().getString(R.string.common_battle_inviting);
         mProcessBattleDialog = new StandardDialog(getContext());
         mProcessBattleDialog.setContent(content);
         mProcessBattleDialog.setAvatar(user.avatarUrl);
 
-        String rejectText = getContext().getString(R.string.live_reject);
+        String rejectText = getContext().getString(R.string.common_reject);
         mProcessBattleDialog.setNegativeText(rejectText, negativeView -> {
             mProcessBattleDialog.dismiss();
             mProcessBattleDialog = null;
@@ -768,7 +783,7 @@ public class AnchorView extends BasicView implements ITUINotification {
             });
         });
 
-        String receiveText = getContext().getString(R.string.live_receive);
+        String receiveText = getContext().getString(R.string.common_receive);
         mProcessBattleDialog.setPositiveText(receiveText, positiveView -> {
             mProcessBattleDialog.dismiss();
             mProcessBattleDialog = null;
@@ -841,7 +856,7 @@ public class AnchorView extends BasicView implements ITUINotification {
     private void onEnterUserChange(UserState.UserInfo userInfo) {
         if (userInfo != null && mBarrageStreamView != null) {
             Barrage barrage = new Barrage();
-            barrage.content = mContext.getString(R.string.live_entered_room);
+            barrage.content = mContext.getString(R.string.common_entered_room);
             barrage.user.userId = userInfo.userId;
             barrage.user.userName = TextUtils.isEmpty(userInfo.name.getValue()) ? userInfo.userId :
                     userInfo.name.getValue();

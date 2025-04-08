@@ -58,7 +58,7 @@ public class GiftPlayView extends FrameLayout {
     public GiftPlayView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
-        LayoutInflater.from(getContext()).inflate(R.layout.livekit_gift_layout_animator, this, true);
+        LayoutInflater.from(getContext()).inflate(R.layout.gift_layout_animator, this, true);
         initView();
         initAnimationPlayer();
         initImageAnimationPlayer();
@@ -218,10 +218,10 @@ public class GiftPlayView extends FrameLayout {
             return;
         }
         if (sender != null && TextUtils.equals(sender.userId, TUILogin.getUserId())) {
-            sender.userName = mContext.getString(R.string.live_gift_me);
+            sender.userName = mContext.getString(R.string.common_gift_me);
         }
         if (receiver != null && TextUtils.equals(receiver.userId, TUILogin.getUserId())) {
-            receiver.userName = mContext.getString(R.string.live_gift_me);
+            receiver.userName = mContext.getString(R.string.common_gift_me);
         }
         GiftAnimationModel giftModel = new GiftAnimationModel();
         giftModel.gift = gift;

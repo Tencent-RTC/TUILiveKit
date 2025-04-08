@@ -26,8 +26,8 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="5dp"
-                android:text="@string/live_voiceroom_need_agree"
-                android:textColor="@color/livekit_design_standard_g7"
+                android:text="@string/common_voiceroom_need_agree"
+                android:textColor="@color/common_design_standard_g7"
                 android:textSize="16sp" />
 
             <androidx.appcompat.widget.SwitchCompat
@@ -39,8 +39,8 @@
                 android:layout_toEndOf="@id/need_request"
                 android:background="@null"
                 android:checked="false"
-                app:thumbTint="@color/livekit_switch_thumb_bg"
-                app:trackTint="@color/livekit_switch_track_bg" />
+                app:thumbTint="@color/audio_effect_switch_thumb_bg"
+                app:trackTint="@color/audio_effect_switch_track_bg" />
         </RelativeLayout>
     </LinearLayout>
 </LinearLayout>

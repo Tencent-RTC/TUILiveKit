@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textColor="@color/livekit_design_standard_g7"
+            android:textColor="@color/common_design_standard_g7"
             android:textSize="14sp"
             android:textStyle="bold" />
 
@@ -26,8 +26,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="20dp"
-            android:text="@string/live_dashboard_video_info_title"
-            android:textColor="@color/livekit_design_standard_g7"
+            android:text="@string/common_dashboard_video_info_title"
+            android:textColor="@color/common_design_standard_g7"
             android:textSize="14sp"
             android:textStyle="bold" />
 
@@ -46,8 +46,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/live_dashboard_video_resolution"
-                    android:textColor="@color/livekit_design_standard_g7"
+                    android:text="@string/common_dashboard_video_resolution"
+                    android:textColor="@color/common_design_standard_g7"
                     android:textSize="16sp" />
 
                 <TextView
@@ -57,7 +57,7 @@
                     android:layout_marginEnd="15dp"
                     android:layout_weight="1"
                     android:gravity="end"
-                    android:textColor="@color/livekit_design_standard_g7"
+                    android:textColor="@color/common_design_standard_g7"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -66,7 +66,7 @@
                 android:layout_height="0.5dp"
                 android:layout_marginTop="13dp"
                 android:layout_marginEnd="10dp"
-                android:background="@color/livekit_not_standard_separator_67" />
+                android:background="@color/common_not_standard_separator_67" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -77,8 +77,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/live_dashboard_video_bitrate"
-                    android:textColor="@color/livekit_design_standard_g7"
+                    android:text="@string/common_dashboard_video_bitrate"
+                    android:textColor="@color/common_design_standard_g7"
                     android:textSize="16sp" />
 
                 <TextView
@@ -88,7 +88,7 @@
                     android:layout_marginEnd="15dp"
                     android:layout_weight="1"
                     android:gravity="end"
-                    android:textColor="@color/livekit_design_standard_g7"
+                    android:textColor="@color/common_design_standard_g7"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -97,7 +97,7 @@
                 android:layout_height="0.5dp"
                 android:layout_marginTop="13dp"
                 android:layout_marginEnd="10dp"
-                android:background="@color/livekit_not_standard_separator_67" />
+                android:background="@color/common_not_standard_separator_67" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -108,8 +108,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/live_dashboard_video_fps"
-                    android:textColor="@color/livekit_design_standard_g7"
+                    android:text="@string/common_dashboard_video_fps"
+                    android:textColor="@color/common_design_standard_g7"
                     android:textSize="16sp" />
 
                 <TextView
@@ -119,7 +119,7 @@
                     android:layout_marginEnd="15dp"
                     android:layout_weight="1"
                     android:gravity="end"
-                    android:textColor="@color/livekit_design_standard_g7"
+                    android:textColor="@color/common_design_standard_g7"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -133,8 +133,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/live_dashboard_stream_type"
-                    android:textColor="@color/livekit_design_standard_g7"
+                    android:text="@string/common_dashboard_stream_type"
+                    android:textColor="@color/common_design_standard_g7"
                     android:textSize="16sp" />
 
                 <TextView
@@ -143,7 +143,7 @@
                     android:layout_marginEnd="15dp"
                     android:layout_weight="1"
                     android:gravity="end"
-                    android:textColor="@color/livekit_design_standard_g7"
+                    android:textColor="@color/common_design_standard_g7"
                     android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>
@@ -153,8 +153,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
-            android:text="@string/live_dashboard_audio_info_title"
-            android:textColor="@color/livekit_design_standard_g7"
+            android:text="@string/common_dashboard_audio_info_title"
+            android:textColor="@color/common_design_standard_g7"
             android:textSize="14sp"
             android:textStyle="bold" />
 
@@ -174,8 +174,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/live_dashboard_audio_sample_rate"
-                    android:textColor="@color/livekit_design_standard_g7"
+                    android:text="@string/common_dashboard_audio_sample_rate"
+                    android:textColor="@color/common_design_standard_g7"
                     android:textSize="16sp" />
 
                 <TextView
@@ -185,7 +185,7 @@
                     android:layout_marginEnd="15dp"
                     android:layout_weight="1"
                     android:gravity="end"
-                    android:textColor="@color/livekit_design_standard_g7"
+                    android:textColor="@color/common_design_standard_g7"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -193,7 +193,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:layout_marginTop="13dp"
-                android:background="@color/livekit_not_standard_separator_67" />
+                android:background="@color/common_not_standard_separator_67" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -204,8 +204,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
-                    android:text="@string/live_dashboard_audio_bitrate"
-                    android:textColor="@color/livekit_design_standard_g7"
+                    android:text="@string/common_dashboard_audio_bitrate"
+                    android:textColor="@color/common_design_standard_g7"
                     android:textSize="16sp" />
 
                 <TextView
@@ -216,7 +216,7 @@
                     android:layout_marginEnd="15dp"
                     android:layout_weight="1"
                     android:gravity="end"
-                    android:textColor="@color/livekit_design_standard_g7"
+                    android:textColor="@color/common_design_standard_g7"
                     android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>

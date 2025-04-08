@@ -28,11 +28,11 @@ public class ConnectionErrorHandler {
         switch (resultCode) {
             case CONNECTING:
             case CONNECTING_OTHER_ROOM:
-                return context.getString(R.string.live_connect_conflict);
+                return context.getString(R.string.common_connect_conflict);
             case CONNECTION_FULL:
-                return context.getString(R.string.live_connection_room_full);
+                return context.getString(R.string.common_connection_room_full);
             default:
-                return context.getString(R.string.live_connect_error);
+                return context.getString(R.string.common_connect_error);
         }
     }
 

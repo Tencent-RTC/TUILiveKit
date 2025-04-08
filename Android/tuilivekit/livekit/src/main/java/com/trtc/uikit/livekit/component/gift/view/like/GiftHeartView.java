@@ -44,8 +44,8 @@ public class GiftHeartView extends AppCompatImageView {
     private static Bitmap sHeart;
     private static Bitmap sHeartBorder;
 
-    private int mHeartResId       = R.drawable.livekit_gift_heart0;
-    private int mHeartBorderResId = R.drawable.livekit_gift_heart1;
+    private int mHeartResId       = R.drawable.gift_heart0;
+    private int mHeartBorderResId = R.drawable.gift_heart1;
 
     public GiftHeartView(Context context, AttributeSet attrs) {
         super(context, attrs);

@@ -35,7 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
-                android:textColor="@color/livekit_text_color_primary"
+                android:textColor="@color/common_text_color_primary"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@id/iv_head"
@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="6dp"
-                android:textColor="@color/livekit_text_color_secondary"
+                android:textColor="@color/common_text_color_secondary"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="@id/iv_head"
                 app:layout_constraintStart_toEndOf="@id/iv_head" />
@@ -67,7 +67,7 @@
                     android:layout_gravity="center_vertical"
                     android:background="@drawable/livekit_user_manager_unfollow_bg"
                     android:gravity="center"
-                    android:text="@string/live_follow_anchor"
+                    android:text="@string/common_follow_anchor"
                     android:textColor="@android:color/white"
                     android:textSize="14sp"
                     android:visibility="gone" />
@@ -109,7 +109,7 @@
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:layout_gravity="center_horizontal"
-                    android:background="@drawable/livekit_settings_item_not_select_background">
+                    android:background="@drawable/audio_effect_settings_item_not_select_background">
 
                     <ImageView
                         android:id="@+id/iv_audio"
@@ -127,8 +127,8 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="6dp"
                     android:singleLine="true"
-                    android:text="@string/live_voiceroom_mute_seat"
-                    android:textColor="@color/livekit_text_color_primary"
+                    android:text="@string/common_voiceroom_mute_seat"
+                    android:textColor="@color/common_text_color_primary"
                     android:textSize="12sp" />
 
             </LinearLayout>
@@ -145,7 +145,7 @@
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:layout_gravity="center_horizontal"
-                    android:background="@drawable/livekit_settings_item_not_select_background"
+                    android:background="@drawable/audio_effect_settings_item_not_select_background"
                     android:enabled="false">
 
                     <ImageView
@@ -165,8 +165,8 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="6dp"
                     android:singleLine="true"
-                    android:text="@string/live_stop_video"
-                    android:textColor="@color/livekit_text_color_primary"
+                    android:text="@string/common_stop_video"
+                    android:textColor="@color/common_text_color_primary"
                     android:textSize="12sp" />
 
             </LinearLayout>
@@ -183,7 +183,7 @@
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:layout_gravity="center_horizontal"
-                    android:background="@drawable/livekit_settings_item_not_select_background">
+                    android:background="@drawable/audio_effect_settings_item_not_select_background">
 
                     <ImageView
                         android:id="@+id/iv_flip_camera"
@@ -201,8 +201,8 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="6dp"
                     android:singleLine="true"
-                    android:text="@string/live_video_settings_item_flip"
-                    android:textColor="@color/livekit_text_color_primary"
+                    android:text="@string/common_video_settings_item_flip"
+                    android:textColor="@color/common_text_color_primary"
                     android:textSize="12sp" />
 
             </LinearLayout>
@@ -219,7 +219,7 @@
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:layout_gravity="center_horizontal"
-                    android:background="@drawable/livekit_settings_item_not_select_background">
+                    android:background="@drawable/audio_effect_settings_item_not_select_background">
 
                     <ImageView
                         android:id="@+id/iv_hand_up"
@@ -237,8 +237,8 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="6dp"
                     android:singleLine="true"
-                    android:text="@string/live_end_user"
-                    android:textColor="@color/livekit_text_color_primary"
+                    android:text="@string/common_end_user"
+                    android:textColor="@color/common_text_color_primary"
                     android:textSize="12sp" />
 
             </LinearLayout>

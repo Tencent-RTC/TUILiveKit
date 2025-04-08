@@ -88,7 +88,7 @@ public class CoHostManager extends BaseManager {
         removeSendConnectionRequest(invitee.roomId);
         updateRecommendListStatus();
         ToastUtil.toastShortMessage(ContextProvider.getApplicationContext().getResources()
-                .getString(R.string.live_connect_request_rejected));
+                .getString(R.string.common_connect_request_rejected));
     }
 
     public void onConnectionRequestTimeout(TUILiveConnectionManager.ConnectionUser inviter,

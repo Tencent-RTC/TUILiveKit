@@ -38,11 +38,11 @@ public class RoomInfoView extends FrameLayout {
     private       LinearLayout          mLayoutRoot;
     private       TextView              mTextUnfollow;
     private       ImageView             mImageFollowIcon;
-    private       FrameLayout         mLayoutFollowPanel;
-    private       RoomInfoPopupDialog mRoomInfoPopupDialog;
-    private final RoomInfoService     mRoomInfoService = new RoomInfoService();
-    private final RoomInfoState       mRoomInfoState   = mRoomInfoService.mRoomInfoState;
-    private final Observer<String>    mHostIdObserver  = this::onHostIdChange;
+    private       FrameLayout           mLayoutFollowPanel;
+    private       RoomInfoPopupDialog   mRoomInfoPopupDialog;
+    private final RoomInfoService       mRoomInfoService      = new RoomInfoService();
+    private final RoomInfoState         mRoomInfoState        = mRoomInfoService.mRoomInfoState;
+    private final Observer<String>      mHostIdObserver       = this::onHostIdChange;
     private final Observer<String>      mHostNickNameObserver = this::onHostNickNameChange;
     private final Observer<String>      mHostAvatarObserver   = this::onHostAvatarChange;
     private final Observer<Set<String>> mFollowStatusObserver = this::onFollowStatusChange;
@@ -67,7 +67,7 @@ public class RoomInfoView extends FrameLayout {
     public RoomInfoView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
-        LayoutInflater.from(mContext).inflate(R.layout.livekit_room_info, this, true);
+        LayoutInflater.from(mContext).inflate(R.layout.room_info_view, this, true);
         bindViewId();
     }
 
@@ -138,7 +138,8 @@ public class RoomInfoView extends FrameLayout {
     }
 
     private void initHostAvatarView() {
-        ImageLoader.load(mContext, mImageAvatar, mRoomInfoState.ownerAvatarUrl.getValue(), R.drawable.livekit_ic_avatar);
+        ImageLoader.load(mContext, mImageAvatar, mRoomInfoState.ownerAvatarUrl.getValue(),
+                R.drawable.room_info_default_avatar);
     }
 
     private void initRoomInfoPanelView() {
@@ -167,7 +168,7 @@ public class RoomInfoView extends FrameLayout {
     }
 
     private void onHostAvatarChange(String avatar) {
-        ImageLoader.load(mContext, mImageAvatar, avatar, R.drawable.livekit_ic_avatar);
+        ImageLoader.load(mContext, mImageAvatar, avatar, R.drawable.room_info_default_avatar);
     }
 
     private void onFollowStatusChange(Set<String> followUsers) {

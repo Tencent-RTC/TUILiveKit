@@ -72,8 +72,8 @@ public class StreamDashboardDialog extends PopupDialog {
         mTextUpLoss = view.findViewById(R.id.tv_upLoss);
         mRecyclerMediaInfo = view.findViewById(R.id.rv_media_info);
         mLayoutMediaInfo = view.findViewById(R.id.ll_media_info);
-        mColorGreen = mContext.getResources().getColor(R.color.livekit_not_standard_green_47);
-        mColorPink = mContext.getResources().getColor(R.color.livekit_not_standard_pink_f9);
+        mColorGreen = mContext.getResources().getColor(R.color.common_not_standard_green_47);
+        mColorPink = mContext.getResources().getColor(R.color.common_not_standard_pink_f9);
     }
 
     @Override

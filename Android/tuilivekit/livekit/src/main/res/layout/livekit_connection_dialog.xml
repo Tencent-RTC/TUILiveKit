@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:textColor="@color/livekit_design_standard_g1"
+            android:textColor="@color/common_design_standard_g1"
             android:paddingEnd="25dp"
             android:textSize="16sp" />
     </LinearLayout>
@@ -74,7 +74,7 @@
         android:layout_height="54dp"
         android:background="@android:color/transparent"
         android:textAllCaps="false"
-        android:textColor="@color/livekit_design_standard_b1"
+        android:textColor="@color/common_design_standard_b1"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_weight="1"
