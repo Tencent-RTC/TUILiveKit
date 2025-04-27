@@ -1,6 +1,6 @@
 {
   "name": "@tencentcloud/live-uikit-vue",
-  "version": "3.0.0",
+  "version": "3.0.4",
   "scripts": {
     "dev": "vite",
     "dev:inner": "cross-env VITE_RUNTIME_SCENE=inner npm run dev",
@@ -14,9 +14,9 @@
     "lint": "./node_modules/.bin/eslint ./src --no-error-on-unmatched-pattern"
   },
   "dependencies": {
-    "@tencentcloud/livekit-web-vue3": "~3.0.0",
-    "@tencentcloud/tuiroom-engine-js": "~3.0.0",
-    "@tencentcloud/uikit-base-component-vue3": "0.3.2",
+    "@tencentcloud/livekit-web-vue3": "~3.0.4",
+    "@tencentcloud/tuiroom-engine-js": "~3.0.4",
+    "@tencentcloud/uikit-base-component-vue3": "0.3.3",
     "axios": "^0.27.2",
     "js-cookie": "^3.0.1",
     "mitt": "^3.0.0",
