@@ -15,6 +15,12 @@
             "state" : "translated",
             "value" : "360p"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "360p"
+          }
         }
       }
     },
@@ -28,6 +34,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "540p"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "540p"
@@ -49,6 +61,12 @@
             "state" : "translated",
             "value" : "720p"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "720p"
+          }
         }
       }
     },
@@ -62,6 +80,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1080p"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "1080p"
@@ -83,6 +107,12 @@
             "state" : "translated",
             "value" : "接受"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接受"
+          }
         }
       }
     },
@@ -100,6 +130,12 @@
             "state" : "translated",
             "value" : "调整视频连麦画面"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "調整視頻連麥畫面"
+          }
         }
       }
     },
@@ -113,6 +149,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同意"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "同意"
@@ -134,6 +176,12 @@
             "state" : "translated",
             "value" : "当前房间已开启全员禁言"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當前房間已開啓全員禁言"
+          }
         }
       }
     },
@@ -150,6 +198,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "允许观众申请连麦"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "允許觀衆申請連麥"
           }
         }
       }
@@ -168,6 +222,12 @@
             "state" : "translated",
             "value" : "已经处于麦上状态"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已經處於麥上狀態"
+          }
         }
       }
     },
@@ -185,6 +245,12 @@
             "state" : "translated",
             "value" : "已经处于排麦状态"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已經處於排麥狀態"
+          }
         }
       }
     },
@@ -198,6 +264,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "主播"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "主播"
@@ -219,6 +291,12 @@
             "state" : "translated",
             "value" : "礼物动画不是MP4资源"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "禮物動畫不是MP4資源"
+          }
         }
       }
     },
@@ -235,6 +313,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "礼物动画不是SVGA资源"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "禮物動畫不是SVGA資源"
           }
         }
       }
@@ -253,6 +337,12 @@
             "state" : "translated",
             "value" : "申请列表 (xxx)"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "申請列表 (xxx)"
+          }
         }
       }
     },
@@ -269,6 +359,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "申请语音连麦"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "申請語音連麥"
           }
         }
       }
@@ -287,6 +383,12 @@
             "state" : "translated",
             "value" : "申请连麦"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "申請連麥"
+          }
         }
       }
     },
@@ -303,6 +405,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "申请视频连麦"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "申請視頻連麥"
           }
         }
       }
@@ -321,6 +429,12 @@
             "state" : "translated",
             "value" : "确认要删除xxx吗?"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "確認要刪除xxx嗎?"
+          }
         }
       }
     },
@@ -337,6 +451,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "确定要断开与其他主播的连线吗?"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "確定要斷開與其他主播的連線嗎?"
           }
         }
       }
@@ -355,6 +475,12 @@
             "state" : "translated",
             "value" : "确定要断开xxx的连麦吗？"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "確定要斷開xxx的連麥嗎？"
+          }
         }
       }
     },
@@ -371,6 +497,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "确定要断开连麦吗？"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "確定要斷開連麥嗎？"
           }
         }
       }
@@ -389,6 +521,12 @@
             "state" : "translated",
             "value" : "确定要结束PK吗？结束后将以当前结果为最终结果"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "確定要結束PK嗎？結束後將以當前結果爲最終結果"
+          }
         }
       }
     },
@@ -406,6 +544,12 @@
             "state" : "translated",
             "value" : "确定要移除xxx吗？"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "確定要移除xxx嗎？"
+          }
         }
       }
     },
@@ -419,6 +563,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音效"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "音效"
@@ -440,6 +590,12 @@
             "state" : "translated",
             "value" : "音频码率"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音頻碼率"
+          }
         }
       }
     },
@@ -456,6 +612,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "音频信息"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音頻信息"
           }
         }
       }
@@ -474,6 +636,12 @@
             "state" : "translated",
             "value" : "音频采样率"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音頻採樣率"
+          }
         }
       }
     },
@@ -491,6 +659,12 @@
             "state" : "translated",
             "value" : "音频设置"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音頻設置"
+          }
         }
       }
     },
@@ -504,6 +678,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "背景"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "背景"
@@ -525,6 +705,12 @@
             "state" : "translated",
             "value" : "余额 xxx"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "餘額 xxx"
+          }
         }
       }
     },
@@ -541,6 +727,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "PK邀请已超时"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PK邀請已超時"
           }
         }
       }
@@ -559,6 +751,12 @@
             "state" : "translated",
             "value" : "美颜"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "美顏"
+          }
         }
       }
     },
@@ -575,6 +773,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "直播已结束"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "直播已結束"
           }
         }
       }
@@ -593,6 +797,12 @@
             "state" : "translated",
             "value" : "摄像头没有系统授权, 检查系统授权"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "攝像頭沒有系統授權, 檢查系統授權"
+          }
         }
       }
     },
@@ -610,6 +820,12 @@
             "state" : "translated",
             "value" : "摄像头被占用，检查是否有其他进程使用摄像头"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "攝像頭被佔用，檢查是否有其他進程使用攝像頭"
+          }
         }
       }
     },
@@ -623,6 +839,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "取消"
@@ -644,6 +866,12 @@
             "state" : "translated",
             "value" : "取消连麦申请"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消連麥申請"
+          }
         }
       }
     },
@@ -660,6 +888,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "欢快"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "歡快"
           }
         }
       }
@@ -678,6 +912,12 @@
             "state" : "translated",
             "value" : "选择连麦方式"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選擇連麥方式"
+          }
         }
       }
     },
@@ -695,6 +935,12 @@
             "state" : "translated",
             "value" : "选择音乐"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選擇音樂"
+          }
         }
       }
     },
@@ -708,6 +954,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清晰度"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "清晰度"
@@ -729,6 +981,12 @@
             "state" : "translated",
             "value" : "关闭"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "關閉"
+          }
         }
       }
     },
@@ -745,6 +1003,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "发起连线"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "發起連線"
           }
         }
       }
@@ -763,6 +1027,12 @@
             "state" : "translated",
             "value" : "确认"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "確認"
+          }
         }
       }
     },
@@ -779,6 +1049,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "选择连麦方式，主播同意后接通"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選擇連麥方式，主播同意後接通"
           }
         }
       }
@@ -797,6 +1073,12 @@
             "state" : "translated",
             "value" : "连线中"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "連線中"
+          }
         }
       }
     },
@@ -814,6 +1096,12 @@
             "state" : "translated",
             "value" : "连线申请被拒绝"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "連線申請被拒絕"
+          }
         }
       }
     },
@@ -827,6 +1115,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "封面"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "封面"
@@ -848,6 +1142,12 @@
             "state" : "translated",
             "value" : "短时间内频繁发起 battle, 稍等一会再试"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "短時間內頻繁發起 battle, 稍等一會再試"
+          }
         }
       }
     },
@@ -864,6 +1164,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "短时间内连线过于频繁，稍等一会再试"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "短時間內連線過於頻繁，稍等一會再試"
           }
         }
       }
@@ -882,6 +1188,12 @@
             "state" : "translated",
             "value" : "频率超过限制，例如创建房间超过频率超限，同一房间 ID， 1秒内只能创建一次"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "頻率超過限制，例如創建房間超過頻率超限，同一房間 ID， 1秒內只能創建一次"
+          }
         }
       }
     },
@@ -898,6 +1210,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "当前麦位（xxx/yyy)"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當前麥位（xxx/yyy)"
           }
         }
       }
@@ -916,6 +1234,12 @@
             "state" : "translated",
             "value" : "当前麦位音频被锁"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當前麥位音頻被鎖"
+          }
         }
       }
     },
@@ -933,6 +1257,12 @@
             "state" : "translated",
             "value" : "当前麦位视频被锁, 需要由房主解锁麦位后，才能打开摄像头"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當前麥位視頻被鎖, 需要由房主解鎖麥位後，才能打開攝像頭"
+          }
         }
       }
     },
@@ -946,6 +1276,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日常聊天"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "日常聊天"
@@ -967,6 +1303,12 @@
             "state" : "translated",
             "value" : "仪表盘"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "儀表盤"
+          }
         }
       }
     },
@@ -984,6 +1326,12 @@
             "state" : "translated",
             "value" : "禁用音频"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "禁用音頻"
+          }
         }
       }
     },
@@ -997,6 +1345,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "禁言"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "禁言"
@@ -1018,6 +1372,12 @@
             "state" : "translated",
             "value" : "禁用视频"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "禁用視頻"
+          }
         }
       }
     },
@@ -1034,6 +1394,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "断开连线"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "斷開連線"
           }
         }
       }
@@ -1052,6 +1418,12 @@
             "state" : "translated",
             "value" : "下行丢包率"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下行丟包率"
+          }
         }
       }
     },
@@ -1069,6 +1441,12 @@
             "state" : "translated",
             "value" : "直播时长"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "直播時長"
+          }
         }
       }
     },
@@ -1082,6 +1460,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "耳返"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "耳返"
@@ -1103,6 +1487,12 @@
             "state" : "translated",
             "value" : "耳返音量"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "耳返音量"
+          }
         }
       }
     },
@@ -1120,6 +1510,12 @@
             "state" : "translated",
             "value" : "启用音频"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "啓用音頻"
+          }
         }
       }
     },
@@ -1133,6 +1529,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "解除禁言"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "解除禁言"
@@ -1154,6 +1556,12 @@
             "state" : "translated",
             "value" : "启用视频"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "啓用視頻"
+          }
         }
       }
     },
@@ -1170,6 +1578,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "挂断"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "掛斷"
           }
         }
       }
@@ -1188,6 +1602,12 @@
             "state" : "translated",
             "value" : "断开连麦"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "斷開連麥"
+          }
         }
       }
     },
@@ -1204,6 +1624,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "断开连线"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "斷開連線"
           }
         }
       }
@@ -1222,6 +1648,12 @@
             "state" : "translated",
             "value" : "结束连麦"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "結束連麥"
+          }
         }
       }
     },
@@ -1238,6 +1670,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "关闭直播间"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "關閉直播間"
           }
         }
       }
@@ -1256,6 +1694,12 @@
             "state" : "translated",
             "value" : "断开 PK"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "斷開 PK"
+          }
         }
       }
     },
@@ -1272,6 +1716,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "进入房间"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "進入房間"
           }
         }
       }
@@ -1290,6 +1740,12 @@
             "state" : "translated",
             "value" : "空灵"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "空靈"
+          }
         }
       }
     },
@@ -1306,6 +1762,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "超过付费上限，例如麦位数，pk场次房间数量等超过付费限制"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "超過付費上限，例如麥位數，pk場次房間數量等超過付費限制"
           }
         }
       }
@@ -1324,6 +1786,12 @@
             "state" : "translated",
             "value" : "退出直播间"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退出直播間"
+          }
         }
       }
     },
@@ -1340,6 +1808,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "开启屏幕分享失败，检查房间内是否有人正在屏幕分享"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開啓屏幕分享失敗，檢查房間內是否有人正在屏幕分享"
           }
         }
       }
@@ -1358,6 +1832,12 @@
             "state" : "translated",
             "value" : "进房失败"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "進房失敗"
+          }
         }
       }
     },
@@ -1374,6 +1854,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "获取屏幕分享源（屏幕和窗口）失败，检查屏幕录制权限"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "獲取屏幕分享源（屏幕和窗口）失敗，檢查屏幕錄製權限"
           }
         }
       }
@@ -1392,6 +1878,12 @@
             "state" : "translated",
             "value" : "获取权限失败，当前未授权音/视频权限，请查看是否开启设备权限"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "獲取權限失敗，當前未授權音/視頻權限，請查看是否開啓設備權限"
+          }
         }
       }
     },
@@ -1408,6 +1900,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "滤镜"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "濾鏡"
           }
         }
       }
@@ -1426,6 +1924,12 @@
             "state" : "translated",
             "value" : "翻转"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻轉"
+          }
         }
       }
     },
@@ -1442,6 +1946,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "关注"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "關注"
           }
         }
       }
@@ -1460,6 +1970,12 @@
             "state" : "translated",
             "value" : "礼物"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "禮物"
+          }
         }
       }
     },
@@ -1476,6 +1992,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "送礼人数"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "送禮人數"
           }
         }
       }
@@ -1494,6 +2016,12 @@
             "state" : "translated",
             "value" : "礼物收入"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "禮物收入"
+          }
         }
       }
     },
@@ -1510,6 +2038,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "开始直播"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開始直播"
           }
         }
       }
@@ -1528,6 +2062,12 @@
             "state" : "translated",
             "value" : "挂断"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "掛斷"
+          }
         }
       }
     },
@@ -1544,6 +2084,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "创建房间 ID 非法，自定义 ID 必须为可打印 ASCII 字符（0x20-0x7e），最长48个字节"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "創建房間 ID 非法，自定義 ID 必須爲可打印 ASCII 字符（0x20-0x7e），最長48個字節"
           }
         }
       }
@@ -1562,6 +2108,12 @@
             "state" : "translated",
             "value" : "房间名称非法，名称最长30字节，字符编码必须是 UTF-8 ，如果包含中文"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "房間名稱非法，名稱最長30字節，字符編碼必須是 UTF-8 ，如果包含中文"
+          }
         }
       }
     },
@@ -1578,6 +2130,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "余额不足，请充值"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "餘額不足，請充值"
           }
         }
       }
@@ -1596,6 +2154,12 @@
             "state" : "translated",
             "value" : "内部错误，推荐重试一次。"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "內部錯誤，推薦重試一次。"
+          }
         }
       }
     },
@@ -1613,6 +2177,12 @@
             "state" : "translated",
             "value" : "无效的房间类型"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無效的房間類型"
+          }
         }
       }
     },
@@ -1626,6 +2196,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "非法的userId"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "非法的userId"
@@ -1647,6 +2223,12 @@
             "state" : "translated",
             "value" : "邀请"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "邀請"
+          }
         }
       }
     },
@@ -1663,6 +2245,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在直播中，请稍后再试。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在直播中，請稍後再試。"
           }
         }
       }
@@ -1681,6 +2269,12 @@
             "state" : "translated",
             "value" : "该房间处于 battle 中"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "該房間處於 battle 中"
+          }
         }
       }
     },
@@ -1697,6 +2291,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "被主持人踢下麦位"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "被主持人踢下麥位"
           }
         }
       }
@@ -1715,6 +2315,12 @@
             "state" : "translated",
             "value" : "知识教学"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "知識教學"
+          }
         }
       }
     },
@@ -1728,6 +2334,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KTV"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "KTV"
@@ -1749,6 +2361,12 @@
             "state" : "translated",
             "value" : "聊聊吧~"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "聊聊吧~"
+          }
         }
       }
     },
@@ -1765,6 +2383,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "点赞数量"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "點贊數量"
           }
         }
       }
@@ -1783,6 +2407,12 @@
             "state" : "translated",
             "value" : "申请连麦(xxx)"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "申請連麥(xxx)"
+          }
         }
       }
     },
@@ -1799,6 +2429,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "连麦管理"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "連麥管理"
           }
         }
       }
@@ -1817,6 +2453,12 @@
             "state" : "translated",
             "value" : "直播已结束"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "直播已結束"
+          }
         }
       }
     },
@@ -1833,6 +2475,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "直播分类:xxx"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "直播分類:xxx"
           }
         }
       }
@@ -1851,6 +2499,12 @@
             "state" : "translated",
             "value" : "本场直播数据"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本場直播數據"
+          }
         }
       }
     },
@@ -1864,6 +2518,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "直播模式:xxx"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "直播模式:xxx"
@@ -1885,6 +2545,12 @@
             "state" : "translated",
             "value" : "直播房间ID：xxx"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "直播房間ID：xxx"
+          }
         }
       }
     },
@@ -1901,6 +2567,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "视频直播"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "視頻直播"
           }
         }
       }
@@ -1919,6 +2591,12 @@
             "state" : "translated",
             "value" : "加载更多"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加載更多"
+          }
         }
       }
     },
@@ -1935,6 +2613,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在加载..."
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在加載..."
           }
         }
       }
@@ -1953,6 +2637,12 @@
             "state" : "translated",
             "value" : "本地用户"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本地用戶"
+          }
         }
       }
     },
@@ -1969,6 +2659,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "锁定麦位"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "鎖定麥位"
           }
         }
       }
@@ -1987,6 +2683,12 @@
             "state" : "translated",
             "value" : "萝莉"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "蘿莉"
+          }
         }
       }
     },
@@ -2000,6 +2702,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "洪亮"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "洪亮"
@@ -2021,6 +2729,12 @@
             "state" : "translated",
             "value" : "低沉"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "低沉"
+          }
         }
       }
     },
@@ -2034,6 +2748,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "神奇世界"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "神奇世界"
@@ -2055,6 +2775,12 @@
             "state" : "translated",
             "value" : "美妆"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "美妝"
+          }
         }
       }
     },
@@ -2072,6 +2798,12 @@
             "state" : "translated",
             "value" : "最大麦位超出套餐包数量限制"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最大麥位超出套餐包數量限制"
+          }
         }
       }
     },
@@ -2085,6 +2817,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "我"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "我"
@@ -2106,6 +2844,12 @@
             "state" : "translated",
             "value" : "音视频信息"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音視頻信息"
+          }
         }
       }
     },
@@ -2122,6 +2866,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "忧郁"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "憂鬱"
           }
         }
       }
@@ -2140,6 +2890,12 @@
             "state" : "translated",
             "value" : "消息数量"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "消息數量"
+          }
         }
       }
     },
@@ -2156,6 +2912,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "金属声"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "金屬聲"
           }
         }
       }
@@ -2174,6 +2936,12 @@
             "state" : "translated",
             "value" : "麦克风没有系统授权，检查系统授权"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "麥克風沒有系統授權，檢查系統授權"
+          }
         }
       }
     },
@@ -2191,6 +2959,12 @@
             "state" : "translated",
             "value" : "麦克风被占用"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "麥克風被佔用"
+          }
         }
       }
     },
@@ -2204,6 +2978,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "磨皮"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "磨皮"
@@ -2225,6 +3005,12 @@
             "state" : "translated",
             "value" : "镜像"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "鏡像"
+          }
         }
       }
     },
@@ -2238,6 +3024,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "修改封面"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "修改封面"
@@ -2259,6 +3051,12 @@
             "state" : "translated",
             "value" : "更多设置"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更多設置"
+          }
         }
       }
     },
@@ -2275,6 +3073,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "音乐"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音樂"
           }
         }
       }
@@ -2293,6 +3097,12 @@
             "state" : "translated",
             "value" : "音乐升降调"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音樂升降調"
+          }
         }
       }
     },
@@ -2309,6 +3119,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "音乐播放失败"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音樂播放失敗"
           }
         }
       }
@@ -2327,6 +3143,12 @@
             "state" : "translated",
             "value" : "音乐音量"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音樂音量"
+          }
         }
       }
     },
@@ -2344,6 +3166,12 @@
             "state" : "translated",
             "value" : "静音"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "靜音"
+          }
         }
       }
     },
@@ -2357,6 +3185,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "熊孩子"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "熊孩子"
@@ -2378,6 +3212,12 @@
             "state" : "translated",
             "value" : "需要向房主或管理员申请后打开摄像头"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要向房主或管理員申請後打開攝像頭"
+          }
         }
       }
     },
@@ -2394,6 +3234,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "需要向房主或管理员申请后打开麦克风"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要向房主或管理員申請後打開麥克風"
           }
         }
       }
@@ -2412,6 +3258,12 @@
             "state" : "translated",
             "value" : "网络信息"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "網絡信息"
+          }
         }
       }
     },
@@ -2428,6 +3280,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "当前无摄像头设备，请插入摄像头设备解决该问题"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當前無攝像頭設備，請插入攝像頭設備解決該問題"
           }
         }
       }
@@ -2446,6 +3304,12 @@
             "state" : "translated",
             "value" : "无效果"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無效果"
+          }
         }
       }
     },
@@ -2462,6 +3326,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "当前无麦克风设备"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當前無麥克風設備"
           }
         }
       }
@@ -2480,6 +3350,12 @@
             "state" : "translated",
             "value" : "无付费信息，需在控制台购买套餐包"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無付費信息，需在控制檯購買套餐包"
+          }
         }
       }
     },
@@ -2496,6 +3372,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "信令请求无权限，例如取消非自己发起的邀请"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "信令請求無權限，例如取消非自己發起的邀請"
           }
         }
       }
@@ -2514,6 +3396,12 @@
             "state" : "translated",
             "value" : "麦位没有用户，去邀请"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "麥位沒有用戶，去邀請"
+          }
         }
       }
     },
@@ -2530,6 +3418,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "发起的 battle 里没有一个有效的房间"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "發起的 battle 裏沒有一個有效的房間"
           }
         }
       }
@@ -2548,6 +3442,12 @@
             "state" : "translated",
             "value" : "非房间成员"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "非房間成員"
+          }
         }
       }
     },
@@ -2564,6 +3464,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "未找到 SDKAppID，请在 腾讯云视立方 SDK 控制台 确认应用信息"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未找到 SDKAppID，請在 騰訊雲視立方 SDK 控制檯 確認應用信息"
           }
         }
       }
@@ -2582,6 +3488,12 @@
             "state" : "translated",
             "value" : "未登录,请调用 Login 接口"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未登錄,請調用 Login 接口"
+          }
         }
       }
     },
@@ -2598,6 +3510,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "未在麦上"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未在麥上"
           }
         }
       }
@@ -2616,6 +3534,12 @@
             "state" : "translated",
             "value" : "没有在排麦列表中"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "沒有在排麥列表中"
+          }
         }
       }
     },
@@ -2632,6 +3556,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "麦上列表 (xxx)\t"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "麥上列表 (xxx)\t"
           }
         }
       }
@@ -2650,6 +3580,12 @@
             "state" : "translated",
             "value" : "一键美颜"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一鍵美顏"
+          }
         }
       }
     },
@@ -2667,6 +3603,12 @@
             "state" : "translated",
             "value" : "在线观众"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在線觀衆"
+          }
         }
       }
     },
@@ -2680,6 +3622,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "操作成功"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "操作成功"
@@ -2701,6 +3649,12 @@
             "state" : "translated",
             "value" : "原声"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "原聲"
+          }
         }
       }
     },
@@ -2717,6 +3671,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "调用 API 时，传入的参数不合法，检查入参是否合法"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "調用 API 時，傳入的參數不合法，檢查入參是否合法"
           }
         }
       }
@@ -2735,6 +3695,12 @@
             "state" : "translated",
             "value" : "PK结束"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PK結束"
+          }
         }
       }
     },
@@ -2751,6 +3717,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "请输入房间名"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請輸入房間名"
           }
         }
       }
@@ -2769,6 +3741,12 @@
             "state" : "translated",
             "value" : "隐私"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隱私"
+          }
         }
       }
     },
@@ -2786,6 +3764,12 @@
             "state" : "translated",
             "value" : "公开"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "公開"
+          }
         }
       }
     },
@@ -2799,6 +3783,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下拉刷新"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "下拉刷新"
@@ -2820,6 +3810,12 @@
             "state" : "translated",
             "value" : "充值"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "充值"
+          }
         }
       }
     },
@@ -2836,6 +3832,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "拒绝"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拒絕"
           }
         }
       }
@@ -2854,6 +3856,12 @@
             "state" : "translated",
             "value" : "松开刷新"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "鬆開刷新"
+          }
         }
       }
     },
@@ -2871,6 +3879,12 @@
             "state" : "translated",
             "value" : "远端用户"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "遠端用戶"
+          }
         }
       }
     },
@@ -2884,6 +3898,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "移除"
@@ -2905,6 +3925,12 @@
             "state" : "translated",
             "value" : "移出房间"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移出房間"
+          }
         }
       }
     },
@@ -2921,6 +3947,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "重复操作"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重複操作"
           }
         }
       }
@@ -2939,6 +3971,12 @@
             "state" : "translated",
             "value" : "请求被限频，请稍后重试"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請求被限頻，請稍後重試"
+          }
         }
       }
     },
@@ -2956,6 +3994,12 @@
             "state" : "translated",
             "value" : "上麦需要房主同意"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上麥需要房主同意"
+          }
         }
       }
     },
@@ -2969,6 +4013,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分辨率"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "分辨率"
@@ -2990,6 +4040,12 @@
             "state" : "translated",
             "value" : "混响"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "混響"
+          }
         }
       }
     },
@@ -3006,6 +4062,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "进房密码错误"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "進房密碼錯誤"
           }
         }
       }
@@ -3024,6 +4086,12 @@
             "state" : "translated",
             "value" : "房主不支持退房操作，房主只能解散房间"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "房主不支持退房操作，房主只能解散房間"
+          }
         }
       }
     },
@@ -3040,6 +4108,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "需要房主或者管理员权限才能操作"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要房主或者管理員權限才能操作"
           }
         }
       }
@@ -3058,6 +4132,12 @@
             "state" : "translated",
             "value" : "需要房主权限才能操作"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要房主權限才能操作"
+          }
         }
       }
     },
@@ -3074,6 +4154,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "红润"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "紅潤"
           }
         }
       }
@@ -3092,6 +4178,12 @@
             "state" : "translated",
             "value" : "往返延时"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "往返延時"
+          }
         }
       }
     },
@@ -3108,6 +4200,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "需要向房主或管理员申请后打开屏幕分享"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要向房主或管理員申請後打開屏幕分享"
           }
         }
       }
@@ -3126,6 +4224,12 @@
             "state" : "translated",
             "value" : "上麦邀请已被取消"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上麥邀請已被取消"
+          }
         }
       }
     },
@@ -3142,6 +4246,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "麦位编号不存在"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "麥位編號不存在"
           }
         }
       }
@@ -3160,6 +4270,12 @@
             "state" : "translated",
             "value" : "发送"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "發送"
+          }
         }
       }
     },
@@ -3173,6 +4289,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "送出"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "送出"
@@ -3194,6 +4316,12 @@
             "state" : "translated",
             "value" : "送给"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "送給"
+          }
         }
       }
     },
@@ -3210,6 +4338,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "服务器内部错误，请重试"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "服務器內部錯誤，請重試"
           }
         }
       }
@@ -3228,6 +4362,12 @@
             "state" : "translated",
             "value" : "设为背景"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設爲背景"
+          }
         }
       }
     },
@@ -3244,6 +4384,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "设为封面"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設爲封面"
           }
         }
       }
@@ -3262,6 +4408,12 @@
             "state" : "translated",
             "value" : "设置"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設置"
+          }
         }
       }
     },
@@ -3278,6 +4430,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "购物"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "購物"
           }
         }
       }
@@ -3296,6 +4454,12 @@
             "state" : "translated",
             "value" : "信令请求冲突"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "信令請求衝突"
+          }
         }
       }
     },
@@ -3312,6 +4476,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "信令请求重复"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "信令請求重複"
           }
         }
       }
@@ -3330,6 +4500,12 @@
             "state" : "translated",
             "value" : "信令请求 ID 无效或已经被处理过"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "信令請求 ID 無效或已經被處理過"
+          }
         }
       }
     },
@@ -3346,6 +4522,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "开启视频"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開啓視頻"
           }
         }
       }
@@ -3364,6 +4546,12 @@
             "state" : "translated",
             "value" : "关闭视频"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "關閉視頻"
+          }
         }
       }
     },
@@ -3380,6 +4568,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "推荐列表"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "推薦列表"
           }
         }
       }
@@ -3398,6 +4592,12 @@
             "state" : "translated",
             "value" : "切换至横屏"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "切換至橫屏"
+          }
         }
       }
     },
@@ -3414,6 +4614,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "切换至竖屏"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "切換至豎屏"
           }
         }
       }
@@ -3432,6 +4638,12 @@
             "state" : "translated",
             "value" : "系统问题，打开摄像头失败。检查摄像头设备是否正常"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "系統問題，打開攝像頭失敗。檢查攝像頭設備是否正常"
+          }
         }
       }
     },
@@ -3448,6 +4660,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "系统问题，打开麦克风失败。检查麦克风设备是否正常"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "系統問題，打開麥克風失敗。檢查麥克風設備是否正常"
           }
         }
       }
@@ -3466,6 +4684,12 @@
             "state" : "translated",
             "value" : "标签数量超上限"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "標籤數量超上限"
+          }
         }
       }
     },
@@ -3482,6 +4706,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "上麦"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上麥"
           }
         }
       }
@@ -3500,6 +4730,12 @@
             "state" : "translated",
             "value" : "上麦申请被拒绝"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上麥申請被拒絕"
+          }
         }
       }
     },
@@ -3516,6 +4752,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "上麦申请超时"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上麥申請超時"
           }
         }
       }
@@ -3534,6 +4776,12 @@
             "state" : "translated",
             "value" : "暂未归类的通用错误"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暫未歸類的通用錯誤"
+          }
         }
       }
     },
@@ -3550,6 +4798,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "管理员数量超过上限"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "管理員數量超過上限"
           }
         }
       }
@@ -3568,6 +4822,12 @@
             "state" : "translated",
             "value" : "您已被主播关闭摄像头"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "您已被主播關閉攝像頭"
+          }
         }
       }
     },
@@ -3584,6 +4844,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "主播解禁了你的摄像头"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "主播解禁了你的攝像頭"
           }
         }
       }
@@ -3602,6 +4868,12 @@
             "state" : "translated",
             "value" : "您已被主播静音"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "您已被主播靜音"
+          }
         }
       }
     },
@@ -3618,6 +4890,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "主播解除了您的静音"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "主播解除了您的靜音"
           }
         }
       }
@@ -3636,6 +4914,12 @@
             "state" : "translated",
             "value" : "主播正在PK中，无法发起PK"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "主播正在PK中，無法發起PK"
+          }
         }
       }
     },
@@ -3652,6 +4936,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "该场次 battle 不存在或已结束"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "該場次 battle 不存在或已結束"
           }
         }
       }
@@ -3670,6 +4960,12 @@
             "state" : "translated",
             "value" : "该 battle 场次还未开始"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "該 battle 場次還未開始"
+          }
         }
       }
     },
@@ -3686,6 +4982,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "该 battle 场次已经结束"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "該 battle 場次已經結束"
           }
         }
       }
@@ -3704,6 +5006,12 @@
             "state" : "translated",
             "value" : "当前连线不存在或结束"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當前連線不存在或結束"
+          }
         }
       }
     },
@@ -3720,6 +5028,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "当前麦位视频被锁, 需要由房主解锁麦位后，才能打开屏幕分享"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當前麥位視頻被鎖, 需要由房主解鎖麥位後，才能打開屏幕分享"
           }
         }
       }
@@ -3738,6 +5052,12 @@
             "state" : "translated",
             "value" : "当前房间不支持预加载"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當前房間不支持預加載"
+          }
         }
       }
     },
@@ -3754,6 +5074,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "当前房间与其他房间连线中"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當前房間與其他房間連線中"
           }
         }
       }
@@ -3772,6 +5098,12 @@
             "state" : "translated",
             "value" : "当前房间需要密码才能进入"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當前房間需要密碼才能進入"
+          }
         }
       }
     },
@@ -3788,6 +5120,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "当前麦位已经有人了"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當前麥位已經有人了"
           }
         }
       }
@@ -3806,6 +5144,12 @@
             "state" : "translated",
             "value" : "当前连线人数已达最大限制。"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當前連線人數已達最大限制。"
+          }
         }
       }
     },
@@ -3822,6 +5166,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "房间 meta 数据中的 key 数量超过上限"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "房間 meta 數據中的 key 數量超過上限"
           }
         }
       }
@@ -3840,6 +5190,12 @@
             "state" : "translated",
             "value" : "其他错误，无法发起PK"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "其他錯誤，無法發起PK"
+          }
         }
       }
     },
@@ -3856,6 +5212,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "请参数非法，请根据错误描述检查请求是否正确"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請參數非法，請根據錯誤描述檢查請求是否正確"
           }
         }
       }
@@ -3874,6 +5236,12 @@
             "state" : "translated",
             "value" : "房间不存在，或者曾经存在过，但是目前已经被解散"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "房間不存在，或者曾經存在過，但是目前已經被解散"
+          }
         }
       }
     },
@@ -3890,6 +5258,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "该房间不支持连麦"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "該房間不支持連麥"
           }
         }
       }
@@ -3908,6 +5282,12 @@
             "state" : "translated",
             "value" : "房间ID 已被使用，请选择别的房间ID"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "房間ID 已被使用，請選擇別的房間ID"
+          }
         }
       }
     },
@@ -3924,6 +5304,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "房间 ID 已被 IM 占用，可以换一个房间 ID 使用，或者先通过 IM 接口解散该群"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "房間 ID 已被 IM 佔用，可以換一個房間 ID 使用，或者先通過 IM 接口解散該羣"
           }
         }
       }
@@ -3942,6 +5328,12 @@
             "state" : "translated",
             "value" : "房间 ID 已被使用，并且操作者为房主，可以直接使用"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "房間 ID 已被使用，並且操作者爲房主，可以直接使用"
+          }
         }
       }
     },
@@ -3958,6 +5350,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "该房间已经在连线中"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "該房間已經在連線中"
           }
         }
       }
@@ -3976,6 +5374,12 @@
             "state" : "translated",
             "value" : "该房间处于其他的 battle 场次中"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "該房間處於其他的 battle 場次中"
+          }
         }
       }
     },
@@ -3992,6 +5396,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "房间成员已满"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "房間成員已滿"
           }
         }
       }
@@ -4010,6 +5420,12 @@
             "state" : "translated",
             "value" : "该房间已经不在 battle 中"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "該房間已經不在 battle 中"
+          }
         }
       }
     },
@@ -4026,6 +5442,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "超过连线和 battle 房间数量上限"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "超過連線和 battle 房間數量上限"
           }
         }
       }
@@ -4044,6 +5466,12 @@
             "state" : "translated",
             "value" : "邀请连线的房间不存在"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "邀請連線的房間不存在"
+          }
         }
       }
     },
@@ -4060,6 +5488,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "被邀请连线的房间已在邀请列表或者已连线。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "被邀請連線的房間已在邀請列表或者已連線。"
           }
         }
       }
@@ -4078,6 +5512,12 @@
             "state" : "translated",
             "value" : "被邀请连线的房间与其他房间连线中。"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "被邀請連線的房間與其他房間連線中。"
+          }
         }
       }
     },
@@ -4094,6 +5534,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "接通后画面效果将自动生效"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接通後畫面效果將自動生效"
           }
         }
       }
@@ -4112,6 +5558,12 @@
             "state" : "translated",
             "value" : "麦位已锁定，可以尝试换一个麦位"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "麥位已鎖定，可以嘗試換一個麥位"
+          }
         }
       }
     },
@@ -4128,6 +5580,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "连麦列表为空"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "連麥列表爲空"
           }
         }
       }
@@ -4146,6 +5604,12 @@
             "state" : "translated",
             "value" : "麦位已满"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "麥位已滿"
+          }
         }
       }
     },
@@ -4162,6 +5626,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "房间 meta 数据中的 key 大小超过了最大字节数限制"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "房間 meta 數據中的 key 大小超過了最大字節數限制"
           }
         }
       }
@@ -4180,6 +5650,12 @@
             "state" : "translated",
             "value" : "房间 meta 数据中单个 key 对应的 val 超过最大字节数限制"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "房間 meta 數據中單個 key 對應的 val 超過最大字節數限制"
+          }
         }
       }
     },
@@ -4196,6 +5672,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "房间 meta数据中所有 key 对应的 val 总和超过最大字节数限制"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "房間 meta數據中所有 key 對應的 val 總和超過最大字節數限制"
           }
         }
       }
@@ -4214,6 +5696,12 @@
             "state" : "translated",
             "value" : "已经有用户在麦位上"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已經有用戶在麥位上"
+          }
         }
       }
     },
@@ -4230,6 +5718,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "该房间存在待处理的 battle 请求"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "該房間存在待處理的 battle 請求"
           }
         }
       }
@@ -4248,6 +5742,12 @@
             "state" : "translated",
             "value" : "该房间存在待处理的连线请求"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "該房間存在待處理的連線請求"
+          }
         }
       }
     },
@@ -4264,6 +5764,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "没有更多数据了"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "沒有更多數據了"
           }
         }
       }
@@ -4282,6 +5788,12 @@
             "state" : "translated",
             "value" : "删除房间 meta 数据时候，被删除的 key 没有一个存在"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刪除房間 meta 數據時候，被刪除的 key 沒有一個存在"
+          }
         }
       }
     },
@@ -4298,6 +5810,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "需要进房后才可使用此功能"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要進房後纔可使用此功能"
           }
         }
       }
@@ -4316,6 +5834,12 @@
             "state" : "translated",
             "value" : "该功能需要开通额外的套餐，请在 腾讯云视立方 SDK 控制台 按需开通对应套餐"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "該功能需要開通額外的套餐，請在 騰訊雲視立方 SDK 控制檯 按需開通對應套餐"
+          }
         }
       }
     },
@@ -4332,6 +5856,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "该成员已经被封禁"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "該成員已經被封禁"
           }
         }
       }
@@ -4350,6 +5880,12 @@
             "state" : "translated",
             "value" : "该成员已经被禁言"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "該成員已經被禁言"
+          }
         }
       }
     },
@@ -4366,6 +5902,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "当前房间类型下不支持该操作"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當前房間類型下不支持該操作"
           }
         }
       }
@@ -4384,6 +5926,12 @@
             "state" : "translated",
             "value" : "累计观看"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "累計觀看"
+          }
         }
       }
     },
@@ -4400,6 +5948,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "关闭"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "關閉"
           }
         }
       }
@@ -4418,6 +5972,12 @@
             "state" : "translated",
             "value" : "至臻画质"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "至臻畫質"
+          }
         }
       }
     },
@@ -4431,6 +5991,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "大叔"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "大叔"
@@ -4452,6 +6018,12 @@
             "state" : "translated",
             "value" : "取消关注"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消關注"
+          }
         }
       }
     },
@@ -4468,6 +6040,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "解锁麦位"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "解鎖麥位"
           }
         }
       }
@@ -4486,6 +6064,12 @@
             "state" : "translated",
             "value" : "解除静音"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "解除靜音"
+          }
         }
       }
     },
@@ -4502,6 +6086,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "上行丢包率"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上行丟包率"
           }
         }
       }
@@ -4520,6 +6110,12 @@
             "state" : "translated",
             "value" : "当前用户已在别的房间内，单个 roomEngine 实例只支持用户进入一个房间，如果要进入不同的房间请先退房或者使用新的 roomEngine 实例"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當前用戶已在別的房間內，單個 roomEngine 實例只支持用戶進入一個房間，如果要進入不同的房間請先退房或者使用新的 roomEngine 實例"
+          }
         }
       }
     },
@@ -4536,6 +6132,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "用户不存在"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用戶不存在"
           }
         }
       }
@@ -4554,6 +6156,12 @@
             "state" : "translated",
             "value" : "视频参数"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "視頻參數"
+          }
         }
       }
     },
@@ -4570,6 +6178,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "视频码率"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "視頻碼率"
           }
         }
       }
@@ -4588,6 +6202,12 @@
             "state" : "translated",
             "value" : "视频参数"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "視頻參數"
+          }
         }
       }
     },
@@ -4604,6 +6224,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "视频帧率"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "視頻幀率"
           }
         }
       }
@@ -4622,6 +6248,12 @@
             "state" : "translated",
             "value" : "视频信息"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "視頻信息"
+          }
         }
       }
     },
@@ -4638,6 +6270,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "视频分辨率"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "視頻分辨率"
           }
         }
       }
@@ -4656,6 +6294,12 @@
             "state" : "translated",
             "value" : "变声"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "變聲"
+          }
         }
       }
     },
@@ -4672,6 +6316,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "人声音量"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "人聲音量"
           }
         }
       }
@@ -4690,56 +6340,11 @@
             "state" : "translated",
             "value" : "邀请中"
           }
-        }
-      }
-    },
-    "Waiting for link xxx" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Waiting for link xxx"
-          }
         },
-        "zh-Hans" : {
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "等待连麦 xxx"
-          }
-        }
-      }
-    },
-    "Waitingxxx" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Waitingxxx"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "待通过xxx"
-          }
-        }
-      }
-    },
-    "Warm Tips" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Warm Tips"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "温馨提示"
+            "value" : "邀請中"
           }
         }
       }
@@ -4758,6 +6363,81 @@
             "state" : "translated",
             "value" : "等待同意PKxxx"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "等待同意PKxxx"
+          }
+        }
+      }
+    },
+    "Waiting for link xxx" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Waiting for link xxx"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "等待连麦 xxx"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "等待連麥 xxx"
+          }
+        }
+      }
+    },
+    "Waitingxxx" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Waitingxxx"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "待通过xxx"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "待通過xxx"
+          }
+        }
+      }
+    },
+    "Warm Tips" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warm Tips"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "温馨提示"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "溫馨提示"
+          }
         }
       }
     },
@@ -4771,6 +6451,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "美白"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "美白"
@@ -4792,6 +6478,12 @@
             "state" : "translated",
             "value" : "xxx 取消了 PK，请尝试再次发起"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "xxx 取消了 PK，請嘗試再次發起"
+          }
         }
       }
     },
@@ -4808,6 +6500,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "xxx 粉丝"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "xxx 粉絲"
           }
         }
       }
@@ -4826,6 +6524,12 @@
             "state" : "translated",
             "value" : "xxx 向你发来PK邀请"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "xxx 向你發來PK邀請"
+          }
         }
       }
     },
@@ -4842,6 +6546,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "xxx 向你发来连线邀请"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "xxx 向你發來連線邀請"
           }
         }
       }
@@ -4860,6 +6570,12 @@
             "state" : "translated",
             "value" : "xxx 向你发来上麦邀请"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "xxx 向你發來上麥邀請"
+          }
         }
       }
     },
@@ -4876,6 +6592,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "xxx人看过"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "xxx人看過"
           }
         }
       }
@@ -4894,6 +6616,12 @@
             "state" : "translated",
             "value" : "xxx 拒绝了 PK"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "xxx 拒絕了 PK"
+          }
         }
       }
     },
@@ -4910,6 +6638,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "当前处于连麦状态，是否需要「断开连麦」或「退出直播间」"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當前處於連麥狀態，是否需要「斷開連麥」或「退出直播間」"
           }
         }
       }
@@ -4928,6 +6662,12 @@
             "state" : "translated",
             "value" : "当前处于连麦状态，是否需要「关闭直播间」"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當前處於連麥狀態，是否需要「關閉直播間」"
+          }
         }
       }
     },
@@ -4944,6 +6684,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "当前处于连线状态，是否需要「断开连线」或「关闭直播间」"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當前處於連線狀態，是否需要「斷開連線」或「關閉直播間」"
           }
         }
       }
@@ -4962,6 +6708,12 @@
             "state" : "translated",
             "value" : "当前处于PK状态，是否需要「断开PK」或「关闭直播间」"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當前處於PK狀態，是否需要「斷開PK」或「關閉直播間」"
+          }
         }
       }
     },
@@ -4978,6 +6730,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "您无权执行此操作"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "您無權執行此操作"
           }
         }
       }
@@ -4996,6 +6754,12 @@
             "state" : "translated",
             "value" : "您已被主播踢出房间"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "您已被主播踢出房間"
+          }
         }
       }
     },
@@ -5012,6 +6776,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "当前房间内，您已被禁言"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當前房間內，您已被禁言"
           }
         }
       }
@@ -5030,6 +6800,12 @@
             "state" : "translated",
             "value" : "当前房间内，您已被禁言"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當前房間內，您已被禁言"
+          }
         }
       }
     },
@@ -5040,6 +6816,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "当前房间内您已被禁言，无法发送礼物\n"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當前房間內您已被禁言，無法發送禮物\n"
           }
         }
       }
@@ -5058,6 +6840,12 @@
             "state" : "translated",
             "value" : "当前房间内，您已被解除禁言"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當前房間內，您已被解除禁言"
+          }
         }
       }
     },
@@ -5074,6 +6862,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你提交了连麦申请，请等待主播同意"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你提交了連麥申請，請等待主播同意"
           }
         }
       }
