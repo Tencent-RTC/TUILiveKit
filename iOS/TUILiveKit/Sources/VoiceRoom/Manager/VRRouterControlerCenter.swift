@@ -8,6 +8,8 @@
 import Combine
 import RTCCommon
 import RTCRoomEngine
+import TUIAudioEffect
+import TUIGift
 
 class VRRouterControlCenter {
     private var rootRoute: VRRoute

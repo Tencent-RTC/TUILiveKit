@@ -7,24 +7,8 @@
 
 import RTCRoomEngine
 import Combine
-
-class LiveListEffects: Effects {
-    typealias Environment = LiveListService
-    
-    let getLiveInfoList = Effect<Environment>.dispatchingOne { actions, environment in
-        actions.wasCreated(from: LiveListActions.getLiveInfoList)
-            .flatMap { action in
-                environment.getLiveList(cursor: action.payload)
-                    .map { (result) in
-                        return LiveListActions.updateLiveInfoList(payload: result)
-                    }
-                    .catch { error -> Just<Action> in
-                        return Just(LiveListActions.toastError(payload: error))
-                    }
-            }
-            .eraseToAnyPublisher()
-    }
-}
+import RTCCommon
+import TUILiveResources
 
 class LiveListService: BaseServiceProtocol {
     var roomEngine: TUIRoomEngine
@@ -32,21 +16,20 @@ class LiveListService: BaseServiceProtocol {
         self.roomEngine = roomEngine
     }
     
-    func getLiveList(cursor: String, count: Int = 20) -> AnyPublisher<LiveListResult, InternalError> {
-        return Future<LiveListResult, InternalError> { [weak self] promise in
-            guard let self = self else { return }
+    func getLiveList(cursor: String, count: Int = 20) async throws -> LiveListResult {
+        return try await withCheckedThrowingContinuation { continuation in
             guard let listManager = roomEngine.getExtension(extensionType: .liveListManager) as? TUILiveListManager else {
-                promise(.failure(InternalError(code: ErrorService.generalErrorCode, message: "get LiveListManager error")))
+                continuation.resume(throwing: InternalError(code: ErrorLocalized.generalErrorCode, message: "get LiveListManager error"))
                 return
             }
             listManager.fetchLiveList(cursor: cursor, count: count) { resCursor, tuiLiveInfoList in
                 let liveInfoList = tuiLiveInfoList.map { tuiLiveInfo in
                     LiveInfo(tuiLiveInfo: tuiLiveInfo)
                 }
-                promise(.success((LiveListResult(isFirstFetch:cursor.isEmpty, cursor: resCursor, liveInfoList: liveInfoList))))
+                continuation.resume(returning: LiveListResult(isFirstFetch:cursor.isEmpty, cursor: resCursor, liveInfoList: liveInfoList))
             } onError: { error, message in
-                promise(.failure(InternalError(code: error.rawValue, message: message)))
+                continuation.resume(throwing: InternalError(code: error.rawValue, message: message))
             }
-        }.eraseToAnyPublisher()
+        }
     }
 }

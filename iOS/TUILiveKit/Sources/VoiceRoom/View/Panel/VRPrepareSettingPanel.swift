@@ -8,6 +8,7 @@
 import UIKit
 import Combine
 import RTCCommon
+import TUILiveResources
 
 class VRPrepareSettingPanel: UIView {
     private let manager: VoiceRoomManager

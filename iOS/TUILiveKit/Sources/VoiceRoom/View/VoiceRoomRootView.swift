@@ -12,6 +12,8 @@ import TUICore
 import RTCCommon
 import RTCRoomEngine
 import LiveStreamCore
+import TUIGift
+import TUIBarrage
 
 protocol VoiceRoomRootViewDelegate: AnyObject {
     func rootView(_ view: VoiceRoomRootView, showEndView endInfo: [String:Any], isAnchor: Bool)
@@ -814,6 +816,7 @@ extension VoiceRoomRootView: GiftPlayViewDelegate {
         barrage.user.userName = sender.userName
         barrage.user.avatarUrl = sender.avatarUrl
         barrage.user.level = sender.level
+        barrage.extInfo["TYPE"] = AnyCodable("GIFTMESSAGE")
         barrage.extInfo["TYPE"] = AnyCodable("GIFTMESSAGE")
         barrage.extInfo["gift_name"] = AnyCodable(gift.giftName)
         barrage.extInfo["gift_count"] = AnyCodable(giftCount)

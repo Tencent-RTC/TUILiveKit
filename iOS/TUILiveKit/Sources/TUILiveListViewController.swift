@@ -11,16 +11,13 @@ import TUICore
 import Combine
 
 public class TUILiveListViewController: UIViewController {
-    private let liveListStore: LiveListStoreProvider = LiveListStoreProvider()
-    private lazy var currentRouterPublisher = self.liveListStore.select(LiveListSelectors.getCurrentRouter)
+    private let manager = LiveListManager()
+    private lazy var currentRouterPublisher = manager.subscribeRouter(StateSelector(keyPath: \LiveListNavigationState.currentRouter))
     
     // MARK: - Internal property.
     private var needRestoreNavigationBarHiddenState: Bool = false
     
-    private lazy var rootView: LiveListRootView = {
-        let view = LiveListRootView(store: liveListStore)
-        return view
-    }()
+    private lazy var rootView = LiveListRootView(manager: manager)
     
     private var cancellableSet = Set<AnyCancellable>()
     private var popupViewController: UIViewController?

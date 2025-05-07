@@ -22,6 +22,9 @@ class StreamDashboardMediaView: UIView {
     private var userDataSource: [StreamDashboardUser] = []
     
     private var cancellableSet: Set<AnyCancellable> = []
+    
+    private let Screen_Width = UIScreen.main.bounds.size.width
+    private let Screen_Height = UIScreen.main.bounds.size.height
     private weak var manager: StreamDashboardManager?
     init(manager: StreamDashboardManager) {
         self.manager = manager
