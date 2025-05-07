@@ -23,6 +23,7 @@ Pod::Spec.new do |spec|
   spec.dependency 'Protobuf', '~> 3.22.1'
   spec.dependency 'RTCCommon', '>= 1.2.1'
   spec.dependency "ESPullToRefresh"
+  spec.dependency 'TXIMSDK_Plus_iOS_XCFramework', '<= 8.5.6864'
 
   spec.default_subspec = 'Professional'
   
