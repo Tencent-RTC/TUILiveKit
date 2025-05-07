@@ -107,6 +107,7 @@ public class TUILiveRoomAnchorViewController: UIViewController {
         if !needPrepare {
             anchorView.joinSelfCreatedRoom()
         }
+        GiftCloudServer.shared.initialize()
     }
 
     public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

@@ -10,6 +10,7 @@ import SnapKit
 import TUICore
 import RTCCommon
 import Combine
+import TUIGift
 
 protocol GiftListPanelProvider {
     func getAnchorInfo() -> GiftUser

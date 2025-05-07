@@ -8,9 +8,22 @@
 import Foundation
 import TUICore
 import RTCCommon
+import TUIGift
 
 class GiftCloudServer: IGiftCloudServer {
-
+    static var shared = GiftCloudServer()
+    private init() {
+        queryGiftInfoList { error, giftList in
+            if error == .noError {
+                TUIGiftStore.shared.giftList = giftList
+            }
+        }
+    }
+    
+    func initialize() {
+        
+    }
+    
     func rechargeBalance(callback: @escaping (TUIGiftServerError, Int) -> Void) {
         
     }
@@ -43,7 +56,7 @@ class GiftCloudServer: IGiftCloudServer {
         }
     }
 
-    func sendGift(sender: String, 
+    func sendGift(sender: String,
                   receiver: String,
                   giftModel: TUIGift,
                   giftCount: Int,
@@ -53,13 +66,14 @@ class GiftCloudServer: IGiftCloudServer {
     
     private func initTUIGifts(giftList: [Any]) -> [TUIGift] {
         var giftArray: [TUIGift] = []
+        let language = TUIGlobalization.getPreferredLanguage() ?? "en"
         
         for gift in giftList {
             guard let dict = gift as? [String: Any] else { return [] }
             let giftId = (dict["giftId"] as? String) ?? ""
             let imageUrl = (dict["imageUrl"] as? String) ?? ""
             let animationUrl = (dict["animationUrl"] as? String) ?? ""
-            let giftName = LocalizedLanguage.isChinese ? ((dict["giftName"] as? String) ?? "") : ((dict["giftName_en"] as? String) ?? "")
+            let giftName = getGiftName(from: dict, language: language)
             let price = (dict["price"] as? Int) ?? 99
             let model = TUIGift(giftId: giftId, giftName: giftName, imageUrl: imageUrl, animationUrl: animationUrl, price: price, extInfo: [:])
             giftArray.append(model)
@@ -70,5 +84,18 @@ class GiftCloudServer: IGiftCloudServer {
     private func hasTCEffectPlayer() -> Bool {
         let service = TUICore.getService("TUIEffectPlayerService")
         return service != nil
+    }
+    
+    private func getGiftName(from giftDict: [String: Any], language: String) -> String {
+        switch language {
+        case "en":
+            return giftDict["giftName_en"] as? String ?? ""
+        case "zh-Hans":
+            return giftDict["giftName"] as? String ?? ""
+        case "zh-Hant":
+            return giftDict["giftName_zh_hant"] as? String ?? ""
+        default:
+            return giftDict["giftName_en"] as? String ?? ""
+        }
     }
 }

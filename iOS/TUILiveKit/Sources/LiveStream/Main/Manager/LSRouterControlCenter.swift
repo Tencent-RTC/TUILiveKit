@@ -10,6 +10,8 @@ import TUICore
 import RTCCommon
 import RTCRoomEngine
 import LiveStreamCore
+import TUIAudioEffect
+import TUIGift
 
 protocol LSRouterViewProvider: NSObjectProtocol {
     func getRouteView(route: LSRoute) -> UIView?
