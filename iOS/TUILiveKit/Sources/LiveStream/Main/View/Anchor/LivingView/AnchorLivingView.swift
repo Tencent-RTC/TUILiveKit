@@ -11,6 +11,10 @@ import RTCCommon
 import Combine
 import LiveStreamCore
 import RTCRoomEngine
+import TUIGift
+import TUIBarrage
+import TUILiveInfo
+import TUIAudienceList
 
 class AnchorLivingView: UIView {
     

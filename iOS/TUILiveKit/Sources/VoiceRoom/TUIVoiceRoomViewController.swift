@@ -98,6 +98,7 @@ public class TUIVoiceRoomViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         handle(behavior: behavior)
+        GiftCloudServer.shared.initialize()
     }
     
     public override func viewWillAppear(_ animated: Bool) {

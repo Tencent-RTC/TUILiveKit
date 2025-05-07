@@ -21,6 +21,9 @@ class VideoSettingPanel: UIView {
     
     private var videoEncParams: TUIRoomVideoEncoderParams = TUIRoomVideoEncoderParams()
     
+    private let Screen_Width = UIScreen.main.bounds.size.width
+    private let Screen_Height = UIScreen.main.bounds.size.height
+    
     init(routerManager: LSRouterManager, manager: LiveStreamManager, coreView: LiveCoreView) {
         self.manager = manager
         self.routerManager = routerManager

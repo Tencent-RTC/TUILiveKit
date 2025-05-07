@@ -8,6 +8,7 @@
 import Foundation
 import ImSDK_Plus
 import TUICore
+import TUIGift
 
 class LikeManager {
     private var lastSendDate: Date?

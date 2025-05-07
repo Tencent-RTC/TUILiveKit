@@ -9,6 +9,7 @@ import Foundation
 import RTCRoomEngine
 import Combine
 import ImSDK_Plus
+import RTCCommon
 
 protocol LocalizedError: Error {
     var description: String { get }
@@ -34,7 +35,6 @@ class ErrorService {
         let error: LocalizedError?
         let message: String
         var code: Int = 0
-        var actions: [Action] = []
         var localizedMessage: String {
             if let error = error {
                 return error.description
