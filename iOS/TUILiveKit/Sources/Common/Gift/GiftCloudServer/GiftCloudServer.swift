@@ -8,9 +8,23 @@
 import Foundation
 import TUICore
 import RTCCommon
+import TUIGift
 
 class GiftCloudServer: IGiftCloudServer {
+    static var shared = GiftCloudServer()
+    private init() {
+        queryGiftInfoList { error, giftList in
+            if error == .noError {
+                TUIGiftStore.shared.giftList = giftList
+            }
+        }
+    }
 
+    func initialize() {
+        
+    }
+    
+    
     func rechargeBalance(callback: @escaping (TUIGiftServerError, Int) -> Void) {
         
     }

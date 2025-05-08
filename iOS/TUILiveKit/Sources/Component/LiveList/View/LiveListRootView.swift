@@ -9,10 +9,11 @@ import UIKit
 import ESPullToRefresh
 import Combine
 import RTCRoomEngine
+import RTCCommon
 
 class LiveListRootView: UIView {
     
-    private var store: LiveListStore
+    private let manager: LiveListManager
     
     private var cancellableSet = Set<AnyCancellable>()
     private var liveListDataSource: [LiveInfo] = []
@@ -35,8 +36,8 @@ class LiveListRootView: UIView {
         return collectionView
     }()
     
-    init(store: LiveListStore) {
-        self.store = store
+    init(manager: LiveListManager) {
+        self.manager = manager
         super.init(frame: .zero)
     }
     
@@ -94,20 +95,20 @@ extension LiveListRootView {
         
         liveListCollectionView.es.addInfiniteScrolling(animator: footer) { [weak self] in
             guard let self = self else { return }
-            let cursor = self.store.selectCurrent(LiveListSelectors.getLiveInfoList).cursor
+            let cursor = manager.state.liveInfoListResult.cursor
             if cursor != "" {
-                self.store.dispatch(action: LiveListActions.getLiveInfoList(payload: cursor))
+                manager.getLiveList(cursor: cursor)
                 self.liveListCollectionView.es.stopLoadingMore()
             }
         }
     }
     
     func refreshRoomListData() {
-        store.dispatch(action: LiveListActions.getLiveInfoList(payload: ""))
+        manager.getLiveList(cursor: "")
     }
     
     private func subscribeRoomInfoListState() {
-        store.select(LiveListSelectors.getLiveInfoList)
+        manager.subscribeState(StateSelector(keyPath: \LiveListState.liveInfoListResult))
             .receive(on: RunLoop.main)
             .removeDuplicates()
             .sink { [weak self] result in
@@ -144,7 +145,7 @@ extension LiveListRootView: UICollectionViewDataSource {
 extension LiveListRootView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let liveInfo = liveListDataSource[indexPath.item]
-        store.dispatch(action: LiveListNavigatorActions.navigatorTo(payload: .toLive(liveInfo)))
+        manager.routeTo(.toLive(liveInfo))
     }
 }
 

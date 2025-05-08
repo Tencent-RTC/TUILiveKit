@@ -14,6 +14,7 @@ import TXLiteAVSDK_TRTC
 import TXLiteAVSDK_Professional
 #endif
 import TUICore
+import RTCCommon
 
 let TUICore_TEBeautyExtension_GetBeautyPanel = "TUICore_TEBeautyExtension_GetBeautyPanel"
 let TUICore_TEBeautyService = "TUICore_TEBeautyService"
@@ -39,6 +40,9 @@ class BeautyView: UIView {
     private lazy var trtcCloud = roomEngine.getTRTCCloud()
     private var cancellableSet = Set<AnyCancellable>()
     private var beautyPanel: UIView = UIView()
+    
+    private let Screen_Width = UIScreen.main.bounds.size.width
+    private let Screen_Height = UIScreen.main.bounds.size.height
     
     init() {
         roomEngine = TUIRoomEngine.sharedInstance()

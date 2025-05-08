@@ -4,11 +4,7 @@
 //
 //  Created by aby on 2024/3/15.
 //
-
-
-// MARK: - View action params define.
-typealias NextActionParamTuple<T> = (param: T, nextActions: [Action])
-typealias NextActionTemplateParamTuple<T, Payload> = (param: T, nextActionTemplates: [ActionTemplate<Payload>])
+import RTCCommon
 
 public enum LiveStreamPrivacyStatus: NSInteger, CaseIterable {
     case `public` = 0
@@ -66,13 +62,4 @@ public enum LiveStatus: NSInteger, Codable {
     case pushing = 2
     case playing = 3
     case finished = 4
-}
-
-// MARK: -View action params generator.
-func generateActionParamTuple<T>(param: T, actions:[Action]) -> NextActionParamTuple<T> {
-    return (param: param, nextActions: actions)
-}
-
-func generateActionTemplateParamTuple<T, Payload>(param: T, actions:[ActionTemplate<Payload>]) -> NextActionTemplateParamTuple<T, Payload> {
-    return (param: param, nextActionTemplates: actions)
 }

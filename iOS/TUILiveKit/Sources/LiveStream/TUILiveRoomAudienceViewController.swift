@@ -71,6 +71,7 @@ public class TUILiveRoomAudienceViewController: UIViewController {
         constructViewHierarchy()
         activateConstraints()
         view.backgroundColor = .black
+        GiftCloudServer.shared.initialize()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
