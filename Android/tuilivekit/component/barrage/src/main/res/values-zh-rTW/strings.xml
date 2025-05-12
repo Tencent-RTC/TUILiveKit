@@ -1,0 +1,8 @@
+<resources>
+    <string name="live_barrage_text_hint">聊聊吧～</string>
+    <string name="live_barrage_btn_send">發送</string>
+    <string name="live_barrage_agree">同意</string>
+    <string name="live_barrage_warning_not_empty">輸入不能為空</string>
+    <string name="live_barrage_anchor">主播</string>
+    <string name="live_barrage_disable_message_by_admin">當前房間內，您已被禁言</string>
+</resources>
