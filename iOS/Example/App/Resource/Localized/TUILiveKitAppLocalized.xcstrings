@@ -15,6 +15,12 @@
             "state" : "translated",
             "value" : "确定退出当前账号吗?"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "確定退出當前賬號嗎?"
+          }
         }
       }
     },
@@ -28,6 +34,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "取消"
@@ -49,6 +61,12 @@
             "state" : "translated",
             "value" : "仅限中文、字母、数字和下划线，1–20个字"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "僅限中文、字母、數字和下劃線，1–20個字"
+          }
         }
       }
     },
@@ -65,6 +83,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "请输入用户名"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請輸入用戶名"
           }
         }
       }
@@ -83,6 +107,12 @@
             "state" : "translated",
             "value" : "粉丝"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "粉絲"
+          }
         }
       }
     },
@@ -99,6 +129,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "开始直播"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開始直播"
           }
         }
       }
@@ -117,6 +153,12 @@
             "state" : "translated",
             "value" : "高音质·大房间·平滑上下麦"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "高音質·大房間·平滑上下麥"
+          }
         }
       }
     },
@@ -133,6 +175,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "点赞"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "點贊"
           }
         }
       }
@@ -151,6 +199,12 @@
             "state" : "translated",
             "value" : "开播预览·智能美颜·连麦PK"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開播預覽·智能美顏·連麥PK"
+          }
         }
       }
     },
@@ -167,6 +221,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "登录"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登錄"
           }
         }
       }
@@ -185,6 +245,12 @@
             "state" : "translated",
             "value" : "登录成功"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登錄成功"
+          }
         }
       }
     },
@@ -198,6 +264,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "我"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "我"
@@ -219,6 +291,12 @@
             "state" : "translated",
             "value" : "设置名字"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設置名字"
+          }
         }
       }
     },
@@ -232,6 +310,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "操作成功"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "操作成功"
@@ -253,6 +337,12 @@
             "state" : "translated",
             "value" : "注册"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "註冊"
+          }
         }
       }
     },
@@ -270,6 +360,12 @@
             "state" : "translated",
             "value" : "注册成功"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "註冊成功"
+          }
         }
       }
     },
@@ -283,6 +379,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "保存"
@@ -304,6 +406,12 @@
             "state" : "translated",
             "value" : "腾讯云音视频"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "騰訊雲音視頻"
+          }
         }
       }
     },
@@ -317,6 +425,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TUILiveKit"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "TUILiveKit"
@@ -338,6 +452,12 @@
             "state" : "translated",
             "value" : "通用布局：xxx"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通用佈局：xxx"
+          }
         }
       }
     },
@@ -354,6 +474,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在线直播"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在線直播"
           }
         }
       }
@@ -372,6 +498,12 @@
             "state" : "translated",
             "value" : "语聊房"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "語聊房"
+          }
         }
       }
     },
@@ -388,6 +520,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "确定"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "確定"
           }
         }
       }

@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">TUILiveKit</string>
+    <string name="app_main_title">騰訊雲音視頻</string>
+    <string name="app_user_id">用戶ID</string>
+    <string name="app_hint_user_id">請輸入用戶ID</string>
+    <string name="app_login">登入</string>
+    <string name="app_user_id_is_empty">用戶ID不能為空</string>
+    <string name="app_toast_login_fail">登入失敗</string>
+    <string name="app_title_register">註冊</string>
+    <string name="app_hint_user_name">請輸入用戶名</string>
+    <string name="app_tips_user_name">僅限中文、字母、數字和底線，1–20個字</string>
+    <string name="app_toast_register_success_and_logging_in">註冊成功</string>
+    <string name="app_toast_failed_to_set">設置失敗: %1$s</string>
+
+    <string name="app_custom_name_1">路飛</string>
+    <string name="app_custom_name_2">山治</string>
+    <string name="app_custom_name_3">娜美</string>
+    <string name="app_custom_name_4">烏索普</string>
+    <string name="app_custom_name_5">香克斯</string>
+
+    <string name="app_follow_count">關注</string>
+    <string name="app_fans_count">粉絲</string>
+    <string name="app_change_name_title">設置名字</string>
+    <string name="app_name_save">保存</string>
+    <string name="app_tips_title">溫馨提示</string>
+    <string name="app_logout_tips">確定退出當前帳號嗎?</string>
+    <string name="app_logout">確定</string>
+    <string name="app_cancel">取消</string>
+
+    <string name="app_main_item_video_live">線上直播</string>
+    <string name="app_main_item_video_live_sub">開播預覽·智能美顏·連麥PK</string>
+    <string name="app_main_item_voice_room">語音聊天室</string>
+    <string name="app_main_item_voice_room_sub">高音質·大房間·平滑上下麥</string>
+    <string name="app_exit_float_window_tip">正在直播中，請稍後再試。</string>
+</resources>
