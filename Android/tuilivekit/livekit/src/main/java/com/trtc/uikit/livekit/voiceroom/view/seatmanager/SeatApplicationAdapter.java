@@ -53,7 +53,7 @@ public class SeatApplicationAdapter extends RecyclerView.Adapter<SeatApplication
     @Override
     public void onBindViewHolder(@NonNull SeatApplicationAdapter.ViewHolder holder, int position) {
         SeatState.SeatApplication request = mData.get(position);
-        if (TextUtils.isEmpty(request.userName)) {
+        if (!TextUtils.isEmpty(request.userName)) {
             holder.textName.setText(request.userName);
         } else {
             holder.textName.setText(request.userId);
