@@ -166,6 +166,7 @@ public class AudienceListView extends FrameLayout {
     }
 
     private void showAudienceListPanelView() {
+        mAudienceListService.getAudienceList();
         if (mAudienceListPopupDialog == null) {
             mAudienceListPopupDialog = new AudienceListPopupDialog(mContext, mAudienceListState);
             mAudienceListPopupDialog.setOnUserItemClickListener(mOnUserItemClickListener);

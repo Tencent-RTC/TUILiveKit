@@ -52,7 +52,7 @@ public class AudienceListIconAdapter extends RecyclerView.Adapter<AudienceListIc
 
     @Override
     public int getItemCount() {
-        return mData.size();
+        return Math.min(mData.size(), 2);
     }
 
     @SuppressLint("NotifyDataSetChanged")

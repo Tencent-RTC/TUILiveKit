@@ -7,7 +7,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_audience_list"
-        android:layout_width="wrap_content"
+        android:layout_width="50dp"
         android:layout_height="match_parent"
         android:layout_toStartOf="@id/ll_audience_count"
         android:layout_gravity="center_vertical|end"
