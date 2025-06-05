@@ -1,7 +1,5 @@
 package com.trtc.uikit.livekit.component.audiencelist.service;
 
-import static com.trtc.uikit.livekit.component.audiencelist.store.AudienceListState.FETCH_LIST_DURATION_MILLISECOND;
-
 import android.text.TextUtils;
 
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
@@ -51,9 +49,6 @@ public class AudienceListObserver extends TUIRoomObserver {
         if (mAudienceListState.audienceList.getValue().size() < AudienceListState.ROOM_MAX_SHOW_USER_COUNT) {
             mAudienceListState.audienceList.getValue().add(audienceUser);
             mAudienceListState.audienceList.setValue(mAudienceListState.audienceList.getValue());
-        } else if (System.currentTimeMillis() - mAudienceListState.lastFetchTime > FETCH_LIST_DURATION_MILLISECOND) {
-            mAudienceListState.lastFetchTime = System.currentTimeMillis();
-            mAudienceListService.getAudienceList();
         }
     }
 
