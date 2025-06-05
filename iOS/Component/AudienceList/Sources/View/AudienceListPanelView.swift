@@ -107,7 +107,7 @@ extension AudienceListPanelView {
         userListTableView.snp.remakeConstraints { make in
             make.leading.trailing.bottom.equalToSuperview()
             make.top.equalTo(backButton.snp.bottom).offset(32)
-            make.height.equalTo(593.scale375Height())
+            make.height.equalTo(screenHeight * 2 / 3)
         }
     }
 }

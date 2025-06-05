@@ -60,7 +60,6 @@ public class AudienceListView: RTCBaseView {
         service.state
     }
     private lazy var observer: AudienceListObserver = AudienceListObserver(state: state, service: service)
-    private lazy var audienceListPanel = AudienceListPanelView(state: state)
     private var listUser: [TUIUserInfo] = []
     private var cancellableSet: Set<AnyCancellable> = []
     private weak var popupViewController: UIViewController?
@@ -79,6 +78,7 @@ public class AudienceListView: RTCBaseView {
         collectionView.isUserInteractionEnabled = true
         collectionView.contentMode = .scaleToFill
         collectionView.dataSource = self
+        collectionView.isScrollEnabled = false
         collectionView.register(UserInfoCell.self, forCellWithReuseIdentifier: cellId)
         return collectionView
     }()
@@ -169,7 +169,6 @@ public class AudienceListView: RTCBaseView {
         let tap = UITapGestureRecognizer(target: self, action: #selector(containerTapAction))
         addGestureRecognizer(tap)
         isUserInteractionEnabled = true
-        audienceListPanel.onUserManageButtonClicked = onUserManageButtonClicked
     }
     
     deinit {
@@ -197,7 +196,7 @@ extension AudienceListView: UICollectionViewDataSource {
     }
 
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return listUser.count
+        return min(2, listUser.count)
     }
 
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -213,7 +212,10 @@ extension AudienceListView: UICollectionViewDataSource {
 
 extension AudienceListView {
     @objc func containerTapAction() {
+        service.getUserList()
         if let vc = WindowUtils.getCurrentWindowViewController() {
+            let audienceListPanel = AudienceListPanelView(state: state)
+            audienceListPanel.onUserManageButtonClicked = onUserManageButtonClicked
             popupViewController = vc
             let menuContainerView = MenuContainerView(contentView: audienceListPanel)
             audienceListPanel.onBackButtonClickedClosure = { [weak self] in
