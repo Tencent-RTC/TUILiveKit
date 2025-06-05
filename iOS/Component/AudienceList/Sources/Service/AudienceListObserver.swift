@@ -11,7 +11,6 @@ import RTCRoomEngine
 class AudienceListObserver: NSObject, TUIRoomObserver {
     private let state: AudienceListState
     private weak var service: AudienceListService?
-    private var lastFetchDate: Date?
     
     init(state: AudienceListState, service: AudienceListService) {
         self.state = state
@@ -29,15 +28,6 @@ class AudienceListObserver: NSObject, TUIRoomObserver {
         guard !state.audienceList.contains(where: { $0.userId == userInfo.userId }) else { return }
         if state.audienceList.count < kMaxShowUserCount {
             state.audienceList.append(userInfo)
-        } else {
-            let current = Date()
-            if let last = lastFetchDate {
-                if last.timeIntervalSince(current) < 10 {
-                    return
-                }
-            }
-            lastFetchDate = current
-            service?.getUserList()
         }
     }
     
