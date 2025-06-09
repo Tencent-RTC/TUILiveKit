@@ -17,6 +17,7 @@ import com.tencent.imsdk.v2.V2TIMFollowTypeCheckResult;
 import com.tencent.imsdk.v2.V2TIMFriendshipListener;
 import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
+import com.tencent.liteav.beauty.TXBeautyManager;
 import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.trtc.TRTCCloud;
 import com.trtc.uikit.livekit.livestream.manager.api.ILiveService;
@@ -34,6 +35,7 @@ public class LiveServiceImpl implements ILiveService {
         mTUIRoomEngine = TUIRoomEngine.sharedInstance();
         mTRTCCloud = mTUIRoomEngine.getTRTCCloud();
         mTUILiveListManager = (TUILiveListManager) mTUIRoomEngine.getExtension(LIVE_LIST_MANAGER);
+        mTRTCCloud.getBeautyManager().setBeautyStyle(TXBeautyManager.TXBeautyStyleSmooth);
     }
 
     @Override
