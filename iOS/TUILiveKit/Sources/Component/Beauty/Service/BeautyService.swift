@@ -28,6 +28,11 @@ class BeautyService {
         roomEngine.getTRTCCloud().getBeautyManager()
     }
     
+    func setBeautyStyle(_ style: TXBeautyStyle) {
+        LiveKitLog.info("\(#file)", "\(#line)", "setBeautyStyle:[style: \(style.rawValue)]")
+        getBeautyManager().setBeautyStyle(style)
+    }
+    
     func setBeautyLevel(_ beautyLevel: Float) {
         LiveKitLog.info("\(#file)", "\(#line)","setBeautyLevel:[level: \(beautyLevel)]")
         getBeautyManager().setBeautyLevel(beautyLevel)

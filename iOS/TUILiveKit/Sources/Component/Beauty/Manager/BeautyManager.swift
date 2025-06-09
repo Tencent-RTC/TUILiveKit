@@ -32,6 +32,7 @@ class BeautyManager {
     }
     
     init() {
+        service.setBeautyStyle(.smooth)
         StateCache.shared.subscribeToObjectRemoval(key: stateKey) {
             BeautyService.closeBeauty()
         }
