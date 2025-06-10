@@ -15,6 +15,17 @@ protocol LSBottomMenuViewDelegate: NSObjectProtocol {
     func likeButtonClicked()
 }
 
+public enum BottomMenuFeature: CaseIterable {
+    case coGuest
+    case coHost
+    case battle
+    case giftConfig
+    
+    // Settings
+    case beauty
+    case soundEffect
+}
+
 class LSBottomMenuView: RTCBaseView {
     var cancellableSet = Set<AnyCancellable>()
     
@@ -28,6 +39,9 @@ class LSBottomMenuView: RTCBaseView {
     private let buttonSpacing: CGFloat = 6.0
     private let isOwner: Bool
     
+    private var anchorFeatures: [BottomMenuFeature] = BottomMenuFeature.allCases
+    
+    private lazy var creator = LiveRoomRootMenuDataCreator(coreView: coreView, manager: manager, routerManager: routerManager)
     private var menus = [LSButtonMenuInfo]()
     
     let stackView: UIStackView = {
@@ -60,11 +74,6 @@ class LSBottomMenuView: RTCBaseView {
         addSubview(stackView)
     }
     
-    override func didMoveToWindow() {
-        super.didMoveToWindow()
-        setupButtons()
-    }
-    
     override func activateConstraints() {
         stackView.snp.makeConstraints { make in
             let maxWidth = buttonWidth * CGFloat(maxMenuButtonNumber) + buttonSpacing * CGFloat(maxMenuButtonNumber - 1)
@@ -77,11 +86,23 @@ class LSBottomMenuView: RTCBaseView {
     
     override func setupViewStyle() {
         stackView.spacing = buttonSpacing
+        setupButtons()
+    }
+    
+    func disableFeature(_ feature: BottomMenuFeature, isDisable: Bool) {
+        if isDisable {
+            anchorFeatures.removeAll(where: { $0 == feature })
+            setupButtons()
+        } else {
+            if !anchorFeatures.contains(where: { $0 == feature }) {
+                anchorFeatures.append(feature)
+                setupButtons()
+            }
+        }
     }
     
     private func setupButtons() {
-        let creator = LiveRoomRootMenuDataCreator()
-        menus = creator.generateBottomMenuData(manager: manager, routerManager: routerManager, coreView: coreView, isOwner: isOwner)
+        menus = creator.generateBottomMenuData(isOwner: isOwner, features: isOwner ? anchorFeatures : [])
         stackView.subviews.forEach { view in
             stackView.removeArrangedSubview(view)
             view.removeFromSuperview()
@@ -90,22 +111,21 @@ class LSBottomMenuView: RTCBaseView {
             .enumerated().map { value -> LSMenuButton in
                 let index = value.offset
                 let item = value.element
-                let button = self.createButtonFromMenuItem(index: index, item: item)
+                let button = self.createButtonFromMenuItem(index: index, item: item, isOwner: isOwner)
                 stackView.addArrangedSubview(button)
                 button.snp.makeConstraints { make in
-                    make.height.width.equalTo(32.scale375Height())
+                    make.width.equalTo(isOwner ? 34.scale375() : 32.scale375())
+                    make.height.equalTo(isOwner ? 46.scale375() : 32.scale375())
+                    make.centerY.equalToSuperview()
                 }
                 button.addTarget(self, action: #selector(menuTapAction(sender:)), for: .touchUpInside)
                 return button
             }
     }
     
-    private func createButtonFromMenuItem(index: Int, item: LSButtonMenuInfo) -> LSMenuButton {
-        let button = LSMenuButton(frame: .zero)
-        button.setImage(.liveBundleImage(item.normalIcon), for: .normal)
-        button.setImage(.liveBundleImage(item.selectIcon), for: .selected)
-        button.setTitle(item.normalTitle, for: .normal)
-        button.setTitle(item.selectTitle, for: .selected)
+    private func createButtonFromMenuItem(index: Int, item: LSButtonMenuInfo, isOwner: Bool) -> LSMenuButton {
+        let button = LSMenuButton(isOwner: isOwner)
+        button.setupItem(item)
         button.tag = index + 1_000
         item.bindStateClosure?(button, &cancellableSet)
         return button
@@ -113,6 +133,11 @@ class LSBottomMenuView: RTCBaseView {
 }
 
 class LSMenuButton: UIButton {
+    
+    private var isOwner: Bool
+    private var item: LSButtonMenuInfo?
+    private var timer: Timer?
+    private var currentImageIndex = 0
     
     let rotateAnimation: CABasicAnimation = {
         let animation = CABasicAnimation(keyPath: "transform.rotation.z")
@@ -143,8 +168,9 @@ class LSMenuButton: UIButton {
         return redDot
     }()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(isOwner: Bool) {
+        self.isOwner = isOwner
+        super.init(frame: .zero)
         addSubview(redDotContentView)
         redDotContentView.addSubview(redDotLabel)
         
@@ -164,6 +190,64 @@ class LSMenuButton: UIButton {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        timer?.invalidate()
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        guard let imageView = imageView, let titleLabel = titleLabel else { return }
+        let imageViewSize: CGFloat = isOwner ? 28.scale375() : 32.scale375()
+        let imageViewX = (bounds.width - imageViewSize) / 2
+        let titleLabelHeight: CGFloat = 16.scale375()
+        imageView.frame = CGRect(
+            x: imageViewX,
+            y: 0,
+            width: imageViewSize,
+            height: imageViewSize
+        )
+        
+        titleLabel.frame = CGRect(
+            x: 0,
+            y: imageView.frame.maxY + 2,
+            width: bounds.width,
+            height: titleLabelHeight
+        )
+    }
+    
+    func setupItem(_ item: LSButtonMenuInfo) {
+        self.item = item
+        setImage(internalImage(item.normalIcon), for: .normal)
+        setImage(internalImage(item.selectIcon), for: .selected)
+        if isOwner {
+            setTitle(item.normalTitle, for: .normal)
+            setTitle(item.selectTitle, for: .selected)
+            titleLabel?.font = UIFont(name: "PingFangSC-Semibold", size: 10)
+            titleLabel?.textAlignment = .center
+            setTitleColor(.white, for: .normal)
+        }
+    }
+    
+    func startAnimating() {
+        guard let item = item, !item.animateIcon.isEmpty else { return }
+        timer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(switchImage), userInfo: nil, repeats: true)
+    }
+    
+    func stopAnimating() {
+        guard let item = item else { return }
+        timer?.invalidate()
+        setImage(internalImage(item.normalIcon), for: .normal)
+        currentImageIndex = 0
+    }
+    
+    @objc func switchImage() {
+        guard let item = item else { return }
+        currentImageIndex = (currentImageIndex + 1) % item.animateIcon.count
+        let nextImage = internalImage(item.animateIcon[currentImageIndex])
+        self.setImage(nextImage, for: .normal)
     }
     
     func updateDotCount(count: Int) {

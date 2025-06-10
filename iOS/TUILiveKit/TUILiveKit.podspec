@@ -21,21 +21,21 @@ Pod::Spec.new do |spec|
   spec.dependency 'Kingfisher'
   spec.dependency 'SVGAPlayer', '~> 2.5.7'
   spec.dependency 'Protobuf', '~> 3.22.1'
-  spec.dependency 'RTCCommon', '>= 1.2.1'
+  spec.dependency 'RTCCommon', '>= 1.3.1'
   spec.dependency "ESPullToRefresh"
-  spec.dependency 'TXIMSDK_Plus_iOS_XCFramework', '<= 8.5.6864'
-  spec.dependency 'ESPullToRefresh'
-  spec.dependency 'TUIGift'
-  spec.dependency 'TUIBarrage'
-  spec.dependency 'TUIAudioEffect'
-  spec.dependency 'TUILiveInfo'
-  spec.dependency 'TUIAudienceList'
-  
+
   spec.default_subspec = 'Professional'
   
   spec.subspec 'Professional' do |professional|
-    professional.dependency 'RTCRoomEngine/Professional', '>= 3.0.0'
-    professional.dependency 'LiveStreamCore', '>= 3.0.2'
+    professional.dependency 'RTCRoomEngine/Professional', '>= 3.1.0'
+    professional.dependency 'LiveStreamCore/Professional', '>= 3.1.0'
+    professional.dependency 'TUIBarrage/Professional'
+    professional.dependency 'TUILiveResources/Professional'
+    professional.dependency 'TUIAudienceList/Professional'
+    professional.dependency 'TUIAudioEffect/Professional'
+    professional.dependency 'TUIGift/Professional'
+    professional.dependency 'TUILiveInfo/Professional'
+
     professional.source_files = 'Sources/**/*', 'VideoLiveKit.swift', 'VoiceRoomKit.swift', 'VoiceRoomDefine.swift'
     professional.resource_bundles = {
       'TUILiveKitBundle' => ['Resources/*.xcassets', 'Resources/Localized/**/*.xcstrings']
@@ -43,8 +43,15 @@ Pod::Spec.new do |spec|
   end
   
   spec.subspec 'TRTC' do |trtc|
-    trtc.dependency 'RTCRoomEngine/TRTC', '>= 3.0.0'
-    trtc.dependency 'LiveStreamCore/TRTC', '>= 3.0.2'
+    trtc.dependency 'RTCRoomEngine/TRTC', '>= 3.1.0'
+    trtc.dependency 'LiveStreamCore/TRTC', '>= 3.1.0'
+    trtc.dependency 'TUIBarrage/TRTC'
+    trtc.dependency 'TUILiveResources/TRTC'
+    trtc.dependency 'TUIAudienceList/TRTC'
+    trtc.dependency 'TUIAudioEffect/TRTC'
+    trtc.dependency 'TUIGift/TRTC'
+    trtc.dependency 'TUILiveInfo/TRTC'
+
     trtc.source_files = 'Sources/**/*', 'VideoLiveKit.swift', 'VoiceRoomKit.swift', 'VoiceRoomDefine.swift'
     trtc.resource_bundles = {
       'TUILiveKitBundle' => ['Resources/*.xcassets', 'Resources/Localized/**/*.xcstrings']

@@ -15,3 +15,7 @@ let avatarPlaceholderImage: UIImage? = UIImage(named: "live_seat_placeholder_ava
 func internalLocalized(_ key: String) -> String {
     return .localized(key, inBundle: internalBundle, table: "TUIAudienceListLocalized")
 }
+
+func internalImage(_ named: String) -> UIImage? {
+    return UIImage(named: named, in: internalBundle, with: nil) ?? UIImage(named: named)
+}

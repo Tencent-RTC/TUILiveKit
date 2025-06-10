@@ -9,11 +9,13 @@ import Foundation
 import RTCCommon
 import Combine
 import RTCRoomEngine
+import TUILiveResources
 
-class VRRoomManager: VRRoomManagerInterface, VRLiveListObserverInterface, VRRoomEngineObserverRoomInterface {
+class VRRoomManager: VRLiveListObserverInterface, VRRoomEngineObserverRoomInterface {
     var state: VRRoomState {
         observerState.state
     }
+    var roomParams = RoomParams()
     
     private typealias Context = VoiceRoomManager.Context
     private let observerState = ObservableState<VRRoomState>(initialState: VRRoomState())
@@ -54,9 +56,78 @@ extension VRRoomManager {
     }
 }
 
+extension VRRoomManager {
+    func prepareRoomIdBeforeEnterRoom(roomId: String, roomParams: RoomParams?) {
+        update { state in
+            state.roomId = roomId
+        }
+        if let param = roomParams {
+            self.roomParams = param
+        }
+    }
+    
+    func onJoinVoiceRoom(roomInfo: TUIRoomInfo) {
+        update(roomInfo: roomInfo)
+        guard let context = context else { return }
+        if context.coreUserState.selfInfo.userId != roomInfo.ownerId {
+            fetchLiveInfo(roomId: roomInfo.roomId)
+        }
+    }
+    
+    func onStartVoiceRoom(roomInfo: TUIRoomInfo) {
+        guard let context = context else { return }
+        update(roomInfo: roomInfo)
+        
+        let liveInfo = TUILiveInfo()
+        liveInfo.roomInfo.roomId = context.roomManager.state.roomId
+        liveInfo.coverUrl = context.roomManager.state.coverURL
+        liveInfo.backgroundUrl = context.roomManager.state.backgroundURL
+        liveInfo.categoryList = [NSNumber(value: context.roomManager.state.liveExtraInfo.category.rawValue)]
+        liveInfo.isPublicVisible = context.roomManager.state.liveExtraInfo.liveMode == .public
+        setLiveInfo(liveInfo: liveInfo, modifyFlag: [.coverUrl, .publish, .category, .backgroundUrl])
+    }
+    
+    func onReceiveGift(price: Int, senderUserId: String) {
+        update { state in
+            state.liveExtraInfo.giftIncome += price
+            state.liveExtraInfo.giftPeopleSet.insert(senderUserId)
+        }
+    }
+    
+    func onSetRoomName(_ name: String) {
+        update { state in
+            state.roomName = name
+        }
+    }
+    
+    func onSetRoomPrivacy(_ mode: LiveStreamPrivacyStatus) {
+        update { state in
+            state.liveExtraInfo.liveMode = mode
+        }
+    }
+    
+    func onSetRoomCoverUrl(_ coverUrl: String) {
+        update { state in
+            state.coverURL = coverUrl
+        }
+    }
+    
+    func onSetRoomBackgroundUrl(_ backgroundUrl: String, isSetToService: Bool = false) {
+        update { state in
+            state.backgroundURL = backgroundUrl
+        }
+        if isSetToService {
+            let liveInfo = TUILiveInfo()
+            liveInfo.roomInfo.roomId = state.roomId
+            liveInfo.backgroundUrl = backgroundUrl
+            setLiveInfo(liveInfo: liveInfo, modifyFlag: .backgroundUrl)
+        }
+    }
+}
+
 // MARK: - VRRoomManagerInterface
 extension VRRoomManager {
-    func fetchRoomInfo() {
+    private func fetchRoomInfo() {
         Task {
             do {
                 guard let service = service else { return }
@@ -64,10 +135,8 @@ extension VRRoomManager {
                 update { state in
                     state.roomId = roomInfo.roomId
                     state.roomName = roomInfo.name
-                    state.ownerInfo.userId = roomInfo.ownerId
-                    state.seatMode = roomInfo.seatMode
                     state.createTime = roomInfo.createTime
-                    state.maxSeatCount = roomInfo.maxSeatCount
+                    state.roomInfo = roomInfo
                 }
             } catch let error as InternalError {
                 toastSubject.send(error.localizedMessage)
@@ -75,7 +144,7 @@ extension VRRoomManager {
         }
     }
     
-    func fetchLiveInfo(roomId: String) {
+    private func fetchLiveInfo(roomId: String) {
         Task {
             do {
                 guard let service = service else { return }
@@ -97,35 +166,7 @@ extension VRRoomManager {
         }
     }
     
-    func fetchRoomOwnerInfo(ownerId: String) {
-        Task {
-            do {
-                guard let service = service else { return }
-                let user = try await service.fetchRoomOwnerInfo(ownerId: ownerId)
-                update { state in
-                    state.ownerInfo = user
-                }
-            } catch let error as InternalError {
-                toastSubject.send(error.localizedMessage)
-            }
-        }
-    }
-    
-    func setRoomSeatModeByAdmin(_ mode: TUISeatMode) {
-        Task {
-            do {
-                guard let service = service else { return }
-                try await service.setRoomSeatModeByAdmin(mode)
-                update { state in
-                    state.seatMode = mode
-                }
-            } catch let error as InternalError {
-                toastSubject.send(error.localizedMessage)
-            }
-        }
-    }
-    
-    func setLiveInfo(liveInfo: TUILiveInfo, modifyFlag: TUILiveModifyFlag) {
+    private func setLiveInfo(liveInfo: TUILiveInfo, modifyFlag: TUILiveModifyFlag) {
         Task {
             do {
                 guard let service = service else { return }
@@ -165,76 +206,12 @@ extension VRRoomManager {
         }
     }
     
-    func update(roomId: String) {
-        update { state in
-            state.roomId = roomId
-        }
-    }
-    
-    func update(roomName: String) {
-        update { state in
-            state.roomName = roomName
-        }
-    }
-    
-    func update(ownerInfo: VRUser) {
-        update { state in
-            state.ownerInfo = ownerInfo
-        }
-    }
-    
-    func update(roomInfo: TUIRoomInfo) {
+    private func update(roomInfo: TUIRoomInfo) {
         update { state in
             state.roomId = roomInfo.roomId
             state.roomName = roomInfo.name
-            state.ownerInfo.userId = roomInfo.ownerId
-            state.seatMode = roomInfo.seatMode
             state.createTime = roomInfo.createTime
-            state.maxSeatCount = roomInfo.maxSeatCount
-        }
-    }
-    
-    func update(giftIncome: Int, giftPeople: String) {
-        update { state in
-            state.liveExtraInfo.giftIncome += giftIncome
-            state.liveExtraInfo.giftPeopleSet.insert(giftPeople)
-        }
-    }
-    
-    func update(roomParams: RoomParams) {
-        update { state in
-            state.maxSeatCount = roomParams.maxSeatCount
-            state.seatMode = roomParams.seatMode
-        }
-    }
-    
-    func update(roomCategory: LiveStreamCategory) {
-        update { state in
-            state.liveExtraInfo.category = roomCategory
-        }
-    }
-    
-    func update(roomPrivacy: LiveStreamPrivacyStatus) {
-        update { state in
-            state.liveExtraInfo.liveMode = roomPrivacy
-        }
-    }
-    
-    func update(roomCoverUrl: String) {
-        update { state in
-            state.coverURL = roomCoverUrl
-        }
-    }
-    
-    func update(backgroundUrl: String) {
-        update { state in
-            state.backgroundURL = backgroundUrl
-        }
-    }
-    
-    func update(seatMode: TUISeatMode) {
-        update { state in
-            state.seatMode = seatMode
+            state.roomInfo = roomInfo
         }
     }
 }
@@ -280,12 +257,6 @@ extension VRRoomManager {
         update(roomState: { state in
             state.roomId = roomId
             state.roomName = roomName
-        })
-    }
-    
-    func onRoomSeatModeChanged(roomId: String, seatMode: TUISeatMode) {
-        update(roomState: { state in
-            state.seatMode = seatMode
         })
     }
     

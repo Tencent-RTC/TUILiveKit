@@ -10,21 +10,11 @@ import Combine
 import RTCCommon
 
 class StreamDashboardMediaView: UIView {
-    
-    private lazy var titleLabel: UILabel = {
-        let label = UILabel(frame: .zero)
-        label.textColor = .g7
-        label.text = .mediaText
-        label.font = .customFont(ofSize: 14, weight: .semibold)
-        return label
-    }()
+    private let Screen_Width = UIScreen.main.bounds.size.width
     
     private var userDataSource: [StreamDashboardUser] = []
     
     private var cancellableSet: Set<AnyCancellable> = []
-    
-    private let Screen_Width = UIScreen.main.bounds.size.width
-    private let Screen_Height = UIScreen.main.bounds.size.height
     private weak var manager: StreamDashboardManager?
     init(manager: StreamDashboardManager) {
         self.manager = manager
@@ -37,21 +27,31 @@ class StreamDashboardMediaView: UIView {
     
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.minimumLineSpacing = 20
-        layout.minimumInteritemSpacing = 20
-        layout.estimatedItemSize = CGSize(width: Screen_Width, height: 309)
-        layout.scrollDirection = .vertical
+        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = 0
+        layout.scrollDirection = .horizontal
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        view.showsVerticalScrollIndicator = false
+        view.isPagingEnabled = true
+        view.showsHorizontalScrollIndicator = false
         view.backgroundColor = .clear
         view.dataSource = self
+        view.delegate = self
         view.register(StreamDashboardMediaCell.self, forCellWithReuseIdentifier: StreamDashboardMediaCell.CellID)
         return view
     }()
     
+    private lazy var pageControl: UIPageControl = {
+        let pageControl = UIPageControl()
+        pageControl.numberOfPages = userDataSource.count
+        pageControl.currentPage = 0
+        pageControl.pageIndicatorTintColor = .textDisabledColor
+        pageControl.currentPageIndicatorTintColor = .textPrimaryColor
+        return pageControl
+    }()
+    
     private var isViewReady: Bool = false
-    override func layoutSubviews() {
-        super.layoutSubviews()
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
         guard !isViewReady else { return }
         isViewReady = true
         constructViewHierarchy()
@@ -64,20 +64,15 @@ class StreamDashboardMediaView: UIView {
 extension StreamDashboardMediaView {
     
     private func constructViewHierarchy() {
-        addSubview(titleLabel)
         addSubview(collectionView)
     }
     
     private func activateConstraints() {
-        titleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.leading.equalToSuperview().offset(20)
-        }
         collectionView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
-            make.top.equalTo(titleLabel.snp.bottom).offset(10)
-            make.height.equalTo(350)
-            make.bottom.equalToSuperview()
+            make.top.equalToSuperview()
+            make.height.equalTo(174.scale375Height())
+            make.bottom.equalToSuperview().inset(20.scale375Height())
         }
     }
     
@@ -90,11 +85,12 @@ extension StreamDashboardMediaView {
         }
         localPublisher
             .removeDuplicates()
-            .combineLatest(remotePublisher)
+            .combineLatest(remotePublisher.removeDuplicates())
             .receive(on: RunLoop.main)
             .sink { [weak self] localUsers, remoteUsers in
                 guard let self = self else { return }
                 self.userDataSource = localUsers + remoteUsers
+                self.updatePageControl()
                 self.reloadUIData()
             }
             .store(in: &cancellableSet)
@@ -105,7 +101,39 @@ extension StreamDashboardMediaView {
         UIView.performWithoutAnimation { [weak self] in
             guard let self = self else { return }
             self.collectionView.reloadData()
+            
+            let isRemoteUsersEmpty = manager?.state.remoteUsers.isEmpty ?? true
+            collectionView.snp.remakeConstraints { make in
+                make.leading.trailing.equalToSuperview()
+                make.top.equalToSuperview()
+                make.height.equalTo(isRemoteUsersEmpty ? 128.scale375Height() : 174.scale375Height())
+                make.bottom.equalToSuperview().inset(isRemoteUsersEmpty ? 0 : 20.scale375Height())
+            }
         }
+    }
+    
+    private func updatePageControl() {
+        if userDataSource.count > 1 {
+            pageControl.numberOfPages = userDataSource.count
+            addPageControl()
+        } else {
+            removePageControl()
+        }
+    }
+    
+    private func addPageControl() {
+        guard pageControl.superview == nil else { return }
+        addSubview(pageControl)
+        pageControl.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(collectionView.snp.bottom).offset(12.scale375Height())
+            make.height.equalTo(6.scale375())
+        }
+    }
+    
+    private func removePageControl() {
+        guard pageControl.superview != nil else { return }
+        pageControl.removeFromSuperview()
     }
 }
 
@@ -118,10 +146,22 @@ extension StreamDashboardMediaView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: StreamDashboardMediaCell.CellID, for: indexPath) as! StreamDashboardMediaCell
         cell.updateData(userDataSource[indexPath.item])
+        cell.changeRemoteUserEmpty(isEmpty: manager?.state.remoteUsers.isEmpty ?? true)
         return cell
     }
 }
 
-fileprivate extension String {
-    static let mediaText = localized("Media Information")
+extension StreamDashboardMediaView: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let isRemoteUsersEmpty = manager?.state.remoteUsers.isEmpty ?? true
+        return CGSize(width: Screen_Width, height: isRemoteUsersEmpty ? 128.scale375Height() : 174.scale375Height())
+    }
+}
+
+extension StreamDashboardMediaView: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let pageWidth = scrollView.frame.width
+        let currentPage = Int((scrollView.contentOffset.x + pageWidth / 2) / pageWidth)
+        pageControl.currentPage = currentPage
+    }
 }

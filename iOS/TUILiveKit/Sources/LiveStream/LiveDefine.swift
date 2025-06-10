@@ -4,6 +4,7 @@
 //
 //  Created by aby on 2024/3/15.
 //
+
 import RTCCommon
 
 public enum LiveStreamPrivacyStatus: NSInteger, CaseIterable {
@@ -13,9 +14,9 @@ public enum LiveStreamPrivacyStatus: NSInteger, CaseIterable {
     func getString() -> String {
         switch self {
         case .public:
-            return .localized("Public")
+            return internalLocalized("Public")
         case .privacy:
-            return .localized("Privacy")
+            return internalLocalized("Privacy")
         }
     }
 }
@@ -32,15 +33,15 @@ public enum LiveStreamCategory: NSInteger, CaseIterable {
     func getString() -> String {
         switch self {
         case .chat:
-            return .localized("Daily chat")
+            return internalLocalized("Daily chat")
         case .beauty:
-            return .localized("Beauty")
+            return internalLocalized("Beauty")
         case .teach:
-            return .localized("Knowledge Teaching")
+            return internalLocalized("Knowledge Teaching")
         case .shopping:
-            return .localized("Shopping")
+            return internalLocalized("Shopping")
         case .music:
-            return .localized("Music")
+            return internalLocalized("Music")
         }
     }
 }
@@ -58,7 +59,6 @@ public enum LinkStatus: NSInteger, Codable {
 
 public enum LiveStatus: NSInteger, Codable {
     case `none` = 0
-    case previewing = 1
     case pushing = 2
     case playing = 3
     case finished = 4

@@ -8,12 +8,12 @@
 import SnapKit
 import RTCRoomEngine
 
-public protocol LiveListViewDataSource: AnyObject {
+protocol LiveListViewDataSource: AnyObject {
     typealias LiveListCallback = ([LiveInfo]) -> Void
     func fetchLiveList(completionHandler: @escaping LiveListCallback)
 }
 
-public protocol LiveListViewDelegate: AnyObject {
+protocol LiveListViewDelegate: AnyObject {
     func onCreateView(liveInfo: LiveInfo) -> UIView
     
     func onViewWillSlideIn(view: UIView)
@@ -24,9 +24,9 @@ public protocol LiveListViewDelegate: AnyObject {
     func onViewSlideOutCancelled(view: UIView)
 }
 
-public class LiveListPagerView: UIView {
-    public weak var dataSource: LiveListViewDataSource?
-    public weak var delegate: LiveListViewDelegate?
+class LiveListPagerView: UIView {
+    weak var dataSource: LiveListViewDataSource?
+    weak var delegate: LiveListViewDelegate?
     
     private var isViewReady = false
     private var currentPage = 0
@@ -34,8 +34,9 @@ public class LiveListPagerView: UIView {
     private var willDisplayPage: IndexPath? = nil
     private let cellReuseIdentifier = "LiveListCell"
     private var isFetchingLiveList = false
+    private var isScrollEnable = true
     
-    public init() {
+    init() {
         super.init(frame: .zero)
     }
     
@@ -50,12 +51,12 @@ public class LiveListPagerView: UIView {
         tableView.contentInsetAdjustmentBehavior = .never
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellReuseIdentifier)
         tableView.scrollsToTop = false
-        tableView.isScrollEnabled = false
+        tableView.isScrollEnabled = true
         tableView.backgroundColor = .clear
         return tableView
     }()
     
-    override public func didMoveToWindow() {
+    override func didMoveToWindow() {
         super.didMoveToWindow()
         guard !isViewReady else { return }
         fetchLiveList()
@@ -63,13 +64,6 @@ public class LiveListPagerView: UIView {
         activateConstraints()
         bindInteraction()
         isViewReady = true
-    }
-    
-    override public func willMove(toWindow newWindow: UIWindow?) {
-        super.willMove(toWindow: newWindow)
-        if newWindow == nil {
-            onLastCellSlideOut()
-        }
     }
     
     private func constructViewHierarchy() {
@@ -118,15 +112,17 @@ public class LiveListPagerView: UIView {
         }
     }
     
-    public func disableScrolling() {
+    func disableScrolling() {
+        isScrollEnable = false
         tableView.isScrollEnabled = false
     }
     
-    public func enableScrolling() {
+    func enableScrolling() {
+        isScrollEnable = true
         tableView.isScrollEnabled = true
     }
     
-    public func scrollToNextPage() {
+    func scrollToNextPage() {
         let nextPage = currentPage + 1
         if nextPage < liveList.count {
             let indexPath = IndexPath(row: nextPage, section: 0)
@@ -147,11 +143,11 @@ public class LiveListPagerView: UIView {
 }
 
 extension LiveListPagerView: UITableViewDelegate {
-    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UIScreen.main.bounds.height
     }
     
-    public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if let liveView = cell.contentView.subviews.first, (indexPath.row != 0 || currentPage != 0) {
             willDisplayPage = indexPath
             delegate?.onViewWillSlideIn(view: liveView)
@@ -171,14 +167,20 @@ extension LiveListPagerView: UITableViewDelegate {
             }
         }
     }
+    
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if let oldLiveView = cell.contentView.subviews.first {
+            delegate?.onViewDidSlideOut(view: oldLiveView)
+        }
+    }
 }
 
 extension LiveListPagerView: UITableViewDataSource {
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return liveList.count
     }
     
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier, for: indexPath)
         cell.contentView.subviews.forEach { $0.removeFromSuperview() }
         if let liveView = delegate?.onCreateView(liveInfo: liveList[indexPath.row]) {
@@ -192,14 +194,24 @@ extension LiveListPagerView: UITableViewDataSource {
 }
 
 extension LiveListPagerView: UIScrollViewDelegate {
-    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        scrollView.panGestureRecognizer.isEnabled = isScrollEnable
+        guard isScrollEnable else { return }
         let indexPath = IndexPath(row: currentPage, section: 0)
         if let liveView = tableView.cellForRow(at: indexPath)?.contentView.subviews.first {
             delegate?.onViewWillSlideOut(view: liveView)
         }
     }
 
-    public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        isUserInteractionEnabled = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            guard let self = self else { return }
+            isUserInteractionEnabled = true
+        }
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let pageHeight = tableView.frame.height
         let currentOffset = tableView.contentOffset.y
         let newPage = Int(currentOffset / pageHeight)
@@ -213,7 +225,7 @@ extension LiveListPagerView: UIScrollViewDelegate {
         currentPage = newPage
     }
     
-    public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
         let nextPage = currentPage + 1
         if nextPage < liveList.count {
             let oldIndexPath = IndexPath(row: currentPage, section: 0)
@@ -232,13 +244,10 @@ extension LiveListPagerView: UIScrollViewDelegate {
     
     private func scrollToNextRoom(newIndex: Int) {
         let newIndexPath = IndexPath(row: newIndex, section: 0)
-        let oldIndexPath = IndexPath(row: currentPage, section: 0)
-        if let oldLiveView = tableView.cellForRow(at: oldIndexPath)?.contentView.subviews.first {
-            delegate?.onViewDidSlideOut(view: oldLiveView)
-        }
         if let newLiveView = tableView.cellForRow(at: newIndexPath)?.contentView.subviews.first {
             delegate?.onViewDidSlideIn(view: newLiveView)
         }
+        willDisplayPage = nil
     }
     
     private func stayOnThisRoom(index: Int) {

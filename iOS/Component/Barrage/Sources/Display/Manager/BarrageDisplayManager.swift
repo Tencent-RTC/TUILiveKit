@@ -38,15 +38,15 @@ class BarrageDisplayManager: NSObject {
 }
 
 extension BarrageDisplayManager: V2TIMSimpleMsgListener {
-    func onRecvGroupTextMessage(_ msgID: String, groupID: String, sender info: V2TIMGroupMemberInfo, text: String) {
-        Log.info("\(#file)", "\(#line)", "onRecvGroupTextMessage:[msgID:\(msgID), groupID:\(groupID), sender:\(String(describing: info)), text:\(text)]")
+    func onRecvGroupTextMessage(msgID: String, groupID: String?, sender info: V2TIMGroupMemberInfo, text: String?) {
+        Log.info("\(#file)", "\(#line)", "onRecvGroupTextMessage:[msgID:\(msgID), groupID:\(groupID ?? ""), sender:\(String(describing: info)), text:\(text ?? "")]")
         guard self.roomId == groupID else { return }
         let barrage = TUIBarrage()
         barrage.user.userId = info.userID ?? ""
         barrage.user.userName = info.nickName ?? ""
         barrage.user.avatarUrl = info.faceURL ?? ""
         barrage.user.level = "0"
-        barrage.content = text
+        barrage.content = text ?? ""
         onReceiveBarrage(barrage)
     }
 }

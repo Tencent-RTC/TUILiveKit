@@ -8,6 +8,7 @@
 import RTCRoomEngine
 import Combine
 import ImSDK_Plus
+import TUILiveResources
 
 class VRUserService: BaseServiceProtocol {
     var roomEngine: TUIRoomEngine
@@ -21,12 +22,12 @@ class VRUserService: BaseServiceProtocol {
         debugPrint("deinit \(type(of: self))")
     }
     
-    func fetchUserInfo(_ userId: String) async throws -> VRUser {
+    func fetchUserInfo(_ userId: String) async throws -> TUIUserInfo {
         return try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self else { return }
             roomEngine.getUserInfo(userId) { userInfo in
                 if let user = userInfo {
-                    continuation.resume(returning: VRUser(userInfo: user))
+                    continuation.resume(returning: user)
                 } else {
                     let error = InternalError(error: LiveError.userNotExist, message: LiveError.userNotExist.description)
                     continuation.resume(throwing: error)
@@ -38,15 +39,11 @@ class VRUserService: BaseServiceProtocol {
         }
     }
     
-    func fetchUserList() async throws -> [VRUser] {
+    func fetchUserList() async throws -> [TUIUserInfo] {
         return try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self else { return }
-            roomEngine.getUserList(nextSequence: 0) { [weak self] userInfoList, sequence in
-                guard let self = self else { return }
-                let userList = userInfoList.map { userInfo in
-                    return VRUser(userInfo: userInfo)
-                }
-                continuation.resume(returning: userList)
+            roomEngine.getUserList(nextSequence: 0) { userInfoList, sequence in
+                continuation.resume(returning: userInfoList)
             } onError: { error, message in
                 let error = InternalError(code: error.rawValue, message: message)
                 continuation.resume(throwing: error)
@@ -58,7 +55,7 @@ class VRUserService: BaseServiceProtocol {
         return try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self, let imManager = self.imManager else { return }
             LiveKitLog.info("\(#file)", "\(#line)", "followUser[userId:\(userId)]")
-            imManager.followUser([userId]) { result in
+            imManager.followUser(userIDList: [userId]) { result in
                 continuation.resume()
             } fail: { err, message in
                 let error = InternalError(code: Int(err), message: message ?? "")
@@ -71,7 +68,7 @@ class VRUserService: BaseServiceProtocol {
         return try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self, let imManager = self.imManager else { return }
             LiveKitLog.info("\(#file)", "\(#line)", "unfollowUser[userId:\(userId)]")
-            imManager.unfollowUser([userId]) { result in
+            imManager.unfollowUser(userIDList: [userId]) { result in
                 continuation.resume()
             } fail: { err, message in
                 let error = InternalError(code: Int(err), message: message ?? "")
@@ -83,7 +80,7 @@ class VRUserService: BaseServiceProtocol {
     func checkFollowType(userId: String) async throws -> V2TIMFollowType {
         return try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self, let imManager = self.imManager else { return }
-            imManager.checkFollowType([userId], succ: { result in
+            imManager.checkFollowType(userIDList: [userId], succ: { result in
                 guard let followType = result?.first?.followType else { return }
                 continuation.resume(returning: followType)
             }, fail: { err, message in

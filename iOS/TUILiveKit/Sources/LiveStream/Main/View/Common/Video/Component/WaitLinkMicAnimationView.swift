@@ -65,7 +65,7 @@ class WaitLinkMicAnimationView: UIView {
 
     private let waitLinkMicImageView: UIImageView = {
         var view = UIImageView()
-        view.image = .liveBundleImage("live_wait_link_mic_icon")
+        view.image = internalImage("live_wait_link_mic_icon")
         return view
     }()
 
@@ -102,6 +102,6 @@ extension WaitLinkMicAnimationView {
 
 private extension String {
     static var waitLinkMicDesc: String {
-        localized("Waiting for link xxx")
+        internalLocalized("Waiting for link xxx")
     }
 }

@@ -12,6 +12,7 @@ import TUICore
 import ESPullToRefresh
 import LiveStreamCore
 import RTCRoomEngine
+import TUILiveResources
 
 class LSCoHostManagerPanel: RTCBaseView {
     
@@ -37,7 +38,7 @@ class LSCoHostManagerPanel: RTCBaseView {
         button.titleLabel?.font = UIFont.customFont(ofSize: 14)
         button.setTitleColor(.redColor, for: .normal)
         button.setTitle(.disconnectText, for: .normal)
-        button.setImage(.liveBundleImage("live_connection_disconnect"), for: .normal)
+        button.setImage(internalImage("live_connection_disconnect"), for: .normal)
         button.backgroundColor = .clear
         button.isHidden = true
         return button
@@ -249,16 +250,17 @@ extension LSCoHostManagerPanel: UITableViewDataSource {
                 connectionUserCell.updateUser(recommendedUsers[indexPath.row])
                 connectionUserCell.inviteEventClosure = { [weak self] user in
                     guard let self = self else { return }
+                    manager.onRequestConnection(user: user)
                     coreView?.requestCrossRoomConnection(roomId: user.roomId, timeOut: kCoHostTimeout, onSuccess: { [weak self] code in
                         guard let self = self, let code = code else { return }
-                        if code == .success {
-                            manager.onRequestConnection(user: user)
-                        } else {
+                        if code != .success {
+                            manager.onRequestConnectionFailed(roomId: user.roomId)
                             let error = InternalError(error: code, message: "")
                             manager.onError(error)
                         }
                     }, onError: { [weak self] err, msg in
                         guard let self = self else { return }
+                        manager.onRequestConnectionFailed(roomId: user.roomId)
                         let error = InternalError(code: err.rawValue, message: msg)
                         manager.onError(error)
                     })
@@ -270,12 +272,12 @@ extension LSCoHostManagerPanel: UITableViewDataSource {
 }
 
 fileprivate extension String {
-    static let connectionTitleText = localized("Co-host")
-    static let connectedTitleText = localized("Connecting")
-    static let recommendedTitleText = localized("Suggested Hosts")
-    static let disconnectText = localized("End Co-host")
+    static let connectionTitleText = internalLocalized("Start Co-hosting")
+    static let connectedTitleText = internalLocalized("Connecting")
+    static let recommendedTitleText = internalLocalized("Suggested Hosts")
+    static let disconnectText = internalLocalized("End Co-host")
     
-    static let disconnectAlertText = localized("Are you sure you want to disconnect from other streamers?")
-    static let disconnectAlertCancelText = localized("Cancel")
-    static let disconnectAlertDisconnectText = localized("End Co-host")
+    static let disconnectAlertText = internalLocalized("Are you sure you want to disconnect from other streamers?")
+    static let disconnectAlertCancelText = internalLocalized("Cancel")
+    static let disconnectAlertDisconnectText = internalLocalized("End Co-host")
 }

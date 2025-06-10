@@ -10,6 +10,7 @@ import Combine
 import RTCCommon
 import LiveStreamCore
 import RTCRoomEngine
+import TUILiveResources
 
 class AnchorLinkControlPanel: UIView {
     private let manager: LiveStreamManager
@@ -23,7 +24,7 @@ class AnchorLinkControlPanel: UIView {
     private var applyList: [TUIUserInfo] = []
     private lazy var backButton: UIButton = {
         let view = UIButton(type: .system)
-        view.setBackgroundImage(.liveBundleImage("live_back_icon"), for: .normal)
+        view.setBackgroundImage(internalImage("live_back_icon"), for: .normal)
         view.addTarget(self, action: #selector(backButtonClick), for: .touchUpInside)
         return view
     }()
@@ -63,8 +64,8 @@ class AnchorLinkControlPanel: UIView {
     }
     
     private var isViewReady: Bool = false
-    override func layoutSubviews() {
-        super.layoutSubviews()
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
         guard !isViewReady else { return }
         isViewReady = true
         backgroundColor = .clear
@@ -93,6 +94,14 @@ class AnchorLinkControlPanel: UIView {
                 userListTableView.reloadData()
             }
             .store(in: &cancellable)
+        
+        manager.toastSubject
+            .receive(on: RunLoop.main)
+            .sink { [weak self] message in
+                guard let self = self else { return }
+                makeToast(message)
+            }
+            .store(in: &cancellable)
     }
 }
 
@@ -110,11 +119,6 @@ extension AnchorLinkControlPanel {
 
     func activateConstraints() {
         snp.remakeConstraints { make in
-            if isPortrait {
-                make.height.equalTo(718.scale375Height())
-            } else {
-                make.width.equalTo(375.scale375())
-            }
             make.edges.equalToSuperview()
         }
 
@@ -135,6 +139,7 @@ extension AnchorLinkControlPanel {
         userListTableView.snp.remakeConstraints { make in
             make.leading.trailing.bottom.equalToSuperview()
             make.top.equalTo(titleLabel.snp.bottom).offset(20)
+            make.height.equalTo(screenHeight * 2 / 3)
         }
     }
 }
@@ -256,14 +261,16 @@ extension AnchorLinkControlPanel: UITableViewDelegate {
             return tableView.dequeueReusableCell(withIdentifier: LinkMicBaseCell.cellReuseIdentifier, for: indexPath)
         }
         
-        cell.respondEventClosure = { [weak self] seatApplication, isAccepted in
+        cell.respondEventClosure = { [weak self] seatApplication, isAccepted, onComplete in
             guard let self = self else { return }
             self.coreView?.respondIntraRoomConnection(userId: seatApplication.userId, isAccepted: isAccepted) {
+                onComplete()
             } onError: { [weak self] code, message in
                 guard let self = self else { return }
                 let error = InternalError(code: code.rawValue, message: message)
                 makeToast(error.localizedMessage)
                 manager.onError(error)
+                onComplete()
             }
         }
         
@@ -274,19 +281,19 @@ extension AnchorLinkControlPanel: UITableViewDelegate {
 
 private extension String {
     static var anchorLinkControlTitle: String {
-        localized("Link Management")
+        internalLocalized("Link Management")
     }
 
     static var anchorLinkControlDesc: String {
-        localized("Allow viewers to apply for continuous microphone")
+        internalLocalized("Allow viewers to apply for continuous microphone")
     }
     
     static var anchorLinkControlSeatCount: String {
-        localized("Current Mic (xxx/yyy)")
+        internalLocalized("Current Mic (xxx/yyy)")
     }
     
     static var anchorLinkControlRequestCount: String {
-        localized("Link Application(xxx)")
+        internalLocalized("Link Application(xxx)")
     }
     
 }

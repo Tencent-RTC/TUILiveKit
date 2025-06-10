@@ -12,7 +12,7 @@ target 'TUILiveKitApp' do
   pod 'Alamofire'
   # Local Library
   pod 'TUILiveKit', :path => '../TUILiveKit'
-  pod 'RTCCommon', '>= 1.2.1'
+  pod 'RTCCommon', '>= 1.3.1'
 
   # Live Component
   pod 'TUILiveResources', :path => '../Component/Common/TUILiveResources.podspec'

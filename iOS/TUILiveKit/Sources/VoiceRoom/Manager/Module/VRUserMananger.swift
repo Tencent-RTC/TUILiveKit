@@ -10,8 +10,9 @@ import Combine
 import RTCCommon
 import ImSDK_Plus
 import RTCRoomEngine
+import TUILiveResources
 
-class VRUserManager: VRUserManagerInterface, VRIMObserverInterface, VRRoomEngineObserverUserInterface {
+class VRUserManager: VRIMObserverInterface, VRRoomEngineObserverUserInterface {
     var state: VRUserState {
         observerState.state
     }
@@ -30,7 +31,6 @@ class VRUserManager: VRUserManagerInterface, VRIMObserverInterface, VRRoomEngine
     
     func resetState() {
         update { state in
-            state.hasAudioStreamUserList = []
             state.myFollowingUserList = []
             state.speakingUserList = []
             state.userList = []
@@ -43,38 +43,37 @@ extension VRUserManager {
         return observerState.subscribe(selector)
     }
     
-    func subscribeState() -> AnyPublisher<VRUserState, Never> {
-        return observerState.subscribe()
+    func onSeatListChanged(seatList: [TUISeatInfo]) {
+        guard let context = context else { return }
+        var linkStatus: LinkStatus = .none
+        let selfUserId = context.coreUserState.selfInfo.userId
+        if seatList.contains(where: { $0.userId == selfUserId }) {
+            linkStatus = .linking
+        }
+        update(linkStatus: linkStatus)
     }
-}
-
-// MARK: - VRUserManagerInterface
-extension VRUserManager {
-    func fetchUserList() {
-        Task {
-            guard let service = service else { return }
-            do {
-                let userList = try await service.fetchUserList()
-                update { state in
-                    state.userList = userList
-                }
-            } catch let err as InternalError {
-                toastSubject.send(err.localizedMessage)
-            }
+    
+    func onStartVoiceRoom() {
+        fetchUserList()
+    }
+    
+    func onJoinVoiceRoom(ownerId: String) {
+        fetchUserList()
+        guard let context = context else { return }
+        if context.coreUserState.selfInfo.userId != ownerId {
+            checkFollowType(ownerId)
         }
     }
     
-    func fetchSelfInfo() {
-        Task {
-            guard let service = service else { return }
-            let info = service.getSelfInfo()
-            update { state in
-                state.selfInfo = VRUser(loginInfo: info)
-            }
-        }
+    func onStopVoiceRoom() {
+        update(linkStatus: .none)
     }
     
-    func followUser(_ user: VRUser, isFollow: Bool) {
+    func onLeaveVoiceRoom() {
+        update(linkStatus: .none)
+    }
+    
+    func followUser(_ user: TUIUserInfo, isFollow: Bool) {
         Task {
             guard let service = service else { return }
             do {
@@ -90,12 +89,30 @@ extension VRUserManager {
         }
     }
     
-    func checkFollowType(_ userId: String) {
+}
+
+// MARK: - Tools
+extension VRUserManager {
+    private func fetchUserList() {
+        Task {
+            guard let service = service else { return }
+            do {
+                let userList = try await service.fetchUserList()
+                update { state in
+                    state.userList = userList
+                }
+            } catch let err as InternalError {
+                toastSubject.send(err.localizedMessage)
+            }
+        }
+    }
+    
+    private func checkFollowType(_ userId: String) {
         Task {
             guard let service = service else { return }
             do {
                 let type = try await service.checkFollowType(userId: userId)
-                var user: VRUser = VRUser()
+                var user: TUIUserInfo = TUIUserInfo()
                 user.userId = userId
                 let isFollow = type == .FOLLOW_TYPE_IN_MY_FOLLOWING_LIST || type == .FOLLOW_TYPE_IN_BOTH_FOLLOWERS_LIST
                 updateFollowUserList(user: user, isFollow: isFollow)
@@ -105,9 +122,9 @@ extension VRUserManager {
         }
     }
     
-    func update(linkStatus: LinkStatus) {
+    private func update(linkStatus: LinkStatus) {
         update { state in
-            state.selfInfo.linkStatus = linkStatus
+            state.linkStatus = linkStatus
         }
     }
 }
@@ -116,9 +133,8 @@ extension VRUserManager {
 extension VRUserManager {
     func onRemoteUserEnterRoom(roomId: String, userInfo: TUIUserInfo) {
         update(userState: { state in
-            let user = VRUser(userInfo: userInfo)
-            if !state.userList.contains(user) {
-                state.userList.append(user)
+            if !state.userList.contains(userInfo) {
+                state.userList.append(userInfo)
             }
         })
     }
@@ -137,7 +153,7 @@ extension VRUserManager {
     func onMyFollowingListChanged(userInfoList: [V2TIMUserFullInfo], isAdd: Bool) {
         guard var myFollowingUserList = context?.userManager.state.myFollowingUserList else { return }
         if isAdd {
-            let newFollowingUsers = userInfoList.map { VRUser(userInfo: $0) }
+            let newFollowingUsers = userInfoList.map { TUIUserInfo(userFullInfo: $0) }
             myFollowingUserList.formUnion(newFollowingUsers)
         } else {
             let userIdsToRemove = Set(userInfoList.map { $0.userID })
@@ -157,7 +173,7 @@ extension VRUserManager {
         observerState.update(reduce: userState)
     }
     
-    private func updateFollowUserList(user: VRUser, isFollow: Bool) {
+    private func updateFollowUserList(user: TUIUserInfo, isFollow: Bool) {
         update { state in
             if isFollow {
                 if !state.myFollowingUserList.map({ $0.userId }).contains(user.userId) {

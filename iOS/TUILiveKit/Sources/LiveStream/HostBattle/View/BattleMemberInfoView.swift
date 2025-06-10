@@ -45,7 +45,7 @@ class BattleMemberInfoView: RTCBaseView {
     
     private let rankImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = .liveBundleImage("live_battle_ranking_\(1)_icon")
+        imageView.image = internalImage("live_battle_ranking_\(1)_icon")
         return imageView
     }()
     
@@ -160,6 +160,7 @@ class BattleMemberInfoView: RTCBaseView {
         isOnDisplayResultPublisher
             .removeDuplicates()
             .receive(on: RunLoop.main)
+            .dropFirst()
             .sink { [weak self] display in
                 guard let self = self else { return }
                 self.onBattleResultDisplay(display: display)
@@ -215,7 +216,7 @@ class BattleMemberInfoView: RTCBaseView {
             showBattleView(show: true)
             scoreLabel.text = "\(user.score)"
             if user.ranking > 0 && user.ranking <= maxRankingValue {
-                rankImageView.image = .liveBundleImage("live_battle_ranking_\(user.ranking)_icon")
+                rankImageView.image = internalImage("live_battle_ranking_\(user.ranking)_icon")
             }
         } else {
             showBattleView(show: false)
@@ -263,5 +264,5 @@ class BattleMemberInfoView: RTCBaseView {
 }
 
 private extension String {
-    static let connectingText = localized("Connecting")
+    static let connectingText = internalLocalized("Connecting")
 }

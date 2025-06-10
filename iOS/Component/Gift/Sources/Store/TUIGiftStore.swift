@@ -16,4 +16,3 @@ public class TUIGiftStore {
     public var giftDataMap: Observable<[String: TUIGiftData]> = Observable([:])
     public var likeDataMap: Observable<[String: TUILikeData]> = Observable([:])
 }
-

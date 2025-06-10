@@ -10,6 +10,7 @@ import TUICore
 import LiveStreamCore
 import RTCRoomEngine
 import RTCCommon
+import TUILiveResources
 
 public class TUILiveRoomAudienceViewController: UIViewController {
     
@@ -54,7 +55,7 @@ public class TUILiveRoomAudienceViewController: UIViewController {
     
     deinit {
         StateCache.shared.clear()
-        print("deinit \(type(of: self))")
+        LiveKitLog.info("\(#file)", "\(#line)", "deinit TUILiveRoomAudienceViewController \(self)")
     }
     
     public func leaveLive(onSuccess: TUISuccessBlock?, onError: TUIErrorBlock?) {
@@ -70,7 +71,6 @@ public class TUILiveRoomAudienceViewController: UIViewController {
         subscribeRouter()
         constructViewHierarchy()
         activateConstraints()
-        view.backgroundColor = .black
         GiftCloudServer.shared.initialize()
     }
     
@@ -93,7 +93,6 @@ extension TUILiveRoomAudienceViewController {
     }
     
     private func constructViewHierarchy() {
-        view.backgroundColor = .g1
         view.addSubview(sliderView)
     }
     
@@ -106,23 +105,23 @@ extension TUILiveRoomAudienceViewController {
 
 // MARK: - FloatWindowDataSource
 extension TUILiveRoomAudienceViewController: FloatWindowDataSource {
-    func getRoomId() -> String {
+    public func getRoomId() -> String {
         roomId
     }
     
-    func getOwnerId() -> String {
+    public func getOwnerId() -> String {
         ownerId
     }
 
-    func getCoreView() -> LiveCoreView {
+    public func getCoreView() -> LiveCoreView {
         return coreView ?? LiveCoreView()
     }
     
-    func relayoutCoreView() {
+    public func relayoutCoreView() {
         relayoutCoreViewClosure()
     }
     
-    func getIsLinking() -> Bool {
+    public func getIsLinking() -> Bool {
         guard let coGuestState: CoGuestState = coreView?.getState(),
               let userState: UserState = coreView?.getState() else { return false }
         return !coGuestState.seatList.filter({ $0.userId == userState.selfInfo.userId }).isEmpty
@@ -130,7 +129,7 @@ extension TUILiveRoomAudienceViewController: FloatWindowDataSource {
 }
 
 extension TUILiveRoomAudienceViewController: LiveListViewDataSource {
-    public func fetchLiveList(completionHandler: @escaping LiveListCallback) {
+    func fetchLiveList(completionHandler: @escaping LiveListCallback) {
         guard cursor != "" || isFirstFetch else { return }
         isFirstFetch = false
         let liveListManager = TUIRoomEngine.sharedInstance().getExtension(extensionType: .liveListManager) as? TUILiveListManager
@@ -169,7 +168,7 @@ extension TUILiveRoomAudienceViewController: LiveListViewDataSource {
 
 extension TUILiveRoomAudienceViewController: LiveListViewDelegate {
     public func onCreateView(liveInfo: LiveInfo) -> UIView {
-        let audienceCell = AudienceSliderCell(roomId: liveInfo.roomId, routerManager: routerManager, routerCenter: routerCenter, audienceVC: self)
+        let audienceCell = AudienceSliderCell(liveInfo: liveInfo, routerManager: routerManager, routerCenter: routerCenter, audienceVC: self)
         audienceCell.delegate = self
         return audienceCell
     }
@@ -213,9 +212,9 @@ extension TUILiveRoomAudienceViewController: LiveListViewDelegate {
 
 extension TUILiveRoomAudienceViewController: AudienceListCellDelegate {
     func handleScrollToNewRoom(roomId: String, ownerId: String, manager: LiveStreamManager,
-                               coreView: LiveCoreView, routerProvider: LSRouterViewProvider,
+                               coreView: LiveCoreView,
                                relayoutCoreViewClosure: @escaping () -> Void) {
-        routerCenter.handleScrollToNewRoom(manager: manager, coreView: coreView, routerProvider: routerProvider)
+        routerCenter.handleScrollToNewRoom(manager: manager, coreView: coreView)
         self.roomId = roomId
         self.ownerId = ownerId
         self.coreView = coreView

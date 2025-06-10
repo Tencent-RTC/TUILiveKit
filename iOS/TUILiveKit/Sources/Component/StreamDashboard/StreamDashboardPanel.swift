@@ -20,7 +20,7 @@ class StreamDashboardPanel: UIView {
         let label = UILabel()
         label.text = .dashboardText
         label.font = .customFont(ofSize: 16.0, weight: .medium)
-        label.textColor = .g7
+        label.textColor = .textPrimaryColor
         label.textAlignment = .center
         return label
     }()
@@ -52,8 +52,8 @@ class StreamDashboardPanel: UIView {
     }
     
     private var isViewReady: Bool = false
-    override func layoutSubviews() {
-        super.layoutSubviews()
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
         guard !isViewReady else { return }
         isViewReady = true
         constructViewHierarchy()
@@ -74,16 +74,17 @@ extension StreamDashboardPanel {
     
     private func activateConstraints() {
         titleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(10)
+            make.top.equalToSuperview().offset(20.scale375Height())
             make.centerX.equalToSuperview()
         }
         networkInfoView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
-            make.top.equalTo(titleLabel.snp.bottom).offset(10)
+            make.top.equalTo(titleLabel.snp.bottom).offset(12.scale375Height())
+            make.height.equalTo(48.scale375Height())
         }
         mediaView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
-            make.top.equalTo(networkInfoView.snp.bottom).offset(10)
+            make.top.equalTo(networkInfoView.snp.bottom).offset(8.scale375Height())
             make.bottom.equalToSuperview()
         }
     }
@@ -93,7 +94,7 @@ extension StreamDashboardPanel {
     }
     
     private func setupViewStyle() {
-        backgroundColor = .black.withAlphaComponent(0.1)
+        backgroundColor = .bgOperateColor
         layer.cornerRadius = 16
         layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
     }
@@ -101,5 +102,5 @@ extension StreamDashboardPanel {
 
 
 fileprivate extension String {
-    static let dashboardText = localized("Dashboard")
+    static let dashboardText = internalLocalized("Dashboard")
 }

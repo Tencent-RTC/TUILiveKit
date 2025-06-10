@@ -49,7 +49,7 @@ class LSBattleCountDownView: UIView {
     
     private let startBattleImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = .liveBundleImage("live_battle_start")
+        imageView.image = internalImage("live_battle_start")
         imageView.isHidden = true
         return imageView
     }()
@@ -82,8 +82,8 @@ class LSBattleCountDownView: UIView {
     }()
     
     private var isViewReady = false
-    override func layoutSubviews() {
-        super.layoutSubviews()
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
         guard !isViewReady else { return }
         backgroundColor = .clear
         constructViewHierarchy()
@@ -215,6 +215,6 @@ class CountdownTimer {
 }
 
 private extension String {
-    static let waitForBattleText: String = localized("Waiting for battlexxx")
-    static let cancelText: String = localized("Cancel")
+    static let waitForBattleText: String = internalLocalized("Waiting for battlexxx")
+    static let cancelText: String = internalLocalized("Cancel")
 }

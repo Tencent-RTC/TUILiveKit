@@ -7,6 +7,7 @@
 
 import RTCRoomEngine
 import Combine
+import TUILiveResources
 
 // TODO: - Dependency management, needs to consolidate RoomEngine instances.
 class VRRoomService: BaseServiceProtocol {
@@ -24,7 +25,7 @@ class VRRoomService: BaseServiceProtocol {
             guard let self = self else { return }
             self.roomEngine.fetchRoomInfo { roomInfo in
                 guard let roomInfo = roomInfo else {
-                    let error = InternalError(code: ErrorService.generalErrorCode, message: "fetch room info fail.")
+                    let error = InternalError(code: ErrorLocalized.generalErrorCode, message: "fetch room info fail.")
                     continuation.resume(throwing: error)
                     return
                 }
@@ -36,12 +37,12 @@ class VRRoomService: BaseServiceProtocol {
         }
     }
     
-    func fetchRoomOwnerInfo(ownerId: String) async throws -> VRUser {
+    func fetchRoomOwnerInfo(ownerId: String) async throws -> TUIUserInfo {
         return try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self else { return }
             roomEngine.getUserInfo(ownerId) { userInfo in
                 if let user = userInfo {
-                    continuation.resume(returning: VRUser(userInfo: user))
+                    continuation.resume(returning: user)
                 } else {
                     let error = InternalError(error: LiveError.userNotExist, message: LiveError.userNotExist.description)
                     continuation.resume(throwing: error)
@@ -58,7 +59,7 @@ class VRRoomService: BaseServiceProtocol {
     func fetchLiveInfo(roomId: String) async throws -> TUILiveInfo {
         return try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self, let liveListManager = roomEngine.getExtension(extensionType: .liveListManager) as? TUILiveListManager else {
-                let error = InternalError(code: ErrorService.generalErrorCode, message: "get LiveListManager error")
+                let error = InternalError(code: ErrorLocalized.generalErrorCode, message: "get LiveListManager error")
                 continuation.resume(throwing: error)
                 return
             }
@@ -74,7 +75,7 @@ class VRRoomService: BaseServiceProtocol {
     func setLiveInfo(liveInfo: TUILiveInfo, modifyFlag: TUILiveModifyFlag) async throws {
         return try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self, let liveListManager = roomEngine.getExtension(extensionType: .liveListManager) as? TUILiveListManager else {
-                let error = InternalError(code: ErrorService.generalErrorCode, message: "get LiveListManager error")
+                let error = InternalError(code: ErrorLocalized.generalErrorCode, message: "get LiveListManager error")
                 continuation.resume(throwing: error)
                 return
             }

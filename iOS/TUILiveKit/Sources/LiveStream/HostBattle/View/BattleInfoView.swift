@@ -60,14 +60,14 @@ class BattleInfoView: RTCBaseView {
     
     private let battleTimeView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = .liveBundleImage("live_battle_time_background_icon")
+        imageView.image = internalImage("live_battle_time_background_icon")
         imageView.isHidden = true
         return imageView
     }()
     
     private let startBattleImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = .liveBundleImage("live_battle_start")
+        imageView.image = internalImage("live_battle_start")
         imageView.isHidden = true
         return imageView
     }()
@@ -81,7 +81,7 @@ class BattleInfoView: RTCBaseView {
     
     private lazy var battleClockButton: UIButton = {
         let button = UIButton()
-        button.setImage(.liveBundleImage("live_battle_clock_icon"), for: .normal)
+        button.setImage(internalImage("live_battle_clock_icon"), for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.textAlignment = .center
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16)
@@ -305,7 +305,7 @@ class BattleInfoView: RTCBaseView {
         }
         
         battleResultImageView.isHidden = false
-        battleResultImageView.image = .liveBundleImage(imageName)
+        battleResultImageView.image = internalImage(imageName)
     }
     
     private func stopDisplayBattleResult() {
@@ -315,5 +315,5 @@ class BattleInfoView: RTCBaseView {
 }
 
 private extension String {
-    static let battleEndText = localized("PK End")
+    static let battleEndText = internalLocalized("PK End")
     }

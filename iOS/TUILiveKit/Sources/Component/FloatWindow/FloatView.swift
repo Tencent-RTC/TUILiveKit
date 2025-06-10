@@ -33,14 +33,14 @@ class FloatView: UIView {
     
     private let enableMicImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = .liveBundleImage("live_microphone_opened")
+        imageView.image = internalImage("live_microphone_opened")
         imageView.isHidden = true
         return imageView
     }()
     
     private let enableVideoImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = .liveBundleImage("live_video_opened")
+        imageView.image = internalImage("live_video_opened")
         imageView.isHidden = true
         return imageView
     }()
@@ -144,7 +144,7 @@ class FloatView: UIView {
             .sink { [weak self] muted in
                 guard let self = self else { return }
                 let imageImage = muted ? "live_microphone_closed" : "live_microphone_opened"
-                self.enableMicImageView.image = .liveBundleImage(imageImage)
+                self.enableMicImageView.image = internalImage(imageImage)
             }
             .store(in: &cancellableSet)
         
@@ -153,7 +153,7 @@ class FloatView: UIView {
             .sink { [weak self] opened in
                 guard let self = self else { return }
                 let imageImage = opened ? "live_video_opened" : "live_video_closed"
-                self.enableVideoImageView.image = .liveBundleImage(imageImage)
+                self.enableVideoImageView.image = internalImage(imageImage)
             }.store(in: &cancellableSet)
     }
     

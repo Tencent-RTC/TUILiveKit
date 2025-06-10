@@ -253,7 +253,7 @@ extension LSBattleManager {
 
 // MARK: Localized String
 private extension String {
-    static let battleInviterCancelledText = localized("xxx canceled battle, please try to initiate it again")
-    static let battleInvitationRejectText = localized("xxx rejected battle")
-    static let battleInvitationTimeoutText = localized("Battle request has been timeout")
+    static let battleInviterCancelledText = internalLocalized("xxx canceled battle, please try to initiate it again")
+    static let battleInvitationRejectText = internalLocalized("xxx rejected battle")
+    static let battleInvitationTimeoutText = internalLocalized("Battle request has been timeout")
 }

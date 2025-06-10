@@ -10,6 +10,7 @@ import RTCCommon
 import Combine
 import LiveStreamCore
 import RTCRoomEngine
+import TUILiveResources
 
 class AudienceView: RTCBaseView {
     let roomId: String
@@ -23,9 +24,30 @@ class AudienceView: RTCBaseView {
     private lazy var liveStreamObserver = LiveStreamObserver(manager: manager)
     private lazy var battleObserver = LSBattleManagerObserver(battleManager: manager.battleManager)
     
+    private var panDirection: PanDirection = .none
+    enum PanDirection {
+        case left, right, none
+    }
+    
     lazy var livingView: AudienceLivingView = {
         let view = AudienceLivingView(manager: manager, routerManager: routerManager, coreView: videoView)
         return view
+    }()
+    
+    lazy var leaveButton: UIButton = {
+        let button = UIButton()
+        button.setImage(internalImage("live_leave_icon"), for: .normal)
+        button.imageEdgeInsets = UIEdgeInsets(top: 2.scale375(), left: 2.scale375(), bottom: 2.scale375(), right: 2.scale375())
+        return button
+    }()
+    
+    lazy var restoreClearButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = .black.withAlphaComponent(0.2)
+        button.setImage(internalImage("live_restore_clean_icon"), for: .normal)
+        button.layer.cornerRadius = 20.scale375()
+        button.isHidden = true
+        return button
     }()
     
     lazy var dashboardView: AudienceEndView = {
@@ -47,6 +69,18 @@ class AudienceView: RTCBaseView {
         return imageView
     }()
     
+    lazy var topGradientView: UIView = {
+        var view = UIView()
+        view.isUserInteractionEnabled = false
+        return view
+    }()
+    
+    lazy var bottomGradientView: UIView = {
+        var view = UIView()
+        view.isUserInteractionEnabled = false
+        return view
+    }()
+    
     init(roomId: String, manager: LiveStreamManager, routerManager: LSRouterManager, coreView: LiveCoreView) {
         self.roomId = roomId
         self.manager = manager
@@ -66,14 +100,17 @@ class AudienceView: RTCBaseView {
     deinit {
         videoView.unregisterConnectionObserver(observer: liveStreamObserver)
         videoView.unregisterBattleObserver(observer: battleObserver)
-        print("deinit \(self)")
+        LiveKitLog.info("\(#file)", "\(#line)", "deinit AudienceView \(self)")
     }
     
     override func constructViewHierarchy() {
-        backgroundColor = .black
         addSubview(coverBgView)
         addSubview(videoView)
+        addSubview(topGradientView)
+        addSubview(bottomGradientView)
         addSubview(livingView)
+        addSubview(leaveButton)
+        addSubview(restoreClearButton)
         addSubview(dashboardView)
     }
     
@@ -87,8 +124,27 @@ class AudienceView: RTCBaseView {
         livingView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+        leaveButton.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().inset(20.scale375Width())
+            make.top.equalToSuperview().offset(70.scale375Height())
+            make.width.equalTo(24.scale375Width())
+            make.height.equalTo(24.scale375Width())
+        }
+        restoreClearButton.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().inset(16.scale375())
+            make.bottom.equalToSuperview().inset(40.scale375Height())
+            make.width.height.equalTo(40.scale375())
+        }
         dashboardView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
+        }
+        topGradientView.snp.makeConstraints { make in
+            make.top.leading.trailing.equalToSuperview()
+            make.height.equalTo(142.scale375Height())
+        }
+        bottomGradientView.snp.makeConstraints { make in
+            make.bottom.leading.trailing.equalToSuperview()
+            make.height.equalTo(246.scale375Height())
         }
     }
     
@@ -96,6 +152,15 @@ class AudienceView: RTCBaseView {
         subscribeRoomState()
         subscribeMediaState()
         subscribeSubject()
+        setupSlideToClear()
+        leaveButton.addTarget(self, action: #selector(leaveButtonClick), for: .touchUpInside)
+        restoreClearButton.addTarget(self, action: #selector(restoreLivingView), for: .touchUpInside)
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        topGradientView.gradient(colors: [.g1.withAlphaComponent(0.3), .clear], isVertical: true)
+        bottomGradientView.gradient(colors: [.clear, .g1.withAlphaComponent(0.3)], isVertical: true)
     }
     
     func relayoutCoreView() {
@@ -111,6 +176,7 @@ class AudienceView: RTCBaseView {
 extension AudienceView {
     private func subscribeRoomState() {
         manager.subscribeState(StateSelector(keyPath: \LSRoomState.liveStatus))
+            .removeDuplicates()
             .receive(on: RunLoop.main)
             .sink { [weak self] status in
                 guard let self = self else { return }
@@ -146,7 +212,7 @@ extension AudienceView {
             .removeDuplicates()
             .sink { [weak self] url in
                 guard let self = self else { return }
-                coverBgView.kf.setImage(with: URL(string: url))
+                coverBgView.kf.setImage(with: URL(string: url), placeholder: internalImage("live_edit_info_default_cover_image"))
             }
             .store(in: &cancellableSet)
     }
@@ -208,16 +274,118 @@ extension AudienceView {
             routerManager.router(action: .exit)
         }
     }
+    
+    @objc func leaveButtonClick() {
+        let selfUserId = manager.coreUserState.selfInfo.userId
+        if !manager.coreCoGuestState.seatList.contains(where: { $0.userId == selfUserId }) {
+            leaveRoom()
+            return
+        }
+        var items: [ActionItem] = []
+        let lineConfig = ActionItemDesignConfig(lineWidth: 1, titleColor: .redColor)
+        lineConfig.backgroundColor = .white
+        lineConfig.lineColor = .g8
+        
+        let title: String = .endLiveOnLinkMicText
+        let endLinkMicItem = ActionItem(title: .endLiveLinkMicDisconnectText, designConfig: lineConfig, actionClosure: { [weak self] _ in
+            guard let self = self else { return }
+            videoView.terminateIntraRoomConnection()
+            routerManager.router(action: .dismiss())
+        })
+        items.append(endLinkMicItem)
+        
+        let designConfig = ActionItemDesignConfig(lineWidth: 7, titleColor: .g2)
+        designConfig.backgroundColor = .white
+        designConfig.lineColor = .g8
+        let endLiveItem = ActionItem(title: .confirmCloseText, designConfig: designConfig, actionClosure: { [weak self] _ in
+            guard let self = self else { return }
+            routerManager.router(action: .dismiss())
+            leaveRoom()
+        })
+        items.append(endLiveItem)
+        routerManager.router(action: .present(.listMenu(ActionPanelData(title: title, items: items))))
+    }
+    
+    func leaveRoom() {
+        videoView.leaveLiveStream() { [weak self] in
+            guard let self = self else { return }
+            manager.onLeaveLive()
+        } onError: { _, _ in
+        }
+        routerManager.router(action: .exit)
+    }
 }
 
-extension AudienceView: LSRouterViewProvider {
-    func getRouteView(route: LSRoute) -> UIView? {
-        if route == .videoSetting {
-            return VideoSettingPanel(routerManager: routerManager, manager: manager, coreView: videoView)
+// MARK: - Slide to clear
+extension AudienceView {
+    private func setupSlideToClear() {
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+        panGesture.delegate = self
+        addGestureRecognizer(panGesture)
+    }
+    
+    @objc private func handlePan(_ gesture: UIPanGestureRecognizer) {
+        let translation = gesture.translation(in: self)
+        let velocity = gesture.velocity(in: self)
+        
+        switch gesture.state {
+        case .began:
+            panDirection = velocity.x > 0 ? .right : .left
+        case .changed:
+            guard isValidPan() else { return }
+            if panDirection == .left {
+                livingView.transform = CGAffineTransform(translationX: bounds.width + translation.x, y: 0)
+            } else if translation.x > 0 {
+                livingView.transform = CGAffineTransform(translationX: translation.x, y: 0)
+            }
+        case .ended, .cancelled:
+            guard isValidPan() else { return }
+            let isSameDirection = velocity.x > 0 && panDirection == .right || velocity.x < 0 && panDirection == .left
+            let shouldComplete = isSameDirection && (abs(translation.x) > 100 || abs(velocity.x) > 800)
+            if shouldComplete {
+                panDirection == .right ? hideLivingView() : restoreLivingView()
+            } else {
+                resetLivingView()
+            }
+            panDirection = .none
+        default: break
         }
-        else {
-            return nil
+    }
+    
+    private func isValidPan() -> Bool {
+        return (panDirection == .right && !isLivingViewMoved()) || (panDirection == .left && isLivingViewMoved())
+    }
+    
+    private func hideLivingView() {
+        UIView.animate(withDuration: 0.3, animations: { [weak self] in
+            guard let self = self else { return }
+            livingView.transform = CGAffineTransform(translationX: UIScreen.main.bounds.width, y: 0)
+        })
+        restoreClearButton.isHidden = false
+        livingView.setGiftPureMode(true)
+    }
+    
+    @objc private func restoreLivingView() {
+        UIView.animate(withDuration: 0.3) {
+            self.livingView.transform = CGAffineTransform(translationX: 0, y: 0)
         }
+        restoreClearButton.isHidden = true
+        livingView.setGiftPureMode(false)
+    }
+        
+    private func resetLivingView() {
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            guard let self = self else { return }
+            if panDirection == .right {
+                livingView.transform = .identity
+            } else {
+                livingView.transform = CGAffineTransform(translationX: bounds.width, y: 0)
+            }
+        }
+    }
+    
+    private func isLivingViewMoved() -> Bool {
+        !restoreClearButton.isHidden
     }
 }
 
@@ -229,12 +397,13 @@ extension AudienceView: LiveEndViewDelegate {
 }
 
 extension AudienceView {
-    func joinLiveStream() {
+    func joinLiveStream(onComplete: @escaping () -> Void) {
         videoView.joinLiveStream(roomId: roomId) { [weak self] roomInfo in
             guard let self = self, let roomInfo = roomInfo else { return }
             manager.onJoinLive(roomInfo: roomInfo)
             livingView.initComponentView()
             livingView.isHidden = false
+            onComplete()
         } onError: { [weak self] code, message in
             guard let self = self else { return }
             let error = InternalError(code: code.rawValue, message: message)
@@ -243,6 +412,7 @@ extension AudienceView {
                 guard let self = self else { return }
                 routerManager.router(action: .exit)
             }
+            onComplete()
         }
     }
 }
@@ -283,10 +453,21 @@ extension AudienceView: VideoViewDelegate {
     }
 }
 
+extension AudienceView: UIGestureRecognizerDelegate {
+    override func gestureRecognizerShouldBegin(_ gesture: UIGestureRecognizer) -> Bool {
+        guard let pan = gesture as? UIPanGestureRecognizer else { return true }
+        let velocity = pan.velocity(in: self)
+        return abs(velocity.x) > abs(velocity.y)
+    }
+}
+
 fileprivate extension String {
-    static let kickedOutText = localized("You have been kicked out of the room by the anchor")
-    static let mutedAudioText = localized("The anchor has muted you")
-    static let unmutedAudioText = localized("The anchor has unmuted you")
-    static let mutedVideoText = localized("The anchor disabled your video")
-    static let unmutedVideoText = localized("The anchor enabled your video")
+    static let kickedOutText = internalLocalized("You have been kicked out of the room by the anchor")
+    static let mutedAudioText = internalLocalized("The anchor has muted you")
+    static let unmutedAudioText = internalLocalized("The anchor has unmuted you")
+    static let mutedVideoText = internalLocalized("The anchor disabled your video")
+    static let unmutedVideoText = internalLocalized("The anchor enabled your video")
+    static let endLiveOnLinkMicText = internalLocalized("You are currently co-guesting with other streamers. Would you like to [End Co-guest] or [Exit Live] ?")
+    static let endLiveLinkMicDisconnectText = internalLocalized("End Co-guest")
+    static let confirmCloseText = internalLocalized("Exit Live")
 }

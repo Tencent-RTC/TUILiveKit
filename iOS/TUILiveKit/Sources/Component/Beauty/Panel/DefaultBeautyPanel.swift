@@ -45,10 +45,6 @@ class DefaultBeautyPanel: UIView {
     override func didMoveToWindow() {
         super.didMoveToWindow()
         updatePreview()
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
         guard !isViewReady else { return }
         constructViewHierarchy()
         activateConstraints()
@@ -61,7 +57,7 @@ class DefaultBeautyPanel: UIView {
     
     private lazy var backButton: UIButton = {
         let view = UIButton(type: .system)
-        view.setBackgroundImage(.liveBundleImage("live_back_icon"), for: .normal)
+        view.setBackgroundImage(internalImage("live_back_icon"), for: .normal)
         view.addTarget(self, action: #selector(backButtonClick), for: .touchUpInside)
         return view
     }()
@@ -98,7 +94,7 @@ class DefaultBeautyPanel: UIView {
         view.maximumValue = 9
         view.value = 0
         view.addTarget(self, action: #selector(sliderValueChanged), for: .valueChanged)
-        view.setThumbImage(.liveBundleImage("live_slider_icon"), for: .normal)
+        view.setThumbImage(internalImage("live_slider_icon"), for: .normal)
         view.isHidden = true
         return view
     }()
@@ -320,8 +316,8 @@ extension DefaultBeautyPanel {
 }
 
 private extension String {
-    static let titleText = localized("One-click beauty")
-    static let buffingText = localized("Microdermabrasion")
-    static let whitenessText = localized("Whitening")
-    static let ruddyText = localized("Rosy")
+    static let titleText = internalLocalized("One-click beauty")
+    static let buffingText = internalLocalized("Microdermabrasion")
+    static let whitenessText = internalLocalized("Whitening")
+    static let ruddyText = internalLocalized("Rosy")
     }

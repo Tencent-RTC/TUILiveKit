@@ -8,6 +8,7 @@
 import Foundation
 import RTCRoomEngine
 import LiveStreamCore
+import TUILiveResources
 
 protocol LSCoHostService {
     func fetchRecommendedList(cursor: String, count: Int) async throws -> (String, [TUILiveInfo])
@@ -33,7 +34,7 @@ extension LSCoHostServiceImpl: LSCoHostService {
     func fetchRecommendedList(cursor: String, count: Int) async throws -> (String, [TUILiveInfo]) {
         return try await withUnsafeThrowingContinuation { [weak self] continuation  in
             guard let self = self, let listManager = roomEngine.getExtension(extensionType: .liveListManager) as? TUILiveListManager else {
-                continuation.resume(throwing: InternalError(code: ErrorService.generalErrorCode,
+                continuation.resume(throwing: InternalError(code: ErrorLocalized.generalErrorCode,
                                                             message: "get LiveListManager error"))
                 return
             }

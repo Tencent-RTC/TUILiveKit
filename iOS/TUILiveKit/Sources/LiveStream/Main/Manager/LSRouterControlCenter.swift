@@ -13,17 +13,12 @@ import LiveStreamCore
 import TUIAudioEffect
 import TUIGift
 
-protocol LSRouterViewProvider: NSObjectProtocol {
-    func getRouteView(route: LSRoute) -> UIView?
-}
-
 class LSRouterControlCenter {
     private var coreView: LiveCoreView?
     private var rootRoute: LSRoute
     private var routerManager: LSRouterManager
     private var manager: LiveStreamManager?
     
-    weak var routerProvider: LSRouterViewProvider?
     private weak var rootViewController: UIViewController?
     private var cancellableSet = Set<AnyCancellable>()
     private var presentedRouteStack: [LSRoute] = []
@@ -38,15 +33,9 @@ class LSRouterControlCenter {
         routerManager.setRootRoute(route: rootRoute)
     }
     
-    func updateRootRoute(rootRoute: LSRoute) {
-        self.rootRoute = rootRoute
-        routerManager.setRootRoute(route: rootRoute)
-    }
-    
-    func handleScrollToNewRoom(manager: LiveStreamManager, coreView: LiveCoreView, routerProvider: LSRouterViewProvider) {
+    func handleScrollToNewRoom(manager: LiveStreamManager, coreView: LiveCoreView) {
         self.manager = manager
         self.coreView = coreView
-        self.routerProvider = routerProvider
         self.presentedViewControllerMap.removeAll()
     }
     
@@ -66,13 +55,6 @@ extension LSRouterControlCenter {
                 self.comparePresentedVCWith(routeStack: routeStack)
             }
             .store(in: &cancellableSet)
-    }
-    
-    func unSubscribeRouter() {
-        cancellableSet.forEach { cancellable in
-            cancellable.cancel()
-        }
-        cancellableSet.removeAll()
     }
 }
 
@@ -116,14 +98,8 @@ extension LSRouterControlCenter {
         if tryToPresentCachedViewController(route: route) {
             return
         }
-        
-        var view: UIView? = routerProvider?.getRouteView(route: route)
-        
-        if view == nil {
-            view = getRouteDefaultView(route: route)
-        }
-        
-        if let view = view {
+                
+        if let view = getRouteDefaultView(route: route) {
             var presentedViewController: UIViewController = UIViewController()
             switch route {
             case .alert(_):
@@ -217,16 +193,6 @@ extension LSRouterControlCenter {
             view = actionPanel
         case .linkSetting:
             view = VideoLinkSettingPanel(manager: manager, routerManager: routerManager, coreView: coreView)
-        case .systemImageSelection:
-            let imageConfig = LSSystemImageFactory.getImageAssets()
-            let systemImageSelectionPanel = LSSystemImageSelectionPanel(configs: imageConfig, manager: manager)
-            systemImageSelectionPanel.backButtonClickClosure = { [weak self] in
-                guard let self = self else { return }
-                self.routerManager.router(action: .dismiss())
-            }
-            view = systemImageSelectionPanel
-        case .prepareSetting:
-            break
         case .battleCountdown(let countdownTime):
             let countdownView = LSBattleCountDownView(countdownTime: countdownTime, manager: manager.battleManager, coreView: coreView)
             countdownView.timeEndClosure = { [weak self] in
@@ -247,7 +213,7 @@ extension LSRouterControlCenter {
             if BeautyView.checkIsNeedDownloadResource() {
                 return nil
             }
-            let beautyView = BeautyView()
+            let beautyView = BeautyView.shared()
             beautyView.backClosure = { [weak self] in
                 guard let self = self else { return }
                 routerManager.router(action: .dismiss())
@@ -276,8 +242,8 @@ extension LSRouterControlCenter {
         switch route {
         case .battleCountdown(_),
                 .alert(_),
-                .videoSetting,
                 .streamDashboard,
+                .featureSetting(_),
                 .userManagement(_, _):
             return true
         default:
@@ -291,7 +257,6 @@ extension LSRouterControlCenter {
                 .featureSetting(_), .alert(_),
                 .streamDashboard,
                 .giftView,
-                .videoSetting,
                 .listMenu(_),
                 .userManagement(_, _):
             return false
@@ -314,14 +279,10 @@ extension LSRouterControlCenter {
         switch route {
         case .listMenu(_):
             safeBottomViewBackgroundColor = .white
-        case .beauty:
-            if TUICore.getService(TUICore_TEBeautyService) != nil {
-                safeBottomViewBackgroundColor = .black
-            }
         case .battleCountdown(_):
             safeBottomViewBackgroundColor = .clear
-        case .streamDashboard:
-            safeBottomViewBackgroundColor = .black.withAlphaComponent(0.1)
+        case .streamDashboard, .featureSetting(_), .giftView, .beauty:
+            safeBottomViewBackgroundColor = .bgOperateColor
         default:
             break
         }
@@ -333,9 +294,9 @@ extension LSRouterControlCenter {
 extension LSRouterControlCenter {
     private func presentPopup(view: UIView, route: LSRoute) -> UIViewController {
         let safeBottomViewBackgroundColor = getSafeBottomViewBackgroundColor(route: route)
-        let menuContainerView = LSMenuContainerView(contentView: view, safeBottomViewBackgroundColor: safeBottomViewBackgroundColor)
+        let menuContainerView = MenuContainerView(contentView: view, safeBottomViewBackgroundColor: safeBottomViewBackgroundColor)
         let popupViewController = PopupViewController(contentView: menuContainerView,
-                                                 supportBlurView: supportBlurView(route: route))
+                                                  supportBlurView: supportBlurView(route: route))
         menuContainerView.blackAreaClickClosure = { [weak self] in
             guard let self = self else { return }
             self.routerManager.router(action: .dismiss())

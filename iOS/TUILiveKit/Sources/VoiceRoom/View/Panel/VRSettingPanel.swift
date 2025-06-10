@@ -40,8 +40,8 @@ class VRSettingPanel: UIView {
     }()
 
     private var isViewReady: Bool = false
-    override func layoutSubviews() {
-        super.layoutSubviews()
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
         guard !isViewReady else { return }
         constructViewHierarchy()
         activateConstraints()
@@ -50,7 +50,7 @@ class VRSettingPanel: UIView {
     }
 
     private func setupView() {
-        backgroundColor = .g2
+        backgroundColor = .bgOperateColor
         layer.cornerRadius = 20
         layer.masksToBounds = true
     }
@@ -89,5 +89,5 @@ private extension VRSettingPanel {
 }
 
 private extension String {
-    static let settingTitleText: String = localized("Settings")
+    static let settingTitleText: String = internalLocalized("Settings")
 }

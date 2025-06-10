@@ -40,9 +40,7 @@ enum LSRoute {
     case listMenu(_ data: ActionPanelData)
     case audioEffect
     case beauty
-    case videoSetting
     case giftView
-    case systemImageSelection
     case prepareSetting
     case battleCountdown(_ countdownTime: TimeInterval)
     case alert(info: LSAlertInfo)
@@ -63,10 +61,8 @@ extension LSRoute: Equatable {
                 (.linkSetting, .linkSetting),
                 (.audioEffect,.audioEffect),
                 (.beauty, .beauty),
-                (.videoSetting,.videoSetting),
                 (.giftView, .giftView),
                 (.prepareSetting, .prepareSetting),
-                (.systemImageSelection, .systemImageSelection),
                 (.alert, .alert),
                 (.streamDashboard, .streamDashboard):
                 return true
@@ -93,9 +89,7 @@ extension LSRoute: Equatable {
                 (.listMenu, _),
                 (.audioEffect, _),
                 (.beauty, _),
-                (.videoSetting, _),
                 (.giftView, _),
-                (.systemImageSelection, _),
                 (.prepareSetting, _),
                 (.battleCountdown, _),
                 (.alert, _),
@@ -141,12 +135,8 @@ extension LSRoute: Hashable {
                 return "audioEffect"
             case .beauty:
                 return "beauty"
-            case .videoSetting:
-                return "videoSetting"
             case .giftView:
                 return "giftView"
-            case .systemImageSelection:
-                return "systemImageSelection"
             case .prepareSetting:
                 return "prepareSetting"
             case .battleCountdown(let countdownTime):

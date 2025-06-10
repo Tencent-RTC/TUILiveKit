@@ -66,7 +66,7 @@ class VRSystemImageCell: UICollectionViewCell {
     let selectedImageView: UIImageView = {
         let view = UIImageView()
         view.backgroundColor = .b1
-        view.image = .liveBundleImage("live_user_followed_icon")
+        view.image = internalImage("live_user_followed_icon")
         view.isHidden = true
         return view
     }()

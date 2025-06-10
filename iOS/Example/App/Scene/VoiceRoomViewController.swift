@@ -10,17 +10,19 @@ import TUICore
 import TUILiveKit
 
 class VoiceRoomViewController: UIViewController {
-
-    private let navBackgroundImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "top_background")
-        return imageView
-    }()
     
     private lazy var goLiveButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "goLive"), for: .normal)
+        button.layer.cornerRadius = 26.scale375()
+        button.setImage(UIImage(named: "create_live"), for: .normal)
+        button.setTitle(.goLiveText, for: .normal)
         button.addTarget(self, action: #selector(goLiveClick), for: .touchUpInside)
+        button.titleLabel?.font = UIFont(name: "PingFangSC-Semibold", size: 20)
+        button.backgroundColor = UIColor("1C66E5")
+        
+        let spacing: CGFloat = 8
+        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -spacing / 2, bottom: 0, right: spacing / 2)
+        button.titleEdgeInsets = UIEdgeInsets(top: 0, left: spacing / 2, bottom: 0, right: -spacing / 2)
         return button
     }()
     
@@ -33,11 +35,11 @@ class VoiceRoomViewController: UIViewController {
         setupNavigation()
         constructViewHierarchy()
         activateConstraints()
+        view.backgroundColor = .white
     }
     
     
     private func constructViewHierarchy() {
-        view.addSubview(navBackgroundImageView)
         view.addSubview(goLiveButton)
         
         addChild(liveListViewController)
@@ -46,17 +48,14 @@ class VoiceRoomViewController: UIViewController {
     }
     
     private func activateConstraints() {
-        navBackgroundImageView.snp.makeConstraints { make in
-            make.top.leading.trailing.equalToSuperview()
-            make.height.equalTo(200.scale375Height())
-        }
         liveListViewController.view.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
         goLiveButton.snp.makeConstraints { make in
             make.bottom.equalTo(-(15.scale375Height() + kDeviceSafeBottomHeight))
             make.centerX.equalToSuperview()
-            make.height.width.equalTo(40.scale375())
+            make.height.equalTo(48.scale375())
+            make.width.equalTo(154.scale375())
         }
     }
     
@@ -66,6 +65,19 @@ class VoiceRoomViewController: UIViewController {
 extension VoiceRoomViewController {
     
     private func setupNavigation() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
+        appearance.backgroundColor = .clear
+        navigationItem.standardAppearance = appearance
+        navigationItem.scrollEdgeAppearance = appearance
+        
+        let backBtn = UIButton(type: .custom)
+        backBtn.setImage(UIImage(named: "live_back"), for: .normal)
+        backBtn.addTarget(self, action: #selector(backBtnClick), for: .touchUpInside)
+        backBtn.sizeToFit()
+        let backItem = UIBarButtonItem(customView: backBtn)
+        navigationItem.leftBarButtonItem = backItem
+        
         let helpButton = UIButton()
         helpButton.setImage(UIImage(named: "help_small"), for: .normal)
         helpButton.addTarget(self, action: #selector(helpClick), for: .touchUpInside)
@@ -74,13 +86,29 @@ extension VoiceRoomViewController {
         helpItem.tintColor = .black
         navigationItem.rightBarButtonItem = helpItem
         
-        navigationItem.title = .voiceRoomTitle
+        let titleView = UILabel()
+        titleView.text = .voiceRoomTitle
+        titleView.textColor = .black
+        titleView.textAlignment = .center
+        titleView.font = UIFont.boldSystemFont(ofSize: 17)
+        titleView.adjustsFontSizeToFitWidth = true
+        let width = titleView.sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude,
+                                                  height: CGFloat.greatestFiniteMagnitude)).width
+        titleView.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: width, height: 44))
+        self.navigationItem.titleView = titleView
     }
 
 }
 
 // MARK: - Actions
 extension VoiceRoomViewController {
+    @objc private func backBtnClick(sender: UIButton) {
+        if let nav = navigationController {
+            nav.popViewController(animated: true)
+        } else {
+            dismiss(animated: true)
+        }
+    }
     
     @objc private func helpClick() {
         if let url = URL(string: "https://cloud.tencent.com/document/product/647/105441") {
@@ -98,4 +126,5 @@ extension VoiceRoomViewController {
 
 fileprivate extension String {
     static let voiceRoomTitle = TUILiveKitAppLocalize("Voice Room")
+    static let goLiveText = TUILiveKitAppLocalize("Go Live")
 }

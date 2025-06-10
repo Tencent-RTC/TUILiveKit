@@ -10,13 +10,14 @@ import Combine
 import TUICore
 import LiveStreamCore
 import RTCRoomEngine
+import TUILiveResources
 
 class VRSeatInvitationPanel: RTCBaseView {
     private let manager: VoiceRoomManager
     private let routerManager: VRRouterManager
     private weak var coreView: SeatGridView?
     private var cancellableSet: Set<AnyCancellable> = []
-    private var audienceTupleList: [(audienceInfo: VRUser, isInvited: Bool)] = []
+    private var audienceTupleList: [(audienceInfo: TUIUserInfo, isInvited: Bool)] = []
     private let seatIndex: Int
     
     private let titleLabel: UILabel = {
@@ -76,7 +77,7 @@ class VRSeatInvitationPanel: RTCBaseView {
         
         tableView.snp.makeConstraints { make in
             make.leading.trailing.bottom.equalToSuperview()
-            make.height.equalTo(575.scale375Height())
+            make.height.equalTo(screenHeight * 2 / 3)
             make.top.equalTo(subTitleLabel.snp.bottom)
         }
     }
@@ -87,18 +88,13 @@ class VRSeatInvitationPanel: RTCBaseView {
         subscribeUserListState()
         subscribeToastState()
     }
-    
-    deinit {
-        cancellableSet.forEach { $0.cancel() }
-        cancellableSet.removeAll()
-    }
 }
 
 extension VRSeatInvitationPanel {
     private func subscribeUserListState() {
-        let userListPublisher = manager.subscribeUserState(StateSelector(keyPath: \.userList))
-        let seatListPublisher = manager.subscribeSeatState(StateSelector(keyPath: \.seatList))
-        let invitedUserIdsPublisher = manager.subscribeSeatState(StateSelector(keyPath: \.invitedUserIds))
+        let userListPublisher = manager.subscribeState(StateSelector(keyPath: \VRUserState.userList))
+        let seatListPublisher = manager.subscribeCoreState(StateSelector(keyPath: \SGSeatState.seatList))
+        let invitedUserIdsPublisher = manager.subscribeState(StateSelector(keyPath: \VRSeatState.invitedUserIds))
         userListPublisher
             .combineLatest(seatListPublisher, invitedUserIdsPublisher)
             .receive(on: RunLoop.main)
@@ -106,7 +102,7 @@ extension VRSeatInvitationPanel {
                 guard let self = self else { return }
                 let audienceList = userList.filter { [weak self] user in
                     guard let self = self else { return false }
-                    return user.userId != self.manager.userState.selfInfo.userId
+                    return user.userId != self.manager.coreUserState.selfInfo.userId
                 }
                 self.audienceTupleList = audienceList.filter { user in
                     !seatList.contains { $0.userId == user.userId }
@@ -161,20 +157,20 @@ extension VRSeatInvitationPanel: UITableViewDataSource {
                 } onRejected: { [weak self] userInfo in
                     guard let self = self else { return }
                     self.manager.onRespondedSeatInvitation(of: user.userId)
-                    self.manager.toastSubject.send(.inviteSeatCancelText)
+                    self.manager.onError(.inviteSeatCancelText)
                 } onCancelled: { [weak self] userInfo in
                     guard let self = self else { return }
                     self.manager.onRespondedSeatInvitation(of: user.userId)
                 } onTimeout: { [weak self] userInfo in
                     guard let self = self else { return }
                     self.manager.onRespondedSeatInvitation(of: user.userId)
-                    self.manager.toastSubject.send(.inviteSeatCancelText)
+                    self.manager.onError(.inviteSeatCancelText)
                 } onError: { [weak self] userInfo, code, message in
                     guard let self = self else { return }
                     self.manager.onRespondedSeatInvitation(of: user.userId)
                     guard let err = TUIError(rawValue: code) else { return }
                     let error = InternalError(code: err.rawValue, message: message)
-                    self.manager.toastSubject.send(error.localizedMessage)
+                    self.manager.onError(error.localizedMessage)
                 }
                 
                 if self.seatIndex != -1 {
@@ -189,7 +185,7 @@ extension VRSeatInvitationPanel: UITableViewDataSource {
                 } onError: { [weak self] code, message in
                     guard let self = self, let err = TUIError(rawValue: code) else { return }
                     let error = InternalError(code: err.rawValue, message: message)
-                    self.manager.toastSubject.send(error.localizedMessage)
+                    self.manager.onError(error.localizedMessage)
                 }
             }
         }
@@ -198,7 +194,7 @@ extension VRSeatInvitationPanel: UITableViewDataSource {
 }
 
 fileprivate extension String {
-    static let inviteText = localized("Invite")
-    static let onlineAudienceText = localized("Online audience")
-    static let inviteSeatCancelText = localized("Seat invitation has been canceled")
+    static let inviteText = internalLocalized("Invite")
+    static let onlineAudienceText = internalLocalized("Online audience")
+    static let inviteSeatCancelText = internalLocalized("Seat invitation has been canceled")
 }

@@ -10,6 +10,7 @@ import RTCCommon
 import RTCRoomEngine
 import Combine
 import LiveStreamCore
+import TUILiveResources
 
 class LSUserManager {
     private let observerState = ObservableState<LSUserState>(initialState: LSUserState())
@@ -90,6 +91,7 @@ extension LSUserManager {
     }
     
     func onRemoteUserEnterRoom(roomId: String, userInfo: TUIUserInfo) {
+        guard roomId == context?.roomManager.roomState.roomId else { return }
         if userInfo.userId == context?.coreRoomState.ownerInfo.userId {
             return
         }
@@ -99,6 +101,7 @@ extension LSUserManager {
     }
     
     func onRemoteUserLeaveRoom(roomId: String, userInfo: TUIUserInfo) {
+        guard roomId == context?.roomManager.roomState.roomId else { return }
         update { state in
             state.userList.remove(userInfo)
         }
@@ -127,6 +130,6 @@ extension LSUserManager {
 }
 
 fileprivate extension String {
-    static let messageDisabledText = localized("You have been muted in the current room")
-    static let messageEnabledText =  localized("You have been unmuted in the current room")
+    static let messageDisabledText = internalLocalized("You have been muted in the current room")
+    static let messageEnabledText =  internalLocalized("You have been unmuted in the current room")
 }

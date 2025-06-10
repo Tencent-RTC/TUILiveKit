@@ -12,8 +12,9 @@ import TUICore
 import RTCCommon
 import RTCRoomEngine
 import LiveStreamCore
-import TUIGift
 import TUIBarrage
+import TUILiveResources
+import TUIGift
 
 protocol VoiceRoomRootViewDelegate: AnyObject {
     func rootView(_ view: VoiceRoomRootView, showEndView endInfo: [String:Any], isAnchor: Bool)
@@ -23,6 +24,7 @@ class VoiceRoomRootView: RTCBaseView {
     weak var delegate: VoiceRoomRootViewDelegate?
     
     private let manager: VoiceRoomManager
+    private let seatGridView: SeatGridView
     private let routerManager: VRRouterManager
     private let kTimeoutValue: TimeInterval = 60
     private let isOwner: Bool
@@ -47,31 +49,12 @@ class VoiceRoomRootView: RTCBaseView {
         return view
     }()
     
-    private lazy var seatGridView: SeatGridView = {
-        func setComponent() {
-            do {
-                let jsonObject: [String: Any] = [
-                    "api": "component",
-                    "component": 22
-                ]
-                let jsonData = try JSONSerialization.data(withJSONObject: jsonObject, options: [])
-                if let jsonString = String(data: jsonData, encoding: .utf8) {
-                    SeatGridView.callExperimentalAPI(jsonString)
-                }
-            } catch {
-                LiveKitLog.error("\(#file)","\(#line)", "dataReport: \(error.localizedDescription)")
-            }
-        }
-        setComponent()
-        return SeatGridView()
-    }()
-    
     private lazy var bottomMenu = VRBottomMenuView(manager: manager, routerManager: routerManager, coreView: seatGridView, isOwner: isOwner)
     
     private let muteMicrophoneButton: UIButton = {
         let button = UIButton(frame: .zero)
-        button.setImage(.liveBundleImage("live_open_mic_icon"), for: .normal)
-        button.setImage(.liveBundleImage("live_close_mic_icon"), for: .selected)
+        button.setImage(internalImage("live_open_mic_icon"), for: .normal)
+        button.setImage(internalImage("live_close_mic_icon"), for: .selected)
         button.layer.borderColor = UIColor.g3.withAlphaComponent(0.3).cgColor
         button.layer.borderWidth = 1
         button.layer.cornerRadius = 16.scale375Height()
@@ -79,7 +62,6 @@ class VoiceRoomRootView: RTCBaseView {
     }()
     
     private lazy var barrageButton: BarrageInputView = {
-        let ownerId = manager.roomState.ownerInfo.userId
         let view = BarrageInputView(roomId: manager.roomState.roomId)
         view.layer.borderColor = UIColor.g3.withAlphaComponent(0.3).cgColor
         view.layer.borderWidth = 1
@@ -102,6 +84,7 @@ class VoiceRoomRootView: RTCBaseView {
     
     init(frame: CGRect,
          roomId: String,
+         seatGridView: SeatGridView,
          manager: VoiceRoomManager,
          routerManager: VRRouterManager,
          isCreate: Bool) {
@@ -109,8 +92,8 @@ class VoiceRoomRootView: RTCBaseView {
         self.routerManager = routerManager
         self.isOwner = isCreate
         self.likeManager = LikeManager(roomId: roomId)
+        self.seatGridView = seatGridView
         super.init(frame: frame)
-        manager.update(roomId: roomId)
         if isCreate {
             start(roomId: roomId)
         } else {
@@ -190,7 +173,6 @@ class VoiceRoomRootView: RTCBaseView {
         topView.delegate = self
         subscribeRoomState()
         subscribeUserState()
-        subscribeSeatState()
         subscribeSubject()
         muteMicrophoneButton.addTarget(self, action: #selector(muteMicrophoneButtonClick(sender:)), for: .touchUpInside)
     }
@@ -205,24 +187,19 @@ extension VoiceRoomRootView {
     func muteMicrophone(mute: Bool) {
         if mute {
             seatGridView.muteMicrophone()
-            manager.update(microphoneMuted: true)
         } else {
-            seatGridView.unmuteMicrophone(onSuccess: { [weak self] in
-                guard let self = self else { return }
-                manager.update(microphoneMuted: false)
+            seatGridView.unmuteMicrophone(onSuccess: {
             }, onError: { [weak self] code, message in
                 guard let self = self else { return }
-                manager.update(microphoneMuted: true)
                 let error = InternalError(code: code, message: message)
-                makeToast(error.localizedMessage)
+                manager.onError(error.localizedMessage)
             })
         }
     }
     
     func startMicrophone() {
-        seatGridView.startMicrophone { [weak self] in
-            guard let self = self else { return }
-            manager.update(microphoneOpened: true)
+        seatGridView.startMicrophone {
+            
         } onError: { [weak self] code, message in
             if code == TUIError.openMicrophoneNeedSeatUnlock.rawValue {
                 // Seat muted will pops up in unmuteMicrophone, so no processing is needed here
@@ -230,13 +207,12 @@ extension VoiceRoomRootView {
             }
             guard let self = self else { return }
             let error = InternalError(code: code, message: message)
-            makeToast(error.localizedMessage)
+            manager.onError(error.localizedMessage)
         }
     }
     
     func stopMicrophone() {
         seatGridView.stopMicrophone()
-        manager.update(microphoneOpened: false)
     }
 }
 
@@ -246,30 +222,19 @@ extension VoiceRoomRootView {
         let roomState = manager.roomState
         roomInfo.roomId = roomId
         roomInfo.name = roomState.roomName
-        roomInfo.seatMode = roomState.seatMode
-        roomInfo.maxSeatCount = roomState.maxSeatCount
+        roomInfo.seatMode = manager.roomParams.seatMode
+        roomInfo.maxSeatCount = manager.roomParams.maxSeatCount
         roomInfo.isSeatEnabled = true
         roomInfo.roomType = .live
         
         seatGridView.startVoiceRoom(roomInfo: roomInfo) { [weak self] roomInfo in
             guard let self = self else { return }
             handleAbnormalExitedSence()
-            
-            manager.update(ownerInfo: manager.userState.selfInfo)
-            let liveInfo = TUILiveInfo()
-            liveInfo.roomInfo.roomId = roomState.roomId
-            liveInfo.coverUrl = roomState.coverURL
-            liveInfo.backgroundUrl = roomState.backgroundURL
-            liveInfo.categoryList = [NSNumber(value: roomState.liveExtraInfo.category.rawValue)]
-            liveInfo.isPublicVisible = roomState.liveExtraInfo.liveMode == .public
-            manager.setLiveInfo(liveInfo: liveInfo, modifyFlag: [.coverUrl, .publish, .category, .backgroundUrl])
-            manager.setRoomSeatModeByAdmin(manager.roomState.seatMode)
-            
-            self.didEnterRoom(roomInfo: roomInfo)
-            self.initComponentView()
+            manager.onStartVoiceRoom(roomInfo: roomInfo)
+            didEnterRoom()
         } onError: {  [weak self] code, message in
             guard let self = self else { return }
-            manager.toastSubject.send(.enterRoomFailedText)
+            manager.onError(.enterRoomFailedText)
         }
     }
     
@@ -277,31 +242,26 @@ extension VoiceRoomRootView {
         
         seatGridView.joinVoiceRoom(roomId: roomId) { [weak self] roomInfo in
             guard let self = self else { return }
-            self.didEnterRoom(roomInfo: roomInfo)
-            self.initComponentView()
+            manager.onJoinVoiceRoom(roomInfo: roomInfo)
+            didEnterRoom()
         } onError: { [weak self] code, message in
             guard let self = self else { return }
-            manager.toastSubject.send(.enterRoomFailedText)
-            routerManager.router(action: .exit)
+            let error = InternalError(code: code, message: message)
+            manager.onError(error.localizedMessage)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+                guard let self = self else { return }
+                routerManager.router(action: .exit)
+            }
         }
     }
     
-    func didEnterRoom(roomInfo: TUIRoomInfo) {
+    func didEnterRoom() {
         subscribeMicrophoneState()
-        manager.fetchUserList()
-        manager.fetchSeatList()
-        manager.fetchRoomOwnerInfo(ownerId: roomInfo.ownerId)
-        manager.update(roomInfo: roomInfo)
-        
-        if !isOwner {
-            manager.fetchLiveInfo(roomId: manager.roomState.roomId)
-            manager.checkFollowType(roomInfo.ownerId)
-        }
-        
         TUICore.notifyEvent(TUICore_PrivacyService_ROOM_STATE_EVENT_CHANGED,
                             subKey: TUICore_PrivacyService_ROOM_STATE_EVENT_SUB_KEY_START,
                             object: nil,
                             param: nil)
+        initComponentView()
     }
     
     func onExit() {
@@ -342,11 +302,11 @@ extension VoiceRoomRootView {
     private func showAnchorEndView() {
         seatGridView.stopVoiceRoom { [weak self] in
             guard let self = self else { return }
-            manager.update(microphoneOpened: false)
+            manager.onStopVoiceRoom()
         } onError: { [weak self] code, message in
             guard let self = self else { return }
             let error = InternalError(code: code, message: message)
-            manager.toastSubject.send(error.localizedMessage)
+            manager.onError(error.localizedMessage)
         }
         
         let roomState = manager.roomState
@@ -366,8 +326,8 @@ extension VoiceRoomRootView {
         if !isOwner {
             let info: [String: Any] = [
                 "roomId": manager.roomState.roomId,
-                "avatarUrl": manager.roomState.ownerInfo.avatarUrl,
-                "userName": manager.userState.selfInfo.name
+                "avatarUrl": manager.coreRoomState.ownerAvatar,
+                "userName": manager.coreUserState.selfInfo.userName
             ]
             delegate?.rootView(self, showEndView: info, isAnchor: false)
         }
@@ -392,7 +352,7 @@ extension VoiceRoomRootView {
 
 extension VoiceRoomRootView {
     private func subscribeRoomBackgroundState() {
-        manager.subscribeRoomState(StateSelector(keyPath: \.backgroundURL))
+        manager.subscribeState(StateSelector(keyPath: \VRRoomState.backgroundURL))
             .receive(on: RunLoop.main)
             .sink(receiveValue: { [weak self] url in
                 guard let self = self else { return }
@@ -402,11 +362,11 @@ extension VoiceRoomRootView {
     }
     
     private func subscribeRoomOwnerState() {
-        manager.subscribeRoomState(StateSelector(keyPath: \.ownerInfo))
+        manager.subscribeCoreState(StateSelector(keyPath: \SGRoomState.ownerId))
             .receive(on: RunLoop.main)
-            .sink { [weak self] ownerInfo in
+            .sink { [weak self] ownerId in
                 guard let self = self else { return }
-                self.barrageDisplayView.setOwnerId(ownerInfo.userId)
+                self.barrageDisplayView.setOwnerId(ownerId)
             }
             .store(in: &cancellableSet)
     }
@@ -416,8 +376,8 @@ extension VoiceRoomRootView {
 
 extension VoiceRoomRootView {
     private func subscribeUserIsOnSeatState() {
-        let selfInfoPublisher = manager.subscribeUserState(StateSelector(keyPath: \.selfInfo))
-        let seatListPublisher = manager.subscribeSeatState(StateSelector(keyPath: \.seatList))
+        let selfInfoPublisher = manager.subscribeCoreState(StateSelector(keyPath: \SGUserState.selfInfo))
+        let seatListPublisher = manager.subscribeCoreState(StateSelector(keyPath: \SGSeatState.seatList))
         seatListPublisher
             .combineLatest(selfInfoPublisher)
             .receive(on: RunLoop.main)
@@ -429,7 +389,7 @@ extension VoiceRoomRootView {
     }
     
     private func subscribeUserLinkState() {
-        manager.subscribeUserState(StateSelector(keyPath: \.selfInfo.linkStatus))
+        manager.subscribeState(StateSelector(keyPath: \VRUserState.linkStatus))
             .receive(on: RunLoop.main)
             .removeDuplicates()
             .sink { [weak self] status in
@@ -450,30 +410,12 @@ extension VoiceRoomRootView {
 
 extension VoiceRoomRootView {
     private func subscribeMicrophoneState() {
-        manager.subscribeMediaState(StateSelector(keyPath: \.isMicrophoneMuted))
+        manager.subscribeCoreState(StateSelector(keyPath: \SGMediaState.isMicrophoneMuted))
             .receive(on: RunLoop.main)
             .sink(receiveValue: { [weak self] microphoneMuted in
                 guard let self = self else { return }
                 self.muteMicrophoneButton.isSelected = microphoneMuted
             })
-            .store(in: &cancellableSet)
-    }
-}
-
-// MARK: - SubscribeSeatState
-
-extension VoiceRoomRootView {
-    private func subscribeSeatState() {
-        manager.subscribeSeatState(StateSelector(keyPath: \.seatList))
-            .receive(on: RunLoop.main)
-            .sink { [weak self] seatList in
-                guard let self = self else { return }
-                var linkStatus: LinkStatus = .none
-                if seatList.contains(where: { $0.userId == self.manager.userState.selfInfo.userId }) {
-                    linkStatus = .linking
-                }
-                manager.update(linkStatus: linkStatus)
-            }
             .store(in: &cancellableSet)
     }
 }
@@ -516,7 +458,6 @@ extension VoiceRoomRootView: VRTopViewDelegate {
         designConfig.lineColor = .g8
         let item = ActionItem(title: .confirmCloseText, designConfig: designConfig, actionClosure: { [weak self] _ in
             guard let self = self else { return }
-            manager.update(linkStatus: .none)
             self.showAnchorEndView()
             self.routerManager.router(action: .dismiss())
         })
@@ -524,8 +465,8 @@ extension VoiceRoomRootView: VRTopViewDelegate {
     }
     
     private func audienceLeaveButtonClick() {
-        let selfUserId = manager.userState.selfInfo.userId
-        if !manager.seatState.seatList.contains(where: { $0.userId == selfUserId }) {
+        let selfUserId = manager.coreUserState.selfInfo.userId
+        if !manager.coreSeatState.seatList.contains(where: { $0.userId == selfUserId }) {
             leaveRoom()
             routerManager.router(action: .exit)
             return
@@ -542,7 +483,7 @@ extension VoiceRoomRootView: VRTopViewDelegate {
             } onError: { [weak self] code, message in
                 guard let self = self else { return }
                 let error = InternalError(code: code, message: message)
-                manager.toastSubject.send(error.localizedMessage)
+                manager.onError(error.localizedMessage)
             }
 
             routerManager.router(action: .dismiss())
@@ -563,14 +504,13 @@ extension VoiceRoomRootView: VRTopViewDelegate {
     }
     
     private func leaveRoom() {
-        manager.update(linkStatus: .none)
         seatGridView.leaveVoiceRoom { [weak self] in
             guard let self = self else { return }
-            manager.resetAllState()
+            manager.onLeaveVoiceRoom()
         } onError: { [weak self] code, message in
             guard let self = self else { return }
             let error = InternalError(code: code, message: message)
-            manager.toastSubject.send(error.localizedMessage)
+            manager.onError(error.localizedMessage)
         }
     }
 }
@@ -579,9 +519,9 @@ extension VoiceRoomRootView: VRTopViewDelegate {
 extension VoiceRoomRootView: SeatGridViewObserver {
     func onKickedOutOfRoom(roomId: String, reason: TUIKickedOutOfRoomReason, message: String) {
         guard reason != .byLoggedOnOtherDevice else { return }
-        let isOwner = manager.userState.selfInfo.userId == manager.roomState.ownerInfo.userId
+        let isOwner = manager.coreUserState.selfInfo.userId == manager.coreRoomState.ownerId
         isOwner ? routeToAnchorView() : routeToAudienceView()
-        manager.toastSubject.send(.kickedOutText)
+        manager.onError(.kickedOutText)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
             guard let self = self else { return }
             routerManager.router(action: .exit)
@@ -589,13 +529,11 @@ extension VoiceRoomRootView: SeatGridViewObserver {
     }
     
     func onKickedOffSeat(userInfo: TUIUserInfo) {
-        manager.toastSubject.send(.onKickedOutOfSeatText)
+        manager.onError(.onKickedOutOfSeatText)
     }
     
     func onUserAudioStateChanged(userInfo: TUIUserInfo, hasAudio: Bool, reason: TUIChangeReason) {
-        if userInfo.userId == manager.userState.selfInfo.userId {
-            manager.update(microphoneMuted: !hasAudio)
-        }
+        
     }
     
     func onRoomDismissed(roomId: String) {
@@ -618,7 +556,7 @@ extension VoiceRoomRootView: SeatGridViewObserver {
                     guard let self = self else { return }
                     self.routerManager.router(action: .dismiss(.alert))
                     let error = InternalError(code: code, message: message)
-                    manager.toastSubject.send(error.localizedMessage)
+                    manager.onError(error.localizedMessage)
                 }
             } defaultClosure: { [weak self] _ in
                 guard let self = self else { return }
@@ -629,13 +567,13 @@ extension VoiceRoomRootView: SeatGridViewObserver {
                     guard let self = self else { return }
                     self.routerManager.router(action: .dismiss(.alert))
                     let error = InternalError(code: code, message: message)
-                    manager.toastSubject.send(error.localizedMessage)
+                    manager.onError(error.localizedMessage)
                 }
             }
             routerManager.router(action: .present(.alert(info: alertInfo)))
         } else {
             guard !userInfo.userId.isEmpty else { return }
-            manager.addSeatUserInfo(userInfo)
+            manager.onApplyToTakeSeatRequestReceived(userInfo: userInfo)
         }
     }
     
@@ -643,12 +581,12 @@ extension VoiceRoomRootView: SeatGridViewObserver {
         if type == .inviteToTakeSeat {
             routerManager.router(action: .dismiss(.alert))
         } else {
-            manager.removeSeatUserInfo(userInfo)
+            manager.onApplyToTakeSeatRequestCancelled(userInfo: userInfo)
         }
     }
     
     func onSeatViewClicked(seatView: UIView, seatInfo: TUISeatInfo) {
-        let menus = generateOperateSeatMenuData(seat: VRSeatInfo(info: seatInfo))
+        let menus = generateOperateSeatMenuData(seat: seatInfo)
         if menus.isEmpty {
             return
         }
@@ -660,7 +598,7 @@ extension VoiceRoomRootView: SeatGridViewObserver {
 
 // MARK: - Invite/Lock seat
 extension VoiceRoomRootView {
-    private func generateOperateSeatMenuData(seat: VRSeatInfo) -> [ActionItem] {
+    private func generateOperateSeatMenuData(seat: TUISeatInfo) -> [ActionItem] {
         if isOwner {
             return generateRoomOwnerOperateSeatMenuData(seat: seat)
         } else {
@@ -668,9 +606,9 @@ extension VoiceRoomRootView {
         }
     }
     
-    private func generateRoomOwnerOperateSeatMenuData(seat: VRSeatInfo) -> [ActionItem] {
+    private func generateRoomOwnerOperateSeatMenuData(seat: TUISeatInfo) -> [ActionItem] {
         var menus: [ActionItem] = []
-        if seat.userId.isEmpty {
+        if (seat.userId ?? "").isEmpty {
             if !seat.isLocked {
                 let inviteTakeSeat = ActionItem(title: String.inviteText, designConfig: designConfig())
                 inviteTakeSeat.actionClosure = { [weak self] _ in
@@ -693,17 +631,17 @@ extension VoiceRoomRootView {
             return menus
         }
         
-        let isSelf = seat.userId == manager.userState.selfInfo.userId
+        let isSelf = seat.userId == manager.coreUserState.selfInfo.userId
         if !isSelf {
             routerManager.router(action: .present(.userControl(seatGridView, seat)))
         }
         return menus
     }
     
-    private func generateNormalUserOperateSeatMenuData(seat: VRSeatInfo) -> [ActionItem] {
+    private func generateNormalUserOperateSeatMenuData(seat: TUISeatInfo) -> [ActionItem] {
         var menus: [ActionItem] = []
-        let isOnSeat = manager.seatState.seatList.contains { $0.userId == manager.userState.selfInfo.userId}
-        if seat.userId.isEmpty && !seat.isLocked {
+        let isOnSeat = manager.coreSeatState.seatList.contains { $0.userId == manager.coreUserState.selfInfo.userId}
+        if (seat.userId ?? "").isEmpty && !seat.isLocked {
             let takeSeatItem = ActionItem(title: .takeSeat, designConfig: designConfig())
             takeSeatItem.actionClosure = { [weak self] _ in
                 guard let self = self else { return }
@@ -718,7 +656,7 @@ extension VoiceRoomRootView {
             return menus
         }
         
-        if !seat.userId.isEmpty && seat.userId != manager.userState.selfInfo.userId {
+        if !(seat.userId ?? "").isEmpty && seat.userId != manager.coreUserState.selfInfo.userId {
             routerManager.router(action: .present(.userControl(seatGridView, seat)))
         }
         return menus
@@ -731,7 +669,7 @@ extension VoiceRoomRootView {
         return designConfig
     }
     
-    private func lockSeat(seat: VRSeatInfo) {
+    private func lockSeat(seat: TUISeatInfo) {
         let lockSeat = TUISeatLockParams()
         lockSeat.lockAudio = seat.isAudioLocked
         lockSeat.lockVideo = seat.isVideoLocked
@@ -742,7 +680,7 @@ extension VoiceRoomRootView {
         } onError: { [weak self] code, message in
             guard let self = self else { return }
             let error = InternalError(code: code, message: message)
-            manager.toastSubject.send(error.localizedMessage)
+            manager.onError(error.localizedMessage)
         }
     }
     
@@ -751,27 +689,27 @@ extension VoiceRoomRootView {
             makeToast(.repeatRequest)
             return
         }
+        manager.onSentTakeSeatRequest()
         seatGridView.takeSeat(index: index, timeout: kSGDefaultTimeout) { [weak self] _ in
             guard let self = self else { return }
-            handleApplicationState(isApplying: false)
+            manager.onRespondedTakeSeatRequest()
         } onRejected: { [weak self] userInfo in
             guard let self = self else { return }
-            handleApplicationState(isApplying: false)
+            manager.onRespondedTakeSeatRequest()
             makeToast(.takeSeatApplicationRejected)
         } onCancelled: { [weak self] userInfo in
             guard let self = self else { return }
-            handleApplicationState(isApplying: false)
+            manager.onRespondedTakeSeatRequest()
         } onTimeout: { [weak self] userInfo in
             guard let self = self else { return }
-            handleApplicationState(isApplying: false)
+            manager.onRespondedTakeSeatRequest()
             makeToast(.takeSeatApplicationTimeout)
         } onError: { [weak self] userInfo, code, message in
             guard let self = self else { return }
-            handleApplicationState(isApplying: false)
+            manager.onRespondedTakeSeatRequest()
             let error = InternalError(code: code, message: message)
             makeToast(error.localizedMessage)
         }
-        handleApplicationState(isApplying: true)
     }
     
     private func moveToSeat(index: Int) {
@@ -781,10 +719,6 @@ extension VoiceRoomRootView {
             let error = InternalError(code: code, message: message)
             makeToast(error.localizedMessage)
         }
-    }
-    
-    private func handleApplicationState(isApplying: Bool) {
-        manager.update(applicationStateIsApplying: isApplying)
     }
 }
 
@@ -806,9 +740,9 @@ extension VoiceRoomRootView: BarrageStreamViewDelegate {
 
 extension VoiceRoomRootView: GiftPlayViewDelegate {
     func giftPlayView(_ giftPlayView: GiftPlayView, onReceiveGift gift: TUIGift, giftCount: Int, sender: TUIGiftUser, receiver: TUIGiftUser) {
-        let userId = manager.userState.selfInfo.userId
+        let userId = manager.coreUserState.selfInfo.userId
         if isOwner && userId == receiver.userId {
-            manager.update(giftIncome: gift.price * giftCount, giftPeople: sender.userId)
+            manager.onReceiveGift(price: gift.price * giftCount, senderUserId: sender.userId)
         }
         let barrage = TUIBarrage()
         barrage.content = "gift"
@@ -816,7 +750,6 @@ extension VoiceRoomRootView: GiftPlayViewDelegate {
         barrage.user.userName = sender.userName
         barrage.user.avatarUrl = sender.avatarUrl
         barrage.user.level = sender.level
-        barrage.extInfo["TYPE"] = AnyCodable("GIFTMESSAGE")
         barrage.extInfo["TYPE"] = AnyCodable("GIFTMESSAGE")
         barrage.extInfo["gift_name"] = AnyCodable(gift.giftName)
         barrage.extInfo["gift_count"] = AnyCodable(giftCount)
@@ -842,23 +775,23 @@ extension VoiceRoomRootView: GiftPlayViewDelegate {
 
 // MARK: - String
 fileprivate extension String {
-    static let meText = localized("Me")
-    static let confirmCloseText = localized("End Live")
-    static let rejectText = localized("Reject")
-    static let agreeText = localized("Agree")
-    static let inviteLinkText = localized("xxx invites you to take seat")
-    static let enterRoomFailedText = localized("Failed to enter room")
-    static let inviteText = localized("Invite")
-    static let lockSeat = localized("Lock Seat")
-    static let takeSeat = localized("Take Seat")
-    static let unLockSeat = localized("Unlock Seat")
-    static let operationSuccessful = localized("Operation Successful")
-    static let takeSeatApplicationRejected = localized("Take seat application has been rejected")
-    static let takeSeatApplicationTimeout = localized("Take seat application timeout")
-    static let repeatRequest = localized("Signal request repetition")
-    static let onKickedOutOfSeatText = localized("Kicked out of seat by room owner")
-    static let exitLiveOnLinkMicText = localized("You are currently co-guesting with other streamers. Would you like to [End Co-guest] or [Exit Live] ?")
-    static let exitLiveLinkMicDisconnectText = localized("End Co-guest")
-    static let exitLiveText = localized("Exit Live")
-    static let kickedOutText = localized("You have been kicked out of the room by the anchor")
+    static let meText = internalLocalized("Me")
+    static let confirmCloseText = internalLocalized("End Live")
+    static let rejectText = internalLocalized("Reject")
+    static let agreeText = internalLocalized("Agree")
+    static let inviteLinkText = internalLocalized("xxx invites you to take seat")
+    static let enterRoomFailedText = internalLocalized("Failed to enter room")
+    static let inviteText = internalLocalized("Invite")
+    static let lockSeat = internalLocalized("Lock Seat")
+    static let takeSeat = internalLocalized("Take Seat")
+    static let unLockSeat = internalLocalized("Unlock Seat")
+    static let operationSuccessful = internalLocalized("Operation Successful")
+    static let takeSeatApplicationRejected = internalLocalized("Take seat application has been rejected")
+    static let takeSeatApplicationTimeout = internalLocalized("Take seat application timeout")
+    static let repeatRequest = internalLocalized("Signal request repetition")
+    static let onKickedOutOfSeatText = internalLocalized("Kicked out of seat by room owner")
+    static let exitLiveOnLinkMicText = internalLocalized("You are currently co-guesting with other streamers. Would you like to [End Co-guest] or [Exit Live] ?")
+    static let exitLiveLinkMicDisconnectText = internalLocalized("End Co-guest")
+    static let exitLiveText = internalLocalized("Exit Live")
+    static let kickedOutText = internalLocalized("You have been kicked out of the room by the anchor")
 }

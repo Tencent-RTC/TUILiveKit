@@ -9,8 +9,9 @@ import Foundation
 import Combine
 import RTCCommon
 import RTCRoomEngine
+import TUILiveResources
 
-class VRSeatManager: VRSeatManagerInterface, VRRoomEngineObserverSeatInterface {
+class VRSeatManager {
     var state: VRSeatState {
         observerState.state
     }
@@ -30,7 +31,6 @@ class VRSeatManager: VRSeatManagerInterface, VRRoomEngineObserverSeatInterface {
     func resetState() {
         update { state in
             state.seatApplicationList = []
-            state.seatList = []
         }
     }
 }
@@ -45,48 +45,16 @@ extension VRSeatManager {
     }
 }
 
-// MARK: - VRSeatManagerInterface
 extension VRSeatManager {
-    func fetchSeatList() {
-        Task {
-            guard let service = service else { return }
-            do {
-                let list = try await service.getSeatList()
-                let res = list.map { VRSeatInfo(info: $0) }
-                update { state in
-                    state.seatList = res
-                }
-            } catch let err as InternalError {
-                toastSubject.send(err.localizedMessage)
-            }
-        }
-    }
-    
-    func fetchSeatApplicationList() {
-        Task {
-            guard let service = service else { return }
-            do {
-                let list = try await service.fetchSeatApplicationList()
-                update { state in
-                    state.seatApplicationList = list
-                }
-            } catch let err as InternalError {
-                toastSubject.send(err.localizedMessage)
-            }
-        }
-    }
-    
-    func addSeatUserInfo(_ info: TUIUserInfo) {
+    func onSentTakeSeatRequest() {
         update { seatState in
-            if !seatState.seatApplicationList.contains(where: { $0.userId == info.userId }) {
-                seatState.seatApplicationList.append(VRSeatApplication(userInfo: info))
-            }
+            seatState.isApplyingToTakeSeat = true
         }
     }
     
-    func removeSeatUserInfo(_ info: TUIUserInfo) {
+    func onRespondedTakeSeatRequest() {
         update { seatState in
-            seatState.seatApplicationList.removeAll(where: { $0.userId == info.userId })
+            seatState.isApplyingToTakeSeat = false
         }
     }
     
@@ -102,19 +70,38 @@ extension VRSeatManager {
         }
     }
     
-    func update(applicationStateIsApplying: Bool) {
-        update { seatState in
-            seatState.isApplyingToTakeSeat = applicationStateIsApplying
+    func onRespondedRemoteRequest() {
+        Task {
+            guard let service = service else { return }
+            do {
+                let list = try await service.fetchSeatApplicationList()
+                update { state in
+                    state.seatApplicationList = list
+                }
+            } catch let err as InternalError {
+                toastSubject.send(err.localizedMessage)
+            }
         }
     }
-}
-
-// MARK: - VRRoomEngineObserverSeatInterface
-extension VRSeatManager {
-    func onSeatListChanged(seatList: [TUISeatInfo], seated seatedList: [TUISeatInfo], left leftList: [TUISeatInfo]) {
-        update(seatState: { state in
-            state.seatList = seatList.map { VRSeatInfo(info: $0) }
-        })
+    
+    func onApplyToTakeSeatRequestReceived(userInfo: TUIUserInfo) {
+        update { seatState in
+            if !seatState.seatApplicationList.contains(where: { $0.userId == userInfo.userId }) {
+                seatState.seatApplicationList.append(VRSeatApplication(userInfo: userInfo))
+            }
+        }
+    }
+    
+    func onApplyToTakeSeatRequestCancelled(_ userInfo: TUIUserInfo) {
+        update { seatState in
+            seatState.seatApplicationList.removeAll(where: { $0.userId == userInfo.userId })
+        }
+    }
+    
+    func onRemoteRequestError(userId: String) {
+        update { seatState in
+            seatState.seatApplicationList.removeAll(where: { $0.userId == userId })
+        }
     }
 }
 

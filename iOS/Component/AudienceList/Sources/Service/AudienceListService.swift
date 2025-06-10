@@ -11,15 +11,10 @@ import RTCRoomEngine
 class AudienceListService {
     public let state = AudienceListState()
     
-    public func initRoomInfo(roomId: String) {
-        state.roomId = roomId
-        TUIRoomEngine.sharedInstance().fetchRoomInfo(roomId: roomId, roomType: .live) { [weak self] roomInfo in
-            guard let self = self, let roomInfo = roomInfo else { return }
-            self.state.ownerId = roomInfo.ownerId
-            self.getUserList()
-        } onError: { code, message in
-            
-        }
+    public func initRoomInfo(roomInfo: TUIRoomInfo) {
+        state.roomId = roomInfo.roomId
+        state.ownerId = roomInfo.ownerId
+        self.getUserList()
     }
     
     func getUserList() {

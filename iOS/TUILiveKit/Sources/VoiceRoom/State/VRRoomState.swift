@@ -16,16 +16,14 @@ public enum RoomPrivacyMode: NSInteger, CaseIterable {
     case privacy = 1
 }
 
-struct VRRoomState: Codable {
+struct VRRoomState {
     var roomId: String = ""
+    var roomInfo: TUIRoomInfo = TUIRoomInfo()
     var createTime: UInt = 0
-    var ownerInfo: VRUser = VRUser()
     var roomName: String = ""
     var coverURL: String = "https://liteav-test-1252463788.cos.ap-guangzhou.myqcloud.com/voice_room/voice_room_cover1.png"
     var backgroundURL: String = "https://liteav-test-1252463788.cos.ap-guangzhou.myqcloud.com/voice_room/voice_room_background1.png"    
-    var seatMode: TUISeatMode = .applyToTake
     var userCount: Int = 0
-    var maxSeatCount: Int = 0
     var liveExtraInfo: LiveExtraInfo = LiveExtraInfo()
     
     struct LiveExtraInfo: Codable {
@@ -42,18 +40,5 @@ struct VRRoomState: Codable {
 extension VRRoomState: Identifiable {
     var id: String {
         self.roomId
-    }
-}
-
-extension TUISeatMode: Codable {
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        let rawValue = try container.decode(UInt.self)
-        self = TUISeatMode(rawValue: rawValue) ?? .applyToTake
-    }
-    
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(self.rawValue)
     }
 }

@@ -17,26 +17,26 @@ enum BeautyTypeEvent {
     func getString() -> String {
         switch self {
         case .closeClick:
-            return .localized("turn off")
+            return internalLocalized("turn off")
         case .buffingClick:
-            return .localized("Microdermabrasion")
+            return internalLocalized("Microdermabrasion")
         case .whitenessClick:
-            return .localized("Whitening")
+            return internalLocalized("Whitening")
         case .ruddyClick:
-            return .localized("Rosy")
+            return internalLocalized("Rosy")
         }
     }
 
     func getImage() -> UIImage? {
         switch self {
         case .closeClick:
-            return .liveBundleImage("live_beauty_close")
+            return internalImage("live_beauty_close")
         case .buffingClick:
-            return .liveBundleImage("live_beauty_buffing")
+            return internalImage("live_beauty_buffing")
         case .whitenessClick:
-            return .liveBundleImage("live_beauty_whiteness")
+            return internalImage("live_beauty_whiteness")
         case .ruddyClick:
-            return .liveBundleImage("live_beauty_ruddy")
+            return internalImage("live_beauty_ruddy")
         }
     }
 }

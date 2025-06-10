@@ -15,8 +15,8 @@ class LSSettingPanel: UIView {
     private let titleLabel: UILabel = {
         let view = UILabel()
         view.text = .settingTitleText
-        view.textColor = .g7
-        view.font = .customFont(ofSize: 16)
+        view.textColor = .textPrimaryColor
+        view.font = .customFont(ofSize: 16, weight: .medium)
         view.textAlignment = .center
         return view
     }()
@@ -30,7 +30,7 @@ class LSSettingPanel: UIView {
         view.delegate = self
         view.showsVerticalScrollIndicator = false
         view.showsHorizontalScrollIndicator = false
-        view.contentInset = UIEdgeInsets(top: 0, left: settingPanelModel.itemDiff, bottom: 0, right: settingPanelModel.itemDiff)
+        view.contentInset = UIEdgeInsets(top: 0, left: 24.scale375(), bottom: 0, right: 23.scale375())
         view.register(LSSettingPanelCell.self, forCellWithReuseIdentifier: LSSettingPanelCell.CellId)
         return view
     }()
@@ -49,8 +49,8 @@ class LSSettingPanel: UIView {
     }()
 
     private var isViewReady: Bool = false
-    override func layoutSubviews() {
-        super.layoutSubviews()
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
         guard !isViewReady else { return }
         constructViewHierarchy()
         activateConstraints()
@@ -59,7 +59,7 @@ class LSSettingPanel: UIView {
     }
 
     private func setupView() {
-        backgroundColor = .g2
+        backgroundColor = .bgOperateColor
         layer.cornerRadius = 20
         layer.masksToBounds = true
     }
@@ -76,7 +76,7 @@ private extension LSSettingPanel {
     func activateConstraints() {
         snp.remakeConstraints { make in
             if isPortrait {
-                make.height.equalTo(350.scale375Height())
+                make.height.equalTo(289.scale375Height())
             } else {
                 make.width.equalTo(375.scale375())
             }
@@ -91,7 +91,7 @@ private extension LSSettingPanel {
         }
 
         collectionView.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(32.scale375Height())
+            make.top.equalTo(titleLabel.snp.bottom).offset(20.scale375Height())
             make.bottom.equalToSuperview()
             make.leading.trailing.equalToSuperview()
         }
@@ -160,5 +160,5 @@ class LSSettingPanelCell: UICollectionViewCell {
 
 
 private extension String {
-    static let settingTitleText: String = localized("Settings")
+    static let settingTitleText: String = internalLocalized("More Features")
 }

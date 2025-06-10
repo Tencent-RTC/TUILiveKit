@@ -66,7 +66,7 @@ class AnchorEndView: UIView {
 
     private lazy var closeButton: UIButton = {
         let button = UIButton()
-        button.setImage(.liveBundleImage("live_leave_icon"), for: .normal)
+        button.setImage(internalImage("live_leave_icon"), for: .normal)
         button.addTarget(self, action: #selector(closeButtonClick), for: .touchUpInside)
         return button
     }()
@@ -105,9 +105,16 @@ class AnchorEndView: UIView {
     private func getTitleWithIndex(_ index: Int) -> (String, String) {
         switch index {
         case 0: // liveDurationCell
-            let minutes = liveDataModel.liveDuration / 60
-            let remainingSeconds = liveDataModel.liveDuration % 60
-            let topStr = String(format: "%02d:%02d", minutes, remainingSeconds)
+            let totalSec = liveDataModel.liveDuration
+            let topStr: String
+            if totalSec > 0 {
+                let h = totalSec / 3600
+                let m = totalSec % 3600 / 60
+                let s = totalSec % 60
+                topStr = String(format: "%02d:%02d:%02d", h, m, s)
+            } else {
+                topStr = "-- --"
+            }
             return (topTitle: topStr, bottomTitle: .durationText)
         case 1: // audienceCountCell
             return (topTitle: "\(liveDataModel.audienceCount)", bottomTitle: .audienceCountText)
@@ -228,34 +235,34 @@ extension AnchorEndView {
 
 private extension String {
     static var titleText: String {
-        localized("Live broadcast has ended")
+        internalLocalized("Live broadcast has ended")
     }
     
     static var contentDestText: String {
-        localized("Live data")
+        internalLocalized("Live data")
     }
     
     static var durationText: String {
-        localized("Duration")
+        internalLocalized("Duration")
     }
     
     static var giftIncomeText: String {
-        localized("Gift Income")
+        internalLocalized("Gift Income")
     }
     
     static var audienceCountText: String {
-        localized("Total Views")
+        internalLocalized("Total Views")
     }
     
     static var messageCountText: String {
-        localized("Messages")
+        internalLocalized("Messages")
     }
     
     static var giftPeopleCountText: String {
-        localized("Gift givers")
+        internalLocalized("Gift givers")
     }
     
     static var likeCountText: String {
-        localized("Likes")
+        internalLocalized("Likes Count")
     }
 }

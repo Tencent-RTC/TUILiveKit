@@ -18,7 +18,7 @@ class LSRoomEngineObserver: NSObject {
 
 extension LSRoomEngineObserver: TUIRoomObserver {
     func onRoomDismissed(roomId: String, reason: TUIRoomDismissedReason) {
-        context?.roomManager.onLiveEnd()
+        context?.roomManager.onLiveEnd(roomId: roomId)
     }
     
     func onRoomUserCountChanged(roomId: String, userCount: Int) {
@@ -47,10 +47,6 @@ extension LSRoomEngineObserver: TUIRoomObserver {
     
     func onUserInfoChanged(userInfo: TUIUserInfo, modifyFlag: TUIUserInfoModifyFlag) {
         context?.userManager.onUserInfoChanged(userInfo: userInfo, modifyFlag: modifyFlag)
-    }
-    
-    func onSeatListChanged(seatList: [TUISeatInfo], seated seatedList: [TUISeatInfo], left leftList: [TUISeatInfo]) {
-        context?.coGuestManager.onSeatListChanged(seatList: seatList, seated: seatedList, left: leftList)
     }
     
     func OnSendMessageForUserDisableChanged(roomId: String, userId: String, isDisable muted: Bool) {

@@ -84,12 +84,13 @@ public extension UIColor {
     
     /// temporary semantic color
     static let textPrimaryColor = themColor("#FFFFFFE6")
-    static let textSecondaryColor = themColor("FFFFFF8C")
-    static let textDisabledColor = themColor("FFFFFF24")
+    static let textSecondaryColor = themColor("#FFFFFF8C")
+    static let textDisabledColor = themColor("#FFFFFF24")
+    static let bgTopBarColor = themColor("#131417")
     static let bgOperateColor = themColor("#1F2024")
     static let bgEntrycardColor = themColor("#2B2C30")
-    static let strokeModuleColor = themColor("48494F")
-    static let buttonPrimaryDefaultColor = themColor("4086FF")
+    static let strokeModuleColor = themColor("#48494F")
+    static let buttonPrimaryDefaultColor = themColor("#4086FF")
 
     private static func themColor(_ hex: String) -> UIColor {
         return UIColor(hex: hex) ?? .black

@@ -7,10 +7,10 @@
 
 import Foundation
 import RTCRoomEngine
+import TUILiveResources
 
 protocol VRRoomEngineObserverRoomInterface {
     func onRoomNameChanged(roomId: String, roomName: String)
-    func onRoomSeatModeChanged(roomId: String, seatMode: TUISeatMode)
     func onRoomDismissed(roomId: String)
     func onRoomUserCountChanged(roomId: String, userCount: Int)
     func onKickedOffLine(message: String)
@@ -20,10 +20,6 @@ protocol VRRoomEngineObserverRoomInterface {
 protocol VRRoomEngineObserverUserInterface {
     func onRemoteUserEnterRoom(roomId: String, userInfo: TUIUserInfo)
     func onRemoteUserLeaveRoom(roomId: String, userInfo: TUIUserInfo)
-}
-
-protocol VRRoomEngineObserverSeatInterface {
-    func onSeatListChanged(seatList: [TUISeatInfo], seated seatedList: [TUISeatInfo], left leftList: [TUISeatInfo])
 }
 
 class VRRoomEngineObserver: NSObject {
@@ -60,10 +56,6 @@ extension VRRoomEngineObserver: TUIRoomObserver {
         roomManager?.onRoomNameChanged(roomId: roomId, roomName: roomName)
     }
     
-    func onRoomSeatModeChanged(roomId: String, seatMode: TUISeatMode) {
-        roomManager?.onRoomSeatModeChanged(roomId: roomId, seatMode: seatMode)
-    }
-    
     func onRoomDismissed(roomId: String) {
         roomManager?.onRoomDismissed(roomId: roomId)
     }
@@ -86,9 +78,5 @@ extension VRRoomEngineObserver: TUIRoomObserver {
     
     func onKickedOutOfRoom(roomId: String, reason: TUIKickedOutOfRoomReason, message: String) {
         roomManager?.onKickedOutOfRoom(roomId: roomId, reason: reason, message: message)
-    }
-    
-    func onSeatListChanged(seatList: [TUISeatInfo], seated seatedList: [TUISeatInfo], left leftList: [TUISeatInfo]) {
-        seatManager?.onSeatListChanged(seatList: seatList, seated: seatedList, left: leftList)
     }
 }

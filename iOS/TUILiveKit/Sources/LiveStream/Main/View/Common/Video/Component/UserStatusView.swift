@@ -11,6 +11,7 @@ import Combine
 import RTCRoomEngine
 import RTCCommon
 import LiveStreamCore
+import TUILiveResources
 
 class UserStatusView: UIView {
     private let manager: LiveStreamManager
@@ -69,7 +70,7 @@ class UserStatusView: UIView {
     
     private lazy var voiceMuteImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = .liveBundleImage("live_audio_mute_icon")
+        imageView.image = internalImage("live_audio_mute_icon")
         return imageView
     }()
     

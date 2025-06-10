@@ -44,7 +44,7 @@ extension TUIGiftIMService {
             let giftWrapper = TUIGiftWrapper(businessID: "TUIGift", data: giftData)
             let encoder = JSONEncoder()
             let data = try encoder.encode(giftWrapper)
-            imManager?.sendGroupCustomMessage(data, to: roomId, priority: .PRIORITY_NORMAL) {
+            imManager?.sendGroupCustomMessage(customData: data, to: roomId, priority: .PRIORITY_NORMAL) {
                 callback?(0, "send gift message success.")
             } fail: { code, message in
                 debugPrint("sendGroupCustomMessage failed. code:\(code), message:\(message ?? "")")
@@ -71,8 +71,8 @@ extension TUIGiftIMService {
 // MARK: V2TIMSimpleMsgListener
 
 extension TUIGiftIMService: V2TIMSimpleMsgListener {
-    func onRecvGroupCustomMessage(_ msgID: String, groupID: String, sender info: V2TIMGroupMemberInfo, customData data: Data!) {
-        guard roomId == groupID else { return }
+    func onRecvGroupCustomMessage(msgID: String, groupID: String?, sender info: V2TIMGroupMemberInfo, customData data: Data?) {
+        guard roomId == groupID, let data else { return }
         let decoder = JSONDecoder()
         do {
             let giftWrapper = try decoder.decode(TUIGiftWrapper.self, from: data)

@@ -11,6 +11,7 @@ import RTCRoomEngine
 import RTCCommon
 import TUICore
 import LiveStreamCore
+import TUILiveResources
 
 class VideoLinkSettingPanel: RTCBaseView {
     private weak var coreView: LiveCoreView?
@@ -48,7 +49,7 @@ class VideoLinkSettingPanel: RTCBaseView {
         designConfig.cornerRadius = 10.scale375Width()
         designConfig.type = .imageAboveTitle
         items.append(LSFeatureItem(normalTitle: .beautyText,
-                                 normalImage: .liveBundleImage("live_video_setting_beauty"),
+                                 normalImage: internalImage("live_video_setting_beauty"),
                                  designConfig: designConfig,
                                  actionClosure: { [weak self] _ in
             guard let self = self else { return }
@@ -58,18 +59,11 @@ class VideoLinkSettingPanel: RTCBaseView {
                                             Constants.DataReport.kDataReportPanelShowLiveRoomBeauty)
         }))
         items.append(LSFeatureItem(normalTitle: .flipText,
-                                 normalImage: .liveBundleImage("live_video_setting_flip"),
+                                 normalImage: internalImage("live_video_setting_flip"),
                                  designConfig: designConfig,
                                  actionClosure: { [weak self] _ in
             guard let self = self else { return }
             coreView?.switchCamera(isFront: !manager.coreMediaState.isFrontCamera)
-        }))
-        items.append(LSFeatureItem(normalTitle: .videoParametersText,
-                                 normalImage: .liveBundleImage("live_setting_video_parameters"),
-                                 designConfig: designConfig,
-                                 actionClosure: { [weak self] _ in
-            guard let self = self else { return }
-            self.routerManager.router(action: .present(.videoSetting))
         }))
         return items
     }()
@@ -210,11 +204,11 @@ extension VideoLinkSettingPanel {
 }
 
 private extension String {
-    static let videoLinkConfigTitleText = localized("Adjust the video link screen")
-    static let requestText = localized("Apply for link mic")
-    static let videoLinkConfigTipsText = localized("The screen effect will automatically take effect after connecting")
-    static let beautyText = localized("Beauty")
-    static let videoParametersText = localized("Video Config")
-    static let flipText = localized("Flip")
-    static let waitToLinkText = localized("You have submitted a link mic request, please wait for the author approval")
+    static let videoLinkConfigTitleText = internalLocalized("Adjust the video link screen")
+    static let requestText = internalLocalized("Apply for link mic")
+    static let videoLinkConfigTipsText = internalLocalized("The screen effect will automatically take effect after connecting")
+    static let beautyText = internalLocalized("Beauty")
+    static let videoParametersText = internalLocalized("Video Config")
+    static let flipText = internalLocalized("Flip")
+    static let waitToLinkText = internalLocalized("You have submitted a link mic request, please wait for the author approval")
 }

@@ -39,7 +39,7 @@ public class ErrorLocalized {
             if let error = error {
                 return error.description
             }
-            return "code: \(code), message: \(message)"
+            return "\(String.localized("Temporarily Unclassified General Error")):\(code)"
         }
         
         public init(error: LocalizedError, message: String) {
@@ -207,8 +207,6 @@ public enum LiveError: Int, Error {
     case sendMessageDisabledForAll = -2380
     case sendMessageDisabledForCurrent = -2381
     case roomNotSupportPreloading = -4001
-    case invalidUserId = 7_002
-    case hasBeenMuted = 10017
     case systemInternalError = 100001
     case paramIllegal = 100002
     case roomIdOccupied = 100003
@@ -259,6 +257,28 @@ public enum LiveError: Int, Error {
     case metadataTotalValueSizeExceedsByteLimit = 100502
     case metadataNoValidKey = 100503
     case metadataKeySizeExceedsByteLimit = 100504
+    
+    // TIMError
+    case ERR_SDK_COMM_TINYID_EMPTY = 7002
+    case ERR_SDK_COMM_API_CALL_FREQUENCY_LIMIT = 7008
+    case ERR_SVR_GROUP_SHUTUP_DENY = 10017
+    case ERR_SDK_BLOCKED_BY_SENSITIVE_WORD = 7015
+    case ERR_SDK_NET_PKG_SIZE_LIMIT = 9522
+    case ERR_SDK_NET_DISCONNECT = 9508
+    case ERR_SDK_NET_WAIT_ACK_TIMEOUT = 9520
+    case ERR_SDK_NET_ALLREADY_CONN = 9509
+    case ERR_SDK_NET_CONN_TIMEOUT = 9510
+    case ERR_SDK_NET_CONN_REFUSE = 9511
+    case ERR_SDK_NET_NET_UNREACH = 9512
+    case ERR_SDK_NET_WAIT_INQUEUE_TIMEOUT = 9518
+    case ERR_SDK_NET_WAIT_SEND_TIMEOUT = 9519
+    case ERR_SDK_NET_WAIT_SEND_REMAINING_TIMEOUT = 9521
+    case ERR_SDK_NET_WAIT_SEND_TIMEOUT_NO_NETWORK = 9523
+    case ERR_SDK_NET_WAIT_ACK_TIMEOUT_NO_NETWORK = 9524
+    case ERR_SDK_NET_SEND_REMAINING_TIMEOUT_NO_NETWORK = 9525
+    case ERR_SVR_GROUP_NOT_FOUND = 10010
+    case ERR_INVALID_PARAMETERS = 6017
+
 }
 
 extension LiveError: LocalizedError {
@@ -346,10 +366,6 @@ extension LiveError: LocalizedError {
             return .localized("You Have Been Muted in the Current Room")
         case .roomNotSupportPreloading:
             return .localized("The current room does not support preloading")
-        case .invalidUserId:
-            return .localized("Invalid userId")
-        case .hasBeenMuted:   // 100017
-            return .localized("You Have Been Muted in the Current Room")
         case .systemInternalError:  // 100001
             return .localized("Server internal error, please retry")
         case .paramIllegal:     // 100002
@@ -450,8 +466,35 @@ extension LiveError: LocalizedError {
             return .localized("There is no valid keys when delete metadata")
         case .metadataKeySizeExceedsByteLimit:  // 100504
             return .localized("The size of key in the room's Metadata exceeds the maximum byte limit")
+            
+        // TIMError
+        case .ERR_SDK_COMM_TINYID_EMPTY:
+            return .localized("Invalid userId")
+        case .ERR_SDK_COMM_API_CALL_FREQUENCY_LIMIT:
+            return .localized("Request Rate Limited, Please Try Again Later")
+        case .ERR_SVR_GROUP_SHUTUP_DENY:
+            return .localized("You Have Been Muted in the Current Room")
+        case .ERR_SDK_BLOCKED_BY_SENSITIVE_WORD:
+            return .localized("Sensitive words are detected, please modify it and try again")
+        case .ERR_SDK_NET_PKG_SIZE_LIMIT:
+            return .localized("The content is too long, please reduce the content and try again")
+        case .ERR_SDK_NET_DISCONNECT,
+                .ERR_SDK_NET_WAIT_ACK_TIMEOUT,
+                .ERR_SDK_NET_ALLREADY_CONN,
+                .ERR_SDK_NET_CONN_TIMEOUT,
+                .ERR_SDK_NET_CONN_REFUSE,
+                .ERR_SDK_NET_NET_UNREACH,
+                .ERR_SDK_NET_WAIT_INQUEUE_TIMEOUT,
+                .ERR_SDK_NET_WAIT_SEND_TIMEOUT,
+                .ERR_SDK_NET_WAIT_SEND_REMAINING_TIMEOUT,
+                .ERR_SDK_NET_WAIT_SEND_TIMEOUT_NO_NETWORK,
+                .ERR_SDK_NET_WAIT_ACK_TIMEOUT_NO_NETWORK,
+                .ERR_SDK_NET_SEND_REMAINING_TIMEOUT_NO_NETWORK:
+            return .localized("The network is abnormal, please try again later")
+
+            
         @unknown default:
-            return .localized("Temporarily Unclassified General Error") + ", code: \(self.rawValue)"
+            return .localized("Temporarily Unclassified General Error") + ":\(self.rawValue)"
         }
     }
 }

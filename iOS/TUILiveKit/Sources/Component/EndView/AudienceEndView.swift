@@ -24,7 +24,7 @@ class AudienceEndView: UIView {
     
     private lazy var closeButton: UIButton = {
         let button = UIButton()
-        button.setImage(.liveBundleImage("live_leave_icon"), for: .normal)
+        button.setImage(internalImage("live_leave_icon"), for: .normal)
         button.addTarget(self, action: #selector(closeButtonClick), for: .touchUpInside)
         return button
     }()
@@ -118,6 +118,6 @@ class AudienceEndView: UIView {
 
 private extension String {
     static var titleText: String {
-        localized("Live broadcast has ended")
+        internalLocalized("Live broadcast has ended")
     }
 }

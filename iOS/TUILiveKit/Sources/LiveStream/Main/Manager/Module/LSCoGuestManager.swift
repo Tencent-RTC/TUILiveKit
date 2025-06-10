@@ -9,6 +9,8 @@ import Foundation
 import RTCCommon
 import RTCRoomEngine
 import Combine
+import TUILiveResources
+import LiveStreamCore
 
 class LSCoGuestManager {
     private let observerState = ObservableState<LSCoGuestState>(initialState: LSCoGuestState())
@@ -19,10 +21,27 @@ class LSCoGuestManager {
     private typealias Context = LiveStreamManager.Context
     private weak var context: Context?
     private let service: LSRoomEngineService
+    private var cancellableSet: Set<AnyCancellable> = []
     
     init(context: LiveStreamManager.Context) {
         self.context = context
         self.service = context.service
+        subscribeCoreCoGuestState()
+    }
+    
+    private func subscribeCoreCoGuestState() {
+        context?.provider?.subscribeCoreViewState(StateSelector(keyPath: \CoGuestState.seatList))
+            .receive(on: RunLoop.main)
+            .removeDuplicates()
+            .sink(receiveValue: { [weak self] seatList in
+                guard let self = self else { return }
+                updateCoGuestStatusBySeatList(seatList: seatList)
+                updateMediaLockStatus(seatList: seatList)
+                if seatList.first(where: { $0.userId == self.context?.coreUserState.selfInfo.userId }) == nil {
+                    context?.mediaManager.onSelfLeaveSeat()
+                }
+            })
+            .store(in: &cancellableSet)
     }
 }
 
@@ -86,17 +105,6 @@ extension LSCoGuestManager {
     
     func subscribeState<Value>(_ selector: StateSelector<LSCoGuestState, Value>) -> AnyPublisher<Value, Never> {
         return observerState.subscribe(selector)
-    }
-}
-
-// MARK: - Observer
-extension LSCoGuestManager {
-    func onSeatListChanged(seatList: [TUISeatInfo], seated seatedList: [TUISeatInfo], left leftList: [TUISeatInfo]) {
-        updateCoGuestStatusBySeatList(seatList: seatList)
-        updateMediaLockStatus(seatList: seatList)
-        if !leftList.filter({ $0.userId == context?.coreUserState.selfInfo.userId }).isEmpty {
-            context?.mediaManager.onSelfLeaveSeat()
-        }
     }
 }
 
