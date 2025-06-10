@@ -11,8 +11,8 @@ import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
-import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestream.state.BattleState;
 import com.trtc.uikit.livekit.livestream.state.CoHostState;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Locale;
 
 public final class BattleCountdownDialog extends Dialog {
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getLiveStreamLogger("BattleCountdownDialog");
 
     private final LiveStreamManager mLiveStreamManager;
     private final LiveCoreView      mLiveCoreView;
@@ -101,7 +102,7 @@ public final class BattleCountdownDialog extends Dialog {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error("BattleCountdownDialog" + " cancelBattle failed:error:" + error + "," +
+                LOGGER.error("BattleCountdownDialog" + " cancelBattle failed:error:" + error + "," +
                         "errorCode:" + error.getValue() + "message:" + message);
                 ErrorLocalized.onError(error);
             }

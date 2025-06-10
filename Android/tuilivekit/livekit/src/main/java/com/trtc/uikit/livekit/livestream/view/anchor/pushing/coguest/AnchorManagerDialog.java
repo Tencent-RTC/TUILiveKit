@@ -22,8 +22,8 @@ import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
-import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestream.manager.module.CoGuestManager;
 import com.trtc.uikit.livekit.livestream.state.UserState;
 import com.trtc.uikit.livekit.livestream.view.anchor.pushing.usermanage.ConfirmDialog;
@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Set;
 
 public class AnchorManagerDialog extends PopupDialog {
-    private static final String FILE = "AnchorManagerDialog";
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getLiveStreamLogger("AnchorManagerDialog");
 
     private static final float BUTTON_DISABLE_ALPHA = 0.24f;
     private static final float BUTTON_ENABLE_ALPHA  = 1.0f;
@@ -257,7 +257,7 @@ public class AnchorManagerDialog extends PopupDialog {
 
                     @Override
                     public void onError(TUICommonDefine.Error error, String message) {
-                        LiveStreamLog.error(FILE + " disconnectUser failed:error:" + error + "," +
+                        LOGGER.error("disconnectUser failed:error:" + error + "," +
                                 "errorCode:" + error.getValue() + "message:" + message);
                         ErrorLocalized.onError(error);
                     }
@@ -340,7 +340,7 @@ public class AnchorManagerDialog extends PopupDialog {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(FILE + " unMuteMicrophone failed:error:" + error + "," +
+                LOGGER.error("unMuteMicrophone failed:error:" + error + "," +
                         "errorCode:" + error.getValue() + "message:" + message);
                 ErrorLocalized.onError(error);
             }
@@ -356,7 +356,7 @@ public class AnchorManagerDialog extends PopupDialog {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(FILE + " startCamera failed:error:" + error + "," +
+                LOGGER.error("startCamera failed:error:" + error + "," +
                         "errorCode:" + error.getValue() + "message:" + message);
                 ErrorLocalized.onError(error);
             }

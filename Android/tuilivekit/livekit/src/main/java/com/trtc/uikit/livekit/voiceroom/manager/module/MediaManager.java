@@ -1,11 +1,11 @@
 package com.trtc.uikit.livekit.voiceroom.manager.module;
 
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.voiceroom.manager.api.IVoiceRoom;
-import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
 import com.trtc.uikit.livekit.voiceroom.state.VoiceRoomState;
 
 public class MediaManager extends BaseManager {
-    private static final String FILE = "MediaManager";
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getVoiceRoomLogger("MediaManager");
 
     public MediaManager(VoiceRoomState state, IVoiceRoom service) {
         super(state, service);
@@ -13,6 +13,6 @@ public class MediaManager extends BaseManager {
 
     @Override
     public void destroy() {
-        Logger.info(FILE, " destroy");
+        LOGGER.info("destroy");
     }
 }

@@ -1,56 +1,49 @@
 package com.trtc.uikit.livekit.example.view.main;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.widget.ImageView;
 
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.trtc.tuikit.common.imageloader.ImageLoader;
+import com.trtc.tuikit.common.util.ActivityLauncher;
 import com.trtc.uikit.livekit.example.BaseActivity;
 import com.trtc.uikit.livekit.example.R;
 import com.trtc.uikit.livekit.example.store.AppStore;
-import com.trtc.uikit.livekit.example.view.main.adapter.MainAdapter;
-import com.trtc.uikit.livekit.example.view.main.model.MainItemData;
-import com.trtc.uikit.livekit.example.view.main.model.MainTypeEnum;
-import com.trtc.uikit.livekit.example.view.me.MeActivity;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.trtc.uikit.livekit.example.view.scene.VideoLiveActivity;
+import com.trtc.uikit.livekit.example.view.scene.VoiceRoomActivity;
 
 public class MainActivity extends BaseActivity {
-
-    private final List<MainItemData> mDataList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.app_activity_main);
-
-        initUserAvatarView();
-        initMainRecyclerView();
+        initWebsiteLinkView();
+        initVideoLiveView();
+        initVoiceRoomView();
     }
 
-    private void initUserAvatarView() {
-        ImageView ivUserAvatar = findViewById(R.id.iv_avatar);
-        ImageLoader.load(getApplicationContext(), ivUserAvatar, AppStore.userAvatar, R.drawable.app_avatar);
-        ivUserAvatar.setOnClickListener(v -> {
-            Intent intent = new Intent(this, MeActivity.class);
+
+    private void initWebsiteLinkView() {
+        findViewById(R.id.btn_multi_function).setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(AppStore.TRTC_VIDEO_LIVE_DOCUMENT_URL));
+            ActivityLauncher.startActivity(MainActivity.this, intent);
+        });
+    }
+
+    private void initVideoLiveView() {
+        findViewById(R.id.video_live).setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, VideoLiveActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         });
     }
 
-    private void initMainRecyclerView() {
-        mDataList.add(new MainItemData(MainTypeEnum.TYPE_VIDEO_LIVE, R.drawable.app_ic_main_video_live,
-                R.string.app_main_item_video_live, R.string.app_main_item_video_live_sub));
-        mDataList.add(new MainItemData(MainTypeEnum.TYPE_VOICE_ROOM, R.drawable.app_ic_main_voice_room,
-                R.string.app_main_item_voice_room, R.string.app_main_item_voice_room_sub));
-        RecyclerView mRecyclerMainList = findViewById(R.id.rv_main_list);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(), 2);
-        mRecyclerMainList.setLayoutManager(gridLayoutManager);
-        mRecyclerMainList.setAdapter(new MainAdapter(getApplicationContext(), mDataList));
+    private void initVoiceRoomView() {
+        findViewById(R.id.voice_room).setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, VoiceRoomActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        });
     }
-
-
 }

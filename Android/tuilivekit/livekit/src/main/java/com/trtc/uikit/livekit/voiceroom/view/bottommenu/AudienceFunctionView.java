@@ -22,16 +22,16 @@ import com.tencent.qcloud.tuicore.TUIConfig;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.component.gift.LikeButton;
 import com.trtc.uikit.livekit.component.giftaccess.GiftButton;
-import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
 import com.trtc.uikit.livekit.voiceroom.state.SeatState;
 import com.trtc.uikit.livekit.voiceroom.view.BasicView;
 import com.trtc.uikit.livekit.voiceroomcore.VoiceRoomDefine;
 
 public class AudienceFunctionView extends BasicView {
-    private static final String FILE = "AudienceFunctionView";
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getVoiceRoomLogger("AudienceFunctionView");
 
     private ImageView mTakeSeatButton;
 
@@ -75,8 +75,8 @@ public class AudienceFunctionView extends BasicView {
 
     private void initGiftButton() {
         GiftButton giftButton = new GiftButton(mContext);
-        giftButton.init(mRoomState.roomId, mRoomState.ownerInfo.userId, mRoomState.ownerInfo.name.getValue(),
-                mRoomState.ownerInfo.avatarUrl.getValue());
+        giftButton.init(mRoomState.roomId, mRoomState.ownerInfo.userId, mRoomState.ownerInfo.userName,
+                mRoomState.ownerInfo.avatarUrl);
         giftButton.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.MATCH_PARENT));
         RelativeLayout container = findViewById(R.id.rl_gift);
@@ -139,7 +139,7 @@ public class AudienceFunctionView extends BasicView {
 
             @Override
             public void onError(TUIRoomDefine.UserInfo userInfo, TUICommonDefine.Error error, String message) {
-                Logger.error(FILE, "takeSeat failed,error:" + error + ",message:" + message);
+                LOGGER.error("takeSeat failed,error:" + error + ",message:" + message);
                 if (error != TUICommonDefine.Error.REQUEST_ID_REPEAT && error.getValue() != LIVE_SERVER_ERROR_ALREADY_ON_THE_MIC_QUEUE) {
                     mSeatManager.updateLinkState(SeatState.LinkStatus.NONE);
                 }
@@ -158,7 +158,7 @@ public class AudienceFunctionView extends BasicView {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                Logger.error(FILE, "leaveSeat failed,error:" + error + ",message:" + message);
+                LOGGER.error("leaveSeat failed,error:" + error + ",message:" + message);
                 ErrorLocalized.onError(error);
             }
         });
@@ -175,7 +175,7 @@ public class AudienceFunctionView extends BasicView {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                Logger.error(FILE, "cancelRequest failed,error:" + error + ",message:" + message);
+                LOGGER.error("cancelRequest failed,error:" + error + ",message:" + message);
                 ErrorLocalized.onError(error);
                 view.setEnabled(true);
             }

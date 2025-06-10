@@ -2,198 +2,158 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_marginStart="28dp"
+    android:layout_marginEnd="28dp"
+    android:background="@drawable/livekit_stream_dashboard_item_bg"
+    android:orientation="vertical"
+    android:padding="16dp">
 
     <LinearLayout
+        android:id="@+id/ll_user_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/livekit_stream_dashboard_dialog_bg"
-        android:orientation="vertical"
-        android:paddingHorizontal="15dp"
-        android:paddingVertical="10dp">
+        android:visibility="gone"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/tv_user_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textColor="@color/common_design_standard_g7"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textColor="@color/common_text_color_primary"
+            android:textSize="14sp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
-            android:text="@string/common_dashboard_video_info_title"
-            android:textColor="@color/common_design_standard_g7"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:background="@color/common_stroke_color_module" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/ll_video_info"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/livekit_stream_dashboard_dialog_bg"
-            android:orientation="vertical"
-            android:padding="15dp">
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/common_dashboard_video_info_title"
+                android:textColor="@color/common_text_color_primary"
+                android:textSize="12sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     android:text="@string/common_dashboard_video_resolution"
-                    android:textColor="@color/common_design_standard_g7"
-                    android:textSize="16sp" />
+                    android:textColor="@color/common_text_color_secondary"
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/tv_video_resolution"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="15dp"
-                    android:layout_weight="1"
-                    android:gravity="end"
-                    android:textColor="@color/common_design_standard_g7"
-                    android:textSize="16sp" />
+                    android:gravity="start"
+                    android:textColor="@color/common_text_color_primary"
+                    android:textSize="12sp" />
             </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginTop="13dp"
-                android:layout_marginEnd="10dp"
-                android:background="@color/common_not_standard_separator_67" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
+                android:layout_marginBottom="4dp"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="50dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/common_dashboard_video_bitrate"
-                    android:textColor="@color/common_design_standard_g7"
-                    android:textSize="16sp" />
+                    android:text="@string/common_dashboard_bitrate"
+                    android:textColor="@color/common_text_color_secondary"
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/tv_video_bitrate"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="15dp"
-                    android:layout_weight="1"
-                    android:gravity="end"
-                    android:textColor="@color/common_design_standard_g7"
-                    android:textSize="16sp" />
+                    android:gravity="start"
+                    android:textColor="@color/common_text_color_primary"
+                    android:textSize="12sp" />
             </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginTop="13dp"
-                android:layout_marginEnd="10dp"
-                android:background="@color/common_not_standard_separator_67" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     android:text="@string/common_dashboard_video_fps"
-                    android:textColor="@color/common_design_standard_g7"
-                    android:textSize="16sp" />
+                    android:textColor="@color/common_text_color_secondary"
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/tv_video_fps"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="15dp"
-                    android:layout_weight="1"
-                    android:gravity="end"
-                    android:textColor="@color/common_design_standard_g7"
-                    android:textSize="16sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:orientation="horizontal"
-                android:visibility="gone">
-
-                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/common_dashboard_stream_type"
-                    android:textColor="@color/common_design_standard_g7"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="15dp"
-                    android:layout_weight="1"
-                    android:gravity="end"
-                    android:textColor="@color/common_design_standard_g7"
-                    android:textSize="16sp" />
+                    android:gravity="start"
+                    android:textColor="@color/common_text_color_primary"
+                    android:textSize="12sp" />
             </LinearLayout>
+
         </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:text="@string/common_dashboard_audio_info_title"
-            android:textColor="@color/common_design_standard_g7"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-
         <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/ll_audio_info"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/livekit_stream_dashboard_dialog_bg"
-            android:orientation="vertical"
-            android:padding="15dp">
+            android:paddingStart="20dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/common_dashboard_audio_info_title"
+                android:textColor="@color/common_text_color_primary"
+                android:textSize="12sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     android:text="@string/common_dashboard_audio_sample_rate"
-                    android:textColor="@color/common_design_standard_g7"
-                    android:textSize="16sp" />
+                    android:textColor="@color/common_text_color_secondary"
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/tv_audio_sample_rate"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="15dp"
-                    android:layout_weight="1"
-                    android:gravity="end"
-                    android:textColor="@color/common_design_standard_g7"
-                    android:textSize="16sp" />
+                    android:gravity="start"
+                    android:textColor="@color/common_text_color_primary"
+                    android:textSize="12sp" />
             </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginTop="13dp"
-                android:background="@color/common_not_standard_separator_67" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -201,28 +161,20 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="50dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:text="@string/common_dashboard_audio_bitrate"
-                    android:textColor="@color/common_design_standard_g7"
-                    android:textSize="16sp" />
+                    android:text="@string/common_dashboard_bitrate"
+                    android:textColor="@color/common_text_color_secondary"
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/tv_audio_bitrate"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="18dp"
-                    android:layout_marginEnd="15dp"
-                    android:layout_weight="1"
-                    android:gravity="end"
-                    android:textColor="@color/common_design_standard_g7"
-                    android:textSize="16sp" />
+                    android:gravity="start"
+                    android:textColor="@color/common_text_color_primary"
+                    android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="20dp" />
 </LinearLayout>

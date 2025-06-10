@@ -13,23 +13,24 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.utils.widget.ImageFilterView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
 import com.trtc.uikit.livekit.voiceroom.state.SeatState;
 import com.trtc.uikit.livekit.voiceroom.state.UserState;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SeatInvitationAdapter extends RecyclerView.Adapter<SeatInvitationAdapter.ViewHolder> {
 
-    private final Context                                  mContext;
-    private final VoiceRoomManager                         mVoiceRoomManager;
-    private final SeatState                                mSeatState;
-    private       OnInviteButtonClickListener              mOnInviteButtonClickListener;
-    private final CopyOnWriteArrayList<UserState.UserInfo> mData = new CopyOnWriteArrayList<>();
+    private final Context                                      mContext;
+    private final VoiceRoomManager                             mVoiceRoomManager;
+    private final SeatState                                    mSeatState;
+    private       OnInviteButtonClickListener                  mOnInviteButtonClickListener;
+    private final CopyOnWriteArrayList<TUIRoomDefine.UserInfo> mData = new CopyOnWriteArrayList<>();
 
     public SeatInvitationAdapter(Context context, VoiceRoomManager liveController) {
         mVoiceRoomManager = liveController;
@@ -40,9 +41,9 @@ public class SeatInvitationAdapter extends RecyclerView.Adapter<SeatInvitationAd
 
     private void initData() {
         mData.clear();
-        Set<UserState.UserInfo> audienceList = mVoiceRoomManager.getUserState().userList.getValue();
+        Collection<TUIRoomDefine.UserInfo> audienceList = mVoiceRoomManager.getUserState().userList.getValue().values();
         List<SeatState.SeatInfo> seatList = mSeatState.seatList.getValue();
-        for (UserState.UserInfo userInfo : audienceList) {
+        for (TUIRoomDefine.UserInfo userInfo : audienceList) {
             if (seatList.contains(new SeatState.SeatInfo(userInfo.userId))) {
                 continue;
             }
@@ -64,17 +65,17 @@ public class SeatInvitationAdapter extends RecyclerView.Adapter<SeatInvitationAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        UserState.UserInfo userInfo = mData.get(position);
-        if (TextUtils.isEmpty(userInfo.avatarUrl.getValue())) {
+        TUIRoomDefine.UserInfo userInfo = mData.get(position);
+        if (TextUtils.isEmpty(userInfo.avatarUrl)) {
             holder.imageHead.setImageResource(R.drawable.livekit_ic_avatar);
         } else {
-            ImageLoader.load(mContext, holder.imageHead, userInfo.avatarUrl.getValue(), R.drawable.livekit_ic_avatar);
+            ImageLoader.load(mContext, holder.imageHead, userInfo.avatarUrl, R.drawable.livekit_ic_avatar);
         }
 
-        if (TextUtils.isEmpty(userInfo.name.getValue())) {
+        if (TextUtils.isEmpty(userInfo.userName)) {
             holder.textName.setText(userInfo.userId);
         } else {
-            holder.textName.setText(userInfo.name.getValue());
+            holder.textName.setText(userInfo.userName);
         }
         if (mSeatState.sentSeatInvitationMap.getValue().containsKey(userInfo.userId)) {
             holder.inviteButton.setSelected(true);
@@ -103,13 +104,6 @@ public class SeatInvitationAdapter extends RecyclerView.Adapter<SeatInvitationAd
         notifyDataSetChanged();
     }
 
-    public void updateSentSeatInvitationState(String userId) {
-        int index = mData.indexOf(new UserState.UserInfo(userId));
-        if (index != -1) {
-            notifyItemChanged(index);
-        }
-    }
-
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ImageFilterView imageHead;
         public TextView        textName;
@@ -126,6 +120,6 @@ public class SeatInvitationAdapter extends RecyclerView.Adapter<SeatInvitationAd
     }
 
     public interface OnInviteButtonClickListener {
-        void onItemClick(TextView inviteButton, UserState.UserInfo userInfo);
+        void onItemClick(TextView inviteButton, TUIRoomDefine.UserInfo userInfo);
     }
 }

@@ -35,22 +35,22 @@ import com.trtc.uikit.component.barrage.store.model.Barrage;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.Constants;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.component.gift.GiftPlayView;
+import com.trtc.uikit.livekit.component.gift.store.model.Gift;
+import com.trtc.uikit.livekit.component.gift.store.model.GiftUser;
 import com.trtc.uikit.livekit.component.giftaccess.service.GiftCacheService;
 import com.trtc.uikit.livekit.component.giftaccess.store.GiftStore;
 import com.trtc.uikit.livekit.component.giftaccess.view.BarrageViewTypeDelegate;
 import com.trtc.uikit.livekit.component.giftaccess.view.GiftBarrageAdapter;
-import com.trtc.uikit.livekit.component.gift.store.model.Gift;
-import com.trtc.uikit.livekit.component.gift.store.model.GiftUser;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
-import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
 import com.trtc.uikit.livekit.voiceroom.manager.module.RoomManager;
 import com.trtc.uikit.livekit.voiceroom.manager.observer.SeatGridViewCoreObserver;
 import com.trtc.uikit.livekit.voiceroom.state.RoomState;
 import com.trtc.uikit.livekit.voiceroom.state.SeatState;
-import com.trtc.uikit.livekit.voiceroom.state.UserState;
 import com.trtc.uikit.livekit.voiceroom.view.basic.ConfirmDialog;
 import com.trtc.uikit.livekit.voiceroom.view.basic.ExitConfirmDialog;
+import com.trtc.uikit.livekit.voiceroom.view.basic.ExitSeatDialog;
 import com.trtc.uikit.livekit.voiceroom.view.bottommenu.BottomMenuView;
 import com.trtc.uikit.livekit.voiceroom.view.dashboard.AnchorDashboardView;
 import com.trtc.uikit.livekit.voiceroom.view.dashboard.AudienceDashboardView;
@@ -65,7 +65,7 @@ import org.json.JSONObject;
 import java.util.Map;
 
 public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
-    private static final String FILE = "VoiceRoomRootView";
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getVoiceRoomLogger("VoiceRoomRootView");
 
     private final Context                           mContext;
     private       VoiceRoomManager                  mVoiceRoomManager;
@@ -84,12 +84,13 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
     private GiftCacheService  mGiftCacheService;
     private ConfirmDialog     mInvitationDialog;
     private ExitConfirmDialog mExitConfirmDialog;
+    private ExitSeatDialog    mExitSeatDialog;
 
     private SeatGridViewCoreObserver mSeatGridViewCoreObserver;
 
     private final Observer<String>                   mBackgroundURLObserver  = this::updateRoomBackground;
     private final Observer<RoomState.LiveStatus>     mLiveStateObserver      = this::onLiveStateChanged;
-    private final Observer<UserState.UserInfo>       mEnterUserObserver      = this::onEnterUserChange;
+    private final Observer<TUIRoomDefine.UserInfo>   mEnterUserObserver      = this::onEnterUserChange;
     private final Observer<SeatState.SeatInvitation> mSeatInvitationObserver = this::onSeatInvitationChanged;
     private final Observer<SeatState.LinkStatus>     mLinkStateObserver      = this::onLinkStateChanged;
 
@@ -130,7 +131,7 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
             jsonObject.put("component", Constants.DATA_REPORT_COMPONENT_VOICE_ROOM);
             SeatGridView.callExperimentalAPI(jsonObject.toString());
         } catch (JSONException e) {
-            Logger.error(FILE, "setComponent:" + e);
+            LOGGER.error("setComponent:" + e);
         }
     }
 
@@ -160,7 +161,7 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
 
     @Override
     protected void onAttachedToWindow() {
-        Logger.info(FILE, "VoiceRoomRootView attached to window");
+        LOGGER.info("VoiceRoomRootView attached to window");
         super.onAttachedToWindow();
         if (mVoiceRoomManager == null) {
             return;
@@ -174,7 +175,7 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        Logger.info(FILE, "VoiceRoomRootView detached to window");
+        LOGGER.info("VoiceRoomRootView detached to window");
         if (mIsAddObserver) {
             removeObserver();
             mIsAddObserver = false;
@@ -239,7 +240,7 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                Logger.error(FILE, "unmuteMicrophone failed, error: " + error + ", message: " + message);
+                LOGGER.error("unmuteMicrophone failed, error: " + error + ", message: " + message);
                 ErrorLocalized.onError(error);
             }
         });
@@ -254,7 +255,7 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                Logger.error(FILE, "startMicrophone failed, error: " + error + ", message: " + message);
+                LOGGER.error("startMicrophone failed, error: " + error + ", message: " + message);
                 ErrorLocalized.onError(error);
             }
         });
@@ -374,7 +375,7 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
         mSeatGridView.startVoiceRoom(roomInfo, new TUIRoomDefine.GetRoomInfoCallback() {
             @Override
             public void onSuccess(TUIRoomDefine.RoomInfo roomInfo) {
-                Logger.info(FILE, "create room success");
+                LOGGER.info("create room success");
                 mVoiceRoomManager.getRoomManager().updateRoomState(roomInfo);
                 mVoiceRoomManager.getRoomManager().updateLiveStatus(RoomState.LiveStatus.PUSHING);
                 mVoiceRoomManager.getRoomManager().updateLiveInfo();
@@ -385,7 +386,7 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                Logger.error(FILE, "create room failed, error: " + error + ", message: " + message);
+                LOGGER.error("create room failed, error: " + error + ", message: " + message);
                 ErrorLocalized.onError(error);
             }
         });
@@ -395,7 +396,7 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
         mSeatGridView.joinVoiceRoom(mVoiceRoomManager.getRoomState().roomId, new TUIRoomDefine.GetRoomInfoCallback() {
             @Override
             public void onSuccess(TUIRoomDefine.RoomInfo roomInfo) {
-                Logger.info(FILE, "enter room success");
+                LOGGER.info("enter room success");
                 mVoiceRoomManager.getRoomManager().updateRoomState(roomInfo);
                 mVoiceRoomManager.getRoomManager().getLiveInfo(roomInfo.roomId);
                 mVoiceRoomManager.getUserManager().getAudienceList();
@@ -406,7 +407,7 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                Logger.error(FILE, " enter room failed, error: " + error + ", message: " + message);
+                LOGGER.error("enter room failed, error: " + error + ", message: " + message);
                 ErrorLocalized.onError(error);
                 mVoiceRoomManager.getRoomManager().updateLiveStatus(RoomState.LiveStatus.NONE);
                 if (mContext instanceof Activity) {
@@ -424,7 +425,7 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
         RoomManager roomManager = mVoiceRoomManager.getRoomManager();
         roomManager.updateLikeNumber(mGiftPlayView.getLikeCount());
         roomManager.updateMessageCount(mBarrageStreamView.getBarrageCount());
-        if (mVoiceRoomManager.getUserState().selfInfo.role.getValue() == TUIRoomDefine.Role.ROOM_OWNER) {
+        if (mVoiceRoomManager.getUserState().selfInfo.userRole == TUIRoomDefine.Role.ROOM_OWNER) {
             initAnchorEndView();
         } else {
             initAudienceEndView();
@@ -458,14 +459,13 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
         }
     }
 
-    private void onEnterUserChange(UserState.UserInfo userInfo) {
+    private void onEnterUserChange(TUIRoomDefine.UserInfo userInfo) {
         if (userInfo != null && mBarrageStreamView != null) {
             Barrage barrage = new Barrage();
             barrage.content = mContext.getString(R.string.common_entered_room);
             barrage.user.userId = userInfo.userId;
-            barrage.user.userName = TextUtils.isEmpty(userInfo.name.getValue()) ? userInfo.userId :
-                    userInfo.name.getValue();
-            barrage.user.avatarUrl = userInfo.avatarUrl.getValue();
+            barrage.user.userName = TextUtils.isEmpty(userInfo.userName) ? userInfo.userId : userInfo.userName;
+            barrage.user.avatarUrl = userInfo.avatarUrl;
             mBarrageStreamView.insertBarrages(barrage);
         }
     }
@@ -491,7 +491,9 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
                 v -> responseSeatInvitation(seatInvitation.userId, false));
         mInvitationDialog.setHeadIconUrl(seatInvitation.avatarUrl);
         mInvitationDialog.setContent(mContext.getString(R.string.common_voiceroom_receive_seat_invitation,
-                seatInvitation.userName));
+                TextUtils.isEmpty(mVoiceRoomManager.getRoomState().ownerInfo.userName) ?
+                        mVoiceRoomManager.getRoomState().ownerInfo.userId :
+                        mVoiceRoomManager.getRoomState().ownerInfo.userName));
         mInvitationDialog.show();
     }
 
@@ -504,7 +506,7 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                Logger.error(FILE, "responseSeatInvitation failed, error: " + error + ", message: " + message);
+                LOGGER.error("responseSeatInvitation failed, error: " + error + ", message: " + message);
                 ErrorLocalized.onError(error);
             }
         });
@@ -527,12 +529,31 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
     @Override
     public void onNotifyEvent(String key, String subKey, Map<String, Object> param) {
         if (EVENT_SUB_KEY_CLOSE_VOICE_ROOM.equals(subKey)) {
-            if (mVoiceRoomManager.getUserState().selfInfo.role.getValue() == TUIRoomDefine.Role.ROOM_OWNER) {
+            if (mVoiceRoomManager.getUserState().selfInfo.userRole == TUIRoomDefine.Role.ROOM_OWNER) {
                 showExitConfirmDialog();
+            } else if (mVoiceRoomManager.getSeatState().linkStatus.getValue() == SeatState.LinkStatus.LINKING){
+                showExitSeatDialog();
             } else {
                 exit();
             }
         }
+    }
+
+    private void showExitSeatDialog() {
+        if (mExitSeatDialog == null) {
+            mExitSeatDialog = new ExitSeatDialog(mContext, new ExitSeatDialog.OnConfirmListener() {
+                @Override
+                public void onExitRoom() {
+                    exit();
+                }
+
+                @Override
+                public void onExitSeat() {
+                    mSeatGridView.leaveSeat(null);
+                }
+            });
+        }
+        mExitSeatDialog.show();
     }
 
     private void showExitConfirmDialog() {

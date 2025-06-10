@@ -17,65 +17,64 @@ import com.tencent.imsdk.v2.V2TIMFollowTypeCheckResult;
 import com.tencent.imsdk.v2.V2TIMFriendshipListener;
 import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
-import com.tencent.liteav.beauty.TXBeautyManager;
 import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.trtc.TRTCCloud;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.livestream.manager.api.ILiveService;
-import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 
 import java.util.List;
 
 public class LiveServiceImpl implements ILiveService {
-    private final String             mTag = "LiveServiceImpl[" + hashCode() + "]";
-    private final TUIRoomEngine      mTUIRoomEngine;
-    private final TRTCCloud          mTRTCCloud;
-    private final TUILiveListManager mTUILiveListManager;
+    private static final LiveKitLogger      LOGGER = LiveKitLogger.getLiveStreamLogger("LiveServiceImpl");
+    private final        TUIRoomEngine      mTUIRoomEngine;
+    private final        TRTCCloud          mTRTCCloud;
+    private final        TUILiveListManager mTUILiveListManager;
+
 
     public LiveServiceImpl() {
         mTUIRoomEngine = TUIRoomEngine.sharedInstance();
         mTRTCCloud = mTUIRoomEngine.getTRTCCloud();
         mTUILiveListManager = (TUILiveListManager) mTUIRoomEngine.getExtension(LIVE_LIST_MANAGER);
-        mTRTCCloud.getBeautyManager().setBeautyStyle(TXBeautyManager.TXBeautyStyleSmooth);
     }
 
     @Override
     public void destroy() {
-        LiveStreamLog.info(mTag + " destroy");
+        LOGGER.info(hashCode() + " destroy");
     }
 
     @Override
     public void addRoomEngineObserver(TUIRoomObserver observer) {
-        LiveStreamLog.info(mTag + " addRoomEngineObserver:[observer:" + observer.hashCode() + "]");
+        LOGGER.info(hashCode() + " addRoomEngineObserver:[observer:" + observer.hashCode() + "]");
         mTUIRoomEngine.addObserver(observer);
     }
 
     @Override
     public void removeRoomEngineObserver(TUIRoomObserver observer) {
-        LiveStreamLog.info(mTag + " removeRoomEngineObserver:[observer:" + observer.hashCode() + "]");
+        LOGGER.info(hashCode() + " removeRoomEngineObserver:[observer:" + observer.hashCode() + "]");
         mTUIRoomEngine.removeObserver(observer);
     }
 
     @Override
     public void addLiveListManagerObserver(TUILiveListManager.Observer observer) {
-        LiveStreamLog.info(mTag + " addLiveListManagerObserver:[observer:" + observer.hashCode() + "]");
+        LOGGER.info(hashCode() + " addLiveListManagerObserver:[observer:" + observer.hashCode() + "]");
         mTUILiveListManager.addObserver(observer);
     }
 
     @Override
     public void removeLiveListManagerObserver(TUILiveListManager.Observer observer) {
-        LiveStreamLog.info(mTag + " removeLiveListManagerObserver:[observer:" + observer.hashCode() + "]");
+        LOGGER.info(hashCode() + " removeLiveListManagerObserver:[observer:" + observer.hashCode() + "]");
         mTUILiveListManager.removeObserver(observer);
     }
 
     @Override
     public void addFriendListener(V2TIMFriendshipListener listener) {
-        LiveStreamLog.info(mTag + " addFriendListener:[listener:" + listener.hashCode() + "]");
+        LOGGER.info(hashCode() + " addFriendListener:[listener:" + listener.hashCode() + "]");
         V2TIMManager.getFriendshipManager().addFriendListener(listener);
     }
 
     @Override
     public void removeFriendListener(V2TIMFriendshipListener listener) {
-        LiveStreamLog.info(mTag + " removeFriendListener:[observer:" + listener.hashCode() + "]");
+        LOGGER.info(hashCode() + " removeFriendListener:[observer:" + listener.hashCode() + "]");
         V2TIMManager.getFriendshipManager().removeFriendListener(listener);
     }
 
@@ -104,11 +103,11 @@ public class LiveServiceImpl implements ILiveService {
 
     @Override
     public void leave(TUIRoomDefine.ActionCallback callback) {
-        LiveStreamLog.info(mTag + " exitRoom:[isSyncWaiting" + true + "]");
+        LOGGER.info(hashCode() + " exitRoom:[isSyncWaiting" + true + "]");
         mTUIRoomEngine.exitRoom(true, new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
-                LiveStreamLog.info(mTag + " exitRoom:[onSuccess]");
+                LOGGER.info(hashCode() + " exitRoom:[onSuccess]");
                 if (callback != null) {
                     callback.onSuccess();
                 }
@@ -116,7 +115,7 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(mTag + " exitRoom:[onError:[error:" + error + ",message:" + message + "]]");
+                LOGGER.error(hashCode() + " exitRoom:[onError:[error:" + error + ",message:" + message + "]]");
                 if (callback != null) {
                     callback.onError(error, message);
                 }
@@ -126,11 +125,11 @@ public class LiveServiceImpl implements ILiveService {
 
     @Override
     public void stop(TUIRoomDefine.ActionCallback callback) {
-        LiveStreamLog.info(mTag + " destroyRoom:[]");
+        LOGGER.info(hashCode() + " destroyRoom:[]");
         mTUIRoomEngine.destroyRoom(new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
-                LiveStreamLog.info(mTag + " destroyRoom:[onSuccess]");
+                LOGGER.info(hashCode() + " destroyRoom:[onSuccess]");
                 if (callback != null) {
                     callback.onSuccess();
                 }
@@ -138,7 +137,7 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(mTag + " destroyRoom:[onError:[error:" + error + ",message:" + message + "]]");
+                LOGGER.error(hashCode() + " destroyRoom:[onError:[error:" + error + ",message:" + message + "]]");
                 if (callback != null) {
                     callback.onError(error, message);
                 }
@@ -150,7 +149,7 @@ public class LiveServiceImpl implements ILiveService {
         loginRoomEngine(new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
-                LiveStreamLog.info(mTag + " createRoom:[roomInfo:" + new Gson().toJson(roomInfo) + "]");
+                LOGGER.info(hashCode() + " createRoom:[roomInfo:" + new Gson().toJson(roomInfo) + "]");
                 mTUIRoomEngine.createRoom(roomInfo, callback);
             }
 
@@ -164,12 +163,11 @@ public class LiveServiceImpl implements ILiveService {
         loginRoomEngine(new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
-                LiveStreamLog.info(mTag
-                        + " enterRoom:[roomId:" + roomId + ", roomType:" + TUIRoomDefine.RoomType.LIVE + "]");
+                LOGGER.info(hashCode() + " enterRoom:[roomId:" + roomId + ", roomType:" + TUIRoomDefine.RoomType.LIVE + "]");
                 mTUIRoomEngine.enterRoom(roomId, TUIRoomDefine.RoomType.LIVE, new TUIRoomDefine.GetRoomInfoCallback() {
                     @Override
                     public void onSuccess(TUIRoomDefine.RoomInfo roomInfo) {
-                        LiveStreamLog.info(mTag + " enterRoom:[onSuccess:[roomInfo" + new Gson().toJson(roomInfo) +
+                        LOGGER.info(hashCode() + " enterRoom:[onSuccess:[roomInfo" + new Gson().toJson(roomInfo) +
                                 "]]");
                         if (callback != null) {
                             callback.onSuccess(roomInfo);
@@ -178,7 +176,7 @@ public class LiveServiceImpl implements ILiveService {
 
                     @Override
                     public void onError(TUICommonDefine.Error error, String message) {
-                        LiveStreamLog.error(mTag + " enterRoom:[onError:[error:" + error + ",message:" + message +
+                        LOGGER.error(hashCode() + " enterRoom:[onError:[error:" + error + ",message:" + message +
                                 "]]");
                         if (callback != null) {
                             callback.onError(error, message);
@@ -203,8 +201,7 @@ public class LiveServiceImpl implements ILiveService {
         mTUILiveListManager.getLiveInfo(roomId, new TUILiveListManager.LiveInfoCallback() {
             @Override
             public void onSuccess(LiveInfo liveInfo) {
-                LiveStreamLog.info(mTag + " getLiveInfo :[onSuccess:[liveInfo"
-                        + new Gson().toJson(liveInfo) + "]]");
+                LOGGER.info(hashCode() + " getLiveInfo :[onSuccess:[liveInfo" + new Gson().toJson(liveInfo) + "]]");
                 if (callback != null) {
                     callback.onSuccess(liveInfo);
                 }
@@ -212,7 +209,7 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(mTag + " getLiveInfo:[onError:[error:" + error + ",message:" + message + "]]");
+                LOGGER.error(hashCode() + " getLiveInfo:[onError:[error:" + error + ",message:" + message + "]]");
                 if (callback != null) {
                     callback.onError(error, message);
                 }
@@ -221,18 +218,19 @@ public class LiveServiceImpl implements ILiveService {
     }
 
     public void updateRoomSeatModeByAdmin(TUIRoomDefine.SeatMode seatMode, TUIRoomDefine.ActionCallback callback) {
-        LiveStreamLog.info(mTag + " updateRoomSeatModeByAdmin, seatMode:" + seatMode + "]");
+        LOGGER.info(hashCode() + " updateRoomSeatModeByAdmin, seatMode:" + seatMode + "]");
         mTUIRoomEngine.updateRoomSeatModeByAdmin(seatMode, callback);
     }
 
     /****************************************** Seat Business *******************************************/
     @Override
     public TUIRoomDefine.Request takeSeat(int seatIndex, int timeout, TUIRoomDefine.RequestCallback callback) {
-        LiveStreamLog.info(mTag + " takeSeat:[seatIndex:" + seatIndex + ",timeout:" + timeout + "]");
+        LOGGER.info(hashCode() + " takeSeat:[seatIndex:" + seatIndex + ",timeout:" + timeout + "]");
         return mTUIRoomEngine.takeSeat(seatIndex, timeout, new TUIRoomDefine.RequestCallback() {
             @Override
             public void onAccepted(String requestId, String userId) {
-                LiveStreamLog.info(mTag + " takeSeat:[onAccepted:[requestId:" + requestId + ",userId:" + userId + "]]");
+                LOGGER.info(hashCode() + " takeSeat:[onAccepted:[requestId:" + requestId + ",userId:" + userId +
+                        "]]");
                 if (callback != null) {
                     callback.onAccepted(requestId, userId);
                 }
@@ -240,7 +238,8 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onRejected(String requestId, String userId, String message) {
-                LiveStreamLog.info(mTag + " takeSeat:[onRejected:[requestId:" + requestId + ",userId:" + userId + "]]");
+                LOGGER.info(hashCode() + " takeSeat:[onRejected:[requestId:" + requestId + ",userId:" + userId +
+                        "]]");
                 if (callback != null) {
                     callback.onRejected(requestId, userId, message);
                 }
@@ -248,7 +247,7 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onCancelled(String requestId, String userId) {
-                LiveStreamLog.info(mTag + " takeSeat:[onCancelled:[requestId:" + requestId + ",userId:" + userId +
+                LOGGER.info(hashCode() + " takeSeat:[onCancelled:[requestId:" + requestId + ",userId:" + userId +
                         "]]");
                 if (callback != null) {
                     callback.onCancelled(requestId, userId);
@@ -257,7 +256,7 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onTimeout(String requestId, String userId) {
-                LiveStreamLog.info(mTag + " takeSeat:[onTimeout:[requestId:" + requestId + ",userId:" + userId + "]]");
+                LOGGER.info(hashCode() + " takeSeat:[onTimeout:[requestId:" + requestId + ",userId:" + userId + "]]");
                 if (callback != null) {
                     callback.onTimeout(requestId, userId);
                 }
@@ -265,9 +264,8 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onError(String requestId, String userId, TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(mTag + " takeSeat:onError, [requestId:" + requestId + ",userId:" + userId + "," +
-                        "error:"
-                        + error + ",message:" + message + "]");
+                LOGGER.error(hashCode() + " takeSeat:onError, [requestId:" + requestId + ",userId:" + userId + "," +
+                        "error:" + error + ",message:" + message + "]");
                 if (callback != null) {
                     callback.onError(requestId, userId, error, message);
                 }
@@ -277,13 +275,12 @@ public class LiveServiceImpl implements ILiveService {
 
     public TUIRoomDefine.Request takeUserOnSeatByAdmin(int seatIndex, String userId, int timeout,
                                                        TUIRoomDefine.RequestCallback callback) {
-        LiveStreamLog.info(mTag + " takeUserOnSeatByAdmin:[seatIndex:" + seatIndex + ",userId:" + userId + ",timeout:"
-                + timeout + "]");
+        LOGGER.info(hashCode() + " takeUserOnSeatByAdmin:[seatIndex:" + seatIndex + ",userId:" + userId + ",timeout" +
+                ":" + timeout + "]");
         return mTUIRoomEngine.takeUserOnSeatByAdmin(seatIndex, userId, timeout, new TUIRoomDefine.RequestCallback() {
             @Override
             public void onAccepted(String requestId, String userId) {
-                LiveStreamLog.info(mTag + " takeUserOnSeatByAdmin:[onAccepted:[requestId:" + requestId + ",userId:"
-                        + userId + "]]");
+                LOGGER.info(hashCode() + " takeUserOnSeatByAdmin:[onAccepted:[requestId:" + requestId + ",userId:" + userId + "]]");
                 if (callback != null) {
                     callback.onAccepted(requestId, userId);
                 }
@@ -291,8 +288,7 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onRejected(String requestId, String userId, String message) {
-                LiveStreamLog.info(mTag + " takeUserOnSeatByAdmin:[onRejected:[requestId:" + requestId + ",userId:"
-                        + userId + "]]");
+                LOGGER.info(hashCode() + " takeUserOnSeatByAdmin:[onRejected:[requestId:" + requestId + ",userId:" + userId + "]]");
                 if (callback != null) {
                     callback.onRejected(requestId, userId, message);
                 }
@@ -300,8 +296,7 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onCancelled(String requestId, String userId) {
-                LiveStreamLog.info(mTag + " takeUserOnSeatByAdmin:[onCancelled:[requestId:" + requestId + ",userId:"
-                        + userId + "]]");
+                LOGGER.info(hashCode() + " takeUserOnSeatByAdmin:[onCancelled:[requestId:" + requestId + ",userId:" + userId + "]]");
                 if (callback != null) {
                     callback.onCancelled(requestId, userId);
                 }
@@ -309,8 +304,7 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onTimeout(String requestId, String userId) {
-                LiveStreamLog.info(mTag + " takeUserOnSeatByAdmin:[onTimeout:[requestId:" + requestId + ",userId:"
-                        + userId + "]]");
+                LOGGER.info(hashCode() + " takeUserOnSeatByAdmin:[onTimeout:[requestId:" + requestId + ",userId:" + userId + "]]");
                 if (callback != null) {
                     callback.onTimeout(requestId, userId);
                 }
@@ -318,8 +312,7 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onError(String requestId, String userId, TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(mTag + " takeUserOnSeatByAdmin:onError, [requestId:" + requestId + ",userId:" + userId
-                        + ",error:" + error + ",message:" + message + "]");
+                LOGGER.error(hashCode() + " takeUserOnSeatByAdmin:onError, [requestId:" + requestId + ",userId:" + userId + ",error:" + error + ",message:" + message + "]");
                 if (callback != null) {
                     callback.onError(requestId, userId, error, message);
                 }
@@ -329,11 +322,11 @@ public class LiveServiceImpl implements ILiveService {
 
     @Override
     public void leaveSeat(TUIRoomDefine.ActionCallback callback) {
-        LiveStreamLog.info(mTag + " leaveSeat:[]");
+        LOGGER.info(hashCode() + " leaveSeat:[]");
         mTUIRoomEngine.leaveSeat(new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
-                LiveStreamLog.info(mTag + " leaveSeat:[onSuccess]");
+                LOGGER.info(hashCode() + " leaveSeat:[onSuccess]");
                 if (callback != null) {
                     callback.onSuccess();
                 }
@@ -341,7 +334,7 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(mTag + " leaveSeat:[onError:[error:" + error + ",message:" + message + "]]");
+                LOGGER.error(hashCode() + " leaveSeat:[onError:[error:" + error + ",message:" + message + "]]");
                 if (callback != null) {
                     callback.onError(error, message);
                 }
@@ -351,11 +344,12 @@ public class LiveServiceImpl implements ILiveService {
 
     @Override
     public void lockSeat(int seatIndex, TUIRoomDefine.SeatLockParams param, TUIRoomDefine.ActionCallback callback) {
-        LiveStreamLog.info(mTag + " lockSeatByAdmin:[seatIndex:" + seatIndex + "params:" + new Gson().toJson(param) + "]");
+        LOGGER.info(hashCode() + " lockSeatByAdmin:[seatIndex:" + seatIndex + "params:" + new Gson().toJson(param) +
+                "]");
         mTUIRoomEngine.lockSeatByAdmin(seatIndex, param, new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
-                LiveStreamLog.info(mTag + " lockSeatByAdmin:[onSuccess]");
+                LOGGER.info(hashCode() + " lockSeatByAdmin:[onSuccess]");
                 if (callback != null) {
                     callback.onSuccess();
                 }
@@ -363,7 +357,7 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(mTag + " lockSeatByAdmin:[onError:[error:" + error + ",message:" + message + "]]");
+                LOGGER.error(hashCode() + " lockSeatByAdmin:[onError:[error:" + error + ",message:" + message + "]]");
                 if (callback != null) {
                     callback.onError(error, message);
                 }
@@ -373,11 +367,11 @@ public class LiveServiceImpl implements ILiveService {
 
     @Override
     public void kickSeat(String userId, TUIRoomDefine.ActionCallback callback) {
-        LiveStreamLog.info(mTag + " kickSeat:[userId:" + userId + "]");
+        LOGGER.info(hashCode() + " kickSeat:[userId:" + userId + "]");
         mTUIRoomEngine.kickUserOffSeatByAdmin(-1, userId, new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
-                LiveStreamLog.info(mTag + " kickUserOffSeatByAdmin:[onSuccess]");
+                LOGGER.info(hashCode() + " kickUserOffSeatByAdmin:[onSuccess]");
                 if (callback != null) {
                     callback.onSuccess();
                 }
@@ -385,8 +379,7 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(mTag + " kickUserOffSeatByAdmin:[onError:[error:" + error + ",message:" + message
-                        + "]]");
+                LOGGER.error(hashCode() + " kickUserOffSeatByAdmin:[onError:[error:" + error + ",message:" + message + "]]");
                 if (callback != null) {
                     callback.onError(error, message);
                 }
@@ -396,12 +389,12 @@ public class LiveServiceImpl implements ILiveService {
 
     @Override
     public void getSeatList(TUIRoomDefine.GetSeatListCallback callback) {
-        LiveStreamLog.info(mTag + " getSeatList:[]");
+        LOGGER.info(hashCode() + " getSeatList:[]");
         mTUIRoomEngine.getSeatList(new TUIRoomDefine.GetSeatListCallback() {
 
             @Override
             public void onSuccess(List<TUIRoomDefine.SeatInfo> list) {
-                LiveStreamLog.info(mTag + " getSeatList:[onSuccess]");
+                LOGGER.info(hashCode() + " getSeatList:[onSuccess]");
                 if (callback != null) {
                     callback.onSuccess(list);
                 }
@@ -409,7 +402,7 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(mTag + " getSeatList:[onError:[error:" + error + ",message:" + message + "]]");
+                LOGGER.error(hashCode() + " getSeatList:[onError:[error:" + error + ",message:" + message + "]]");
                 if (callback != null) {
                     callback.onError(error, message);
                 }
@@ -419,11 +412,12 @@ public class LiveServiceImpl implements ILiveService {
 
     @Override
     public void getSeatApplicationList(TUIRoomDefine.RequestListCallback callback) {
-        LiveStreamLog.info(mTag + " getSeatApplicationList:[]");
+        LOGGER.info(hashCode() + " getSeatApplicationList:[]");
         mTUIRoomEngine.getSeatApplicationList(new TUIRoomDefine.RequestListCallback() {
             @Override
             public void onSuccess(List<TUIRoomDefine.Request> list) {
-                LiveStreamLog.info(mTag + " getSeatApplicationList:[onSuccess:[list:" + new Gson().toJson(list) + "]]");
+                LOGGER.info(hashCode() + " getSeatApplicationList:[onSuccess:[list:" + new Gson().toJson(list) +
+                        "]]");
                 if (callback != null) {
                     callback.onSuccess(list);
                 }
@@ -431,8 +425,7 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(mTag + " getSeatApplicationList:[onError:[error:" + error + ",message:" + message
-                        + "]]");
+                LOGGER.error(hashCode() + " getSeatApplicationList:[onError:[error:" + error + ",message:" + message + "]]");
                 if (callback != null) {
                     callback.onError(error, message);
                 }
@@ -442,11 +435,11 @@ public class LiveServiceImpl implements ILiveService {
 
     @Override
     public void acceptRequest(String requestId, TUIRoomDefine.ActionCallback callback) {
-        LiveStreamLog.info(mTag + " responseRemoteRequest:[requestId:" + requestId + ",agree:" + true + "]");
+        LOGGER.info(hashCode() + " responseRemoteRequest:[requestId:" + requestId + ",agree:" + true + "]");
         mTUIRoomEngine.responseRemoteRequest(requestId, true, new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
-                LiveStreamLog.info(mTag + " responseRemoteRequest:[onSuccess]");
+                LOGGER.info(hashCode() + " responseRemoteRequest:[onSuccess]");
                 if (callback != null) {
                     callback.onSuccess();
                 }
@@ -454,8 +447,7 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(mTag + " responseRemoteRequest:[onError:[error:" + error + ",message:" + message
-                        + "]]");
+                LOGGER.error(hashCode() + " responseRemoteRequest:[onError:[error:" + error + ",message:" + message + "]]");
                 if (callback != null) {
                     callback.onError(error, message);
                 }
@@ -465,11 +457,11 @@ public class LiveServiceImpl implements ILiveService {
 
     @Override
     public void rejectRequest(String requestId, TUIRoomDefine.ActionCallback callback) {
-        LiveStreamLog.info(mTag + " responseRemoteRequest:[requestId:" + requestId + ",agree:" + false + "]");
+        LOGGER.info(hashCode() + " responseRemoteRequest:[requestId:" + requestId + ",agree:" + false + "]");
         mTUIRoomEngine.responseRemoteRequest(requestId, false, new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
-                LiveStreamLog.info(mTag + " responseRemoteRequest:[onSuccess]");
+                LOGGER.info(hashCode() + " responseRemoteRequest:[onSuccess]");
                 if (callback != null) {
                     callback.onSuccess();
                 }
@@ -477,8 +469,7 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(mTag + " responseRemoteRequest:[onError:[error:" + error + ",message:" + message
-                        + "]]");
+                LOGGER.error(hashCode() + " responseRemoteRequest:[onError:[error:" + error + ",message:" + message + "]]");
                 if (callback != null) {
                     callback.onError(error, message);
                 }
@@ -488,11 +479,11 @@ public class LiveServiceImpl implements ILiveService {
 
     @Override
     public void cancelRequest(String requestId, TUIRoomDefine.ActionCallback callback) {
-        LiveStreamLog.info(mTag + " cancelRequest:[requestId:" + requestId + "]");
+        LOGGER.info(hashCode() + " cancelRequest:[requestId:" + requestId + "]");
         mTUIRoomEngine.cancelRequest(requestId, new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
-                LiveStreamLog.info(mTag + " cancelRequest:[onSuccess]");
+                LOGGER.info(hashCode() + " cancelRequest:[onSuccess]");
                 if (callback != null) {
                     callback.onSuccess();
                 }
@@ -500,7 +491,7 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(mTag + " cancelRequest:[onError:[error:" + error + ",message:" + message + "]]");
+                LOGGER.error(hashCode() + " cancelRequest:[onError:[error:" + error + ",message:" + message + "]]");
                 if (callback != null) {
                     callback.onError(error, message);
                 }
@@ -510,11 +501,11 @@ public class LiveServiceImpl implements ILiveService {
 
     @Override
     public void kickUserOffSeatByAdmin(int seatIndex, String userId, TUIRoomDefine.ActionCallback callback) {
-        LiveStreamLog.info(mTag + " kickUserOffSeatByAdmin:[seatIndex:" + seatIndex + "userId:" + userId + "]");
+        LOGGER.info(hashCode() + " kickUserOffSeatByAdmin:[seatIndex:" + seatIndex + "userId:" + userId + "]");
         mTUIRoomEngine.kickUserOffSeatByAdmin(seatIndex, userId, new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
-                LiveStreamLog.info(mTag + " kickUserOffSeatByAdmin:[onSuccess]");
+                LOGGER.info(hashCode() + " kickUserOffSeatByAdmin:[onSuccess]");
                 if (callback != null) {
                     callback.onSuccess();
                 }
@@ -522,8 +513,7 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(mTag + " kickUserOffSeatByAdmin:[onError:[error:" + error + ",message:" + message
-                        + "]]");
+                LOGGER.error(hashCode() + " kickUserOffSeatByAdmin:[onError:[error:" + error + ",message:" + message + "]]");
                 if (callback != null) {
                     callback.onError(error, message);
                 }
@@ -534,11 +524,11 @@ public class LiveServiceImpl implements ILiveService {
     /****************************************** User Business *******************************************/
     @Override
     public void getUserList(long nextSequence, TUIRoomDefine.GetUserListCallback callback) {
-        LiveStreamLog.info(mTag + " getUserList:[nextSequence:" + nextSequence + "]");
+        LOGGER.info(hashCode() + " getUserList:[nextSequence:" + nextSequence + "]");
         mTUIRoomEngine.getUserList(nextSequence, new TUIRoomDefine.GetUserListCallback() {
             @Override
             public void onSuccess(TUIRoomDefine.UserListResult userListResult) {
-                LiveStreamLog.info(mTag + " getUserList:[onSuccess]");
+                LOGGER.info(hashCode() + " getUserList:[onSuccess]");
                 if (callback != null) {
                     callback.onSuccess(userListResult);
                 }
@@ -546,7 +536,7 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(mTag + " getUserList:[onError:[error:" + error + ",message:" + message + "]]");
+                LOGGER.error(hashCode() + " getUserList:[onError:[error:" + error + ",message:" + message + "]]");
                 if (callback != null) {
                     callback.onError(error, message);
                 }
@@ -556,11 +546,11 @@ public class LiveServiceImpl implements ILiveService {
 
     @Override
     public void getUserInfo(String userId, TUIRoomDefine.GetUserInfoCallback callback) {
-        LiveStreamLog.info(mTag + " getUserInfo:[userId:" + userId + "]");
+        LOGGER.info(hashCode() + " getUserInfo:[userId:" + userId + "]");
         mTUIRoomEngine.getUserInfo(userId, new TUIRoomDefine.GetUserInfoCallback() {
             @Override
             public void onSuccess(TUIRoomDefine.UserInfo userInfo) {
-                LiveStreamLog.info(mTag + " getUserInfo:[onSuccess]");
+                LOGGER.info(hashCode() + " getUserInfo:[onSuccess]");
                 if (callback != null) {
                     callback.onSuccess(userInfo);
                 }
@@ -568,7 +558,7 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(mTag + " getUserInfo:[onError:[error:" + error + ",message:" + message + "]]");
+                LOGGER.error(hashCode() + " getUserInfo:[onError:[error:" + error + ",message:" + message + "]]");
                 if (callback != null) {
                     callback.onError(error, message);
                 }
@@ -578,17 +568,17 @@ public class LiveServiceImpl implements ILiveService {
 
     @Override
     public void muteAllRemoteAudio(boolean isMute) {
-        LiveStreamLog.info(mTag + " muteAllRemoteAudio:[isMute:" + isMute + "]");
+        LOGGER.info(hashCode() + " muteAllRemoteAudio:[isMute:" + isMute + "]");
         mTRTCCloud.muteAllRemoteAudio(isMute);
     }
 
     @Override
     public void disableSendingMessageByAdmin(String userId, boolean isDisable, TUIRoomDefine.ActionCallback callback) {
-        LiveStreamLog.info(mTag + " disableSendingMessageByAdmin:[userId:" + userId + ",isDisable:" + isDisable + "]");
+        LOGGER.info(hashCode() + " disableSendingMessageByAdmin:[userId:" + userId + ",isDisable:" + isDisable + "]");
         mTUIRoomEngine.disableSendingMessageByAdmin(userId, isDisable, new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
-                LiveStreamLog.info(mTag + " disableSendingMessageByAdmin:[onSuccess]");
+                LOGGER.info(hashCode() + " disableSendingMessageByAdmin:[onSuccess]");
                 if (callback != null) {
                     callback.onSuccess();
                 }
@@ -596,7 +586,7 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(mTag + " disableSendingMessageByAdmin:[onError:[error:" + error + ",message:" + message + "]]");
+                LOGGER.error(hashCode() + " disableSendingMessageByAdmin:[onError:[error:" + error + ",message:" + message + "]]");
                 if (callback != null) {
                     callback.onError(error, message);
                 }
@@ -606,11 +596,11 @@ public class LiveServiceImpl implements ILiveService {
 
     @Override
     public void kickRemoteUserOutOfRoom(String userId, TUIRoomDefine.ActionCallback callback) {
-        LiveStreamLog.info(mTag + " kickRemoteUserOutOfRoom:[userId:" + userId + "]");
+        LOGGER.info(hashCode() + " kickRemoteUserOutOfRoom:[userId:" + userId + "]");
         mTUIRoomEngine.kickRemoteUserOutOfRoom(userId, new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
-                LiveStreamLog.info(mTag + " kickRemoteUserOutOfRoom:[onSuccess]");
+                LOGGER.info(hashCode() + " kickRemoteUserOutOfRoom:[onSuccess]");
                 if (callback != null) {
                     callback.onSuccess();
                 }
@@ -618,7 +608,7 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(mTag + " kickRemoteUserOutOfRoom:[onError:[error:" + error + ",message:" + message + "]]");
+                LOGGER.error(hashCode() + " kickRemoteUserOutOfRoom:[onError:[error:" + error + ",message:" + message + "]]");
                 if (callback != null) {
                     callback.onError(error, message);
                 }
@@ -629,25 +619,25 @@ public class LiveServiceImpl implements ILiveService {
     /****************************************** Media Business *******************************************/
     @Override
     public void setLocalVideoView(TUIVideoView videoView) {
-        LiveStreamLog.info(mTag + " setLocalVideoView:[videoView:" + videoView + "]");
+        LOGGER.info(hashCode() + " setLocalVideoView:[videoView:" + videoView + "]");
         mTUIRoomEngine.setLocalVideoView(videoView);
     }
 
     @Override
     public void setRemoteVideoView(String userId, TUIRoomDefine.VideoStreamType streamType, TUIVideoView videoView) {
-        LiveStreamLog.info(mTag + " setRemoteVideoView:[userId:" + userId + "streamType:" + streamType
-                + "videoView:" + videoView + "]");
+        LOGGER.info(hashCode() + " setRemoteVideoView:[userId:" + userId + "streamType:" + streamType + "videoView" +
+                ":" + videoView + "]");
         mTUIRoomEngine.setRemoteVideoView(userId, streamType, videoView);
     }
 
     @Override
     public void startPlayRemoteVideo(String userId, TUIRoomDefine.VideoStreamType streamType,
                                      TUIRoomDefine.PlayCallback callback) {
-        LiveStreamLog.info(mTag + " startPlayRemoteVideo:[userId:" + userId + "streamType:" + streamType + "]");
+        LOGGER.info(hashCode() + " startPlayRemoteVideo:[userId:" + userId + "streamType:" + streamType + "]");
         mTUIRoomEngine.startPlayRemoteVideo(userId, streamType, new TUIRoomDefine.PlayCallback() {
             @Override
             public void onPlaying(String userId) {
-                LiveStreamLog.info(mTag + " startPlayRemoteVideo:[onPlaying:[userId" + userId + "]]");
+                LOGGER.info(hashCode() + " startPlayRemoteVideo:[onPlaying:[userId" + userId + "]]");
                 if (callback != null) {
                     callback.onPlaying(userId);
                 }
@@ -655,7 +645,7 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onLoading(String userId) {
-                LiveStreamLog.info(mTag + " startPlayRemoteVideo:[onLoading:[userId" + userId + "]]");
+                LOGGER.info(hashCode() + " startPlayRemoteVideo:[onLoading:[userId" + userId + "]]");
                 if (callback != null) {
                     callback.onLoading(userId);
                 }
@@ -663,8 +653,8 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onPlayError(String userId, TUICommonDefine.Error error, String message) {
-                LiveStreamLog.info(mTag + " startPlayRemoteVideo:[onPlayError:[userId" + userId + ",error" + error
-                        + ",message" + message + "]]");
+                LOGGER.info(hashCode() + " startPlayRemoteVideo:[onPlayError:[userId" + userId + ",error" + error +
+                        ",message" + message + "]]");
                 if (callback != null) {
                     callback.onPlayError(userId, error, message);
                 }
@@ -674,17 +664,17 @@ public class LiveServiceImpl implements ILiveService {
 
     @Override
     public void muteLocalAudio() {
-        LiveStreamLog.info(mTag + " muteLocalAudio:[]");
+        LOGGER.info(hashCode() + " muteLocalAudio:[]");
         mTUIRoomEngine.muteLocalAudio();
     }
 
     @Override
     public void unMuteLocalAudio(TUIRoomDefine.ActionCallback callback) {
-        LiveStreamLog.info(mTag + " unMuteLocalAudio:[]");
+        LOGGER.info(hashCode() + " unMuteLocalAudio:[]");
         mTUIRoomEngine.unmuteLocalAudio(new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
-                LiveStreamLog.info(mTag + " unMuteLocalAudio:[onSuccess]");
+                LOGGER.info(hashCode() + " unMuteLocalAudio:[onSuccess]");
                 if (callback != null) {
                     callback.onSuccess();
                 }
@@ -692,7 +682,8 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(mTag + " unMuteLocalAudio:[onError:[error:" + error + ",message:" + message + "]]");
+                LOGGER.error(hashCode() + " unMuteLocalAudio:[onError:[error:" + error + ",message:" + message +
+                        "]]");
                 if (callback != null) {
                     callback.onError(error, message);
                 }
@@ -702,67 +693,31 @@ public class LiveServiceImpl implements ILiveService {
 
     @Override
     public void enableGravitySensor(boolean enable) {
-        LiveStreamLog.info(mTag + " enableGravitySensor:[enable:" + enable + "]");
+        LOGGER.info(hashCode() + " enableGravitySensor:[enable:" + enable + "]");
         mTUIRoomEngine.enableGravitySensor(enable);
     }
 
     @Override
-    public void updateVideoQualityEx(TUIRoomDefine.RoomVideoEncoderParams videoEncParam) {
-        LiveStreamLog.info(mTag + " updateVideoQualityEx:[videoEncParam:" + videoEncParam + "]");
-        mTUIRoomEngine.updateVideoQualityEx(TUIRoomDefine.VideoStreamType.CAMERA_STREAM, videoEncParam);
-    }
-
-    @Override
-    public void updateVideoQuality(TUIRoomDefine.VideoQuality quality) {
-        LiveStreamLog.info(mTag + " updateVideoQuality:[quality:" + quality + "]");
-        mTUIRoomEngine.updateVideoQuality(quality);
-    }
-
-    @Override
     public void updateAudioQuality(TUIRoomDefine.AudioQuality quality) {
-        LiveStreamLog.info(mTag + " updateAudioQuality:[quality:" + quality + "]");
+        LOGGER.info(hashCode() + " updateAudioQuality:[quality:" + quality + "]");
         mTUIRoomEngine.updateAudioQuality(quality);
     }
 
     @Override
     public void setVideoResolutionMode(TUIRoomDefine.ResolutionMode resolutionMode) {
-        LiveStreamLog.info(mTag + " setVideoResolutionMode:[resolutionMode:" + resolutionMode + "]");
+        LOGGER.info(hashCode() + " setVideoResolutionMode:[resolutionMode:" + resolutionMode + "]");
         mTUIRoomEngine.setVideoResolutionMode(TUIRoomDefine.VideoStreamType.CAMERA_STREAM, resolutionMode);
-    }
-
-    @Override
-    public void setBeautyStyle(int style) {
-        LiveStreamLog.info(mTag + " setBeautyStyle:[style:" + style + "]");
-        mTRTCCloud.getBeautyManager().setBeautyStyle(style);
-    }
-
-    @Override
-    public void setBeautyLevel(float level) {
-        LiveStreamLog.info(mTag + " setBeautyLevel:[level:" + level + "]");
-        mTRTCCloud.getBeautyManager().setBeautyLevel(level);
-    }
-
-    @Override
-    public void setWhitenessLevel(float level) {
-        LiveStreamLog.info(mTag + " setWhitenessLevel:[level:" + level + "]");
-        mTRTCCloud.getBeautyManager().setWhitenessLevel(level);
-    }
-
-    @Override
-    public void setRuddyLevel(float level) {
-        LiveStreamLog.info(mTag + " setRuddyLevel:[level:" + level + "]");
-        mTRTCCloud.getBeautyManager().setRuddyLevel(level);
     }
 
     /****************************************** IM Business *******************************************/
     @Override
     public void followUser(List<String> userIDList, V2TIMValueCallback<List<V2TIMFollowOperationResult>> callback) {
-        LiveStreamLog.info(mTag + " followUser:[userIDList:" + userIDList + "]");
+        LOGGER.info(hashCode() + " followUser:[userIDList:" + userIDList + "]");
         V2TIMManager.getFriendshipManager().followUser(userIDList,
                 new V2TIMValueCallback<List<V2TIMFollowOperationResult>>() {
                     @Override
                     public void onSuccess(List<V2TIMFollowOperationResult> results) {
-                        LiveStreamLog.info(mTag + " followUser:[onSuccess:[results:" + new Gson().toJson(results) +
+                        LOGGER.info(hashCode() + " followUser:[onSuccess:[results:" + new Gson().toJson(results) +
                                 "]]");
                         if (callback != null) {
                             callback.onSuccess(results);
@@ -771,7 +726,7 @@ public class LiveServiceImpl implements ILiveService {
 
                     @Override
                     public void onError(int code, String message) {
-                        LiveStreamLog.error(mTag + " followUser:[onSuccess:[code:" + code + ",message:" + message +
+                        LOGGER.error(hashCode() + " followUser:[onSuccess:[code:" + code + ",message:" + message +
                                 "]]");
                         if (callback != null) {
                             callback.onError(code, message);
@@ -782,13 +737,13 @@ public class LiveServiceImpl implements ILiveService {
 
     @Override
     public void unfollowUser(List<String> userIDList, V2TIMValueCallback<List<V2TIMFollowOperationResult>> callback) {
-        LiveStreamLog.info(mTag + " unfollowUser:[userIDList:" + userIDList + "]");
+        LOGGER.info(hashCode() + " unfollowUser:[userIDList:" + userIDList + "]");
         V2TIMManager.getFriendshipManager().unfollowUser(userIDList,
                 new V2TIMValueCallback<List<V2TIMFollowOperationResult>>() {
                     @Override
                     public void onSuccess(List<V2TIMFollowOperationResult> results) {
-                        LiveStreamLog.info(mTag + " unfollowUser:[onSuccess:[results:" + new Gson().toJson(results)
-                                + "]]");
+                        LOGGER.info(hashCode() + " unfollowUser:[onSuccess:[results:" + new Gson().toJson(results) +
+                                "]]");
                         if (callback != null) {
                             callback.onSuccess(results);
                         }
@@ -796,8 +751,8 @@ public class LiveServiceImpl implements ILiveService {
 
                     @Override
                     public void onError(int code, String message) {
-                        LiveStreamLog.error(mTag + " unfollowUser:[onSuccess:[code:" + code + ",message:" + message
-                                + "]]");
+                        LOGGER.error(hashCode() + " unfollowUser:[onSuccess:[code:" + code + ",message:" + message +
+                                "]]");
                         if (callback != null) {
                             callback.onError(code, message);
                         }
@@ -808,13 +763,12 @@ public class LiveServiceImpl implements ILiveService {
     @Override
     public void checkFollowType(List<String> userIDList,
                                 V2TIMValueCallback<List<V2TIMFollowTypeCheckResult>> callback) {
-        LiveStreamLog.info(mTag + " checkFollowType:[userIDList:" + userIDList + "]");
+        LOGGER.info(hashCode() + " checkFollowType:[userIDList:" + userIDList + "]");
         V2TIMManager.getFriendshipManager().checkFollowType(userIDList,
                 new V2TIMValueCallback<List<V2TIMFollowTypeCheckResult>>() {
                     @Override
                     public void onSuccess(List<V2TIMFollowTypeCheckResult> results) {
-                        LiveStreamLog.info(mTag + " checkFollowType:[onSuccess:[results:" + new Gson().toJson(results)
-                                + "]]");
+                        LOGGER.info(hashCode() + " checkFollowType:[onSuccess:[results:" + new Gson().toJson(results) + "]]");
                         if (callback != null) {
                             callback.onSuccess(results);
                         }
@@ -822,8 +776,7 @@ public class LiveServiceImpl implements ILiveService {
 
                     @Override
                     public void onError(int code, String message) {
-                        LiveStreamLog.error(mTag + " checkFollowType:[onSuccess:[code:" + code
-                                + ",message:" + message + "]]");
+                        LOGGER.error(hashCode() + " checkFollowType:[onSuccess:[code:" + code + ",message:" + message + "]]");
                         if (callback != null) {
                             callback.onError(code, message);
                         }
@@ -833,13 +786,13 @@ public class LiveServiceImpl implements ILiveService {
 
     @Override
     public void getUserFollowInfo(List<String> userIDList, V2TIMValueCallback<List<V2TIMFollowInfo>> callback) {
-        LiveStreamLog.info(mTag + " getUserFollowInfo:[userIDList:" + userIDList + "]");
+        LOGGER.info(hashCode() + " getUserFollowInfo:[userIDList:" + userIDList + "]");
         V2TIMManager.getFriendshipManager().getUserFollowInfo(userIDList,
                 new V2TIMValueCallback<List<V2TIMFollowInfo>>() {
                     @Override
                     public void onSuccess(List<V2TIMFollowInfo> results) {
-                        LiveStreamLog.info(mTag + " getUserFollowInfo:[onSuccess:[results:" + new Gson().toJson(results)
-                                + "]]");
+                        LOGGER.info(hashCode() + " getUserFollowInfo:[onSuccess:[results:" + new Gson().toJson(results) +
+                                "]]");
                         if (callback != null) {
                             callback.onSuccess(results);
                         }
@@ -847,8 +800,8 @@ public class LiveServiceImpl implements ILiveService {
 
                     @Override
                     public void onError(int code, String message) {
-                        LiveStreamLog.error(mTag + " getUserFollowInfo:[onSuccess:[code:" + code
-                                + ",message:" + message + "]]");
+                        LOGGER.error(hashCode() + " getUserFollowInfo:[onSuccess:[code:" + code + ",message:" + message +
+                                "]]");
                         if (callback != null) {
                             callback.onError(code, message);
                         }
@@ -858,19 +811,18 @@ public class LiveServiceImpl implements ILiveService {
 
     @Override
     public void callExperimentalAPI(String jsonStr) {
-        LiveStreamLog.info(mTag + " callExperimentalAPI:[jsonStr:" + jsonStr + "]");
-        TUIRoomEngine.callExperimentalAPI(jsonStr);
+        LOGGER.info(hashCode() + " callExperimentalAPI:[jsonStr:" + jsonStr + "]");
+        TUIRoomEngine.sharedInstance().callExperimentalAPI(jsonStr, null);
     }
 
     /****************************************** Plugin - Room List *******************************************/
     @Override
     public void fetchLiveList(String cursor, int count, TUILiveListManager.LiveInfoListCallback callback) {
-        LiveStreamLog.info(mTag + " fetchLiveList:[cursor:" + cursor + ",count:" + count + "]");
+        LOGGER.info(hashCode() + " fetchLiveList:[cursor:" + cursor + ",count:" + count + "]");
         mTUILiveListManager.fetchLiveList(cursor, count, new TUILiveListManager.LiveInfoListCallback() {
             @Override
             public void onSuccess(TUILiveListManager.LiveInfoListResult liveInfoListResult) {
-                LiveStreamLog.info(mTag + " fetchLiveList:[onSuccess:[liveInfoListResult:"
-                        + new Gson().toJson(liveInfoListResult));
+                LOGGER.info(hashCode() + " fetchLiveList:[onSuccess:[liveInfoListResult:" + new Gson().toJson(liveInfoListResult));
                 if (callback != null) {
                     callback.onSuccess(liveInfoListResult);
                 }
@@ -878,7 +830,7 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onError(TUICommonDefine.Error error, String s) {
-                LiveStreamLog.error(mTag + " fetchLiveList:[onError:[error:" + error + ",s:" + s + "]]");
+                LOGGER.error(hashCode() + " fetchLiveList:[onError:[error:" + error + ",s:" + s + "]]");
                 if (callback != null) {
                     callback.onError(error, s);
                 }
@@ -888,12 +840,12 @@ public class LiveServiceImpl implements ILiveService {
 
     @Override
     public void setLiveInfo(LiveInfo liveInfo, List<LiveModifyFlag> flagList, TUIRoomDefine.ActionCallback callback) {
-        LiveStreamLog.info((mTag + " setLiveInfo:[liveInfo:" + new Gson().toJson(liveInfo) + ",flag:" + flagList +
+        LOGGER.info((hashCode() + " setLiveInfo:[liveInfo:" + new Gson().toJson(liveInfo) + ",flag:" + flagList +
                 "]"));
         mTUILiveListManager.setLiveInfo(liveInfo, flagList, new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
-                LiveStreamLog.info(mTag + " setLiveInfo:[onSuccess]");
+                LOGGER.info(hashCode() + " setLiveInfo:[onSuccess]");
                 if (callback != null) {
                     callback.onSuccess();
                 }
@@ -901,7 +853,7 @@ public class LiveServiceImpl implements ILiveService {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(mTag + " setLiveInfo:[onError:[error:" + error + ",message:" + message + "]]");
+                LOGGER.error(hashCode() + " setLiveInfo:[onError:[error:" + error + ",message:" + message + "]]");
                 if (callback != null) {
                     callback.onError(error, message);
                 }

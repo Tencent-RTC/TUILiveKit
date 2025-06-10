@@ -18,13 +18,14 @@ import com.tencent.qcloud.tuicore.util.ScreenUtil;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
-import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestream.state.RoomState;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
 @SuppressLint("ViewConstructor")
 public class EndLiveStreamDialog extends PopupDialog {
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getLiveStreamLogger("EndLiveStreamDialog");
 
     protected     Context           mContext;
     private final LiveCoreView      mLiveStream;
@@ -104,7 +105,7 @@ public class EndLiveStreamDialog extends PopupDialog {
 
                 @Override
                 public void onError(TUICommonDefine.Error error, String message) {
-                    LiveStreamLog.error("EndLiveStreamDialog" + " terminateBattle " +
+                    LOGGER.error("EndLiveStreamDialog" + " terminateBattle " +
                             "failed:error:" + error + "," + "errorCode:" + error.getValue() + "message:" + message);
                 }
             });
@@ -148,7 +149,7 @@ public class EndLiveStreamDialog extends PopupDialog {
 
                 @Override
                 public void onError(TUICommonDefine.Error error, String message) {
-                    LiveStreamLog.error("EndLiveStreamDialog" + " getLiveInfo " +
+                    LOGGER.error("EndLiveStreamDialog" + " getLiveInfo " +
                             "failed:error:" + error + "," + "errorCode:" + error.getValue() + "message:" + message);
                     if (checkActivityStatus()) {
                         stopLiveStream();
@@ -175,7 +176,7 @@ public class EndLiveStreamDialog extends PopupDialog {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error("EndLiveStreamDialog" + " stopLiveStream " +
+                LOGGER.error("EndLiveStreamDialog" + " stopLiveStream " +
                         "failed:error:" + error + "," + "errorCode:" + error.getValue() + "message:" + message);
                 if (checkActivityStatus()) {
                     ErrorLocalized.onError(error);

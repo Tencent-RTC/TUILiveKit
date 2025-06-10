@@ -9,9 +9,7 @@ import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMMessage;
 import com.tencent.imsdk.v2.V2TIMSimpleMsgListener;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
-import com.tencent.qcloud.tuicore.util.ToastUtil;
-import com.trtc.tuikit.common.system.ContextProvider;
-import com.trtc.uikit.component.barrage.R;
+import com.tencent.qcloud.tuicore.interfaces.TUICallback;
 import com.trtc.uikit.component.barrage.store.BarrageState;
 import com.trtc.uikit.component.barrage.store.BarrageStore;
 import com.trtc.uikit.component.barrage.store.model.Barrage;
@@ -20,8 +18,6 @@ import java.util.List;
 
 public class BarrageIMService {
     private static final String TAG = "BarrageIMService";
-
-    private static final int ERROR_CODE_DISABLE_MESSAGE = 10017;
 
     private int mMaxBarrageCount = 1000;
 
@@ -34,7 +30,7 @@ public class BarrageIMService {
         mMaxBarrageCount = count > 0 ? count : mMaxBarrageCount;
     }
 
-    public void sendBarrage(String roomId, Barrage barrage) {
+    public void sendBarrage(String roomId, Barrage barrage, TUICallback callback) {
         Log.i(TAG, "sendBarrage:" + new Gson().toJson(barrage));
         if (TextUtils.isEmpty(barrage.content)) {
             return;
@@ -44,15 +40,17 @@ public class BarrageIMService {
                     @Override
                     public void onSuccess(V2TIMMessage v2TIMMessage) {
                         Log.i(TAG, "sendGroupTextMessage success");
+                        if (callback != null) {
+                            callback.onSuccess();
+                        }
                         insertBarrages(roomId, barrage);
                     }
 
                     @Override
                     public void onError(int code, String s) {
-                        Log.i(TAG, "sendGroupTextMessage error " + code + " errorMessage:" + s);
-                        if (code == ERROR_CODE_DISABLE_MESSAGE) {
-                            ToastUtil.toastShortMessage(ContextProvider.getApplicationContext().getResources()
-                                    .getString(R.string.live_barrage_disable_message_by_admin));
+                        Log.e(TAG, "sendGroupTextMessage error " + code + " errorMessage:" + s);
+                        if (callback != null) {
+                            callback.onError(code, s);
                         }
                     }
                 });

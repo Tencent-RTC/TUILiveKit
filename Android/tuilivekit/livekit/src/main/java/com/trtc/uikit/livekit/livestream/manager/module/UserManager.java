@@ -16,8 +16,8 @@ import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.tuikit.common.system.ContextProvider;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.livestream.manager.api.ILiveService;
-import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestream.state.LiveState;
 import com.trtc.uikit.livekit.livestream.state.UserState;
 
@@ -28,8 +28,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class UserManager extends BaseManager {
-    private static final String TAG                        = "UserManager";
-    private static final int    VOLUME_CAN_HEARD_MIN_LIMIT = 25;
+    private static final LiveKitLogger LOGGER                     = LiveKitLogger.getLiveStreamLogger("UserManager");
+    private static final int           VOLUME_CAN_HEARD_MIN_LIMIT = 25;
 
     public UserManager(LiveState state, ILiveService service) {
         super(state, service);
@@ -85,7 +85,7 @@ public class UserManager extends BaseManager {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(TAG + " getUserInfo failed:error:" + error + ",errorCode:" + error.getValue() +
+                LOGGER.error("getUserInfo failed:error:" + error + ",errorCode:" + error.getValue() +
                         "message:" + message);
                 ErrorLocalized.onError(error);
             }
@@ -146,7 +146,7 @@ public class UserManager extends BaseManager {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(TAG + " disableSendingMessageByAdmin failed:error:" + error + ",errorCode:" + error.getValue() +
+                LOGGER.error("disableSendingMessageByAdmin failed:error:" + error + ",errorCode:" + error.getValue() +
                         "message:" + message);
                 ErrorLocalized.onError(error);
             }
@@ -164,7 +164,7 @@ public class UserManager extends BaseManager {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(TAG + " disableSendingMessageByAdmin failed:error:" + error + ",errorCode:" + error.getValue() +
+                LOGGER.error("disableSendingMessageByAdmin failed:error:" + error + ",errorCode:" + error.getValue() +
                         "message:" + message);
                 ErrorLocalized.onError(error);
             }
@@ -185,7 +185,7 @@ public class UserManager extends BaseManager {
 
             @Override
             public void onError(int code, String desc) {
-                LiveStreamLog.error(TAG + " followUser failed:errorCode:" + "message:" + desc);
+                LOGGER.error("followUser failed:errorCode:" + "message:" + desc);
                 ToastUtil.toastShortMessage(code + "," + desc);
             }
         });
@@ -201,7 +201,7 @@ public class UserManager extends BaseManager {
 
             @Override
             public void onError(int code, String desc) {
-                LiveStreamLog.error(TAG + " unfollowUser failed:errorCode:" + "message:" + desc);
+                LOGGER.error("unfollowUser failed:errorCode:" + "message:" + desc);
                 ToastUtil.toastShortMessage(code + "," + desc);
             }
         });
@@ -231,7 +231,7 @@ public class UserManager extends BaseManager {
 
             @Override
             public void onError(int code, String desc) {
-                LiveStreamLog.error(TAG + " checkFollowType failed:errorCode:" + "message:" + desc);
+                LOGGER.error("checkFollowType failed:errorCode:" + "message:" + desc);
                 ToastUtil.toastShortMessage(code + "," + desc);
             }
         });

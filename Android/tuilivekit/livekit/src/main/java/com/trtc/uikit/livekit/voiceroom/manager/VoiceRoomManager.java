@@ -1,7 +1,7 @@
 package com.trtc.uikit.livekit.voiceroom.manager;
 
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.voiceroom.manager.api.IVoiceRoom;
-import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
 import com.trtc.uikit.livekit.voiceroom.manager.api.impl.VoiceRoomImpl;
 import com.trtc.uikit.livekit.voiceroom.manager.module.MediaManager;
 import com.trtc.uikit.livekit.voiceroom.manager.module.RoomManager;
@@ -17,7 +17,7 @@ import com.trtc.uikit.livekit.voiceroom.state.VoiceRoomState;
 import com.trtc.uikit.livekit.voiceroomcore.VoiceRoomDefine.CoreState;
 
 public class VoiceRoomManager {
-    private static final String FILE = "VoiceRoomManager";
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getVoiceRoomLogger("VoiceRoomManager");
 
     private final RoomManager    mRoomManager;
     private final SeatManager    mSeatManager;
@@ -95,7 +95,7 @@ public class VoiceRoomManager {
 
     public void setRoomId(String roomId) {
         getRoomState().roomId = roomId;
-        Logger.info(FILE, " setRoomId:[mRoomId=" + roomId + ",mLiveService:" + ",mLiveObserver:"
+        LOGGER.info(hashCode() + " setRoomId:[mRoomId=" + roomId + ",mLiveService:" + ",mLiveObserver:"
                 + mRoomEngineObserver.hashCode() + "]");
     }
 

@@ -10,28 +10,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.utils.widget.ImageFilterView;
-import androidx.lifecycle.Observer;
 
+import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
-import com.trtc.uikit.livekit.voiceroom.state.UserState;
 import com.trtc.uikit.livekit.voiceroom.view.BasicView;
 
 public class AudienceDashboardView extends BasicView {
 
     private TextView        mTextName;
     private ImageFilterView mImageHead;
-
-    private final Observer<String> mOwnerNameObserver = (name) -> mTextName.setText(name);
-
-    private final Observer<String> mOwnerAvatarObserver = (avatar) -> {
-        if (TextUtils.isEmpty(avatar)) {
-            mImageHead.setImageResource(R.drawable.livekit_ic_avatar);
-        } else {
-            ImageLoader.load(mContext, mImageHead, avatar, R.drawable.livekit_ic_avatar);
-        }
-    };
 
     public AudienceDashboardView(@NonNull Context context) {
         this(context, null);
@@ -62,24 +51,22 @@ public class AudienceDashboardView extends BasicView {
     @Override
     public void init(@NonNull VoiceRoomManager voiceRoomManager) {
         super.init(voiceRoomManager);
-        UserState.UserInfo ownerInfo = mRoomState.ownerInfo;
-        mTextName.setText(TextUtils.isEmpty(ownerInfo.name.getValue()) ? ownerInfo.userId : ownerInfo.name.getValue());
-        if (TextUtils.isEmpty(ownerInfo.avatarUrl.getValue())) {
+        TUIRoomDefine.UserInfo ownerInfo = mRoomState.ownerInfo;
+        mTextName.setText(TextUtils.isEmpty(ownerInfo.userName) ? ownerInfo.userId : ownerInfo.userName);
+        if (TextUtils.isEmpty(ownerInfo.avatarUrl)) {
             mImageHead.setImageResource(R.drawable.livekit_ic_avatar);
         } else {
-            ImageLoader.load(mContext, mImageHead, ownerInfo.avatarUrl.getValue(), R.drawable.livekit_ic_avatar);
+            ImageLoader.load(mContext, mImageHead, ownerInfo.avatarUrl, R.drawable.livekit_ic_avatar);
         }
     }
 
     @Override
     protected void addObserver() {
-        mRoomState.ownerInfo.name.observeForever(mOwnerNameObserver);
-        mRoomState.ownerInfo.avatarUrl.observeForever(mOwnerAvatarObserver);
+
     }
 
     @Override
     protected void removeObserver() {
-        mRoomState.ownerInfo.name.removeObserver(mOwnerNameObserver);
-        mRoomState.ownerInfo.avatarUrl.removeObserver(mOwnerAvatarObserver);
+
     }
 }

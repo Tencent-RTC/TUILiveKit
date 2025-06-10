@@ -16,7 +16,7 @@ public class DataReporter {
             jsonObject.put("api", "KeyMetricsStats");
             jsonObject.put("params", params);
             String json = jsonObject.toString();
-            TUIRoomEngine.callExperimentalAPI(json);
+            TUIRoomEngine.sharedInstance().callExperimentalAPI(json, null);
             Log.i("DataReporter", "reportEventData:[json:" + json + "]");
         } catch (JSONException e) {
             Log.e("DataReporter", "reportEventData:[e:" + e.getMessage() + "]");

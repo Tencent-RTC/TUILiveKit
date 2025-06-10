@@ -8,7 +8,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class AudienceListState {
-    public static final int ROOM_MAX_SHOW_USER_COUNT        = 100;
+    public static final int ROOM_MAX_SHOW_USER_COUNT = 100;
 
     public String                                       roomId;
     public String                                       ownerId;

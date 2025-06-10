@@ -5,6 +5,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -34,21 +35,24 @@ public class StreamInfoAdapter extends RecyclerView.Adapter<StreamInfoAdapter.Vi
         return new ViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         StreamDashboardUserState streamDashboardUserState = mDataList.get(position);
         String title;
         if (streamDashboardUserState.isLocal) {
             title = mContext.getString(R.string.common_dashboard_local_user);
+            holder.mUserInfoLayout.setVisibility(getItemCount() == 1 ? View.GONE : View.VISIBLE);
         } else {
             title = mContext.getString(R.string.common_dashboard_remote_user) + " : " + streamDashboardUserState.userId;
+            holder.mUserInfoLayout.setVisibility(View.VISIBLE);
         }
         holder.mTextUserId.setText(title);
         holder.mTextVideoResolution.setText(streamDashboardUserState.videoResolution);
-        holder.mTextVideoBitrate.setText(String.valueOf(streamDashboardUserState.videoBitrate));
-        holder.mTextVideoFps.setText(String.valueOf(streamDashboardUserState.videoFrameRate));
-        holder.mTextAudioSampleRate.setText(String.valueOf(streamDashboardUserState.audioSampleRate));
-        holder.mTextAudioBitrate.setText(String.valueOf(streamDashboardUserState.audioBitrate));
+        holder.mTextVideoBitrate.setText(streamDashboardUserState.videoBitrate + " kbps");
+        holder.mTextVideoFps.setText(streamDashboardUserState.videoFrameRate + " FPS");
+        holder.mTextAudioSampleRate.setText(streamDashboardUserState.audioSampleRate + " HZ");
+        holder.mTextAudioBitrate.setText(streamDashboardUserState.audioBitrate + " kbps");
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -59,10 +63,10 @@ public class StreamInfoAdapter extends RecyclerView.Adapter<StreamInfoAdapter.Vi
         for (TRTCStatistics.TRTCLocalStatistics localStatistics : localArray) {
             mDataList.clear();
             mDataList.add(new StreamDashboardUserState("", true,
-                    localStatistics.width + "x" + localStatistics.height, localStatistics.frameRate,
+                    localStatistics.width + "*" + localStatistics.height, localStatistics.frameRate,
                     localStatistics.videoBitrate, localStatistics.audioSampleRate, localStatistics.audioBitrate));
-            notifyDataSetChanged();
         }
+        notifyDataSetChanged();
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -79,7 +83,7 @@ public class StreamInfoAdapter extends RecyclerView.Adapter<StreamInfoAdapter.Vi
         }
         for (TRTCStatistics.TRTCRemoteStatistics remoteStatistics : remoteArray) {
             mDataList.add(new StreamDashboardUserState(remoteStatistics.userId, false,
-                    remoteStatistics.width + "x" + remoteStatistics.height,
+                    remoteStatistics.width + "*" + remoteStatistics.height,
                     remoteStatistics.frameRate, remoteStatistics.videoBitrate,
                     remoteStatistics.audioSampleRate, remoteStatistics.audioBitrate));
         }
@@ -92,15 +96,17 @@ public class StreamInfoAdapter extends RecyclerView.Adapter<StreamInfoAdapter.Vi
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView mTextUserId;
-        private final TextView mTextVideoResolution;
-        private final TextView mTextVideoBitrate;
-        private final TextView mTextVideoFps;
-        private final TextView mTextAudioSampleRate;
-        private final TextView mTextAudioBitrate;
+        private final LinearLayout mUserInfoLayout;
+        private final TextView     mTextUserId;
+        private final TextView     mTextVideoResolution;
+        private final TextView     mTextVideoBitrate;
+        private final TextView     mTextVideoFps;
+        private final TextView     mTextAudioSampleRate;
+        private final TextView     mTextAudioBitrate;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            mUserInfoLayout = itemView.findViewById(R.id.ll_user_info);
             mTextUserId = itemView.findViewById(R.id.tv_user_id);
             mTextVideoResolution = itemView.findViewById(R.id.tv_video_resolution);
             mTextVideoBitrate = itemView.findViewById(R.id.tv_video_bitrate);

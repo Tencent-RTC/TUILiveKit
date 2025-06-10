@@ -21,8 +21,8 @@ import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.tuikit.common.system.ContextProvider;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.livestream.manager.api.ILiveService;
-import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestream.state.LiveState;
 import com.trtc.uikit.livekit.livestream.state.RoomState;
 
@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 public class RoomManager extends BaseManager {
-    private static final String TAG = "RoomManager";
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getLiveStreamLogger("RoomManager");
 
     public RoomManager(LiveState state, ILiveService service) {
         super(state, service);
@@ -43,7 +43,7 @@ public class RoomManager extends BaseManager {
     }
 
     public void initCreateRoomState(String roomId, String roomName) {
-        LiveStreamLog.info(TAG + " initCreateRoomState roomId [roomId: " + roomId + ", roomName:" + roomName);
+        LOGGER.info("initCreateRoomState roomId [roomId: " + roomId + ", roomName:" + roomName);
         mRoomState.roomId = roomId;
         mRoomState.roomName.setValue(roomName);
         mRoomState.createTime = System.currentTimeMillis();
@@ -91,6 +91,7 @@ public class RoomManager extends BaseManager {
         if (roomInfo.ownerAvatarUrl != null) {
             mRoomState.ownerInfo.avatarUrl.setValue(roomInfo.ownerAvatarUrl);
         }
+        mRoomState.roomInfo = roomInfo;
     }
 
     public void updateLiveStatus(RoomState.LiveStatus liveStatus) {
@@ -143,6 +144,12 @@ public class RoomManager extends BaseManager {
         });
     }
 
+    public void setLiveInfo(String roomName, String coverUrl, RoomState.LiveStreamPrivacyStatus privacyStatus) {
+        mRoomState.roomName.setValue(roomName);
+        mRoomState.coverURL.setValue(coverUrl);
+        mRoomState.liveMode.setValue(privacyStatus);
+    }
+
     public void onRoomUserCountChanged(String roomId, int userCount) {
         if (userCount > 0) {
             mRoomState.userCount.setValue(userCount - 1);
@@ -193,5 +200,12 @@ public class RoomManager extends BaseManager {
             params.put("roomId", roomId);
             TUICore.notifyEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_FINISH_ACTIVITY, params);
         }
+    }
+
+    public void startStreaming(String roomName, String coverUrl, RoomState.LiveStreamPrivacyStatus privacyStatus) {
+        mRoomState.roomName.setValue(roomName);
+        mRoomState.coverURL.setValue(coverUrl);
+        mRoomState.liveMode.setValue(privacyStatus);
+        mRoomState.liveStatus.setValue(RoomState.LiveStatus.PUSHING);
     }
 }

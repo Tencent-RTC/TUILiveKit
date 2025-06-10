@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.trtc.uikit.livekit.component.liveListviewpager.LiveListViewPager
-        android:id="@+id/live_list_view_pager"
+    <com.trtc.uikit.livekit.features.audiencecontainer.AudienceContainerView
+        android:id="@+id/audience_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 </LinearLayout>

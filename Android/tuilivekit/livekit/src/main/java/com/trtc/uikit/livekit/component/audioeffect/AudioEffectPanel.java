@@ -61,7 +61,7 @@ public class AudioEffectPanel extends FrameLayout {
     protected void initView() {
         bindViewId();
 
-        initBackView();
+        initFinishView();
         initChangeVoiceView();
         initReverbView();
         initEarReturnVolumeView();
@@ -131,8 +131,8 @@ public class AudioEffectPanel extends FrameLayout {
         mTextEarReturnVolume.setText((String.valueOf(mAudioEffectState.earMonitorVolume.getValue())));
     }
 
-    private void initBackView() {
-        findViewById(R.id.iv_back).setOnClickListener((view) -> {
+    private void initFinishView() {
+        findViewById(R.id.tv_finish).setOnClickListener((view) -> {
             if (mOnBackButtonClickListener != null) {
                 mOnBackButtonClickListener.onClick();
             }

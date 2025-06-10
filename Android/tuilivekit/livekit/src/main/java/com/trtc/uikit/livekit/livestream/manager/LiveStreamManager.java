@@ -1,7 +1,7 @@
 package com.trtc.uikit.livekit.livestream.manager;
 
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.livestream.manager.api.ILiveService;
-import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestream.manager.api.impl.LiveServiceImpl;
 import com.trtc.uikit.livekit.livestream.manager.module.BattleManager;
 import com.trtc.uikit.livekit.livestream.manager.module.CoGuestManager;
@@ -14,7 +14,6 @@ import com.trtc.uikit.livekit.livestream.manager.observer.IMFriendshipListener;
 import com.trtc.uikit.livekit.livestream.manager.observer.LiveListManagerObserver;
 import com.trtc.uikit.livekit.livestream.manager.observer.RoomEngineObserver;
 import com.trtc.uikit.livekit.livestream.state.BattleState;
-import com.trtc.uikit.livekit.livestream.state.BeautyState;
 import com.trtc.uikit.livekit.livestream.state.CoGuestState;
 import com.trtc.uikit.livekit.livestream.state.CoHostState;
 import com.trtc.uikit.livekit.livestream.state.DashboardState;
@@ -25,7 +24,8 @@ import com.trtc.uikit.livekit.livestream.state.UserState;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine.CoreState;
 
 public class LiveStreamManager {
-    private final String                  mTag = "LiveStreamManager[" + hashCode() + "]";
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getLiveStreamLogger("CoGuestManager");
+
     private final RoomManager             mRoomManager;
     private final CoGuestManager          mCoGuestManager;
     private final UserManager             mUserManager;
@@ -142,10 +142,6 @@ public class LiveStreamManager {
         return mState.mediaState;
     }
 
-    public BeautyState getBeautyState() {
-        return mState.beautyState;
-    }
-
     public CoreState getCoreState() {
         return mCoreStateProvider.getCoreState();
     }
@@ -156,7 +152,7 @@ public class LiveStreamManager {
 
     public void setRoomId(String roomId) {
         getRoomState().roomId = roomId;
-        LiveStreamLog.info(mTag + " setRoomId:[mRoomId=" + roomId + ",mLiveService:" + mLiveService.hashCode()
+        LOGGER.info(hashCode() + " setRoomId:[mRoomId=" + roomId + ",mLiveService:" + mLiveService.hashCode()
                 + ",mLiveObserver:" + mRoomEngineObserver.hashCode() + "]");
     }
 

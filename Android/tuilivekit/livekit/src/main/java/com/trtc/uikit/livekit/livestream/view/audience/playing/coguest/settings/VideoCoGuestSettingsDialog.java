@@ -21,7 +21,7 @@ import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
-import com.trtc.uikit.livekit.component.floatwindow.view.RoundFrameLayout;
+import com.trtc.uikit.livekit.common.ui.RoundFrameLayout;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
 import com.trtc.uikit.livekit.livestream.state.RoomState;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
@@ -35,7 +35,6 @@ public class VideoCoGuestSettingsDialog extends PopupDialog {
     private       RecyclerView      mRecycleSettingsOption;
     private final LiveCoreView      mLiveStream;
     private final LiveStreamManager mLiveManager;
-    private       boolean           mNeedCloseCamera = true;
 
     private final Observer<RoomState.LiveStatus> mLiveStatusObserver = this::onLiveStateChanged;
 
@@ -75,9 +74,7 @@ public class VideoCoGuestSettingsDialog extends PopupDialog {
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mLiveManager.getRoomState().liveStatus.removeObserver(mLiveStatusObserver);
-        if (mNeedCloseCamera) {
-            mLiveStream.stopCamera();
-        }
+        mLiveStream.stopCamera();
     }
 
     private void initRoundFrameLayout() {
@@ -94,7 +91,6 @@ public class VideoCoGuestSettingsDialog extends PopupDialog {
             mLiveStream.requestIntraRoomConnection("", 60, true, new TUIRoomDefine.ActionCallback() {
                 @Override
                 public void onSuccess() {
-                    mNeedCloseCamera = false;
                     mLiveManager.getCoGuestManager().updateCoGuestStates(APPLYING);
                 }
 
@@ -110,21 +106,11 @@ public class VideoCoGuestSettingsDialog extends PopupDialog {
     private void initPreviewVideoView() {
         mLiveManager.getMediaManager().setLocalVideoView(mPreviewVideoView);
         boolean isFront = Boolean.TRUE.equals(mLiveStream.getCoreState().mediaState.isFrontCamera.getValue());
-        mLiveStream.startCamera(isFront, new TUIRoomDefine.ActionCallback() {
-            @Override
-            public void onSuccess() {
-                mLiveStream.startMicrophone(null);
-            }
-
-            @Override
-            public void onError(TUICommonDefine.Error error, String message) {
-                mLiveStream.startMicrophone(null);
-            }
-        });
+        mLiveStream.startCamera(isFront, null);
     }
 
     private void initRecycleSettingsOption() {
-        mRecycleSettingsOption.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        mRecycleSettingsOption.setLayoutManager(new GridLayoutManager(getContext(), 2));
         VideoCoGuestSettingsAdapter adapter = new VideoCoGuestSettingsAdapter(getContext(), mLiveManager, mLiveStream);
         mRecycleSettingsOption.setAdapter(adapter);
     }

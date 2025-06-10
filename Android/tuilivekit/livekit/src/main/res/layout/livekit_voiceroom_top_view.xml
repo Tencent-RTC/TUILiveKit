@@ -5,18 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.trtc.uikit.livekit.component.roominfo.RoomInfoView
+    <com.trtc.uikit.livekit.component.roominfo.LiveInfoView
         android:id="@+id/rl_room_info"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
+        android:layout_width="170dp"
+        android:layout_height="40dp"
         android:layout_marginStart="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.trtc.uikit.livekit.component.audiencelist.AudienceListView
         android:id="@+id/rl_audience_list"
-        android:layout_width="135dp"
-        android:layout_height="wrap_content"
+        android:layout_width="80dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="@id/rl_room_info"
         app:layout_constraintEnd_toStartOf="@id/iv_report"
         app:layout_constraintTop_toTopOf="@id/rl_room_info" />
@@ -25,18 +26,20 @@
         android:id="@+id/iv_report"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginEnd="5dp"
+        android:layout_marginEnd="8dp"
         android:src="@drawable/livekit_ic_report_room"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/rl_room_info"
         app:layout_constraintEnd_toStartOf="@id/iv_close"
+        app:layout_constraintTop_toTopOf="@id/rl_room_info"
         tools:ignore="ContentDescription" />
 
     <ImageView
         android:id="@+id/iv_close"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginEnd="16dp"
+        android:padding="2dp"
+        android:layout_marginEnd="10dp"
         android:src="@drawable/livekit_ic_audience_exit"
         app:layout_constraintBottom_toBottomOf="@id/rl_room_info"
         app:layout_constraintEnd_toEndOf="parent"

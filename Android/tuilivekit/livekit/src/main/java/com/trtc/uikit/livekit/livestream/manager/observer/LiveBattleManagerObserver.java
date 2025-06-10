@@ -3,87 +3,114 @@ package com.trtc.uikit.livekit.livestream.manager.observer;
 import com.google.gson.Gson;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveBattleManager.BattleInfo;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveBattleManager.BattleUser;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
-import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestream.manager.module.BattleManager;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 public final class LiveBattleManagerObserver implements LiveCoreViewDefine.BattleObserver {
-    private final String mTag = "LiveBattleManagerObserver[" + hashCode() + "]";
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getLiveStreamLogger("LiveBattleManagerObserver");
 
-    private final BattleManager mBattleManager;
+    private final WeakReference<BattleManager> mBattleManagerWeak;
 
     public LiveBattleManagerObserver(LiveStreamManager manager) {
-        mBattleManager = manager.getBattleManager();
+        mBattleManagerWeak = new WeakReference<>(manager.getBattleManager());
     }
 
     @Override
     public void onBattleStarted(BattleInfo battleInfo) {
-        LiveStreamLog.info(mTag + " onBattleStarted:[battleInfo:" + new Gson().toJson(battleInfo) + "]");
-        mBattleManager.onBattleStarted(battleInfo);
+        LOGGER.info(hashCode() + " onBattleStarted:[battleInfo:" + new Gson().toJson(battleInfo) + "]");
+        BattleManager manager = mBattleManagerWeak.get();
+        if (manager != null) {
+            manager.onBattleStarted(battleInfo);
+        }
     }
 
     @Override
     public void onBattleEnded(BattleInfo battleInfo) {
-        LiveStreamLog.info(mTag + " onBattleEnded:[battleInfo:" + new Gson().toJson(battleInfo) + "]");
-        mBattleManager.onBattleEnded(battleInfo);
+        LOGGER.info(hashCode() + " onBattleEnded:[battleInfo:" + new Gson().toJson(battleInfo) + "]");
+        BattleManager manager = mBattleManagerWeak.get();
+        if (manager != null) {
+            manager.onBattleEnded(battleInfo);
+        }
     }
 
     @Override
     public void onUserJoinBattle(String battleId, BattleUser battleUser) {
-        LiveStreamLog.info(mTag + " onUserJoinBattle:[battleId:" + battleId
+        LOGGER.info(hashCode() + " onUserJoinBattle:[battleId:" + battleId
                 + ",battleUser:" + new Gson().toJson(battleUser) + "]");
-        mBattleManager.onUserExitBattle(battleUser);
     }
 
     @Override
     public void onUserExitBattle(String battleId, BattleUser battleUser) {
-        LiveStreamLog.info(mTag + " onUserExitBattle:[battleId:" + battleId
+        LOGGER.info(hashCode() + " onUserExitBattle:[battleId:" + battleId
                 + ",battleUser:" + new Gson().toJson(battleUser) + "]");
-        mBattleManager.onUserExitBattle(battleUser);
+        BattleManager manager = mBattleManagerWeak.get();
+        if (manager != null) {
+            manager.onUserExitBattle(battleUser);
+        }
     }
 
     @Override
     public void onBattleScoreChanged(String battleId, List<BattleUser> battleUserList) {
-        LiveStreamLog.info(mTag + " onBattleScoreChanged:[battleId:" + battleId
+        LOGGER.info(hashCode() + " onBattleScoreChanged:[battleId:" + battleId
                 + ",battleUserList:" + new Gson().toJson(battleUserList) + "]");
-        mBattleManager.onBattleScoreChanged(battleUserList);
+        BattleManager manager = mBattleManagerWeak.get();
+        if (manager != null) {
+            manager.onBattleScoreChanged(battleUserList);
+        }
     }
 
     @Override
     public void onBattleRequestReceived(String battleId, BattleUser inviter, BattleUser invitee) {
-        LiveStreamLog.info(mTag + " onBattleRequestReceived:[battleId:" + battleId
+        LOGGER.info(hashCode() + " onBattleRequestReceived:[battleId:" + battleId
                 + ",inviter:" + new Gson().toJson(inviter) + ",invitee:" + new Gson().toJson(invitee) + "]");
-        mBattleManager.onBattleRequestReceived(battleId, inviter);
+        BattleManager manager = mBattleManagerWeak.get();
+        if (manager != null) {
+            manager.onBattleRequestReceived(battleId, inviter);
+        }
     }
 
     @Override
     public void onBattleRequestCancelled(String battleId, BattleUser inviter, BattleUser invitee) {
-        LiveStreamLog.info(mTag + " onBattleRequestCancelled:[battleId:" + battleId
+        LOGGER.info(hashCode() + " onBattleRequestCancelled:[battleId:" + battleId
                 + ",inviter:" + new Gson().toJson(inviter) + ",invitee:" + new Gson().toJson(invitee) + "]");
-        mBattleManager.onBattleRequestCancelled(inviter);
+        BattleManager manager = mBattleManagerWeak.get();
+        if (manager != null) {
+            manager.onBattleRequestCancelled(inviter);
+        }
     }
 
     @Override
     public void onBattleRequestTimeout(String battleId, BattleUser inviter, BattleUser invitee) {
-        LiveStreamLog.info(mTag + " onBattleRequestTimeout:[battleId:" + battleId
+        LOGGER.info(hashCode() + " onBattleRequestTimeout:[battleId:" + battleId
                 + ",inviter:" + new Gson().toJson(inviter) + ",invitee:" + new Gson().toJson(invitee) + "]");
-        mBattleManager.onBattleRequestTimeout(inviter, invitee);
+        BattleManager manager = mBattleManagerWeak.get();
+        if (manager != null) {
+            manager.onBattleRequestTimeout(inviter, invitee);
+        }
     }
 
     @Override
     public void onBattleRequestAccept(String battleId, BattleUser inviter, BattleUser invitee) {
-        LiveStreamLog.info(mTag + " onBattleRequestAccept:[battleId:" + battleId
+        LOGGER.info(hashCode() + " onBattleRequestAccept:[battleId:" + battleId
                 + ",inviter:" + new Gson().toJson(inviter) + ",invitee:" + new Gson().toJson(invitee) + "]");
-        mBattleManager.onBattleRequestAccept(invitee);
+        BattleManager manager = mBattleManagerWeak.get();
+        if (manager != null) {
+            manager.onBattleRequestAccept(invitee);
+        }
     }
 
     @Override
     public void onBattleRequestReject(String battleId, BattleUser inviter, BattleUser invitee) {
-        LiveStreamLog.info(mTag + " onBattleRequestReject:[battleId:" + battleId
+        LOGGER.info(hashCode() + " onBattleRequestReject:[battleId:" + battleId
                 + ",inviter:" + new Gson().toJson(inviter) + ",invitee:" + new Gson().toJson(invitee) + "]");
-        mBattleManager.onBattleRequestReject(invitee);
+        BattleManager manager = mBattleManagerWeak.get();
+        if (manager != null) {
+            manager.onBattleRequestReject(invitee);
+        }
     }
 }

@@ -4,38 +4,30 @@
     android:layout_height="wrap_content"
     android:background="@drawable/livekit_stream_dashboard_dialog_bg"
     android:orientation="vertical"
-    android:padding="15dp">
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="10dp"
         android:gravity="center"
         android:text="@string/common_dashboard_title"
-        android:textColor="@color/common_design_standard_g7"
+        android:textColor="@color/common_text_color_primary"
         android:textSize="16sp"
         android:textStyle="bold" />
 
     <LinearLayout
-        android:id="@+id/ll_media_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
-            android:text="@string/common_dashboard_network_info_title"
-            android:textColor="@color/common_design_standard_g7"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal"
+            android:padding="2dp">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -48,15 +40,15 @@
                     android:id="@+id/tv_rtt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/common_not_standard_green_47"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+                    android:textColor="@color/common_text_color_success"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/common_dashboard_rtt"
-                    android:textColor="@color/common_not_standard_white_99_transparency" />
+                    android:textColor="@color/common_text_color_secondary"
+                    android:textSize="12sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -70,15 +62,15 @@
                     android:id="@+id/tv_downLoss"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/common_not_standard_green_47"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+                    android:textColor="@color/common_text_color_success"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/common_dashboard_down_loss"
-                    android:textColor="@color/common_not_standard_white_99_transparency" />
+                    android:textColor="@color/common_text_color_secondary"
+                    android:textSize="12sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -92,33 +84,32 @@
                     android:id="@+id/tv_upLoss"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/common_not_standard_green_47"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+                    android:textColor="@color/common_text_color_success"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/common_dashboard_up_loss"
-                    android:textColor="@color/common_not_standard_white_99_transparency" />
+                    android:textColor="@color/common_text_color_secondary"
+                    android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
-            android:text="@string/common_dashboard_media_info_title"
-            android:textColor="@color/common_design_standard_g7"
-            android:textSize="14sp"
-            android:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_media_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" />
+
+        <com.trtc.uikit.livekit.component.dashboard.view.CircleIndicator
+            android:id="@+id/ci_pager"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal"/>
     </LinearLayout>
 
 </LinearLayout>

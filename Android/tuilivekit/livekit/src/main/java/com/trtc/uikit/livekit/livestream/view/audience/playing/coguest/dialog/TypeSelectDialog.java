@@ -86,7 +86,6 @@ public class TypeSelectDialog extends PopupDialog {
             if (!view.isEnabled()) {
                 return;
             }
-            mLiveManager.getMediaManager().changeVideoEncParams(MediaState.VideoEncParams.VideoEncType.SMALL);
             view.setEnabled(false);
             applyLinkMic(true);
         });
@@ -94,7 +93,6 @@ public class TypeSelectDialog extends PopupDialog {
 
     private void initLinkSettingsView() {
         mImageLinkSettings.setOnClickListener(view -> {
-            mLiveManager.getMediaManager().changeVideoEncParams(MediaState.VideoEncParams.VideoEncType.SMALL);
             VideoCoGuestSettingsDialog settingsDialog = new VideoCoGuestSettingsDialog(getContext(), mLiveManager,
                     mLiveStream);
             settingsDialog.show();

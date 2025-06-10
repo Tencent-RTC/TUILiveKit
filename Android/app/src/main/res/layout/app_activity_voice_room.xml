@@ -57,26 +57,39 @@
             tools:ignore="ContentDescription,RtlHardcoded" />
     </androidx.appcompat.widget.Toolbar>
 
-    <FrameLayout
-        android:id="@+id/fl_live_list"
+    <com.trtc.uikit.livekit.features.livelist.LiveListView
+        android:id="@+id/live_list_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_live" />
 
-
-    <ImageView
-        android:id="@+id/iv_start"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginLeft="109dp"
-        android:layout_marginRight="109dp"
+    <LinearLayout
+        android:id="@+id/ll_start"
+        android:layout_width="200dp"
+        android:layout_height="48dp"
         android:layout_marginBottom="20dp"
-        android:src="@drawable/app_start_live"
+        android:background="@drawable/app_bg_start_live_stream"
+        android:gravity="center"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:round="40dp"
-        tools:ignore="ContentDescription" />
+        app:round="40dp">
+
+        <ImageView
+            android:id="@+id/iv_start"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/app_ic_add"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/app_start_live_stream"
+            android:textColor="@color/app_color_white"
+            android:textSize="20sp" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

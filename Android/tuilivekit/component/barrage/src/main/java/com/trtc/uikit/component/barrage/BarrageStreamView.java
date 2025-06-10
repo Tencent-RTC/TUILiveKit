@@ -23,6 +23,7 @@ import com.trtc.uikit.component.barrage.service.DataReporter;
 import com.trtc.uikit.component.barrage.store.BarrageState;
 import com.trtc.uikit.component.barrage.store.BarrageStore;
 import com.trtc.uikit.component.barrage.store.model.Barrage;
+import com.trtc.uikit.component.barrage.view.CustomRecyclerView;
 import com.trtc.uikit.component.barrage.view.IBarrageDisplayView;
 import com.trtc.uikit.component.barrage.view.adapter.BarrageItemAdapter;
 import com.trtc.uikit.component.barrage.view.adapter.BarrageItemDefaultAdapter;
@@ -96,10 +97,14 @@ public class BarrageStreamView extends FrameLayout implements IBarrageDisplayVie
         }
     }
 
-    private void initState() {
+    public void clearAllMessage() {
         if (mBarrageState != null) {
-            return;
+            mBarrageState.mBarrageCacheList.getValue().clear();
+            mBarrageState.mBarrageCacheList.setValue(mBarrageState.mBarrageCacheList.getValue());
         }
+    }
+
+    private void initState() {
         mBarrageState = BarrageStore.sharedInstance().getBarrageState(mRoomId);
         addObserver();
     }
@@ -169,6 +174,9 @@ public class BarrageStreamView extends FrameLayout implements IBarrageDisplayVie
     private void notifyDataSetChanged() {
         mTimestampOnLastUpdate = System.currentTimeMillis();
         mAdapter.notifyDataSetChanged();
+        if (((CustomRecyclerView) mRecyclerMsg).isLongPressed()) {
+            return;
+        }
         int targetPosition = Math.max(0, mAdapter.getItemCount() - 1);
         if (mSmoothScroll) {
             mRecyclerMsg.smoothScrollToPosition(targetPosition);

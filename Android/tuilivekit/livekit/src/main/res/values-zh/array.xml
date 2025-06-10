@@ -1,8 +1,0 @@
-<resources>
-    <string-array name="livekit_stream_privacy_status">
-        <item>公开</item>
-        <item>隐私</item>
-    </string-array>
-</resources>
-
-

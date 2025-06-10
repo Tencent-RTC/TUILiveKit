@@ -10,16 +10,17 @@ import android.widget.Toast;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager;
 import com.trtc.tuikit.common.system.ContextProvider;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.common.utils.LiveCoreLogger;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 
 public class ConnectionErrorHandler {
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getLiveStreamLogger("ConnectionErrorHandler");
 
     public static void onError(TUILiveConnectionManager.ConnectionCode code) {
         if (code == TUILiveConnectionManager.ConnectionCode.SUCCESS || code == null) {
             return;
         }
         String message = convertToErrorMessage(code);
-        LiveCoreLogger.info("ConnectionErrorHandler :[code:" + code + ",message:" + message + "]");
+        LOGGER.info("ConnectionErrorHandler :[code:" + code + ",message:" + message + "]");
         showToast(message);
     }
 

@@ -13,9 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.component.beauty.BeautyUtils;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
-import com.trtc.uikit.livekit.livestream.view.widgets.beauty.BeautyPanelDialog;
-import com.trtc.uikit.livekit.livestream.view.widgets.videosettings.VideoSettingsDialog;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
 import java.util.ArrayList;
@@ -23,7 +22,6 @@ import java.util.List;
 
 public class VideoCoGuestSettingsAdapter extends RecyclerView.Adapter<VideoCoGuestSettingsAdapter.BaseViewHolder> {
     private static final int ITEM_SETTINGS_BEAUTY = 101;
-    private static final int ITEM_SETTINGS_VIDEO  = 104;
     private static final int ITEM_SETTINGS_FLIP   = 105;
 
     private final Context            mContext;
@@ -49,10 +47,7 @@ public class VideoCoGuestSettingsAdapter extends RecyclerView.Adapter<VideoCoGue
                 R.drawable.livekit_video_settings_beauty, ITEM_SETTINGS_BEAUTY, view -> {
             popUpBeautyPanel();
         }));
-        mSettingsItem.add(new SettingsItem(mContext.getString(R.string.common_video_config),
-                R.drawable.livekit_settings_item_video_params, ITEM_SETTINGS_VIDEO, view -> {
-            showVideoSettingsDialog();
-        }));
+
         mSettingsItem.add(new SettingsItem(mContext.getString(R.string.common_video_settings_item_flip),
                 R.drawable.livekit_video_settings_flip, ITEM_SETTINGS_FLIP, view -> {
             boolean isFront = Boolean.TRUE.equals(mLiveCoreView.getCoreState().mediaState.isFrontCamera.getValue());
@@ -62,13 +57,7 @@ public class VideoCoGuestSettingsAdapter extends RecyclerView.Adapter<VideoCoGue
 
     @SuppressLint("NotifyDataSetChanged")
     private void popUpBeautyPanel() {
-        BeautyPanelDialog dialog = new BeautyPanelDialog(mContext, mLiveManager);
-        dialog.show();
-    }
-
-    private void showVideoSettingsDialog() {
-        VideoSettingsDialog videoSettingsDialog = new VideoSettingsDialog(mContext, mLiveCoreView, mLiveManager);
-        videoSettingsDialog.show();
+        BeautyUtils.showBeautyDialog(mContext);
     }
 
     @NonNull

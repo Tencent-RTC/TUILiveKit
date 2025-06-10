@@ -1,5 +1,7 @@
 package com.trtc.uikit.livekit.voiceroom.manager.module;
 
+import static com.trtc.uikit.livekit.common.utils.MutableLiveDataUtils.setValue;
+
 import android.text.TextUtils;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
@@ -8,11 +10,9 @@ import com.tencent.qcloud.tuicore.TUIConfig;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
-import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.voiceroom.manager.api.IVoiceRoom;
-import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
 import com.trtc.uikit.livekit.voiceroom.state.SeatState;
-import com.trtc.uikit.livekit.voiceroom.state.UserState;
 import com.trtc.uikit.livekit.voiceroom.state.VoiceRoomState;
 import com.trtc.uikit.livekit.voiceroomcore.VoiceRoomDefine;
 
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SeatManager extends BaseManager {
-    private static final String FILE = "SeatManager";
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getVoiceRoomLogger("SeatManager");
 
     public SeatManager(VoiceRoomState state, IVoiceRoom service) {
         super(state, service);
@@ -28,7 +28,7 @@ public class SeatManager extends BaseManager {
 
     @Override
     public void destroy() {
-        Logger.info(FILE, " destroy");
+        LOGGER.info("destroy");
     }
 
     public void getSeatList() {
@@ -43,7 +43,7 @@ public class SeatManager extends BaseManager {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(FILE + " getSeatList failed:error:" + error + ",errorCode:" + error.getValue() +
+                LOGGER.error("getSeatList failed:error:" + error + ",errorCode:" + error.getValue() +
                         "message:" + message);
                 ErrorLocalized.onError(error);
             }
@@ -65,7 +65,7 @@ public class SeatManager extends BaseManager {
         mSeatState.seatApplicationList.setValue(mSeatState.seatApplicationList.getValue());
     }
 
-    public void addSentSeatInvitation(UserState.UserInfo userInfo) {
+    public void addSentSeatInvitation(TUIRoomDefine.UserInfo userInfo) {
         SeatState.SeatInvitation seatInvitation = new SeatState.SeatInvitation(userInfo.userId);
         seatInvitation.updateState(userInfo);
         mSeatState.sentSeatInvitationMap.getValue().put(userInfo.userId, seatInvitation);
@@ -87,7 +87,7 @@ public class SeatManager extends BaseManager {
     }
 
     private void autoTakeSeatByOwner() {
-        if (mUserState.selfInfo.role.getValue() != TUIRoomDefine.Role.ROOM_OWNER) {
+        if (mUserState.selfInfo.userRole != TUIRoomDefine.Role.ROOM_OWNER) {
             return;
         }
         if (mSeatState.linkStatus.getValue() == SeatState.LinkStatus.LINKING) {
@@ -96,7 +96,7 @@ public class SeatManager extends BaseManager {
         mLiveService.takeSeat(-1, 60, new TUIRoomDefine.RequestCallback() {
             @Override
             public void onAccepted(String requestId, String userId) {
-                mSeatState.linkStatus.setValue(SeatState.LinkStatus.LINKING);
+                setValue(mSeatState.linkStatus, SeatState.LinkStatus.LINKING);
             }
 
             @Override
@@ -116,7 +116,7 @@ public class SeatManager extends BaseManager {
 
             @Override
             public void onError(String requestId, String userId, TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(FILE + " takeSeat failed:error:" + error + ",errorCode:" + error.getValue() +
+                LOGGER.error("takeSeat failed:error:" + error + ",errorCode:" + error.getValue() +
                         "message:" + message);
                 ErrorLocalized.onError(error);
                 mSeatState.linkStatus.setValue(SeatState.LinkStatus.NONE);
@@ -202,7 +202,7 @@ public class SeatManager extends BaseManager {
         }
         for (TUIRoomDefine.SeatInfo seatInfo : seatedList) {
             if (isSelfSeatInfo(seatInfo)) {
-                mSeatState.linkStatus.setValue(SeatState.LinkStatus.LINKING);
+                setValue(mSeatState.linkStatus, SeatState.LinkStatus.LINKING);
             }
         }
         if (!seatedList.isEmpty()) {

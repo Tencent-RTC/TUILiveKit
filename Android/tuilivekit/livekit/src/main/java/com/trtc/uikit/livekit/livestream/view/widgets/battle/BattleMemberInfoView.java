@@ -11,9 +11,9 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.component.floatwindow.service.FloatWindowManager;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
-import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestream.state.BattleState.BattleUser;
 import com.trtc.uikit.livekit.livestream.state.CoHostState;
 import com.trtc.uikit.livekit.livestream.state.CoHostState.ConnectionUser;
@@ -29,8 +29,7 @@ import java.util.Map;
  */
 @SuppressLint("ViewConstructor")
 public class BattleMemberInfoView extends BasicView {
-
-    private static final String TAG = "BattleMemberInfoView";
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getLiveStreamLogger("BattleMemberInfoView");
 
     private static final int[] RANKING_IMAGE = {
             R.drawable.livekit_battle_ranking_1,
@@ -154,7 +153,7 @@ public class BattleMemberInfoView extends BasicView {
             }
         }
         boolean isSingleBattle = singleBattleUserMap.size() == 2;
-        LiveStreamLog.info(TAG + " onBattleChanged isSingleBattle: " + isSingleBattle);
+        LOGGER.info("onBattleChanged isSingleBattle: " + isSingleBattle);
         if (isSingleBattle) {
             reset();
         } else {
@@ -196,7 +195,7 @@ public class BattleMemberInfoView extends BasicView {
             }
         }
         boolean isSingleBattle = singleBattleUserMap.size() == 2;
-        LiveStreamLog.info(TAG + " onBattleEnd isSingleBattle: " + isSingleBattle);
+        LOGGER.info("onBattleEnd isSingleBattle: " + isSingleBattle);
         if (!isSingleBattle) {
             setData(battleUserMap.get(mUserId));
         }

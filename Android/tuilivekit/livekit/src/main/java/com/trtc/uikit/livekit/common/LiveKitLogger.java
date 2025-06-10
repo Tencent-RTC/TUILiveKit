@@ -11,6 +11,7 @@ import org.json.JSONObject;
 public class LiveKitLogger {
     public static final String MODULE_LIVE_STREAM_CORE = "KitLiveStream";
     public static final String MODULE_SEAT_GRID_CORE   = "KitVoiceRoom";
+    public static final String MODULE_FEATURES         = "KitFeatures";
     public static final String MODULE_COMPONENT        = "KitComponent";
     public static final String MODULE_COMMON           = "KitCommon";
 
@@ -40,6 +41,10 @@ public class LiveKitLogger {
 
     public static LiveKitLogger getVoiceRoomLogger(String file) {
         return new LiveKitLogger(MODULE_SEAT_GRID_CORE, file);
+    }
+
+    public static LiveKitLogger getFeaturesLogger(String file) {
+        return new LiveKitLogger(MODULE_FEATURES, file);
     }
 
     public static LiveKitLogger getComponentLogger(String file) {
@@ -91,8 +96,7 @@ public class LiveKitLogger {
             loggerJson.put(LOG_KEY_API, API);
             loggerJson.put(LOG_KEY_PARAMS, paramsJson);
 
-            TRTCCloud.sharedInstance(ContextProvider.getApplicationContext())
-                    .callExperimentalAPI(loggerJson.toString());
+            TRTCCloud.sharedInstance(ContextProvider.getApplicationContext()).callExperimentalAPI(loggerJson.toString());
         } catch (JSONException e) {
             Log.e("Logger", e.toString());
         }

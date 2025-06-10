@@ -12,12 +12,13 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
-import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestream.view.anchor.pushing.cohost.StandardDialog;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
 public final class AnchorEndBattleDialog extends PopupDialog {
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getLiveStreamLogger("AnchorEndBattleDialog");
 
     private final LiveStreamManager mLiveManager;
     private final LiveCoreView      mLiveCoreView;
@@ -66,12 +67,11 @@ public final class AnchorEndBattleDialog extends PopupDialog {
             mLiveCoreView.terminateBattle(battleId, new TUIRoomDefine.ActionCallback() {
                 @Override
                 public void onSuccess() {
-                    mLiveManager.getBattleManager().onExitBattle();
                 }
 
                 @Override
                 public void onError(TUICommonDefine.Error error, String message) {
-                    LiveStreamLog.error("AnchorEndBattleDialog" + " terminateBattle failed:error:" + error + "," +
+                    LOGGER.error("AnchorEndBattleDialog" + " terminateBattle failed:error:" + error + "," +
                             "errorCode:" + error.getValue() + "message:" + message);
                     ErrorLocalized.onError(error);
                 }

@@ -17,6 +17,7 @@ import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.component.floatwindow.service.FloatWindowManager;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
 import com.trtc.uikit.livekit.livestream.state.CoHostState.ConnectionUser;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Set;
 
 public class CoHostWidgetsView extends BasicView {
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getLiveStreamLogger("CoHostWidgetsView");
 
     private       ImageFilterView                mImageAvatar;
     private       LinearLayout                   mLayoutUserInfo;
@@ -52,6 +54,7 @@ public class CoHostWidgetsView extends BasicView {
     }
 
     public void init(LiveStreamManager manager, LiveCoreViewDefine.CoHostUser userInfo) {
+        LOGGER.info("init userId:" + userInfo.connectionUser.userId + ",roomId:" + userInfo.connectionUser.roomId);
         mState.roomId = userInfo.connectionUser.roomId;
         mState.userId = userInfo.connectionUser.userId;
         mState.userName = userInfo.connectionUser.userName;
