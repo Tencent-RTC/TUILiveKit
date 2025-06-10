@@ -144,7 +144,7 @@ extension LinkMicAnchorFloatView: UICollectionViewDataSource {
         } else {
             let user = TUIUserInfo()
             cell.user = user
-            cell.setImage(image: .liveBundleImage("live_more_audience_icon"))
+            cell.setImage(image: internalImage("live_more_audience_icon"))
         }
         return cell
     }
@@ -160,6 +160,6 @@ extension LinkMicAnchorFloatView {
 
 private extension String {
     static var applyLinkMicCount: String {
-        localized("Link Application(xxx)")
+        internalLocalized("Link Application(xxx)")
     }
 }

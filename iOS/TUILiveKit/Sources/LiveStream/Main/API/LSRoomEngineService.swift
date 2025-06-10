@@ -12,6 +12,7 @@ import RTCRoomEngine
     import TXLiteAVSDK_Professional
 #endif
 import ImSDK_Plus
+import TUILiveResources
 
 class LSRoomEngineService {
     let roomEngine: TUIRoomEngine
@@ -48,7 +49,7 @@ extension LSRoomEngineService {
     func syncLiveInfoToService(liveInfo: TUILiveInfo, modifyFlag: TUILiveModifyFlag) async throws {
         return try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self, let liveListManager = liveListManager else {
-                let error = InternalError(code: ErrorService.generalErrorCode, message: "get LiveListManager error")
+                let error = InternalError(code: ErrorLocalized.generalErrorCode, message: "get LiveListManager error")
                 continuation.resume(throwing: error)
                 return
             }
@@ -63,7 +64,7 @@ extension LSRoomEngineService {
     func fetchLiveInfo(roomId: String) async throws -> TUILiveInfo {
         return try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self, let liveListManager = liveListManager else {
-                let error = InternalError(code: ErrorService.generalErrorCode, message: "get LiveListManager error")
+                let error = InternalError(code: ErrorLocalized.generalErrorCode, message: "get LiveListManager error")
                 continuation.resume(throwing: error)
                 return
             }

@@ -11,10 +11,11 @@ import RTCCommon
 import Combine
 import LiveStreamCore
 import RTCRoomEngine
-import TUIGift
 import TUIBarrage
-import TUILiveInfo
+import TUILiveResources
 import TUIAudienceList
+import TUIGift
+import TUILiveInfo
 
 class AudienceLivingView: RTCBaseView {
     // MARK: - private property.
@@ -28,7 +29,7 @@ class AudienceLivingView: RTCBaseView {
     
     private let liveInfoView: LiveInfoView = {
         let view = LiveInfoView(enableFollow: VideoLiveKit.createInstance().enableFollow)
-        view.mm_h = 32.scale375()
+        view.mm_h = 40.scale375()
         view.backgroundColor = UIColor.g1.withAlphaComponent(0.4)
         view.layer.cornerRadius = view.mm_h * 0.5
         return view
@@ -41,7 +42,7 @@ class AudienceLivingView: RTCBaseView {
 
     private lazy var reportBtn: UIButton  = {
         let btn = UIButton(type: .custom)
-        btn.setImage(.liveBundleImage("live_report"), for: .normal)
+        btn.setImage(internalImage("live_report"), for: .normal)
         btn.imageView?.contentMode = .scaleAspectFill
         btn.addTarget(self, action: #selector(clickReport), for: .touchUpInside)
         return btn
@@ -49,23 +50,16 @@ class AudienceLivingView: RTCBaseView {
     
     private lazy var floatWindowButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(.liveBundleImage("live_floatwindow_open_icon"), for: .normal)
+        button.setImage(internalImage("live_floatwindow_open_icon"), for: .normal)
         button.addTarget(self, action: #selector(onFloatWindowButtonClick), for: .touchUpInside)
-        return button
-    }()
-    
-    private let leaveButton: UIButton = {
-        let button = UIButton()
-        button.setImage(.liveBundleImage("live_leave_icon"), for: .normal)
+        button.imageEdgeInsets = UIEdgeInsets(top: 2.scale375(), left: 2.scale375(), bottom: 2.scale375(), right: 2.scale375())
         return button
     }()
 
     private lazy var barrageSendView: BarrageInputView = {
         let roomId = manager.roomState.roomId
         var view = BarrageInputView(roomId: roomId)
-        view.layer.borderColor = UIColor.g3.withAlphaComponent(0.3).cgColor
-        view.layer.borderWidth = 0.5
-        view.layer.cornerRadius = 18.scale375Height()
+        view.layer.cornerRadius = 20.scale375Height()
         view.layer.masksToBounds = true
         return view
     }()
@@ -113,7 +107,6 @@ class AudienceLivingView: RTCBaseView {
         addSubview(reportBtn)
 #endif
         addSubview(floatWindowButton)
-        addSubview(leaveButton)
         addSubview(bottomMenu)
         addSubview(floatView)
         addSubview(barrageSendView)
@@ -125,30 +118,24 @@ class AudienceLivingView: RTCBaseView {
         }
 
         barrageDisplayView.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(16)
-            make.bottom.equalTo(barrageSendView.snp.top).offset(-20.scale375Height())
+            make.leading.equalToSuperview().offset(12.scale375())
+            make.bottom.equalTo(barrageSendView.snp.top).offset(-12.scale375Height())
             make.width.equalTo(305.scale375Width())
             make.height.equalTo(212.scale375Height())
         }
 
         liveInfoView.snp.remakeConstraints { make in
-            make.top.equalToSuperview().offset(54.scale375Height())
+            make.centerY.equalTo(floatWindowButton)
             make.height.equalTo(liveInfoView.frame.height)
             make.leading.equalToSuperview().inset(16.scale375())
-        }
-
-        leaveButton.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().offset(-20.scale375Width())
-            make.top.equalToSuperview().offset(58.scale375Height())
-            make.width.equalTo(24.scale375Width())
-            make.height.equalTo(24.scale375Width())
+            make.width.lessThanOrEqualTo(200.scale375())
         }
         
         floatWindowButton.snp.makeConstraints { make in
-            make.trailing.equalTo(leaveButton.snp.leading).offset(-8.scale375Width())
-            make.top.equalToSuperview().offset(61.scale375Height())
-            make.width.equalTo(18.scale375Width())
-            make.height.equalTo(18.scale375Width())
+            make.trailing.equalToSuperview().offset(-48.scale375Width())
+            make.top.equalToSuperview().offset(70.scale375Height())
+            make.width.equalTo(24.scale375Width())
+            make.height.equalTo(24.scale375Width())
         }
         
 #if RTCube_APPSTORE
@@ -166,23 +153,23 @@ class AudienceLivingView: RTCBaseView {
         audienceListView.snp.makeConstraints { make in
             make.trailing
                 .equalTo(floatWindowButton.snp.leading)
-                .offset(-4.scale375Width())
+                .offset(-8.scale375Width())
             make.centerY.equalTo(floatWindowButton)
             make.leading.greaterThanOrEqualTo(liveInfoView.snp.trailing).offset(20.scale375())
         }
 #endif
 
         barrageSendView.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(16.scale375())
-            make.width.equalTo(130.scale375())
-            make.height.equalTo(36.scale375Height())
-            make.bottom.equalToSuperview().offset(-34.scale375Height())
+            make.leading.equalToSuperview().offset(12.scale375())
+            make.width.equalTo(124.scale375())
+            make.height.equalTo(40.scale375Height())
+            make.bottom.equalToSuperview().offset(-38.scale375Height())
         }
 
         bottomMenu.snp.makeConstraints { make in
             make.trailing.equalToSuperview().offset(-16.scale375Width())
             make.height.equalTo(36.scale375Height())
-            make.bottom.equalToSuperview().offset(-34.scale375Height())
+            make.centerY.equalTo(barrageSendView)
         }
         
         floatView.snp.makeConstraints { make in
@@ -191,9 +178,9 @@ class AudienceLivingView: RTCBaseView {
             make.trailing.equalToSuperview().offset(-8.scale375())
         }
     }
+    
     override func bindInteraction() {
         subscribeSeatSubject()
-        leaveButton.addTarget(self, action: #selector(leaveButtonClick), for: .touchUpInside)
     }
     
     func initComponentView() {
@@ -202,11 +189,15 @@ class AudienceLivingView: RTCBaseView {
     }
     
     func initAudienceListView() {
-        audienceListView.initialize(roomId: manager.roomState.roomId)
+        audienceListView.initialize(roomInfo: manager.roomState.roomInfo)
     }
     
     func initLiveInfoView() {
-        liveInfoView.initialize(roomId: manager.roomState.roomId)
+        liveInfoView.initialize(roomInfo: manager.roomState.roomInfo)
+    }
+    
+    func setGiftPureMode(_ isPureMode: Bool) {
+        giftDisplayView.onPureModeSet(isPureMode: isPureMode)
     }
 }
 
@@ -236,46 +227,6 @@ extension AudienceLivingView {
     
     @objc func onFloatWindowButtonClick() {
         manager.floatWindowSubject.send()
-    }
-
-    @objc func leaveButtonClick() {
-        let selfUserId = manager.coreUserState.selfInfo.userId
-        if !manager.coreCoGuestState.seatList.contains(where: { $0.userId == selfUserId }) {
-            leaveRoom()
-            return
-        }
-        var items: [ActionItem] = []
-        let lineConfig = ActionItemDesignConfig(lineWidth: 1, titleColor: .redColor)
-        lineConfig.backgroundColor = .white
-        lineConfig.lineColor = .g8
-        
-        let title: String = .endLiveOnLinkMicText
-        let endLinkMicItem = ActionItem(title: .endLiveLinkMicDisconnectText, designConfig: lineConfig, actionClosure: { [weak self] _ in
-            guard let self = self else { return }
-            coreView.terminateIntraRoomConnection()
-            routerManager.router(action: .dismiss())
-        })
-        items.append(endLinkMicItem)
-        
-        let designConfig = ActionItemDesignConfig(lineWidth: 7, titleColor: .g2)
-        designConfig.backgroundColor = .white
-        designConfig.lineColor = .g8
-        let endLiveItem = ActionItem(title: .confirmCloseText, designConfig: designConfig, actionClosure: { [weak self] _ in
-            guard let self = self else { return }
-            routerManager.router(action: .dismiss())
-            leaveRoom()
-        })
-        items.append(endLiveItem)
-        routerManager.router(action: .present(.listMenu(ActionPanelData(title: title, items: items))))
-    }
-    
-    func leaveRoom() {
-        coreView.leaveLiveStream() { [weak self] in
-            guard let self = self else { return }
-            manager.onLeaveLive()
-        } onError: { _, _ in
-        }
-        routerManager.router(action: .exit)
     }
     
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
@@ -345,8 +296,5 @@ extension AudienceLivingView: LinkMicAudienceFloatViewDelegate {
 }
 
 private extension String {
-    static let meText = localized("Me")
-    static let endLiveOnLinkMicText = localized("You are currently co-guesting with other streamers. Would you like to [End Co-guest] or [Exit Live] ?")
-    static let endLiveLinkMicDisconnectText = localized("End Co-guest")
-    static let confirmCloseText = localized("Exit Live")
+    static let meText = internalLocalized("Me")
 }

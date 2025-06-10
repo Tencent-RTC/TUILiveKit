@@ -11,14 +11,6 @@ import RTCCommon
 
 class StreamDashboardNetView: UIView {
     
-    private lazy var titleLabel: UILabel = {
-        let label = UILabel(frame: .zero)
-        label.textColor = .g7
-        label.text = .netText
-        label.font = .customFont(ofSize: 14, weight: .semibold)
-        return label
-    }()
-    
     private lazy var netInfoStackView: UIStackView = {
         let view = UIStackView(frame: .zero)
         view.backgroundColor = .clear
@@ -63,8 +55,8 @@ class StreamDashboardNetView: UIView {
     }
     
     private var isViewReady: Bool = false
-    override func layoutSubviews() {
-        super.layoutSubviews()
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
         guard !isViewReady else { return }
         isViewReady = true
         constructViewHierarchy()
@@ -76,7 +68,6 @@ class StreamDashboardNetView: UIView {
 extension StreamDashboardNetView {
     
     private func constructViewHierarchy() {
-        addSubview(titleLabel)
         addSubview(netInfoStackView)
         netInfoStackView.addArrangedSubview(rttInfoView)
         netInfoStackView.addArrangedSubview(downLossInfoView)
@@ -84,15 +75,9 @@ extension StreamDashboardNetView {
     }
     
     private func activateConstraints() {
-        titleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.leading.equalToSuperview().offset(20)
-        }
-        
         netInfoStackView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(20)
-            make.top.equalTo(titleLabel.snp.bottom).offset(10)
-            make.bottom.equalToSuperview()
+            make.top.bottom.equalToSuperview()
         }
     }
     
@@ -212,14 +197,13 @@ fileprivate class StreamDashboardNetItemView: UIView {
         nameLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview()
-            make.top.equalTo(valueLabel.snp.bottom).offset(5)
+            make.top.equalTo(valueLabel.snp.bottom).offset(5.scale375Height())
         }
     }
 }
 
 fileprivate extension String {
-    static let netText = localized("Network Information")
-    static let rttText = localized("RTT")
-    static let downLossText = localized("DownLoss")
-    static let upLossText = localized("UpLoss")
+    static let rttText = internalLocalized("RTT")
+    static let downLossText = internalLocalized("DownLoss")
+    static let upLossText = internalLocalized("UpLoss")
 }

@@ -9,9 +9,10 @@ import LiveStreamCore
 import RTCRoomEngine
 import RTCCommon
 import Combine
+import TUILiveResources
 
 protocol AudienceListCellDelegate: AnyObject {
-    func handleScrollToNewRoom(roomId: String, ownerId: String, manager: LiveStreamManager, coreView: LiveCoreView, routerProvider: LSRouterViewProvider, relayoutCoreViewClosure: @escaping () -> Void)
+    func handleScrollToNewRoom(roomId: String, ownerId: String, manager: LiveStreamManager, coreView: LiveCoreView, relayoutCoreViewClosure: @escaping () -> Void)
     func showFloatWindow()
     func showToast(message: String)
     func disableScrolling()
@@ -49,13 +50,16 @@ class AudienceSliderCell: UIView {
     private let routerManager: LSRouterManager
     private lazy var likeManager = LikeManager(roomId: roomId)
     private var cancellableSet = Set<AnyCancellable>()
+    private var isStartedPreload = false
+    private var isEnteredRoom = false
     
-    init(roomId: String, routerManager: LSRouterManager, routerCenter: LSRouterControlCenter, audienceVC: UIViewController & FloatWindowDataSource) {
-        self.roomId = roomId
+    init(liveInfo: LiveInfo, routerManager: LSRouterManager, routerCenter: LSRouterControlCenter, audienceVC: UIViewController & FloatWindowDataSource) {
+        self.roomId = liveInfo.roomId
         self.routerManager = routerManager
         self.routerCenter = routerCenter
         self.audienceVC = audienceVC
         super.init(frame: .zero)
+        manager.onAudienceSliderCellInit(liveInfo: liveInfo)
         debugPrint("init:\(self)")
     }
     
@@ -74,27 +78,33 @@ class AudienceSliderCell: UIView {
         constructViewHierarchy()
         activateConstraints()
         subscribeSubjects()
-//        subscribeState()
+        subscribeState()
         isViewReady = true
     }
     
     func onViewWillSlideIn() {
+        LiveKitLog.info("\(#file)","\(#line)", "onViewWillSlideIn roomId: \(roomId)")
         audienceView.livingView.isHidden = true
         coreView.startPreviewLiveStream(roomId: roomId, isMuteAudio: true)
+        isStartedPreload = true
     }
 
     func onViewDidSlideIn() {
-//        manager.initSelfUserData()
+        LiveKitLog.info("\(#file)","\(#line)", "onViewDidSlideIn roomId: \(roomId)")
         enterRoom()
     }
     
     func onViewSlideInCancelled() {
+        LiveKitLog.info("\(#file)","\(#line)", "onViewSlideInCancelled roomId: \(roomId)")
+        coreView.stopPreviewLiveStream(roomId: roomId)
     }
     
     func onViewWillSlideOut() {
+        LiveKitLog.info("\(#file)","\(#line)", "onViewWillSlideOut roomId: \(roomId)")
     }
     
     func onViewDidSlideOut() {
+        LiveKitLog.info("\(#file)","\(#line)", "onViewDidSlideOut roomId: \(roomId)")
         if !FloatWindow.shared.isShowingFloatWindow() {
             coreView.stopPreviewLiveStream(roomId: roomId)
             coreView.leaveLiveStream() { [weak self] in
@@ -102,24 +112,39 @@ class AudienceSliderCell: UIView {
                 manager.onLeaveLive()
             } onError: { _, _ in
             }
+            isStartedPreload = false
+            isEnteredRoom = false
         }
     }
     
     func onViewSlideOutCancelled() {
+        LiveKitLog.info("\(#file)","\(#line)", "onViewSlideOutCancelled roomId: \(roomId)")
     }
     
     func enterRoom() {
         delegate?.handleScrollToNewRoom(roomId: roomId, ownerId: manager.coreRoomState.ownerInfo.userId,
-                                        manager: manager, coreView: coreView,
-                                        routerProvider: audienceView) { [weak self] in
+                                        manager: manager, coreView: coreView) { [weak self] in
             guard let self = self else { return }
             audienceView.relayoutCoreView()
         }
-        audienceView.joinLiveStream()
+        delegate?.disableScrolling()
+        audienceView.joinLiveStream() { [weak self] in
+            guard let self = self else { return }
+            delegate?.enableScrolling()
+        }
+        isEnteredRoom = true
     }
     
     deinit {
         debugPrint("deinit:\(self)")
+        if isStartedPreload {
+            coreView.stopPreviewLiveStream(roomId: roomId)
+        }
+        if isEnteredRoom {
+            coreView.leaveLiveStream() {
+            } onError: { _, _ in
+            }
+        }
     }
 }
 
@@ -164,6 +189,7 @@ extension AudienceSliderCell {
         manager.subscribeState(StateSelector(keyPath: \LSCoGuestState.coGuestStatus))
             .removeDuplicates()
             .receive(on: RunLoop.main)
+            .dropFirst()
             .sink { [weak self] coGuestStatus in
                 guard let self = self, let delegate = delegate else { return }
                 if coGuestStatus == .applying || coGuestStatus == .linking {

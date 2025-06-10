@@ -56,7 +56,7 @@ class VRSeatView: UIView {
     
     let seatImageView: UIImageView = {
         let imageView = UIImageView(frame: .zero)
-        imageView.image = .liveBundleImage("live_seat_empty_icon")
+        imageView.image = internalImage("live_seat_empty_icon")
         return imageView
     }()
     

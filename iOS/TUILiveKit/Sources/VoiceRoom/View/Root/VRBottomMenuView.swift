@@ -11,6 +11,7 @@ import SnapKit
 import Combine
 import LiveStreamCore
 import RTCRoomEngine
+import TUILiveResources
 
 class VRBottomMenuView: UIView {
     var cancellableSet = Set<AnyCancellable>()
@@ -113,8 +114,8 @@ class VRBottomMenuView: UIView {
     
     private func createButtonFromMenuItem(index: Int, item: VRButtonMenuInfo) -> MenuButton {
         let button = MenuButton(frame: .zero)
-        button.setImage(.liveBundleImage(item.normalIcon), for: .normal)
-        button.setImage(.liveBundleImage(item.selectIcon), for: .selected)
+        button.setImage(internalImage(item.normalIcon), for: .normal)
+        button.setImage(internalImage(item.selectIcon), for: .selected)
         button.setTitle(item.normalTitle, for: .normal)
         button.setTitle(item.selectTitle, for: .selected)
         button.tag = index + 1_000
@@ -232,7 +233,7 @@ extension VRBottomMenuView {
         
         linkMic.bindStateClosure = { [weak manager] button, cancellableSet in
             guard let manager = manager else { return }
-            manager.subscribeSeatState(StateSelector(keyPath: \.seatApplicationList))
+            manager.subscribeState(StateSelector(keyPath: \VRSeatState.seatApplicationList))
                 .receive(on: RunLoop.main)
                 .sink(receiveValue: { list in
                     button.updateDotCount(count: list.count)
@@ -253,14 +254,14 @@ extension VRBottomMenuView {
         designConfig.titleFont = .customFont(ofSize: 12)
         designConfig.type = .imageAboveTitleBottom
         model.items.append(VRFeatureItem(normalTitle: .backgroundText,
-                                       normalImage: .liveBundleImage("live_setting_background_icon"),
+                                       normalImage: internalImage("live_setting_background_icon"),
                                        designConfig: designConfig,
                                          actionClosure: { [weak self] _ in
             guard let self = self else { return }
-            self.routerManager.router(action: .present(.systemImageSelection(.background)))
+            self.routerManager.router(action: .present(.systemImageSelection(.background, isSetToService: true)))
         }))
         model.items.append(VRFeatureItem(normalTitle: .audioEffectsText,
-                                       normalImage: .liveBundleImage("live_setting_audio_effects"),
+                                       normalImage: internalImage("live_setting_audio_effects"),
                                        designConfig: designConfig,
                                          actionClosure: { [weak self] _ in
             guard let self = self else { return }
@@ -288,68 +289,67 @@ extension VRBottomMenuView {
         var linkMic = VRButtonMenuInfo(normalIcon: "live_voice_room_link_icon", selectIcon: "live_voice_room_linking_icon")
         linkMic.tapAction = { [weak self] sender in
             guard let self = self, !isPending else { return }
-            let selfUserId = manager.userState.selfInfo.userId
+            let selfUserId = manager.coreUserState.selfInfo.userId
             let isApplying = manager.seatState.isApplyingToTakeSeat
             if isApplying {
                 isPending = true
                 coreView.cancelRequest(userId: selfUserId) { [weak self] in
                     guard let self = self else { return }
                     isPending = false
-                    self.handleApplicationState(isApplying: false)
+                    manager.onRespondedTakeSeatRequest()
                 } onError: { [weak self] code, message in
                     guard let self = self else { return }
                     isPending = false
                     let error = InternalError(code: code, message: message)
-                    self.manager.toastSubject.send(error.localizedMessage)
+                    self.manager.onError(error.localizedMessage)
                 }
             } else {
-                let isOnSeat = manager.seatState.seatList.contains(where: { $0.userId == selfUserId })
+                let isOnSeat = manager.coreSeatState.seatList.contains(where: { $0.userId == selfUserId })
                 if isOnSeat {
                     coreView.leaveSeat {
                     } onError: { [weak self] code, message in
                         guard let self = self else { return }
                         let error = InternalError(code: code, message: message)
-                        self.manager.toastSubject.send(error.localizedMessage)
+                        self.manager.onError(error.localizedMessage)
                     }
 
                 } else {
                     // request
                     if manager.seatState.isApplyingToTakeSeat {
-                        manager.toastSubject.send(.repeatRequest)
+                        manager.onError(.repeatRequest)
                         return
                     }
                     let kTimeoutValue = 60
+                    manager.onSentTakeSeatRequest()
                     coreView.takeSeat(index: -1, timeout: kTimeoutValue) { [weak self] userInfo in
                         guard let self = self else { return }
-                        self.handleApplicationState(isApplying: false)
+                        manager.onRespondedTakeSeatRequest()
                     } onRejected: { [weak self] userInfo in
                         guard let self = self else { return }
-                        self.handleApplicationState(isApplying: false)
-                        self.manager.toastSubject.send(.takeSeatApplicationRejected)
+                        manager.onRespondedTakeSeatRequest()
+                        manager.onError(.takeSeatApplicationRejected)
                     } onCancelled: { [weak self] userInfo in
                         guard let self = self else { return }
-                        self.handleApplicationState(isApplying: false)
+                        manager.onRespondedTakeSeatRequest()
                     } onTimeout: { [weak self] userInfo in
                         guard let self = self else { return }
-                        self.handleApplicationState(isApplying: false)
-                        self.manager.toastSubject.send(.takeSeatApplicationTimeout)
+                        manager.onRespondedTakeSeatRequest()
+                        manager.onError(.takeSeatApplicationTimeout)
                     } onError: { [weak self] userInfo, code, message in
                         guard let self = self else { return }
                         if code != LiveError.requestIdRepeat.rawValue && code != LiveError.alreadyOnTheSeatQueue.rawValue {
-                            self.handleApplicationState(isApplying: false)
+                            manager.onRespondedTakeSeatRequest()
                         }
-                        guard let err = TUIError(rawValue: code) else { return }
                         let error = InternalError(code: code, message: message)
-                        self.manager.toastSubject.send(error.localizedMessage)
+                        self.manager.onError(error.localizedMessage)
                     }
-                    handleApplicationState(isApplying: true)
                 }
             }
         }
         linkMic.bindStateClosure = { [weak self] button, cancellableSet in
             guard let self = self else { return }
             
-            manager.subscribeSeatState(StateSelector(keyPath: \.isApplyingToTakeSeat))
+            manager.subscribeState(StateSelector(keyPath: \VRSeatState.isApplyingToTakeSeat))
                 .sink { isApplying in
                     DispatchQueue.main.async {
                         button.isSelected = isApplying
@@ -359,30 +359,25 @@ extension VRBottomMenuView {
                 .store(in: &cancellableSet)
             
             
-            manager.subscribeSeatState(StateSelector(keyPath: \.seatList))
+            manager.subscribeCoreState(StateSelector(keyPath: \SGSeatState.seatList))
                 .receive(on: RunLoop.main)
                 .sink { [weak self] seatInfoList in
                     guard let self = self else { return }
-                    let isOnSeat = seatInfoList.contains(where: { $0.userId == self.manager.userState.selfInfo.userId })
+                    let isOnSeat = seatInfoList.contains(where: { $0.userId == self.manager.coreUserState.selfInfo.userId })
                     let imageName = isOnSeat ? "live_linked_icon" : "live_voice_room_link_icon"
-                    button.setImage(.liveBundleImage(imageName), for: .normal)
+                    button.setImage(internalImage(imageName), for: .normal)
                 }
                 .store(in: &cancellableSet)
         }
         menus.append(linkMic)
         return menus
     }
-    
-    private func handleApplicationState(isApplying: Bool) {
-        manager.update(applicationStateIsApplying: isApplying)
-    }
-    
 }
 
 private extension String {
-    static let backgroundText = localized("Background")
-    static let audioEffectsText = localized("Audio")
-    static let repeatRequest = localized("Signal request repetition")
-    static let takeSeatApplicationRejected = localized("Take seat application has been rejected")
-    static let takeSeatApplicationTimeout = localized("Take seat application timeout")
+    static let backgroundText = internalLocalized("Background")
+    static let audioEffectsText = internalLocalized("Audio")
+    static let repeatRequest = internalLocalized("Signal request repetition")
+    static let takeSeatApplicationRejected = internalLocalized("Take seat application has been rejected")
+    static let takeSeatApplicationTimeout = internalLocalized("Take seat application timeout")
 }

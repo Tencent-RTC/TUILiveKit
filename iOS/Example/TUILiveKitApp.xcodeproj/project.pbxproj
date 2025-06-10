@@ -11,6 +11,7 @@
 		047F81F12CB77E5C0079BA02 /* VideoLiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047F81F02CB77E5C0079BA02 /* VideoLiveViewController.swift */; };
 		04B9468C2CB51EB80052D0F2 /* MainCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B9468B2CB51EB80052D0F2 /* MainCollectionCell.swift */; };
 		04B946902CB52F8B0052D0F2 /* MainItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B9468F2CB52F8B0052D0F2 /* MainItemModel.swift */; };
+		064548B32DCC52D000F28874 /* TUILiveKitAppLocalized.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 064548B22DCC52D000F28874 /* TUILiveKitAppLocalized.xcstrings */; };
 		40DD29E9264395FF00DC4BA8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40DD29E8264395FF00DC4BA8 /* AppDelegate.swift */; };
 		40DD29EB264395FF00DC4BA8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40DD29EA264395FF00DC4BA8 /* SceneDelegate.swift */; };
 		40DD29F0264395FF00DC4BA8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 40DD29EE264395FF00DC4BA8 /* Main.storyboard */; };
@@ -25,7 +26,6 @@
 		470EB6C4266A46F80072071F /* LaunchImage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 470EB6C0266A46F80072071F /* LaunchImage@2x.png */; };
 		470EB6C7266A47050072071F /* LaunchScreen_en.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 470EB6C5266A47050072071F /* LaunchScreen_en.storyboard */; };
 		4795D41B265F4A6200C82562 /* GenerateTestUserSig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4795D41A265F4A6200C82562 /* GenerateTestUserSig.swift */; };
-		583596D82D7B1D3500BEC375 /* TUILiveKitAppLocalized.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 583596D72D7B1D3500BEC375 /* TUILiveKitAppLocalized.xcstrings */; };
 		A917D53F2C22789400F9C310 /* MeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A917D53E2C22789400F9C310 /* MeViewController.swift */; };
 		A917D5412C2278A600F9C310 /* MeRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A917D5402C2278A600F9C310 /* MeRootView.swift */; };
 		A917D5432C2282FA00F9C310 /* IMManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A917D5422C2282FA00F9C310 /* IMManager.swift */; };
@@ -40,7 +40,6 @@
 		A9BC40702AB43DE4008AD131 /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BC40652AB43DE4008AD131 /* RegisterViewController.swift */; };
 		A9BC40712AB43DE4008AD131 /* UserAgreementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BC40662AB43DE4008AD131 /* UserAgreementViewController.swift */; };
 		A9BC40722AB43DE4008AD131 /* LayoutDefine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BC40672AB43DE4008AD131 /* LayoutDefine.swift */; };
-		A9DD617E2CF968F000D4BAF0 /* LayoutTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DD617C2CF968F000D4BAF0 /* LayoutTestViewController.swift */; };
 		C11E26282B0B0B8300674403 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C11E26222B0B0B8300674403 /* InfoPlist.strings */; };
 		C11E26292B0B0B8300674403 /* TUILiveKitAppLocalized.swift in Sources */ = {isa = PBXBuildFile; fileRef = C11E26262B0B0B8300674403 /* TUILiveKitAppLocalized.swift */; };
 		CE1257C2F52958776702FE41 /* Pods_TUILiveKitApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85ED6BC58723B389A3F09C20 /* Pods_TUILiveKitApp.framework */; };
@@ -51,6 +50,7 @@
 		047F81F02CB77E5C0079BA02 /* VideoLiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoLiveViewController.swift; sourceTree = "<group>"; };
 		04B9468B2CB51EB80052D0F2 /* MainCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCollectionCell.swift; sourceTree = "<group>"; };
 		04B9468F2CB52F8B0052D0F2 /* MainItemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainItemModel.swift; sourceTree = "<group>"; };
+		064548B22DCC52D000F28874 /* TUILiveKitAppLocalized.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = TUILiveKitAppLocalized.xcstrings; sourceTree = "<group>"; };
 		280028A651ECA453A8558409 /* Pods-TUILiveKitApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TUILiveKitApp.release.xcconfig"; path = "Target Support Files/Pods-TUILiveKitApp/Pods-TUILiveKitApp.release.xcconfig"; sourceTree = "<group>"; };
 		40DD29E5264395FF00DC4BA8 /* TUILiveKitApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TUILiveKitApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		40DD29E8264395FF00DC4BA8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -69,7 +69,6 @@
 		470EB6C6266A47050072071F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen_en.storyboard; sourceTree = "<group>"; };
 		4795D41A265F4A6200C82562 /* GenerateTestUserSig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenerateTestUserSig.swift; sourceTree = "<group>"; };
 		4A5F6CD9FDD7555D3C923F4B /* Pods-TUILiveKitApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TUILiveKitApp.debug.xcconfig"; path = "Target Support Files/Pods-TUILiveKitApp/Pods-TUILiveKitApp.debug.xcconfig"; sourceTree = "<group>"; };
-		583596D72D7B1D3500BEC375 /* TUILiveKitAppLocalized.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = TUILiveKitAppLocalized.xcstrings; sourceTree = "<group>"; };
 		85ED6BC58723B389A3F09C20 /* Pods_TUILiveKitApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TUILiveKitApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A917D53E2C22789400F9C310 /* MeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeViewController.swift; sourceTree = "<group>"; };
 		A917D5402C2278A600F9C310 /* MeRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeRootView.swift; sourceTree = "<group>"; };
@@ -91,7 +90,6 @@
 		A9BC40652AB43DE4008AD131 /* RegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		A9BC40662AB43DE4008AD131 /* UserAgreementViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserAgreementViewController.swift; sourceTree = "<group>"; };
 		A9BC40672AB43DE4008AD131 /* LayoutDefine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayoutDefine.swift; sourceTree = "<group>"; };
-		A9DD617C2CF968F000D4BAF0 /* LayoutTestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutTestViewController.swift; sourceTree = "<group>"; };
 		C11E26232B0B0B8300674403 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		C11E26252B0B0B8300674403 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C11E26262B0B0B8300674403 /* TUILiveKitAppLocalized.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TUILiveKitAppLocalized.swift; sourceTree = "<group>"; };
@@ -167,7 +165,6 @@
 		40DD29E7264395FF00DC4BA8 /* App */ = {
 			isa = PBXGroup;
 			children = (
-				A9DD61762CF967FC00D4BAF0 /* Tests */,
 				40DD29E8264395FF00DC4BA8 /* AppDelegate.swift */,
 				40DD29EA264395FF00DC4BA8 /* SceneDelegate.swift */,
 				A9BC40672AB43DE4008AD131 /* LayoutDefine.swift */,
@@ -296,28 +293,12 @@
 			path = Extension;
 			sourceTree = "<group>";
 		};
-		A9DD61762CF967FC00D4BAF0 /* Tests */ = {
-			isa = PBXGroup;
-			children = (
-				A9DD61772CF9684A00D4BAF0 /* SeatGridView */,
-			);
-			path = Tests;
-			sourceTree = "<group>";
-		};
-		A9DD61772CF9684A00D4BAF0 /* SeatGridView */ = {
-			isa = PBXGroup;
-			children = (
-				A9DD617C2CF968F000D4BAF0 /* LayoutTestViewController.swift */,
-			);
-			path = SeatGridView;
-			sourceTree = "<group>";
-		};
 		C11E261F2B0B0B8300674403 /* Localized */ = {
 			isa = PBXGroup;
 			children = (
+				064548B22DCC52D000F28874 /* TUILiveKitAppLocalized.xcstrings */,
 				C11E26222B0B0B8300674403 /* InfoPlist.strings */,
 				C11E26262B0B0B8300674403 /* TUILiveKitAppLocalized.swift */,
-				583596D72D7B1D3500BEC375 /* TUILiveKitAppLocalized.xcstrings */,
 			);
 			path = Localized;
 			sourceTree = "<group>";
@@ -387,10 +368,10 @@
 				470EB6C3266A46F80072071F /* LaunchImage_en@2x.png in Resources */,
 				40DD29F2264395FF00DC4BA8 /* Assets.xcassets in Resources */,
 				470EB6C2266A46F80072071F /* LaunchImage_en@3x.png in Resources */,
+				064548B32DCC52D000F28874 /* TUILiveKitAppLocalized.xcstrings in Resources */,
 				470EB6C7266A47050072071F /* LaunchScreen_en.storyboard in Resources */,
 				470EB6C1266A46F80072071F /* LaunchImage@3x.png in Resources */,
 				40DD29F0264395FF00DC4BA8 /* Main.storyboard in Resources */,
-				583596D82D7B1D3500BEC375 /* TUILiveKitAppLocalized.xcstrings in Resources */,
 				470EB6C4266A46F80072071F /* LaunchImage@2x.png in Resources */,
 				C11E26282B0B0B8300674403 /* InfoPlist.strings in Resources */,
 			);
@@ -479,7 +460,6 @@
 				A9BC40722AB43DE4008AD131 /* LayoutDefine.swift in Sources */,
 				40DD29E9264395FF00DC4BA8 /* AppDelegate.swift in Sources */,
 				C11E26292B0B0B8300674403 /* TUILiveKitAppLocalized.swift in Sources */,
-				A9DD617E2CF968F000D4BAF0 /* LayoutTestViewController.swift in Sources */,
 				A95566442ADFC42100D86BFD /* LoginRootView.swift in Sources */,
 				A9BC40682AB43DE4008AD131 /* RegisterRootView.swift in Sources */,
 				A9BC406A2AB43DE4008AD131 /* UserAgreementViewController+UI.swift in Sources */,

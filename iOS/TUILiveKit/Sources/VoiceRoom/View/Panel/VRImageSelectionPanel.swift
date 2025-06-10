@@ -20,6 +20,7 @@ class VRImageSelectionPanel: UIView {
    
     private var configs: [VRSystemImageModel]
     private var panelMode: PanelMode = .cover
+    private let isSetToService: Bool
     private let manager: VoiceRoomManager
     private var currentSelectModel: VRSystemImageModel?
     private var cancellableSet = Set<AnyCancellable>()
@@ -30,7 +31,7 @@ class VRImageSelectionPanel: UIView {
     
     private lazy var backButton: UIButton = {
         let view = UIButton(type: .system)
-        view.setBackgroundImage(.liveBundleImage("live_back_icon"), for: .normal)
+        view.setBackgroundImage(internalImage("live_back_icon"), for: .normal)
         view.addTarget(self, action: #selector(backButtonClick), for: .touchUpInside)
         return view
     }()
@@ -79,9 +80,10 @@ class VRImageSelectionPanel: UIView {
         return view
     }()
     
-    init(configs:[VRSystemImageModel], panelMode: PanelMode = .cover, manager: VoiceRoomManager) {
+    init(configs:[VRSystemImageModel], panelMode: PanelMode = .cover, isSetToService: Bool = false, manager: VoiceRoomManager) {
         self.configs = configs
         self.panelMode = panelMode
+        self.isSetToService = isSetToService
         self.manager = manager
         super.init(frame: .zero)
     }
@@ -91,8 +93,8 @@ class VRImageSelectionPanel: UIView {
     }
     
     private var isViewReady: Bool = false
-    override func layoutSubviews() {
-        super.layoutSubviews()
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
         guard !isViewReady else { return }
         isViewReady = true
         backgroundColor = .clear
@@ -190,15 +192,9 @@ extension VRImageSelectionPanel {
         }
         switch panelMode {
         case .cover:
-            manager.update(roomCoverUrl: newImageUrlString)
+            manager.onSetRoomCoverUrl(newImageUrlString)
         case .background:
-            manager.update(backgroundUrl: newImageUrlString)
-            if !manager.roomState.ownerInfo.userId.isEmpty {
-                let liveInfo = TUILiveInfo()
-                liveInfo.roomInfo.roomId = manager.roomState.roomId
-                liveInfo.backgroundUrl = newImageUrlString
-                manager.setLiveInfo(liveInfo: liveInfo, modifyFlag: .backgroundUrl)
-            }
+            manager.onSetRoomBackgroundUrl(newImageUrlString, isSetToService: isSetToService)
         }
         
         backButtonClickClosure?()
@@ -234,10 +230,10 @@ extension VRImageSelectionPanel: UICollectionViewDelegateFlowLayout,
 }
 
 private extension String {
-    static let coverTitleText = localized("Cover")
-    static let coverConfirmText = localized("Set as cover")
-    static let backgroundTitleText = localized("Background")
-    static let backgroundConfirmText = localized("Set as background")
+    static let coverTitleText = internalLocalized("Cover")
+    static let coverConfirmText = internalLocalized("Set as cover")
+    static let backgroundTitleText = internalLocalized("Background")
+    static let backgroundConfirmText = internalLocalized("Set as background")
 }
 
 

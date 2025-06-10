@@ -8,10 +8,12 @@
 import Combine
 import RTCCommon
 import RTCRoomEngine
+import TUILiveResources
 import TUIAudioEffect
 import TUIGift
 
 class VRRouterControlCenter {
+    
     private var rootRoute: VRRoute
     private var routerManager: VRRouterManager
     private let manager: VoiceRoomManager
@@ -193,10 +195,12 @@ extension VRRouterControlCenter {
                 self.routerManager.router(action: .dismiss())
             }
             view = actionPanel
-        case .systemImageSelection(let imageType):
+        case .systemImageSelection(let imageType, let isSetToService):
             let imageConfig = VRSystemImageFactory.getImageAssets(imageType: imageType)
             let systemImageSelectionPanel = VRImageSelectionPanel(configs: imageConfig,
-                                                                  panelMode: imageType == .cover ? .cover : .background, manager: manager)
+                                                                  panelMode: imageType == .cover ? .cover : .background,
+                                                                  isSetToService: isSetToService,
+                                                                  manager: manager)
             systemImageSelectionPanel.backButtonClickClosure = { [weak self] in
                 guard let self = self else { return }
                 self.routerManager.router(action: .dismiss())
@@ -251,6 +255,8 @@ extension VRRouterControlCenter {
         switch route {
         case .listMenu(_):
             safeBottomViewBackgroundColor = .white
+        case .featureSetting(_), .giftView:
+            safeBottomViewBackgroundColor = .bgOperateColor
         default:
             break
         }

@@ -10,6 +10,7 @@ import Combine
 import Kingfisher
 import RTCCommon
 import TUILiveResources
+import RTCRoomEngine
 
 public class LiveInfoView: UIView {
     private let service = RoomInfoService()
@@ -54,8 +55,8 @@ public class LiveInfoView: UIView {
         return button
     }()
     
-    public func initialize(roomId: String) {
-        service.initRoomInfo(roomId: roomId)
+    public func initialize(roomInfo: TUIRoomInfo) {
+        service.initRoomInfo(roomInfo: roomInfo)
     }
     
     public init(enableFollow: Bool = true, frame: CGRect = .zero) {

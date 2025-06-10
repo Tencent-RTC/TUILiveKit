@@ -9,7 +9,6 @@ import Foundation
 import RTCRoomEngine
 
 struct VRSeatState: Encodable {
-    var seatList: [VRSeatInfo] = []
     var seatApplicationList: [VRSeatApplication] = []
     var isApplyingToTakeSeat: Bool = false
     var invitedUserIds: Set<String> = []
@@ -42,55 +41,4 @@ struct VRSeatApplication: Codable {
     }
 }
 
-struct VRSeatInfo: Codable {
-    var index: Int
-    var userId: String
-    var avatarUrl: String
-    var userName: String
-    var isLocked: Bool
-    var isVideoLocked: Bool
-    var isAudioLocked: Bool
-    
-    init(info: TUISeatInfo) {
-        self.index = info.index
-        self.userId = info.userId ?? ""
-        self.isLocked = info.isLocked
-        self.isAudioLocked = info.isAudioLocked
-        self.isVideoLocked = info.isVideoLocked
-        self.userName = info.userName ?? ""
-        self.avatarUrl = info.avatarUrl ?? ""
-    }
-    
-    init() {
-        self.index = -1
-        self.userId = ""
-        self.isLocked = false
-        self.isVideoLocked = false
-        self.isAudioLocked = false
-        self.userName = ""
-        self.avatarUrl = ""
-    }
-    
-    init(userInfo: VRUser) {
-        self.index = -1
-        self.userId = userInfo.userId
-        self.userName = userInfo.name
-        self.avatarUrl = userInfo.avatarUrl
-        
-        self.isLocked = false
-        self.isVideoLocked = false
-        self.isAudioLocked = false
-    }
-    
-}
-
-extension VRSeatInfo: Equatable {}
-
 extension VRSeatApplication: Equatable {}
-
-extension VRSeatInfo: Hashable {
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(userId)
-    }
-}
-

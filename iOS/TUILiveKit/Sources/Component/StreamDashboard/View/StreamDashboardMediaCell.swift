@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import Combine
+import RTCCommon
 
 class StreamDashboardMediaCell: UICollectionViewCell {
     static let CellID: String = "StreamDashboardMediaCell"
@@ -23,7 +25,7 @@ class StreamDashboardMediaCell: UICollectionViewCell {
     
     private lazy var containerView: UIView = {
         let view = UIView(frame: .zero)
-        view.backgroundColor = .black.withAlphaComponent(0.2)
+        view.backgroundColor = .bgEntrycardColor
         view.layer.cornerRadius = 12
         view.layer.masksToBounds = true
         return view
@@ -31,17 +33,23 @@ class StreamDashboardMediaCell: UICollectionViewCell {
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel(frame: .zero)
-        label.font = .customFont(ofSize: 14, weight: .semibold)
-        label.textColor = .g7
-        label.textAlignment = .center
+        label.font = .customFont(ofSize: 14, weight: .medium)
+        label.textColor = .textPrimaryColor
+        label.textAlignment = .left
         return label
+    }()
+    
+    private lazy var separatorLine: UIView = {
+        let view = UIView()
+        view.backgroundColor = .strokeModuleColor
+        return view
     }()
     
     private lazy var videoTitleLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.text = .videoText
-        label.font = .customFont(ofSize: 14, weight: .semibold)
-        label.textColor = .g7
+        label.font = .customFont(ofSize: 12, weight: .medium)
+        label.textColor = .textPrimaryColor
         return label
     }()
     
@@ -52,19 +60,17 @@ class StreamDashboardMediaCell: UICollectionViewCell {
         view.delegate = self
         view.dataSource = self
         view.register(StreamDashboardMediaItemCell.self, forCellReuseIdentifier: StreamDashboardMediaItemCell.CellID)
-        view.backgroundColor = .black.withAlphaComponent(0.3)
+        view.backgroundColor = .clear
         view.layer.cornerRadius = 12
         view.layer.masksToBounds = true
-        view.separatorInset = .init(top: 0, left: 20, bottom: 0, right: 20)
-        view.separatorColor = .g3
         return view
     }()
     
     private lazy var audioTitleLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.text = .audioText
-        label.font = .customFont(ofSize: 14, weight: .semibold)
-        label.textColor = .g7
+        label.font = .customFont(ofSize: 12, weight: .medium)
+        label.textColor = .textPrimaryColor
         return label
     }()
     
@@ -75,25 +81,25 @@ class StreamDashboardMediaCell: UICollectionViewCell {
         view.delegate = self
         view.dataSource = self
         view.register(StreamDashboardMediaItemCell.self, forCellReuseIdentifier: StreamDashboardMediaItemCell.CellID)
-        view.backgroundColor = .black.withAlphaComponent(0.3)
+        view.backgroundColor = .clear
         view.layer.cornerRadius = 12
         view.layer.masksToBounds = true
-        view.separatorInset = .init(top: 0, left: 20, bottom: 0, right: 20)
-        view.separatorColor = .g3
         return view
     }()
     
-    
     private var videoDataSource: [VideoDataType] = [.resolution, .bitrate, .fps]
     private var audioDataSource: [AudioDataType] = [.sampleRate, .bitrate]
+    @Published private var isRemoteUserEmpty: Bool = false
+    var cancellableSet = Set<AnyCancellable>()
     
     private var isViewReady: Bool = false
-    override func layoutSubviews() {
-        super.layoutSubviews()
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
         guard !isViewReady else { return }
         isViewReady = true
         constructViewHierarchy()
         activateConstraints()
+        subscribeState()
         contentView.backgroundColor = .clear
     }
     
@@ -119,13 +125,39 @@ class StreamDashboardMediaCell: UICollectionViewCell {
         self.videoTableView.reloadData()
         self.audioTableView.reloadData()
     }
+    
+    func changeRemoteUserEmpty(isEmpty: Bool) {
+        isRemoteUserEmpty = isEmpty
+    }
+    
+    func subscribeState() {
+        $isRemoteUserEmpty
+            .removeDuplicates()
+            .receive(on: RunLoop.main)
+            .dropFirst()
+            .sink { [weak self] isRemoteUserEmpty in
+                guard let self = self else { return }
+                if isRemoteUserEmpty {
+                    titleLabel.removeFromSuperview()
+                    separatorLine.removeFromSuperview()
+                } else {
+                    containerView.addSubview(titleLabel)
+                    containerView.addSubview(separatorLine)
+                }
+                activateConstraints()
+            }
+            .store(in: &cancellableSet)
+    }
 }
 
 extension StreamDashboardMediaCell {
     
     private func constructViewHierarchy() {
         contentView.addSubview(containerView)
-        containerView.addSubview(titleLabel)
+        if !isRemoteUserEmpty {
+            containerView.addSubview(titleLabel)
+            containerView.addSubview(separatorLine)
+        }
         containerView.addSubview(videoTitleLabel)
         containerView.addSubview(videoTableView)
         containerView.addSubview(audioTitleLabel)
@@ -133,39 +165,50 @@ extension StreamDashboardMediaCell {
     }
     
     private func activateConstraints() {
-        containerView.snp.makeConstraints { make in
+        containerView.snp.remakeConstraints { make in
             make.top.bottom.equalToSuperview()
-            make.leading.trailing.equalToSuperview().inset(20)
+            make.leading.trailing.equalToSuperview().inset(20.scale375())
         }
-        titleLabel.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(30)
-            make.top.equalTo(10)
+        if !isRemoteUserEmpty {
+            titleLabel.snp.remakeConstraints { make in
+                make.leading.trailing.top.equalToSuperview().inset(16.scale375())
+            }
+            separatorLine.snp.remakeConstraints { make in
+                make.leading.trailing.equalToSuperview().inset(16.scale375())
+                make.top.equalTo(titleLabel.snp.bottom).offset(12.scale375())
+                make.height.equalTo(1)
+            }
         }
-        videoTitleLabel.snp.makeConstraints { make in
-            make.leading.equalTo(20)
-            make.top.equalTo(titleLabel.snp.bottom)
+        videoTitleLabel.snp.remakeConstraints { make in
+            make.leading.equalToSuperview().offset(16.scale375())
+            if isRemoteUserEmpty {
+                make.top.equalToSuperview().offset(16.scale375Height())
+            } else {
+                make.top.equalTo(separatorLine.snp.bottom).offset(12.scale375Height())
+            }
         }
-        videoTableView.snp.makeConstraints { make in
-            make.top.equalTo(videoTitleLabel.snp.bottom).offset(10)
-            make.leading.trailing.equalToSuperview().inset(20)
+        videoTableView.snp.remakeConstraints { make in
+            make.top.equalTo(videoTitleLabel.snp.bottom).offset(8.scale375Height())
+            make.leading.equalToSuperview().inset(16.scale375())
+            make.width.equalTo(bounds.width / 2 - 44.scale375())
             make.height.equalTo(StreamDashboardMediaItemCell.CellHeight * CGFloat(videoDataSource.count))
         }
-        audioTitleLabel.snp.makeConstraints { make in
-            make.leading.equalTo(20)
-            make.top.equalTo(videoTableView.snp.bottom).offset(10)
+        audioTitleLabel.snp.remakeConstraints { make in
+            make.leading.equalTo(videoTableView.snp.trailing).offset(16.scale375())
+            make.centerY.equalTo(videoTitleLabel)
         }
-        audioTableView.snp.makeConstraints { make in
-            make.top.equalTo(audioTitleLabel.snp.bottom).offset(10)
-            make.leading.trailing.equalToSuperview().inset(20)
+        audioTableView.snp.remakeConstraints { make in
+            make.top.equalTo(audioTitleLabel.snp.bottom).offset(8.scale375Height())
+            make.leading.equalTo(audioTitleLabel)
+            make.trailing.equalToSuperview().inset(16.scale375())
             make.height.equalTo(StreamDashboardMediaItemCell.CellHeight * CGFloat(audioDataSource.count))
-            make.bottom.equalToSuperview().offset(-20)
         }
     }
     
     private func updateVideoCellData(cell: StreamDashboardMediaItemCell, dataType: VideoDataType) {
         switch dataType {
         case .bitrate:
-            cell.titleLabel.text = .videoBitrateText
+            cell.titleLabel.text = .bitrateText
             cell.valueLabel.text = "\(data.videoBitrate) kbps"
         case .fps:
             cell.titleLabel.text = .videoFrameRateText
@@ -179,7 +222,7 @@ extension StreamDashboardMediaCell {
     private func updateAudioCellData(cell: StreamDashboardMediaItemCell, dataType: AudioDataType) {
         switch dataType {
         case .bitrate:
-            cell.titleLabel.text = .audioBitrateText
+            cell.titleLabel.text = .bitrateText
             cell.valueLabel.text = "\(data.audioBitrate) kbps"
         case .sampleRate:
             cell.titleLabel.text = .audioSampleRateText
@@ -221,19 +264,20 @@ extension StreamDashboardMediaCell: UITableViewDelegate {
 
 class StreamDashboardMediaItemCell: UITableViewCell {
     static let CellID: String = "StreamDashboardMediaItemCell"
-    static let CellHeight: CGFloat = 38
+    static let CellHeight: CGFloat = 20.scale375Height()
     
     lazy var titleLabel: UILabel = {
         let label = UILabel(frame: .zero)
-        label.font = .customFont(ofSize: 12, weight: .semibold)
-        label.textColor = .white
+        label.font = .customFont(ofSize: 12)
+        label.textColor = .textSecondaryColor
+        label.adjustsFontSizeToFitWidth = true
         return label
     }()
     
     lazy var valueLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.font = .customFont(ofSize: 12)
-        label.textColor = .white
+        label.textColor = .textPrimaryColor
         return label
     }()
     
@@ -256,11 +300,12 @@ class StreamDashboardMediaItemCell: UITableViewCell {
     
     private func activateConstraints() {
         titleLabel.snp.makeConstraints { make in
-            make.leading.equalTo(20)
-            make.centerY.equalToSuperview()
+            make.centerY.leading.equalToSuperview()
+            make.width.equalTo(LocalizedLanguage.isChinese ? 40.scale375() : 63.scale375())
+            make.height.equalTo(20.scale375Height())
         }
         valueLabel.snp.makeConstraints { make in
-            make.trailing.equalTo(-20)
+            make.leading.equalTo(titleLabel.snp.trailing).offset(8.scale375())
             make.centerY.equalToSuperview()
         }
     }
@@ -268,15 +313,14 @@ class StreamDashboardMediaItemCell: UITableViewCell {
 
 fileprivate extension String {
     
-    static let localText = localized("Local User")
-    static let remoteText = localized("Remote User")
+    static let localText = internalLocalized("Local User")
+    static let remoteText = internalLocalized("Remote User")
     
-    static let videoText = localized("Video Information")
-    static let videoResolutionText = localized("Resolution")
-    static let videoBitrateText = localized("Video Bitrate")
-    static let videoFrameRateText = localized("Video FPS")
+    static let videoText = internalLocalized("Video Information")
+    static let videoResolutionText = internalLocalized("Resolution")
+    static let bitrateText = internalLocalized("Bitrate")
+    static let videoFrameRateText = internalLocalized("FPS")
     
-    static let audioText = localized("Audio Information")
-    static let audioSampleRateText = localized("Audio Sample Rate")
-    static let audioBitrateText = localized("Audio Bitrate")
+    static let audioText = internalLocalized("Audio Information")
+    static let audioSampleRateText = internalLocalized("Sample Rate")
 }

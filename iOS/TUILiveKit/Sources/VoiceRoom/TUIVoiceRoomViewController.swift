@@ -10,6 +10,8 @@ import RTCCommon
 import Combine
 import RTCRoomEngine
 import TUICore
+import LiveStreamCore
+import TUILiveResources
 
 let defaultMaxSeatCount = 10
 
@@ -37,12 +39,11 @@ public class TUIVoiceRoomViewController: UIViewController {
     
     // MARK: - Public property.
     public var behavior: RoomBehavior = .prepareCreate
-    public var roomParams: RoomParams?
     
     // MARK: - Private property.
    
     private let roomId: String
-    private let manager = VoiceRoomManager()
+    private lazy var manager = VoiceRoomManager(provider: self)
     private let routerManager: VRRouterManager = VRRouterManager()
     private var needRestoreNavigationBarHiddenState: Bool = false
     private var cancellableSet = Set<AnyCancellable>()
@@ -52,6 +53,25 @@ public class TUIVoiceRoomViewController: UIViewController {
         let rootRoute: VRRoute = behavior == .join ? .audience : .anchor
         let routerCenter = VRRouterControlCenter(rootViewController: self, rootRoute: rootRoute, routerManager: routerManager, manager: manager)
         return routerCenter
+    }()
+    
+    private lazy var seatGridView: SeatGridView = {
+        func setComponent() {
+            do {
+                let jsonObject: [String: Any] = [
+                    "api": "component",
+                    "component": 22
+                ]
+                let jsonData = try JSONSerialization.data(withJSONObject: jsonObject, options: [])
+                if let jsonString = String(data: jsonData, encoding: .utf8) {
+                    SeatGridView.callExperimentalAPI(jsonString)
+                }
+            } catch {
+                LiveKitLog.error("\(#file)","\(#line)", "dataReport: \(error.localizedDescription)")
+            }
+        }
+        setComponent()
+        return SeatGridView()
     }()
     
     private lazy var voicePrepareView: VoiceRoomPrepareView = {
@@ -65,6 +85,7 @@ public class TUIVoiceRoomViewController: UIViewController {
     private lazy var voiceRootView: VoiceRoomRootView = {
         let view = VoiceRoomRootView(frame: UIScreen.main.bounds,
                                      roomId: roomId,
+                                     seatGridView: seatGridView,
                                      manager: manager,
                                      routerManager: routerManager,
                                      isCreate: behavior != .join)
@@ -76,10 +97,9 @@ public class TUIVoiceRoomViewController: UIViewController {
     public init(roomId: String, behavior: RoomBehavior, roomParams: RoomParams? = nil) {
         self.roomId = roomId
         self.behavior = behavior
-        self.roomParams = roomParams
         super.init(nibName: nil, bundle: nil)
         subscribeToast()
-        initManager()
+        manager.prepareRoomIdBeforeEnterRoom(roomId: roomId, roomParams: roomParams)
         UIApplication.shared.isIdleTimerDisabled = true
     }
     
@@ -130,7 +150,6 @@ public class TUIVoiceRoomViewController: UIViewController {
     
     private func showVoiceRoot() {
         view.subviews.forEach{$0.removeFromSuperview()}
-        manager.fetchSelfInfo()
         view.addSubview(voiceRootView)
         voiceRootView.snp.makeConstraints { make in
             make.top.bottom.leading.trailing.equalToSuperview()
@@ -165,13 +184,6 @@ public class TUIVoiceRoomViewController: UIViewController {
         view.addSubview(audienceEndView)
         audienceEndView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
-        }
-    }
-    
-    private func initManager() {
-        manager.update(roomId: roomId)
-        if let roomParams = roomParams {
-            manager.update(roomParams: roomParams)
         }
     }
 }
@@ -237,5 +249,15 @@ extension TUIVoiceRoomViewController {
         guard let navigationController = self.navigationController, needRestoreNavigationBarHiddenState else { return }
         navigationController.setNavigationBarHidden(false, animated: true)
         needRestoreNavigationBarHiddenState = false
+    }
+}
+
+extension TUIVoiceRoomViewController: VoiceRoomManagerProvider {
+    func subscribeCoreViewState<State, Value>(_ selector: StateSelector<State, Value>) -> AnyPublisher<Value, Never> {
+        seatGridView.subscribeState(selector)
+    }
+    
+    func getCoreViewState<T>() -> T where T : State {
+        seatGridView.getState()
     }
 }

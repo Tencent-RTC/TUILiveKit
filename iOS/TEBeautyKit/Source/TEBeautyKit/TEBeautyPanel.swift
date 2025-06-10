@@ -32,6 +32,10 @@ class TEBeautyPanel: UIView {
     }
     
     private func initBeautyKit(frame: CGRect) {
+        TEUIConfig.shareInstance().panelBackgroundColor = UIColor(red: 0x1F/255.0,
+                                                                  green: 0x20/255.0,
+                                                                  blue: 0x24/255.0,
+                                                                  alpha: 1.0)
         initBeautyJson()
         beautyKit = TEBeautyKit()
         panelView = TEPanelView(nil, comboType: nil)
@@ -67,7 +71,8 @@ class TEBeautyPanel: UIView {
                                                      lut: bundle.path(forResource: "lut", ofType: "json") ?? "",
                                                      motion: Bundle.beautyKitBundle.path(forResource: "motion", ofType: "json") ?? "",
                                                      makeup: bundle.path(forResource: "makeup", ofType: "json") ?? "",
-                                                     segmentation: bundle.path(forResource: "segmentation", ofType: "json") ?? "")
+                                                     segmentation: bundle.path(forResource: "segmentation", ofType: "json") ?? "",
+                                                     lightMakeup: bundle.path(forResource: "light_makeup", ofType: "json") ?? "")
     }
     
     private func initXMagic() {
@@ -120,7 +125,7 @@ extension TEBeautyPanel {
                                               textureHeight: textureHeight,
                                               with: .topLeft,
                                               with: .cameraRotation0)
-        return output?.textureData?.texture ?? 0
+        return Int32(output?.textureData?.texture ?? 0)
     }
     
     public func processVideoFrame(pixelBuffer: CVPixelBuffer) -> CVPixelBuffer {
@@ -128,8 +133,6 @@ extension TEBeautyPanel {
             return pixelBuffer
         }
         let output = beautyKit.processPixelData(pixelBuffer,
-                                                pixelDataWidth: Int32(CVPixelBufferGetWidth(pixelBuffer)),
-                                                pixelDataHeight: Int32(CVPixelBufferGetHeight(pixelBuffer)),
                                                 with: .topLeft,
                                                 with: .cameraRotation0)
         return output?.pixelData?.data ?? pixelBuffer

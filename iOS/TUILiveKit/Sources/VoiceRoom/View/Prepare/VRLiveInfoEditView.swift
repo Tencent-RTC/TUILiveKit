@@ -16,19 +16,11 @@ class VRLiveInfoEditView: UIView {
     private let routerManager: VRRouterManager
     private var cancellableSet = Set<AnyCancellable>()
 
-    lazy var categorySelectionModel: VRPrepareSelectionModel = {
-        let model = VRPrepareSelectionModel()
-        model.leftIcon = .liveBundleImage("live_category_icon")
-        model.midText = .localizedReplace(.categoryText, replace: manager.roomState.liveExtraInfo.category.getString())
-        model.rightIcon = .liveBundleImage("live_selection_arrow_icon")
-        return model
-    }()
-
     lazy var modeSelectionModel: VRPrepareSelectionModel = {
         let model = VRPrepareSelectionModel()
-        model.leftIcon = .liveBundleImage("live_mode_icon")
+        model.leftIcon = internalImage("live_mode_icon")
         model.midText = .localizedReplace(.modeText, replace: manager.roomState.liveExtraInfo.liveMode.getString())
-        model.rightIcon = .liveBundleImage("live_selection_arrow_icon")
+        model.rightIcon = internalImage("live_selection_arrow_icon")
         return model
     }()
 
@@ -73,7 +65,7 @@ class VRLiveInfoEditView: UIView {
         let view = UIView()
         let editIcon = UIButton()
         editIcon.addTarget(self, action: #selector(editIconClick), for: .touchUpInside)
-        editIcon.setBackgroundImage(.liveBundleImage("live_edit_icon"), for: .normal)
+        editIcon.setBackgroundImage(internalImage("live_edit_icon"), for: .normal)
         view.addSubview(editIcon)
         editIcon.snp.makeConstraints { make in
             make.trailing.equalToSuperview()
@@ -100,12 +92,6 @@ class VRLiveInfoEditView: UIView {
             make.top.equalTo(inputTextField.snp.bottom)
         }
 
-        return view
-    }()
-
-    private lazy var categoryBackgroundView: VRPrepareSelectionButton = {
-        let view = VRPrepareSelectionButton(model: categorySelectionModel)
-        view.addTarget(self, action: #selector(categorySelectionClick), for: .touchUpInside)
         return view
     }()
 
@@ -139,7 +125,7 @@ class VRLiveInfoEditView: UIView {
     private func initialize() {
         let roomName = TUILogin.getNickName() ?? ""
         inputTextField.text = roomName
-        manager.update(roomName: roomName)
+        manager.onSetRoomName(roomName)
     }
 }
 
@@ -151,7 +137,6 @@ extension VRLiveInfoEditView {
         backgroundColor = .g2.withAlphaComponent(0.4)
         addSubview(coverButtonView)
         addSubview(inputBackgroundView)
-        addSubview(categoryBackgroundView)
         addSubview(modeBackgroundView)
     }
 
@@ -169,17 +154,10 @@ extension VRLiveInfoEditView {
             make.height.equalTo(36.scale375())
         }
 
-        categoryBackgroundView.snp.makeConstraints { make in
+        modeBackgroundView.snp.makeConstraints { make in
             make.leading.equalTo(coverButtonView.snp.trailing).offset(12)
             make.trailing.equalToSuperview().inset(12)
             make.top.equalTo(inputBackgroundView.snp.bottom).offset(14)
-            make.height.equalTo(20.scale375())
-        }
-
-        modeBackgroundView.snp.makeConstraints { make in
-            make.leading.equalTo(categoryBackgroundView.snp.leading)
-            make.trailing.equalToSuperview().inset(12)
-            make.top.equalTo(categoryBackgroundView.snp.bottom).offset(8)
             make.height.equalTo(20.scale375())
         }
     }
@@ -196,52 +174,19 @@ extension VRLiveInfoEditView {
         inputTextField.becomeFirstResponder()
     }
 
-    @objc func categorySelectionClick() {
-        inputTextField.resignFirstResponder()
-        showCategorySelection()
-    }
-
     @objc func modeSelectionClick() {
         inputTextField.resignFirstResponder()
         showModeSelection()
     }
-    
-    private func showCategorySelection() {
-        var items: [ActionItem] = []
-        let designConfig = ActionItemDesignConfig()
-        var config: ActionItemDesignConfig
-        for category in LiveStreamCategory.allCases {
-            if category == .music {
-                config = ActionItemDesignConfig(lineWidth: 7)
-            } else {
-                config = designConfig
-            }
-            let item = ActionItem(title: category.getString(), designConfig: config, actionClosure: { [weak self] _ in
-                guard let self = self else { return }
-                self.manager.update(roomCategory: category)
-                self.routerManager.router(action: .dismiss())
-            })
-            items.append(item)
-        }
-        var panelData = ActionPanelData(items: items)
-        panelData.containCancel = false
-        routerManager.router(action: .present(.listMenu(panelData)))
-    }
 
     private func showModeSelection() {
         var items: [ActionItem] = []
-        let designConfig = ActionItemDesignConfig()
-        var config: ActionItemDesignConfig
+        let config = ActionItemDesignConfig()
         for mode in LiveStreamPrivacyStatus.allCases {
-            if mode == .privacy {
-                config = ActionItemDesignConfig(lineWidth: 7)
-            } else {
-                config = designConfig
-            }
             let item = ActionItem(title: mode.getString(), designConfig: config, actionClosure: { [weak self] value in
                 guard let self = self else { return }
                 guard let privacy = LiveStreamPrivacyStatus(rawValue: value) else { return }
-                self.manager.update(roomPrivacy: privacy)
+                self.manager.onSetRoomPrivacy(privacy)
                 self.routerManager.router(action: .dismiss())
             })
             items.append(item)
@@ -278,14 +223,14 @@ extension VRLiveInfoEditView: UITextFieldDelegate {
     }
 
     func textFieldDidChangeSelection(_ textField: UITextField) {
-        manager.update(roomName: textField.text ?? "")
+        manager.onSetRoomName(textField.text ?? "")
     }
 }
 
 // MARK: - subscribeRoomState
 extension VRLiveInfoEditView {
     private func subscribeRoomState() {
-        manager.subscribeRoomState(StateSelector(keyPath: \VRRoomState.coverURL))
+        manager.subscribeState(StateSelector(keyPath: \VRRoomState.coverURL))
             .receive(on: RunLoop.main)
             .sink { [weak self] url in
                 guard let self = self else { return }
@@ -295,16 +240,7 @@ extension VRLiveInfoEditView {
             }
             .store(in: &cancellableSet)
         
-        manager.subscribeRoomState(StateSelector(keyPath: \VRRoomState.liveExtraInfo.category))
-            .receive(on: RunLoop.main)
-            .sink { [weak self] category in
-                guard let self = self else { return }
-                let value = String.localizedReplace(.categoryText, replace: self.manager.roomState.liveExtraInfo.category.getString())
-                self.categorySelectionModel.midText = value
-            }
-            .store(in: &cancellableSet)
-        
-        manager.subscribeRoomState(StateSelector(keyPath: \VRRoomState.liveExtraInfo.liveMode))
+        manager.subscribeState(StateSelector(keyPath: \VRRoomState.liveExtraInfo.liveMode))
             .receive(on: RunLoop.main)
             .sink { [weak self] mode in
                 guard let self = self else { return }
@@ -316,8 +252,7 @@ extension VRLiveInfoEditView {
 }
 
 private extension String {
-    static let editCoverTitle = localized("Modify the cover")
-    static let editPlaceholderText = localized("Please enter room name")
-    static let categoryText = localized("Live Category:xxx")
-    static let modeText = localized("Live Mode:xxx")
+    static let editCoverTitle = internalLocalized("Modify the cover")
+    static let editPlaceholderText = internalLocalized("Please enter room name")
+    static let modeText = internalLocalized("Live Mode:xxx")
 }

@@ -37,8 +37,8 @@ class ActionPanel: UIView {
         WindowUtils.isPortrait
     }()
     private var isViewReady: Bool = false
-    override func layoutSubviews() {
-        super.layoutSubviews()
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
         guard !isViewReady else { return }
         constructViewHierarchy()
         activateConstraints()
@@ -133,11 +133,10 @@ class ActionPanel: UIView {
     }
     
     func activateConstraints() {
-        let bottomSafeHeight = WindowUtils.bottomSafeHeight
         snp.remakeConstraints { [weak self] make in
             guard let self = self else { return }
             if self.isPortrait {
-                make.height.equalTo(min(718.scale375Height(), self.viewHeight+bottomSafeHeight))
+                make.height.equalTo(min(718.scale375Height(), self.viewHeight))
             } else {
                 make.width.equalTo(375.scale375())
             }
@@ -172,14 +171,6 @@ class ActionPanel: UIView {
             make.centerX.equalToSuperview()
             make.width.equalToSuperview()
             make.height.equalTo(cancelButtonViewHeight)
-        }
-    }
-    
-    private func adjustTableViewBounces() {
-        if viewHeight <= screenWidth - (48.scale375() + WindowUtils.bottomSafeHeight) {
-            actionTableView.bounces = false
-        } else {
-            actionTableView.bounces = true
         }
     }
     
@@ -227,6 +218,6 @@ extension ActionPanel: UITableViewDataSource {
 
 private extension String {
     static var cancelText = {
-        localized("Cancel")
+        internalLocalized("Cancel")
     }()
 }

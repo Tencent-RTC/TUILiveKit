@@ -10,6 +10,7 @@ import LiveStreamCore
 import RTCCommon
 import Combine
 import ImSDK_Plus
+import TUILiveResources
 
 class UserManagePanelView: RTCBaseView {
     private let manager: LiveStreamManager
@@ -98,7 +99,7 @@ class UserManagePanelView: RTCBaseView {
         button.titleLabel?.font = .customFont(ofSize: 14)
         button.setTitle(.followText, for: .normal)
         button.setTitleColor(.g7, for: .normal)
-        button.setImage(.liveBundleImage("live_user_followed_icon"), for: .selected)
+        button.setImage(internalImage("live_user_followed_icon"), for: .selected)
         button.layer.cornerRadius = 16
         button.isHidden = isSelf
         return button
@@ -185,7 +186,7 @@ class UserManagePanelView: RTCBaseView {
                 if isFollow {
                     followButton.backgroundColor = .g5
                     followButton.setTitle("", for: .normal)
-                    followButton.setImage(.liveBundleImage("live_user_followed_icon"), for: .normal)
+                    followButton.setImage(internalImage("live_user_followed_icon"), for: .normal)
                 } else {
                     followButton.backgroundColor = .deepSeaBlueColor
                     followButton.setTitle(.followText, for: .normal)
@@ -245,7 +246,7 @@ class UserManagePanelView: RTCBaseView {
     }
     
     private func checkFollowStatus() {
-        V2TIMManager.sharedInstance().checkFollowType([user.userId]) { [weak self] checkResultList in
+        V2TIMManager.sharedInstance().checkFollowType(userIDList: [user.userId]) { [weak self] checkResultList in
             guard let self = self, let result = checkResultList?.first else { return }
             if result.followType == .FOLLOW_TYPE_IN_BOTH_FOLLOWERS_LIST || result.followType == .FOLLOW_TYPE_IN_MY_FOLLOWING_LIST {
                 self.isFollow = true
@@ -320,9 +321,9 @@ class UserManagePanelView: RTCBaseView {
     
     private lazy var disableChatItem: LSFeatureItem = {
         LSFeatureItem(normalTitle: .disableChatText,
-                      normalImage: .liveBundleImage("live_enable_chat_icon"),
+                      normalImage: internalImage("live_enable_chat_icon"),
                       selectedTitle: .enableChatText,
-                      selectedImage: .liveBundleImage("live_disable_chat_icon"),
+                      selectedImage: internalImage("live_disable_chat_icon"),
                       isSelected: isMessageDisabled,
                       designConfig: designConfig,
                       actionClosure: { [weak self] sender in
@@ -333,7 +334,7 @@ class UserManagePanelView: RTCBaseView {
     
     private lazy var kickOutItem: LSFeatureItem = {
         LSFeatureItem(normalTitle: .kickOutOfRoomText,
-                      normalImage: .liveBundleImage("live_anchor_kickout_icon"),
+                      normalImage: internalImage("live_anchor_kickout_icon"),
                       designConfig: designConfig,
                       actionClosure: { [weak self] _ in
             guard let self = self else { return }
@@ -343,9 +344,9 @@ class UserManagePanelView: RTCBaseView {
     
     private lazy var muteSelfAudioItem: LSFeatureItem = {
         LSFeatureItem(normalTitle: .muteAudioText,
-                      normalImage: .liveBundleImage("live_anchor_unmute_icon"),
+                      normalImage: internalImage("live_anchor_unmute_icon"),
                       selectedTitle: .unmuteAudioText,
-                      selectedImage: .liveBundleImage("live_anchor_mute_icon"),
+                      selectedImage: internalImage("live_anchor_mute_icon"),
                       isSelected: isSelfMuted,
                       isDisabled: isAudioLocked,
                       designConfig: designConfig,
@@ -357,9 +358,9 @@ class UserManagePanelView: RTCBaseView {
     
     private lazy var closeSelfCameraItem: LSFeatureItem = {
         LSFeatureItem(normalTitle: .closeCameraText,
-                      normalImage: .liveBundleImage("live_open_camera_icon"),
+                      normalImage: internalImage("live_open_camera_icon"),
                       selectedTitle: .opneCameraText,
-                      selectedImage: .liveBundleImage("live_close_camera_icon"),
+                      selectedImage: internalImage("live_close_camera_icon"),
                       isSelected: !isSelfCameraOpened,
                       isDisabled: isCameraLocked,
                       designConfig: designConfig,
@@ -371,7 +372,7 @@ class UserManagePanelView: RTCBaseView {
     
     private lazy var flipItem: LSFeatureItem = {
         LSFeatureItem(normalTitle: .filpText,
-                      normalImage: .liveBundleImage("live_video_setting_flip"),
+                      normalImage: internalImage("live_video_setting_flip"),
                       designConfig: designConfig,
                       actionClosure: { [weak self] _ in
             guard let self = self else { return }
@@ -381,7 +382,7 @@ class UserManagePanelView: RTCBaseView {
     
     private lazy var leaveSeatItem: LSFeatureItem = {
         LSFeatureItem(normalTitle: .disconnectText,
-                      normalImage: .liveBundleImage("live_leave_seat_icon"),
+                      normalImage: internalImage("live_leave_seat_icon"),
                       designConfig: designConfig,
                       actionClosure: { [weak self] _ in
             guard let self = self else { return }
@@ -391,9 +392,9 @@ class UserManagePanelView: RTCBaseView {
     
     private lazy var disableAudioItem: LSFeatureItem = {
         LSFeatureItem(normalTitle: .disableAudioText,
-                      normalImage: .liveBundleImage("live_anchor_unmute_icon"),
+                      normalImage: internalImage("live_anchor_unmute_icon"),
                       selectedTitle: .enableAudioText,
-                      selectedImage: .liveBundleImage("live_disable_audio_icon"),
+                      selectedImage: internalImage("live_disable_audio_icon"),
                       isSelected: isAudioLocked,
                       designConfig: designConfig,
                       actionClosure: { [weak self] _ in
@@ -404,9 +405,9 @@ class UserManagePanelView: RTCBaseView {
     
     private lazy var disableCameraItem: LSFeatureItem = {
         LSFeatureItem(normalTitle: .disableCameraText,
-                      normalImage: .liveBundleImage("live_open_camera_icon"),
+                      normalImage: internalImage("live_open_camera_icon"),
                       selectedTitle: .enableCameraText,
-                      selectedImage: .liveBundleImage("live_disable_camera_icon"),
+                      selectedImage: internalImage("live_disable_camera_icon"),
                       isSelected: isCameraLocked,
                       designConfig: designConfig,
                       actionClosure: { [weak self] _ in
@@ -417,7 +418,7 @@ class UserManagePanelView: RTCBaseView {
     
     private lazy var kickOffSeatItem: LSFeatureItem = {
         LSFeatureItem(normalTitle: .hangupText,
-                      normalImage: .liveBundleImage("live_leave_seat_icon"),
+                      normalImage: internalImage("live_leave_seat_icon"),
                       designConfig: designConfig,
                       actionClosure: { [weak self] _ in
             guard let self = self else { return }
@@ -430,7 +431,7 @@ class UserManagePanelView: RTCBaseView {
 extension UserManagePanelView {
     @objc private func followButtonClick() {
         if isFollow {
-            V2TIMManager.sharedInstance().unfollowUser([user.userId]) { [weak self] followResultList in
+            V2TIMManager.sharedInstance().unfollowUser(userIDList: [user.userId]) { [weak self] followResultList in
                 guard let self = self, let result = followResultList?.first else { return }
                 if result.resultCode == 0 {
                     isFollow = false
@@ -442,7 +443,7 @@ extension UserManagePanelView {
                 manager.toastSubject.send("code: \(code), message: \(String(describing: message))")
             }
         } else {
-            V2TIMManager.sharedInstance().followUser([user.userId]) { [weak self] followResultList in
+            V2TIMManager.sharedInstance().followUser(userIDList: [user.userId]) { [weak self] followResultList in
                 guard let self = self, let result = followResultList?.first else { return }
                 if result.resultCode == 0 {
                     isFollow = true
@@ -590,24 +591,24 @@ extension UserManagePanelView {
 }
 
 fileprivate extension String {
-    static let followText = localized("Follow")
-    static let disableChatText = localized("Disable Chat")
-    static let enableChatText = localized("Enable Chat")
-    static let kickOutOfRoomText = localized("Remove Out")
-    static let kickOutOfRoomConfirmText = localized("Remove")
-    static let kickOutAlertText = localized("Are you sure you want to remove xxx?")
-    static let muteAudioText = localized("Mute")
-    static let unmuteAudioText = localized("Unmute")
-    static let opneCameraText = localized("Start Video")
-    static let closeCameraText = localized("Stop Video")
-    static let filpText = localized("Flip")
-    static let leaveSeatAlertText = localized("Are you sure you want to disconnect?")
-    static let cancelText = localized("Cancel")
-    static let disableAudioText = localized("Disable Audio")
-    static let enableAudioText = localized("Enable Audio")
-    static let disableCameraText = localized("Disable Video")
-    static let enableCameraText = localized("Enable Video")
-    static let hangupText = localized("End")
-    static let hangupAlertText = localized("Are you sure you want to disconnect xxx?")
-    static let disconnectText = localized("End Co-guest")
+    static let followText = internalLocalized("Follow")
+    static let disableChatText = internalLocalized("Disable Chat")
+    static let enableChatText = internalLocalized("Enable Chat")
+    static let kickOutOfRoomText = internalLocalized("Remove Out")
+    static let kickOutOfRoomConfirmText = internalLocalized("Remove")
+    static let kickOutAlertText = internalLocalized("Are you sure you want to remove xxx?")
+    static let muteAudioText = internalLocalized("Mute")
+    static let unmuteAudioText = internalLocalized("Unmute")
+    static let opneCameraText = internalLocalized("Start Video")
+    static let closeCameraText = internalLocalized("Stop Video")
+    static let filpText = internalLocalized("Flip")
+    static let leaveSeatAlertText = internalLocalized("Are you sure you want to disconnect?")
+    static let cancelText = internalLocalized("Cancel")
+    static let disableAudioText = internalLocalized("Disable Audio")
+    static let enableAudioText = internalLocalized("Enable Audio")
+    static let disableCameraText = internalLocalized("Disable Video")
+    static let enableCameraText = internalLocalized("Enable Video")
+    static let hangupText = internalLocalized("End")
+    static let hangupAlertText = internalLocalized("Are you sure you want to disconnect xxx?")
+    static let disconnectText = internalLocalized("End Co-guest")
 }

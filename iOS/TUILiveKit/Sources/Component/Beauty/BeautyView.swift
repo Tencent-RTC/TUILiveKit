@@ -33,6 +33,16 @@ let TUICore_TEBeautyService_PanelLevel = "TUICore_TEBeautyService_PanelLevel"
 let TUICore_TEBeautyService_CachedBeautyEffect = "TUICore_TEBeautyService_CachedBeautyEffect"
 
 class BeautyView: UIView {
+    static func shared() -> BeautyView {
+        if let instance = instance {
+            return instance
+        }
+        let view = BeautyView()
+        instance = view
+        return view
+    }
+    private static var instance: BeautyView?
+    
     var backClosure: (()->Void)?
     var resetBeautyEffectForAdvancedBeauty = true
     private var isAdvancedBeauty = false
@@ -44,9 +54,21 @@ class BeautyView: UIView {
     private let Screen_Width = UIScreen.main.bounds.size.width
     private let Screen_Height = UIScreen.main.bounds.size.height
     
-    init() {
+    private static let stateKey = "__kBeautyView_state_key__"
+    
+    private init() {
         roomEngine = TUIRoomEngine.sharedInstance()
         super.init(frame: .zero)
+        subscribe()
+    }
+    
+    private func subscribe() {
+        StateCache.shared.subscribeToObjectRemoval(key: BeautyView.stateKey) {
+            BeautyView.instance = nil
+            DispatchQueue.main.async {
+                BeautyView.shared().subscribe()
+            }
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -69,7 +91,6 @@ class BeautyView: UIView {
     private func constructViewHierarchy() {
         if let advancedBeautyPanel = getAdvancedBeautyPanel() {
             beautyPanel = advancedBeautyPanel
-            beautyPanel.backgroundColor = .black
             setBeautyMode(isAdvanced: true)
         } else {
             beautyPanel = DefaultBeautyPanel()

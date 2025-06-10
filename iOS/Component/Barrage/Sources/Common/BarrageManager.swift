@@ -36,9 +36,11 @@ class BarrageManager: NSObject {
         TUIRoomEngine.sharedInstance()
     }
     
+    typealias RoomBarrage = (roomId: String, barrage: TUIBarrage)
+    
     var inputString: String = ""
     let toastSubject = PassthroughSubject<String, Never>()
-    let sendBarrageSubject = PassthroughSubject<TUIBarrage, Never>()
+    let sendBarrageSubject = PassthroughSubject<RoomBarrage, Never>()
     let roomDismissedSubject = PassthroughSubject<String, Never>()
 }
 

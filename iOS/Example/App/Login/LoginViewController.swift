@@ -60,13 +60,14 @@ class LoginViewController: UIViewController {
     }
     
     func loginSucc() {
+        let appDelegate = UIApplication.shared.delegate as? AppDelegate
+        
         if SettingsConfig.share.name.count == 0 {
             let vc = RegisterViewController()
             navigationController?.pushViewController(vc, animated: true)
         } else {
-            self.view.makeToast(TUILiveKitAppLocalize("Logged in"))
+            self.view.makeToast(TUILiveKitAppLocalize("Logged In"))
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                let appDelegate = UIApplication.shared.delegate as? AppDelegate
                 appDelegate?.showMainViewController()
             }
         }

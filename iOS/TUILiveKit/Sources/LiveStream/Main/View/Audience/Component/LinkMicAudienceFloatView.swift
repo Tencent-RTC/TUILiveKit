@@ -241,9 +241,9 @@ extension LinkMicAudienceFloatView {
 
 private extension String {
     static var toBePassedText: String {
-        localized("Waitingxxx")
+        internalLocalized("Waitingxxx")
     }
     static var cancelLinkMicRequestText = {
-        localized("Cancel application for link mic")
+        internalLocalized("Cancel application for link mic")
     }()
 }

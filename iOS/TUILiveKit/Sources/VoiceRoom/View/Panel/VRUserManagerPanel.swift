@@ -10,15 +10,16 @@ import RTCCommon
 import Combine
 import RTCRoomEngine
 import LiveStreamCore
+import TUILiveResources
 
 class VRUserManagerPanel: RTCBaseView {
     private let manager: VoiceRoomManager
     private let routerManager: VRRouterManager
     private weak var coreView: SeatGridView?
     private var cancellableSet: Set<AnyCancellable> = []
-    private var seatInfo: VRSeatInfo
+    private var seatInfo: TUISeatInfo
     private var isOwner: Bool {
-        manager.userState.selfInfo.userId == manager.roomState.ownerInfo.userId
+        manager.coreUserState.selfInfo.userId == manager.coreRoomState.ownerId
     }
     
     private let avatarImageView: UIImageView = {
@@ -54,7 +55,7 @@ class VRUserManagerPanel: RTCBaseView {
         button.titleLabel?.font = .customFont(ofSize: 14, weight: .medium)
         button.setTitle(.followText, for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.setImage(.liveBundleImage("live_user_followed_icon"), for: .selected)
+        button.setImage(internalImage("live_user_followed_icon"), for: .selected)
         button.layer.cornerRadius = 16.scale375Height()
         button.isHidden = true
         return button
@@ -71,9 +72,9 @@ class VRUserManagerPanel: RTCBaseView {
         model.itemSize = CGSize(width: 56.scale375(), height: 50.scale375())
         model.itemDiff = 25.scale375()
         model.items.append(VRFeatureItem(normalTitle: .muteText,
-                                       normalImage: .liveBundleImage("live_anchor_mute_icon"),
+                                       normalImage: internalImage("live_anchor_mute_icon"),
                                        selectedTitle: .unmuteText,
-                                       selectedImage: .liveBundleImage("live_anchor_unmute_icon"),
+                                       selectedImage: internalImage("live_anchor_unmute_icon"),
                                        isSelected: seatInfo.isAudioLocked,
                                        designConfig: designConfig,
                                        actionClosure: { [weak self] button in
@@ -81,7 +82,7 @@ class VRUserManagerPanel: RTCBaseView {
             self.muteClick(sender: button)
         }))
         model.items.append(VRFeatureItem(normalTitle: .kickoffText,
-                                       normalImage: .liveBundleImage("live_anchor_kickoff_icon"),
+                                       normalImage: internalImage("live_anchor_kickoff_icon"),
                                        designConfig: designConfig,
                                        actionClosure: { [weak self] button in
             guard let self = self else { return }
@@ -92,7 +93,7 @@ class VRUserManagerPanel: RTCBaseView {
         return featureClickPanel
     }()
     
-    init(manager: VoiceRoomManager, routerMangear: VRRouterManager, coreView: SeatGridView, seatInfo: VRSeatInfo) {
+    init(manager: VoiceRoomManager, routerMangear: VRRouterManager, coreView: SeatGridView, seatInfo: TUISeatInfo) {
         self.manager = manager
         self.routerManager = routerMangear
         self.coreView = coreView
@@ -161,9 +162,9 @@ class VRUserManagerPanel: RTCBaseView {
     }
     
     override func setupViewStyle() {
-        avatarImageView.kf.setImage(with: URL(string: seatInfo.avatarUrl), placeholder: UIImage.avatarPlaceholderImage)
+        avatarImageView.kf.setImage(with: URL(string: seatInfo.avatarUrl ?? ""), placeholder: UIImage.avatarPlaceholderImage)
         userNameLabel.text = seatInfo.userName
-        userIdLabel.text = "ID: " + seatInfo.userId
+        userIdLabel.text = "ID: " + (seatInfo.userId ?? "")
     }
     
     deinit {
@@ -174,7 +175,7 @@ class VRUserManagerPanel: RTCBaseView {
 
 extension VRUserManagerPanel {
     private func subscribeMyFollowListState() {
-        manager.subscribeUserState(StateSelector(keyPath: \.myFollowingUserList))
+        manager.subscribeState(StateSelector(keyPath: \VRUserState.myFollowingUserList))
             .receive(on: RunLoop.main)
             .sink { [weak self] followUserList in
                 guard let self = self else { return }
@@ -197,13 +198,13 @@ extension VRUserManagerPanel {
     }
     
     private func subscribeSeatInfoState() {
-        manager.subscribeSeatState(StateSelector(keyPath: \.seatList))
+        manager.subscribeCoreState(StateSelector(keyPath: \SGSeatState.seatList))
             .removeDuplicates()
             .receive(on: RunLoop.main)
             .sink { [weak self] seatInfoList in
                 guard let self = self else { return }
                 self.seatInfo = seatInfoList[seatInfo.index]
-                if seatInfo.userId.isEmpty {
+                if (seatInfo.userId ?? "").isEmpty {
                     routerManager.router(action: .dismiss())
                 }
             }
@@ -214,7 +215,7 @@ extension VRUserManagerPanel {
 extension VRUserManagerPanel {
     @objc
     private func followButtonClick(sender: UIButton) {
-        manager.followUser(VRUser(seatInfo: seatInfo), isFollow: !sender.isSelected)
+        manager.followUser(TUIUserInfo(seatInfo: seatInfo), isFollow: !sender.isSelected)
     }
     
     @objc
@@ -232,25 +233,25 @@ extension VRUserManagerPanel {
         } onError: { [weak self] code, message in
             guard let self = self else { return }
             let error = InternalError(code: code, message: message)
-            self.manager.toastSubject.send(error.localizedMessage)
+            self.manager.onError(error.localizedMessage)
         }
     }
     
     @objc
     private func kickoffClick() {
-        coreView?.kickUserOffSeatByAdmin(userId: seatInfo.userId) {
+        coreView?.kickUserOffSeatByAdmin(userId: seatInfo.userId ?? "") {
         } onError: { [weak self] code, message in
             guard let self = self else { return }
             let error = InternalError(code: code, message: message)
-            self.manager.toastSubject.send(error.localizedMessage)
+            self.manager.onError(error.localizedMessage)
         }
         routerManager.router(action: .dismiss())
     }
 }
 
 fileprivate extension String {
-    static let followText = localized("Follow")
-    static let muteText = localized("Mute")
-    static let unmuteText = localized("Unmute")
-    static let kickoffText = localized("End")
+    static let followText = internalLocalized("Follow")
+    static let muteText = internalLocalized("Mute")
+    static let unmuteText = internalLocalized("Unmute")
+    static let kickoffText = internalLocalized("End")
 }

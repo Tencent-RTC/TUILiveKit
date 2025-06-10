@@ -143,7 +143,7 @@ class ActionCell: UITableViewCell {
                     self.iconImageView.isHidden = iconIsEmpty
                     self.actionLabel.textAlignment = iconIsEmpty ? .center : .left
                     guard !iconIsEmpty else { return }
-                    self.iconImageView.image = .liveBundleImage(item.icon)
+                    self.iconImageView.image = internalImage(item.icon)
                 }
             }
             .store(in: &cancellableSet)

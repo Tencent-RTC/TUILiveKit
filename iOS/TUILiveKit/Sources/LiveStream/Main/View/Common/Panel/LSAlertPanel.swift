@@ -115,6 +115,10 @@ class LSAlertPanel: UIView {
     
     func show() {
         WindowUtils.getCurrentWindowViewController()?.view.addSubview(self)
+        snp.remakeConstraints { make in
+            make.center.equalToSuperview()
+            make.size.equalTo(CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
+        }
     }
     
     func dismiss() {
@@ -246,5 +250,5 @@ extension LSAlertPanel {
 }
 
 fileprivate extension String {
-    static let confirmText = localized("Confirm")
+    static let confirmText = internalLocalized("Confirm")
 }

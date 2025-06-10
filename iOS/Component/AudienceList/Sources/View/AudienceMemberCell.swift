@@ -55,7 +55,7 @@ class AudienceMemberCell: UITableViewCell {
     
     lazy var userManageButton: UIButton = {
         let button = UIButton()
-        button.setImage(.liveBundleImage("live_more_icon"), for: .normal)
+        button.setImage(internalImage("live_more_icon"), for: .normal)
         button.addTarget(self, action: #selector(userManageButtonClick), for: .touchUpInside)
         return button
     }()

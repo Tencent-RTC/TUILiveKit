@@ -33,7 +33,7 @@ class RegisterViewController: UIViewController {
         let userFullInfo = V2TIMUserFullInfo()
         userFullInfo.nickName = userName
         userFullInfo.faceURL = SettingsConfig.share.avatar
-        V2TIMManager.sharedInstance().setSelfInfo(userFullInfo) { [weak self] in
+        V2TIMManager.sharedInstance().setSelfInfo(info: userFullInfo) { [weak self] in
             guard let self = self else { return }
             SettingsConfig.share.name = userName
             self.registerSuccess()

@@ -40,6 +40,7 @@ public class BarrageStreamView: UIView {
         view.contentInsetAdjustmentBehavior = .never
         view.estimatedRowHeight = 30.scale375Height()
         view.register(TUIBarrageCell.self, forCellReuseIdentifier: TUIBarrageCell.cellReuseIdentifier)
+        view.contentInset = UIEdgeInsets(top: bounds.height - view.estimatedRowHeight, left: 0, bottom: 0, right: 0)
         return view
     }()
 
@@ -105,8 +106,8 @@ public class BarrageStreamView: UIView {
     private func bindInteraction() {
         BarrageManager.shared.sendBarrageSubject
             .receive(on: RunLoop.main)
-            .sink { [weak self] barrage in
-                guard let self = self else { return }
+            .sink { [weak self] roomId, barrage in
+                guard let self = self, roomId == self.roomId else { return }
                 insertBarrages([barrage])
             }
             .store(in: &cancellableSet)

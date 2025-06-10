@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RTCRoomEngine
 
 class VRSeatControlCell: UITableViewCell {
     let avatarImageView: UIImageView = {
@@ -72,8 +73,8 @@ class VRSeatControlCell: UITableViewCell {
 
 class VRTheSeatCell: VRSeatControlCell {
     static let identifier = "VRTheSeatCell"
-    var kickoffEventClosure: ((VRSeatInfo) -> Void)?
-    var seatInfo: VRSeatInfo?
+    var kickoffEventClosure: ((TUISeatInfo) -> Void)?
+    var seatInfo: TUISeatInfo?
     
     let seatIndexLabel: UILabel = {
         let label = UILabel(frame: .zero)
@@ -135,9 +136,9 @@ class VRTheSeatCell: VRSeatControlCell {
         kickoffSeatButton.addTarget(self, action: #selector(kickoffSeatButtonClick(sender:)), for: .touchUpInside)
     }
     
-    func updateSeatInfo(seatInfo: VRSeatInfo) {
+    func updateSeatInfo(seatInfo: TUISeatInfo) {
         self.seatInfo = seatInfo
-        avatarImageView.kf.setImage(with: URL(string: seatInfo.avatarUrl), placeholder: UIImage.avatarPlaceholderImage)
+        avatarImageView.kf.setImage(with: URL(string: seatInfo.avatarUrl ?? ""), placeholder: UIImage.avatarPlaceholderImage)
         userNameLabel.text = seatInfo.userName
         seatIndexLabel.text = "\(seatInfo.index + 1)"
     }
@@ -243,9 +244,9 @@ class VRApplyTakeSeatCell: VRSeatControlCell {
 
 class VRInviteTakeSeatCell: VRSeatControlCell {
     static let identifier = "VRInviteTakeSeatCell"
-    var inviteEventClosure: ((VRUser) -> Void)?
-    var cancelEventClosure: ((VRUser) -> Void)?
-    var user: VRUser?
+    var inviteEventClosure: ((TUIUserInfo) -> Void)?
+    var cancelEventClosure: ((TUIUserInfo) -> Void)?
+    var user: TUIUserInfo?
     var lastClickTime: Date?
     let clickInterval = 0.5
     
@@ -288,10 +289,10 @@ class VRInviteTakeSeatCell: VRSeatControlCell {
         inviteButton.addTarget(self, action: #selector(inviteButtonClick(sender:)), for: .touchUpInside)
     }
     
-    func updateUser(user: VRUser) {
+    func updateUser(user: TUIUserInfo) {
         self.user = user
         avatarImageView.kf.setImage(with: URL(string: user.avatarUrl), placeholder: UIImage.avatarPlaceholderImage)
-        userNameLabel.text = user.name
+        userNameLabel.text = user.userName
     }
     
     func updateButtonView(isSelected: Bool) {
@@ -329,9 +330,9 @@ class VRInviteTakeSeatCell: VRSeatControlCell {
 }
 
 fileprivate extension String {
-    static let endTitleText = localized("End")
-    static let approveText = localized("Agree")
-    static let rejectText = localized("Reject")
-    static let inviteText = localized("Invite")
-    static let cancelText = localized("Cancel")
+    static let endTitleText = internalLocalized("End")
+    static let approveText = internalLocalized("Agree")
+    static let rejectText = internalLocalized("Reject")
+    static let inviteText = internalLocalized("Invite")
+    static let cancelText = internalLocalized("Cancel")
 }

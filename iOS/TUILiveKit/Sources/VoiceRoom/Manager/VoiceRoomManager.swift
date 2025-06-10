@@ -8,58 +8,15 @@
 import RTCRoomEngine
 import RTCCommon
 import Combine
+import TUILiveResources
+import LiveStreamCore
 
-// MARK: --------------- API --------------------
-protocol VRRoomManagerInterface {
-    func fetchRoomInfo()
-    func fetchLiveInfo(roomId: String)
-    func fetchRoomOwnerInfo(ownerId: String)
-    
-    func setRoomSeatModeByAdmin(_ seatMode: TUISeatMode)
-    func setLiveInfo(liveInfo: TUILiveInfo, modifyFlag: TUILiveModifyFlag)
-    
-    func update(roomId: String)
-    func update(roomName: String)
-    func update(ownerInfo: VRUser)
-    func update(roomInfo: TUIRoomInfo)
-    func update(giftIncome: Int, giftPeople: String)
-    func update(roomParams: RoomParams)
-    func update(roomCategory: LiveStreamCategory)
-    func update(roomPrivacy: LiveStreamPrivacyStatus)
-    func update(roomCoverUrl: String)
-    func update(backgroundUrl: String)
-    func update(seatMode: TUISeatMode)
+protocol VoiceRoomManagerProvider: NSObject {
+    func getCoreViewState<T: State>() -> T
+    func subscribeCoreViewState<State, Value>(_ selector: StateSelector<State, Value>) -> AnyPublisher<Value, Never>
 }
 
-protocol VRMediaManagerInterface {
-    func update(microphoneMuted: Bool)
-    func update(microphoneOpened: Bool)
-}
-
-protocol VRUserManagerInterface {
-    func fetchUserList()
-    func fetchSelfInfo()
-    
-    func followUser(_ user: VRUser, isFollow: Bool)
-    func checkFollowType(_ userId: String)
-    
-    func update(linkStatus: LinkStatus)
-}
-
-protocol VRSeatManagerInterface {
-    func fetchSeatList()
-    func fetchSeatApplicationList()
-    
-    func addSeatUserInfo(_ info: TUIUserInfo)
-    func removeSeatUserInfo(_ info: TUIUserInfo)
-    
-    func update(applicationStateIsApplying: Bool)
-}
-
-// MARK: --------------- IMPL --------------------
-class VoiceRoomManager: VRRoomManagerInterface, VRMediaManagerInterface, VRUserManagerInterface, VRSeatManagerInterface {
-    // TODO: Encapsulate the subscription logic of PassthroughSubject
-    
+class VoiceRoomManager {
     // Event for show toast
     public let toastSubject = PassthroughSubject<String, Never>()
     // Event for exit room
@@ -68,16 +25,26 @@ class VoiceRoomManager: VRRoomManagerInterface, VRMediaManagerInterface, VRUserM
     public let likeSubject = PassthroughSubject<Void, Never>()
     
     private let context: Context
-    init() {
-        self.context = Context(toastSubject: toastSubject, exitSubject: exitSubject)
+    init(provider: VoiceRoomManagerProvider) {
+        self.context = Context(provider: provider, toastSubject: toastSubject, exitSubject: exitSubject)
+        provider.subscribeCoreViewState(StateSelector(keyPath: \SGSeatState.seatList))
+            .receive(on: RunLoop.main)
+            .removeDuplicates()
+            .sink { [weak self] seatList in
+                guard let self = self else { return }
+                userManager.onSeatListChanged(seatList: seatList)
+            }
+            .store(in: &context.cancellableSet)
     }
     
     class Context {
         let service = VRRoomEngineService()
+        weak var provider: VoiceRoomManagerProvider?
+        
+        var cancellableSet = Set<AnyCancellable>()
         
         private(set) lazy var roomManager = VRRoomManager(context: self)
         private(set) lazy var userManager = VRUserManager(context: self)
-        private(set) lazy var mediaManager = VRMediaManager(context: self)
         private(set) lazy var seatManager = VRSeatManager(context: self)
         
         private(set) lazy var engineObserver = VRRoomEngineObserver(context: self)
@@ -87,9 +54,10 @@ class VoiceRoomManager: VRRoomManagerInterface, VRMediaManagerInterface, VRUserM
         let toastSubject: PassthroughSubject<String, Never>
         let exitSubject: PassthroughSubject<Void, Never>
         
-        init(toastSubject: PassthroughSubject<String, Never>, exitSubject: PassthroughSubject<Void, Never>) {
+        init(provider: VoiceRoomManagerProvider, toastSubject: PassthroughSubject<String, Never>, exitSubject: PassthroughSubject<Void, Never>) {
             self.toastSubject = toastSubject
             self.exitSubject = exitSubject
+            self.provider = provider
             service.addEngineObserver(engineObserver)
             service.addLiveListObserver(liveListObserver)
             service.addIMFriendshipObserver(imObserver)
@@ -101,182 +69,74 @@ class VoiceRoomManager: VRRoomManagerInterface, VRMediaManagerInterface, VRUserM
         }
     }
     
-    func resetAllState() {
+    private func resetAllState() {
         roomManager.resetState()
         userManager.resetState()
-        mediaManager.resetState()
         seatManager.resetState()
     }
 }
 
-// MARK: - Subscribe
+// MARK: - Common
 extension VoiceRoomManager {
-    func subscribeRoomState<Value>(_ selector: StateSelector<VRRoomState, Value>) -> AnyPublisher<Value, Never> {
-        context.roomManager.subscribeState(selector)
-    }
-    func subscribeRoomState() -> AnyPublisher<VRRoomState, Never> {
-        context.roomManager.subscribeState()
+    func onError(_ message: String) {
+        toastSubject.send(message)
     }
     
-    func subscribeUserState<Value>(_ selector: StateSelector<VRUserState, Value>) -> AnyPublisher<Value, Never> {
-        context.userManager.subscribeState(selector)
-    }
-    func subscribeUserState() -> AnyPublisher<VRUserState, Never> {
-        context.userManager.subscribeState()
+    func prepareRoomIdBeforeEnterRoom(roomId: String, roomParams: RoomParams?) {
+        roomManager.prepareRoomIdBeforeEnterRoom(roomId: roomId, roomParams: roomParams)
     }
     
-    func subscribeMediaState<Value>(_ selector: StateSelector<VRMediaState, Value>) -> AnyPublisher<Value, Never> {
-        context.mediaManager.subscribeState(selector)
-    }
-    func subscribeMediaState() -> AnyPublisher<VRMediaState, Never> {
-        context.mediaManager.subscribeState()
+    func onJoinVoiceRoom(roomInfo: TUIRoomInfo) {
+        userManager.onJoinVoiceRoom(ownerId: roomInfo.ownerId)
+        roomManager.onJoinVoiceRoom(roomInfo: roomInfo)
     }
     
-    func subscribeSeatState<Value>(_ selector: StateSelector<VRSeatState, Value>) -> AnyPublisher<Value, Never> {
-        context.seatManager.subscribeState(selector)
-    }
-    func subscribeSeatState() -> AnyPublisher<VRSeatState, Never> {
-        context.seatManager.subscribeState()
-    }
-}
-
-// MARK: - Room
-extension VoiceRoomManager {
-    var roomManager: VRRoomManager {
-        context.roomManager
-    }
-    var roomState: VRRoomState {
-        roomManager.state
+    func onReceiveGift(price: Int, senderUserId: String) {
+        roomManager.onReceiveGift(price: price, senderUserId: senderUserId)
     }
     
-    func fetchRoomInfo() {
-        roomManager.fetchRoomInfo()
-    }
-    
-    func fetchLiveInfo(roomId: String) {
-        roomManager.fetchLiveInfo(roomId: roomId)
-    }
-    
-    func fetchRoomOwnerInfo(ownerId: String) {
-        roomManager.fetchRoomOwnerInfo(ownerId: ownerId)
-    }
-    
-    func setRoomSeatModeByAdmin(_ seatMode: TUISeatMode) {
-        roomManager.setRoomSeatModeByAdmin(seatMode)
-    }
-    
-    func setLiveInfo(liveInfo: TUILiveInfo, modifyFlag: TUILiveModifyFlag) {
-        roomManager.setLiveInfo(liveInfo: liveInfo, modifyFlag: modifyFlag)
-    }
-    
-    func update(roomId: String) {
-        roomManager.update(roomId: roomId)
-    }
-    
-    func update(roomName: String) {
-        roomManager.update(roomName: roomName)
-    }
-    
-    func update(ownerInfo: VRUser) {
-        roomManager.update(ownerInfo: ownerInfo)
-    }
-    
-    func update(roomInfo: TUIRoomInfo) {
-        roomManager.update(roomInfo: roomInfo)
-    }
-    
-    func update(giftIncome: Int, giftPeople: String) {
-        roomManager.update(giftIncome: giftIncome, giftPeople: giftPeople)
-    }
-    
-    func update(roomParams: RoomParams) {
-        roomManager.update(roomParams: roomParams)
-    }
-    
-    func update(roomCategory: LiveStreamCategory) {
-        roomManager.update(roomCategory: roomCategory)
-    }
-    
-    func update(roomPrivacy: LiveStreamPrivacyStatus) {
-        roomManager.update(roomPrivacy: roomPrivacy)
-    }
-    
-    func update(roomCoverUrl: String) {
-        roomManager.update(roomCoverUrl: roomCoverUrl)
-    }
-    
-    func update(backgroundUrl: String) {
-        roomManager.update(backgroundUrl: backgroundUrl)
-    }
-    
-    func update(seatMode: TUISeatMode) {
-        roomManager.update(seatMode: seatMode)
-    }
-}
-
-// MARK: - User
-extension VoiceRoomManager {
-    var userManager: VRUserManager {
-        context.userManager
-    }
-    var userState: VRUserState {
-        userManager.state
-    }
-    
-    func fetchUserList() {
-        userManager.fetchUserList()
-    }
-    
-    func fetchSelfInfo() {
-        userManager.fetchSelfInfo()
-    }
-    
-    func followUser(_ user: VRUser, isFollow: Bool) {
+    func followUser(_ user: TUIUserInfo, isFollow: Bool) {
         userManager.followUser(user, isFollow: isFollow)
     }
-    
-    func checkFollowType(_ userId:String) {
-        userManager.checkFollowType(userId)
-    }
-    
-    func update(linkStatus: LinkStatus) {
-        userManager.update(linkStatus: linkStatus)
-    }
 }
 
-// MARK: - Media
+// MARK: - Anchor
 extension VoiceRoomManager {
-    var mediaManager: VRMediaManager {
-        context.mediaManager
-    }
-    var mediaState: VRMediaState {
-        mediaManager.state
+    func onSetRoomName(_ name: String) {
+        roomManager.onSetRoomName(name)
     }
     
-    func update(microphoneMuted: Bool) {
-        mediaManager.update(microphoneMuted: microphoneMuted)
+    func onSetRoomPrivacy(_ mode: LiveStreamPrivacyStatus) {
+        roomManager.onSetRoomPrivacy(mode)
     }
     
-    func update(microphoneOpened: Bool) {
-        mediaManager.update(microphoneOpened: microphoneOpened)
-    }
-}
-
-// MARK: - Seat
-extension VoiceRoomManager {
-    var seatManager: VRSeatManager {
-        context.seatManager
-    }
-    var seatState: VRSeatState {
-        seatManager.state
+    func onSetRoomCoverUrl(_ coverUrl: String) {
+        roomManager.onSetRoomCoverUrl(coverUrl)
     }
     
-    func fetchSeatList() {
-        seatManager.fetchSeatList()
+    func onSetRoomBackgroundUrl(_ backgroundUrl: String, isSetToService: Bool = false) {
+        roomManager.onSetRoomBackgroundUrl(backgroundUrl, isSetToService: isSetToService)
     }
     
-    func fetchSeatApplicationList() {
-        seatManager.fetchSeatApplicationList()
+    func onChangedSeatMode(_ seatMode: TUISeatMode) {
+        roomParams.seatMode = seatMode
+    }
+    
+    func onStartVoiceRoom(roomInfo: TUIRoomInfo) {
+        roomManager.onStartVoiceRoom(roomInfo: roomInfo)
+        userManager.onStartVoiceRoom()
+    }
+    
+    func onStopVoiceRoom() {
+        userManager.onStopVoiceRoom()
+    }
+    
+    func onApplyToTakeSeatRequestReceived(userInfo: TUIUserInfo) {
+        seatManager.onApplyToTakeSeatRequestReceived(userInfo: userInfo)
+    }
+    
+    func onApplyToTakeSeatRequestCancelled(userInfo: TUIUserInfo) {
+        seatManager.onApplyToTakeSeatRequestCancelled(userInfo)
     }
     
     func onSentSeatInvitation(to userId: String) {
@@ -286,24 +146,115 @@ extension VoiceRoomManager {
     func onRespondedSeatInvitation(of userId: String) {
         seatManager.onRespondedSeatInvitation(of: userId)
     }
-    
-    func addSeatUserInfo(_ info: TUIUserInfo) {
-        seatManager.addSeatUserInfo(info)
+}
+
+// MARK: - Audience
+extension VoiceRoomManager {
+    func onLeaveVoiceRoom() {
+        userManager.onLeaveVoiceRoom()
+        resetAllState()
     }
     
-    func removeSeatUserInfo(_ info: TUIUserInfo) {
-        seatManager.removeSeatUserInfo(info)
+    func onSentTakeSeatRequest() {
+        seatManager.onSentTakeSeatRequest()
     }
     
-    func update(applicationStateIsApplying: Bool) {
-        seatManager.update(applicationStateIsApplying: applicationStateIsApplying)
+    func onRespondedTakeSeatRequest() {
+        seatManager.onRespondedTakeSeatRequest()
+    }
+    
+    func onRespondedRemoteRequest() {
+        seatManager.onRespondedRemoteRequest()
+    }
+    
+    func onRemoteRequestError(userId: String) {
+        seatManager.onRemoteRequestError(userId: userId)
+    }
+}
+
+// MARK: - Subscribe
+extension VoiceRoomManager {
+    func subscribeState<State, Value>(_ selector: StateSelector<State, Value>) -> AnyPublisher<Value, Never> {
+        if let sel = selector as? StateSelector<VRUserState, Value> {
+            return context.userManager.subscribeState(sel)
+        } else if let sel = selector as? StateSelector<VRRoomState, Value> {
+            return context.roomManager.subscribeState(sel)
+        } else if let sel = selector as? StateSelector<VRSeatState, Value> {
+            return context.seatManager.subscribeState(sel)
+        }
+        assert(false, "Not impl")
+        return Empty<Value, Never>().eraseToAnyPublisher()
+    }
+    
+    func subscribeCoreState<State, Value>(_ selector: StateSelector<State, Value>) -> AnyPublisher<Value, Never> {
+        guard let provider = context.provider else { return Empty<Value, Never>().eraseToAnyPublisher() }
+        return provider.subscribeCoreViewState(selector)
+    }
+}
+// MARK: - Tools
+extension VoiceRoomManager {
+    var roomState: VRRoomState {
+        context.roomManager.state
+    }
+    var seatState: VRSeatState {
+        context.seatManager.state
+    }
+    var userState: VRUserState {
+        context.userManager.state
+    }
+    
+    var roomParams: RoomParams {
+        roomManager.roomParams
+    }
+    
+    var roomManager: VRRoomManager {
+        context.roomManager
+    }
+    var userManager: VRUserManager {
+        context.userManager
+    }
+    var seatManager: VRSeatManager {
+        context.seatManager
+    }
+}
+
+extension VoiceRoomManager {
+    var coreRoomState: SGRoomState {
+        context.coreRoomState
+    }
+    var coreUserState: SGUserState {
+        context.coreUserState
+    }
+    var coreMediaState: SGMediaState {
+        context.coreMediaState
+    }
+    var coreSeatState: SGSeatState {
+        context.coreSeatState
+    }
+}
+
+extension VoiceRoomManager.Context {
+    var coreRoomState: SGRoomState {
+        guard let provider = provider else { return SGRoomState() }
+        return provider.getCoreViewState()
+    }
+    var coreUserState: SGUserState {
+        guard let provider = provider else { return SGUserState() }
+        return provider.getCoreViewState()
+    }
+    var coreMediaState: SGMediaState {
+        guard let provider = provider else { return SGMediaState() }
+        return provider.getCoreViewState()
+    }
+    var coreSeatState: SGSeatState {
+        guard let provider = provider else { return SGSeatState() }
+        return provider.getCoreViewState()
     }
 }
 
 extension VoiceRoomManager: GiftListPanelProvider {
     func getAnchorInfo() -> GiftUser {
-        let owner = roomState.ownerInfo
-        let giftUser = GiftUser(userId: owner.userId, name: owner.name, avatarUrl: owner.avatarUrl)
+        let giftUser = GiftUser(userId: coreRoomState.ownerId, name: coreRoomState.ownerName, avatarUrl: coreRoomState.ownerAvatar)
         return giftUser
     }
 }

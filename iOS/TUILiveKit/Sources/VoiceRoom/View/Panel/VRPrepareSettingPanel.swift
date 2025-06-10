@@ -15,10 +15,10 @@ class VRPrepareSettingPanel: UIView {
     private let routerManager: VRRouterManager
     private var cancellableSet = Set<AnyCancellable>()
     private lazy var menus: [SwitchItem] = {
-        var item = SwitchItem(title: .needRequestText, isOn: manager.roomState.seatMode == .applyToTake)
+        var item = SwitchItem(title: .needRequestText, isOn: manager.coreRoomState.seatMode == .applyToTake)
         item.action = { [weak self] isNeedToApply in
             guard let self = self else { return }
-            manager.update(seatMode: isNeedToApply ? .applyToTake : .freeToTake)
+            manager.onChangedSeatMode(isNeedToApply ? .applyToTake : .freeToTake)
         }
         let menus = [item]
         return menus
@@ -30,7 +30,7 @@ class VRPrepareSettingPanel: UIView {
     
     private lazy var backButton: UIButton = {
         let view = UIButton(type: .system)
-        view.setBackgroundImage(.liveBundleImage("live_back_icon"), for: .normal)
+        view.setBackgroundImage(internalImage("live_back_icon"), for: .normal)
         view.addTarget(self, action: #selector(backButtonClick), for: .touchUpInside)
         return view
     }()
@@ -66,8 +66,8 @@ class VRPrepareSettingPanel: UIView {
     }
     
     private var isViewReady: Bool = false
-    override func layoutSubviews() {
-        super.layoutSubviews()
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
         guard !isViewReady else { return }
         isViewReady = true
         backgroundColor = .clear
@@ -144,6 +144,6 @@ extension VRPrepareSettingPanel: UITableViewDelegate {
 }
 
 fileprivate extension String {
-    static let settingText: String = localized("Settings")
-    static let needRequestText: String = localized("Require owner's consent to speak")
+    static let settingText: String = internalLocalized("Settings")
+    static let needRequestText: String = internalLocalized("Require owner's consent to speak")
 }

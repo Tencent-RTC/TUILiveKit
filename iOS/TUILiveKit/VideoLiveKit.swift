@@ -40,11 +40,13 @@ public class VideoLiveKit: NSObject {
             }
         }
         
-        let viewController = TUILiveRoomAnchorViewController(roomId: roomId)
-        viewController.modalPresentationStyle = .fullScreen
-        
-        getRootController()?.present(viewController, animated: true)
-        self.viewController = viewController
+        let vc = TUILiveRoomAnchorPrepareViewController(roomId: roomId)
+        vc.modalPresentationStyle = .fullScreen
+        getRootController()?.present(vc, animated: true)
+        vc.willStartLive = { [weak self] controller in
+            guard let self = self else { return }
+            viewController = controller
+        }
     }
     
     @MainActor
@@ -112,5 +114,5 @@ extension VideoLiveKit {
 }
 
 extension String {
-    fileprivate static let pushingToReturnText = localized("It's live, please try again later.")
+    fileprivate static let pushingToReturnText = internalLocalized("Live streaming in progress. Please try again later.")
 }

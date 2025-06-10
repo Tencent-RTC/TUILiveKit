@@ -12,6 +12,7 @@ import Combine
 #elseif canImport(TXLiteAVSDK_Professional)
     import TXLiteAVSDK_Professional
 #endif
+import TUILiveResources
 
 class BeautyService {
  

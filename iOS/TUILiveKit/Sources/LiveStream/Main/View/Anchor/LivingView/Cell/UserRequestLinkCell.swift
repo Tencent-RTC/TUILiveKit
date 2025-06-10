@@ -9,7 +9,8 @@ import Foundation
 import RTCRoomEngine
 
 class UserRequestLinkCell: LinkMicBaseCell {
-    var respondEventClosure: ((TUIUserInfo, Bool) -> Void)?
+    var respondEventClosure: ((TUIUserInfo, Bool, @escaping () -> Void) -> Void)?
+    private var isPending = false
     
     private lazy var acceptButton: UIButton = {
         let view = UIButton(type: .system)
@@ -108,23 +109,31 @@ class UserRequestLinkCell: LinkMicBaseCell {
 
 extension UserRequestLinkCell {
     @objc func acceptButtonClick() {
-        guard let seatApplication = seatApplication, let respondEventClosure = respondEventClosure else { return }
-        respondEventClosure(seatApplication, true)
+        guard let seatApplication = seatApplication, let respondEventClosure = respondEventClosure, !isPending else { return }
+        isPending = true
+        respondEventClosure(seatApplication, true) { [weak self] in
+            guard let self = self else { return }
+            isPending = false
+        }
     }
     
     @objc func rejectButtonClick() {
-        guard let seatApplication = seatApplication, let respondEventClosure = respondEventClosure else { return }
-        respondEventClosure(seatApplication, false)
+        guard let seatApplication = seatApplication, let respondEventClosure = respondEventClosure, !isPending else { return }
+        isPending = true
+        respondEventClosure(seatApplication, false) { [weak self] in
+            guard let self = self else { return }
+            isPending = false
+        }
     }
 }
 
 private extension String {
     static var anchorLinkAgreeTitle: String {
-        localized("Agree")
+        internalLocalized("Agree")
     }
     
     static var anchorLinkRejectTitle: String {
-        localized("Reject")
+        internalLocalized("Reject")
     }
 
 }

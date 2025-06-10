@@ -41,7 +41,7 @@ class VoiceRoomPrepareView: RTCBaseView {
     
     private let backButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setBackgroundImage(.liveBundleImage("live_back_icon"), for: .normal)
+        button.setBackgroundImage(internalImage("live_back_icon"), for: .normal)
         return button
     }()
     
@@ -60,21 +60,21 @@ class VoiceRoomPrepareView: RTCBaseView {
         model.itemSize = CGSize(width: 63.scale375(), height: 56.scale375Height())
         model.itemDiff = 25.scale375()
         model.items.append(VRFeatureItem(normalTitle: .backgroundText,
-                                       normalImage: .liveBundleImage("live_prepare_background_icon"),
+                                       normalImage: internalImage("live_prepare_background_icon"),
                                        designConfig: designConfig,
                                        actionClosure: { [weak self] _ in
             guard let self = self else { return }
             self.routerManager.router(action: .present(.systemImageSelection(.background)))
         }))
         model.items.append(VRFeatureItem(normalTitle: .audioEffectsText,
-                                       normalImage: .liveBundleImage("live_prepare_audio_icon"),
+                                       normalImage: internalImage("live_prepare_audio_icon"),
                                        designConfig: designConfig,
                                        actionClosure: { [weak self] _ in
             guard let self = self else { return }
             self.routerManager.router(action: .present(.audioEffect))
         }))
         model.items.append(VRFeatureItem(normalTitle: .settingText,
-                                       normalImage: .liveBundleImage("live_prepare_setting_icon"),
+                                       normalImage: internalImage("live_prepare_setting_icon"),
                                        designConfig: designConfig,
                                        actionClosure: { [weak self] _ in
             guard let self = self else { return }
@@ -83,7 +83,6 @@ class VoiceRoomPrepareView: RTCBaseView {
         let featureClickPanel = VRFeatureClickPanel(model: model)
         return featureClickPanel
     }()
-    
     
     let startButton: UIButton = {
         let button = UIButton(type: .custom)
@@ -186,7 +185,6 @@ class VoiceRoomPrepareView: RTCBaseView {
     }
     
     override func bindInteraction() {
-        manager.fetchSelfInfo()
         backButton.addTarget(self, action: #selector(clickBack(sender:)), for: .touchUpInside)
         startButton.addTarget(self, action: #selector(clickStart(sender:)), for: .touchUpInside)
         subscribeRoomBackgroundState()
@@ -196,7 +194,7 @@ class VoiceRoomPrepareView: RTCBaseView {
 // MARK: - subscribe view state.
 extension VoiceRoomPrepareView {
     private func subscribeRoomBackgroundState() {
-        manager.subscribeRoomState(StateSelector(keyPath: \VRRoomState.backgroundURL))
+        manager.subscribeState(StateSelector(keyPath: \VRRoomState.backgroundURL))
             .receive(on: RunLoop.main)
             .sink { [weak self] url in
                 guard let self = self else { return }
@@ -259,8 +257,8 @@ extension VoiceRoomPrepareView {
 }
 
 private extension String {
-    static let startText = localized("Go live")
-    static let backgroundText: String = localized("Background")
-    static let audioEffectsText: String = localized("Audio")
-    static let settingText: String = localized("Settings")
+    static let startText = internalLocalized("Start Live")
+    static let backgroundText: String = internalLocalized("Background")
+    static let audioEffectsText: String = internalLocalized("Audio")
+    static let settingText: String = internalLocalized("Settings")
 }

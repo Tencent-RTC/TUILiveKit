@@ -10,16 +10,17 @@ import RTCCommon
 import Combine
 import LiveStreamCore
 import RTCRoomEngine
+import TUILiveResources
 
 class VRSeatManagerPanel: RTCBaseView {
     private let manager: VoiceRoomManager
     private let routerManager: VRRouterManager
     private weak var coreView: SeatGridView?
     private var cancellableSet: Set<AnyCancellable> = []
-    private var onTheSeatList: [VRSeatInfo] = []
+    private var onTheSeatList: [TUISeatInfo] = []
     private var applySeatList: [VRSeatApplication] = []
-    private lazy var seatListPublisher = manager.subscribeSeatState(StateSelector(keyPath: \.seatList))
-    private lazy var seatApplicationPublisher = manager.subscribeSeatState(StateSelector(keyPath: \.seatApplicationList))
+    private lazy var seatListPublisher = manager.subscribeCoreState(StateSelector(keyPath: \SGSeatState.seatList))
+    private lazy var seatApplicationPublisher = manager.subscribeState(StateSelector(keyPath: \VRSeatState.seatApplicationList))
     
     private let titleLabel: UILabel = {
         let label = UILabel(frame: .zero)
@@ -100,7 +101,7 @@ class VRSeatManagerPanel: RTCBaseView {
     
     private let inviteImageButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage.liveBundleImage("live_anchor_invite_icon"), for: .normal)
+        button.setImage(internalImage("live_anchor_invite_icon"), for: .normal)
         return button
     }()
     
@@ -197,9 +198,9 @@ class VRSeatManagerPanel: RTCBaseView {
                 guard let self = self else { return }
                 self.onTheSeatList = seatList.filter{ [weak self] in
                     guard let self = self else { return true }
-                    return !$0.userId.isEmpty && $0.userId != manager.userState.selfInfo.userId
+                    return !($0.userId ?? "").isEmpty && $0.userId != manager.coreUserState.selfInfo.userId
                 }
-                let seatListCount = manager.seatState.seatList.count
+                let seatListCount = manager.coreSeatState.seatList.count
                 self.onTheSeatHeaderLabel.text = .localizedReplace(.onSeatListText, replace: "\(onTheSeatList.count) / \(seatListCount - 1)")
                 self.tableView.reloadData()
             }
@@ -227,7 +228,7 @@ class VRSeatManagerPanel: RTCBaseView {
                 guard let self = self else { return }
                 let onSeatList = seatList.filter{ [weak self] in
                     guard let self = self else { return true }
-                    return !$0.userId.isEmpty && $0.userId != self.manager.userState.selfInfo.userId
+                    return !($0.userId ?? "").isEmpty && $0.userId != self.manager.coreUserState.selfInfo.userId
                 }
                 self.inviteContentView.isHidden = (onSeatList.count != 0 || applicationSeatList.count != 0)
             }
@@ -243,7 +244,7 @@ class VRSeatManagerPanel: RTCBaseView {
     }
     
     private func subscribeSeatModeState() {
-        manager.subscribeRoomState(StateSelector(keyPath: \.seatMode))
+        manager.subscribeCoreState(StateSelector(keyPath: \SGRoomState.seatMode))
             .receive(on: RunLoop.main)
             .sink { [weak self] seatMode in
                 guard let self = self else { return }
@@ -261,7 +262,12 @@ class VRSeatManagerPanel: RTCBaseView {
 extension VRSeatManagerPanel {
     @objc
     private func seatModeSwitchClick(sender: UISwitch) {
-        manager.setRoomSeatModeByAdmin(sender.isOn ? .applyToTake : .freeToTake)
+        coreView?.updateRoomSeatMode(seatMode: sender.isOn ? .applyToTake : .freeToTake, onSuccess: {
+        }, onError: { [weak self] code, message in
+            guard let self = self else { return }
+            let err = InternalError(code: code, message: message)
+            manager.onError(err.localizedMessage)
+        })
     }
     
     @objc
@@ -329,11 +335,11 @@ extension VRSeatManagerPanel: UITableViewDataSource {
                 onTheSeatCell.updateSeatInfo(seatInfo: onTheSeatList[indexPath.row])
                 onTheSeatCell.kickoffEventClosure = { [weak self] seatInfo in
                     guard let self = self else { return }
-                    self.coreView?.kickUserOffSeatByAdmin(userId: seatInfo.userId) {
+                    self.coreView?.kickUserOffSeatByAdmin(userId: seatInfo.userId ?? "") {
                     } onError: { [weak self] code, message in
                         guard let self = self else { return }
                         let error = InternalError(code: code, message: message)
-                        self.manager.toastSubject.send(error.localizedMessage)
+                        self.manager.onError(error.localizedMessage)
                     }
                 }
             }
@@ -346,11 +352,11 @@ extension VRSeatManagerPanel: UITableViewDataSource {
                     guard let self = self else { return }
                     self.coreView?.responseRemoteRequest(userId: seatApplication.userId, agree: true) { [weak self] in
                         guard let self = self else { return }
-                        self.manager.fetchSeatApplicationList()
+                        self.manager.onRespondedRemoteRequest()
                     } onError: { [weak self] code, message in
                         guard let self = self else { return }
                         let error = InternalError(code: code, message: message)
-                        self.manager.toastSubject.send(error.localizedMessage)
+                        self.manager.onError(error.localizedMessage)
                     }
                 }
                 
@@ -358,14 +364,12 @@ extension VRSeatManagerPanel: UITableViewDataSource {
                     guard let self = self else { return }
                     self.coreView?.responseRemoteRequest(userId: seatApplication.userId, agree: false) { [weak self] in
                         guard let self = self else { return }
-                        self.manager.fetchSeatApplicationList()
+                        self.manager.onRespondedRemoteRequest()
                     } onError: { [weak self] code, message in
                         guard let self = self else { return }
-                        let userInfo = TUIUserInfo()
-                        userInfo.userId = seatApplication.userId
-                        manager.removeSeatUserInfo(userInfo)
+                        manager.onRemoteRequestError(userId: seatApplication.userId)
                         let error = InternalError(code: code, message: message)
-                        self.manager.toastSubject.send(error.localizedMessage)
+                        self.manager.onError(error.localizedMessage)
                     }
                 }
             }
@@ -375,10 +379,10 @@ extension VRSeatManagerPanel: UITableViewDataSource {
 }
 
 fileprivate extension String {
-    static let seatControlTitleText = localized("Link Management")
-    static let needRequestText = localized("Require owner's consent to speak")
-    static let onSeatListText = localized("On Seat List (xxx)")
-    static let applySeatListText = localized("Application List (xxx)")
-    static let inviteText = localized("Invite")
-    static let inviteAudienceText = localized("No users in the seat, go to invite")
+    static let seatControlTitleText = internalLocalized("Link Management")
+    static let needRequestText = internalLocalized("Require owner's consent to speak")
+    static let onSeatListText = internalLocalized("On Seat List (xxx)")
+    static let applySeatListText = internalLocalized("Application List (xxx)")
+    static let inviteText = internalLocalized("Invite")
+    static let inviteAudienceText = internalLocalized("No users in the seat, go to invite")
 }

@@ -7,6 +7,7 @@
 
 import Foundation
 import LiveStreamCore
+import RTCRoomEngine
 
 enum VRDismissType {
     case panel
@@ -27,12 +28,12 @@ enum VRRoute {
     case recentViewer
     case voiceLinkControl(_ coreView: SeatGridView)
     case linkInviteControl(_ coreView: SeatGridView, _ index: Int)
-    case userControl(_ coreView: SeatGridView, _ user: VRSeatInfo)
+    case userControl(_ coreView: SeatGridView, _ user: TUISeatInfo)
     case featureSetting(_ settingModel: VRFeatureClickPanelModel)
     case listMenu(_ data: ActionPanelData)
     case audioEffect
     case giftView
-    case systemImageSelection(_ imageType: VRImageType)
+    case systemImageSelection(_ imageType: VRImageType, isSetToService: Bool = false)
     case prepareSetting
     case alert(info: VRAlertInfo)
 }
@@ -54,8 +55,8 @@ extension VRRoute: Equatable {
                 return l == r
             case let (.listMenu(l), .listMenu(r)):
                 return l == r
-            case let (.systemImageSelection(l), .systemImageSelection(r)):
-                return l == r
+            case let (.systemImageSelection(l1, l2), .systemImageSelection(r1, r2)):
+                return l1 == r1 && l2 == r2
             case let (.linkInviteControl(l), .linkInviteControl(r)):
                 return l == r
             case let (.userControl(l), .userControl(r)):
@@ -110,8 +111,8 @@ extension VRRoute: Hashable {
                 return "audioEffect"
             case .giftView:
                 return "giftView"
-            case .systemImageSelection(let imageType):
-                return "systemImageSelection" + imageType.rawValue
+            case .systemImageSelection(let imageType, let isSetToService):
+                return "systemImageSelection \(imageType.rawValue) \(isSetToService)"
             case .prepareSetting:
                 return "prepareSetting"
             case .alert(let alertInfo):

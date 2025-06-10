@@ -10,6 +10,7 @@ import Combine
 import RTCCommon
 import RTCRoomEngine
 import LiveStreamCore
+import TUILiveResources
 
 typealias LSRoomStateUpdateClosure = (inout LSRoomState) -> Void
 typealias LSUserStateUpdateClosure = (inout LSUserState) -> Void
@@ -104,20 +105,12 @@ extension LiveStreamManager {
         context.roomManager.onSetRoomName(name)
     }
     
-    func onSetCategory(_ category: LiveStreamCategory) {
-        context.roomManager.onSetCategory(category)
-    }
-    
     func onSetRoomPrivacy(_ mode: LiveStreamPrivacyStatus) {
         context.roomManager.onSetRoomPrivacy(mode)
     }
     
     func onSetRoomCoverUrl(_ url: String) {
         context.roomManager.onSetRoomCoverUrl(url)
-    }
-    
-    func onPreviewing() {
-        context.roomManager.onPreviewing()
     }
     
     func onStartLive(isJoinSelf: Bool, roomInfo: TUIRoomInfo) {
@@ -231,6 +224,10 @@ extension LiveStreamManager {
         context.roomManager.onLeaveLive()
         context.userManager.onLeaveLive()
         context.mediaManager.onLeaveLive()
+    }
+    
+    func onAudienceSliderCellInit(liveInfo: LiveInfo) {
+        context.roomManager.onAudienceSliderCellInit(liveInfo: liveInfo)
     }
     
     func onStartRequestIntraRoomConnection() {
@@ -397,7 +394,7 @@ extension LiveStreamManager: GiftListPanelProvider {
 }
 
 fileprivate extension String {
-    static let takeSeatApplicationRejected = localized("Take seat application has been rejected")
-    static let takeSeatApplicationTimeout = localized("Take seat application timeout")
-    static let kickedOutOfSeat = localized("Kicked out of seat by room owner")
+    static let takeSeatApplicationRejected = internalLocalized("Take seat application has been rejected")
+    static let takeSeatApplicationTimeout = internalLocalized("Take seat application timeout")
+    static let kickedOutOfSeat = internalLocalized("Kicked out of seat by room owner")
 }

@@ -12,46 +12,31 @@ class MainCollectionCell: UICollectionViewCell {
     
     static let CellID: String = "MainCollectionCell"
 
-    private var gradientColors: [UIColor] = []
-    private lazy var containerView:UIView = {
-        let containerView = UIView()
-        containerView.layer.cornerRadius = 6
-        containerView.layer.masksToBounds = true
-        containerView.backgroundColor = .white
-        return containerView
-    }()
-
     private lazy var titleLabel: UILabel = {
         let label = UILabel(frame: .zero)
-        label.textColor = UIColor("262B32")
+        label.textColor = .white
         label.textAlignment = .left
+        label.font = .customFont(ofSize: 20, weight: .semibold)
         label.adjustsFontSizeToFitWidth = true
         label.minimumScaleFactor = 0.5
         return label
     }()
     
-    private lazy var iconImageView: UIImageView = {
+    private lazy var backgroundImageView: UIImageView = {
         let imageView = UIImageView(frame: .zero)
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
         return imageView
     }()
     
     private lazy var descLabel: UILabel = {
         let label = UILabel(frame: .zero)
-        label.font = UIFont(name: "PingFangSC-Regular", size: convertPixel(w: 12))
-        label.textColor = UIColor("626E84")
+        label.font = .customFont(ofSize: 10)
+        label.textColor = .white.withAlphaComponent(0.75)
         label.textAlignment = .left
         label.numberOfLines = 0
         label.adjustsFontSizeToFitWidth = true
         label.minimumScaleFactor = 0.8
         return label
-    }()
-    
-    private let arrowImageView: UIImageView = {
-        let imageView = UIImageView(frame: .zero)
-        imageView.image = UIImage(named: "main_arrow")
-        imageView.contentMode = .scaleAspectFit
-        return imageView
     }()
     
     private var isViewReady = false
@@ -60,51 +45,37 @@ class MainCollectionCell: UICollectionViewCell {
         guard !isViewReady else { return }
         constructViewHierarchy()
         activateConstraints()
+        setupViewStyle()
         isViewReady = true
     }
     
-    override func draw(_ rect: CGRect) {
-        super.draw(rect)
-        let gradientLayer = containerView.gradient(colors: gradientColors)
-        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.0)
-        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1.0)
-    }
-    
     private func constructViewHierarchy() {
-        contentView.addSubview(containerView)
-        containerView.addSubview(titleLabel)
-        containerView.addSubview(iconImageView)
-        containerView.addSubview(descLabel)
-        containerView.addSubview(arrowImageView)
+        addSubview(backgroundImageView)
+        addSubview(titleLabel)
+        addSubview(descLabel)
     }
     
     private func activateConstraints() {
-        containerView.snp.makeConstraints { make in
-            make.top.left.equalToSuperview().offset(convertPixel(h: 4))
-            make.bottom.right.equalToSuperview().offset(convertPixel(h: -4))
-        }
-        iconImageView.snp.makeConstraints { make in
-            make.top.left.equalToSuperview().offset(16)
-            make.width.height.equalTo(24)
+        backgroundImageView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
         titleLabel.snp.makeConstraints { make in
-            make.left.equalTo(iconImageView.snp.right).offset(convertPixel(w: 6))
-            make.right.equalToSuperview().offset(convertPixel(w: -6))
-            make.centerY.equalTo(iconImageView)
+            make.leading.top.equalToSuperview().offset(20.scale375())
+            make.height.equalTo(28.scale375Height())
+            make.width.lessThanOrEqualTo(120.scale375())
         }
         descLabel.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(convertPixel(w: 14))
-            make.right.equalToSuperview().offset(convertPixel(w: -14))
-            make.top.equalTo(iconImageView.snp.bottom).offset(convertPixel(h: 12)).priority(.high)
-            make.bottom.lessThanOrEqualToSuperview().offset(convertPixel(h: -14))
-        }
-        arrowImageView.snp.makeConstraints { make in
-            make.centerY.equalTo(iconImageView)
-            make.right.equalToSuperview().offset(-16)
-            make.size.equalTo(CGSize(width: 16.0, height: 16.0))
+            make.leading.equalTo(titleLabel)
+            make.top.equalTo(titleLabel.snp.bottom).offset(8.scale375Height())
+            make.width.lessThanOrEqualTo(155.scale375())
+            make.height.lessThanOrEqualTo(48.scale375Height())
         }
     }
     
+    private func setupViewStyle() {
+        layer.cornerRadius = 8.scale375()
+        layer.masksToBounds = true
+    }
 }
 
 extension MainCollectionCell {
@@ -112,6 +83,6 @@ extension MainCollectionCell {
     public func config(_ item: MainItemModel) {
         titleLabel.text = item.title
         descLabel.text = item.content
-        iconImageView.image = UIImage(named: item.imageName)
+        backgroundImageView.image = UIImage(named: item.imageName)
     }
 }

@@ -37,8 +37,8 @@ class MainViewController: UIViewController {
     
     private lazy var collectionView: UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
-        flowLayout.sectionInset = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
-        flowLayout.minimumLineSpacing = 0
+        flowLayout.sectionInset = UIEdgeInsets(top: 20.scale375Height(), left: 20.scale375(), bottom: 0, right: 20.scale375())
+        flowLayout.minimumLineSpacing = 16.scale375Height()
         flowLayout.minimumInteritemSpacing = 0
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         collectionView.register(MainCollectionCell.self,
@@ -87,14 +87,7 @@ extension MainViewController {
     }
     
     private func setupNavigation() {
-        let logoImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
-        logoImageView.contentMode = .scaleAspectFit
-        logoImageView.image = UIImage(named: "main_nav_logo")
-        let logoImageItem = UIBarButtonItem(customView: logoImageView)
-        
-        let logoTitleItem = UIBarButtonItem(title: "TUILiveKit", style: .plain, target: nil, action: nil)
-        logoTitleItem.tintColor = .black
-        navigationItem.leftBarButtonItems = [logoImageItem, logoTitleItem]
+        navigationItem.title = .liveTitle
         
         let debugButton = UIButton(type: .custom)
         debugButton.setImage(UIImage(named: "debug"), for: .normal)
@@ -103,46 +96,28 @@ extension MainViewController {
         let debugButtonItem = UIBarButtonItem(customView: debugButton)
         debugButtonItem.tintColor = .black
         
-        let mineBtn = UIButton(frame: .zero)
-        mineBtn.layer.cornerRadius = 15
-        mineBtn.layer.masksToBounds = true
-        mineBtn.addTarget(self, action: #selector(mineAction), for: .touchUpInside)
-        mineBtn.kf.setBackgroundImage(with: URL(string: SettingsConfig.share.avatar),
-                                      for: .normal,
-                                      placeholder: UIImage(named: "main_mine_nor"))
-        mineBtn.widthAnchor.constraint(equalToConstant: 30).isActive = true
-        mineBtn.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        let mineItem = UIBarButtonItem(customView: mineBtn)
-        navigationItem.rightBarButtonItems = [mineItem, debugButtonItem, getSeatGridViewLogicTestButton()]
+        let helpButton = UIButton()
+        helpButton.setImage(UIImage(named: "help_small"), for: .normal)
+        helpButton.addTarget(self, action: #selector(helpClick), for: .touchUpInside)
+        helpButton.sizeToFit()
+        let helpItem = UIBarButtonItem(customView: helpButton)
+        
+        navigationItem.rightBarButtonItems = [helpItem, debugButtonItem]
     }
-    
-    private func getSeatGridViewLogicTestButton() -> UIBarButtonItem {
-            let button = UIButton()
-            button.setImage(UIImage(systemName: "waveform.path"), for: .normal)
-            button.addTarget(self, action: #selector(seatGridViewLayoutTestButtonClick), for: .touchUpInside)
-            button.sizeToFit()
-            let barButtonItem = UIBarButtonItem(customView: button)
-            barButtonItem.tintColor = .black
-            return barButtonItem
-        }
 }
 
 // MARK: - Actions
 extension MainViewController  {
     
-    @objc private func mineAction() {
-        let viewController = MeViewController()
-        navigationController?.pushViewController(viewController, animated: true)
+    @objc private func helpClick() {
+        if let url = URL(string: "https://cloud.tencent.com/document/product/647/105441") {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        }
     }
     
     @objc private func debugClick() {
         let debugVC = SandBoxFileBrowserViewController(bathPath: NSHomeDirectory())
         navigationController?.pushViewController(debugVC, animated: true)
-    }
-       
-    @objc private func seatGridViewLayoutTestButtonClick() {
-        let seatGridViewLayoutTestVC = LayoutTestViewController()
-        navigationController?.pushViewController(seatGridViewLayoutTestVC, animated: true)
     }
 }
 
@@ -179,14 +154,15 @@ extension MainViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: ScreenWidth / 2 - 12, height: 106)
+        return CGSize(width: 335.scale375(), height: 180.scale375Height())
     }
 }
 
 // MARK: - Localized String
 private extension String {
+    static let liveTitle = TUILiveKitAppLocalize("Live")
     static let videoLiveTitle = TUILiveKitAppLocalize("Video Live")
-    static let videoLiveDesc = TUILiveKitAppLocalize("Live preview/Beauty filters/Multi-host")
+    static let videoLiveDesc = TUILiveKitAppLocalize("Create Interactive Video Live with Live API for a Seamless Streaming Experience.")
     static let voiceRoomTitle = TUILiveKitAppLocalize("Voice Room")
-    static let voiceRoomDesc = TUILiveKitAppLocalize("High audio quality/Large room/Smooth mic on/off")
+    static let voiceRoomDesc = TUILiveKitAppLocalize("Enable Interactive Voice Room with Live API for an Enhanced Communication Experience.")
 }

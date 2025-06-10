@@ -10,6 +10,7 @@ import Combine
 import RTCCommon
 import RTCRoomEngine
 import ImSDK_Plus
+import TUILiveResources
 
 enum UserManagePanelType {
     case messageAndKickOut
@@ -159,7 +160,7 @@ class UserInfoPanelView: RTCBaseView {
     }
     
     private func initFansView() {
-        V2TIMManager.sharedInstance().getUserFollowInfo([user.userId]) { [weak self] followInfoList in
+        V2TIMManager.sharedInstance().getUserFollowInfo(userIDList: [user.userId]) { [weak self] followInfoList in
             guard let self = self, let followInfo = followInfoList?.first else { return }
             fansNumber = Int(followInfo.followersCount)
         } fail: { code, message in
@@ -168,7 +169,7 @@ class UserInfoPanelView: RTCBaseView {
     }
     
     private func checkFollowType() {
-        V2TIMManager.sharedInstance().checkFollowType([user.userId]) { [weak self] checkResultList in
+        V2TIMManager.sharedInstance().checkFollowType(userIDList: [user.userId]) { [weak self] checkResultList in
             guard let self = self, let result = checkResultList?.first else { return }
             if result.followType == .FOLLOW_TYPE_IN_BOTH_FOLLOWERS_LIST || result.followType == .FOLLOW_TYPE_IN_MY_FOLLOWING_LIST {
                 self.isFollow = true
@@ -218,7 +219,7 @@ class UserInfoPanelView: RTCBaseView {
 extension UserInfoPanelView {
     @objc private func followButtonClick() {
         if isFollow {
-            V2TIMManager.sharedInstance().unfollowUser([user.userId]) { [weak self] followResultList in
+            V2TIMManager.sharedInstance().unfollowUser(userIDList: [user.userId]) { [weak self] followResultList in
                 guard let self = self, let result = followResultList?.first else { return }
                 if result.resultCode == 0 {
                     isFollow = false
@@ -231,7 +232,7 @@ extension UserInfoPanelView {
                 manager.toastSubject.send("code: \(code), message: \(String(describing: message))")
             }
         } else {
-            V2TIMManager.sharedInstance().followUser([user.userId]) { [weak self] followResultList in
+            V2TIMManager.sharedInstance().followUser(userIDList: [user.userId]) { [weak self] followResultList in
                 guard let self = self, let result = followResultList?.first else { return }
                 if result.resultCode == 0 {
                     isFollow = true
@@ -248,7 +249,7 @@ extension UserInfoPanelView {
 }
 
 fileprivate extension String {
-    static let fansCountText = localized("xxx Fans")
-    static let followText = localized("Follow")
-    static let unfollowText = localized("Unfollow")
+    static let fansCountText = internalLocalized("xxx Fans")
+    static let followText = internalLocalized("Follow")
+    static let unfollowText = internalLocalized("Unfollow")
     }

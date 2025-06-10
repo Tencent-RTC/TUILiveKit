@@ -9,6 +9,7 @@ import Foundation
 import RTCRoomEngine
 import RTCCommon
 import Combine
+import TUILiveResources
 
 class LSCoHostManager {
 
@@ -99,6 +100,18 @@ extension LSCoHostManager {
             }
         }
     }
+    
+    func onRequestConnectionFailed(roomId: String) {
+        for recommendedUser in state.recommendedUsers {
+            if recommendedUser.roomId == roomId {
+                let useUser = recommendedUser
+                useUser.connectionStatus = .none
+                observableState.update { state in
+                    state.removeSentConnectionRequest(roomId)
+                }
+            }
+        }
+    }
 }
 
 // MARK: - Observer
@@ -153,5 +166,5 @@ extension LSCoHostManager {
 }
 
 fileprivate extension String {
-    static let requestRejectedText = localized("Connection application has been rejected")
+    static let requestRejectedText = internalLocalized("Connection application has been rejected")
 }
