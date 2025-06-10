@@ -9,6 +9,7 @@ import Foundation
 import Combine
 import RTCCommon
 import TUILiveResources
+import RTCRoomEngine
 
 class RoomInfoPanelView: RTCBaseView {
     private var cancellableSet = Set<AnyCancellable>()
@@ -84,8 +85,8 @@ class RoomInfoPanelView: RTCBaseView {
         print("deinit \(type(of: self))")
     }
     
-    func initialize(roomId: String) {
-        service.initRoomInfo(roomId: roomId);
+    func initialize(roomInfo: TUIRoomInfo) {
+        service.initRoomInfo(roomInfo: roomInfo);
     }
     
     override func constructViewHierarchy() {

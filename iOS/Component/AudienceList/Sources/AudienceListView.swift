@@ -98,9 +98,9 @@ public class AudienceListView: RTCBaseView {
         return label
     }()
 
-    public func initialize(roomId: String) {
+    public func initialize(roomInfo: TUIRoomInfo) {
         TUIRoomEngine.sharedInstance().addObserver(observer)
-        service.initRoomInfo(roomId: roomId)
+        service.initRoomInfo(roomInfo: roomInfo)
     }
     
     public override func constructViewHierarchy() {

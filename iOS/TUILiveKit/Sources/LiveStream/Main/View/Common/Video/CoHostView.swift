@@ -76,8 +76,7 @@ class CoHostView: UIView {
         avatarImageView.kf.setImage(with: URL(string: coHostUser.connectionUser.avatarUrl),
                                     placeholder: UIImage.avatarPlaceholderImage)
         let hasVideo = manager.coreUserState.hasVideoStreamUserList.contains(coHostUser.connectionUser.userId)
-        let isPreview = manager.roomState.liveStatus == .previewing
-        avatarImageView.isHidden = hasVideo || isPreview || coHostUser.hasVideoStream
+        avatarImageView.isHidden = hasVideo || coHostUser.hasVideoStream
     }
 }
 
@@ -87,7 +86,7 @@ extension CoHostView {
             .receive(on: RunLoop.main)
             .removeDuplicates()
             .sink { [weak self] userIdList in
-                guard let self = self, manager.roomState.liveStatus != .previewing else { return }
+                guard let self = self else { return }
                 if userIdList.contains(self.coHostUser.connectionUser.userId) || self.coHostUser.hasVideoStream {
                     avatarImageView.isHidden = true
                 } else {

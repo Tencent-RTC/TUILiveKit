@@ -26,18 +26,6 @@ class LSCoHostUserCell: UITableViewCell {
         return label
     }()
     
-    let levelButton: UIButton = {
-        let button = UIButton()
-        button.layer.cornerRadius = 7.scale375Height()
-        button.titleLabel?.textColor = .flowKitWhite
-        button.isEnabled = false
-        let spacing: CGFloat = 2.scale375()
-        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -spacing / 2, bottom: 0, right: spacing / 2)
-        button.titleEdgeInsets = UIEdgeInsets(top: 0, left: spacing / 2, bottom: 0, right: -spacing / 2)
-        button.titleLabel?.font = UIFont(name: "PingFangSC-Regular", size: 12)
-        return button
-    }()
-    
     let inviteButton: UIButton = {
         let button = UIButton()
         button.layer.cornerRadius = 12.scale375()
@@ -78,7 +66,6 @@ class LSCoHostUserCell: UITableViewCell {
     func constructViewHierarchy() {
         contentView.addSubview(avatarImageView)
         contentView.addSubview(userNameLabel)
-        contentView.addSubview(levelButton)
         contentView.addSubview(inviteButton)
     }
     
@@ -95,12 +82,6 @@ class LSCoHostUserCell: UITableViewCell {
             make.width.lessThanOrEqualTo(120.scale375())
         }
         
-        levelButton.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.leading.equalTo(userNameLabel.snp.trailing).offset(4.scale375())
-            make.width.equalTo(35.scale375())
-            make.height.equalTo(14.scale375Height())
-        }
         inviteButton.snp.makeConstraints { make in
             make.trailing.equalToSuperview().offset(-24.scale375())
             make.centerY.equalToSuperview()
@@ -115,8 +96,7 @@ class LSCoHostUserCell: UITableViewCell {
     func updateUser(_ user: TUIConnectionUser) {
         self.connectionUser = user
         avatarImageView.kf.setImage(with: URL(string: user.avatarUrl), placeholder: UIImage.avatarPlaceholderImage)
-        userNameLabel.text = user.userName
-        levelButton.setLevel()
+        userNameLabel.text = user.userName.isEmpty ? user.userId : user.userName
         
         inviteButton.isHidden = user.connectionStatus == .connected
         updateButtonView(isEnabled: user.connectionStatus == .none)
@@ -140,6 +120,6 @@ extension LSCoHostUserCell {
 }
 
 fileprivate extension String {
-    static let inviteText = localized("Invite")
-    static let invitingTest = localized("Waiting")
+    static let inviteText = internalLocalized("Invite")
+    static let invitingTest = internalLocalized("Waiting")
 }

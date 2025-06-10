@@ -8,8 +8,11 @@ import SnapKit
 import Foundation
 import TUICore
 import LiveStreamCore
+import TUILiveResources
+import Combine
+import RTCRoomEngine
 
-protocol FloatWindowDataSource {
+public protocol FloatWindowDataSource {
     func getRoomId() -> String
     func getOwnerId() -> String
     func getIsLinking() -> Bool
@@ -18,13 +21,27 @@ protocol FloatWindowDataSource {
     func relayoutCoreView()
 }
 
-class FloatWindow {
+class FloatWindow: NSObject {
     static let shared = FloatWindow()
-    private init() {}
-    private var isShow : Bool = false
+    private override init() {
+        super.init()
+        NotificationCenter.default.addObserver(self,selector: #selector(handleLogoutNotification),
+                                               name: NSNotification.Name(rawValue: NSNotification.Name.TUILogoutSuccess.rawValue),
+                                               object: nil)
+    }
+    @Published private var isShow : Bool = false
     private var floatView: FloatView?
     private var controller: (UIViewController & FloatWindowDataSource)?
     private var coreView: LiveCoreView?
+    @objc private func handleLogoutNotification() {
+        if isShow == true {
+            releaseFloatWindow()
+        }
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
 }
 
 // MARK: -------------- API --------------
@@ -55,6 +72,9 @@ extension FloatWindow {
         
         isShow = true
         
+        LiveKitLog.info("\(#file)", "\(#line)", "FloatWindow show")
+        TUIRoomEngine.sharedInstance().addObserver(self)
+        
         floatView.isUserInteractionEnabled = false
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak floatView] in
             floatView?.isUserInteractionEnabled = true
@@ -66,13 +86,16 @@ extension FloatWindow {
     @discardableResult
     func resumeLive(atViewController: UIViewController) -> Bool {
         guard isShow, let controller = controller else { return false }
+        LiveKitLog.info("\(#file)", "\(#line)", "FloatWindow resume")
         controller.relayoutCoreView()
+        controller.modalPresentationStyle = .fullScreen
         TUITool.applicationKeywindow().rootViewController?.present(controller, animated: true)
         dismiss()
         return true
     }
     
     func releaseFloatWindow() {
+        LiveKitLog.info("\(#file)", "\(#line)", "FloatWindow release")
         leaveRoom()
         dismiss()
     }
@@ -95,6 +118,10 @@ extension FloatWindow {
         guard let controller = controller else { return false }
         return controller.getIsLinking()
     }
+    
+    func subscribeShowingState() -> AnyPublisher<Bool, Never> {
+        $isShow.eraseToAnyPublisher()
+    }
 }
 
 // MARK: -------------- IMPL --------------
@@ -105,6 +132,7 @@ private extension FloatWindow {
         floatView?.removeFromSuperview()
         floatView = nil
         isShow = false
+        TUIRoomEngine.sharedInstance().removeObserver(self)
     }
     
     func leaveRoom() {
@@ -130,5 +158,20 @@ extension FloatWindow: FloatViewDelegate {
             LiveKitLog.info("\(#file)", "\(#line)","FloatWindow onResume cant found controller to present")
             releaseFloatWindow()
         }
+    }
+}
+
+// MARK: - Observer
+extension FloatWindow: TUIRoomObserver {
+    func onRoomDismissed(roomId: String, reason: TUIRoomDismissedReason) {
+        releaseFloatWindow()
+    }
+    
+    func onKickedOutOfRoom(roomId: String, reason: TUIKickedOutOfRoomReason, message: String) {
+        releaseFloatWindow()
+    }
+    
+    func onKickedOffLine(message: String) {
+        releaseFloatWindow()
     }
 }

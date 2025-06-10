@@ -40,7 +40,7 @@ class SingleBattleScoreView: UIView {
     }()
     private let dividerImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = .liveBundleImage("live_battle_score_divider_icon")
+        imageView.image = internalImage("live_battle_score_divider_icon")
         return imageView
     }()
     

@@ -10,27 +10,42 @@ import RTCRoomEngine
 import TUICore
 import RTCCommon
 import LiveStreamCore
+import TUILiveResources
 
 class LiveRoomRootMenuDataCreator {
-    func generateBottomMenuData(manager: LiveStreamManager, routerManager: LSRouterManager, coreView: LiveCoreView, isOwner: Bool) -> [LSButtonMenuInfo] {
+    
+    private let coreView: LiveCoreView
+    private let manager: LiveStreamManager
+    private let routerManager: LSRouterManager
+    
+    init(coreView: LiveCoreView, manager: LiveStreamManager, routerManager: LSRouterManager) {
+        self.coreView = coreView
+        self.manager = manager
+        self.routerManager = routerManager
+    }
+    
+    func generateBottomMenuData(isOwner: Bool, features: [BottomMenuFeature]) -> [LSButtonMenuInfo] {
         if isOwner {
-            return ownerBottomMenu(manager: manager, routerManager: routerManager, coreView: coreView)
+            return ownerBottomMenu(features: features)
         } else {
-            return memberBottomMenu(manager: manager, routerManager: routerManager, coreView: coreView)
+            return memberBottomMenu()
         }
     }
     
-    func generateLinkTypeMenuData(manager: LiveStreamManager, routerManager: LSRouterManager, coreView: LiveCoreView) -> [LinkMicTypeCellData] {
+    func generateLinkTypeMenuData() -> [LinkMicTypeCellData] {
         var data = [LinkMicTypeCellData]()
         let timeOutValue = 60
-        data.append(LinkMicTypeCellData(image: .liveBundleImage("live_link_video"),
+        data.append(LinkMicTypeCellData(image: internalImage("live_link_video"),
                                         text: .videoLinkRequestText,
-                                        action: {
+                                        action: { [weak self] in
+            guard let self = self else { return }
             manager.mediaManager.changeVideoEncParams(encType: .small)
             manager.onStartRequestIntraRoomConnection()
-            coreView.requestIntraRoomConnection(userId: "", timeOut: timeOutValue, openCamera: true) {
+            coreView.requestIntraRoomConnection(userId: "", timeOut: timeOutValue, openCamera: true) { [weak self] in
+                guard let self = self else { return }
                 manager.toastSubject.send(.waitToLinkText)
-            } onError: { code, message in
+            } onError: { [weak self] code, message in
+                guard let self = self else { return }
                 let error = InternalError(code: code.rawValue, message: message)
                 manager.toastSubject.send(error.localizedMessage)
                 manager.onRequestIntraRoomConnectionFailed()
@@ -38,13 +53,16 @@ class LiveRoomRootMenuDataCreator {
             routerManager.router(action: .dismiss())
         }))
         
-        data.append(LinkMicTypeCellData(image: .liveBundleImage("live_link_audio"),
+        data.append(LinkMicTypeCellData(image: internalImage("live_link_audio"),
                                         text: .audioLinkRequestText,
-                                        action: {
+                                        action: { [weak self] in
+            guard let self = self else { return }
             manager.onStartRequestIntraRoomConnection()
-            coreView.requestIntraRoomConnection(userId: "", timeOut: timeOutValue, openCamera: false) {
+            coreView.requestIntraRoomConnection(userId: "", timeOut: timeOutValue, openCamera: false) { [weak self] in
+                guard let self = self else { return }
                 manager.toastSubject.send(.waitToLinkText)
-            } onError: { code, message in
+            } onError: { [weak self] code, message in
+                guard let self = self else { return }
                 let error = InternalError(code: code.rawValue, message: message)
                 manager.toastSubject.send(error.localizedMessage)
                 manager.onRequestIntraRoomConnectionFailed()
@@ -60,148 +78,163 @@ class LiveRoomRootMenuDataCreator {
 }
 
 extension LiveRoomRootMenuDataCreator {
-    func ownerBottomMenu(manager: LiveStreamManager, routerManager: LSRouterManager, coreView: LiveCoreView) -> [LSButtonMenuInfo] {
+    func ownerBottomMenu(features: [BottomMenuFeature]) -> [LSButtonMenuInfo] {
         var menus: [LSButtonMenuInfo] = []
-        var connection = LSButtonMenuInfo(normalIcon: "live_connection_icon")
-        let selfUserId = manager.coreUserState.selfInfo.userId
-        connection.tapAction = { sender in
-            if manager.coreCoGuestState.connectedUserList.count > 1 || manager.battleState.battleUsers.contains(where: {$0.userId == selfUserId}) {
-                return
-            } else {
-                routerManager.router(action: .present(.connectionControl))
-            }
-        }
-        
-        connection.bindStateClosure = { button, cancellableSet in
-            func updateButton(_ button: LSMenuButton, battleUsers: [BattleUser], connectedUserList: [TUIUserInfo]) {
-                let isBattle = battleUsers.contains(where: {$0.userId == selfUserId})
-                let isCoGuestConnected = connectedUserList.count > 1
-                let imageName = isBattle || isCoGuestConnected ? "live_connection_disable_icon" : "live_connection_icon"
-                button.setImage(.liveBundleImage(imageName), for: .normal)
+        if features.contains(.coHost) {
+            var connection = LSButtonMenuInfo(normalIcon: "live_connection_icon", normalTitle: .coHostText)
+            let selfUserId = manager.coreUserState.selfInfo.userId
+            connection.tapAction = { [weak self] sender in
+                guard let self = self else { return }
+                if manager.coreCoGuestState.connectedUserList.count > 1 || manager.battleState.battleUsers.contains(where: {$0.userId == selfUserId}) {
+                    return
+                } else {
+                    routerManager.router(action: .present(.connectionControl))
+                }
             }
             
-            let connectedUserListPublisher = manager.subscribeCoreViewState(StateSelector(keyPath: \CoGuestState.connectedUserList))
-            let battleUsersPublisher = manager.subscribeState(StateSelector(keyPath: \LSBattleState.battleUsers))
-            connectedUserListPublisher
-                .removeDuplicates()
-                .combineLatest(battleUsersPublisher.removeDuplicates())
-                .receive(on: RunLoop.main)
-                .sink { seatList, battleUsers in
-                    updateButton(button, battleUsers: battleUsers, connectedUserList: seatList)
-                }
-                .store(in: &cancellableSet)
+            connection.bindStateClosure = { [weak self] button, cancellableSet in
+                guard let self = self else { return }
+                let connectedUserListPublisher = manager.subscribeCoreViewState(StateSelector(keyPath: \CoGuestState.connectedUserList))
+                let battleUsersPublisher = manager.subscribeState(StateSelector(keyPath: \LSBattleState.battleUsers))
+                connectedUserListPublisher
+                    .removeDuplicates()
+                    .combineLatest(battleUsersPublisher.removeDuplicates())
+                    .receive(on: RunLoop.main)
+                    .sink { [weak button] seatList, battleUsers in
+                        let isBattle = battleUsers.contains(where: {$0.userId == selfUserId})
+                        let isCoGuestConnected = seatList.count > 1
+                        let imageName = isBattle || isCoGuestConnected ? "live_connection_disable_icon" : "live_connection_icon"
+                        button?.setImage(internalImage(imageName), for: .normal)
+                    }
+                    .store(in: &cancellableSet)
+            }
+            menus.append(connection)
         }
-        menus.append(connection)
         
-        var battle = LSButtonMenuInfo(normalIcon: "live_battle_icon")
-        battle.tapAction = { sender in
-            let selfUserId = manager.coreUserState.selfInfo.userId
-            let isSelfInBattle = manager.battleState.battleUsers.contains(where: { $0.userId == selfUserId })
-            if isSelfInBattle {
-                self.confirmToExitBattle(manager: manager, routerManager: routerManager, coreView: coreView)
-            } else {
-                let isOnDisplayResult = manager.battleState.isOnDisplayResult
-                let isSelfInConnection = manager.coHostState.connectedUsers.contains(where: { $0.userId == selfUserId })
-                guard !isOnDisplayResult && isSelfInConnection else {
+        if features.contains(.battle) {
+            var battle = LSButtonMenuInfo(normalIcon: "live_battle_icon", normalTitle: .battleText)
+            battle.tapAction = { [weak self] sender in
+                guard let self = self else { return }
+                let selfUserId = manager.coreUserState.selfInfo.userId
+                let isSelfInBattle = manager.battleState.battleUsers.contains(where: { $0.userId == selfUserId })
+                if isSelfInBattle {
+                    confirmToExitBattle()
+                } else {
+                    let isOnDisplayResult = manager.battleState.isOnDisplayResult
+                    let isSelfInConnection = manager.coHostState.connectedUsers.contains(where: { $0.userId == selfUserId })
+                    guard !isOnDisplayResult && isSelfInConnection else {
+                        return
+                    }
+                    let config = TUIBattleConfig()
+                    config.duration = battleDuration
+                    config.needResponse = true
+                    config.extensionInfo = ""
+                    let requestUserIds = manager.coHostState.connectedUsers
+                        .filter { $0.userId != selfUserId }
+                        .map { $0.userId }
+                    coreView.requestBattle(config: config, userIdList: requestUserIds, timeout: battleRequestTimeout) { [weak self] (battleId, battleUserList) in
+                        guard let self = self else { return }
+                        manager.onRequestBattle(battleId: battleId, battleUserList: battleUserList)
+                    } onError: { [weak self] code, message in
+                        guard let self = self else { return }
+                        let err = InternalError(code: code.rawValue, message: message)
+                        manager.onError(err)
+                    }
+                }
+            }
+            battle.bindStateClosure = { [weak self] button, cancellableSet in
+                guard let self = self else { return }
+                let selfUserId = manager.coreUserState.selfInfo.userId
+                let battleUsersPublisher = manager.subscribeState(StateSelector(keyPath: \LSBattleState.battleUsers))
+                let connectedUsersPublisher = manager.subscribeState(StateSelector(keyPath: \LSCoHostState.connectedUsers))
+                let displayResultPublisher = manager.subscribeState(StateSelector(keyPath: \LSBattleState.isOnDisplayResult))
+              
+                battleUsersPublisher
+                    .removeDuplicates()
+                    .receive(on: RunLoop.main)
+                    .sink { [weak button] battleUsers in
+                        let isOnBattle = battleUsers.contains(where: {$0.userId == selfUserId})
+                        let imageName = isOnBattle ? "live_battle_exit_icon" : "live_battle_icon"
+                        button?.setImage(internalImage(imageName), for: .normal)
+                    }
+                    .store(in: &cancellableSet)
+
+                displayResultPublisher
+                    .removeDuplicates()
+                    .receive(on: RunLoop.main)
+                    .sink { [weak button] display in
+                        let imageName = display ?
+                                            "live_battle_disable_icon" :
+                                            "live_battle_icon"
+                        button?.setImage(internalImage(imageName), for: .normal)
+                    }
+                    .store(in: &cancellableSet)
+                
+                connectedUsersPublisher
+                    .removeDuplicates()
+                    .combineLatest(battleUsersPublisher)
+                    .receive(on: RunLoop.main)
+                    .sink { [weak button] connectedUsers, battleUsers in
+                        let isSelfInBattle = battleUsers.contains(where: { $0.userId == selfUserId })
+                        guard !isSelfInBattle else { return }
+                        let isSelfInConnection = connectedUsers.contains(where: { $0.userId == selfUserId })
+                        
+                        let imageName = isSelfInConnection ?
+                                            "live_battle_icon" :
+                                            "live_battle_disable_icon"
+                        button?.setImage(internalImage(imageName), for: .normal)
+                    }.store(in: &cancellableSet)
+            }
+            menus.append(battle)
+        }
+        
+        if features.contains(.coGuest) {
+            var linkMic = LSButtonMenuInfo(normalIcon: "live_link_icon", normalTitle: .coGuestText)
+            linkMic.tapAction = { [weak self] sender in
+                guard let self = self else { return }
+                if !manager.coHostState.connectedUsers.isEmpty {
                     return
                 }
-                let config = TUIBattleConfig()
-                config.duration = battleDuration
-                config.needResponse = true
-                config.extensionInfo = ""
-                let requestUserIds = manager.coHostState.connectedUsers
-                    .filter { $0.userId != selfUserId }
-                    .map { $0.userId }
-                coreView.requestBattle(config: config, userIdList: requestUserIds, timeout: battleRequestTimeout) { (battleId, battleUserList) in
-                    manager.onRequestBattle(battleId: battleId, battleUserList: battleUserList)
-                } onError: { _, _ in
-                    
-                }
+                routerManager.router(action: .present(.liveLinkControl))
             }
-        }
-        battle.bindStateClosure = { button, cancellableSet in
-            let selfUserId = manager.coreUserState.selfInfo.userId
-            let battleUsersPublisher = manager.subscribeState(StateSelector(keyPath: \LSBattleState.battleUsers))
-            let connectedUsersPublisher = manager.subscribeState(StateSelector(keyPath: \LSCoHostState.connectedUsers))
-            let displayResultPublisher = manager.subscribeState(StateSelector(keyPath: \LSBattleState.isOnDisplayResult))
-          
-            battleUsersPublisher
-                .removeDuplicates()
-                .receive(on: RunLoop.main)
-                .sink { battleUsers in
-                    let isOnBattle = battleUsers.contains(where: {$0.userId == selfUserId})
-                    let imageName = isOnBattle ? "live_battle_exit_icon" : "live_battle_icon"
-                    button.setImage(.liveBundleImage(imageName), for: .normal)
-                }
-                .store(in: &cancellableSet)
-
-            displayResultPublisher
-                .removeDuplicates()
-                .receive(on: RunLoop.main)
-                .sink { display in
-                    let imageName = display ?
-                                        "live_battle_disable_icon" :
-                                        "live_battle_icon"
-                    button.setImage(.liveBundleImage(imageName), for: .normal)
-                }
-                .store(in: &cancellableSet)
-            
-            connectedUsersPublisher
-                .removeDuplicates()
-                .combineLatest(battleUsersPublisher)
-                .receive(on: RunLoop.main)
-                .sink { connectedUsers, battleUsers in
-                    let isSelfInBattle = battleUsers.contains(where: { $0.userId == selfUserId })
-                    guard !isSelfInBattle else { return }
-                    let isSelfInConnection = connectedUsers.contains(where: { $0.userId == selfUserId })
-                    
-                    let imageName = isSelfInConnection ?
-                                        "live_battle_icon" :
-                                        "live_battle_disable_icon"
-                    button.setImage(.liveBundleImage(imageName), for: .normal)
-                }.store(in: &cancellableSet)
-        }
-        menus.append(battle)
-        
-        var linkMic = LSButtonMenuInfo(normalIcon: "live_link_icon")
-        linkMic.tapAction = { sender in
-            if !manager.coHostState.connectedUsers.isEmpty {
-                return
+            linkMic.bindStateClosure = { [weak self] button, cancellableSet in
+                guard let self = self else { return }
+                manager.subscribeState(StateSelector(keyPath: \LSCoHostState.connectedUsers))
+                    .map { !$0.isEmpty }
+                    .receive(on: RunLoop.main)
+                    .sink { [weak button] isConnecting in
+                        let imageName = isConnecting ? "live_link_disable_icon" : "live_link_icon"
+                        button?.setImage(internalImage(imageName), for: .normal)
+                    }
+                    .store(in: &cancellableSet)
             }
-            routerManager.router(action: .present(.liveLinkControl))
+            menus.append(linkMic)
         }
-        linkMic.bindStateClosure = { button, cancellableSet in
-            manager.subscribeState(StateSelector(keyPath: \LSCoHostState.connectedUsers))
-                .map { !$0.isEmpty }
-                .receive(on: RunLoop.main)
-                .sink { isConnecting in
-                    let imageName = isConnecting ? "live_link_disable_icon" : "live_link_icon"
-                    button.setImage(.liveBundleImage(imageName), for: .normal)
-                }
-                .store(in: &cancellableSet)
-        }
-        menus.append(linkMic)
         
-        var setting = LSButtonMenuInfo(normalIcon: "live_anchor_setting_icon")
-        setting.tapAction = { sender in
-            let settingModel = self.generateAnchorSettingModel(manager: manager, routerManager: routerManager, coreView: coreView)
+        var setting = LSButtonMenuInfo(normalIcon: "live_more_btn_icon", normalTitle: .MoreText)
+        setting.tapAction = { [weak self] sender in
+            guard let self = self else { return }
+            let settingModel = generateAnchorSettingModel(features: features)
             routerManager.router(action: .present(.featureSetting(settingModel)))
         }
         menus.append(setting)
         return menus
     }
     
-    private func confirmToExitBattle(manager: LiveStreamManager, routerManager: LSRouterManager, coreView: LiveCoreView) {
+    private func confirmToExitBattle() {
         var items: [ActionItem] = []
         let designConfig = ActionItemDesignConfig(lineWidth: 7, titleColor: .redColor)
         designConfig.backgroundColor = .white
         designConfig.lineColor = .g8
-        let endBattleItem = ActionItem(title: .confirmEndBattleText, designConfig: designConfig, actionClosure: { _ in
+        let endBattleItem = ActionItem(title: .confirmEndBattleText, designConfig: designConfig, actionClosure: {  [weak self] _ in
+            guard let self = self else { return }
             let alertInfo = LSAlertInfo(description: String.endBattleAlertText, imagePath: nil,
                                       cancelButtonInfo: (String.alertCancelText, .g3),
-                                      defaultButtonInfo: (String.confirmEndBattleText, .redColor)) { _ in
+                                      defaultButtonInfo: (String.confirmEndBattleText, .redColor)) { [weak self] _ in
+                guard let self = self else { return }
                 routerManager.router(action: .routeTo(.anchor))
-            } defaultClosure: { alertPanel in
+            } defaultClosure: { [weak self] alertPanel in
+                guard let self = self else { return }
                 coreView.terminateBattle(battleId: manager.battleState.battleId) {
                 } onError: { _, _ in
                 }
@@ -213,78 +246,84 @@ extension LiveRoomRootMenuDataCreator {
         routerManager.router(action: .present(.listMenu(ActionPanelData(items: items))))
     }
     
-    func generateAnchorSettingModel(manager: LiveStreamManager,
-                                    routerManager: LSRouterManager,
-                                    coreView: LiveCoreView) -> LSFeatureClickPanelModel {
+    func generateAnchorSettingModel(features: [BottomMenuFeature]) -> LSFeatureClickPanelModel {
         let model = LSFeatureClickPanelModel()
-        model.itemSize = CGSize(width: 56.scale375(), height: 76.scale375())
+        model.itemSize = CGSize(width: 56.scale375(), height: 80.scale375Height())
         model.itemDiff = 12.scale375()
         var designConfig = LSFeatureItemDesignConfig()
-        designConfig.backgroundColor = .g3
+        designConfig.backgroundColor = .bgEntrycardColor
         designConfig.cornerRadius = 10
         designConfig.titleFont = .customFont(ofSize: 12)
+        designConfig.titileColor = .textPrimaryColor
         designConfig.type = .imageAboveTitleBottom
-        model.items.append(LSFeatureItem(normalTitle: .beautyText,
-                                       normalImage: .liveBundleImage("live_video_setting_beauty"),
-                                       designConfig: designConfig,
-                                       actionClosure: { [weak routerManager] _ in
-            guard let routerManager = routerManager else { return }
-            routerManager.router(action: .dismiss(.panel, completion: { [weak routerManager] in
-                guard let routerManager = routerManager else { return }
-                routerManager.router(action: .present(.beauty))
+        if features.contains(.beauty) {
+            model.items.append(LSFeatureItem(normalTitle: .beautyText,
+                                           normalImage: internalImage("live_video_setting_beauty")?.withTintColor(.textPrimaryColor),
+                                           designConfig: designConfig,
+                                           actionClosure: { [weak self] _ in
+                guard let self = self else { return }
+                routerManager.router(action: .dismiss(.panel, completion: { [weak self] in
+                    guard let self = self else { return }
+                    routerManager.router(action: .present(.beauty))
+                }))
+                let isEffectBeauty = (TUICore.getService(TUICore_TEBeautyService) != nil)
+                DataReporter.reportEventData(eventKey: isEffectBeauty ? Constants.DataReport.kDataReportPanelShowLiveRoomBeautyEffect :
+                                                Constants.DataReport.kDataReportPanelShowLiveRoomBeauty)
             }))
-            let isEffectBeauty = (TUICore.getService(TUICore_TEBeautyService) != nil)
-            DataReporter.reportEventData(eventKey: isEffectBeauty ? Constants.DataReport.kDataReportPanelShowLiveRoomBeautyEffect :
-                                            Constants.DataReport.kDataReportPanelShowLiveRoomBeauty)
-        }))
-        model.items.append(LSFeatureItem(normalTitle: .audioEffectsText,
-                                       normalImage: .liveBundleImage("live_setting_audio_effects"),
-                                       designConfig: designConfig,
-                                       actionClosure: { _ in
-            routerManager.router(action: .present(.audioEffect))
-        }))
+        }
+        if features.contains(.soundEffect) {
+            model.items.append(LSFeatureItem(normalTitle: .audioEffectsText,
+                                           normalImage: internalImage("live_setting_audio_effects")?.withTintColor(.textPrimaryColor),
+                                           designConfig: designConfig,
+                                           actionClosure: { [weak self] _ in
+                guard let self = self else { return }
+                routerManager.router(action: .present(.audioEffect))
+            }))
+        }
         model.items.append(LSFeatureItem(normalTitle: .flipText,
-                                       normalImage: .liveBundleImage("live_video_setting_flip"),
+                                       normalImage: internalImage("live_video_setting_flip")?.withTintColor(.textPrimaryColor),
                                        designConfig: designConfig,
-                                       actionClosure: { [weak coreView] _ in
-            guard let coreView = coreView else { return }
+                                       actionClosure: { [weak self] _ in
+            guard let self = self else { return }
             coreView.switchCamera(isFront: !manager.coreMediaState.isFrontCamera)
         }))
-        model.items.append(LSFeatureItem(normalTitle: .videoParametersText,
-                                       normalImage: .liveBundleImage("live_setting_video_parameters"),
-                                       designConfig: designConfig,
-                                       actionClosure: { _ in
-            routerManager.router(action: .dismiss(.panel, completion: { [weak self] in
-                guard let _ = self else { return }
-                routerManager.router(action: .present(.videoSetting))
-            }))
+        model.items.append(LSFeatureItem(normalTitle: .mirrorText,
+                                         normalImage: internalImage("live_video_setting_mirror")?.withTintColor(.textPrimaryColor),
+                                         designConfig: designConfig,
+                                         actionClosure: { [weak self] _ in
+            guard let self = self else { return }
+            coreView.enableMirror(enable: !manager.coreMediaState.isMirrorEnabled)
         }))
         model.items.append(LSFeatureItem(normalTitle: .streamDashboardText,
-                                       normalImage: .liveBundleImage("live_setting_stream_dashboard"),
+                                       normalImage: internalImage("live_setting_stream_dashboard")?.withTintColor(.textPrimaryColor),
                                        designConfig: designConfig,
-                                       actionClosure: { _ in
+                                       actionClosure: { [weak self] _ in
+            guard let self = self else { return }
             routerManager.router(action: .dismiss(.panel, completion: { [weak self] in
-                guard let _ = self else { return }
+                guard let self = self else { return }
                 routerManager.router(action: .present(.streamDashboard))
             }))
         }))
         return model
     }
     
-    func memberBottomMenu(manager: LiveStreamManager, routerManager: LSRouterManager, coreView: LiveCoreView) -> [LSButtonMenuInfo] {
+    func memberBottomMenu() -> [LSButtonMenuInfo] {
         var menus: [LSButtonMenuInfo] = []
         var streamDashboard = LSButtonMenuInfo(normalIcon: "live_stream_dashboard_icon", normalTitle: "")
-        streamDashboard.tapAction = { sender in
+        streamDashboard.tapAction = { [weak self] sender in
+            guard let self = self else { return }
             routerManager.router(action: .present(.streamDashboard))
         }
         menus.append(streamDashboard)
         var gift = LSButtonMenuInfo(normalIcon: "live_gift_icon", normalTitle: "")
-        gift.tapAction = { sender in
+        gift.tapAction = { [weak self] sender in
+            guard let self = self else { return }
             routerManager.router(action: .present(.giftView))
         }
         menus.append(gift)
         var linkMic = LSButtonMenuInfo(normalIcon: "live_link_icon", selectIcon: "live_linking_icon")
-        linkMic.tapAction = { sender in
+        linkMic.tapAction = { [weak self] sender in
+            guard let self = self else { return }
             if !manager.coHostState.connectedUsers.isEmpty {
                 return
             }
@@ -292,12 +331,15 @@ extension LiveRoomRootMenuDataCreator {
                 let designConfig = ActionItemDesignConfig(lineWidth: 7, titleColor: .g2)
                 designConfig.backgroundColor = .white
                 designConfig.lineColor = .g8
-                let item = ActionItem(title: .cancelLinkMicRequestText, designConfig: designConfig) { _ in
+                let item = ActionItem(title: .cancelLinkMicRequestText, designConfig: designConfig) { [weak self] _ in
+                    guard let self = self else { return }
                     routerManager.router(action: .dismiss())
                     manager.onStartCancelIntraRoomConnection()
-                    coreView.cancelIntraRoomConnection(userId: "") {
+                    coreView.cancelIntraRoomConnection(userId: "") { [weak self] in
+                        guard let self = self else { return }
                         manager.onCancelIntraRoomConnection()
-                    } onError: { code, message in
+                    } onError: { [weak self] code, message in
+                        guard let self = self else { return }
                         let error = InternalError(code: code.rawValue, message: message)
                         manager.onCancelIntraRoomConnection()
                         manager.toastSubject.send(error.localizedMessage)
@@ -305,37 +347,42 @@ extension LiveRoomRootMenuDataCreator {
                 }
                 routerManager.router(action: .present(.listMenu(ActionPanelData(items: [item]))))
             } else {
-                let isOnSeat = manager.coreCoGuestState.seatList.contains(where: { $0.userId == manager.coreUserState.selfInfo.userId })
+                let selfUserId = manager.coreUserState.selfInfo.userId
+                let isOnSeat = manager.coreCoGuestState.seatList.contains(where: { $0.userId == selfUserId })
                 if isOnSeat {
-                    self.confirmToTerminateCoGuest(routerManager: routerManager, coreView: coreView)
+                    confirmToTerminateCoGuest()
                 } else {
-                    let data = LiveRoomRootMenuDataCreator().generateLinkTypeMenuData(manager: manager, routerManager: routerManager, coreView: coreView)
+                    let data = generateLinkTypeMenuData()
                     routerManager.router(action: .present(.linkType(data)))
                 }
             }
         }
-        linkMic.bindStateClosure = { button, cancellableSet in
+        linkMic.bindStateClosure = { [weak self] button, cancellableSet in
+            guard let self = self else { return }
             manager.subscribeState(StateSelector(keyPath: \LSCoGuestState.coGuestStatus))
                 .removeDuplicates()
                 .receive(on: RunLoop.main)
-                .sink { coGuestStatus in
-                    self.onCoGuestStatusChanged(button: button, enable: true, coGuestStatus: manager.coGuestState.coGuestStatus)
+                .sink { [weak self] coGuestStatus in
+                    guard let self = self else { return }
+                    onCoGuestStatusChanged(button: button, enable: true, coGuestStatus: coGuestStatus)
                 }
                 .store(in: &cancellableSet)
             
             manager.subscribeState(StateSelector(keyPath: \LSCoHostState.connectedUsers))
                 .removeDuplicates()
                 .receive(on: RunLoop.main)
-                .sink { users in
+                .sink { [weak self] users in
+                    guard let self = self else { return }
                     let isConnecting = users.count > 0
-                    self.onCoGuestStatusChanged(button: button, enable: !isConnecting, coGuestStatus: manager.coGuestState.coGuestStatus)
+                    onCoGuestStatusChanged(button: button, enable: !isConnecting, coGuestStatus: manager.coGuestState.coGuestStatus)
                 }
                 .store(in: &cancellableSet)
             
         }
         menus.append(linkMic)
         var like = LSButtonMenuInfo(normalIcon: "live_like_icon")
-        like.tapAction = { sender in
+        like.tapAction = { [weak self] sender in
+            guard let self = self else { return }
             manager.likeSubject.send()
         }
         menus.append(like)
@@ -357,16 +404,17 @@ extension LiveRoomRootMenuDataCreator {
         }
         
         button.isSelected = isSelected
-        button.setImage(.liveBundleImage(imageName), for: .normal)
+        button.setImage(internalImage(imageName), for: .normal)
     }
     
-    private func confirmToTerminateCoGuest(routerManager: LSRouterManager, coreView: LiveCoreView) {
+    private func confirmToTerminateCoGuest() {
         var items: [ActionItem] = []
         let designConfig = ActionItemDesignConfig(lineWidth: 7, titleColor: .redColor)
         designConfig.backgroundColor = .white
         designConfig.lineColor = .g8
         
-        let terminteGoGuestItem = ActionItem(title: .confirmTerminateCoGuestText, designConfig: designConfig, actionClosure: { _ in
+        let terminteGoGuestItem = ActionItem(title: .confirmTerminateCoGuestText, designConfig: designConfig, actionClosure: { [weak self] _ in
+            guard let self = self else { return }
             coreView.terminateIntraRoomConnection()
             routerManager.router(action: .routeTo(.audience))
         })
@@ -376,18 +424,22 @@ extension LiveRoomRootMenuDataCreator {
 }
 
 private extension String {
-    static let videoLinkRequestText = localized("Apply for video link")
-    static var audioLinkRequestText = localized("Apply for audio link")
-    static let waitToLinkText = localized("You have submitted a link mic request, please wait for the author approval")
-    static let beautyText = localized("Beauty")
-    static let audioEffectsText = localized("Audio")
-    static let flipText = localized("Flip")
-    static let videoParametersText = localized("Video Config")
-    static let confirmEndBattleText = localized("End PK")
-    static let endBattleAlertText = localized("Are you sure you want to end the battle? The current result will be the final result after the end")
-    static let alertCancelText = localized("Cancel")
+    static let videoLinkRequestText = internalLocalized("Apply for video link")
+    static var audioLinkRequestText = internalLocalized("Apply for audio link")
+    static let waitToLinkText = internalLocalized("You have submitted a link mic request, please wait for the author approval")
+    static let beautyText = internalLocalized("Beauty")
+    static let audioEffectsText = internalLocalized("Audio")
+    static let flipText = internalLocalized("Flip")
+    static let mirrorText = internalLocalized("Mirror")
+    static let confirmEndBattleText = internalLocalized("End PK")
+    static let endBattleAlertText = internalLocalized("Are you sure you want to end the battle? The current result will be the final result after the end")
+    static let alertCancelText = internalLocalized("Cancel")
     
-    static let streamDashboardText = localized("Dashboard")
-    static let cancelLinkMicRequestText = localized("Cancel application for link mic")
-    static let confirmTerminateCoGuestText = localized("End Link")
+    static let streamDashboardText = internalLocalized("Dashboard")
+    static let cancelLinkMicRequestText = internalLocalized("Cancel application for link mic")
+    static let confirmTerminateCoGuestText = internalLocalized("End Link")
+    static let coHostText = internalLocalized("Host")
+    static let battleText = internalLocalized("Battle")
+    static let coGuestText = internalLocalized("Guest")
+    static let MoreText = internalLocalized("More")
 }

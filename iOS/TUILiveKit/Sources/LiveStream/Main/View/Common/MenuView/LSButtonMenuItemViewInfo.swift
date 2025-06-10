@@ -15,15 +15,17 @@ struct LSButtonMenuInfo: Identifiable  {
     let id: UUID
     let normalIcon: String
     let selectIcon: String
+    let animateIcon: [String]
     let normalTitle: String
     let selectTitle: String
     var tapAction: LSBottomMenuTapClosure?
     var bindStateClosure: LSBottomMenuBindButtonStateClosure?
     
-    init(normalIcon: String, selectIcon: String = "", normalTitle: String = "", selectTitle: String = "") {
+    init(normalIcon: String, selectIcon: String = "", animateIcon: [String] = [], normalTitle: String = "", selectTitle: String = "") {
         id = UUID()
         self.normalIcon = normalIcon
         self.selectIcon = selectIcon
+        self.animateIcon = animateIcon
         self.normalTitle = normalTitle
         self.selectTitle = selectTitle
     }

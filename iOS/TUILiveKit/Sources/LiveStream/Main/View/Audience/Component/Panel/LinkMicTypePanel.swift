@@ -61,7 +61,7 @@ class LinkMicTypePanel: UIView {
     
     private lazy var videoSettingButton: UIButton = {
         let view = UIButton()
-        view.setImage(.liveBundleImage("live_link_video_setting"), for: .normal)
+        view.setImage(internalImage("live_link_video_setting"), for: .normal)
         view.addTarget(self, action: #selector(videoSettingImageViewAction), for: .touchUpInside)
         return view
         
@@ -159,18 +159,18 @@ extension LinkMicTypePanel: UITableViewDataSource {
 
 private extension String {
     static var linkTypeTitleText: String {
-        localized("Choose Link Mode")
+        internalLocalized("Choose Link Mode")
     }
 
     static var linkTypeTipsText: String {
-        localized("connect upon host's approval")
+        internalLocalized("connect upon host's approval")
     }
 
     static var videoLinkRequestText: String {
-        localized("Apply for video link")
+        internalLocalized("Apply for video link")
     }
 
     static var audioLinkRequestText: String {
-        localized("Apply for audio link")
+        internalLocalized("Apply for audio link")
     }
 }

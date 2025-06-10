@@ -9,6 +9,7 @@ import Foundation
 import RTCCommon
 import RTCRoomEngine
 import Combine
+import TUILiveResources
 
 class LSRoomManager {
     private let observerState = ObservableState<LSRoomState>(initialState: LSRoomState())
@@ -40,10 +41,6 @@ extension LSRoomManager {
         }
     }
     
-    func onPreviewing() {
-        update(liveStatus: .previewing)
-    }
-    
     func onStartLive(isJoinSelf: Bool, roomInfo: TUIRoomInfo) {
         update(liveStatus: .pushing)
         updateRoomState(roomInfo: roomInfo)
@@ -53,6 +50,9 @@ extension LSRoomManager {
     }
     
     func onJoinLive(roomInfo: TUIRoomInfo) {
+        Task {
+            try? await fetchLiveInfo(roomId: roomInfo.roomId)
+        }
         updateRoomState(roomInfo: roomInfo)
         update(liveStatus: .playing)
     }
@@ -67,6 +67,14 @@ extension LSRoomManager {
         }
     }
     
+    func onAudienceSliderCellInit(liveInfo: LiveInfo) {
+        update { state in
+            state.coverURL = liveInfo.coverUrl
+            state.roomId = liveInfo.roomId
+            state.roomName = liveInfo.name
+        }
+    }
+    
     func getDefaultRoomName() -> String {
         guard let context = context else { return "" }
         let selfInfo = context.coreUserState.selfInfo
@@ -74,18 +82,14 @@ extension LSRoomManager {
     }
     
     func fetchLiveInfo(roomId: String) async throws -> TUILiveInfo {
-        try await service.fetchLiveInfo(roomId: roomId)
+        let liveInfo = try await service.fetchLiveInfo(roomId: roomId)
+        updateLiveInfo(liveInfo: liveInfo)
+        return liveInfo
     }
     
     func onSetRoomName(_ name: String) {
         update { state in
             state.roomName = name
-        }
-    }
-    
-    func onSetCategory(_ category: LiveStreamCategory) {
-        update { state in
-            state.liveExtraInfo.category = category
         }
     }
     
@@ -115,17 +119,20 @@ extension LSRoomManager {
 
 // MARK: - Observer
 extension LSRoomManager {
-    func onLiveEnd() {
+    func onLiveEnd(roomId: String) {
+        guard roomId == roomState.roomId else { return }
         update { state in
             state.liveStatus = .finished
         }
     }
     
     func onKickedOutOfRoom(roomId: String, reason: TUIKickedOutOfRoomReason, message: String) {
+        guard roomId == roomState.roomId else { return }
         context?.kickedOutSubject.send()
     }
     
     func onRoomUserCountChanged(roomId: String, userCount: Int) {
+        guard roomId == roomState.roomId else { return }
         if userCount > 0 {
             update { state in
                 state.userCount = userCount - 1
@@ -158,6 +165,7 @@ extension LSRoomManager {
             state.roomId = roomInfo.roomId
             state.createTime = roomInfo.createTime
             state.roomName = roomInfo.name
+            state.roomInfo = roomInfo
         }
     }
     
@@ -166,7 +174,6 @@ extension LSRoomManager {
         liveInfo.roomInfo.roomId = roomState.roomId
         liveInfo.coverUrl = roomState.coverURL
         liveInfo.isPublicVisible = roomState.liveExtraInfo.liveMode == .public
-        liveInfo.categoryList = [NSNumber(value: roomState.liveExtraInfo.category.rawValue)]
         Task {
             var modifyFlag: TUILiveModifyFlag = []
             modifyFlag = modifyFlag.union([.coverUrl, .publish, .category, .backgroundUrl])
@@ -193,9 +200,6 @@ extension LSRoomManager {
             }
             if modifyFlag.contains(.activityStatus) {
                 state.liveExtraInfo.activeStatus = liveInfo.activityStatus
-            }
-            if modifyFlag.contains(.category), let category = liveInfo.categoryList.first {
-                state.liveExtraInfo.category = LiveStreamCategory(rawValue: category.intValue) ?? .chat
             }
         }
     }

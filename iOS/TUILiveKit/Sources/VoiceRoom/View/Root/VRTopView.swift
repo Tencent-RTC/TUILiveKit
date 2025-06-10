@@ -9,8 +9,8 @@ import UIKit
 import SnapKit
 import Kingfisher
 import Combine
-import TUILiveInfo
 import TUIAudienceList
+import TUILiveInfo
 
 private let containerHeight = 36.0
 private let componentHeight = 32.0
@@ -49,7 +49,7 @@ class VRTopView: UIView {
     
     private lazy var reportBtn: UIButton  = {
         let btn = UIButton(type: .custom)
-        btn.setImage(.liveBundleImage("live_report"), for: .normal)
+        btn.setImage(internalImage("live_report"), for: .normal)
         btn.imageView?.contentMode = .scaleAspectFill
         btn.addTarget(self, action: #selector(clickReport), for: .touchUpInside)
         return btn
@@ -57,7 +57,7 @@ class VRTopView: UIView {
     
     let stopButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setBackgroundImage(.liveBundleImage( "live_leave_icon"), for: .normal)
+        button.setBackgroundImage(internalImage( "live_leave_icon"), for: .normal)
         return button
     }()
     
@@ -68,8 +68,8 @@ class VRTopView: UIView {
     }
     
     func initialize(roomId: String) {
-        liveInfoView.initialize(roomId: roomId)
-        audienceListView.initialize(roomId: roomId)
+        liveInfoView.initialize(roomInfo: manager.roomState.roomInfo)
+        audienceListView.initialize(roomInfo: manager.roomState.roomInfo)
     }
     
     required init?(coder: NSCoder) {
@@ -154,7 +154,7 @@ extension VRTopView {
     private func clickReport() {
         let selector = NSSelectorFromString("showReportAlertWithRoomId:ownerId:")
         if responds(to: selector) {
-            perform(selector, with: manager.roomState.roomId, with: manager.roomState.ownerInfo.userId)
+            perform(selector, with: manager.roomState.roomId, with: manager.coreRoomState.ownerId)
         }
     }
 }

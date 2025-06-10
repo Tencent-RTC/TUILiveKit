@@ -12,7 +12,7 @@ typealias onSuccess = () -> Void
 typealias onError = (Int,String) -> Void
 class IMManager {
     func getUserFollowInfo(userId: String, onSuccess: onSuccess? = nil, onError: onError? = nil) {
-        V2TIMManager.sharedInstance().getUserFollowInfo([userId], succ: { followInfo in
+        V2TIMManager.sharedInstance().getUserFollowInfo(userIDList: [userId], succ: { followInfo in
             guard let followInfo = followInfo?.first else { return}
             SettingsConfig.share.fansCount = Int(followInfo.followersCount)
             SettingsConfig.share.followCount = Int(followInfo.followingCount)
@@ -26,7 +26,7 @@ class IMManager {
     func changeUserName(newName name: String, onSuccess: onSuccess? = nil, onError: onError? = nil) {
         let userFullInfo = V2TIMUserFullInfo()
         userFullInfo.nickName = name
-        V2TIMManager.sharedInstance().setSelfInfo(userFullInfo, succ: { [weak self] in
+        V2TIMManager.sharedInstance().setSelfInfo(info: userFullInfo, succ: { [weak self] in
             guard let self = self else { return }
             SettingsConfig.share.name = name
             onSuccess?()

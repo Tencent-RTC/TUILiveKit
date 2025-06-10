@@ -11,10 +11,11 @@ import RTCCommon
 import Combine
 import LiveStreamCore
 import RTCRoomEngine
-import TUIGift
 import TUIBarrage
-import TUILiveInfo
+import TUILiveResources
 import TUIAudienceList
+import TUIGift
+import TUILiveInfo
 
 class AnchorLivingView: UIView {
     
@@ -31,7 +32,7 @@ class AnchorLivingView: UIView {
     
     private let liveInfoView: LiveInfoView = {
         let view = LiveInfoView(enableFollow: VideoLiveKit.createInstance().enableFollow)
-        view.mm_h = 32.scale375()
+        view.mm_h = 40.scale375()
         view.backgroundColor = UIColor.g1.withAlphaComponent(0.4)
         view.layer.cornerRadius = view.mm_h * 0.5
         return view
@@ -39,8 +40,9 @@ class AnchorLivingView: UIView {
     
     private lazy var closeButton: UIButton = {
         let view = UIButton(frame: .zero)
-        view.setImage(.liveBundleImage("live_end_live_icon"), for: .normal)
+        view.setImage(internalImage("live_end_live_icon"), for: .normal)
         view.addTarget(self, action: #selector(closeButtonClick), for: .touchUpInside)
+        view.imageEdgeInsets = UIEdgeInsets(top: 2.scale375(), left: 2.scale375(), bottom: 2.scale375(), right: 2.scale375())
         return view
     }()
     
@@ -79,17 +81,16 @@ class AnchorLivingView: UIView {
     
     private lazy var barrageSendView: BarrageInputView = {
         var view = BarrageInputView(roomId: roomId)
-        view.layer.borderColor = UIColor.g3.withAlphaComponent(0.3).cgColor
-        view.layer.borderWidth = 0.5
-        view.layer.cornerRadius = 18.scale375Height()
-        view.backgroundColor = .g1.withAlphaComponent(0.4)
+        view.layer.cornerRadius = 20.scale375Height()
+        view.layer.masksToBounds = true
         return view
     }()
     
     private lazy var floatWindowButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(.liveBundleImage("live_floatwindow_open_icon"), for: .normal)
+        button.setImage(internalImage("live_floatwindow_open_icon"), for: .normal)
         button.addTarget(self, action: #selector(onFloatWindowButtonClick), for: .touchUpInside)
+        button.imageEdgeInsets = UIEdgeInsets(top: 2.scale375(), left: 2.scale375(), bottom: 2.scale375(), right: 2.scale375())
         return button
     }()
     
@@ -115,8 +116,8 @@ class AnchorLivingView: UIView {
     }
     
     private var isViewReady: Bool = false
-    override func layoutSubviews() {
-        super.layoutSubviews()
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
         guard !isViewReady else { return }
         backgroundColor = .clear
         constructViewHierarchy()
@@ -181,11 +182,11 @@ class AnchorLivingView: UIView {
     }
     
     func initAudienceListView() {
-        audienceListView.initialize(roomId: roomId)
+        audienceListView.initialize(roomInfo: manager.roomState.roomInfo)
     }
     
     func initLiveInfoView() {
-        liveInfoView.initialize(roomId: roomId)
+        liveInfoView.initialize(roomInfo: manager.roomState.roomInfo)
     }
     
     @objc func onFloatWindowButtonClick() {
@@ -195,6 +196,27 @@ class AnchorLivingView: UIView {
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         let view = super.hitTest(point, with: event)
         return view == self ? nil : view
+    }
+}
+
+extension AnchorLivingView {
+    func disableFeature(_ feature: AnchorViewFeature, isDisable: Bool) {
+        switch feature {
+        case .liveData:
+            liveInfoView.isHidden = isDisable
+        case .visitorCnt:
+            audienceListView.isHidden = isDisable
+        case .giftConfig:
+            bottomMenu.disableFeature(.giftConfig, isDisable: isDisable)
+        case .coGuest:
+            bottomMenu.disableFeature(.coGuest, isDisable: isDisable)
+        case .coHost:
+            bottomMenu.disableFeature(.coHost, isDisable: isDisable)
+        case .battle:
+            bottomMenu.disableFeature(.battle, isDisable: isDisable)
+        case .soundEffect:
+            bottomMenu.disableFeature(.soundEffect, isDisable: isDisable)
+        }
     }
 }
 
@@ -225,29 +247,29 @@ extension AnchorLivingView {
         }
         
         barrageDisplayView.snp.remakeConstraints { make in
-            make.left.equalToSuperview().offset(16)
+            make.left.equalToSuperview().offset(12.scale375())
             make.width.equalTo(305.scale375())
             make.height.equalTo(212.scale375Height())
-            make.bottom.equalTo(barrageSendView.snp.top).offset(-20.scale375Height())
+            make.bottom.equalTo(barrageSendView.snp.top).offset(-16.scale375Height())
         }
         
         closeButton.snp.remakeConstraints { make in
             make.height.equalTo(24.scale375())
             make.width.equalTo(24.scale375())
             make.trailing.equalToSuperview().inset((self.isPortrait ? 16 : 45).scale375())
-            make.top.equalToSuperview().inset((self.isPortrait ? 58 : 24).scale375Height())
+            make.top.equalToSuperview().inset((self.isPortrait ? 70 : 24).scale375Height())
         }
         
         floatWindowButton.snp.makeConstraints { make in
             make.trailing.equalTo(closeButton.snp.leading).offset(-8.scale375())
             make.centerY.equalTo(closeButton)
-            make.width.equalTo(18.scale375Width())
-            make.height.equalTo(18.scale375Width())
+            make.width.equalTo(24.scale375Width())
+            make.height.equalTo(24.scale375Width())
         }
         
         audienceListView.snp.remakeConstraints { make in
             make.centerY.equalTo(closeButton)
-            make.trailing.equalTo(floatWindowButton.snp.leading).offset(-4.scale375())
+            make.trailing.equalTo(floatWindowButton.snp.leading).offset(-8.scale375())
             make.leading.greaterThanOrEqualTo(liveInfoView.snp.trailing).offset(20.scale375())
         }
         
@@ -255,12 +277,13 @@ extension AnchorLivingView {
             make.centerY.equalTo(closeButton)
             make.height.equalTo(liveInfoView.mm_h)
             make.leading.equalToSuperview().inset((self.isPortrait ? 16 : 45).scale375())
+            make.width.lessThanOrEqualTo(160.scale375())
         }
         
         bottomMenu.snp.makeConstraints { make in
-            make.bottom.equalToSuperview().offset(-34.scale375Height())
+            make.bottom.equalToSuperview().offset(-38.scale375Height())
             make.trailing.equalToSuperview()
-            make.height.equalTo(36)
+            make.height.equalTo(46.scale375Height())
         }
         
         floatView.snp.makeConstraints { make in
@@ -271,10 +294,10 @@ extension AnchorLivingView {
         }
         
         barrageSendView.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(16.scale375())
-            make.width.equalTo(130.scale375())
-            make.height.equalTo(36.scale375Height())
-            make.bottom.equalToSuperview().offset(-34.scale375Height())
+            make.leading.equalToSuperview().offset(12.scale375())
+            make.width.equalTo(120.scale375())
+            make.height.equalTo(40.scale375Height())
+            make.centerY.equalTo(bottomMenu)
         }
     }
 }
@@ -321,7 +344,6 @@ extension AnchorLivingView {
         designConfig.lineColor = .g8
         let endLiveItem = ActionItem(title: .confirmCloseText, designConfig: designConfig, actionClosure: { [weak self] _ in
             guard let self = self else { return }
-            self.exitBattle()
             self.showEndView()
             self.routerManager.router(action: .dismiss())
         })
@@ -339,8 +361,15 @@ extension AnchorLivingView {
         let roomState = manager.roomState
         let giftIncome = roomState.liveExtraInfo.giftIncome
         let giftPeopleCount = roomState.liveExtraInfo.giftPeopleSet.count
+        var dur = abs(Int(Date().timeIntervalSince1970 - Double(roomState.createTime / 1_000)))
+        if roomState.createTime == 0 {
+            dur = 0
+        }
+        
+        LiveKitLog.info("\(#file)", "\(#line)", "showEndView:{roomId:\(self.roomId), viewCount:\(giftPeopleCount), messageCount:\(barrageDisplayView.getBarrageCount()), giftIncome:\(giftIncome), giftPeople:\(giftPeopleCount), likeCount:\(giftDisplayView.getLikeCount()), createTime:\(roomState.createTime)(ms), currentTime:\(Date().timeIntervalSince1970)(s), dur:\(dur)(s)}")
+
         let liveDataModel = LiveDataModel(roomId: roomId,
-                                          liveDuration: abs(Int(Date().timeIntervalSince1970 - Double(roomState.createTime / 1_000))),
+                                          liveDuration: dur,
                                           audienceCount: manager.roomState.liveExtraInfo.maxAudienceCount,
                                           messageCount: barrageDisplayView.getBarrageCount(),
                                           giftIncome: giftIncome,
@@ -356,6 +385,7 @@ extension AnchorLivingView {
         manager.fetchLiveInfo(roomId: roomId) { [weak self, weak anchorEndView] liveInfo in
             self?.stopLiveStream()
             guard let anchorEndView = anchorEndView else { return }
+            LiveKitLog.info("\(#file)", "\(#line)", "endView update viewCount:\(liveInfo.viewCount)")
             anchorEndView.updateAudienceCount(liveInfo.viewCount)
         } onError: { [weak self] error in
             guard let self = self else { return }
@@ -447,12 +477,12 @@ extension AnchorLivingView: LiveEndViewDelegate {
 }
 
 fileprivate extension String {
-    static let confirmCloseText = localized("End Live")
-    static let meText = localized("Me")
+    static let confirmCloseText = internalLocalized("End Live")
+    static let meText = internalLocalized("Me")
     
-    static let endLiveOnConnectionText = localized("You are currently co-hosting with other streamers. Would you like to [End Co-host] or [End Live] ?")
-    static let endLiveDisconnectText = localized("End Co-host")
-    static let endLiveOnLinkMicText = localized("You are currently co-guesting with other streamers. Would you like to [End Live] ?")
-    static let endLiveOnBattleText = localized("You are currently in PK mode. Would you like to  [End PK] or [End Live] ?")
-    static let endLiveBattleText = localized("End PK")
+    static let endLiveOnConnectionText = internalLocalized("You are currently co-hosting with other streamers. Would you like to [End Co-host] or [End Live] ?")
+    static let endLiveDisconnectText = internalLocalized("End Co-host")
+    static let endLiveOnLinkMicText = internalLocalized("You are currently co-guesting with other streamers. Would you like to [End Live] ?")
+    static let endLiveOnBattleText = internalLocalized("You are currently in PK mode. Would you like to [End PK] or [End Live] ?")
+    static let endLiveBattleText = internalLocalized("End PK")
 }
