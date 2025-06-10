@@ -3,9 +3,5 @@
     <corners
         android:topLeftRadius="20dp"
         android:topRightRadius="20dp" />
-    <gradient
-        android:angle="180"
-        android:gradientRadius="90dp"
-        android:startColor="@color/common_design_standard_g1"
-        android:endColor="@color/common_design_standard_g2" />
+    <solid android:color="@color/common_bg_color_operate" />
 </shape>

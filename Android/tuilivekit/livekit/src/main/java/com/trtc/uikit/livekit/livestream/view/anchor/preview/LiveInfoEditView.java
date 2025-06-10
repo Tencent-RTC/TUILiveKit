@@ -112,11 +112,11 @@ public class LiveInfoEditView extends FrameLayout {
     private void initLiveCoverPicker() {
         View coverSettingsLayout = findViewById(R.id.fl_cover_edit);
         ImageLoader.load(getContext(), mImageStreamCover, mRoomState.coverURL.getValue(),
-                R.drawable.livekit_live_stream_default_cover);
+                R.drawable.anchor_prepare_live_stream_default_cover);
         coverSettingsLayout.setOnClickListener(view -> {
             if (mStreamPresetImagePicker == null) {
                 StreamPresetImagePicker.Config config = new StreamPresetImagePicker.Config();
-                config.title = getContext().getString(R.string.common_titile_preset_cover);
+                config.title = getContext().getString(R.string.common_title_preset_cover);
                 config.confirmButtonText = getContext().getString(R.string.common_set_as_cover);
                 config.data = Arrays.asList(COVER_URL_LIST);
                 config.currentImageUrl = mRoomState.coverURL.getValue();
@@ -178,7 +178,7 @@ public class LiveInfoEditView extends FrameLayout {
     }
 
     private void onLiveCoverChange(String coverURL) {
-        ImageLoader.load(getContext(), mImageStreamCover, coverURL, R.drawable.livekit_live_stream_default_cover);
+        ImageLoader.load(getContext(), mImageStreamCover, coverURL, R.drawable.anchor_prepare_live_stream_default_cover);
     }
 
     private void onLivePrivacyStatusChange(LiveStreamPrivacyStatus status) {

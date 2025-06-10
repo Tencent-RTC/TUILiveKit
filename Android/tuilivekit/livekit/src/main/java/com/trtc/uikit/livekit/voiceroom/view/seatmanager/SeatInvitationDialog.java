@@ -20,19 +20,17 @@ import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
-import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
 import com.trtc.uikit.livekit.voiceroom.state.SeatState;
-import com.trtc.uikit.livekit.voiceroom.state.UserState;
 import com.trtc.uikit.livekit.voiceroomcore.SeatGridView;
 import com.trtc.uikit.livekit.voiceroomcore.VoiceRoomDefine;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class SeatInvitationDialog extends PopupDialog {
-    private static final String FILE = "SeatInvitationDialog";
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getVoiceRoomLogger("SeatInvitationDialog");
 
     private final Context          mContext;
     private final VoiceRoomManager mVoiceRoomManager;
@@ -45,8 +43,8 @@ public class SeatInvitationDialog extends PopupDialog {
     private SeatInvitationAdapter mSeatInvitationAdapter;
     private int                   mInvitationIndex = -1;
 
-    private final Observer<Set<UserState.UserInfo>>  mAudienceListObserver = this::onAudienceListChanged;
-    private final Observer<List<SeatState.SeatInfo>> mSeatListObserver     = this::updateSeatListView;
+    private final Observer<Map<String, TUIRoomDefine.UserInfo>> mAudienceListObserver = this::onAudienceListChanged;
+    private final Observer<List<SeatState.SeatInfo>>            mSeatListObserver     = this::updateSeatListView;
 
     public SeatInvitationDialog(@NonNull Context context, VoiceRoomManager voiceRoomManager,
                                 SeatGridView seatGridView) {
@@ -114,7 +112,7 @@ public class SeatInvitationDialog extends PopupDialog {
         mSeatInvitationListView.setAdapter(mSeatInvitationAdapter);
     }
 
-    private void onAudienceListChanged(Set<UserState.UserInfo> userInfoList) {
+    private void onAudienceListChanged(Map<String, TUIRoomDefine.UserInfo> userInfoList) {
         mSeatInvitationAdapter.updateData();
     }
 
@@ -122,7 +120,7 @@ public class SeatInvitationDialog extends PopupDialog {
         mSeatInvitationAdapter.updateData();
     }
 
-    private void onInviteButtonClicked(TextView inviteButton, UserState.UserInfo userInfo) {
+    private void onInviteButtonClicked(TextView inviteButton, TUIRoomDefine.UserInfo userInfo) {
         String userId = userInfo.userId;
         if (inviteButton.isSelected()) {
             mSeatGridView.cancelRequest(userId, new TUIRoomDefine.ActionCallback() {
@@ -133,7 +131,7 @@ public class SeatInvitationDialog extends PopupDialog {
 
                 @Override
                 public void onError(TUICommonDefine.Error error, String message) {
-                    Logger.error(FILE, "cancelRequest failed,error:" + error + ",message:" + message);
+                    LOGGER.error("cancelRequest failed,error:" + error + ",message:" + message);
                     ErrorLocalized.onError(error);
                 }
             });
@@ -167,7 +165,7 @@ public class SeatInvitationDialog extends PopupDialog {
 
             @Override
             public void onError(TUIRoomDefine.UserInfo userInfo, TUICommonDefine.Error error, String message) {
-                Logger.error(FILE, "takeUserOnSeatByAdmin failed,error:" + error + ",message:" + message);
+                LOGGER.error("takeUserOnSeatByAdmin failed,error:" + error + ",message:" + message);
                 ErrorLocalized.onError(error);
                 mVoiceRoomManager.getSeatManager().removeSentSeatInvitation(userId);
             }
@@ -178,7 +176,8 @@ public class SeatInvitationDialog extends PopupDialog {
         }
     }
 
-    private final Observer<Map<String, SeatState.SeatInvitation>> mSentSeatInvitationMap = new Observer<Map<String, SeatState.SeatInvitation>>() {
+    private final Observer<Map<String, SeatState.SeatInvitation>> mSentSeatInvitationMap = new Observer<Map<String,
+            SeatState.SeatInvitation>>() {
         @SuppressLint("NotifyDataSetChanged")
         @Override
         public void onChanged(Map<String, SeatState.SeatInvitation> stringSeatInvitationMap) {

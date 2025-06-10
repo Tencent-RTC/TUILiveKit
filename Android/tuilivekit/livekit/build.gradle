@@ -27,11 +27,14 @@ android {
             res.srcDirs = [
                     'src/main/res',
                     'src/main/res-common',
+                    'src/main/res-anchor-prepare',
+                    'src/main/res-anchor-boardcast',
                     'src/main/res-audience-list',
                     'src/main/res-audio-effect',
+                    'src/main/res-beauty',
                     'src/main/res-gift',
                     'src/main/res-room-info',
-                    'src/main/res-room-list',
+                    'src/main/res-livelist',
             ]
         }
     }
@@ -54,10 +57,10 @@ dependencies {
     api projects.contains("tuicore") ?
             project(':tuicore') : "com.tencent.liteav.tuikit:tuicore:latest.release"
 
-    api rootProject.getProperties().containsKey("roomEngineSdk") ? rootProject.ext.roomEngineSdk : "io.trtc.uikit:rtc_room_engine:3.0.0.685"
-    api rootProject.getProperties().containsKey("liteavSdk") ? rootProject.ext.liteavSdk : "com.tencent.liteav:LiteAVSDK_Professional:12.4.0.17372"
-    api rootProject.getProperties().containsKey("imSdk") ? rootProject.ext.imSdk : "com.tencent.imsdk:imsdk-plus:8.5.6864"
-    api rootProject.getProperties().containsKey("liveStreamCore") ? rootProject.ext.liveStreamCore : "io.trtc.uikit:live-stream-core:3.0.0.649"
+    api rootProject.getProperties().containsKey("roomEngineSdk") ? rootProject.ext.roomEngineSdk : "io.trtc.uikit:rtc_room_engine:3.1.0.824"
+    api rootProject.getProperties().containsKey("liteavSdk") ? rootProject.ext.liteavSdk : "com.tencent.liteav:LiteAVSDK_Professional:12.5.0.17567"
+    api rootProject.getProperties().containsKey("imSdk") ? rootProject.ext.imSdk : "com.tencent.imsdk:imsdk-plus:8.6.7019"
+    api rootProject.getProperties().containsKey("liveStreamCore") ? rootProject.ext.liveStreamCore : "io.trtc.uikit:live-stream-core:3.1.0.946"
 
     if (projects.contains("tceffectplayerkit")) {
         api project(':tceffectplayerkit')

@@ -17,7 +17,7 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
-import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
 import com.trtc.uikit.livekit.voiceroom.state.SeatState;
 import com.trtc.uikit.livekit.voiceroomcore.SeatGridView;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SeatApplicationAdapter extends RecyclerView.Adapter<SeatApplicationAdapter.ViewHolder> {
-    private static final String FILE = "SeatApplicationAdapter";
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getVoiceRoomLogger("SeatApplicationAdapter");
 
     private final Context                         mContext;
     private final SeatState                       mSeatState;
@@ -53,7 +53,7 @@ public class SeatApplicationAdapter extends RecyclerView.Adapter<SeatApplication
     @Override
     public void onBindViewHolder(@NonNull SeatApplicationAdapter.ViewHolder holder, int position) {
         SeatState.SeatApplication request = mData.get(position);
-        if (TextUtils.isEmpty(request.userName)) {
+        if (!TextUtils.isEmpty(request.userName)) {
             holder.textName.setText(request.userName);
         } else {
             holder.textName.setText(request.userId);
@@ -76,7 +76,7 @@ public class SeatApplicationAdapter extends RecyclerView.Adapter<SeatApplication
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                Logger.error(FILE, "responseRemoteRequest failed,error:" + error + ",message:" + message);
+                LOGGER.error("responseRemoteRequest failed,error:" + error + ",message:" + message);
                 ErrorLocalized.onError(error);
             }
         });

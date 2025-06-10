@@ -9,11 +9,10 @@ import com.tencent.qcloud.tuicore.TUIConfig;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
-import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
 import com.trtc.uikit.livekit.voiceroom.manager.module.SeatManager;
 import com.trtc.uikit.livekit.voiceroom.state.SeatState;
-import com.trtc.uikit.livekit.voiceroom.state.UserState;
 import com.trtc.uikit.livekit.voiceroomcore.SeatGridView;
 import com.trtc.uikit.livekit.voiceroomcore.VoiceRoomDefine;
 
@@ -21,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SeatActionSheetGenerator {
-    private static final String FILE = "SeatActionSheetGenerator";
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getVoiceRoomLogger("SeatActionSheetGenerator");
 
     private final Context          mContext;
     private final VoiceRoomManager mVoiceRoomManager;
@@ -39,8 +38,8 @@ public class SeatActionSheetGenerator {
     }
 
     public List<ListMenuInfo> generate(TUIRoomDefine.SeatInfo seatInfo) {
-        UserState.UserInfo selfInfo = mVoiceRoomManager.getUserState().selfInfo;
-        if (selfInfo.role.getValue() == TUIRoomDefine.Role.ROOM_OWNER) {
+        TUIRoomDefine.UserInfo selfInfo = mVoiceRoomManager.getUserState().selfInfo;
+        if (selfInfo.userRole == TUIRoomDefine.Role.ROOM_OWNER) {
             return generaSeatManagerMenuInfo(seatInfo, selfInfo);
         } else {
             return generaSeatGeneraUserMenuInfo(seatInfo, selfInfo);
@@ -53,7 +52,8 @@ public class SeatActionSheetGenerator {
         }
     }
 
-    private List<ListMenuInfo> generaSeatManagerMenuInfo(TUIRoomDefine.SeatInfo seatInfo, UserState.UserInfo selfInfo) {
+    private List<ListMenuInfo> generaSeatManagerMenuInfo(TUIRoomDefine.SeatInfo seatInfo,
+                                                         TUIRoomDefine.UserInfo selfInfo) {
         List<ListMenuInfo> menuInfoList = new ArrayList<>();
         if (TextUtils.isEmpty(seatInfo.userId)) {
             if (!seatInfo.isLocked) {
@@ -75,7 +75,7 @@ public class SeatActionSheetGenerator {
     }
 
     private List<ListMenuInfo> generaSeatGeneraUserMenuInfo(TUIRoomDefine.SeatInfo seatInfo,
-                                                            UserState.UserInfo selfInfo) {
+                                                            TUIRoomDefine.UserInfo selfInfo) {
         List<ListMenuInfo> menuInfoList = new ArrayList<>();
         if (seatInfo.isLocked) {
             return menuInfoList;
@@ -116,7 +116,7 @@ public class SeatActionSheetGenerator {
         mUserManagerDialog.show();
     }
 
-    private boolean isSelfSeatInfo(TUIRoomDefine.SeatInfo seatInfo, UserState.UserInfo selfInfo) {
+    private boolean isSelfSeatInfo(TUIRoomDefine.SeatInfo seatInfo, TUIRoomDefine.UserInfo selfInfo) {
         if (TextUtils.isEmpty(selfInfo.userId)) {
             return false;
         }
@@ -151,7 +151,7 @@ public class SeatActionSheetGenerator {
 
             @Override
             public void onError(TUIRoomDefine.UserInfo userInfo, TUICommonDefine.Error error, String message) {
-                Logger.error(FILE, "takeSeat failed,error:" + error + ",message:" + message);
+                LOGGER.error("takeSeat failed,error:" + error + ",message:" + message);
                 if (error != TUICommonDefine.Error.REQUEST_ID_REPEAT) {
                     mSeatManager.updateLinkState(SeatState.LinkStatus.NONE);
                 }
@@ -170,7 +170,7 @@ public class SeatActionSheetGenerator {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                Logger.error(FILE, "moveToSeat failed,error:" + error + ",message:" + message);
+                LOGGER.error("moveToSeat failed,error:" + error + ",message:" + message);
                 ErrorLocalized.onError(error);
             }
         });
@@ -187,7 +187,7 @@ public class SeatActionSheetGenerator {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                Logger.error(FILE, "lockSeat failed,error:" + error + ",message:" + message);
+                LOGGER.error("lockSeat failed,error:" + error + ",message:" + message);
                 ErrorLocalized.onError(error);
             }
         });

@@ -7,6 +7,7 @@ import static com.trtc.uikit.livekit.livestream.state.RoomState.LiveStreamPrivac
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.uikit.livekit.R;
 
 public class RoomState {
@@ -21,6 +22,7 @@ public class RoomState {
     public MutableLiveData<LiveStreamPrivacyStatus> liveMode         = new MutableLiveData<>(PUBLIC);
     public MutableLiveData<Integer>                 activityStatus   = new MutableLiveData<>(0);
     public int                                      maxAudienceCount = 0;
+    public TUIRoomDefine.RoomInfo                   roomInfo         = new TUIRoomDefine.RoomInfo();
 
     public void reset() {
         createTime = 0;

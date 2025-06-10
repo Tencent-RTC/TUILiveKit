@@ -69,7 +69,7 @@ public class BottomMenuView extends BasicView {
     public void init(@NonNull VoiceRoomManager voiceRoomManager, SeatGridView seatGridView) {
         super.init(voiceRoomManager, seatGridView);
         BasicView functionView;
-        if (mUserState.selfInfo.role.getValue() == TUIRoomDefine.Role.ROOM_OWNER) {
+        if (mUserState.selfInfo.userRole == TUIRoomDefine.Role.ROOM_OWNER) {
             functionView = new AnchorFunctionView(mContext);
         } else {
             functionView = new AudienceFunctionView(mContext);

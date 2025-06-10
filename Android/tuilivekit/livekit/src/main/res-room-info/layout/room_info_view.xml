@@ -3,15 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ll_root"
     android:layout_width="wrap_content"
-    android:layout_height="32dp"
+    android:layout_height="40dp"
     android:background="@drawable/room_info_background"
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_avatar"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="8dp"
         android:padding="0.86dp"
@@ -32,6 +32,7 @@
         android:ellipsize="end"
         android:gravity="center_vertical"
         android:lines="1"
+        android:maxWidth="90dp"
         android:textColor="@color/common_design_standard_g7" />
 
     <FrameLayout
@@ -42,14 +43,14 @@
 
         <TextView
             android:id="@+id/tv_unfollow"
-            android:layout_width="46dp"
+            android:layout_width="44dp"
             android:layout_height="24dp"
-            android:layout_marginEnd="4dp"
+            android:layout_marginEnd="8dp"
             android:background="@drawable/room_info_button_unfollow"
             android:gravity="center"
             android:text="@string/common_follow_anchor"
             android:textColor="@color/common_design_standard_g7"
-            android:textSize="10sp" />
+            android:textSize="12sp" />
 
         <ImageView
             android:id="@+id/iv_follow"

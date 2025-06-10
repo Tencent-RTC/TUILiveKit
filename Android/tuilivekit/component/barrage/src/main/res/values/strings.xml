@@ -1,8 +1,14 @@
+<?xml version="1.0" ?>
 <resources>
-    <string name="live_barrage_text_hint">Let\'s talk</string>
-    <string name="live_barrage_btn_send">Send</string>
-    <string name="live_barrage_agree">Agree</string>
+    <string name="live_barrage_anchor">Anchor</string>
+    <string name="live_barrage_error_content_is_long">The content is too long, please reduce the content and try again</string>
+    <string name="live_barrage_error_disable_message_by_admin">You have been muted in the current room</string>
+    <string name="live_barrage_error_failed">Temporarily Unclassified General Error</string>
+    <string name="live_barrage_error_freq_limit">Request Rate Limited, Please Try Again Later</string>
+    <string name="live_barrage_error_network">The network is abnormal, please try again later</string>
+    <string name="live_barrage_error_sensitive_word">Sensitive words are detected, please modify it and try again</string>
+    <string name="live_barrage_text_hint">Join Chat!</string>
     <string name="live_barrage_warning_not_empty">input can\'t be empty!</string>
-    <string name="live_barrage_anchor">Anchor</string>    
-    <string name="live_barrage_disable_message_by_admin">You have been muted in the current room</string>
+    <string name="live_barrage_agree">Agree</string>
+    <string name="live_barrage_btn_send">Send</string>
 </resources>

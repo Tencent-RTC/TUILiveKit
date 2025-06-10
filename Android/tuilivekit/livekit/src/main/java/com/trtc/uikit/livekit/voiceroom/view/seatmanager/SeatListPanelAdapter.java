@@ -17,7 +17,7 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
-import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
 import com.trtc.uikit.livekit.voiceroom.state.SeatState;
 import com.trtc.uikit.livekit.voiceroomcore.SeatGridView;
@@ -26,11 +26,11 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SeatListPanelAdapter extends RecyclerView.Adapter<SeatListPanelAdapter.LinkMicViewHolder> {
-    private static final String FILE = "SeatListPanelAdapter";
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getVoiceRoomLogger("SeatListPanelAdapter");
 
     private final VoiceRoomManager mVoiceRoomManager;
-    private final Context      mContext;
-    private final SeatGridView mSeatGridView;
+    private final Context          mContext;
+    private final SeatGridView     mSeatGridView;
 
     private final CopyOnWriteArrayList<SeatState.SeatInfo> mData = new CopyOnWriteArrayList<>();
 
@@ -75,7 +75,7 @@ public class SeatListPanelAdapter extends RecyclerView.Adapter<SeatListPanelAdap
 
                 @Override
                 public void onError(TUICommonDefine.Error error, String message) {
-                    Logger.error(FILE, "kickUserOffSeatByAdmin failed,error:" + error + ",message:" + message);
+                    LOGGER.error("kickUserOffSeatByAdmin failed,error:" + error + ",message:" + message);
                     ErrorLocalized.onError(error);
                 }
             });

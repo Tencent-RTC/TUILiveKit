@@ -47,8 +47,6 @@ public interface IVoiceRoom {
 
     void checkFollowType(List<String> userIDList, V2TIMValueCallback<List<V2TIMFollowTypeCheckResult>> callback);
 
-    void getUserFollowInfo(List<String> userIDList, V2TIMValueCallback<List<V2TIMFollowInfo>> callback);
-
     /****************************************** Plugin - Room List *******************************************/
     void setLiveInfo(LiveInfo liveInfo, List<LiveModifyFlag> flagList, TUIRoomDefine.ActionCallback callback);
 }

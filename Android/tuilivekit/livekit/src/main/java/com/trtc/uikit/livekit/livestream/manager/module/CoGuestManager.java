@@ -12,8 +12,8 @@ import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.tuikit.common.system.ContextProvider;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.livestream.manager.api.ILiveService;
-import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestream.state.CoGuestState;
 import com.trtc.uikit.livekit.livestream.state.LiveState;
 
@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 public class CoGuestManager extends BaseManager {
-    private static final String TAG = "CoGuestManager";
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getLiveStreamLogger("CoGuestManager");
 
     private Map<String, TUIRoomDefine.SeatInfo> seatInfoMap = new HashMap<>();
 
@@ -59,7 +59,7 @@ public class CoGuestManager extends BaseManager {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(TAG + " getUserList failed:error:" + error + ",errorCode:" + error.getValue() +
+                LOGGER.error("getUserList failed:error:" + error + ",errorCode:" + error.getValue() + 
                         "message:" + message);
                 ErrorLocalized.onError(error);
             }
@@ -84,12 +84,12 @@ public class CoGuestManager extends BaseManager {
         mLiveService.lockSeat(seatInfo.index, params, new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
-                LiveStreamLog.info(TAG + " lockSeat:[success]");
+                LOGGER.info("lockSeat:[success]");
             }
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(TAG + " lockSeat failed:error:" + error + ",errorCode:" + error.getValue() +
+                LOGGER.error("lockSeat failed:error:" + error + ",errorCode:" + error.getValue() +
                         "message:" + message);
                 ErrorLocalized.onError(error);
             }
@@ -114,6 +114,8 @@ public class CoGuestManager extends BaseManager {
     private void updateSelfSeatedState() {
         if (isSelfInSeat()) {
             mCoGuestState.coGuestStatus.setValue(LINKING);
+        } else {
+            mCoGuestState.coGuestStatus.setValue(NONE);
         }
     }
 
@@ -140,22 +142,7 @@ public class CoGuestManager extends BaseManager {
     public void onSeatListChanged(List<UserInfo> userList, List<UserInfo> joinList,
                                   List<UserInfo> leaveList) {
         initSeatList(userList);
-        for (UserInfo seatInfo : joinList) {
-            if (isSelfSeatInfo(seatInfo)) {
-                mCoGuestState.coGuestStatus.setValue(LINKING);
-            }
-        }
-        if (!joinList.isEmpty()) {
-            mCoGuestState.connectedUserList.setValue(mCoGuestState.connectedUserList.getValue());
-        }
-        for (UserInfo seatInfo : leaveList) {
-            if (isSelfSeatInfo(seatInfo)) {
-                mCoGuestState.coGuestStatus.setValue(NONE);
-            }
-        }
-        if (!leaveList.isEmpty()) {
-            mCoGuestState.connectedUserList.setValue(mCoGuestState.connectedUserList.getValue());
-        }
+        updateSelfSeatedState();
     }
 
     public void onSeatLockStateChanged(List<TUIRoomDefine.SeatInfo> seatList) {

@@ -21,4 +21,16 @@ public class DashboardState {
         giftPeopleSet.clear();
         likeCount = 0;
     }
+
+    @Override
+    public String toString() {
+        return "DashboardState{" +
+                "duration=" + duration +
+                ", maxViewersCount=" + maxViewersCount +
+                ", messageCount=" + messageCount +
+                ", giftIncome=" + giftIncome +
+                ", likeCount=" + likeCount +
+                ", giftPeopleSet.size=" + giftPeopleSet.size() +
+                '}';
+    }
 }

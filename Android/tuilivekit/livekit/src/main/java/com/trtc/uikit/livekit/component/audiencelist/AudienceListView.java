@@ -22,17 +22,19 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
 import com.tencent.qcloud.tuicore.util.ScreenUtil;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.DataReporter;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.component.audiencelist.service.AudienceListObserver;
 import com.trtc.uikit.livekit.component.audiencelist.service.AudienceListService;
 import com.trtc.uikit.livekit.component.audiencelist.store.AudienceListState;
 import com.trtc.uikit.livekit.component.audiencelist.view.AudienceListPopupDialog;
 import com.trtc.uikit.livekit.component.audiencelist.view.adapter.AudienceListIconAdapter;
 
+import java.util.Locale;
 import java.util.Set;
 
 @SuppressLint("ViewConstructor")
 public class AudienceListView extends FrameLayout {
-    private static final int MAX_SHOW_AVATAR_COUNT                               = 3;
+    private static final int MAX_SHOW_AVATAR_COUNT                               = 2;
     private static final int LIVEKIT_METRICS_PANEL_SHOW_LIVE_ROOM_AUDIENCE_LIST  = 190010;
     private static final int LIVEKIT_METRICS_PANEL_SHOW_VOICE_ROOM_AUDIENCE_LIST = 191009;
 
@@ -56,6 +58,8 @@ public class AudienceListView extends FrameLayout {
     private       AudienceListPopupDialog               mAudienceListPopupDialog;
     private       OnUserItemClickListener               mOnUserItemClickListener;
 
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getComponentLogger("AudienceListView");
+
     public AudienceListView(Context context) {
         this(context, null);
     }
@@ -67,13 +71,12 @@ public class AudienceListView extends FrameLayout {
     public AudienceListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
-        LayoutInflater.from(mContext).inflate(R.layout.audience_list_layout_icon, this,
-                true);
+        LayoutInflater.from(mContext).inflate(R.layout.audience_list_layout_icon, this, true);
     }
 
-    public void init(String roomId) {
-        mAudienceListService.initRoomInfo(roomId);
-        reportData(roomId);
+    public void init(TUIRoomDefine.RoomInfo roomInfo) {
+        mAudienceListService.initRoomInfo(roomInfo);
+        reportData(roomInfo.roomId);
     }
 
     public void setOnUserItemClickListener(OnUserItemClickListener listener) {
@@ -183,11 +186,7 @@ public class AudienceListView extends FrameLayout {
     }
 
     private void onAudienceCountChange(int userCount) {
-        if (userCount > AudienceListState.ROOM_MAX_SHOW_USER_COUNT) {
-            setUserCount(userCount);
-        } else {
-            setUserCount(mAudienceListState.audienceList.getValue().size());
-        }
+        updateAudienceCount();
     }
 
     private void onAudienceListChange(Set<TUIRoomDefine.UserInfo> userInfo) {
@@ -195,15 +194,44 @@ public class AudienceListView extends FrameLayout {
         if (userInfo.size() <= MAX_SHOW_AVATAR_COUNT) {
             params.width = RelativeLayout.LayoutParams.WRAP_CONTENT;
         } else {
-            params.width = ScreenUtil.dip2px(78);
+            params.width = ScreenUtil.dip2px(56);
         }
         mAdapter.updateData();
-        setUserCount(mAudienceListState.audienceCount.getValue());
+        updateAudienceCount();
+    }
+
+    private void updateAudienceCount() {
+        int userCount = mAudienceListState.audienceCount.getValue();
+        int listSize = mAudienceListState.audienceList.getValue().size();
+        LOGGER.info("updateAudienceCount userCount:" + userCount + " listSize:" + listSize);
+        if (listSize > AudienceListState.ROOM_MAX_SHOW_USER_COUNT) {
+            setUserCount(userCount);
+        } else {
+            setUserCount(listSize);
+        }
     }
 
     @SuppressLint("SetTextI18n")
     private void setUserCount(int count) {
-        mTextAudienceCount.setText("" + count);
+        String text = formatUserCount(count);
+        mTextAudienceCount.setText(text);
+    }
+
+    private String formatUserCount(int count) {
+        String text = "" + count;
+        if (count >= 10000) {
+            boolean isChinese = Locale.CHINESE.getLanguage().equals(Locale.getDefault().getLanguage());
+            if (isChinese) {
+                text = String.format(Locale.getDefault(), "%.1f", count / 10000.0F);
+                if (text.endsWith(".0")) {
+                    text = text.replace(".0", "");
+                }
+                text = text + "万";
+            } else {
+                text = String.format(Locale.getDefault(), "%dk", count / 1000);
+            }
+        }
+        return text;
     }
 
     private void reportData(String roomId) {

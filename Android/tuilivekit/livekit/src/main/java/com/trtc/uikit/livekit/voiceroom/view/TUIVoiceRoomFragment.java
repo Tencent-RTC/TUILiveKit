@@ -26,7 +26,7 @@ import com.trtc.tuikit.common.foregroundservice.AudioForegroundService;
 import com.trtc.tuikit.common.system.ContextProvider;
 import com.trtc.uikit.component.barrage.store.BarrageStore;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.common.utils.VoiceCoreLogger;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.component.audioeffect.store.AudioEffectStore;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
 import com.trtc.uikit.livekit.voiceroom.state.RoomState;
@@ -37,7 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TUIVoiceRoomFragment extends Fragment implements ITUINotification {
-    private static final String TAG = "TUIVoiceRoomFragment";
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getVoiceRoomLogger("TUIVoiceRoomFragment");
 
     private       VoiceRoomRootView              mVoiceRoomRootView;
     private       VoiceRoomManager               mVoiceRoomManager;
@@ -177,7 +177,7 @@ public class TUIVoiceRoomFragment extends Fragment implements ITUINotification {
 
 
     private void startForegroundService() {
-        VoiceCoreLogger.info(TAG, "startForegroundService");
+        LOGGER.info("startForegroundService");
         Context context = ContextProvider.getApplicationContext();
         AudioForegroundService.start(context,
                 context.getString(context.getApplicationInfo().labelRes),
@@ -186,7 +186,7 @@ public class TUIVoiceRoomFragment extends Fragment implements ITUINotification {
     }
 
     private void stopForegroundService() {
-        VoiceCoreLogger.info(TAG, "stopForegroundService");
+        LOGGER.info("stopForegroundService");
         Context context = ContextProvider.getApplicationContext();
         AudioForegroundService.stop(context);
     }

@@ -2,6 +2,7 @@ package com.tencent.effect.beautykit.tuiextension;
 
 import static android.app.Activity.RESULT_OK;
 import static com.tencent.effect.beautykit.tuiextension.Constants.PARAM_CONTEXT;
+import static com.tencent.effect.beautykit.tuiextension.Constants.PARAM_LAST_PARAM_LIST;
 import static com.tencent.imsdk.base.ThreadUtils.runOnUiThread;
 
 import android.content.Context;
@@ -9,6 +10,8 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.tencent.effect.beautykit.TEBeautyKit;
 import com.tencent.effect.beautykit.model.TEUIProperty;
 import com.tencent.effect.beautykit.tuiextension.utils.AppConfig;
@@ -24,6 +27,7 @@ import com.tencent.qcloud.tuicore.interfaces.TUIExtensionInfo;
 import com.tencent.qcloud.tuicore.interfaces.TUIServiceCallback;
 
 import java.io.File;
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +53,17 @@ public class TEBeautyExtension implements ITUIExtension, ITUIService {
         }
 
         @Override
-        public void onUpdateEffected() {
+        public void onUpdateEffected(List<TEUIProperty.TESDKParam> sdkParams) {
+
+        }
+
+        @Override
+        public void onEffectStateChange(TEBeautyKit.EffectState effectState) {
+
+        }
+
+        @Override
+        public void onTitleClick(TEUIProperty uiProperty) {
 
         }
     };
@@ -64,7 +78,8 @@ public class TEBeautyExtension implements ITUIExtension, ITUIService {
         HashMap<String, Object> hashMap = new HashMap<>();
         if (param != null && Constants.KEY_EXTENSION_NAME.equals(extensionID)) {
             Context context = (Context) param.get(PARAM_CONTEXT);
-            hashMap.put(Constants.PARAM_BEAUTY_PANEL, getTEPanelView(context));
+            String lastParamList = (String) param.get(PARAM_LAST_PARAM_LIST);
+            hashMap.put(Constants.PARAM_BEAUTY_PANEL, getTEPanelView(context, lastParamList));
             TUIExtensionInfo extensionInfo = new TUIExtensionInfo();
             extensionInfo.setData(hashMap);
             return Collections.singletonList(extensionInfo);
@@ -77,9 +92,10 @@ public class TEBeautyExtension implements ITUIExtension, ITUIService {
         if (param != null && TextUtils.equals(Constants.METHOD_INIT_BEAUTY_KIT, method)) {
             if (mBeautyKit == null) {
                 Context context = (Context) param.get(PARAM_CONTEXT);
+                String lastParamList = (String) param.get(PARAM_LAST_PARAM_LIST);
                 TEBeautyKit.create(context, beautyKit -> {
                     mBeautyKit = beautyKit;
-                    Log.i(TAG, "TEBeautyKit create, mBeautyKit = " + mBeautyKit);
+                    mBeautyKit.setEffectList(convertLastParamList(lastParamList));
                     if (callback != null) {
                         callback.onServiceCallback(mBeautyKit == null ? -1 : 0, "", null);
                     }
@@ -112,6 +128,8 @@ public class TEBeautyExtension implements ITUIExtension, ITUIService {
             int resultCode = (int) param.get("resultCode");
             Intent data = (Intent) param.get("data");
             onActivityResult(requestCode, resultCode, data);
+        } else if (TextUtils.equals(Constants.METHOD_EXPORT_PARAM, method)) {
+            return exportParam();
         }
         return null;
     }
@@ -124,7 +142,7 @@ public class TEBeautyExtension implements ITUIExtension, ITUIService {
         return beautyKit.process(srcTextureId, textureWidth, textureHeight);
     }
 
-    private TEPanelView getTEPanelView(Context context) {
+    private TEPanelView getTEPanelView(Context context, String lastParamList) {
         if (context == null) {
             return null;
         }
@@ -132,6 +150,7 @@ public class TEBeautyExtension implements ITUIExtension, ITUIService {
         mPanelView.setTEPanelViewCallback(mTEPanelViewCallback);
         Log.i(TAG, "TEPanelView create, mBeautyKit = " + mBeautyKit);
         if (mBeautyKit != null) {
+            mPanelView.setLastParamList(lastParamList);
             mPanelView.setupWithTEBeautyKit(mBeautyKit);
         }
         mPanelView.showView(mTEPanelViewCallback);
@@ -193,5 +212,22 @@ public class TEBeautyExtension implements ITUIExtension, ITUIService {
             mBeautyKit.onDestroy();
             mBeautyKit = null;
         }
+    }
+
+    private String exportParam() {
+        return mBeautyKit != null ? mBeautyKit.exportInUseSDKParam() : "";
+    }
+
+    private List<TEUIProperty.TESDKParam> convertLastParamList(String lastParamList) {
+        if (!TextUtils.isEmpty(lastParamList)) {
+            Type type = (new TypeToken<List<TEUIProperty.TESDKParam>>() {
+            }).getType();
+            try {
+                return new Gson().fromJson(lastParamList, type);
+            } catch (Exception e) {
+                Log.e(TAG, Log.getStackTraceString(e));
+            }
+        }
+        return null;
     }
 }

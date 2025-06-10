@@ -3,13 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/black">
 
-    <FrameLayout
+    <com.trtc.uikit.livekit.common.ui.RoundFrameLayout
         android:id="@+id/lsv_video_view_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="44dp"
+        android:layout_marginBottom="96dp"
         android:background="@color/common_design_standard_g1" />
+
+    <FrameLayout
+        android:id="@+id/video_view_foreground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/livekit_video_view_foreground"/>
 
     <FrameLayout
         android:id="@+id/rl_component_layout"
@@ -21,13 +30,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone">
-
-            <RelativeLayout
-                android:id="@+id/rl_anchor_preview_mask"
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:layout_gravity="bottom"
-                android:background="@drawable/livekit_live_room_preview_mask" />
 
             <ImageView
                 android:id="@+id/iv_back"
@@ -41,36 +43,10 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.trtc.uikit.livekit.livestream.view.anchor.preview.LiveInfoEditView
-                android:id="@+id/rl_live_info_edit_view"
-                android:layout_width="343dp"
-                android:layout_height="112dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="96dp" />
-
-            <com.trtc.uikit.livekit.livestream.view.anchor.preview.PreviewFunctionView
-                android:id="@+id/fl_preview_function"
+            <com.trtc.uikit.livekit.features.anchorprepare.AnchorPrepareView
+                android:id="@+id/apv_prepare_view"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_gravity="bottom"
-                android:layout_marginLeft="22dp"
-                android:layout_marginRight="22dp"
-                android:layout_marginBottom="144dp"
-                app:layout_constraintBottom_toTopOf="@id/btn_start_live" />
-
-            <Button
-                android:id="@+id/btn_start_live"
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:layout_gravity="bottom"
-                android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
-                android:layout_marginBottom="60dp"
-                android:background="@drawable/livekit_round_button_background"
-                android:text="@string/common_start_live"
-                android:textAllCaps="false"
-                android:textColor="@android:color/white"
-                android:textSize="20sp" />
+                android:layout_height="match_parent" />
         </FrameLayout>
 
         <FrameLayout
@@ -80,12 +56,11 @@
 
             <com.trtc.uikit.component.barrage.BarrageStreamView
                 android:id="@+id/barrage_stream_view"
-                android:layout_width="match_parent"
-                android:layout_height="212dp"
+                android:layout_width="305dp"
+                android:layout_height="206dp"
                 android:layout_gravity="bottom"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="56dp"
-                android:layout_marginBottom="70dp" />
+                android:layout_marginStart="12dp"
+                android:layout_marginBottom="96dp" />
 
             <com.trtc.uikit.livekit.component.gift.GiftPlayView
                 android:id="@+id/gift_play_view"
@@ -111,18 +86,19 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cl_function"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="46dp"
                 android:layout_gravity="bottom"
                 android:layout_marginBottom="36dp">
 
                 <com.trtc.uikit.component.barrage.BarrageInputView
                     android:id="@+id/barrage_input_view"
                     android:layout_width="130dp"
-                    android:layout_height="36dp"
+                    android:layout_height="40dp"
                     android:layout_marginStart="15dp"
                     android:layout_marginEnd="15dp"
-                    android:scaleType="centerCrop"
                     android:background="@drawable/livekit_barrage_button_bg"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -131,37 +107,95 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="2dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/barrage_input_view"
-                    app:layout_constraintEnd_toEndOf="parent">
+                    android:gravity="center_vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                    <View
-                        android:id="@+id/v_co_host"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                    <LinearLayout
+                        android:id="@+id/ll_co_host"
+                        android:layout_width="34dp"
+                        android:layout_height="46dp"
                         android:layout_marginEnd="8dp"
-                        android:background="@drawable/livekit_function_connection" />
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
 
-                    <View
-                        android:id="@+id/v_battle"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_marginEnd="8dp"
-                        android:background="@drawable/livekit_function_battle" />
+                        <View
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:background="@drawable/livekit_function_connection" />
 
-                    <View
-                        android:id="@+id/v_co_guest"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_marginEnd="8dp"
-                        android:background="@drawable/livekit_function_link_default" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="16dp"
+                            android:gravity="center"
+                            android:text="@string/common_link_host"
+                            android:textSize="10dp" />
+                    </LinearLayout>
 
-                    <View
-                        android:id="@+id/v_settings"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                    <LinearLayout
+                        android:id="@+id/ll_battle"
+                        android:layout_width="34dp"
+                        android:layout_height="46dp"
                         android:layout_marginEnd="8dp"
-                        android:background="@drawable/livekit_function_settings" />
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <View
+                            android:id="@+id/v_battle_icon"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:background="@drawable/livekit_function_battle" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="16dp"
+                            android:gravity="center"
+                            android:text="@string/common_anchor_battle"
+                            android:textSize="10dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_co_guest"
+                        android:layout_width="34dp"
+                        android:layout_height="46dp"
+                        android:layout_marginEnd="8dp"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <com.trtc.uikit.livekit.livestream.view.anchor.pushing.coguest.CoGuestIconView
+                            android:id="@+id/co_guest_icon"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="16dp"
+                            android:gravity="center"
+                            android:text="@string/common_link_guest"
+                            android:textSize="10dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_more"
+                        android:layout_width="34dp"
+                        android:layout_height="46dp"
+                        android:layout_marginEnd="8dp"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <View
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:background="@drawable/livekit_function_more" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="16dp"
+                            android:gravity="center"
+                            android:text="@string/common_more"
+                            android:textSize="10dp" />
+                    </LinearLayout>
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -174,28 +208,29 @@
                 android:layout_marginEnd="8dp"
                 android:visibility="gone" />
 
-            <com.trtc.uikit.livekit.component.roominfo.RoomInfoView
+            <com.trtc.uikit.livekit.component.roominfo.LiveInfoView
                 android:id="@+id/room_info_view"
-                android:layout_width="150dp"
-                android:layout_height="32dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="57dp" />
+                android:layout_marginTop="52dp" />
 
             <com.trtc.uikit.livekit.component.audiencelist.AudienceListView
                 android:id="@+id/audience_list_view"
-                android:layout_width="135dp"
+                android:layout_width="80dp"
                 android:layout_height="24dp"
                 android:layout_gravity="end"
-                android:layout_marginTop="61dp"
-                android:layout_marginEnd="60dp" />
+                android:layout_marginTop="60dp"
+                android:layout_marginEnd="68dp" />
 
             <ImageView
                 android:id="@+id/iv_float_window"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
+                android:padding="2dp"
                 android:layout_gravity="end"
-                android:layout_marginTop="61dp"
-                android:layout_marginEnd="34dp"
+                android:layout_marginTop="60dp"
+                android:layout_marginEnd="38dp"
                 android:src="@drawable/livekit_float_window"
                 tools:ignore="ContentDescription" />
 
@@ -203,8 +238,9 @@
                 android:id="@+id/iv_end_live_stream"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
+                android:padding="2dp"
                 android:layout_gravity="end"
-                android:layout_marginTop="61dp"
+                android:layout_marginTop="60dp"
                 android:layout_marginEnd="10dp"
                 android:src="@drawable/livekit_anchor_icon_end_stream" />
         </FrameLayout>

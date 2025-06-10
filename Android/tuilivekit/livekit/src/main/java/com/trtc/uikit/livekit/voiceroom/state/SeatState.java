@@ -187,15 +187,6 @@ public class SeatState {
             }
         }
 
-        public void updateState(UserState.UserInfo userInfo) {
-            this.avatarUrl = userInfo.avatarUrl.getValue();
-            if (!TextUtils.isEmpty(userInfo.name.getValue())) {
-                this.userName = userInfo.name.getValue();
-            } else {
-                this.userName = userInfo.userId;
-            }
-        }
-
         @NonNull
         @Override
         public String toString() {

@@ -28,17 +28,4 @@
         android:maxLines="1"
         android:textColor="@color/common_design_standard_g6"
         android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/tv_level"
-        android:layout_width="32dp"
-        android:layout_height="14dp"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="4dp"
-        android:layout_toEndOf="@id/tv_name"
-        android:background="@drawable/livekit_audience_list_panel_level_background"
-        android:gravity="center"
-        android:text="lv20"
-        android:textColor="@color/common_design_standard_flowkit_white"
-        android:textSize="10sp" />
 </RelativeLayout>

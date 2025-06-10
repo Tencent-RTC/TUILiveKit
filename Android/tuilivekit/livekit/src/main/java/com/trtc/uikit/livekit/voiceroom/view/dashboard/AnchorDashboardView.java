@@ -14,6 +14,8 @@ import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
 import com.trtc.uikit.livekit.voiceroom.view.BasicView;
 
+import java.util.Locale;
+
 public class AnchorDashboardView extends BasicView {
 
     public AnchorDashboardView(@NonNull Context context) {
@@ -40,7 +42,7 @@ public class AnchorDashboardView extends BasicView {
         super.init(voiceRoomManager);
         TextView textDuration = findViewById(R.id.tv_duration);
         textDuration.setText(formatSecondsTo00(
-                (long) (System.currentTimeMillis() - mVoiceRoomManager.getRoomState().createTime) / 1000));
+                (int) (System.currentTimeMillis() - mVoiceRoomManager.getRoomState().createTime) / 1000));
 
         TextView textViewers = findViewById(R.id.tv_viewers);
         textViewers.setText(String.format("%d", mVoiceRoomManager.getRoomState().liveExtraInfo.maxAudienceCount));
@@ -73,21 +75,14 @@ public class AnchorDashboardView extends BasicView {
     protected void removeObserver() {
     }
 
-    private String formatSecondsTo00(long timeSeconds) {
-        int second = (int) (timeSeconds % 60);
-        long minuteTemp = timeSeconds / 60;
-        String secondFormat = second >= 10 ? (second + "") : ("0" + second);
-        if (minuteTemp > 0) {
-            int minute = (int) (minuteTemp % 60);
-            long hour = minuteTemp / 60;
-            String s = minute >= 10 ? (minute + "") : ("0" + minute);
-            if (hour > 0) {
-                return (hour >= 10 ? (hour + "") : ("0" + hour)) + ":" + s + ":" + secondFormat;
-            } else {
-                return s + ":" + secondFormat;
-            }
-        } else {
-            return "00:" + secondFormat;
+    private String formatSecondsTo00(int timeSeconds) {
+        String timeString = "-- --";
+        if (timeSeconds > 0) {
+            int hour = timeSeconds / 3600;
+            int min = timeSeconds % 3600 / 60;
+            int sec = timeSeconds % 60;
+            timeString = String.format(Locale.getDefault(), "%02d:%02d:%02d", hour, min, sec);
         }
+        return timeString;
     }
 }

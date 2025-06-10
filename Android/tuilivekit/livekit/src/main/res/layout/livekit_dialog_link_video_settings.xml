@@ -17,7 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.trtc.uikit.livekit.component.floatwindow.view.RoundFrameLayout
+    <com.trtc.uikit.livekit.common.ui.RoundFrameLayout
         android:id="@+id/fl_preview_audience_video"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,14 +30,14 @@
             android:id="@+id/preview_audience_video"
             android:layout_width="328dp"
             android:layout_height="328dp" />
-    </com.trtc.uikit.livekit.component.floatwindow.view.RoundFrameLayout>
+    </com.trtc.uikit.livekit.common.ui.RoundFrameLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/video_settings_options"
-        android:layout_width="228dp"
+        android:layout_width="wrap_content"
         android:layout_height="72dp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fl_preview_audience_video" />
 
     <Button

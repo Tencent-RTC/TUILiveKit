@@ -15,7 +15,6 @@ import com.trtc.uikit.livekit.livestream.manager.module.MediaManager;
 import com.trtc.uikit.livekit.livestream.manager.module.RoomManager;
 import com.trtc.uikit.livekit.livestream.manager.module.UserManager;
 import com.trtc.uikit.livekit.livestream.state.BattleState;
-import com.trtc.uikit.livekit.livestream.state.BeautyState;
 import com.trtc.uikit.livekit.livestream.state.CoGuestState;
 import com.trtc.uikit.livekit.livestream.state.CoHostState;
 import com.trtc.uikit.livekit.livestream.state.DashboardState;
@@ -24,23 +23,22 @@ import com.trtc.uikit.livekit.livestream.state.RoomState;
 import com.trtc.uikit.livekit.livestream.state.UserState;
 
 public abstract class BasicView extends FrameLayout {
-    protected Context           mContext;
-    protected RoomState         mRoomState;
-    protected CoGuestState      mCoGuestState;
-    protected CoHostState       mCoHostState;
-    protected BattleState       mBattleState;
-    protected UserState         mUserState;
-    protected MediaState        mMediaState;
-    protected BeautyState       mBeautyState;
-    protected DashboardState    mDashboardState;
-    protected LiveStreamManager mLiveManager;
-    protected RoomManager       mRoomManager;
-    protected CoGuestManager    mCoGuestManager;
-    protected CoHostManager     mCoHostManager;
-    protected BattleManager     mBattleManager;
-    protected UserManager       mUserManager;
-    protected MediaManager      mMediaManager;
-    private   boolean           mIsAddObserver = false;
+    protected final Context           mContext;
+    protected       RoomState         mRoomState;
+    protected       CoGuestState      mCoGuestState;
+    protected       CoHostState       mCoHostState;
+    protected       BattleState       mBattleState;
+    protected       UserState         mUserState;
+    protected       MediaState        mMediaState;
+    protected       DashboardState    mDashboardState;
+    protected       LiveStreamManager mLiveManager;
+    protected       RoomManager       mRoomManager;
+    protected       CoGuestManager    mCoGuestManager;
+    protected       CoHostManager     mCoHostManager;
+    protected       BattleManager     mBattleManager;
+    protected       UserManager       mUserManager;
+    protected       MediaManager      mMediaManager;
+    private         boolean           mIsAddObserver = false;
 
     public BasicView(@NonNull Context context) {
         this(context, null);
@@ -68,7 +66,6 @@ public abstract class BasicView extends FrameLayout {
         mCoGuestState = liveStreamManager.getCoGuestState();
         mUserState = liveStreamManager.getUserState();
         mMediaState = liveStreamManager.getMediaState();
-        mBeautyState = liveStreamManager.getBeautyState();
         mCoHostState = liveStreamManager.getCoHostState();
         mBattleState = liveStreamManager.getBattleState();
         mDashboardState = liveStreamManager.getDashboardState();

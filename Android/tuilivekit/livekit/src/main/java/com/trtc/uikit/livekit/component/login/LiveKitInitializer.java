@@ -2,7 +2,6 @@ package com.trtc.uikit.livekit.component.login;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
@@ -23,6 +22,9 @@ import com.trtc.uikit.livekit.common.LiveKitLogger;
 public final class LiveKitInitializer extends ContentProvider {
     private static final LiveKitLogger LOGGER = LiveKitLogger.getComponentLogger("LiveKitInitializer");
 
+    public static final String EVENT_ENGINE_LOGIN_STATE_CHANGED   = "eventEngineLoginStateChanged";
+    public static final String EVENT_SUB_KEY_ENGINE_LOGIN_SUCCESS = "eventSubKeyEngineLoginSuccess";
+
     private final ITUINotification mNotification = (key, subKey, param) -> {
         if (TUIConstants.TUILogin.EVENT_LOGIN_STATE_CHANGED.equals(key)
                 && TUIConstants.TUILogin.EVENT_SUB_KEY_USER_LOGIN_SUCCESS.equals(subKey)
@@ -31,8 +33,8 @@ public final class LiveKitInitializer extends ContentProvider {
                     TUILogin.getUserSig(), new TUIRoomDefine.ActionCallback() {
                         @Override
                         public void onSuccess() {
-                            Context context = TUIConfig.getAppContext();
                             LOGGER.info("serviceInitializer login:[Success]");
+                            notifyEngineLoginSuccess();
                         }
 
                         @Override
@@ -57,6 +59,7 @@ public final class LiveKitInitializer extends ContentProvider {
                         @Override
                         public void onSuccess() {
                             LOGGER.info("RoomEngine login:[Success]");
+                            notifyEngineLoginSuccess();
                         }
 
                         @Override
@@ -66,6 +69,10 @@ public final class LiveKitInitializer extends ContentProvider {
                         }
                     });
         }
+    }
+
+    private void notifyEngineLoginSuccess() {
+        TUICore.notifyEvent(EVENT_ENGINE_LOGIN_STATE_CHANGED, EVENT_SUB_KEY_ENGINE_LOGIN_SUCCESS, null);
     }
 
     private void registerEvent() {

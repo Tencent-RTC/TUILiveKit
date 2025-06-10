@@ -19,17 +19,16 @@ import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
-import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
 import com.trtc.uikit.livekit.voiceroom.state.SeatState;
-import com.trtc.uikit.livekit.voiceroom.state.UserState;
 import com.trtc.uikit.livekit.voiceroomcore.SeatGridView;
 
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 public class UserManagerDialog extends PopupDialog {
-    private static final String FILE = "UserManagerDialog";
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getVoiceRoomLogger("UserManagerDialog");
 
     private final Context            mContext;
     private final VoiceRoomManager   mVoiceRoomManager;
@@ -46,9 +45,10 @@ public class UserManagerDialog extends PopupDialog {
     private ImageView       mImageFollowIcon;
     private View            mUserControllerView;
 
-    private final Observer<Boolean>                 isAudioLockedObserver    = this::updateAudioLockState;
-    private final Observer<String>                  userIdObserver           = this::updateUserIdState;
-    private final Observer<Set<UserState.UserInfo>> mMyFollowingUserObserver = this::onMyFollowingUserChanged;
+    private final Observer<Boolean>                             isAudioLockedObserver    = this::updateAudioLockState;
+    private final Observer<String>                              userIdObserver           = this::updateUserIdState;
+    private final Observer<Map<String, TUIRoomDefine.UserInfo>> mMyFollowingUserObserver =
+            this::onMyFollowingUserChanged;
 
     public UserManagerDialog(@NonNull Context context, VoiceRoomManager voiceRoomManager, SeatGridView seatGridView) {
         super(context);
@@ -96,7 +96,7 @@ public class UserManagerDialog extends PopupDialog {
         rootView.findViewById(R.id.hand_up).setOnClickListener(v -> hangup());
         rootView.findViewById(R.id.mute_container).setOnClickListener(v -> muteSeatAudio());
         mUserControllerView.setVisibility(
-                mVoiceRoomManager.getUserState().selfInfo.role.getValue() == TUIRoomDefine.Role.ROOM_OWNER ? VISIBLE
+                mVoiceRoomManager.getUserState().selfInfo.userRole == TUIRoomDefine.Role.ROOM_OWNER ? VISIBLE
                         : GONE);
     }
 
@@ -151,20 +151,20 @@ public class UserManagerDialog extends PopupDialog {
             if (mSeatInfo == null) {
                 return;
             }
-            if (mVoiceRoomManager.getUserState().myFollowingUserList.getValue().contains(
-                    new UserState.UserInfo(mSeatInfo.userId.getValue()))) {
-                mVoiceRoomManager.getUserManager().unfollow(mSeatInfo.userId.getValue());
+            String seatUserId = mSeatInfo.userId.getValue();
+            if (mVoiceRoomManager.getUserState().myFollowingUserList.getValue().containsKey(seatUserId)) {
+                mVoiceRoomManager.getUserManager().unfollow(seatUserId);
             } else {
-                mVoiceRoomManager.getUserManager().follow(mSeatInfo.userId.getValue());
+                mVoiceRoomManager.getUserManager().follow(seatUserId);
             }
         });
     }
 
-    private void onMyFollowingUserChanged(Set<UserState.UserInfo> followUsers) {
+    private void onMyFollowingUserChanged(Map<String, TUIRoomDefine.UserInfo> followUsers) {
         if (mSeatInfo == null) {
             return;
         }
-        if (followUsers.contains(new UserState.UserInfo(mSeatInfo.userId.getValue()))) {
+        if (followUsers.containsKey(mSeatInfo.userId.getValue())) {
             mTextUnfollow.setVisibility(GONE);
             mImageFollowIcon.setVisibility(VISIBLE);
         } else {
@@ -219,7 +219,7 @@ public class UserManagerDialog extends PopupDialog {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                Logger.error(FILE, "kickUserOffSeatByAdmin failed, error: " + error + ", message: " + message);
+                LOGGER.error("kickUserOffSeatByAdmin failed, error: " + error + ", message: " + message);
                 ErrorLocalized.onError(error);
             }
         });

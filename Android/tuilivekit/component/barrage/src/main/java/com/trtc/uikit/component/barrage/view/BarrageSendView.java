@@ -7,7 +7,10 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +22,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.tencent.qcloud.tuicore.TUILogin;
+import com.tencent.qcloud.tuicore.interfaces.TUICallback;
 import com.tencent.qcloud.tuicore.util.SPUtils;
 import com.tencent.qcloud.tuicore.util.ScreenUtil;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
@@ -26,14 +30,17 @@ import com.trtc.uikit.component.barrage.BarrageInputView;
 import com.trtc.uikit.component.barrage.R;
 import com.trtc.uikit.component.barrage.service.BarrageConstants;
 import com.trtc.uikit.component.barrage.service.DataReporter;
+import com.trtc.uikit.component.barrage.service.ErrorLocalized;
 import com.trtc.uikit.component.barrage.service.IEmojiResource;
 import com.trtc.uikit.component.barrage.store.BarrageStore;
 import com.trtc.uikit.component.barrage.store.model.Barrage;
 import com.trtc.uikit.component.barrage.view.util.OnDecorViewListener;
 
 public class BarrageSendView extends Dialog implements IBarrageSendView, OnDecorViewListener.OnKeyboardCallback {
-    private static final String  FILE_NAME           = "keyboard.common";
-    private static final String  KEY_KEYBOARD_HEIGHT = "sp.key.keyboard.height";
+    private static final String  TAG                         = "BarrageSendView";
+    private static final String  FILE_NAME                   = "keyboard.common";
+    private static final String  KEY_KEYBOARD_HEIGHT         = "sp.key.keyboard.height";
+    private static final int     KEY_KEYBOARD_HEIGHT_DEFAULT = ScreenUtil.dip2px(300);
     private final        SPUtils mKeyboardSP;
 
     private final Context                         mContext;
@@ -55,7 +62,7 @@ public class BarrageSendView extends Dialog implements IBarrageSendView, OnDecor
         mRoomID = roomId;
         mContext = context;
         mKeyboardSP = SPUtils.getInstance(FILE_NAME);
-        mKeyboardHeight = mKeyboardSP.getInt(KEY_KEYBOARD_HEIGHT, ScreenUtil.dip2px(300));
+        mKeyboardHeight = mKeyboardSP.getInt(KEY_KEYBOARD_HEIGHT, KEY_KEYBOARD_HEIGHT_DEFAULT);
         mInputMethodManager = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
         mLastScreenOrientation = getScreenOrientation(mContext);
 
@@ -73,6 +80,23 @@ public class BarrageSendView extends Dialog implements IBarrageSendView, OnDecor
         initListener();
     }
 
+    public void show(boolean showEmoji) {
+        super.show();
+        Log.i(TAG, "show showEmoji:" + showEmoji);
+        ViewGroup.LayoutParams layoutParams = mBottomPlaceholder.getLayoutParams();
+        layoutParams.height = mKeyboardHeight > 0 ? mKeyboardHeight : KEY_KEYBOARD_HEIGHT_DEFAULT;
+        mBottomPlaceholder.setLayoutParams(layoutParams);
+        mBottomPlaceholder.setVisibility(View.VISIBLE);
+        mBottomPlaceholder.getChildAt(0).setVisibility(View.VISIBLE);
+        setEmojiSwitchImageResId(R.drawable.live_barrage_softkeyboard);
+        if (showEmoji) {
+            mEditText.clearFocus();
+        } else {
+            boolean performClick = mEmojiSwitchImage.performClick();
+            Log.i(TAG, "EmojiSwitchImage.performClick:" + performClick);
+        }
+    }
+
     private int getScreenOrientation(Context context) {
         Configuration screenConfig = context.getResources().getConfiguration();
         return screenConfig.orientation;
@@ -80,6 +104,22 @@ public class BarrageSendView extends Dialog implements IBarrageSendView, OnDecor
 
     @SuppressLint("ClickableViewAccessibility")
     private void initListener() {
+        mEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                notifyExitTextContent(s.length() == 0);
+            }
+        });
         mEditText.setOnEditorActionListener((textView, i, keyEvent) -> {
             if (i == EditorInfo.IME_ACTION_SEND) {
                 sendText();
@@ -116,25 +156,39 @@ public class BarrageSendView extends Dialog implements IBarrageSendView, OnDecor
             return false;
         });
 
-        mEmojiSwitchImage.setTag(R.drawable.livekit_barrage_ic_emoticons);
+        setEmojiSwitchImageResId(R.drawable.live_barrage_softkeyboard);
         mEmojiSwitchImage.setOnClickListener(v -> {
             ViewGroup.LayoutParams layoutParams = mBottomPlaceholder.getLayoutParams();
-            if ((Integer) v.getTag() == R.drawable.livekit_barrage_ic_emoticons) {
-                mEmojiSwitchImage.setTag(R.drawable.live_barrage_softkeyboard);
-                mEmojiSwitchImage.setBackgroundResource(R.drawable.live_barrage_softkeyboard);
+            Log.i(TAG, "mEmojiSwitchImage onClick, layoutParams.height:" + layoutParams.height);
+            if ((Integer) v.getTag() == R.drawable.live_barrage_ic_emoticons) {
+                Log.i(TAG, "mEmojiSwitchImage setTag:softkeyboard");
+                setEmojiSwitchImageResId(R.drawable.live_barrage_softkeyboard);
                 if (layoutParams.height > 0) {
                     mBottomPlaceholder.getChildAt(0).setVisibility(View.VISIBLE);
                     mInputMethodManager.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
+                    Log.i(TAG, "hideSoftInputFromWindow");
                 }
             } else {
-                mEmojiSwitchImage.setTag(R.drawable.livekit_barrage_ic_emoticons);
-                mEmojiSwitchImage.setBackgroundResource(R.drawable.livekit_barrage_ic_emoticons);
+                Log.i(TAG, "mEmojiSwitchImage setTag:emoticons");
+                setEmojiSwitchImageResId(R.drawable.live_barrage_ic_emoticons);
                 if (layoutParams.height > 0) {
                     mBottomPlaceholder.getChildAt(0).setVisibility(View.GONE);
+                    mEditText.requestFocus();
                     mInputMethodManager.showSoftInput(mEditText, InputMethodManager.SHOW_FORCED);
+                    Log.i(TAG, "showSoftInput");
                 }
             }
         });
+    }
+
+    private void notifyExitTextContent(boolean isEmpty) {
+        mButtonSend.setEnabled(!isEmpty);
+        ((EmojiLayout) mBottomPlaceholder.getChildAt(0)).setDeleteViewEnable(!isEmpty);
+    }
+
+    private void setEmojiSwitchImageResId(int resId) {
+        mEmojiSwitchImage.setTag(resId);
+        mEmojiSwitchImage.setBackgroundResource(resId);
     }
 
     private void sendText() {
@@ -145,9 +199,18 @@ public class BarrageSendView extends Dialog implements IBarrageSendView, OnDecor
         if (TextUtils.isEmpty(message)) {
             ToastUtil.toastLongMessage(mContext.getString(R.string.live_barrage_warning_not_empty));
         } else {
-            mEditText.setText("");
             Barrage barrage = createBarrageModel(message);
-            sendBarrage(barrage);
+            sendBarrage(barrage, new TUICallback() {
+                @Override
+                public void onSuccess() {
+                    mEditText.setText("");
+                }
+
+                @Override
+                public void onError(int errorCode, String errorMessage) {
+                    ErrorLocalized.onError(errorCode);
+                }
+            });
             dismiss();
         }
     }
@@ -156,8 +219,6 @@ public class BarrageSendView extends Dialog implements IBarrageSendView, OnDecor
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initStatusBar();
-        mEditText.requestFocus();
-        mInputMethodManager.showSoftInput(mEditText, InputMethodManager.SHOW_FORCED);
         reportData();
     }
 
@@ -190,11 +251,13 @@ public class BarrageSendView extends Dialog implements IBarrageSendView, OnDecor
         if (mOnGlobalLayoutListener != null) {
             mOnGlobalLayoutListener.clear();
         }
+        mEditText.clearFocus();
         super.dismiss();
     }
 
     @Override
     public void onKeyboardHeightUpdated(int keyboardHeight) {
+        Log.i(TAG, "onKeyboardHeightUpdated:" + keyboardHeight);
         if (mKeyboardHeight != keyboardHeight) {
             mKeyboardHeight = keyboardHeight;
             mKeyboardSP.put(KEY_KEYBOARD_HEIGHT, mKeyboardHeight);
@@ -203,8 +266,7 @@ public class BarrageSendView extends Dialog implements IBarrageSendView, OnDecor
             return;
         }
         if (keyboardHeight > 0) {
-            mEmojiSwitchImage.setTag(R.drawable.livekit_barrage_ic_emoticons);
-            mEmojiSwitchImage.setBackgroundResource(R.drawable.livekit_barrage_ic_emoticons);
+            setEmojiSwitchImageResId(R.drawable.live_barrage_ic_emoticons);
             mBottomPlaceholder.getChildAt(0).setVisibility(View.GONE);
         }
         ViewGroup.LayoutParams layoutParams = mBottomPlaceholder.getLayoutParams();
@@ -224,6 +286,8 @@ public class BarrageSendView extends Dialog implements IBarrageSendView, OnDecor
             }
             decorView.getViewTreeObserver().addOnGlobalLayoutListener(mOnGlobalLayoutListener);
         }
+        Editable editable = mEditText.getText();
+        notifyExitTextContent(editable == null || editable.length() == 0);
     }
 
     @Override
@@ -240,14 +304,14 @@ public class BarrageSendView extends Dialog implements IBarrageSendView, OnDecor
     }
 
     @Override
-    public void sendBarrage(Barrage barrage) {
+    public void sendBarrage(Barrage barrage, TUICallback callback) {
         if (barrage == null) {
             return;
         }
         if (mOnSendListener != null) {
             mOnSendListener.willSendBarrage(barrage);
         }
-        BarrageStore.sharedInstance().mBarrageIMService.sendBarrage(mRoomID, barrage);
+        BarrageStore.sharedInstance().mBarrageIMService.sendBarrage(mRoomID, barrage, callback);
     }
 
     private Barrage createBarrageModel(String message) {

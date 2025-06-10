@@ -3,6 +3,8 @@ package com.trtc.uikit.livekit.component.floatwindow.service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,30 +15,33 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomObserver;
 import com.trtc.tuikit.common.foregroundservice.VideoForegroundService;
 import com.trtc.tuikit.common.system.ContextProvider;
 import com.trtc.uikit.component.barrage.store.BarrageStore;
+import com.trtc.uikit.livekit.ListAudienceActivity;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.LiveIdentityGenerator;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.component.audioeffect.store.AudioEffectStore;
+import com.trtc.uikit.livekit.component.beauty.basicbeauty.store.BasicBeautyStore;
+import com.trtc.uikit.livekit.component.beauty.tebeauty.store.TEBeautyStore;
 import com.trtc.uikit.livekit.component.floatwindow.core.FloatWindow;
 import com.trtc.uikit.livekit.component.floatwindow.core.FloatWindowObserver;
 import com.trtc.uikit.livekit.component.floatwindow.store.FloatWindowStore;
 import com.trtc.uikit.livekit.component.floatwindow.view.VideoFloatView;
 import com.trtc.uikit.livekit.component.floatwindow.view.VoiceFloatView;
-import com.trtc.uikit.livekit.component.liveListviewpager.ListAudienceActivity;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
-import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestream.view.anchor.VideoLiveAnchorActivity;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 import com.trtc.uikit.livekit.voiceroom.VoiceRoomDefine;
 import com.trtc.uikit.livekit.voiceroom.view.VoiceRoomActivity;
 
 public final class FloatWindowManager {
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getComponentLogger("FloatWindowManager");
 
-    private static final String TAG = "FloatWindowManager";
+    private static final int DELAY_TIME_MS = 500;
 
-    private final FloatWindowStore mStore = new FloatWindowStore();
-
-    private LiveStreamManager mLiveStreamManager;
-    private LiveCoreView      mCoreView;
+    private final FloatWindowStore  mStore   = new FloatWindowStore();
+    private       LiveStreamManager mLiveStreamManager;
+    private       LiveCoreView      mCoreView;
+    private final Handler           mHandler = new Handler(Looper.getMainLooper());
 
     private static final FloatWindowManager INSTANCE = new FloatWindowManager();
 
@@ -60,7 +65,7 @@ public final class FloatWindowManager {
     private View createFloatView(Context context, LiveCoreView coreView) {
         LiveStreamManager liveStreamManager = getLiveStreamManager();
         if (liveStreamManager == null) {
-            LiveStreamLog.error(TAG + " initWindow failed: liveStreamManager is null");
+            LOGGER.error("initWindow failed: liveStreamManager is null");
             return null;
         }
 
@@ -80,13 +85,15 @@ public final class FloatWindowManager {
     }
 
     public void releaseFloatWindow() {
-        LiveStreamLog.info(TAG + " releaseFloatWindow");
+        LOGGER.info("releaseFloatWindow");
         LiveStreamManager liveStreamManager = mLiveStreamManager;
         if (liveStreamManager != null) {
             String roomId = liveStreamManager.getRoomState().roomId;
             com.trtc.uikit.livekit.component.gift.store.GiftStore.sharedInstance().unInit(roomId);
             AudioEffectStore.sharedInstance().unInit();
             BarrageStore.sharedInstance().unInit(roomId);
+            BasicBeautyStore.getInstance().unInit();
+            TEBeautyStore.getInstance().unInit();
             if (mCoreView != null) {
                 String ownerId = liveStreamManager.getRoomState().ownerInfo.userId;
                 String selfId = liveStreamManager.getUserState().selfInfo.userId;
@@ -145,7 +152,7 @@ public final class FloatWindowManager {
 
     public void resumeLive() {
         LiveStreamManager liveStreamManager = mLiveStreamManager;
-        LiveStreamLog.info(TAG + " resumeLive: liveStreamManager=" + liveStreamManager);
+        LOGGER.info("resumeLive: liveStreamManager=" + liveStreamManager);
         if (liveStreamManager == null) {
             return;
         }
@@ -157,7 +164,7 @@ public final class FloatWindowManager {
             joinRoom(liveStreamManager);
         } else if (role == TUIRoomDefine.Role.ROOM_OWNER) {
             if (roomType == LiveIdentityGenerator.RoomType.VOICE) {
-                LiveStreamLog.warn(TAG + " resumeLive error: not support voice room");
+                LOGGER.warn("resumeLive error: not support voice room");
             } else {
                 startLiveStream(roomId);
             }
@@ -165,21 +172,25 @@ public final class FloatWindowManager {
     }
 
     private void startLiveStream(String roomId) {
-        LiveStreamLog.info(TAG + " startLiveStream:" + roomId);
-        Context context = ContextProvider.getApplicationContext();
-        Intent intent = new Intent(context, VideoLiveAnchorActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(VideoLiveAnchorActivity.INTENT_KEY_ROOM_ID, roomId);
-        context.startActivity(intent);
+        LOGGER.info("startLiveStream:" + roomId);
+        mHandler.postDelayed(() -> {
+            Context context = ContextProvider.getApplicationContext();
+            Intent intent = new Intent(context, VideoLiveAnchorActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra(VideoLiveAnchorActivity.INTENT_KEY_ROOM_ID, roomId);
+            context.startActivity(intent);
+        }, DELAY_TIME_MS);
     }
 
     private void joinRoom(LiveStreamManager liveStreamManager) {
-        LiveStreamLog.info(TAG + " joinRoom:" + liveStreamManager.getRoomState().roomId);
-        Context context = ContextProvider.getApplicationContext();
-        Intent intent = new Intent(context, ListAudienceActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtras(convertLiveInfoToBundle(liveStreamManager));
-        context.startActivity(intent);
+        LOGGER.info("joinRoom:" + liveStreamManager.getRoomState().roomId);
+        mHandler.postDelayed(() -> {
+            Context context = ContextProvider.getApplicationContext();
+            Intent intent = new Intent(context, ListAudienceActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtras(convertLiveInfoToBundle(liveStreamManager));
+            context.startActivity(intent);
+        }, DELAY_TIME_MS);
     }
 
     private Bundle convertLiveInfoToBundle(LiveStreamManager liveStreamManager) {
@@ -191,7 +202,7 @@ public final class FloatWindowManager {
     }
 
     private void startVoiceStream(String roomId, VoiceRoomDefine.CreateRoomParams params) {
-        LiveStreamLog.info(TAG + " startVoiceStream:" + roomId + ", params=" + new Gson().toJson(params));
+        LOGGER.info("startVoiceStream:" + roomId + ", params=" + new Gson().toJson(params));
         Context context = ContextProvider.getApplicationContext();
         Intent intent = new Intent(context, VoiceRoomActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -203,7 +214,7 @@ public final class FloatWindowManager {
     }
 
     public void showFloatWindow() {
-        LiveStreamLog.info(TAG + " showFloatWindow");
+        LOGGER.info("showFloatWindow");
         if (isShowingFloatWindow()) {
             return;
         }
@@ -226,7 +237,7 @@ public final class FloatWindowManager {
     }
 
     private void dismissFloatWindow() {
-        LiveStreamLog.info(TAG + " dismissFloatWindow");
+        LOGGER.info("dismissFloatWindow");
         LiveStreamManager liveStreamManager = getLiveStreamManager();
         if (liveStreamManager != null) {
             liveStreamManager.getLiveService().removeRoomEngineObserver(mRoomObserver);

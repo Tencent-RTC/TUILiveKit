@@ -117,11 +117,11 @@ public class LiveInfoEditView extends BasicView {
     private void initLiveCoverPicker() {
         View coverSettingsLayout = findViewById(R.id.fl_cover_edit);
         ImageLoader.load(mContext, mImageStreamCover, mRoomState.coverURL.getValue(),
-                R.drawable.livekit_live_stream_default_cover);
+                R.drawable.anchor_prepare_live_stream_default_cover);
         coverSettingsLayout.setOnClickListener(view -> {
             if (mStreamPresetImagePicker == null) {
                 StreamPresetImagePicker.Config config = new StreamPresetImagePicker.Config();
-                config.title = mContext.getString(R.string.common_titile_preset_cover);
+                config.title = mContext.getString(R.string.common_title_preset_cover);
                 config.confirmButtonText = mContext.getString(R.string.common_set_as_cover);
                 config.data = Arrays.asList(Constants.COVER_URL_LIST);
                 config.currentImageUrl = mRoomState.coverURL.getValue();
@@ -147,7 +147,7 @@ public class LiveInfoEditView extends BasicView {
     }
 
     private void onLiveCoverChanged(String coverURL) {
-        ImageLoader.load(mContext, mImageStreamCover, coverURL, R.drawable.livekit_live_stream_default_cover);
+        ImageLoader.load(mContext, mImageStreamCover, coverURL, R.drawable.anchor_prepare_live_stream_default_cover);
     }
 
     private void onLivePrivacyStatusChange(RoomState.LiveStreamPrivacyStatus status) {

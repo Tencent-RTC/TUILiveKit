@@ -52,7 +52,12 @@ public class BarrageInputView extends FrameLayout {
         mBarrageSendView = new BarrageSendView(mContext, mRoomId);
         setOnClickListener(v -> {
             if (!mBarrageSendView.isShowing()) {
-                mBarrageSendView.show();
+                mBarrageSendView.show(false);
+            }
+        });
+        findViewById(R.id.rl_emoticons).setOnClickListener(v -> {
+            if (!mBarrageSendView.isShowing()) {
+                mBarrageSendView.show(true);
             }
         });
     }

@@ -3,9 +3,7 @@ package com.trtc.uikit.livekit.component.roominfo.service;
 import static com.tencent.imsdk.v2.V2TIMFollowTypeCheckResult.V2TIM_FOLLOW_TYPE_IN_BOTH_FOLLOWERS_LIST;
 import static com.tencent.imsdk.v2.V2TIMFollowTypeCheckResult.V2TIM_FOLLOW_TYPE_IN_MY_FOLLOWING_LIST;
 
-import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
-import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
 import com.tencent.imsdk.v2.V2TIMFollowInfo;
 import com.tencent.imsdk.v2.V2TIMFollowOperationResult;
 import com.tencent.imsdk.v2.V2TIMFollowTypeCheckResult;
@@ -15,7 +13,6 @@ import com.tencent.imsdk.v2.V2TIMUserFullInfo;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
-import com.trtc.uikit.livekit.common.ErrorLocalized;
 import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.component.roominfo.store.RoomInfoState;
 
@@ -42,25 +39,12 @@ public class RoomInfoService {
         });
     }
 
-    public void initRoomInfo(String roomId) {
-        mRoomInfoState.roomId = roomId;
+    public void initRoomInfo(TUIRoomDefine.RoomInfo roomInfo) {
+        mRoomInfoState.roomId = roomInfo.roomId;
         mRoomInfoState.myUserId = TUILogin.getUserId();
-        TUIRoomEngine.sharedInstance().fetchRoomInfo(roomId, TUIRoomDefine.RoomType.LIVE,
-                new TUIRoomDefine.GetRoomInfoCallback() {
-                    @Override
-                    public void onSuccess(TUIRoomDefine.RoomInfo roomInfo) {
-                        mRoomInfoState.ownerId.setValue(roomInfo.ownerId);
-                        mRoomInfoState.ownerName.setValue(roomInfo.ownerName);
-                        mRoomInfoState.ownerAvatarUrl.setValue(roomInfo.ownerAvatarUrl);
-                    }
-
-                    @Override
-                    public void onError(TUICommonDefine.Error error, String message) {
-                        LOGGER.error("fetchRoomInfo failed:error:" + error + ",errorCode:" + error.getValue() +
-                                "message:" + message);
-                        ErrorLocalized.onError(error);
-                    }
-                });
+        mRoomInfoState.ownerId.setValue(roomInfo.ownerId);
+        mRoomInfoState.ownerName.setValue(roomInfo.ownerName);
+        mRoomInfoState.ownerAvatarUrl.setValue(roomInfo.ownerAvatarUrl);
     }
 
     public void getFansNumber() {

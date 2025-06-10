@@ -14,4 +14,5 @@ public class Constants {
     public static final String EVENT_SUB_KEY_REQUEST_CONNECTION        = "EVENT_SUB_KEY_REQUEST_CONNECTION_SUCCESS";
     public static final String EVENT_SUB_KEY_SHOW_CO_GUEST_MANAGE_VIEW = "EVENT_SUB_KEY_SHOW_CO_GUEST_MANAGE_VIEW";
     public static final String EVENT_PARAMS_KEY_USER_INFO              = "EVENT_PARAMS_KEY_USER_INFO";
+    public static final String EVENT_PARAMS_KEY_ROOM_ID                = "EVENT_PARAMS_KEY_ROOM_ID";
 }

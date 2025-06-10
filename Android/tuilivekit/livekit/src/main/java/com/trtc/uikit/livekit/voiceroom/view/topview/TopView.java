@@ -13,9 +13,9 @@ import androidx.annotation.Nullable;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.component.audiencelist.AudienceListView;
-import com.trtc.uikit.livekit.component.roominfo.RoomInfoView;
-import com.trtc.uikit.livekit.voiceroom.manager.api.Constants;
+import com.trtc.uikit.livekit.component.roominfo.LiveInfoView;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
+import com.trtc.uikit.livekit.voiceroom.manager.api.Constants;
 import com.trtc.uikit.livekit.voiceroom.view.BasicView;
 
 import java.util.HashMap;
@@ -48,10 +48,10 @@ public class TopView extends BasicView {
     @Override
     public void init(@NonNull VoiceRoomManager voiceRoomManager) {
         super.init(voiceRoomManager);
-        RoomInfoView roomInfoView = findViewById(R.id.rl_room_info);
-        roomInfoView.init(mVoiceRoomManager.getRoomState().roomId);
+        LiveInfoView roomInfoView = findViewById(R.id.rl_room_info);
+        roomInfoView.init(mVoiceRoomManager.getRoomState().roomInfo);
         AudienceListView audienceListView = findViewById(R.id.rl_audience_list);
-        audienceListView.init(mVoiceRoomManager.getRoomState().roomId);
+        audienceListView.init(mVoiceRoomManager.getRoomState().roomInfo);
         initReportView();
         initCloseView();
     }
