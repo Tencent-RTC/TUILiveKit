@@ -1,6 +1,7 @@
 package com.trtc.uikit.livekit.livestream.view.anchor.pushing.cohost;
 
 import static com.trtc.uikit.livekit.livestream.state.CoHostState.ConnectionStatus.INVITING;
+import static com.trtc.uikit.livekit.livestream.state.CoHostState.ConnectionStatus.UNKNOWN;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -18,8 +19,8 @@ import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
-import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestream.manager.error.ConnectionErrorHandler;
 import com.trtc.uikit.livekit.livestream.state.CoHostState;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
@@ -29,6 +30,7 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class AnchorRecommendedAdapter extends RecyclerView.Adapter<AnchorRecommendedAdapter.RecommendViewHolder> {
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getLiveStreamLogger("AnchorRecommendedAdapter");
 
     private final LiveStreamManager                                mLiveStreamManager;
     private final LiveCoreView                                     mLiveStream;
@@ -77,7 +79,7 @@ public class AnchorRecommendedAdapter extends RecyclerView.Adapter<AnchorRecomme
 
     private void setUserName(RecommendViewHolder holder, CoHostState.ConnectionUser recommendUser) {
         holder.textName.setText(TextUtils.isEmpty(recommendUser.userName)
-                ? recommendUser.roomId : recommendUser.userName);
+                ? recommendUser.userId : recommendUser.userName);
     }
 
     private void setAvatar(RecommendViewHolder holder, CoHostState.ConnectionUser recommendUser) {
@@ -93,7 +95,7 @@ public class AnchorRecommendedAdapter extends RecyclerView.Adapter<AnchorRecomme
             holder.textConnect.setText(R.string.common_connect_inviting);
             holder.textConnect.setAlpha(0.5f);
         } else {
-            holder.textConnect.setText(R.string.common_start_connection);
+            holder.textConnect.setText(R.string.common_voiceroom_invite);
             holder.textConnect.setAlpha(1f);
         }
     }
@@ -101,23 +103,21 @@ public class AnchorRecommendedAdapter extends RecyclerView.Adapter<AnchorRecomme
     private void setConnectionClickListener(RecommendViewHolder holder, CoHostState.ConnectionUser recommendUser) {
         holder.textConnect.setOnClickListener(view -> {
             if (recommendUser.connectionStatus == CoHostState.ConnectionStatus.UNKNOWN) {
+                recommendUser.connectionStatus = INVITING;
+                mLiveStreamManager.getCoHostManager().addSendConnectionRequest(recommendUser);
+                mLiveStreamManager.getCoHostState().recommendUsers.setValue(
+                        mLiveStreamManager.getCoHostState().recommendUsers.getValue());
                 mLiveStream.requestCrossRoomConnection(recommendUser.roomId, 10,
                         new TUILiveConnectionManager.ConnectionRequestCallback() {
                             @Override
                             public void onSuccess(Map<String, TUILiveConnectionManager.ConnectionCode> map) {
                                 if (map != null) {
                                     TUILiveConnectionManager.ConnectionCode code = map.get(recommendUser.roomId);
-                                    if (code == TUILiveConnectionManager.ConnectionCode.SUCCESS) {
-                                        for (CoHostState.ConnectionUser item :
-                                                mLiveStreamManager.getCoHostState().recommendUsers.getValue()) {
-                                            if (TextUtils.equals(item.roomId, recommendUser.roomId)) {
-                                                item.connectionStatus = INVITING;
-                                                mLiveStreamManager.getCoHostManager().addSendConnectionRequest(item);
-                                                mLiveStreamManager.getCoHostState().recommendUsers.setValue(
-                                                        mLiveStreamManager.getCoHostState().recommendUsers.getValue());
-                                            }
-                                        }
-                                    } else {
+                                    if (code != TUILiveConnectionManager.ConnectionCode.SUCCESS) {
+                                        recommendUser.connectionStatus = UNKNOWN;
+                                        mLiveStreamManager.getCoHostManager().removeSendConnectionRequest(recommendUser.roomId);
+                                        mLiveStreamManager.getCoHostState().recommendUsers.setValue(
+                                                mLiveStreamManager.getCoHostState().recommendUsers.getValue());
                                         ConnectionErrorHandler.onError(code);
                                     }
                                 }
@@ -125,8 +125,12 @@ public class AnchorRecommendedAdapter extends RecyclerView.Adapter<AnchorRecomme
 
                             @Override
                             public void onError(TUICommonDefine.Error error, String message) {
+                                recommendUser.connectionStatus = UNKNOWN;
+                                mLiveStreamManager.getCoHostManager().removeSendConnectionRequest(recommendUser.roomId);
+                                mLiveStreamManager.getCoHostState().recommendUsers.setValue(
+                                        mLiveStreamManager.getCoHostState().recommendUsers.getValue());
                                 ErrorLocalized.onError(error);
-                                LiveStreamLog.error("AnchorRecommendedAdapter" + " requestCrossRoomConnection " +
+                                LOGGER.error("AnchorRecommendedAdapter" + " requestCrossRoomConnection " +
                                         "failed:error:" + error + "," + "errorCode:" + error.getValue() + "message:" + message);
                             }
                         });
@@ -146,14 +150,12 @@ public class AnchorRecommendedAdapter extends RecyclerView.Adapter<AnchorRecomme
     public static class RecommendViewHolder extends RecyclerView.ViewHolder {
         public ImageFilterView imageHead;
         public TextView        textName;
-        public TextView        textLevel;
         public TextView        textConnect;
 
         public RecommendViewHolder(View itemView) {
             super(itemView);
             imageHead = itemView.findViewById(R.id.iv_head);
             textName = itemView.findViewById(R.id.tv_name);
-            textLevel = itemView.findViewById(R.id.tv_level);
             textConnect = itemView.findViewById(R.id.tv_connect);
         }
     }

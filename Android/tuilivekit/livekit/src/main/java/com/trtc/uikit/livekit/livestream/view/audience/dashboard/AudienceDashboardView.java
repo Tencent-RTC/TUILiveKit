@@ -56,6 +56,7 @@ public class AudienceDashboardView extends BasicView {
     private void initBackView() {
         mImageBack.setOnClickListener(view -> {
             mRoomManager.updateLiveStatus(RoomState.LiveStatus.NONE);
+            mLiveManager.destroy();
             if (mContext instanceof Activity) {
                 ((Activity) mContext).finish();
             }

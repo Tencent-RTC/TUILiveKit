@@ -14,4 +14,6 @@
     <color name="app_color_bottom_line_grey">#66000000</color>
     <color name="app_color_main_item_bg">#66000000</color>
     <color name="app_color_main_item_subtitle">#777777</color>
+    <!--    B1-->
+    <color name="app_design_standard_b1">#1C66E5</color>
 </resources>

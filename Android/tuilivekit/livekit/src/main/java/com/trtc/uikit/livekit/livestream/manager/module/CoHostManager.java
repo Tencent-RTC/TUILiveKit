@@ -13,8 +13,8 @@ import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.tuikit.common.system.ContextProvider;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.livestream.manager.api.ILiveService;
-import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestream.state.CoHostState;
 import com.trtc.uikit.livekit.livestream.state.LiveState;
 
@@ -23,8 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 
 public class CoHostManager extends BaseManager {
-    private static final String TAG              = "CoHostManager";
-    private static final int    FETCH_LIST_COUNT = 20;
+    private static final LiveKitLogger LOGGER           = LiveKitLogger.getLiveStreamLogger("CoHostManager");
+    private static final int           FETCH_LIST_COUNT = 20;
 
     public CoHostManager(LiveState state, ILiveService service) {
         super(state, service);
@@ -39,9 +39,31 @@ public class CoHostManager extends BaseManager {
         mCoHostState.sentConnectionRequests.setValue(mCoHostState.sentConnectionRequests.getValue());
     }
 
+    public void removeSendConnectionRequest(String inviteeRoomId) {
+        Iterator<CoHostState.ConnectionUser> iterator =
+                mCoHostState.sentConnectionRequests.getValue().listIterator();
+        while (iterator.hasNext()) {
+            CoHostState.ConnectionUser user = iterator.next();
+            if (TextUtils.equals(user.roomId, inviteeRoomId)) {
+                iterator.remove();
+            }
+        }
+        mCoHostState.sentConnectionRequests.setValue(mCoHostState.sentConnectionRequests.getValue());
+    }
+
     public void cleanConnectedUsers() {
         mCoHostState.connectedUsers.getValue().clear();
         mCoHostState.connectedUsers.setValue(mCoHostState.connectedUsers.getValue());
+    }
+
+    public boolean isSelfInCoHost() {
+        List<CoHostState.ConnectionUser> userList = mCoHostState.connectedUsers.getValue();
+        for (CoHostState.ConnectionUser user : userList) {
+            if (TextUtils.equals(mUserState.selfInfo.userId, user.userId)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void fetchLiveList() {
@@ -54,7 +76,8 @@ public class CoHostManager extends BaseManager {
 
                     @Override
                     public void onError(TUICommonDefine.Error error, String message) {
-                        LiveStreamLog.error(TAG + " fetchLiveList failed:error:" + error + ",errorCode:" + error.getValue() + "message:" + message);
+                        LOGGER.error("fetchLiveList failed:error:" + error + ",errorCode:" + error.getValue() +
+                                "message:" + message);
                         ErrorLocalized.onError(error);
                     }
                 });
@@ -123,18 +146,6 @@ public class CoHostManager extends BaseManager {
         mCoHostState.connectedUsers.getValue().clear();
         mCoHostState.connectedUsers.getValue().addAll(connectedList);
         mCoHostState.connectedUsers.setValue(mCoHostState.connectedUsers.getValue());
-    }
-
-    private void removeSendConnectionRequest(String inviteeRoomId) {
-        Iterator<CoHostState.ConnectionUser> iterator =
-                mCoHostState.sentConnectionRequests.getValue().listIterator();
-        while (iterator.hasNext()) {
-            CoHostState.ConnectionUser user = iterator.next();
-            if (TextUtils.equals(user.roomId, inviteeRoomId)) {
-                iterator.remove();
-            }
-        }
-        mCoHostState.sentConnectionRequests.setValue(mCoHostState.sentConnectionRequests.getValue());
     }
 
     private void addReceivedConnectionRequest(CoHostState.ConnectionUser inviter) {

@@ -13,20 +13,20 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cd_delete"
-        android:layout_width="45dp"
-        android:layout_height="35dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
-        app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="5dp"
+        android:layout_width="56dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="48dp"
+        app:cardBackgroundColor="@color/livekit_barrage_button_color_secondary_default"
+        app:cardCornerRadius="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent">
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="20dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_gravity="center"
-            android:src="@drawable/live_barrage_delete" />
+            android:src="@drawable/livekit_barrage_img_emoji_delete" />
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

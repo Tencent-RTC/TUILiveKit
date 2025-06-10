@@ -17,9 +17,8 @@ import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
-import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.voiceroom.manager.api.IVoiceRoom;
-import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
 import com.trtc.uikit.livekit.voiceroom.state.RoomState;
 import com.trtc.uikit.livekit.voiceroom.state.VoiceRoomState;
 
@@ -29,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 public class RoomManager extends BaseManager {
-    private static final String FILE = "RoomManager";
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getVoiceRoomLogger("RoomManager");
 
     public RoomManager(VoiceRoomState state, IVoiceRoom service) {
         super(state, service);
@@ -37,11 +36,11 @@ public class RoomManager extends BaseManager {
 
     @Override
     public void destroy() {
-        Logger.info(FILE, " destroy");
+        LOGGER.info("destroy");
     }
 
     public void initCreateRoomState(String roomId, String roomName, TUIRoomDefine.SeatMode seatMode, int maxSeatCount) {
-        Logger.info(FILE, " initCreateRoomState roomId [roomId: " + roomId + ", roomName:" + roomName + ", "
+        LOGGER.info("initCreateRoomState roomId [roomId: " + roomId + ", roomName:" + roomName + ", "
                 + "seatMode:" + seatMode + ", maxSeatCount:" + maxSeatCount + "]");
         mRoomState.roomId = roomId;
         mRoomState.roomName.setValue(roomName);
@@ -49,9 +48,9 @@ public class RoomManager extends BaseManager {
         mRoomState.maxSeatCount.setValue(maxSeatCount);
         mRoomState.createTime = System.currentTimeMillis();
         mRoomState.ownerInfo.userId = mUserState.selfInfo.userId;
-        mRoomState.ownerInfo.name.setValue(mUserState.selfInfo.name.getValue());
-        mRoomState.ownerInfo.avatarUrl.setValue(mUserState.selfInfo.avatarUrl.getValue());
-        mUserState.selfInfo.role.setValue(TUIRoomDefine.Role.ROOM_OWNER);
+        mRoomState.ownerInfo.userName = mUserState.selfInfo.userName;
+        mRoomState.ownerInfo.avatarUrl = mUserState.selfInfo.avatarUrl;
+        mUserState.selfInfo.userRole = TUIRoomDefine.Role.ROOM_OWNER;
     }
 
     public void updateRoomState(TUIRoomDefine.RoomInfo roomInfo) {
@@ -146,7 +145,7 @@ public class RoomManager extends BaseManager {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                LiveStreamLog.error(FILE + " setLiveInfo failed:error:" + error + ",errorCode:" + error.getValue() +
+                LOGGER.error("setLiveInfo failed:error:" + error + ",errorCode:" + error.getValue() +
                         "message:" + message);
                 ErrorLocalized.onError(error);
             }
@@ -154,10 +153,10 @@ public class RoomManager extends BaseManager {
     }
 
     public String getDefaultRoomName() {
-        if (TextUtils.isEmpty(mUserState.selfInfo.name.getValue())) {
+        if (TextUtils.isEmpty(mUserState.selfInfo.userName)) {
             return mUserState.selfInfo.userId;
         } else {
-            return mUserState.selfInfo.name.getValue();
+            return mUserState.selfInfo.userName;
         }
     }
 
@@ -204,7 +203,7 @@ public class RoomManager extends BaseManager {
 
     /******************************************  Observer *******************************************/
     public void onKickedOutOfRoom(String roomId, TUIRoomDefine.KickedOutOfRoomReason reason, String message) {
-        Logger.info(FILE, "onKickedOutOfRoom:[roomId:" + roomId + ",reason:" + reason + ",message:"
+        LOGGER.info("onKickedOutOfRoom:[roomId:" + roomId + ",reason:" + reason + ",message:"
                 + message + "]");
         if (reason != null && BY_LOGGED_ON_OTHER_DEVICE != reason) {
             ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(R.string.common_kicked_out_of_room_by_owner));

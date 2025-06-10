@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<resources>
+    <string name="livelist_loading">Loading...</string>
+    <string name="livelist_no_more_data">There is no more data</string>
+    <string name="livelist_empty_data">Please start a live room</string>
+    <string name="livelist_viewed_audience_count">%1$d people viewed</string>
+    <string name="livelist_exit_float_window_tip">Live streaming in progress. Please try again later.</string>
+    <string name="livelist_click_enter_room">Click to enter the live room</string>
+    <string name="livelist_click_live">Live</string>
+</resources>

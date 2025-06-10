@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tencent.cloud.tuikit.engine.extension.TUILiveBattleManager;
+import com.tencent.rtmp.TXLiveBase;
 import com.trtc.tuikit.common.system.ContextProvider;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.livestream.manager.api.ILiveService;
@@ -69,13 +70,25 @@ public final class BattleManager extends BaseManager {
         return firstUser.ranking == lastUser.ranking;
     }
 
+    public boolean isSelfInBattle() {
+        List<BattleState.BattleUser> userList = mBattleState.mBattledUsers.getValue();
+        for (BattleState.BattleUser user : userList) {
+            if (TextUtils.equals(mUserState.selfInfo.userId, user.userId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void onBattleStarted(TUILiveBattleManager.BattleInfo battleInfo) {
         if (Boolean.TRUE.equals(mBattleState.mIsBattleRunning.getValue())) {
             return;
         }
         mBattleState.mBattleId = battleInfo.battleId;
         mBattleState.mBattleConfig.copy(battleInfo.config);
-        int duration = (int) (battleInfo.config.duration + battleInfo.startTime - System.currentTimeMillis() / 1000);
+        int duration = (int) (battleInfo.config.duration + battleInfo.startTime - getCurrentTimestamp() / 1000);
+        duration = Math.min(duration, battleInfo.config.duration);
+        duration = Math.max(duration, 0);
         mBattleState.mDurationCountDown.setValue(duration);
         mMainHandler.postDelayed(new Runnable() {
             @Override
@@ -212,6 +225,12 @@ public final class BattleManager extends BaseManager {
     public void destroy() {
         mMainHandler.removeCallbacksAndMessages(null);
         mBattleState.reset();
+    }
+
+    private long getCurrentTimestamp() {
+        long networkTimestamp = TXLiveBase.getNetworkTimestamp();
+        long localTimestamp = System.currentTimeMillis();
+        return networkTimestamp > 0 ? networkTimestamp : localTimestamp;
     }
 
     private void sortBattleUsersByScore(List<BattleState.BattleUser> users) {

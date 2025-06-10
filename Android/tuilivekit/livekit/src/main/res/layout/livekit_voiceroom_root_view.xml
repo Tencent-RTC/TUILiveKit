@@ -26,8 +26,8 @@
         android:id="@+id/top_view"
         android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="32dp"
-        android:layout_marginTop="54dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="52dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -15,23 +15,9 @@ public class AudienceListService {
 
     public final AudienceListState mAudienceListState = new AudienceListState();
 
-    public void initRoomInfo(String roomId) {
-        mAudienceListState.roomId = roomId;
-        TUIRoomEngine.sharedInstance().fetchRoomInfo(roomId, TUIRoomDefine.RoomType.LIVE,
-                new TUIRoomDefine.GetRoomInfoCallback() {
-                    @Override
-                    public void onSuccess(TUIRoomDefine.RoomInfo roomInfo) {
-                        mAudienceListState.ownerId = roomInfo.ownerId;
-                        getAudienceList();
-                    }
-
-                    @Override
-                    public void onError(TUICommonDefine.Error error, String message) {
-                        LOGGER.error("fetchRoomInfo failed:error:" + error + ",errorCode:" + error.getValue() +
-                                "message:" + message);
-                        ErrorLocalized.onError(error);
-                    }
-                });
+    public void initRoomInfo(TUIRoomDefine.RoomInfo roomInfo) {
+        mAudienceListState.roomId = roomInfo.roomId;
+        mAudienceListState.ownerId = roomInfo.ownerId;
     }
 
     public void getAudienceList() {

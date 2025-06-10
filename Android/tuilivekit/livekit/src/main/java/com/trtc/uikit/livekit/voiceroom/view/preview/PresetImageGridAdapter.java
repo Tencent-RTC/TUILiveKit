@@ -44,7 +44,7 @@ public class PresetImageGridAdapter extends RecyclerView.Adapter<PresetImageGrid
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
         String imageURL = mDataList.get(position);
-        ImageLoader.load(mContext, holder.mImage, imageURL, R.drawable.livekit_live_stream_default_cover);
+        ImageLoader.load(mContext, holder.mImage, imageURL, R.drawable.anchor_prepare_live_stream_default_cover);
         holder.mImageSelectedContainer.setVisibility(position == mSelectedPosition ? View.VISIBLE : View.INVISIBLE);
         holder.mImage.setOnClickListener(v -> {
             notifyItemChanged(mSelectedPosition);

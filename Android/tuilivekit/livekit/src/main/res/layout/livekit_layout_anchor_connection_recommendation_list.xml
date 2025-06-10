@@ -32,19 +32,6 @@
         android:textColor="@color/common_design_standard_g7" />
 
     <TextView
-        android:id="@+id/tv_level"
-        android:layout_width="35dp"
-        android:layout_height="15dp"
-        android:layout_marginStart="10dp"
-        android:layout_centerVertical="true"
-        android:layout_toEndOf="@id/tv_name"
-        android:gravity="center"
-        android:text="lv20"
-        android:textSize="12sp"
-        android:textColor="@color/common_design_standard_flowkit_white"
-        android:background="@drawable/livekit_audience_list_panel_level_background"/>
-
-    <TextView
         android:id="@+id/tv_connect"
         android:layout_width="64dp"
         android:layout_height="24dp"

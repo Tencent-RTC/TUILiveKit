@@ -17,8 +17,8 @@ import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
-import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestream.state.UserState;
 
 import java.util.ArrayList;
@@ -27,6 +27,8 @@ import java.util.Set;
 
 @SuppressLint("ViewConstructor")
 public class UserInfoDialog extends PopupDialog {
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getLiveStreamLogger("UserInfoDialog");
+
     private final Context                                              mContext;
     private       Button                                               mButtonFollow;
     private       TextView                                             mTextUserName;
@@ -86,6 +88,7 @@ public class UserInfoDialog extends PopupDialog {
         removeObserver();
     }
 
+    @SuppressLint("SetTextI18n")
     private void updateView() {
         if (mUserInfo == null) {
             return;
@@ -94,7 +97,7 @@ public class UserInfoDialog extends PopupDialog {
             return;
         }
         mTextUserName.setText(mUserInfo.userName.isEmpty() ? mUserInfo.userId : mUserInfo.userName);
-        mTextUserId.setText(mUserInfo.userId);
+        mTextUserId.setText("UserId:" + mUserInfo.userId);
         String avatarUrl = mUserInfo.avatarUrl;
         if (TextUtils.isEmpty(avatarUrl)) {
             mImageAvatar.setImageResource(R.drawable.livekit_ic_avatar);
@@ -129,7 +132,7 @@ public class UserInfoDialog extends PopupDialog {
 
                     @Override
                     public void onError(int code, String desc) {
-                        LiveStreamLog.error("UserInfoDialog"+ " getUserFollowInfo failed:errorCode:" + "message:" + desc);
+                        LOGGER.error("UserInfoDialog"+ " getUserFollowInfo failed:errorCode:" + "message:" + desc);
                         ToastUtil.toastShortMessage(code + "," + desc);
                     }
                 });

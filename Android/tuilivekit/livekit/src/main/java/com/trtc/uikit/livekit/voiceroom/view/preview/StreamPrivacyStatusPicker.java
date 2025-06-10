@@ -48,6 +48,6 @@ public class StreamPrivacyStatusPicker extends PopupDialog {
     }
 
     private List<String> getDataList(Context context) {
-        return Arrays.asList(context.getResources().getStringArray(R.array.livekit_stream_privacy_status));
+        return Arrays.asList(context.getResources().getStringArray(R.array.common_stream_privacy_status));
     }
 }

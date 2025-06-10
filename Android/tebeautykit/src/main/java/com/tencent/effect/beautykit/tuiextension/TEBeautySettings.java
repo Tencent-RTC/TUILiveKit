@@ -42,6 +42,7 @@ public final class TEBeautySettings {
             Log.e(TAG, "context is null");
             return;
         }
+        TEUIConfig.getInstance().panelBackgroundColor = 0xFF1F2024;
         Context appContext = context.getApplicationContext();
         copyBeautyResources(appContext, new TUIServiceCallback() {
             @Override

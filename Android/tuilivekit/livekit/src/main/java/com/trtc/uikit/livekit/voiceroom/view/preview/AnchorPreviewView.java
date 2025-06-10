@@ -3,7 +3,6 @@ package com.trtc.uikit.livekit.voiceroom.view.preview;
 import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 
 import androidx.annotation.NonNull;
@@ -15,7 +14,7 @@ import com.tencent.qcloud.tuicore.TUIConstants;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
-import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
 import com.trtc.uikit.livekit.voiceroom.state.RoomState;
 import com.trtc.uikit.livekit.voiceroom.view.BasicView;
@@ -25,8 +24,9 @@ import java.util.Map;
 import java.util.Objects;
 
 public class AnchorPreviewView extends BasicView {
-    private static final String  FILE    = "AnchorPreviewView";
-    private              boolean mIsExit = false;
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getVoiceRoomLogger("AnchorPreviewView");
+
+    private boolean mIsExit = false;
 
     public AnchorPreviewView(@NonNull Context context) {
         this(context, null);
@@ -97,7 +97,7 @@ public class AnchorPreviewView extends BasicView {
                     mSeatGridView.stopVoiceRoom(null);
                     return;
                 }
-                Logger.info(FILE, " create room success");
+                LOGGER.info("create room success");
                 mVoiceRoomManager.getRoomManager().updateRoomState(roomInfo);
                 mVoiceRoomManager.getRoomManager().updateLiveInfo();
                 mVoiceRoomManager.getUserManager().getAudienceList();
@@ -109,7 +109,7 @@ public class AnchorPreviewView extends BasicView {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                Logger.error(FILE, " create room failed, error: " + error + ", message: " + message);
+                LOGGER.error(" create room failed, error: " + error + ", message: " + message);
                 ErrorLocalized.onError(error);
             }
         });
@@ -122,7 +122,7 @@ public class AnchorPreviewView extends BasicView {
             TUICore.notifyEvent(TUIConstants.Privacy.EVENT_ROOM_STATE_CHANGED,
                     TUIConstants.Privacy.EVENT_SUB_KEY_ROOM_STATE_START, map);
         } catch (Exception e) {
-            Log.d(FILE, "showAlertUserLiveTips exception:" + e.getMessage());
+            LOGGER.error("showAlertUserLiveTips exception:" + e.getMessage());
         }
     }
 }

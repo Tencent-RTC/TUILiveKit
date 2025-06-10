@@ -10,9 +10,9 @@
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/iv_head"
-        android:layout_width="22dp"
-        android:layout_height="22dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_centerInParent="true"
         android:src="@drawable/audience_list_default_avatar"
-        app:round="11dp" />
+        app:round="12dp" />
 </RelativeLayout>

@@ -19,13 +19,14 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
-import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class AnchorApplyCoGuestAdapter extends RecyclerView.Adapter<AnchorApplyCoGuestAdapter.ApplyLinkMicViewHolder> {
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getLiveStreamLogger("AnchorApplyCoGuestAdapter");
 
     private final LiveStreamManager                            mLiveManage;
     private final LiveCoreView                                 mLiveStream;
@@ -94,8 +95,8 @@ public class AnchorApplyCoGuestAdapter extends RecyclerView.Adapter<AnchorApplyC
                         view.setEnabled(true);
                     }
                     ErrorLocalized.onError(error);
-                    LiveStreamLog.error("AnchorApplyCoGuestAdapter" + " respondIntraRoomConnection failed:error:" + error + "," +
-                            "errorCode:" + error.getValue() + "message:" + message);
+                    LOGGER.error("AnchorApplyCoGuestAdapter" + " respondIntraRoomConnection failed:error:" + error +
+                            ",errorCode:" + error.getValue() + "message:" + message);
                 }
             });
 

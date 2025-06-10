@@ -3,7 +3,6 @@ package com.trtc.uikit.livekit.livestream.view.widgets.coguest;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,9 +17,9 @@ import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.component.floatwindow.service.FloatWindowManager;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
-import com.trtc.uikit.livekit.livestream.state.CoGuestState;
 import com.trtc.uikit.livekit.livestream.state.CoGuestState.CoGuestStatus;
 import com.trtc.uikit.livekit.livestream.state.RoomState;
 import com.trtc.uikit.livekit.livestream.view.BasicView;
@@ -28,6 +27,7 @@ import com.trtc.uikit.livekit.livestream.view.BasicView;
 import java.util.Set;
 
 public class CoGuestWidgetsView extends BasicView {
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getLiveStreamLogger("CoGuestWidgetsView");
 
     private       ImageFilterView         mImageAvatar;
     private       LinearLayout            mLayoutUserInfo;
@@ -52,6 +52,7 @@ public class CoGuestWidgetsView extends BasicView {
     }
 
     public void init(LiveStreamManager manager, TUIRoomDefine.UserInfo userInfo) {
+        LOGGER.info("init userId:" + userInfo.userId);
         mState.userId = userInfo.userId;
         mState.userName = userInfo.userName;
         mState.userAvatar = userInfo.avatarUrl;
@@ -98,12 +99,16 @@ public class CoGuestWidgetsView extends BasicView {
 
     private void initUserNameView() {
         if (mState.userId.equals(mUserState.selfInfo.userId) || (mState.userId.equals(mRoomState.ownerInfo.userId)
-                && mCoGuestState.coGuestStatus.getValue() == CoGuestState.CoGuestStatus.NONE)) {
+                && mCoGuestState.coGuestStatus.getValue() != CoGuestStatus.LINKING)) {
             mLayoutUserInfo.setVisibility(GONE);
         } else {
             mLayoutUserInfo.setVisibility(VISIBLE);
             mTextName.setText(mState.userName);
         }
+    }
+
+    private boolean isAnchor() {
+        return TextUtils.equals(mState.userId, mRoomState.ownerInfo.userId);
     }
 
     private void initUserAvatarView() {
@@ -136,14 +141,12 @@ public class CoGuestWidgetsView extends BasicView {
         mCoGuestState.coGuestStatus.removeObserver(mCoGuestStatusObserver);
         FloatWindowManager.getInstance().getStore().isShowingFloatWindow.removeObserver(mFloatWindowModeObserver);
     }
-
+ 
     private void onVideoStreamUserListChange(Set<String> strings) {
-        Log.i("CoGuestWidgetsView", "onVideoStreamUserListChange, userId=" + mState.userId + ", strings=" + strings);
         initUserAvatarView();
     }
 
     private void onAudioStreamUserListChange(Set<String> strings) {
-        Log.i("CoGuestWidgetsView", "onAudioStreamUserListChange, userId=" + mState.userId + ", strings=" + strings);
         initMuteAudioView();
     }
 

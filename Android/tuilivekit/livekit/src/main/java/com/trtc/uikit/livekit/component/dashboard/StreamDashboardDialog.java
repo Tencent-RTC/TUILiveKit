@@ -8,11 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
@@ -20,10 +20,12 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomObserver;
 import com.tencent.trtc.TRTCStatistics;
 import com.trtc.tuikit.common.ui.PopupDialog;
+import com.trtc.tuikit.common.util.ScreenUtil;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.component.dashboard.service.TRTCObserver;
 import com.trtc.uikit.livekit.component.dashboard.service.TRTCStatisticsListener;
 import com.trtc.uikit.livekit.component.dashboard.store.StreamDashboardUserState;
+import com.trtc.uikit.livekit.component.dashboard.view.CircleIndicator;
 import com.trtc.uikit.livekit.component.dashboard.view.StreamInfoAdapter;
 
 import java.util.ArrayList;
@@ -32,11 +34,12 @@ import java.util.List;
 public class StreamDashboardDialog extends PopupDialog {
     private final Context                        mContext;
     private final TRTCObserver                   mTRTCObserver;
+    private final PagerSnapHelper                mPagerSnapHelper  = new PagerSnapHelper();
     private       RecyclerView                   mRecyclerMediaInfo;
+    private       CircleIndicator                mCircleIndicator;
     private       TextView                       mTextUpLoss;
     private       TextView                       mTextDownLoss;
     private       TextView                       mTextRtt;
-    private       LinearLayout                   mLayoutMediaInfo;
     private       StreamInfoAdapter              mAdapter;
     private       int                            mColorGreen;
     private       int                            mColorPink;
@@ -71,8 +74,8 @@ public class StreamDashboardDialog extends PopupDialog {
         mTextDownLoss = view.findViewById(R.id.tv_downLoss);
         mTextUpLoss = view.findViewById(R.id.tv_upLoss);
         mRecyclerMediaInfo = view.findViewById(R.id.rv_media_info);
-        mLayoutMediaInfo = view.findViewById(R.id.ll_media_info);
-        mColorGreen = mContext.getResources().getColor(R.color.common_not_standard_green_47);
+        mCircleIndicator = view.findViewById(R.id.ci_pager);
+        mColorGreen = mContext.getResources().getColor(R.color.common_text_color_success);
         mColorPink = mContext.getResources().getColor(R.color.common_not_standard_pink_f9);
     }
 
@@ -110,9 +113,30 @@ public class StreamDashboardDialog extends PopupDialog {
     }
 
     private void initMediaInfoRecyclerView() {
+        mCircleIndicator.setCircleRadius(ScreenUtil.dip2px(3));
+        mPagerSnapHelper.attachToRecyclerView(mRecyclerMediaInfo);
         mAdapter = new StreamInfoAdapter(getContext(), mVideoStatusList);
-        mRecyclerMediaInfo.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerMediaInfo.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         mRecyclerMediaInfo.setAdapter(mAdapter);
+        mRecyclerMediaInfo.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    updateCircleIndicator();
+                }
+            }
+        });
+    }
+
+    private void updateCircleIndicator() {
+        int count = mAdapter.getItemCount();
+        mCircleIndicator.setVisibility(count > 1 ? View.VISIBLE : View.GONE);
+        mCircleIndicator.setCircleCount(count);
+        View snapView = mPagerSnapHelper.findSnapView(mRecyclerMediaInfo.getLayoutManager());
+        if (snapView != null) {
+            int position = mRecyclerMediaInfo.getLayoutManager().getPosition(snapView);
+            mCircleIndicator.setSelected(position);
+        }
     }
 
     private void setTRTCListener() {
@@ -120,20 +144,19 @@ public class StreamDashboardDialog extends PopupDialog {
             @SuppressLint("DefaultLocale")
             @Override
             public void onNetworkStatisticsChange(int rtt, int upLoss, int downLoss) {
-                super.onNetworkStatisticsChange(rtt, upLoss, downLoss);
                 updateNetworkStatistics(rtt, upLoss, downLoss);
             }
 
             @Override
             public void onLocalStatisticsChange(ArrayList<TRTCStatistics.TRTCLocalStatistics> localArray) {
-                super.onLocalStatisticsChange(localArray);
                 mAdapter.updateLocalVideoStatus(localArray);
+                updateCircleIndicator();
             }
 
             @Override
             public void onRemoteStatisticsChange(ArrayList<TRTCStatistics.TRTCRemoteStatistics> remoteArray) {
-                super.onRemoteStatisticsChange(remoteArray);
                 mAdapter.updateRemoteVideoStatus(remoteArray);
+                updateCircleIndicator();
             }
         });
     }

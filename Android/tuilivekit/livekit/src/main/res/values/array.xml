@@ -1,7 +1,0 @@
-<resources>
-    <string-array name="livekit_stream_privacy_status">
-        <item>Public</item>
-        <item>Privacy</item>
-    </string-array>
-
-</resources>

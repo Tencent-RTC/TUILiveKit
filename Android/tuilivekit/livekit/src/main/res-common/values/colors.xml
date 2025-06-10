@@ -51,6 +51,8 @@
     <!--    transparent-->
     <color name="common_design_standard_transparent">#00000000</color>
 
+    <color name="common_black">#FF000000</color>
+
     <!--    Colors in non-interactive specifications-->
     <color name="common_not_standard_gray_60_transparency">#9922262E</color>
     <color name="common_not_standard_40_g1">#660F1014</color>
@@ -98,11 +100,13 @@
     <color name="common_view_line">#4F586B4D</color>
     <color name="common_bottom_panel_text">#B2BBD1</color>
     <color name="common_confirm_dialog">#4F586B</color>
-
-    <!--    float window color-->
-    <color name="common_color_float_Window_bg">#22262E</color>
-
+    <color name="common_bg_color_entrycard">#2B2C30</color>
+    <color name="common_bg_color_operate">#1F2024</color>
     <color name="common_text_color_primary">#E6FFFFFF</color>
     <color name="common_text_color_secondary">#8CFFFFFF</color>
+    <color name="common_text_color_disabled">#24FFFFFF</color>
+    <color name="common_text_color_link">#4086FF</color>
+    <color name="common_text_color_success">#38A673</color>
+    <color name="common_stroke_color_module">#48494F</color>
 
 </resources>

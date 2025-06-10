@@ -21,16 +21,19 @@ import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 @SuppressLint("ViewConstructor")
 public class EndLiveStreamDialog extends PopupDialog {
 
-    protected     Context           mContext;
-    private final LiveCoreView      mLiveStream;
-    private final LiveStreamManager mLiveStreamManager;
-    private       LinearLayout      mRootLayout;
+    protected     Context             mContext;
+    private final LiveCoreView        mLiveStream;
+    private final LiveStreamManager   mLiveStreamManager;
+    private       LinearLayout        mRootLayout;
+    private       OnExitClickListener mOnExitClickListener;
 
-    public EndLiveStreamDialog(@NonNull Context context, LiveCoreView liveStream, LiveStreamManager liveManager) {
+    public EndLiveStreamDialog(@NonNull Context context, LiveCoreView liveStream, LiveStreamManager liveManager,
+                               OnExitClickListener listener) {
         super(context);
         mContext = context;
         mLiveStream = liveStream;
         mLiveStreamManager = liveManager;
+        mOnExitClickListener = listener;
         initView();
     }
 
@@ -72,10 +75,9 @@ public class EndLiveStreamDialog extends PopupDialog {
         TextView itemView = addItemView();
         itemView.setText(getContext().getString(R.string.common_end_live));
         itemView.setOnClickListener(v -> {
-            mLiveStream.leaveLiveStream(null);
             dismiss();
-            if (mContext instanceof Activity) {
-                ((Activity) mContext).finish();
+            if (mOnExitClickListener != null) {
+                mOnExitClickListener.onClick(v);
             }
         });
         addSplitLine(ScreenUtil.dip2px(7));
@@ -91,7 +93,8 @@ public class EndLiveStreamDialog extends PopupDialog {
         View view = new View(mContext);
         int color = mContext.getResources().getColor(R.color.common_design_standard_g8);
         view.setBackgroundColor(color);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                height);
         mRootLayout.addView(view, params);
     }
 
@@ -105,5 +108,9 @@ public class EndLiveStreamDialog extends PopupDialog {
                 LinearLayout.LayoutParams.MATCH_PARENT, ScreenUtil.dip2px(56));
         mRootLayout.addView(textView, params);
         return textView;
+    }
+
+    public interface OnExitClickListener {
+        void onClick(View view);
     }
 }

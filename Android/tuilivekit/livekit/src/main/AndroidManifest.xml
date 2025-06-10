@@ -13,7 +13,7 @@
     <application>
         <activity
             android:allowBackup="false"
-            android:name=".component.liveListviewpager.ListAudienceActivity"
+            android:name=".ListAudienceActivity"
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"

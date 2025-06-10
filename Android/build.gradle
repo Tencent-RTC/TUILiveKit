@@ -36,9 +36,9 @@ task clean(type: Delete) {
 }
 
 ext {
-    liteavSdk = "com.tencent.liteav:LiteAVSDK_Professional:12.4.0.17372"
-    roomEngineSdk = "io.trtc.uikit:rtc_room_engine:3.0.0.685"
-    imSdk = "com.tencent.imsdk:imsdk-plus:8.5.6864"
-    common = "io.trtc.uikit:common:3.0.0.801"
-    liveStreamCore = "io.trtc.uikit:live-stream-core:3.0.0.649"
+    liteavSdk = "com.tencent.liteav:LiteAVSDK_Professional:12.5.0.17567"
+    roomEngineSdk = "io.trtc.uikit:rtc_room_engine:3.1.0.824"
+    imSdk = "com.tencent.imsdk:imsdk-plus:8.6.7019"
+    common = "io.trtc.uikit:common:3.1.0.946"
+    liveStreamCore = "io.trtc.uikit:live-stream-core:3.1.0.946"
 }

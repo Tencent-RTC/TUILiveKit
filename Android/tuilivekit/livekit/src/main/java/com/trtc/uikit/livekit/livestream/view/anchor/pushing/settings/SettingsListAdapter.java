@@ -14,10 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.component.audioeffect.AudioEffectPanel;
+import com.trtc.uikit.livekit.component.beauty.BeautyUtils;
 import com.trtc.uikit.livekit.component.dashboard.StreamDashboardDialog;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
-import com.trtc.uikit.livekit.livestream.view.widgets.beauty.BeautyPanelDialog;
-import com.trtc.uikit.livekit.livestream.view.widgets.videosettings.VideoSettingsDialog;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
 import java.util.ArrayList;
@@ -27,7 +26,7 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
     private static final int                 ITEM_TYPE_BEAUTY       = 0;
     private static final int                 ITEM_TYPE_AUDIO_EFFECT = 1;
     private static final int                 ITEM_TYPE_FLIP         = 2;
-    private static final int                 ITEM_TYPE_VIDEO_PARAMS = 3;
+    private static final int                 ITEM_TYPE_MIRROR       = 3;
     private static final int                 ITEM_TYPE_DASHBOARD    = 4;
     private final        List<SettingsItem>  mData                  = new ArrayList<>();
     private final        Context             mContext;
@@ -53,8 +52,8 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
                 , R.drawable.livekit_settings_audio_effect, ITEM_TYPE_AUDIO_EFFECT));
         mData.add(new SettingsItem(mContext.getString(R.string.common_video_settings_item_flip)
                 , R.drawable.livekit_settings_item_flip, ITEM_TYPE_FLIP));
-        mData.add(new SettingsItem(mContext.getString(R.string.common_video_config)
-                , R.drawable.livekit_settings_item_video_params, ITEM_TYPE_VIDEO_PARAMS));
+        mData.add(new SettingsItem(mContext.getString(R.string.common_video_settings_item_mirror)
+                , R.drawable.livekit_settings_item_mirror, ITEM_TYPE_MIRROR));
         mData.add(new SettingsItem(mContext.getString(R.string.common_dashboard_title)
                 , R.drawable.livekit_settings_dashboard, ITEM_TYPE_DASHBOARD));
     }
@@ -84,8 +83,8 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
                 case ITEM_TYPE_FLIP:
                     handleCameraFlip();
                     break;
-                case ITEM_TYPE_VIDEO_PARAMS:
-                    showVideoParamsPanel();
+                case ITEM_TYPE_MIRROR:
+                    switchMirror();
                     break;
                 case ITEM_TYPE_DASHBOARD:
                     showMediaDashboardDialog();
@@ -102,10 +101,9 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
         mLiveCoreView.switchCamera(!isFront);
     }
 
-    private void showVideoParamsPanel() {
-        mSettingsDialog.dismiss();
-        VideoSettingsDialog dialog = new VideoSettingsDialog(mContext, mLiveCoreView, mLiveStreamManager);
-        dialog.show();
+    private void switchMirror() {
+        boolean isMirrorEnabled = Boolean.TRUE.equals(mLiveCoreView.getCoreState().mediaState.isMirrorEnabled.getValue());
+        mLiveCoreView.enableMirror(!isMirrorEnabled);
     }
 
     private void showMediaDashboardDialog() {
@@ -128,8 +126,7 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
 
     private void showBeautyPanel() {
         mSettingsDialog.dismiss();
-        BeautyPanelDialog dialog = new BeautyPanelDialog(mContext, mLiveStreamManager);
-        dialog.show();
+        BeautyUtils.showBeautyDialog(mContext);
     }
 
     @Override

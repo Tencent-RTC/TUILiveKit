@@ -6,53 +6,149 @@
     android:layout_height="match_parent"
     android:background="@color/app_color_white">
 
-    <RelativeLayout
-        android:id="@+id/rl_title"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_live"
         android:layout_width="match_parent"
-        android:layout_height="42dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="57dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="10dp">
-
-        <ImageView
-            android:id="@+id/iv_logo"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@drawable/app_ic_launcher"
-            android:layout_centerVertical="true"
-            android:layout_alignParentStart="true"
-            android:importantForAccessibility="no" />
+        android:layout_height="?android:attr/actionBarSize"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/iv_logo"
-            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="@string/app_main_item_video_live"
+            android:textColor="@color/black"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:text="@string/app_name"
-            android:textColor="@color/app_color_black"
-            tools:ignore="RelativeOverlap,UnusedAttribute" />
+            android:textStyle="bold" />
 
-        <androidx.constraintlayout.utils.widget.ImageFilterView
-            android:id="@+id/iv_avatar"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:src="@drawable/app_avatar"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"
-            app:roundPercent="1" />
-    </RelativeLayout>
+        <ImageButton
+            android:id="@+id/btn_multi_function"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_gravity="right|center_vertical"
+            android:background="@null"
+            android:padding="21dp"
+            android:src="@drawable/app_question_link"
+            tools:ignore="ContentDescription,RtlHardcoded" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_main_list"
+    </androidx.appcompat.widget.Toolbar>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/rl_title"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:overScrollMode="never" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar_live"
+        android:orientation="vertical"
+        android:padding="20dp">
 
+        <RelativeLayout
+            android:id="@+id/video_live"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:background="@drawable/app_item_bg_live_stream"
+            android:orientation="vertical"
+            android:paddingStart="20dp"
+            android:paddingTop="20dp"
+            android:paddingEnd="20dp">
+
+            <TextView
+                android:id="@+id/video_live_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_main_item_video_live"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/video_live_sub"
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/video_live_title"
+                android:layout_marginTop="8dp"
+                android:text="@string/app_main_item_video_live_sub"
+                android:textColor="#BFFFFFFF"
+                android:textSize="11sp" />
+
+            <ImageView
+                android:layout_width="112dp"
+                android:layout_height="160dp"
+                android:layout_alignParentEnd="true"
+                android:layout_gravity="end"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/app_item_live_stream_end_bg"
+                android:importantForAccessibility="no" />
+
+            <ImageView
+                android:layout_width="58dp"
+                android:layout_height="24dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/app_bg_enter_live"
+                android:importantForAccessibility="no"
+                android:paddingStart="24dp"
+                android:paddingTop="7dp"
+                android:paddingEnd="24dp"
+                android:paddingBottom="7dp"
+                android:src="@drawable/app_ic_enter_live" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/voice_room"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/app_item_bg_voice_room"
+            android:orientation="vertical"
+            android:paddingStart="20dp"
+            android:paddingTop="20dp"
+            android:paddingEnd="20dp">
+
+            <TextView
+                android:id="@+id/voice_room_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_main_item_voice_room"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/voice_room_sub"
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/voice_room_title"
+                android:layout_marginTop="8dp"
+                android:text="@string/app_main_item_video_live_sub"
+                android:textColor="#BFFFFFFF"
+                android:textSize="11sp" />
+
+            <ImageView
+                android:layout_width="112dp"
+                android:layout_height="160dp"
+                android:layout_alignParentEnd="true"
+                android:layout_gravity="end"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/app_item_voice_room_end_bg"
+                android:importantForAccessibility="no" />
+
+            <ImageView
+                android:layout_width="58dp"
+                android:layout_height="24dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/app_bg_enter_live"
+                android:importantForAccessibility="no"
+                android:paddingStart="24dp"
+                android:paddingTop="7dp"
+                android:paddingEnd="24dp"
+                android:paddingBottom="7dp"
+                android:src="@drawable/app_ic_enter_live" />
+
+        </RelativeLayout>
+    </LinearLayout>
 </RelativeLayout>

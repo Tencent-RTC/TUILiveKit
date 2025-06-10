@@ -95,22 +95,9 @@ public interface ILiveService {
 
     void enableGravitySensor(boolean enable);
 
-    void updateVideoQualityEx(TUIRoomDefine.RoomVideoEncoderParams videoEncParam);
-
-    void updateVideoQuality(TUIRoomDefine.VideoQuality quality);
-
     void updateAudioQuality(TUIRoomDefine.AudioQuality quality);
 
     void setVideoResolutionMode(TUIRoomDefine.ResolutionMode resolutionMode);
-
-    void setBeautyStyle(int style);
-
-    void setBeautyLevel(float level);
-
-    void setWhitenessLevel(float level);
-
-    void setRuddyLevel(float level);
-
     /****************************************** IM Business *******************************************/
     void followUser(List<String> userIDList, V2TIMValueCallback<List<V2TIMFollowOperationResult>> callback);
 

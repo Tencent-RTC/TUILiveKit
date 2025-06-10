@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<resources>
+    <string name="livelist_loading">正在加载...</string>
+    <string name="livelist_no_more_data">没有更多数据了</string>
+    <string name="livelist_empty_data">请先开启一个直播间</string>
+    <string name="livelist_viewed_audience_count">%1$d人看过</string>
+    <string name="livelist_exit_float_window_tip">正在直播中，请稍后再试。</string>
+    <string name="livelist_click_enter_room">点击进入直播间</string>
+    <string name="livelist_click_live">直播中</string>
+</resources>

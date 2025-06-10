@@ -13,10 +13,15 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.livestream.view.BasicView;
+
+import java.util.Locale;
 
 @SuppressLint("ViewConstructor")
 public class AnchorDashboardView extends BasicView {
+
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getLiveStreamLogger("AnchorDashboardView");
 
     private TextView  mTextDuration;
     private TextView  mTextViewersCount;
@@ -65,6 +70,7 @@ public class AnchorDashboardView extends BasicView {
 
     @Override
     protected void refreshView() {
+        LOGGER.info("mDashboardState:" + mDashboardState);
         initDurationView();
         initViewersCountView();
         initMessageInfoView();
@@ -74,7 +80,7 @@ public class AnchorDashboardView extends BasicView {
     }
 
     private void initDurationView() {
-        mTextDuration.setText(formatSecondsTo00((long) mDashboardState.duration / 1000));
+        mTextDuration.setText(formatSecondsTo00((int) mDashboardState.duration / 1000));
     }
 
     private void initViewersCountView() {
@@ -111,22 +117,15 @@ public class AnchorDashboardView extends BasicView {
         });
     }
 
-    private String formatSecondsTo00(long timeSeconds) {
-        int second = (int) (timeSeconds % 60);
-        long minuteTemp = timeSeconds / 60;
-        String secondFormat = second >= 10 ? (second + "") : ("0" + second);
-        if (minuteTemp > 0) {
-            int minute = (int) (minuteTemp % 60);
-            long hour = minuteTemp / 60;
-            String s = minute >= 10 ? (minute + "") : ("0" + minute);
-            if (hour > 0) {
-                return (hour >= 10 ? (hour + "") : ("0" + hour)) + ":" + s + ":" + secondFormat;
-            } else {
-                return s + ":" + secondFormat;
-            }
-        } else {
-            return "00:" + secondFormat;
+    private String formatSecondsTo00(int timeSeconds) {
+        String timeString = "-- --";
+        if (timeSeconds > 0) {
+            int hour = timeSeconds / 3600;
+            int min = timeSeconds % 3600 / 60;
+            int sec = timeSeconds % 60;
+            timeString = String.format(Locale.getDefault(), "%02d:%02d:%02d", hour, min, sec);
         }
+        return timeString;
     }
 
     private void onViewersCountChange(int count) {

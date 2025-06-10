@@ -45,7 +45,7 @@ public class AnchorConnectingAdapter extends RecyclerView.Adapter<AnchorConnecti
     public void onBindViewHolder(@NonNull LinkMicViewHolder holder, int position) {
         CoHostState.ConnectionUser connectionUser = mData.get(position);
         if (TextUtils.isEmpty(connectionUser.userName)) {
-            holder.textName.setText(connectionUser.roomId);
+            holder.textName.setText(connectionUser.userId);
         } else {
             holder.textName.setText(connectionUser.userName);
         }
@@ -79,13 +79,11 @@ public class AnchorConnectingAdapter extends RecyclerView.Adapter<AnchorConnecti
     public static class LinkMicViewHolder extends RecyclerView.ViewHolder {
         public ImageFilterView imageHead;
         public TextView        textName;
-        public TextView        textLevel;
 
         public LinkMicViewHolder(View itemView) {
             super(itemView);
             imageHead = itemView.findViewById(R.id.iv_head);
             textName = itemView.findViewById(R.id.tv_name);
-            textLevel = itemView.findViewById(R.id.tv_level);
         }
     }
 }

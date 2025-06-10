@@ -69,7 +69,7 @@ public class AudienceListPanelAdapter extends RecyclerView.Adapter<AudienceListP
 
         String selfUserId = TUIRoomEngine.getSelfInfo().userId;
         if (!TextUtils.isEmpty(selfUserId) && selfUserId.equals(mAudienceListState.ownerId)) {
-            holder.more.setVisibility(View.VISIBLE);
+            holder.more.setVisibility(mOnItemClickListener == null ? View.GONE : View.VISIBLE);
         } else {
             holder.more.setVisibility(View.GONE);
         }

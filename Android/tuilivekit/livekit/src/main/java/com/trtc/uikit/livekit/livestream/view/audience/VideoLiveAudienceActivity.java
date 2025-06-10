@@ -3,6 +3,7 @@ package com.trtc.uikit.livekit.livestream.view.audience;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.View;
 import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
@@ -31,6 +32,7 @@ public class VideoLiveAudienceActivity extends FullScreenActivity implements Vid
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(null);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         String roomId = getIntent().getStringExtra(INTENT_KEY_ROOM_ID);
         setContentView(R.layout.livekit_activity_video_live_audience);
         FragmentManager fragmentManager = getSupportFragmentManager();

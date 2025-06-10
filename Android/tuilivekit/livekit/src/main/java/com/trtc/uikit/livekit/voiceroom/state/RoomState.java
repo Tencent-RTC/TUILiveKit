@@ -11,11 +11,13 @@ import java.util.Set;
 
 public class RoomState {
     public String                                  roomId        = "";
+    public TUIRoomDefine.RoomInfo                  roomInfo      = new TUIRoomDefine.RoomInfo();
     public long                                    createTime    = 0;
-    public UserState.UserInfo                      ownerInfo     = new UserState.UserInfo();
+    public TUIRoomDefine.UserInfo                  ownerInfo     = new TUIRoomDefine.UserInfo();
     public MutableLiveData<String>                 roomName      = new MutableLiveData<>("");
     public MutableLiveData<String>                 coverURL      = new MutableLiveData<>(Constants.DEFAULT_COVER_URL);
-    public MutableLiveData<String>                 backgroundURL = new MutableLiveData<>(Constants.DEFAULT_BACKGROUND_URL);
+    public MutableLiveData<String>                 backgroundURL =
+            new MutableLiveData<>(Constants.DEFAULT_BACKGROUND_URL);
     public MutableLiveData<TUIRoomDefine.SeatMode> seatMode      =
             new MutableLiveData<>(TUIRoomDefine.SeatMode.FREE_TO_TAKE);
     public MutableLiveData<Integer>                userCount     = new MutableLiveData<>(0);
@@ -45,6 +47,7 @@ public class RoomState {
         this.seatMode.setValue(roomInfo.seatMode);
         this.ownerInfo.userId = roomInfo.ownerId;
         this.maxSeatCount.setValue(roomInfo.maxSeatCount);
+        this.roomInfo = roomInfo;
     }
 
     public enum LiveStatus {
@@ -90,7 +93,8 @@ public class RoomState {
     }
 
     public static class LiveExtraInfo {
-        public MutableLiveData<LiveStreamPrivacyStatus> liveMode         = new MutableLiveData<>(LiveStreamPrivacyStatus.PUBLIC);
+        public MutableLiveData<LiveStreamPrivacyStatus> liveMode         =
+                new MutableLiveData<>(LiveStreamPrivacyStatus.PUBLIC);
         public int                                      maxAudienceCount = 0;
         public int                                      messageCount     = 0;
         public int                                      giftIncome       = 0;

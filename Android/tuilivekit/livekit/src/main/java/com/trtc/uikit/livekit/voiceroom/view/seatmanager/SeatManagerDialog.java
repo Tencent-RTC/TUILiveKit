@@ -20,7 +20,7 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
-import com.trtc.uikit.livekit.voiceroom.manager.api.Logger;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
 import com.trtc.uikit.livekit.voiceroom.state.SeatState;
 import com.trtc.uikit.livekit.voiceroomcore.SeatGridView;
@@ -29,7 +29,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 public class SeatManagerDialog extends PopupDialog {
-    private static final String FILE = "SeatManagerDialog";
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getVoiceRoomLogger("SeatManagerDialog");
 
     private final Context          mContext;
     private final VoiceRoomManager mVoiceRoomManager;
@@ -155,7 +155,8 @@ public class SeatManagerDialog extends PopupDialog {
 
 
     private void initNeedRequest() {
-        boolean needRequest = mVoiceRoomManager.getRoomState().seatMode.getValue() == TUIRoomDefine.SeatMode.APPLY_TO_TAKE;
+        boolean needRequest =
+                mVoiceRoomManager.getRoomState().seatMode.getValue() == TUIRoomDefine.SeatMode.APPLY_TO_TAKE;
         mSwitchNeedRequest.setChecked(needRequest);
         mSwitchNeedRequest.setOnCheckedChangeListener((compoundButton, enable) -> onSeatModeClicked(enable));
     }
@@ -217,7 +218,7 @@ public class SeatManagerDialog extends PopupDialog {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                Logger.error(FILE, "responseSeatInvitation failed, error: " + error + ", message: " + message);
+                LOGGER.error("responseSeatInvitation failed, error: " + error + ", message: " + message);
                 ErrorLocalized.onError(error);
             }
         });

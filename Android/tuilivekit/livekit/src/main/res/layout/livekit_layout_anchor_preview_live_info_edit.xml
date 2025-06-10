@@ -71,7 +71,7 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_marginStart="6dp"
-                android:background="@drawable/livekit_live_stream_edit_icon"
+                android:background="@drawable/anchor_prepare_live_stream_edit_icon"
                 android:importantForAccessibility="no"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -99,7 +99,7 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_gravity="center_vertical"
-                android:background="@drawable/livekit_live_stream_privacy_mode"
+                android:background="@drawable/anchor_prepare_live_stream_privacy_mode"
                 android:importantForAccessibility="no" />
 
             <TextView

@@ -2,7 +2,6 @@ package com.trtc.uikit.livekit.livestream.manager.module;
 
 import com.trtc.uikit.livekit.livestream.manager.api.ILiveService;
 import com.trtc.uikit.livekit.livestream.state.BattleState;
-import com.trtc.uikit.livekit.livestream.state.BeautyState;
 import com.trtc.uikit.livekit.livestream.state.CoGuestState;
 import com.trtc.uikit.livekit.livestream.state.CoHostState;
 import com.trtc.uikit.livekit.livestream.state.DashboardState;
@@ -17,9 +16,8 @@ public abstract class BaseManager {
     protected CoGuestState   mCoGuestState;
     protected CoHostState    mCoHostState;
     protected UserState      mUserState;
-    protected MediaState     mMediaState;
-    protected BeautyState    mBeautyState;
-    protected BattleState    mBattleState;
+    protected MediaState       mMediaState;
+    protected BattleState      mBattleState;
     protected DashboardState mDashboardState;
     protected ILiveService   mLiveService;
 
@@ -29,7 +27,6 @@ public abstract class BaseManager {
         mCoGuestState = mState.coGuestState;
         mUserState = mState.userState;
         mMediaState = mState.mediaState;
-        mBeautyState = mState.beautyState;
         mCoHostState = mState.coHostState;
         mBattleState = mState.battleState;
         mDashboardState = mState.dashboardState;

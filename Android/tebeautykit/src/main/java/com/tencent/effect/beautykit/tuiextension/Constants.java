@@ -9,6 +9,7 @@ public class Constants {
     public static final String METHOD_PROCESS_VIDEO_FRAME = "processVideoFrame";
     public static final String METHOD_DESTROY_BEAUTY_KIT  = "destroyBeautyKit";
     public static final String METHOD_CHECK_RESOURCE      = "checkResource";
+    public static final String METHOD_EXPORT_PARAM        = "exportParam";
     public static final String NOTIFY_START_ACTIVITY      = "onStartActivityNotifyEvent";
     public static final String METHOD_ACTIVITY_RESULT     = "onActivityResult";
     public static final String PARAM_BEAUTY_PANEL         = "beautyPanel";
@@ -19,4 +20,5 @@ public class Constants {
     public static final String PARAM_NAME_SRC_TEXTURE_ID  = "srcTextureId";
     public static final String PARAM_CONTEXT              = "context";
     public static final String PARAM_BEAUTY_VERSION       = "version";
+    public static final String PARAM_LAST_PARAM_LIST      = "lastParamList";
 }

@@ -1,5 +1,6 @@
 package com.trtc.uikit.livekit.livestream.view.anchor;
 
+import static android.app.Activity.RESULT_OK;
 import static com.trtc.uikit.livekit.component.giftaccess.service.GiftConstants.GIFT_COUNT;
 import static com.trtc.uikit.livekit.component.giftaccess.service.GiftConstants.GIFT_ICON_URL;
 import static com.trtc.uikit.livekit.component.giftaccess.service.GiftConstants.GIFT_NAME;
@@ -13,12 +14,12 @@ import static com.trtc.uikit.livekit.livestream.manager.Constants.EVENT_SUB_KEY_
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -38,25 +39,28 @@ import com.tencent.qcloud.tuicore.TUIConstants;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
 import com.trtc.tuikit.common.system.ContextProvider;
+import com.trtc.tuikit.common.util.ScreenUtil;
 import com.trtc.uikit.component.barrage.BarrageInputView;
 import com.trtc.uikit.component.barrage.BarrageStreamView;
 import com.trtc.uikit.component.barrage.store.model.Barrage;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.Constants;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
-import com.trtc.uikit.livekit.common.utils.LiveCoreLogger;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
+import com.trtc.uikit.livekit.common.ui.RoundFrameLayout;
 import com.trtc.uikit.livekit.component.audiencelist.AudienceListView;
 import com.trtc.uikit.livekit.component.floatwindow.service.FloatWindowManager;
 import com.trtc.uikit.livekit.component.gift.GiftPlayView;
+import com.trtc.uikit.livekit.component.gift.store.model.Gift;
+import com.trtc.uikit.livekit.component.gift.store.model.GiftUser;
 import com.trtc.uikit.livekit.component.giftaccess.service.GiftCacheService;
 import com.trtc.uikit.livekit.component.giftaccess.store.GiftStore;
 import com.trtc.uikit.livekit.component.giftaccess.view.BarrageViewTypeDelegate;
 import com.trtc.uikit.livekit.component.giftaccess.view.GiftBarrageAdapter;
-import com.trtc.uikit.livekit.component.gift.store.model.Gift;
-import com.trtc.uikit.livekit.component.gift.store.model.GiftUser;
-import com.trtc.uikit.livekit.component.roominfo.RoomInfoView;
+import com.trtc.uikit.livekit.component.roominfo.LiveInfoView;
+import com.trtc.uikit.livekit.features.anchorprepare.AnchorPrepareView;
+import com.trtc.uikit.livekit.features.anchorprepare.AnchorPrepareViewDefine.LiveStreamPrivacyStatus;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
-import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestream.manager.module.DashboardManager;
 import com.trtc.uikit.livekit.livestream.manager.observer.LiveBattleManagerObserver;
 import com.trtc.uikit.livekit.livestream.manager.observer.LiveStreamObserver;
@@ -71,14 +75,13 @@ import com.trtc.uikit.livekit.livestream.state.UserState;
 import com.trtc.uikit.livekit.livestream.view.BasicView;
 import com.trtc.uikit.livekit.livestream.view.VideoLiveKitImpl;
 import com.trtc.uikit.livekit.livestream.view.anchor.dashboard.AnchorDashboardView;
-import com.trtc.uikit.livekit.livestream.view.anchor.preview.LiveInfoEditView;
-import com.trtc.uikit.livekit.livestream.view.anchor.preview.PreviewFunctionView;
 import com.trtc.uikit.livekit.livestream.view.anchor.pushing.EndLiveStreamDialog;
 import com.trtc.uikit.livekit.livestream.view.anchor.pushing.battle.AnchorEndBattleDialog;
 import com.trtc.uikit.livekit.livestream.view.anchor.pushing.battle.BattleCountdownDialog;
 import com.trtc.uikit.livekit.livestream.view.anchor.pushing.coguest.AnchorCoGuestManageDialog;
 import com.trtc.uikit.livekit.livestream.view.anchor.pushing.coguest.AnchorManagerDialog;
 import com.trtc.uikit.livekit.livestream.view.anchor.pushing.coguest.ApplyCoGuestFloatView;
+import com.trtc.uikit.livekit.livestream.view.anchor.pushing.coguest.CoGuestIconView;
 import com.trtc.uikit.livekit.livestream.view.anchor.pushing.cohost.AnchorCoHostManageDialog;
 import com.trtc.uikit.livekit.livestream.view.anchor.pushing.cohost.StandardDialog;
 import com.trtc.uikit.livekit.livestream.view.anchor.pushing.settings.SettingsPanelDialog;
@@ -101,26 +104,23 @@ import java.util.Objects;
 
 @SuppressLint("ViewConstructor")
 public class AnchorView extends BasicView implements ITUINotification {
-    private static final String TAG = "AnchorView";
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getLiveStreamLogger("AnchorView");
 
     private       LiveCoreView                           mLiveCoreView;
     private       FrameLayout                            mLayoutPreview;
+    private       AnchorPrepareView                      mAnchorPrepareView;
     private       FrameLayout                            mLayoutPushing;
     private       AnchorDashboardView                    mAnchorDashboardView;
     private       View                                   mBackView;
-    private       LiveInfoEditView                       mLiveInfoEditView;
-    private       PreviewFunctionView                    mPreviewFunctionView;
-    private       RelativeLayout                         mLayoutAnchorPreviewMask;
     private       RelativeLayout                         mLayoutAnchorLivingTopMask;
     private       RelativeLayout                         mLayoutAnchorLivingBottomMask;
-    private       Button                                 mButtonStartLive;
     private       ImageView                              mImageEndLive;
     private       ImageView                              mImageFloatWindow;
     private       View                                   mViewCoGuest;
     private       View                                   mViewCoHost;
     private       View                                   mViewBattle;
     private       AudienceListView                       mAudienceListView;
-    private       RoomInfoView                           mRoomInfoView;
+    private       LiveInfoView                           mRoomInfoView;
     private       BarrageInputView                       mBarrageInputView;
     private       BarrageStreamView                      mBarrageStreamView;
     private       GiftPlayView                           mGiftPlayView;
@@ -131,14 +131,18 @@ public class AnchorView extends BasicView implements ITUINotification {
     private       AnchorManagerDialog                    mAnchorManagerDialog;
     private       UserManagerDialog                      mUserManagerDialog;
     private       TUILiveRoomAnchorFragment.RoomBehavior mRoomBehavior;
-    private       boolean                                mIsExit                         = false;
     private       boolean                                mUseCachedCoreView;
+    private       LiveStreamObserver                     mLiveStreamObserver;
+    private       LiveBattleManagerObserver              mLiveBattleManagerObserver;
+    private       AnchorEndBattleDialog                  mAnchorEndBattleDialog;
     private final Observer<LiveStatus>                   mLiveStatusObserver             =
             this::onLiveStatusChange;
     private final Observer<ConnectionUser>               mReceivedConnectRequestObserver =
             this::onReceivedCoHostRequest;
     private final Observer<List<ConnectionUser>>         mConnectedObserver              =
             this::onConnectedUserChange;
+    private final Observer<List<BattleState.BattleUser>> mBattleUserObserver             =
+            this::onBattleUserChange;
     private final Observer<List<CoGuestState.SeatInfo>>  mCoGuestUserObserver            =
             this::onCoGuestUserChange;
     private final Observer<Boolean>                      mBattleStartObserver            =
@@ -151,6 +155,8 @@ public class AnchorView extends BasicView implements ITUINotification {
             this::onReceivedBattleRequestChange;
     private final Observer<Boolean>                      mInWaitingObserver              =
             this::onInWaitingChange;
+    private final Observer<Boolean>                      mStartLiveClickObserver         =
+            this::onStartLiveClick;
 
     public AnchorView(@NonNull Context context) {
         this(context, null);
@@ -194,18 +200,15 @@ public class AnchorView extends BasicView implements ITUINotification {
         mLayoutPushing = findViewById(R.id.fl_pushing);
         mAnchorDashboardView = findViewById(R.id.anchor_dashboard_view);
         mBackView = findViewById(R.id.iv_back);
-        mLiveInfoEditView = findViewById(R.id.rl_live_info_edit_view);
-        mPreviewFunctionView = findViewById(R.id.fl_preview_function);
-        mLayoutAnchorPreviewMask = findViewById(R.id.rl_anchor_preview_mask);
         mLayoutAnchorLivingTopMask = findViewById(R.id.rl_anchor_living_top_mask);
         mLayoutAnchorLivingBottomMask = findViewById(R.id.rl_anchor_living_bottom_mask);
         mAudienceListView = findViewById(R.id.audience_list_view);
         mImageEndLive = findViewById(R.id.iv_end_live_stream);
         mImageFloatWindow = findViewById(R.id.iv_float_window);
-        mButtonStartLive = findViewById(R.id.btn_start_live);
-        mViewCoGuest = findViewById(R.id.v_co_guest);
-        mViewCoHost = findViewById(R.id.v_co_host);
-        mViewBattle = findViewById(R.id.v_battle);
+        mAnchorPrepareView = findViewById(R.id.apv_prepare_view);
+        mViewCoGuest = findViewById(R.id.ll_co_guest);
+        mViewCoHost = findViewById(R.id.ll_co_host);
+        mViewBattle = findViewById(R.id.ll_battle);
         mBarrageInputView = findViewById(R.id.barrage_input_view);
         mBarrageStreamView = findViewById(R.id.barrage_stream_view);
         mRoomInfoView = findViewById(R.id.room_info_view);
@@ -219,7 +222,8 @@ public class AnchorView extends BasicView implements ITUINotification {
             mUseCachedCoreView = true;
             FloatWindowManager.getInstance().setCoreView(null);
         }
-        FrameLayout frameLayout = findViewById(R.id.lsv_video_view_container);
+        RoundFrameLayout frameLayout = findViewById(R.id.lsv_video_view_container);
+        frameLayout.setRadius(ScreenUtil.dip2px(16));
         frameLayout.addView(mLiveCoreView);
     }
 
@@ -227,12 +231,10 @@ public class AnchorView extends BasicView implements ITUINotification {
     protected void refreshView() {
         initBackView();
         initLiveCoreView();
-        initComponentView();
     }
 
     private void initBackView() {
         mBackView.setOnClickListener(v -> {
-            mIsExit = true;
             ((Activity) getContext()).finish();
         });
     }
@@ -259,8 +261,10 @@ public class AnchorView extends BasicView implements ITUINotification {
     private void initLiveCoreView() {
         setComponent();
         if (!mUseCachedCoreView) {
-            mLiveCoreView.registerConnectionObserver(new LiveStreamObserver(mLiveManager));
-            mLiveCoreView.registerBattleObserver(new LiveBattleManagerObserver(mLiveManager));
+            mLiveStreamObserver = new LiveStreamObserver(mLiveManager);
+            mLiveBattleManagerObserver = new LiveBattleManagerObserver(mLiveManager);
+            mLiveCoreView.registerConnectionObserver(mLiveStreamObserver);
+            mLiveCoreView.registerBattleObserver(mLiveBattleManagerObserver);
         }
         mLiveCoreView.setVideoViewAdapter(new LiveCoreViewDefine.VideoViewAdapter() {
             @Override
@@ -278,7 +282,7 @@ public class AnchorView extends BasicView implements ITUINotification {
             @Override
             public void updateCoGuestView(View coGuestView, UserInfo userInfo,
                                           List<LiveCoreViewDefine.UserInfoModifyFlag> modifyFlag) {
-                LiveCoreLogger.info("Anchor initLiveCoreView updateCoGuestView: userInfo = " + new Gson().toJson(userInfo)
+                LOGGER.info("updateCoGuestView: userInfo = " + new Gson().toJson(userInfo)
                         + ",modifyFlag = " + new Gson().toJson(modifyFlag) + ",coGuestView = " + coGuestView);
             }
 
@@ -292,7 +296,7 @@ public class AnchorView extends BasicView implements ITUINotification {
             @Override
             public void updateCoHostView(View coHostView, LiveCoreViewDefine.CoHostUser coHostUser,
                                          List<LiveCoreViewDefine.UserInfoModifyFlag> modifyFlag) {
-                LiveCoreLogger.info("Anchor initLiveCoreView updateCoHostView: coHostUser = " + new Gson().toJson(coHostUser)
+                LOGGER.info("updateCoHostView: coHostUser = " + new Gson().toJson(coHostUser)
                         + ",modifyFlag = " + new Gson().toJson(modifyFlag) + ",coHostView = " + coHostView);
             }
 
@@ -322,26 +326,22 @@ public class AnchorView extends BasicView implements ITUINotification {
             }
         });
 
-        boolean isFrontCamera = Boolean.TRUE.equals(mLiveCoreView.getCoreState().mediaState.isFrontCamera.getValue());
-        mLiveCoreView.startCamera(isFrontCamera, new TUIRoomDefine.ActionCallback() {
-            @Override
-            public void onSuccess() {
-                mLiveCoreView.startMicrophone(null);
-            }
-
-            @Override
-            public void onError(TUICommonDefine.Error error, String message) {
-                mLiveCoreView.startMicrophone(null);
-            }
-        });
         if (mRoomBehavior == TUILiveRoomAnchorFragment.RoomBehavior.ENTER_ROOM) {
             mLayoutPushing.setVisibility(VISIBLE);
             mUserManager.initSelfUserData();
             mLiveCoreView.joinLiveStream(mRoomState.roomId, new GetRoomInfoCallback() {
                 @Override
                 public void onSuccess(RoomInfo roomInfo) {
-                    mLiveManager.getRoomManager().updateLiveStatus(RoomState.LiveStatus.PUSHING);
+                    Activity activity = (Activity) mContext;
+                    if (activity.isFinishing() || activity.isDestroyed()) {
+                        LOGGER.warn("activity is exit, stopLiveStream");
+                        mLiveCoreView.stopLiveStream(null);
+                        mLiveCoreView.unregisterConnectionObserver(mLiveStreamObserver);
+                        mLiveCoreView.unregisterBattleObserver(mLiveBattleManagerObserver);
+                        return;
+                    }
                     mLiveManager.getRoomManager().updateRoomState(roomInfo);
+                    mLiveManager.getRoomManager().updateLiveStatus(RoomState.LiveStatus.PUSHING);
                     mLiveManager.getRoomManager().updateLiveInfo();
                     mUserManager.getAudienceList();
                     mUserManager.updateOwnerUserInfo();
@@ -351,7 +351,6 @@ public class AnchorView extends BasicView implements ITUINotification {
                 @Override
                 public void onError(TUICommonDefine.Error error, String message) {
                     ErrorLocalized.onError(error);
-                    removeAllViews();
                     if (mContext instanceof Activity) {
                         ((Activity) mContext).finish();
                     }
@@ -367,7 +366,7 @@ public class AnchorView extends BasicView implements ITUINotification {
             jsonObject.put("component", Constants.DATA_REPORT_COMPONENT_LIVE_ROOM);
             LiveCoreView.callExperimentalAPI(jsonObject.toString());
         } catch (JSONException e) {
-            LiveCoreLogger.error("dataReport:" + e);
+            LOGGER.error("dataReport:" + Log.getStackTraceString(e));
         }
     }
 
@@ -386,8 +385,8 @@ public class AnchorView extends BasicView implements ITUINotification {
         dashboardManager.updateDuration(System.currentTimeMillis() - mRoomState.createTime);
         dashboardManager.updateLikeNumber(mGiftPlayView.getLikeCount());
         dashboardManager.updateMessageCount(mBarrageStreamView.getBarrageCount());
-        mLayoutPushing.removeAllViews();
-        mLayoutPreview.removeAllViews();
+        mLayoutPushing.setVisibility(GONE);
+        mLayoutPreview.setVisibility(GONE);
         mAnchorDashboardView.setVisibility(VISIBLE);
         mAnchorDashboardView.init(mLiveManager);
     }
@@ -396,16 +395,15 @@ public class AnchorView extends BasicView implements ITUINotification {
         mLayoutPushing.setVisibility(GONE);
         mAnchorDashboardView.setVisibility(GONE);
         mLayoutPreview.setVisibility(VISIBLE);
-
-        initStartLiveView();
-        initLiveInfoEditView();
-        initPreviewFunctionView();
+        mAnchorPrepareView.init(mLiveManager.getRoomState().roomId, mLiveCoreView);
+        mAnchorPrepareView.getState().startLiveClick.observeForever(mStartLiveClickObserver);
     }
 
     private void initPushingStatus() {
         mLayoutPreview.setVisibility(GONE);
         mAnchorDashboardView.setVisibility(GONE);
         mLayoutPushing.setVisibility(VISIBLE);
+
 
         initRoomInfoView();
         initAudienceListView();
@@ -422,7 +420,7 @@ public class AnchorView extends BasicView implements ITUINotification {
     }
 
     private void initSettingsPanel() {
-        findViewById(R.id.v_settings).setOnClickListener(view -> {
+        findViewById(R.id.ll_more).setOnClickListener(view -> {
             if (!view.isEnabled()) {
                 return;
             }
@@ -433,46 +431,6 @@ public class AnchorView extends BasicView implements ITUINotification {
         });
     }
 
-    private void initStartLiveView() {
-        mButtonStartLive.setOnClickListener((View view) -> {
-            if (!view.isEnabled()) {
-                return;
-            }
-            view.setEnabled(false);
-            RoomInfo roomInfo = new RoomInfo();
-            roomInfo.roomId = mRoomState.roomId;
-            roomInfo.name = mRoomState.roomName.getValue();
-            roomInfo.maxSeatCount = 9;
-            mUserManager.initSelfUserData();
-            mLayoutPreview.setVisibility(GONE);
-            mLayoutPushing.setVisibility(VISIBLE);
-            mLiveCoreView.startLiveStream(roomInfo, new GetRoomInfoCallback() {
-                @Override
-                public void onSuccess(RoomInfo roomInfo) {
-                    if (mIsExit) {
-                        mLiveCoreView.stopLiveStream(null);
-                        return;
-                    }
-                    mLiveManager.getRoomManager().updateLiveStatus(RoomState.LiveStatus.PUSHING);
-                    mLiveManager.getRoomManager().updateRoomState(roomInfo);
-                    mLiveManager.getRoomManager().updateLiveInfo();
-                    mUserManager.getAudienceList();
-                    mUserManager.updateOwnerUserInfo();
-                    mCoGuestManager.getSeatList();
-                    showAlertUserLiveTips();
-                }
-
-                @Override
-                public void onError(TUICommonDefine.Error error, String message) {
-                    LiveStreamLog.error(TAG + " startLiveStream failed:error:" + error + ",errorCode:" + error.getValue() + "message:" + message);
-                    ErrorLocalized.onError(error);
-                    mLiveManager.getRoomManager().updateLiveStatus(RoomState.LiveStatus.NONE);
-                    view.setEnabled(true);
-                }
-            });
-        });
-    }
-
     private void showAlertUserLiveTips() {
         try {
             Map<String, Object> map = new HashMap<>();
@@ -480,20 +438,12 @@ public class AnchorView extends BasicView implements ITUINotification {
             TUICore.notifyEvent(TUIConstants.Privacy.EVENT_ROOM_STATE_CHANGED,
                     TUIConstants.Privacy.EVENT_SUB_KEY_ROOM_STATE_START, map);
         } catch (Exception e) {
-            Log.d(TAG, "showAlertUserLiveTips exception:" + e.getMessage());
+            LOGGER.error("showAlertUserLiveTips exception:" + e.getMessage());
         }
     }
 
-    private void initLiveInfoEditView() {
-        mLiveInfoEditView.init(mLiveManager);
-    }
-
-    private void initPreviewFunctionView() {
-        mPreviewFunctionView.init(mLiveManager, mLiveCoreView);
-    }
-
     private void initAudienceListView() {
-        mAudienceListView.init(mRoomState.roomId);
+        mAudienceListView.init(mRoomState.roomInfo);
         mAudienceListView.setOnUserItemClickListener(userInfo -> {
             if (mUserManagerDialog == null) {
                 mUserManagerDialog = new UserManagerDialog(mContext, mLiveManager);
@@ -522,7 +472,7 @@ public class AnchorView extends BasicView implements ITUINotification {
 
     private void initRoomInfoView() {
         boolean enableFollow = VideoLiveKitImpl.createInstance(mContext).isEnableFollowFeature();
-        mRoomInfoView.init(mRoomState.roomId, enableFollow);
+        mRoomInfoView.init(mRoomState.roomInfo, enableFollow);
     }
 
     private void initBarrageInputView() {
@@ -563,17 +513,28 @@ public class AnchorView extends BasicView implements ITUINotification {
 
     private void initCoHostView() {
         mViewCoHost.setOnClickListener((view) -> {
+            if (!view.isEnabled()) {
+                return;
+            }
+            view.setEnabled(false);
             AnchorCoHostManageDialog dialog = new AnchorCoHostManageDialog(mContext, mLiveManager, mLiveCoreView);
+            dialog.setOnDismissListener(dialog1 -> view.setEnabled(true));
             dialog.show();
         });
     }
 
     private void initBattleView() {
         mViewBattle.setOnClickListener(view -> {
-            if (Boolean.TRUE.equals(mBattleState.mIsBattleRunning.getValue())) {
-                AnchorEndBattleDialog dialog = new AnchorEndBattleDialog(mContext, mLiveManager, mLiveCoreView);
-                dialog.show();
+            if (Boolean.TRUE.equals(mBattleState.mIsBattleRunning.getValue()) && mBattleManager.isSelfInBattle()) {
+                if (mAnchorEndBattleDialog == null) {
+                    mAnchorEndBattleDialog = new AnchorEndBattleDialog(mContext, mLiveManager, mLiveCoreView);
+                }
+                mAnchorEndBattleDialog.show();
             } else {
+                if (Boolean.TRUE.equals(mBattleState.mIsOnDisplayResult.getValue()) || !mCoHostManager.isSelfInCoHost()) {
+                    LOGGER.warn("can not requestBattle");
+                    return;
+                }
                 List<String> list = new ArrayList<>();
                 String selfId = mLiveManager.getUserState().selfInfo.userId;
                 for (CoHostState.ConnectionUser user : mCoHostState.connectedUsers.getValue()) {
@@ -581,6 +542,7 @@ public class AnchorView extends BasicView implements ITUINotification {
                         list.add(user.userId);
                     }
                 }
+
                 TUILiveBattleManager.BattleConfig battleConfig = new TUILiveBattleManager.BattleConfig();
                 battleConfig.duration = BattleState.BATTLE_DURATION;
                 battleConfig.needResponse = true;
@@ -594,7 +556,7 @@ public class AnchorView extends BasicView implements ITUINotification {
 
                             @Override
                             public void onError(TUICommonDefine.Error error, String message) {
-                                LiveStreamLog.error(TAG + " requestBattle failed:error:" + error + ",errorCode:" + error.getValue() + "message:" + message);
+                                LOGGER.error("requestBattle failed:error:" + error + ",errorCode:" + error.getValue() + "message:" + message);
                                 ErrorLocalized.onError(error);
                             }
                         });
@@ -647,6 +609,7 @@ public class AnchorView extends BasicView implements ITUINotification {
     protected void addObserver() {
         mRoomState.liveStatus.observeForever(mLiveStatusObserver);
         mCoHostState.connectedUsers.observeForever(mConnectedObserver);
+        mBattleState.mBattledUsers.observeForever(mBattleUserObserver);
         mCoHostState.receivedConnectionRequest.observeForever(mReceivedConnectRequestObserver);
         mBattleState.mReceivedBattleRequest.observeForever(mReceivedBattleRequestObserver);
         mBattleState.mIsBattleRunning.observeForever(mBattleStartObserver);
@@ -661,6 +624,7 @@ public class AnchorView extends BasicView implements ITUINotification {
     protected void removeObserver() {
         mRoomState.liveStatus.removeObserver(mLiveStatusObserver);
         mCoHostState.connectedUsers.removeObserver(mConnectedObserver);
+        mBattleState.mBattledUsers.removeObserver(mBattleUserObserver);
         mCoHostState.receivedConnectionRequest.removeObserver(mReceivedConnectRequestObserver);
         mBattleState.mReceivedBattleRequest.removeObserver(mReceivedBattleRequestObserver);
         mBattleState.mIsBattleRunning.removeObserver(mBattleStartObserver);
@@ -668,6 +632,9 @@ public class AnchorView extends BasicView implements ITUINotification {
         mBattleState.mIsOnDisplayResult.removeObserver(mBattleResultDisplayObserver);
         mUserState.enterUserInfo.removeObserver(mEnterUserObserver);
         mCoGuestState.connectedUserList.removeObserver(mCoGuestUserObserver);
+        if (mAnchorPrepareView != null && mAnchorPrepareView.getState() != null) {
+            mAnchorPrepareView.getState().startLiveClick.removeObserver(mStartLiveClickObserver);
+        }
         TUICore.unRegisterEvent(this);
     }
 
@@ -715,15 +682,12 @@ public class AnchorView extends BasicView implements ITUINotification {
 
     private void showMaskView(RoomState.LiveStatus liveStatus) {
         if (RoomState.LiveStatus.PREVIEWING == liveStatus) {
-            mLayoutAnchorPreviewMask.setVisibility(VISIBLE);
             mLayoutAnchorLivingTopMask.setVisibility(GONE);
             mLayoutAnchorLivingBottomMask.setVisibility(GONE);
         } else if (RoomState.LiveStatus.PUSHING == liveStatus || RoomState.LiveStatus.PLAYING == liveStatus) {
-            mLayoutAnchorPreviewMask.setVisibility(GONE);
             mLayoutAnchorLivingTopMask.setVisibility(VISIBLE);
             mLayoutAnchorLivingBottomMask.setVisibility(VISIBLE);
         } else {
-            mLayoutAnchorPreviewMask.setVisibility(GONE);
             mLayoutAnchorLivingTopMask.setVisibility(GONE);
             mLayoutAnchorLivingBottomMask.setVisibility(GONE);
         }
@@ -732,23 +696,26 @@ public class AnchorView extends BasicView implements ITUINotification {
     @SuppressLint("NotifyDataSetChanged")
     private void onConnectedUserChange(List<ConnectionUser> connectedList) {
         post(() -> {
-            enableView(mViewBattle, !connectedList.isEmpty());
+            updateBattleView();
             enableView(mViewCoGuest, connectedList.isEmpty());
-            MediaState.VideoEncParams.VideoEncType targetEncType = connectedList.size() >= 2
-                    ? MediaState.VideoEncParams.VideoEncType.SMALL
-                    : MediaState.VideoEncParams.VideoEncType.BIG;
-            mLiveManager.getMediaManager().changeVideoEncParams(targetEncType);
         });
+    }
+
+    private void onBattleUserChange(List<BattleState.BattleUser> userList) {
+        post(this::updateBattleView);
     }
 
     private void onCoGuestUserChange(List<CoGuestState.SeatInfo> seatList) {
         post(() -> {
             enableView(mViewCoHost, seatList.size() <= 1);
-
-            MediaState.VideoEncParams.VideoEncType targetEncType = seatList.size() >= 2
-                    ? MediaState.VideoEncParams.VideoEncType.SMALL
-                    : MediaState.VideoEncParams.VideoEncType.BIG;
-            mLiveManager.getMediaManager().changeVideoEncParams(targetEncType);
+            CoGuestIconView coGuestIconView = findViewById(R.id.co_guest_icon);
+            if (coGuestIconView != null) {
+                if (seatList.size() > 1) {
+                    coGuestIconView.startAnimation();
+                } else {
+                    coGuestIconView.stopAnimation();
+                }
+            }
         });
     }
 
@@ -777,7 +744,8 @@ public class AnchorView extends BasicView implements ITUINotification {
 
                 @Override
                 public void onError(TUICommonDefine.Error error, String message) {
-                    LiveStreamLog.error(TAG + " respondToBattle failed:error:" + error + ",errorCode:" + error.getValue() + "message:" + message);
+                    LOGGER.error("respondToBattle failed:error:" + error + ",errorCode:" + error.getValue() +
+                            "message:" + message);
                     ErrorLocalized.onError(error);
                 }
             });
@@ -795,7 +763,8 @@ public class AnchorView extends BasicView implements ITUINotification {
 
                 @Override
                 public void onError(TUICommonDefine.Error error, String message) {
-                    LiveStreamLog.error(TAG + " respondToBattle failed:error:" + error + ",errorCode:" + error.getValue() + "message:" + message);
+                    LOGGER.error("respondToBattle failed:error:" + error + ",errorCode:" + error.getValue() +
+                            "message:" + message);
                     ErrorLocalized.onError(error);
                 }
             });
@@ -817,6 +786,63 @@ public class AnchorView extends BasicView implements ITUINotification {
         }
     }
 
+    private void onStartLiveClick(Boolean isStart) {
+        if (!isStart) {
+            return;
+        }
+        mRoomManager.setLiveInfo(mAnchorPrepareView.getState().roomName.getValue(),
+                mAnchorPrepareView.getState().coverURL.getValue(),
+                mAnchorPrepareView.getState().liveMode.getValue() == LiveStreamPrivacyStatus.PUBLIC
+                        ? RoomState.LiveStreamPrivacyStatus.PUBLIC : RoomState.LiveStreamPrivacyStatus.PRIVACY);
+        RoomInfo roomInfo = new RoomInfo();
+        roomInfo.roomId = mRoomState.roomId;
+        roomInfo.name = mRoomState.roomName.getValue();
+        roomInfo.maxSeatCount = 9;
+        mUserManager.initSelfUserData();
+        mLayoutPreview.setVisibility(GONE);
+        mLayoutPushing.setVisibility(VISIBLE);
+        mLiveCoreView.startLiveStream(roomInfo, new GetRoomInfoCallback() {
+            @Override
+            public void onSuccess(RoomInfo roomInfo) {
+                Activity activity = (Activity) mContext;
+                if (activity.isFinishing() || activity.isDestroyed()) {
+                    LOGGER.warn("activity is exit, stopLiveStream");
+                    mLiveCoreView.stopLiveStream(null);
+                    mLiveCoreView.unregisterConnectionObserver(mLiveStreamObserver);
+                    mLiveCoreView.unregisterBattleObserver(mLiveBattleManagerObserver);
+                    return;
+                }
+                mLiveManager.getRoomManager().updateRoomState(roomInfo);
+                mLiveManager.getRoomManager().updateLiveStatus(RoomState.LiveStatus.PUSHING);
+                mLiveManager.getRoomManager().updateLiveInfo();
+                mUserManager.getAudienceList();
+                mUserManager.updateOwnerUserInfo();
+                mCoGuestManager.getSeatList();
+                showAlertUserLiveTips();
+            }
+
+            @Override
+            public void onError(TUICommonDefine.Error error, String message) {
+                LOGGER.error("startLiveStream failed:error:" + error + ",errorCode:" + error.getValue() +
+                        "message:" + message);
+                ErrorLocalized.onError(error);
+                mLiveManager.getRoomManager().updateLiveStatus(RoomState.LiveStatus.NONE);
+                if (error == TUICommonDefine.Error.SDK_NOT_INITIALIZED) {
+                    finishActivity();
+                }
+            }
+        });
+    }
+
+    private void finishActivity() {
+        if (mContext instanceof Activity) {
+            Activity activity = (Activity) mContext;
+            Intent intent = new Intent();
+            activity.setResult(RESULT_OK, intent);
+            activity.finish();
+        }
+    }
+
     private void onInWaitingChange(Boolean inWaiting) {
         if (Boolean.TRUE.equals(inWaiting)) {
             showBattleCountdownDialog();
@@ -827,7 +853,6 @@ public class AnchorView extends BasicView implements ITUINotification {
 
     private void onBattleStartChange(Boolean started) {
         if (Boolean.TRUE.equals(started)) {
-            mViewBattle.setBackgroundResource(R.drawable.livekit_function_battle_exit);
             for (BattleState.BattleUser user : mBattleState.mBattledUsers.getValue()) {
                 if (TextUtils.equals(mUserState.selfInfo.userId, user.userId)) {
                     enableView(mViewCoHost, false);
@@ -835,16 +860,33 @@ public class AnchorView extends BasicView implements ITUINotification {
                 }
             }
         } else if (Boolean.FALSE.equals(started)) {
-            mViewBattle.setBackgroundResource(R.drawable.livekit_function_battle);
             enableView(mViewCoHost, true);
+            if (mAnchorEndBattleDialog != null && mAnchorEndBattleDialog.isShowing()) {
+                mAnchorEndBattleDialog.dismiss();
+            }
         }
     }
 
     private void onBattleResultDisplay(Boolean onDisplay) {
-        if (Boolean.TRUE.equals(onDisplay)) {
-            enableView(mViewBattle, false);
-        } else if (Boolean.FALSE.equals(onDisplay)) {
-            enableView(mViewBattle, true);
+        post(this::updateBattleView);
+    }
+
+    private void updateBattleView() {
+        View battleIconView = mViewBattle.findViewById(R.id.v_battle_icon);
+        Boolean battleResultDisplay = mBattleState.mIsOnDisplayResult.getValue();
+        if (mCoHostManager.isSelfInCoHost()) {
+            if (mBattleManager.isSelfInBattle()) {
+                battleIconView.setBackgroundResource(R.drawable.livekit_function_battle_exit);
+            } else {
+                battleIconView.setBackgroundResource(R.drawable.livekit_function_battle);
+            }
+            if (Boolean.TRUE.equals(battleResultDisplay)) {
+                battleIconView.setBackgroundResource(R.drawable.livekit_function_battle_disable);
+            } else if (Boolean.FALSE.equals(battleResultDisplay)) {
+                battleIconView.setBackgroundResource(R.drawable.livekit_function_battle);
+            }
+        } else {
+            battleIconView.setBackgroundResource(R.drawable.livekit_function_battle_disable);
         }
     }
 
@@ -868,7 +910,7 @@ public class AnchorView extends BasicView implements ITUINotification {
     @Override
     public void onNotifyEvent(String key, String subKey, Map<String, Object> param) {
         if (TextUtils.equals(subKey, EVENT_SUB_KEY_SHOW_CO_GUEST_MANAGE_VIEW)) {
-            UserInfo userInfo = (UserInfo)param.get(EVENT_PARAMS_KEY_USER_INFO);
+            UserInfo userInfo = (UserInfo) param.get(EVENT_PARAMS_KEY_USER_INFO);
             showCoGuestManageDialog(userInfo);
         }
     }
