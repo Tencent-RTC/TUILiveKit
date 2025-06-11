@@ -200,5 +200,5 @@ class TUIBarrageCustomCell: UIView {
 }
 
 private extension String {
-    static let anchorText = localized("Anchor")
+    static let anchorText = internalLocalized("Anchor")
 }

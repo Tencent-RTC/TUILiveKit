@@ -10,7 +10,7 @@ import Combine
 import RTCCommon
 import RTCRoomEngine
 import ImSDK_Plus
-import TUILiveResources
+import TUILiveComponent
 
 enum UserManagePanelType {
     case messageAndKickOut

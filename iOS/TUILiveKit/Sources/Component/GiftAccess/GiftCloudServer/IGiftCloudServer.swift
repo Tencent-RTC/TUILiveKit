@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import TUIGift
+import TUILiveComponent
 
 protocol IGiftCloudServer {
     func rechargeBalance(callback: @escaping (TUIGiftServerError, Int) -> Void)

@@ -9,7 +9,6 @@ import Foundation
 import Combine
 import Kingfisher
 import RTCCommon
-import TUILiveResources
 import RTCRoomEngine
 
 public class LiveInfoView: UIView {

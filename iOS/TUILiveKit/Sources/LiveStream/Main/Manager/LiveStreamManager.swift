@@ -10,7 +10,7 @@ import Combine
 import RTCCommon
 import RTCRoomEngine
 import LiveStreamCore
-import TUILiveResources
+import TUILiveComponent
 
 typealias LSRoomStateUpdateClosure = (inout LSRoomState) -> Void
 typealias LSUserStateUpdateClosure = (inout LSUserState) -> Void

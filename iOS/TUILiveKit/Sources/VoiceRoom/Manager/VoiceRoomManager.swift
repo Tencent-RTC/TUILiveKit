@@ -8,7 +8,7 @@
 import RTCRoomEngine
 import RTCCommon
 import Combine
-import TUILiveResources
+import TUILiveComponent
 import LiveStreamCore
 
 protocol VoiceRoomManagerProvider: NSObject {

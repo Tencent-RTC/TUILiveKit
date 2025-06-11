@@ -10,7 +10,7 @@ import Combine
 import TUICore
 import LiveStreamCore
 import RTCRoomEngine
-import TUILiveResources
+import TUILiveComponent
 
 class VRSeatInvitationPanel: RTCBaseView {
     private let manager: VoiceRoomManager

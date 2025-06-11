@@ -9,7 +9,7 @@ import Foundation
 import RTCCommon
 import RTCRoomEngine
 import Combine
-import TUILiveResources
+import TUILiveComponent
 
 class LSRoomManager {
     private let observerState = ObservableState<LSRoomState>(initialState: LSRoomState())

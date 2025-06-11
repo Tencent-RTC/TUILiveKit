@@ -9,7 +9,7 @@ import Foundation
 import RTCRoomEngine
 import RTCCommon
 import Combine
-import TUILiveResources
+import TUILiveComponent
 
 class LSCoHostManager {
 

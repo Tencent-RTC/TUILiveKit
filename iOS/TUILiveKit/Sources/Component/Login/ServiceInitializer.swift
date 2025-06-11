@@ -8,7 +8,7 @@
 import Foundation
 import TUICore
 import RTCRoomEngine
-import TUILiveResources
+import TUILiveComponent
 
 extension NSObject {
     @objc class func liveKitExtensionLoad() {

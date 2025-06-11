@@ -9,7 +9,7 @@ import UIKit
 import ESPullToRefresh
 import RTCCommon
 import RTCRoomEngine
-import TUILiveResources
+import TUILiveComponent
 
 public class LiveListView: UIView {
     public weak var adapter: LiveListViewAdapter?

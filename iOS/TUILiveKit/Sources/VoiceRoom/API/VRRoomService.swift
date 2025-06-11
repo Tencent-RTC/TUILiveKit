@@ -7,7 +7,7 @@
 
 import RTCRoomEngine
 import Combine
-import TUILiveResources
+import TUILiveComponent
 
 // TODO: - Dependency management, needs to consolidate RoomEngine instances.
 class VRRoomService: BaseServiceProtocol {

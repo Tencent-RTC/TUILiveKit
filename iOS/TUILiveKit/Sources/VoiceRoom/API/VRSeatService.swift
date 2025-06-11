@@ -7,7 +7,7 @@
 
 import RTCRoomEngine
 import Combine
-import TUILiveResources
+import TUILiveComponent
 
 class VRSeatService: BaseServiceProtocol {
     var roomEngine: TUIRoomEngine

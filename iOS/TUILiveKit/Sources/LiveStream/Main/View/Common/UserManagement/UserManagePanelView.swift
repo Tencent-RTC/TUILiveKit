@@ -10,7 +10,7 @@ import LiveStreamCore
 import RTCCommon
 import Combine
 import ImSDK_Plus
-import TUILiveResources
+import TUILiveComponent
 
 class UserManagePanelView: RTCBaseView {
     private let manager: LiveStreamManager

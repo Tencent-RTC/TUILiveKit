@@ -6,7 +6,7 @@
 //
 
 import RTCRoomEngine
-import TUILiveResources
+import TUILiveComponent
 
 struct LSRoomState {
     var roomId: String = ""

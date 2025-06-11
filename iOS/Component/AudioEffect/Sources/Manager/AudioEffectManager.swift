@@ -9,7 +9,6 @@ import Foundation
 import RTCCommon
 import Combine
 import RTCRoomEngine
-import TUILiveResources
 
 protocol AudioEffectManagerInterface {
     func setMicrophoneVolume(_ volume: Int)

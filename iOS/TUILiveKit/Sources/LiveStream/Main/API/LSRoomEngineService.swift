@@ -12,7 +12,7 @@ import RTCRoomEngine
     import TXLiteAVSDK_Professional
 #endif
 import ImSDK_Plus
-import TUILiveResources
+import TUILiveComponent
 
 class LSRoomEngineService {
     let roomEngine: TUIRoomEngine

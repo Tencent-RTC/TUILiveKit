@@ -11,7 +11,7 @@ import Combine
 import RTCRoomEngine
 import RTCCommon
 import LiveStreamCore
-import TUILiveResources
+import TUILiveComponent
 
 class UserStatusView: UIView {
     private let manager: LiveStreamManager

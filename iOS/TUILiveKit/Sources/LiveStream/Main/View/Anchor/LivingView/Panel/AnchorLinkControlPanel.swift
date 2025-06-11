@@ -10,7 +10,7 @@ import Combine
 import RTCCommon
 import LiveStreamCore
 import RTCRoomEngine
-import TUILiveResources
+import TUILiveComponent
 
 class AnchorLinkControlPanel: UIView {
     private let manager: LiveStreamManager

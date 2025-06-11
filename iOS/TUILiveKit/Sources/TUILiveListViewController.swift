@@ -10,7 +10,7 @@ import RTCCommon
 import TUICore
 import Combine
 import RTCRoomEngine
-import TUILiveResources
+import TUILiveComponent
 
 public class TUILiveListViewController: UIViewController {
     // MARK: - Internal property.

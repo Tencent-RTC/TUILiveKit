@@ -11,7 +11,7 @@ import Combine
 import RTCRoomEngine
 import TUICore
 import LiveStreamCore
-import TUILiveResources
+import TUILiveComponent
 
 let defaultMaxSeatCount = 10
 

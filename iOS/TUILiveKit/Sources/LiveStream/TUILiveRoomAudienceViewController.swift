@@ -10,7 +10,7 @@ import TUICore
 import LiveStreamCore
 import RTCRoomEngine
 import RTCCommon
-import TUILiveResources
+import TUILiveComponent
 
 public class TUILiveRoomAudienceViewController: UIViewController {
     

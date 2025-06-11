@@ -8,7 +8,7 @@
 import Foundation
 import TUICore
 import RTCCommon
-import TUIGift
+import TUILiveComponent
 
 class GiftCloudServer: IGiftCloudServer {
     static var shared = GiftCloudServer()

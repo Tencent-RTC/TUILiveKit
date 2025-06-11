@@ -37,9 +37,11 @@ public extension UIColor {
 
     
     /// colors in non-interactive specifications
+    static let gray60Transparency = themColor("#9922262E")
     static let whiteColor = themColor("#D1D9EC")
     static let greyColor = themColor("#7C85A6")
     static let redColor = themColor("#E5395C")
+    static let white20Transparency = themColor("#33FFFFFF")
     static let blue40Transparency = themColor("#4D4F586B")
     static let brandBlueColor = themColor("#006CFF")
     static let blackColor = themColor("#181B21")
@@ -62,6 +64,8 @@ public extension UIColor {
     static let grayColor = themColor("#C5CCDB")
     static let tipsGrayColor = themColor("#8F9AB2")
     static let pinkColor = themColor("#F15065")
+    static let btnDisabledColor = themColor("243047")
+    static let btnGrayColor = themColor("3A3C42")
     
     /// message color
     static let barrageColorMsg1 = themColor("#3074FD")

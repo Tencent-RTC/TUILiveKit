@@ -12,9 +12,7 @@ import TUICore
 import RTCCommon
 import RTCRoomEngine
 import LiveStreamCore
-import TUIBarrage
-import TUILiveResources
-import TUIGift
+import TUILiveComponent
 
 protocol VoiceRoomRootViewDelegate: AnyObject {
     func rootView(_ view: VoiceRoomRootView, showEndView endInfo: [String:Any], isAnchor: Bool)

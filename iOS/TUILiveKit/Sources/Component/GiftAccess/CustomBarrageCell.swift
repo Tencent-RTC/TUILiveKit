@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 import TUICore
 import Kingfisher
-import TUIBarrage
+import TUILiveComponent
 
 class CustomBarrageCell: UIView {
     

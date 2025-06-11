@@ -20,7 +20,7 @@ public class BarrageInputView: UIView {
 
     private lazy var emojiButton: UIButton = {
         let button = UIButton()
-        button.setImage(.barrageBundleImage("live_emoji_icon")?.withTintColor(.white.withAlphaComponent(0.55)), for: .normal)
+        button.setImage(internalImage("live_emoji_icon")?.withTintColor(.white.withAlphaComponent(0.55)), for: .normal)
         button.addTarget(self, action: #selector(emojiButtonTapped), for: .touchUpInside)
         return button
     }()
@@ -115,5 +115,5 @@ extension BarrageInputView {
 }
 
 private extension String {
-    static let chatText = localized("Join Chat!")
+    static let chatText = internalLocalized("Join Chat!")
 }

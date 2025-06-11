@@ -39,7 +39,7 @@ public class ErrorLocalized {
             if let error = error {
                 return error.description
             }
-            return "\(String.localized("Temporarily Unclassified General Error")):\(code)"
+            return "\(internalLocalized("Temporarily Unclassified General Error")):\(code)"
         }
         
         public init(error: LocalizedError, message: String) {
@@ -68,7 +68,7 @@ public class UnknownError: Error {
 
 extension UnknownError: LocalizedError {
     public var description: String {
-        "\(String.localized("Temporarily Unclassified General Error")):\(rawValue)"
+        "\(internalLocalized("Temporarily Unclassified General Error")):\(rawValue)"
     }
 }
 
@@ -98,19 +98,19 @@ extension TIMError: LocalizedError {
     public var description: String {
         switch self {
         case .success:
-            return .localized("Operation Successful")
+            return internalLocalized("Operation Successful")
         case .failed:
-            return "\(String.localized("Temporarily Unclassified General Error")):\(rawValue)"
+            return "\(internalLocalized("Temporarily Unclassified General Error")):\(rawValue)"
         case .invalidUserId:
-            return .localized("live.error.invalid.userId")
+            return internalLocalized("live.error.invalid.userId")
         case .ERR_SDK_COMM_API_CALL_FREQUENCY_LIMIT:
-            return .localized("Request Rate Limited, Please Try Again Later")
+            return internalLocalized("Request Rate Limited, Please Try Again Later")
         case .ERR_SVR_GROUP_SHUTUP_DENY:
-            return .localized("You Have Been Muted in the Current Room")
+            return internalLocalized("You Have Been Muted in the Current Room")
         case .ERR_SDK_BLOCKED_BY_SENSITIVE_WORD:
-            return .localized("Sensitive words are detected, please modify it and try again")
+            return internalLocalized("Sensitive words are detected, please modify it and try again")
         case .ERR_SDK_NET_PKG_SIZE_LIMIT:
-            return .localized("The content is too long, please reduce the content and try again")
+            return internalLocalized("The content is too long, please reduce the content and try again")
         case .ERR_SDK_NET_DISCONNECT,
                 .ERR_SDK_NET_WAIT_ACK_TIMEOUT,
                 .ERR_SDK_NET_ALLREADY_CONN,
@@ -123,7 +123,7 @@ extension TIMError: LocalizedError {
                 .ERR_SDK_NET_WAIT_SEND_TIMEOUT_NO_NETWORK,
                 .ERR_SDK_NET_WAIT_ACK_TIMEOUT_NO_NETWORK,
                 .ERR_SDK_NET_SEND_REMAINING_TIMEOUT_NO_NETWORK:
-            return .localized("The network is abnormal, please try again later")
+            return internalLocalized("The network is abnormal, please try again later")
         }
     }
 }
@@ -132,13 +132,13 @@ extension TUIBattleCode: LocalizedError {
     public var description: String {
         switch self {
             case .unknown:
-                return .localized("Temporarily Unclassified General Error")
+                return internalLocalized("Temporarily Unclassified General Error")
             case .success:
-                return .localized("Operation Successful")
+                return internalLocalized("Operation Successful")
             case .battlingOtherRoom:
-                return .localized("The anchor is in the battle and cannot initiate the battle")
+                return internalLocalized("The anchor is in the battle and cannot initiate the battle")
             default:
-                return .localized("The other error, cannot initiate the battle")
+                return internalLocalized("The other error, cannot initiate the battle")
         }
     }
 }
@@ -147,19 +147,19 @@ extension TUIConnectionCode: LocalizedError {
     public var description: String {
         switch self {
         case .success:
-            return .localized("Operation Successful")
+            return internalLocalized("Operation Successful")
         case .roomNotExist:
-            return .localized("The room you are invited to connect to does not exist")
+            return internalLocalized("The room you are invited to connect to does not exist")
         case .connecting:
-            return .localized("The room you are invited to connect to is already in the invitation list or is already connected.")
+            return internalLocalized("The room you are invited to connect to is already in the invitation list or is already connected.")
         case .connectingOtherRoom:
-            return .localized("The room you are invited to connect to is connected to another room.")
+            return internalLocalized("The room you are invited to connect to is connected to another room.")
         case .full:
-            return .localized("The number of co-hosting has exceeded the maximum limit.")
+            return internalLocalized("The number of co-hosting has exceeded the maximum limit.")
         case .retry:
-            return .localized("Internal error, it is recommended to try again.")
+            return internalLocalized("Internal error, it is recommended to try again.")
         default:
-            return .localized("Temporarily Unclassified General Error")
+            return internalLocalized("Temporarily Unclassified General Error")
         }
     }
 }
@@ -285,199 +285,199 @@ extension LiveError: LocalizedError {
     public var description: String {
         switch self {
         case .success:
-            return .localized("Operation Successful")
+            return internalLocalized("Operation Successful")
         case .freqLimit:
-            return .localized("Request Rate Limited, Please Try Again Later")
+            return internalLocalized("Request Rate Limited, Please Try Again Later")
         case .repeatOperation:
-            return .localized("Repeat Operation")
+            return internalLocalized("Repeat Operation")
         case .sdkAppIDNotFound:
-            return .localized("Not Found SDKAppID, Please Confirm Application Info in TRTC Console")
+            return internalLocalized("Not Found SDKAppID, Please Confirm Application Info in TRTC Console")
         case .invalidParameter:
-            return .localized("Passing illegal parameters when calling API, check if the parameters are legal")
+            return internalLocalized("Passing illegal parameters when calling API, check if the parameters are legal")
         case .sdkNotInitialized:
-            return .localized("Not Logged In, Please Call Login API")
+            return internalLocalized("Not Logged In, Please Call Login API")
         case .permissionDenied:
-            return .localized("Failed to Obtain Permission, Unauthorized Audio/Video Permission, Please Check if Device Permission is Enabled")
+            return internalLocalized("Failed to Obtain Permission, Unauthorized Audio/Video Permission, Please Check if Device Permission is Enabled")
         case .requirePayment:
-            return .localized("This feature requires an additional package. Please activate the corresponding package as needed in the TRTC Console")
+            return internalLocalized("This feature requires an additional package. Please activate the corresponding package as needed in the TRTC Console")
         case .cameraStartFail:
-            return .localized("System Issue, Failed to Open Camera. Check if Camera Device is Normal")
+            return internalLocalized("System Issue, Failed to Open Camera. Check if Camera Device is Normal")
         case .cameraNotAuthorized:
-            return .localized("Camera has No System Authorization, Check System Authorization")
+            return internalLocalized("Camera has No System Authorization, Check System Authorization")
         case .cameraOccupied:
-            return .localized("Camera is Occupied, Check if Other Process is Using Camera")
+            return internalLocalized("Camera is Occupied, Check if Other Process is Using Camera")
         case .cameraDeviceEmpty:
-            return .localized("No Camera Device Currently, Please Insert Camera Device to Solve the Problem")
+            return internalLocalized("No Camera Device Currently, Please Insert Camera Device to Solve the Problem")
         case .microphoneStartFail:
-            return .localized("System Issue, Failed to Open Mic. Check if Mic Device is Normal")
+            return internalLocalized("System Issue, Failed to Open Mic. Check if Mic Device is Normal")
         case .microphoneNotAuthorized:
-            return .localized("Mic has No System Authorization, Check System Authorization")
+            return internalLocalized("Mic has No System Authorization, Check System Authorization")
         case .microphoneOccupied:
-            return .localized("Mic is Occupied")
+            return internalLocalized("Mic is Occupied")
         case .microphoneDeviceEmpty:
-            return .localized("No Mic Device Currently")
+            return internalLocalized("No Mic Device Currently")
         case .getScreenSharingTargetFailed:
-            return .localized("Failed to get screen sharing source (screen and window), check screen recording permissions")
+            return internalLocalized("Failed to get screen sharing source (screen and window), check screen recording permissions")
         case .startScreenSharingFailed:
-            return .localized("Failed to Enable Screen Sharing, Check if Someone is Already Screen Sharing in the Room")
+            return internalLocalized("Failed to Enable Screen Sharing, Check if Someone is Already Screen Sharing in the Room")
         case .operationInvalidBeforeEnterRoom:
-            return .localized("This Feature Can Only Be Used After Entering the Room")
+            return internalLocalized("This Feature Can Only Be Used After Entering the Room")
         case .exitNotSupportedForRoomOwner:
-            return .localized("Room Owner Does Not Support Leaving the Room, Room Owner Can Only Close the Room")
+            return internalLocalized("Room Owner Does Not Support Leaving the Room, Room Owner Can Only Close the Room")
         case .operationNotSupportedInCurrentRoomType:
-            return .localized("This Operation is Not Supported in the Current Room Type")
+            return internalLocalized("This Operation is Not Supported in the Current Room Type")
         case .roomIdInvalid:
-            return .localized("Illegal Custom Room ID, Must Be Printable ASCII Characters (0x20-0x7e), Up to 48 Bytes Long")
+            return internalLocalized("Illegal Custom Room ID, Must Be Printable ASCII Characters (0x20-0x7e), Up to 48 Bytes Long")
         case .roomNameInvalid:
-            return .localized("Illegal Room Name, Maximum 30 Bytes, Must Be UTF-8 Encoding if Contains Chinese Characters")
+            return internalLocalized("Illegal Room Name, Maximum 30 Bytes, Must Be UTF-8 Encoding if Contains Chinese Characters")
         case .alreadyInOtherRoom:
-            return .localized("User is Already in Another Room, Single RoomEngine Instance Only Supports User Entering One Room, To Enter Different Room, Please Leave the Room or Use New RoomEngine Instance")
+            return internalLocalized("User is Already in Another Room, Single RoomEngine Instance Only Supports User Entering One Room, To Enter Different Room, Please Leave the Room or Use New RoomEngine Instance")
         case .userNotExist:
-            return .localized("User is not exist")
+            return internalLocalized("User is not exist")
         case .userNeedOwnerPermission:
-            return .localized("Room Owner Permission Required for Operation")
+            return internalLocalized("Room Owner Permission Required for Operation")
         case .userNeedAdminPermission:
-            return .localized("Room Owner or Administrator Permission Required for Operation")
+            return internalLocalized("Room Owner or Administrator Permission Required for Operation")
         case .requestNoPermission:
-            return .localized("No Permission for Signaling Request, e.g. Canceling an Invite Not Initiated by Yourself")
+            return internalLocalized("No Permission for Signaling Request, e.g. Canceling an Invite Not Initiated by Yourself")
         case .requestIdInvalid:
-            return .localized("Signaling Request ID is Invalid or Has Been Processed")
+            return internalLocalized("Signaling Request ID is Invalid or Has Been Processed")
         case .requestIdRepeat:
-            return .localized("Signal request repetition")
+            return internalLocalized("Signal request repetition")
         case .maxSeatCountLimit:
-            return .localized("Maximum Seat Exceeds Package Quantity Limit")
+            return internalLocalized("Maximum Seat Exceeds Package Quantity Limit")
         case .seatIndexNotExist:
-            return .localized("Seat Serial Number Does Not Exist")
+            return internalLocalized("Seat Serial Number Does Not Exist")
         case .openMicrophoneNeedSeatUnlock:
-            return .localized("Current Seat Audio is Locked")
+            return internalLocalized("Current Seat Audio is Locked")
         case .openMicrophoneNeedPermissionFromAdmin:
-            return .localized("Need to Apply to Room Owner or Administrator to Open Mic")
+            return internalLocalized("Need to Apply to Room Owner or Administrator to Open Mic")
         case .openCameraNeedSeatUnlock:
-            return .localized("Current Seat Video is Locked, Need Room Owner to Unlock Mic Seat Before Opening Camera")
+            return internalLocalized("Current Seat Video is Locked, Need Room Owner to Unlock Mic Seat Before Opening Camera")
         case .openCameraNeedPermissionFromAdmin:
-            return .localized("Need to Apply to Room Owner or Administrator to Open Camera")
+            return internalLocalized("Need to Apply to Room Owner or Administrator to Open Camera")
         case .openScreenShareNeedSeatUnlock:
-            return .localized("The current microphone position video is locked and needs to be unlocked by the room owner before screen sharing can be enabled")
+            return internalLocalized("The current microphone position video is locked and needs to be unlocked by the room owner before screen sharing can be enabled")
         case .openScreenShareNeedPermissionFromAdmin:
-            return .localized("Screen sharing needs to be enabled after applying to the room owner or administrator")
+            return internalLocalized("Screen sharing needs to be enabled after applying to the room owner or administrator")
         case .sendMessageDisabledForAll:
-            return .localized("All Members Muted in the Current Room")
+            return internalLocalized("All Members Muted in the Current Room")
         case .sendMessageDisabledForCurrent:
-            return .localized("You Have Been Muted in the Current Room")
+            return internalLocalized("You Have Been Muted in the Current Room")
         case .roomNotSupportPreloading:
-            return .localized("The current room does not support preloading")
+            return internalLocalized("The current room does not support preloading")
         case .systemInternalError:  // 100001
-            return .localized("Server internal error, please retry")
+            return internalLocalized("Server internal error, please retry")
         case .paramIllegal:     // 100002
-            return .localized("The parameter is illegal. Check whether the request is correct according to the error description")
+            return internalLocalized("The parameter is illegal. Check whether the request is correct according to the error description")
         case .roomIdOccupied:   // 100003
-            return .localized("The room ID already exists. Please select another room ID")
+            return internalLocalized("The room ID already exists. Please select another room ID")
         case .roomIdNotExist:   // 100004
-            return .localized("The room does not exist, or it once existed but has now been dissolved")
+            return internalLocalized("The room does not exist, or it once existed but has now been dissolved")
         case .userNotEntered:   // 100005
-            return .localized("Not a room member")
+            return internalLocalized("Not a room member")
         case .insufficientOperationPermissions: // 100006
-            return .localized("You do not have permission to perform this operation")
+            return internalLocalized("You do not have permission to perform this operation")
         case .noPaymentInformation: // 100007
-            return .localized("No payment information, you need to purchase a package in the console")
+            return internalLocalized("No payment information, you need to purchase a package in the console")
         case .roomIsFull:   // 100008
-            return .localized("The room is full")
+            return internalLocalized("The room is full")
         case .tagQuantityExceedsUpperLimit: // 100009
-            return .localized("Tag quantity Exceeds Upper limit")
+            return internalLocalized("Tag quantity Exceeds Upper limit")
         case .roomIdHasBeenUsed:    // 100010
-            return .localized("The room ID has been used, and the operator is the room owner, it can be used directly")
+            return internalLocalized("The room ID has been used, and the operator is the room owner, it can be used directly")
         case .roomIdHasBeenOccupiedByChat:  // 100011
-            return .localized("The room ID has been occupied by Chat. You can use a different room ID or dissolve the group first")
+            return internalLocalized("The room ID has been occupied by Chat. You can use a different room ID or dissolve the group first")
         case .creatingRoomsExceedsTheFrequencyLimit:    // 100012
-            return .localized("Creating rooms exceeds the frequency limit, the same room ID can only be created once within 1 second")
+            return internalLocalized("Creating rooms exceeds the frequency limit, the same room ID can only be created once within 1 second")
         case .exceedsTheUpperLimit:     // 100013
-            return .localized("Exceeds the upper limit, for example, the number of microphone seats, the number of PK match rooms, etc., exceeds the payment limit")
+            return internalLocalized("Exceeds the upper limit, for example, the number of microphone seats, the number of PK match rooms, etc., exceeds the payment limit")
         case .invalidRoomType:  // 100015
-            return .localized("Invalid room type")
+            return internalLocalized("Invalid room type")
         case .memberHasBeenBanned:  // 100016
-            return .localized("This member has been banned")
+            return internalLocalized("This member has been banned")
         case .memberHasBeenMuted:   // 100017
-            return .localized("This member has been muted")
+            return internalLocalized("This member has been muted")
         case .requiresPassword:     // 100018
-            return .localized("The current room requires a password for entry")
+            return internalLocalized("The current room requires a password for entry")
         case .roomEntryPasswordError:   // 100019
-            return .localized("Room Entry Password Error")
+            return internalLocalized("Room Entry Password Error")
         case .roomAdminQuantityExceedsTheUpperLimit:    // 100020
-            return .localized("The admin quantity exceeds the upper limit")
+            return internalLocalized("The admin quantity exceeds the upper limit")
         case .requestIdConflict:    // 100102
-            return .localized("Signal request conflict")
+            return internalLocalized("Signal request conflict")
         case .seatLocked:   // 100200
-            return .localized("The seat is locked. You can try another seat")
+            return internalLocalized("The seat is locked. You can try another seat")
         case .seatOccupied:     // 100201
-            return .localized("The current seat is already occupied")
+            return internalLocalized("The current seat is already occupied")
         case .alreadyOnTheSeatQueue:    // 100202
-            return .localized("Already on the seat queue")
+            return internalLocalized("Already on the seat queue")
         case .alreadyInSeat:    // 100203
-            return .localized("Already on the seat")
+            return internalLocalized("Already on the seat")
         case .notOnTheSeatQueue:    // 100204
-            return .localized("Not on the seat queue")
+            return internalLocalized("Not on the seat queue")
         case .allSeatOccupied:  // 100205
-            return .localized("The seats are all taken.")
+            return internalLocalized("The seats are all taken.")
         case .userNotInSeat:    // 100206
-            return .localized("Not on the seat")
+            return internalLocalized("Not on the seat")
         case .userAlreadyOnSeat:    // 100210
-            return .localized("The user is already on the seat")
+            return internalLocalized("The user is already on the seat")
         case .seatNotSupportLinkMic:    // 100211
-            return .localized("The room does not support seat ability")
+            return internalLocalized("The room does not support seat ability")
         case .emptySeatList:    // 100251
-            return .localized("The seat list is empty")
+            return internalLocalized("The seat list is empty")
         case .connectionNotExist:   // 100400
-            return .localized("The current connection does not exist or has ended")
+            return internalLocalized("The current connection does not exist or has ended")
         case .roomInConnection:     // 100401
-            return .localized("The room is already in connection")
+            return internalLocalized("The room is already in connection")
         case .pendingConnectionRequest:     // 100402
-            return .localized("There is a pending connection request for this room")
+            return internalLocalized("There is a pending connection request for this room")
         case .roomConnectedInOther:     // 100403
-            return .localized("The current room is connecting with other rooms")
+            return internalLocalized("The current room is connecting with other rooms")
         case .connectionOrBattleLimitExceeded:  // 100404
-            return .localized("The room number has exceeded the limit in connection or battle")
+            return internalLocalized("The room number has exceeded the limit in connection or battle")
         case .creatingConnectionTooFrequent:    // 100405
-            return .localized("creating connections too frequent in a short time. Wait a moment and try again")
+            return internalLocalized("creating connections too frequent in a short time. Wait a moment and try again")
         case .battleNotExistOrEnded:    // 100411
-            return .localized("The battle does not exist or has ended")
+            return internalLocalized("The battle does not exist or has ended")
         case .noRoomsInBattleIsValid:   // 100412
-            return .localized("None of the rooms in the battle is valid")
+            return internalLocalized("None of the rooms in the battle is valid")
         case .creatingBattleTooFrequently:  // 100413
-            return .localized("creating battles too frequently. Wait a moment and try again")
+            return internalLocalized("creating battles too frequently. Wait a moment and try again")
         case .roomNotInBattle:  // 100414
-            return .localized("The room isn‘t in the battle")
+            return internalLocalized("The room isn‘t in the battle")
         case .inOtherBattle:    // 100415
-            return .localized("The room is already in other battle")
+            return internalLocalized("The room is already in other battle")
         case .pendingBattleRequest:     // 100416
-            return .localized("There is a pending battle request for this room")
+            return internalLocalized("There is a pending battle request for this room")
         case .notAllowedCancelBattleForRoomInBattle:    // 100419
-            return .localized("It's not allowed to cancel battle for room in battle")
+            return internalLocalized("It's not allowed to cancel battle for room in battle")
         case .battleNotStart:   // 100420
-            return .localized("The battle has not started yet")
+            return internalLocalized("The battle has not started yet")
         case .battleHasEnded:   // 100421
-            return .localized("The battle session has ended")
+            return internalLocalized("The battle session has ended")
         case .metadataKeyExceedsLimit:  // 100500
-            return .localized("The number of keys in the room's Metadata exceeds the limit")
+            return internalLocalized("The number of keys in the room's Metadata exceeds the limit")
         case .metadataValueSizeExceedsByteLimit:  // 100501
-            return .localized("The size of value in the room's Metadata exceeds the maximum byte limit")
+            return internalLocalized("The size of value in the room's Metadata exceeds the maximum byte limit")
         case .metadataTotalValueSizeExceedsByteLimit:  // 100502
-            return .localized("The total size of all value in the room's Metadata exceeds the maximum byte limit")
+            return internalLocalized("The total size of all value in the room's Metadata exceeds the maximum byte limit")
         case .metadataNoValidKey:  // 100503
-            return .localized("There is no valid keys when delete metadata")
+            return internalLocalized("There is no valid keys when delete metadata")
         case .metadataKeySizeExceedsByteLimit:  // 100504
-            return .localized("The size of key in the room's Metadata exceeds the maximum byte limit")
+            return internalLocalized("The size of key in the room's Metadata exceeds the maximum byte limit")
             
         // TIMError
         case .ERR_SDK_COMM_TINYID_EMPTY:
-            return .localized("Invalid userId")
+            return internalLocalized("Invalid userId")
         case .ERR_SDK_COMM_API_CALL_FREQUENCY_LIMIT:
-            return .localized("Request Rate Limited, Please Try Again Later")
+            return internalLocalized("Request Rate Limited, Please Try Again Later")
         case .ERR_SVR_GROUP_SHUTUP_DENY:
-            return .localized("You Have Been Muted in the Current Room")
+            return internalLocalized("You Have Been Muted in the Current Room")
         case .ERR_SDK_BLOCKED_BY_SENSITIVE_WORD:
-            return .localized("Sensitive words are detected, please modify it and try again")
+            return internalLocalized("Sensitive words are detected, please modify it and try again")
         case .ERR_SDK_NET_PKG_SIZE_LIMIT:
-            return .localized("The content is too long, please reduce the content and try again")
+            return internalLocalized("The content is too long, please reduce the content and try again")
         case .ERR_SDK_NET_DISCONNECT,
                 .ERR_SDK_NET_WAIT_ACK_TIMEOUT,
                 .ERR_SDK_NET_ALLREADY_CONN,
@@ -490,11 +490,11 @@ extension LiveError: LocalizedError {
                 .ERR_SDK_NET_WAIT_SEND_TIMEOUT_NO_NETWORK,
                 .ERR_SDK_NET_WAIT_ACK_TIMEOUT_NO_NETWORK,
                 .ERR_SDK_NET_SEND_REMAINING_TIMEOUT_NO_NETWORK:
-            return .localized("The network is abnormal, please try again later")
+            return internalLocalized("The network is abnormal, please try again later")
 
             
         @unknown default:
-            return .localized("Temporarily Unclassified General Error") + ":\(self.rawValue)"
+            return internalLocalized("Temporarily Unclassified General Error") + ":\(self.rawValue)"
         }
     }
 }

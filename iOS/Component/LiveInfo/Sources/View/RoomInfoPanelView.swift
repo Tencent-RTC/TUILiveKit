@@ -8,7 +8,6 @@
 import Foundation
 import Combine
 import RTCCommon
-import TUILiveResources
 import RTCRoomEngine
 
 class RoomInfoPanelView: RTCBaseView {

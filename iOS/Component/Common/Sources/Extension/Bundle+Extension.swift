@@ -13,8 +13,8 @@ public extension Bundle {
         return SharedBundle.sharedBundle
     }
     
-    static func moduleBundle(for aClass: AnyClass = ErrorLocalized.self, bundleName: String = "TUILiveResourcesBundle", moduleName: String = "TUILiveResources") -> Bundle? {
-        if let url = Bundle(for: aClass).url(forResource: "bundleName", withExtension: "bundle") {
+    static func moduleBundle(for aClass: AnyClass = ErrorLocalized.self, bundleName: String = "TUILiveComponentBundle", moduleName: String = "TUILiveComponent") -> Bundle? {
+        if let url = Bundle(for: aClass).url(forResource: bundleName, withExtension: "bundle") {
             return Bundle(url: url)
         }
         if let url = Bundle.main.url(forResource: bundleName, withExtension: "bundle") {
@@ -44,16 +44,16 @@ class SharedBundle {
     }
     
     private static func getLiveBundle() -> Bundle? {
-        var url: NSURL? = Bundle.main.url(forResource: "TUILiveResourcesBundle", withExtension: "bundle") as NSURL?
+        var url: NSURL? = Bundle.main.url(forResource: "TUILiveComponentBundle", withExtension: "bundle") as NSURL?
         if let associateBundleURL = url {
             return Bundle(url: associateBundleURL as URL)
         }
         url = Bundle.main.url(forResource: "Frameworks", withExtension: nil) as NSURL?
-        url = url?.appendingPathComponent("TUILiveResources") as NSURL?
+        url = url?.appendingPathComponent("TUILiveComponent") as NSURL?
         url = url?.appendingPathComponent("framework") as NSURL?
         if let associateBundleURL = url {
             let bundle = Bundle(url: associateBundleURL as URL)
-            url = bundle?.url(forResource: "TUILiveResourcesBundle", withExtension: "bundle") as NSURL?
+            url = bundle?.url(forResource: "TUILiveComponentBundle", withExtension: "bundle") as NSURL?
             if let associateBundleURL = url {
                 return Bundle(url: associateBundleURL as URL)
             }

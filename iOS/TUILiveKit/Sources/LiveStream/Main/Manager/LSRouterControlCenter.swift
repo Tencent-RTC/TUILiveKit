@@ -10,8 +10,7 @@ import TUICore
 import RTCCommon
 import RTCRoomEngine
 import LiveStreamCore
-import TUIAudioEffect
-import TUIGift
+import TUILiveComponent
 
 class LSRouterControlCenter {
     private var coreView: LiveCoreView?

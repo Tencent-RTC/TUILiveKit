@@ -11,7 +11,7 @@ import SnapKit
 import Combine
 import LiveStreamCore
 import RTCRoomEngine
-import TUILiveResources
+import TUILiveComponent
 
 class VRBottomMenuView: UIView {
     var cancellableSet = Set<AnyCancellable>()

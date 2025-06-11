@@ -35,8 +35,8 @@ class InputBarView: UIView {
 
     lazy var emotionSwitchButton: UIButton = {
         let button = UIButton()
-        button.setImage(.barrageBundleImage("live_emoji_icon"), for: .normal)
-        button.setImage(.barrageBundleImage("live_barrage_softkeyboard"), for: .selected)
+        button.setImage(internalImage("live_emoji_icon"), for: .normal)
+        button.setImage(internalImage("live_barrage_softkeyboard"), for: .selected)
         button.addTarget(self, action: #selector(emotionSwitchButtonClick), for: .touchUpInside)
         return button
     }()
@@ -265,6 +265,6 @@ extension InputBarView {
 
 private extension String {
     static let sendText = {
-        localized("Send")
+        internalLocalized("Send")
     }()
 }
