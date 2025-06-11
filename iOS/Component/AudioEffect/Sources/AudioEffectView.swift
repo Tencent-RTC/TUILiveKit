@@ -13,7 +13,6 @@ import RTCCommon
 #elseif canImport(TXLiteAVSDK_Professional)
     import TXLiteAVSDK_Professional
 #endif
-import TUILiveResources
 
 public class AudioEffectView: UIView {
     private let manager = AudioEffectManager()

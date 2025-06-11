@@ -6,7 +6,7 @@
 //
 
 import LiveStreamCore
-import TUILiveResources
+import TUILiveComponent
 
 class LiveListViewCell: UICollectionViewCell {
     static let identifier = "LiveListViewCell"

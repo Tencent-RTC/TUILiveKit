@@ -8,8 +8,7 @@
 import Foundation
 import ImSDK_Plus
 import TUICore
-import TUILiveResources
-import TUIGift
+import TUILiveComponent
 
 class LikeManager {
     private var lastSendDate: Date?

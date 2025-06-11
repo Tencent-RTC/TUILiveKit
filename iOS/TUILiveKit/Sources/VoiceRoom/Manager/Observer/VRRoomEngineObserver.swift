@@ -7,7 +7,7 @@
 
 import Foundation
 import RTCRoomEngine
-import TUILiveResources
+import TUILiveComponent
 
 protocol VRRoomEngineObserverRoomInterface {
     func onRoomNameChanged(roomId: String, roomName: String)

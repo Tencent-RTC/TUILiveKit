@@ -28,11 +28,11 @@ class BarrageInputManager {
         Task {
             do {
                 try await service.sendBarrage(barrage)
-                Log.info("\(#file)", "\(#line)", "sendBarrage:\(text)")
+                LiveKitLog.info("\(#file)", "\(#line)", "sendBarrage:\(text)")
                 BarrageManager.shared.sendBarrageSubject.send((roomId, barrage))
                 BarrageManager.shared.inputString = ""
             } catch let err as InternalError {
-                Log.info("\(#file)", "\(#line)", "sendBarrage failed:\(text)")
+                LiveKitLog.info("\(#file)", "\(#line)", "sendBarrage failed:\(text)")
                 BarrageManager.shared.toastSubject.send(err.localizedMessage)
             }
         }

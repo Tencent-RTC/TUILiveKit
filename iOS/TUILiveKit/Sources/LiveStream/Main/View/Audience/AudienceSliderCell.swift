@@ -9,7 +9,7 @@ import LiveStreamCore
 import RTCRoomEngine
 import RTCCommon
 import Combine
-import TUILiveResources
+import TUILiveComponent
 
 protocol AudienceListCellDelegate: AnyObject {
     func handleScrollToNewRoom(roomId: String, ownerId: String, manager: LiveStreamManager, coreView: LiveCoreView, relayoutCoreViewClosure: @escaping () -> Void)

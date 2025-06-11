@@ -7,7 +7,6 @@
 
 import UIKit
 import SVGAPlayer
-import TUILiveResources
 
 class SVGAAnimationView: UIView, AnimationView {
     var finishClosure: ((Int) -> Void)?

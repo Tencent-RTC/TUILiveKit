@@ -9,7 +9,6 @@ import SVGAPlayer
 import TUICore
 import UIKit
 import RTCCommon
-import TUILiveResources
 
 public protocol GiftPlayViewDelegate: AnyObject {
     func giftPlayView(_ giftPlayView: GiftPlayView, onReceiveGift gift: TUIGift, giftCount: Int, sender: TUIGiftUser, receiver: TUIGiftUser)

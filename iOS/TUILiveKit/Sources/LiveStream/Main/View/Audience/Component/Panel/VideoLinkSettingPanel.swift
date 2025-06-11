@@ -11,7 +11,7 @@ import RTCRoomEngine
 import RTCCommon
 import TUICore
 import LiveStreamCore
-import TUILiveResources
+import TUILiveComponent
 
 class VideoLinkSettingPanel: RTCBaseView {
     private weak var coreView: LiveCoreView?

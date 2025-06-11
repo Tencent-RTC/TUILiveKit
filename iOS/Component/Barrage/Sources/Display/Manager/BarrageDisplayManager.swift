@@ -39,7 +39,7 @@ class BarrageDisplayManager: NSObject {
 
 extension BarrageDisplayManager: V2TIMSimpleMsgListener {
     func onRecvGroupTextMessage(msgID: String, groupID: String?, sender info: V2TIMGroupMemberInfo, text: String?) {
-        Log.info("\(#file)", "\(#line)", "onRecvGroupTextMessage:[msgID:\(msgID), groupID:\(groupID ?? ""), sender:\(String(describing: info)), text:\(text ?? "")]")
+        LiveKitLog.info("\(#file)", "\(#line)", "onRecvGroupTextMessage:[msgID:\(msgID), groupID:\(groupID ?? ""), sender:\(String(describing: info)), text:\(text ?? "")]")
         guard self.roomId == groupID else { return }
         let barrage = TUIBarrage()
         barrage.user.userId = info.userID ?? ""
@@ -53,7 +53,7 @@ extension BarrageDisplayManager: V2TIMSimpleMsgListener {
 
 extension BarrageDisplayManager: TUIRoomObserver {
     func onRemoteUserEnterRoom(roomId: String, userInfo: TUIUserInfo) {
-        Log.info("\(#file)", "\(#line)", "onRemoteUserEnterRoom:[roomId:\(roomId), userId:\(userInfo.userId), userName:\(userInfo.userName)]")
+        LiveKitLog.info("\(#file)", "\(#line)", "onRemoteUserEnterRoom:[roomId:\(roomId), userId:\(userInfo.userId), userName:\(userInfo.userName)]")
         guard self.roomId == roomId else { return }
         let barrage: TUIBarrage = TUIBarrage()
         barrage.user.userId = userInfo.userId
@@ -66,6 +66,6 @@ extension BarrageDisplayManager: TUIRoomObserver {
 }
 
 private extension String {
-    static let comingText: String = localized("Entered room")
+    static let comingText: String = internalLocalized("Entered room")
 }
 

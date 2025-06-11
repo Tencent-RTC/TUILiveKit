@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import TUILiveResources
+import TUILiveComponent
 
 let internalBundle: Bundle = Bundle.moduleBundle(for: VideoLiveKit.self, bundleName: "TUILiveKitBundle", moduleName: "TUILiveKit") ?? .main
 

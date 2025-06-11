@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import TUILiveResources
 
 class AnimationViewWrapper: UIView {
     

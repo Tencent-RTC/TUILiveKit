@@ -8,7 +8,7 @@
 import Foundation
 import RTCRoomEngine
 import RTCCommon
-import TUILiveResources
+import TUILiveComponent
 
 protocol BeautyManagerInterface {
     func setSmoothLevel(_ level: Float)

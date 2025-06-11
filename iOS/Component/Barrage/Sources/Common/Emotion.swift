@@ -11,7 +11,7 @@ class Emotion: Equatable {
     let identifier: String
     let displayName: String
     var image: UIImage {
-        .barrageBundleImage(identifier) ?? UIImage()
+        internalImage(identifier) ?? UIImage()
     }
 
     init(identifier: String, displayName: String) {

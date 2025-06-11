@@ -8,9 +8,7 @@
 import Combine
 import RTCCommon
 import RTCRoomEngine
-import TUILiveResources
-import TUIAudioEffect
-import TUIGift
+import TUILiveComponent
 
 class VRRouterControlCenter {
     

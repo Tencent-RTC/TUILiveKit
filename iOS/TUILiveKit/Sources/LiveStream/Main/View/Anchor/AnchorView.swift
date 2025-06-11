@@ -11,7 +11,7 @@ import TUICore
 import RTCRoomEngine
 import LiveStreamCore
 import RTCCommon
-import TUILiveResources
+import TUILiveComponent
 
 public protocol AnchorViewDelegate: AnyObject {
     func showFloatWindow()

@@ -8,9 +8,8 @@
 import Foundation
 import RTCCommon
 import TUICore
-import TUILiveResources
+import TUILiveComponent
 import LiveStreamCore
-import TUIAudioEffect
 
 public class AnchorPrepareView: UIView {
     public weak var delegate: AnchorPrepareViewDelegate?

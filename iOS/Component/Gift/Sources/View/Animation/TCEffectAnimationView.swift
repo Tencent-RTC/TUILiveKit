@@ -7,7 +7,6 @@
 
 import UIKit
 import TUICore
-import TUILiveResources
 
 let KEY_SERVICE_NAME = "TUIEffectPlayerService"
 let KEY_GET_VIEW = "TCEffectAnimView"

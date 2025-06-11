@@ -10,7 +10,7 @@ import RTCRoomEngine
 import TUICore
 import RTCCommon
 import LiveStreamCore
-import TUILiveResources
+import TUILiveComponent
 
 class LiveRoomRootMenuDataCreator {
     

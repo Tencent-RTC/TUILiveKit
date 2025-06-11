@@ -12,7 +12,7 @@ import TUICore
 import ESPullToRefresh
 import LiveStreamCore
 import RTCRoomEngine
-import TUILiveResources
+import TUILiveComponent
 
 class LSCoHostManagerPanel: RTCBaseView {
     

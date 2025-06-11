@@ -9,8 +9,7 @@ import UIKit
 import SnapKit
 import Kingfisher
 import Combine
-import TUIAudienceList
-import TUILiveInfo
+import TUILiveComponent
 
 private let containerHeight = 36.0
 private let componentHeight = 32.0

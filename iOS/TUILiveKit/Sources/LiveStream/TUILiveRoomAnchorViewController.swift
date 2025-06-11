@@ -12,7 +12,7 @@ import RTCRoomEngine
 import Combine
 import LiveStreamCore
 import RTCCommon
-import TUILiveResources
+import TUILiveComponent
 
 @objcMembers
 public class TUILiveRoomAnchorViewController: UIViewController {

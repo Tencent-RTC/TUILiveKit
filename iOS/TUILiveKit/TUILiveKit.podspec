@@ -29,12 +29,7 @@ Pod::Spec.new do |spec|
   spec.subspec 'Professional' do |professional|
     professional.dependency 'RTCRoomEngine/Professional', '>= 3.1.0'
     professional.dependency 'LiveStreamCore/Professional', '>= 3.1.0'
-    professional.dependency 'TUIBarrage/Professional'
-    professional.dependency 'TUILiveResources/Professional'
-    professional.dependency 'TUIAudienceList/Professional'
-    professional.dependency 'TUIAudioEffect/Professional'
-    professional.dependency 'TUIGift/Professional'
-    professional.dependency 'TUILiveInfo/Professional'
+    professional.dependency 'TUILiveComponent/Professional'
 
     professional.source_files = 'Sources/**/*', 'VideoLiveKit.swift', 'VoiceRoomKit.swift', 'VoiceRoomDefine.swift'
     professional.resource_bundles = {
@@ -45,12 +40,7 @@ Pod::Spec.new do |spec|
   spec.subspec 'TRTC' do |trtc|
     trtc.dependency 'RTCRoomEngine/TRTC', '>= 3.1.0'
     trtc.dependency 'LiveStreamCore/TRTC', '>= 3.1.0'
-    trtc.dependency 'TUIBarrage/TRTC'
-    trtc.dependency 'TUILiveResources/TRTC'
-    trtc.dependency 'TUIAudienceList/TRTC'
-    trtc.dependency 'TUIAudioEffect/TRTC'
-    trtc.dependency 'TUIGift/TRTC'
-    trtc.dependency 'TUILiveInfo/TRTC'
+    trtc.dependency 'TUILiveComponent/TRTC'
 
     trtc.source_files = 'Sources/**/*', 'VideoLiveKit.swift', 'VoiceRoomKit.swift', 'VoiceRoomDefine.swift'
     trtc.resource_bundles = {

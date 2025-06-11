@@ -8,7 +8,7 @@
 import TUICore
 
 public extension String {
-    static func localized(_ key: String, inBundle: Bundle = .liveBundle, table: String = "TUILiveResourcesLocalized") -> String {
+    static func localized(_ key: String, inBundle: Bundle, table: String = "TUILiveComponentLocalized") -> String {
         if let bundlePath = inBundle.path(forResource: TUIGlobalization.getPreferredLanguage() ?? "", ofType: "lproj"),
            let bundle = Bundle(path: bundlePath) {
             return bundle.localizedString(forKey: key, value: "", table: table)

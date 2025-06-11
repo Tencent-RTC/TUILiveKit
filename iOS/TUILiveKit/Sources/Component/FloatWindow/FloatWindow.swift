@@ -8,7 +8,7 @@ import SnapKit
 import Foundation
 import TUICore
 import LiveStreamCore
-import TUILiveResources
+import TUILiveComponent
 import Combine
 import RTCRoomEngine
 

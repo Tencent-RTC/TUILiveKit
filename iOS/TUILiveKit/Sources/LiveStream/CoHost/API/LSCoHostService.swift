@@ -8,7 +8,7 @@
 import Foundation
 import RTCRoomEngine
 import LiveStreamCore
-import TUILiveResources
+import TUILiveComponent
 
 protocol LSCoHostService {
     func fetchRecommendedList(cursor: String, count: Int) async throws -> (String, [TUILiveInfo])

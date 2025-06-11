@@ -8,7 +8,6 @@
 import SnapKit
 import UIKit
 import TUICore
-import TUILiveResources
 
 public protocol GiftListViewDelegate: AnyObject {
     func onSendGift(gift model: TUIGift, giftCount: Int)

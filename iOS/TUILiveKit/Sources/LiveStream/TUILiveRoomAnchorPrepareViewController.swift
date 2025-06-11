@@ -9,7 +9,7 @@ import LiveStreamCore
 import RTCCommon
 import Combine
 import TUICore
-import TUILiveResources
+import TUILiveComponent
 
 public class TUILiveRoomAnchorPrepareViewController: UIViewController {
     private let roomId: String

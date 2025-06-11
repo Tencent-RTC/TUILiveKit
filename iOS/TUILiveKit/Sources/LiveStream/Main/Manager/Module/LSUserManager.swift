@@ -10,7 +10,7 @@ import RTCCommon
 import RTCRoomEngine
 import Combine
 import LiveStreamCore
-import TUILiveResources
+import TUILiveComponent
 
 class LSUserManager {
     private let observerState = ObservableState<LSUserState>(initialState: LSUserState())

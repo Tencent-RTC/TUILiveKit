@@ -9,7 +9,7 @@ import Foundation
 import RTCCommon
 import Combine
 import RTCRoomEngine
-import TUILiveResources
+import TUILiveComponent
 
 class VRRoomManager: VRLiveListObserverInterface, VRRoomEngineObserverRoomInterface {
     var state: VRRoomState {
