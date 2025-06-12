@@ -340,6 +340,7 @@ extension AnchorLivingView {
         designConfig.lineColor = .g8
         let endLiveItem = ActionItem(title: .confirmCloseText, designConfig: designConfig, actionClosure: { [weak self] _ in
             guard let self = self else { return }
+            self.exitBattle()
             self.showEndView()
             self.routerManager.router(action: .dismiss())
         })
