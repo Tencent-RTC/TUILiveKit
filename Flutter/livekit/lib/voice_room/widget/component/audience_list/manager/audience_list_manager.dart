@@ -8,7 +8,6 @@ import '../state/audience_list_state.dart';
 
 class AudienceListManager {
   final AudienceListState state = AudienceListState();
-  DateTime? _lastFetchDate;
 
   void initRoomInfo(String roomId) async {
     state.roomId = roomId;
@@ -63,13 +62,6 @@ extension AudienceListManagerCallback on AudienceListManager {
       state.audienceList.value = userList;
       return;
     }
-    final current = DateTime.now();
-    if (_lastFetchDate != null &&
-        current.difference(_lastFetchDate!).inSeconds < 10) {
-      return;
-    }
-    _lastFetchDate = current;
-    getUserList();
   }
 
   void onRemoteUserLeaveRoom(String roomId, TUIUserInfo userInfo) {
