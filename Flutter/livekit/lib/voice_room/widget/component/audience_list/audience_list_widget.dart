@@ -158,6 +158,7 @@ class _AudienceListWidgetState extends State<AudienceListWidget> {
 
 extension on _AudienceListWidgetState {
   void _audienceListViewClick() {
+    manager.getUserList();
     _popupWidget(AudienceListPanelWidget(manager: manager));
   }
 
