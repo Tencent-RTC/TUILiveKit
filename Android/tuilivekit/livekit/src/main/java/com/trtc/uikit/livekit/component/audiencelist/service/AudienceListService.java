@@ -18,6 +18,7 @@ public class AudienceListService {
     public void initRoomInfo(TUIRoomDefine.RoomInfo roomInfo) {
         mAudienceListState.roomId = roomInfo.roomId;
         mAudienceListState.ownerId = roomInfo.ownerId;
+        getAudienceList();
     }
 
     public void getAudienceList() {
