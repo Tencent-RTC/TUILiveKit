@@ -323,7 +323,7 @@ extension LiveListView: UICollectionViewDelegate {
     }
 
     public func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard let cell = cell as? LiveListViewCell, indexPath.item < liveList.count, currentStyle == .doubleColumn, isOnCurrentView else { return }
+        guard let cell = cell as? LiveListViewCell, indexPath.item < liveList.count, isOnCurrentView else { return }
         cell.stopPreload()
         doublePlayingIndexPaths.remove(indexPath)
     }
@@ -400,10 +400,6 @@ extension LiveListView: UIScrollViewDelegate {
         
         if newPage != currentPageInSingleStyle {
             let newIndexPath = IndexPath(item: newPage, section: 0)
-            let oldIndexPath = IndexPath(item: currentPageInSingleStyle, section: 0)
-            if let oldLiveView = collectionView.cellForItem(at: oldIndexPath) as? LiveListViewCell {
-                oldLiveView.stopPreload()
-            }
             if let newLiveView = collectionView.cellForItem(at: newIndexPath) as? LiveListViewCell {
                 newLiveView.startPreload(roomId: liveList[newPage].roomId, isMuteAudio: false)
             }
