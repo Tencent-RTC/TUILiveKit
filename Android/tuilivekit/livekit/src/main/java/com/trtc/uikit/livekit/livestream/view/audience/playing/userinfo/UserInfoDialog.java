@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.imsdk.v2.V2TIMFollowInfo;
 import com.tencent.imsdk.v2.V2TIMManager;
@@ -49,7 +50,19 @@ public class UserInfoDialog extends PopupDialog {
 
     public void init(TUIRoomDefine.UserInfo userInfo) {
         mUserInfo = userInfo;
-        updateView();
+        mLiveStreamManager.getUserManager().getUserInfo(userInfo.userId, new TUIRoomDefine.GetUserInfoCallback() {
+            @Override
+            public void onSuccess(TUIRoomDefine.UserInfo info) {
+                userInfo.userName = info.userName;
+                userInfo.avatarUrl = info.avatarUrl;
+                updateView();
+            }
+
+            @Override
+            public void onError(TUICommonDefine.Error error, String message) {
+
+            }
+        });
     }
 
     private void addObserver() {
