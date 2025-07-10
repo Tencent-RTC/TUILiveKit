@@ -21,6 +21,7 @@
 #-renamesourcefileattribute SourceFile
 
 -dontwarn javax.annotation.Nullable
+-printmapping build/proguard/mapping.txt
 
 -keep class com.tencent.** { *; }
 -keep class com.trtc.uikit.livekit.livestreamcore.** { *; }
@@ -33,3 +34,13 @@
 -keep class com.tencent.xmagic.** { *; }
 -keep class androidx.exifinterface.** {*;}
 -keep class com.google.gson.** { *;}
+# Tencent Effect SDK - beauty
+-keep class com.tencent.xmagic.** { *;}
+-keep class org.light.** { *;}
+-keep class org.libpag.** { *;}
+-keep class org.extra.** { *;}
+-keep class com.gyailib.**{ *;}
+-keep class com.tencent.cloud.iai.lib.** { *;}
+-keep class com.tencent.beacon.** { *;}
+-keep class com.tencent.qimei.** { *;}
+-keep class androidx.exifinterface.** { *;}

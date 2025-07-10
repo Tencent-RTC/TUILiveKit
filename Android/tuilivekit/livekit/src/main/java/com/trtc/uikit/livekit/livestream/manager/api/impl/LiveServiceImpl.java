@@ -698,6 +698,18 @@ public class LiveServiceImpl implements ILiveService {
     }
 
     @Override
+    public void updateVideoQualityEx(TUIRoomDefine.RoomVideoEncoderParams videoEncParam) {
+        LOGGER.info(hashCode() + " updateVideoQualityEx:[videoEncParam:" + videoEncParam + "]");
+        mTUIRoomEngine.updateVideoQualityEx(TUIRoomDefine.VideoStreamType.CAMERA_STREAM, videoEncParam);
+    }
+
+    @Override
+    public void updateVideoQuality(TUIRoomDefine.VideoQuality quality) {
+        LOGGER.info(hashCode() + " updateVideoQuality:[quality:" + quality + "]");
+        mTUIRoomEngine.updateVideoQuality(quality);
+    }
+
+    @Override
     public void updateAudioQuality(TUIRoomDefine.AudioQuality quality) {
         LOGGER.info(hashCode() + " updateAudioQuality:[quality:" + quality + "]");
         mTUIRoomEngine.updateAudioQuality(quality);

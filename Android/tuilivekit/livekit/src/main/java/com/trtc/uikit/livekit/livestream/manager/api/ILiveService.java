@@ -95,6 +95,10 @@ public interface ILiveService {
 
     void enableGravitySensor(boolean enable);
 
+    void updateVideoQualityEx(TUIRoomDefine.RoomVideoEncoderParams videoEncParam);
+
+    void updateVideoQuality(TUIRoomDefine.VideoQuality quality);
+
     void updateAudioQuality(TUIRoomDefine.AudioQuality quality);
 
     void setVideoResolutionMode(TUIRoomDefine.ResolutionMode resolutionMode);

@@ -80,6 +80,7 @@ import com.trtc.uikit.livekit.livestream.manager.observer.LiveStreamObserver;
 import com.trtc.uikit.livekit.livestream.state.CoGuestState;
 import com.trtc.uikit.livekit.livestream.state.CoHostState;
 import com.trtc.uikit.livekit.livestream.state.CoHostState.ConnectionUser;
+import com.trtc.uikit.livekit.livestream.state.MediaState;
 import com.trtc.uikit.livekit.livestream.state.RoomState;
 import com.trtc.uikit.livekit.livestream.state.UserState;
 import com.trtc.uikit.livekit.livestream.view.BasicView;
@@ -637,6 +638,7 @@ public class AudienceView extends BasicView implements ITUINotification {
                 break;
             case LINKING:
                 mWaitingCoGuestPassView.setVisibility(GONE);
+                mLiveManager.getMediaManager().changeVideoEncParams(MediaState.VideoEncParams.VideoEncType.SMALL);
                 stopCoGuest();
                 break;
             default:

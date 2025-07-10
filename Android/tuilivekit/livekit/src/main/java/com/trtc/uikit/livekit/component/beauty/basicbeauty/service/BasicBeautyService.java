@@ -1,17 +1,12 @@
 package com.trtc.uikit.livekit.component.beauty.basicbeauty.service;
 
 import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
-import com.tencent.liteav.beauty.TXBeautyManager;
 import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.component.beauty.basicbeauty.store.BasicBeautyState;
 
 public class BasicBeautyService {
     private static final LiveKitLogger    LOGGER = LiveKitLogger.getComponentLogger("BasicBeautyService");
     private final        BasicBeautyState mState = new BasicBeautyState();
-
-    public BasicBeautyService() {
-        TUIRoomEngine.sharedInstance().getTRTCCloud().getBeautyManager().setBeautyStyle(TXBeautyManager.TXBeautyStyleSmooth);
-    }
 
     public BasicBeautyState getState() {
         return mState;
