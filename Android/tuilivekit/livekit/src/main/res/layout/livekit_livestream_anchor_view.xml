@@ -163,10 +163,10 @@
                         android:gravity="center_horizontal"
                         android:orientation="vertical">
 
-                        <com.trtc.uikit.livekit.livestream.view.anchor.pushing.coguest.CoGuestIconView
-                            android:id="@+id/co_guest_icon"
+                        <View
                             android:layout_width="28dp"
-                            android:layout_height="28dp" />
+                            android:layout_height="28dp"
+                            android:background="@drawable/livekit_function_link_default" />
 
                         <TextView
                             android:layout_width="match_parent"

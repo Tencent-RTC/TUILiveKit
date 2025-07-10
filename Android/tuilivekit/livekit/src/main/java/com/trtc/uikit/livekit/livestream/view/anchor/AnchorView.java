@@ -81,7 +81,6 @@ import com.trtc.uikit.livekit.livestream.view.anchor.pushing.battle.BattleCountd
 import com.trtc.uikit.livekit.livestream.view.anchor.pushing.coguest.AnchorCoGuestManageDialog;
 import com.trtc.uikit.livekit.livestream.view.anchor.pushing.coguest.AnchorManagerDialog;
 import com.trtc.uikit.livekit.livestream.view.anchor.pushing.coguest.ApplyCoGuestFloatView;
-import com.trtc.uikit.livekit.livestream.view.anchor.pushing.coguest.CoGuestIconView;
 import com.trtc.uikit.livekit.livestream.view.anchor.pushing.cohost.AnchorCoHostManageDialog;
 import com.trtc.uikit.livekit.livestream.view.anchor.pushing.cohost.StandardDialog;
 import com.trtc.uikit.livekit.livestream.view.anchor.pushing.settings.SettingsPanelDialog;
@@ -698,6 +697,10 @@ public class AnchorView extends BasicView implements ITUINotification {
         post(() -> {
             updateBattleView();
             enableView(mViewCoGuest, connectedList.isEmpty());
+            MediaState.VideoEncParams.VideoEncType targetEncType = connectedList.size() >= 2
+                    ? MediaState.VideoEncParams.VideoEncType.SMALL
+                    : MediaState.VideoEncParams.VideoEncType.BIG;
+            mLiveManager.getMediaManager().changeVideoEncParams(targetEncType);
         });
     }
 
@@ -708,14 +711,11 @@ public class AnchorView extends BasicView implements ITUINotification {
     private void onCoGuestUserChange(List<CoGuestState.SeatInfo> seatList) {
         post(() -> {
             enableView(mViewCoHost, seatList.size() <= 1);
-            CoGuestIconView coGuestIconView = findViewById(R.id.co_guest_icon);
-            if (coGuestIconView != null) {
-                if (seatList.size() > 1) {
-                    coGuestIconView.startAnimation();
-                } else {
-                    coGuestIconView.stopAnimation();
-                }
-            }
+
+            MediaState.VideoEncParams.VideoEncType targetEncType = seatList.size() >= 2
+                    ? MediaState.VideoEncParams.VideoEncType.SMALL
+                    : MediaState.VideoEncParams.VideoEncType.BIG;
+            mLiveManager.getMediaManager().changeVideoEncParams(targetEncType);
         });
     }
 
