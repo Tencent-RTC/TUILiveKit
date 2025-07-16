@@ -9,7 +9,8 @@ void main() {
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
   ));
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp,
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
 }
@@ -29,28 +30,22 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    S.load(View
-        .of(context)
-        .platformDispatcher
-        .locale);
+    S.load(View.of(context).platformDispatcher.locale);
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-        navigatorObservers: [
-          TUILiveKitNavigatorObserver.instance
-        ],
+        debugShowCheckedModeBanner: false,
+        navigatorObservers: [TUILiveKitNavigatorObserver.instance],
         localizationsDelegates: const [
           ...LiveKitLocalizations.localizationsDelegates,
           ...BarrageLocalizations.localizationsDelegates,
           ...GiftLocalizations.localizationsDelegates,
         ],
-        supportedLocales: [
-          ...S.delegate.supportedLocales,
-          ...LiveKitLocalizations.supportedLocales,
-          ...BarrageLocalizations.supportedLocales,
-          ...GiftLocalizations.supportedLocales,
+        supportedLocales: const [
+          Locale('en'),
+          Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'),
+          Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'),
+          Locale('zh'),
         ],
-        builder: (context, child) =>
-            Scaffold(
+        builder: (context, child) => Scaffold(
               resizeToAvoidBottomInset: false,
               body: GestureDetector(
                 onTap: () {

@@ -1,16 +1,18 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:live_stream_core/common/index.dart';
 import 'package:live_stream_core/live_stream_core.dart';
 import 'package:rtc_room_engine/rtc_room_engine.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:tencent_live_uikit/common/index.dart';
 
 import '../common/language/index.dart';
 import '../common/platform/index.dart';
 import '../common/widget/index.dart';
+import '../component/audio_effect/index.dart';
 import '../live_navigator_observer.dart';
 import './index.dart';
-import 'widget/component/audio_effect/index.dart';
 
 const maxConnectedViewersCount = 10;
 
@@ -50,6 +52,7 @@ class _TUIVoiceRoomWidgetState extends State<TUIVoiceRoomWidget> {
   @override
   void initState() {
     super.initState();
+    LiveDataReporter.reportComponent(LiveComponentType.voiceRoom);
     _startForegroundService();
     roomId = widget.roomId;
     behavior = widget.behavior;
@@ -125,7 +128,7 @@ extension on _TUIVoiceRoomWidgetState {
   void _startForegroundService() async {
     String description = LiveKitLocalizations.of(
             TUILiveKitNavigatorObserver.instance.getContext())!
-        .live_app_running;
+        .common_app_running;
 
     Permission.microphone.onGrantedCallback(() {
       TUILiveKitPlatform.instance

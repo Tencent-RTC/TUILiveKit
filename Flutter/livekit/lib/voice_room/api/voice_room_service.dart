@@ -2,6 +2,7 @@ import 'package:rtc_room_engine/rtc_room_engine.dart';
 import 'package:tencent_cloud_chat_sdk/enum/V2TimFriendshipListener.dart';
 import 'package:tencent_cloud_chat_sdk/tencent_im_sdk_plugin.dart';
 
+import '../../component/live_info/state/follow_define.dart';
 import '../state/index.dart';
 
 class VoiceRoomService {
@@ -41,9 +42,9 @@ extension VoiceRoomServiceWithRoom on VoiceRoomService {
     final result = await roomEngine.getUserInfo(userId);
     return (result.code == TUIError.success && result.data != null)
         ? TUIValueCallBack(
-        code: result.code,
-        message: result.message,
-        data: User.fromTUIUserInfo(result.data!))
+            code: result.code,
+            message: result.message,
+            data: User.fromTUIUserInfo(result.data!))
         : TUIValueCallBack(code: result.code, message: result.message);
   }
 
@@ -53,10 +54,10 @@ extension VoiceRoomServiceWithRoom on VoiceRoomService {
 
   Future<TUIActionCallback> setLiveInfo(String roomId,
       {String? coverUrl,
-        String? backgroundUrl,
-        List<int>? categoryList,
-        bool? isPublicVisible,
-        int? activityStatus}) {
+      String? backgroundUrl,
+      List<int>? categoryList,
+      bool? isPublicVisible,
+      int? activityStatus}) {
     return liveListManager.setLiveInfo(roomId,
         backgroundUrl: backgroundUrl,
         coverUrl: coverUrl,
@@ -75,7 +76,7 @@ extension VoiceRoomServiceWithSeat on VoiceRoomService {
     final result = await roomEngine.getSeatList();
     if (result.code == TUIError.success && result.data != null) {
       final seatList =
-      result.data!.map((seat) => SeatInfo.fromTUISeatInfo(seat)).toList();
+          result.data!.map((seat) => SeatInfo.fromTUISeatInfo(seat)).toList();
       return TUIValueCallBack(
           code: result.code, message: result.message, data: seatList);
     }
@@ -83,7 +84,7 @@ extension VoiceRoomServiceWithSeat on VoiceRoomService {
   }
 
   Future<TUIValueCallBack<List<SeatApplication>>>
-  fetchSeatApplicationList() async {
+      fetchSeatApplicationList() async {
     final result = await roomEngine.getSeatApplicationList();
     if (result.code == TUIError.success && result.data != null) {
       final seatApplications = result.data!
@@ -101,9 +102,9 @@ extension VoiceRoomServiceWithUser on VoiceRoomService {
     final result = await roomEngine.getUserInfo(userId);
     return (result.code == TUIError.success && result.data != null)
         ? TUIValueCallBack(
-        code: result.code,
-        message: result.message,
-        data: User.fromTUIUserInfo(result.data!))
+            code: result.code,
+            message: result.message,
+            data: User.fromTUIUserInfo(result.data!))
         : TUIValueCallBack(code: result.code, message: result.message);
   }
 
@@ -137,7 +138,7 @@ extension VoiceRoomServiceWithUser on VoiceRoomService {
 
   Future<TUIValueCallBack<IMFollowType>> checkFollowType(String userId) async {
     final result =
-    await friendshipManager.checkFollowType(userIDList: [userId]);
+        await friendshipManager.checkFollowType(userIDList: [userId]);
     const success = 0;
     if (result.code == success &&
         result.data != null &&

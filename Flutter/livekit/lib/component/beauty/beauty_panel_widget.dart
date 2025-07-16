@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:tencent_live_uikit/common/index.dart';
 
-import '../../common/index.dart';
+import 'state/beautyStateFactory.dart';
+import 'state/beauty_state.dart';
 
-class BeautyPanelWidget extends BasicWidget {
-  const BeautyPanelWidget({super.key, required super.liveController});
+class BeautyPanelWidget extends StatefulWidget {
+  const BeautyPanelWidget({super.key});
 
   @override
-  BasicState getState() {
-    return BeautyPanelWidgetState();
-  }
+  State<BeautyPanelWidget> createState() => _BeautyPanelWidgetState();
 }
 
-class BeautyPanelWidgetState extends BasicState<BeautyPanelWidget> {
+class _BeautyPanelWidgetState extends State<BeautyPanelWidget> {
+  late final BeautyManager manager;
   late final ValueNotifier<int> selectIndex = ValueNotifier(0);
   late final ValueNotifier<int> sliderValue = ValueNotifier(0);
   late final List<BeautyItem> list;
@@ -25,38 +26,40 @@ class BeautyPanelWidgetState extends BasicState<BeautyPanelWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: screenWidth,
-      height: 350,
-      decoration: const BoxDecoration(
+      width: 1.screenWidth,
+      height: 310.height,
+      decoration: BoxDecoration(
         color: LiveColors.designStandardG2,
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20.radius),
+            topRight: Radius.circular(20.radius)),
       ),
       child: Column(children: [
+        SizedBox(height: 20.height),
         _initTitleWidget(),
-        32.verticalSpace,
+        SizedBox(height: 32.height),
         _initSliderWidget(),
-        16.verticalSpace,
+        SizedBox(height: 16.height),
         _initBeautyListWidget()
       ]),
     );
   }
 
-  _initTitleWidget() {
+  Widget _initTitleWidget() {
     return SizedBox(
-      height: 44,
-      width: screenWidth,
+      height: 24.height,
+      width: 1.screenWidth,
       child: Stack(
         children: [
           Positioned(
-            left: 14,
+            left: 24.width,
             child: GestureDetector(
               onTap: () {
                 Navigator.pop(context);
               },
-              child: Container(
-                width: 44,
-                height: 44,
-                padding: const EdgeInsets.all(10),
+              child: SizedBox(
+                width: 24.height,
+                height: 24.height,
                 child: Image.asset(
                   LiveImages.returnArrow,
                   package: Constants.pluginName,
@@ -66,8 +69,10 @@ class BeautyPanelWidgetState extends BasicState<BeautyPanelWidget> {
           ),
           Center(
             child: Text(
-              LiveKitLocalizations.of(Global.appContext())!.live_beauty_panel_title,
-              style: const TextStyle(color: LiveColors.designStandardG7, fontSize: 16),
+              LiveKitLocalizations.of(Global.appContext())!
+                  .common_beauty_panel_title,
+              style: const TextStyle(
+                  color: LiveColors.designStandardG7, fontSize: 16),
             ),
           ),
         ],
@@ -75,33 +80,34 @@ class BeautyPanelWidgetState extends BasicState<BeautyPanelWidget> {
     );
   }
 
-  _initSliderWidget() {
+  Widget _initSliderWidget() {
     return ValueListenableBuilder(
       valueListenable: selectIndex,
       builder: (BuildContext context, int value, Widget? child) {
         if (selectIndex.value == 0) {
-          return 22.verticalSpace;
+          return SizedBox(height: 22.height);
         } else {
           return ValueListenableBuilder(
             valueListenable: sliderValue,
-            builder: (BuildContext context, int value, Widget? child) {
+            builder: (context, sliderValue, _) {
               return SizedBox(
-                height: 22,
+                height: 22.height,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       _getLeftTitle(),
-                      style: const TextStyle(color: LiveColors.designStandardG6, fontSize: 12),
+                      style: const TextStyle(
+                          color: LiveColors.designStandardG6, fontSize: 12),
                     ),
-                    9.horizontalSpace,
+                    SizedBox(width: 9.width),
                     SizedBox(
-                      width: 220,
-                      height: 22,
+                      width: 220.width,
+                      height: 22.height,
                       child: Slider(
                         min: 0,
                         max: 9,
-                        value: sliderValue.value.toDouble(),
+                        value: sliderValue.toDouble(),
                         activeColor: LiveColors.designStandardB1,
                         thumbColor: LiveColors.designStandardFlowkitWhite,
                         onChanged: (double value) {
@@ -109,10 +115,11 @@ class BeautyPanelWidgetState extends BasicState<BeautyPanelWidget> {
                         },
                       ),
                     ),
-                    14.horizontalSpace,
+                    SizedBox(width: 14.width),
                     Text(
-                      sliderValue.value.toString(),
-                      style: const TextStyle(color: LiveColors.designStandardG6, fontSize: 12),
+                      sliderValue.toString(),
+                      style: const TextStyle(
+                          color: LiveColors.designStandardG6, fontSize: 12),
                     ),
                   ],
                 ),
@@ -124,12 +131,12 @@ class BeautyPanelWidgetState extends BasicState<BeautyPanelWidget> {
     );
   }
 
-  _initBeautyListWidget() {
+  Widget _initBeautyListWidget() {
     return SizedBox(
-      width: screenWidth,
-      height: 79,
+      width: 1.screenWidth,
+      height: 79.height,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: EdgeInsets.symmetric(horizontal: 24.width),
         child: ListView.builder(
           shrinkWrap: true,
           physics: const AlwaysScrollableScrollPhysics(),
@@ -138,40 +145,40 @@ class BeautyPanelWidgetState extends BasicState<BeautyPanelWidget> {
           itemBuilder: (context, index) {
             return ValueListenableBuilder(
               valueListenable: selectIndex,
-              builder: (BuildContext context, int value, Widget? child) {
+              builder: (context, selectIndex, _) {
                 return GestureDetector(
                   onTap: () => _onTapIndex(index),
                   child: Container(
-                    width: 56,
-                    height: 79,
-                    margin: const EdgeInsets.only(left: 15, right: 10),
+                    width: 56.width,
+                    height: 79.height,
+                    margin: EdgeInsets.only(right: 12.width),
                     child: Column(
                       children: [
                         Container(
-                          width: 56,
-                          height: 56,
-                          padding: const EdgeInsets.all(2),
+                          width: 56.width,
+                          height: 56.width,
                           decoration: BoxDecoration(
                             color: LiveColors.notStandardBlue30Transparency,
                             border: Border.all(
-                                color: selectIndex.value == index
+                                color: selectIndex == index
                                     ? LiveColors.designStandardB1
                                     : LiveColors.notStandardBlue30Transparency,
-                                width: 2),
-                            borderRadius: BorderRadius.circular(10),
+                                width: 2.width),
+                            borderRadius: BorderRadius.circular(10.radius),
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.all(10.0),
+                            padding: EdgeInsets.all(13.radius),
                             child: Image.asset(
                               list[index].icon,
                               package: Constants.pluginName,
                             ),
                           ),
                         ),
-                        2.verticalSpace,
+                        SizedBox(height: 2.height),
                         Text(
                           list[index].title,
-                          style: const TextStyle(color: LiveColors.designStandardG6, fontSize: 12),
+                          style: const TextStyle(
+                              color: LiveColors.designStandardG6, fontSize: 12),
                         ),
                       ],
                     ),
@@ -186,18 +193,15 @@ class BeautyPanelWidgetState extends BasicState<BeautyPanelWidget> {
   }
 }
 
-extension BeautyPanelWidgetStateLogicExtension on BeautyPanelWidgetState {
+extension on _BeautyPanelWidgetState {
   void _onSliderChanged(double value) {
     sliderValue.value = value.toInt();
     if (selectIndex.value == 1) {
-      liveController.getBeautyState().smoothLevel.value = sliderValue.value;
-      liveController.liveService.setBeautyLevel(liveController.getBeautyState().smoothLevel.value);
+      manager.setBeautyLevel(sliderValue.value);
     } else if (selectIndex.value == 2) {
-      liveController.getBeautyState().whitenessLevel.value = sliderValue.value;
-      liveController.liveService.setWhitenessLevel(liveController.getBeautyState().whitenessLevel.value);
+      manager.setWhitenessLevel(sliderValue.value);
     } else if (selectIndex.value == 3) {
-      liveController.getBeautyState().ruddyLevel.value = sliderValue.value;
-      liveController.liveService.setRuddyLevel(liveController.getBeautyState().ruddyLevel.value);
+      manager.setRuddyLevel(sliderValue.value);
     }
   }
 
@@ -211,21 +215,16 @@ extension BeautyPanelWidgetStateLogicExtension on BeautyPanelWidgetState {
     switch (item.type) {
       case BeautyItemType.none:
         sliderValue.value = 0;
-        liveController.getBeautyState().whitenessLevel.value = 0;
-        liveController.getBeautyState().smoothLevel.value = 0;
-        liveController.getBeautyState().ruddyLevel.value = 0;
-        liveController.liveService.setBeautyLevel(liveController.getBeautyState().whitenessLevel.value);
-        liveController.liveService.setWhitenessLevel(liveController.getBeautyState().smoothLevel.value);
-        liveController.liveService.setRuddyLevel(liveController.getBeautyState().ruddyLevel.value);
+        manager.closeBeautyEffect();
         break;
       case BeautyItemType.smooth:
-        sliderValue.value = liveController.getBeautyState().smoothLevel.value;
+        sliderValue.value = manager.state.smoothLevel.value;
         break;
       case BeautyItemType.whiteness:
-        sliderValue.value = liveController.getBeautyState().whitenessLevel.value;
+        sliderValue.value = manager.state.whitenessLevel.value;
         break;
       case BeautyItemType.ruddy:
-        sliderValue.value = liveController.getBeautyState().ruddyLevel.value;
+        sliderValue.value = manager.state.ruddyLevel.value;
         break;
       default:
         break;
@@ -233,27 +232,37 @@ extension BeautyPanelWidgetStateLogicExtension on BeautyPanelWidgetState {
   }
 
   bool _isClose() {
-    final state = liveController.getBeautyState();
-    final value = state.smoothLevel.value + state.whitenessLevel.value + state.ruddyLevel.value;
+    final state = manager.state;
+    final value = state.smoothLevel.value +
+        state.whitenessLevel.value +
+        state.ruddyLevel.value;
     return value == 0;
   }
 
   void _initData() {
+    BeautyState state =
+        BeautyStateFactory.getState(BeautyManager.beautyStateKey);
+    manager = BeautyManager(state: state);
+
     list = [
       BeautyItem(
-          title: LiveKitLocalizations.of(Global.appContext())!.live_beauty_item_none,
+          title: LiveKitLocalizations.of(Global.appContext())!
+              .common_beauty_item_close,
           icon: LiveImages.selectNone,
           type: BeautyItemType.none),
       BeautyItem(
-          title: LiveKitLocalizations.of(Global.appContext())!.live_beauty_item_smooth,
+          title: LiveKitLocalizations.of(Global.appContext())!
+              .common_beauty_item_smooth,
           icon: LiveImages.selectSmooth,
           type: BeautyItemType.smooth),
       BeautyItem(
-          title: LiveKitLocalizations.of(Global.appContext())!.live_beauty_item_whiteness,
+          title: LiveKitLocalizations.of(Global.appContext())!
+              .common_beauty_item_whiteness,
           icon: LiveImages.selectWhiteness,
           type: BeautyItemType.whiteness),
       BeautyItem(
-          title: LiveKitLocalizations.of(Global.appContext())!.live_beauty_item_ruddy,
+          title: LiveKitLocalizations.of(Global.appContext())!
+              .common_beauty_item_ruddy,
           icon: LiveImages.selectRuddy,
           type: BeautyItemType.ruddy),
     ];

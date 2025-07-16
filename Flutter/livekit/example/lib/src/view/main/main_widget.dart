@@ -31,11 +31,11 @@ class _MainWidgetState extends State<MainWidget> {
             children: [
               Image.asset(
                 'assets/app_icon.png',
-                width: context.adapter.getWidth(30),
-                height: context.adapter.getWidth(30),
+                width: 30.radius,
+                height: 30.radius,
                 fit: BoxFit.fitWidth,
               ),
-              SizedBox(width: context.adapter.getWidth(4)),
+              SizedBox(width: 4.width),
               const Text(
                 'TUILiveKit',
                 style: TextStyle(
@@ -48,8 +48,8 @@ class _MainWidgetState extends State<MainWidget> {
                 onPressed: () => _showFileBrowser(),
                 icon: Image.asset(
                   'assets/debug.png',
-                  width: context.adapter.getWidth(30),
-                  height: context.adapter.getWidth(30),
+                  width: 30.radius,
+                  height: 30.radius,
                 ),
               ),
               Expanded(
@@ -59,7 +59,7 @@ class _MainWidgetState extends State<MainWidget> {
                     onTap: () => _enterMeWidget(),
                     child: ClipOval(
                       child: Image.network(AppStore.userAvatar,
-                          width: context.adapter.getWidth(30)),
+                          width: 30.radius),
                     ),
                   ),
                 ),
@@ -78,7 +78,7 @@ class _MainWidgetState extends State<MainWidget> {
                 children: [
                   Card(
                     child: SizedBox(
-                      width: context.adapter.getWidth(165),
+                      width: 165.width,
                       child: MenuItemWidget(
                         iconUrl: 'assets/app_video_live.png',
                         title: S.current.app_video,
@@ -89,7 +89,7 @@ class _MainWidgetState extends State<MainWidget> {
                   ),
                   Card(
                     child: SizedBox(
-                      width: context.adapter.getWidth(165),
+                      width: 165.width,
                       child: MenuItemWidget(
                         iconUrl: 'assets/app_voice_room.png',
                         title: S.current.app_voice,
@@ -164,7 +164,7 @@ class MenuItemWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () => onTap?.call(),
       child: ClipRRect(
-          borderRadius: BorderRadius.circular(context.adapter.getWidth(10)),
+          borderRadius: BorderRadius.circular(10.width),
           child: Container(
             decoration: const BoxDecoration(
                 gradient: LinearGradient(
@@ -177,20 +177,20 @@ class MenuItemWidget extends StatelessWidget {
                   children: [
                     Padding(
                       padding: EdgeInsets.only(
-                          top: context.adapter.getHeight(16),
-                          left: context.adapter.getWidth(16)),
+                          top: 16.height,
+                          left: 16.width),
                       child: Image.asset(
                         iconUrl,
-                        width: context.adapter.getWidth(24),
-                        height: context.adapter.getWidth(24),
+                        width: 24.radius,
+                        height: 24.radius,
                       ),
                     ),
-                    SizedBox(width: context.adapter.getWidth(6)),
+                    SizedBox(width: 6.width),
                     SizedBox(
-                      width: context.adapter.getWidth(60),
+                      width: 60.width,
                       child: Padding(
                         padding:
-                            EdgeInsets.only(top: context.adapter.getHeight(16)),
+                            EdgeInsets.only(top: 16.height),
                         child: Text(
                           title,
                           style: const TextStyle(
@@ -202,20 +202,20 @@ class MenuItemWidget extends StatelessWidget {
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.only(
-                            top: context.adapter.getHeight(16),
-                            left: context.adapter.getWidth(16)),
+                            top: 16.height,
+                            left: 16.width),
                         child: Image.asset(
                           'assets/app_arrow.png',
-                          width: context.adapter.getWidth(16),
-                          height: context.adapter.getWidth(16),
+                          width: 16.radius,
+                          height: 16.radius,
                         ),
                       ),
                     )
                   ],
                 ),
-                SizedBox(height: context.adapter.getHeight(20)),
+                SizedBox(height: 20.height),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: context.adapter.getWidth(16)),
+                  padding: EdgeInsets.symmetric(horizontal: 16.width),
                   child: Text(
                     description,
                     style: const TextStyle(color: Color(0xFF626e84)),

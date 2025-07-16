@@ -25,50 +25,48 @@ class Alert {
       context: Global.appContext(),
       barrierDismissible: false,
       builder: (context) {
-        final screenHeight = MediaQuery.of(context).size.height;
         return Dialog(
           backgroundColor: LiveColors.designStandardTransparent,
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              maxHeight: screenHeight * 0.8,
-              minWidth: context.adapter.getWidth(323),
+              maxHeight: 0.8.screenHeight,
+              minWidth: 323.width,
             ),
             child: SingleChildScrollView(
               child: Container(
                 decoration: BoxDecoration(
                   color: LiveColors.designStandardFlowkitWhite,
-                  borderRadius:
-                      BorderRadius.circular(context.adapter.getHeight(10)),
+                  borderRadius: BorderRadius.circular(10.height),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Padding(
                       padding: EdgeInsets.only(
-                          left: context.adapter.getWidth(45),
-                          top: context.adapter.getHeight(24),
-                          right: context.adapter.getWidth(45),
-                          bottom: context.adapter.getHeight(24)),
+                          left: 45.width,
+                          top: 24.height,
+                          right: 45.width,
+                          bottom: 24.height),
                       child: Row(
                         children: [
                           if (info.imageUrl != null)
                             ClipOval(
                               child: Image.network(
                                 info.imageUrl!,
-                                width: context.adapter.getWidth(24),
-                                height: context.adapter.getWidth(24),
+                                width: 24.radius,
+                                height: 24.radius,
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, _) {
                                   return Image.asset(
                                     LiveImages.defaultAvatar,
                                     package: Constants.pluginName,
-                                    width: context.adapter.getWidth(24),
-                                    height: context.adapter.getWidth(24),
+                                    width: 24.radius,
+                                    height: 24.radius,
                                   );
                                 },
                               ),
                             ),
-                          SizedBox(width: context.adapter.getWidth(4)),
+                          SizedBox(width: 4.width),
                           Expanded(
                             child: Text(
                               info.description,
@@ -81,8 +79,7 @@ class Alert {
                       ),
                     ),
                     Container(
-                        height: context.adapter.getHeight(1),
-                        color: LiveColors.designStandardG7),
+                        height: 1.height, color: LiveColors.designStandardG7),
                     IntrinsicHeight(
                       child: Row(
                         children: [
@@ -102,7 +99,7 @@ class Alert {
                             ),
                           if (info.cancelActionInfo != null)
                             Container(
-                              width: context.adapter.getWidth(1),
+                              width: 1.width,
                               color: LiveColors.designStandardG7,
                             ),
                           Expanded(

@@ -25,7 +25,7 @@ class SeatManager {
       return;
     }
     toastSubject?.add(ErrorHandler.convertToErrorMessage(
-            result.code.value(), result.message) ??
+            result.code.rawValue, result.message) ??
         '');
   }
 
@@ -36,7 +36,7 @@ class SeatManager {
       return;
     }
     toastSubject?.add(ErrorHandler.convertToErrorMessage(
-            result.code.value(), result.message) ??
+            result.code.rawValue, result.message) ??
         '');
   }
 

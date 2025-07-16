@@ -1,18 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:rtc_room_engine/api/room/tui_room_engine.dart';
 
-import '../../common/index.dart';
-import 'audience_list_panel_widget.dart';
+import '../../../../common/index.dart';
+import 'manager/audience_list_manager.dart';
+import 'manager/audience_list_observer.dart';
+import 'panel/audience_list_panel_widget.dart';
 
-class AudienceListWidget extends BasicWidget {
-  const AudienceListWidget({super.key, required super.liveController});
+class AudienceListWidget extends StatefulWidget {
+  final String roomId;
+
+  const AudienceListWidget({super.key, required this.roomId});
 
   @override
-  BasicState getState() {
-    return AudienceListWidgetState();
-  }
+  State<AudienceListWidget> createState() => _AudienceListWidgetState();
 }
 
-class AudienceListWidgetState extends BasicState<AudienceListWidget> {
+class _AudienceListWidgetState extends State<AudienceListWidget> {
+  final AudienceListManager manager = AudienceListManager();
+  late final AudienceListObserver observer =
+      AudienceListObserver(manager: WeakReference(manager));
+
+  @override
+  void initState() {
+    super.initState();
+    manager.initRoomInfo(widget.roomId);
+    TUIRoomEngine.sharedInstance().addObserver(observer);
+  }
+
+  @override
+  void dispose() {
+    TUIRoomEngine.sharedInstance().removeObserver(observer);
+    manager.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -20,15 +41,18 @@ class AudienceListWidgetState extends BasicState<AudienceListWidget> {
         _audienceListViewClick();
       },
       child: ValueListenableBuilder(
-        valueListenable: liveController.getUserState().userList,
-        builder: (BuildContext context, value, Widget? child) {
-          return SizedBox(
-            width: 132,
-            height: 24,
-            child: Stack(
+        valueListenable: manager.state.audienceList,
+        builder: (context, audienceList, child) {
+          return Container(
+            constraints:
+                BoxConstraints(minWidth: 24.width, maxWidth: 126.width),
+            height: 24.height,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                _initAudienceCountWidget(),
                 _initAudienceAvatarWidget(),
+                SizedBox(width: audienceList.isNotEmpty ? 4.width : 0),
+                _initAudienceCountWidget(),
               ],
             ),
           );
@@ -37,81 +61,39 @@ class AudienceListWidgetState extends BasicState<AudienceListWidget> {
     );
   }
 
-  _initAudienceCountWidget() {
+  Widget _initAudienceAvatarWidget() {
     return ValueListenableBuilder(
-      valueListenable: liveController.getUserState().userList,
-      builder: (BuildContext context, value, Widget? child) {
-        return ValueListenableBuilder(
-          valueListenable: liveController.getRoomSate().userCount,
-          builder: (BuildContext context, value, Widget? child) {
-            var count = liveController.getRoomSate().userCount.value;
-            if (liveController.getUserState().userList.value.length <= Constants.roomMaxShowUserCount) {
-              count = liveController.getUserState().userList.value.length;
-            }
-            return Positioned(
-              top: 0,
-              right: 0,
-              child: ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(12)),
-                child: Container(
-                  color: LiveColors.notStandard40G1,
-                  width: 38,
-                  height: 24,
-                  child: Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "$count",
-                          style: const TextStyle(
-                            color: LiveColors.designStandardFlowkitWhite,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 10,
-                          ),
-                        ),
-                        Image.asset(
-                          LiveImages.audienceListArrow,
-                          width: 8,
-                          height: 8,
-                          package: Constants.pluginName,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  _initAudienceAvatarWidget() {
-    return ValueListenableBuilder(
-      valueListenable: liveController.getUserState().userList,
-      builder: (BuildContext context, value, Widget? child) {
-        return SizedBox(
-          width: 80,
-          child: Container(
-            color: Colors.transparent,
+      valueListenable: manager.state.audienceList,
+      builder: (context, audienceList, child) {
+        return Container(
+          constraints: BoxConstraints(maxWidth: 52.width),
+          height: 24.height,
+          color: Colors.transparent,
+          child: Visibility(
+            visible: audienceList.isNotEmpty,
             child: ListView.builder(
+              shrinkWrap: true,
               reverse: true,
               scrollDirection: Axis.horizontal,
-              itemCount: liveController.getUserState().userList.value.length,
-              itemBuilder: (BuildContext context, int index) {
-                final user = liveController.getUserState().userList.value.toList()[index];
+              itemCount: audienceList.length,
+              itemBuilder: (context, index) {
+                final user = audienceList[index];
+                final double padding = index == 0 ? 0 : 4.width;
                 return Padding(
-                  padding: const EdgeInsets.only(right: 4),
+                  padding: EdgeInsets.only(right: padding),
                   child: ClipOval(
-                    child: Image.network(
-                      user.avatarUrl.value!,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Image.asset(
-                          LiveImages.defaultAvatar,
-                          package: Constants.pluginName,
-                        );
-                      },
+                    child: SizedBox(
+                      width: 24.radius,
+                      height: 24.radius,
+                      child: Image.network(
+                        user.avatarUrl,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset(
+                            LiveImages.defaultAvatar,
+                            package: Constants.pluginName,
+                          );
+                        },
+                      ),
                     ),
                   ),
                 );
@@ -122,12 +104,71 @@ class AudienceListWidgetState extends BasicState<AudienceListWidget> {
       },
     );
   }
+
+  Widget _initAudienceCountWidget() {
+    return ListenableBuilder(
+      listenable: Listenable.merge(
+          [manager.state.audienceList, manager.state.audienceCount]),
+      builder: (context, child) {
+        var count = manager.state.audienceCount.value;
+        if (manager.state.audienceList.value.length <=
+            Constants.roomMaxShowUserCount) {
+          count = manager.state.audienceList.value.length;
+        }
+        return ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(12.radius)),
+          child: Container(
+            color: LiveColors.black.withAlpha(0x40),
+            constraints: BoxConstraints(minWidth: 24.width, maxWidth: 42.width),
+            height: 24.height,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "$count",
+                  style: const TextStyle(
+                    color: LiveColors.designStandardFlowkitWhite,
+                    fontWeight: FontWeight.normal,
+                    fontSize: 10,
+                  ),
+                ),
+                Image.asset(
+                  LiveImages.audienceListArrow,
+                  width: 8.radius,
+                  height: 8.radius,
+                  package: Constants.pluginName,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 }
 
-extension AudienceListWidgetStateLogicExtension on AudienceListWidgetState {
-  _audienceListViewClick() {
-    showWidget(AudienceListPanelWidget(
-      liveController: liveController,
-    ));
+extension on _AudienceListWidgetState {
+  void _audienceListViewClick() {
+    manager.getUserList();
+    _popupWidget(AudienceListPanelWidget(manager: manager));
+  }
+
+  void _popupWidget(Widget widget, {Color? barrierColor}) {
+    showModalBottomSheet(
+      barrierColor: barrierColor,
+      isScrollControlled: true,
+      context: Global.appContext(),
+      builder: (context) => Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20.radius),
+            topRight: Radius.circular(20.radius),
+          ),
+          color: LiveColors.designStandardG2,
+        ),
+        child: widget,
+      ),
+    );
   }
 }

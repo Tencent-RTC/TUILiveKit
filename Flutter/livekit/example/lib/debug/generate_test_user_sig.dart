@@ -13,6 +13,7 @@
 ///           Given that it is more difficult to hack a server than a client app, server-end calculation can better protect your key.
 ///
 /// Reference: https://cloud.tencent.com/document/product/647/17275#Server
+library;
 
 // ignore_for_file: slash_for_doc_comments
 
@@ -48,7 +49,8 @@ class GenerateTestUserSig {
    * Note: this method is for testing only. Before commercial launch, please migrate the UserSig calculation code and key to your backend server to prevent key disclosure and traffic stealing.
    * Reference: https://cloud.tencent.com/document/product/647/17275#Server
    */
-  static String secretKey = '';
+  static String secretKey =
+      '';
 
   static genTestSig(String userId) {
     int currTime = _getCurrentTime();
@@ -86,13 +88,17 @@ class GenerateTestUserSig {
     String contentToBeSigned =
         "TLS.identifier:$identifier\nTLS.sdkappid:$sdkappid\nTLS.time:$currTime\nTLS.expire:$expire\n";
     Hmac hmacSha256 = Hmac(sha256, utf8.encode(secretKey));
-    Digest hmacSha256Digest = hmacSha256.convert(utf8.encode(contentToBeSigned));
+    Digest hmacSha256Digest =
+        hmacSha256.convert(utf8.encode(contentToBeSigned));
     return base64.encode(hmacSha256Digest.bytes);
   }
 
   static String _escape({
     required String content,
   }) {
-    return content.replaceAll('\+', '*').replaceAll('\/', '-').replaceAll('=', '_');
+    return content
+        .replaceAll('+', '*')
+        .replaceAll('/', '-')
+        .replaceAll('=', '_');
   }
 }

@@ -60,7 +60,7 @@ class _AudienceDashboardWidgetState extends State<AudienceDashboardWidget> {
           _closeWidget();
         },
         child: Text(
-          LiveKitLocalizations.of(Global.appContext())!.live_live_has_stop,
+          LiveKitLocalizations.of(Global.appContext())!.common_live_has_stop,
           style: const TextStyle(
               color: LiveColors.designStandardFlowkitWhite,
               fontSize: 20),

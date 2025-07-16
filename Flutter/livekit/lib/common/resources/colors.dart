@@ -49,6 +49,9 @@ class LiveColors {
   /// G7-->
   static const Color designStandardG7 = Color(0xFFD5E0F2);
 
+  /// G8 -->
+  static const Color designStandardG8 = Color(0xFFF2F5FC);
+
   /// Flowkit/Red-->
   static const Color designStandardFlowkitRed = Color(0xFFFC5555);
 
@@ -80,6 +83,7 @@ class LiveColors {
   static const Color notStandardGrey = Color(0xFF7C85A6);
   static const Color notStandardRed = Color(0xFFE5395C);
   static const Color notStandardWhite20Transparency = Color(0x33FFFFFF);
+  static const Color notStandardWhite30Transparency = Color(0x4DFFFFFF);
   static const Color notStandardGrey20Transparency = Color(0x3399A2B2);
   static const Color notStandardBlue30Transparency = Color(0x4D4F586B);
   static const Color notStandardWhiteD2 = Color(0xFFD2D2D2);
@@ -87,9 +91,11 @@ class LiveColors {
   static const Color notStandardBlue = Color(0xFF0157DF);
   static const Color notStandardGreyC5 = Color(0x36C5CCDB);
   static const Color notStandardBlueD1 = Color(0xFF25D1D1);
+  static const Color notStandardBlack = Color(0xFF000000);
   static const Color notStandardBlack80Transparency = Color(0x80000000);
   static const Color notStandardBlack4DTransparency = Color(0x4D0F1014);
   static const Color notStandardBlack00Transparency = Color(0x000F1014);
+  static const Color notStandardPinkColor = Color(0xFFF15065);
 
   /// barrage color-->
   static const Color barrageColorMsg1 = Color(0xFF3074FD);

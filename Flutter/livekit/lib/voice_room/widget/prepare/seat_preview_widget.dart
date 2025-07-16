@@ -31,15 +31,13 @@ class SeatPreviewWidget extends StatelessWidget {
                 color: LiveColors.designStandardWhite7.withAlpha(0x1A),
                 border: Border.all(
                     color: LiveColors.designStandardWhite7.withAlpha(0x1A),
-                    width: context.adapter.getWidth(0.5)),
+                    width: 0.5.width),
                 shape: BoxShape.circle),
-            width: context.adapter.getWidth(50),
-            height: context.adapter.getWidth(50),
+            width: 50.radius,
+            height: 50.radius,
             child: Center(
               child: Image.asset(LiveImages.emptySeat,
-                  package: Constants.pluginName,
-                  width: context.adapter.getWidth(22),
-                  height: context.adapter.getWidth(22)),
+                  package: Constants.pluginName, width: 22.radius, height: 22.radius),
             ),
           );
         }),

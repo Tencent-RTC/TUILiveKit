@@ -20,25 +20,29 @@ public class TuilivekitPlugin: NSObject, FlutterPlugin {
     }
   }
 
-  public func apiLog(_ call: FlutterMethodCall, _ result: @escaping FlutterResult) {
+    public func apiLog(_ call: FlutterMethodCall, _ result: @escaping FlutterResult) {
       guard let arguments = call.arguments as? [String: Any],
-            let logString = arguments["logString"] as? String,
-            let level = arguments["level"] as? Int else {
-          result(0)
-          return
+        let logString = arguments["logString"] as? String,
+        let level = arguments["level"] as? Int,
+        let module = arguments["module"] as? String,
+        let file = arguments["file"] as? String,
+        let line = arguments["line"] as? Int
+      else {
+        result(0)
+        return
       }
 
       switch level {
       case 0:
-          LiveKitLog.info("\(#file)", "\(#line)","\(logString)")
+        LiveKitLog.info("\(module)", "\(file)", "\(line)", "\(logString)")
       case 1:
-          LiveKitLog.warn("\(#file)", "\(#line)","\(logString)")
+        LiveKitLog.warn("\(module)", "\(file)", "\(line)", "\(logString)")
       case 2:
-          LiveKitLog.error("\(#file)", "\(#line)","\(logString)")
+        LiveKitLog.error("\(module)", "\(file)", "\(line)", "\(logString)")
       default:
-          LiveKitLog.info("\(#file)", "\(#line)","\(logString)")
+        LiveKitLog.info("\(module)", "\(file)", "\(line)", "\(logString)")
       }
 
       result(0)
-  }
+   }
 }

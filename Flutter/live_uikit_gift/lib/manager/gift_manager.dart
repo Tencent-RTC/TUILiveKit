@@ -70,19 +70,21 @@ class GiftManager {
                 priority: MessagePriorityEnum.V2TIM_PRIORITY_NORMAL,
               );
       if (sendMessageRes.code == 0) {
-        debugPrint("GiftManager sendBarrage success");
+        debugPrint("GiftManager sendGift success");
         GiftStore().state.giftMessage.value = message;
         if (_onSendGiftCallback != null) {
           _onSendGiftCallback!(message);
         }
         return true;
       } else {
+        GiftStore().onError?.call(sendMessageRes.code, sendMessageRes.desc);
         debugPrint(
-            "GiftManager sendBarrage fail,{code:${sendMessageRes.code}, desc:${sendMessageRes.desc}");
+            "GiftManager sendGift fail,{code:${sendMessageRes.code}, desc:${sendMessageRes.desc}");
         return false;
       }
     } else {
-      debugPrint("GiftManager sendBarrage createTextMessage fail,"
+      GiftStore().onError?.call(createCustomMessage.code, createCustomMessage.desc);
+      debugPrint("GiftManager sendGift createTextMessage fail,"
           "{code:${createCustomMessage.code}, desc:${createCustomMessage.desc}");
       return false;
     }

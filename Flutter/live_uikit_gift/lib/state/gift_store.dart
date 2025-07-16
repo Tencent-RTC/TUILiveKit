@@ -4,8 +4,11 @@ import 'gift_message.dart';
 import 'gift_state.dart';
 import 'gift_user.dart';
 
+typedef OnGiftError = void Function(int code, String message);
+
 class GiftStore {
   static GiftStore? _instance;
+  OnGiftError? onError;
 
   GiftStore._internal();
 

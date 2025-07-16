@@ -1,5 +1,8 @@
 class Constants {
   static const String pluginName = 'tencent_live_uikit';
+
+  static const String liveKitLog = 'LiveKitLog';
+
   static const String defaultCoverUrl =
       'https://liteav-test-1252463788.cos.ap-guangzhou.myqcloud.com/voice_room/voice_room_cover1.png';
   static const List<String> coverUrlList = [
@@ -45,11 +48,15 @@ class Constants {
       'EVENT_PARAMS_KEY_ENABLE_SLIDE';
 
   static const int defaultMaxSeatCount = 8;
+  static const int defaultRequestTimeout = 60;
   static const int roomMaxShowUserCount = 100;
+  static const int battleDuration = 30;
+  static const int battleRequestTimeout = 10;
+  static const int battleEndInfoDuration = 5;
 
   static const int dataReportComponentLiveRoom = 21;
   static const int dataReportComponentVoiceRoom = 22;
-  static const int dataReportFramework = 1;
+  static const int dataReportFramework = 7;
   static const int dataReportLanguageFlutter = 9;
   static int dataReportComponent = dataReportComponentLiveRoom;
 

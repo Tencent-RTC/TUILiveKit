@@ -10,3 +10,4 @@ export 'resources/index.dart';
 export '../component/index.dart';
 export 'screen/index.dart';
 export 'widget/index.dart';
+export 'reporter/index.dart';

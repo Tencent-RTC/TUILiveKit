@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tencent_live_uikit/common/index.dart';
 
 import '../../../../common/constants/index.dart';
 import '../../../../common/language/index.dart';
@@ -66,10 +67,9 @@ class _AnchorDashboardWidgetState extends State<AnchorDashboardWidget> {
           _closeWidget();
         },
         child: Text(
-          LiveKitLocalizations.of(Global.appContext())!.live_live_has_stop,
+          LiveKitLocalizations.of(Global.appContext())!.common_live_has_stop,
           style: const TextStyle(
-              color: LiveColors.designStandardFlowkitWhite,
-              fontSize: 20),
+              color: LiveColors.designStandardFlowkitWhite, fontSize: 20),
         ),
       ),
     );
@@ -93,10 +93,9 @@ class _AnchorDashboardWidgetState extends State<AnchorDashboardWidget> {
               margin: const EdgeInsets.only(top: 5, left: 15),
               child: Text(
                 LiveKitLocalizations.of(Global.appContext())!
-                    .live_common_this_live_data,
+                    .common_common_this_live_data,
                 style: const TextStyle(
-                    color: LiveColors.designStandardFlowkitWhite,
-                    fontSize: 14),
+                    color: LiveColors.designStandardFlowkitWhite, fontSize: 14),
               ),
             ),
             SizedBox(
@@ -137,15 +136,14 @@ class _AnchorDashboardWidgetState extends State<AnchorDashboardWidget> {
         Text(
           "${model.liveDuration}",
           style: const TextStyle(
-              color: LiveColors.designStandardFlowkitWhite,
-              fontSize: 12),
+              color: LiveColors.designStandardFlowkitWhite, fontSize: 12),
         ),
-        2.verticalSpace,
+        SizedBox(height: 2.height),
         Text(
           LiveKitLocalizations.of(Global.appContext())!
-              .live_common_live_duration,
-          style: const TextStyle(
-              color: LiveColors.designStandardG5, fontSize: 12),
+              .common_common_live_duration,
+          style:
+              const TextStyle(color: LiveColors.designStandardG5, fontSize: 12),
         ),
       ],
     );
@@ -159,15 +157,14 @@ class _AnchorDashboardWidgetState extends State<AnchorDashboardWidget> {
         Text(
           "${model.audienceCount}",
           style: const TextStyle(
-              color: LiveColors.designStandardFlowkitWhite,
-              fontSize: 12),
+              color: LiveColors.designStandardFlowkitWhite, fontSize: 12),
         ),
-        2.verticalSpace,
+        SizedBox(height: 2.height),
         Text(
           LiveKitLocalizations.of(Global.appContext())!
-              .live_common_live_people_number,
-          style: const TextStyle(
-              color: LiveColors.designStandardG5, fontSize: 12),
+              .common_common_live_people_number,
+          style:
+              const TextStyle(color: LiveColors.designStandardG5, fontSize: 12),
         ),
       ],
     );
@@ -181,15 +178,14 @@ class _AnchorDashboardWidgetState extends State<AnchorDashboardWidget> {
         Text(
           "${model.messageCount}",
           style: const TextStyle(
-              color: LiveColors.designStandardFlowkitWhite,
-              fontSize: 12),
+              color: LiveColors.designStandardFlowkitWhite, fontSize: 12),
         ),
-        2.verticalSpace,
+        SizedBox(height: 2.height),
         Text(
           LiveKitLocalizations.of(Global.appContext())!
-              .live_common_message_count,
-          style: const TextStyle(
-              color: LiveColors.designStandardG5, fontSize: 12),
+              .common_common_message_count,
+          style:
+              const TextStyle(color: LiveColors.designStandardG5, fontSize: 12),
         ),
       ],
     );
@@ -203,15 +199,14 @@ class _AnchorDashboardWidgetState extends State<AnchorDashboardWidget> {
         Text(
           "${model.giftIncome}",
           style: const TextStyle(
-              color: LiveColors.designStandardFlowkitWhite,
-              fontSize: 12),
+              color: LiveColors.designStandardFlowkitWhite, fontSize: 12),
         ),
-        2.verticalSpace,
+        SizedBox(height: 2.height),
         Text(
           LiveKitLocalizations.of(Global.appContext())!
-              .live_common_gift_income,
-          style: const TextStyle(
-              color: LiveColors.designStandardG5, fontSize: 12),
+              .common_common_gift_income,
+          style:
+              const TextStyle(color: LiveColors.designStandardG5, fontSize: 12),
         ),
       ],
     );
@@ -225,15 +220,14 @@ class _AnchorDashboardWidgetState extends State<AnchorDashboardWidget> {
         Text(
           "${model.giftPeopleCount}",
           style: const TextStyle(
-              color: LiveColors.designStandardFlowkitWhite,
-              fontSize: 12),
+              color: LiveColors.designStandardFlowkitWhite, fontSize: 12),
         ),
-        2.verticalSpace,
+        SizedBox(height: 2.height),
         Text(
           LiveKitLocalizations.of(Global.appContext())!
-              .live_common_send_gift_people_count,
-          style: const TextStyle(
-              color: LiveColors.designStandardG5, fontSize: 12),
+              .common_common_send_gift_people_count,
+          style:
+              const TextStyle(color: LiveColors.designStandardG5, fontSize: 12),
         ),
       ],
     );
@@ -247,15 +241,14 @@ class _AnchorDashboardWidgetState extends State<AnchorDashboardWidget> {
         Text(
           "${model.likeCount}",
           style: const TextStyle(
-              color: LiveColors.designStandardFlowkitWhite,
-              fontSize: 12),
+              color: LiveColors.designStandardFlowkitWhite, fontSize: 12),
         ),
-        2.verticalSpace,
+        SizedBox(height: 2.height),
         Text(
           LiveKitLocalizations.of(Global.appContext())!
-              .live_common_like_count,
-          style: const TextStyle(
-              color: LiveColors.designStandardG5, fontSize: 12),
+              .common_common_like_count,
+          style:
+              const TextStyle(color: LiveColors.designStandardG5, fontSize: 12),
         ),
       ],
     );

@@ -9,12 +9,14 @@ class GiftDisplayController {
       {required String roomId,
       required GiftUser owner,
       required GiftUser self,
-      bool enablePreloading = false}) {
+      bool enablePreloading = false,
+      OnGiftError? onError}) {
     GiftStore().giftManager.init(roomId, owner, self);
     GiftStore().likeManager.init(roomId, owner, self);
     if (enablePreloading) {
       _preloadSvgaResource();
     }
+    GiftStore().onError = onError;
   }
 
   void setGiftCallback(

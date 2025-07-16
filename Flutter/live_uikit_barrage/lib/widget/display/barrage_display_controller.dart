@@ -8,8 +8,9 @@ class BarrageDisplayController {
   CustomBarrageBuilder? customBarrageBuilder;
 
   BarrageDisplayController(
-      {required String roomId, required String ownerId, required String selfUserId, String? selfName}) {
+      {required String roomId, required String ownerId, required String selfUserId, String? selfName, OnBarrageError? onError}) {
     BarrageStore().manager.init(roomId, ownerId, selfUserId, selfName);
+    BarrageStore().onError = onError;
   }
 
   void insertMessage(Barrage barrage) {

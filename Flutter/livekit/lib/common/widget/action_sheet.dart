@@ -6,7 +6,7 @@ class ActionSheet {
       List<ActionSheetModel> list, Function(ActionSheetModel) clickBlock,
       {String? title, Color backgroundColor = LiveColors.designStandardG2}) {
     final bool hasTitle = title != null && title.isNotEmpty;
-    double titleHeight = hasTitle ? 50 : 0;
+    double titleHeight = hasTitle ? 50.height : 0;
     double bottomHeight = MediaQuery.of(Global.appContext()).padding.bottom;
     double actionSheetHeight =
         list.fold(0.0, (sum, item) => sum + item.cellHeight);
@@ -15,9 +15,9 @@ class ActionSheet {
       context: Global.appContext(),
       builder: (context) => Container(
         decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20.radius),
+            topRight: Radius.circular(20.radius),
           ),
           color: backgroundColor,
         ),
@@ -40,7 +40,7 @@ class ActionSheet {
             Visibility(
                 visible: hasTitle,
                 child: Container(
-                    height: 1, color: LiveColors.designStandardWhite7)),
+                    height: 1.height, color: LiveColors.designStandardWhite7)),
             Expanded(
               child: ListView.builder(
                 itemCount: list.length,
@@ -78,24 +78,24 @@ class ActionSheet {
                 children: [
                   Visibility(
                     visible: model.icon.isNotEmpty,
-                    child: const SizedBox(
-                      width: 14,
+                    child: SizedBox(
+                      width: 14.width,
                     ),
                   ),
                   Visibility(
                     visible: model.icon.isNotEmpty,
                     child: Image.asset(
                       model.icon,
-                      width: 20,
-                      height: 20,
+                      width: 20.width,
+                      height: 20.height,
                       fit: BoxFit.cover,
                       package: Constants.pluginName,
                     ),
                   ),
                   Visibility(
                     visible: model.icon.isNotEmpty,
-                    child: const SizedBox(
-                      width: 14,
+                    child: SizedBox(
+                      width: 14.width,
                     ),
                   ),
                   Text(

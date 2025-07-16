@@ -1,63 +1,91 @@
 import 'package:flutter/material.dart';
+import 'package:rtc_room_engine/api/room/tui_room_engine.dart';
+import 'package:tencent_cloud_chat_sdk/tencent_im_sdk_plugin.dart';
 
-import '../../common/index.dart';
-import '../../live_stream/state/index.dart';
-import 'live_info_detail_widget.dart';
+import '../../../../common/constants/constants.dart';
+import '../../../../common/language/index.dart';
+import '../../../../common/resources/colors.dart';
+import '../../../../common/resources/images.dart';
+import '../../../../common/widget/index.dart';
+import '../../../../common/screen/index.dart';
+import 'manager/live_info_engine_observer.dart';
+import 'manager/live_info_im_observer.dart';
+import 'manager/live_info_manager.dart';
+import 'panel/live_info_detail_widget.dart';
 
-class LiveInfoWidget extends BasicWidget {
-  const LiveInfoWidget({super.key, required super.liveController});
+class LiveInfoWidget extends StatefulWidget {
+  final String roomId;
+
+  const LiveInfoWidget({super.key, required this.roomId});
 
   @override
-  LiveInfoWidgetState getState() {
-    return LiveInfoWidgetState();
-  }
+  State<LiveInfoWidget> createState() => _LiveInfoWidgetState();
 }
 
-class LiveInfoWidgetState extends BasicState<LiveInfoWidget> {
+class _LiveInfoWidgetState extends State<LiveInfoWidget> {
+  final LiveInfoManager manager = LiveInfoManager();
+  late final LiveInfoIMObserver imObserver =
+      LiveInfoIMObserver(manager: WeakReference(manager));
+  late final LiveInfoEngineObserver engineObserver =
+      LiveInfoEngineObserver(manager: WeakReference(manager));
+
+  @override
+  void initState() {
+    super.initState();
+    manager.initRoomInfo(widget.roomId);
+    TUIRoomEngine.sharedInstance().addObserver(engineObserver);
+    TencentImSDKPlugin.v2TIMManager
+        .getFriendshipManager()
+        .addFriendListener(listener: imObserver);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    TUIRoomEngine.sharedInstance().removeObserver(engineObserver);
+    manager.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final isOwner = manager.state.ownerId.value == manager.state.selfUserId;
     return GestureDetector(
       onTap: () {
         _showLiveInfoDetailWidget();
       },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            height: 32,
-            padding: const EdgeInsets.only(right: 4),
-            decoration: const BoxDecoration(
-              color: LiveColors.notStandardGray60Transparency,
-              borderRadius: BorderRadius.all(Radius.circular(16)),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                _initOwnerAvatarWidget(),
-                _initOwnerNameWidget(),
-                _initFollowWidget(),
-              ],
-            ),
-          ),
-          Expanded(child: Container(color: LiveColors.designStandardTransparent)),
-        ],
+      child: Container(
+        constraints: BoxConstraints(maxWidth: isOwner ? 160.width : 200.width),
+        height: 40.height,
+        decoration: BoxDecoration(
+          color: LiveColors.black.withAlpha(0x40),
+          borderRadius: BorderRadius.all(Radius.circular(20.height)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _initOwnerAvatarWidget(),
+            _initOwnerNameWidget(),
+            SizedBox(width: 12.width),
+            _initFollowWidget(),
+          ],
+        ),
       ),
     );
   }
 
-  _initOwnerAvatarWidget() {
+  Widget _initOwnerAvatarWidget() {
     return Container(
-        margin: const EdgeInsets.only(left: 4, right: 4),
-        width: 24,
-        height: 24,
+        margin: EdgeInsets.only(left: 4.width, right: 4.width),
+        width: 32.radius,
+        height: 32.radius,
         child: ClipOval(
           child: ValueListenableBuilder(
-            valueListenable: liveController.getRoomSate().ownerInfo.avatarUrl,
-            builder: (BuildContext context, String? value, Widget? child) {
+            valueListenable: manager.state.ownerAvatarUrl,
+            builder: (context, avatarUrl, child) {
               return Image.network(
-                liveController.getRoomSate().ownerInfo.avatarUrl.value ?? "",
+                avatarUrl,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return Image.asset(
@@ -71,78 +99,113 @@ class LiveInfoWidgetState extends BasicState<LiveInfoWidget> {
         ));
   }
 
-  _initOwnerNameWidget() {
+  Widget _initOwnerNameWidget() {
     return Container(
-      margin: const EdgeInsets.only(right: 4),
-      constraints: const BoxConstraints(maxWidth: 72),
+      constraints: BoxConstraints(maxWidth: 96.width),
       child: ValueListenableBuilder(
-          valueListenable: liveController.getRoomSate().ownerInfo.name,
-          builder: (BuildContext context, String? value, Widget? child) {
+          valueListenable: manager.state.ownerName,
+          builder: (context, ownerName, child) {
             return Text(
-              liveController.getRoomSate().ownerInfo.name.value ?? "",
+              ownerName,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
-                  fontSize: 12, fontStyle: FontStyle.normal, color: LiveColors.designStandardG7),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  fontStyle: FontStyle.normal,
+                  color: LiveColors.designStandardG7),
             );
           }),
     );
   }
 
-  _initFollowWidget() {
-    return Visibility(
-      visible: liveController.getRoomSate().ownerInfo.userId != liveController.getUserState().selfInfo.userId,
-      child: ValueListenableBuilder(
-        valueListenable: liveController.getUserState().myFollowingUserList,
-        builder: (BuildContext context, value, Widget? child) {
-          return Container(
-            margin: const EdgeInsets.only(left: 10.5),
-            width: 45,
-            height: 24,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color: _isFollow() ? LiveColors.notStandardGreyC5 : LiveColors.notStandardBlue,
-            ),
-            alignment: Alignment.center,
-            child: _isFollow()
-                ? Image.asset(
-                    LiveImages.followed,
-                    package: Constants.pluginName,
-                    width: 16,
-                    height: 16,
-                  )
-                : GestureDetector(
-                    onTap: () {
-                      _followAnchor();
-                    },
-                    child: Text(
-                      LiveKitLocalizations.of(Global.appContext())!.live_follow_anchor,
-                      style: const TextStyle(
-                          fontSize: 12, fontStyle: FontStyle.normal, color: LiveColors.designStandardG7),
-                    ),
-                  ),
-          );
-        },
-      ),
+  Widget _initFollowWidget() {
+    return ValueListenableBuilder(
+      valueListenable: manager.state.ownerId,
+      builder: (context, value, child) {
+        return Visibility(
+          visible: manager.state.ownerId.value != manager.state.selfUserId,
+          child: ValueListenableBuilder(
+            valueListenable: manager.state.followingList,
+            builder: (BuildContext context, value, Widget? child) {
+              return Container(
+                margin: EdgeInsets.only(right: 8.width),
+                width: 44.width,
+                height: 24.height,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12.height),
+                  color: _isFollow()
+                      ? LiveColors.notStandardGreyC5
+                      : LiveColors.notStandardBlue,
+                ),
+                alignment: Alignment.center,
+                child: _isFollow()
+                    ? GestureDetector(
+                        onTap: () {
+                          _unfollowAnchor();
+                        },
+                        child: Image.asset(
+                          LiveImages.followed,
+                          package: Constants.pluginName,
+                          width: 16.radius,
+                          height: 16.radius,
+                        ),
+                      )
+                    : GestureDetector(
+                        onTap: () {
+                          _followAnchor();
+                        },
+                        child: Text(
+                          LiveKitLocalizations.of(Global.appContext())!
+                              .common_follow_anchor,
+                          style: const TextStyle(
+                              fontSize: 12,
+                              fontStyle: FontStyle.normal,
+                              color: LiveColors.designStandardG7),
+                        ),
+                      ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }
 
-extension LiveInfoWidgetStateLogicExtension on LiveInfoWidgetState {
+extension on _LiveInfoWidgetState {
   bool _isFollow() {
-    return liveController
-        .getUserState()
-        .myFollowingUserList
-        .value
-        .contains(UserInfo.formUserId(liveController.getRoomSate().ownerInfo.userId));
+    return manager.state.followingList.value
+        .any((following) => following.userId == manager.state.ownerId.value);
   }
 
-  _followAnchor() {
-    liveController.userController.followUser(liveController.getRoomSate().ownerInfo.userId);
+  void _followAnchor() {
+    manager.followUser(manager.state.ownerId.value);
   }
 
-  _showLiveInfoDetailWidget() {
-    showWidget(LiveInfoDetailWidget(
-      liveController: liveController,
-    ));
+  void _unfollowAnchor() {
+    manager.unfollowUser(manager.state.ownerId.value);
+  }
+
+  void _showLiveInfoDetailWidget() {
+    _popupWidget(LiveInfoDetailWidget(manager: manager));
+  }
+
+  void _popupWidget(Widget widget, {Color? barrierColor}) {
+    showModalBottomSheet(
+      barrierColor: barrierColor,
+      isScrollControlled: true,
+      context: Global.appContext(),
+      backgroundColor: LiveColors.designStandardTransparent,
+      builder: (context) => Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20.width),
+            topRight: Radius.circular(20.width),
+          ),
+          color: LiveColors.designStandardTransparent,
+        ),
+        child: widget,
+      ),
+    );
   }
 }

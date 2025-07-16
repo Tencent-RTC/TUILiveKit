@@ -55,10 +55,12 @@ class LikeManager {
         debugPrint("LikeManager sendLike success{id: $id");
         GiftStore().state.showLikeStart.value = id.hashCode;
       } else {
+        GiftStore().onError?.call(sendMessageRes.code, sendMessageRes.desc);
         debugPrint(
             "LikeManager sendLike fail,{id:$id, code:${sendMessageRes.code}, desc:${sendMessageRes.desc}");
       }
     } else {
+      GiftStore().onError?.call(createCustomMessage.code, createCustomMessage.desc);
       debugPrint("LikeManager sendLike createTextMessage fail,"
           "{code:${createCustomMessage.code}, desc:${createCustomMessage.desc}");
     }

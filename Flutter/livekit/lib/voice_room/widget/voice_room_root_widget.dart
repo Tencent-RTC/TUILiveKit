@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:live_stream_core/live_stream_core.dart';
 import 'package:live_uikit_barrage/live_uikit_barrage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -16,6 +14,7 @@ import '../../common/error/index.dart';
 import '../../common/language/index.dart';
 import '../../common/resources/index.dart';
 import '../../common/widget/index.dart';
+import '../../component/gift_access/gift_barrage_item_builder.dart';
 import '../index.dart';
 
 typedef ShowEndViewCallback = void Function(
@@ -129,11 +128,11 @@ class _VoiceRoomRootWidgetState extends State<VoiceRoomRootWidget> {
 
   Widget _initBarrageDisplayWidget() {
     return Positioned(
-        left: context.adapter.getWidth(16),
-        bottom: context.adapter.getHeight(84),
+        left: 16.width,
+        bottom: 84.height,
         child: SizedBox(
-          width: context.adapter.getWidth(305),
-          height: context.adapter.getHeight(224),
+          width: 305.width,
+          height: 224.height,
           child: ValueListenableBuilder(
               valueListenable: enterRoomSuccess,
               builder: (context, success, child) {
@@ -157,10 +156,10 @@ class _VoiceRoomRootWidgetState extends State<VoiceRoomRootWidget> {
 
   Widget _initSeatGridWidget() {
     return Positioned(
-        top: context.adapter.getHeight(122),
+        top: 122.height,
         child: SizedBox(
             width: _screenSize.width,
-            height: context.adapter.getHeight(245),
+            height: 245.height,
             child: SeatGridWidget(
                 controller: seatGridController,
                 onSeatWidgetTap: (seatInfo) {
@@ -208,12 +207,12 @@ class _VoiceRoomRootWidgetState extends State<VoiceRoomRootWidget> {
         return Visibility(
           visible: success,
           child: Positioned(
-              top: context.adapter.getHeight(54),
-              left: context.adapter.getWidth(12),
-              right: context.adapter.getWidth(12),
+              top: 54.height,
+              left: 12.width,
+              right: 12.width,
               child: SizedBox(
                 width: _screenSize.width,
-                height: context.adapter.getHeight(40),
+                height: 40.height,
                 child: TopWidget(
                     manager: manager,
                     onTapTopWidget: (tapEvent) {
@@ -227,13 +226,11 @@ class _VoiceRoomRootWidgetState extends State<VoiceRoomRootWidget> {
 
   Widget _initBottomMenuWidget() {
     return Positioned(
-        right: context.adapter.getWidth(27),
-        bottom: context.adapter.getHeight(36),
+        right: 27.width,
+        bottom: 36.height,
         child: SizedBox(
-            width: isOwner
-                ? context.adapter.getWidth(72)
-                : context.adapter.getWidth(152),
-            height: context.adapter.getHeight(46),
+            width: isOwner ? 72.width : 152.width,
+            height: 46.height,
             child: BottomMenuWidget(
                 manager: manager,
                 seatGridController: seatGridController,
@@ -242,11 +239,11 @@ class _VoiceRoomRootWidgetState extends State<VoiceRoomRootWidget> {
 
   Widget _initBarrageInputWidget() {
     return Positioned(
-        left: context.adapter.getWidth(15),
-        bottom: context.adapter.getHeight(36),
+        left: 15.width,
+        bottom: 36.height,
         child: SizedBox(
-          height: context.adapter.getHeight(36),
-          width: context.adapter.getWidth(130),
+          height: 36.height,
+          width: 130.width,
           child: ValueListenableBuilder(
             valueListenable: enterRoomSuccess,
             builder: (context, value, child) {
@@ -266,8 +263,8 @@ class _VoiceRoomRootWidgetState extends State<VoiceRoomRootWidget> {
 
   Widget _initMuteMicrophoneWidget() {
     return Positioned(
-        left: context.adapter.getWidth(153),
-        bottom: context.adapter.getHeight(38),
+        left: 153.width,
+        bottom: 38.height,
         child: Center(
           child: ListenableBuilder(
               listenable: Listenable.merge([
@@ -287,8 +284,8 @@ class _VoiceRoomRootWidgetState extends State<VoiceRoomRootWidget> {
                   visible: manager.seatState.seatList.value.any((seatInfo) =>
                       seatInfo.userId == manager.userState.selfInfo.userId),
                   child: Container(
-                    width: context.adapter.getWidth(32),
-                    height: context.adapter.getWidth(32),
+                    width: 32.radius,
+                    height: 32.radius,
                     decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
@@ -299,13 +296,13 @@ class _VoiceRoomRootWidgetState extends State<VoiceRoomRootWidget> {
                         onPressed: () {
                           _muteMicrophone(hasAudio);
                         },
-                        iconSize: context.adapter.getWidth(20),
+                        iconSize: 20.radius,
                         padding: EdgeInsets.zero,
                         icon: Image.asset(
                           imageUrl,
                           package: Constants.pluginName,
-                          width: context.adapter.getWidth(20),
-                          height: context.adapter.getWidth(20),
+                          width: 20.radius,
+                          height: 20.radius,
                         )),
                   ),
                 );
@@ -373,7 +370,7 @@ extension _RoomOperation on _VoiceRoomRootWidgetState {
 
   void _toastAndPopup() {
     manager.toastSubject.add(LiveKitLocalizations.of(Global.appContext())!
-        .live_server_error_room_does_not_exist);
+        .common_server_error_room_does_not_exist);
     if (mounted) {
       Navigator.of(context).pop();
     }
@@ -398,7 +395,7 @@ extension _MediaOperation on _VoiceRoomRootWidgetState {
     final result = await seatGridController.unmuteMicrophone();
     if (result.code != TUIError.success) {
       manager.toastSubject.add(ErrorHandler.convertToErrorMessage(
-              result.code.value(), result.message) ??
+              result.code.rawValue, result.message) ??
           '');
     }
   }
@@ -427,14 +424,14 @@ extension _TopWidgetTapEventHandler on _VoiceRoomRootWidgetState {
     );
     final List<ActionSheetModel> menuData = List.empty(growable: true);
     final takeOrMoveSeat = ActionSheetModel(
-        text: LiveKitLocalizations.of(Global.appContext())!.live_end_live,
+        text: LiveKitLocalizations.of(Global.appContext())!.common_end_live,
         textStyle: textStyle,
         lineColor: lineColor,
         bingData: 1);
     menuData.add(takeOrMoveSeat);
 
     final cancel = ActionSheetModel(
-        text: LiveKitLocalizations.of(Global.appContext())!.live_cancel,
+        text: LiveKitLocalizations.of(Global.appContext())!.common_cancel,
         textStyle: textStyle,
         lineColor: lineColor,
         bingData: 2);
@@ -459,7 +456,7 @@ extension _TopWidgetTapEventHandler on _VoiceRoomRootWidgetState {
     result.code == TUIError.success
         ? manager.onMicrophoneClosed()
         : manager.toastSubject.add(ErrorHandler.convertToErrorMessage(
-                result.code.value(), result.message) ??
+                result.code.rawValue, result.message) ??
             '');
   }
 
@@ -482,7 +479,7 @@ extension _TopWidgetTapEventHandler on _VoiceRoomRootWidgetState {
     final List<ActionSheetModel> menuData = List.empty(growable: true);
     final endLink = ActionSheetModel(
         isCenter: true,
-        text: LiveKitLocalizations.of(Global.appContext())!.live_end_link,
+        text: LiveKitLocalizations.of(Global.appContext())!.common_end_link,
         textStyle:
             const TextStyle(color: LiveColors.notStandardRed, fontSize: 16),
         lineColor: lineColor,
@@ -491,7 +488,7 @@ extension _TopWidgetTapEventHandler on _VoiceRoomRootWidgetState {
 
     final exitLive = ActionSheetModel(
         isCenter: true,
-        text: LiveKitLocalizations.of(Global.appContext())!.live_exit_live,
+        text: LiveKitLocalizations.of(Global.appContext())!.common_exit_live,
         textStyle: textStyle,
         lineColor: lineColor,
         bingData: exitLiveNumber);
@@ -499,7 +496,7 @@ extension _TopWidgetTapEventHandler on _VoiceRoomRootWidgetState {
 
     final cancel = ActionSheetModel(
         isCenter: true,
-        text: LiveKitLocalizations.of(Global.appContext())!.live_cancel,
+        text: LiveKitLocalizations.of(Global.appContext())!.common_cancel,
         textStyle: textStyle,
         lineColor: lineColor,
         bingData: cancelNumber);
@@ -518,7 +515,7 @@ extension _TopWidgetTapEventHandler on _VoiceRoomRootWidgetState {
       }
     },
         title: LiveKitLocalizations.of(Global.appContext())!
-            .live_audience_end_link_tips,
+            .common_audience_end_link_tips,
         backgroundColor: LiveColors.designStandardFlowkitWhite);
   }
 
@@ -536,7 +533,7 @@ extension _TopWidgetTapEventHandler on _VoiceRoomRootWidgetState {
     final result = await future;
     if (result.code != TUIError.success) {
       manager.toastSubject.add(ErrorHandler.convertToErrorMessage(
-              result.code.value(), result.message) ??
+              result.code.rawValue, result.message) ??
           '');
     }
   }
@@ -574,7 +571,7 @@ extension _SeatGridWidgetTapEventHandler on _VoiceRoomRootWidgetState {
     if (seatInfo.isLocked != null && !seatInfo.isLocked!) {
       final inviteToTakeSeat = ActionSheetModel(
           text: LiveKitLocalizations.of(Global.appContext())!
-              .live_voiceroom_invite,
+              .common_voiceroom_invite,
           textStyle: textStyle,
           lineColor: lineColor,
           autoPopSheet: false,
@@ -586,15 +583,16 @@ extension _SeatGridWidgetTapEventHandler on _VoiceRoomRootWidgetState {
     final lockSeat = ActionSheetModel(
         text: isSeatLocked
             ? LiveKitLocalizations.of(Global.appContext())!
-                .live_voiceroom_unlock
-            : LiveKitLocalizations.of(Global.appContext())!.live_voiceroom_lock,
+                .common_voiceroom_unlock
+            : LiveKitLocalizations.of(Global.appContext())!
+                .common_voiceroom_lock,
         textStyle: textStyle,
         lineColor: lineColor,
         bingData: 2);
     menuData.add(lockSeat);
 
     final cancel = ActionSheetModel(
-        text: LiveKitLocalizations.of(Global.appContext())!.live_cancel,
+        text: LiveKitLocalizations.of(Global.appContext())!.common_cancel,
         textStyle: textStyle,
         lineColor: lineColor,
         bingData: 3);
@@ -658,14 +656,14 @@ extension _SeatGridWidgetTapEventHandler on _VoiceRoomRootWidgetState {
     final List<ActionSheetModel> menuData = List.empty(growable: true);
     final takeOrMoveSeat = ActionSheetModel(
         text: LiveKitLocalizations.of(Global.appContext())!
-            .live_voiceroom_take_seat,
+            .common_voiceroom_take_seat,
         textStyle: textStyle,
         lineColor: lineColor,
         bingData: 1);
     menuData.add(takeOrMoveSeat);
 
     final cancel = ActionSheetModel(
-        text: LiveKitLocalizations.of(Global.appContext())!.live_cancel,
+        text: LiveKitLocalizations.of(Global.appContext())!.common_cancel,
         textStyle: textStyle,
         lineColor: lineColor,
         bingData: 2);
@@ -683,7 +681,7 @@ extension _SeatGridWidgetTapEventHandler on _VoiceRoomRootWidgetState {
     final result = await seatGridController.moveToSeat(seatInfo.index);
     if (result.code != TUIError.success) {
       manager.toastSubject.add(ErrorHandler.convertToErrorMessage(
-              result.code.value(), result.message) ??
+              result.code.rawValue, result.message) ??
           '');
     }
   }
@@ -692,7 +690,7 @@ extension _SeatGridWidgetTapEventHandler on _VoiceRoomRootWidgetState {
     if (manager.seatState.isApplyingToTakeSeat.value) {
       return manager.toastSubject.add(
           LiveKitLocalizations.of(Global.appContext())!
-              .live_client_error_request_id_repeat);
+              .common_client_error_request_id_repeat);
     }
     manager.onApplyingToSeatStateChanged(true);
     const timeoutValue = 60;
@@ -706,7 +704,7 @@ extension _SeatGridWidgetTapEventHandler on _VoiceRoomRootWidgetState {
         case RequestResultType.onRejected:
           manager.onApplyingToSeatStateChanged(false);
           manager.toastSubject.add(LiveKitLocalizations.of(Global.appContext())!
-              .live_voiceroom_take_seat_rejected);
+              .common_voiceroom_take_seat_rejected);
           break;
         case RequestResultType.onCancelled:
           manager.onApplyingToSeatStateChanged(false);
@@ -714,7 +712,7 @@ extension _SeatGridWidgetTapEventHandler on _VoiceRoomRootWidgetState {
         case RequestResultType.onTimeout:
           manager.onApplyingToSeatStateChanged(false);
           manager.toastSubject.add(LiveKitLocalizations.of(Global.appContext())!
-              .live_voiceroom_take_seat_timeout);
+              .common_voiceroom_take_seat_timeout);
           break;
         default:
           break;
@@ -722,7 +720,7 @@ extension _SeatGridWidgetTapEventHandler on _VoiceRoomRootWidgetState {
     } else {
       manager.onApplyingToSeatStateChanged(false);
       manager.toastSubject.add(ErrorHandler.convertToErrorMessage(
-              result.code.value(), result.message) ??
+              result.code.rawValue, result.message) ??
           '');
     }
   }
@@ -758,7 +756,7 @@ extension _SeatGridObserver on _VoiceRoomRootWidgetState {
       _handleCancelledRequest(requestType, userInfo);
     }, onKickedOffSeat: (userInfo) {
       manager.toastSubject.add(LiveKitLocalizations.of(Global.appContext())!
-          .live_voiceroom_kicked_out_of_seat);
+          .common_voiceroom_kicked_out_of_seat);
     });
   }
 
@@ -773,10 +771,11 @@ extension _SeatGridObserver on _VoiceRoomRootWidgetState {
     }
     final alertInfo = AlertInfo(
         imageUrl: userInfo.avatarUrl,
-        description:
-            ('${userInfo.userName} ${LiveKitLocalizations.of(Global.appContext())!.live_voiceroom_receive_seat_invitation}'),
+        description: LiveKitLocalizations.of(Global.appContext())!
+            .common_voiceroom_receive_seat_invitation
+            .replaceAll('%s', userInfo.userName),
         cancelActionInfo: (
-          title: LiveKitLocalizations.of(Global.appContext())!.live_reject,
+          title: LiveKitLocalizations.of(Global.appContext())!.common_reject,
           titleColor: LiveColors.designStandardG3
         ),
         cancelCallback: () {
@@ -784,7 +783,7 @@ extension _SeatGridObserver on _VoiceRoomRootWidgetState {
           isShowingAlert = false;
         },
         defaultActionInfo: (
-          title: LiveKitLocalizations.of(Global.appContext())!.live_accept,
+          title: LiveKitLocalizations.of(Global.appContext())!.common_accept,
           titleColor: LiveColors.designStandardB1
         ),
         defaultCallback: () {
@@ -801,7 +800,7 @@ extension _SeatGridObserver on _VoiceRoomRootWidgetState {
         await seatGridController.responseRemoteRequest(userInfo.userId, agree);
     if (result.code != TUIError.success) {
       manager.toastSubject.add(ErrorHandler.convertToErrorMessage(
-              result.code.value(), result.message) ??
+              result.code.rawValue, result.message) ??
           '');
     }
 
@@ -867,7 +866,7 @@ extension _BarrageOperation on _VoiceRoomRootWidgetState {
     Barrage barrage = Barrage();
     barrage.user = barrageUser;
     barrage.content =
-        LiveKitLocalizations.of(Global.appContext())!.live_entered_room;
+        LiveKitLocalizations.of(Global.appContext())!.common_entered_room;
     _barrageDisplayController?.insertMessage(barrage);
   }
 
@@ -888,121 +887,5 @@ extension _BarrageOperation on _VoiceRoomRootWidgetState {
     barrage.extInfo[Constants.keyGiftReceiverUsername] =
         message.receiver?.userName ?? message.receiver?.userId ?? "";
     _barrageDisplayController?.insertMessage(barrage);
-  }
-}
-
-class GiftBarrageItemBuilder extends CustomBarrageBuilder {
-  final String selfUserId;
-
-  List<Color> giftMessageColor = [
-    LiveColors.barrageColorMsg1,
-    LiveColors.barrageColorMsg2,
-    LiveColors.barrageColorMsg3,
-    LiveColors.barrageColorMsg4,
-    LiveColors.barrageColorMsg5,
-    LiveColors.barrageColorMsg6,
-    LiveColors.barrageColorMsg7
-  ];
-
-  GiftBarrageItemBuilder({required this.selfUserId});
-
-  @override
-  Widget buildWidget(BuildContext context, Barrage barrage) {
-    String receiverUserId = barrage.extInfo[Constants.keyGiftReceiverUserId];
-    String receiverUserName =
-        barrage.extInfo[Constants.keyGiftReceiverUsername];
-    String giftUrl = barrage.extInfo[Constants.keyGiftImage];
-    String giftName = barrage.extInfo[Constants.keyGiftName];
-    int giftCount = barrage.extInfo[Constants.keyGiftCount];
-    String senderUserId = barrage.user.userId;
-    String senderUserName = barrage.user.userName;
-    if (senderUserId == selfUserId) {
-      senderUserName = LiveKitLocalizations.of(context)!.live_gift_me;
-    }
-    if (receiverUserId == selfUserId) {
-      receiverUserName = LiveKitLocalizations.of(context)!.live_gift_me;
-    }
-    return Wrap(
-      children: [
-        Container(
-          margin: const EdgeInsets.only(top: 3, bottom: 3),
-          padding: const EdgeInsets.only(left: 6, top: 4, right: 6, bottom: 4),
-          decoration: BoxDecoration(
-            color: LiveColors.notStandard40G1,
-            borderRadius: BorderRadius.circular(14),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(width: context.adapter.getWidth(4)),
-              Text(
-                senderUserName,
-                style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: LiveColors.barrageUserNameColor),
-              ),
-              SizedBox(width: context.adapter.getWidth(4)),
-              Text(
-                LiveKitLocalizations.of(context)!.live_sent,
-                style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white),
-              ),
-              SizedBox(width: context.adapter.getWidth(4)),
-              Text(
-                receiverUserName,
-                style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: LiveColors.barrageUserNameColor),
-              ),
-              SizedBox(width: context.adapter.getWidth(4)),
-              Text(
-                giftName,
-                style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: giftMessageColor[Random().nextInt(7)]),
-              ),
-              SizedBox(width: context.adapter.getWidth(4)),
-              Padding(
-                padding: const EdgeInsets.only(top: 3.0),
-                child: CachedNetworkImage(
-                  width: 13,
-                  height: 13,
-                  imageUrl: giftUrl,
-                  fit: BoxFit.fitWidth,
-                  placeholder: (context, url) => _buildDefaultGift(),
-                  errorWidget: (context, url, error) => _buildDefaultGift(),
-                ),
-              ),
-              SizedBox(width: context.adapter.getWidth(4)),
-              Text(
-                "x$giftCount",
-                style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  @override
-  bool shouldCustomizeBarrageItem(Barrage barrage) {
-    if (barrage.extInfo.containsKey(Constants.keyGiftViewType)) {
-      return true;
-    }
-    return false;
-  }
-
-  _buildDefaultGift() {
-    return Container(color: Colors.transparent);
   }
 }

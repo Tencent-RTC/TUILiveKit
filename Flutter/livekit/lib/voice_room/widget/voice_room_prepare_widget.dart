@@ -59,16 +59,16 @@ class _VoiceRoomPrepareWidgetState extends State<VoiceRoomPrepareWidget> {
 
   Widget _initLiveInfoEditWidget(VoiceRoomManager manager) {
     return Positioned(
-        top: context.adapter.getHeight(96),
-        left: context.adapter.getWidth(16),
-        right: context.adapter.getWidth(16),
-        height: context.adapter.getHeight(112),
+        top: 96.height,
+        left: 16.width,
+        right: 16.width,
+        height: 112.height,
         child: LivePrepareInfoEditWidget(manager: manager));
   }
 
   Widget _initSeatPreviewWidget() {
     return Positioned(
-        top: context.adapter.getHeight(212),
+        top: 212.height,
         left: 0,
         bottom: 0,
         right: 0,
@@ -78,18 +78,18 @@ class _VoiceRoomPrepareWidgetState extends State<VoiceRoomPrepareWidget> {
   Widget _initFunctionWidget() {
     return Positioned(
         left: 0,
-        bottom: context.adapter.getHeight(134),
-        width: context.adapter.getWidth(375),
-        height: context.adapter.getHeight(62),
+        bottom: 134.height,
+        width: 375.width,
+        height: 62.height,
         child: LivePrepareFunctionWidget(manager: manager));
   }
 
   Widget _initBackWidget() {
     return Positioned(
-        left: context.adapter.getWidth(16),
-        top: context.adapter.getHeight(56),
-        width: context.adapter.getWidth(24),
-        height: context.adapter.getWidth(24),
+        left: 16.width,
+        top: 56.height,
+        width: 24.radius,
+        height: 24.radius,
         child: GestureDetector(
             onTap: () {
               _closeWidget();
@@ -100,10 +100,10 @@ class _VoiceRoomPrepareWidgetState extends State<VoiceRoomPrepareWidget> {
 
   Widget _initStartLiveWidget() {
     return Positioned(
-      left: context.adapter.getWidth(50),
-      right: context.adapter.getWidth(50),
-      bottom: context.adapter.getHeight(64),
-      height: context.adapter.getHeight(40),
+      left: 50.width,
+      right: 50.width,
+      bottom: 64.height,
+      height: 40.height,
       child: GestureDetector(
         onTap: () {
           _createRoom();
@@ -111,11 +111,11 @@ class _VoiceRoomPrepareWidgetState extends State<VoiceRoomPrepareWidget> {
         child: Container(
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(context.adapter.getHeight(20)),
+            borderRadius: BorderRadius.circular(20.height),
             color: LiveColors.designStandardB1,
           ),
           child: Text(
-            LiveKitLocalizations.of(Global.appContext())!.live_start_live,
+            LiveKitLocalizations.of(Global.appContext())!.common_go_live,
             style: const TextStyle(
                 color: LiveColors.designStandardFlowkitWhite,
                 fontSize: 16,
