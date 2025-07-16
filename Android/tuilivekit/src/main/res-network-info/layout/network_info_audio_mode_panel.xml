@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/network_info_panel_bg"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_default"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:gravity="center"
+        android:text="@string/common_audio_mode_default"
+        android:textColor="@color/common_design_standard_g7"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/common_bg_color_entrycard" />
+
+    <TextView
+        android:id="@+id/tv_speech"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:gravity="center"
+        android:text="@string/common_audio_mode_speech"
+        android:textColor="@color/common_design_standard_g7"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/common_bg_color_entrycard" />
+
+    <TextView
+        android:id="@+id/tv_music"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:gravity="center"
+        android:text="@string/common_audio_mode_music"
+        android:textColor="@color/common_design_standard_g7"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="7dp"
+        android:background="@color/common_bg_color_entrycard" />
+
+    <TextView
+        android:id="@+id/tv_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:gravity="center"
+        android:text="@string/cancel"
+        android:textColor="@color/common_design_standard_g7"
+        android:textSize="16sp" />
+</LinearLayout>

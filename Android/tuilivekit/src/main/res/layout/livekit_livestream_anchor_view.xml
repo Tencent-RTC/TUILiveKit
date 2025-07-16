@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <com.trtc.uikit.livekit.common.ui.RoundFrameLayout
+        android:id="@+id/fl_video_view_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="44dp"
+        android:layout_marginBottom="96dp"
+        android:background="@color/common_design_standard_g1" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/livekit_video_view_mask" />
+
+    <FrameLayout
+        android:id="@+id/rl_component_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.trtc.uikit.livekit.component.barrage.BarrageStreamView
+            android:id="@+id/barrage_stream_view"
+            android:layout_width="305dp"
+            android:layout_height="206dp"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="12dp"
+            android:layout_marginBottom="96dp" />
+
+        <com.trtc.uikit.livekit.component.gift.GiftPlayView
+            android:id="@+id/gift_play_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_function"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="36dp">
+
+            <com.trtc.uikit.livekit.component.barrage.BarrageInputView
+                android:id="@+id/barrage_input_view"
+                android:layout_width="130dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/livekit_barrage_button_bg"
+                android:scaleType="centerCrop"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/rl_function"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:gravity="center_vertical|end"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:id="@+id/ll_co_host"
+                    android:layout_width="34dp"
+                    android:layout_height="46dp"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:background="@drawable/livekit_function_connection" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="16dp"
+                        android:gravity="center"
+                        android:text="@string/common_link_host"
+                        android:textSize="10dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_battle"
+                    android:layout_width="34dp"
+                    android:layout_height="46dp"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <View
+                        android:id="@+id/v_battle_icon"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:background="@drawable/livekit_function_battle" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="16dp"
+                        android:gravity="center"
+                        android:text="@string/common_anchor_battle"
+                        android:textSize="10dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_co_guest"
+                    android:layout_width="34dp"
+                    android:layout_height="46dp"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <com.trtc.uikit.livekit.features.anchorboardcast.view.coguest.panel.CoGuestIconView
+                        android:id="@+id/co_guest_icon"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="16dp"
+                        android:gravity="center"
+                        android:text="@string/common_link_guest"
+                        android:textSize="10dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_more"
+                    android:layout_width="34dp"
+                    android:layout_height="46dp"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:background="@drawable/livekit_function_more" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="16dp"
+                        android:gravity="center"
+                        android:text="@string/common_more"
+                        android:textSize="10dp" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.trtc.uikit.livekit.features.anchorboardcast.view.coguest.panel.ApplyCoGuestFloatView
+            android:id="@+id/rl_apply_link_audience"
+            android:layout_width="114dp"
+            android:layout_height="86dp"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="130dp"
+            android:layout_marginEnd="8dp"
+            android:visibility="gone" />
+
+        <FrameLayout
+            android:id="@+id/fl_header_container"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_marginTop="52dp">
+
+            <com.trtc.uikit.livekit.component.roominfo.LiveInfoView
+                android:id="@+id/room_info_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp" />
+
+            <com.trtc.uikit.livekit.component.audiencelist.AudienceListView
+                android:id="@+id/audience_list_view"
+                android:layout_width="80dp"
+                android:layout_height="24dp"
+                android:layout_gravity="end"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="68dp" />
+
+            <com.trtc.uikit.livekit.component.networkInfo.NetworkInfoView
+                android:id="@+id/network_info_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="48dp"
+                android:layout_marginEnd="10dp" />
+
+            <ImageView
+                android:id="@+id/iv_float_window"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="end"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="38dp"
+                android:padding="2dp"
+                android:src="@drawable/livekit_float_window"
+                tools:ignore="ContentDescription" />
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/iv_end_live_stream"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="end"
+            android:layout_marginTop="60dp"
+            android:layout_marginEnd="10dp"
+            android:padding="2dp"
+            android:src="@drawable/livekit_anchor_icon_end_stream" />
+    </FrameLayout>
+
+</FrameLayout>

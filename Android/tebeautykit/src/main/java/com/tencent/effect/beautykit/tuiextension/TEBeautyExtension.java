@@ -13,6 +13,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tencent.effect.beautykit.TEBeautyKit;
+import com.tencent.effect.beautykit.config.TEUIConfig;
 import com.tencent.effect.beautykit.model.TEUIProperty;
 import com.tencent.effect.beautykit.tuiextension.utils.AppConfig;
 import com.tencent.effect.beautykit.tuiextension.utils.BitmapUtil;
@@ -31,6 +32,7 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class TEBeautyExtension implements ITUIExtension, ITUIService {
@@ -146,6 +148,7 @@ public class TEBeautyExtension implements ITUIExtension, ITUIService {
         if (context == null) {
             return null;
         }
+        TEUIConfig.getInstance().setSystemLocal(Locale.getDefault());
         mPanelView = new TEPanelView(context);
         mPanelView.setTEPanelViewCallback(mTEPanelViewCallback);
         Log.i(TAG, "TEPanelView create, mBeautyKit = " + mBeautyKit);

@@ -1,4 +1,3 @@
 include ':app'
 include ':debug'
-include ':tuilivekit:livekit'
-include ':tuilivekit:component:barrage'
+include ':tuilivekit'

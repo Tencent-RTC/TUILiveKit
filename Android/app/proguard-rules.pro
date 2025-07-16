@@ -44,3 +44,10 @@
 -keep class com.tencent.beacon.** { *;}
 -keep class com.tencent.qimei.** { *;}
 -keep class androidx.exifinterface.** { *;}
+
+# TRTC SDK Viesion >= 12.5.0
+-dontwarn com.tencent.rtmp.video.BaseBridge$BaseBridgeCallback
+-dontwarn com.tencent.rtmp.video.BaseBridge
+-dontwarn com.tencent.rtmp.video.VirtualDisplayListener
+-dontwarn com.tencent.rtmp.video.VirtualDisplayManagerProxy
+-dontwarn com.tencent.rtmp.video.VirtualDisplayWrapper
