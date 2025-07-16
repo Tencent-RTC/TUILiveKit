@@ -59,15 +59,13 @@ class _BottomMenuWidgetState extends State<BottomMenuWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        constraints: BoxConstraints(
-            minWidth: context.adapter.getWidth(30),
-            minHeight: context.adapter.getHeight(46)),
-        width: context.adapter.getWidth(50),
-        height: context.adapter.getHeight(46),
+        constraints: BoxConstraints(minWidth: 30.width, minHeight: 46.height),
+        width: 50.width,
+        height: 46.height,
         child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.center,
-            spacing: context.adapter.getWidth(16),
+            spacing: 16.width,
             children: _generateBottomButtonWidgets()));
   }
 }
@@ -86,11 +84,11 @@ extension on _BottomMenuWidgetState {
         normalImage: Image.asset(LiveImages.functionSettings,
             package: Constants.pluginName),
         normalTitle: Text(
-            LiveKitLocalizations.of(Global.appContext())!.live_settings,
+            LiveKitLocalizations.of(Global.appContext())!.common_settings,
             style: const TextStyle(
                 fontSize: 12, color: LiveColors.designStandardFlowkitWhite),
             textAlign: TextAlign.center),
-        imageSize: context.adapter.getWidth(28),
+        imageSize: 28.radius,
         onPressed: () {
           _showSettingsPanel();
         });
@@ -107,11 +105,11 @@ extension on _BottomMenuWidgetState {
                 package: Constants.pluginName),
             normalTitle: Text(
                 LiveKitLocalizations.of(Global.appContext())!
-                    .live_seat_management,
+                    .common_seat_management,
                 style: const TextStyle(
                     fontSize: 12, color: LiveColors.designStandardFlowkitWhite),
                 textAlign: TextAlign.center),
-            imageSize: context.adapter.getWidth(28),
+            imageSize: 28.radius,
             markCount: filterApplications.length,
             onPressed: () {
               _showSeatManagementPanel();
@@ -130,11 +128,11 @@ extension on _BottomMenuWidgetState {
         normalImage:
             Image.asset(LiveImages.functionGift, package: Constants.pluginName),
         normalTitle: Text(
-            LiveKitLocalizations.of(Global.appContext())!.live_gift_title,
+            LiveKitLocalizations.of(Global.appContext())!.common_gift_title,
             style: const TextStyle(
                 fontSize: 12, color: LiveColors.designStandardFlowkitWhite),
             textAlign: TextAlign.center),
-        imageSize: context.adapter.getWidth(28),
+        imageSize: 28.radius,
         onPressed: () {
           _showGiftPanelWidget(context, _giftSendController);
         });
@@ -145,11 +143,11 @@ extension on _BottomMenuWidgetState {
         normalImage:
             Image.asset(LiveImages.functionLike, package: Constants.pluginName),
         normalTitle: Text(
-            LiveKitLocalizations.of(Global.appContext())!.live_like,
+            LiveKitLocalizations.of(Global.appContext())!.common_like,
             style: const TextStyle(
                 fontSize: 12, color: LiveColors.designStandardFlowkitWhite),
             textAlign: TextAlign.center),
-        imageSize: context.adapter.getWidth(28),
+        imageSize: 28.radius,
         onPressed: () {
           _likeSendController.sendLikeMessage();
         },
@@ -175,9 +173,9 @@ extension on _BottomMenuWidgetState {
               : LiveImages.functionVoiceRoomLink;
 
           final hangupLocalization =
-              LiveKitLocalizations.of(Global.appContext())!.live_hang_up;
+              LiveKitLocalizations.of(Global.appContext())!.common_hang_up;
           final linkMicLocalization =
-              LiveKitLocalizations.of(Global.appContext())!.live_link;
+              LiveKitLocalizations.of(Global.appContext())!.common_link;
           final normalTitle =
               isOnSeat ? hangupLocalization : linkMicLocalization;
           return BottomButtonWidget(
@@ -191,12 +189,12 @@ extension on _BottomMenuWidgetState {
                       color: LiveColors.designStandardFlowkitWhite),
                   textAlign: TextAlign.center),
               selectedTitle: Text(
-                  LiveKitLocalizations.of(Global.appContext())!.live_cancel,
+                  LiveKitLocalizations.of(Global.appContext())!.common_cancel,
                   style: const TextStyle(
                       fontSize: 12,
                       color: LiveColors.designStandardFlowkitWhite),
                   textAlign: TextAlign.center),
-              imageSize: context.adapter.getWidth(28),
+              imageSize: 28.radius,
               onPressed: () {
                 _handleAudienceLinkMic();
               },
@@ -238,7 +236,7 @@ extension on _BottomMenuWidgetState {
         manager.onApplyingToSeatStateChanged(false);
       } else {
         manager.toastSubject.add(ErrorHandler.convertToErrorMessage(
-                result.code.value(), result.message) ??
+                result.code.rawValue, result.message) ??
             '');
       }
       return;
@@ -250,7 +248,7 @@ extension on _BottomMenuWidgetState {
       final result = await seatGridController.leaveSeat();
       if (result.code != TUIError.success) {
         manager.toastSubject.add(ErrorHandler.convertToErrorMessage(
-                result.code.value(), result.message) ??
+                result.code.rawValue, result.message) ??
             '');
       }
       seatGridController.stopMicrophone();
@@ -268,7 +266,7 @@ extension on _BottomMenuWidgetState {
         case RequestResultType.onRejected:
           manager.onApplyingToSeatStateChanged(false);
           manager.toastSubject.add(LiveKitLocalizations.of(Global.appContext())!
-              .live_voiceroom_take_seat_rejected);
+              .common_voiceroom_take_seat_rejected);
           break;
         case RequestResultType.onCancelled:
           manager.onApplyingToSeatStateChanged(false);
@@ -276,7 +274,7 @@ extension on _BottomMenuWidgetState {
         case RequestResultType.onTimeout:
           manager.onApplyingToSeatStateChanged(false);
           manager.toastSubject.add(LiveKitLocalizations.of(Global.appContext())!
-              .live_voiceroom_take_seat_timeout);
+              .common_voiceroom_take_seat_timeout);
           break;
         default:
           break;
@@ -284,7 +282,7 @@ extension on _BottomMenuWidgetState {
     } else {
       manager.onApplyingToSeatStateChanged(false);
       manager.toastSubject.add(ErrorHandler.convertToErrorMessage(
-              result.code.value(), result.message) ??
+              result.code.rawValue, result.message) ??
           '');
     }
   }
@@ -364,13 +362,13 @@ class _BottomButtonWidgetState extends State<BottomButtonWidget>
               child: DebounceGestureRecognizer(
                 onTap: () => widget.onPressed?.call(),
                 child: SizedBox(
-                    width: context.adapter.getWidth(28),
-                    height: context.adapter.getWidth(28),
+                    width: 28.radius,
+                    height: 28.radius,
                     child: widget.isSelected
                         ? _initSelectedImage()
                         : widget.normalImage),
               )),
-          SizedBox(height: context.adapter.getHeight(2)),
+          SizedBox(height: 2.height),
           widget.isSelected ? _initSelectedTitle() : _initNormalTitle(),
           Visibility(
               visible: widget.markCount != 0,
@@ -378,12 +376,11 @@ class _BottomButtonWidgetState extends State<BottomButtonWidget>
                   top: -5,
                   right: -5,
                   child: Container(
-                    width: context.adapter.getWidth(20),
-                    height: context.adapter.getWidth(20),
+                    width: 20.radius,
+                    height: 20.radius,
                     decoration: BoxDecoration(
                         color: Colors.red,
-                        borderRadius: BorderRadius.circular(
-                            context.adapter.getWidth(10))),
+                        borderRadius: BorderRadius.circular(10.radius)),
                     child: Text(
                       widget.markCount > 99 ? '99+' : '${widget.markCount}',
                       style: const TextStyle(

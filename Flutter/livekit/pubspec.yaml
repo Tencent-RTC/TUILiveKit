@@ -1,6 +1,6 @@
 name: tencent_live_uikit
 description: "TUILiveKit enables interactive live streaming for scenarios such as social entertainment, shopping, and fitness classes."
-version: 3.0.0
+version: 3.1.0
 repository: https://github.com/Tencent-RTC/TUILiveKit
 homepage: https://trtc.io/
 
@@ -20,14 +20,16 @@ dependencies:
   permission_handler: ^11.0.0
   cached_network_image: ^3.4.1
 
-  live_stream_core: ^3.0.0
-  live_uikit_barrage: ^1.0.0
-  live_uikit_gift: ^1.0.0
+  live_stream_core: ^3.1.0
+  live_uikit_barrage: ^1.0.1
+  live_uikit_gift: ^1.0.1
 
-  rtc_room_engine: ^3.0.0
+  rtc_room_engine: '>=3.1.2 <3.2.0'
   tencent_trtc_cloud: ^3.0.1
   tencent_cloud_uikit_core: ^1.7.0
   tencent_cloud_chat_sdk: ^8.0.5901
+
+  stack_trace: ^1.12.0
 
 dev_dependencies:
   flutter_test:

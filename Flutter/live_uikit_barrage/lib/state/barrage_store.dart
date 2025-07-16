@@ -1,8 +1,11 @@
 import '../manager/index.dart';
 import 'index.dart';
 
+typedef OnBarrageError = void Function(int code, String message);
+
 class BarrageStore {
   static BarrageStore? _instance;
+  OnBarrageError? onError;
 
   BarrageStore._internal();
 

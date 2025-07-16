@@ -41,26 +41,26 @@ class _LiveBackgroundSelectPanelWidgetState
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     return SizedBox(
-      height: context.adapter.getHeight(483),
+      height: 483.height,
       width: screenWidth,
       child: Column(
         children: [
-          SizedBox(height: context.adapter.getHeight(15)),
+          SizedBox(height: 15.height),
           SizedBox(
-            height: context.adapter.getHeight(44),
+            height: 44.height,
             width: screenWidth,
             child: Stack(
               children: [
                 Positioned(
-                  left: context.adapter.getWidth(14),
+                  left: 14.width,
                   child: GestureDetector(
                     onTap: () {
                       Navigator.pop(context);
                     },
                     child: Container(
-                      width: context.adapter.getWidth(44),
-                      height: context.adapter.getHeight(14),
-                      padding: EdgeInsets.all(context.adapter.getWidth(10)),
+                      width: 44.width,
+                      height: 14.height,
+                      padding: EdgeInsets.all(10.radius),
                       child: Image.asset(
                         LiveImages.returnArrow,
                         package: Constants.pluginName,
@@ -71,7 +71,7 @@ class _LiveBackgroundSelectPanelWidgetState
                 Center(
                   child: Text(
                     LiveKitLocalizations.of(Global.appContext())!
-                        .live_settings_bg_image,
+                        .common_settings_bg_image,
                     style: const TextStyle(
                         color: LiveColors.designStandardFlowkitWhite,
                         fontSize: 16),
@@ -81,10 +81,10 @@ class _LiveBackgroundSelectPanelWidgetState
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(context.adapter.getWidth(15)),
+            padding: EdgeInsets.all(15.radius),
             child: SizedBox(
-              width: context.adapter.getWidth(345),
-              height: context.adapter.getHeight(300),
+              width: 345.width,
+              height: 300.height,
               child: GridView.builder(
                 itemCount: widget.backgroundUrls.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -95,22 +95,22 @@ class _LiveBackgroundSelectPanelWidgetState
                       _onLiveBackgroundItemSelected(index);
                     },
                     child: Padding(
-                      padding: EdgeInsets.all(context.adapter.getWidth(5)),
+                      padding: EdgeInsets.all(5.radius),
                       child: ValueListenableBuilder(
                         valueListenable: selectedIndex,
                         builder:
                             (BuildContext context, int value, Widget? child) {
                           return Container(
-                            width: context.adapter.getWidth(90),
-                            height: context.adapter.getWidth(90),
+                            width: 90.radius,
+                            height: 90.radius,
                             decoration: BoxDecoration(
                                 border: Border.all(
                                     color: selectedIndex.value == index
                                         ? LiveColors.designStandardB1
                                         : LiveColors.designStandardTransparent,
-                                    width: context.adapter.getWidth(3)),
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(context.adapter.getWidth(6)))),
+                                    width: 3.width),
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(6.radius))),
                             child: CachedNetworkImage(
                                 imageUrl: widget.backgroundUrls[index],
                                 fit: BoxFit.cover,
@@ -129,23 +129,22 @@ class _LiveBackgroundSelectPanelWidgetState
               ),
             ),
           ),
-          SizedBox(height: context.adapter.getHeight(20)),
+          SizedBox(height: 20.height),
           GestureDetector(
             onTap: () {
               _setLiveBackground();
             },
             child: Container(
-              width: context.adapter.getWidth(201),
-              height: context.adapter.getHeight(40),
+              width: 201.width,
+              height: 40.height,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                borderRadius:
-                    BorderRadius.circular(context.adapter.getHeight(20)),
+                borderRadius: BorderRadius.circular(20.radius),
                 color: LiveColors.designStandardB1,
               ),
               child: Text(
                 LiveKitLocalizations.of(Global.appContext())!
-                    .live_set_as_background,
+                    .common_set_as_background,
                 style: const TextStyle(
                     color: LiveColors.designStandardFlowkitWhite,
                     fontSize: 16,

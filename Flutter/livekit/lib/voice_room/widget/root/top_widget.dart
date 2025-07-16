@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import '../../../common/screen/index.dart';
 import '../../../common/constants/constants.dart';
 import '../../../common/resources/index.dart';
+import '../../../component/audience_list/index.dart';
+import '../../../component/live_info/index.dart';
 import '../../index.dart';
-import '../component/index.dart';
 
 enum TopWidgetTapEvent { stop, audienceList, liveInfo }
 
@@ -42,25 +43,25 @@ class _TopWidgetState extends State<TopWidget> {
         widget.onTapTopWidget?.call(TopWidgetTapEvent.liveInfo);
       },
       child: Container(
-          constraints: BoxConstraints(
-              maxHeight: context.adapter.getHeight(40),
-              maxWidth: context.adapter.getWidth(200)),
-          height: context.adapter.getHeight(40),
+          constraints:
+              BoxConstraints(maxHeight: 40.height, maxWidth: 200.width),
+          height: 40.height,
           child: LiveInfoWidget(roomId: manager.roomState.roomId)),
     );
   }
 
   Widget _initAudienceListWidget() {
     return Positioned(
-        top: context.adapter.getHeight(8),
-        bottom: context.adapter.getHeight(8),
-        right: context.adapter.getWidth(30),
+        top: 8.height,
+        bottom: 8.height,
+        right: 30.width,
         child: GestureDetector(
           onTap: () {
             widget.onTapTopWidget?.call(TopWidgetTapEvent.audienceList);
           },
-          child: Container(constraints: BoxConstraints(maxWidth: context.adapter.getWidth(107))
-          ,child: AudienceListWidget(roomId: manager.roomState.roomId)),
+          child: Container(
+              constraints: BoxConstraints(maxWidth: 107.width),
+              child: AudienceListWidget(roomId: manager.roomState.roomId)),
         ));
   }
 
@@ -68,18 +69,16 @@ class _TopWidgetState extends State<TopWidget> {
     final isOwner =
         manager.roomState.ownerInfo.userId == manager.userState.selfInfo.userId;
     return Positioned(
-        top: context.adapter.getHeight(10),
-        bottom: context.adapter.getHeight(10),
+        top: 10.height,
+        bottom: 10.height,
         right: 0,
         child: SizedBox(
-            width: context.adapter.getWidth(20),
-            height: context.adapter.getWidth(20),
+            width: 20.radius,
+            height: 20.radius,
             child: GestureDetector(
               onTap: () => widget.onTapTopWidget?.call(TopWidgetTapEvent.stop),
               child: Image.asset(
-                isOwner
-                    ? LiveImages.close
-                    : LiveImages.audienceClose,
+                isOwner ? LiveImages.close : LiveImages.audienceClose,
                 package: Constants.pluginName,
               ),
             )));

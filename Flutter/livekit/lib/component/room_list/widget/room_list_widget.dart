@@ -15,12 +15,10 @@ class RoomListWidget extends StatefulWidget {
 }
 
 class RoomListWidgetState extends State<RoomListWidget> {
-  late final double screenWidth = MediaQuery.of(context).size.width;
-  late final double screenHeight = MediaQuery.of(context).size.height;
-  late final cellWidth = (screenWidth - 40) * 0.5;
+  late final cellWidth = (1.screenWidth - 39.width) * 0.5;
   late final cellHeight = cellWidth / _childAspectRatio;
   final int _column = 2;
-  final double _childAspectRatio = 169.0 / 262.0;
+  final double _childAspectRatio = 168.width / 262.height;
   late final RoomListService _roomListService = RoomListService();
   late final RoomListState _roomListState = _roomListService.roomListState;
   final ScrollController _scrollController = ScrollController();
@@ -46,7 +44,7 @@ class RoomListWidgetState extends State<RoomListWidget> {
     return RefreshIndicator(
       onRefresh: _onRefresh,
       child: SizedBox(
-        height: screenHeight,
+        height: 1.screenHeight,
         child: CustomScrollView(
           controller: _scrollController,
           physics: const AlwaysScrollableScrollPhysics(),
@@ -107,9 +105,9 @@ extension RoomListWidgetStateLogicExtension on RoomListWidgetState {
             (BuildContext context, int index) {
               return Padding(
                 padding: EdgeInsets.only(
-                  left: index % _column == 0 ? 16 : 4,
-                  right: index % _column == 1 ? 16 : 4,
-                  top: 8,
+                  left: index % _column == 0 ? 16.width : 3.5.width,
+                  right: index % _column == 1 ? 16.width : 3.5.width,
+                  top: 8.height,
                 ),
                 child: _buildItemWidget(index),
               );
@@ -128,75 +126,83 @@ extension RoomListWidgetStateLogicExtension on RoomListWidgetState {
         _clickItem(index);
       },
       child: ClipRRect(
-        borderRadius: const BorderRadius.all(Radius.circular(8)),
-        child: Container(
+        borderRadius: BorderRadius.all(Radius.circular(12.radius)),
+        child: SizedBox(
           width: cellWidth,
-          color: LiveColors.designStandardFlowkitWhite,
           child: Stack(
             children: [
               Positioned(
                 child: Container(
-                  height: cellHeight - 40,
                   width: cellWidth,
                   padding: const EdgeInsets.all(0),
                   child: Image.network(
                     item.coverUrl.split(';').first,
                     fit: BoxFit.fill,
                     errorBuilder: (context, error, stackTrace) {
-                      return Image.asset(
+                      return Image.network(
                         fit: BoxFit.fill,
-                        LiveImages.streamDefaultCover,
-                        package: Constants.pluginName,
+                        Constants.defaultCoverUrl,
                       );
                     },
                   ),
                 ),
               ),
               Positioned(
-                left: 2,
-                top: 16,
+                left: 8.width,
+                top: 6.height,
                 child: Row(
                   children: [
-                    Container(
-                      height: 20,
-                      width: 20,
-                      padding: const EdgeInsets.all(6),
+                    SizedBox(
+                      height: 8.radius,
+                      width: 8.radius,
                       child: Image.asset(
                         fit: BoxFit.fill,
                         LiveImages.roomListItemLiveStatus,
                         package: Constants.pluginName,
                       ),
                     ),
+                    SizedBox(width: 5.width),
                     Text(
                       LiveKitLocalizations.of(Global.appContext())!
-                          .live_audience_count_in_room
-                          .replaceAll('%d', "${item.viewCount}"),
+                          .livelist_viewed_audience_count
+                          .replaceAll('xxx', "${item.viewCount}"),
                       style: const TextStyle(
                           color: LiveColors.designStandardFlowkitWhite,
-                          fontSize: 12),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600),
                     )
                   ],
                 ),
               ),
               Positioned(
-                left: 8,
-                bottom: 32,
-                child: Text(
-                  item.roomInfo.name ?? "",
-                  style: const TextStyle(
-                      color: LiveColors.designStandardG2, fontSize: 14),
+                left: 8.width,
+                bottom: 32.height,
+                right: 8.width,
+                child: Container(
+                  constraints:
+                      BoxConstraints(maxHeight: 22.height, maxWidth: 152.width),
+                  child: Text(
+                    item.roomInfo.name ?? "",
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        color: LiveColors.designStandardFlowkitWhite
+                            .withAlpha(0xE6),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600),
+                  ),
                 ),
               ),
               Positioned(
-                left: 8,
-                bottom: 8,
+                left: 8.width,
+                bottom: 10.height,
+                right: 8.width,
                 child: Row(
                   children: [
                     ClipRRect(
-                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      borderRadius: BorderRadius.all(Radius.circular(8.radius)),
                       child: SizedBox(
-                        height: 20,
-                        width: 20,
+                        height: 16.radius,
+                        width: 16.radius,
                         child: Image.network(
                           item.roomInfo.ownerAvatarUrl ?? "",
                           fit: BoxFit.fill,
@@ -210,11 +216,20 @@ extension RoomListWidgetStateLogicExtension on RoomListWidgetState {
                         ),
                       ),
                     ),
-                    4.horizontalSpace,
-                    Text(
-                      item.roomInfo.ownerName ?? item.roomInfo.ownerId,
-                      style: const TextStyle(
-                          color: LiveColors.designStandardG3, fontSize: 12),
+                    SizedBox(width: 4.width),
+                    Container(
+                      constraints: BoxConstraints(
+                          maxWidth: 132.width, maxHeight: 20.height),
+                      child: Text(
+                        item.roomInfo.ownerName?.isNotEmpty ?? false
+                            ? item.roomInfo.ownerName ?? ''
+                            : item.roomInfo.ownerId,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            color: LiveColors.designStandardFlowkitWhite
+                                .withAlpha(0x8C),
+                            fontSize: 12),
+                      ),
                     )
                   ],
                 ),
@@ -234,11 +249,11 @@ extension RoomListWidgetStateLogicExtension on RoomListWidgetState {
             child: (_roomListState.isHaveMoreData.value &&
                     _roomListState.loadStatus.value)
                 ? Container(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: EdgeInsets.all(16.radius),
                     alignment: Alignment.center,
                     child: const CircularProgressIndicator(),
                   )
-                : 12.verticalSpace,
+                : SizedBox(height: 12.height),
           );
         });
   }
@@ -252,12 +267,12 @@ extension RoomListWidgetStateLogicExtension on RoomListWidgetState {
           return SliverToBoxAdapter(
             child: isShow
                 ? Container(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: EdgeInsets.all(16.radius),
                     alignment: Alignment.center,
                     child: Text(LiveKitLocalizations.of(Global.appContext())!
-                        .live_no_room_tip),
+                        .livelist_no_more_data),
                   )
-                : 0.verticalSpace,
+                : const SizedBox.shrink(),
           );
         });
   }

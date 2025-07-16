@@ -48,19 +48,19 @@ class _SeatInvitationPanelWidgetState extends State<SeatInvitationPanelWidget> {
     return Container(
         decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(context.adapter.getWidth(15)),
-                topRight: Radius.circular(context.adapter.getWidth(15)))),
-        height: context.adapter.getHeight(722),
+                topLeft: Radius.circular(15.width),
+                topRight: Radius.circular(15.width))),
+        height: 722.height,
         child: Column(
           children: [
-            SizedBox(height: context.adapter.getHeight(20)),
+            SizedBox(height: 20.height),
             SizedBox(
               width: _screenWidth,
-              height: context.adapter.getHeight(28),
+              height: 28.height,
               child: Center(
                 child: Text(
                   LiveKitLocalizations.of(Global.appContext())!
-                      .live_voiceroom_invite,
+                      .common_voiceroom_invite,
                   style: const TextStyle(
                       color: LiveColors.designStandardFlowkitWhite,
                       fontSize: 16),
@@ -68,28 +68,27 @@ class _SeatInvitationPanelWidgetState extends State<SeatInvitationPanelWidget> {
                 ),
               ),
             ),
-            SizedBox(height: context.adapter.getHeight(24)),
+            SizedBox(height: 24.height),
             SizedBox(
                 width: _screenWidth,
-                height: context.adapter.getHeight(28),
+                height: 28.height,
                 child: Padding(
-                  padding: EdgeInsets.only(left: context.adapter.getWidth(24)),
+                  padding: EdgeInsets.only(left: 24.width),
                   child: Text(
                     LiveKitLocalizations.of(Global.appContext())!
-                        .live_anchor_audience_list_panel_title,
+                        .common_anchor_audience_list_panel_title,
                     style: const TextStyle(
                         color: LiveColors.designStandardFlowkitWhite,
                         fontSize: 16),
                     textAlign: TextAlign.left,
                   ),
                 )),
-            SizedBox(height: context.adapter.getHeight(16)),
+            SizedBox(height: 16.height),
             Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: context.adapter.getWidth(24)),
+              padding: EdgeInsets.symmetric(horizontal: 24.width),
               child: Container(
                   color: LiveColors.designStandardG3.withAlpha(0x4D),
-                  height: context.adapter.getHeight(1)),
+                  height: 1.height),
             ),
             _initAudienceInvitationListWidget()
           ],
@@ -119,8 +118,7 @@ class _SeatInvitationPanelWidgetState extends State<SeatInvitationPanelWidget> {
               .map((user) => (user, invitedIds.contains(user.userId))));
 
         return Padding(
-          padding:
-              EdgeInsets.symmetric(horizontal: context.adapter.getWidth(24)),
+          padding: EdgeInsets.symmetric(horizontal: 24.width),
           child: Visibility(
             visible: audienceInvited.isNotEmpty,
             child: SizedBox(
@@ -142,7 +140,7 @@ class _SeatInvitationPanelWidgetState extends State<SeatInvitationPanelWidget> {
 
   Widget _buildAudienceInvitationItem(int index) {
     return Container(
-      height: context.adapter.getHeight(60),
+      height: 60.height,
       color: LiveColors.designStandardG2,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -152,8 +150,8 @@ class _SeatInvitationPanelWidgetState extends State<SeatInvitationPanelWidget> {
           Row(
             children: [
               SizedBox(
-                width: context.adapter.getWidth(40),
-                height: context.adapter.getWidth(40),
+                width: 40.radius,
+                height: 40.radius,
                 child: Stack(
                   children: [
                     ClipOval(
@@ -171,11 +169,10 @@ class _SeatInvitationPanelWidgetState extends State<SeatInvitationPanelWidget> {
                   ],
                 ),
               ),
-              SizedBox(width: context.adapter.getHeight(12)),
+              SizedBox(width: 12.width),
               Container(
                 alignment: Alignment.centerLeft,
-                constraints:
-                    BoxConstraints(maxWidth: context.adapter.getWidth(135)),
+                constraints: BoxConstraints(maxWidth: 135.width),
                 child: Text(
                   audienceInvited[index].$1.name.isNotEmpty
                       ? audienceInvited[index].$1.name
@@ -193,8 +190,8 @@ class _SeatInvitationPanelWidgetState extends State<SeatInvitationPanelWidget> {
                   audienceInvited[index].$1, audienceInvited[index].$2);
             },
             child: Container(
-              width: context.adapter.getWidth(60),
-              height: context.adapter.getHeight(24),
+              width: 60.width,
+              height: 24.height,
               decoration: BoxDecoration(
                 color: audienceInvited[index].$2
                     ? LiveColors.designStandardTransparent
@@ -204,15 +201,15 @@ class _SeatInvitationPanelWidgetState extends State<SeatInvitationPanelWidget> {
                         ? LiveColors.notStandardRed
                         : LiveColors.notStandardBlue,
                     width: 1),
-                borderRadius:
-                    BorderRadius.circular(context.adapter.getHeight(12)),
+                borderRadius: BorderRadius.circular(12.radius),
               ),
               alignment: Alignment.center,
               child: Text(
                 audienceInvited[index].$2
-                    ? LiveKitLocalizations.of(Global.appContext())!.live_cancel
+                    ? LiveKitLocalizations.of(Global.appContext())!
+                        .common_cancel
                     : LiveKitLocalizations.of(Global.appContext())!
-                        .live_voiceroom_invite,
+                        .common_voiceroom_invite,
                 style: TextStyle(
                     color: audienceInvited[index].$2
                         ? LiveColors.notStandardRed
@@ -229,11 +226,9 @@ class _SeatInvitationPanelWidgetState extends State<SeatInvitationPanelWidget> {
   double _calculateAudienceInvitationListHeight() {
     double totalHeight = 0;
     if (audienceInvited.isNotEmpty) {
-      totalHeight = audienceInvited.length * context.adapter.getHeight(60);
+      totalHeight = audienceInvited.length * 60.height;
     }
-    return totalHeight > context.adapter.getHeight(280)
-        ? context.adapter.getHeight(280)
-        : totalHeight;
+    return totalHeight > 280.height ? 280.height : totalHeight;
   }
 
   void _handleAudienceInvitation(User audience, bool isInvited) async {
@@ -261,7 +256,7 @@ class _SeatInvitationPanelWidgetState extends State<SeatInvitationPanelWidget> {
             manager.onRespondedSeatInvitation(audience.userId);
             manager.toastSubject.add(
                 LiveKitLocalizations.of(Global.appContext())!
-                    .live_voiceroom_invite_seat_canceled);
+                    .common_voiceroom_invite_seat_canceled);
             break;
           case RequestResultType.onCancelled:
             manager.onRespondedSeatInvitation(audience.userId);
@@ -270,14 +265,14 @@ class _SeatInvitationPanelWidgetState extends State<SeatInvitationPanelWidget> {
             manager.onRespondedSeatInvitation(audience.userId);
             manager.toastSubject.add(
                 LiveKitLocalizations.of(Global.appContext())!
-                    .live_voiceroom_invite_seat_canceled);
+                    .common_voiceroom_invite_seat_canceled);
             break;
           default:
             break;
         }
       } else {
         manager.toastSubject.add(ErrorHandler.convertToErrorMessage(
-                result.code.value(), result.message) ??
+                result.code.rawValue, result.message) ??
             '');
       }
       return;
@@ -288,7 +283,7 @@ class _SeatInvitationPanelWidgetState extends State<SeatInvitationPanelWidget> {
       manager.onRespondedSeatInvitation(audience.userId);
     } else {
       manager.toastSubject.add(ErrorHandler.convertToErrorMessage(
-              result.code.value(), result.message) ??
+              result.code.rawValue, result.message) ??
           '');
     }
   }

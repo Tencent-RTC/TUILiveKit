@@ -1,10 +1,8 @@
-library uicomponent;
+library component;
 
-export 'audience_list/audience_list_widget.dart';
+export 'audience_list/index.dart';
 export 'audio_effect/index.dart';
-export 'beauty/beauty_panel_widget.dart';
-export 'dashboard/anchor_dashboard_widget.dart';
-export 'dashboard/audience_dashboard_widget.dart';
-export 'live_info/live_info_widget.dart';
-export 'music/index.dart';
-export 'preview/live_info_edit_widget.dart';
+export 'beauty/index.dart';
+export 'gift_access/index.dart';
+export 'live_info/index.dart';
+export 'room_list/index.dart';

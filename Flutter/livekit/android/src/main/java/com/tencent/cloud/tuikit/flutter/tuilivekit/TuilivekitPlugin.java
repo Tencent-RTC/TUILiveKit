@@ -29,7 +29,7 @@ public class TuilivekitPlugin implements FlutterPlugin, MethodCallHandler {
     public static final String TAG = "TuilivekitPlugin";
 
     private MethodChannel mMethodChannel;
-    private Context       mContext;
+    private Context mContext;
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
@@ -41,8 +41,7 @@ public class TuilivekitPlugin implements FlutterPlugin, MethodCallHandler {
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         try {
-            Method method = TuilivekitPlugin.class.getDeclaredMethod(call.method, MethodCall.class,
-                    MethodChannel.Result.class);
+            Method method = TuilivekitPlugin.class.getDeclaredMethod(call.method, MethodCall.class, MethodChannel.Result.class);
             method.invoke(this, call, result);
         } catch (Exception e) {
             Log.e(TAG, "onMethodCall |method=" + call.method + "|arguments=" + call.arguments + "|error=" + e);
@@ -57,16 +56,19 @@ public class TuilivekitPlugin implements FlutterPlugin, MethodCallHandler {
     public void apiLog(MethodCall call, MethodChannel.Result result) {
         String logString = MethodUtils.getMethodRequiredParams(call, "logString", result);
         int level = MethodUtils.getMethodRequiredParams(call, "level", result);
+        String module = MethodUtils.getMethodRequiredParams(call, "module", result);
+        String file = MethodUtils.getMethodRequiredParams(call, "file", result);
+        int line = MethodUtils.getMethodRequiredParams(call, "line", result);
 
         switch (level) {
             case 1:
-                LiveKitLog.warn(mContext, logString);
+                LiveKitLog.warn(mContext, module, file, line, logString);
                 break;
             case 2:
-                LiveKitLog.error(mContext, logString);
+                LiveKitLog.error(mContext, module, file, line, logString);
                 break;
             default:
-                LiveKitLog.info(mContext, logString);
+                LiveKitLog.info(mContext, module, file, line, logString);
                 break;
         }
         result.success(0);

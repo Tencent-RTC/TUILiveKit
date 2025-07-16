@@ -1,40 +1,41 @@
 import 'package:flutter/material.dart';
 
-import '../../../common/index.dart';
-import '../service/audio_effect_service.dart';
+import '../../../../../common/constants/index.dart';
+import '../../../../../common/language/index.dart';
+import '../../../../../common/resources/index.dart';
+import '../../../../../common/widget/index.dart';
+import '../../../../../common/screen/index.dart';
+import '../manager/audio_effect_manager.dart';
 
-class ReverbWidget extends BasicWidget {
-  const ReverbWidget(
-      {super.key,
-      required super.liveController,
-      required this.audioEffectService});
+class ReverbWidget extends StatefulWidget {
+  final AudioEffectManager manager;
 
-  final AudioEffectService audioEffectService;
+  const ReverbWidget({super.key, required this.manager});
 
   @override
-  ReverbWidgetState getState() {
-    return ReverbWidgetState();
-  }
+  State<ReverbWidget> createState() => _ReverbWidgetState();
 }
 
-class ReverbWidgetState extends BasicState<ReverbWidget> {
+class _ReverbWidgetState extends State<ReverbWidget> {
+  late final AudioEffectManager manager;
   List<ReverbItem> mData = [];
 
   @override
   void initState() {
     super.initState();
+    manager = widget.manager;
     _initData();
   }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 80,
+      height: 89.height,
       child: _initReverbListViewWidget(),
     );
   }
 
-  _initReverbListViewWidget() {
+  Widget _initReverbListViewWidget() {
     return ListView.builder(
       shrinkWrap: true,
       physics: const AlwaysScrollableScrollPhysics(),
@@ -42,33 +43,27 @@ class ReverbWidgetState extends BasicState<ReverbWidget> {
       itemCount: mData.length,
       itemBuilder: (context, index) {
         return ValueListenableBuilder(
-          valueListenable:
-              widget.audioEffectService.audioEffectState.reverbType,
-          builder: (BuildContext context, int value, Widget? child) {
+          valueListenable: manager.state.reverbType,
+          builder: (context, reverbType, child) {
             return GestureDetector(
               onTap: () {
                 _setReverbType(mData[index].type);
               },
               child: Container(
-                width: 56,
-                height: 79,
-                margin: const EdgeInsets.only(left: 15, right: 10),
+                width: 56.width,
+                height: 81.height,
+                margin: EdgeInsets.only(left: 12.width, right: 12.width),
                 child: Column(
                   children: [
                     Container(
-                      width: 56,
-                      height: 56,
-                      padding: const EdgeInsets.all(2),
+                      width: 56.width,
+                      padding: EdgeInsets.all(13.width),
                       decoration: BoxDecoration(
-                        color:
-                            LiveColors.notStandardBlue30Transparency,
+                        color: LiveColors.notStandardBlue30Transparency,
                         border: Border.all(
-                            color: widget.audioEffectService.audioEffectState
-                                        .reverbType.value ==
-                                    mData[index].type
+                            color: reverbType == mData[index].type
                                 ? LiveColors.designStandardB1
-                                : LiveColors
-                                    .notStandardBlue30Transparency,
+                                : LiveColors.notStandardBlue30Transparency,
                             width: 2),
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -77,14 +72,14 @@ class ReverbWidgetState extends BasicState<ReverbWidget> {
                         package: Constants.pluginName,
                       ),
                     ),
-                    const SizedBox(
-                      height: 2,
-                    ),
-                    Text(
-                      mData[index].title,
-                      style: const TextStyle(
-                          color: LiveColors.designStandardG6,
-                          fontSize: 12),
+                    SizedBox(height: 2.height),
+                    SizedBox(
+                      height: 18.height,
+                      child: Text(
+                        mData[index].title,
+                        style: const TextStyle(
+                            color: LiveColors.designStandardG6, fontSize: 12),
+                      ),
                     ),
                   ],
                 ),
@@ -99,27 +94,26 @@ class ReverbWidgetState extends BasicState<ReverbWidget> {
   void _initData() {
     mData.clear();
     mData.add(ReverbItem(
-        title:
-            LiveKitLocalizations.of(Global.appContext())!.live_reverb_none,
+        title: LiveKitLocalizations.of(Global.appContext())!.common_reverb_none,
         icon: LiveImages.selectNone,
         type: 0));
     mData.add(ReverbItem(
-        title: LiveKitLocalizations.of(Global.appContext())!
-            .live_reverb_karaoke,
+        title:
+            LiveKitLocalizations.of(Global.appContext())!.common_reverb_karaoke,
         icon: LiveImages.reverbKTV,
         type: 1));
     mData.add(ReverbItem(
         title: LiveKitLocalizations.of(Global.appContext())!
-            .live_reverb_metallic_sound,
+            .common_reverb_metallic_sound,
         icon: LiveImages.reverbMetallic,
         type: 6));
     mData.add(ReverbItem(
-        title: LiveKitLocalizations.of(Global.appContext())!.live_reverb_low,
+        title: LiveKitLocalizations.of(Global.appContext())!.common_reverb_low,
         icon: LiveImages.reverbLow,
         type: 4));
     mData.add(ReverbItem(
         title: LiveKitLocalizations.of(Global.appContext())!
-            .live_reverb_loud_and_loud,
+            .common_reverb_loud_and_loud,
         icon: LiveImages.reverbLoud,
         type: 5));
   }
@@ -137,8 +131,8 @@ class ReverbItem {
   });
 }
 
-extension ReverbWidgetStateLogicExtension on ReverbWidgetState {
-  _setReverbType(int type) {
-    widget.audioEffectService.setVoiceReverbType(type);
+extension on _ReverbWidgetState {
+  void _setReverbType(int type) {
+    manager.setVoiceReverbType(type);
   }
 }

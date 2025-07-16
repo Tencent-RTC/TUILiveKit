@@ -38,30 +38,30 @@ class _SeatManagementPanelWidgetState extends State<SeatManagementPanelWidget> {
       width: _screenWidth,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(context.adapter.getWidth(15)),
-              topRight: Radius.circular(context.adapter.getWidth(15)))),
-      height: context.adapter.getHeight(724),
+              topLeft: Radius.circular(15.width),
+              topRight: Radius.circular(15.width))),
+      height: 724.height,
       child: Column(
         children: [
-          SizedBox(height: context.adapter.getHeight(20)),
+          SizedBox(height: 20.height),
           SizedBox(
               width: _screenWidth,
-              height: context.adapter.getHeight(28),
+              height: 28.height,
               child: Stack(alignment: Alignment.center, children: [
                 Text(
                   LiveKitLocalizations.of(Global.appContext())!
-                      .live_link_mic_manager,
+                      .common_link_mic_manager,
                   style: const TextStyle(
                       color: LiveColors.designStandardFlowkitWhite,
                       fontSize: 16),
                   textAlign: TextAlign.center,
                 ),
                 Positioned(
-                  top: context.adapter.getHeight(2),
-                  right: context.adapter.getWidth(26),
+                  top: 2.height,
+                  right: 26.width,
                   child: SizedBox(
-                    width: context.adapter.getWidth(20),
-                    height: context.adapter.getWidth(20),
+                    width: 20.radius,
+                    height: 20.radius,
                     child: GestureDetector(
                       onTap: () => _showSeatInvitationPanel(),
                       child: Image.asset(LiveImages.invitation,
@@ -70,16 +70,16 @@ class _SeatManagementPanelWidgetState extends State<SeatManagementPanelWidget> {
                   ),
                 ),
               ])),
-          SizedBox(height: context.adapter.getHeight(24)),
+          SizedBox(height: 24.height),
           SizedBox(
               width: _screenWidth,
-              height: context.adapter.getHeight(26),
+              height: 26.height,
               child: Stack(alignment: Alignment.center, children: [
                 Positioned(
-                  left: context.adapter.getWidth(24),
+                  left: 24.width,
                   child: Text(
                     LiveKitLocalizations.of(Global.appContext())!
-                        .live_voiceroom_need_agree,
+                        .common_voiceroom_need_agree,
                     style: const TextStyle(
                         color: LiveColors.designStandardFlowkitWhite,
                         fontSize: 16),
@@ -87,13 +87,13 @@ class _SeatManagementPanelWidgetState extends State<SeatManagementPanelWidget> {
                   ),
                 ),
                 Positioned(
-                  right: context.adapter.getWidth(24),
+                  right: 24.width,
                   child: ValueListenableBuilder(
                       valueListenable: manager.roomState.seatMode,
                       builder: (context, seatMode, child) {
                         return SizedBox(
-                          width: context.adapter.getWidth(45),
-                          height: context.adapter.getHeight(24),
+                          width: 45.width,
+                          height: 24.height,
                           child: Switch(
                               activeTrackColor: Colors.blue,
                               value: seatMode == TUISeatMode.applyToTake,
@@ -107,13 +107,12 @@ class _SeatManagementPanelWidgetState extends State<SeatManagementPanelWidget> {
                       }),
                 )
               ])),
-          SizedBox(height: context.adapter.getHeight(16)),
+          SizedBox(height: 16.height),
           Padding(
-            padding:
-                EdgeInsets.symmetric(horizontal: context.adapter.getWidth(24)),
+            padding: EdgeInsets.symmetric(horizontal: 24.width),
             child: Container(
                 color: LiveColors.designStandardG3.withAlpha(0x4D),
-                height: context.adapter.getHeight(1)),
+                height: 1.height),
           ),
           ListenableBuilder(
               listenable: Listenable.merge([
@@ -140,23 +139,23 @@ class _SeatManagementPanelWidgetState extends State<SeatManagementPanelWidget> {
   Widget _initEmptySeatManagement() {
     return SizedBox(
         width: _screenWidth,
-        height: context.adapter.getHeight(609),
+        height: 609.height,
         child: Column(
           children: [
-            SizedBox(height: context.adapter.getHeight(217)),
+            SizedBox(height: 217.height),
             Text(
               LiveKitLocalizations.of(Global.appContext())!
-                  .live_voiceroom_empty_view,
+                  .common_voiceroom_empty_view,
               style: const TextStyle(
                   color: LiveColors.designStandardG5, fontSize: 16),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: context.adapter.getHeight(23)),
+            SizedBox(height: 23.height),
             GestureDetector(
               onTap: () => _showSeatInvitationPanel(),
               child: Container(
-                width: context.adapter.getWidth(201),
-                height: context.adapter.getHeight(40),
+                width: 201.width,
+                height: 40.height,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
@@ -164,7 +163,7 @@ class _SeatManagementPanelWidgetState extends State<SeatManagementPanelWidget> {
                 ),
                 child: Text(
                   LiveKitLocalizations.of(Global.appContext())!
-                      .live_voiceroom_invite,
+                      .common_voiceroom_invite,
                   style: const TextStyle(
                       color: LiveColors.designStandardFlowkitWhite,
                       fontSize: 16,
@@ -178,13 +177,13 @@ class _SeatManagementPanelWidgetState extends State<SeatManagementPanelWidget> {
 
   Widget _initSeatManagement() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: context.adapter.getWidth(24)),
+      padding: EdgeInsets.symmetric(horizontal: 24.width),
       child: SingleChildScrollView(
           child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-            SizedBox(height: context.adapter.getHeight(16)),
+            SizedBox(height: 16.height),
             _initMicUpTitleWidget(),
             _initMicUpUserListWidget(),
             _initSeparationWidget(),
@@ -206,7 +205,7 @@ class _SeatManagementPanelWidgetState extends State<SeatManagementPanelWidget> {
         return Visibility(
           visible: seatedCount > 0,
           child: Text(
-            "${LiveKitLocalizations.of(Global.appContext())!.live_on_seat_list}"
+            "${LiveKitLocalizations.of(Global.appContext())!.common_link_mic_up_title}"
             "($seatedCount/9)",
             style: const TextStyle(
                 color: LiveColors.designStandardG7, fontSize: 16),
@@ -260,7 +259,7 @@ class _SeatManagementPanelWidgetState extends State<SeatManagementPanelWidget> {
               visible: seatedCount > 1 && seatApplicationList.isNotEmpty,
               child: Container(
                 color: LiveColors.designStandardG3Divider,
-                height: context.adapter.getHeight(7),
+                height: 7.height,
               ),
             );
           },
@@ -280,7 +279,7 @@ class _SeatManagementPanelWidgetState extends State<SeatManagementPanelWidget> {
         return Visibility(
           visible: filterApplications.isNotEmpty,
           child: Text(
-            "${LiveKitLocalizations.of(Global.appContext())!.live_application_list}"
+            "${LiveKitLocalizations.of(Global.appContext())!.common_apply_link_mic}"
             "(${filterApplications.length})",
             style: const TextStyle(
                 color: LiveColors.designStandardG7, fontSize: 16),
@@ -318,7 +317,7 @@ class _SeatManagementPanelWidgetState extends State<SeatManagementPanelWidget> {
 
   Widget _buildMicUpUserItem(int index) {
     return Container(
-      height: context.adapter.getHeight(60),
+      height: 60.height,
       color: LiveColors.designStandardG2,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -328,8 +327,8 @@ class _SeatManagementPanelWidgetState extends State<SeatManagementPanelWidget> {
           Row(
             children: [
               SizedBox(
-                width: context.adapter.getWidth(40),
-                height: context.adapter.getWidth(40),
+                width: 40.radius,
+                height: 40.radius,
                 child: Stack(
                   children: [
                     ClipOval(
@@ -348,12 +347,11 @@ class _SeatManagementPanelWidgetState extends State<SeatManagementPanelWidget> {
                       bottom: 0,
                       right: 0,
                       child: Container(
-                          width: context.adapter.getWidth(16),
-                          height: context.adapter.getWidth(16),
+                          width: 16.radius,
+                          height: 16.radius,
                           decoration: BoxDecoration(
                               color: LiveColors.designStandardG1,
-                              borderRadius: BorderRadius.circular(
-                                  context.adapter.getWidth(8))),
+                              borderRadius: BorderRadius.circular(8.radius)),
                           child: Text('${currentSeatList[index].index + 1}',
                               style: TextStyle(
                                   color: LiveColors.designStandardFlowkitWhite
@@ -364,11 +362,10 @@ class _SeatManagementPanelWidgetState extends State<SeatManagementPanelWidget> {
                   ],
                 ),
               ),
-              SizedBox(width: context.adapter.getHeight(12)),
+              SizedBox(width: 12.width),
               Container(
                 alignment: Alignment.centerLeft,
-                constraints:
-                    BoxConstraints(maxWidth: context.adapter.getWidth(135)),
+                constraints: BoxConstraints(maxWidth: 135.width),
                 child: Text(
                   currentSeatList[index].userName.isNotEmpty
                       ? currentSeatList[index].userName
@@ -385,16 +382,15 @@ class _SeatManagementPanelWidgetState extends State<SeatManagementPanelWidget> {
               _hangUpLinkMic(currentSeatList[index].userId);
             },
             child: Container(
-              width: context.adapter.getWidth(60),
-              height: context.adapter.getHeight(24),
+              width: 60.width,
+              height: 24.height,
               decoration: BoxDecoration(
                 border: Border.all(color: LiveColors.notStandardRed, width: 1),
-                borderRadius:
-                    BorderRadius.circular(context.adapter.getHeight(12)),
+                borderRadius: BorderRadius.circular(12.height),
               ),
               alignment: Alignment.center,
               child: Text(
-                LiveKitLocalizations.of(Global.appContext())!.live_hang_up,
+                LiveKitLocalizations.of(Global.appContext())!.common_hang_up,
                 style: const TextStyle(
                     color: LiveColors.notStandardRed, fontSize: 12),
               ),
@@ -408,7 +404,7 @@ class _SeatManagementPanelWidgetState extends State<SeatManagementPanelWidget> {
   Widget _buildMicDownUserItem(int index) {
     final dataList = manager.seatState.seatApplicationList.value;
     return Container(
-      height: context.adapter.getHeight(60),
+      height: 60.height,
       color: LiveColors.designStandardG2,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -418,8 +414,8 @@ class _SeatManagementPanelWidgetState extends State<SeatManagementPanelWidget> {
           Row(
             children: [
               SizedBox(
-                width: context.adapter.getWidth(40),
-                height: context.adapter.getWidth(40),
+                width: 40.radius,
+                height: 40.radius,
                 child: ClipOval(
                   child: Image.network(
                     dataList[index].avatarUrl,
@@ -433,11 +429,10 @@ class _SeatManagementPanelWidgetState extends State<SeatManagementPanelWidget> {
                   ),
                 ),
               ),
-              SizedBox(width: context.adapter.getWidth(10)),
+              SizedBox(width: 10.width),
               Container(
                 alignment: Alignment.centerLeft,
-                constraints:
-                    BoxConstraints(maxWidth: context.adapter.getWidth(135)),
+                constraints: BoxConstraints(maxWidth: 135.width),
                 child: Text(
                   dataList[index].userName.isNotEmpty
                       ? dataList[index].userName
@@ -456,43 +451,40 @@ class _SeatManagementPanelWidgetState extends State<SeatManagementPanelWidget> {
                   _acceptLinkMicRequest(dataList[index].userId);
                 },
                 child: Container(
-                  width: context.adapter.getWidth(60),
-                  height: context.adapter.getHeight(24),
+                  width: 60.width,
+                  height: 24.height,
                   decoration: BoxDecoration(
                     color: LiveColors.designStandardB1,
-                    borderRadius:
-                        BorderRadius.circular(context.adapter.getHeight(12)),
+                    borderRadius: BorderRadius.circular(12.height),
                   ),
                   alignment: Alignment.center,
                   child: Text(
-                    LiveKitLocalizations.of(Global.appContext())!.live_accept,
+                    LiveKitLocalizations.of(Global.appContext())!.common_accept,
                     style: const TextStyle(
                         color: LiveColors.designStandardFlowkitWhite,
                         fontSize: 12),
                   ),
                 ),
               ),
-              8.horizontalSpace,
+              SizedBox(width: 8.width),
               GestureDetector(
                 onTap: () {
                   _rejectLinkMicRequest(dataList[index].userId);
                 },
                 child: Container(
-                  width: context.adapter.getWidth(60),
-                  height: context.adapter.getHeight(24),
+                  width: 60.width,
+                  height: 24.height,
                   decoration: BoxDecoration(
                     border: Border.all(
-                        color: LiveColors.designStandardB1,
-                        width: context.adapter.getWidth(1)),
-                    borderRadius:
-                        BorderRadius.circular(context.adapter.getHeight(12)),
+                        color: LiveColors.designStandardB1, width: 1.width),
+                    borderRadius: BorderRadius.circular(12.height),
                   ),
                   alignment: Alignment.center,
                   child: Text(
-                    LiveKitLocalizations.of(Global.appContext())!.live_reject,
+                    LiveKitLocalizations.of(Global.appContext())!.common_reject,
                     style: TextStyle(
                         color: LiveColors.designStandardB1,
-                        fontSize: context.adapter.getHeight(12)),
+                        fontSize: 12.height),
                   ),
                 ),
               ),
@@ -518,7 +510,7 @@ extension on _SeatManagementPanelWidgetState {
       return manager.fetchSeatApplicationList();
     }
     manager.toastSubject.add(ErrorHandler.convertToErrorMessage(
-            result.code.value(), result.message) ??
+            result.code.rawValue, result.message) ??
         '');
   }
 
@@ -535,7 +527,7 @@ extension on _SeatManagementPanelWidgetState {
         userRole: TUIRole.generalUser);
     manager.onSeatApplicationProcessed(userInfo);
     manager.toastSubject.add(ErrorHandler.convertToErrorMessage(
-            result.code.value(), result.message) ??
+            result.code.rawValue, result.message) ??
         '');
   }
 
@@ -543,7 +535,7 @@ extension on _SeatManagementPanelWidgetState {
     final result = await seatGridController.kickUserOffSeatByAdmin(userId);
     if (result.code != TUIError.success) {
       return manager.toastSubject.add(ErrorHandler.convertToErrorMessage(
-              result.code.value(), result.message) ??
+              result.code.rawValue, result.message) ??
           '');
     }
   }
@@ -556,21 +548,17 @@ extension on _SeatManagementPanelWidgetState {
       filterSeatList.removeWhere((seatInfo) =>
           seatInfo.userId.isEmpty ||
           seatInfo.userId == manager.userState.selfInfo.userId);
-      totalHeight = (filterSeatList.length) * context.adapter.getHeight(60);
+      totalHeight = (filterSeatList.length) * 60.height;
     }
-    return totalHeight > context.adapter.getHeight(280)
-        ? context.adapter.getHeight(280)
-        : totalHeight;
+    return totalHeight > 280.height ? 280.height : totalHeight;
   }
 
   double _calculateMicDownUserListHeight() {
     double totalHeight = 0;
     if (manager.seatState.seatApplicationList.value.isNotEmpty) {
-      totalHeight = manager.seatState.seatApplicationList.value.length *
-          context.adapter.getHeight(60);
+      totalHeight =
+          manager.seatState.seatApplicationList.value.length * 60.height;
     }
-    return totalHeight > context.adapter.getHeight(280)
-        ? context.adapter.getHeight(280)
-        : totalHeight;
+    return totalHeight > 280.height ? 280.height : totalHeight;
   }
 }

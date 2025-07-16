@@ -52,7 +52,7 @@ class _LivePrepareInfoEditWidgetState extends State<LivePrepareInfoEditWidget> {
       child: Container(
         decoration: BoxDecoration(
           color: LiveColors.notStandard40G1,
-          borderRadius: BorderRadius.circular(context.adapter.getWidth(16)),
+          borderRadius: BorderRadius.circular(16.radius),
         ),
       ),
     );
@@ -60,9 +60,9 @@ class _LivePrepareInfoEditWidgetState extends State<LivePrepareInfoEditWidget> {
 
   _initLiveCoverWidget(VoiceRoomManager manager) {
     return Positioned(
-      left: context.adapter.getWidth(8),
-      top: context.adapter.getHeight(8),
-      bottom: context.adapter.getHeight(8),
+      left: 8.width,
+      top: 8.height,
+      bottom: 8.height,
       child: GestureDetector(
         onTap: () {
           _showCoverSelectPanel();
@@ -70,11 +70,10 @@ class _LivePrepareInfoEditWidgetState extends State<LivePrepareInfoEditWidget> {
         child: Stack(
           children: [
             SizedBox(
-              width: context.adapter.getWidth(72),
-              height: context.adapter.getHeight(96),
+              width: 72.width,
+              height: 96.height,
               child: ClipRRect(
-                borderRadius:
-                    BorderRadius.circular(context.adapter.getWidth(8)),
+                borderRadius: BorderRadius.circular(8.radius),
                 child: ValueListenableBuilder(
                   valueListenable: manager.roomState.coverUrl,
                   builder: (context, value, child) {
@@ -101,12 +100,11 @@ class _LivePrepareInfoEditWidgetState extends State<LivePrepareInfoEditWidget> {
                 decoration: BoxDecoration(
                     color: LiveColors.notStandardBlack80Transparency,
                     borderRadius: BorderRadius.only(
-                        bottomLeft:
-                            Radius.circular(context.adapter.getWidth(8)),
-                        bottomRight:
-                            Radius.circular(context.adapter.getWidth(8)))),
+                        bottomLeft: Radius.circular(8.width),
+                        bottomRight: Radius.circular(8.width))),
                 child: Text(
-                  LiveKitLocalizations.of(Global.appContext())!.live_edit_cover,
+                  LiveKitLocalizations.of(Global.appContext())!
+                      .common_edit_cover,
                   style: const TextStyle(
                       color: LiveColors.designStandardG7, fontSize: 14),
                 ),
@@ -120,9 +118,9 @@ class _LivePrepareInfoEditWidgetState extends State<LivePrepareInfoEditWidget> {
 
   _initLiveNameWidget(VoiceRoomManager manager) {
     return Positioned(
-      left: context.adapter.getWidth(92),
-      right: context.adapter.getWidth(18),
-      height: context.adapter.getHeight(48),
+      left: 92.width,
+      right: 18.width,
+      height: 48.height,
       child: Column(
         children: [
           Expanded(
@@ -134,7 +132,7 @@ class _LivePrepareInfoEditWidgetState extends State<LivePrepareInfoEditWidget> {
                     valueListenable: manager.roomState.roomName,
                     builder: (context, value, child) {
                       return SizedBox(
-                        width: context.adapter.getWidth(185),
+                        width: 185.width,
                         child: TextField(
                             controller: _controller,
                             inputFormatters: [
@@ -158,8 +156,8 @@ class _LivePrepareInfoEditWidgetState extends State<LivePrepareInfoEditWidget> {
                     },
                   ),
                   SizedBox(
-                    width: context.adapter.getWidth(16),
-                    height: context.adapter.getWidth(16),
+                    width: 16.radius,
+                    height: 16.radius,
                     child: Image.asset(
                       LiveImages.streamEditIcon,
                       package: Constants.pluginName,
@@ -168,8 +166,8 @@ class _LivePrepareInfoEditWidgetState extends State<LivePrepareInfoEditWidget> {
                 ]),
           ),
           Container(
-            width: context.adapter.getWidth(235),
-            height: context.adapter.getHeight(1),
+            width: 235.width,
+            height: 1.height,
             color: LiveColors.designStandardFlowkitWhite.withAlpha(0x4D),
           )
         ],
@@ -179,8 +177,8 @@ class _LivePrepareInfoEditWidgetState extends State<LivePrepareInfoEditWidget> {
 
   _initLiveModeWidget(VoiceRoomManager manager) {
     return Positioned(
-      left: context.adapter.getWidth(92),
-      top: context.adapter.getHeight(56),
+      left: 92.width,
+      top: 56.height,
       child: GestureDetector(
         onTap: () {
           _showLiveModeSelectPanel();
@@ -190,19 +188,19 @@ class _LivePrepareInfoEditWidgetState extends State<LivePrepareInfoEditWidget> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(
-                width: context.adapter.getWidth(16),
-                height: context.adapter.getWidth(16),
+                width: 16.radius,
+                height: 16.radius,
                 child: Image.asset(
                   LiveImages.streamPrivacyMode,
                   package: Constants.pluginName,
                 ),
               ),
               SizedBox(
-                width: context.adapter.getWidth(8),
+                width: 8.width,
               ),
               Text(
                 LiveKitLocalizations.of(Global.appContext())!
-                    .live_stream_privacy_status,
+                    .common_stream_privacy_status,
                 style: const TextStyle(
                   fontSize: 14,
                   color: LiveColors.designStandardG7,
@@ -223,8 +221,8 @@ class _LivePrepareInfoEditWidgetState extends State<LivePrepareInfoEditWidget> {
                 },
               ),
               SizedBox(
-                width: context.adapter.getWidth(20),
-                height: context.adapter.getWidth(20),
+                width: 20.radius,
+                height: 20.radius,
                 child: Image.asset(
                   LiveImages.streamEditArrow,
                   package: Constants.pluginName,
@@ -249,12 +247,12 @@ extension on _LivePrepareInfoEditWidgetState {
       ActionSheetModel(
           isCenter: true,
           text: LiveKitLocalizations.of(Global.appContext())!
-              .live_stream_privacy_status_default,
+              .common_stream_privacy_status_default,
           bingData: 1),
       ActionSheetModel(
           isCenter: true,
           text: LiveKitLocalizations.of(Global.appContext())!
-              .live_stream_privacy_status_privacy,
+              .common_stream_privacy_status_privacy,
           bingData: 2),
     ];
     ActionSheet.show(list, (ActionSheetModel model) async {
@@ -268,13 +266,13 @@ extension on _LivePrepareInfoEditWidgetState {
     switch (status) {
       case PrivacyStatus.publicity:
         return LiveKitLocalizations.of(Global.appContext())!
-            .live_stream_privacy_status_default;
+            .common_stream_privacy_status_default;
       case PrivacyStatus.privacy:
         return LiveKitLocalizations.of(Global.appContext())!
-            .live_stream_privacy_status_privacy;
+            .common_stream_privacy_status_privacy;
       default:
         return LiveKitLocalizations.of(Global.appContext())!
-            .live_stream_privacy_status_default;
+            .common_stream_privacy_status_default;
     }
   }
 }

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:tencent_live_uikit/voice_room/index.dart';
-import 'package:tencent_live_uikit/voice_room/widget/component/audio_effect/audio_effect_panel_widget.dart';
 
 import '../../../common/constants/index.dart';
 import '../../../common/language/index.dart';
 import '../../../common/resources/index.dart';
 import '../../../common/widget/index.dart';
 import '../../../common/screen/index.dart';
+import '../../../component/audio_effect/index.dart';
 
 class LivePrepareFunctionWidget extends StatefulWidget {
   final VoiceRoomManager manager;
@@ -45,8 +45,8 @@ class _LivePrepareFunctionWidgetState extends State<LivePrepareFunctionWidget> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(
-            width: context.adapter.getWidth(36),
-            height: context.adapter.getWidth(36),
+            width: 36.radius,
+            height: 36.radius,
             child: Image.asset(
               LiveImages.voiceBackground,
               package: Constants.pluginName,
@@ -54,7 +54,7 @@ class _LivePrepareFunctionWidgetState extends State<LivePrepareFunctionWidget> {
           ),
           Text(
             LiveKitLocalizations.of(Global.appContext())!
-                .live_settings_bg_image,
+                .common_settings_bg_image,
             style: const TextStyle(
               fontSize: 12,
               color: LiveColors.designStandardG7,
@@ -76,15 +76,15 @@ class _LivePrepareFunctionWidgetState extends State<LivePrepareFunctionWidget> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(
-            width: context.adapter.getWidth(36),
-            height: context.adapter.getWidth(36),
+            width: 36.radius,
+            height: 36.radius,
             child: Image.asset(
               LiveImages.prepareAudio,
               package: Constants.pluginName,
             ),
           ),
           Text(
-            LiveKitLocalizations.of(Global.appContext())!.live_audio_effect,
+            LiveKitLocalizations.of(Global.appContext())!.common_audio_effect,
             style: const TextStyle(
               fontSize: 12,
               color: LiveColors.designStandardG7,
@@ -105,15 +105,15 @@ class _LivePrepareFunctionWidgetState extends State<LivePrepareFunctionWidget> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(
-            width: context.adapter.getWidth(36),
-            height: context.adapter.getWidth(36),
+            width: 36.radius,
+            height: 36.radius,
             child: Image.asset(
               LiveImages.prepareSetting,
               package: Constants.pluginName,
             ),
           ),
           Text(
-            LiveKitLocalizations.of(Global.appContext())!.live_settings,
+            LiveKitLocalizations.of(Global.appContext())!.common_settings,
             style: const TextStyle(
               fontSize: 12,
               color: LiveColors.designStandardG7,

@@ -34,28 +34,28 @@ class _LiveCoverSelectPanelWidgetState
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     return SizedBox(
-      height: context.adapter.getHeight(700),
+      height: 700.height,
       width: screenWidth,
       child: Column(
         children: [
           SizedBox(
-            height: context.adapter.getHeight(15),
+            height: 15.height,
           ),
           SizedBox(
-            height: context.adapter.getHeight(44),
+            height: 44.height,
             width: screenWidth,
             child: Stack(
               children: [
                 Positioned(
-                  left: context.adapter.getWidth(14),
+                  left: 14.width,
                   child: GestureDetector(
                     onTap: () {
                       Navigator.pop(context);
                     },
                     child: Container(
-                      width: context.adapter.getWidth(44),
-                      height: context.adapter.getWidth(44),
-                      padding: EdgeInsets.all(context.adapter.getWidth(10)),
+                      width: 44.radius,
+                      height: 44.radius,
+                      padding: EdgeInsets.all(10.radius),
                       child: Image.asset(
                         LiveImages.returnArrow,
                         package: Constants.pluginName,
@@ -66,7 +66,7 @@ class _LiveCoverSelectPanelWidgetState
                 Center(
                   child: Text(
                     LiveKitLocalizations.of(Global.appContext())!
-                        .live_preset_cover,
+                        .common_title_preset_cover,
                     style: const TextStyle(
                         color: LiveColors.designStandardFlowkitWhite,
                         fontSize: 16),
@@ -76,10 +76,10 @@ class _LiveCoverSelectPanelWidgetState
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(context.adapter.getWidth(15)),
+            padding: EdgeInsets.all(15.radius),
             child: SizedBox(
-              width: context.adapter.getWidth(345),
-              height: context.adapter.getHeight(500),
+              width: 345.width,
+              height: 500.height,
               child: GridView.builder(
                 itemCount: widget.coverUrls.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -90,22 +90,22 @@ class _LiveCoverSelectPanelWidgetState
                       _onLiveCoverItemSelected(index);
                     },
                     child: Padding(
-                      padding: EdgeInsets.all(context.adapter.getWidth(5)),
+                      padding: EdgeInsets.all(5.radius),
                       child: ValueListenableBuilder(
                         valueListenable: selectedIndex,
                         builder:
                             (BuildContext context, int value, Widget? child) {
                           return Container(
-                            width: context.adapter.getWidth(90),
-                            height: context.adapter.getWidth(90),
+                            width: 90.radius,
+                            height: 90.radius,
                             decoration: BoxDecoration(
                                 border: Border.all(
                                     color: selectedIndex.value == index
                                         ? LiveColors.designStandardB1
                                         : LiveColors.designStandardTransparent,
-                                    width: context.adapter.getWidth(3)),
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(context.adapter.getWidth(6)))),
+                                    width: 3.width),
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(6.radius))),
                             child: Image.network(
                               widget.coverUrls[index],
                               fit: BoxFit.cover,
@@ -126,23 +126,23 @@ class _LiveCoverSelectPanelWidgetState
             ),
           ),
           SizedBox(
-            height: context.adapter.getHeight(20),
+            height: 20.height,
           ),
           GestureDetector(
             onTap: () {
               _setLiveCover();
             },
             child: Container(
-              width: context.adapter.getWidth(200),
-              height: context.adapter.getHeight(52),
+              width: 200.width,
+              height: 52.height,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(context.adapter.getWidth(10)),
+                borderRadius: BorderRadius.circular(10.radius),
                 color: LiveColors.designStandardB1,
               ),
               child: Text(
                 LiveKitLocalizations.of(Global.appContext())!
-                    .live_set_as_cover,
+                    .common_set_as_cover,
                 style: const TextStyle(
                     color: LiveColors.designStandardFlowkitWhite,
                     fontSize: 16,

@@ -4,6 +4,7 @@ import 'package:rtc_room_engine/api/common/tui_common_define.dart';
 import 'package:rtc_room_engine/api/room/tui_room_define.dart';
 import 'package:tencent_cloud_chat_sdk/models/v2_tim_user_full_info.dart';
 
+import '../../../component/live_info/state/follow_define.dart';
 import '../../index.dart';
 import '../../../common/index.dart';
 
@@ -29,7 +30,7 @@ class UserManager {
       return;
     }
     toastSubject?.add(ErrorHandler.convertToErrorMessage(
-            result.code.value(), result.message) ??
+            result.code.rawValue, result.message) ??
         '');
   }
 
@@ -46,7 +47,7 @@ class UserManager {
       return _updateFollowUserList(user, isFollow);
     }
     toastSubject?.add(ErrorHandler.convertToErrorMessage(
-            result.code.value(), result.message) ??
+            result.code.rawValue, result.message) ??
         '');
   }
 
@@ -61,7 +62,7 @@ class UserManager {
       return _updateFollowUserList(user, isFollow);
     }
     toastSubject?.add(ErrorHandler.convertToErrorMessage(
-            result.code.value(), result.message) ??
+            result.code.rawValue, result.message) ??
         '');
   }
 }

@@ -5,8 +5,8 @@ import '../../../common/constants/constants.dart';
 import '../../../common/language/index.dart';
 import '../../../common/resources/index.dart';
 import '../../../common/screen/index.dart';
+import '../../../component/audio_effect/index.dart';
 import '../../manager/index.dart';
-import '../component/audio_effect/index.dart';
 import 'index.dart';
 
 class SettingsPanelWidget extends StatefulWidget {
@@ -35,17 +35,17 @@ class _SettingsPanelWidgetState extends State<SettingsPanelWidget> {
     _screenWidth = MediaQuery.of(context).size.width;
     return Container(
       width: _screenWidth,
-      height: context.adapter.getHeight(350),
+      height: 350.height,
       decoration: BoxDecoration(
         color: LiveColors.designStandardG2,
         borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(context.adapter.getWidth(20)),
-            topRight: Radius.circular(context.adapter.getWidth(20))),
+            topLeft: Radius.circular(20.width),
+            topRight: Radius.circular(20.width)),
       ),
       child: Column(children: [
-        SizedBox(height: context.adapter.getHeight(20)),
+        SizedBox(height: 20.height),
         _initTitleWidget(),
-        SizedBox(height: context.adapter.getHeight(32)),
+        SizedBox(height: 32.height),
         _initSettingsListWidget()
       ]),
     );
@@ -54,10 +54,10 @@ class _SettingsPanelWidgetState extends State<SettingsPanelWidget> {
   Widget _initTitleWidget() {
     return Container(
       alignment: Alignment.center,
-      height: context.adapter.getHeight(28),
+      height: 28.height,
       width: _screenWidth,
       child: Text(
-        LiveKitLocalizations.of(Global.appContext())!.live_settings,
+        LiveKitLocalizations.of(Global.appContext())!.common_settings,
         style:
             const TextStyle(color: LiveColors.designStandardG7, fontSize: 16),
       ),
@@ -67,7 +67,7 @@ class _SettingsPanelWidgetState extends State<SettingsPanelWidget> {
   Widget _initSettingsListWidget() {
     return SizedBox(
       width: _screenWidth,
-      height: context.adapter.getHeight(92),
+      height: 92.height,
       child: Center(
         child: ListView.builder(
           shrinkWrap: true,
@@ -78,28 +78,28 @@ class _SettingsPanelWidgetState extends State<SettingsPanelWidget> {
             return GestureDetector(
               onTap: () => _onTapIndex(index),
               child: Container(
-                width: context.adapter.getWidth(56),
-                height: context.adapter.getHeight(79),
+                width: 56.width,
+                height: 79.height,
                 margin: EdgeInsets.symmetric(
-                    horizontal: context.adapter.getWidth(22)),
+                    horizontal: 22.width),
                 child: Column(
                   children: [
                     Container(
-                      width: context.adapter.getWidth(56),
-                      height: context.adapter.getWidth(56),
-                      padding: EdgeInsets.all(context.adapter.getWidth(2)),
+                      width: 56.radius,
+                      height: 56.radius,
+                      padding: EdgeInsets.all(2.radius),
                       decoration: BoxDecoration(
                         color: LiveColors.notStandardBlue30Transparency,
                         border: Border.all(
                             color: LiveColors.notStandardBlue30Transparency,
-                            width: context.adapter.getWidth(2)),
+                            width: 2.width),
                         borderRadius: BorderRadius.circular(
-                            context.adapter.getHeight(10)),
+                            10.radius),
                       ),
                       child: Center(
                         child: SizedBox(
-                          width: context.adapter.getWidth(30),
-                          height: context.adapter.getWidth(30),
+                          width: 30.radius,
+                          height: 30.radius,
                           child: Image.asset(
                             list[index].icon,
                             package: Constants.pluginName,
@@ -107,7 +107,7 @@ class _SettingsPanelWidgetState extends State<SettingsPanelWidget> {
                         ),
                       ),
                     ),
-                    SizedBox(height: context.adapter.getHeight(6)),
+                    SizedBox(height: 6.height),
                     Text(
                       list[index].title,
                       style: const TextStyle(
@@ -146,12 +146,12 @@ extension on _SettingsPanelWidgetState {
     list = [
       _SettingsItem(
           title: LiveKitLocalizations.of(Global.appContext())!
-              .live_settings_bg_image,
+              .common_settings_bg_image,
           icon: LiveImages.settingBackground,
           type: _SettingsItemType.background),
       _SettingsItem(
           title: LiveKitLocalizations.of(Global.appContext())!
-              .live_audio_effect,
+              .common_audio_effect,
           icon: LiveImages.settingsItemMusic,
           type: _SettingsItemType.audioEffect)
     ];

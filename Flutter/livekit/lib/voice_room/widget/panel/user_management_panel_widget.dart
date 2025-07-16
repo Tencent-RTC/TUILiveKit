@@ -70,20 +70,15 @@ class _UserManagementPanelWidgetState extends State<UserManagementPanelWidget> {
         manager.roomState.ownerInfo.userId == manager.userState.selfInfo.userId;
     return Container(
       width: _screenWidth,
-      constraints: BoxConstraints(
-          minHeight: context.adapter.getHeight(88),
-          maxHeight: context.adapter.getHeight(179)),
+      constraints: BoxConstraints(minHeight: 88.height, maxHeight: 179.height),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(context.adapter.getWidth(15)),
-              topRight: Radius.circular(context.adapter.getWidth(15)))),
-      height: isOwner
-          ? context.adapter.getHeight(179)
-          : context.adapter.getHeight(99),
+              topLeft: Radius.circular(15.width), topRight: Radius.circular(15.width))),
+      height: isOwner ? 179.height : 99.height,
       child: Column(children: [
-        SizedBox(height: context.adapter.getHeight(24)),
+        SizedBox(height: 24.height),
         _initUserInfoWidget(),
-        SizedBox(height: context.adapter.getHeight(20)),
+        SizedBox(height: 20.height),
         _initSeatManagementWidget()
       ]),
     );
@@ -91,14 +86,14 @@ class _UserManagementPanelWidgetState extends State<UserManagementPanelWidget> {
 
   Widget _initUserInfoWidget() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: context.adapter.getWidth(24)),
+      padding: EdgeInsets.symmetric(horizontal: 24.width),
       child: SizedBox(
         width: _screenWidth,
         child: Stack(
           children: [
             SizedBox(
-              width: context.adapter.getWidth(40),
-              height: context.adapter.getWidth(40),
+              width: 40.radius,
+              height: 40.radius,
               child: ClipOval(
                 child: Image.network(
                   seatInfo.avatarUrl ?? '',
@@ -110,7 +105,7 @@ class _UserManagementPanelWidgetState extends State<UserManagementPanelWidget> {
             ),
             Positioned(
                 top: 0,
-                left: context.adapter.getWidth(52),
+                left: 52.width,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,8 +125,8 @@ class _UserManagementPanelWidgetState extends State<UserManagementPanelWidget> {
                   ],
                 )),
             Positioned(
-                top: context.adapter.getHeight(4),
-                bottom: context.adapter.getHeight(4),
+                top: 4.height,
+                bottom: 4.height,
                 right: 0,
                 child: ValueListenableBuilder(
                   valueListenable: manager.userState.myFollowingUserList,
@@ -141,25 +136,24 @@ class _UserManagementPanelWidgetState extends State<UserManagementPanelWidget> {
                     return GestureDetector(
                       onTap: () => _followUser(seatInfo.userId, !isFollowed),
                       child: Container(
-                        width: context.adapter.getWidth(70),
-                        height: context.adapter.getHeight(32),
+                        width: 70.width,
+                        height: 32.height,
                         decoration: BoxDecoration(
                             color: isFollowed
                                 ? LiveColors.notStandardGreyC5
                                 : LiveColors.notStandardBlue,
-                            borderRadius: BorderRadius.circular(
-                                context.adapter.getHeight(16))),
+                            borderRadius: BorderRadius.circular(16.height)),
                         child: Center(
                           child: isFollowed
                               ? Image.asset(
                                   LiveImages.followed,
                                   package: Constants.pluginName,
-                                  width: context.adapter.getWidth(16),
-                                  height: context.adapter.getWidth(16),
+                                  width: 16.radius,
+                                  height: 16.radius,
                                 )
                               : Text(
                                   LiveKitLocalizations.of(Global.appContext())!
-                                      .live_follow_anchor,
+                                      .common_follow_anchor,
                                   style: const TextStyle(
                                       fontSize: 12,
                                       fontStyle: FontStyle.normal,
@@ -182,16 +176,14 @@ class _UserManagementPanelWidgetState extends State<UserManagementPanelWidget> {
     return Visibility(
         visible: isOwner,
         child: Padding(
-          padding:
-              EdgeInsets.symmetric(horizontal: context.adapter.getWidth(24)),
+          padding: EdgeInsets.symmetric(horizontal: 24.width),
           child: Container(
-            constraints:
-                BoxConstraints(maxWidth: context.adapter.getWidth(327)),
-            height: context.adapter.getHeight(77),
+            constraints: BoxConstraints(maxWidth: 327.width),
+            height: 77.height,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
-              spacing: context.adapter.getWidth(20),
+              spacing: 20.width,
               children: [
                 ValueListenableBuilder(
                   valueListenable: seatAudioLocked,
@@ -203,25 +195,24 @@ class _UserManagementPanelWidgetState extends State<UserManagementPanelWidget> {
                           Container(
                               decoration: BoxDecoration(
                                   color: LiveColors.designStandardG3,
-                                  borderRadius: BorderRadius.circular(
-                                      context.adapter.getWidth(12.5))),
-                              width: context.adapter.getWidth(50),
-                              height: context.adapter.getWidth(50),
+                                  borderRadius: BorderRadius.circular(12.radius)),
+                              width: 50.radius,
+                              height: 50.radius,
                               child: Center(
                                 child: Image.asset(
                                     seatAudioLocked
                                         ? LiveImages.unmuteMicrophone
                                         : LiveImages.muteMicrophone,
                                     package: Constants.pluginName,
-                                    width: context.adapter.getWidth(25),
-                                    height: context.adapter.getWidth(25)),
+                                    width: 25.radius,
+                                    height: 25.radius),
                               )),
                           Text(
                             seatAudioLocked
                                 ? LiveKitLocalizations.of(Global.appContext())!
-                                    .live_voiceroom_unmuted_seat
+                                    .common_voiceroom_unmuted_seat
                                 : LiveKitLocalizations.of(Global.appContext())!
-                                    .live_voiceroom_mute_seat,
+                                    .common_voiceroom_mute_seat,
                             style: const TextStyle(
                                 color: LiveColors.designStandardG6,
                                 fontSize: 12),
@@ -241,19 +232,18 @@ class _UserManagementPanelWidgetState extends State<UserManagementPanelWidget> {
                       Container(
                           decoration: BoxDecoration(
                               color: LiveColors.designStandardG3,
-                              borderRadius: BorderRadius.circular(
-                                  context.adapter.getWidth(12.5))),
-                          width: context.adapter.getWidth(50),
-                          height: context.adapter.getWidth(50),
+                              borderRadius: BorderRadius.circular(12.5.radius)),
+                          width: 50.radius,
+                          height: 50.radius,
                           child: Center(
                             child: Image.asset(LiveImages.anchorKickoff,
                                 package: Constants.pluginName,
-                                width: context.adapter.getWidth(25),
-                                height: context.adapter.getWidth(25)),
+                                width: 25.radius,
+                                height: 25.radius),
                           )),
                       Text(
                         LiveKitLocalizations.of(Global.appContext())!
-                            .live_end_user,
+                            .common_end_user,
                         style: const TextStyle(
                             color: LiveColors.designStandardG6, fontSize: 12),
                       )

@@ -44,7 +44,7 @@ extension RoomListServiceLogicExtension on RoomListService {
           result.message!.contains('exceed frequency limit')) {
         LiveKitLogger.error(
             "${RoomListService.tag} _initData [code:${result.code},message:${result.message}]");
-        ErrorHandler.onError(result.code.value(), result.message ?? '');
+        ErrorHandler.onError(result.code.rawValue, result.message ?? '');
       }
       roomListState.loadStatus.value = false;
       roomListState.refreshStatus.value = false;
@@ -66,7 +66,7 @@ extension RoomListServiceLogicExtension on RoomListService {
     if (result.code != TUIError.success) {
       LiveKitLogger.error(
           "${RoomListService.tag} _initData [code:${result.code},message:${result.message}]");
-      ErrorHandler.onError(result.code.value(), result.message);
+      ErrorHandler.onError(result.code.rawValue, result.message);
       roomListState.loadStatus.value = false;
       roomListState.isHaveMoreData.value = false;
     } else {

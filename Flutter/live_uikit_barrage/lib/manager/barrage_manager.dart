@@ -85,6 +85,7 @@ class BarrageManager {
         BarrageStore().state.barrageList.value = list;
         return true;
       } else {
+        BarrageStore().onError?.call(sendMessageRes.code, sendMessageRes.desc);
         debugPrint(
             "BarrageManager sendBarrage fail,{code:${sendMessageRes.code}, desc:${sendMessageRes.desc}");
         return false;

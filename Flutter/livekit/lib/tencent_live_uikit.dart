@@ -1,6 +1,6 @@
 library tencent_live_uilit;
 
-export 'live_stream/widget/index.dart';
+export 'live_stream/features/index.dart';
 export 'voice_room/voice_room_widget.dart';
 export 'common/language/index.dart';
 export 'live_identity_generator.dart';

@@ -31,22 +31,22 @@ class _SeatModeSettingPanelWidgetState
       width: screenWidth,
       height: 300,
       child: Column(children: [
-        SizedBox(height: context.adapter.getHeight(20)),
+        SizedBox(height: 20.height),
         SizedBox(
-          height: context.adapter.getHeight(44),
+          height: 44.height,
           width: screenWidth,
           child: Stack(
             children: [
               Positioned(
-                  left: context.adapter.getWidth(14),
+                  left: 14.width,
                   child: GestureDetector(
                       onTap: () {
                         Navigator.pop(context);
                       },
                       child: Container(
-                          width: context.adapter.getWidth(44),
-                          height: context.adapter.getWidth(44),
-                          padding: EdgeInsets.all(context.adapter.getWidth(10)),
+                          width: 44.radius,
+                          height: 44.radius,
+                          padding: EdgeInsets.all(10.radius),
                           child: Image.asset(
                             LiveImages.returnArrow,
                             package: Constants.pluginName,
@@ -54,7 +54,7 @@ class _SeatModeSettingPanelWidgetState
               Center(
                 child: Text(
                   LiveKitLocalizations.of(Global.appContext())!
-                      .live_settings,
+                      .common_settings,
                   style: const TextStyle(
                       color: LiveColors.designStandardFlowkitWhite,
                       fontSize: 16),
@@ -66,10 +66,10 @@ class _SeatModeSettingPanelWidgetState
         Row(
           children: [
             Padding(
-              padding: EdgeInsets.all(context.adapter.getWidth(16)),
+              padding: EdgeInsets.all(16.radius),
               child: Text(
                   LiveKitLocalizations.of(Global.appContext())!
-                      .live_voiceroom_need_agree,
+                      .common_voiceroom_need_agree,
                   style: const TextStyle(
                       fontSize: 16,
                       color: LiveColors.designStandardFlowkitWhite)),

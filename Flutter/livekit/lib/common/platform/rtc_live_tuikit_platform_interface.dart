@@ -24,11 +24,13 @@ abstract class TUILiveKitPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<void> apiLog(LiveKitLoggerLevel level, String logString) async {
-    await instance.apiLog(level, logString);
+  Future<void> apiLog(LiveKitLoggerLevel level, String module, String file,
+      int line, String logString) async {
+    await instance.apiLog(level, module, file, line, logString);
   }
 
-  Future<void> startForegroundService(ForegroundServiceType type, String title, String description) async {
+  Future<void> startForegroundService(
+      ForegroundServiceType type, String title, String description) async {
     await instance.startForegroundService(type, title, description);
   }
 

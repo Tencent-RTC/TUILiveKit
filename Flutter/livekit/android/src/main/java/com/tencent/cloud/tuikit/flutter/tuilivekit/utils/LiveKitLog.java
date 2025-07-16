@@ -16,26 +16,20 @@ public class LiveKitLog {
     private static final String LOG_KEY_PARAMS_FILE         = "file";
     private static final String LOG_KEY_PARAMS_MODULE       = "module";
     private static final String LOG_KEY_PARAMS_LINE         = "line";
-    private static final String LOG_KEY_PARAMS_FILE_VALUE   = "LiveKitLog";
-    private static final String LOG_KEY_PARAMS_MODULE_VALUE = "TUILiveKit";
-    private static final int    LOG_KEY_PARAMS_LINE_VALUE   = 0;
     private static final int    LOG_LEVEL_INFO              = 0;
     private static final int    LOG_LEVEL_WARNING           = 1;
     private static final int    LOG_LEVEL_ERROR             = 2;
 
-    public static void error(Context context, String message) {
-        log(context, message, LOG_LEVEL_ERROR, LOG_KEY_PARAMS_MODULE_VALUE, LOG_KEY_PARAMS_FILE_VALUE,
-                LOG_KEY_PARAMS_LINE_VALUE);
+    public static void error(Context context, String module, String file, int line, String message) {
+        log(context, message, LOG_LEVEL_ERROR, module, file, line);
     }
 
-    public static void warn(Context context, String message) {
-        log(context, message, LOG_LEVEL_WARNING, LOG_KEY_PARAMS_MODULE_VALUE, LOG_KEY_PARAMS_FILE_VALUE,
-                LOG_KEY_PARAMS_LINE_VALUE);
+    public static void warn(Context context, String module, String file, int line,  String message) {
+        log(context, message, LOG_LEVEL_WARNING, module, file, line);
     }
 
-    public static void info(Context context, String message) {
-        log(context, message, LOG_LEVEL_INFO, LOG_KEY_PARAMS_MODULE_VALUE, LOG_KEY_PARAMS_FILE_VALUE,
-                LOG_KEY_PARAMS_LINE_VALUE);
+    public static void info(Context context, String module, String file, int line,  String message) {
+        log(context, message, LOG_LEVEL_INFO, module, file, line);
     }
 
     private static void log(Context context, String message, int level, String module, String file, int line) {

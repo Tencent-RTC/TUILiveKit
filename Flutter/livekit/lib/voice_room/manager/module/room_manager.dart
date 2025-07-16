@@ -32,7 +32,7 @@ class RoomManager {
       return;
     }
     toastSubject?.add(ErrorHandler.convertToErrorMessage(
-            result.code.value(), result.message) ??
+            result.code.rawValue, result.message) ??
         '');
   }
 
@@ -48,7 +48,7 @@ class RoomManager {
       return;
     }
     toastSubject?.add(ErrorHandler.convertToErrorMessage(
-            result.code.value(), result.message) ??
+            result.code.rawValue, result.message) ??
         '');
   }
 
@@ -60,7 +60,7 @@ class RoomManager {
       return;
     }
     toastSubject?.add(ErrorHandler.convertToErrorMessage(
-            result.code.value(), result.message) ??
+            result.code.rawValue, result.message) ??
         '');
   }
 
@@ -71,7 +71,7 @@ class RoomManager {
       return;
     }
     toastSubject?.add(ErrorHandler.convertToErrorMessage(
-            result.code.value(), result.message) ??
+            result.code.rawValue, result.message) ??
         '');
   }
 
@@ -82,7 +82,7 @@ class RoomManager {
       return _updateLiveInfo(liveInfo, modifyFlags);
     }
     toastSubject?.add(ErrorHandler.convertToErrorMessage(
-            result.code.value(), result.message) ??
+            result.code.rawValue, result.message) ??
         '');
   }
 }
