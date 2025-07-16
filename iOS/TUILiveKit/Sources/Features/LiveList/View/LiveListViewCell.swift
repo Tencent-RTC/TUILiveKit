@@ -6,7 +6,7 @@
 //
 
 import LiveStreamCore
-import TUILiveComponent
+import TUICore
 
 class LiveListViewCell: UICollectionViewCell {
     static let identifier = "LiveListViewCell"
@@ -47,6 +47,7 @@ class LiveListViewCell: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         stopPreload()
+        self.roomId = nil
     }
     
     private func constructViewHierarchy() {
@@ -86,9 +87,8 @@ class LiveListViewCell: UICollectionViewCell {
             LiveKitLog.info("\(#file)","\(#line)", "float window view is showing, startPreload ignore, roomId: \(roomId)")
             return
         }
-        coreView.startPreviewLiveStream(roomId: roomId, isMuteAudio: isMuteAudio) { [weak self] _ in
-            guard let self = self, self.roomId == roomId else { return }
-            coreView.isHidden = false
+        coreView.isHidden = false
+        coreView.startPreviewLiveStream(roomId: roomId, isMuteAudio: isMuteAudio) { _ in
         } onLoading: { _ in
         } onError: { [weak self] _, _, _ in
             guard let self = self, self.roomId == roomId else { return }
@@ -104,6 +104,22 @@ class LiveListViewCell: UICollectionViewCell {
             return
         }
         coreView.stopPreviewLiveStream(roomId: roomId)
-        self.roomId = nil
+    }
+    
+    func unmutePreviewVideoStream() {
+        guard let roomId = roomId else { return }
+        if FloatWindow.shared.isShowingFloatWindow(), let ownerId = FloatWindow.shared.getRoomOwnerId(), ownerId == TUILogin.getUserID() {
+            LiveKitLog.info("\(#file)","\(#line)", "Anchor FloatWindow is showing, unmutePreviewVideoStream ignore, roomId:\(roomId)")
+            return
+        }
+        LiveKitLog.info("\(#file)","\(#line)", "unmutePreviewVideoStream roomId:\(roomId)")
+        coreView.startPreviewLiveStream(roomId: roomId, isMuteAudio: false) { [weak self] _ in
+            guard let self = self, self.roomId == roomId else { return }
+            coreView.isHidden = false
+        } onLoading: { _ in
+        } onError: { [weak self] _, _, _ in
+            guard let self = self, self.roomId == roomId else { return }
+            coreView.isHidden = true
+        }
     }
 }

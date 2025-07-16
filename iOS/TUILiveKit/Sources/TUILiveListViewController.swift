@@ -10,7 +10,6 @@ import RTCCommon
 import TUICore
 import Combine
 import RTCRoomEngine
-import TUILiveComponent
 
 public class TUILiveListViewController: UIViewController {
     // MARK: - Internal property.
@@ -137,7 +136,7 @@ extension TUILiveListViewController: OnItemClickDelegate {
         default:
             // How to determine room type without roomId
             if isOwner {
-                let vc = TUILiveRoomAnchorViewController(roomId: liveInfo.roomId, needPrepare: false)
+                let vc = TUILiveRoomAnchorViewController(liveInfo: liveInfo, behavior: .enterRoom)
                 vc.modalPresentationStyle = .custom
                 let transitionDelegate = LiveTransitioningDelegate(originFrame: frame)
                 vc.transitioningDelegate = transitionDelegate

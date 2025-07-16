@@ -15,13 +15,13 @@ import LiveStreamCore
 
 class LSLiveInfoEditView: UIView {
     private var cancellableSet = Set<AnyCancellable>()
-    private var editInfo: EditInfo
+    private var state: PrepareState
     private weak var popupViewController: PopupViewController?
 
     lazy var modeSelectionModel: PrepareSelectionModel = {
         let model = PrepareSelectionModel()
         model.leftIcon = internalImage("live_mode_icon")
-        model.midText = .localizedReplace(.modeText, replace: editInfo.privacyMode.getString())
+        model.midText = .localizedReplace(.modeText, replace: state.privacyMode.getString())
         model.rightIcon = internalImage("live_selection_arrow_icon")
         return model
     }()
@@ -33,7 +33,7 @@ class LSLiveInfoEditView: UIView {
         view.layer.cornerRadius = 8
         view.layer.masksToBounds = true
         view.addTarget(self, action: #selector(coverButtonClick), for: .touchUpInside)
-        view.kf.setImage(with: URL(string: editInfo.coverUrl), for: .normal, placeholder: UIImage.placeholderImage)
+        view.kf.setImage(with: URL(string: state.coverUrl), for: .normal, placeholder: UIImage.placeholderImage)
         let label = UILabel(frame: .zero)
         label.backgroundColor = .pureBlackColor.withAlphaComponent(0.5)
         label.font = .customFont(ofSize: 14)
@@ -103,8 +103,8 @@ class LSLiveInfoEditView: UIView {
         return view
     }()
     
-    init(editInfo: inout EditInfo) {
-        self.editInfo = editInfo
+    init(state: inout PrepareState) {
+        self.state = state
         super.init(frame: .zero)
     }
     
@@ -124,7 +124,7 @@ class LSLiveInfoEditView: UIView {
     }
     
     private func initialize() {
-        let roomName = editInfo.roomName
+        let roomName = state.roomName
         inputTextField.text = roomName
     }
 }
@@ -168,7 +168,7 @@ extension LSLiveInfoEditView {
     @objc func coverButtonClick() {
         inputTextField.resignFirstResponder()
         let imageConfig = LSSystemImageFactory.getImageAssets()
-        let systemImageSelectionPanel = LSSystemImageSelectionPanel(configs: imageConfig, editInfo: &editInfo)
+        let systemImageSelectionPanel = LSSystemImageSelectionPanel(configs: imageConfig, state: &state)
         systemImageSelectionPanel.backButtonClickClosure = { [weak self] in
             guard let self = self else { return }
             self.popupViewController?.dismiss(animated: true)
@@ -199,7 +199,7 @@ extension LSLiveInfoEditView {
         for mode in LiveStreamPrivacyStatus.allCases {
             let item = PrepareActionItem(title: mode.getString(), designConfig: config, actionClosure: { [weak self] _ in
                 guard let self = self else { return }
-                editInfo.privacyMode = mode
+                state.privacyMode = mode
             })
             items.append(item)
         }
@@ -253,13 +253,13 @@ extension LSLiveInfoEditView: UITextFieldDelegate {
             roomName = name
         }
         textField.text = roomName
-        editInfo.roomName = roomName
+        state.roomName = roomName
     }
 }
 
 extension LSLiveInfoEditView {
     private func subscribeRoomState() {
-        editInfo.$coverUrl
+        state.$coverUrl
             .receive(on: RunLoop.main)
             .removeDuplicates()
             .sink { [weak self] url in
@@ -270,7 +270,7 @@ extension LSLiveInfoEditView {
             }
             .store(in: &cancellableSet)
         
-        editInfo.$privacyMode
+        state.$privacyMode
             .receive(on: RunLoop.main)
             .sink { [weak self] mode in
                 guard let self = self else { return }
@@ -282,7 +282,7 @@ extension LSLiveInfoEditView {
 }
 
 private extension String {
-    static let editCoverTitle = internalLocalized("Modify the cover")
+    static let editCoverTitle = internalLocalized("Set Cover")
     static let editPlaceholderText = internalLocalized("Please enter room name")
     static let categoryText = internalLocalized("Live Category:xxx")
     static let modeText = internalLocalized("Live Mode:xxx")

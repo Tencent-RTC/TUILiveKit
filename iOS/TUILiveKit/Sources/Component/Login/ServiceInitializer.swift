@@ -8,11 +8,11 @@
 import Foundation
 import TUICore
 import RTCRoomEngine
-import TUILiveComponent
 
 extension NSObject {
     @objc class func liveKitExtensionLoad() {
         ServiceInitializer.shared.registerObserver()
+        TestTool.shared.initialize()
     }
 }
 

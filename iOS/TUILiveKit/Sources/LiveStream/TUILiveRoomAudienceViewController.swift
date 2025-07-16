@@ -5,40 +5,21 @@
 //  Created by WesleyLei on 2023/12/11.
 //
 import UIKit
-import Combine
-import TUICore
 import LiveStreamCore
 import RTCRoomEngine
-import RTCCommon
-import TUILiveComponent
 
 public class TUILiveRoomAudienceViewController: UIViewController {
     
-    private lazy var sliderView: LiveListPagerView = {
-        let view = LiveListPagerView()
-        view.dataSource = self
+    private lazy var audienceContainerView: AudienceContainerView = {
+        let view = AudienceContainerView(roomId: roomId)
         view.delegate = self
+        view.rotateScreenDelegate = self
         return view
     }()
     
-    private weak var coreView: LiveCoreView?
-    
     // MARK: - private property.
     var roomId: String
-    private let routerManager: LSRouterManager = LSRouterManager()
-    private var cancellableSet = Set<AnyCancellable>()
-    private lazy var routerCenter: LSRouterControlCenter = {
-        let rootRoute: LSRoute = .audience
-        let routerCenter = LSRouterControlCenter(rootViewController: self, rootRoute: rootRoute, routerManager: routerManager)
-        return routerCenter
-    }()
-    private var ownerId = ""
-    private var cursor = ""
-    private let fetchCount = 20
-    private var isFirstFetch = true
-    private var isFirstRoom = true
-    private var relayoutCoreViewClosure: () -> Void = {}
-    
+    private var orientation: UIDeviceOrientation = .portrait
     public init(roomId: String) {
         self.roomId = roomId
         super.init(nibName: nil, bundle: nil)
@@ -54,24 +35,32 @@ public class TUILiveRoomAudienceViewController: UIViewController {
     }
     
     deinit {
-        StateCache.shared.clear()
         LiveKitLog.info("\(#file)", "\(#line)", "deinit TUILiveRoomAudienceViewController \(self)")
+        
+        // ** Only should use for test **
+        TestTool.shared.unregisterCaseFrom(self)
+        TUIGiftStore.shared.reset()
+        unregisterApplicationObserver()
     }
     
     public func leaveLive(onSuccess: TUISuccessBlock?, onError: TUIErrorBlock?) {
-        coreView?.leaveLiveStream(onSuccess: {
-            onSuccess?()
-        }, onError: { code, message in
-            onError?(code, message)
-        })
+        audienceContainerView.leaveLive(onSuccess: onSuccess, onError: onError)
     }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        subscribeRouter()
         constructViewHierarchy()
         activateConstraints()
-        GiftCloudServer.shared.initialize()
+        registerApplicationObserver()
+        
+        // ** Only should use for test **
+        let scrolling = TestCaseItemModel(title: "禁用滑动", view: audienceContainerView, sel: #selector(AudienceContainerView.disableSlidingForTest(_:)))
+        let floatWin = TestCaseItemModel(title: "禁用悬浮窗按钮", view: audienceContainerView, sel: #selector(AudienceContainerView.disableHeaderFloatWinForTest(_:)))
+        let liveData = TestCaseItemModel(title: "禁用房间信息", view: audienceContainerView, sel: #selector(AudienceContainerView.disableHeaderLiveDataForTest(_:)))
+        let visitor = TestCaseItemModel(title: "禁用观众列表", view: audienceContainerView, sel: #selector(AudienceContainerView.disableHeaderVisitorCntForTest(_:)))
+        let coGuest = TestCaseItemModel(title: "禁用连麦按钮", view: audienceContainerView, sel: #selector(AudienceContainerView.disableFooterCoGuestForTest(_:)))
+        let model = TestCaseModel(list: [scrolling, floatWin, liveData, visitor, coGuest], obj: self)
+        TestTool.shared.registerCase(model)
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -85,159 +74,125 @@ public class TUILiveRoomAudienceViewController: UIViewController {
         UIApplication.shared.isIdleTimerDisabled = false
         navigationController?.setNavigationBarHidden(false, animated: true)
     }
+    
+    public override var shouldAutorotate: Bool {
+        return false
+    }
+    
+    public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return [.portrait, .landscapeRight, .landscapeLeft]
+    }
+    
+    public override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
+        NotificationCenter.default.post(name: Notification.Name.TUILiveKitRotateScreenNotification, object: nil)
+    }
+        
+    public func forceLandscapeMode() {
+        if #available(iOS 16.0, *) {
+            guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
+                return
+            }
+            let preferences = UIWindowScene.GeometryPreferences.iOS(interfaceOrientations: .landscape)
+            scene.requestGeometryUpdate(preferences) { error in
+                debugPrint("forceLandscapeMode: \(error.localizedDescription)")
+            }
+        } else {
+            let orientation: UIDeviceOrientation = .landscapeRight
+            UIDevice.current.setValue(orientation.rawValue, forKey: "orientation")
+            UIViewController.attemptRotationToDeviceOrientation()
+        }
+        
+        orientation = .landscapeRight
+    }
+    
+    public func forcePortraitMode() {
+        if #available(iOS 16.0, *) {
+            guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
+                return
+            }
+            let preferences = UIWindowScene.GeometryPreferences.iOS(interfaceOrientations: .portrait)
+            scene.requestGeometryUpdate(preferences) { error in
+                debugPrint("forcePortraitMode: \(error.localizedDescription)")
+            }
+        } else {
+            let orientation: UIDeviceOrientation = .portrait
+            UIDevice.current.setValue(orientation.rawValue, forKey: "orientation")
+            UIViewController.attemptRotationToDeviceOrientation()
+        }
+        
+        orientation = .portrait
+    }
+
+    @objc private func applicationWillEnterForeground() {
+        if orientation == .landscapeRight {
+            forceLandscapeMode()
+        } else {
+            forcePortraitMode()
+        }
+    }
 }
 
 extension TUILiveRoomAudienceViewController {
-    private func subscribeRouter() {
-        routerCenter.subscribeRouter()
-    }
-    
     private func constructViewHierarchy() {
-        view.addSubview(sliderView)
+        view.addSubview(audienceContainerView)
     }
     
     private func activateConstraints() {
-        sliderView.snp.remakeConstraints { make in
+        audienceContainerView.snp.remakeConstraints { make in
             make.edges.equalToSuperview()
         }
     }
-}
+    
+    private func registerApplicationObserver() {
+        NotificationCenter.default.addObserver(self,
+                                            selector: #selector(applicationWillEnterForeground),
+                                            name: UIApplication.willEnterForegroundNotification,
+                                            object: nil)
 
-// MARK: - FloatWindowDataSource
-extension TUILiveRoomAudienceViewController: FloatWindowDataSource {
-    public func getRoomId() -> String {
-        roomId
     }
     
-    public func getOwnerId() -> String {
-        ownerId
-    }
+    private func unregisterApplicationObserver() {
+        NotificationCenter.default.removeObserver(self)
 
-    public func getCoreView() -> LiveCoreView {
-        return coreView ?? LiveCoreView()
-    }
-    
-    public func relayoutCoreView() {
-        relayoutCoreViewClosure()
-    }
-    
-    public func getIsLinking() -> Bool {
-        guard let coGuestState: CoGuestState = coreView?.getState(),
-              let userState: UserState = coreView?.getState() else { return false }
-        return !coGuestState.seatList.filter({ $0.userId == userState.selfInfo.userId }).isEmpty
     }
 }
 
-extension TUILiveRoomAudienceViewController: LiveListViewDataSource {
-    func fetchLiveList(completionHandler: @escaping LiveListCallback) {
-        guard cursor != "" || isFirstFetch else { return }
-        isFirstFetch = false
-        let liveListManager = TUIRoomEngine.sharedInstance().getExtension(extensionType: .liveListManager) as? TUILiveListManager
-        var resultList: [LiveInfo] = []
-        liveListManager?.fetchLiveList(cursor: cursor, count: fetchCount) { [weak self] cursor, list in
-            guard let self = self else { return }
-            self.cursor = cursor
-            if isFirstRoom {
-                var liveInfo = LiveInfo()
-                liveInfo.roomId = roomId
-                resultList.append(liveInfo)
-                isFirstRoom = false
-                let filteredList = list.filter { tuiLiveInfo in
-                    tuiLiveInfo.roomInfo.roomId != self.roomId
-                }.map { tuiLiveInfo in
-                    LiveInfo(tuiLiveInfo: tuiLiveInfo)
-                }
-                resultList.append(contentsOf: filteredList)
-            } else {
-                let liveInfoList = list.map { tuiLiveInfo in
-                    LiveInfo(tuiLiveInfo: tuiLiveInfo)
-                }
-                resultList.append(contentsOf: liveInfoList)
-            }
-            completionHandler(resultList)
-        } onError: { [weak self] code, message in
-            guard let self = self else { return }
-            LiveKitLog.error("\(#file)","\(#line)","fetchLiveList:[onError:[code:\(code),message:\(message)]]")
-            var liveInfo = LiveInfo()
-            liveInfo.roomId = self.roomId
-            resultList.append(liveInfo)
-            completionHandler(resultList)
+// MARK: - AudienceEndStatisticsViewDelegate
+extension TUILiveRoomAudienceViewController: AudienceEndStatisticsViewDelegate {
+    func onCloseButtonClick() {
+        if let nav = navigationController {
+            nav.popViewController(animated: true)
+        } else {
+            dismiss(animated: true)
         }
     }
 }
 
-extension TUILiveRoomAudienceViewController: LiveListViewDelegate {
-    public func onCreateView(liveInfo: LiveInfo) -> UIView {
-        let audienceCell = AudienceSliderCell(liveInfo: liveInfo, routerManager: routerManager, routerCenter: routerCenter, audienceVC: self)
-        audienceCell.delegate = self
-        return audienceCell
-    }
-    
-    public func onViewWillSlideIn(view: UIView) {
-        if let view = view as? AudienceSliderCell {
-            view.onViewWillSlideIn()
+extension TUILiveRoomAudienceViewController: AudienceContainerViewDelegate {
+    public func onLiveEnded(roomId: String, avatarUrl: String, userName: String) {
+        let audienceEndView = AudienceEndStatisticsView(roomId: roomId, avatarUrl: avatarUrl, userName: userName)
+        audienceEndView.delegate = self
+        view.addSubview(audienceEndView)
+        audienceEndView.snp.remakeConstraints { make in
+            make.edges.equalToSuperview()
         }
     }
     
-    public func onViewDidSlideIn(view: UIView) {
-        if let view = view as? AudienceSliderCell {
-            view.onViewDidSlideIn()
-        }
+    public func onClickFloatWindow() {
+        FloatWindow.shared.showFloatWindow(controller: self, provider: audienceContainerView)
     }
-    
-    public func onViewSlideInCancelled(view: UIView) {
-        if let view = view as? AudienceSliderCell {
-            view.onViewSlideInCancelled()
-        }
-    }
-    
-    public func onViewWillSlideOut(view: UIView) {
-        if let view = view as? AudienceSliderCell {
-            view.onViewWillSlideOut()
-        }
-    }
-    
-    public func onViewDidSlideOut(view: UIView) {
-        if let view = view as? AudienceSliderCell {
-            view.onViewDidSlideOut()
-        }
-    }
-    
-    public func onViewSlideOutCancelled(view: UIView) {
-        if let view = view as? AudienceSliderCell {
-            view.onViewSlideOutCancelled()
+}
+
+extension TUILiveRoomAudienceViewController: RotateScreenDelegate {
+    public func rotateScreen(isPortrait: Bool) {
+        if isPortrait  {
+            forcePortraitMode()
+        } else {
+            forceLandscapeMode()
         }
     }
 }
 
-extension TUILiveRoomAudienceViewController: AudienceListCellDelegate {
-    func handleScrollToNewRoom(roomId: String, ownerId: String, manager: LiveStreamManager,
-                               coreView: LiveCoreView,
-                               relayoutCoreViewClosure: @escaping () -> Void) {
-        routerCenter.handleScrollToNewRoom(manager: manager, coreView: coreView)
-        self.roomId = roomId
-        self.ownerId = ownerId
-        self.coreView = coreView
-        self.relayoutCoreViewClosure = relayoutCoreViewClosure
-    }
-    
-    func showFloatWindow() {
-        FloatWindow.shared.showFloatWindow(controller: self)
-    }
-    
-    func showToast(message: String) {
-        view.makeToast(message)
-    }
-    
-    func disableScrolling() {
-        sliderView.disableScrolling()
-    }
-    
-    func enableScrolling() {
-        sliderView.enableScrolling()
-    }
-    
-    func scrollToNextPage() {
-        sliderView.scrollToNextPage()
-    }
+extension Notification.Name {
+    static let TUILiveKitRotateScreenNotification = Notification.Name("TUILiveKitRotateScreenNotification")
 }

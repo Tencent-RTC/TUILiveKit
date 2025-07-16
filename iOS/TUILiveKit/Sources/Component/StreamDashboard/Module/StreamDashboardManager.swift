@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import RTCCommon
+import RTCRoomEngine
 
 #if canImport(TXLiteAVSDK_TRTC)
     import TXLiteAVSDK_TRTC
@@ -30,14 +31,16 @@ class StreamDashboardManager: NSObject {
     }
     
  
-    func addTRTCEvent() {
+    func addObserver() {
         service.addTRTCObserver(self)
+        service.addRoomEngineObserver(self)
     }
     
-    func removeTRTCEvent() {
+    func removeObserver() {
         service.removeTRTCObserver(self)
+        service.removeRoomEngineObserver(self)
     }
-    
+
 }
 
 extension StreamDashboardManager {
@@ -47,13 +50,24 @@ extension StreamDashboardManager {
     }
 }
 
+extension StreamDashboardManager: TUIRoomObserver {
+    func onUserNetworkQualityChanged(networkList: [TUINetworkInfo]) {
+
+        let userId = TUIRoomEngine.getSelfInfo().userId
+        if let matchedInfo = networkList.first(where: { $0.userId == userId }) {
+            observableState.update { state in
+                state.rtt = matchedInfo.delay
+                state.downLoss = matchedInfo.downLoss
+                state.upLoss = matchedInfo.upLoss
+            }
+        }
+    }
+}
+
 extension StreamDashboardManager: TRTCCloudDelegate {
     
     func onStatistics(_ statistics: TRTCStatistics) {
         observableState.update { state in
-            state.rtt = statistics.rtt
-            state.downLoss = statistics.downLoss
-            state.upLoss = statistics.upLoss
             state.localUsers = statistics.localStatistics.map({ data in
                 return StreamDashboardUser(local: data)
             })

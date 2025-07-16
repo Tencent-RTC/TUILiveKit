@@ -10,7 +10,6 @@ import RTCCommon
 import Combine
 import LiveStreamCore
 import RTCRoomEngine
-import TUILiveComponent
 
 class VRSeatManagerPanel: RTCBaseView {
     private let manager: VoiceRoomManager
@@ -105,6 +104,13 @@ class VRSeatManagerPanel: RTCBaseView {
         return button
     }()
     
+    private lazy var backButton: UIButton = {
+        let view = UIButton(type: .system)
+        view.setBackgroundImage(internalImage("live_back_icon"), for: .normal)
+        view.addTarget(self, action: #selector(backButtonClick), for: .touchUpInside)
+        return view
+    }()
+    
     init(manager: VoiceRoomManager, routerManager: VRRouterManager, coreView: SeatGridView) {
         self.manager = manager
         self.routerManager = routerManager
@@ -116,6 +122,7 @@ class VRSeatManagerPanel: RTCBaseView {
     }
     
     override func constructViewHierarchy() {
+        addSubview(backButton)
         addSubview(titleLabel)
         addSubview(inviteImageButton)
         addSubview(changeSeatModeLabel)
@@ -129,6 +136,13 @@ class VRSeatManagerPanel: RTCBaseView {
     }
     
     override func activateConstraints() {
+        backButton.snp.makeConstraints { make in
+            make.leading.equalToSuperview().inset(20)
+            make.top.equalToSuperview().inset(20)
+            make.height.equalTo(24.scale375())
+            make.width.equalTo(24.scale375())
+        }
+        
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalToSuperview().offset(20.scale375Height())
@@ -274,6 +288,10 @@ extension VRSeatManagerPanel {
     private func inviteButtonClick(sender: UIButton) {
         guard let coreView = coreView else { return }
         routerManager.router(action: .present(.linkInviteControl(coreView, -1)))
+    }
+    
+    @objc private func backButtonClick(_ sender: UIButton) {
+        routerManager.router(action: .dismiss())
     }
 }
 

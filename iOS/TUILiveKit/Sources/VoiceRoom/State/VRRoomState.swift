@@ -31,9 +31,9 @@ struct VRRoomState {
         var liveMode: LiveStreamPrivacyStatus = .public
         var maxAudienceCount: Int = 0
         var messageCount: Int = 0
-        var giftIncome: Int = 0
-        var giftPeopleSet: Set<String> = []
-        var likeCount: Int = 0
+        var giftTotalCoins: Int = 0
+        var giftTotalUniqueSender: Int = 0
+        var likeTotalUniqueSender: Int = 0
     }
 }
 

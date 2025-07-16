@@ -14,6 +14,39 @@ import TXLiteAVSDK_TRTC
 import TXLiteAVSDK_Professional
 #endif
 
+enum BeautyTypeEvent {
+    case closeClick
+    case buffingClick
+    case whitenessClick
+    case ruddyClick
+    
+    func getString() -> String {
+        switch self {
+        case .closeClick:
+            return internalLocalized("turn off")
+        case .buffingClick:
+            return internalLocalized("Microdermabrasion")
+        case .whitenessClick:
+            return internalLocalized("Whitening")
+        case .ruddyClick:
+            return internalLocalized("Rosy")
+        }
+    }
+
+    func getImage() -> UIImage? {
+        switch self {
+        case .closeClick:
+            return internalImage("live_beauty_close")
+        case .buffingClick:
+            return internalImage("live_beauty_buffing")
+        case .whitenessClick:
+            return internalImage("live_beauty_whiteness")
+        case .ruddyClick:
+            return internalImage("live_beauty_ruddy")
+        }
+    }
+}
+
 class DefaultBeautyPanel: UIView {
     var backClosure: (() ->Void)?
     private let manager = BeautyManager()

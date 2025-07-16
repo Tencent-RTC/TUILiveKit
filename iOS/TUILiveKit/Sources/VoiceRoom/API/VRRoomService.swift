@@ -7,13 +7,14 @@
 
 import RTCRoomEngine
 import Combine
-import TUILiveComponent
 
 // TODO: - Dependency management, needs to consolidate RoomEngine instances.
 class VRRoomService: BaseServiceProtocol {
+    let liveGiftManager: TUILiveGiftManager?
     var roomEngine: TUIRoomEngine
     required init(roomEngine: TUIRoomEngine) {
         self.roomEngine = roomEngine
+        self.liveGiftManager = roomEngine.getExtension(extensionType: .liveGiftManager) as? TUILiveGiftManager
     }
     
     deinit {
@@ -68,6 +69,38 @@ class VRRoomService: BaseServiceProtocol {
             } onError: { error, message in
                 let error = InternalError(code: error.rawValue, message: message)
                 continuation.resume(throwing: error)
+            }
+        }
+    }
+    
+    func fetchGiftCount(roomId: String) async throws -> (totalGiftsSent: UInt,  totalGiftCoins: UInt,  totalUniqueGiftSenders: UInt) {
+        return try await withCheckedThrowingContinuation { [weak self] continuation in
+            guard let self = self, let liveGiftManager = liveGiftManager else {
+                let error = InternalError(code: ErrorLocalized.generalErrorCode, message: "get LiveGiftManager error")
+                continuation.resume(throwing: error)
+                return
+            }
+            
+            liveGiftManager.getGiftCountByAnchor(roomId: roomId) { totalGiftsSent, totalGiftCoins, totalUniqueGiftSenders in
+                continuation.resume(returning: (totalGiftsSent, totalGiftCoins, totalUniqueGiftSenders))
+            } onError: { code, msg in
+                continuation.resume(throwing: InternalError(code: code.rawValue, message: msg))
+            }
+        }
+    }
+    
+    func fetchLikeCount(roomId: String) async throws -> UInt {
+        return try await withCheckedThrowingContinuation { [weak self] continuation in
+            guard let self = self, let liveGiftManager = liveGiftManager else {
+                let error = InternalError(code: ErrorLocalized.generalErrorCode, message: "get LiveGiftManager error")
+                continuation.resume(throwing: error)
+                return
+            }
+            
+            liveGiftManager.getLikesCount(roomId: roomId) { totalLikesReceived in
+                continuation.resume(returning: totalLikesReceived)
+            } onError: { code, msg in
+                continuation.resume(throwing: InternalError(code: code.rawValue, message: msg))
             }
         }
     }

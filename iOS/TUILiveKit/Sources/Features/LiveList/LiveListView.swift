@@ -9,7 +9,6 @@ import UIKit
 import ESPullToRefresh
 import RTCCommon
 import RTCRoomEngine
-import TUILiveComponent
 
 public class LiveListView: UIView {
     public weak var adapter: LiveListViewAdapter?
@@ -52,6 +51,7 @@ public class LiveListView: UIView {
                     newLiveView.startPreload(roomId: liveList[targetIndexPath.item].roomId, isMuteAudio: false)
                 }
             }
+            doublePlayingIndexPaths.removeAll()
         } else {
             let doubleColumnLayout = UICollectionViewFlowLayout()
             doubleColumnLayout.itemSize = CGSize(width: 168.scale375(), height: 262.scale375Height())
@@ -236,15 +236,9 @@ extension LiveListView {
         LiveKitLog.info("\(#file)","\(#line)", "preloadTopFullyVisibleRow")
         let visibleIndexPaths = collectionView.indexPathsForVisibleItems
         guard !visibleIndexPaths.isEmpty else { return }
-        let visibleRect = CGRect(origin: collectionView.contentOffset, size: collectionView.bounds.size)
-        let fullyVisibleIndexPaths = visibleIndexPaths.filter { indexPath in
-            if let cell = collectionView.cellForItem(at: indexPath) {
-                return visibleRect.contains(cell.frame)
-            }
-            return false
-        }
+        let topFullyVisibleRowIndexPaths = getTopFullyVisibleRowIndexPaths()
         
-        guard !fullyVisibleIndexPaths.isEmpty else {
+        guard !topFullyVisibleRowIndexPaths.isEmpty else {
             for indexPath in visibleIndexPaths {
                 if let cell = collectionView.cellForItem(at: indexPath) as? LiveListViewCell {
                     cell.stopPreload()
@@ -254,24 +248,43 @@ extension LiveListView {
             return
         }
         
+        for indexPath in visibleIndexPaths {
+            guard let cell = collectionView.cellForItem(at: indexPath) as? LiveListViewCell else { continue }
+            if topFullyVisibleRowIndexPaths.contains(indexPath) {
+                guard !doublePlayingIndexPaths.contains(indexPath) else { continue }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self, weak cell] in
+                    guard let self = self, let cell = cell,
+                          self.isOnCurrentView,
+                          !doublePlayingIndexPaths.contains(indexPath),
+                          self.collectionView.cellForItem(at: indexPath) === cell,
+                          self.getTopFullyVisibleRowIndexPaths().contains(indexPath)
+                    else { return }
+                    cell.startPreload(roomId: self.liveList[indexPath.item].roomId)
+                    doublePlayingIndexPaths.insert(indexPath)
+                }
+            } else {
+                cell.stopPreload()
+                doublePlayingIndexPaths.remove(indexPath)
+            }
+        }
+    }
+    
+    private func getTopFullyVisibleRowIndexPaths() -> [IndexPath] {
+        let visibleIndexPaths = collectionView.indexPathsForVisibleItems
+        let visibleRect = CGRect(origin: collectionView.contentOffset, size: collectionView.bounds.size)
+        let fullyVisibleIndexPaths = visibleIndexPaths.filter { indexPath in
+            if let cell = collectionView.cellForItem(at: indexPath) {
+                return visibleRect.contains(cell.frame)
+            }
+            return false
+        }
+        guard !fullyVisibleIndexPaths.isEmpty else { return [] }
         let minY = fullyVisibleIndexPaths
             .compactMap { collectionView.cellForItem(at: $0)?.frame.origin.y }
             .min() ?? 0
-        let topFullyVisibleRowIndexPaths = fullyVisibleIndexPaths.filter {
+        return fullyVisibleIndexPaths.filter {
             guard let cell = collectionView.cellForItem(at: $0) else { return false }
             return abs(cell.frame.origin.y - minY) < 1
-        }
-        
-        for indexPath in visibleIndexPaths {
-            if let cell = collectionView.cellForItem(at: indexPath) as? LiveListViewCell {
-                if topFullyVisibleRowIndexPaths.contains(indexPath) {
-                    cell.startPreload(roomId: liveList[indexPath.item].roomId)
-                    doublePlayingIndexPaths.insert(indexPath)
-                } else {
-                    cell.stopPreload()
-                    doublePlayingIndexPaths.remove(indexPath)
-                }
-            }
         }
     }
     
@@ -331,6 +344,7 @@ extension LiveListView: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard indexPath.item < liveList.count, let cell = collectionView.cellForItem(at: indexPath) as? LiveListViewCell else { return }
         let originFrame = cell.convert(cell.bounds, to: window)
+        cell.unmutePreviewVideoStream()
         itemClickDelegate?.onItemClick(liveInfo: liveList[indexPath.item], frame: originFrame)
         willEnterRoomIndexPath = indexPath
     }

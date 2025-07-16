@@ -8,7 +8,6 @@
 import Foundation
 import RTCCommon
 import TUICore
-import TUILiveComponent
 import LiveStreamCore
 
 public class AnchorPrepareView: UIView {
@@ -39,9 +38,9 @@ public class AnchorPrepareView: UIView {
         return view
     }()
     
-    private lazy var editInfo = EditInfo(roomName: getDefaultRoomName(), coverUrl: Constants.URL.defaultCover, privacyMode: .public)
+    private lazy var state = PrepareState(roomName: getDefaultRoomName(), coverUrl: Constants.URL.defaultCover, privacyMode: .public)
     
-    private lazy var editView = LSLiveInfoEditView(editInfo: &editInfo)
+    private lazy var editView = LSLiveInfoEditView(state: &state)
     
     private lazy var defaultPanelModelItems: [PrepareFeatureItem] = {
         var designConfig = PrepareFeatureItemDesignConfig()
@@ -141,17 +140,29 @@ public class AnchorPrepareView: UIView {
     }
     
     private func startCameraAndMicrophone() {
-        coreView.startCamera(useFrontCamera: true) {
+        coreView.startCamera(useFrontCamera: true) { [weak self] in
+            guard let self = self else { return }
+            coreView.startMicrophone() {
+            } onError: { [weak self] code, message in
+                guard let self = self else { return }
+                let error = InternalError(code: code.rawValue, message: message)
+                makeToast(error.localizedMessage)
+                coreView.stopCamera()
+                startButton.isEnabled = false
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+                    guard let self = self else { return }
+                    delegate?.onClickBackButton()
+                }
+            }
         } onError: { [weak self] code, message in
             guard let self = self else { return }
             let error = InternalError(code: code.rawValue, message: message)
             makeToast(error.localizedMessage)
-        }
-        coreView.startMicrophone() {
-        } onError: { [weak self] code, message in
-            guard let self = self else { return }
-            let error = InternalError(code: code.rawValue, message: message)
-            makeToast(error.localizedMessage)
+            startButton.isEnabled = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+                guard let self = self else { return }
+                delegate?.onClickBackButton()
+            }
         }
     }
     
@@ -382,7 +393,7 @@ extension AnchorPrepareView {
         }
         coreView.stopCamera()
         coreView.stopMicrophone()
-        delegate?.prepareView(self, didClickBack: backButton)
+        delegate?.onClickBackButton()
     }
     
     @objc func startButtonClick() {
@@ -391,7 +402,7 @@ extension AnchorPrepareView {
             guard let self = self else { return }
             isUserInteractionEnabled = true
         }
-        delegate?.prepareView(self, didClickStart: startButton, editInfo: editInfo)
+        delegate?.onClickStartButton(state: state)
     }
     
     @objc func keyboardWillShow(notification: Notification) {
@@ -478,6 +489,25 @@ extension AnchorPrepareView {
     private func flipClick() {
         let mediaState: MediaState = coreView.getState()
         coreView.switchCamera(isFront: !mediaState.isFrontCamera)
+    }
+}
+
+// ** Only should use for test **
+extension AnchorPrepareView {
+    @objc func disableFeatureMenuForTest(_ isDisable: NSNumber) {
+        disableFeatureMenu(isDisable.boolValue)
+    }
+    
+    @objc func disableMenuSwitchCameraBtnForTest(_ isDisable: NSNumber) {
+        disableMenuSwitchCameraBtn(isDisable.boolValue)
+    }
+    
+    @objc func disableMenuBeautyBtnForTest(_ isDisable: NSNumber) {
+        disableMenuBeautyBtn(isDisable.boolValue)
+    }
+    
+    @objc func disableMenuAudioEffectBtnForTest(_ isDisable: NSNumber) {
+        disableMenuAudioEffectBtn(isDisable.boolValue)
     }
 }
 

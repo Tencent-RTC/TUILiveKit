@@ -56,6 +56,8 @@ class BeautyView: UIView {
     
     private static let stateKey = "__kBeautyView_state_key__"
     
+    static var isDownloading: Bool = false
+    
     private init() {
         roomEngine = TUIRoomEngine.sharedInstance()
         super.init(frame: .zero)
@@ -117,7 +119,7 @@ class BeautyView: UIView {
     private func getAdvancedBeautyPanel() -> UIView? {
         let beautyPanelList = TUICore.getExtensionList(TUICore_TEBeautyExtension_GetBeautyPanel,
                                                        param: ["width":Screen_Width,
-                                                               "height":205.scale375Height(),
+                                                               "height":CGFloat(205),
                                                                "resetBeautyEffect":resetBeautyEffectForAdvancedBeauty])
         if beautyPanelList.count == 0 {
             return nil
@@ -151,10 +153,13 @@ extension BeautyView {
     
     public static func checkIsNeedDownloadResource() -> Bool {
         if TUICore.getService(TUICore_TEBeautyService) != nil {
-            guard let fileExits = TUICore.callService(TUICore_TEBeautyService,
-                                                      method: TUICore_TEBeautyService_CheckResource,
-                                                      param: nil,
-                                                      resultCallback: nil) as? Bool else {
+            isDownloading = true
+            let res = TUICore.callService(TUICore_TEBeautyService,
+                                          method: TUICore_TEBeautyService_CheckResource,
+                                          param: nil) { code, msg, param in
+                BeautyView.isDownloading = false
+            }
+            guard let fileExits = res as? Bool else {
                 return false
             }
             return !fileExits

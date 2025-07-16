@@ -8,6 +8,7 @@
 import Foundation
 import LiveStreamCore
 import RTCRoomEngine
+import RTCCommon
 
 enum VRDismissType {
     case panel

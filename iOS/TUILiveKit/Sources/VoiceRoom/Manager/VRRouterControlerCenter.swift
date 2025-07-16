@@ -8,7 +8,7 @@
 import Combine
 import RTCCommon
 import RTCRoomEngine
-import TUILiveComponent
+import RTCCommon
 
 class VRRouterControlCenter {
     
@@ -209,9 +209,7 @@ extension VRRouterControlCenter {
         case .alert(let info):
             view = VRAlertPanel(alertInfo: info)
         case .giftView:
-            let giftPanel = GiftListPanel(roomId: manager.roomState.roomId, provider: manager)
-            giftPanel.setGiftList(TUIGiftStore.shared.giftList)
-            view = giftPanel
+            view = GiftListPanel(roomId: manager.roomState.roomId)
         default:
             break
         }

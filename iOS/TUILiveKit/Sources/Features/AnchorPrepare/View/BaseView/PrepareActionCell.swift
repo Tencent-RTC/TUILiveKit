@@ -7,6 +7,7 @@
 
 import UIKit
 import Combine
+import RTCCommon
 
 typealias PrepareActionTapClosure = (Int) -> Void
 

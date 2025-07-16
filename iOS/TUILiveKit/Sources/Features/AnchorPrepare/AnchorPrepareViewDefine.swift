@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class EditInfo {
+public class PrepareState {
     public var roomName: String
     @Published public var coverUrl: String
     @Published public var privacyMode: LiveStreamPrivacyStatus
@@ -25,6 +25,6 @@ public enum Feature {
 }
 
 public protocol AnchorPrepareViewDelegate: AnyObject {
-    func prepareView(_ view: AnchorPrepareView, didClickBack button: UIButton)
-    func prepareView(_ view: AnchorPrepareView, didClickStart button: UIButton, editInfo: EditInfo)
+    func onClickStartButton(state: PrepareState)
+    func onClickBackButton()
 }

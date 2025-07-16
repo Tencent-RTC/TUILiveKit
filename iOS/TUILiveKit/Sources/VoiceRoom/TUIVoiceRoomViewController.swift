@@ -11,7 +11,6 @@ import Combine
 import RTCRoomEngine
 import TUICore
 import LiveStreamCore
-import TUILiveComponent
 
 let defaultMaxSeatCount = 10
 
@@ -112,13 +111,13 @@ public class TUIVoiceRoomViewController: UIViewController {
         cancellableSet.forEach { $0.cancel() }
         cancellableSet.removeAll()
         StateCache.shared.clear()
+        TUIGiftStore.shared.reset()
         print("deinit \(type(of: self))")
     }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
         handle(behavior: behavior)
-        GiftCloudServer.shared.initialize()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -162,8 +161,8 @@ public class TUIVoiceRoomViewController: UIViewController {
         
         // TODO: Transition animation needs to be considered
         
-        guard let model = info["data"] as? LiveDataModel else { return }
-        let anchorEndView = AnchorEndView(liveDataModel: model)
+        guard let model = info["data"] as? AnchorEndStatisticsViewInfo else { return }
+        let anchorEndView = AnchorEndStatisticsView(endViewInfo: model)
         anchorEndView.delegate = self
         view.addSubview(anchorEndView)
         anchorEndView.snp.makeConstraints { make in
@@ -179,7 +178,7 @@ public class TUIVoiceRoomViewController: UIViewController {
         guard let roomId = info["roomId"] as? String else { return }
         guard let avatarUrl = info["avatarUrl"] as? String else { return }
         guard let userName = info["userName"] as? String else { return }
-        let audienceEndView = AudienceEndView(roomId: roomId, avatarUrl: avatarUrl, userName: userName)
+        let audienceEndView = AudienceEndStatisticsView(roomId: roomId, avatarUrl: avatarUrl, userName: userName)
         audienceEndView.delegate = self
         view.addSubview(audienceEndView)
         audienceEndView.snp.makeConstraints { make in
@@ -189,7 +188,7 @@ public class TUIVoiceRoomViewController: UIViewController {
 }
 
 // MARK: - LiveEndViewDelegate
-extension TUIVoiceRoomViewController: LiveEndViewDelegate {
+extension TUIVoiceRoomViewController: AnchorEndStatisticsViewDelegate, AudienceEndStatisticsViewDelegate {
     func onCloseButtonClick() {
         routerManager.router(action: .exit)
     }

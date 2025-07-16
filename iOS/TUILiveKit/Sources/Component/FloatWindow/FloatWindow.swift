@@ -8,11 +8,10 @@ import SnapKit
 import Foundation
 import TUICore
 import LiveStreamCore
-import TUILiveComponent
 import Combine
 import RTCRoomEngine
 
-public protocol FloatWindowDataSource {
+public protocol FloatWindowProvider: AnyObject {
     func getRoomId() -> String
     func getOwnerId() -> String
     func getIsLinking() -> Bool
@@ -31,7 +30,8 @@ class FloatWindow: NSObject {
     }
     @Published private var isShow : Bool = false
     private var floatView: FloatView?
-    private var controller: (UIViewController & FloatWindowDataSource)?
+    private var controller: UIViewController?
+    private weak var provider: FloatWindowProvider?
     private var coreView: LiveCoreView?
     @objc private func handleLogoutNotification() {
         if isShow == true {
@@ -47,13 +47,14 @@ class FloatWindow: NSObject {
 // MARK: -------------- API --------------
 extension FloatWindow {
     @discardableResult
-    func showFloatWindow(controller: UIViewController & FloatWindowDataSource) -> Bool {
+    func showFloatWindow(controller: UIViewController, provider: FloatWindowProvider) -> Bool {
         guard !isShow else { return false }
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
               let window = windowScene.windows.first(where: { $0.isKeyWindow }) else { return false }
         
         self.controller = controller
-        let coreView = controller.getCoreView()
+        self.provider = provider
+        let coreView = provider.getCoreView()
         self.coreView = coreView
         
         if let nav = controller.navigationController {
@@ -85,9 +86,9 @@ extension FloatWindow {
     
     @discardableResult
     func resumeLive(atViewController: UIViewController) -> Bool {
-        guard isShow, let controller = controller else { return false }
+        guard isShow, let controller = controller, let dataSource = provider else { return false }
         LiveKitLog.info("\(#file)", "\(#line)", "FloatWindow resume")
-        controller.relayoutCoreView()
+        dataSource.relayoutCoreView()
         controller.modalPresentationStyle = .fullScreen
         TUITool.applicationKeywindow().rootViewController?.present(controller, animated: true)
         dismiss()
@@ -105,18 +106,18 @@ extension FloatWindow {
     }
     
     func getCurrentRoomId() -> String? {
-        guard let controller = controller else { return nil }
-        return controller.getRoomId()
+        guard let dataSource = provider else { return nil }
+        return dataSource.getRoomId()
     }
     
     func getRoomOwnerId() -> String? {
-        guard let controller = controller else { return nil }
-        return controller.getOwnerId()
+        guard let dataSource = provider else { return nil }
+        return dataSource.getOwnerId()
     }
     
     func getIsLinking() -> Bool {
-        guard let controller = controller else { return false }
-        return controller.getIsLinking()
+        guard let dataSource = provider else { return false }
+        return dataSource.getIsLinking()
     }
     
     func subscribeShowingState() -> AnyPublisher<Bool, Never> {

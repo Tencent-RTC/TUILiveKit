@@ -9,7 +9,6 @@ import Foundation
 import RTCCommon
 import Combine
 import RTCRoomEngine
-import TUILiveComponent
 
 class VRRoomManager: VRLiveListObserverInterface, VRRoomEngineObserverRoomInterface {
     var state: VRRoomState {
@@ -39,9 +38,9 @@ class VRRoomManager: VRLiveListObserverInterface, VRRoomEngineObserverRoomInterf
             state.liveExtraInfo.liveMode = .public
             state.liveExtraInfo.maxAudienceCount = 0
             state.liveExtraInfo.messageCount = 0
-            state.liveExtraInfo.giftIncome = 0
-            state.liveExtraInfo.giftPeopleSet = []
-            state.liveExtraInfo.likeCount = 0
+            state.liveExtraInfo.giftTotalCoins = 0
+            state.liveExtraInfo.giftTotalUniqueSender = 0
+            state.liveExtraInfo.likeTotalUniqueSender = 0
         }
     }
 }
@@ -87,10 +86,28 @@ extension VRRoomManager {
         setLiveInfo(liveInfo: liveInfo, modifyFlag: [.coverUrl, .publish, .category, .backgroundUrl])
     }
     
-    func onReceiveGift(price: Int, senderUserId: String) {
+    func fetchGiftCount(roomId: String) async throws {
+        guard let service = service else { return }
+        let result = try await service.fetchGiftCount(roomId: roomId)
         update { state in
-            state.liveExtraInfo.giftIncome += price
-            state.liveExtraInfo.giftPeopleSet.insert(senderUserId)
+            state.liveExtraInfo.giftTotalCoins = Int(result.totalGiftCoins)
+            state.liveExtraInfo.giftTotalUniqueSender = Int(result.totalUniqueGiftSenders)
+        }
+    }
+    
+    func fetchLikeCount(roomId: String) async throws {
+        guard let service = service else { return }
+        let result = try await service.fetchLikeCount(roomId: roomId)
+        update { state in
+            state.liveExtraInfo.likeTotalUniqueSender = Int(result)
+        }
+    }
+    
+    func fetchViewCount(roomId: String) async throws {
+        guard let service = service else { return }
+        let result = try await service.fetchLiveInfo(roomId: roomId)
+        update { state in
+            state.liveExtraInfo.maxAudienceCount = result.viewCount
         }
     }
     

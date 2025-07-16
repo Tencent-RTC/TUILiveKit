@@ -21,15 +21,14 @@ Pod::Spec.new do |spec|
   spec.dependency 'Kingfisher'
   spec.dependency 'SVGAPlayer', '~> 2.5.7'
   spec.dependency 'Protobuf', '~> 3.22.1'
-  spec.dependency 'RTCCommon', '>= 1.3.1'
+  spec.dependency 'RTCCommon', '>= 1.1.0'
   spec.dependency "ESPullToRefresh"
 
   spec.default_subspec = 'Professional'
   
   spec.subspec 'Professional' do |professional|
-    professional.dependency 'RTCRoomEngine/Professional', '>= 3.1.0'
-    professional.dependency 'LiveStreamCore/Professional', '>= 3.1.0'
-    professional.dependency 'TUILiveComponent/Professional'
+    professional.dependency 'RTCRoomEngine/Professional', '>= 2.9.0'
+    professional.dependency 'LiveStreamCore/Professional'
 
     professional.source_files = 'Sources/**/*', 'VideoLiveKit.swift', 'VoiceRoomKit.swift', 'VoiceRoomDefine.swift'
     professional.resource_bundles = {
@@ -38,9 +37,8 @@ Pod::Spec.new do |spec|
   end
   
   spec.subspec 'TRTC' do |trtc|
-    trtc.dependency 'RTCRoomEngine/TRTC', '>= 3.1.0'
-    trtc.dependency 'LiveStreamCore/TRTC', '>= 3.1.0'
-    trtc.dependency 'TUILiveComponent/TRTC'
+    trtc.dependency 'RTCRoomEngine/TRTC', '>= 2.9.0'
+    trtc.dependency 'LiveStreamCore/TRTC'
 
     trtc.source_files = 'Sources/**/*', 'VideoLiveKit.swift', 'VoiceRoomKit.swift', 'VoiceRoomDefine.swift'
     trtc.resource_bundles = {
