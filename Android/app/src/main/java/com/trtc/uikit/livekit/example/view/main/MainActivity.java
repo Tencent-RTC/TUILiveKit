@@ -8,8 +8,8 @@ import com.trtc.tuikit.common.util.ActivityLauncher;
 import com.trtc.uikit.livekit.example.BaseActivity;
 import com.trtc.uikit.livekit.example.R;
 import com.trtc.uikit.livekit.example.store.AppStore;
-import com.trtc.uikit.livekit.example.view.scene.VideoLiveActivity;
-import com.trtc.uikit.livekit.example.view.scene.VoiceRoomActivity;
+import com.trtc.uikit.livekit.livestream.VideoLiveListActivity;
+import com.trtc.uikit.livekit.voiceroom.VoiceRoomListActivity;
 
 public class MainActivity extends BaseActivity {
 
@@ -33,7 +33,7 @@ public class MainActivity extends BaseActivity {
 
     private void initVideoLiveView() {
         findViewById(R.id.video_live).setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, VideoLiveActivity.class);
+            Intent intent = new Intent(MainActivity.this, VideoLiveListActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         });
@@ -41,7 +41,7 @@ public class MainActivity extends BaseActivity {
 
     private void initVoiceRoomView() {
         findViewById(R.id.voice_room).setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, VoiceRoomActivity.class);
+            Intent intent = new Intent(MainActivity.this, VoiceRoomListActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         });

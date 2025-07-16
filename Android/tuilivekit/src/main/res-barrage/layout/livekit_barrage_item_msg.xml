@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="3dp"
+    android:layout_marginBottom="3dp"
+    android:background="@drawable/livekit_barrage_bg_msg_item"
+    android:orientation="horizontal">
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|top"
+        android:layout_margin="5dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/tv_msg_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:textColor="@color/livekit_barrage_g8"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_anchor_flag"
+            android:layout_width="44dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="1dp"
+            android:background="@drawable/livekit_barrage_bg_anchor_flag"
+            android:gravity="center"
+            android:text="@string/live_barrage_anchor"
+            android:textAllCaps="true"
+            android:textColor="@color/livekit_barrage_g8"
+            android:textSize="9sp"
+            android:textStyle="bold"
+            tools:ignore="SmallSp,UnusedAttribute" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/btn_msg_agree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:background="@drawable/livekit_barrage_bg_select_item"
+        android:paddingLeft="16dp"
+        android:paddingTop="4dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="4dp"
+        android:text="@string/live_barrage_agree"
+        android:textColor="@color/livekit_barrage_g8"
+        android:textSize="14sp"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+</LinearLayout>

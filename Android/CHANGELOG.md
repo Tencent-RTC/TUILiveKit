@@ -1,3 +1,10 @@
+# 3.2.0
+### New Features
+- Android&iOS: New AnchorView feature
+- Android&iOS: New AudienceContainerView feature
+- Android&iOS: New AnchorEndStatisticsView feature
+- Android&iOS: New AudienceEndStatisticsView feature
+
 # 3.1.0
 ### New Features
 - Android&iOS: New LiveListView feature

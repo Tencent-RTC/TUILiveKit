@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fl_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <com.trtc.uikit.livekit.common.ui.RoundFrameLayout
+        android:id="@+id/fl_video_view_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="44dp"
+        android:layout_marginBottom="96dp"
+        android:background="@color/common_design_standard_g1" />
+
+    <RelativeLayout
+        android:id="@+id/rl_anchor_preview_mask"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/anchor_prepare_preview_mask" />
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="56dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/livekit_return_arrow"
+        android:importantForAccessibility="no" />
+</FrameLayout>

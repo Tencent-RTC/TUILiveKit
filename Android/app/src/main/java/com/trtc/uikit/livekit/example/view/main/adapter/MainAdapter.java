@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.trtc.uikit.livekit.example.R;
 import com.trtc.uikit.livekit.example.view.main.model.MainItemData;
-import com.trtc.uikit.livekit.example.view.scene.VideoLiveActivity;
-import com.trtc.uikit.livekit.example.view.scene.VoiceRoomActivity;
+import com.trtc.uikit.livekit.livestream.VideoLiveListActivity;
+import com.trtc.uikit.livekit.voiceroom.VoiceRoomListActivity;
 
 import java.util.List;
 
@@ -88,13 +88,13 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ItemViewHolder
         }
 
         private void startVideoLiveActivity() {
-            Intent intent = new Intent(mContext, VideoLiveActivity.class);
+            Intent intent = new Intent(mContext, VideoLiveListActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);
         }
 
         private void startVoiceRoomActivity() {
-            Intent intent = new Intent(mContext, VoiceRoomActivity.class);
+            Intent intent = new Intent(mContext, VoiceRoomListActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);
         }

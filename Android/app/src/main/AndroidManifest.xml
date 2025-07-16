@@ -47,15 +47,5 @@
         <activity
             android:name=".view.me.MeActivity"
             android:exported="true" />
-        <activity
-            android:name=".view.scene.VideoLiveActivity"
-            android:exported="true"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".view.scene.VoiceRoomActivity"
-            android:exported="true"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
     </application>
 </manifest>
