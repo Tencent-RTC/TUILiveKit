@@ -8,7 +8,6 @@
 import RTCRoomEngine
 import Combine
 import ImSDK_Plus
-import TUILiveComponent
 
 class VRUserService: BaseServiceProtocol {
     var roomEngine: TUIRoomEngine

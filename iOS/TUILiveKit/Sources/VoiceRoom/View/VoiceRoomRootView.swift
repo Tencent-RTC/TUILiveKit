@@ -12,7 +12,6 @@ import TUICore
 import RTCCommon
 import RTCRoomEngine
 import LiveStreamCore
-import TUILiveComponent
 
 protocol VoiceRoomRootViewDelegate: AnyObject {
     func rootView(_ view: VoiceRoomRootView, showEndView endInfo: [String:Any], isAnchor: Bool)
@@ -28,7 +27,6 @@ class VoiceRoomRootView: RTCBaseView {
     private let isOwner: Bool
     private let giftCacheService = TUIGiftStore.shared.giftCacheService
     private var cancellableSet = Set<AnyCancellable>()
-    private let likeManager: LikeManager
     private var isExited: Bool = false
     
     private let backgroundImageView: UIImageView = {
@@ -89,7 +87,6 @@ class VoiceRoomRootView: RTCBaseView {
         self.manager = manager
         self.routerManager = routerManager
         self.isOwner = isCreate
-        self.likeManager = LikeManager(roomId: roomId)
         self.seatGridView = seatGridView
         super.init(frame: frame)
         if isCreate {
@@ -135,7 +132,7 @@ class VoiceRoomRootView: RTCBaseView {
         }
         seatGridView.snp.makeConstraints { make in
             make.top.equalTo(topView.snp.bottom).offset(40.scale375())
-            make.height.equalTo(230.scale375Height())
+            make.height.equalTo(230)
             make.left.equalToSuperview()
             make.right.equalToSuperview()
         }
@@ -171,7 +168,6 @@ class VoiceRoomRootView: RTCBaseView {
         topView.delegate = self
         subscribeRoomState()
         subscribeUserState()
-        subscribeSubject()
         muteMicrophoneButton.addTarget(self, action: #selector(muteMicrophoneButtonClick(sender:)), for: .touchUpInside)
     }
 }
@@ -297,26 +293,58 @@ extension VoiceRoomRootView {
 // MARK: - EndView
 
 extension VoiceRoomRootView {
-    private func showAnchorEndView() {
-        seatGridView.stopVoiceRoom { [weak self] in
+    
+    func stopVoiceRoom() {
+        fetchRoomStatistics { [weak self] in
             guard let self = self else { return }
-            manager.onStopVoiceRoom()
-        } onError: { [weak self] code, message in
-            guard let self = self else { return }
-            let error = InternalError(code: code, message: message)
-            manager.onError(error.localizedMessage)
+            self.seatGridView.stopVoiceRoom { [weak self] in
+                guard let self = self else { return }
+                manager.onStopVoiceRoom()
+                showAnchorEndView()
+            } onError: { [weak self] code, message in
+                guard let self = self else { return }
+                let error = InternalError(code: code, message: message)
+                manager.onError(error.localizedMessage)
+            }
+        }
+    }
+    
+    private func fetchRoomStatistics(completion: @escaping () -> Void) {
+        let roomId = manager.roomState.roomId
+        let group = DispatchGroup()
+        
+        group.enter()
+        manager.fetchGiftCount(roomId: roomId) {
+            group.leave()
+        } onError: { _ in
+            group.leave()
         }
         
-        let roomState = manager.roomState
-        let giftIncome = roomState.liveExtraInfo.giftIncome
-        let giftPeopleCount = roomState.liveExtraInfo.giftPeopleSet.count
-        let liveDataModel = LiveDataModel(roomId: manager.roomState.roomId,
-                                          liveDuration: abs(Int(Date().timeIntervalSince1970 - Double(roomState.createTime / 1_000))),
-                                          audienceCount: manager.roomState.liveExtraInfo.maxAudienceCount,
-                                          messageCount: barrageDisplayView.getBarrageCount(),
-                                          giftIncome: giftIncome,
-                                          giftPeopleCount: giftPeopleCount,
-                                          likeCount: giftDisplayView.getLikeCount())
+        group.enter()
+        manager.fetchLikeCount(roomId: roomId) {
+            group.leave()
+        } onError: { _ in
+            group.leave()
+        }
+        
+        group.enter()
+        manager.fetchViewCount(roomId: roomId) {
+            group.leave()
+        } onError: { _ in
+            group.leave()
+        }
+        
+        group.notify(queue: .main, execute: completion)
+    }
+    
+    private func showAnchorEndView() {
+        let liveDataModel = AnchorEndStatisticsViewInfo(roomId: manager.roomState.roomId,
+                                                        liveDuration: abs(Int(Date().timeIntervalSince1970 - Double(manager.roomState.createTime / 1_000))),
+                                                        viewCount: manager.roomState.liveExtraInfo.maxAudienceCount,
+                                                        messageCount: barrageDisplayView.getBarrageCount(),
+                                                        giftTotalCoins: manager.roomState.liveExtraInfo.giftTotalCoins,
+                                                        giftTotalUniqueSender: manager.roomState.liveExtraInfo.giftTotalUniqueSender,
+                                                        likeTotalUniqueSender: manager.roomState.liveExtraInfo.likeTotalUniqueSender)
         delegate?.rootView(self, showEndView: ["data": liveDataModel], isAnchor: true)
     }
     
@@ -418,20 +446,6 @@ extension VoiceRoomRootView {
     }
 }
 
-// MARK: - SubscribeSubject
-
-extension VoiceRoomRootView {
-    private func subscribeSubject() {
-        manager.likeSubject
-            .receive(on: RunLoop.main)
-            .sink { [weak self] in
-                guard let self = self else { return }
-                likeManager.sendLike()
-            }
-            .store(in: &cancellableSet)
-    }
-}
-
 // MARK: - TopViewDelegate
 
 extension VoiceRoomRootView: VRTopViewDelegate {
@@ -456,10 +470,10 @@ extension VoiceRoomRootView: VRTopViewDelegate {
         designConfig.lineColor = .g8
         let item = ActionItem(title: .confirmCloseText, designConfig: designConfig, actionClosure: { [weak self] _ in
             guard let self = self else { return }
-            self.showAnchorEndView()
+            self.stopVoiceRoom()
             self.routerManager.router(action: .dismiss())
         })
-        routerManager.router(action: .present(.listMenu(ActionPanelData(items: [item]))))
+        routerManager.router(action: .present(.listMenu(ActionPanelData(items: [item], cancelText: .cancelText))))
     }
     
     private func audienceLeaveButtonClick() {
@@ -498,7 +512,7 @@ extension VoiceRoomRootView: VRTopViewDelegate {
             routerManager.router(action: .exit)
         })
         items.append(endLiveItem)
-        routerManager.router(action: .present(.listMenu(ActionPanelData(title: title, items: items))))
+        routerManager.router(action: .present(.listMenu(ActionPanelData(title: title, items: items, cancelText: .cancelText))))
     }
     
     private func leaveRoom() {
@@ -589,7 +603,7 @@ extension VoiceRoomRootView: SeatGridViewObserver {
             return
         }
         
-        let data = ActionPanelData(items: menus)
+        let data = ActionPanelData(items: menus, cancelText: .cancelText)
         routerManager.router(action: .present(.listMenu(data)))
     }
 }
@@ -727,7 +741,7 @@ extension VoiceRoomRootView: BarrageStreamViewDelegate {
         guard let type = barrage.extInfo["TYPE"], type.value as? String == "GIFTMESSAGE" else {
             return nil
         }
-        return CustomBarrageCell(barrage: barrage)
+        return GiftBarrageCell(barrage: barrage)
     }
     
     func onBarrageClicked(user: TUIUserInfo) {
@@ -737,21 +751,22 @@ extension VoiceRoomRootView: BarrageStreamViewDelegate {
 // MARK: - GiftPlayViewDelegate
 
 extension VoiceRoomRootView: GiftPlayViewDelegate {
-    func giftPlayView(_ giftPlayView: GiftPlayView, onReceiveGift gift: TUIGift, giftCount: Int, sender: TUIGiftUser, receiver: TUIGiftUser) {
-        let userId = manager.coreUserState.selfInfo.userId
-        if isOwner && userId == receiver.userId {
-            manager.onReceiveGift(price: gift.price * giftCount, senderUserId: sender.userId)
-        }
+    func giftPlayView(_ giftPlayView: GiftPlayView, onReceiveGift gift: TUIGiftInfo, giftCount: Int, sender: TUIUserInfo) {        
+        let receiver = TUIUserInfo()
+        receiver.userId = manager.coreRoomState.ownerId
+        receiver.userName = manager.coreRoomState.ownerName
+        receiver.avatarUrl = manager.coreRoomState.ownerAvatar
+  
         let barrage = TUIBarrage()
         barrage.content = "gift"
         barrage.user.userId = sender.userId
         barrage.user.userName = sender.userName
         barrage.user.avatarUrl = sender.avatarUrl
-        barrage.user.level = sender.level
+        barrage.user.level = "0"
         barrage.extInfo["TYPE"] = AnyCodable("GIFTMESSAGE")
-        barrage.extInfo["gift_name"] = AnyCodable(gift.giftName)
+        barrage.extInfo["gift_name"] = AnyCodable(gift.name)
         barrage.extInfo["gift_count"] = AnyCodable(giftCount)
-        barrage.extInfo["gift_icon_url"] = AnyCodable(gift.imageUrl)
+        barrage.extInfo["gift_icon_url"] = AnyCodable(gift.iconUrl)
         if receiver.userId == TUILogin.getUserID() {
             receiver.userName = .meText
         }
@@ -759,8 +774,8 @@ extension VoiceRoomRootView: GiftPlayViewDelegate {
         barrageDisplayView.insertBarrages([barrage])
     }
     
-    func giftPlayView(_ giftPlayView: GiftPlayView, onPlayGiftAnimation gift: TUIGift) {
-        guard let url = URL(string: gift.animationUrl) else { return }
+    func giftPlayView(_ giftPlayView: GiftPlayView, onPlayGiftAnimation gift: TUIGiftInfo) {
+        guard let url = URL(string: gift.resourceUrl) else { return }
         giftCacheService.request(withURL: url) { error, fileUrl in
             if error == 0 {
                 DispatchQueue.main.async {
@@ -791,5 +806,6 @@ fileprivate extension String {
     static let exitLiveOnLinkMicText = internalLocalized("You are currently co-guesting with other streamers. Would you like to [End Co-guest] or [Exit Live] ?")
     static let exitLiveLinkMicDisconnectText = internalLocalized("End Co-guest")
     static let exitLiveText = internalLocalized("Exit Live")
-    static let kickedOutText = internalLocalized("You have been kicked out of the room by the anchor")
+    static let kickedOutText = internalLocalized("You have been kicked out of the room")
+    static let cancelText = internalLocalized("Cancel")
 }

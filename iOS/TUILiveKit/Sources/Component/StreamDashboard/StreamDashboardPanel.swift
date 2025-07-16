@@ -6,11 +6,7 @@
 //
 
 import Foundation
-#if canImport(TXLiteAVSDK_TRTC)
-import TXLiteAVSDK_TRTC
-#elseif canImport(TXLiteAVSDK_Professional)
-import TXLiteAVSDK_Professional
-#endif
+import RTCRoomEngine
 
 class StreamDashboardPanel: UIView {
     
@@ -37,8 +33,8 @@ class StreamDashboardPanel: UIView {
         return view
     }()
     
-    init(roomId: String, trtcCloud: TRTCCloud) {
-        let service = EngineStreamDashboardService(trtcCloud: trtcCloud)
+    init(roomId: String, roomEngine: TUIRoomEngine) {
+        let service = EngineStreamDashboardService(roomEngine: roomEngine)
         self.manager = StreamDashboardManager(service: service, roomId: roomId)
         super.init(frame: .zero)
     }
@@ -48,7 +44,7 @@ class StreamDashboardPanel: UIView {
     }
     
     deinit {
-        manager.removeTRTCEvent()
+        manager.removeObserver()
     }
     
     private var isViewReady: Bool = false
@@ -90,7 +86,7 @@ extension StreamDashboardPanel {
     }
     
     private func bindInteraction() {
-        manager.addTRTCEvent()
+        manager.addObserver()
     }
     
     private func setupViewStyle() {

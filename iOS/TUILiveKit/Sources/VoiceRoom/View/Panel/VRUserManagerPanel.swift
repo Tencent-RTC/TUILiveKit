@@ -10,7 +10,6 @@ import RTCCommon
 import Combine
 import RTCRoomEngine
 import LiveStreamCore
-import TUILiveComponent
 
 class VRUserManagerPanel: RTCBaseView {
     private let manager: VoiceRoomManager

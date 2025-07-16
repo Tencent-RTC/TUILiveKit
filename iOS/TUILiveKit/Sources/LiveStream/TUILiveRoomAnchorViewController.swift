@@ -12,7 +12,6 @@ import RTCRoomEngine
 import Combine
 import LiveStreamCore
 import RTCCommon
-import TUILiveComponent
 
 @objcMembers
 public class TUILiveRoomAnchorViewController: UIViewController {
@@ -23,14 +22,14 @@ public class TUILiveRoomAnchorViewController: UIViewController {
     private var cancellableSet = Set<AnyCancellable>()
     private let coreView: LiveCoreView
 
-    private let roomId: String
-    private let needPrepare: Bool
+    private let liveInfo: LiveInfo
+    private let behavior: RoomBehavior
     
     private let anchorView: AnchorView
     
-    public init(roomId: String, needPrepare: Bool = true, liveInfo: TUILiveInfo? = nil, coreView: LiveCoreView? = nil) {
-        self.roomId = roomId
-        self.needPrepare = needPrepare
+    public init(liveInfo: LiveInfo, coreView: LiveCoreView? = nil, behavior: RoomBehavior = .createRoom) {
+        self.liveInfo = liveInfo
+        self.behavior = behavior
         if let coreView = coreView {
             self.coreView = coreView
         } else {
@@ -48,7 +47,7 @@ public class TUILiveRoomAnchorViewController: UIViewController {
             }
             self.coreView = LiveCoreView()
         }
-        self.anchorView = AnchorView(roomId: roomId, coreView: self.coreView, liveInfo: liveInfo)
+        self.anchorView = AnchorView(liveInfo: liveInfo, coreView: self.coreView, behavior: behavior)
         super.init(nibName: nil, bundle: nil)
         if FloatWindow.shared.isShowingFloatWindow() {
             FloatWindow.shared.releaseFloatWindow()
@@ -65,6 +64,9 @@ public class TUILiveRoomAnchorViewController: UIViewController {
     deinit {
         StateCache.shared.clear()
         LiveKitLog.info("\(#file)", "\(#line)", "deinit TUILiveRoomAnchorViewController \(self)")
+        TUIGiftStore.shared.reset()
+        // ** Only should use for test **
+        TestTool.shared.unregisterCaseFrom(self)
     }
     
     public func stopLive(onSuccess: TUISuccessBlock?, onError: TUIErrorBlock?) {
@@ -78,11 +80,17 @@ public class TUILiveRoomAnchorViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.setNavigationBarHidden(true, animated: true)
-        if !needPrepare {
-            startLiveBlock?()
-            anchorView.joinSelfCreatedRoom()
-        }
-        GiftCloudServer.shared.initialize()
+        startLiveBlock?()
+        
+        // ** Only should use for test **
+        let liveData = TestCaseItemModel(title: "禁用房间信息", view: anchorView, sel: #selector(AnchorView.disableHeaderLiveDataForTest(_:)))
+        let visitor = TestCaseItemModel(title: "禁用观众列表", view: anchorView, sel: #selector(AnchorView.disableHeaderVisitorCntForTest(_:)))
+        let coGuest = TestCaseItemModel(title: "禁用连麦按钮", view: anchorView, sel: #selector(AnchorView.disableFooterCoGuestForTest(_:)))
+        let coHost = TestCaseItemModel(title: "禁用连线按钮", view: anchorView, sel: #selector(AnchorView.disableFooterCoHostForTest(_:)))
+        let battle = TestCaseItemModel(title: "禁用PK按钮", view: anchorView, sel: #selector(AnchorView.disableFooterBattleForTest(_:)))
+        let soundEffect = TestCaseItemModel(title: "禁用音效按钮", view: anchorView, sel: #selector(AnchorView.disableFooterSoundEffectForTest(_:)))
+        let model = TestCaseModel(list: [liveData, visitor, coGuest, coHost, battle, soundEffect], obj: self)
+        TestTool.shared.registerCase(model)
     }
     
     public override func loadView() {
@@ -119,24 +127,33 @@ public class TUILiveRoomAnchorViewController: UIViewController {
     public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
     }
-    
-    func startLiveStream(roomName: String? = nil,
-                         privacyMode: LiveStreamPrivacyStatus? = nil,
-                         coverUrl: String? = nil) {
-        startLiveBlock?()
-        anchorView.startLiveStream(roomName: roomName, privacyMode: privacyMode, coverUrl: coverUrl)
-    }
 }
 
 extension TUILiveRoomAnchorViewController: AnchorViewDelegate {
-    public func showFloatWindow() {
-        FloatWindow.shared.showFloatWindow(controller: self)
+    public func onClickFloatWindow() {
+        FloatWindow.shared.showFloatWindow(controller: self, provider: self)
+    }
+    
+    public func onEndLiving(state: AnchorState) {
+        let liveDataModel = AnchorEndStatisticsViewInfo(roomId: liveInfo.roomId,
+                                                        liveDuration: state.duration,
+                                                        viewCount: state.viewCount,
+                                                        messageCount: state.messageCount,
+                                                        giftTotalCoins: state.giftTotalCoins,
+                                                        giftTotalUniqueSender: state.giftTotalUniqueSender,
+                                                        likeTotalUniqueSender: state.likeTotalUniqueSender)
+        let anchorEndView = AnchorEndStatisticsView(endViewInfo: liveDataModel)
+        anchorEndView.delegate = self
+        view.addSubview(anchorEndView)
+        anchorEndView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
     }
 }
 
-extension TUILiveRoomAnchorViewController: FloatWindowDataSource {
+extension TUILiveRoomAnchorViewController: FloatWindowProvider {
     public func getRoomId() -> String {
-        roomId
+        liveInfo.roomId
     }
     
     public func getOwnerId() -> String {
@@ -156,5 +173,15 @@ extension TUILiveRoomAnchorViewController: FloatWindowDataSource {
         let coGuestState: CoGuestState = coreView.getState()
         let userState: UserState = coreView.getState()
         return coGuestState.connectedUserList.contains(where: { $0.userId == userState.selfInfo.userId })
+    }
+}
+
+extension TUILiveRoomAnchorViewController: AnchorEndStatisticsViewDelegate {
+    func onCloseButtonClick() {
+        if let nav = navigationController {
+            nav.popViewController(animated: true)
+        } else {
+            dismiss(animated: true)
+        }
     }
 }

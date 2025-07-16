@@ -14,7 +14,7 @@ class LSSystemImageSelectionPanel: UIView {
     
     var backButtonClickClosure: (()->Void)?
     private var cancellableSet = Set<AnyCancellable>()
-    private let editInfo: EditInfo
+    private let state: PrepareState
     
     private var configs: [LSSystemImageModel]
     private var currentSelectModel: LSSystemImageModel?
@@ -74,9 +74,9 @@ class LSSystemImageSelectionPanel: UIView {
         return view
     }()
     
-    init(configs:[LSSystemImageModel], editInfo: inout EditInfo) {
+    init(configs:[LSSystemImageModel], state: inout PrepareState) {
         self.configs = configs
-        self.editInfo = editInfo
+        self.state = state
         super.init(frame: .zero)
     }
     
@@ -153,7 +153,7 @@ extension LSSystemImageSelectionPanel {
     
     private func defaultSelectItem() {
         var imageUrlPath: String = ""
-        imageUrlPath = editInfo.coverUrl
+        imageUrlPath = state.coverUrl
         if let index = configs.firstIndex(where: { imageUrlPath.contains($0.imagePath) }) {
             collectionView.selectItem(at: IndexPath(item: index, section: 0), animated: false, scrollPosition: .top)
         }
@@ -173,7 +173,7 @@ extension LSSystemImageSelectionPanel {
             backButtonClickClosure?()
             return
         }
-        editInfo.coverUrl = newImageUrlString
+        state.coverUrl = newImageUrlString
         backButtonClickClosure?()
     }
 }

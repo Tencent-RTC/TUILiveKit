@@ -11,7 +11,6 @@ import SnapKit
 import Combine
 import LiveStreamCore
 import RTCRoomEngine
-import TUILiveComponent
 
 class VRBottomMenuView: UIView {
     var cancellableSet = Set<AnyCancellable>()
@@ -45,6 +44,11 @@ class VRBottomMenuView: UIView {
     }()
     
     private var buttons: [UIButton] = []
+    
+    private lazy var likeButton: TUILikeButton = {
+        let likeButton = TUILikeButton(roomId: manager.roomState.roomId)
+        return likeButton
+    }()
     
     init(manager: VoiceRoomManager, routerManager: VRRouterManager, coreView: SeatGridView, isOwner: Bool) {
         self.manager = manager
@@ -110,6 +114,15 @@ class VRBottomMenuView: UIView {
                 button.addTarget(self, action: #selector(menuTapAction(sender:)), for: .touchUpInside)
                 return button
             }
+        if !isOwner {
+            stackView.addArrangedSubview(likeButton)
+            likeButton.snp.makeConstraints { make in
+                make.width.equalTo(isOwner ? 34.scale375() : 32.scale375())
+                make.height.equalTo(isOwner ? 46.scale375() : 32.scale375())
+                make.centerY.equalToSuperview()
+            }
+            buttons.append(likeButton)
+        }
     }
     
     private func createButtonFromMenuItem(index: Int, item: VRButtonMenuInfo) -> MenuButton {
@@ -278,13 +291,6 @@ extension VRBottomMenuView {
             self.routerManager.router(action: .present(.giftView))
         }
         menus.append(gift)
-        
-        var like = VRButtonMenuInfo(normalIcon: "live_like_icon")
-        like.tapAction = { [weak self] sender in
-            guard let self = self else { return }
-            manager.likeSubject.send()
-        }
-        menus.append(like)
         
         var linkMic = VRButtonMenuInfo(normalIcon: "live_voice_room_link_icon", selectIcon: "live_voice_room_linking_icon")
         linkMic.tapAction = { [weak self] sender in

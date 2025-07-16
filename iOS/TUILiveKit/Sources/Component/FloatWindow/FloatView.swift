@@ -28,22 +28,7 @@ class FloatView: UIView {
         return view
     }()
     
-    
     private let contentView: UIView
-    
-    private let enableMicImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = internalImage("live_microphone_opened")
-        imageView.isHidden = true
-        return imageView
-    }()
-    
-    private let enableVideoImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = internalImage("live_video_opened")
-        imageView.isHidden = true
-        return imageView
-    }()
     
     private var margin : CGFloat = 10
     
@@ -84,26 +69,12 @@ class FloatView: UIView {
 
     private func constructViewHierarchy() {
         addSubview(contentView)
-        addSubview(enableMicImageView)
-        addSubview(enableVideoImageView)
         addSubview(gestureOverlayView)
     }
     
     private func activateConstraints() {
         contentView.snp.makeConstraints { make in
             make.size.equalToSuperview()
-        }
-        
-        enableMicImageView.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(23.scale375())
-            make.bottom.equalToSuperview().offset(-8.scale375Height())
-            make.size.equalTo(16.scale375())
-        }
-        
-        enableVideoImageView.snp.makeConstraints { make in
-            make.leading.equalTo(enableMicImageView.snp.trailing).offset(30.scale375())
-            make.bottom.equalTo(enableMicImageView.snp.bottom)
-            make.size.equalTo(16.scale375())
         }
         
         gestureOverlayView.snp.makeConstraints{ make in
@@ -119,42 +90,6 @@ class FloatView: UIView {
         gestureOverlayView.addGestureRecognizer(panGesture)
         
         tapGesture.require(toFail: panGesture)
-        
-        subscribeState()
-    }
-    
-    private func subscribeState() {
-        guard let coreView = contentView as? LiveCoreView else { return }
-        coreView.subscribeState(StateSelector(keyPath: \UserState.selfInfo.userRole))
-            .receive(on: RunLoop.main)
-            .sink { [weak self] role in
-                guard let self = self else { return }
-                if role == .generalUser {
-                    enableMicImageView.isHidden = true
-                    enableVideoImageView.isHidden = true
-                } else {
-                    enableMicImageView.isHidden = false
-                    enableVideoImageView.isHidden = false
-                }
-            }
-            .store(in: &cancellableSet)
-        
-        coreView.subscribeState(StateSelector(keyPath: \MediaState.isMicrophoneMuted))
-            .receive(on: RunLoop.main)
-            .sink { [weak self] muted in
-                guard let self = self else { return }
-                let imageImage = muted ? "live_microphone_closed" : "live_microphone_opened"
-                self.enableMicImageView.image = internalImage(imageImage)
-            }
-            .store(in: &cancellableSet)
-        
-        coreView.subscribeState(StateSelector(keyPath: \MediaState.isCameraOpened))
-            .receive(on: RunLoop.main)
-            .sink { [weak self] opened in
-                guard let self = self else { return }
-                let imageImage = opened ? "live_video_opened" : "live_video_closed"
-                self.enableVideoImageView.image = internalImage(imageImage)
-            }.store(in: &cancellableSet)
     }
     
     override func layoutSubviews() {

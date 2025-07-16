@@ -191,7 +191,7 @@ extension VRLiveInfoEditView {
             })
             items.append(item)
         }
-        var panelData = ActionPanelData(items: items)
+        var panelData = ActionPanelData(items: items, cancelText: .cancelText)
         panelData.containCancel = false
         routerManager.router(action: .present(.listMenu(panelData)))
     }
@@ -252,7 +252,8 @@ extension VRLiveInfoEditView {
 }
 
 private extension String {
-    static let editCoverTitle = internalLocalized("Modify the cover")
+    static let editCoverTitle = internalLocalized("Set Cover")
     static let editPlaceholderText = internalLocalized("Please enter room name")
     static let modeText = internalLocalized("Live Mode:xxx")
+    static let cancelText = internalLocalized("Cancel")
 }

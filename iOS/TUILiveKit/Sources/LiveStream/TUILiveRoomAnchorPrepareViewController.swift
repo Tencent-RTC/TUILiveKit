@@ -9,7 +9,7 @@ import LiveStreamCore
 import RTCCommon
 import Combine
 import TUICore
-import TUILiveComponent
+import RTCRoomEngine
 
 public class TUILiveRoomAnchorPrepareViewController: UIViewController {
     private let roomId: String
@@ -20,6 +20,9 @@ public class TUILiveRoomAnchorPrepareViewController: UIViewController {
     
     deinit {
         LiveKitLog.info("\(#file)", "\(#line)", "deinit TUILiveRoomAnchorPrepareViewController \(self)")
+        
+        // ** Only should use for test **
+        TestTool.shared.unregisterCaseFrom(self)
     }
     
     required init?(coder: NSCoder) {
@@ -34,16 +37,18 @@ public class TUILiveRoomAnchorPrepareViewController: UIViewController {
         return view
     }()
     
-    private lazy var anchorVC: TUILiveRoomAnchorViewController = {
-        let vc = TUILiveRoomAnchorViewController(roomId: roomId, needPrepare: true, coreView: coreView)
-        vc.modalPresentationStyle = .fullScreen
-        return vc
-    }()
-    
     var willStartLive: ((_ vc: TUILiveRoomAnchorViewController) -> ())?
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // ** Only should use for test **
+        let feature = TestCaseItemModel(title: "禁用所有按钮", view: rootView, sel: #selector(AnchorPrepareView.disableFeatureMenuForTest(_:)))
+        let switchCamera = TestCaseItemModel(title: "禁用切换摄像头按钮", view: rootView, sel: #selector(AnchorPrepareView.disableMenuSwitchCameraBtnForTest(_:)))
+        let beauty = TestCaseItemModel(title: "禁用美颜按钮", view: rootView, sel: #selector(AnchorPrepareView.disableMenuBeautyBtnForTest(_:)))
+        let audioEffect = TestCaseItemModel(title: "禁用音效按钮", view: rootView, sel: #selector(AnchorPrepareView.disableMenuAudioEffectBtnForTest(_:)))
+        let model = TestCaseModel(list: [feature, switchCamera, beauty, audioEffect], obj: self)
+        TestTool.shared.registerCase(model)
     }
     
     public override func loadView() {
@@ -58,7 +63,7 @@ public class TUILiveRoomAnchorPrepareViewController: UIViewController {
 }
 
 extension TUILiveRoomAnchorPrepareViewController : AnchorPrepareViewDelegate {
-    public func prepareView(_ view: AnchorPrepareView, didClickBack button: UIButton) {
+    public func onClickBackButton() {
         if let nav = navigationController {
             nav.popViewController(animated: true)
         } else {
@@ -67,12 +72,8 @@ extension TUILiveRoomAnchorPrepareViewController : AnchorPrepareViewDelegate {
         StateCache.shared.clear()
     }
     
-    public func prepareView(_ view: AnchorPrepareView, didClickStart button: UIButton, editInfo: EditInfo) {
+    public func onClickStartButton(state: PrepareState) {
         guard let rootVC = TUITool.applicationKeywindow().rootViewController else { return }
-        
-        willStartLive?(anchorVC)
-        anchorVC.startLiveStream(roomName: editInfo.roomName, privacyMode: editInfo.privacyMode, coverUrl: editInfo.coverUrl)
-        
         let tmpView: UIView
         if let snapshot = rootView.snapshotView(afterScreenUpdates: true) {
             tmpView = snapshot
@@ -84,6 +85,18 @@ extension TUILiveRoomAnchorPrepareViewController : AnchorPrepareViewDelegate {
         
         dismiss(animated: false) { [weak self, weak tmpView, weak rootVC] in
             guard let self = self, let tmpView = tmpView, let rootVC = rootVC else { return }
+            
+            var liveInfo = LiveInfo()
+            liveInfo.roomId = roomId
+            liveInfo.name = state.roomName
+            liveInfo.coverUrl = state.coverUrl
+            liveInfo.isPublicVisible = state.privacyMode == .public
+            
+            let anchorVC = TUILiveRoomAnchorViewController(liveInfo: liveInfo, coreView: coreView, behavior: .createRoom)
+            anchorVC.modalPresentationStyle = .fullScreen
+
+            willStartLive?(anchorVC)
+            
             rootVC.present(anchorVC, animated: false) { [weak tmpView, weak rootVC] in
                 guard let tmpView = tmpView, let rootVC = rootVC else { return }
                 rootVC.view.bringSubviewToFront(tmpView)

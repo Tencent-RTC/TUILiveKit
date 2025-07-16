@@ -10,7 +10,6 @@ import Combine
 import RTCCommon
 import ImSDK_Plus
 import RTCRoomEngine
-import TUILiveComponent
 
 class VRUserManager: VRIMObserverInterface, VRRoomEngineObserverUserInterface {
     var state: VRUserState {

@@ -9,7 +9,6 @@ import Foundation
 import Combine
 import RTCCommon
 import RTCRoomEngine
-import TUILiveComponent
 
 class VRSeatManager {
     var state: VRSeatState {

@@ -8,7 +8,6 @@
 import RTCRoomEngine
 import RTCCommon
 import Combine
-import TUILiveComponent
 import LiveStreamCore
 
 protocol VoiceRoomManagerProvider: NSObject {
@@ -21,8 +20,6 @@ class VoiceRoomManager {
     public let toastSubject = PassthroughSubject<String, Never>()
     // Event for exit room
     public let exitSubject = PassthroughSubject<Void, Never>()
-    // Event for click like button
-    public let likeSubject = PassthroughSubject<Void, Never>()
     
     private let context: Context
     init(provider: VoiceRoomManagerProvider) {
@@ -91,8 +88,37 @@ extension VoiceRoomManager {
         roomManager.onJoinVoiceRoom(roomInfo: roomInfo)
     }
     
-    func onReceiveGift(price: Int, senderUserId: String) {
-        roomManager.onReceiveGift(price: price, senderUserId: senderUserId)
+    func fetchGiftCount(roomId: String, onSuccess: @escaping TUISuccessBlock, onError: @escaping InternalErrorBlock) {
+        Task {
+            do {
+                try await context.roomManager.fetchGiftCount(roomId: roomId)
+                onSuccess()
+            } catch let error as InternalError {
+                onError(error)
+            }
+        }
+    }
+    
+    func fetchLikeCount(roomId: String, onSuccess: @escaping TUISuccessBlock, onError: @escaping InternalErrorBlock) {
+        Task {
+            do {
+                try await context.roomManager.fetchLikeCount(roomId: roomId)
+                onSuccess()
+            } catch let error as InternalError {
+                onError(error)
+            }
+        }
+    }
+    
+    func fetchViewCount(roomId: String, onSuccess: @escaping TUISuccessBlock, onError: @escaping InternalErrorBlock) {
+        Task {
+            do {
+                try await context.roomManager.fetchViewCount(roomId: roomId)
+                onSuccess()
+            } catch let error as InternalError {
+                onError(error)
+            }
+        }
     }
     
     func followUser(_ user: TUIUserInfo, isFollow: Bool) {
@@ -249,12 +275,5 @@ extension VoiceRoomManager.Context {
     var coreSeatState: SGSeatState {
         guard let provider = provider else { return SGSeatState() }
         return provider.getCoreViewState()
-    }
-}
-
-extension VoiceRoomManager: GiftListPanelProvider {
-    func getAnchorInfo() -> GiftUser {
-        let giftUser = GiftUser(userId: coreRoomState.ownerId, name: coreRoomState.ownerName, avatarUrl: coreRoomState.ownerAvatar)
-        return giftUser
     }
 }
