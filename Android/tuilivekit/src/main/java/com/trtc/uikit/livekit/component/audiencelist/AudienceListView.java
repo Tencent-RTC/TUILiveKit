@@ -213,7 +213,7 @@ public class AudienceListView extends FrameLayout {
         int userCount = mAudienceListState.audienceCount.getValue();
         int listSize = mAudienceListState.audienceList.getValue().size();
         LOGGER.info("updateAudienceCount userCount:" + userCount + " listSize:" + listSize);
-        if (listSize > AudienceListState.ROOM_MAX_SHOW_USER_COUNT) {
+        if (userCount >= AudienceListState.ROOM_MAX_SHOW_USER_COUNT) {
             setUserCount(userCount);
         } else {
             setUserCount(listSize);
