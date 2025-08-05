@@ -1,0 +1,34 @@
+<resources>
+    <string name="ktv_permission_mic_reason">需要访问您的麦克风权限，开启后用于视频互动等功能，并且开启后录制的视频才会有声音。</string>
+    <string name="ktv_permission_microphone">麦克风</string>
+    <string name="ktv_permission_separator">、</string>
+    <string name="ktv_permission_tips">请先打开%1$s权限</string>
+    <string name="ktv_permission_title">%1$s申请获取%2$s权限</string>
+    <string name="ktv_viewer_count">%1$d人观看</string>
+    <string name="ktv_create_stream">开始直播</string>
+    <string name="ktv_live_has_stop">直播已结束</string>
+    <string name="ktv_toast_room_owner_can_operate_it">抱歉，该操作仅限房主</string>
+    <string name="ktv_cancel">取消</string>
+    <string name="ktv_choose_song">点歌</string>
+    <string name="ktv_chosen_song">已点</string>
+    <string name="ktv_chosen_song_count">已点(%s)</string>
+    <string name="ktv_no_song_chosen">还没有点歌</string>
+    <string name="ktv_goto_order_song">快去点首喜欢的歌吧</string>
+    <string name="ktv_search_music_hint">搜索歌曲或者歌手名称</string>
+    <string name="ktv_loading_no_data">抱歉，没有找到你想唱的歌曲</string>
+    <string name="ktv_loading_more_music">正在加载更多的数据</string>
+    <string name="ktv_loading_no_more_data">没有更多数据了</string>
+    <string name="ktv_loading_error">加载失败</string>
+    <string name="ktv_input_keywords">请输入搜索关键字</string>
+    <string name="ktv_singer">原唱: %s</string>
+    <string name="ktv_origin">原唱</string>
+    <string name="ktv_accompany">伴奏</string>
+    <string name="ktv_microphone_permission_tips">请先开启麦克风权限</string>
+    <string name="ktv_set_cover">修改封面</string>
+    <string name="ktv_privacy_mode">直播模式：%s</string>
+    <string name="ktv_privacy_status_public">公开</string>
+    <string name="ktv_privacy_status_privacy">隐私</string>
+    <string name="ktv_leave_seat">结束连麦</string>
+    <string name="ktv_cover">封面</string>
+    <string name="ktv_set_as_cover">设为封面</string>
+</resources>

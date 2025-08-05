@@ -1,17 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdk 34
+    compileSdk rootProject.compileSdkVersion
     namespace "com.trtc.uikit.livekit.example"
 
     defaultConfig {
         applicationId "com.trtc.uikit.livekit.example"
-        minSdkVersion 21
-        targetSdkVersion 34
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
         versionCode 1
         versionName "1.0"
-
-        targetSdkVersion 34
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.qcloud.tuicore.TUIConstants;
 import com.tencent.qcloud.tuicore.TUICore;
@@ -94,7 +95,7 @@ public class AnchorPreviewView extends BasicView {
             @Override
             public void onSuccess(TUIRoomDefine.RoomInfo roomInfo) {
                 if (mIsExit) {
-                    mSeatGridView.stopVoiceRoom(null);
+                    mSeatGridView.stopVoiceRoom((TUILiveListManager.StopLiveCallback) null);
                     return;
                 }
                 LOGGER.info("create room success");

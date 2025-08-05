@@ -10,8 +10,8 @@ buildscript {
     dependencies {
         VersionNumber currentGradleVersion = VersionNumber.parse(gradle.gradleVersion)
         if (currentGradleVersion.major >= 8) {
-            classpath 'com.android.tools.build:gradle:8.0.2'
-            classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0"
+            classpath 'com.android.tools.build:gradle:8.9.1'
+            classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.0"
         } else {
             classpath 'com.android.tools.build:gradle:4.2.1'
             classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10"
@@ -36,6 +36,10 @@ task clean(type: Delete) {
 }
 
 ext {
+    compileSdkVersion = 35
+    buildToolsVersion = "30.0.1"
+    minSdkVersion = 21
+    targetSdkVersion = 35
     liteavSdk = "com.tencent.liteav:LiteAVSDK_Professional:12.6+"
     roomEngineSdk = "io.trtc.uikit:rtc_room_engine:3.2.0.835"
     imSdk = "com.tencent.imsdk:imsdk-plus:8.6.7019"

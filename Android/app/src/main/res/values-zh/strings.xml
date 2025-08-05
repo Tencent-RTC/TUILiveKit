@@ -19,6 +19,7 @@
     <string name="app_main_item_video_live_sub">通过 Live API 构建互动视频直播，为您带来清晰流畅的直播体验。</string>
     <string name="app_main_item_voice_room">语聊房</string>
     <string name="app_main_item_voice_room_sub">通过 Live API 搭建互动语音聊天室，为您带来低延迟高音质的体验。</string>
+    <string name="app_main_item_ktv_room_sub">通过 Live API 构建互动KTV房间，为您带来清晰流畅的直播体验。</string>
     <string name="app_main_title">腾讯云音视频</string>
     <string name="app_name">TUILiveKit</string>
     <string name="app_name_save">保存</string>

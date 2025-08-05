@@ -19,6 +19,7 @@
     <string name="app_main_item_video_live_sub">Create Interactive Video Live with Live API for a Seamless Streaming Experience.</string>
     <string name="app_main_item_voice_room">Voice Room</string>
     <string name="app_main_item_voice_room_sub">Enable Interactive Voice Room with Live API for an Enhanced Communication Experience.</string>
+    <string name="app_main_item_ktv_room_sub">Enable Interactive KTV Room with Live API for an Enhanced Communication Experience.</string>
     <string name="app_main_title">Tencent \n Real-Time \n Communication</string>
     <string name="app_name">TUILiveKit</string>
     <string name="app_name_save">Save</string>

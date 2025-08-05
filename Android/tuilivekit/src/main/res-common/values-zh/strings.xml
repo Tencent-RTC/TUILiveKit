@@ -194,6 +194,7 @@
     <string name="common_sent">送给</string>
     <string name="common_main_item_video_live">在线直播</string>
     <string name="common_go_live">开直播</string>
+    <string name="common_main_item_ktv_room">KTV</string>
     <string name="common_main_item_voice_room">语聊房</string>
     <string name="common_server_error_already_on_the_mic">已经处于麦上状态</string>
     <string name="common_server_error_already_on_the_mic_queue">已经处于排麦状态</string>
