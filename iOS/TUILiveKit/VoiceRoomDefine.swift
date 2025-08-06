@@ -20,10 +20,12 @@ public class CreateRoomParams: NSObject {
     public var roomName: String
     public var maxAnchorCount: Int
     public var seatMode: TUISeatMode
+    public var isPublic: Bool
     
     public override init() {
         self.roomName = ""
         self.maxAnchorCount = VoiceRoomDefine.MAX_CONNECTED_VIEWERS_COUNT
         self.seatMode = .applyToTake
+        self.isPublic = true
     }
 }

@@ -80,6 +80,14 @@ extension VideoLiveViewController {
         let backItem = UIBarButtonItem(customView: backBtn)
         navigationItem.leftBarButtonItem = backItem
         
+        let debugView = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+        debugView.backgroundColor = .clear
+        debugView.isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer(target: self, action: #selector(debugModeChanged))
+        tap.numberOfTapsRequired = 5
+        debugView.addGestureRecognizer(tap)
+        let debugViewItem = UIBarButtonItem(customView: debugView)
+        
         let switchColumnBtn = UIButton(type: .custom)
         switchColumnBtn.setImage(UIImage(named: "live_single_column_icon"), for: .normal)
         switchColumnBtn.setImage(UIImage(named: "live_double_column_icon"), for: .selected)
@@ -87,7 +95,7 @@ extension VideoLiveViewController {
         switchColumnBtn.sizeToFit()
         let switchItem = UIBarButtonItem(customView: switchColumnBtn)
         switchItem.tintColor = .white
-        navigationItem.rightBarButtonItem = switchItem
+        navigationItem.rightBarButtonItems = [switchItem, debugViewItem]
     
         let titleView = UILabel()
         titleView.text = .videoLiveTitle
@@ -119,6 +127,10 @@ extension VideoLiveViewController {
         liveListViewController.setColumnStyle(style: newStyle)
         sender.isSelected = currentStyle == .singleColumn
         goLiveButton.isHidden = currentStyle == .singleColumn
+    }
+    
+    @objc private func debugModeChanged() {
+        NotificationCenter.default.post(Notification(name: Notification.Name("__kTUILiveKitTestModeChanged__")))
     }
     
     @objc private func goLiveClick() {

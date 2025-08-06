@@ -133,6 +133,16 @@ extension TUILiveListViewController: OnItemClickDelegate {
             let transitionDelegate = LiveTransitioningDelegate(originFrame: frame)
             vc.transitioningDelegate = transitionDelegate
             present(vc, animated: true)
+        case .ktv:
+            let KTVPage: KTVRootView
+            if isOwner {
+                KTVPage = KTVRootView(page: .hostPage(liveId: liveInfo.roomId, params: nil, needCreate: false))
+            } else {
+                KTVPage = KTVRootView(page: .guestPage(liveId: liveInfo.roomId))
+            }
+            let host = PortraitHostingController(rootView:  KTVPage)
+            host.modalPresentationStyle = .fullScreen
+            present(host, animated: true)
         default:
             // How to determine room type without roomId
             if isOwner {

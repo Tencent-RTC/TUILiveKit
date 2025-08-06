@@ -43,6 +43,7 @@
 		C11E26282B0B0B8300674403 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C11E26222B0B0B8300674403 /* InfoPlist.strings */; };
 		C11E26292B0B0B8300674403 /* TUILiveKitAppLocalized.swift in Sources */ = {isa = PBXBuildFile; fileRef = C11E26262B0B0B8300674403 /* TUILiveKitAppLocalized.swift */; };
 		CE1257C2F52958776702FE41 /* Pods_TUILiveKitApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85ED6BC58723B389A3F09C20 /* Pods_TUILiveKitApp.framework */; };
+		FAA6FFD52E434F180078A4FC /* KTVRoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA6FFD42E434F180078A4FC /* KTVRoomViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -93,6 +94,7 @@
 		C11E26232B0B0B8300674403 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		C11E26252B0B0B8300674403 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C11E26262B0B0B8300674403 /* TUILiveKitAppLocalized.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TUILiveKitAppLocalized.swift; sourceTree = "<group>"; };
+		FAA6FFD42E434F180078A4FC /* KTVRoomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KTVRoomViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +112,7 @@
 		047F81F22CB7BE990079BA02 /* Scene */ = {
 			isa = PBXGroup;
 			children = (
+				FAA6FFD42E434F180078A4FC /* KTVRoomViewController.swift */,
 				047F81F02CB77E5C0079BA02 /* VideoLiveViewController.swift */,
 				0421D8552CB682DC0075593D /* VoiceRoomViewController.swift */,
 			);
@@ -462,6 +465,7 @@
 				C11E26292B0B0B8300674403 /* TUILiveKitAppLocalized.swift in Sources */,
 				A95566442ADFC42100D86BFD /* LoginRootView.swift in Sources */,
 				A9BC40682AB43DE4008AD131 /* RegisterRootView.swift in Sources */,
+				FAA6FFD52E434F180078A4FC /* KTVRoomViewController.swift in Sources */,
 				A9BC406A2AB43DE4008AD131 /* UserAgreementViewController+UI.swift in Sources */,
 				A955663F2ADFA0E900D86BFD /* SettingsConfig.swift in Sources */,
 				A917D5452C22B45100F9C310 /* RenamePanel.swift in Sources */,
@@ -706,7 +710,7 @@
 				INFOPLIST_KEY_UIRequiredDeviceCapabilities = armv7;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -755,7 +759,7 @@
 				INFOPLIST_KEY_UIRequiredDeviceCapabilities = armv7;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

@@ -9,9 +9,10 @@ import Foundation
 
 @objcMembers
 public final class LiveIdentityGenerator: NSObject {
-    @objc public enum RoomType: Int {
+    @objc public enum RoomType: Int, CaseIterable {
         case live
         case voice
+        case ktv
         case unknown
     }
 
@@ -24,8 +25,7 @@ public final class LiveIdentityGenerator: NSObject {
     }
 
     public func getIDType(_ id: String) -> RoomType {
-        let roomTypeArray = [RoomType.live, RoomType.voice]
-        for roomType in roomTypeArray {
+        for roomType in RoomType.allCases {
             if id.hasPrefix(getPrefix(type: roomType)) {
                 return roomType
             }
@@ -39,6 +39,8 @@ public final class LiveIdentityGenerator: NSObject {
             return "live_"
         case .voice:
             return "voice_"
+        case .ktv:
+            return "ktv_"
         case .unknown:
             return ""
         }
