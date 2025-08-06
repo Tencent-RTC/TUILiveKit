@@ -3,7 +3,7 @@ Pod::Spec.new do |spec|
   spec.name                  = 'TUILiveKit'
   spec.version               = '1.0.0'
   spec.platform              = :ios
-  spec.ios.deployment_target = '13.0'
+  spec.ios.deployment_target = '14.0'
   spec.license               = { :type => 'MIT', :file => 'LICENSE' }
   spec.homepage              = 'https://trtc.io/'
   spec.documentation_url     = 'https://trtc.io/document'
@@ -30,9 +30,9 @@ Pod::Spec.new do |spec|
     professional.dependency 'RTCRoomEngine/Professional', '>= 2.9.0'
     professional.dependency 'LiveStreamCore/Professional'
 
-    professional.source_files = 'Sources/**/*', 'VideoLiveKit.swift', 'VoiceRoomKit.swift', 'VoiceRoomDefine.swift'
+    professional.source_files = 'Sources/**/*', 'VideoLiveKit.swift', 'VoiceRoomKit.swift', 'VoiceRoomDefine.swift', 'KTVRoomKit.swift'
     professional.resource_bundles = {
-      'TUILiveKitBundle' => ['Resources/*.xcassets', 'Resources/Localized/**/*.xcstrings']
+      'TUILiveKitBundle' => ['Resources/*.xcassets', 'Resources/Localized/**/*.xcstrings', 'Resources/KTVResource/*']
     }
   end
   
@@ -40,9 +40,9 @@ Pod::Spec.new do |spec|
     trtc.dependency 'RTCRoomEngine/TRTC', '>= 2.9.0'
     trtc.dependency 'LiveStreamCore/TRTC'
 
-    trtc.source_files = 'Sources/**/*', 'VideoLiveKit.swift', 'VoiceRoomKit.swift', 'VoiceRoomDefine.swift'
+    trtc.source_files = 'Sources/**/*', 'VideoLiveKit.swift', 'VoiceRoomKit.swift', 'VoiceRoomDefine.swift', 'KTVRoomKit.swift'
     trtc.resource_bundles = {
-      'TUILiveKitBundle' => ['Resources/*.xcassets', 'Resources/Localized/**/*.xcstrings']
+      'TUILiveKitBundle' => ['Resources/*.xcassets', 'Resources/Localized/**/*.xcstrings', 'Resources/KTVResource/*']
     }
   end
   

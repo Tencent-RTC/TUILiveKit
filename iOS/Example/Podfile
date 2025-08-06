@@ -2,7 +2,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 
 use_frameworks!
 
-platform :ios, '13.0'
+platform :ios, '14.0'
 
 target 'TUILiveKitApp' do
   # UI Library
@@ -24,7 +24,7 @@ post_install do |installer|
       config.build_settings['CODE_SIGNING_REQUIRED'] = "NO"
       config.build_settings['CODE_SIGNING_ALLOWED'] = "NO"
       config.build_settings['GENERATE_INFOPLIST_FILE'] = "NO"
-      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'
     end
     shell_script_path = "Pods/Target Support Files/#{target.name}/#{target.name}-frameworks.sh"
     if File::exist?(shell_script_path)

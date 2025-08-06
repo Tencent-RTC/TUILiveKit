@@ -73,6 +73,7 @@ extension MainViewController {
         menuItems = [
             MainItemModel(imageName: "main_item_video_live", title: .videoLiveTitle, content: .videoLiveDesc),
             MainItemModel(imageName: "main_item_voice_room", title: .voiceRoomTitle, content: .voiceRoomDesc),
+            MainItemModel(imageName: "main_item_voice_room", title: .KTVRoomTitle, content: .KTVRoomDesc),
         ]
     }
     
@@ -145,8 +146,11 @@ extension MainViewController: UICollectionViewDelegateFlowLayout {
         if indexPath.item == 0 {
             let controller = VideoLiveViewController()
             navigationController?.pushViewController(controller, animated: true)
-        } else {
+        } else if indexPath.item == 1 {
             let controller = VoiceRoomViewController()
+            navigationController?.pushViewController(controller, animated: true)
+        } else {
+            let controller = KTVRoomViewController()
             navigationController?.pushViewController(controller, animated: true)
         }
     }
@@ -165,4 +169,6 @@ private extension String {
     static let videoLiveDesc = TUILiveKitAppLocalize("Create Interactive Video Live with Live API for a Seamless Streaming Experience.")
     static let voiceRoomTitle = TUILiveKitAppLocalize("Voice Room")
     static let voiceRoomDesc = TUILiveKitAppLocalize("Enable Interactive Voice Room with Live API for an Enhanced Communication Experience.")
+    static let KTVRoomTitle = TUILiveKitAppLocalize("KTV")
+    static let KTVRoomDesc = TUILiveKitAppLocalize("Enable Interactive KTV Room with Live API for an Enhanced Communication Experience.")
 }
