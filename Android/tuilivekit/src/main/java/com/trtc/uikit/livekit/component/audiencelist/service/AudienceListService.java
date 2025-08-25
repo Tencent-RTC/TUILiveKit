@@ -1,6 +1,7 @@
 package com.trtc.uikit.livekit.component.audiencelist.service;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
@@ -15,9 +16,9 @@ public class AudienceListService {
 
     public final AudienceListState mAudienceListState = new AudienceListState();
 
-    public void initRoomInfo(TUIRoomDefine.RoomInfo roomInfo) {
-        mAudienceListState.roomId = roomInfo.roomId;
-        mAudienceListState.ownerId = roomInfo.ownerId;
+    public void initRoomInfo(TUILiveListManager.LiveInfo liveInfo) {
+        mAudienceListState.roomId = liveInfo.roomId;
+        mAudienceListState.ownerId = liveInfo.ownerId;
         getAudienceList();
     }
 

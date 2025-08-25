@@ -17,7 +17,6 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.Observer;
 
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.qcloud.tuicore.TUICore;
@@ -45,8 +44,6 @@ public class VideoLiveAudienceActivity extends FullScreenActivity implements ITU
     private FrameLayout               mLayoutContainer;
     private AudienceContainerView     mAudienceContainerView;
     private AudienceEndStatisticsView mAudienceEndStatisticsView;
-
-    private final Observer<Boolean> mEndStatisticsViewObserver = this::onEndStatisticsView;
 
     @Override
     protected void attachBaseContext(Context context) {
@@ -182,7 +179,7 @@ public class VideoLiveAudienceActivity extends FullScreenActivity implements ITU
         mAudienceEndStatisticsView.init(roomId, ownerName, ownerAvatarUrl);
         mLayoutContainer.removeAllViews();
         mLayoutContainer.addView(mAudienceEndStatisticsView);
-        mAudienceEndStatisticsView.getState().exitClick.observeForever(mEndStatisticsViewObserver);
+        mAudienceEndStatisticsView.setListener(this::finish);
     }
 
     @Override
@@ -192,13 +189,5 @@ public class VideoLiveAudienceActivity extends FullScreenActivity implements ITU
             String roomId = mAudienceContainerView.getRoomId();
             setValue(PictureInPictureStore.sharedInstance().getState().roomId, roomId);
         }
-    }
-
-    private void onEndStatisticsView(Boolean isClick) {
-        if (!isClick) {
-            return;
-        }
-        mAudienceEndStatisticsView.getState().exitClick.removeObserver(mEndStatisticsViewObserver);
-        finish();
     }
 }

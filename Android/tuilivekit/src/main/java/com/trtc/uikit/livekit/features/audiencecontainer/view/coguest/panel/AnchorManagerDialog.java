@@ -37,10 +37,10 @@ public class AnchorManagerDialog extends PopupDialog {
     private static final float BUTTON_DISABLE_ALPHA = 0.24f;
     private static final float BUTTON_ENABLE_ALPHA  = 1.0f;
 
-    private final Context                mContext;
-    private final AudienceManager        mAudienceManager;
-    private final LiveCoreView           mLiveCoreView;
-    private       TUIRoomDefine.UserInfo mUserInfo;
+    private final Context                    mContext;
+    private final AudienceManager            mAudienceManager;
+    private final LiveCoreView               mLiveCoreView;
+    private       TUIRoomDefine.SeatFullInfo mUserInfo;
 
     private ImageFilterView mImageHeadView;
     private TextView        mUserIdText;
@@ -74,7 +74,7 @@ public class AnchorManagerDialog extends PopupDialog {
         initView();
     }
 
-    public void init(TUIRoomDefine.UserInfo seatInfo) {
+    public void init(TUIRoomDefine.SeatFullInfo seatInfo) {
         mUserInfo = seatInfo;
         updateView();
     }
@@ -127,7 +127,7 @@ public class AnchorManagerDialog extends PopupDialog {
         if (TextUtils.isEmpty(mUserInfo.userId)) {
             return;
         }
-        String avatarUrl = mUserInfo.avatarUrl;
+        String avatarUrl = mUserInfo.userAvatar;
         if (TextUtils.isEmpty(avatarUrl)) {
             mImageHeadView.setImageResource(R.drawable.livekit_ic_avatar);
         } else {
@@ -183,7 +183,7 @@ public class AnchorManagerDialog extends PopupDialog {
         if (TextUtils.isEmpty(selfUserId)) {
             return false;
         }
-        return selfUserId.equals(mAudienceManager.getRoomState().roomInfo.ownerId);
+        return selfUserId.equals(mAudienceManager.getRoomState().liveInfo.ownerId);
     }
 
     private void addObserver() {

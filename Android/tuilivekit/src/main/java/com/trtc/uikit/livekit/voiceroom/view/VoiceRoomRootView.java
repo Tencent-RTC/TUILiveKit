@@ -27,6 +27,7 @@ import androidx.lifecycle.Observer;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveGiftManager;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.TUILogin;
@@ -362,20 +363,22 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
     }
 
     private void start() {
-        TUIRoomDefine.RoomInfo roomInfo = new TUIRoomDefine.RoomInfo();
-        roomInfo.roomType = TUIRoomDefine.RoomType.LIVE;
-        roomInfo.isSeatEnabled = true;
-        roomInfo.roomId = mVoiceRoomManager.getRoomState().roomId;
-        roomInfo.name = mVoiceRoomManager.getRoomState().roomName.getValue();
-        roomInfo.maxSeatCount = mVoiceRoomManager.getRoomState().maxSeatCount.getValue();
-        roomInfo.seatMode = mVoiceRoomManager.getRoomState().seatMode.getValue();
-        mSeatGridView.startVoiceRoom(roomInfo, new TUIRoomDefine.GetRoomInfoCallback() {
+        RoomState roomState = mVoiceRoomManager.getRoomState();
+        TUILiveListManager.LiveInfo liveInfo = new TUILiveListManager.LiveInfo();
+        liveInfo.isSeatEnabled = true;
+        liveInfo.roomId = roomState.roomId;
+        liveInfo.name = roomState.roomName.getValue();
+        liveInfo.maxSeatCount = roomState.maxSeatCount.getValue() == null ? 9 : roomState.maxSeatCount.getValue();
+        liveInfo.seatMode = roomState.seatMode.getValue();
+        liveInfo.backgroundUrl = roomState.backgroundURL.getValue();
+        liveInfo.coverUrl = roomState.coverURL.getValue();
+        liveInfo.isPublicVisible = roomState.liveExtraInfo.liveMode.getValue() == RoomState.LiveStreamPrivacyStatus.PUBLIC;
+        mSeatGridView.startVoiceRoom(liveInfo, new TUILiveListManager.LiveInfoCallback() {
             @Override
-            public void onSuccess(TUIRoomDefine.RoomInfo roomInfo) {
+            public void onSuccess(TUILiveListManager.LiveInfo liveInfo) {
                 LOGGER.info("create room success");
-                mVoiceRoomManager.getRoomManager().updateRoomState(roomInfo);
+                mVoiceRoomManager.getRoomManager().updateRoomState(liveInfo);
                 mVoiceRoomManager.getRoomManager().updateLiveStatus(RoomState.LiveStatus.PUSHING);
-                mVoiceRoomManager.getRoomManager().updateLiveInfo();
                 mVoiceRoomManager.getUserManager().getAudienceList();
                 mVoiceRoomManager.getUserManager().updateOwnerUserInfo();
                 mVoiceRoomManager.getSeatManager().getSeatList();
@@ -390,12 +393,12 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
     }
 
     public void enter() {
-        mSeatGridView.joinVoiceRoom(mVoiceRoomManager.getRoomState().roomId, new TUIRoomDefine.GetRoomInfoCallback() {
+        mSeatGridView.joinVoiceRoom(mVoiceRoomManager.getRoomState().roomId, new TUILiveListManager.LiveInfoCallback() {
             @Override
-            public void onSuccess(TUIRoomDefine.RoomInfo roomInfo) {
+            public void onSuccess(TUILiveListManager.LiveInfo liveInfo) {
                 LOGGER.info("enter room success");
-                mVoiceRoomManager.getRoomManager().updateRoomState(roomInfo);
-                mVoiceRoomManager.getRoomManager().getLiveInfo(roomInfo.roomId);
+                mVoiceRoomManager.getRoomManager().updateRoomState(liveInfo);
+                mVoiceRoomManager.getRoomManager().getLiveInfo(liveInfo.roomId);
                 mVoiceRoomManager.getUserManager().getAudienceList();
                 mVoiceRoomManager.getUserManager().updateOwnerUserInfo();
                 mVoiceRoomManager.getSeatManager().getSeatList();
@@ -432,27 +435,19 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
         RoomManager roomManager = mVoiceRoomManager.getRoomManager();
         roomManager.updateMessageCount(mBarrageStreamView.getBarrageCount());
         if (roomManager.isOwner()) {
-            roomManager.loadVoiceEndInfo(new Runnable() {
+            mSeatGridView.stopVoiceRoom(new TUILiveListManager.StopLiveCallback() {
                 @Override
-                public void run() {
-                    mSeatGridView.post(this::onLoadEnd);
+                public void onSuccess(TUILiveListManager.LiveStatisticsData data) {
+                    mVoiceRoomManager.getRoomManager().updateLiveStatisticsData(data);
+                    mVoiceRoomManager.getRoomManager().updateLiveStatus(RoomState.LiveStatus.DASHBOARD);
                 }
 
-                public void onLoadEnd() {
-                    mSeatGridView.stopVoiceRoom(new TUIRoomDefine.ActionCallback() {
-                        @Override
-                        public void onSuccess() {
-                            mVoiceRoomManager.getRoomManager().updateLiveStatus(RoomState.LiveStatus.DASHBOARD);
-                        }
-
-                        @Override
-                        public void onError(TUICommonDefine.Error error, String message) {
-                            LOGGER.error("stopVoiceRoom onError:error:" + error + ", errorCode:" + error.getValue() + ", message:" + message);
-                            if (checkActivityStatus()) {
-                                ErrorLocalized.onError(error);
-                            }
-                        }
-                    });
+                @Override
+                public void onError(TUICommonDefine.Error error, String message) {
+                    LOGGER.error("stopVoiceRoom onError:error:" + error + ", errorCode:" + error.getValue() + ", message:" + message);
+                    if (mContext instanceof Activity) {
+                        ((Activity) mContext).finish();
+                    }
                 }
             });
         } else {

@@ -18,8 +18,8 @@
     <string name="app_main_item_video_live">在線直播</string>
     <string name="app_main_item_video_live_sub">通過 Live API 構建互動視頻直播，為您帶來清晰流暢的直播體驗。</string>
     <string name="app_main_item_voice_room">語聊房</string>
-    <string name="app_main_item_ktv_room_sub">通過 Live API 構建互動KTV 房間，為您帶來清晰流暢的直播體驗。</string>
     <string name="app_main_item_voice_room_sub">通過 Live API 搭建互動語音聊天室，為您帶來低延遲高音質的體驗。</string>
+    <string name="app_main_item_ktv_room_sub">通過 Live API 構建互動KTV 房間，為您帶來清晰流暢的直播體驗。</string>
     <string name="app_main_title">騰訊雲音視頻</string>
     <string name="app_name">TUILiveKit</string>
     <string name="app_name_save">保存</string>

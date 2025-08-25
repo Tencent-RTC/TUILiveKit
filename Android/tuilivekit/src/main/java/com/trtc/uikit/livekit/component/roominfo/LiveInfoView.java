@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.lifecycle.Observer;
 
 import com.google.android.material.imageview.ShapeableImageView;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomObserver;
@@ -71,14 +72,24 @@ public class LiveInfoView extends FrameLayout {
         bindViewId();
     }
 
+    @Deprecated
     public void init(TUIRoomDefine.RoomInfo roomInfo) {
         init(roomInfo, true);
     }
 
+    @Deprecated
     public void init(TUIRoomDefine.RoomInfo roomInfo, boolean enableFollow) {
-        mRoomInfoService.init(roomInfo);
+        init(convertToLiveInfo(roomInfo), enableFollow);
+    }
+
+    public void init(TUILiveListManager.LiveInfo liveInfo) {
+        init(liveInfo, true);
+    }
+
+    public void init(TUILiveListManager.LiveInfo liveInfo, boolean enableFollow) {
+        mRoomInfoService.init(liveInfo);
         mRoomInfoState.enableFollow = enableFollow;
-        reportData(roomInfo.roomId);
+        reportData(liveInfo.roomId);
         refreshView();
     }
 
@@ -91,6 +102,16 @@ public class LiveInfoView extends FrameLayout {
             return;
         }
         mLayoutRoot.setEnabled(isPortrait);
+    }
+
+    private TUILiveListManager.LiveInfo convertToLiveInfo(TUIRoomDefine.RoomInfo roomInfo) {
+        TUILiveListManager.LiveInfo liveInfo = new TUILiveListManager.LiveInfo();
+        liveInfo.roomId = roomInfo.roomId;
+        liveInfo.name = roomInfo.name;
+        liveInfo.ownerId = roomInfo.ownerId;
+        liveInfo.ownerName = roomInfo.ownerName;
+        liveInfo.ownerAvatarUrl = roomInfo.ownerAvatarUrl;
+        return liveInfo;
     }
 
     private void initView() {
@@ -145,7 +166,11 @@ public class LiveInfoView extends FrameLayout {
     }
 
     private void initHostNameView() {
-        mTextNickName.setText(mRoomInfoState.ownerName.getValue());
+        if (!TextUtils.isEmpty(mRoomInfoState.ownerName.getValue())) {
+            mTextNickName.setText(mRoomInfoState.ownerName.getValue());
+        } else {
+            mTextNickName.setText(mRoomInfoState.ownerId.getValue());
+        }
     }
 
     private void initHostAvatarView() {
@@ -175,7 +200,7 @@ public class LiveInfoView extends FrameLayout {
     }
 
     private void onHostNickNameChange(String name) {
-        mTextNickName.setText(name);
+        initHostNameView();
     }
 
     private void onHostAvatarChange(String avatar) {

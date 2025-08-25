@@ -8,7 +8,6 @@ import com.trtc.tuikit.common.util.ActivityLauncher;
 import com.trtc.uikit.livekit.example.BaseActivity;
 import com.trtc.uikit.livekit.example.R;
 import com.trtc.uikit.livekit.example.store.AppStore;
-import com.trtc.uikit.livekit.ktv.KTVRoomListActivity;
 import com.trtc.uikit.livekit.livestream.VideoLiveListActivity;
 import com.trtc.uikit.livekit.voiceroom.VoiceRoomListActivity;
 
@@ -21,7 +20,6 @@ public class MainActivity extends BaseActivity {
         initWebsiteLinkView();
         initVideoLiveView();
         initVoiceRoomView();
-        initKTVRoomView();
     }
 
 
@@ -44,14 +42,6 @@ public class MainActivity extends BaseActivity {
     private void initVoiceRoomView() {
         findViewById(R.id.voice_room).setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, VoiceRoomListActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        });
-    }
-
-    private void initKTVRoomView() {
-        findViewById(R.id.ktv_room).setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, KTVRoomListActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         });

@@ -27,7 +27,6 @@ public class RoomEngineObserver extends TUIRoomObserver {
     @Override
     public void onRoomUserCountChanged(String roomId, int userCount) {
         LOGGER.info(hashCode() + " onRoomUserCountChanged:[roomId:" + roomId + ",userCount:" + userCount + "]");
-        mVoiceRoomManager.getRoomManager().onRoomUserCountChanged(roomId, userCount);
     }
 
     @Override

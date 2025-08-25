@@ -19,6 +19,8 @@ import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.features.anchorboardcast.manager.api.IAnchorAPI;
 
+import org.json.JSONObject;
+
 import java.util.List;
 
 public class AnchorAPIImpl implements IAnchorAPI {
@@ -307,25 +309,24 @@ public class AnchorAPIImpl implements IAnchorAPI {
     }
 
     @Override
-    public void setLiveInfo(LiveInfo liveInfo, List<LiveModifyFlag> flagList, TUIRoomDefine.ActionCallback callback) {
-        LOGGER.info((hashCode() + " setLiveInfo:[liveInfo:" + new Gson().toJson(liveInfo) + ",flag:" + flagList +
-                "]"));
-        mTUILiveListManager.setLiveInfo(liveInfo, flagList, new TUIRoomDefine.ActionCallback() {
-            @Override
-            public void onSuccess() {
-                LOGGER.info(hashCode() + " setLiveInfo:[onSuccess]");
-                if (callback != null) {
-                    callback.onSuccess();
-                }
-            }
+    public void setCoHostLayoutTemplateId(int templateId) {
+        LOGGER.info((hashCode() + " setCoHostLayoutTemplateId:[templateId:" + templateId + "]"));
+        try {
+            JSONObject params = new JSONObject();
+            params.put("templateId", templateId);
 
-            @Override
-            public void onError(TUICommonDefine.Error error, String message) {
-                LOGGER.error(hashCode() + " setLiveInfo:[onError:[error:" + error + ",message:" + message + "]]");
-                if (callback != null) {
-                    callback.onError(error, message);
-                }
-            }
-        });
+            JSONObject requestObj = new JSONObject();
+            requestObj.put("api", "setCoHostLayoutTemplateId");
+            requestObj.put("params", params);
+
+            String jsonString = requestObj.toString();
+
+            mTUIRoomEngine.callExperimentalAPI(jsonString, (result) -> {
+                LOGGER.info(hashCode() + " setCoHostLayoutTemplateId:[onResponse:[result:" + result + "]]");
+            });
+
+        } catch (Exception e) {
+            LOGGER.error(hashCode() + " setCoHostLayoutTemplateId:[Exception]");
+        }
     }
 }

@@ -19,7 +19,7 @@ public class LiveListManagerObserver extends TUILiveListManager.Observer {
     @Override
     public void onLiveInfoChanged(TUILiveListManager.LiveInfo liveInfo,
                                   List<TUILiveListManager.LiveModifyFlag> modifyFlagList) {
-        LOGGER.info(hashCode() + " onLiveInfoChanged:[liveInfo:" + new Gson().toJson(liveInfo) + ",modifyFlagList:");
+        LOGGER.info(hashCode() + " onLiveInfoChanged:[liveInfo:" + new Gson().toJson(liveInfo) + ",modifyFlagList:" + modifyFlagList);
         mVoiceRoomManager.getRoomManager().onLiveInfoChanged(liveInfo, modifyFlagList);
     }
 }

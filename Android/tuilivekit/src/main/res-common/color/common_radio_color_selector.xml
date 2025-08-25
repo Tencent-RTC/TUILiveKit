@@ -1,0 +1,4 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@color/common_design_standard_flowkit_blue" android:state_checked="true" />
+    <item android:color="@color/common_color_white" android:state_checked="false" />
+</selector>

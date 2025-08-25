@@ -58,8 +58,8 @@ public class VoiceRoomKitImpl implements VoiceRoomKit {
     @Override
     public void enterRoom(@NonNull TUILiveListManager.LiveInfo liveInfo) {
         Intent intent = new Intent(mContext, VoiceRoomActivity.class);
-        boolean isAnchor = liveInfo.roomInfo != null && Objects.equals(liveInfo.roomInfo.ownerId, TUILogin.getUserId());
-        intent.putExtra(VoiceRoomActivity.INTENT_KEY_ROOM_ID, liveInfo.roomInfo.roomId);
+        boolean isAnchor = Objects.equals(liveInfo.ownerId, TUILogin.getUserId());
+        intent.putExtra(VoiceRoomActivity.INTENT_KEY_ROOM_ID, liveInfo.roomId);
         if (isAnchor) {
             intent.putExtra(VoiceRoomActivity.INTENT_KEY_ROOM_BEHAVIOR, AUTO_CREATE.ordinal());
         } else {

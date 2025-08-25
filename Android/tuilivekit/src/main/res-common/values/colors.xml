@@ -52,6 +52,9 @@
     <color name="common_design_standard_transparent">#00000000</color>
 
     <color name="common_black">#FF000000</color>
+    <color name="common_black_6">#40000000</color>
+    <color name="common_gray_dark_2">#1F2024</color>
+    <color name="common_list_color_focused">#243047</color>
 
     <!--    Colors in non-interactive specifications-->
     <color name="common_not_standard_gray_60_transparency">#9922262E</color>
@@ -106,6 +109,7 @@
     <color name="common_text_color_secondary">#8CFFFFFF</color>
     <color name="common_text_color_disabled">#24FFFFFF</color>
     <color name="common_text_color_link">#4086FF</color>
+    <color name="common_text_color_link_hover">#2B6AD6</color>
     <color name="common_text_color_normal">#38A673</color>
     <color name="common_text_color_abnormal">#E6594C</color>
     <color name="common_stroke_color_module">#48494F</color>

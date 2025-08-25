@@ -73,6 +73,10 @@ public class CoHostManager extends BaseManager {
         return false;
     }
 
+    public void setCoHostTemplateId(int id) {
+        mCoHostState.coHostTemplateId = id;
+    }
+
     /******************************************  Observer *******************************************/
     public void onConnectionUserListChanged(List<ConnectionUser> connectedList) {
         updateRecommendedList(connectedList);
@@ -134,8 +138,8 @@ public class CoHostManager extends BaseManager {
 
         for (TUILiveListManager.LiveInfo liveInfo : result.liveInfoList) {
             CoHostState.ConnectionUser user = new CoHostState.ConnectionUser(liveInfo);
-            if (!isConnected(liveInfo.roomInfo.roomId)) {
-                if (isInviting(liveInfo.roomInfo.roomId)) {
+            if (!isConnected(liveInfo.roomId)) {
+                if (isInviting(liveInfo.roomId)) {
                     user.connectionStatus = CoHostState.ConnectionStatus.INVITING;
                 }
                 list.add(user);
@@ -175,5 +179,9 @@ public class CoHostManager extends BaseManager {
         addLiveToRecommendList(result, list);
         mCoHostState.recommendedCursor = result.cursor;
         mCoHostState.recommendUsers.setValue(list);
+    }
+
+    public void setCoHostLayoutTemplateId(int templateId) {
+        mLiveService.setCoHostLayoutTemplateId(templateId);
     }
 }

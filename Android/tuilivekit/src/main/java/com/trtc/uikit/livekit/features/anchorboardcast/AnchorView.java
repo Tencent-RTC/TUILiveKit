@@ -37,8 +37,7 @@ import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager.Connec
 import com.tencent.cloud.tuikit.engine.extension.TUILiveGiftManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
-import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.GetRoomInfoCallback;
-import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.RoomInfo;
+import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.SeatFullInfo;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.UserInfo;
 import com.tencent.qcloud.tuicore.TUIConstants;
 import com.tencent.qcloud.tuicore.TUICore;
@@ -83,10 +82,13 @@ import com.trtc.uikit.livekit.features.anchorboardcast.view.coguest.panel.Anchor
 import com.trtc.uikit.livekit.features.anchorboardcast.view.coguest.panel.AnchorManagerDialog;
 import com.trtc.uikit.livekit.features.anchorboardcast.view.coguest.panel.ApplyCoGuestFloatView;
 import com.trtc.uikit.livekit.features.anchorboardcast.view.coguest.panel.CoGuestIconView;
-import com.trtc.uikit.livekit.features.anchorboardcast.view.coguest.widgets.CoGuestWidgetsView;
+import com.trtc.uikit.livekit.features.anchorboardcast.view.coguest.widgets.AnchorEmptySeatView;
+import com.trtc.uikit.livekit.features.anchorboardcast.view.coguest.widgets.CoGuestBackgroundWidgetsView;
+import com.trtc.uikit.livekit.features.anchorboardcast.view.coguest.widgets.CoGuestForegroundWidgetsView;
 import com.trtc.uikit.livekit.features.anchorboardcast.view.cohost.panel.AnchorCoHostManageDialog;
 import com.trtc.uikit.livekit.features.anchorboardcast.view.cohost.panel.StandardDialog;
-import com.trtc.uikit.livekit.features.anchorboardcast.view.cohost.widgets.CoHostWidgetsView;
+import com.trtc.uikit.livekit.features.anchorboardcast.view.cohost.widgets.CoHostBackgroundWidgetsView;
+import com.trtc.uikit.livekit.features.anchorboardcast.view.cohost.widgets.CoHostForegroundWidgetsView;
 import com.trtc.uikit.livekit.features.anchorboardcast.view.settings.SettingsPanelDialog;
 import com.trtc.uikit.livekit.features.anchorboardcast.view.usermanage.UserManagerDialog;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
@@ -183,13 +185,15 @@ public class AnchorView extends BasicView implements EndLiveStreamDialog.EndLive
         mLayoutCoreViewContainer.setRadius(ScreenUtil.dip2px(16));
     }
 
-    public void init(TUILiveListManager.LiveInfo liveInfo, LiveCoreView coreView, RoomBehavior behavior) {
+    public void init(TUILiveListManager.LiveInfo liveInfo, LiveCoreView coreView, RoomBehavior behavior,
+                     Map<String, Object> params) {
         mBehavior = behavior;
         mLiveInfo = liveInfo;
         mAnchorManager = new AnchorManager(liveInfo);
         mAnchorManager.setLiveStateListener(this);
         initLiveCoreView(coreView);
         super.init(mAnchorManager);
+        parseParams(params);
         createVideoMuteBitmap();
         createOrEnterRoom();
         startForegroundService();
@@ -198,7 +202,7 @@ public class AnchorView extends BasicView implements EndLiveStreamDialog.EndLive
     public void unInit() {
         destroy();
         if (mLiveCoreView != null) {
-            mLiveCoreView.stopLiveStream(null);
+            mLiveCoreView.stopLiveStream((TUILiveListManager.StopLiveCallback) null);
         }
     }
 
@@ -285,7 +289,7 @@ public class AnchorView extends BasicView implements EndLiveStreamDialog.EndLive
     protected void refreshView() {
     }
 
-    private void showCoGuestManageDialog(UserInfo userInfo) {
+    private void showCoGuestManageDialog(SeatFullInfo userInfo) {
         if (userInfo == null) {
             return;
         }
@@ -329,13 +333,62 @@ public class AnchorView extends BasicView implements EndLiveStreamDialog.EndLive
         mLiveCoreView.registerBattleObserver(mLiveBattleManagerObserver);
         mLiveCoreView.setVideoViewAdapter(new LiveCoreViewDefine.VideoViewAdapter() {
             @Override
+            public View createCoGuestView(SeatFullInfo seatInfo, LiveCoreViewDefine.ViewLayer viewLayer) {
+                if (TextUtils.isEmpty(seatInfo.userId)) {
+                    if (viewLayer == LiveCoreViewDefine.ViewLayer.BACKGROUND) {
+                        AnchorEmptySeatView anchorEmptySeatView = new AnchorEmptySeatView(getContext());
+                        anchorEmptySeatView.init(mAnchorManager, seatInfo);
+                        return anchorEmptySeatView;
+                    } else {
+                        return null;
+                    }
+                }
+                if (viewLayer == LiveCoreViewDefine.ViewLayer.BACKGROUND) {
+                    CoGuestBackgroundWidgetsView backgroundWidgetsView = new CoGuestBackgroundWidgetsView(getContext());
+                    backgroundWidgetsView.init(mAnchorManager, seatInfo);
+                    return backgroundWidgetsView;
+                } else {
+                    CoGuestForegroundWidgetsView foregroundWidgetsView = new CoGuestForegroundWidgetsView(getContext());
+                    foregroundWidgetsView.init(mAnchorManager, seatInfo);
+                    foregroundWidgetsView.setOnClickListener(v -> {
+                        showCoGuestManageDialog(seatInfo);
+                    });
+                    return foregroundWidgetsView;
+                }
+            }
+
+            @Override
+            public View createCoHostView(SeatFullInfo coHostUser,
+                                         LiveCoreViewDefine.ViewLayer viewLayer) {
+                if (viewLayer == LiveCoreViewDefine.ViewLayer.BACKGROUND) {
+                    CoHostBackgroundWidgetsView backgroundWidgetsView = new CoHostBackgroundWidgetsView(mContext);
+                    backgroundWidgetsView.init(mAnchorManager, coHostUser);
+                    return backgroundWidgetsView;
+                } else {
+                    CoHostForegroundWidgetsView foregroundWidgetsView = new CoHostForegroundWidgetsView(mContext);
+                    foregroundWidgetsView.init(mAnchorManager, coHostUser);
+                    return foregroundWidgetsView;
+                }
+            }
+
+            @Override
+            public View createBattleView(TUILiveBattleManager.BattleUser battleUser) {
+                BattleMemberInfoView battleMemberInfoView = new BattleMemberInfoView(mContext);
+                battleMemberInfoView.init(mAnchorManager, battleUser.userId);
+                return battleMemberInfoView;
+            }
+
+
+            @Override
+            public View createBattleContainerView() {
+                BattleInfoView battleInfoView = new BattleInfoView(mContext);
+                battleInfoView.init(mAnchorManager);
+                return battleInfoView;
+            }
+
+            @Override
             public View createCoGuestView(UserInfo userInfo) {
-                CoGuestWidgetsView coGuestWidgetsView = new CoGuestWidgetsView(getContext());
-                coGuestWidgetsView.init(mAnchorManager, userInfo);
-                coGuestWidgetsView.setOnClickListener(v -> {
-                    showCoGuestManageDialog(userInfo);
-                });
-                return coGuestWidgetsView;
+                return null;
             }
 
             @Override
@@ -346,9 +399,7 @@ public class AnchorView extends BasicView implements EndLiveStreamDialog.EndLive
 
             @Override
             public View createCoHostView(LiveCoreViewDefine.CoHostUser coHostUser) {
-                CoHostWidgetsView coHostWidgetsView = new CoHostWidgetsView(mContext);
-                coHostWidgetsView.init(mAnchorManager, coHostUser);
-                return coHostWidgetsView;
+                return null;
             }
 
             @Override
@@ -358,59 +409,48 @@ public class AnchorView extends BasicView implements EndLiveStreamDialog.EndLive
             }
 
             @Override
-            public View createBattleView(TUILiveBattleManager.BattleUser battleUser) {
-                BattleMemberInfoView battleMemberInfoView = new BattleMemberInfoView(mContext);
-                battleMemberInfoView.init(mAnchorManager, battleUser.userId);
-                return battleMemberInfoView;
-            }
-
-            @Override
             public void updateBattleView(View battleView, TUILiveBattleManager.BattleUser battleUser) {
-            }
-
-            @Override
-            public View createBattleContainerView() {
-                BattleInfoView battleInfoView = new BattleInfoView(mContext);
-                battleInfoView.init(mAnchorManager);
-                return battleInfoView;
             }
 
             @Override
             public void updateBattleContainerView(View battleContainnerView,
                                                   List<LiveCoreViewDefine.BattleUserViewModel> userInfos) {
-                BattleInfoView battleInfoView = (BattleInfoView) battleContainnerView;
-                battleInfoView.updateView(userInfos);
             }
         });
 
         if (mBehavior == ENTER_ROOM) {
-            mLiveCoreView.startCamera(true, new TUIRoomDefine.ActionCallback() {
-                @Override
-                public void onSuccess() {
-                    mLiveCoreView.startMicrophone(null);
-                }
+            if (mRoomState.liveInfo.keepOwnerOnSeat) {
+                mLiveCoreView.startCamera(true, new TUIRoomDefine.ActionCallback() {
+                    @Override
+                    public void onSuccess() {
+                        mLiveCoreView.startMicrophone(null);
+                    }
 
-                @Override
-                public void onError(TUICommonDefine.Error error, String s) {
-                }
-            });
+                    @Override
+                    public void onError(TUICommonDefine.Error error, String s) {
+                    }
+                });
+            }
 
             mLiveCoreView.setLocalVideoMuteImage(mMediaState.bigMuteBitmap, mMediaState.smallMuteBitmap);
-            mLiveCoreView.joinLiveStream(mRoomState.roomId, new GetRoomInfoCallback() {
+            mLiveCoreView.joinLiveStream(mRoomState.roomId, new TUILiveListManager.LiveInfoCallback() {
                 @Override
-                public void onSuccess(RoomInfo roomInfo) {
+                public void onSuccess(TUILiveListManager.LiveInfo liveInfo) {
                     Activity activity = (Activity) mContext;
                     if (activity.isFinishing() || activity.isDestroyed()) {
-                        LOGGER.warn("activity is exit, stopLiveStream");
+                        LOGGER.warn("activity is exit");
                         mLiveCoreView.setVideoViewAdapter(null);
-                        mLiveCoreView.stopLiveStream(null);
+                        if (liveInfo.keepOwnerOnSeat) {
+                            mLiveCoreView.stopLiveStream((TUILiveListManager.StopLiveCallback) null);
+                        } else {
+                            mLiveCoreView.leaveLiveStream(null);
+                        }
                         mLiveCoreView.setLocalVideoMuteImage(null, null);
                         mLiveCoreView.unregisterConnectionObserver(mLiveStreamObserver);
                         mLiveCoreView.unregisterBattleObserver(mLiveBattleManagerObserver);
                         return;
                     }
-                    mAnchorManager.getRoomManager().updateRoomState(roomInfo);
-                    mAnchorManager.getRoomManager().updateLiveInfo();
+                    mAnchorManager.getRoomManager().updateRoomState(liveInfo);
                     mUserManager.getAudienceList();
                     initComponentView();
                 }
@@ -424,26 +464,21 @@ public class AnchorView extends BasicView implements EndLiveStreamDialog.EndLive
                 }
             });
         } else {
-            mRoomManager.setLiveInfo(mLiveInfo.roomInfo.name, mLiveInfo.coverUrl, mLiveInfo.isPublicVisible);
-            RoomInfo roomInfo = new RoomInfo();
-            roomInfo.roomId = mRoomState.roomId;
-            roomInfo.name = mRoomState.roomName.getValue();
-            roomInfo.maxSeatCount = 9;
+            mLiveInfo.keepOwnerOnSeat = true;
             mLiveCoreView.setLocalVideoMuteImage(mMediaState.bigMuteBitmap, mMediaState.smallMuteBitmap);
-            mLiveCoreView.startLiveStream(roomInfo, new GetRoomInfoCallback() {
+            mLiveCoreView.startLiveStream(mLiveInfo, new TUILiveListManager.LiveInfoCallback() {
                 @Override
-                public void onSuccess(RoomInfo roomInfo) {
+                public void onSuccess(TUILiveListManager.LiveInfo liveInfo) {
                     Activity activity = (Activity) mContext;
                     if (activity.isFinishing() || activity.isDestroyed()) {
                         LOGGER.warn("activity is exit, stopLiveStream");
-                        mLiveCoreView.stopLiveStream(null);
+                        mLiveCoreView.stopLiveStream((TUIRoomDefine.ActionCallback) null);
                         mLiveCoreView.setLocalVideoMuteImage(null, null);
                         mLiveCoreView.unregisterConnectionObserver(mLiveStreamObserver);
                         mLiveCoreView.unregisterBattleObserver(mLiveBattleManagerObserver);
                         return;
                     }
-                    mAnchorManager.getRoomManager().updateRoomState(roomInfo);
-                    mAnchorManager.getRoomManager().updateLiveInfo();
+                    mAnchorManager.getRoomManager().updateRoomState(liveInfo);
                     mUserManager.getAudienceList();
                     initComponentView();
                     showAlertUserLiveTips();
@@ -452,7 +487,7 @@ public class AnchorView extends BasicView implements EndLiveStreamDialog.EndLive
                 @Override
                 public void onError(TUICommonDefine.Error error, String message) {
                     LOGGER.error("startLiveStream failed:error:" + error + ",errorCode:" + error.getValue() +
-                            "message:" + message);
+                            ",message:" + message);
                     ErrorLocalized.onError(error);
                     if (error == TUICommonDefine.Error.SDK_NOT_INITIALIZED) {
                         finishActivity();
@@ -490,7 +525,7 @@ public class AnchorView extends BasicView implements EndLiveStreamDialog.EndLive
     }
 
     private void initNetworkView() {
-        mNetworkInfoView.init(mRoomState.createTime);
+        mNetworkInfoView.init(mRoomState.liveInfo.createTime);
     }
 
     private void initSettingsPanel() {
@@ -517,7 +552,7 @@ public class AnchorView extends BasicView implements EndLiveStreamDialog.EndLive
     }
 
     private void initAudienceListView() {
-        mAudienceListView.init(mRoomState.roomInfo);
+        mAudienceListView.init(mRoomState.liveInfo);
         mAudienceListView.setOnUserItemClickListener(userInfo -> {
             if (mUserManagerDialog == null) {
                 mUserManagerDialog = new UserManagerDialog(mContext, mAnchorManager);
@@ -540,7 +575,7 @@ public class AnchorView extends BasicView implements EndLiveStreamDialog.EndLive
     }
 
     private void initRoomInfoView() {
-        mRoomInfoView.init(mRoomState.roomInfo);
+        mRoomInfoView.init(mRoomState.liveInfo);
     }
 
     private void initBarrageInputView() {
@@ -906,6 +941,18 @@ public class AnchorView extends BasicView implements EndLiveStreamDialog.EndLive
         view.setAlpha(enable ? 1.0f : 0.5f);
     }
 
+    private void parseParams(Map<String, Object> params) {
+        if (params == null) {
+            return;
+        }
+        if (params.containsKey("coHostTemplateId") && params.get("coHostTemplateId") != null) {
+            Object coHostTemplateId = params.get("coHostTemplateId");
+            if (coHostTemplateId instanceof Integer) {
+                mAnchorManager.getCoHostManager().setCoHostTemplateId((int) coHostTemplateId);
+            }
+        }
+    }
+
     private void destroy() {
         if (mIsDestroy) {
             return;
@@ -913,11 +960,10 @@ public class AnchorView extends BasicView implements EndLiveStreamDialog.EndLive
         mIsDestroy = true;
         mLiveCoreView.stopCamera();
         mLiveCoreView.stopMicrophone();
-        mAnchorManager.getUserManager().clearEnterUserInfo();
 
-        TUIGiftStore.sharedInstance().unInit(mLiveInfo.roomInfo.roomId);
+        TUIGiftStore.sharedInstance().unInit(mLiveInfo.roomId);
         AudioEffectStore.sharedInstance().unInit();
-        BarrageStore.sharedInstance().unInit(mLiveInfo.roomInfo.roomId);
+        BarrageStore.sharedInstance().unInit(mLiveInfo.roomId);
         BasicBeautyStore.getInstance().unInit();
         TEBeautyStore.getInstance().unInit();
         mAnchorManager.destroy();
@@ -976,6 +1022,11 @@ public class AnchorView extends BasicView implements EndLiveStreamDialog.EndLive
     }
 
     @Override
+    public void onRoomExit() {
+        onEndLive();
+    }
+
+    @Override
     public void onRoomExitEndStatistics() {
         mAnchorManager.setExternalState(mBarrageStreamView != null ? mBarrageStreamView.getBarrageCount() : 0);
     }
@@ -1019,7 +1070,7 @@ public class AnchorView extends BasicView implements EndLiveStreamDialog.EndLive
     private void onEndLive() {
         if (mLiveCoreView != null) {
             mLiveCoreView.setLocalVideoMuteImage(null, null);
-            mLiveCoreView.stopLiveStream(null);
+            mLiveCoreView.stopLiveStream((TUILiveListManager.StopLiveCallback) null);
         }
         finishActivity();
     }

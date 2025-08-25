@@ -89,9 +89,6 @@ public class DoubleColumnListView extends FrameLayout {
 
     private void onLiveInfoViewClick(View view, TUILiveListManager.LiveInfo liveInfo) {
         mWillEnterRoomView = (DoubleColumnItemView) view;
-        if (mWillEnterRoomView != null) {
-            mWillEnterRoomView.unmutePreviewVideoStream();
-        }
         if (mOnItemClickListener != null) {
             mOnItemClickListener.onItemClick(view, liveInfo);
         }

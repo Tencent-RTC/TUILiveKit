@@ -272,12 +272,12 @@ public class NetworkInfoPanel extends PopupDialog {
 
     private void onUpLossChange(Integer upLoss) {
         mTextUpLoss.setText(String.format("%d%%", upLoss));
-        mTextUpLoss.setTextColor(upLoss > 100 ? mColorAbnormal : mColorNormal);
+        mTextUpLoss.setTextColor(upLoss > 10 ? mColorAbnormal : mColorNormal);
     }
 
     private void onDownLossChange(Integer downLoss) {
         mTextDownLoss.setText(String.format("%d%%", downLoss));
-        mTextDownLoss.setTextColor(downLoss > 100 ? mColorAbnormal : mColorNormal);
+        mTextDownLoss.setTextColor(downLoss > 10 ? mColorAbnormal : mColorNormal);
     }
 
     private void onTakeSeatStatusChange(Boolean isTakeSeat) {

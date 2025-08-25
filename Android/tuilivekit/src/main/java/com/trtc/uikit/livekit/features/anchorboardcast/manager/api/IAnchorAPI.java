@@ -56,5 +56,5 @@ public interface IAnchorAPI {
 
     void fetchLiveList(String cursor, int count, TUILiveListManager.LiveInfoListCallback callback);
 
-    void setLiveInfo(LiveInfo liveInfo, List<LiveModifyFlag> flagList, TUIRoomDefine.ActionCallback callback);
+    void setCoHostLayoutTemplateId(int templateId);
 }

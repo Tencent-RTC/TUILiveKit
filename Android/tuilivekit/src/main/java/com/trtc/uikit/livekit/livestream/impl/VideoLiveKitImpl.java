@@ -20,6 +20,9 @@ import android.util.Rational;
 
 import androidx.annotation.RequiresApi;
 
+import com.google.gson.Gson;
+import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfo;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
@@ -37,7 +40,7 @@ import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class VideoLiveKitImpl implements VideoLiveKit {
-    private final LiveKitLogger LOGGER = LiveKitLogger.getFeaturesLogger("AnchorPrepareView");
+    private final LiveKitLogger LOGGER = LiveKitLogger.getFeaturesLogger("VideoLiveKitImpl");
 
     private static volatile VideoLiveKitImpl       sInstance;
     private final           Context                mContext;
@@ -81,17 +84,37 @@ public class VideoLiveKitImpl implements VideoLiveKit {
 
     @Override
     public void startLive(String roomId) {
-        Intent intent = new Intent(mContext, VideoLiveAnchorActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(VideoLiveAnchorActivity.INTENT_KEY_ROOM_ID, roomId);
-        mContext.startActivity(intent);
+        LOGGER.info("startLive, roomId:" + roomId);
+        Runnable startTask = () -> {
+            Intent intent = new Intent(mContext, VideoLiveAnchorActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra(VideoLiveAnchorActivity.INTENT_KEY_ROOM_ID, roomId);
+            mContext.startActivity(intent);
+        };
+        TUILiveListManager liveListManager = (TUILiveListManager) TUIRoomEngine.sharedInstance().getExtension(TUICommonDefine.ExtensionType.LIVE_LIST_MANAGER);
+        liveListManager.getLiveInfo(roomId, new TUILiveListManager.LiveInfoCallback() {
+            @Override
+            public void onSuccess(LiveInfo liveInfo) {
+                LOGGER.info("getLiveInfo, onSuccess, liveInfo:" + new Gson().toJson(liveInfo));
+                if (liveInfo.keepOwnerOnSeat) {
+                    startTask.run();
+                } else {
+                    joinLive(liveInfo);
+                }
+            }
+
+            @Override
+            public void onError(TUICommonDefine.Error error, String s) {
+                LOGGER.warn("getLiveInfo onError:" + s);
+                startTask.run();
+            }
+        });
     }
 
     @Override
     public void joinLive(String roomId) {
         LiveInfo liveInfo = new LiveInfo();
-        liveInfo.roomInfo = new TUIRoomDefine.RoomInfo();
-        liveInfo.roomInfo.roomId = roomId;
+        liveInfo.roomId = roomId;
         liveInfo.backgroundUrl = DEFAULT_BACKGROUND_URL;
         liveInfo.coverUrl = DEFAULT_COVER_URL;
         liveInfo.isPublicVisible = true;
@@ -103,11 +126,11 @@ public class VideoLiveKitImpl implements VideoLiveKit {
 
     @Override
     public void joinLive(LiveInfo liveInfo) {
-        if (liveInfo == null || liveInfo.roomInfo == null || TextUtils.isEmpty(liveInfo.roomInfo.roomId)) {
+        if (liveInfo == null || TextUtils.isEmpty(liveInfo.roomId)) {
             return;
         }
         Intent intent;
-        if (Objects.equals(liveInfo.roomInfo.ownerId, TUILogin.getUserId())) {
+        if (Objects.equals(liveInfo.ownerId, TUILogin.getUserId())) {
             intent = new Intent(mContext, VideoLiveAnchorActivity.class);
             intent.putExtra(VideoLiveAnchorActivity.INTENT_KEY_NEED_CREATE, false);
         } else {

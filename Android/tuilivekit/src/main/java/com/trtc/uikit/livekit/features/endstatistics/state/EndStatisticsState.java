@@ -12,7 +12,6 @@ public class EndStatisticsState {
     public final MutableLiveData<Long>    likeCount       = new MutableLiveData<>(0L);
     public final MutableLiveData<Long>    giftIncome      = new MutableLiveData<>(0L);
     public final MutableLiveData<Long>    giftSenderCount = new MutableLiveData<>(0L);
-    public final MutableLiveData<Boolean> exitClick       = new MutableLiveData<>(false);
 
     @Override
     public String toString() {
@@ -26,7 +25,6 @@ public class EndStatisticsState {
                 ", likeCount=" + likeCount.getValue() +
                 ", giftIncome=" + giftIncome.getValue() +
                 ", giftSenderCount=" + giftSenderCount.getValue() +
-                ", exitClick=" + exitClick.getValue() +
                 '}';
     }
 }

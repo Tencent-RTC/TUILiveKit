@@ -6,6 +6,7 @@ import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class LiveInfoUtils {
 
@@ -22,69 +23,43 @@ public class LiveInfoUtils {
         liveBundle.putInt("activityStatus", liveInfo.activityStatus);
         liveBundle.putInt("viewCount", liveInfo.viewCount);
 
-        Bundle roomBundle = new Bundle();
-        TUIRoomDefine.RoomInfo roomInfo = liveInfo.roomInfo;
-        if (roomInfo == null) {
-            roomInfo = new TUIRoomDefine.RoomInfo();
+        if (liveInfo.seatMode == null) {
+            liveInfo.seatMode = TUIRoomDefine.SeatMode.FREE_TO_TAKE;
         }
-        if (roomInfo.seatMode == null) {
-            roomInfo.seatMode = TUIRoomDefine.SeatMode.FREE_TO_TAKE;
-        }
-        if (roomInfo.roomType == null) {
-            roomInfo.roomType = TUIRoomDefine.RoomType.LIVE;
-        }
-        roomBundle.putString("roomId", roomInfo.roomId);
-        roomBundle.putString("ownerId", roomInfo.ownerId);
-        roomBundle.putString("ownerName", roomInfo.ownerName);
-        roomBundle.putString("ownerAvatarUrl", roomInfo.ownerAvatarUrl);
-        roomBundle.putInt("roomType", roomInfo.roomType.getValue());
-        roomBundle.putString("name", roomInfo.name);
-        roomBundle.putBoolean("isCameraDisableForAllUser", roomInfo.isCameraDisableForAllUser);
-        roomBundle.putBoolean("isMicrophoneDisableForAllUser", roomInfo.isMicrophoneDisableForAllUser);
-        roomBundle.putBoolean("isScreenShareDisableForAllUser", roomInfo.isScreenShareDisableForAllUser);
-        roomBundle.putBoolean("isMessageDisableForAllUser", roomInfo.isMessageDisableForAllUser);
-        roomBundle.putBoolean("isSeatEnabled", roomInfo.isSeatEnabled);
-        roomBundle.putInt("seatMode", roomInfo.seatMode.getValue());
-        roomBundle.putInt("maxSeatCount", roomInfo.maxSeatCount);
-        roomBundle.putLong("createTime", roomInfo.createTime);
-        roomBundle.putInt("memberCount", roomInfo.memberCount);
-        roomBundle.putString("password", roomInfo.password);
-
-        liveBundle.putBundle("roomInfo", roomBundle);
+        liveBundle.putString("roomId", liveInfo.roomId);
+        liveBundle.putString("ownerId", liveInfo.ownerId);
+        liveBundle.putString("ownerName", liveInfo.ownerName);
+        liveBundle.putString("ownerAvatarUrl", liveInfo.ownerAvatarUrl);
+        liveBundle.putString("name", liveInfo.name);
+        liveBundle.putBoolean("isMessageDisableForAllUser", liveInfo.isMessageDisableForAllUser);
+        liveBundle.putBoolean("isSeatEnabled", liveInfo.isSeatEnabled);
+        liveBundle.putInt("seatMode", liveInfo.seatMode.getValue());
+        liveBundle.putInt("maxSeatCount", liveInfo.maxSeatCount);
+        liveBundle.putLong("createTime", liveInfo.createTime);
         return liveBundle;
     }
 
     public static TUILiveListManager.LiveInfo convertBundleToLiveInfo(Bundle liveBundle) {
         TUILiveListManager.LiveInfo liveInfo = new TUILiveListManager.LiveInfo();
-        liveInfo.coverUrl = liveBundle.getString("coverUrl");
-        liveInfo.backgroundUrl = liveBundle.getString("backgroundUrl");
+        liveInfo.roomId = liveBundle.getString("roomId", "");
+        liveInfo.ownerId = liveBundle.getString("ownerId", "");
+        liveInfo.ownerName = liveBundle.getString("ownerName", "");
+        liveInfo.ownerAvatarUrl = liveBundle.getString("ownerAvatarUrl", "");
+        liveInfo.name = liveBundle.getString("name", "");
+        liveInfo.isMessageDisableForAllUser = liveBundle.getBoolean("isMessageDisableForAllUser", false);
+        liveInfo.isSeatEnabled = liveBundle.getBoolean("isSeatEnabled", false);
+        liveInfo.seatMode = TUIRoomDefine.SeatMode.fromInt(liveBundle.getInt("seatMode", TUIRoomDefine.SeatMode.FREE_TO_TAKE.getValue()));
+        liveInfo.maxSeatCount = liveBundle.getInt("maxSeatCount", 0);
+        liveInfo.createTime = liveBundle.getLong("createTime", 0);
+        liveInfo.coverUrl = liveBundle.getString("coverUrl", "");
+        liveInfo.backgroundUrl = liveBundle.getString("backgroundUrl", "");
         liveInfo.categoryList = liveBundle.getIntegerArrayList("categoryList");
+        if (liveInfo.categoryList == null) {
+            liveInfo.categoryList = Collections.EMPTY_LIST;
+        }
         liveInfo.isPublicVisible = liveBundle.getBoolean("isPublicVisible", false);
         liveInfo.activityStatus = liveBundle.getInt("activityStatus", 0);
         liveInfo.viewCount = liveBundle.getInt("viewCount", 0);
-
-        TUIRoomDefine.RoomInfo roomInfo = new TUIRoomDefine.RoomInfo();
-        liveInfo.roomInfo = roomInfo;
-
-        Bundle roomBundle = liveBundle.getBundle("roomInfo");
-        if (roomBundle != null) {
-            roomInfo.roomId = roomBundle.getString("roomId");
-            roomInfo.ownerId = roomBundle.getString("ownerId");
-            roomInfo.ownerName = roomBundle.getString("ownerName");
-            roomInfo.ownerAvatarUrl = roomBundle.getString("ownerAvatarUrl");
-            roomInfo.roomType = TUIRoomDefine.RoomType.fromInt(roomBundle.getInt("roomType", 0));
-            roomInfo.name = roomBundle.getString("name");
-            roomInfo.isCameraDisableForAllUser = roomBundle.getBoolean("isCameraDisableForAllUser", false);
-            roomInfo.isMicrophoneDisableForAllUser = roomBundle.getBoolean("isMicrophoneDisableForAllUser", false);
-            roomInfo.isScreenShareDisableForAllUser = roomBundle.getBoolean("isScreenShareDisableForAllUser", false);
-            roomInfo.isMessageDisableForAllUser = roomBundle.getBoolean("isMessageDisableForAllUser", false);
-            roomInfo.isSeatEnabled = roomBundle.getBoolean("isSeatEnabled", false);
-            roomInfo.seatMode = TUIRoomDefine.SeatMode.fromInt(roomBundle.getInt("seatMode", 0));
-            roomInfo.maxSeatCount = roomBundle.getInt("maxSeatCount", 0);
-            roomInfo.createTime = roomBundle.getLong("createTime", 0);
-            roomInfo.memberCount = roomBundle.getInt("memberCount", 0);
-            roomInfo.password = roomBundle.getString("password");
-        }
         return liveInfo;
     }
 }

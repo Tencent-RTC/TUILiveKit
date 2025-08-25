@@ -48,15 +48,19 @@ public class NetworkInfoService {
     private static final int  LOW_BITRATE_THRESHOLD_1080P   = 1500;
 
     private final        Context                             mContext;
-    private static final LiveKitLogger                       LOGGER                     = LiveKitLogger.getComponentLogger("NetworkInfoService");
+    private static final LiveKitLogger                       LOGGER                     =
+            LiveKitLogger.getComponentLogger("NetworkInfoService");
     private final        String                              mUserId;
     public               NetworkInfoState                    mNetworkInfoState          = new NetworkInfoState();
-    private final        TRTCCloud                           mTRTCCloud                 = TUIRoomEngine.sharedInstance().getTRTCCloud();
-    private final        TUIRoomEngine                       mTUIRoomEngine             = TUIRoomEngine.sharedInstance();
+    private final        TRTCCloud                           mTRTCCloud                 =
+            TUIRoomEngine.sharedInstance().getTRTCCloud();
+    private final        TUIRoomEngine                       mTUIRoomEngine             =
+            TUIRoomEngine.sharedInstance();
     private              ConnectivityManager.NetworkCallback networkCallback;
     private              BroadcastReceiver                   networkReceiver;
     private              long                                mNetworkBadStartTime       = 0;
-    private final        Observer<Boolean>                   mNetworkConnectionObserver = this::onNetworkConnectionChange;
+    private final        Observer<Boolean>                   mNetworkConnectionObserver =
+            this::onNetworkConnectionChange;
 
     private final TUIRoomObserver mEngineObserver = new TUIRoomObserver() {
         @Override
@@ -80,6 +84,11 @@ public class NetworkInfoService {
                                       List<TUIRoomDefine.SeatInfo> leftList) {
             handleSeatListChanged(seatList);
         }
+
+        @Override
+        public void onRoomDismissed(String roomId, TUIRoomDefine.RoomDismissedReason reason) {
+            handleRoomDismissed();
+        }
     };
 
     private final TRTCCloudListener mTRTCObserver = new TRTCCloudListener() {
@@ -90,7 +99,7 @@ public class NetworkInfoService {
     };
 
     public NetworkInfoService(Context context) {
-        mContext = context;
+        mContext = context.getApplicationContext();
         mUserId = TUIRoomEngine.getSelfInfo().userId;
     }
 
@@ -176,6 +185,10 @@ public class NetworkInfoService {
         mNetworkInfoState.isTakeInSeat.setValue(false);
     }
 
+    private void handleRoomDismissed() {
+        mNetworkInfoState.roomDismissed.setValue(true);
+    }
+
     private void handleVideoStateChanged(String userId, boolean hasVideo) {
         if (TextUtils.equals(userId, mUserId)) {
             mNetworkInfoState.videoStatus.setValue(hasVideo ? Normal : Closed);
@@ -190,7 +203,6 @@ public class NetworkInfoService {
         updateResolution(localStreamStats);
         updateVideoStatus(localStreamStats);
         updateAudioStatus(localStreamStats);
-        updateAudioMode(localStreamStats);
     }
 
     private void updateNetworkInfo(TUICommonDefine.NetworkInfo info) {
@@ -278,16 +290,6 @@ public class NetworkInfoService {
             mNetworkInfoState.audioStatus.setValue(NetworkInfoState.Status.Normal);
         } else {
             mNetworkInfoState.audioStatus.setValue(Abnormal);
-        }
-    }
-
-    private void updateAudioMode(TRTCStatistics.TRTCLocalStatistics statistics) {
-        if (statistics.audioBitrate > 4 && statistics.audioBitrate <= 16) {
-            mNetworkInfoState.audioMode.setValue(TUIRoomDefine.AudioQuality.SPEECH);
-        } else if (statistics.audioBitrate > 16 && statistics.audioBitrate < 127) {
-            mNetworkInfoState.audioMode.setValue(TUIRoomDefine.AudioQuality.DEFAULT);
-        } else if (statistics.audioBitrate >= 128) {
-            mNetworkInfoState.audioMode.setValue(TUIRoomDefine.AudioQuality.MUSIC);
         }
     }
 

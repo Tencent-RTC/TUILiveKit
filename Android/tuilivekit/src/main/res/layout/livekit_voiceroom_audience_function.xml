@@ -13,19 +13,19 @@
         android:layout_gravity="center_vertical"
         android:layout_marginEnd="8dp" />
 
-    <RelativeLayout
-        android:id="@+id/rl_like"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_gravity="center_vertical"
-        android:layout_marginEnd="8dp" />
-
     <ImageView
         android:id="@+id/iv_take_seat"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_gravity="center_vertical"
+        android:layout_marginEnd="8dp"
         android:scaleType="centerCrop"
         android:src="@drawable/livekit_ic_hand_up"
         tools:ignore="ContentDescription" />
+
+    <RelativeLayout
+        android:id="@+id/rl_like"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center_vertical" />
 </LinearLayout>

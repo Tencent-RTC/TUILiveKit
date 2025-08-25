@@ -50,6 +50,14 @@ public class AnchorPrepareManager {
         mInternalState.liveMode.setValue(value);
     }
 
+    public void setCoGuestTemplate(int template) {
+        mInternalState.coGuestTemplateId.setValue(template);
+    }
+
+    public void setCoHostTemplate(int template) {
+        mInternalState.coHostTemplateId.setValue(template);
+    }
+
     public void startLive() {
         mListenerManager.notifyAnchorPrepareViewListener(AnchorPrepareViewListener::onClickStartButton);
     }
@@ -75,6 +83,8 @@ public class AnchorPrepareManager {
         mExternalState.coverURL = mPrepareStateMediator.coverURL;
         mExternalState.liveMode = mPrepareStateMediator.liveMode;
         mExternalState.roomName = mPrepareStateMediator.roomName;
+        mExternalState.coGuestTemplateId = mPrepareStateMediator.coGuestTemplateId;
+        mExternalState.coHostTemplateId = mPrepareStateMediator.coHostTemplateId;
     }
 
     public void startPreview(TUIRoomDefine.ActionCallback callback) {

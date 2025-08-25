@@ -45,6 +45,13 @@
 -keep class com.tencent.qimei.** { *;}
 -keep class androidx.exifinterface.** { *;}
 
+-keep class okhttp3.** { *; }
+-keep interface okhttp3.** { *; }
+-keep class okio.** { *; }
+-keep interface okio.** { *; }
+-dontwarn okhttp3.**
+-dontwarn okio.**
+
 # TRTC SDK Viesion >= 12.5.0
 -dontwarn com.tencent.rtmp.video.BaseBridge$BaseBridgeCallback
 -dontwarn com.tencent.rtmp.video.BaseBridge

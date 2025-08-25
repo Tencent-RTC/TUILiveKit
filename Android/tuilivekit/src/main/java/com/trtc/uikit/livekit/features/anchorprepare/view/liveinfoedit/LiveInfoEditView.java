@@ -31,13 +31,14 @@ import java.util.Arrays;
 
 public class LiveInfoEditView extends FrameLayout {
 
-    private       AnchorPrepareManager              mManager;
-    private       AnchorPrepareState                mState;
-    private       EditText                          mEditRoomName;
-    private       TextView                          mTextStreamPrivacyStatus;
-    private       ImageView                         mImageStreamCover;
-    private       LiveCoverPicker                   mLiveCoverPicker;
-    private final Observer<String>                  mLiveCoverObserver         = this::onLiveCoverChange;
+    private       AnchorPrepareManager mManager;
+    private       AnchorPrepareState   mState;
+    private       EditText             mEditRoomName;
+    private       TextView             mTextStreamPrivacyStatus;
+    private       ImageView            mImageStreamCover;
+    private       LiveCoverPicker      mLiveCoverPicker;
+    private final Observer<String>     mLiveCoverObserver = this::onLiveCoverChange;
+
     private final Observer<LiveStreamPrivacyStatus> mLivePrivacyStatusObserver = this::onLivePrivacyStatusChange;
 
     public LiveInfoEditView(@NonNull Context context) {

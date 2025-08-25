@@ -75,7 +75,7 @@
                 android:layout_height="212dp"
                 android:layout_gravity="bottom"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="56dp"
+                android:layout_marginEnd="126dp"
                 android:layout_marginBottom="70dp" />
 
             <com.trtc.uikit.livekit.component.gift.GiftPlayView

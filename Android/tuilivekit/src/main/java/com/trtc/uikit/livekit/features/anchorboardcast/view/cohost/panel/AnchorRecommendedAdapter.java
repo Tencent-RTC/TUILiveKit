@@ -107,6 +107,7 @@ public class AnchorRecommendedAdapter extends RecyclerView.Adapter<AnchorRecomme
                 recommendUser.connectionStatus = INVITING;
                 mAnchorManager.getCoHostState().recommendUsers.setValue(
                         mAnchorManager.getCoHostState().recommendUsers.getValue());
+                mAnchorManager.getCoHostManager().setCoHostLayoutTemplateId(mAnchorManager.getCoHostState().coHostTemplateId);
                 mLiveStream.requestCrossRoomConnection(recommendUser.roomId, 10,
                         new TUILiveConnectionManager.ConnectionRequestCallback() {
                             @Override
