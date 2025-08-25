@@ -39,13 +39,18 @@ public class VideoLiveKit: NSObject {
                 return
             }
         }
-        
-        let vc = TUILiveRoomAnchorPrepareViewController(roomId: roomId)
-        vc.modalPresentationStyle = .fullScreen
-        getRootController()?.present(vc, animated: true)
-        vc.willStartLive = { [weak self] controller in
+        let listManager = TUIRoomEngine.sharedInstance().getExtension(extensionType: .liveListManager)as? TUILiveListManager
+        guard let listManager = listManager else {return}
+        listManager.getLiveInfo(roomId){[weak self] liveInfo in
             guard let self = self else { return }
-            viewController = controller
+            if liveInfo.keepOwnerOnSeat == true {
+                self.showPrepareViewController(roomId: roomId)
+            } else {
+                self.showAnchorViewController(roomId: roomId)
+            }
+        } onError: { [weak self] error, message in
+            guard let self = self else { return }
+            self.showPrepareViewController(roomId: roomId)
         }
     }
     
@@ -110,6 +115,24 @@ extension VideoLiveKit {
     
     private func getRootController() -> UIViewController? {
         return TUITool.applicationKeywindow().rootViewController
+    }
+
+    private func showPrepareViewController(roomId: String) {
+        let vc = TUILiveRoomAnchorPrepareViewController(roomId: roomId)
+        vc.modalPresentationStyle = .fullScreen
+        vc.willStartLive = { [weak self] controller in
+            guard let self = self else { return }
+            self.viewController = controller
+        }
+        getRootController()?.present(vc, animated: true)
+    }
+
+    private func showAnchorViewController(roomId: String) {
+        var liveInfo = LiveInfo()
+        liveInfo.roomId = roomId
+        let anchorVC = TUILiveRoomAnchorViewController(liveInfo: liveInfo, behavior: .enterRoom)
+        anchorVC.modalPresentationStyle = .fullScreen
+        getRootController()?.present(anchorVC, animated: true)
     }
 }
 

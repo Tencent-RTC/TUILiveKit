@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 
+#if DEV_MODE
 class TestToolListCell: UITableViewCell {
     static let cellId = "TestToolListCellID"
     
@@ -69,3 +70,4 @@ class TestToolListCell: UITableViewCell {
         }
     }
 }
+#endif

@@ -9,7 +9,7 @@ import RTCRoomEngine
 
 struct AudienceRoomState {
     var roomId: String = ""
-    var roomInfo: TUIRoomInfo = TUIRoomInfo()
+    var liveInfo: TUILiveInfo = TUILiveInfo()
     var createTime: UInt = 0
     var roomName: String = ""
     var coverURL: String = ""

@@ -48,7 +48,11 @@ public struct LiveInfo {
     
     var ownerAvatarUrl = ""
     
-    var name = "";
+    var name = ""
+    
+    var seatLayoutTemplateId: Int = 0
+    
+    var pkTemplateId: Int = 0
     
     init(tuiLiveInfo: TUILiveInfo) {
         self.coverUrl = tuiLiveInfo.coverUrl
@@ -62,6 +66,7 @@ public struct LiveInfo {
         self.ownerName = tuiLiveInfo.roomInfo.ownerName
         self.ownerAvatarUrl = tuiLiveInfo.roomInfo.ownerAvatarUrl
         self.name = tuiLiveInfo.roomInfo.name
+        self.seatLayoutTemplateId = Int(tuiLiveInfo.seatLayoutTemplateId)
     }
     
     init() {}

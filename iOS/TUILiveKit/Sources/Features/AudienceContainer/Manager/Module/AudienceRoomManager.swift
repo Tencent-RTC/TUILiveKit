@@ -36,11 +36,8 @@ extension AudienceRoomManager {
         }
     }
     
-    func onJoinLive(roomInfo: TUIRoomInfo) {
-        Task {
-            try? await fetchLiveInfo(roomId: roomInfo.roomId)
-        }
-        updateRoomState(roomInfo: roomInfo)
+    func onJoinLive(liveInfo: TUILiveInfo) {
+        updateRoomState(liveInfo: liveInfo)
         update(liveStatus: .playing)
     }
     
@@ -131,12 +128,12 @@ extension AudienceRoomManager {
         }
     }
     
-    private func updateRoomState(roomInfo: TUIRoomInfo) {
+    private func updateRoomState(liveInfo: TUILiveInfo) {
         update { state in
-            state.roomId = roomInfo.roomId
-            state.createTime = roomInfo.createTime
-            state.roomName = roomInfo.name
-            state.roomInfo = roomInfo
+            state.roomId = liveInfo.roomId
+            state.createTime = liveInfo.createTime
+            state.roomName = liveInfo.name
+            state.liveInfo = liveInfo
         }
     }
     
@@ -144,7 +141,7 @@ extension AudienceRoomManager {
                                 updateRoomInfo: Bool = true,
                                 modifyFlag: TUILiveModifyFlag = [.activityStatus, .category, .publish, .coverUrl]) {
         if updateRoomInfo {
-            updateRoomState(roomInfo: liveInfo.roomInfo)
+            updateRoomState(liveInfo: liveInfo)
         }
         update { state in
             if modifyFlag.contains(.coverUrl) {

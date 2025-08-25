@@ -148,7 +148,7 @@ public class TUIVoiceRoomViewController: UIViewController {
     }
     
     private func showVoiceRoot() {
-        view.subviews.forEach{$0.removeFromSuperview()}
+        view.subviews.forEach{$0.safeRemoveFromSuperview()}
         view.addSubview(voiceRootView)
         voiceRootView.snp.makeConstraints { make in
             make.top.bottom.leading.trailing.equalToSuperview()
@@ -157,7 +157,7 @@ public class TUIVoiceRoomViewController: UIViewController {
     }
     
     private func showAnchorEndView(info: [String: Any]) {
-        view.subviews.forEach {$0.removeFromSuperview()}
+        view.subviews.forEach {$0.safeRemoveFromSuperview()}
         
         // TODO: Transition animation needs to be considered
         
@@ -171,7 +171,7 @@ public class TUIVoiceRoomViewController: UIViewController {
     }
     
     private func showAudienceEndView(info: [String: Any]) {
-        view.subviews.forEach {$0.removeFromSuperview()}
+        view.subviews.forEach {$0.safeRemoveFromSuperview()}
         
         // TODO: Transition animation needs to be considered
         

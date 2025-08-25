@@ -37,6 +37,7 @@ extension AnchorRoomManager {
             state.coverURL = liveInfo.coverUrl
             state.liveExtraInfo.liveMode = liveInfo.isPublicVisible ? .public : .privacy
             state.liveExtraInfo.activeStatus = liveInfo.activityStatus
+            state.pkTemplateId = liveInfo.pkTemplateId
         }
     }
     
@@ -46,20 +47,9 @@ extension AnchorRoomManager {
         }
     }
     
-    func onStartLive(isJoinSelf: Bool, roomInfo: TUIRoomInfo) {
+    func onStartLive(isJoinSelf: Bool, liveInfo: TUILiveInfo) {
+        updateRoomState(liveInfo: liveInfo)
         update(liveStatus: .pushing)
-        updateRoomState(roomInfo: roomInfo)
-        if !isJoinSelf {
-            syncLiveInfoToService()
-        }
-    }
-    
-    func onJoinLive(roomInfo: TUIRoomInfo) {
-        Task {
-            try? await fetchLiveInfo(roomId: roomInfo.roomId)
-        }
-        updateRoomState(roomInfo: roomInfo)
-        update(liveStatus: .playing)
     }
     
     func onStopLive() {
@@ -139,8 +129,8 @@ extension AnchorRoomManager {
 
 // MARK: - Observer
 extension AnchorRoomManager {
-    func onLiveEnd(roomId: String) {
-        guard roomId == roomState.roomId else { return }
+    func onLiveEnd(roomId: String, reason: TUIRoomDismissedReason) {
+        guard roomId == roomState.roomId, reason != .byOwner else { return }
         update { state in
             state.liveStatus = .finished
         }
@@ -181,29 +171,12 @@ extension AnchorRoomManager {
         }
     }
     
-    private func updateRoomState(roomInfo: TUIRoomInfo) {
+    private func updateRoomState(liveInfo: TUILiveInfo) {
         update { state in
-            state.roomId = roomInfo.roomId
-            state.createTime = roomInfo.createTime
-            state.roomName = roomInfo.name
-            state.roomInfo = roomInfo
-        }
-    }
-    
-    private func syncLiveInfoToService() {
-        let liveInfo = TUILiveInfo()
-        liveInfo.roomInfo.roomId = roomState.roomId
-        liveInfo.coverUrl = roomState.coverURL
-        liveInfo.isPublicVisible = roomState.liveExtraInfo.liveMode == .public
-        liveInfo.activityStatus = roomState.liveExtraInfo.activeStatus
-        Task {
-            var modifyFlag: TUILiveModifyFlag = []
-            modifyFlag = modifyFlag.union([.coverUrl, .publish, .activityStatus])
-            do {
-                try await service.syncLiveInfoToService(liveInfo: liveInfo, modifyFlag: modifyFlag)
-            } catch let err as InternalError {
-                toastSubject.send(err.localizedMessage)
-            }
+            state.roomId = liveInfo.roomId
+            state.createTime = liveInfo.createTime
+            state.roomName = liveInfo.name
+            state.liveInfo = liveInfo
         }
     }
     
@@ -211,7 +184,7 @@ extension AnchorRoomManager {
                                 updateRoomInfo: Bool = true,
                                 modifyFlag: TUILiveModifyFlag = [.activityStatus, .category, .publish, .coverUrl]) {
         if updateRoomInfo {
-            updateRoomState(roomInfo: liveInfo.roomInfo)
+            updateRoomState(liveInfo: liveInfo)
         }
         update { state in
             if modifyFlag.contains(.coverUrl) {

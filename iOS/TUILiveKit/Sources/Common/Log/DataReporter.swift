@@ -45,7 +45,8 @@ public class DataReporter {
             let jsonData = try JSONSerialization.data(withJSONObject: params, options: .prettyPrinted)
             if let jsonString = String(data: jsonData, encoding: .utf8) {
                 print(jsonString)
-                TUIRoomEngine.callExperimentalAPI(jsonStr: jsonString)
+                TUIRoomEngine.sharedInstance().callExperimentalAPI(jsonStr: jsonString) { message in
+                }
             } else {
                 print("Error converting JSON data to string")
             }

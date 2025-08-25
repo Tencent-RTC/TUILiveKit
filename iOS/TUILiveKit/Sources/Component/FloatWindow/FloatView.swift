@@ -73,8 +73,10 @@ class FloatView: UIView {
     }
     
     private func activateConstraints() {
+        let size = contentView.bounds.size
         contentView.snp.makeConstraints { make in
-            make.size.equalToSuperview()
+            make.leading.trailing.top.equalToSuperview()
+            make.height.equalTo(snp.width).multipliedBy(size.height / size.width)
         }
         
         gestureOverlayView.snp.makeConstraints{ make in
@@ -92,15 +94,6 @@ class FloatView: UIView {
         tapGesture.require(toFail: panGesture)
     }
     
-    override func layoutSubviews() {
-        contentView.snp.remakeConstraints{ make in
-            make.size.equalToSuperview()
-        }
-        gestureOverlayView.snp.remakeConstraints{ make in
-            make.size.equalToSuperview()
-        }
-    }
-    
     @objc private func handleTap() {
         delegate?.onResume()
     }
@@ -112,27 +105,12 @@ class FloatView: UIView {
             case .began, .changed:
                 self.center = CGPoint(x: self.center.x + translation.x, y: self.center.y + translation.y)
                 gestureRecognizer.setTranslation(CGPoint.zero, in: UIApplication.shared.windows.last!)
-                
-                adjustPosition()
-                
             case .ended, .cancelled:
                 
                 snapToEdge()
                 
             default:
                 break
-        }
-    }
-    
-    private func adjustPosition() {
-        contentView.snp.remakeConstraints { make in
-            make.size.equalToSuperview()
-            make.center.equalTo(self.center)
-        }
-        
-        gestureOverlayView.snp.remakeConstraints{ make in
-            make.size.equalToSuperview()
-            make.center.equalTo(self.center)
         }
     }
     

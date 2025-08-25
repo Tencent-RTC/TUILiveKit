@@ -120,8 +120,8 @@ extension AudienceManager {
         context.roomManager.prepareRoomIdBeforeEnterRoom(roomId: roomId)
     }
     
-    func onJoinLive(roomInfo: TUIRoomInfo) {
-        context.roomManager.onJoinLive(roomInfo: roomInfo)
+    func onJoinLive(liveInfo: TUILiveInfo) {
+        context.roomManager.onJoinLive(liveInfo: liveInfo)
     }
     
     func onLeaveLive() {

@@ -18,6 +18,10 @@ typealias AnchorCoGuestStateUpdateClosure = (inout AnchorCoGuestState) -> Void
 
 typealias InternalErrorBlock = (_ error: InternalError) -> Void
 
+typealias StateSelector = RTCCommon.StateSelector
+typealias CoHostState = LiveStreamCore.CoHostState
+typealias CoGuestState = LiveStreamCore.CoGuestState
+
 protocol AnchorManagerProvider: NSObject {
     func getCoreViewState<T: State>() -> T
     func subscribeCoreViewState<State, Value>(_ selector: StateSelector<State, Value>) -> AnyPublisher<Value, Never>
@@ -92,10 +96,6 @@ extension AnchorManager {
         context.roomManager.prepareLiveInfoBeforeEnterRoom(liveInfo: liveInfo)
     }
     
-    func prepareRoomIdBeforeEnterRoom(roomId: String) {
-        context.roomManager.prepareRoomIdBeforeEnterRoom(roomId: roomId)
-    }
-    
     func onSetRoomName(_ name: String) {
         context.roomManager.onSetRoomName(name)
     }
@@ -108,8 +108,8 @@ extension AnchorManager {
         context.roomManager.onSetRoomCoverUrl(url)
     }
     
-    func onStartLive(isJoinSelf: Bool, roomInfo: TUIRoomInfo) {
-        context.roomManager.onStartLive(isJoinSelf: isJoinSelf, roomInfo: roomInfo)
+    func onStartLive(isJoinSelf: Bool, liveInfo: TUILiveInfo) {
+        context.roomManager.onStartLive(isJoinSelf: isJoinSelf, liveInfo: liveInfo)
         context.userManager.onStartLive()
     }
     

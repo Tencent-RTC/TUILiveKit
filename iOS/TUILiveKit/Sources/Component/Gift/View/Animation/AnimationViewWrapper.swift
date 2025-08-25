@@ -5,7 +5,7 @@
 //  Created by krabyu on 2024/7/22.
 //
 
-import UIKit
+import RTCCommon
 
 class AnimationViewWrapper: UIView {
     
@@ -82,7 +82,7 @@ extension AnimationViewWrapper: AnimationView {
 extension AnimationViewWrapper {
     private func switchPlaySourceIfNeeded(type: AnimationSourceType) {
         guard let shouldUseView = getPlayAnimationView(type: type) else {
-            animationView?.removeFromSuperview()
+            animationView?.safeRemoveFromSuperview()
             animationView = nil
             return
         }
@@ -90,7 +90,7 @@ extension AnimationViewWrapper {
             if animationView == shouldUseView {
                 return
             }
-            animationView.removeFromSuperview()
+            animationView.safeRemoveFromSuperview()
             self.animationView = nil
         }
         self.animationView = shouldUseView

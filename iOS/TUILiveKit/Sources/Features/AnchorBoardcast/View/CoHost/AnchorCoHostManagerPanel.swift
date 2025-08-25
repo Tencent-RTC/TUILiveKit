@@ -58,17 +58,18 @@ class AnchorCoHostManagerPanel: RTCBaseView {
         tableView.backgroundColor = .clear
         tableView.register(AnchorCoHostUserCell.self, forCellReuseIdentifier: AnchorCoHostUserCell.identifier)
         tableView.register(AnchorCoHostUserTableHeaderView.self, forHeaderFooterViewReuseIdentifier: AnchorCoHostUserTableHeaderView.identifier)
-        tableView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 0)
         return tableView
     }()
     
-    init(manager: AnchorCoHostManager, coreView: LiveCoreView) {
+    init(manager: AnchorCoHostManager, coreView: LiveCoreView, pkTemplateId: Int) {
         self.manager = manager
         self.coreView = coreView
         super.init(frame: .zero)
         backgroundColor = .g2
         layer.cornerRadius = 16
         layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        
+        manager.setCoHostlayoutTemplateId(pkTemplateId)
     }
     
     override func didMoveToWindow() {

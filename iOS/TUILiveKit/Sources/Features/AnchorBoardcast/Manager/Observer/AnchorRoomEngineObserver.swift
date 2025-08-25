@@ -18,7 +18,7 @@ class AnchorRoomEngineObserver: NSObject {
 
 extension AnchorRoomEngineObserver: TUIRoomObserver {
     func onRoomDismissed(roomId: String, reason: TUIRoomDismissedReason) {
-        context?.roomManager.onLiveEnd(roomId: roomId)
+        context?.roomManager.onLiveEnd(roomId: roomId, reason: reason)
     }
     
     func onRoomUserCountChanged(roomId: String, userCount: Int) {

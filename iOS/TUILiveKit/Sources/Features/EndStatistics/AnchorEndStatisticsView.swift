@@ -98,9 +98,9 @@ class AnchorEndStatisticsView: UIView {
             }
             return (topTitle: topStr, bottomTitle: .durationText)
         case 1: // viewCountCell
-            return (topTitle: "\(endViewInfo.viewCount)", bottomTitle: .audienceCountText)
+            return (topTitle: "\(max(endViewInfo.viewCount - 1, 0))", bottomTitle: .audienceCountText)
         case 2: // messageCountCell
-            return (topTitle: "\(endViewInfo.messageCount)", bottomTitle: .messageCountText)
+            return (topTitle: "\(max(endViewInfo.messageCount - 1, 0))", bottomTitle: .messageCountText)
         case 3: // giftIncomeCell
             return (topTitle: "\(endViewInfo.giftTotalCoins)", bottomTitle: .giftIncomeText)
         case 4: // giftSenderCountCell
@@ -188,7 +188,7 @@ extension AnchorEndStatisticsView: UICollectionViewDataSource, UICollectionViewD
     }
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath)
-        cell.contentView.subviews.forEach { $0.removeFromSuperview() }
+        cell.contentView.subviews.forEach { $0.safeRemoveFromSuperview() }
         cell.backgroundColor = .clear
         cell.contentView.backgroundColor = .clear
         

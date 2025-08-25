@@ -28,7 +28,7 @@ class TUIBarrageCell: UITableViewCell {
 
     func setContent(_ barrage: TUIBarrage, ownerId: String) {
         if let cell = contentCell {
-            cell.removeFromSuperview()
+            cell.safeRemoveFromSuperview()
         }
         let cell = TUIBarrageDefaultCell(barrage: barrage, ownerId: ownerId)
         contentView.addSubview(cell)
@@ -40,7 +40,7 @@ class TUIBarrageCell: UITableViewCell {
 
     func setContent(_ view: UIView) {
         if let cell = contentCell {
-            cell.removeFromSuperview()
+            cell.safeRemoveFromSuperview()
         }
         let cell = TUIBarrageCustomCell(customView: view)
         contentView.addSubview(cell)

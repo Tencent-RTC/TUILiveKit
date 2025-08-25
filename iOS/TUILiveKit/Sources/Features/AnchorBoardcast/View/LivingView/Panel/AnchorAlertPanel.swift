@@ -122,7 +122,7 @@ class AnchorAlertPanel: UIView {
     }
     
     func dismiss() {
-        removeFromSuperview()
+        safeRemoveFromSuperview()
     }
 }
 

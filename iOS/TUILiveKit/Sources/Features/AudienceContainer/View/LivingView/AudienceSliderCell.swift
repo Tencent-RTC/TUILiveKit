@@ -130,9 +130,11 @@ class AudienceSliderCell: UIView {
             audienceView.relayoutCoreView()
         }
         delegate?.disableScrolling()
-        audienceView.joinLiveStream() { [weak self] in
+        audienceView.joinLiveStream() { [weak self] result in
             guard let self = self else { return }
-            delegate?.enableScrolling()
+            if case .success = result {
+                delegate?.enableScrolling()
+            }
         }
     }
     
@@ -195,8 +197,8 @@ extension AudienceSliderCell {
                 guard let self = self else { return }
                 switch status {
                     case .finished:
-                    let avaUrl = manager.roomState.roomInfo.ownerAvatarUrl
-                    let userName = manager.roomState.roomInfo.ownerName
+                    let avaUrl = manager.roomState.liveInfo.ownerAvatarUrl
+                    let userName = manager.roomState.liveInfo.ownerName
                     delegate?.onRoomDismissed(roomId: manager.roomState.roomId, avatarUrl: avaUrl, userName: userName)
                     default: break
                 }

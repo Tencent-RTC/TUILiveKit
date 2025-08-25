@@ -66,8 +66,8 @@ class VRTopView: UIView {
     }
     
     func initialize(roomId: String) {
-        liveInfoView.initialize(roomInfo: manager.roomState.roomInfo)
-        audienceListView.initialize(roomInfo: manager.roomState.roomInfo)
+        liveInfoView.initialize(liveInfo: manager.roomState.liveInfo)
+        audienceListView.initialize(liveInfo: manager.roomState.liveInfo)
     }
     
     required init?(coder: NSCoder) {

@@ -97,7 +97,7 @@ class AnchorLivingView: UIView {
         let button = NetworkInfoButton(manager: netWorkInfoManager)
         button.onNetWorkInfoButtonClicked = { [weak self] in
             guard let self = self else { return }
-            routerManager.router(action: .present(.netWorkInfo(netWorkInfoManager,isAudience: false)))
+            routerManager.router(action: .present(.netWorkInfo(netWorkInfoManager,isAudience: !manager.roomState.liveInfo.keepOwnerOnSeat)))
         }
         return button
     }()
@@ -129,7 +129,7 @@ class AnchorLivingView: UIView {
     
     deinit {
         if manager.roomState.liveStatus == .pushing {
-            coreView.stopLiveStream() {
+            coreView.leaveLiveStream {
             } onError: { _, _ in
             }
         }
@@ -245,11 +245,11 @@ class AnchorLivingView: UIView {
     }
     
     func initAudienceListView() {
-        audienceListView.initialize(roomInfo: manager.roomState.roomInfo)
+        audienceListView.initialize(liveInfo: manager.roomState.liveInfo)
     }
     
     func initLiveInfoView() {
-        liveInfoView.initialize(roomInfo: manager.roomState.roomInfo)
+        liveInfoView.initialize(liveInfo: manager.roomState.liveInfo)
     }
     
     @objc func onFloatWindowButtonClick() {
@@ -419,7 +419,8 @@ extension AnchorLivingView {
         let designConfig = ActionItemDesignConfig(lineWidth: 7, titleColor: .g2)
         designConfig.backgroundColor = .white
         designConfig.lineColor = .g8
-        let endLiveItem = ActionItem(title: .confirmCloseText, designConfig: designConfig, actionClosure: { [weak self] _ in
+        let text: String = manager.roomState.liveInfo.keepOwnerOnSeat == false ? .confirmExitText : .confirmCloseText
+        let endLiveItem = ActionItem(title: text, designConfig: designConfig, actionClosure: { [weak self] _ in
             guard let self = self else { return }
             self.exitBattle()
             self.stopLiveStream()
@@ -435,55 +436,45 @@ extension AnchorLivingView {
         }
     }
     
-    private func fetchRoomStatistics(completion: @escaping () -> Void) {
-        let group = DispatchGroup()
-        group.enter()
-        manager.fetchGiftCount(roomId: roomId) {
-            group.leave()
-        } onError: { _ in
-            group.leave()
-        }
-        
-        group.enter()
-        manager.fetchLikeCount(roomId: roomId) {
-            group.leave()
-        } onError: { _ in
-            group.leave()
-        }
-        
-        group.enter()
-        manager.fetchViewCount(roomId: roomId) {
-            group.leave()
-        } onError: { _ in
-            group.leave()
-        }
-        
-        group.notify(queue: .main, execute: completion)
-    }
-    
     func stopLiveStream() {
-        fetchRoomStatistics { [weak self] in
-            guard let self = self else { return }
-            coreView.stopLiveStream() { [weak self] in
+        if manager.roomState.liveInfo.keepOwnerOnSeat == false {
+            coreView.leaveLiveStream() { [weak self] in
                 guard let self = self else { return }
-                manager.onStopLive()
+                routerManager.router(action: .exit)
             } onError: { [weak self] code, message in
                 guard let self = self else { return }
                 let error = InternalError(code: code.rawValue, message: message)
                 manager.onError(error)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+                    guard let self = self else { return }
+                    routerManager.router(action: .exit)
+                }
             }
-            showEndView()
+        } else {
+            coreView.stopLiveStream() { [weak self] statisticsData in
+                guard let self = self else { return }
+                manager.onStopLive()
+                showEndView(with: statisticsData)
+            } onError: { [weak self] code, message in
+                guard let self = self else { return }
+                let error = InternalError(code: code.rawValue, message: message)
+                manager.onError(error)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+                    guard let self = self else { return }
+                    routerManager.router(action: .exit)
+                }
+            }
         }
     }
 
-    func showEndView() {
+    func showEndView(with statisticsData: TUILiveStatisticsData) {
         anchorObserverState.update { [weak self] state in
             guard let self = self else { return }
             state.duration = abs(Int(Date().timeIntervalSince1970 - Double(manager.roomState.createTime / 1_000)))
-            state.viewCount = manager.roomState.liveExtraInfo.maxAudienceCount
-            state.giftTotalCoins = manager.roomState.liveExtraInfo.giftTotalCoins
-            state.giftTotalUniqueSender = manager.roomState.liveExtraInfo.giftTotalUniqueSender
-            state.likeTotalUniqueSender = manager.roomState.liveExtraInfo.likeTotalUniqueSender
+            state.viewCount = statisticsData.totalViewers
+            state.giftTotalCoins = statisticsData.totalGiftCoins
+            state.giftTotalUniqueSender = statisticsData.totalUniqueGiftSenders
+            state.likeTotalUniqueSender = statisticsData.totalLikesReceived
             state.messageCount = barrageDisplayView.getBarrageCount()
             manager.onEndLivingSubject.send(state)
         }
@@ -549,6 +540,7 @@ extension AnchorLivingView: GiftPlayViewDelegate {
 
 fileprivate extension String {
     static let confirmCloseText = internalLocalized("End Live")
+    static let confirmExitText = internalLocalized("Exit Live")
     static let meText = internalLocalized("Me")
     
     static let endLiveOnConnectionText = internalLocalized("You are currently co-hosting with other streamers. Would you like to [End Co-host] or [End Live] ?")

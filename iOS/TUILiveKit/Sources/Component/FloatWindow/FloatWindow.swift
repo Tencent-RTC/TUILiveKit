@@ -63,7 +63,7 @@ extension FloatWindow {
             controller.dismiss(animated: true)
         }
         
-        coreView.removeFromSuperview()
+        coreView.safeRemoveFromSuperview()
         
         let floatView = FloatView(contentView: coreView)
         floatView.layoutSubviews()
@@ -130,7 +130,7 @@ private extension FloatWindow {
     func dismiss() {
         controller = nil
         coreView = nil
-        floatView?.removeFromSuperview()
+        floatView?.safeRemoveFromSuperview()
         floatView = nil
         isShow = false
         TUIRoomEngine.sharedInstance().removeObserver(self)
@@ -141,7 +141,7 @@ private extension FloatWindow {
         let roomState: RoomState = coreView.getState()
         let userState: UserState = coreView.getState()
         if roomState.ownerInfo.userId == userState.selfInfo.userId {
-            coreView.stopLiveStream() {} onError: { _, _ in }
+            coreView.stopLiveStream() {_ in} onError: { _, _ in }
         } else {
             coreView.leaveLiveStream() {} onError: { _, _ in }
         }

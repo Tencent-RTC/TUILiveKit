@@ -46,17 +46,8 @@ class AudienceCoGuestView: UIView {
     
     private lazy var userInfoView = AudienceUserStatusView(userInfo: userInfo, manager: manager)
     
-    private lazy var avatarImageView: UIImageView = {
-        let imageView = UIImageView(frame: .zero)
-        imageView.layer.cornerRadius = 40.scale375() * 0.5
-        imageView.layer.masksToBounds = true
-        imageView.isHidden = true
-        return imageView
-    }()
-    
     private func constructViewHierarchy() {
         addSubview(userInfoView)
-        addSubview(avatarImageView)
     }
 
     private func activateConstraints() {
@@ -66,23 +57,14 @@ class AudienceCoGuestView: UIView {
             make.leading.equalToSuperview().offset(5)
             make.width.lessThanOrEqualTo(self).multipliedBy(0.9)
         }
-        avatarImageView.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-            make.width.equalTo(40.scale375())
-            make.height.equalTo(40.scale375())
-        }
     }
     
     private func initViewState() {
-        avatarImageView.kf.setImage(with: URL(string: userInfo.avatarUrl),
-                                    placeholder: UIImage.avatarPlaceholderImage)
-        if userInfo.userId == manager.coreUserState.selfInfo.userId  ||
-            (userInfo.userId == manager.coreRoomState.ownerInfo.userId &&
-             manager.coGuestState.coGuestStatus == .none) {
+        if manager.coreCoHostState.connectedUserList.count > 1 || manager.coreCoGuestState.connectedUserList.count > 1 {
+            userInfoView.isHidden = false
+        } else {
             userInfoView.isHidden = true
         }
-        let hasVideo = manager.coreUserState.hasVideoStreamUserList.contains(userInfo.userId)
-        avatarImageView.isHidden = hasVideo || userInfo.hasVideoStream || !isEnteredRoom()
     }
     
     @objc private func handleTap() {
@@ -101,19 +83,6 @@ class AudienceCoGuestView: UIView {
 
 extension AudienceCoGuestView {
     func subscribeState() {
-        manager.subscribeCoreViewState(StateSelector(keyPath: \UserState.hasVideoStreamUserList))
-            .receive(on: RunLoop.main)
-            .removeDuplicates()
-            .sink { [weak self] userIdList in
-                guard let self = self else { return }
-                if userIdList.contains(self.userInfo.userId) || self.userInfo.hasVideoStream || !isEnteredRoom() {
-                    avatarImageView.isHidden = true
-                } else {
-                    avatarImageView.isHidden = false
-                }
-            }
-            .store(in: &cancellableSet)
-        
         FloatWindow.shared.subscribeShowingState()
             .receive(on: RunLoop.main)
             .removeDuplicates()

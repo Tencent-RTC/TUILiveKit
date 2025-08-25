@@ -213,20 +213,6 @@ extension NetWorkInfoManager: TRTCCloudDelegate {
                 state.audioState = .normal
             }
         }
-
-        if bigStreamStats.audioBitrate > 4 && bigStreamStats.audioBitrate <= 16 {
-            state.update { state in
-                state.audioQuality = .speech
-            }
-        } else if bigStreamStats.audioBitrate > 16 && bigStreamStats.audioBitrate < 127 {
-            state.update { state in
-                state.audioQuality = .default
-            }
-        } else if bigStreamStats.audioBitrate >= 128{
-            state.update { state in
-                state.audioQuality = .music
-            }
-        }
     }
 }
 

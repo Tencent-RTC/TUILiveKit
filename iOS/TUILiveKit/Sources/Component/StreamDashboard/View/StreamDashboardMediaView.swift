@@ -132,8 +132,7 @@ extension StreamDashboardMediaView {
     }
     
     private func removePageControl() {
-        guard pageControl.superview != nil else { return }
-        pageControl.removeFromSuperview()
+        pageControl.safeRemoveFromSuperview()
     }
 }
 

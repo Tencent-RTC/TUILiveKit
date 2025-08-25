@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 import RTCCommon
 
+#if DEV_MODE
 class TestToolListWindow: UIWindow {
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .grouped)
@@ -74,3 +75,4 @@ extension TestToolListWindow: UITableViewDataSource, UITableViewDelegate {
         return cell
     }
 }
+#endif

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import RTCCommon
 
 enum VRFeatureItemType {
     case singleImage
@@ -228,7 +229,7 @@ class VRFeatureClickPanel: UIView {
     func updateVRFeatureItems(newItems: [VRFeatureItem]) {
         model.items = newItems
         for subview in subviews {
-            subview.removeFromSuperview()
+            subview.safeRemoveFromSuperview()
         }
         setView()
     }

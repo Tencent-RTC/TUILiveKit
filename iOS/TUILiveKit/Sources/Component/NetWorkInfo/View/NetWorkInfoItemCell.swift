@@ -83,6 +83,15 @@ class NetWorkInfoItemCell: UITableViewCell {
         slider.isHidden = true
         return slider
     }()
+    
+    private lazy var volumeLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont(name: "pingFangSC-Regular", size: 12)
+        label.textColor = UIColor.white.withAlphaComponent(0.55)
+        label.text = "100"
+        label.isHidden = true
+        return label
+    }()
 
     private var type: NetWorkInfoItemViewType?
     var onRightComponentsTapped: (() -> Void)?
@@ -201,10 +210,16 @@ class NetWorkInfoItemCell: UITableViewCell {
             rightComponentsView.addSubview(arrowIcon)
             slider.snp.makeConstraints { make in
                 make.left.equalTo(titleLabel)
-                make.width.equalTo(280.scale375())
+                make.width.equalTo(270.scale375())
                 make.top.equalTo(detailLabel.snp.bottom).offset(12.scale375())
                 make.height.equalTo(20.scale375())
-                make.bottom.equalToSuperview().offset(-12.scale375())
+            }
+            
+            contentView.addSubview(volumeLabel)
+            volumeLabel.snp.makeConstraints { make in
+                make.left.equalTo(slider.snp.right).offset(4.scale375())
+                make.centerY.equalTo(slider)
+                make.right.lessThanOrEqualToSuperview().offset(-16.scale375())
             }
             arrowIcon.snp.makeConstraints { make in
                 make.left.equalTo(rightLabel.snp.right)
@@ -246,11 +261,13 @@ class NetWorkInfoItemCell: UITableViewCell {
         rightComponentsView.isHidden = !showDetail
         let shouldShowSlider = type == .audio && showDetail
         slider.isHidden = !shouldShowSlider
+        volumeLabel.isHidden = !shouldShowSlider
         updateConstraintsForSlider(hasSlider: shouldShowSlider)
     }
 
     func updateSliderValue(_ value: Float) {
         slider.value = value
+        volumeLabel.text = "\(Int(value))"
     }
 
     func updateContent(title: String? = nil,

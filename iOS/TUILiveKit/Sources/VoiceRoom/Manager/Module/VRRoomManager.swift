@@ -65,24 +65,14 @@ extension VRRoomManager {
         }
     }
     
-    func onJoinVoiceRoom(roomInfo: TUIRoomInfo) {
-        update(roomInfo: roomInfo)
+    func onJoinVoiceRoom(liveInfo: TUILiveInfo) {
         guard let context = context else { return }
-        if context.coreUserState.selfInfo.userId != roomInfo.ownerId {
-            fetchLiveInfo(roomId: roomInfo.roomId)
-        }
+        update(liveInfo: liveInfo)
     }
     
-    func onStartVoiceRoom(roomInfo: TUIRoomInfo) {
+    func onStartVoiceRoom(liveInfo: TUILiveInfo) {
         guard let context = context else { return }
-        update(roomInfo: roomInfo)
-        
-        let liveInfo = TUILiveInfo()
-        liveInfo.roomInfo.roomId = context.roomManager.state.roomId
-        liveInfo.coverUrl = context.roomManager.state.coverURL
-        liveInfo.backgroundUrl = context.roomManager.state.backgroundURL
-        liveInfo.categoryList = [NSNumber(value: context.roomManager.state.liveExtraInfo.category.rawValue)]
-        liveInfo.isPublicVisible = context.roomManager.state.liveExtraInfo.liveMode == .public
+        update(liveInfo: liveInfo)
         setLiveInfo(liveInfo: liveInfo, modifyFlag: [.coverUrl, .publish, .category, .backgroundUrl])
     }
     
@@ -144,39 +134,12 @@ extension VRRoomManager {
 
 // MARK: - VRRoomManagerInterface
 extension VRRoomManager {
-    private func fetchRoomInfo() {
-        Task {
-            do {
-                guard let service = service else { return }
-                let roomInfo = try await service.fetchRoomInfo()
-                update { state in
-                    state.roomId = roomInfo.roomId
-                    state.roomName = roomInfo.name
-                    state.createTime = roomInfo.createTime
-                    state.roomInfo = roomInfo
-                }
-            } catch let error as InternalError {
-                toastSubject.send(error.localizedMessage)
-            }
-        }
-    }
     
     private func fetchLiveInfo(roomId: String) {
         Task {
             do {
                 guard let service = service else { return }
                 let liveInfo = try await service.fetchLiveInfo(roomId: roomId)
-                if let categoryValue = liveInfo.categoryList.first?.intValue,
-                   let category = LiveStreamCategory(rawValue: categoryValue) {
-                    update { state in
-                        state.liveExtraInfo.category = category
-                    }
-                }
-                update { state in
-                    state.coverURL = liveInfo.coverUrl
-                    state.liveExtraInfo.liveMode = liveInfo.isPublicVisible ? .public : .privacy
-                    state.backgroundURL = liveInfo.backgroundUrl
-                }
             } catch let error as InternalError {
                 toastSubject.send(error.localizedMessage)
             }
@@ -223,12 +186,14 @@ extension VRRoomManager {
         }
     }
     
-    private func update(roomInfo: TUIRoomInfo) {
+    private func update(liveInfo: TUILiveInfo) {
         update { state in
-            state.roomId = roomInfo.roomId
-            state.roomName = roomInfo.name
-            state.createTime = roomInfo.createTime
-            state.roomInfo = roomInfo
+            state.roomId = liveInfo.roomId
+            state.roomName = liveInfo.name
+            state.createTime = liveInfo.createTime
+            state.liveInfo = liveInfo
+            state.backgroundURL = liveInfo.backgroundUrl
+            state.coverURL = liveInfo.coverUrl
         }
     }
 }

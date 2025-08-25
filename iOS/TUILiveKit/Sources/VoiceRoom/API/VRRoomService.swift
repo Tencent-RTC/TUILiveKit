@@ -21,23 +21,6 @@ class VRRoomService: BaseServiceProtocol {
         debugPrint("deinit \(type(of: self))")
     }
     
-    func fetchRoomInfo() async throws -> TUIRoomInfo {
-        return try await withCheckedThrowingContinuation { [weak self] continuation in
-            guard let self = self else { return }
-            self.roomEngine.fetchRoomInfo { roomInfo in
-                guard let roomInfo = roomInfo else {
-                    let error = InternalError(code: ErrorLocalized.generalErrorCode, message: "fetch room info fail.")
-                    continuation.resume(throwing: error)
-                    return
-                }
-                continuation.resume(returning: roomInfo)
-            } onError: { err, message in
-                let error = InternalError(code: err.rawValue, message: message)
-                continuation.resume(throwing: error)
-            }
-        }
-    }
-    
     func fetchRoomOwnerInfo(ownerId: String) async throws -> TUIUserInfo {
         return try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self else { return }

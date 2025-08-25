@@ -47,21 +47,6 @@ class AnchorService {
 
 // MARK: - RoomAPI
 extension AnchorService {
-    func syncLiveInfoToService(liveInfo: TUILiveInfo, modifyFlag: TUILiveModifyFlag) async throws {
-        return try await withCheckedThrowingContinuation { [weak self] continuation in
-            guard let self = self, let liveListManager = liveListManager else {
-                let error = InternalError(code: ErrorLocalized.generalErrorCode, message: "get LiveListManager error")
-                continuation.resume(throwing: error)
-                return
-            }
-            liveListManager.setLiveInfo(liveInfo, modifyFlag: modifyFlag) {
-                continuation.resume()
-            } onError: { code, message in
-                continuation.resume(throwing: InternalError(code: code.rawValue, message: message))
-            }
-        }
-    }
-    
     func fetchLiveInfo(roomId: String) async throws -> TUILiveInfo {
         return try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self, let liveListManager = liveListManager else {

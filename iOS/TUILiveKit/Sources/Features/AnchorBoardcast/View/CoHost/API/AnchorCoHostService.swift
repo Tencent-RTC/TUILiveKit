@@ -11,6 +11,7 @@ import LiveStreamCore
 
 protocol AnchorCoHostService {
     func fetchRecommendedList(cursor: String, count: Int) async throws -> (String, [TUILiveInfo])
+    func setCoHostlayoutTemplateId(_ id: Int)
 }
 
 class AnchorCoHostServiceImpl {
@@ -41,6 +42,21 @@ extension AnchorCoHostServiceImpl: AnchorCoHostService {
                 continuation.resume(returning: (responseCursor, responseLiveList))
             } onError: { error, message in
                 continuation.resume(throwing: InternalError(code: error.rawValue, message: message))
+            }
+        }
+    }
+    
+    func setCoHostlayoutTemplateId(_ id: Int) {
+        let obj: [String: Any] = [
+            "api": "setCoHostLayoutTemplateId",
+            "params": [
+                "templateId": id,
+            ]
+        ]
+        if let jsonData = try? JSONSerialization.data(withJSONObject: obj, options: []),
+           let jsonString = String(data: jsonData, encoding: .utf8) {
+            roomEngine.callExperimentalAPI(jsonStr: jsonString) { res in
+                
             }
         }
     }

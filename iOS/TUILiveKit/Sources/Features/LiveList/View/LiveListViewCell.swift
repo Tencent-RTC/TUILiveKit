@@ -72,7 +72,7 @@ class LiveListViewCell: UICollectionViewCell {
     }
     
     func removeBlurEffect() {
-        blurView.removeFromSuperview()
+        blurView.safeRemoveFromSuperview()
     }
     
     func updateView(liveInfo: LiveInfo) {

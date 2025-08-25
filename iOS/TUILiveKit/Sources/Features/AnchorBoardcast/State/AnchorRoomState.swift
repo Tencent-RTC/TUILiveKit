@@ -9,13 +9,14 @@ import RTCRoomEngine
 
 struct AnchorRoomState {
     var roomId: String = ""
-    var roomInfo: TUIRoomInfo = TUIRoomInfo()
+    var liveInfo: TUILiveInfo = TUILiveInfo()
     var createTime: UInt = 0
     var roomName: String = ""
     var coverURL: String = ""
     var userCount: Int = 0
     var liveStatus: LiveStatus = .none
     var liveExtraInfo: AnchorLiveExtraInfo = AnchorLiveExtraInfo()
+    var pkTemplateId: Int = 0
     
     struct AnchorLiveExtraInfo: Codable {
         var liveMode: LiveStreamPrivacyStatus = .public

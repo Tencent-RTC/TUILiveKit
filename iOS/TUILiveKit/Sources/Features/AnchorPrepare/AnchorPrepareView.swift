@@ -38,7 +38,7 @@ public class AnchorPrepareView: UIView {
         return view
     }()
     
-    private lazy var state = PrepareState(roomName: getDefaultRoomName(), coverUrl: Constants.URL.defaultCover, privacyMode: .public)
+    private lazy var state = PrepareState(roomName: getDefaultRoomName(), coverUrl: Constants.URL.defaultCover, privacyMode: .public, templateMode: .verticalGridDynamic, pkTemplateMode: .verticalGridDynamic)
     
     private lazy var editView = LSLiveInfoEditView(state: &state)
     
@@ -68,6 +68,13 @@ public class AnchorPrepareView: UIView {
                                         actionClosure: { [weak self] _ in
             guard let self = self else { return }
             self.flipClick()
+        }))
+        items.append(PrepareFeatureItem(normalTitle: .layouteText,
+                                       normalImage: internalImage("layoutSetting"),
+                                       designConfig: designConfig,
+                                        actionClosure: { [weak self] _ in
+            guard let self = self else { return }
+            layoutClick()
         }))
         return items
     }()
@@ -490,6 +497,31 @@ extension AnchorPrepareView {
         let mediaState: MediaState = coreView.getState()
         coreView.switchCamera(isFront: !mediaState.isFrontCamera)
     }
+    
+    private func layoutClick() {
+        let view = TemplateSelectionView(defaultMode: state.templateMode, defaultPkMode: state.pkTemplateMode, frame: .zero)
+        view.onSelectMode = { [weak self] mode in
+            guard let self = self else { return }
+            state.templateMode = mode
+        }
+        view.onSelectPkMode = { [weak self] mode in
+            guard let self = self else { return }
+            state.pkTemplateMode = mode
+        }
+        view.onCloseClosure = { [weak self] in
+            guard let self = self else { return }
+            self.popupViewController?.dismiss(animated: true)
+        }
+        let menuContainerView = MenuContainerView(contentView: view, safeBottomViewBackgroundColor: .black)
+        let popupViewController = PopupViewController(contentView: menuContainerView, supportBlurView: false)
+        menuContainerView.blackAreaClickClosure = { [weak self] in
+            guard let self = self else { return }
+            self.popupViewController?.dismiss(animated: true)
+        }
+        guard let presentingViewController = getCurrentViewController() else { return }
+        presentingViewController.present(popupViewController, animated: true)
+        self.popupViewController = popupViewController
+    }
 }
 
 // ** Only should use for test **
@@ -516,4 +548,5 @@ private extension String {
     static let beautyText: String = internalLocalized("Beauty")
     static let audioText: String = internalLocalized("Audio")
     static let flipText: String = internalLocalized("Flip")
+    static let layouteText: String = internalLocalized("Layout")
 }

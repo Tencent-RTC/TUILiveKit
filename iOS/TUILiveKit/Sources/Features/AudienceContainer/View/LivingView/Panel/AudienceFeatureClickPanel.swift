@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import RTCCommon
 
 enum AudienceFeatureItemType {
     case singleImage
@@ -233,7 +234,7 @@ class AudienceFeatureClickPanel: UIView {
     func updateFeatureItems(newItems: [AudienceFeatureItem]) {
         model.items = newItems
         for subview in subviews {
-            subview.removeFromSuperview()
+            subview.safeRemoveFromSuperview()
         }
         setView()
     }

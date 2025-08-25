@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import RTCCommon
 
 enum PrepareFeatureItemType {
     case singleImage
@@ -233,7 +234,7 @@ class PrepareFeatureClickPanel: UIView {
     func updateFeatureItems(newItems: [PrepareFeatureItem]) {
         model.items = newItems
         for subview in subviews {
-            subview.removeFromSuperview()
+            subview.safeRemoveFromSuperview()
         }
         setView()
     }
