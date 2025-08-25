@@ -28,12 +28,14 @@ public class TypeSelectDialog extends PopupDialog implements AudienceManager.Aud
     private final LiveCoreView     mLiveStream;
     private final AudienceManager  mAudienceManager;
     private final Context          mContext;
+    private final int              mSeatIndex;
 
-    public TypeSelectDialog(@NonNull Context context, AudienceManager manager, LiveCoreView liveStream) {
+    public TypeSelectDialog(@NonNull Context context, AudienceManager manager, LiveCoreView liveStream, int index) {
         super(context);
         mContext = context;
         mAudienceManager = manager;
         mLiveStream = liveStream;
+        mSeatIndex = index;
         initView();
     }
 
@@ -98,7 +100,7 @@ public class TypeSelectDialog extends PopupDialog implements AudienceManager.Aud
 
     private void applyLinkMic(boolean openCamera) {
         ToastUtil.toastShortMessageCenter(getContext().getString(R.string.common_toast_apply_link_mic));
-        mLiveStream.requestIntraRoomConnection("", 60, openCamera, new TUIRoomDefine.ActionCallback() {
+        mLiveStream.requestIntraRoomConnection("", mSeatIndex, 60, openCamera, new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
                 mAudienceManager.getCoGuestManager().updateCoGuestStates(APPLYING);

@@ -18,23 +18,33 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
+import com.tencent.qcloud.tuicore.TUIConstants;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.TUILogin;
+import com.tencent.qcloud.tuicore.util.SPUtils;
 import com.trtc.tuikit.common.FullScreenActivity;
 import com.trtc.tuikit.common.util.ToastUtil;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.LiveIdentityGenerator;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.component.pictureinpicture.PictureInPictureStore;
 import com.trtc.uikit.livekit.features.livelist.LiveListView;
 import com.trtc.uikit.livekit.features.livelist.LiveListViewDefine;
 import com.trtc.uikit.livekit.voiceroom.VoiceRoomKit;
 
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
 public class VideoLiveListActivity extends FullScreenActivity {
     public static final String  EVENT_ADVANCE_SETTING_EXTENSION         = "AdvanceSettingExtension";
     public static final String  EVENT_SUB_KEY_SHOW_ADVANCE_SETTING_VIEW = "showAdvanceSettingView";
     public static final String  EVENT_SUB_KEY_HIDE_ADVANCE_SETTING_VIEW = "hideAdvanceSettingView";
-    private             boolean isAdvanceSettingsViewVisible            = false;
 
+    private static final String  EVENT_SUB_KEY_REAL_NAME_VERIFY         = "eventRealNameVerify";
+    private             boolean  isAdvanceSettingsViewVisible           = false;
+
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getComponentLogger("VideoLiveListActivity");
     private LiveListViewDefine.Style mStyle = LiveListViewDefine.Style.DOUBLE_COLUMN;
     private ConstraintLayout         mMainLayout;
     private LiveListView             mLiveListView;
@@ -96,7 +106,7 @@ public class VideoLiveListActivity extends FullScreenActivity {
                 return;
             }
             if (PictureInPictureStore.sharedInstance().getState().anchorIsPictureInPictureMode) {
-                if (PictureInPictureStore.sharedInstance().getState().roomId.getValue().equals(liveInfo.roomInfo.roomId)) {
+                if (TextUtils.equals(PictureInPictureStore.sharedInstance().getState().roomId.getValue(), liveInfo.roomInfo.roomId)) {
                     VideoLiveKit.createInstance(this).startLive(liveInfo.roomInfo.roomId);
                 } else {
                     ToastUtil.toastShortMessage(getString(R.string.common_exit_float_window_tip));
@@ -144,16 +154,39 @@ public class VideoLiveListActivity extends FullScreenActivity {
 
     private void initStartLiveView() {
         mStartLiveView.setOnClickListener(view -> {
-            LiveIdentityGenerator identityGenerator = LiveIdentityGenerator.getInstance();
-            String roomId = identityGenerator.generateId(TUILogin.getUserId(), LiveIdentityGenerator.RoomType.LIVE);
-            VideoLiveKit.createInstance(getApplicationContext()).startLive(roomId);
+            if (this.getPackageName().equals("com.tencent.trtc")) {
+                realNameVerifyAndStartLive();
+                return;
+            }
+            startVideoLive();
         });
+    }
+
+    private void realNameVerifyAndStartLive() {
+        if (!Locale.CHINA.equals(getResources().getConfiguration().locale) || SPUtils.getInstance("sp_verify").getBoolean("sp_verify", false)) {
+            startVideoLive();
+        } else {
+            try {
+                Map<String, Object> map = new HashMap<>();
+                map.put(TUIConstants.Privacy.PARAM_DIALOG_CONTEXT, this);
+                TUICore.notifyEvent(TUIConstants.Privacy.EVENT_ROOM_STATE_CHANGED, EVENT_SUB_KEY_REAL_NAME_VERIFY, map);
+            } catch (Exception e) {
+                LOGGER.error("real name verify fail, exception:" + e.getMessage());
+            }
+        }
+    }
+
+    private void startVideoLive() {
+        LiveIdentityGenerator identityGenerator = LiveIdentityGenerator.getInstance();
+        String roomId = identityGenerator.generateId(TUILogin.getUserId(), LiveIdentityGenerator.RoomType.LIVE);
+        VideoLiveKit.createInstance(getApplicationContext()).startLive(roomId);
     }
 
     private void initBackButton() {
         findViewById(R.id.iv_back).setOnClickListener(v -> {
             hideAdvanceSettingView();
-            if (PictureInPictureStore.sharedInstance().getState().anchorIsPictureInPictureMode) {
+            if (PictureInPictureStore.sharedInstance().getState().anchorIsPictureInPictureMode
+                    || PictureInPictureStore.sharedInstance().getState().audienceIsPictureInPictureMode) {
                 Intent homeIntent = new Intent(Intent.ACTION_MAIN);
                 homeIntent.addCategory(Intent.CATEGORY_HOME);
                 homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -166,7 +199,8 @@ public class VideoLiveListActivity extends FullScreenActivity {
 
     @Override
     public void onBackPressed() {
-        if (PictureInPictureStore.sharedInstance().getState().anchorIsPictureInPictureMode) {
+        if (PictureInPictureStore.sharedInstance().getState().anchorIsPictureInPictureMode
+                || PictureInPictureStore.sharedInstance().getState().audienceIsPictureInPictureMode) {
             Intent homeIntent = new Intent(Intent.ACTION_MAIN);
             homeIntent.addCategory(Intent.CATEGORY_HOME);
             homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

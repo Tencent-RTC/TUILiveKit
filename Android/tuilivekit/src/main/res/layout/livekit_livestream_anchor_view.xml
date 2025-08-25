@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black">
+    android:background="@color/common_black">
 
     <com.trtc.uikit.livekit.common.ui.RoundFrameLayout
         android:id="@+id/fl_video_view_container"
@@ -26,11 +26,12 @@
 
         <com.trtc.uikit.livekit.component.barrage.BarrageStreamView
             android:id="@+id/barrage_stream_view"
-            android:layout_width="305dp"
+            android:layout_width="match_parent"
+            android:layout_marginEnd="126dp"
             android:layout_height="206dp"
             android:layout_gravity="bottom"
             android:layout_marginStart="12dp"
-            android:layout_marginBottom="96dp" />
+            android:layout_marginBottom="126dp" />
 
         <com.trtc.uikit.livekit.component.gift.GiftPlayView
             android:id="@+id/gift_play_view"

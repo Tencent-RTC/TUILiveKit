@@ -194,8 +194,8 @@
     <string name="common_sent">送給</string>
     <string name="common_main_item_video_live">在線直播</string>
     <string name="common_go_live">開直播</string>
-    <string name="common_main_item_ktv_room">KTV</string>
     <string name="common_main_item_voice_room">語聊房</string>
+    <string name="common_main_item_ktv_room">KTV</string>
     <string name="common_server_error_already_on_the_mic">已經處於麥上狀態</string>
     <string name="common_server_error_already_on_the_mic_queue">已經處於排麥狀態</string>
     <string name="common_server_error_battle_does_not_exist_or_has_ended">該場次 battle 不存在或已結束</string>
@@ -314,4 +314,15 @@
     <string name="common_switch_network">切換網路</string>
     <string name="common_picture_in_picture_android_system_tips">Android 8.0以下的系統不支援畫中畫功能</string>
     <string name="common_exit_float_window_tip">正在直播中，請稍後再試。</string>
+    <string name="common_wait_connection">等待連線</string>
+    <string name="common_apply_connection">申請連線</string>
+    <string name="common_template_select">模板選擇:</string>
+    <string name="common_template_dynamic_grid">動態宮格</string>
+    <string name="common_template_dynamic_float">浮動小窗</string>
+    <string name="common_template_static_grid">靜態宮格</string>
+    <string name="common_template_static_float">固定小窗</string>
+    <string name="common_template_layout_settings">佈局設定</string>
+    <string name="common_template_layout_co_guest">連觀眾佈置</string>
+    <string name="common_template_layout_co_host">主播PK佈局</string>
+    <string name="common_template_layout">佈局</string>
 </resources>

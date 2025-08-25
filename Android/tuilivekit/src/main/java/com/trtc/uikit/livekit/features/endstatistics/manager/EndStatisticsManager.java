@@ -1,26 +1,18 @@
 package com.trtc.uikit.livekit.features.endstatistics.manager;
 
-import com.trtc.uikit.livekit.features.endstatistics.EndStatisticsDefine.EndStatisticsViewState;
 import com.trtc.uikit.livekit.features.endstatistics.state.EndStatisticsState;
-import com.trtc.uikit.livekit.features.endstatistics.state.mediator.EndStatisticsStateMediator;
 
 import java.util.Locale;
 
 public class EndStatisticsManager {
-    private final EndStatisticsState     mInternalState = new EndStatisticsState();
-    private final EndStatisticsViewState mExternalState = new EndStatisticsViewState();
+    private final EndStatisticsState mInternalState = new EndStatisticsState();
 
     public EndStatisticsManager() {
-        EndStatisticsStateMediator stateMediator = new EndStatisticsStateMediator(mInternalState);
-        mExternalState.exitClick = stateMediator.exitClick;
+
     }
 
     public EndStatisticsState getState() {
         return mInternalState;
-    }
-
-    public EndStatisticsViewState getExternalState() {
-        return mExternalState;
     }
 
     public void setRoomId(String roomId) {
@@ -57,10 +49,6 @@ public class EndStatisticsManager {
 
     public void setGiftSenderCount(long count) {
         mInternalState.giftSenderCount.setValue(count);
-    }
-
-    public void setExitClick(boolean click) {
-        mInternalState.exitClick.setValue(click);
     }
 
     public String formatSeconds(int timeSeconds) {

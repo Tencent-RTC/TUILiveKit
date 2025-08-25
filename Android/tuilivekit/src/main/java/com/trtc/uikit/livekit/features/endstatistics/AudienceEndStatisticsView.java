@@ -29,6 +29,8 @@ public class AudienceEndStatisticsView extends FrameLayout {
     private TextView        mTextName;
     private ImageFilterView mImageHead;
 
+    private EndStatisticsDefine.AudienceEndStatisticsViewListener mListener;
+
     public AudienceEndStatisticsView(@NonNull Context context) {
         this(context, null);
     }
@@ -52,8 +54,8 @@ public class AudienceEndStatisticsView extends FrameLayout {
         LOGGER.info("init, " + mState.toString());
     }
 
-    public EndStatisticsDefine.EndStatisticsViewState getState() {
-        return mManager.getExternalState();
+    public void setListener(EndStatisticsDefine.AudienceEndStatisticsViewListener listener) {
+        mListener = listener;
     }
 
     @Override
@@ -79,7 +81,9 @@ public class AudienceEndStatisticsView extends FrameLayout {
     }
 
     private void onExitClick() {
-        mManager.setExitClick(true);
+        if (mListener != null) {
+            mListener.onCloseButtonClick();
+        }
     }
 
     private void onOwnerNameChange(String name) {

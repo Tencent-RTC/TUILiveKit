@@ -2,13 +2,14 @@ package com.trtc.uikit.livekit.voiceroom.state;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.voiceroom.manager.api.Constants;
 
 public class RoomState {
     public String                                  roomId        = "";
-    public TUIRoomDefine.RoomInfo                  roomInfo      = new TUIRoomDefine.RoomInfo();
+    public TUILiveListManager.LiveInfo             liveInfo      = new TUILiveListManager.LiveInfo();
     public long                                    createTime    = 0;
     public TUIRoomDefine.UserInfo                  ownerInfo     = new TUIRoomDefine.UserInfo();
     public MutableLiveData<String>                 roomName      = new MutableLiveData<>("");
@@ -33,18 +34,18 @@ public class RoomState {
         liveExtraInfo = new LiveExtraInfo();
     }
 
-    public void updateState(TUIRoomDefine.RoomInfo roomInfo) {
-        this.roomId = roomInfo.roomId;
-        if (roomInfo.createTime != 0) {
-            this.createTime = roomInfo.createTime;
+    public void updateState(TUILiveListManager.LiveInfo liveInfo) {
+        this.roomId = liveInfo.roomId;
+        if (liveInfo.createTime != 0) {
+            this.createTime = liveInfo.createTime;
         } else {
             this.createTime = System.currentTimeMillis();
         }
-        this.roomName.setValue(roomInfo.name);
-        this.seatMode.setValue(roomInfo.seatMode);
-        this.ownerInfo.userId = roomInfo.ownerId;
-        this.maxSeatCount.setValue(roomInfo.maxSeatCount);
-        this.roomInfo = roomInfo;
+        this.roomName.setValue(liveInfo.name);
+        this.seatMode.setValue(liveInfo.seatMode);
+        this.ownerInfo.userId = liveInfo.ownerId;
+        this.maxSeatCount.setValue(liveInfo.maxSeatCount);
+        this.liveInfo = liveInfo;
     }
 
     public enum LiveStatus {

@@ -4,6 +4,9 @@ import static com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.KickedOutOfRoom
 import static com.trtc.uikit.livekit.features.audiencecontainer.manager.Constants.EVENT_KEY_LIVE_KIT;
 import static com.trtc.uikit.livekit.features.audiencecontainer.manager.Constants.EVENT_SUB_KEY_DESTROY_AUDIENCE_CONTAINER;
 
+import android.text.TextUtils;
+
+import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
@@ -17,8 +20,8 @@ public class RoomManager extends BaseManager {
         super(state, service);
     }
 
-    public void updateRoomState(TUIRoomDefine.RoomInfo roomInfo) {
-        mRoomState.roomInfo = roomInfo;
+    public void updateRoomState(TUILiveListManager.LiveInfo liveInfo) {
+        mRoomState.liveInfo = liveInfo;
     }
 
     public void onKickedOutOfRoom(String roomId, TUIRoomDefine.KickedOutOfRoomReason reason) {
@@ -33,7 +36,7 @@ public class RoomManager extends BaseManager {
     }
 
     public void onLiveVideoLayoutChanged(String roomId, int width, int height) {
-        if (!mRoomState.roomInfo.roomId.equals(roomId)) {
+        if (!TextUtils.equals(roomId, mRoomState.liveInfo.roomId)) {
             return;
         }
         boolean isLandscape = width >= height;

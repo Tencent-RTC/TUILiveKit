@@ -13,9 +13,6 @@
 
     <application>
         <activity
-            android:name=".ktv.KTVRoomListActivity"
-            android:exported="false" />
-        <activity
             android:name=".livestream.VideoLiveListActivity"
             android:exported="true"
             android:launchMode="singleTask"

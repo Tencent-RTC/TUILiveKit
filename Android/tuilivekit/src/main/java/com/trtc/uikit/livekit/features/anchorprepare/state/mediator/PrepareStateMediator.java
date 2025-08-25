@@ -13,6 +13,8 @@ public final class PrepareStateMediator {
     public LiveData<String>                                          coverURL;
     public LiveData<AnchorPrepareViewDefine.LiveStreamPrivacyStatus> liveMode;
     public LiveData<String>                                          roomName;
+    public LiveData<Integer>                                         coGuestTemplateId;
+    public LiveData<Integer>                                         coHostTemplateId;
 
     public PrepareStateMediator(AnchorPrepareState state) {
         coverURL = new ReadOnlyLiveData<>(state.coverURL,
@@ -32,6 +34,18 @@ public final class PrepareStateMediator {
                     LOGGER.info(" AnchorPrepareState roomName Change:" + value);
                     return value;
                 });
+
+        coGuestTemplateId = new ReadOnlyLiveData<>(state.coGuestTemplateId,
+                value -> {
+                    LOGGER.info(" AnchorPrepareState coGuestTemplateId Change:" + value);
+                    return value;
+                });
+
+        coHostTemplateId = new ReadOnlyLiveData<>(state.coHostTemplateId,
+                value -> {
+                    LOGGER.info(" AnchorPrepareState coHostTemplateId Change:" + value);
+                    return value;
+                });
     }
 
     public void destroy() {
@@ -39,5 +53,7 @@ public final class PrepareStateMediator {
         ((ReadOnlyLiveData<?>) coverURL).destroy();
         ((ReadOnlyLiveData<?>) liveMode).destroy();
         ((ReadOnlyLiveData<?>) roomName).destroy();
+        ((ReadOnlyLiveData<?>) coGuestTemplateId).destroy();
+        ((ReadOnlyLiveData<?>) coHostTemplateId).destroy();
     }
 }

@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +28,7 @@ import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.Debug;
 import com.trtc.uikit.livekit.features.anchorboardcast.manager.AnchorManager;
 import com.trtc.uikit.livekit.features.anchorboardcast.state.CoHostState;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
@@ -120,9 +122,8 @@ public class AnchorCoHostManageDialog extends PopupDialog implements ITUINotific
                 mTextDisconnect.setVisibility(VISIBLE);
                 mTextConnectedTitle.setVisibility(VISIBLE);
                 mTextConnectedTitle.setVisibility(VISIBLE);
-                mTextConnectedTitle.setText(
-                        String.format(getContext().getString(R.string.common_connection_list_title),
-                                mAnchorManager.getCoreState().coHostState.connectedUserList.getValue().size() - 1));
+                mTextConnectedTitle.setText(getContext().getString(R.string.common_connection_list_title,
+                        mAnchorManager.getCoreState().coHostState.connectedUserList.getValue().size() - 1));
             }
             mAnchorConnectedAdapter.updateData(mAnchorManager.getCoreState().coHostState.connectedUserList.getValue());
             mAnchorConnectedAdapter.notifyDataSetChanged();
@@ -197,10 +198,9 @@ public class AnchorCoHostManageDialog extends PopupDialog implements ITUINotific
         dialog.setContent(getContext().getString(R.string.common_disconnect_tips));
         dialog.setAvatar(null);
 
-        dialog.setNegativeText(getContext().getString(R.string.common_disconnect_cancel),
-                negativeView -> {
-                    dialog.dismiss();
-                });
+        dialog.setNegativeText(getContext().getString(R.string.common_disconnect_cancel), negativeView -> {
+            dialog.dismiss();
+        });
         dialog.setPositiveText(getContext().getString(R.string.common_end_connect), positiveView -> {
             dialog.dismiss();
             disconnect();
@@ -214,8 +214,7 @@ public class AnchorCoHostManageDialog extends PopupDialog implements ITUINotific
 
     @Override
     public void onNotifyEvent(String key, String subKey, Map<String, Object> param) {
-        if (TextUtils.equals(key, EVENT_KEY_LIVE_KIT)
-                && TextUtils.equals(subKey, EVENT_SUB_KEY_REQUEST_CONNECTION)) {
+        if (TextUtils.equals(key, EVENT_KEY_LIVE_KIT) && TextUtils.equals(subKey, EVENT_SUB_KEY_REQUEST_CONNECTION)) {
             if (param == null) {
                 showConnectionErrorToast(TUILiveConnectionManager.ConnectionCode.UNKNOWN);
             } else {

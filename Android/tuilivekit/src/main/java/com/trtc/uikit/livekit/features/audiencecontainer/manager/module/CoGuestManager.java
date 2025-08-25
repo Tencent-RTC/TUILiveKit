@@ -182,7 +182,7 @@ public class CoGuestManager extends BaseManager {
     }
 
     public void onUserConnectionAccepted(String userId) {
-        if (!mRoomState.roomInfo.ownerId.equals(mCoreState.userState.selfInfo.getValue().userId)) {
+        if (!TextUtils.equals(mRoomState.liveInfo.ownerId, mCoreState.userState.selfInfo.getValue().userId)) {
             mCoGuestState.coGuestStatus.setValue(LINKING);
         }
     }

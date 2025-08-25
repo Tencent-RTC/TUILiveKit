@@ -111,7 +111,7 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
             mStreamPresetImagePicker.setOnConfirmListener(imageUrl
                     -> {
                 String backgroundUrl = transferImageUrlFromThumb(imageUrl);
-                mVoiceRoomManager.getRoomManager().setBackgroundURL(backgroundUrl);
+                mVoiceRoomManager.getRoomManager().updateLiveBackgroundURL(backgroundUrl);
             });
         }
         mStreamPresetImagePicker.show();

@@ -27,6 +27,7 @@ public class NetworkInfoView extends FrameLayout {
     private final NetworkInfoState                         mState;
     private       ImageView                                mImageNetworkStatus;
     private       TextView                                 mTextCreateTime;
+    private       NetworkInfoPanel                         mNetworkInfoPanel;
     private       LinearLayout                             mLayoutNetworkInfo;
     private       long                                     mCreateTime              = 0L;
     private       Runnable                                 mLiveTimeRunnable;
@@ -34,6 +35,7 @@ public class NetworkInfoView extends FrameLayout {
             new Handler(Looper.getMainLooper());
     private final Observer<TUICommonDefine.NetworkQuality> mNetWorkQualityObserver  = this::onNetworkQualityChange;
     private final Observer<Boolean>                        mNetworkWeakTipsObserver = this::onNetworkWeakTipsChange;
+    private final Observer<Boolean>                        mRoomDismissedObserver   = this::onRoomRoomDismissed;
 
     public NetworkInfoView(Context context) {
         this(context, null);
@@ -97,19 +99,21 @@ public class NetworkInfoView extends FrameLayout {
         mService.addObserver();
         mState.networkStatus.observeForever(mNetWorkQualityObserver);
         mState.isDisplayNetworkWeakTips.observeForever(mNetworkWeakTipsObserver);
+        mState.roomDismissed.observeForever(mRoomDismissedObserver);
     }
 
     private void removeObserver() {
         mService.removeObserver();
         mState.networkStatus.removeObserver(mNetWorkQualityObserver);
         mState.isDisplayNetworkWeakTips.removeObserver(mNetworkWeakTipsObserver);
+        mState.roomDismissed.removeObserver(mRoomDismissedObserver);
     }
 
     private void initNetworkView() {
         mLayoutNetworkInfo.setOnClickListener(v -> {
-            NetworkInfoPanel networkInfoPanel = new NetworkInfoPanel(mContext, mService,
+            mNetworkInfoPanel = new NetworkInfoPanel(mContext, mService,
                     Boolean.TRUE.equals(mState.isTakeInSeat.getValue()));
-            networkInfoPanel.show();
+            mNetworkInfoPanel.show();
         });
     }
 
@@ -168,6 +172,12 @@ public class NetworkInfoView extends FrameLayout {
         if (isShow) {
             NetworkBadTipsDialog dialog = new NetworkBadTipsDialog(mContext);
             dialog.show();
+        }
+    }
+
+    private void onRoomRoomDismissed(Boolean dismissed) {
+        if (dismissed && mNetworkInfoPanel != null && mNetworkInfoPanel.isShowing()) {
+            mNetworkInfoPanel.dismiss();
         }
     }
 }

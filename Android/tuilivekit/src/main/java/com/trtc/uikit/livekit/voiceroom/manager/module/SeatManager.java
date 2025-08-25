@@ -38,7 +38,6 @@ public class SeatManager extends BaseManager {
                 updateSeatList(list);
                 mSeatState.seatList.setValue(mSeatState.seatList.getValue());
                 updateSelfSeatedState();
-                autoTakeSeatByOwner();
             }
 
             @Override
@@ -84,44 +83,6 @@ public class SeatManager extends BaseManager {
         if (isSelfInSeat()) {
             mSeatState.linkStatus.setValue(SeatState.LinkStatus.LINKING);
         }
-    }
-
-    private void autoTakeSeatByOwner() {
-        if (mUserState.selfInfo.userRole != TUIRoomDefine.Role.ROOM_OWNER) {
-            return;
-        }
-        if (mSeatState.linkStatus.getValue() == SeatState.LinkStatus.LINKING) {
-            return;
-        }
-        mLiveService.takeSeat(-1, 60, new TUIRoomDefine.RequestCallback() {
-            @Override
-            public void onAccepted(String requestId, String userId) {
-                setValue(mSeatState.linkStatus, SeatState.LinkStatus.LINKING);
-            }
-
-            @Override
-            public void onRejected(String requestId, String userId, String message) {
-                mSeatState.linkStatus.setValue(SeatState.LinkStatus.NONE);
-            }
-
-            @Override
-            public void onCancelled(String requestId, String userId) {
-                mSeatState.linkStatus.setValue(SeatState.LinkStatus.NONE);
-            }
-
-            @Override
-            public void onTimeout(String requestId, String userId) {
-                mSeatState.linkStatus.setValue(SeatState.LinkStatus.NONE);
-            }
-
-            @Override
-            public void onError(String requestId, String userId, TUICommonDefine.Error error, String message) {
-                LOGGER.error("takeSeat failed:error:" + error + ",errorCode:" + error.getValue() +
-                        "message:" + message);
-                ErrorLocalized.onError(error);
-                mSeatState.linkStatus.setValue(SeatState.LinkStatus.NONE);
-            }
-        });
     }
 
     private boolean isSelfInSeat() {

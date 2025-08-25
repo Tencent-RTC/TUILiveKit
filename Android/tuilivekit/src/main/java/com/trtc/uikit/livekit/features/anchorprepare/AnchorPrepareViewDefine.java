@@ -9,10 +9,13 @@ public class AnchorPrepareViewDefine {
         public LiveData<String>                  coverURL;
         public LiveData<LiveStreamPrivacyStatus> liveMode;
         public LiveData<String>                  roomName;
+        public LiveData<Integer>                 coGuestTemplateId;
+        public LiveData<Integer>                 coHostTemplateId;
     }
 
     public interface AnchorPrepareViewListener {
         void onClickStartButton();
+
         void onClickBackButton();
     }
 

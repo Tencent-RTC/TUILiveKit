@@ -13,6 +13,7 @@ import static com.trtc.uikit.livekit.features.audiencecontainer.manager.Constant
 import static com.trtc.uikit.livekit.features.audiencecontainer.manager.Constants.EVENT_SUB_KEY_LINK_STATUS_CHANGE;
 import static com.trtc.uikit.livekit.features.audiencecontainer.state.CoGuestState.CoGuestStatus.APPLYING;
 import static com.trtc.uikit.livekit.features.audiencecontainer.state.CoGuestState.CoGuestStatus.LINKING;
+import static com.trtc.uikit.livekit.features.audiencecontainer.state.CoGuestState.CoGuestStatus.NONE;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -43,8 +44,7 @@ import com.tencent.cloud.tuikit.engine.extension.TUILiveBattleManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager.ConnectionUser;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveGiftManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
-import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.GetRoomInfoCallback;
-import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.RoomInfo;
+import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.UserInfo;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.TUIThemeManager;
@@ -86,8 +86,11 @@ import com.trtc.uikit.livekit.features.audiencecontainer.view.coguest.panel.Canc
 import com.trtc.uikit.livekit.features.audiencecontainer.view.coguest.panel.CoGuestRequestFloatView;
 import com.trtc.uikit.livekit.features.audiencecontainer.view.coguest.panel.StopCoGuestDialog;
 import com.trtc.uikit.livekit.features.audiencecontainer.view.coguest.panel.TypeSelectDialog;
-import com.trtc.uikit.livekit.features.audiencecontainer.view.coguest.widgets.CoGuestWidgetsView;
-import com.trtc.uikit.livekit.features.audiencecontainer.view.cohost.widgets.CoHostWidgetsView;
+import com.trtc.uikit.livekit.features.audiencecontainer.view.coguest.widgets.AudienceEmptySeatView;
+import com.trtc.uikit.livekit.features.audiencecontainer.view.coguest.widgets.CoGuestBackgroundWidgetsView;
+import com.trtc.uikit.livekit.features.audiencecontainer.view.coguest.widgets.CoGuestForegroundWidgetsView;
+import com.trtc.uikit.livekit.features.audiencecontainer.view.cohost.widgets.CoHostBackgroundWidgetsView;
+import com.trtc.uikit.livekit.features.audiencecontainer.view.cohost.widgets.CoHostForegroundWidgetsView;
 import com.trtc.uikit.livekit.features.audiencecontainer.view.userinfo.UserInfoDialog;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine;
@@ -143,6 +146,7 @@ public class AudienceView extends BasicView {
     private final int     mTouchSlop;
     private       boolean mIsSwiping;
     private       boolean mIsJoinRoom;
+    private       boolean mIsClickEmptySeat = false;
 
     private final Observer<List<ConnectionUser>> mCoHostConnectedUsersObserver    = this::onCoHostConnectedUsersChanged;
     private final Observer<CoGuestStatus>        mLinkStatusObserver              = this::onLinkStatusChange;
@@ -168,11 +172,11 @@ public class AudienceView extends BasicView {
     public void init(TUILiveListManager.LiveInfo liveInfo) {
         LOGGER.info("AudienceView init:" + this);
         mLiveInfo = liveInfo;
-        mLiveCoreView = new LiveCoreView(ContextProvider.getApplicationContext());
+        mLiveCoreView = new LiveCoreView(getContext());
         mAudienceManager = new AudienceManager();
         mAudienceManager.setCoreState(mLiveCoreView.getCoreState());
         init(mAudienceManager);
-        mRoomManager.updateRoomState(liveInfo.roomInfo);
+        mRoomManager.updateRoomState(liveInfo);
         mAudienceManager.getMediaManager().setCustomVideoProcess();
         mLayoutLiveCoreView.addView(mLiveCoreView);
         createVideoMuteBitmap();
@@ -182,10 +186,7 @@ public class AudienceView extends BasicView {
     }
 
     public String getRoomId() {
-        if (mLiveInfo != null && mLiveInfo.roomInfo != null) {
-            return mLiveInfo.roomInfo.roomId;
-        }
-        return "";
+        return mLiveInfo == null ? "" : mLiveInfo.roomId;
     }
 
     public void setAudienceContainerViewListenerList(AudienceContainerViewListenerList viewListenerList) {
@@ -262,13 +263,13 @@ public class AudienceView extends BasicView {
 
     public void startPreviewLiveStream() {
         if (mLiveCoreView != null) {
-            mLiveCoreView.startPreviewLiveStream(mLiveInfo.roomInfo.roomId, true, null);
+            mLiveCoreView.startPreviewLiveStream(mLiveInfo.roomId, true, null);
         }
     }
 
     public void stopPreviewLiveStream() {
         if (mLiveCoreView != null) {
-            mLiveCoreView.stopPreviewLiveStream(mLiveInfo.roomInfo.roomId);
+            mLiveCoreView.stopPreviewLiveStream(mLiveInfo.roomId);
         }
     }
 
@@ -288,9 +289,9 @@ public class AudienceView extends BasicView {
         onViewLoading();
         mAudienceManager.getMediaManager().setCustomVideoProcess();
         mLiveCoreView.setLocalVideoMuteImage(mMediaState.bigMuteBitmap, mMediaState.smallMuteBitmap);
-        mLiveCoreView.joinLiveStream(mLiveInfo.roomInfo.roomId, new GetRoomInfoCallback() {
+        mLiveCoreView.joinLiveStream(mLiveInfo.roomId, new TUILiveListManager.LiveInfoCallback() {
             @Override
-            public void onSuccess(RoomInfo roomInfo) {
+            public void onSuccess(TUILiveListManager.LiveInfo liveInfo) {
                 Activity activity = (Activity) mContext;
                 if (activity.isFinishing() || activity.isDestroyed()) {
                     LOGGER.warn("activity is exit, leaveLiveStream");
@@ -300,8 +301,8 @@ public class AudienceView extends BasicView {
                     mLiveCoreView.unregisterBattleObserver(mLiveBattleManagerObserver);
                     return;
                 }
-                mRoomManager.updateRoomState(roomInfo);
-                initComponentView(roomInfo);
+                mRoomManager.updateRoomState(liveInfo);
+                initComponentView(liveInfo);
                 onViewFinished();
             }
 
@@ -319,7 +320,7 @@ public class AudienceView extends BasicView {
             return;
         }
         mIsJoinRoom = false;
-        String roomId = mLiveInfo.roomInfo.roomId;
+        String roomId = mLiveInfo.roomId;
         stopPreviewLiveStream();
         mAudienceManager.removeObserver();
         mLiveCoreView.unregisterConnectionObserver(mLiveStreamObserver);
@@ -461,7 +462,7 @@ public class AudienceView extends BasicView {
         }
     }
 
-    private void showCoGuestManageDialog(UserInfo userInfo) {
+    private void showCoGuestManageDialog(TUIRoomDefine.SeatFullInfo userInfo) {
         if (userInfo == null) {
             return;
         }
@@ -478,7 +479,7 @@ public class AudienceView extends BasicView {
         }
     }
 
-    private void showAnchorManagerDialog(UserInfo userInfo) {
+    private void showAnchorManagerDialog(TUIRoomDefine.SeatFullInfo userInfo) {
         if (mAnchorManagerDialog == null) {
             mAnchorManagerDialog = new AnchorManagerDialog(mContext, mAudienceManager, mLiveCoreView);
         }
@@ -486,7 +487,7 @@ public class AudienceView extends BasicView {
         mAnchorManagerDialog.show();
     }
 
-    private void showUserInfoDialog(UserInfo userInfo) {
+    private void showUserInfoDialog(TUIRoomDefine.SeatFullInfo userInfo) {
         if (mUserInfoDialog == null) {
             mUserInfoDialog = new UserInfoDialog(mContext, mAudienceManager);
         }
@@ -514,28 +515,28 @@ public class AudienceView extends BasicView {
         mLiveCoreView.setVideoViewAdapter(null);
     }
 
-    private void initComponentView(RoomInfo roomInfo) {
+    private void initComponentView(TUILiveListManager.LiveInfo liveInfo) {
         mLayoutPlaying.setVisibility(VISIBLE);
         initCoGuestIcon();
-        initRoomInfoView(roomInfo);
-        initAudienceListView(roomInfo);
-        initNetworkView(roomInfo);
+        initRoomInfoView(liveInfo);
+        initAudienceListView(liveInfo);
+        initNetworkView(liveInfo);
         initExitRoomView();
-        initBarrageStreamView(roomInfo);
-        initBarrageInputView(roomInfo);
+        initBarrageStreamView(liveInfo);
+        initBarrageInputView(liveInfo);
         initDashboardIcon();
-        initGiftView(roomInfo);
-        initLikeView(roomInfo);
-        initGiftPlayView(roomInfo);
+        initGiftView(liveInfo);
+        initLikeView(liveInfo);
+        initGiftPlayView(liveInfo);
         initWaitingCoGuestPassView();
     }
 
-    private void initAudienceListView(RoomInfo roomInfo) {
-        mAudienceListView.init(roomInfo);
+    private void initAudienceListView(TUILiveListManager.LiveInfo liveInfo) {
+        mAudienceListView.init(liveInfo);
     }
 
-    private void initNetworkView(RoomInfo roomInfo) {
-        mNetworkInfoView.init(roomInfo.createTime);
+    private void initNetworkView(TUILiveListManager.LiveInfo liveInfo) {
+        mNetworkInfoView.init(liveInfo.createTime);
     }
 
     private void initExitRoomView() {
@@ -543,12 +544,12 @@ public class AudienceView extends BasicView {
         mImageCompactExit.setOnClickListener(view -> onExitButtonClick());
     }
 
-    private void initRoomInfoView(RoomInfo roomInfo) {
-        mRoomInfoView.init(roomInfo);
+    private void initRoomInfoView(TUILiveListManager.LiveInfo liveInfo) {
+        mRoomInfoView.init(liveInfo);
     }
 
-    private void initBarrageStreamView(RoomInfo roomInfo) {
-        mBarrageStreamView.init(roomInfo.roomId, roomInfo.ownerId);
+    private void initBarrageStreamView(TUILiveListManager.LiveInfo liveInfo) {
+        mBarrageStreamView.init(liveInfo.roomId, liveInfo.ownerId);
         mBarrageStreamView.setItemTypeDelegate(new BarrageViewTypeDelegate());
         mBarrageStreamView.setItemAdapter(GIFT_VIEW_TYPE_1, new GiftBarrageAdapter(mContext));
         mBarrageStreamView.setOnMessageClickListener(userInfo -> {
@@ -567,20 +568,20 @@ public class AudienceView extends BasicView {
         });
     }
 
-    private void initBarrageInputView(RoomInfo roomInfo) {
-        mBarrageInputView.init(roomInfo.roomId);
+    private void initBarrageInputView(TUILiveListManager.LiveInfo liveInfo) {
+        mBarrageInputView.init(liveInfo.roomId);
     }
 
-    private void initGiftView(RoomInfo roomInfo) {
-        mButtonGift.init(roomInfo.roomId, roomInfo.ownerId, roomInfo.ownerName, roomInfo.ownerAvatarUrl);
+    private void initGiftView(TUILiveListManager.LiveInfo liveInfo) {
+        mButtonGift.init(liveInfo.roomId, liveInfo.ownerId, liveInfo.ownerName, liveInfo.ownerAvatarUrl);
     }
 
-    private void initLikeView(RoomInfo roomInfo) {
-        mButtonLike.init(roomInfo.roomId);
+    private void initLikeView(TUILiveListManager.LiveInfo liveInfo) {
+        mButtonLike.init(liveInfo.roomId);
     }
 
-    private void initGiftPlayView(RoomInfo roomInfo) {
-        mGiftPlayView.init(roomInfo.roomId);
+    private void initGiftPlayView(TUILiveListManager.LiveInfo liveInfo) {
+        mGiftPlayView.init(liveInfo.roomId);
         GiftCacheService giftCacheService = GiftStore.getInstance().mGiftCacheService;
         mGiftPlayView.setListener(new GiftPlayView.TUIGiftPlayViewListener() {
             @Override
@@ -598,8 +599,8 @@ public class AudienceView extends BasicView {
                 barrage.extInfo.put(GIFT_NAME, gift.name);
                 barrage.extInfo.put(GIFT_COUNT, giftCount);
                 barrage.extInfo.put(GIFT_ICON_URL, gift.iconUrl);
-                barrage.extInfo.put(GIFT_RECEIVER_USERNAME, TextUtils.isEmpty(mRoomState.roomInfo.ownerName)
-                        ? mRoomState.roomInfo.ownerId : mRoomState.roomInfo.ownerName);
+                barrage.extInfo.put(GIFT_RECEIVER_USERNAME, TextUtils.isEmpty(mRoomState.liveInfo.ownerName)
+                        ? mRoomState.liveInfo.ownerId : mRoomState.liveInfo.ownerName);
                 mBarrageStreamView.insertBarrages(barrage);
             }
 
@@ -617,7 +618,12 @@ public class AudienceView extends BasicView {
     private void initCoGuestIcon() {
         mImageCoGuest.setImageResource(R.drawable.livekit_function_link_default);
         mImageCoGuest.setOnClickListener(view -> {
-            TypeSelectDialog typeSelectDialog = new TypeSelectDialog(mContext, mAudienceManager, mLiveCoreView);
+            if (mCoGuestState.coGuestStatus.getValue() != NONE || mIsClickEmptySeat) {
+                return;
+            }
+            mIsClickEmptySeat = true;
+            TypeSelectDialog typeSelectDialog = new TypeSelectDialog(mContext, mAudienceManager, mLiveCoreView, -1);
+            typeSelectDialog.setOnDismissListener(dialog -> mIsClickEmptySeat = false);
             typeSelectDialog.show();
         });
     }
@@ -779,16 +785,66 @@ public class AudienceView extends BasicView {
         }
 
         @Override
-        public View createCoGuestView(UserInfo userInfo) {
+        public View createCoGuestView(TUIRoomDefine.SeatFullInfo seatInfo, LiveCoreViewDefine.ViewLayer viewLayer) {
             Context context = mWeakContext.get();
             if (context == null) {
                 LOGGER.error("createCoGuestView: context is null");
                 return null;
             }
-            CoGuestWidgetsView coGuestWidgetsView = new CoGuestWidgetsView(context);
-            coGuestWidgetsView.init(mAudienceManager, userInfo);
-            coGuestWidgetsView.setOnClickListener(v -> showCoGuestManageDialog(userInfo));
-            return coGuestWidgetsView;
+            if (TextUtils.isEmpty(seatInfo.userId)) {
+                if (viewLayer == LiveCoreViewDefine.ViewLayer.BACKGROUND) {
+                    AudienceEmptySeatView emptySeatView = new AudienceEmptySeatView(getContext());
+                    emptySeatView.init(mAudienceManager, seatInfo);
+                    emptySeatView.setTag(seatInfo);
+                    emptySeatView.setOnClickListener(v -> {
+                        if (mCoGuestState.coGuestStatus.getValue() != NONE || mIsClickEmptySeat) {
+                            return;
+                        }
+                        mIsClickEmptySeat = true;
+                        TUIRoomDefine.SeatFullInfo seat = (TUIRoomDefine.SeatFullInfo) v.getTag();
+                        TypeSelectDialog typeSelectDialog = new TypeSelectDialog(mContext, mAudienceManager,
+                                mLiveCoreView, seat.seatIndex);
+                        typeSelectDialog.setOnDismissListener(dialog -> mIsClickEmptySeat = false);
+                        typeSelectDialog.show();
+                    });
+                    return emptySeatView;
+                } else {
+                    return null;
+                }
+            }
+            if (LiveCoreViewDefine.ViewLayer.BACKGROUND == viewLayer) {
+                CoGuestBackgroundWidgetsView backgroundWidgetsView = new CoGuestBackgroundWidgetsView(context);
+                backgroundWidgetsView.init(mAudienceManager, seatInfo);
+                return backgroundWidgetsView;
+            } else {
+                CoGuestForegroundWidgetsView foregroundWidgetsView = new CoGuestForegroundWidgetsView(context);
+                foregroundWidgetsView.init(mAudienceManager, seatInfo);
+                foregroundWidgetsView.setOnClickListener(v -> showCoGuestManageDialog(seatInfo));
+                return foregroundWidgetsView;
+            }
+        }
+
+        @Override
+        public View createCoHostView(TUIRoomDefine.SeatFullInfo coHostUser, LiveCoreViewDefine.ViewLayer viewLayer) {
+            Context context = mWeakContext.get();
+            if (context == null) {
+                LOGGER.error("createCoHostView: context is null");
+                return null;
+            }
+            if (LiveCoreViewDefine.ViewLayer.BACKGROUND == viewLayer) {
+                CoHostBackgroundWidgetsView backgroundWidgetsView = new CoHostBackgroundWidgetsView(context);
+                backgroundWidgetsView.init(mAudienceManager, coHostUser);
+                return backgroundWidgetsView;
+            } else {
+                CoHostForegroundWidgetsView foregroundWidgetsView = new CoHostForegroundWidgetsView(context);
+                foregroundWidgetsView.init(mAudienceManager, coHostUser);
+                return foregroundWidgetsView;
+            }
+        }
+
+        @Override
+        public View createCoGuestView(UserInfo userInfo) {
+            return null;
         }
 
         @Override
@@ -800,14 +856,7 @@ public class AudienceView extends BasicView {
 
         @Override
         public View createCoHostView(LiveCoreViewDefine.CoHostUser coHostUser) {
-            Context context = mWeakContext.get();
-            if (context == null) {
-                LOGGER.error("createCoHostView: context is null");
-                return null;
-            }
-            CoHostWidgetsView coHostWidgetsView = new CoHostWidgetsView(context);
-            coHostWidgetsView.init(mAudienceManager, coHostUser);
-            return coHostWidgetsView;
+            return null;
         }
 
         @Override

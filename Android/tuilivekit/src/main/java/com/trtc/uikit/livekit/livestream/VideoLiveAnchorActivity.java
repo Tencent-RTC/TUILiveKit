@@ -21,10 +21,8 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.Observer;
 
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
-import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
 import com.trtc.tuikit.common.FullScreenActivity;
@@ -53,16 +51,15 @@ public class VideoLiveAnchorActivity extends FullScreenActivity implements Video
     public static final  String PICK_CONTENT_ALL         = "image/*|video/*";
     private static final int    REQUEST_CODE_PERMISSIONS = 1001;
 
-    private       int                         mStartActivityRequestCode  = 0;
+    private       int                         mStartActivityRequestCode = 0;
     private       FrameLayout                 mLayoutContainer;
     private       AnchorPrepareView           mAnchorPrepareView;
     private       AnchorView                  mAnchorView;
     private       AnchorEndStatisticsView     mAnchorEndStatisticsView;
-    private       Boolean                     mNeedCreateRoom            = true;
-    private       TUILiveListManager.LiveInfo mLiveInfo                  = new TUILiveListManager.LiveInfo();
-    private final TUIRoomDefine.RoomInfo      mRoomInfo                  = new TUIRoomDefine.RoomInfo();
-    private final AnchorEndStatisticsInfo     mAnchorEndStatisticsInfo   = new AnchorEndStatisticsInfo();
-    private final Observer<Boolean>           mEndStatisticsViewObserver = this::onEndStatisticsView;
+    private       Boolean                     mNeedCreateRoom           = true;
+    private       String                      mRoomId                   = "";
+    private       TUILiveListManager.LiveInfo mLiveInfo                 = new TUILiveListManager.LiveInfo();
+    private final AnchorEndStatisticsInfo     mAnchorEndStatisticsInfo  = new AnchorEndStatisticsInfo();
 
     @Override
     protected void attachBaseContext(Context context) {
@@ -77,16 +74,16 @@ public class VideoLiveAnchorActivity extends FullScreenActivity implements Video
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(null);
-        setContentView(R.layout.livekit_activity_video_live_anchor);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        mRoomInfo.roomId = getIntent().getStringExtra(INTENT_KEY_ROOM_ID);
+        setContentView(R.layout.livekit_activity_video_live_anchor);
+        mRoomId = getIntent().getStringExtra(INTENT_KEY_ROOM_ID);
+        mLiveInfo.roomId = mRoomId;
         mNeedCreateRoom = getIntent().getBooleanExtra(INTENT_KEY_NEED_CREATE, true);
         Bundle liveBundle = getIntent().getExtras();
-        if (liveBundle != null) {
+        if (liveBundle != null && !liveBundle.containsKey(INTENT_KEY_ROOM_ID)) {
             mLiveInfo = LiveInfoUtils.convertBundleToLiveInfo(liveBundle);
         }
-        setContentView(R.layout.livekit_activity_video_live_anchor);
         mLayoutContainer = findViewById(R.id.fl_container);
         if (mNeedCreateRoom) {
             addPrepareView();
@@ -123,9 +120,6 @@ public class VideoLiveAnchorActivity extends FullScreenActivity implements Video
             mAnchorView.removeAnchorViewListener(this);
         }
 
-        if (mAnchorEndStatisticsView != null) {
-            mAnchorEndStatisticsView.getState().exitClick.removeObserver(mEndStatisticsViewObserver);
-        }
         setValue(PictureInPictureStore.sharedInstance().getState().roomId, "");
     }
 
@@ -148,7 +142,7 @@ public class VideoLiveAnchorActivity extends FullScreenActivity implements Video
 
     private void addPrepareView() {
         mAnchorPrepareView = new AnchorPrepareView(this);
-        mAnchorPrepareView.init(mRoomInfo.roomId, null);
+        mAnchorPrepareView.init(mLiveInfo.roomId, null);
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.MATCH_PARENT);
         mLayoutContainer.addView(mAnchorPrepareView, layoutParams);
@@ -158,10 +152,13 @@ public class VideoLiveAnchorActivity extends FullScreenActivity implements Video
 
     private void addAnchorView() {
         mAnchorView = new AnchorView(this);
+        Map<String, Object> params = new HashMap<>();
         if (mAnchorPrepareView != null) {
-            mAnchorView.init(mLiveInfo, mAnchorPrepareView.getCoreView(), mNeedCreateRoom ? CREATE_ROOM : ENTER_ROOM);
+            params.put("coHostTemplateId", mAnchorPrepareView.getState().coHostTemplateId.getValue());
+            mAnchorView.init(mLiveInfo, mAnchorPrepareView.getCoreView(), mNeedCreateRoom ? CREATE_ROOM : ENTER_ROOM,
+                    params);
         } else {
-            mAnchorView.init(mLiveInfo, null, mNeedCreateRoom ? CREATE_ROOM : ENTER_ROOM);
+            mAnchorView.init(mLiveInfo, null, mNeedCreateRoom ? CREATE_ROOM : ENTER_ROOM, params);
         }
 
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
@@ -177,18 +174,20 @@ public class VideoLiveAnchorActivity extends FullScreenActivity implements Video
 
     private void initLiveInfo() {
         mLiveInfo = new TUILiveListManager.LiveInfo();
-        mLiveInfo.roomInfo = mRoomInfo;
+        mLiveInfo.roomId = mRoomId;
         if (mAnchorPrepareView != null && mAnchorPrepareView.getState() != null) {
-            mLiveInfo.roomInfo.name = mAnchorPrepareView.getState().roomName.getValue();
+            mLiveInfo.name = mAnchorPrepareView.getState().roomName.getValue();
             mLiveInfo.isPublicVisible =
                     mAnchorPrepareView.getState().liveMode.getValue() == AnchorPrepareViewDefine.LiveStreamPrivacyStatus.PUBLIC;
             mLiveInfo.coverUrl = mAnchorPrepareView.getState().coverURL.getValue();
+            mLiveInfo.backgroundUrl = mAnchorPrepareView.getState().coverURL.getValue();
+            mLiveInfo.seatLayoutTemplateId = mAnchorPrepareView.getState().coGuestTemplateId.getValue();
         }
     }
 
     private void initEndStatisticsInfo(AnchorViewDefine.AnchorState state) {
         if (state != null) {
-            mAnchorEndStatisticsInfo.roomId = mRoomInfo.roomId;
+            mAnchorEndStatisticsInfo.roomId = mLiveInfo.roomId;
             mAnchorEndStatisticsInfo.liveDurationMS = state.duration;
             mAnchorEndStatisticsInfo.maxViewersCount = state.viewCount;
             mAnchorEndStatisticsInfo.messageCount = state.messageCount;
@@ -209,8 +208,7 @@ public class VideoLiveAnchorActivity extends FullScreenActivity implements Video
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.MATCH_PARENT);
         mLayoutContainer.addView(mAnchorEndStatisticsView, layoutParams);
-
-        mAnchorEndStatisticsView.getState().exitClick.observeForever(mEndStatisticsViewObserver);
+        mAnchorEndStatisticsView.setListener(this::finish);
     }
 
     @Override
@@ -239,16 +237,8 @@ public class VideoLiveAnchorActivity extends FullScreenActivity implements Video
     public void onClickFloatWindow() {
         boolean success = VideoLiveKitImpl.createInstance(getApplicationContext()).enterPictureInPictureMode(this);
         if (success) {
-            setValue(PictureInPictureStore.sharedInstance().getState().roomId, mRoomInfo.roomId);
+            setValue(PictureInPictureStore.sharedInstance().getState().roomId, mLiveInfo.roomId);
         }
-    }
-
-    private void onEndStatisticsView(Boolean isClick) {
-        if (!isClick) {
-            return;
-        }
-        mAnchorEndStatisticsView.getState().exitClick.removeObserver(mEndStatisticsViewObserver);
-        finish();
     }
 
     @Override

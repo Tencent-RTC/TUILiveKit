@@ -194,8 +194,8 @@
     <string name="common_sent">Sent</string>
     <string name="common_main_item_video_live">Video Live</string>
     <string name="common_go_live">Go Live</string>
-    <string name="common_main_item_ktv_room">KTV</string>
     <string name="common_main_item_voice_room">Voice Room</string>
+    <string name="common_main_item_ktv_room">KTV</string>
     <string name="common_server_error_already_on_the_mic">Already on the seat</string>
     <string name="common_server_error_already_on_the_mic_queue">Already on the seat queue</string>
     <string name="common_server_error_battle_does_not_exist_or_has_ended">The battle does not exist or has ended</string>
@@ -314,4 +314,15 @@
     <string name="common_switch_network">Switch Network</string>
     <string name="common_picture_in_picture_android_system_tips">Android systems below 8.0 do not support the picture-in-picture function</string>
     <string name="common_exit_float_window_tip">Live streaming in progress. Please try again later.</string>
+    <string name="common_wait_connection">Conn Wait</string>
+    <string name="common_apply_connection">Conn Join</string>
+    <string name="common_template_select">Template:</string>
+    <string name="common_template_dynamic_grid">Dynamic grid layout</string>
+    <string name="common_template_dynamic_float">Dynamic float layout</string>
+    <string name="common_template_static_grid">Static grid layout</string>
+    <string name="common_template_static_float">Static float layout</string>
+    <string name="common_template_layout_settings">Layout settings</string>
+    <string name="common_template_layout_co_guest">Layout co-guest</string>
+    <string name="common_template_layout_co_host">Layout co-host</string>
+    <string name="common_template_layout">Layout</string>
 </resources>

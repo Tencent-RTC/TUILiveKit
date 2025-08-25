@@ -36,25 +36,25 @@ public class AnchorManagerDialog extends PopupDialog {
     private static final float BUTTON_DISABLE_ALPHA = 0.24f;
     private static final float BUTTON_ENABLE_ALPHA  = 1.0f;
 
-    private final Context                mContext;
-    private final AnchorManager          mAnchorManager;
-    private final LiveCoreView           mLiveCoreView;
-    private       TUIRoomDefine.UserInfo mUserInfo;
-    private       ImageFilterView        mImageHeadView;
-    private       TextView               mUserIdText;
-    private       TextView               mUserNameText;
-    private       View                   mFlipCameraContainer;
-    private       View                   mFollowContainer;
-    private       View                   mHandUpContainer;
-    private       View                   mAudioContainer;
-    private       View                   mVideoContainer;
-    private       ImageView              mIvAudio;
-    private       TextView               mTvAudio;
-    private       ImageView              mIvVideo;
-    private       TextView               mTvVideo;
-    private       TextView               mTextUnfollow;
-    private       ImageView              mImageFollowIcon;
-    private       ConfirmDialog          mConfirmDialog;
+    private final Context                    mContext;
+    private final AnchorManager              mAnchorManager;
+    private final LiveCoreView               mLiveCoreView;
+    private       TUIRoomDefine.SeatFullInfo mUserInfo;
+    private       ImageFilterView            mImageHeadView;
+    private       TextView                   mUserIdText;
+    private       TextView                   mUserNameText;
+    private       View                       mFlipCameraContainer;
+    private       View                       mFollowContainer;
+    private       View                       mHandUpContainer;
+    private       View                       mAudioContainer;
+    private       View                       mVideoContainer;
+    private       ImageView                  mIvAudio;
+    private       TextView                   mTvAudio;
+    private       ImageView                  mIvVideo;
+    private       TextView                   mTvVideo;
+    private       TextView                   mTextUnfollow;
+    private       ImageView                  mImageFollowIcon;
+    private       ConfirmDialog              mConfirmDialog;
 
     private final Observer<Boolean>                      mMicrophoneMutedObserver  = value -> updateMicrophoneButton();
     private final Observer<Boolean>                      mCameraOpenedObserver     = value -> updateCameraButton();
@@ -72,7 +72,7 @@ public class AnchorManagerDialog extends PopupDialog {
         initView();
     }
 
-    public void init(TUIRoomDefine.UserInfo userInfo) {
+    public void init(TUIRoomDefine.SeatFullInfo userInfo) {
         mUserInfo = userInfo;
         mAnchorManager.getUserManager().checkFollowUser(userInfo.userId);
         updateView();
@@ -126,7 +126,7 @@ public class AnchorManagerDialog extends PopupDialog {
         if (TextUtils.isEmpty(mUserInfo.userId)) {
             return;
         }
-        String avatarUrl = mUserInfo.avatarUrl;
+        String avatarUrl = mUserInfo.userAvatar;
         if (TextUtils.isEmpty(avatarUrl)) {
             mImageHeadView.setImageResource(R.drawable.livekit_ic_avatar);
         } else {

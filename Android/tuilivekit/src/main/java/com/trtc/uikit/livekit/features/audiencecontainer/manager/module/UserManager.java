@@ -112,7 +112,7 @@ public class UserManager extends BaseManager {
     }
 
     public void onRemoteUserEnterRoom(String roomId, TUIRoomDefine.UserInfo userInfo) {
-        if (userInfo.userId.equals(mRoomState.roomInfo.ownerId)) {
+        if (TextUtils.equals(userInfo.userId, mRoomState.liveInfo.ownerId)) {
             return;
         }
         UserState.UserInfo user = new UserState.UserInfo(userInfo);

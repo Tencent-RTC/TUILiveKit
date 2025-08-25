@@ -14,6 +14,7 @@ public class CoHostState {
     public MutableLiveData<List<ConnectionUser>> recommendUsers    = new MutableLiveData<>(new ArrayList<>());
     public boolean                               isLoadMore        = false;
     public boolean                               isLastPage        = false;
+    public int                                   coHostTemplateId  = 600;
 
     public enum ConnectionStatus {
         UNKNOWN,
@@ -29,10 +30,10 @@ public class CoHostState {
         public ConnectionStatus connectionStatus;
 
         public ConnectionUser(TUILiveListManager.LiveInfo liveUser) {
-            this.roomId = liveUser.roomInfo.roomId;
-            this.userId = liveUser.roomInfo.ownerId;
-            this.userName = liveUser.roomInfo.ownerName;
-            this.avatarUrl = liveUser.roomInfo.ownerAvatarUrl;
+            this.roomId = liveUser.roomId;
+            this.userId = liveUser.ownerId;
+            this.userName = liveUser.ownerName;
+            this.avatarUrl = liveUser.ownerAvatarUrl;
             this.joinConnectionTime = 0;
             this.connectionStatus = ConnectionStatus.UNKNOWN;
         }

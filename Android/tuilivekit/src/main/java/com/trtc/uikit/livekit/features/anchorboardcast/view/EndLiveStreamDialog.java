@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.qcloud.tuicore.util.ScreenUtil;
 import com.trtc.tuikit.common.ui.PopupDialog;
@@ -137,22 +138,38 @@ public class EndLiveStreamDialog extends PopupDialog {
             return;
         }
         view.setEnabled(false);
-        mAnchorManager.loadLiveEndInfo(new Runnable() {
-            @Override
-            public void run() {
-                mRootLayout.post(this::onLoadEnd);
-            }
-
-            private void onLoadEnd() {
-                mCoreView.stopLiveStream(null);
-                if (mListener != null) {
-                    mListener.onRoomExitEndStatistics();
+        boolean keepOwnerOnSeat = mAnchorManager.getRoomState().liveInfo.keepOwnerOnSeat;
+        LOGGER.info("onExitLiveClick, keepOwnerOnSeat:" + keepOwnerOnSeat);
+        if (keepOwnerOnSeat) {
+            mCoreView.stopLiveStream(new TUILiveListManager.StopLiveCallback() {
+                @Override
+                public void onSuccess(TUILiveListManager.LiveStatisticsData statisticData) {
+                    mAnchorManager.setLiveStatisticsData(statisticData);
+                    onEnd();
                 }
-                dismiss();
-                mAnchorManager.notifyRoomExit();
-                mCoreView.setLocalVideoMuteImage(null, null);
+
+                @Override
+                public void onError(TUICommonDefine.Error error, String message) {
+                    LOGGER.error("stopLiveStream onError:error:" + error + "," + "errorCode:" + error.getValue() + "message:" + message);
+                    onEnd();
+                }
+
+                private void onEnd() {
+                    if (mListener != null) {
+                        mListener.onRoomExitEndStatistics();
+                    }
+                    dismiss();
+                    mAnchorManager.notifyRoomExit();
+                }
+            });
+        } else {
+            mCoreView.leaveLiveStream(null);
+            dismiss();
+            if (mListener != null) {
+                mListener.onRoomExit();
             }
-        });
+        }
+        mCoreView.setLocalVideoMuteImage(null, null);
     }
 
     private void initCancelItem() {
@@ -183,6 +200,7 @@ public class EndLiveStreamDialog extends PopupDialog {
     }
 
     public interface EndLiveStreamDialogListener {
+        void onRoomExit();
         void onRoomExitEndStatistics();
     }
 }

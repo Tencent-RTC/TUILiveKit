@@ -52,7 +52,7 @@ public class TopView extends BasicView {
     public void init(@NonNull VoiceRoomManager voiceRoomManager) {
         super.init(voiceRoomManager);
         AudienceListView audienceListView = findViewById(R.id.rl_audience_list);
-        audienceListView.init(mVoiceRoomManager.getRoomState().roomInfo);
+        audienceListView.init(mVoiceRoomManager.getRoomState().liveInfo);
         initReportView();
         initCloseView();
     }
@@ -73,7 +73,7 @@ public class TopView extends BasicView {
 
     @Override
     protected void addObserver() {
-        mLiveInfoView.init(mVoiceRoomManager.getRoomState().roomInfo);
+        mLiveInfoView.init(mVoiceRoomManager.getRoomState().liveInfo);
     }
 
     @Override

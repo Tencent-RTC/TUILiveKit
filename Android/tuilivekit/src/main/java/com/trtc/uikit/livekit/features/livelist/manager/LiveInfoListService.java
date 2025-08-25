@@ -51,8 +51,8 @@ public class LiveInfoListService {
                 LOGGER.info("fetchLiveList onSuccess. result.liveInfoList.size:" + liveInfoList.size());
                 List<LiveInfo> list = new ArrayList<>();
                 for (LiveInfo liveInfo : liveInfoList) {
-                    if (mFirstLiveInfo != null && mFirstLiveInfo.roomInfo != null) {
-                        if (TextUtils.equals(liveInfo.roomInfo.roomId, mFirstLiveInfo.roomInfo.roomId)) {
+                    if (mFirstLiveInfo != null) {
+                        if (TextUtils.equals(liveInfo.roomId, mFirstLiveInfo.roomId)) {
                             continue;
                         }
                     }

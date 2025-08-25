@@ -7,7 +7,6 @@ import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.EVENT_SUB_K
 import android.text.TextUtils;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
-import com.tencent.cloud.tuikit.engine.extension.TUILiveGiftManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfo;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveModifyFlag;
@@ -27,8 +26,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 public class RoomManager extends BaseManager {
     private static final LiveKitLogger LOGGER = LiveKitLogger.getVoiceRoomLogger("RoomManager");
@@ -56,23 +53,18 @@ public class RoomManager extends BaseManager {
         mUserState.selfInfo.userRole = TUIRoomDefine.Role.ROOM_OWNER;
     }
 
-    public void updateRoomState(TUIRoomDefine.RoomInfo roomInfo) {
-        mRoomState.updateState(roomInfo);
+    public void updateRoomState(LiveInfo liveInfo) {
+        mRoomState.updateState(liveInfo);
     }
 
-    public void updateLiveInfo() {
-        LiveInfo liveInfo = new LiveInfo();
-        liveInfo.roomInfo = new TUIRoomDefine.RoomInfo();
-        liveInfo.roomInfo.roomId = mRoomState.roomId;
-        liveInfo.coverUrl = mRoomState.coverURL.getValue();
-        liveInfo.backgroundUrl = mRoomState.backgroundURL.getValue();
-        liveInfo.isPublicVisible =
-                RoomState.LiveStreamPrivacyStatus.PUBLIC == mRoomState.liveExtraInfo.liveMode.getValue();
-        List<LiveModifyFlag> flagList = new ArrayList<>();
-        flagList.add(LiveModifyFlag.COVER_URL);
-        flagList.add(LiveModifyFlag.PUBLISH);
-        flagList.add(LiveModifyFlag.BACKGROUND_URL);
-        mLiveService.setLiveInfo(liveInfo, flagList, null);
+    public void updateLiveStatisticsData(TUILiveListManager.LiveStatisticsData data) {
+        if (data == null) {
+            return;
+        }
+        mRoomState.liveExtraInfo.maxAudienceCount = data.totalViewers;
+        mRoomState.liveExtraInfo.giftSenderCount = data.totalUniqueGiftSenders;
+        mRoomState.liveExtraInfo.giftIncome = data.totalGiftCoins;
+        mRoomState.liveExtraInfo.likeCount = data.totalLikesReceived;
     }
 
     public void updateLiveStatus(RoomState.LiveStatus status) {
@@ -111,20 +103,15 @@ public class RoomManager extends BaseManager {
     }
 
     public void setBackgroundURL(String backgroundURL) {
-        if (TextUtils.isEmpty(backgroundURL)) {
-            return;
-        }
-        if (backgroundURL.equals(mRoomState.backgroundURL.getValue())) {
-            return;
-        }
-        if (mRoomState.liveStatus.getValue() == RoomState.LiveStatus.PREVIEWING) {
-            mRoomState.backgroundURL.setValue(backgroundURL);
-            return;
-        }
+        mRoomState.backgroundURL.setValue(backgroundURL);
+    }
 
+    public void updateLiveBackgroundURL(String backgroundURL) {
+        if (TextUtils.isEmpty(backgroundURL) || backgroundURL.equals(mRoomState.backgroundURL.getValue())) {
+            return;
+        }
         LiveInfo liveInfo = new LiveInfo();
-        liveInfo.roomInfo = new TUIRoomDefine.RoomInfo();
-        liveInfo.roomInfo.roomId = mRoomState.roomId;
+        liveInfo.roomId = mRoomState.roomId;
         liveInfo.backgroundUrl = backgroundURL;
         List<LiveModifyFlag> flagList = new ArrayList<>();
         flagList.add(LiveModifyFlag.BACKGROUND_URL);
@@ -155,67 +142,12 @@ public class RoomManager extends BaseManager {
         mRoomState.seatMode.setValue(seatMode);
     }
 
-    public void loadVoiceEndInfo(Runnable callback) {
-        String roomId = mRoomState.roomId;
-        TUILiveGiftManager giftManager = (TUILiveGiftManager) TUIRoomEngine.sharedInstance().getExtension(TUICommonDefine.ExtensionType.LIVE_GIFT_MANAGER);
-        final CountDownLatch countDownLatch = new CountDownLatch(2);
-        new Thread(() -> {
-            giftManager.getLikesCount(roomId, new TUILiveGiftManager.GetLikesCountCallback() {
-                @Override
-                public void onSuccess(long l) {
-                    mRoomState.liveExtraInfo.likeCount = l;
-                    countDownLatch.countDown();
-                    LOGGER.info("getLikesCount onSuccess");
-                }
-
-                @Override
-                public void onError(TUICommonDefine.Error error, String s) {
-                    countDownLatch.countDown();
-                    LOGGER.error("getLikesCount onError:" + error.getValue() + ", s:" + s);
-                }
-            });
-            giftManager.getGiftCountByAnchor(roomId, new TUILiveGiftManager.GetGiftCountCallback() {
-                @Override
-                public void onSuccess(long l, long l1, long l2) {
-                    mRoomState.liveExtraInfo.giftIncome = l1;
-                    mRoomState.liveExtraInfo.giftSenderCount = l2;
-                    countDownLatch.countDown();
-                    LOGGER.info("getGiftCountByAnchor onSuccess");
-                }
-
-                @Override
-                public void onError(TUICommonDefine.Error error, String s) {
-                    countDownLatch.countDown();
-                    LOGGER.error("getGiftCountByAnchor onError:" + error.getValue() + ", s:" + s);
-                }
-            });
-            try {
-                countDownLatch.await(10, TimeUnit.SECONDS);
-                LOGGER.info("loadVoiceEndInfo end");
-                if (callback != null) {
-                    callback.run();
-                }
-            } catch (InterruptedException e) {
-                LOGGER.error("loadVoiceEndInfo countDownLatch.await error:" + e.getLocalizedMessage());
-            }
-        }).start();
-    }
-
     public boolean isOwner() {
         String selfUserId = TUIRoomEngine.getSelfInfo().userId;
         if (TextUtils.isEmpty(selfUserId)) {
             return false;
         }
         return selfUserId.equals(mRoomState.ownerInfo.userId);
-    }
-
-    public void onRoomUserCountChanged(String roomId, int userCount) {
-        if (userCount > 0) {
-            mRoomState.userCount.setValue(userCount - 1);
-            if (userCount > mRoomState.liveExtraInfo.maxAudienceCount) {
-                mRoomState.liveExtraInfo.maxAudienceCount = userCount - 1;
-            }
-        }
     }
 
     public void onLiveInfoChanged(TUILiveListManager.LiveInfo liveInfo,

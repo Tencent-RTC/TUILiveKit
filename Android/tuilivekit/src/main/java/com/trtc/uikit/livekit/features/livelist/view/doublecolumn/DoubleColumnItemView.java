@@ -97,18 +97,18 @@ public class DoubleColumnItemView extends FrameLayout {
     }
 
     public void startPreviewLiveStreamDelay() {
-        if (mLiveInfo == null || mLiveInfo.roomInfo == null || TextUtils.isEmpty(mLiveInfo.roomInfo.roomId)) {
+        if (mLiveInfo == null || TextUtils.isEmpty(mLiveInfo.roomId)) {
             return;
         }
 
-        if (mLiveInfo.roomInfo.roomId.equals(getPictureInPictureRoomId())) {
-            LOGGER.info("picture in picture view is showing, startPreviewLiveStream ignore, roomId:" + mLiveInfo.roomInfo.roomId);
+        if (mLiveInfo.roomId.equals(getPictureInPictureRoomId())) {
+            LOGGER.info("picture in picture view is showing, startPreviewLiveStream ignore, roomId:" + mLiveInfo.roomId);
             mPauseByPictureInPicture = true;
             return;
         }
         Message message = mHandler.obtainMessage();
         message.what = START_PLAY_VIDEO_STREAM;
-        message.obj = mLiveInfo.roomInfo.roomId;
+        message.obj = mLiveInfo.roomId;
         mHandler.sendMessageDelayed(message, START_PLAY_DELAY_MILLIS);
     }
 
@@ -117,15 +117,15 @@ public class DoubleColumnItemView extends FrameLayout {
         if (TextUtils.isEmpty(roomId)) {
             return;
         }
-        if (mLiveInfo == null || mLiveInfo.roomInfo == null || TextUtils.isEmpty(mLiveInfo.roomInfo.roomId)) {
+        if (mLiveInfo == null || TextUtils.isEmpty(mLiveInfo.roomId)) {
             LOGGER.error("startPreviewLiveStream failed, roomId is empty");
             return;
         }
-        if (roomId.equals(mLiveInfo.roomInfo.roomId)) {
+        if (roomId.equals(mLiveInfo.roomId)) {
             if (roomId.equals(getPictureInPictureRoomId())) {
                 mLiveCoreView.setVisibility(GONE);
                 mPauseByPictureInPicture = true;
-                LOGGER.info("picture in picture view is showing, startPreviewLiveStream ignore, roomId:" + mLiveInfo.roomInfo.roomId);
+                LOGGER.info("picture in picture view is showing, startPreviewLiveStream ignore, roomId:" + mLiveInfo.roomId);
             } else {
                 mLiveCoreView.setVisibility(VISIBLE);
                 LOGGER.info("startPreviewLiveStream, roomId :" + roomId);
@@ -133,19 +133,19 @@ public class DoubleColumnItemView extends FrameLayout {
                 mIsPlaying = true;
             }
         } else {
-            LOGGER.info("roomId is not match, roomId:" + roomId + ",local view bind roomId:" + mLiveInfo.roomInfo.roomId);
+            LOGGER.info("roomId is not match, roomId:" + roomId + ",local view bind roomId:" + mLiveInfo.roomId);
         }
     }
 
     public void stopPreviewLiveStream() {
-        if (mLiveInfo == null || mLiveInfo.roomInfo == null || TextUtils.isEmpty(mLiveInfo.roomInfo.roomId)) {
+        if (mLiveInfo == null || TextUtils.isEmpty(mLiveInfo.roomId)) {
             mHandler.removeMessages(START_PLAY_VIDEO_STREAM);
             LOGGER.error("stopPreviewLiveStream failed roomId is empty");
             return;
         }
-        String roomId = mLiveInfo.roomInfo.roomId;
+        String roomId = mLiveInfo.roomId;
         if (roomId.equals(getPictureInPictureRoomId())) {
-            LOGGER.info("picture in picture view is showing, stopPreviewLiveStream ignore, roomId:" + mLiveInfo.roomInfo.roomId);
+            LOGGER.info("picture in picture view is showing, stopPreviewLiveStream ignore, roomId:" + mLiveInfo.roomId);
             mLiveCoreView.setVisibility(GONE);
             mHandler.removeMessages(START_PLAY_VIDEO_STREAM);
             return;
@@ -153,7 +153,7 @@ public class DoubleColumnItemView extends FrameLayout {
         LOGGER.info("stopPreviewLiveStream, roomId :" + roomId + ",isPlaying:" + mIsPlaying);
         if (mIsPlaying) {
             mHandler.removeMessages(START_PLAY_VIDEO_STREAM);
-            mLiveCoreView.stopPreviewLiveStream(mLiveInfo.roomInfo.roomId);
+            mLiveCoreView.stopPreviewLiveStream(mLiveInfo.roomId);
             mLiveCoreView.setVisibility(GONE);
             mIsPlaying = false;
             mPauseByPictureInPicture = false;
@@ -161,13 +161,13 @@ public class DoubleColumnItemView extends FrameLayout {
     }
 
     public void unmutePreviewVideoStream() {
-        if (mLiveInfo == null || mLiveInfo.roomInfo == null || TextUtils.isEmpty(mLiveInfo.roomInfo.roomId)) {
+        if (mLiveInfo == null || TextUtils.isEmpty(mLiveInfo.roomId)) {
             LOGGER.error("unmutePreviewVideoStream failed, roomId is empty");
             return;
         }
-        String roomId = mLiveInfo.roomInfo.roomId;
+        String roomId = mLiveInfo.roomId;
         if (PictureInPictureStore.sharedInstance().getState().anchorIsPictureInPictureMode) {
-            LOGGER.info("anchor picture in picture view is showing, unmutePreviewVideoStream ignore, roomId:" + mLiveInfo.roomInfo.roomId);
+            LOGGER.info("anchor picture in picture view is showing, unmutePreviewVideoStream ignore, roomId:" + mLiveInfo.roomId);
             return;
         }
         LOGGER.info("unmutePreviewVideoStream, roomId :" + roomId);

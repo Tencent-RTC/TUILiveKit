@@ -27,8 +27,10 @@ public class AnchorPrepareState {
     public String                                   selfUserId;
     public String                                   selfUserName;
     public String                                   roomId;
-    public MutableLiveData<Boolean>                 useFrontCamera = new MutableLiveData<>(true);
-    public MutableLiveData<String>                  coverURL       = new MutableLiveData<>(DEFAULT_COVER_URL);
-    public MutableLiveData<LiveStreamPrivacyStatus> liveMode       = new MutableLiveData<>(PUBLIC);
-    public MutableLiveData<String>                  roomName       = new MutableLiveData<>("");
+    public MutableLiveData<Boolean>                 useFrontCamera    = new MutableLiveData<>(true);
+    public MutableLiveData<String>                  coverURL          = new MutableLiveData<>(DEFAULT_COVER_URL);
+    public MutableLiveData<LiveStreamPrivacyStatus> liveMode          = new MutableLiveData<>(PUBLIC);
+    public MutableLiveData<Integer>                 coGuestTemplateId = new MutableLiveData<>(600);
+    public MutableLiveData<Integer>                 coHostTemplateId  = new MutableLiveData<>(600);
+    public MutableLiveData<String>                  roomName          = new MutableLiveData<>("");
 }

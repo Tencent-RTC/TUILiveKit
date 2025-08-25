@@ -15,7 +15,6 @@ public class UserState {
     public MutableLiveData<Set<UserInfo>> userList          = new MutableLiveData<>(new LinkedHashSet<>());
     public MutableLiveData<Set<String>>   speakingUserList  = new MutableLiveData<>(new LinkedHashSet<>());
     public MutableLiveData<Set<String>>   followingUserList = new MutableLiveData<>(new LinkedHashSet<>());
-    public MutableLiveData<UserInfo>      enterUserInfo     = new MutableLiveData<>();
 
     public static class UserInfo {
         public String                              userId            = "";

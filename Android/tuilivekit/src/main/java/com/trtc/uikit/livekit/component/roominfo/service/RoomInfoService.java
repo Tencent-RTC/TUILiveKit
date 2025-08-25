@@ -5,7 +5,7 @@ import static com.tencent.imsdk.v2.V2TIMFollowTypeCheckResult.V2TIM_FOLLOW_TYPE_
 
 import android.text.TextUtils;
 
-import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.imsdk.v2.V2TIMFollowInfo;
 import com.tencent.imsdk.v2.V2TIMFollowOperationResult;
 import com.tencent.imsdk.v2.V2TIMFollowTypeCheckResult;
@@ -27,12 +27,12 @@ public class RoomInfoService {
     private static final LiveKitLogger LOGGER         = LiveKitLogger.getComponentLogger("RoomInfoService");
     public               RoomInfoState mRoomInfoState = new RoomInfoState();
 
-    public void init(TUIRoomDefine.RoomInfo roomInfo) {
-        mRoomInfoState.roomId = roomInfo.roomId;
+    public void init(TUILiveListManager.LiveInfo liveInfo) {
+        mRoomInfoState.roomId = liveInfo.roomId;
         mRoomInfoState.myUserId = TUILogin.getUserId();
-        mRoomInfoState.ownerId.setValue(roomInfo.ownerId);
-        mRoomInfoState.ownerName.setValue(roomInfo.ownerName);
-        mRoomInfoState.ownerAvatarUrl.setValue(roomInfo.ownerAvatarUrl);
+        mRoomInfoState.ownerId.setValue(liveInfo.ownerId);
+        mRoomInfoState.ownerName.setValue(liveInfo.ownerName);
+        mRoomInfoState.ownerAvatarUrl.setValue(liveInfo.ownerAvatarUrl);
         V2TIMManager.getFriendshipManager().addFriendListener(mTIMFriendshipListener);
     }
 

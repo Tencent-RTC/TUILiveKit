@@ -165,7 +165,7 @@ public class BattleInfoView extends BasicView {
     private void onResultDisplay(Boolean display) {
         if (Boolean.TRUE.equals(display)) {
             for (BattleUser battleUser : mBattleState.mBattledUsers.getValue()) {
-                if (battleUser.userId.equals(mRoomState.roomInfo.ownerId)) {
+                if (battleUser.userId.equals(mRoomState.liveInfo.ownerId)) {
                     BattleResultType type = mBattleManager.isBattleDraw()
                             ? BattleResultType.DRAW
                             : (battleUser.ranking == 1 ? BattleResultType.VICTORY : BattleResultType.DEFEAT);

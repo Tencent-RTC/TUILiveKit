@@ -249,10 +249,6 @@ public class UserManager extends BaseManager {
         checkFollowUserList(userIdList);
     }
 
-    public void clearEnterUserInfo() {
-        mUserState.enterUserInfo.setValue(null);
-    }
-
     public void onSendMessageForUserDisableChanged(String roomId, String userId, boolean isDisable) {
         UserState.UserInfo userInfo = getUserFromUserList(userId);
         if (userInfo != null) {
@@ -286,7 +282,6 @@ public class UserManager extends BaseManager {
         if (TextUtils.isEmpty(userInfo.userId)) {
             return;
         }
-        mUserState.enterUserInfo.setValue(userInfo);
         mUserState.userList.getValue().add(userInfo);
         mUserState.userList.setValue(mUserState.userList.getValue());
     }

@@ -11,7 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
-import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.uikit.livekit.R;
 
@@ -45,10 +44,9 @@ public class DoubleColumnWidgetView extends FrameLayout {
     }
 
     public void updateLiveInfoView(TUILiveListManager.LiveInfo liveInfo) {
-        TUIRoomDefine.RoomInfo roomInfo = liveInfo.roomInfo;
-        ImageLoader.load(mContext, mImageAvatar, roomInfo.ownerAvatarUrl, R.drawable.livelist_default_avatar);
-        mTextRoomName.setText(TextUtils.isEmpty(roomInfo.name) ? roomInfo.roomId : roomInfo.name);
-        mTextAnchorName.setText(TextUtils.isEmpty(roomInfo.ownerName) ? roomInfo.ownerId : roomInfo.ownerName);
+        ImageLoader.load(mContext, mImageAvatar, liveInfo.ownerAvatarUrl, R.drawable.livelist_default_avatar);
+        mTextRoomName.setText(TextUtils.isEmpty(liveInfo.name) ? liveInfo.roomId : liveInfo.name);
+        mTextAnchorName.setText(TextUtils.isEmpty(liveInfo.ownerName) ? liveInfo.ownerId : liveInfo.ownerName);
         mTextAudienceCountInfo.setText(mContext.getString(R.string.livelist_viewed_audience_count, liveInfo.viewCount));
     }
 }

@@ -16,6 +16,7 @@ import com.trtc.uikit.livekit.component.beauty.BeautyUtils;
 import com.trtc.uikit.livekit.component.beauty.tebeauty.TEBeautyManager;
 import com.trtc.uikit.livekit.features.anchorprepare.manager.AnchorPrepareManager;
 import com.trtc.uikit.livekit.features.anchorprepare.state.AnchorPrepareConfig;
+import com.trtc.uikit.livekit.features.anchorprepare.view.liveinfoedit.livetemplatepicker.LiveTemplatePicker;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
 public class PrepareFunctionView extends FrameLayout {
@@ -70,6 +71,7 @@ public class PrepareFunctionView extends FrameLayout {
         initBeautyButton();
         initAudioEffectButton();
         initFlipButton();
+        initLayoutButton();
     }
 
     private void initBeautyButton() {
@@ -95,6 +97,13 @@ public class PrepareFunctionView extends FrameLayout {
         findViewById(R.id.iv_flip).setOnClickListener(view -> {
             boolean isFront = Boolean.TRUE.equals(mLiveCoreView.getCoreState().mediaState.isFrontCamera.getValue());
             mLiveCoreView.switchCamera(!isFront);
+        });
+    }
+
+    private void initLayoutButton() {
+        findViewById(R.id.iv_layout).setOnClickListener(view -> {
+            LiveTemplatePicker picker = new LiveTemplatePicker(getContext(), mManager);
+            picker.show();
         });
     }
 

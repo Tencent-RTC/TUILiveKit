@@ -1,10 +1,7 @@
 package com.trtc.uikit.livekit.features.anchorboardcast.manager;
 
-import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
-import com.tencent.cloud.tuikit.engine.extension.TUILiveGiftManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
-import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
 import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.features.anchorboardcast.AnchorViewDefine;
 import com.trtc.uikit.livekit.features.anchorboardcast.manager.api.IAnchorAPI;
@@ -27,11 +24,7 @@ import com.trtc.uikit.livekit.features.anchorboardcast.state.CoHostState;
 import com.trtc.uikit.livekit.features.anchorboardcast.state.MediaState;
 import com.trtc.uikit.livekit.features.anchorboardcast.state.RoomState;
 import com.trtc.uikit.livekit.features.anchorboardcast.state.UserState;
-import com.trtc.uikit.livekit.features.anchorboardcast.state.mediator.AnchorStateMediator;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine.CoreState;
-
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 public class AnchorManager {
     private static final LiveKitLogger LOGGER = LiveKitLogger.getFeaturesLogger("AnchorManager");
@@ -50,7 +43,6 @@ public class AnchorManager {
     private final IMFriendshipListener         mIMFriendshipListener;
     private       CoreState                    mCoreState;
     private final AnchorViewDefine.AnchorState mExternalState;
-    private final AnchorStateMediator          mAnchorStateMediator;
     private       LiveStateListener            mLiveStateListener;
 
     public AnchorManager(TUILiveListManager.LiveInfo liveInfo) {
@@ -69,13 +61,11 @@ public class AnchorManager {
         mListenerManager = new AnchorViewListenerManager();
 
         addObserver();
-        setRoomId(liveInfo.roomInfo.roomId);
-        mRoomManager.updateLiveInfo(liveInfo);
+        setRoomId(liveInfo.roomId);
         mMediaManager.setCustomVideoProcess();
-        mRoomManager.initCreateRoomState(liveInfo.roomInfo.roomId, "");
+        mRoomManager.initCreateRoomState(liveInfo);
 
         mExternalState = new AnchorViewDefine.AnchorState();
-        mAnchorStateMediator = new AnchorStateMediator(mState);
         initExternalState();
     }
 
@@ -229,75 +219,24 @@ public class AnchorManager {
     }
 
     public void setExternalState(int messageCount) {
-        mExternalState.duration = System.currentTimeMillis() - getRoomState().createTime;
+        mExternalState.duration = System.currentTimeMillis() - getRoomState().liveInfo.createTime;
         mExternalState.messageCount = messageCount;
+    }
+
+    public void setLiveStatisticsData(TUILiveListManager.LiveStatisticsData data) {
+        if (data == null) {
+            return;
+        }
+        mExternalState.viewCount = data.totalViewers;
+        mExternalState.giftSenderCount = data.totalUniqueGiftSenders;
+        mExternalState.giftIncome = data.totalGiftCoins;
+        mExternalState.likeCount = data.totalLikesReceived;
     }
 
     private void initExternalState() {
         mExternalState.duration = 0;
         mExternalState.viewCount = 0;
         mExternalState.messageCount = 0;
-    }
-
-    public void loadLiveEndInfo(Runnable callback) {
-        String roomId = getRoomState().roomId;
-        TUILiveGiftManager giftManager =
-                (TUILiveGiftManager) TUIRoomEngine.sharedInstance().getExtension(TUICommonDefine.ExtensionType.LIVE_GIFT_MANAGER);
-        final CountDownLatch countDownLatch = new CountDownLatch(3);
-        new Thread(() -> {
-            giftManager.getLikesCount(roomId, new TUILiveGiftManager.GetLikesCountCallback() {
-                @Override
-                public void onSuccess(long l) {
-                    mExternalState.likeCount = l;
-                    countDownLatch.countDown();
-                    LOGGER.info("getLikesCount onSuccess");
-                }
-
-                @Override
-                public void onError(TUICommonDefine.Error error, String s) {
-                    countDownLatch.countDown();
-                    LOGGER.error("getLikesCount onError:" + error.getValue() + ", s:" + s);
-                }
-            });
-            giftManager.getGiftCountByAnchor(roomId, new TUILiveGiftManager.GetGiftCountCallback() {
-                @Override
-                public void onSuccess(long l, long l1, long l2) {
-                    mExternalState.giftIncome = l1;
-                    mExternalState.giftSenderCount = l2;
-                    countDownLatch.countDown();
-                    LOGGER.info("getGiftCountByAnchor onSuccess");
-                }
-
-                @Override
-                public void onError(TUICommonDefine.Error error, String s) {
-                    countDownLatch.countDown();
-                    LOGGER.error("getGiftCountByAnchor onError:" + error.getValue() + ", s:" + s);
-                }
-            });
-            mRoomManager.getLiveInfo(getRoomState().roomId, new TUILiveListManager.LiveInfoCallback() {
-                @Override
-                public void onSuccess(TUILiveListManager.LiveInfo liveInfo) {
-                    countDownLatch.countDown();
-                    mExternalState.viewCount = liveInfo.viewCount;
-                    LOGGER.info("getLiveInfo onSuccess");
-                }
-
-                @Override
-                public void onError(TUICommonDefine.Error error, String message) {
-                    countDownLatch.countDown();
-                    LOGGER.info("getLiveInfo onError:" + error.getValue() + ", message:" + message);
-                }
-            });
-            try {
-                countDownLatch.await(10, TimeUnit.SECONDS);
-                LOGGER.info("loadLiveEndInfo end");
-                if (callback != null) {
-                    callback.run();
-                }
-            } catch (InterruptedException e) {
-                LOGGER.error("loadLiveEndInfo countDownLatch.await error:" + e.getLocalizedMessage());
-            }
-        }).start();
     }
 
     public void notifyPictureInPictureClick() {

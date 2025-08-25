@@ -1,5 +1,7 @@
 package com.trtc.uikit.livekit.features.anchorboardcast.manager.observer;
 
+import android.text.TextUtils;
+
 import com.google.gson.Gson;
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
@@ -23,21 +25,22 @@ public class RoomEngineObserver extends TUIRoomObserver {
 
     @Override
     public void onRoomDismissed(String roomId, TUIRoomDefine.RoomDismissedReason reason) {
-        LOGGER.info(hashCode() + " onRoomDismissed:[roomId" + roomId + "]");
+        LOGGER.info(hashCode() + " onRoomDismissed:[roomId:" + roomId + ",reason:" + reason + "]");
         AnchorManager manager = mLiveManager.get();
         if (manager != null) {
+            String ownerId = manager.getRoomState().liveInfo.ownerId;
+            TUIRoomDefine.UserInfo selfInfo = manager.getCoreState().userState.selfInfo.getValue();
+            if (selfInfo != null && TextUtils.equals(ownerId, selfInfo.userId) && reason == TUIRoomDefine.RoomDismissedReason.BY_OWNER) {
+                //case: onRoomDismissed(by owner) maybe earlier than the callback of DestroyRoom
+                return;
+            }
             manager.onRoomDismissed(roomId);
         }
     }
 
-
     @Override
     public void onRoomUserCountChanged(String roomId, int userCount) {
         LOGGER.info(hashCode() + " onRoomUserCountChanged:[roomId:" + roomId + ",userCount:" + userCount + "]");
-        AnchorManager manager = mLiveManager.get();
-        if (manager != null) {
-            manager.getRoomManager().onRoomUserCountChanged(roomId, userCount);
-        }
     }
 
     @Override

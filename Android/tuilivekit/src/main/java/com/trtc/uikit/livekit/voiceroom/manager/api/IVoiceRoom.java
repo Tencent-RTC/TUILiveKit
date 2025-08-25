@@ -34,10 +34,6 @@ public interface IVoiceRoom {
     /****************************************** Seat Business *******************************************/
     void getSeatList(TUIRoomDefine.GetSeatListCallback callback);
 
-    TUIRoomDefine.Request takeSeat(int seatIndex, int timeout, TUIRoomDefine.RequestCallback callback);
-
-    void getSeatApplicationList(TUIRoomDefine.RequestListCallback callback);
-
     /****************************************** User Business *******************************************/
     void getUserList(long nextSequence, TUIRoomDefine.GetUserListCallback callback);
 

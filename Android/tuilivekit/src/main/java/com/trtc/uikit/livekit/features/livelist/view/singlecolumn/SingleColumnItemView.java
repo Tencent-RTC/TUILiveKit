@@ -81,37 +81,37 @@ public class SingleColumnItemView extends FrameLayout {
     }
 
     public void startPreviewLiveStream(boolean isMuteAudio) {
-        if (mLiveInfo == null || mLiveInfo.roomInfo == null || TextUtils.isEmpty(mLiveInfo.roomInfo.roomId)) {
+        if (mLiveInfo == null || TextUtils.isEmpty(mLiveInfo.roomId)) {
             LOGGER.error("startPreviewLiveStream failed, roomId is empty");
             return;
         }
-        String roomId = mLiveInfo.roomInfo.roomId;
+        String roomId = mLiveInfo.roomId;
         if (roomId.equals(getPictureInPictureRoomId())) {
             mLiveCoreView.setVisibility(GONE);
             mPauseByPictureInPicture = true;
-            LOGGER.info("picture in picture view is showing, startPreviewLiveStream ignore, roomId:" + mLiveInfo.roomInfo.roomId);
+            LOGGER.info("picture in picture view is showing, startPreviewLiveStream ignore, roomId:" + mLiveInfo.roomId);
             return;
         }
         mLiveCoreView.setVisibility(VISIBLE);
-        LOGGER.info("startPreviewLiveStream, roomId :" + mLiveInfo.roomInfo.roomId);
-        mLiveCoreView.startPreviewLiveStream(mLiveInfo.roomInfo.roomId, isMuteAudio, null);
+        LOGGER.info("startPreviewLiveStream, roomId :" + mLiveInfo.roomId);
+        mLiveCoreView.startPreviewLiveStream(mLiveInfo.roomId, isMuteAudio, null);
         mIsPlaying = true;
     }
 
     public void stopPreviewLiveStream() {
-        if (mLiveInfo == null || mLiveInfo.roomInfo == null || TextUtils.isEmpty(mLiveInfo.roomInfo.roomId)) {
+        if (mLiveInfo == null || TextUtils.isEmpty(mLiveInfo.roomId)) {
             LOGGER.error("stopPreviewLiveStream failed, roomId is empty");
             return;
         }
-        String roomId = mLiveInfo.roomInfo.roomId;
+        String roomId = mLiveInfo.roomId;
         if (roomId.equals(getPictureInPictureRoomId())) {
             mLiveCoreView.setVisibility(GONE);
-            LOGGER.info("picture in picture view is showing, stopPreviewLiveStream ignore, roomId:" + mLiveInfo.roomInfo.roomId);
+            LOGGER.info("picture in picture view is showing, stopPreviewLiveStream ignore, roomId:" + mLiveInfo.roomId);
             return;
         }
         LOGGER.info("stopPreviewLiveStream, roomId :" + roomId + ",isPlaying:" + mIsPlaying);
         if (mIsPlaying) {
-            mLiveCoreView.stopPreviewLiveStream(mLiveInfo.roomInfo.roomId);
+            mLiveCoreView.stopPreviewLiveStream(mLiveInfo.roomId);
             mLiveCoreView.setVisibility(GONE);
             mIsPlaying = false;
             mPauseByPictureInPicture = false;

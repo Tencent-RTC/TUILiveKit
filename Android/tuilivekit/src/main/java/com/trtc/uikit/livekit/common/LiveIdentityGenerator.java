@@ -30,8 +30,7 @@ public final class LiveIdentityGenerator {
 
     public enum RoomType {
         LIVE("live_"),
-        VOICE("voice_"),
-        KTV("ktv_");
+        VOICE("voice_");
 
         private final String prefix;
 

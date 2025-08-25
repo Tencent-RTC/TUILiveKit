@@ -37,6 +37,8 @@ public class AnchorEndStatisticsView extends FrameLayout {
     private TextView mTextGiftIncome;
     private TextView mTextLikeCount;
 
+    private EndStatisticsDefine.AnchorEndStatisticsViewListener mListener;
+
     public AnchorEndStatisticsView(@NonNull Context context) {
         this(context, null);
     }
@@ -63,8 +65,8 @@ public class AnchorEndStatisticsView extends FrameLayout {
         } else {
             mManager.setRoomId(info.roomId);
             mManager.setLiveDuration(info.liveDurationMS);
-            mManager.setMaxViewersCount(info.maxViewersCount);
-            mManager.setMessageCount(info.messageCount);
+            mManager.setMaxViewersCount(Math.max(0, info.maxViewersCount - 1));
+            mManager.setMessageCount(Math.max(0, info.messageCount - 1));
             mManager.setLikeCount(info.likeCount);
             mManager.setGiftIncome(info.giftIncome);
             mManager.setGiftSenderCount(info.giftSenderCount);
@@ -72,8 +74,8 @@ public class AnchorEndStatisticsView extends FrameLayout {
         }
     }
 
-    public EndStatisticsDefine.EndStatisticsViewState getState() {
-        return mManager.getExternalState();
+    public void setListener(EndStatisticsDefine.AnchorEndStatisticsViewListener listener) {
+        mListener = listener;
     }
 
     @Override
@@ -107,7 +109,9 @@ public class AnchorEndStatisticsView extends FrameLayout {
     }
 
     private void onExitClick() {
-        mManager.setExitClick(true);
+        if (mListener != null) {
+            mListener.onCloseButtonClick();
+        }
     }
 
     private void onLiveDurationChange(Long durationMS) {

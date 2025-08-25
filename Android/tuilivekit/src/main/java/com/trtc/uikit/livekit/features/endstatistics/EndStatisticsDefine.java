@@ -1,7 +1,5 @@
 package com.trtc.uikit.livekit.features.endstatistics;
 
-import androidx.lifecycle.LiveData;
-
 public class EndStatisticsDefine {
 
     public static class AnchorEndStatisticsInfo {
@@ -14,7 +12,11 @@ public class EndStatisticsDefine {
         public long   giftSenderCount = 0;
     }
 
-    public static class EndStatisticsViewState {
-        public LiveData<Boolean> exitClick;
+    public interface AnchorEndStatisticsViewListener {
+        void onCloseButtonClick();
+    }
+
+    public interface AudienceEndStatisticsViewListener {
+        void onCloseButtonClick();
     }
 }

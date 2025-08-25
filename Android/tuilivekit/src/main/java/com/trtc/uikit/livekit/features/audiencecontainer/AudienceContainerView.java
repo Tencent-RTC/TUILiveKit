@@ -55,8 +55,7 @@ public class AudienceContainerView extends FrameLayout implements AudienceView.V
 
     public void init(@NonNull FragmentActivity fragmentActivity, String roomId) {
         TUILiveListManager.LiveInfo liveInfo = new TUILiveListManager.LiveInfo();
-        liveInfo.roomInfo = new TUIRoomDefine.RoomInfo();
-        liveInfo.roomInfo.roomId = roomId;
+        liveInfo.roomId = roomId;
         mFragmentActivity = fragmentActivity;
         AudienceContainerViewDefine.LiveListDataSource dataSource = new TUILiveListDataSource();
         init(fragmentActivity, liveInfo, dataSource);
@@ -72,8 +71,7 @@ public class AudienceContainerView extends FrameLayout implements AudienceView.V
                      AudienceContainerViewDefine.LiveListDataSource dataSource) {
         mFragmentActivity = fragmentActivity;
         TUILiveListManager.LiveInfo liveInfo = new TUILiveListManager.LiveInfo();
-        liveInfo.roomInfo = new TUIRoomDefine.RoomInfo();
-        liveInfo.roomInfo.roomId = roomId;
+        liveInfo.roomId = roomId;
         init(fragmentActivity, liveInfo, dataSource);
     }
 

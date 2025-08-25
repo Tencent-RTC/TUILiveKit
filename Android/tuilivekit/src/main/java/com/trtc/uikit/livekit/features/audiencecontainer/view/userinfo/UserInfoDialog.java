@@ -30,14 +30,14 @@ import java.util.Set;
 public class UserInfoDialog extends PopupDialog {
     private static final LiveKitLogger LOGGER = LiveKitLogger.getLiveStreamLogger("UserInfoDialog");
 
-    private final Context                mContext;
-    private       Button                 mButtonFollow;
-    private       TextView               mTextUserName;
-    private final AudienceManager        mAudienceManager;
-    private       TextView               mTextUserId;
-    private       ImageView              mImageAvatar;
-    private       TextView               mTextFans;
-    private       TUIRoomDefine.UserInfo mUserInfo;
+    private final Context                    mContext;
+    private       Button                     mButtonFollow;
+    private       TextView                   mTextUserName;
+    private final AudienceManager            mAudienceManager;
+    private       TextView                   mTextUserId;
+    private       ImageView                  mImageAvatar;
+    private       TextView                   mTextFans;
+    private       TUIRoomDefine.SeatFullInfo mUserInfo;
 
     private final Observer<Set<String>> mFollowingUserObserver = this::onFollowingUserChanged;
 
@@ -48,8 +48,22 @@ public class UserInfoDialog extends PopupDialog {
         initView();
     }
 
-    public void init(TUIRoomDefine.UserInfo userInfo) {
+    public void init(TUIRoomDefine.SeatFullInfo userInfo) {
         mUserInfo = userInfo;
+        mAudienceManager.getUserManager().checkFollowUser(userInfo.userId);
+        updateView();
+    }
+
+    public void init(TUIRoomDefine.UserInfo userInfo) {
+        if (userInfo == null) {
+            return;
+        }
+        if (mUserInfo == null) {
+            mUserInfo = new TUIRoomDefine.SeatFullInfo();
+        }
+        mUserInfo.userId = userInfo.userId;
+        mUserInfo.userName = userInfo.userName;
+        mUserInfo.userAvatar = userInfo.avatarUrl;
         mAudienceManager.getUserManager().checkFollowUser(userInfo.userId);
         updateView();
     }
@@ -100,7 +114,7 @@ public class UserInfoDialog extends PopupDialog {
         }
         mTextUserName.setText(TextUtils.isEmpty(mUserInfo.userName) ? mUserInfo.userId : mUserInfo.userName);
         mTextUserId.setText("UserId:" + mUserInfo.userId);
-        String avatarUrl = mUserInfo.avatarUrl;
+        String avatarUrl = mUserInfo.userAvatar;
         if (TextUtils.isEmpty(avatarUrl)) {
             mImageAvatar.setImageResource(R.drawable.livekit_ic_avatar);
         } else {

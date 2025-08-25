@@ -17,6 +17,7 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
 import com.tencent.qcloud.tuicore.util.ScreenUtil;
@@ -74,9 +75,14 @@ public class AudienceListView extends FrameLayout {
         LayoutInflater.from(mContext).inflate(R.layout.audience_list_layout_icon, this, true);
     }
 
+    @Deprecated
     public void init(TUIRoomDefine.RoomInfo roomInfo) {
-        mAudienceListService.initRoomInfo(roomInfo);
-        reportData(roomInfo.roomId);
+        init(convertToLiveInfo(roomInfo));
+    }
+
+    public void init(TUILiveListManager.LiveInfo liveInfo) {
+        mAudienceListService.initRoomInfo(liveInfo);
+        reportData(liveInfo.roomId);
     }
 
     public void setOnUserItemClickListener(OnUserItemClickListener listener) {
@@ -118,6 +124,16 @@ public class AudienceListView extends FrameLayout {
         super.onDetachedFromWindow();
         removeObserver();
         mRoomEngine.removeObserver(mAudienceObserver);
+    }
+
+    private TUILiveListManager.LiveInfo convertToLiveInfo(TUIRoomDefine.RoomInfo roomInfo) {
+        TUILiveListManager.LiveInfo liveInfo = new TUILiveListManager.LiveInfo();
+        liveInfo.roomId = roomInfo.roomId;
+        liveInfo.name = roomInfo.name;
+        liveInfo.ownerId = roomInfo.ownerId;
+        liveInfo.ownerName = roomInfo.ownerName;
+        liveInfo.ownerAvatarUrl = roomInfo.ownerAvatarUrl;
+        return liveInfo;
     }
 
     private void initAudienceCountView() {

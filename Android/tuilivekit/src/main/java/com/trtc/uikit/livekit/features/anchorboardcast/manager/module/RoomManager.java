@@ -1,16 +1,15 @@
 package com.trtc.uikit.livekit.features.anchorboardcast.manager.module;
 
-import static java.lang.Boolean.TRUE;
+import android.text.TextUtils;
 
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfo;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveModifyFlag;
-import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.uikit.livekit.common.LiveKitLogger;
+import com.trtc.uikit.livekit.features.anchorboardcast.manager.Constants;
 import com.trtc.uikit.livekit.features.anchorboardcast.manager.api.IAnchorAPI;
 import com.trtc.uikit.livekit.features.anchorboardcast.state.AnchorState;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RoomManager extends BaseManager {
@@ -24,79 +23,27 @@ public class RoomManager extends BaseManager {
     public void destroy() {
     }
 
-    public void initCreateRoomState(String roomId, String roomName) {
-        LOGGER.info("initCreateRoomState roomId [roomId: " + roomId + ", roomName:" + roomName);
-        mRoomState.roomId = roomId;
-        mRoomState.roomName.setValue(roomName);
-        mRoomState.createTime = System.currentTimeMillis();
-    }
-
-    public void setRoomName(String roomName) {
-        mRoomState.roomName.setValue(roomName);
-    }
-
-    public void setCoverURL(String url) {
-        mRoomState.coverURL.setValue(url);
-    }
-
-    public void updateRoomState(TUIRoomDefine.RoomInfo roomInfo) {
-        if (roomInfo.createTime != 0) {
-            mRoomState.createTime = roomInfo.createTime;
-        } else {
-            mRoomState.createTime = System.currentTimeMillis();
+    public void initCreateRoomState(LiveInfo liveInfo) {
+        LOGGER.info("initCreateRoomState roomId [roomId: " + liveInfo.roomId + ", roomName:" + liveInfo.name);
+        mRoomState.roomId = liveInfo.roomId;
+        liveInfo.createTime = System.currentTimeMillis();
+        if (TextUtils.isEmpty(liveInfo.coverUrl)) {
+            liveInfo.coverUrl = Constants.DEFAULT_COVER_URL;
         }
-        if (roomInfo.name != null) {
-            mRoomState.roomName.setValue(roomInfo.name);
+        if (TextUtils.isEmpty(liveInfo.backgroundUrl)) {
+            liveInfo.backgroundUrl = Constants.DEFAULT_BACKGROUND_URL;
         }
-        mRoomState.roomInfo = roomInfo;
     }
 
-    public void updateLiveInfo(LiveInfo liveInfo) {
-        if (liveInfo == null) {
-            return;
+    public void updateRoomState(LiveInfo liveInfo) {
+        if (liveInfo.createTime == 0) {
+            liveInfo.createTime = System.currentTimeMillis();
         }
-        if (liveInfo.roomInfo != null) {
-            updateRoomState(liveInfo.roomInfo);
-        }
-        List<LiveModifyFlag> flagList = new ArrayList<>();
-        flagList.add(LiveModifyFlag.ACTIVITY_STATUS);
-        flagList.add(LiveModifyFlag.COVER_URL);
-        flagList.add(LiveModifyFlag.PUBLISH);
-        flagList.add(LiveModifyFlag.BACKGROUND_URL);
-        onLiveInfoChanged(liveInfo, flagList);
-    }
-
-    public void updateLiveInfo() {
-        LiveInfo liveInfo = new LiveInfo();
-        liveInfo.roomInfo = new TUIRoomDefine.RoomInfo();
-        liveInfo.roomInfo.roomId = mRoomState.roomId;
-        liveInfo.coverUrl = mRoomState.coverURL.getValue();
-        liveInfo.backgroundUrl = mRoomState.backgroundURL.getValue();
-        liveInfo.isPublicVisible = TRUE.equals(mRoomState.isPublicVisible.getValue());
-        List<LiveModifyFlag> flagList = new ArrayList<>();
-        flagList.add(LiveModifyFlag.COVER_URL);
-        flagList.add(LiveModifyFlag.PUBLISH);
-        flagList.add(LiveModifyFlag.BACKGROUND_URL);
-        mLiveService.setLiveInfo(liveInfo, flagList, null);
+        mRoomState.liveInfo = liveInfo;
     }
 
     public void getLiveInfo(String roomId, TUILiveListManager.LiveInfoCallback callback) {
         mLiveService.getLiveInfo(roomId, callback);
-    }
-
-    public void setLiveInfo(String roomName, String coverUrl, boolean isPublicVisible) {
-        mRoomState.roomName.setValue(roomName);
-        mRoomState.coverURL.setValue(coverUrl);
-        mRoomState.isPublicVisible.setValue(isPublicVisible);
-    }
-
-    public void onRoomUserCountChanged(String roomId, int userCount) {
-        if (userCount > 0) {
-            mRoomState.userCount.setValue(userCount - 1);
-            if (userCount > mRoomState.maxAudienceCount) {
-                mRoomState.maxAudienceCount = userCount - 1;
-            }
-        }
     }
 
     public void onLiveInfoChanged(LiveInfo liveInfo, List<LiveModifyFlag> modifyFlagList) {
@@ -108,16 +55,16 @@ public class RoomManager extends BaseManager {
     private void onLiveInfoChanged(LiveModifyFlag flag, LiveInfo liveInfo) {
         switch (flag) {
             case COVER_URL:
-                mRoomState.coverURL.setValue(liveInfo.coverUrl);
+                mRoomState.liveInfo.coverUrl = liveInfo.coverUrl;
                 break;
             case BACKGROUND_URL:
-                mRoomState.backgroundURL.setValue(liveInfo.backgroundUrl);
+                mRoomState.liveInfo.backgroundUrl = liveInfo.backgroundUrl;
                 break;
             case ACTIVITY_STATUS:
-                mRoomState.activityStatus.setValue(liveInfo.activityStatus);
+                mRoomState.liveInfo.activityStatus = liveInfo.activityStatus;
                 break;
             case PUBLISH:
-                mRoomState.isPublicVisible.setValue(liveInfo.isPublicVisible);
+                mRoomState.liveInfo.isPublicVisible = liveInfo.isPublicVisible;
                 break;
             default:
                 break;
