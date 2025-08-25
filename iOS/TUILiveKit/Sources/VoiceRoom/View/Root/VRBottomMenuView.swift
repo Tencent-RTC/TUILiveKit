@@ -100,7 +100,7 @@ class VRBottomMenuView: UIView {
         
         stackView.subviews.forEach { view in
             stackView.removeArrangedSubview(view)
-            view.removeFromSuperview()
+            view.safeRemoveFromSuperview()
         }
         buttons = menus
             .enumerated().map { value -> MenuButton in

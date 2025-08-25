@@ -12,8 +12,8 @@ import RTCCommon
 import RTCRoomEngine
 
 public class LiveInfoView: UIView {
-    private let service = RoomInfoService()
-    public var state: RoomInfoState {
+    private let service = LiveInfoService()
+    public var state: LiveInfoState {
         service.state
     }
     public var isOwner: Bool {
@@ -54,8 +54,8 @@ public class LiveInfoView: UIView {
         return button
     }()
     
-    public func initialize(roomInfo: TUIRoomInfo) {
-        service.initRoomInfo(roomInfo: roomInfo)
+    public func initialize(liveInfo: TUILiveInfo) {
+        service.initLiveInfo(liveInfo: liveInfo)
     }
     
     public init(enableFollow: Bool = true, frame: CGRect = .zero) {
@@ -207,7 +207,7 @@ public class LiveInfoView: UIView {
                 make.height.equalToSuperview()
             }
         } else {
-            followButton.removeFromSuperview()
+            followButton.safeRemoveFromSuperview()
             roomOwnerNameLabel.snp.remakeConstraints { make in
                 make.leading.equalTo(imageView.snp.trailing).offset(8.scale375())
                 make.trailing.equalToSuperview().inset(8.scale375())

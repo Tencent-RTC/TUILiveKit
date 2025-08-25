@@ -212,19 +212,22 @@ extension VoiceRoomRootView {
 
 extension VoiceRoomRootView {
     private func start(roomId: String) {
-        let roomInfo = TUIRoomInfo()
+        let liveInfo = TUILiveInfo()
         let roomState = manager.roomState
-        roomInfo.roomId = roomId
-        roomInfo.name = roomState.roomName
-        roomInfo.seatMode = manager.roomParams.seatMode
-        roomInfo.maxSeatCount = manager.roomParams.maxSeatCount
-        roomInfo.isSeatEnabled = true
-        roomInfo.roomType = .live
-        
-        seatGridView.startVoiceRoom(roomInfo: roomInfo) { [weak self] roomInfo in
+        liveInfo.roomId = roomId
+        liveInfo.name = roomState.roomName
+        liveInfo.seatMode = manager.roomParams.seatMode
+        liveInfo.coverUrl = manager.roomState.coverURL
+        liveInfo.backgroundUrl = manager.roomState.backgroundURL
+        liveInfo.isPublicVisible = manager.roomState.liveExtraInfo.liveMode == .public
+        liveInfo.maxSeatCount = manager.roomParams.maxSeatCount
+        liveInfo.isSeatEnabled = true
+        liveInfo.keepOwnerOnSeat = true
+
+        seatGridView.startVoiceRoom(liveInfo: liveInfo) { [weak self] liveInfo in
             guard let self = self else { return }
             handleAbnormalExitedSence()
-            manager.onStartVoiceRoom(roomInfo: roomInfo)
+            manager.onStartVoiceRoom(liveInfo: liveInfo)
             didEnterRoom()
         } onError: {  [weak self] code, message in
             guard let self = self else { return }
@@ -234,9 +237,9 @@ extension VoiceRoomRootView {
     
     private func join(roomId: String) {
         
-        seatGridView.joinVoiceRoom(roomId: roomId) { [weak self] roomInfo in
+        seatGridView.joinVoiceRoom(roomId: roomId) { [weak self] liveInfo in
             guard let self = self else { return }
-            manager.onJoinVoiceRoom(roomInfo: roomInfo)
+            manager.onJoinVoiceRoom(liveInfo: liveInfo)
             didEnterRoom()
         } onError: { [weak self] code, message in
             guard let self = self else { return }

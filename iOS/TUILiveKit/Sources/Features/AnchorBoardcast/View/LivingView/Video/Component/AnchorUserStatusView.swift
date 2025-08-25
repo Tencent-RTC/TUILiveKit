@@ -23,6 +23,7 @@ class AnchorUserStatusView: UIView {
         self.userInfo = userInfo
         self.manager = manager
         super.init(frame: .zero)
+        self.muteAudio = !userInfo.hasAudioStream
     }
     
     required init?(coder: NSCoder) {
@@ -37,8 +38,8 @@ class AnchorUserStatusView: UIView {
         isViewReady = true
         constructViewHierarchy()
         activateConstraints()
-        subscribeState()
         setupViewStyle()
+        updateAudioStatus()
     }
     
     private lazy var userNameLabel: UILabel = {
@@ -48,7 +49,6 @@ class AnchorUserStatusView: UIView {
         user.textAlignment = TUIGlobalization.getRTLOption() ? .right : .left
         user.numberOfLines = 1
         user.font = .customFont(ofSize: 9)
-        addSubview(user)
         return user
     }()
     
@@ -89,23 +89,3 @@ class AnchorUserStatusView: UIView {
         activateConstraints()
     }
 }
-
-extension AnchorUserStatusView {
-    
-    func subscribeState() {
-        manager.subscribeCoreViewState(StateSelector(keyPath: \UserState.hasAudioStreamUserList))
-            .receive(on: RunLoop.main)
-            .removeDuplicates()
-            .sink { [weak self] userIdList in
-                guard let self = self else { return }
-                if userIdList.contains(self.userInfo.userId) {
-                    self.muteAudio = false
-                } else {
-                    self.muteAudio = true
-                }
-                self.updateAudioStatus()
-            }
-            .store(in: &cancellableSet)
-    }
-}
-

@@ -7,6 +7,7 @@
 
 import UIKit
 
+#if DEV_MODE
 class TestCaseModel {
     let list: [TestCaseItemModel]
     weak var obj: AnyObject?
@@ -27,7 +28,6 @@ class TestCaseItemModel {
         self.title = title
     }
 }
-
 class TestTool {
     private init() {
         NotificationCenter.default.addObserver(self, selector: #selector(onTestModeChanged), name: Notification.Name("__kTUILiveKitTestModeChanged__"), object: nil)
@@ -66,3 +66,4 @@ class TestTool {
         window.updateShowCases(cases)
     }
 }
+#endif

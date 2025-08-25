@@ -42,17 +42,8 @@ class AudienceCoHostView: UIView {
     
     private lazy var userInfoView = AudienceUserStatusView(userInfo: TUIUserInfo(coHostUser: coHostUser), manager: manager)
     
-    private lazy var avatarImageView: UIImageView = {
-        let imageView = UIImageView(frame: .zero)
-        imageView.layer.cornerRadius = 40.scale375() * 0.5
-        imageView.layer.masksToBounds = true
-        imageView.isHidden = true
-        return imageView
-    }()
-    
     private func constructViewHierarchy() {
         addSubview(userInfoView)
-        addSubview(avatarImageView)
     }
     
     private func activateConstraints() {
@@ -62,39 +53,19 @@ class AudienceCoHostView: UIView {
             make.leading.equalToSuperview().offset(5)
             make.width.lessThanOrEqualTo(self).multipliedBy(0.9)
         }
-        avatarImageView.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-            make.width.equalTo(40.scale375())
-            make.height.equalTo(40.scale375())
-        }
     }
     
     private func initViewState() {
-        if coHostUser.connectionUser.userId == manager.coreUserState.selfInfo.userId {
+        if manager.coreCoHostState.connectedUserList.count > 1 || manager.coreCoGuestState.connectedUserList.count > 1 {
+            userInfoView.isHidden = false
+        } else {
             userInfoView.isHidden = true
         }
-        avatarImageView.kf.setImage(with: URL(string: coHostUser.connectionUser.avatarUrl),
-                                    placeholder: UIImage.avatarPlaceholderImage)
-        let hasVideo = manager.coreUserState.hasVideoStreamUserList.contains(coHostUser.connectionUser.userId)
-        avatarImageView.isHidden = hasVideo || coHostUser.hasVideoStream
     }
 }
 
 extension AudienceCoHostView {
     func subscribeState() {
-        manager.subscribeCoreViewState(StateSelector(keyPath: \UserState.hasVideoStreamUserList))
-            .receive(on: RunLoop.main)
-            .removeDuplicates()
-            .sink { [weak self] userIdList in
-                guard let self = self else { return }
-                if userIdList.contains(self.coHostUser.connectionUser.userId) || self.coHostUser.hasVideoStream {
-                    avatarImageView.isHidden = true
-                } else {
-                    avatarImageView.isHidden = false
-                }
-            }
-            .store(in: &cancellableSet)
-        
         manager.subscribeCoreViewState(StateSelector(keyPath: \CoHostState.connectedUserList))
             .receive(on: RunLoop.main)
             .removeDuplicates()

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import RTCCommon
 
 enum AnchorFeatureItemType {
     case singleImage
@@ -233,7 +234,7 @@ class AnchorFeatureClickPanel: UIView {
     func updateFeatureItems(newItems: [AnchorFeatureItem]) {
         model.items = newItems
         for subview in subviews {
-            subview.removeFromSuperview()
+            subview.safeRemoveFromSuperview()
         }
         setView()
     }

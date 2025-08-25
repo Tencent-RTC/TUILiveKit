@@ -183,7 +183,7 @@ extension GiftPlayView {
         
         all.play(isPureMode: isPureMode) { [weak self, weak all] _ in
             guard let self = self else { return }
-            all?.removeFromSuperview()
+            all?.safeRemoveFromSuperview()
             self.normalAnimationManager.finishPlay()
         }
     }
@@ -216,7 +216,7 @@ private extension GiftPlayView {
         currentLikeAnimationCount += 1
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
-            heartImageView.removeFromSuperview()
+            heartImageView.safeRemoveFromSuperview()
             self?.currentLikeAnimationCount -= 1
         }
     }

@@ -21,8 +21,9 @@ public class TUILiveRoomAnchorPrepareViewController: UIViewController {
     deinit {
         LiveKitLog.info("\(#file)", "\(#line)", "deinit TUILiveRoomAnchorPrepareViewController \(self)")
         
-        // ** Only should use for test **
+#if DEV_MODE
         TestTool.shared.unregisterCaseFrom(self)
+#endif
     }
     
     required init?(coder: NSCoder) {
@@ -42,13 +43,14 @@ public class TUILiveRoomAnchorPrepareViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        // ** Only should use for test **
+#if DEV_MODE
         let feature = TestCaseItemModel(title: "禁用所有按钮", view: rootView, sel: #selector(AnchorPrepareView.disableFeatureMenuForTest(_:)))
         let switchCamera = TestCaseItemModel(title: "禁用切换摄像头按钮", view: rootView, sel: #selector(AnchorPrepareView.disableMenuSwitchCameraBtnForTest(_:)))
         let beauty = TestCaseItemModel(title: "禁用美颜按钮", view: rootView, sel: #selector(AnchorPrepareView.disableMenuBeautyBtnForTest(_:)))
         let audioEffect = TestCaseItemModel(title: "禁用音效按钮", view: rootView, sel: #selector(AnchorPrepareView.disableMenuAudioEffectBtnForTest(_:)))
         let model = TestCaseModel(list: [feature, switchCamera, beauty, audioEffect], obj: self)
         TestTool.shared.registerCase(model)
+#endif
     }
     
     public override func loadView() {
@@ -91,6 +93,10 @@ extension TUILiveRoomAnchorPrepareViewController : AnchorPrepareViewDelegate {
             liveInfo.name = state.roomName
             liveInfo.coverUrl = state.coverUrl
             liveInfo.isPublicVisible = state.privacyMode == .public
+            liveInfo.seatLayoutTemplateId = state.templateMode.rawValue
+            // 背景图默认为封面
+            liveInfo.backgroundUrl = state.coverUrl
+            liveInfo.pkTemplateId = state.pkTemplateMode.rawValue
             
             let anchorVC = TUILiveRoomAnchorViewController(liveInfo: liveInfo, coreView: coreView, behavior: .createRoom)
             anchorVC.modalPresentationStyle = .fullScreen
@@ -103,7 +109,7 @@ extension TUILiveRoomAnchorPrepareViewController : AnchorPrepareViewDelegate {
                 UIView.animate(withDuration: 0.3) {
                     tmpView.alpha = 0
                 } completion: { _ in
-                    tmpView.removeFromSuperview()
+                    tmpView.safeRemoveFromSuperview()
                 }
             }
         }

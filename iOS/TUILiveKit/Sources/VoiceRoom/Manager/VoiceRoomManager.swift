@@ -83,9 +83,9 @@ extension VoiceRoomManager {
         roomManager.prepareRoomIdBeforeEnterRoom(roomId: roomId, roomParams: roomParams)
     }
     
-    func onJoinVoiceRoom(roomInfo: TUIRoomInfo) {
-        userManager.onJoinVoiceRoom(ownerId: roomInfo.ownerId)
-        roomManager.onJoinVoiceRoom(roomInfo: roomInfo)
+    func onJoinVoiceRoom(liveInfo: TUILiveInfo) {
+        userManager.onJoinVoiceRoom(ownerId: liveInfo.ownerId)
+        roomManager.onJoinVoiceRoom(liveInfo: liveInfo)
     }
     
     func fetchGiftCount(roomId: String, onSuccess: @escaping TUISuccessBlock, onError: @escaping InternalErrorBlock) {
@@ -148,8 +148,8 @@ extension VoiceRoomManager {
         roomParams.seatMode = seatMode
     }
     
-    func onStartVoiceRoom(roomInfo: TUIRoomInfo) {
-        roomManager.onStartVoiceRoom(roomInfo: roomInfo)
+    func onStartVoiceRoom(liveInfo: TUILiveInfo) {
+        roomManager.onStartVoiceRoom(liveInfo: liveInfo)
         userManager.onStartVoiceRoom()
     }
     

@@ -10,10 +10,10 @@ import RTCRoomEngine
 
 class AudienceListService {
     public let state = AudienceListState()
-    
-    public func initRoomInfo(roomInfo: TUIRoomInfo) {
-        state.roomId = roomInfo.roomId
-        state.ownerId = roomInfo.ownerId
+
+    public func initLiveInfo(liveInfo: TUILiveInfo) {
+        state.roomId = liveInfo.roomId
+        state.ownerId = liveInfo.ownerId
         self.getUserList()
     }
     

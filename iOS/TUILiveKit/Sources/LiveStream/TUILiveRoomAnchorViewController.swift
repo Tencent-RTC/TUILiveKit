@@ -65,8 +65,9 @@ public class TUILiveRoomAnchorViewController: UIViewController {
         StateCache.shared.clear()
         LiveKitLog.info("\(#file)", "\(#line)", "deinit TUILiveRoomAnchorViewController \(self)")
         TUIGiftStore.shared.reset()
-        // ** Only should use for test **
+#if DEV_MODE
         TestTool.shared.unregisterCaseFrom(self)
+#endif
     }
     
     public func stopLive(onSuccess: TUISuccessBlock?, onError: TUIErrorBlock?) {
@@ -82,7 +83,7 @@ public class TUILiveRoomAnchorViewController: UIViewController {
         navigationController?.setNavigationBarHidden(true, animated: true)
         startLiveBlock?()
         
-        // ** Only should use for test **
+#if DEV_MODE
         let liveData = TestCaseItemModel(title: "禁用房间信息", view: anchorView, sel: #selector(AnchorView.disableHeaderLiveDataForTest(_:)))
         let visitor = TestCaseItemModel(title: "禁用观众列表", view: anchorView, sel: #selector(AnchorView.disableHeaderVisitorCntForTest(_:)))
         let coGuest = TestCaseItemModel(title: "禁用连麦按钮", view: anchorView, sel: #selector(AnchorView.disableFooterCoGuestForTest(_:)))
@@ -91,6 +92,7 @@ public class TUILiveRoomAnchorViewController: UIViewController {
         let soundEffect = TestCaseItemModel(title: "禁用音效按钮", view: anchorView, sel: #selector(AnchorView.disableFooterSoundEffectForTest(_:)))
         let model = TestCaseModel(list: [liveData, visitor, coGuest, coHost, battle, soundEffect], obj: self)
         TestTool.shared.registerCase(model)
+#endif
     }
     
     public override func loadView() {

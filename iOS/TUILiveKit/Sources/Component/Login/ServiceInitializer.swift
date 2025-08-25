@@ -12,7 +12,9 @@ import RTCRoomEngine
 extension NSObject {
     @objc class func liveKitExtensionLoad() {
         ServiceInitializer.shared.registerObserver()
+#if DEV_MODE
         TestTool.shared.initialize()
+#endif
     }
 }
 

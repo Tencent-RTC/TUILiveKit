@@ -107,8 +107,8 @@ class AudienceLivingView: RTCBaseView {
         button.onNetWorkInfoButtonClicked = { [weak self] in
             guard let self = self else { return }
             if !WindowUtils.isPortrait { return }
-            let isAudience = manager.coGuestState.coGuestStatus != .linking
-            routerManager.router(action: .present(AudienceRoute.netWorkInfo(netWorkInfoManager,isAudience: isAudience)))
+            let isOnSeat = manager.coGuestState.coGuestStatus == .linking
+            routerManager.router(action: .present(AudienceRoute.netWorkInfo(netWorkInfoManager,isAudience: !isOnSeat)))
         }
         return button
     }()
@@ -338,11 +338,11 @@ class AudienceLivingView: RTCBaseView {
     }
     
     func initAudienceListView() {
-        audienceListView.initialize(roomInfo: manager.roomState.roomInfo)
+        audienceListView.initialize(liveInfo: manager.roomState.liveInfo)
     }
     
     func initLiveInfoView() {
-        liveInfoView.initialize(roomInfo: manager.roomState.roomInfo)
+        liveInfoView.initialize(liveInfo: manager.roomState.liveInfo)
     }
     
     func setGiftPureMode(_ isPureMode: Bool) {

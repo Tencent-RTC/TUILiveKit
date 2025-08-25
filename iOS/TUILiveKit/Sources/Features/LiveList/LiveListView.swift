@@ -344,7 +344,6 @@ extension LiveListView: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard indexPath.item < liveList.count, let cell = collectionView.cellForItem(at: indexPath) as? LiveListViewCell else { return }
         let originFrame = cell.convert(cell.bounds, to: window)
-        cell.unmutePreviewVideoStream()
         itemClickDelegate?.onItemClick(liveInfo: liveList[indexPath.item], frame: originFrame)
         willEnterRoomIndexPath = indexPath
     }
@@ -374,7 +373,7 @@ extension LiveListView: UICollectionViewDataSource {
         let doubleInfoView = cell.contentView.viewWithTag(doubleLiveInfoViewTag)
 
         if currentStyle == .singleColumn {
-            doubleInfoView?.removeFromSuperview()
+            doubleInfoView?.safeRemoveFromSuperview()
             if let singleView = singleInfoView {
                 adapter.updateLiveInfoView(view: singleView, info: info)
             } else {
@@ -387,7 +386,7 @@ extension LiveListView: UICollectionViewDataSource {
                 }
             }
         } else {
-            singleInfoView?.removeFromSuperview()
+            singleInfoView?.safeRemoveFromSuperview()
             if let doubleView = doubleInfoView {
                 adapter.updateLiveInfoView(view: doubleView, info: info)
             } else {

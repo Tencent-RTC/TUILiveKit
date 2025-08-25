@@ -109,7 +109,7 @@ class VRAlertPanel: UIView {
     }
     
     func dismiss() {
-        removeFromSuperview()
+        safeRemoveFromSuperview()
     }
 }
 

@@ -240,6 +240,7 @@ extension AudienceRouterControlCenter {
         switch route {
         case .alert(_),
              .streamDashboard,
+             .linkType(_),
              .userManagement(_, _):
             return true
         default:

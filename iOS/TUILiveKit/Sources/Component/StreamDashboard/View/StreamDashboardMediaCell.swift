@@ -138,8 +138,8 @@ class StreamDashboardMediaCell: UICollectionViewCell {
             .sink { [weak self] isRemoteUserEmpty in
                 guard let self = self else { return }
                 if isRemoteUserEmpty {
-                    titleLabel.removeFromSuperview()
-                    separatorLine.removeFromSuperview()
+                    titleLabel.safeRemoveFromSuperview()
+                    separatorLine.safeRemoveFromSuperview()
                 } else {
                     containerView.addSubview(titleLabel)
                     containerView.addSubview(separatorLine)

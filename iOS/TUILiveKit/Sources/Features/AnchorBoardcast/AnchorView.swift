@@ -194,31 +194,6 @@ extension AnchorView {
     }
     
     private func bindInteraction() {
-        let mediaState: MediaState = videoView.getState()
-        if !mediaState.isCameraOpened {
-            videoView.startCamera(useFrontCamera: true) {
-            } onError: { [weak self] code, message in
-                guard let self = self else { return }
-                let error = InternalError(code: code.rawValue, message: message)
-                manager.onError(error)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
-                    guard let self = self else { return }
-                    routerManager.router(action: .exit)
-                }
-            }
-        }
-        if !mediaState.isMicrophoneOpened {
-            videoView.startMicrophone() {
-            } onError: { [weak self] code, message in
-                guard let self = self else { return }
-                let error = InternalError(code: code.rawValue, message: message)
-                manager.onError(error)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
-                    guard let self = self else { return }
-                    routerManager.router(action: .exit)
-                }
-            }
-        }
         subscribeCoHostState()
         subscribeBattleState()
         subscribeSubjects()
@@ -235,17 +210,31 @@ extension AnchorView {
 extension AnchorView {
     func startLiveStream() {
         setLocalVideoMuteImage()
-        let roomInfo = TUIRoomInfo()
-        roomInfo.roomId = roomId
-        roomInfo.name = liveInfo.name
-        roomInfo.isSeatEnabled = true
-        roomInfo.roomType = .live
-        roomInfo.seatMode = .applyToTake
-        roomInfo.maxSeatCount = 9
+        let info = TUILiveInfo()
+        info.roomId = roomId
+        info.name = liveInfo.name
+        info.isSeatEnabled = true
+        info.seatMode = .applyToTake
+        info.coverUrl = self.liveInfo.coverUrl
+        info.isPublicVisible = self.liveInfo.isPublicVisible
+        info.activityStatus = self.liveInfo.activityStatus
+        info.keepOwnerOnSeat = true
+        if liveInfo.seatLayoutTemplateId > 0 {
+            info.seatLayoutTemplateId = UInt(liveInfo.seatLayoutTemplateId)
+        } else {
+            info.maxSeatCount = 9
+        }
+        info.backgroundUrl = liveInfo.backgroundUrl
         
-        videoView.startLiveStream(roomInfo: roomInfo) { [weak self] roomInfo in
-            guard let self = self, let roomInfo = roomInfo else { return }
-            manager.onStartLive(isJoinSelf: false, roomInfo: roomInfo)
+        routerManager.router(action: .dismiss(.alert, completion: nil))
+        let mediaState: MediaState = videoView.getState()
+        if info.keepOwnerOnSeat && !mediaState.isCameraOpened{
+            openLocalCamera()
+            openLocalMicrophone()
+        }
+        videoView.startLiveStream(liveInfo: info) { [weak self] liveInfo in
+            guard let self = self else { return }
+            manager.onStartLive(isJoinSelf: false, liveInfo: liveInfo)
             startLiveBlock?()
         } onError: { [weak self] code, message in
             guard let self = self else { return }
@@ -260,9 +249,14 @@ extension AnchorView {
     
     func joinSelfCreatedRoom() {
         setLocalVideoMuteImage()
-        videoView.joinLiveStream(roomId: roomId) { [weak self] roomInfo in
-            guard let self = self, let roomInfo = roomInfo else { return }
-            manager.onStartLive(isJoinSelf: true, roomInfo: roomInfo)
+        videoView.joinLiveStream(roomId: roomId) { [weak self] liveInfo in
+            guard let self = self else { return }
+            manager.onStartLive(isJoinSelf: true, liveInfo: liveInfo)
+            let mediaState: MediaState = videoView.getState()
+            if liveInfo.keepOwnerOnSeat && !mediaState.isCameraOpened{
+                openLocalCamera()
+                openLocalMicrophone()
+            }
             startLiveBlock?()
         } onError: { [weak self] code, message in
             guard let self = self else { return }
@@ -328,6 +322,32 @@ extension AnchorView {
                 bigImage:internalImage(imageName) ?? UIImage(),
                 smallImage:internalImage("live_muteImage_small") ?? UIImage()
             )
+    }
+
+    private func openLocalCamera() {
+        videoView.startCamera(useFrontCamera: true) {
+        } onError: { [weak self] code, message in
+            guard let self = self else { return }
+            let error = InternalError(code: code.rawValue, message: message)
+            manager.onError(error)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+                guard let self = self else { return }
+                routerManager.router(action: .exit)
+            }
+        }
+    }
+
+    private func openLocalMicrophone() {
+        videoView.startMicrophone() {
+        } onError: { [weak self] code, message in
+            guard let self = self else { return }
+            let error = InternalError(code: code.rawValue, message: message)
+            manager.onError(error)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+                guard let self = self else { return }
+                routerManager.router(action: .exit)
+            }
+        }
     }
 
     private func subscribeBattleState() {
@@ -441,28 +461,42 @@ extension AnchorView {
 }
 
 extension AnchorView: VideoViewDelegate {
-    public func createCoGuestView(userInfo: TUIUserInfo) -> UIView? {
-        return AnchorCoGuestView(userInfo: userInfo, manager: manager, routerManager: routerManager)
+    public func createCoGuestView(seatInfo: TUISeatFullInfo, viewLayer: ViewLayer) -> UIView? {
+        switch viewLayer {
+        case .foreground:
+            if let userId = seatInfo.userId, !userId.isEmpty {
+                let userInfo = seatFullInfoToUserInfo(seatInfo: seatInfo)
+                return AnchorCoGuestView(userInfo: userInfo, manager: manager, routerManager: routerManager)
+            }
+            return AnchorEmptySeatView(seatInfo: seatInfo)
+        case .background:
+            if let userId = seatInfo.userId, !userId.isEmpty {
+                return AnchorBackgroundWidgetView(avatarUrl: seatInfo.userAvatar ?? "")
+            }
+            return nil
+        }
     }
     
-    public func updateCoGuestView(coGuestView: UIView, userInfo: TUIUserInfo, modifyFlag: LiveStreamCore.UserInfoModifyFlag) {
-        
-    }
-    
-    public func createCoHostView(coHostUser: CoHostUser) -> UIView? {
-        return AnchorCoHostView(connectionUser: coHostUser, manager: manager)
-    }
-    
-    public func updateCoHostView(coHostView: UIView, coHostUser: LiveStreamCore.CoHostUser, modifyFlag: LiveStreamCore.UserInfoModifyFlag) {
-        
+    public func createCoHostView(seatInfo: TUISeatFullInfo, viewLayer: ViewLayer) -> UIView? {
+        switch viewLayer {
+        case .foreground:
+            if let userId = seatInfo.userId, !userId.isEmpty {
+                let coHostUser = seatFullInfoToCoHostUser(seatInfo: seatInfo)
+                return AnchorCoHostView(connectionUser: coHostUser, manager: manager)
+            }
+            return AnchorEmptySeatView(seatInfo: seatInfo)
+        case .background:
+            if let userId = seatInfo.userId, !userId.isEmpty {
+                return AnchorBackgroundWidgetView(avatarUrl: seatInfo.userAvatar ?? "")
+            }
+            return nil
+        }
     }
     
     public func createBattleView(battleUser: TUIBattleUser) -> UIView? {
-        return AnchorBattleMemberInfoView(manager: manager, userId: battleUser.userId)
-    }
-    
-    public func updateBattleView(battleView: UIView, battleUser: TUIBattleUser) {
-        
+        let battleView = AnchorBattleMemberInfoView(manager: manager, userId: battleUser.userId)
+        battleView.isUserInteractionEnabled = false
+        return battleView
     }
     
     public func createBattleContainerView() -> UIView? {
@@ -473,6 +507,31 @@ extension AnchorView: VideoViewDelegate {
         if let battleInfoView = battleContainerView as? AnchorBattleInfoView {
             battleInfoView.updateView(userInfos: userInfos)
         }
+    }
+    
+    private func seatFullInfoToUserInfo(seatInfo: TUISeatFullInfo) -> TUIUserInfo {
+        let userInfo = TUIUserInfo()
+        userInfo.userId = seatInfo.userId ?? ""
+        userInfo.userName = seatInfo.userName ?? ""
+        userInfo.avatarUrl = seatInfo.userAvatar ?? ""
+        userInfo.userRole = .generalUser
+        userInfo.hasVideoStream = seatInfo.userCameraStatus == .opened
+        userInfo.hasAudioStream = seatInfo.userMicrophoneStatus == .opened
+        return userInfo
+    }
+    
+    private func seatFullInfoToCoHostUser(seatInfo: TUISeatFullInfo) -> CoHostUser {
+        let user = TUIConnectionUser()
+        user.userId = seatInfo.userId ?? ""
+        user.userName = seatInfo.userName ?? ""
+        user.avatarUrl = seatInfo.userAvatar ?? ""
+        user.roomId = seatInfo.roomId
+        
+        let coHostUser = CoHostUser()
+        coHostUser.connectionUser = user
+        coHostUser.hasVideoStream = seatInfo.userCameraStatus == .opened
+        coHostUser.hasAudioStream = seatInfo.userMicrophoneStatus == .opened
+        return coHostUser
     }
 }
 

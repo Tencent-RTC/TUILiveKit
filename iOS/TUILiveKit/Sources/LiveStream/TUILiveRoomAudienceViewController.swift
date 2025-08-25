@@ -37,8 +37,9 @@ public class TUILiveRoomAudienceViewController: UIViewController {
     deinit {
         LiveKitLog.info("\(#file)", "\(#line)", "deinit TUILiveRoomAudienceViewController \(self)")
         
-        // ** Only should use for test **
+#if DEV_MODE
         TestTool.shared.unregisterCaseFrom(self)
+#endif
         TUIGiftStore.shared.reset()
         unregisterApplicationObserver()
     }
@@ -53,7 +54,7 @@ public class TUILiveRoomAudienceViewController: UIViewController {
         activateConstraints()
         registerApplicationObserver()
         
-        // ** Only should use for test **
+#if DEV_MODE
         let scrolling = TestCaseItemModel(title: "禁用滑动", view: audienceContainerView, sel: #selector(AudienceContainerView.disableSlidingForTest(_:)))
         let floatWin = TestCaseItemModel(title: "禁用悬浮窗按钮", view: audienceContainerView, sel: #selector(AudienceContainerView.disableHeaderFloatWinForTest(_:)))
         let liveData = TestCaseItemModel(title: "禁用房间信息", view: audienceContainerView, sel: #selector(AudienceContainerView.disableHeaderLiveDataForTest(_:)))
@@ -61,6 +62,7 @@ public class TUILiveRoomAudienceViewController: UIViewController {
         let coGuest = TestCaseItemModel(title: "禁用连麦按钮", view: audienceContainerView, sel: #selector(AudienceContainerView.disableFooterCoGuestForTest(_:)))
         let model = TestCaseModel(list: [scrolling, floatWin, liveData, visitor, coGuest], obj: self)
         TestTool.shared.registerCase(model)
+#endif
     }
     
     public override func viewWillAppear(_ animated: Bool) {

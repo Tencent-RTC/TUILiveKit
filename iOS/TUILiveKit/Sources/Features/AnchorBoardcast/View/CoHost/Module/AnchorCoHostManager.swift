@@ -111,6 +111,10 @@ extension AnchorCoHostManager {
             }
         }
     }
+    
+    func setCoHostlayoutTemplateId(_ templateId: Int) {
+        service.setCoHostlayoutTemplateId(templateId)
+    }
 }
 
 // MARK: - Observer

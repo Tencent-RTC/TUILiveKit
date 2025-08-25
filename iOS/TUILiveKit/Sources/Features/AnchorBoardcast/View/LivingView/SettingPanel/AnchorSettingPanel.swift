@@ -147,7 +147,7 @@ class AnchorSettingPanelCell: UICollectionViewCell {
     
     func updateUI(_ item: AnchorFeatureItem) {
         if let btn = itemButton {
-            btn.removeFromSuperview()
+            btn.safeRemoveFromSuperview()
         }
         itemButton = AnchorFeatureItemButton(item: item)
         itemButton?.addTarget(self, action: #selector(itemClick(_:)), for: .touchUpInside)

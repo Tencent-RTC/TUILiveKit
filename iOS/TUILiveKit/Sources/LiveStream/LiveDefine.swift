@@ -21,6 +21,51 @@ public enum LiveStreamPrivacyStatus: NSInteger, CaseIterable {
     }
 }
 
+public enum LiveTemplateMode: NSInteger, CaseIterable {
+    case verticalGridDynamic = 600
+    case verticalFloatDynamic = 601
+    case verticalGridStatic = 800
+    case verticalFloatStatic = 801
+    
+    func toString() -> String {
+        switch self {
+        case .verticalGridDynamic:
+            return internalLocalized("Dynamic grid layout")
+        case .verticalFloatDynamic:
+            return internalLocalized("Dynamic float layout")
+        case .verticalGridStatic:
+            return internalLocalized("Static grid layout")
+        case .verticalFloatStatic:
+            return internalLocalized("Static float layout")
+        }
+    }
+    
+    func toImageName() -> String {
+        switch self {
+        case .verticalGridDynamic:
+            return "dynamicGridLayout"
+        case .verticalFloatDynamic:
+            return "dynamicFloatLayout"
+        case .verticalGridStatic:
+            return "staticGridLayout"
+        case .verticalFloatStatic:
+            return "staticFloatLayout"
+        }
+    }
+    
+    func toPkImageName() -> String {
+        switch self {
+        case .verticalGridDynamic:
+            return "pk_dynamicGridLayout"
+        case .verticalFloatDynamic:
+            return "pk_dynamicFloatLayout"
+        default:
+            assert(false, "Not support")
+            return ""
+        }
+    }
+}
+
 extension LiveStreamPrivacyStatus: Codable {}
 
 public enum LiveStreamCategory: NSInteger, CaseIterable {

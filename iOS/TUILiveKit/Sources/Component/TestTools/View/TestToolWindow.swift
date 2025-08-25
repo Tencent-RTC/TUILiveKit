@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 import RTCCommon
 
+#if DEV_MODE
 class TestToolWindow: UIWindow {
     func updateShowCases(_ cases: [TestCaseModel]) {
         listWindow.updateShowCases(cases)
@@ -69,3 +70,4 @@ class TestToolWindow: UIWindow {
         return imageView
     }()
 }
+#endif

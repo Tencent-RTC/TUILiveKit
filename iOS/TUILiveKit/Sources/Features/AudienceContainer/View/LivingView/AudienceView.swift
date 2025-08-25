@@ -394,19 +394,19 @@ extension AudienceView {
 }
 
 extension AudienceView {
-    func joinLiveStream(onComplete: @escaping () -> Void) {
+    func joinLiveStream(onComplete: @escaping (Result<Void, InternalError>) -> Void) {
         let imageName = TUIGlobalization.getPreferredLanguage() == "en" ? "live_muteImage_en" : "live_muteImage"
         videoView
             .setLocalVideoMuteImage(
                 bigImage:internalImage(imageName) ?? UIImage(),
                 smallImage:internalImage("live_muteImage_small") ?? UIImage()
             )
-        videoView.joinLiveStream(roomId: roomId) { [weak self] roomInfo in
-            guard let self = self, let roomInfo = roomInfo else { return }
-            manager.onJoinLive(roomInfo: roomInfo)
+        videoView.joinLiveStream(roomId: roomId) { [weak self] liveInfo in
+            guard let self = self else { return }
+            manager.onJoinLive(liveInfo: liveInfo)
             livingView.initComponentView()
             livingView.isHidden = false
-            onComplete()
+            onComplete(.success(()))
         } onError: { [weak self] code, message in
             guard let self = self else { return }
             let error = InternalError(code: code.rawValue, message: message)
@@ -415,34 +415,46 @@ extension AudienceView {
                 guard let self = self else { return }
                 routerManager.router(action: .exit)
             }
-            onComplete()
+            onComplete(.failure(error))
         }
     }
 }
 
 extension AudienceView: VideoViewDelegate {
-    func createCoGuestView(userInfo: TUIUserInfo) -> UIView? {
-        return AudienceCoGuestView(userInfo: userInfo, manager: manager, routerManager: routerManager)
+    func createCoGuestView(seatInfo: TUISeatFullInfo, viewLayer: ViewLayer) -> UIView? {
+        switch viewLayer {
+        case .foreground:
+            if let userId = seatInfo.userId, !userId.isEmpty {
+                let userInfo = seatFullInfoToUserInfo(seatInfo: seatInfo)
+                return AudienceCoGuestView(userInfo: userInfo, manager: manager, routerManager: routerManager)
+            }
+            return AudienceEmptySeatView(seatInfo: seatInfo, manager: manager, routerManager: routerManager, coreView: videoView)
+        case .background:
+            if let userId = seatInfo.userId, !userId.isEmpty {
+                return AudienceBackgroundWidgetView(avatarUrl: seatInfo.userAvatar ?? "")
+            }
+            return nil
+        }
     }
     
-    func updateCoGuestView(coGuestView: UIView, userInfo: TUIUserInfo, modifyFlag: LiveStreamCore.UserInfoModifyFlag) {
-        
-    }
-    
-    func createCoHostView(coHostUser: CoHostUser) -> UIView? {
-        return AudienceCoHostView(connectionUser: coHostUser, manager: manager)
-    }
-    
-    func updateCoHostView(coHostView: UIView, coHostUser: LiveStreamCore.CoHostUser, modifyFlag: LiveStreamCore.UserInfoModifyFlag) {
-        
+    func createCoHostView(seatInfo: TUISeatFullInfo, viewLayer: ViewLayer) -> UIView? {
+        switch viewLayer {
+        case .foreground:
+            if let userId = seatInfo.userId, !userId.isEmpty {
+                let coHostUser = seatFullInfoToCoHostUser(seatInfo: seatInfo)
+                return AudienceCoHostView(connectionUser: coHostUser, manager: manager)
+            }
+            return AudienceEmptySeatView(seatInfo: seatInfo, manager: manager, routerManager: routerManager, coreView: videoView)
+        case .background:
+            if let userId = seatInfo.userId, !userId.isEmpty {
+                return AudienceBackgroundWidgetView(avatarUrl: seatInfo.userAvatar ?? "")
+            }
+            return nil
+        }
     }
     
     func createBattleView(battleUser: TUIBattleUser) -> UIView? {
         return AudienceBattleMemberInfoView(manager: manager, userId: battleUser.userId)
-    }
-    
-    func updateBattleView(battleView: UIView, battleUser: TUIBattleUser) {
-        
     }
     
     func createBattleContainerView() -> UIView? {
@@ -453,6 +465,31 @@ extension AudienceView: VideoViewDelegate {
         if let battleInfoView = battleContainerView as? AudienceBattleInfoView {
             battleInfoView.updateView(userInfos: userInfos)
         }
+    }
+    
+    private func seatFullInfoToUserInfo(seatInfo: TUISeatFullInfo) -> TUIUserInfo {
+        let userInfo = TUIUserInfo()
+        userInfo.userId = seatInfo.userId ?? ""
+        userInfo.userName = seatInfo.userName ?? ""
+        userInfo.avatarUrl = seatInfo.userAvatar ?? ""
+        userInfo.userRole = .generalUser
+        userInfo.hasVideoStream = seatInfo.userCameraStatus == .opened
+        userInfo.hasAudioStream = seatInfo.userMicrophoneStatus == .opened
+        return userInfo
+    }
+    
+    private func seatFullInfoToCoHostUser(seatInfo: TUISeatFullInfo) -> CoHostUser {
+        let user = TUIConnectionUser()
+        user.userId = seatInfo.userId ?? ""
+        user.userName = seatInfo.userName ?? ""
+        user.avatarUrl = seatInfo.userAvatar ?? ""
+        user.roomId = seatInfo.roomId
+        
+        let coHostUser = CoHostUser()
+        coHostUser.connectionUser = user
+        coHostUser.hasVideoStream = seatInfo.userCameraStatus == .opened
+        coHostUser.hasAudioStream = seatInfo.userMicrophoneStatus == .opened
+        return coHostUser
     }
 }
 

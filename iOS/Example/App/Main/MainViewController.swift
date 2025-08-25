@@ -73,7 +73,6 @@ extension MainViewController {
         menuItems = [
             MainItemModel(imageName: "main_item_video_live", title: .videoLiveTitle, content: .videoLiveDesc),
             MainItemModel(imageName: "main_item_voice_room", title: .voiceRoomTitle, content: .voiceRoomDesc),
-            MainItemModel(imageName: "main_item_voice_room", title: .KTVRoomTitle, content: .KTVRoomDesc),
         ]
     }
     
@@ -148,9 +147,6 @@ extension MainViewController: UICollectionViewDelegateFlowLayout {
             navigationController?.pushViewController(controller, animated: true)
         } else if indexPath.item == 1 {
             let controller = VoiceRoomViewController()
-            navigationController?.pushViewController(controller, animated: true)
-        } else {
-            let controller = KTVRoomViewController()
             navigationController?.pushViewController(controller, animated: true)
         }
     }

@@ -209,7 +209,7 @@ extension LiveListPagerView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier, for: indexPath)
-        cell.contentView.subviews.forEach { $0.removeFromSuperview() }
+        cell.contentView.subviews.forEach { $0.safeRemoveFromSuperview() }
         if let liveView = delegate?.onCreateView(liveInfo: liveList[indexPath.row]) {
             cell.contentView.addSubview(liveView)
             liveView.snp.makeConstraints{ make in

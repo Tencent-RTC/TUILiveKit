@@ -18,7 +18,7 @@ public enum RoomPrivacyMode: NSInteger, CaseIterable {
 
 struct VRRoomState {
     var roomId: String = ""
-    var roomInfo: TUIRoomInfo = TUIRoomInfo()
+    var liveInfo: TUILiveInfo = TUILiveInfo()
     var createTime: UInt = 0
     var roomName: String = ""
     var coverURL: String = "https://liteav-test-1252463788.cos.ap-guangzhou.myqcloud.com/voice_room/voice_room_cover1.png"

@@ -25,7 +25,15 @@ class LSLiveInfoEditView: UIView {
         model.rightIcon = internalImage("live_selection_arrow_icon")
         return model
     }()
-
+    
+    lazy var templateSelectionModel: PrepareSelectionModel = {
+        let model = PrepareSelectionModel()
+        model.leftIcon = internalImage("live_mode_icon")
+        model.midText = .templateText.appending(state.templateMode.toString())
+        model.rightIcon = internalImage("live_selection_arrow_icon")
+        return model
+    }()
+    
     private lazy var coverButtonView: UIButton = {
         let view = UIButton()
         view.backgroundColor = .g5
@@ -278,6 +286,14 @@ extension LSLiveInfoEditView {
                 self.modeSelectionModel.midText = value
             }
             .store(in: &cancellableSet)
+        
+        state.$templateMode
+            .receive(on: RunLoop.main)
+            .sink { [weak self] templateMode in
+                guard let self = self else { return }
+                templateSelectionModel.midText = .templateText.appending(templateMode.toString())
+            }
+            .store(in: &cancellableSet)
     }
 }
 
@@ -286,4 +302,5 @@ private extension String {
     static let editPlaceholderText = internalLocalized("Please enter room name")
     static let categoryText = internalLocalized("Live Category:xxx")
     static let modeText = internalLocalized("Live Mode:xxx")
+    static let templateText  = internalLocalized("Template:")
 }

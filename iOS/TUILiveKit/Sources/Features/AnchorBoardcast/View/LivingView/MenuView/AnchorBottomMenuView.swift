@@ -102,7 +102,7 @@ class AnchorBottomMenuView: RTCBaseView {
         menus = creator.generateBottomMenuData(features: anchorFeatures)
         stackView.subviews.forEach { view in
             stackView.removeArrangedSubview(view)
-            view.removeFromSuperview()
+            view.safeRemoveFromSuperview()
         }
         buttons = menus
             .enumerated().map { value -> AnchorMenuButton in

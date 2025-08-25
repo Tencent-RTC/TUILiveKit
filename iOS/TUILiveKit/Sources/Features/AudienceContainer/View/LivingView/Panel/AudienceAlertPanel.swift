@@ -122,7 +122,7 @@ class AudienceAlertPanel: UIView {
     }
     
     func dismiss() {
-        removeFromSuperview()
+        safeRemoveFromSuperview()
     }
 }
 

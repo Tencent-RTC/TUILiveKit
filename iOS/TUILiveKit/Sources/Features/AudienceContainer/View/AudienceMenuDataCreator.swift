@@ -27,7 +27,7 @@ class AudienceRootMenuDataCreator {
         return memberBottomMenu(isDisableCoGuest: isDisableCoGuest)
     }
     
-    func generateLinkTypeMenuData() -> [LinkMicTypeCellData] {
+    func generateLinkTypeMenuData(seatIndex: Int = -1) -> [LinkMicTypeCellData] {
         var data = [LinkMicTypeCellData]()
         let timeOutValue = 60
         data.append(LinkMicTypeCellData(image: internalImage("live_link_video"),
@@ -35,7 +35,7 @@ class AudienceRootMenuDataCreator {
                                         action: { [weak self] in
             guard let self = self else { return }
             manager.onStartRequestIntraRoomConnection()
-            coreView.requestIntraRoomConnection(userId: "", timeOut: timeOutValue, openCamera: true) { [weak self] in
+            coreView.requestIntraRoomConnection(userId: "", timeOut: timeOutValue, openCamera: true, seatIndex: seatIndex) { [weak self] in
                 guard let self = self else { return }
                 manager.toastSubject.send(.waitToLinkText)
             } onError: { [weak self] code, message in
@@ -52,7 +52,7 @@ class AudienceRootMenuDataCreator {
                                         action: { [weak self] in
             guard let self = self else { return }
             manager.onStartRequestIntraRoomConnection()
-            coreView.requestIntraRoomConnection(userId: "", timeOut: timeOutValue, openCamera: false) { [weak self] in
+            coreView.requestIntraRoomConnection(userId: "", timeOut: timeOutValue, openCamera: false, seatIndex: seatIndex) { [weak self] in
                 guard let self = self else { return }
                 manager.toastSubject.send(.waitToLinkText)
             } onError: { [weak self] code, message in

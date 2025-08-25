@@ -89,7 +89,7 @@ class AudienceBottomMenuView: RTCBaseView {
         menus = creator.generateBottomMenuData(isDisableCoGuest: isDisableCoGuest)
         stackView.subviews.forEach { view in
             stackView.removeArrangedSubview(view)
-            view.removeFromSuperview()
+            view.safeRemoveFromSuperview()
         }
         buttons = menus
             .enumerated().map { value -> AudienceMenuButton in

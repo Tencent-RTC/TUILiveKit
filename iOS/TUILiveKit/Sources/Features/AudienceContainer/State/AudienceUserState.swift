@@ -35,5 +35,7 @@ extension TUIUserInfo {
         self.userId = coHostUser.connectionUser.userId
         self.userName = coHostUser.connectionUser.userName
         self.avatarUrl = coHostUser.connectionUser.avatarUrl
+        self.hasAudioStream = coHostUser.hasAudioStream
+        self.hasVideoStream = coHostUser.hasVideoStream
     }
 }

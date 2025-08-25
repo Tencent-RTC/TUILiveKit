@@ -7,6 +7,7 @@
 
 import UIKit
 import SVGAPlayer
+import RTCCommon
 
 class SVGAAnimationView: UIView, AnimationView {
     var finishClosure: ((Int) -> Void)?
@@ -33,7 +34,7 @@ class SVGAAnimationView: UIView, AnimationView {
                 guard let self = self else { return }
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
-                    playerView.removeFromSuperview()
+                    playerView.safeRemoveFromSuperview()
                     finishClosure?(-1)
                 }
                 return
@@ -68,7 +69,7 @@ extension SVGAAnimationView: SVGAPlayerDelegate {
         UIView.animate(withDuration: 0.2) {
             player.alpha = 0
         } completion: { _ in
-            player.removeFromSuperview()
+            player.safeRemoveFromSuperview()
         }
         finishClosure?(0)
     }

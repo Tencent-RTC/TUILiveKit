@@ -170,7 +170,7 @@ extension AnchorRouterControlCenter {
         case .liveLinkControl:
             view = AnchorLinkControlPanel(manager: manager, routerManager: routerManager, coreView: coreView)
         case .connectionControl:
-            let panel = AnchorCoHostManagerPanel(manager: manager.coHostManager, coreView: coreView)
+            let panel = AnchorCoHostManagerPanel(manager: manager.coHostManager, coreView: coreView, pkTemplateId: manager.roomState.pkTemplateId)
             panel.onClickBack = { [weak self] in
                 guard let self = self else { return }
                 routerManager.router(action: .dismiss())
