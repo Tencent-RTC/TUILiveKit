@@ -9,7 +9,7 @@ import Foundation
 import RTCCommon
 import Combine
 import TUICore
-import ESPullToRefresh
+import MJRefresh
 import LiveStreamCore
 import RTCRoomEngine
 
@@ -126,34 +126,32 @@ extension AnchorCoHostManagerPanel {
     
     private func addRefreshDataEvent() {
         
-        let header = ESRefreshHeaderAnimator(frame: CGRect.zero)
-        header.pullToRefreshDescription = .pullToRefreshText
-        header.releaseToRefreshDescription = .releaseToRefreshText
-        header.loadingDescription = .loadingText
-        
-        let footer = ESRefreshFooterAnimator(frame: CGRect.zero)
-        footer.loadingMoreDescription = .loadingMoreText
-        footer.noMoreDataDescription = .noMoreDataText
-        footer.loadingDescription = .loadingText
-        
-        tableView.es.addPullToRefresh(animator: header) { [weak self] in
+        let header = MJRefreshNormalHeader(refreshingBlock: { [weak self] in
             guard let self = self else { return }
-            self.refreshRoomListData()
-            self.tableView.es.stopPullToRefresh()
-        }
+            refreshRoomListData()
+            tableView.mj_header?.endRefreshing()
+        })
+        header.setTitle(.pullToRefreshText, for: .idle)
+        header.setTitle(.releaseToRefreshText, for: .pulling)
+        header.ignoredScrollViewContentInsetTop = tableView.contentInset.top
+        tableView.mj_header = header
         
-        tableView.es.addInfiniteScrolling(animator: footer) { [weak self] in
+        let footer = MJRefreshAutoNormalFooter(refreshingBlock: { [weak self] in
             guard let self = self else { return }
             let cursor = manager.state.recommendedListCursor
             if cursor != "" {
                 // FIXME: 这里需不需要异步等待，后续验证
-                self.manager.fetchRecommendedList(cursor: cursor)
-                self.tableView.es.stopLoadingMore()
+                manager.fetchRecommendedList(cursor: cursor)
+                tableView.mj_footer?.endRefreshing()
             } else {
-                self.tableView.es.noticeNoMoreData()
+                tableView.mj_footer?.endRefreshingWithNoMoreData()
             }
-        }
-        tableView.es.startPullToRefresh()
+        })
+        footer.ignoredScrollViewContentInsetBottom = tableView.contentInset.bottom
+        footer.setTitle(.loadingMoreText, for: .pulling)
+        footer.setTitle(.noMoreDataText, for: .noMoreData)
+        footer.setTitle(.loadingText, for: .refreshing)
+        tableView.mj_footer = footer
     }
     
     private func refreshRoomListData() {
@@ -177,9 +175,9 @@ extension AnchorCoHostManagerPanel {
                 guard let self = self else { return }
                 let cursor = self.manager.state.recommendedListCursor
                 if recommendedUsers.count > 0, cursor == "" {
-                    self.tableView.es.noticeNoMoreData()
+                    tableView.mj_footer?.endRefreshingWithNoMoreData()
                 } else {
-                    self.tableView.es.resetNoMoreData()
+                    tableView.mj_footer?.resetNoMoreData()
                 }
                 self.connectedUsers = connectedUsers.filter({ user in
                     return user.roomId != self.manager.state.currentRoomId

@@ -22,7 +22,7 @@ Pod::Spec.new do |spec|
   spec.dependency 'SVGAPlayer', '~> 2.5.7'
   spec.dependency 'Protobuf', '~> 3.22.1'
   spec.dependency 'RTCCommon'
-  spec.dependency "ESPullToRefresh"
+  spec.dependency "MJRefresh"
 
   spec.default_subspec = 'Professional'
   
