@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import ESPullToRefresh
+import MJRefresh
 import RTCCommon
 import RTCRoomEngine
 
@@ -214,9 +214,9 @@ extension LiveListView {
     private func onFetchLiveListSuccess(cursor: String, liveList: [LiveInfo]) {
         LiveKitLog.info("\(#file)","\(#line)", "onFetchLiveListSuccess")
         if cursor == "" {
-            collectionView.es.noticeNoMoreData()
+            collectionView.mj_footer?.endRefreshingWithNoMoreData()
         } else {
-            collectionView.es.resetNoMoreData()
+            collectionView.mj_footer?.resetNoMoreData()
         }
         if isFirstFetch {
             self.liveList.removeAll()
@@ -302,27 +302,26 @@ extension LiveListView {
     }
     
     private func addRefreshDataEvent() {
-        let header = ESRefreshHeaderAnimator(frame: CGRect.zero)
-        header.pullToRefreshDescription = .pullToRefreshText
-        header.releaseToRefreshDescription = .releaseToRefreshText
-        header.loadingDescription = .loadingText
-        
-        let footer = ESRefreshFooterAnimator(frame: CGRect.zero)
-        footer.loadingMoreDescription = .loadingMoreText
-        footer.noMoreDataDescription = .noMoreDataText
-        footer.loadingDescription = .loadingText
-        
-        collectionView.es.addPullToRefresh(animator: header) { [weak self] in
+        let header = MJRefreshNormalHeader(refreshingBlock: { [weak self] in
             guard let self = self else { return }
             refreshLiveList()
-            self.collectionView.es.stopPullToRefresh()
-        }
+            collectionView.mj_header?.endRefreshing()
+        })
+        header.setTitle(.pullToRefreshText, for: .idle)
+        header.setTitle(.releaseToRefreshText, for: .pulling)
+        header.ignoredScrollViewContentInsetTop = collectionView.contentInset.top
+        collectionView.mj_header = header
         
-        collectionView.es.addInfiniteScrolling(animator: footer) { [weak self] in
+        let footer = MJRefreshAutoNormalFooter(refreshingBlock: { [weak self] in
             guard let self = self, cursor != "" else { return }
             fetchLiveList()
-            self.collectionView.es.stopLoadingMore()
-        }
+            collectionView.mj_footer?.endRefreshing()
+        })
+        footer.ignoredScrollViewContentInsetBottom = collectionView.contentInset.bottom
+        footer.setTitle(.loadingMoreText, for: .pulling)
+        footer.setTitle(.noMoreDataText, for: .noMoreData)
+        footer.setTitle(.loadingText, for: .refreshing)
+        collectionView.mj_footer = footer
     }
 }
 
