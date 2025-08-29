@@ -15,6 +15,7 @@ export default defineConfig({
     },
   },
   build: {
+    target: 'esnext',
     rollupOptions: {
       output: {
         // Custom Split Strategy

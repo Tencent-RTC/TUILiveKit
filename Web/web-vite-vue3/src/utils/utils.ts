@@ -1,8 +1,36 @@
 
 /**
+ * deepClone
+ * @param data Raw data of any type
+ * @returns Data after deepClone
+ */
+export function deepClone(data: any) {
+  let res: any = null;
+  const reference = [Date, RegExp, Set, WeakSet, Map, WeakMap, Error];
+  if (reference.includes(data?.constructor)) {
+    res = new data.constructor(data);
+  } else if (Array.isArray(data)) {
+    res = [];
+    data.forEach((e, i) => {
+      res[i] = deepClone(e);
+    });
+  } else if (typeof data === 'object' && data !== null) {
+    res = {};
+    Object.keys(data).forEach((key) => {
+      if (Object.hasOwnProperty.call(data, key)) {
+        res[key] = deepClone(data[key]);
+      }
+    });
+  } else {
+    res = data;
+  }
+  return res;
+}
+
+/**
  * Get the value of the specified key from window.location.href
- * @param {*} key key to get
- * @returns Get the value of the specified key from window.location.href
+ * @param {*} key The key to get
+ * @returns The value corresponding to the key specified in window.location.href.
  * @example
  * const value = getUrlParam(key);
  */
@@ -14,52 +42,16 @@ export function getUrlParam(key: string) {
   return paramMatch ? paramMatch[2] : null;
 }
 
-/**
- * Get language
- * @returns language
- */
-export function getLanguage() {
-  let language = getUrlParam('lang')
-    || localStorage.getItem('tuiLive-language')
-    || navigator.language
-    || 'en-US';
-  language = language.replace(/_/, '-').toLowerCase();
-  const isZh = language.startsWith('zh');
-  language = isZh ? 'zh-CN' : 'en-US';
+export function getUrlParams(): Record<string, string> {
+  const query: Record<string, string> = {};
+  const hashQueryIndex = location.href.indexOf('?');
+  if (hashQueryIndex !== -1) {
+    const hashQueryString = location.href.substring(hashQueryIndex + 1);
+    const params = new URLSearchParams(hashQueryString);
 
-  return language;
-}
-
-/**
- * Get Theme
- * @returns Theme
- */
-export function getTheme() {
-  let storedTheme = localStorage.getItem('tuiLive-currentTheme') || 'LIGHT';
-
-  if (storedTheme === 'white') {
-    storedTheme = 'LIGHT';
-  } else if (storedTheme === 'black') {
-    storedTheme = 'DARK';
+    params.forEach((value, key) => {
+      query[key] = value;
+    });
   }
-
-  return storedTheme;
-}
-
-export function safelyParse(data: string) {
-  if (typeof data !== 'string') {
-    return data;
-  }
-  let result;
-  try {
-    const tempData = JSON.parse(data);
-    if (typeof tempData === 'object' && tempData) {
-      result = tempData;
-    } else {
-      result = data;
-    }
-  } catch (error) {
-    result = data;
-  }
-  return result;
-}
+  return query;
+};

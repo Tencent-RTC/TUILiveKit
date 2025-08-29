@@ -1,18 +1,15 @@
+<template>
+  <UIKitProvider theme="dark" language="zh-CN">
+    <div id="app">
+      <router-view />
+    </div>
+  </UIKitProvider>
+</template>
+
 <script setup lang="ts">
 import { UIKitProvider } from '@tencentcloud/uikit-base-component-vue3';
 </script>
 
-<template>
-  <UIKitProvider :theme="{ themeStyle: 'dark', primaryColor: 'theme' }">
-    <router-view></router-view>
-  </UIKitProvider>
-</template>
-
 <style lang="scss">
-  html,body,#app{
-        height: 100%;
-    }
-  #app {
-    overflow: hidden;
-  }
+@use './styles/base.scss';
 </style>
