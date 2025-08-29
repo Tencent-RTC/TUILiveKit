@@ -1,17 +1,25 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
-
+import Login from '@/views/login.vue';
 const routes = [
   {
     path: '/',
-    redirect: '/home',
+    redirect: '/live-list',
   },
   {
-    path: '/home',
-    component: () => import('@/views/home.vue'),
+    path: '/login',
+    component: Login,
   },
   {
-    path: '/live',
-    component: () => import('@/views/live.vue'),
+    path: '/live-list',
+    component: () => import('@/views/live-list.vue'),
+  },
+  {
+    path: '/live-player',
+    component: () => import('@/views/live-player.vue'),
+  },
+  {
+    path: '/live-pusher',
+    component: () => import('@/views/live-pusher.vue'),
   },
 ];
 
@@ -19,12 +27,23 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes,
 });
+
 router.beforeEach((to, from, next) => {
-  if (to.name === from.name && to.params === from.params) {
-    // Disable return if current route is the same as previous route
-    next(false);
-  } else {
+  if (to.path === '/login') {
     next();
+    return;
   }
+  const userInfo = localStorage.getItem('tuiLive-userInfo');
+  if (!userInfo) {
+    if (routes.some(route => route.path === from.path) && from.path !== '/login') {
+      next({ path: '/login', query: { from: to.path } });
+    } else {
+      next('/login');
+    }
+    return;
+  }
+
+  next();
 });
+
 export default router;
