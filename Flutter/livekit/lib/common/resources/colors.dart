@@ -76,6 +76,15 @@ class LiveColors {
   /// White7-->
   static const Color designStandardWhite7 = Color(0xFFF2F5FC);
 
+  /// BgColorOperate
+  static const Color designBgColorOperate = Color(0xFF1F2024);
+
+  static const Color designSliderColorFilled = Color(0xFF2B6AD6);
+  static const Color designSliderColorEmpty = Color(0xFF48494F);
+  static const Color designBgColorInput = Color(0xFF2B2C30);
+  static const Color designTextColorSuccess = Color(0xFF38A673);
+  static const Color designTextColorWarning = Color(0xFF0FA968);
+
   /// Colors in non-interactive specifications-->
   static const Color notStandardGray60Transparency = Color(0x9922262E);
   static const Color notStandard40G1 = Color(0x660F1014);
@@ -91,11 +100,14 @@ class LiveColors {
   static const Color notStandardBlue = Color(0xFF0157DF);
   static const Color notStandardGreyC5 = Color(0x36C5CCDB);
   static const Color notStandardBlueD1 = Color(0xFF25D1D1);
-  static const Color notStandardBlack = Color(0xFF000000);
+  static const Color notStandardPureBlack = Color(0xFF000000);
+  static const Color notStandardBlack = Color(0xFF181B21);
   static const Color notStandardBlack80Transparency = Color(0x80000000);
   static const Color notStandardBlack4DTransparency = Color(0x4D0F1014);
   static const Color notStandardBlack00Transparency = Color(0x000F1014);
   static const Color notStandardPinkColor = Color(0xFFF15065);
+  static const Color notStandardBlueColor = Color(0xFF5592EE);
+
 
   /// barrage color-->
   static const Color barrageColorMsg1 = Color(0xFF3074FD);
@@ -116,4 +128,12 @@ class LiveColors {
   static const Color roomListBlackColor = Color(0xFFF2F5FC);
   static const Color black80Transparency = Color(0xCC000000);
   static const Color black = Color(0xFF000000);
+
+  /// decoration widget color
+  static const Color grayDark2 = Color(0xFF1F2024);
+  static const Color black6 = Color(0x40000000);
+  static const Color whiteAlphaE6 = Color(0xE6FFFFFF);
+  static const Color whiteAlpha8C = Color(0x8CFFFFFF);
+  static const Color seatTemplateGray = Color(0xFF2B2C30);
+  static const Color seatTemplateSelectedBorder = Color(0xFF2B6AD6);
 }

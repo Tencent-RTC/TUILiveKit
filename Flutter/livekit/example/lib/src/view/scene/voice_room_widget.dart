@@ -23,7 +23,7 @@ class _VoiceRoomWidgetState extends State<VoiceRoomWidget> {
 
   @override
   Widget build(BuildContext context) {
-    _screenWidth = MediaQuery.of(context).size.width;
+    _screenWidth = MediaQuery.sizeOf(context).width;
 
     return PopScope(
         canPop: false,
@@ -126,7 +126,10 @@ class _VoiceRoomWidgetState extends State<VoiceRoomWidget> {
                 decoration: BoxDecoration(
                     color: const Color(0xFF1C66E5),
                     borderRadius: BorderRadius.circular(24)),
-                child: Text(S.current.app_broadcast('+'), style: const TextStyle(fontSize: 20, color: Colors.white),),
+                child: Text(
+                  S.current.app_broadcast('+'),
+                  style: const TextStyle(fontSize: 20, color: Colors.white),
+                ),
               )),
         ),
       ),
@@ -135,7 +138,6 @@ class _VoiceRoomWidgetState extends State<VoiceRoomWidget> {
 }
 
 extension _VoiceRoomWidgetStateLogicExtension on _VoiceRoomWidgetState {
-
   void _enterVoiceRoomWidget() {
     Navigator.push(context, MaterialPageRoute(
       builder: (context) {

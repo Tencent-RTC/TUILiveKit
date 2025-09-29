@@ -32,7 +32,7 @@ class _SettingsPanelWidgetState extends State<SettingsPanelWidget> {
 
   @override
   Widget build(BuildContext context) {
-    _screenWidth = MediaQuery.of(context).size.width;
+    _screenWidth = MediaQuery.sizeOf(context).width;
     return Container(
       width: _screenWidth,
       height: 350.height,
@@ -80,8 +80,7 @@ class _SettingsPanelWidgetState extends State<SettingsPanelWidget> {
               child: Container(
                 width: 56.width,
                 height: 79.height,
-                margin: EdgeInsets.symmetric(
-                    horizontal: 22.width),
+                margin: EdgeInsets.symmetric(horizontal: 22.width),
                 child: Column(
                   children: [
                     Container(
@@ -93,8 +92,7 @@ class _SettingsPanelWidgetState extends State<SettingsPanelWidget> {
                         border: Border.all(
                             color: LiveColors.notStandardBlue30Transparency,
                             width: 2.width),
-                        borderRadius: BorderRadius.circular(
-                            10.radius),
+                        borderRadius: BorderRadius.circular(10.radius),
                       ),
                       child: Center(
                         child: SizedBox(
@@ -150,8 +148,8 @@ extension on _SettingsPanelWidgetState {
           icon: LiveImages.settingBackground,
           type: _SettingsItemType.background),
       _SettingsItem(
-          title: LiveKitLocalizations.of(Global.appContext())!
-              .common_audio_effect,
+          title:
+              LiveKitLocalizations.of(Global.appContext())!.common_audio_effect,
           icon: LiveImages.settingsItemMusic,
           type: _SettingsItemType.audioEffect)
     ];

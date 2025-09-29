@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:rtc_room_engine/api/room/tui_room_engine.dart';
+import 'package:rtc_room_engine/rtc_room_engine.dart';
 import 'package:tencent_cloud_chat_sdk/tencent_im_sdk_plugin.dart';
 
-import '../../../../common/constants/constants.dart';
-import '../../../../common/language/index.dart';
-import '../../../../common/resources/colors.dart';
-import '../../../../common/resources/images.dart';
-import '../../../../common/widget/index.dart';
-import '../../../../common/screen/index.dart';
+import '../../../../common/index.dart';
 import 'manager/live_info_engine_observer.dart';
 import 'manager/live_info_im_observer.dart';
 import 'manager/live_info_manager.dart';
@@ -51,7 +46,7 @@ class _LiveInfoWidgetState extends State<LiveInfoWidget> {
     final isOwner = manager.state.ownerId.value == manager.state.selfUserId;
     return GestureDetector(
       onTap: () {
-        _showLiveInfoDetailWidget();
+        _showLiveInfoDetailWidget(context);
       },
       child: Container(
         constraints: BoxConstraints(maxWidth: isOwner ? 160.width : 200.width),
@@ -186,7 +181,8 @@ extension on _LiveInfoWidgetState {
     manager.unfollowUser(manager.state.ownerId.value);
   }
 
-  void _showLiveInfoDetailWidget() {
+  void _showLiveInfoDetailWidget(BuildContext context) {
+    if (MediaQuery.orientationOf(context) != Orientation.portrait) return;
     _popupWidget(LiveInfoDetailWidget(manager: manager));
   }
 

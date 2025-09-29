@@ -3,28 +3,22 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:live_stream_core/live_core_widget/index.dart' hide LiveStatus;
 import 'package:rtc_room_engine/rtc_room_engine.dart';
-import 'package:tencent_live_uikit/common/screen/index.dart';
+import 'package:tencent_live_uikit/common/index.dart';
+import 'package:tencent_live_uikit/live_stream/features/anchor_broadcast/co_guest/anchor_empty_seat_widget.dart';
+import 'package:tencent_live_uikit/live_stream/features/index.dart';
 import 'package:tencent_live_uikit/live_stream/state/battle_state.dart';
 
-import '../../../common/error/index.dart';
-import '../../../common/language/index.dart';
-import '../../../common/resources/index.dart';
-import '../../../common/widget/index.dart';
 import '../../live_define.dart';
 import '../../manager/live_stream_manager.dart';
 import '../decorations/index.dart';
 import 'battle/battle_count_down_widget.dart';
 import 'living_widget/anchor_living_widget.dart';
-import 'dashboard_widget/anchor_dashboard_widget.dart';
 
 class AnchorBroadcastWidget extends StatefulWidget {
   final LiveStreamManager liveStreamManager;
   final LiveCoreController liveCoreController;
 
-  const AnchorBroadcastWidget(
-      {super.key,
-      required this.liveStreamManager,
-      required this.liveCoreController});
+  const AnchorBroadcastWidget({super.key, required this.liveStreamManager, required this.liveCoreController});
 
   @override
   State<AnchorBroadcastWidget> createState() => _AnchorBroadcastWidgetState();
@@ -35,6 +29,9 @@ class _AnchorBroadcastWidgetState extends State<AnchorBroadcastWidget> {
   late final LiveCoreController liveCoreController;
   late final StreamSubscription<String> _toastSubscription;
   late final StreamSubscription<void> _kickedOutSubscription;
+  late final VoidCallback _connectionRequestListener = _handleConnectionRequest;
+  late final VoidCallback _battleRequestListener = _handleBattleRequest;
+  late final VoidCallback _battleWaitingStatusListener = _handleBattleWaitingStatusChanged;
   bool isShowingAlert = false;
 
   @override
@@ -58,13 +55,9 @@ class _AnchorBroadcastWidgetState extends State<AnchorBroadcastWidget> {
       body: PopScope(
         canPop: false,
         child: Container(
-          color: LiveColors.notStandardBlack,
+          color: LiveColors.notStandardPureBlack,
           child: Stack(
-            children: [
-              _buildCoreWidget(),
-              _buildLivingWidget(),
-              _buildDashboardWidget()
-            ],
+            children: [_buildCoreWidget(), _buildLivingWidget(), _buildDashboardWidget()],
           ),
         ),
       ),
@@ -73,30 +66,34 @@ class _AnchorBroadcastWidgetState extends State<AnchorBroadcastWidget> {
 
   Widget _buildCoreWidget() {
     return Padding(
-      padding: EdgeInsets.only(top: 36.height, bottom: 96.height),
+      padding: EdgeInsets.only(top: 44.height, bottom: 96.height),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16.radius),
         child: LiveCoreWidget(
           controller: liveCoreController,
-          videoWidgetBuilder:
-              VideoWidgetBuilder(coGuestWidgetBuilder: (context, coGuestUser) {
-            return CoGuestWidget(
-                userInfo: coGuestUser,
-                liveCoreController: liveCoreController,
-                liveStreamManager: liveStreamManager);
-          }, coHostWidgetBuilder: (context, coHostUserInfo) {
-            return CoHostWidget(
-                coHostUser: coHostUserInfo,
-                liveStreamManager: liveStreamManager,
-                liveCoreController: liveCoreController);
+          videoWidgetBuilder: VideoWidgetBuilder(coGuestWidgetBuilder: (context, seatFullInfo, viewLayer) {
+            if (seatFullInfo.userId.isEmpty) {
+              if (viewLayer == ViewLayer.background) {
+                return AnchorEmptySeatWidget(seatFullInfo: seatFullInfo);
+              } else {
+                return Container();
+              }
+            }
+            if (viewLayer == ViewLayer.background) {
+              return CoGuestBackgroundWidget(userInfo: seatFullInfo, liveCoreController: widget.liveCoreController);
+            } else {
+              return CoGuestForegroundWidget(userInfo: seatFullInfo, liveCoreController: widget.liveCoreController);
+            }
+          }, coHostWidgetBuilder: (context, seatFullInfo, viewLayer) {
+            if (viewLayer == ViewLayer.background) {
+              return CoHostBackgroundWidget(userInfo: seatFullInfo, liveCoreController: widget.liveCoreController);
+            } else {
+              return CoHostForegroundWidget(userInfo: seatFullInfo, liveCoreController: widget.liveCoreController);
+            }
           }, battleWidgetBuilder: (context, battleUserInfo) {
-            return BattleMemberInfoWidget(
-                liveStreamManager: liveStreamManager,
-                battleUserId: battleUserInfo.userId);
-          }, battleContainerWidgetBuilder: (context, battleModels) {
-            _onBattleModelsChanged(battleModels);
-            return BattleInfoWidget(
-                liveStreamManager: liveStreamManager, isOwner: true);
+            return BattleMemberInfoWidget(liveStreamManager: liveStreamManager, battleUserId: battleUserInfo.userId);
+          }, battleContainerWidgetBuilder: (context, seatList) {
+            return BattleInfoWidget(seatList: seatList, liveStreamManager: liveStreamManager, isOwner: true);
           }),
         ),
       ),
@@ -104,70 +101,67 @@ class _AnchorBroadcastWidgetState extends State<AnchorBroadcastWidget> {
   }
 
   Widget _buildLivingWidget() {
-    return AnchorLivingWidget(
-        liveStreamManager: liveStreamManager,
-        liveCoreController: liveCoreController);
+    return AnchorLivingWidget(liveStreamManager: liveStreamManager, liveCoreController: liveCoreController);
   }
 
   Widget _buildDashboardWidget() {
     return ValueListenableBuilder(
         valueListenable: liveStreamManager.roomState.liveStatus,
         builder: (context, liveStatus, _) {
+          int liveDuration =
+              ((DateTime.now().millisecondsSinceEpoch - liveStreamManager.roomState.createTime) ~/ 1000).abs();
+          if (liveStreamManager.roomState.createTime == 0) {
+            liveDuration = 0;
+          }
+          var endInfo = AnchorEndStatisticsWidgetInfo(
+              roomId: liveStreamManager.roomState.roomId,
+              liveDuration: liveDuration,
+              viewCount: liveStreamManager.roomState.liveExtraInfo.maxAudienceCount,
+              messageCount: liveStreamManager.roomState.liveExtraInfo.messageCount,
+              giftTotalCoins: liveStreamManager.roomState.liveExtraInfo.giftIncome,
+              giftTotalUniqueSender: liveStreamManager.roomState.liveExtraInfo.giftPeopleSet.length,
+              likeTotalUniqueSender: liveStreamManager.roomState.liveExtraInfo.likeCount);
           return Visibility(
-              visible: liveStatus == LiveStatus.finished,
-              child: AnchorDashboardWidget(
-                  liveStreamManager: liveStreamManager,
-                  liveCoreController: liveCoreController));
+            visible: liveStatus == LiveStatus.finished,
+            child: AnchorEndStatisticsWidget(
+              endWidgetInfo: endInfo,
+            ),
+          );
         });
   }
 }
 
 extension on _AnchorBroadcastWidgetState {
   void _addObserver() {
-    liveStreamManager.coreCoHostState.receivedConnectionRequest
-        .addListener(_handleConnectionRequest);
-    liveStreamManager.battleState.receivedBattleRequest
-        .addListener(_handleBattleRequest);
-    liveStreamManager.battleState.isInWaiting
-        .addListener(_handleBattleWaitingStatusChanged);
+    liveStreamManager.coreCoHostState.receivedConnectionRequest.addListener(_connectionRequestListener);
+    liveStreamManager.battleState.receivedBattleRequest.addListener(_battleRequestListener);
+    liveStreamManager.battleState.isInWaiting.addListener(_battleWaitingStatusListener);
 
-    _toastSubscription = liveStreamManager.toastSubject.stream
-        .listen((toast) => makeToast(msg: toast));
-    _kickedOutSubscription = liveStreamManager.kickedOutSubject.stream
-        .listen((_) => _handleKickedOut());
+    _toastSubscription = liveStreamManager.toastSubject.stream.listen((toast) => makeToast(msg: toast));
+    _kickedOutSubscription = liveStreamManager.kickedOutSubject.stream.listen((_) => _handleKickedOut());
   }
 
   void _removeObserver() {
-    liveStreamManager.coreCoHostState.receivedConnectionRequest
-        .removeListener(_handleConnectionRequest);
-    liveStreamManager.battleState.receivedBattleRequest
-        .removeListener(_handleBattleRequest);
-    liveStreamManager.battleState.isInWaiting
-        .removeListener(_handleBattleWaitingStatusChanged);
+    liveStreamManager.coreCoHostState.receivedConnectionRequest.removeListener(_connectionRequestListener);
+    liveStreamManager.battleState.receivedBattleRequest.removeListener(_battleRequestListener);
+    liveStreamManager.battleState.isInWaiting.removeListener(_battleWaitingStatusListener);
 
     _toastSubscription.cancel();
     _kickedOutSubscription.cancel();
   }
 
   void _handleConnectionRequest() {
-    if (liveStreamManager.coreCoHostState.receivedConnectionRequest.value ==
-            null &&
-        isShowingAlert) {
+    if (liveStreamManager.coreCoHostState.receivedConnectionRequest.value == null && isShowingAlert) {
       Navigator.of(context).pop();
       isShowingAlert = false;
       return;
     }
 
-    if (liveStreamManager.coreCoHostState.receivedConnectionRequest.value !=
-            null &&
-        !isShowingAlert) {
-      final inviter =
-          liveStreamManager.coreCoHostState.receivedConnectionRequest.value!;
+    if (liveStreamManager.coreCoHostState.receivedConnectionRequest.value != null && !isShowingAlert) {
+      final inviter = liveStreamManager.coreCoHostState.receivedConnectionRequest.value!;
       final alertInfo = AlertInfo(
           imageUrl: inviter.avatarUrl,
-          description: LiveKitLocalizations.of(Global.appContext())!
-              .common_connect_inviting_append
-              .replaceAll('xxx', inviter.userName),
+          description: inviter.userName + LiveKitLocalizations.of(Global.appContext())!.common_connect_inviting_append,
           cancelActionInfo: (
             title: LiveKitLocalizations.of(Global.appContext())!.common_reject,
             titleColor: LiveColors.designStandardG3
@@ -190,15 +184,11 @@ extension on _AnchorBroadcastWidgetState {
     }
   }
 
-  void _responseCoHostInvitation(
-      TUIConnectionUser inviter, bool isAccepted) async {
-    liveCoreController
-        .respondToCrossRoomConnection(inviter.roomId, isAccepted)
-        .then((result) {
+  void _responseCoHostInvitation(TUIConnectionUser inviter, bool isAccepted) async {
+    liveCoreController.respondToCrossRoomConnection(inviter.roomId, isAccepted).then((result) {
       if (result.code != TUIError.success) {
-        liveStreamManager.toastSubject.add(ErrorHandler.convertToErrorMessage(
-                result.code.rawValue, result.message) ??
-            '');
+        liveStreamManager.toastSubject
+            .add(ErrorHandler.convertToErrorMessage(result.code.rawValue, result.message) ?? '');
       }
     });
 
@@ -206,24 +196,18 @@ extension on _AnchorBroadcastWidgetState {
   }
 
   void _handleBattleRequest() {
-    if (liveStreamManager.battleState.receivedBattleRequest.value == null &&
-        isShowingAlert) {
+    if (liveStreamManager.battleState.receivedBattleRequest.value == null && isShowingAlert) {
       Navigator.of(context).pop();
       isShowingAlert = false;
       return;
     }
 
-    if (liveStreamManager.battleState.receivedBattleRequest.value != null &&
-        !isShowingAlert) {
-      final battleId =
-          liveStreamManager.battleState.receivedBattleRequest.value!.$1;
-      final inviter =
-          liveStreamManager.battleState.receivedBattleRequest.value!.$2;
+    if (liveStreamManager.battleState.receivedBattleRequest.value != null && !isShowingAlert) {
+      final battleId = liveStreamManager.battleState.receivedBattleRequest.value!.$1;
+      final inviter = liveStreamManager.battleState.receivedBattleRequest.value!.$2;
       final alertInfo = AlertInfo(
           imageUrl: inviter.avatarUrl,
-          description: LiveKitLocalizations.of(Global.appContext())!
-              .common_battle_inviting
-              .replaceAll('xxx', inviter.userName),
+          description: inviter.userName + LiveKitLocalizations.of(Global.appContext())!.common_battle_inviting,
           cancelActionInfo: (
             title: LiveKitLocalizations.of(Global.appContext())!.common_reject,
             titleColor: LiveColors.designStandardG3
@@ -233,7 +217,7 @@ extension on _AnchorBroadcastWidgetState {
             isShowingAlert = false;
           },
           defaultActionInfo: (
-            title: LiveKitLocalizations.of(Global.appContext())!.common_accept,
+            title: LiveKitLocalizations.of(Global.appContext())!.common_receive,
             titleColor: LiveColors.designStandardB1
           ),
           defaultCallback: () {
@@ -249,9 +233,8 @@ extension on _AnchorBroadcastWidgetState {
   void _responseBattleInvitation(String battleId, bool isAccepted) async {
     liveCoreController.respondToBattle(battleId, isAccepted).then((result) {
       if (result.code != TUIError.success) {
-        liveStreamManager.toastSubject.add(ErrorHandler.convertToErrorMessage(
-                result.code.rawValue, result.message) ??
-            '');
+        liveStreamManager.toastSubject
+            .add(ErrorHandler.convertToErrorMessage(result.code.rawValue, result.message) ?? '');
       }
     });
 
@@ -270,12 +253,9 @@ extension on _AnchorBroadcastWidgetState {
           BattleCountDownWidget(
             countdownTime: LSBattleState.battleRequestTime,
             onCancel: () async {
-              final inviteeIdList = liveStreamManager
-                  .coreBattleState.inviteeList.value
-                  .map((user) => user.userId)
-                  .toList();
-              liveCoreController.cancelBattle(
-                  liveStreamManager.battleState.battleId.value, inviteeIdList);
+              final inviteeIdList =
+                  liveStreamManager.coreBattleState.inviteeList.value.map((user) => user.userId).toList();
+              liveCoreController.cancelBattle(liveStreamManager.battleState.battleId.value, inviteeIdList);
               liveStreamManager.onCanceledBattle();
             },
             onTimeEnd: () {
@@ -288,17 +268,4 @@ extension on _AnchorBroadcastWidgetState {
   }
 
   void _handleKickedOut() {}
-
-  void _onBattleModelsChanged(List<BattleUserWidgetModel> battleModels) {
-    final battleUsers = widget.liveStreamManager.battleState.battleUsers.value;
-    for (final battleModel in battleModels) {
-      for (int index = 0; index < battleUsers.length; index++) {
-        final battleUser = battleUsers[index];
-        if (battleUser.userId == battleModel.battleUser.userId) {
-          widget.liveStreamManager.battleManager
-              .updateBattleUserRectFromIndex(battleModel.rect, index);
-        }
-      }
-    }
-  }
 }

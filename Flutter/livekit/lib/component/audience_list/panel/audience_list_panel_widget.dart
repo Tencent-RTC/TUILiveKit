@@ -24,7 +24,7 @@ class _AudienceListPanelWidgetState extends State<AudienceListPanelWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenWidth = MediaQuery.sizeOf(context).width;
     return SizedBox(
       height: 700.height,
       width: screenWidth,
@@ -48,7 +48,7 @@ extension on _AudienceListPanelWidgetState {
   }
 
   Widget _initTopWidget() {
-    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenWidth = MediaQuery.sizeOf(context).width;
     return SizedBox(
       height: 44.height,
       width: screenWidth,
@@ -85,7 +85,7 @@ extension on _AudienceListPanelWidgetState {
   }
 
   Widget _initListWidget() {
-    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenWidth = MediaQuery.sizeOf(context).width;
     return ValueListenableBuilder(
       valueListenable: manager.state.audienceList,
       builder: (BuildContext context, value, Widget? child) {

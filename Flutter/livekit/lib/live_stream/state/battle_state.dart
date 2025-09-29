@@ -29,7 +29,6 @@ class BattleUser {
   String userName;
   int score;
   int ranking;
-  Rect rect;
 
   BattleUser(
       {this.roomId = '',
@@ -37,8 +36,7 @@ class BattleUser {
       this.avatarUrl = '',
       this.userName = '',
       this.score = 0,
-      this.ranking = 1,
-      this.rect = Rect.zero});
+      this.ranking = 1});
 
   BattleUser.fromTUIBattleUser(TUIBattleUser battleUser)
       : roomId = battleUser.roomId,
@@ -46,12 +44,11 @@ class BattleUser {
         avatarUrl = battleUser.avatarUrl,
         userName = battleUser.userName,
         score = battleUser.score,
-        ranking = 1,
-        rect = Rect.zero;
+        ranking = 1;
 
   @override
   String toString() {
-    return 'BattleUser{roomId: $roomId, userId: $userId, avatarUrl: $avatarUrl, userName: $userName, score: $score, ranking: $ranking, rect: $rect}';
+    return 'BattleUser{roomId: $roomId, userId: $userId, avatarUrl: $avatarUrl, userName: $userName, score: $score, ranking: $ranking}';
   }
 }
 

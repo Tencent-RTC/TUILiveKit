@@ -1,5 +1,9 @@
 # LiveUIKitBarrage
 
+## 1.0.2
+
+- Optimized the usage of MediaQuery to avoid unnecessary page rebuilds.
+
 ## 1.0.1
 
 - Android & iOS: Add onError callback to BarrageDisplayController

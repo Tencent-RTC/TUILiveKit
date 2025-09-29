@@ -21,9 +21,9 @@ class AnchorPreviewInfoEditWidget extends StatefulWidget {
 
   const AnchorPreviewInfoEditWidget(
       {super.key,
-      required this.editInfo,
-      required this.liveStreamManager,
-      required this.liveCoreController});
+        required this.editInfo,
+        required this.liveStreamManager,
+        required this.liveCoreController});
 
   @override
   State<AnchorPreviewInfoEditWidget> createState() =>
@@ -120,7 +120,7 @@ class _AnchorPreviewInfoEditWidgetState
                         bottomRight: Radius.circular(8.width))),
                 child: Text(
                   LiveKitLocalizations.of(Global.appContext())!
-                      .common_edit_cover,
+                      .common_set_cover,
                   style: const TextStyle(
                       color: LiveColors.designStandardG7, fontSize: 14),
                 ),

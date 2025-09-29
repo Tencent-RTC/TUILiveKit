@@ -14,14 +14,14 @@ class EmojiPanelWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final panelWidth = MediaQuery.of(context).size.width;
+        final panelWidth = MediaQuery.sizeOf(context).width;
         final panelHeight = controller.getInputKeyboardHeight(context);
         const emojiSize = Size(35, 35);
         final emojiCountPerRow = (panelWidth / emojiSize.width).floor();
         final emojiHorizontalSpacing =
             (panelWidth - emojiCountPerRow * emojiSize.width) /
                 (emojiCountPerRow - 1);
-        Orientation orientation = MediaQuery.of(context).orientation;
+        Orientation orientation = MediaQuery.orientationOf(context);
         return GestureDetector(
           behavior: HitTestBehavior.translucent,
           onTap: () {},

@@ -9,18 +9,17 @@ import 'package:tencent_live_uikit/common/resources/images.dart';
 import 'package:tencent_live_uikit/common/screen/index.dart';
 import 'package:tencent_live_uikit/common/widget/index.dart';
 import 'package:tencent_live_uikit/live_navigator_observer.dart';
-import 'package:tencent_live_uikit/live_stream/manager/live_stream_manager.dart';
 
 import '../../../../component/beauty/index.dart';
 
 class CoGuestVideoSettingsPanelWidget extends StatefulWidget {
   final LiveCoreController liveCoreController;
-  final LiveStreamManager liveStreamManager;
+  final int seatIndex;
 
   const CoGuestVideoSettingsPanelWidget({
     super.key,
     required this.liveCoreController,
-    required this.liveStreamManager,
+    this.seatIndex = -1
   });
 
   @override
@@ -201,9 +200,10 @@ extension on _CoGuestVideoSettingsPanelWidgetState {
 
   Future<void> _requestIntraRoomVideoConnection() async {
     var result = await widget.liveCoreController.requestIntraRoomConnection(
-      widget.liveCoreController.roomState.ownerInfo.userId,
-      Constants.defaultRequestTimeout,
-      true,
+      userId: widget.liveCoreController.roomState.ownerInfo.userId,
+      seatIndex: widget.seatIndex,
+      timeout: Constants.defaultRequestTimeout,
+      openCamera: true,
     );
     if (result.code == TUIError.success) {
       makeToast(

@@ -24,7 +24,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
         child: Scaffold(
             resizeToAvoidBottomInset: false,
             body: SizedBox(
-              width: MediaQuery.of(context).size.width,
+              width: MediaQuery.sizeOf(context).width,
               child: Stack(
                 children: [_buildAppInfo(), _buildSetInfo()],
               ),
@@ -34,8 +34,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   _buildAppInfo() {
     return Positioned(
         left: 0,
-        top: MediaQuery.of(context).size.height / 6,
-        width: MediaQuery.of(context).size.width,
+        top: MediaQuery.sizeOf(context).height / 6,
+        width: MediaQuery.sizeOf(context).width,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -52,7 +52,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                     SizedBox(
                         width: _calculateTextWidth(S.current.app_trtc,
                                     const TextStyle(fontSize: 32)) >
-                                (MediaQuery.of(context).size.width - 70 - 10)
+                                (MediaQuery.sizeOf(context).width - 70 - 10)
                             ? _calculateTextWidth(S.current.app_trtc,
                                     const TextStyle(fontSize: 32)) /
                                 2
@@ -79,12 +79,12 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   _buildSetInfo() {
     return Positioned(
         left: 0,
-        top: MediaQuery.of(context).size.height * 2 / 5,
-        width: MediaQuery.of(context).size.width,
+        top: MediaQuery.sizeOf(context).height * 2 / 5,
+        width: MediaQuery.sizeOf(context).width,
         child: Column(
           children: [
             Container(
-              width: MediaQuery.of(context).size.width - 60,
+              width: MediaQuery.sizeOf(context).width - 60,
               height: 52,
               decoration: BoxDecoration(
                 color: Colors.transparent,
@@ -104,7 +104,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                   ),
                   const SizedBox(width: 10),
                   SizedBox(
-                    width: MediaQuery.of(context).size.width - 200,
+                    width: MediaQuery.sizeOf(context).width - 200,
                     child: TextField(
                       autofocus: true,
                       decoration: const InputDecoration(
@@ -120,7 +120,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
             const SizedBox(height: 40),
             SizedBox(
               height: 52,
-              width: MediaQuery.of(context).size.width - 60,
+              width: MediaQuery.sizeOf(context).width - 60,
               child: ElevatedButton(
                 onPressed: () => _isButtonEnabled ? _setUserInfo() : null,
                 style: ButtonStyle(

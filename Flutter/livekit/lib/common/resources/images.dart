@@ -2,8 +2,7 @@ class LiveImages {
   static const defaultAvatar = 'assets/images/live_default_avatar.png';
   static const audienceListArrow = 'assets/images/live_audience_list_arrow.png';
   static const returnArrow = 'assets/images/live_return_arrow.png';
-  static const streamDefaultCover =
-      'assets/images/live_stream_default_cover.png';
+  static const streamDefaultCover = 'assets/images/live_stream_default_cover.png';
   static const streamEditIcon = 'assets/images/live_stream_edit_icon.png';
   static const streamPrivacyMode = 'assets/images/live_stream_privacy_mode.png';
   static const streamEditArrow = 'assets/images/live_stream_edit_arrow.png';
@@ -16,14 +15,15 @@ class LiveImages {
       'assets/images/live_preview_function_item_mirror.png';
   static const previewFunctionItemMusic =
       'assets/images/live_preview_function_item_music.png';
+  static const previewFunctionItemTemplate =
+      'assets/images/live_preview_function_item_template.png';
 
   static const audienceClose = 'assets/images/live_audience_close.png';
   static const audienceLike = 'assets/images/live_audience_like.png';
 
   static const selectNone = 'assets/images/live_select_none.png';
   static const changeVoiceChild = 'assets/images/live_change_voice_child.png';
-  static const changeVoiceEthereal =
-      'assets/images/live_change_voice_ethereal.png';
+  static const changeVoiceEthereal = 'assets/images/live_change_voice_ethereal.png';
   static const changeVoiceGirl = 'assets/images/live_change_voice_girl.png';
   static const changeVoiceUncle = 'assets/images/live_change_voice_uncle.png';
 
@@ -36,19 +36,15 @@ class LiveImages {
 
   static const functionGift = 'assets/images/live_function_gift.png';
   static const functionLike = 'assets/images/live_function_like.png';
-  static const functionLinkDefault =
-      'assets/images/live_function_link_default.png';
+  static const functionLinkDefault = 'assets/images/live_function_link_default.png';
   static const functionLinkDisable = 'assets/images/live_link_icon_disable.png';
   static const functionRequest = 'assets/images/live_function_link_request.png';
   static const functionLinked = 'assets/images/live_function_linked.png';
   static const functionMusic = 'assets/images/live_function_music.png';
   static const functionSettings = 'assets/images/live_function_settings.png';
-  static const functionSeatManagement =
-      'assets/images/live_function_seat_management.png';
-  static const functionVoiceRoomLink =
-      'assets/images/live_function_voice_room_link.png';
-  static const functionVoiceRoomLinking =
-      'assets/images/live_function_voice_room_linking.png';
+  static const functionSeatManagement = 'assets/images/live_function_seat_management.png';
+  static const functionVoiceRoomLink = 'assets/images/live_function_voice_room_link.png';
+  static const functionVoiceRoomLinking = 'assets/images/live_function_voice_room_linking.png';
 
   static const followed = 'assets/images/live_followed_button_check.png';
 
@@ -56,14 +52,11 @@ class LiveImages {
   static const selectWhiteness = 'assets/images/live_select_whiteness.png';
   static const selectRuddy = 'assets/images/live_select_ruddy.png';
 
-  static const settingsItemBeauty =
-      'assets/images/live_settings_item_beauty.png';
+  static const settingsItemBeauty = 'assets/images/live_settings_item_beauty.png';
   static const settingsItemMusic = 'assets/images/live_settings_item_music.png';
   static const settingsItemFlip = 'assets/images/live_settings_item_flip.png';
-  static const settingsItemMirror =
-      'assets/images/live_settings_item_mirror.png';
-  static const settingsItemVideoParams =
-      'assets/images/live_settings_item_video_params.png';
+  static const settingsItemMirror = 'assets/images/live_settings_item_mirror.png';
+  static const settingsItemVideoParams = 'assets/images/live_settings_item_video_params.png';
   static const downArrow = 'assets/images/live_down_arrow.png';
   static const ellipsis = 'assets/images/live_ellipsis.png';
   static const musicDelete = 'assets/images/live_music_delete.png';
@@ -73,13 +66,10 @@ class LiveImages {
   static const linkVideo = 'assets/images/live_link_video.png';
   static const linkAudio = 'assets/images/live_link_audio.png';
   static const linkWaiting = 'assets/images/live_apply_link_waiting.png';
-  static const roomListItemLiveStatus =
-      'assets/images/live_room_list_item_live_status.png';
-  static const videoSettingsBeauty =
-      'assets/images/live_video_settings_beauty.png';
+  static const roomListItemLiveStatus = 'assets/images/live_room_list_item_live_status.png';
+  static const videoSettingsBeauty = 'assets/images/live_video_settings_beauty.png';
   static const videoSettingsFlip = 'assets/images/live_video_settings_flip.png';
-  static const videoSettingsMirror =
-      'assets/images/live_video_settings_mirror.png';
+  static const videoSettingsMirror = 'assets/images/live_video_settings_mirror.png';
 
   static const voiceBackground = 'assets/images/live_voice_background.png';
   static const prepareAudio = 'assets/images/live_prepare_audio.png';
@@ -98,8 +88,7 @@ class LiveImages {
 
   static const connection = 'assets/images/live_connection.png';
   static const connectionDisable = 'assets/images/live_connection_disable.png';
-  static const connectionDisconnect =
-      'assets/images/live_connection_disconnect.png';
+  static const connectionDisconnect = 'assets/images/live_connection_disconnect.png';
 
   static const battle = 'assets/images/live_battle.png';
   static const battleClock = 'assets/images/live_battle_clock.png';
@@ -117,10 +106,33 @@ class LiveImages {
   static const battleResultDraw = 'assets/images/live_battle_result_draw.png';
   static const battleResultLose = 'assets/images/live_battle_result_lose.png';
   static const battleResultWin = 'assets/images/live_battle_result_win.png';
-  static const battleScoreDivider =
-      'assets/images/live_battle_score_divider.png';
+  static const battleScoreDivider = 'assets/images/live_battle_score_divider.png';
   static const battleStart = 'assets/images/live_battle_start.png';
-  static const battleTimeBackground =
-      'assets/images/live_battle_time_background.png';
+  static const battleTimeBackground = 'assets/images/live_battle_time_background.png';
   static const more = "assets/images/live_more.png";
+  static const rotateScreen = "assets/images/live_rotate_screen.png";
+  static const templatePKDynamicGrid = "assets/images/live_template_pk_dynamic_grid.png";
+  static const templatePKDynamicFloat = "assets/images/live_template_pk_dynamic_float.png";
+  static const templateLinkDynamicGrid = "assets/images/live_template_link_dynamic_grid.png";
+  static const templateLinkDynamicFloat = "assets/images/live_template_link_dynamic_float.png";
+  static const templateLinkStaticGrid = "assets/images/live_template_link_static_grid.png";
+  static const templateLinkStaticFloat = "assets/images/live_template_link_static_float.png";
+
+  static const networkInfoArrow = 'assets/images/live_network_info_arrow.png';
+  static const networkInfoMic = 'assets/images/live_network_info_mic.png';
+  static const networkInfoMicError = 'assets/images/live_network_info_mic_error.png';
+  static const networkInfoSlider = 'assets/images/live_network_info_slider.png';
+  static const networkInfoTemperature = 'assets/images/live_network_info_temperature.png';
+  static const networkInfoTemperatureError = 'assets/images/live_network_info_mic_error.png';
+  static const networkInfoTemperatureWarn = 'assets/images/live_network_info_temperature_warn.png';
+  static const networkInfoTips = 'assets/images/live_network_info_tips.png';
+  static const networkInfoVideo = 'assets/images/live_network_info_video.png';
+  static const networkInfoVideoError = 'assets/images/live_network_info_video_error.png';
+  static const networkInfoWifi = 'assets/images/live_network_info_wifi.png';
+  static const networkInfoWifiBad = 'assets/images/live_network_info_wifi_bad.png';
+  static const networkInfoWifiError = 'assets/images/live_network_info_wifi_error.png';
+  static const networkInfoWifiPoor = 'assets/images/live_network_info_wifi_poor.png';
+  static const add = 'assets/images/live_add.png';
+
+  static const videoResolution = 'assets/images/live_video_resolution.png';
 }

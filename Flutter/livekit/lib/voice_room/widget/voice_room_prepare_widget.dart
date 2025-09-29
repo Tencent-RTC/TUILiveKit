@@ -27,7 +27,7 @@ class _VoiceRoomPrepareWidgetState extends State<VoiceRoomPrepareWidget> {
 
   @override
   Widget build(BuildContext context) {
-    _screenWidth = MediaQuery.of(context).size.width;
+    _screenWidth = MediaQuery.sizeOf(context).width;
     return PopScope(
       canPop: false,
       child: SizedBox(
@@ -115,7 +115,7 @@ class _VoiceRoomPrepareWidgetState extends State<VoiceRoomPrepareWidget> {
             color: LiveColors.designStandardB1,
           ),
           child: Text(
-            LiveKitLocalizations.of(Global.appContext())!.common_go_live,
+            LiveKitLocalizations.of(Global.appContext())!.common_start_live,
             style: const TextStyle(
                 color: LiveColors.designStandardFlowkitWhite,
                 fontSize: 16,

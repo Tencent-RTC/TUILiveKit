@@ -13,14 +13,14 @@ class RoomState {
   ValueNotifier<int> userCount = ValueNotifier(0);
   ValueNotifier<int> maxSeatCount = ValueNotifier(0);
   ValueNotifier<LiveExtraInfo> liveExtraInfo = ValueNotifier(LiveExtraInfo());
+  ValueNotifier<bool> exitRoom = ValueNotifier(false);
 }
 
 class LiveExtraInfo {
-  final ValueNotifier<PrivacyStatus> liveMode =
-      ValueNotifier(PrivacyStatus.publicity);
+  final ValueNotifier<PrivacyStatus> liveMode = ValueNotifier(PrivacyStatus.publicity);
   int maxAudienceCount = 0;
   int messageCount = 0;
   int giftIncome = 0;
-  Set<String> giftPeopleSet = {};
+  int giftSenderCount = 0;
   int likeCount = 0;
 }

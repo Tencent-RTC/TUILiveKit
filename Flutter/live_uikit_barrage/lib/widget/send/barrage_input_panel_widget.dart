@@ -13,9 +13,9 @@ class BarrageInputPanelWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    controller.setInputKeyboardHeight(MediaQuery.of(context).viewInsets.bottom);
+    controller.setInputKeyboardHeight(MediaQuery.viewInsetsOf(context).bottom);
     return SizedBox(
-      width: MediaQuery.of(context).size.width,
+      width: MediaQuery.sizeOf(context).width,
       height: controller.getInputKeyboardHeight(context) + 60,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -28,9 +28,9 @@ class BarrageInputPanelWidget extends StatelessWidget {
   }
 
   Widget _buildTopBarWidget(BuildContext context) {
-    Orientation orientation = MediaQuery.of(context).orientation;
+    Orientation orientation = MediaQuery.orientationOf(context);
     return Container(
-      width: MediaQuery.of(context).size.width,
+      width: MediaQuery.sizeOf(context).width,
       height: 60,
       padding: EdgeInsets.symmetric(
           horizontal: orientation == Orientation.portrait ? 16 : 52,

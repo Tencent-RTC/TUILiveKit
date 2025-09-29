@@ -3,7 +3,6 @@ import 'package:live_stream_core/live_core_widget/state/co_guest_state.dart';
 import 'package:live_uikit_barrage/live_uikit_barrage.dart';
 import 'package:live_uikit_gift/live_uikit_gift.dart';
 import 'package:flutter/material.dart';
-import 'package:rtc_room_engine/api/room/tui_room_define.dart';
 import 'package:tencent_live_uikit/common/index.dart';
 import 'package:tencent_live_uikit/live_stream/features/audience/panel/co_guest_type_select_panel_widget.dart';
 import 'package:tencent_live_uikit/live_stream/manager/live_stream_manager.dart';
@@ -24,16 +23,47 @@ class AudienceBottomMenuWidget extends StatefulWidget {
 
 class _AudienceBottomMenuWidgetState extends State<AudienceBottomMenuWidget> {
   BarrageSendController? _barrageSendController;
-  GiftSendController? _giftSendController;
+  GiftListController? _giftListController;
   LikeSendController? _likeSendController;
+
+  @override
+  void dispose() {
+    _likeSendController?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
       _buildBarrageSendWidget(),
-      _buildCoGuestWidget(),
-      _buildGiftSendWidget(),
-      _buildLikeSendWidget(),
+      Positioned(
+        top: 2.height,
+        right: 20.width,
+        height: 32.height,
+        width: 112.width,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildGiftSendWidget(),
+            SizedBox(width: 8.width),
+            ValueListenableBuilder(
+              valueListenable: widget.liveStreamManager.roomState.roomVideoStreamIsLandscape,
+              builder: (BuildContext context, isLandScape, Widget? child) {
+                return Visibility(
+                    visible: !isLandScape,
+                    child: Row(
+                      children: [
+                        _buildCoGuestWidget(),
+                        SizedBox(width: 8.width),
+                      ],
+                    ));
+              },
+            ),
+            _buildLikeSendWidget(),
+          ],
+        ),
+      ),
     ]);
   }
 
@@ -55,17 +85,12 @@ class _AudienceBottomMenuWidgetState extends State<AudienceBottomMenuWidget> {
         widget.liveCoreController.coHostState.connectedUserList,
       ]),
       builder: (context, _) {
-        bool isDisable = widget
-            .liveCoreController.coHostState.connectedUserList.value.isNotEmpty;
-        return Positioned(
-          right: 60.width,
-          top: 2.height,
-          width: 32.width,
-          height: 32.height,
+        bool isDisable = widget.liveCoreController.coHostState.connectedUserList.value.isNotEmpty;
+        return SizedBox(
+          width: 32.radius,
+          height: 32.radius,
           child: GestureDetector(
-            onTap: () => _handleCoGuestTap(
-                widget.liveCoreController.coGuestState.coGuestStatus.value,
-                isDisable),
+            onTap: () => _handleCoGuestTap(widget.liveCoreController.coGuestState.coGuestStatus.value, isDisable),
             child: Image.asset(
               _getImageByCoGuestStatus(isDisable),
               package: Constants.pluginName,
@@ -78,32 +103,19 @@ class _AudienceBottomMenuWidgetState extends State<AudienceBottomMenuWidget> {
 
   Widget _buildGiftSendWidget() {
     _initGiftSendController();
-    return Positioned(
-      right: 100.width,
-      top: 2.height,
-      width: 32.width,
-      height: 32.height,
-      child: GiftSendWidget(controller: _giftSendController!),
+    return SizedBox(
+      width: 32.radius,
+      height: 32.radius,
+      child: GiftSendWidget(controller: _giftListController!),
     );
   }
 
   Widget _buildLikeSendWidget() {
     _initLikeSendController();
-    return Positioned(
-      right: 20.width,
-      top: 2.height,
-      width: 32.width,
-      height: 32.height,
+    return SizedBox(
+      width: 32.radius,
+      height: 32.radius,
       child: LikeSendWidget(controller: _likeSendController!),
-    );
-  }
-
-  GiftUser _createGiftUser(TUIUserInfo userInfo, String level) {
-    return GiftUser(
-      userId: userInfo.userId,
-      avatarUrl: userInfo.avatarUrl,
-      userName: userInfo.userName,
-      level: level,
     );
   }
 
@@ -127,7 +139,7 @@ class _AudienceBottomMenuWidgetState extends State<AudienceBottomMenuWidget> {
   void _showCoGuestPanelWidget() {
     popupWidget(CoGuestTypeSelectPanelWidget(
       liveCoreController: widget.liveCoreController,
-      liveStreamManager: widget.liveStreamManager,
+      seatIndex: -1,
     ));
   }
 }
@@ -143,29 +155,19 @@ extension on _AudienceBottomMenuWidgetState {
   }
 
   void _initGiftSendController() {
-    _giftSendController ??= GiftSendController(
-      roomId: widget.liveCoreController.roomState.roomId,
-      owner:
-          _createGiftUser(widget.liveCoreController.roomState.ownerInfo, "66"),
-      self: _createGiftUser(widget.liveCoreController.userState.selfInfo, "32"),
-    );
+    final language = DeviceLanguage.getCurrentLanguageCode(context);
+    _giftListController ??= GiftListController(roomId: widget.liveCoreController.roomState.roomId, language: language);
   }
 
   void _initLikeSendController() {
-    _likeSendController ??= LikeSendController(
-      roomId: widget.liveCoreController.roomState.roomId,
-      owner:
-          _createGiftUser(widget.liveCoreController.roomState.ownerInfo, "66"),
-      self: _createGiftUser(widget.liveCoreController.userState.selfInfo, "32"),
-    );
+    _likeSendController ??= LikeSendController(roomId: widget.liveCoreController.roomState.roomId);
   }
 
   void _showCancelRequestPanelWidget() {
     List<ActionSheetModel> list = [
       ActionSheetModel(
           isCenter: true,
-          text: LiveKitLocalizations.of(Global.appContext())!
-              .common_text_cancel_link_mic_apply,
+          text: LiveKitLocalizations.of(Global.appContext())!.common_text_cancel_link_mic_apply,
           textStyle: const TextStyle(
             color: LiveColors.designStandardFlowkitRed,
             fontSize: 16,
@@ -181,8 +183,7 @@ extension on _AudienceBottomMenuWidgetState {
     ];
     ActionSheet.show(list, (ActionSheetModel model) async {
       if (model.bingData == 1) {
-        widget.liveCoreController.cancelIntraRoomConnection(
-            widget.liveCoreController.roomState.ownerInfo.userId);
+        widget.liveCoreController.cancelIntraRoomConnection(widget.liveCoreController.roomState.ownerInfo.userId);
       }
     });
   }
@@ -191,8 +192,7 @@ extension on _AudienceBottomMenuWidgetState {
     List<ActionSheetModel> list = [
       ActionSheetModel(
           isCenter: true,
-          text: LiveKitLocalizations.of(Global.appContext())!
-              .common_text_close_link_mic,
+          text: LiveKitLocalizations.of(Global.appContext())!.common_text_close_link_mic,
           textStyle: const TextStyle(
             color: LiveColors.designStandardFlowkitRed,
             fontSize: 16,

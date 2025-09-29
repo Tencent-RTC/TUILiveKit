@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:live_uikit_gift/live_uikit_gift.dart';
 import 'package:rtc_room_engine/rtc_room_engine.dart';
-import 'package:tencent_cloud_chat_sdk/enum/V2TimSDKListener.dart';
-import 'package:tencent_cloud_chat_sdk/enum/log_level_enum.dart';
-import 'package:tencent_cloud_chat_sdk/models/v2_tim_callback.dart';
-import 'package:tencent_cloud_chat_sdk/tencent_im_sdk_plugin.dart';
 
 import 'debug/generate_test_user_sig.dart';
 
@@ -15,7 +11,6 @@ class ExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    login();
     return MaterialApp(localizationsDelegates: const [
       ...GiftLocalizations.localizationsDelegates,
     ], supportedLocales: const [
@@ -32,108 +27,39 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  static const userId = '1236666';
-  static const userName = 'X6666X';
-  static const roomId = "live_1236666";
-  final GiftUser ownerInfo =
-      GiftUser(userId: userId, userName: userName, avatarUrl: '', level: '0');
-  final GiftUser selfInfo =
-      GiftUser(userId: userId, userName: userName, avatarUrl: '', level: '0');
-
-  late GiftSendController sendController;
-  late LikeSendController likeController;
-  late GiftDisplayController displayController;
+  static const roomId = "live_krab1";
+  final ValueNotifier<bool> enterRoomSuccess = ValueNotifier(false);
+  bool isLogin = false;
 
   @override
   void initState() {
     super.initState();
-    likeController =
-        LikeSendController(roomId: roomId, owner: ownerInfo, self: selfInfo);
-    sendController =
-        GiftSendController(roomId: roomId, owner: ownerInfo, self: selfInfo);
-
-    displayController = GiftDisplayController(
-        roomId: roomId,
-        owner: ownerInfo,
-        self: selfInfo,
-        enablePreloading: true);
-    displayController.setGiftCallback(
-        onReceiveGiftCallback: _onReceiveGiftCallback);
+    login();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Stack(
-          children: [
-            Positioned(
-              left: 20,
-              bottom: 50,
-              width: 40,
-              height: 40,
-              child: SizedBox(
-                width: 40,
-                height: 40,
-                child: GiftSendWidget(
-                  controller: sendController,
-                ),
-              ),
-            ),
-            Positioned(
-              left: 80,
-              bottom: 50,
-              width: 40,
-              height: 40,
-              child: SizedBox(
-                width: 40,
-                height: 40,
-                child: LikeSendWidget(
-                  controller: likeController,
-                ),
-              ),
-            ),
-            Positioned(
-              left: 0,
-              top: 0,
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: GiftDisplayWidget(controller: displayController),
-            ),
-          ],
-        ),
+        child: ValueListenableBuilder(
+            valueListenable: enterRoomSuccess,
+            builder: (context, success, _) {
+              return Visibility(
+                visible: success,
+                child: GiftWidget(roomId: roomId),
+              );
+            }),
       ),
     );
   }
 
-  void _onReceiveGiftCallback(GiftMessage message) {
-    debugPrint(
-        "DemoOnReceiveGiftListener onReceiveGift message:${message.toString()}");
-  }
-}
-
-bool isLogin = false;
-
-void login() async {
-  const userId = '1236666';
-  const roomId = "live_1236666";
-  if (isLogin) {
-    return;
-  }
-  isLogin = true;
-  var initResult = await TencentImSDKPlugin.v2TIMManager.initSDK(
-    sdkAppID: GenerateTestUserSig.sdkAppId,
-    loglevel: LogLevelEnum.V2TIM_LOG_INFO,
-    listener: V2TimSDKListener(),
-  );
-  debugPrint("init login result：${initResult.code}-${initResult.desc}");
-
-  if (initResult.code == 0) {
-    V2TimCallback imLoginResult = await TencentImSDKPlugin.v2TIMManager.login(
-      userID: userId,
-      userSig: GenerateTestUserSig.genTestSig(userId),
-    );
-    debugPrint("im login result：${imLoginResult.code}-${imLoginResult.desc}");
+  void login() async {
+    const userId = '12369999';
+    const roomId = "live_krab1";
+    if (isLogin) {
+      return;
+    }
+    isLogin = true;
 
     var result = await TUIRoomEngine.login(
       GenerateTestUserSig.sdkAppId,
@@ -152,8 +78,76 @@ void login() async {
         .enterRoom(roomId, roomType: TUIRoomType.livingRoom);
     debugPrint(
         'enter room result：${enterRoomResult.code}-${enterRoomResult.message}');
+    if (enterRoomResult.code == TUIError.success) {
+      enterRoomSuccess.value = true;
+    }
     TUILiveListManager listManager = await TUIRoomEngine.sharedInstance()
-        .getExtension(TUIExtensionType.liveListManger);
+        .getExtension(TUIExtensionType.liveListManager);
     listManager.setLiveInfo(roomId, isPublicVisible: true);
+  }
+}
+
+class GiftWidget extends StatelessWidget {
+  final String roomId;
+  GiftSendController? sendController;
+  LikeSendController? likeController;
+  GiftDisplayController? displayController;
+
+  GiftWidget({super.key, required this.roomId});
+
+  @override
+  Widget build(BuildContext context) {
+    likeController ??= LikeSendController(roomId: roomId);
+    sendController ??= GiftSendController(roomId: roomId);
+
+    if (displayController == null) {
+      displayController =
+          GiftDisplayController(roomId: roomId, enablePreloading: true);
+      displayController?.onReceiveGiftCallback = _onReceiveGiftCallback;
+    }
+
+    return Stack(
+      children: [
+        Positioned(
+          left: 20,
+          bottom: 50,
+          width: 40,
+          height: 40,
+          child: SizedBox(
+            width: 40,
+            height: 40,
+            child: GiftSendWidget(
+              controller: sendController!,
+            ),
+          ),
+        ),
+        Positioned(
+          left: 80,
+          bottom: 50,
+          width: 40,
+          height: 40,
+          child: SizedBox(
+            width: 40,
+            height: 40,
+            child: LikeSendWidget(
+              controller: likeController!,
+            ),
+          ),
+        ),
+        Positioned(
+          left: 0,
+          top: 0,
+          width: MediaQuery.sizeOf(context).width,
+          height: MediaQuery.sizeOf(context).height,
+          child: GiftDisplayWidget(giftDisplayController: displayController!),
+        ),
+      ],
+    );
+  }
+
+  void _onReceiveGiftCallback(
+      TUIGiftInfo giftInfo, int count, TUIUserInfo sender) {
+    debugPrint(
+        "DemoOnReceiveGiftListener onReceiveGift giftInfo:$giftInfo, count:$count, sender:$sender");
   }
 }

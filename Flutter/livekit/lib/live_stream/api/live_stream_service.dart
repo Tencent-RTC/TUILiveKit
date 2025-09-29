@@ -1,20 +1,20 @@
-import 'package:rtc_room_engine/api/common/tui_common_define.dart';
-import 'package:rtc_room_engine/api/extension/tui_live_list_manager.dart';
-import 'package:rtc_room_engine/api/room/tui_room_define.dart';
-import 'package:rtc_room_engine/api/room/tui_room_engine.dart';
-import 'package:rtc_room_engine/api/room/tui_room_observer.dart';
-import 'package:tencent_trtc_cloud/trtc_cloud.dart';
-import 'package:tencent_trtc_cloud/tx_beauty_manager.dart';
+import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
+import 'package:rtc_room_engine/rtc_room_engine.dart';
+import 'package:tencent_rtc_sdk/trtc_cloud.dart';
 
 class LiveStreamService {
   late final TUIRoomEngine roomEngine;
   late final TUILiveListManager liveListManager;
+  late final TUILiveLayoutManager liveLayoutManager;
   late final TRTCCloud? trtcCloud;
-  late final TXBeautyManager? beautyManager;
 
   LiveStreamService() {
     roomEngine = TUIRoomEngine.sharedInstance();
     liveListManager = roomEngine.getExtension(TUIExtensionType.liveListManager);
+    liveLayoutManager =
+        roomEngine.getExtension(TUIExtensionType.liveLayoutManager);
     _initTRTCCloud();
   }
 
@@ -33,43 +33,17 @@ class LiveStreamService {
   void removeLiveListManagerObserver(TUILiveListObserver observer) {
     liveListManager.removeObserver(observer);
   }
+
+  void addLiveLayoutObserver(TUILiveLayoutObserver observer) {
+    liveLayoutManager.addObserver(observer);
+  }
+
+  void removeLiveLayoutObserver(TUILiveLayoutObserver observer) {
+    liveLayoutManager.removeObserver(observer);
+  }
 }
 
 extension LiveStreamServiceWithRoom on LiveStreamService {
-  Future<TUIActionCallback> syncLiveInfoToService(
-      TUILiveInfo liveInfo, List<TUILiveModifyFlag> modifyFlags) {
-    final bitmask = modifyFlags.fold(0, (value, flag) => value | flag.value());
-
-    String? coverUrl = _containsFlag(
-            bitmask: bitmask, flag: TUILiveModifyFlag.coverUrl.value())
-        ? liveInfo.coverUrl
-        : null;
-    List<int>? categoryList = _containsFlag(
-            bitmask: bitmask, flag: TUILiveModifyFlag.category.value())
-        ? liveInfo.categoryList
-        : null;
-    bool? isPublicVisible =
-        _containsFlag(bitmask: bitmask, flag: TUILiveModifyFlag.publish.value())
-            ? liveInfo.isPublicVisible
-            : null;
-    int? activityStatus = _containsFlag(
-            bitmask: bitmask, flag: TUILiveModifyFlag.activityStatus.value())
-        ? liveInfo.activityStatus
-        : null;
-
-    String? backgroundUrl = _containsFlag(
-            bitmask: bitmask, flag: TUILiveModifyFlag.backgroundUrl.value())
-        ? liveInfo.backgroundUrl
-        : null;
-
-    return liveListManager.setLiveInfo(liveInfo.roomInfo.roomId,
-        coverUrl: coverUrl,
-        categoryList: categoryList,
-        isPublicVisible: isPublicVisible,
-        activityStatus: activityStatus,
-        backgroundUrl: backgroundUrl);
-  }
-
   Future<TUIValueCallBack<TUILiveInfo>> fetchLiveInfo(String roomId) {
     return liveListManager.getLiveInfo(roomId);
   }
@@ -135,10 +109,6 @@ extension LiveStreamServiceWithMedia on LiveStreamService {
     roomEngine.updateVideoQuality(videoQuality);
   }
 
-  void setBeautyStyle(int style) {
-    beautyManager?.setBeautyStyle(style);
-  }
-
   void updateVideoQualityEx(
       TUIVideoStreamType streamType, TUIRoomVideoEncoderParams params) {
     roomEngine.updateVideoQualityEx(streamType, params);
@@ -165,12 +135,27 @@ extension LiveStreamServiceWithCoHost on LiveStreamService {
       String cursor, int count) {
     return liveListManager.fetchLiveList(cursor, count);
   }
+
+  void setCoHostLayoutTemplateId(int templateId) {
+    try {
+      Map<String, dynamic> params = {'templateId': templateId};
+
+      Map<String, dynamic> jsonObject = {
+        'api': 'setCoHostLayoutTemplateId',
+        'params': params
+      };
+
+      final jsonString = jsonEncode(jsonObject);
+      TUIRoomEngine.sharedInstance().invokeExperimentalAPI(jsonString);
+    } catch (e) {
+      debugPrint('Error setCoHostLayoutTemplateId. templateId:$templateId');
+    }
+  }
 }
 
 extension on LiveStreamService {
   void _initTRTCCloud() async {
     trtcCloud = await TRTCCloud.sharedInstance();
-    beautyManager = trtcCloud?.getBeautyManager();
   }
 
   bool _containsFlag({required int bitmask, required int flag}) {

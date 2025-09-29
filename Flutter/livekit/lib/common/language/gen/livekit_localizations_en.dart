@@ -7,14 +7,150 @@ class LiveKitLocalizationsEn extends LiveKitLocalizations {
   LiveKitLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get common_go_live => 'Go Live';
+  String get common_anchor_battle => 'Battle';
+
+  @override
+  String get common_anchor_end_link_tips =>
+      'You are currently co-guesting with other streamers. Would you like to [End Live] ?';
+
+  @override
+  String get common_battle_connecting => 'Connecting';
+
+  @override
+  String get common_battle_end_pk => 'End PK';
+
+  @override
+  String get common_battle_end_pk_tips =>
+      'Are you sure you want to end the battle? The current result will be the final result after the end';
+
+  @override
+  String get common_battle_invitation_timeout =>
+      'Battle request has been timeout';
+
+  @override
+  String get common_battle_invitee_reject => 'rejected battle';
+
+  @override
+  String get common_battle_inviter_cancel =>
+      'canceled battle, please try to initiate it again';
+
+  @override
+  String get common_battle_inviting => 'invite you to battle together';
+
+  @override
+  String get common_battle_pk_end => 'PK End';
+
+  @override
+  String get common_battle_wait_start => 'Waiting for battle';
+
+  @override
+  String get common_battle_wait_stop => 'Cancel';
+
+  @override
+  String get common_connect_conflict =>
+      'The room you are invited to connect to is connected to another room.';
+
+  @override
+  String get common_connect_error => 'Other errors, cannot connect.';
+
+  @override
+  String get common_connect_inviting => 'Waiting';
+
+  @override
+  String get common_connect_inviting_append => 'invite you to host together';
+
+  @override
+  String get common_connect_request_rejected =>
+      'Connection application has been rejected';
+
+  @override
+  String get common_connect_invitation_timeout => 'Invitation has timed out';
+
+  @override
+  String get common_connection => 'Start Co-hosting';
+
+  @override
+  String get common_connection_list_title => 'Connecting Streamers(xxx)';
+
+  @override
+  String get common_connection_room_full =>
+      'The number of co-hosting has exceeded the maximum limit.';
+
+  @override
+  String get common_cover => 'Cover';
+
+  @override
+  String get common_disconnect_tips =>
+      'Are you sure you want to disconnect from other streamers?';
+
+  @override
+  String get common_end_connect => 'Disconnect';
+
+  @override
+  String get common_end_connection_tips =>
+      'You are currently co-hosting with other streamers. Would you like to [End Co-host] or [End Live] ?';
+
+  @override
+  String get common_end_pk_tips =>
+      'You are currently in PK mode. Would you like to [End PK] or [End Live] ?';
+
+  @override
+  String get common_more => 'More';
+
+  @override
+  String get common_more_features => 'More Features';
+
+  @override
+  String get common_recommended_list => 'Suggested Hosts';
 
   @override
   String get common_link_mic_up_title => 'Current Mic';
 
   @override
+  String get common_send_message_disabled =>
+      'You have been muted in the current room';
+
+  @override
+  String get common_send_message_enable =>
+      'You have been unmuted in the current room';
+
+  @override
+  String get common_start_live => 'Start Live';
+
+  @override
+  String get common_link_guest => 'Guest';
+
+  @override
+  String get common_link_host => 'Host';
+
+  @override
+  String get live_error_connection_notexit =>
+      'The room you are invited to connect to does not exist';
+
+  @override
+  String get live_error_connection_retry =>
+      'Internal error, it is recommended to try again.';
+
+  @override
+  String get livelist_loading => 'Loading...';
+
+  @override
+  String get livelist_no_more_data => 'There is no more data';
+
+  @override
+  String get livelist_viewed_audience_count => 'xxx people viewed';
+
+  @override
+  String get livestreamcore_battle_error_conflict =>
+      'The anchor is in the battle and cannot initiate the battle';
+
+  @override
+  String get livestreamcore_battle_error_other =>
+      'The other error, cannot initiate the battle';
+
+  @override
   String get common_audience_end_link_tips =>
-      'You are currently co-guesting with other streamers. Would you like to[End Co-guest] or [Exit Live] ?';
+      'You are currently co-guesting with other streamers. Would you like to [End Co-guest] or [Exit Live] ?';
 
   @override
   String get common_exit_live => 'Exit Live';
@@ -210,6 +346,21 @@ class LiveKitLocalizationsEn extends LiveKitLocalizations {
   String get common_client_error_user_not_exist => 'User is not exist';
 
   @override
+  String get common_server_error_gift_ability_not_enabled =>
+      'Gift service is not enabled yet please check your package version';
+
+  @override
+  String get common_server_error_gift_not_exist => 'Gift does not exist';
+
+  @override
+  String get common_server_error_gift_server_pre_verification_failed =>
+      'Gift server pre-verification failed please check console configuration';
+
+  @override
+  String get common_server_error_call_in_progress =>
+      'The device operation failed while in a call';
+
+  @override
   String get common_ear_return_volume => 'Ear Monitor Volume';
 
   @override
@@ -303,7 +454,7 @@ class LiveKitLocalizationsEn extends LiveKitLocalizations {
   String get common_ear_return => 'Ear Monitor';
 
   @override
-  String get common_edit_cover => 'Modify the cover';
+  String get common_set_cover => 'Set Cover';
 
   @override
   String get common_end_link => 'End Co-guest';
@@ -313,20 +464,6 @@ class LiveKitLocalizationsEn extends LiveKitLocalizations {
 
   @override
   String get common_end_user => 'End';
-
-  @override
-  String get common_end_connection => 'End Co-host';
-
-  @override
-  String get common_end_connection_tips =>
-      'You are currently co-hosting with other streamers. Would you like to [End Co-host] or [End Live] ?';
-
-  @override
-  String get common_end_pk => 'End PK';
-
-  @override
-  String get common_end_pk_tips =>
-      'You are currently in PK mode. Would you like to [End PK] or [End Live] ?';
 
   @override
   String get common_entered_room => 'Entered room';
@@ -345,7 +482,7 @@ class LiveKitLocalizationsEn extends LiveKitLocalizations {
 
   @override
   String get common_kick_user_confirm_message =>
-      'Are you sure you want to remove %s?';
+      'Are you sure you want to remove xxx?';
 
   @override
   String get common_link_mic_manager => 'Link Management';
@@ -382,6 +519,9 @@ class LiveKitLocalizationsEn extends LiveKitLocalizations {
 
   @override
   String get common_people_volume => 'Voice volume';
+
+  @override
+  String get common_accept => 'Accept';
 
   @override
   String get common_receive => 'Accept';
@@ -424,6 +564,9 @@ class LiveKitLocalizationsEn extends LiveKitLocalizations {
 
   @override
   String get common_sent => 'Sent';
+
+  @override
+  String get common_go_live => 'Go Live';
 
   @override
   String get common_server_error_already_on_the_mic => 'Already on the seat';
@@ -673,9 +816,6 @@ class LiveKitLocalizationsEn extends LiveKitLocalizations {
       'The screen effect will automatically take effect after connecting';
 
   @override
-  String get common_title_preset_cover => 'Preset Images';
-
-  @override
   String get common_title_link_mic_selector => 'Choose Link Mode';
 
   @override
@@ -725,7 +865,7 @@ class LiveKitLocalizationsEn extends LiveKitLocalizations {
 
   @override
   String get common_voiceroom_receive_seat_invitation =>
-      '%1\$s invites you to take seat';
+      'xxx invites you to take seat';
 
   @override
   String get common_voiceroom_take_seat => 'Take Seat';
@@ -766,137 +906,139 @@ class LiveKitLocalizationsEn extends LiveKitLocalizations {
   String get live_music_pitch => 'Music Pitch';
 
   @override
-  String get common_accept => 'Accept';
+  String get common_video_status => 'Video Status';
 
   @override
-  String get livelist_viewed_audience_count => 'xxx people viewed';
+  String get common_audio_status => 'Audio Status';
 
   @override
-  String get livelist_loading => 'Loading...';
+  String get common_device_temp => 'Device Temperature';
 
   @override
-  String get livelist_no_more_data => 'There is no more data';
+  String get common_wifi_or_mobile_network => 'Wi-Fi/Mobile Network';
 
   @override
-  String get common_anchor_battle => 'Battle';
+  String get common_video_stream_smooth => 'Smooth streaming';
 
   @override
-  String get common_anchor_end_link_tips =>
-      'You are currently co-guesting with other streamers. Would you like to [End Live] ?';
+  String get common_video_stream_freezing => 'Freezing streaming';
 
   @override
-  String get common_battle_connecting => 'Connecting';
+  String get common_video_capture_closed => 'Video capture disabled';
 
   @override
-  String get common_battle_end_pk => 'End PK';
+  String get common_audio_tips_proper_volume =>
+      'Proper volume ensures good viewing experience';
 
   @override
-  String get common_battle_end_pk_tips =>
-      'Are you sure you want to end the battle? The current result will be the final result after the end';
+  String get common_audio_tips_regular_checks =>
+      'Regular checks ensure good viewing experience';
 
   @override
-  String get common_battle_invitation_timeout =>
-      'Battle request has been timeout';
+  String get common_network_switch_tips => 'Avoid frequent network switching';
 
   @override
-  String get common_battle_invitee_reject => 'xxx rejected battle';
+  String get common_live_info => 'Live Information';
 
   @override
-  String get common_battle_inviter_cancel =>
-      'xxx canceled battle, please try to initiate it again';
+  String get common_rtt => 'RTT';
 
   @override
-  String get common_battle_inviting => 'xxx invite you to battle together';
+  String get common_down_loss => 'Down Loss';
 
   @override
-  String get common_battle_pk_end => 'PK End';
+  String get common_up_loss => 'Up Loss';
 
   @override
-  String get common_battle_wait_start => 'Waiting for battle';
+  String get common_normal => 'normal';
 
   @override
-  String get common_battle_wait_stop => 'Cancel';
+  String get common_close => 'close';
 
   @override
-  String get common_connect_conflict =>
-      'The room you are invited to connect to is connected to another room.';
+  String get common_exception => 'exception';
 
   @override
-  String get common_connect_error => 'Other errors, cannot connect.';
+  String get common_excellent => 'excellent';
 
   @override
-  String get common_connect_inviting => 'Waiting';
+  String get common_good => 'good';
 
   @override
-  String get common_connect_inviting_append =>
-      'xxx invite you to host together';
+  String get common_poor => 'poor';
 
   @override
-  String get common_connect_request_rejected =>
-      'Connection application has been rejected';
+  String get common_bad => 'bad';
 
   @override
-  String get common_connection => 'Start Co-hosting';
+  String get common_verybad => 'veryBad';
 
   @override
-  String get common_connection_list_title => 'Connecting Streamers(xxx)';
+  String get common_down => 'down';
 
   @override
-  String get common_connection_room_full =>
-      'The number of co-hosting has exceeded the maximum limit.';
+  String get common_audio_mode_default => 'Default';
 
   @override
-  String get common_send_message_enable =>
-      'You have been unmuted in the current room';
+  String get common_audio_mode_speech => 'Speech';
 
   @override
-  String get common_link_host => 'Host';
+  String get common_audio_mode_music => 'Music';
 
   @override
-  String get common_link_guest => 'Guest';
+  String get common_device_temp_fair => 'fair';
 
   @override
-  String get common_recommended_list => 'Suggested Hosts';
+  String get common_device_temp_serious => 'serious';
 
   @override
-  String get common_disconnection => 'Disconnect';
+  String get common_network_bad_tips => 'Network lag detected suggestions';
 
   @override
-  String get common_disconnect_tips =>
-      'Are you sure you want to disconnect from other streamers?';
+  String get common_switch_network => 'Switch Network';
 
   @override
-  String get common_end_connect => 'Disconnect';
+  String get common_wait_connection => 'Conn Wait';
 
   @override
-  String get common_more => 'More';
+  String get common_apply_connection => 'Conn Join';
 
   @override
-  String get common_more_features => 'More Features';
+  String get common_template_select => 'Template:';
 
   @override
-  String get live_error_connection_notexit =>
-      'The room you are invited to connect to does not exist';
+  String get common_template_dynamic_grid => 'Dynamic grid layout';
 
   @override
-  String get live_error_connection_retry =>
-      'Internal error, it is recommended to try again.';
+  String get common_template_dynamic_float => 'Dynamic float layout';
 
   @override
-  String get livestreamcore_battle_error_conflict =>
-      'The anchor is in the battle and cannot initiate the battle';
+  String get common_template_static_grid => 'Static grid layout';
 
   @override
-  String get livestreamcore_battle_error_other =>
-      'The other error, cannot initiate the battle';
+  String get common_template_static_float => 'Static float layout';
 
   @override
-  String get common_text_terminate_connection => 'Disconnection';
+  String get common_template_layout_settings => 'Layout settings';
 
   @override
-  String get common_text_leave_room => 'Leave live room';
+  String get common_template_layout_co_guest => 'Layout co-guest';
 
   @override
-  String get common_text_terminate_connection_tips =>
-      'You are currently connected, do you want to "DisConnection" or "Leave live room"?';
+  String get common_template_layout_co_host => 'Layout co-host';
+
+  @override
+  String get common_template_layout => 'Layout';
+
+  @override
+  String get common_video_settings => 'Video settings';
+
+  @override
+  String get live_video_resolution => 'Resolution';
+
+  @override
+  String get live_video_reduce_resolution => 'Reduce resolution';
+
+  @override
+  String get live_video_resolution_changed => 'resolution changed to';
 }

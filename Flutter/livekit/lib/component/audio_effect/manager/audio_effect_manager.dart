@@ -1,5 +1,5 @@
-import 'package:tencent_trtc_cloud/trtc_cloud.dart';
-import 'package:tencent_trtc_cloud/tx_audio_effect_manager.dart';
+import 'package:tencent_rtc_sdk/trtc_cloud.dart';
+import 'package:tencent_rtc_sdk/tx_audio_effect_manager.dart';
 
 import '../state/audio_effect_state.dart';
 import '../state/audio_effect_state_factory.dart';
@@ -16,12 +16,12 @@ class AudioEffectManager {
   }
 
   void setVoiceChangerType(int type) async {
-    await audioEffectManager?.setVoiceChangerType(type);
+    audioEffectManager?.setVoiceChangerType(TXVoiceChangerTypeExt.fromValue(type));
     state.changerType.value = type;
   }
 
   void setVoiceReverbType(int type) {
-    audioEffectManager?.setVoiceReverbType(type);
+    audioEffectManager?.setVoiceReverbType(TXVoiceReverbTypeExt.fromValue(type));
     state.reverbType.value = type;
   }
 
@@ -72,7 +72,7 @@ extension on AudioEffectManager {
     audioEffectManager?.setAllMusicVolume(60);
     audioEffectManager?.setVoiceCaptureVolume(100);
 
-    audioEffectManager?.setVoiceChangerType(0);
-    audioEffectManager?.setVoiceReverbType(0);
+    audioEffectManager?.setVoiceChangerType(TXVoiceChangerType.type0);
+    audioEffectManager?.setVoiceReverbType(TXVoiceReverbType.type0);
   }
 }

@@ -1,11 +1,8 @@
-import 'package:rtc_room_engine/api/common/tui_common_define.dart';
-import 'package:rtc_room_engine/api/room/tui_room_define.dart';
-import 'package:rtc_room_engine/api/room/tui_room_engine.dart';
+import 'package:rtc_room_engine/rtc_room_engine.dart';
 import 'package:tencent_cloud_chat_sdk/models/v2_tim_follow_info.dart';
 import 'package:tencent_cloud_chat_sdk/models/v2_tim_user_full_info.dart';
 import 'package:tencent_cloud_chat_sdk/tencent_im_sdk_plugin.dart';
 
-import '../../../voice_room/state/voice_define.dart';
 import '../state/follow_define.dart';
 import '../state/live_info_state.dart';
 
@@ -74,7 +71,7 @@ class LiveInfoManager {
   }
 }
 
-extension LiveinfomanagerCallback on LiveInfoManager {
+extension LiveInfoManagerCallback on LiveInfoManager {
   void onRoomDismissed(String roomId, TUIRoomDismissedReason reason) {
     state.roomDismissedSubject.add(roomId);
   }

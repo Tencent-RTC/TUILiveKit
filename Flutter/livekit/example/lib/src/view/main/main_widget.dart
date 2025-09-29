@@ -23,7 +23,7 @@ class _MainWidgetState extends State<MainWidget> {
 
   @override
   Widget build(BuildContext context) {
-    _screenWidth = MediaQuery.of(context).size.width;
+    _screenWidth = MediaQuery.sizeOf(context).width;
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -58,8 +58,8 @@ class _MainWidgetState extends State<MainWidget> {
                   child: GestureDetector(
                     onTap: () => _enterMeWidget(),
                     child: ClipOval(
-                      child: Image.network(AppStore.userAvatar,
-                          width: 30.radius),
+                      child:
+                          Image.network(AppStore.userAvatar, width: 30.radius),
                     ),
                   ),
                 ),
@@ -176,9 +176,7 @@ class MenuItemWidget extends StatelessWidget {
                 Row(
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(
-                          top: 16.height,
-                          left: 16.width),
+                      padding: EdgeInsets.only(top: 16.height, left: 16.width),
                       child: Image.asset(
                         iconUrl,
                         width: 24.radius,
@@ -189,8 +187,7 @@ class MenuItemWidget extends StatelessWidget {
                     SizedBox(
                       width: 60.width,
                       child: Padding(
-                        padding:
-                            EdgeInsets.only(top: 16.height),
+                        padding: EdgeInsets.only(top: 16.height),
                         child: Text(
                           title,
                           style: const TextStyle(
@@ -201,9 +198,8 @@ class MenuItemWidget extends StatelessWidget {
                     ),
                     Expanded(
                       child: Padding(
-                        padding: EdgeInsets.only(
-                            top: 16.height,
-                            left: 16.width),
+                        padding:
+                            EdgeInsets.only(top: 16.height, left: 16.width),
                         child: Image.asset(
                           'assets/app_arrow.png',
                           width: 16.radius,

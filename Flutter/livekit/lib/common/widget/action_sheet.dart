@@ -7,7 +7,7 @@ class ActionSheet {
       {String? title, Color backgroundColor = LiveColors.designStandardG2}) {
     final bool hasTitle = title != null && title.isNotEmpty;
     double titleHeight = hasTitle ? 50.height : 0;
-    double bottomHeight = MediaQuery.of(Global.appContext()).padding.bottom;
+    double bottomHeight = MediaQuery.paddingOf(Global.appContext()).bottom;
     double actionSheetHeight =
         list.fold(0.0, (sum, item) => sum + item.cellHeight);
     debugPrint("showActionSheet:$actionSheetHeight");

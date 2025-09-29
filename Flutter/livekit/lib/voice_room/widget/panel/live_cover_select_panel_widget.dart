@@ -32,7 +32,7 @@ class _LiveCoverSelectPanelWidgetState
 
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenWidth = MediaQuery.sizeOf(context).width;
     return SizedBox(
       height: 700.height,
       width: screenWidth,
@@ -65,8 +65,7 @@ class _LiveCoverSelectPanelWidgetState
                 ),
                 Center(
                   child: Text(
-                    LiveKitLocalizations.of(Global.appContext())!
-                        .common_title_preset_cover,
+                    LiveKitLocalizations.of(Global.appContext())!.common_cover,
                     style: const TextStyle(
                         color: LiveColors.designStandardFlowkitWhite,
                         fontSize: 16),

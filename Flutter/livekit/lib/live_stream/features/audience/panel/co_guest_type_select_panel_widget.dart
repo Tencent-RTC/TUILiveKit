@@ -3,16 +3,15 @@ import 'package:live_stream_core/live_core_widget/live_core_controller.dart';
 import 'package:rtc_room_engine/api/common/tui_common_define.dart';
 import 'package:tencent_live_uikit/common/index.dart';
 import 'package:tencent_live_uikit/live_stream/features/audience/panel/co_guest_video_setting_panel_widget.dart';
-import 'package:tencent_live_uikit/live_stream/manager/live_stream_manager.dart';
 
 class CoGuestTypeSelectPanelWidget extends StatefulWidget {
   final LiveCoreController liveCoreController;
-  final LiveStreamManager liveStreamManager;
+  final int seatIndex;
 
   const CoGuestTypeSelectPanelWidget({
     super.key,
     required this.liveCoreController,
-    required this.liveStreamManager,
+    this.seatIndex = -1
   });
 
   @override
@@ -160,7 +159,7 @@ class _CoGuestTypeSelectPanelWidgetState
   void _showSettingsPanel() {
     popupWidget(CoGuestVideoSettingsPanelWidget(
       liveCoreController: widget.liveCoreController,
-      liveStreamManager: widget.liveStreamManager,
+      seatIndex: widget.seatIndex,
     ));
   }
 }
@@ -172,9 +171,10 @@ extension on _CoGuestTypeSelectPanelWidgetState {
 
   Future<void> _requestConnection({required bool isVideo}) async {
     var result = await widget.liveCoreController.requestIntraRoomConnection(
-      widget.liveCoreController.roomState.ownerInfo.userId,
-      Constants.defaultRequestTimeout,
-      isVideo,
+      userId: widget.liveCoreController.roomState.ownerInfo.userId,
+      seatIndex: widget.seatIndex,
+      timeout: Constants.defaultRequestTimeout,
+      openCamera: isVideo,
     );
     if (result.code == TUIError.success) {
       makeToast(

@@ -7,8 +7,7 @@ class BattleMemberInfoWidget extends StatefulWidget {
   final LiveStreamManager liveStreamManager;
   final String battleUserId;
 
-  const BattleMemberInfoWidget(
-      {super.key, required this.liveStreamManager, required this.battleUserId});
+  const BattleMemberInfoWidget({super.key, required this.liveStreamManager, required this.battleUserId});
 
   @override
   State<BattleMemberInfoWidget> createState() => _BattleMemberInfoWidgetState();
@@ -34,16 +33,11 @@ class _BattleMemberInfoWidgetState extends State<BattleMemberInfoWidget> {
                   widget.liveStreamManager.battleState.isOnDisplayResult
                 ]),
                 builder: (context, _) {
-                  final isBattleRunning = widget
-                      .liveStreamManager.battleState.battleId.value.isNotEmpty;
-                  final isOnDisplayResult = widget
-                      .liveStreamManager.battleState.isOnDisplayResult.value;
-                  final isMultiplePeopleMode = widget.liveStreamManager
-                          .coHostState.connectedUsers.value.length >=
-                      3;
+                  final isBattleRunning = widget.liveStreamManager.battleState.isBattleRunning.value;
+                  final isOnDisplayResult = widget.liveStreamManager.battleState.isOnDisplayResult.value;
+                  final isMultiplePeopleMode = widget.liveStreamManager.coHostState.connectedUsers.value.length >= 3;
                   return Visibility(
-                      visible: (isBattleRunning || isOnDisplayResult) &&
-                          isMultiplePeopleMode,
+                      visible: (isBattleRunning || isOnDisplayResult) && isMultiplePeopleMode,
                       child: Container(
                         child: _buildScoreWidget(),
                       ));
@@ -54,16 +48,13 @@ class _BattleMemberInfoWidgetState extends State<BattleMemberInfoWidget> {
 
   Widget _buildScoreWidget() {
     return Container(
-      constraints: BoxConstraints(maxWidth: 85.width),
       height: 28.height,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12.height)),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(14.height), color: LiveColors.userNameBlackColor),
       child: Padding(
-        padding: EdgeInsets.only(
-            left: 4.width, right: 4.width, top: 5.height, bottom: 5.height),
+        padding: EdgeInsets.only(left: 4.width, right: 4.width, top: 5.height, bottom: 5.height),
         child: Row(
           children: [
-            Image.asset(getRankingImageNamesById(widget.battleUserId),
-                package: Constants.pluginName),
+            Image.asset(getRankingImageNamesById(widget.battleUserId), package: Constants.pluginName),
             SizedBox(width: 2.width),
             Text(
               '${getScoreById(widget.battleUserId)}',
@@ -77,9 +68,8 @@ class _BattleMemberInfoWidgetState extends State<BattleMemberInfoWidget> {
 
   String getRankingImageNamesById(String battleUserId) {
     String imageName = LiveImages.battleRanking1;
-    final battleUser = widget.liveStreamManager.battleState.battleUsers.value
-        .where((user) => user.userId == battleUserId)
-        .firstOrNull;
+    final battleUser =
+        widget.liveStreamManager.battleState.battleUsers.value.where((user) => user.userId == battleUserId).firstOrNull;
     if (battleUser == null) {
       return imageName;
     }
@@ -119,9 +109,8 @@ class _BattleMemberInfoWidgetState extends State<BattleMemberInfoWidget> {
   }
 
   int getScoreById(String battleUserId) {
-    final battleUser = widget.liveStreamManager.battleState.battleUsers.value
-        .where((user) => user.userId == battleUserId)
-        .firstOrNull;
+    final battleUser =
+        widget.liveStreamManager.battleState.battleUsers.value.where((user) => user.userId == battleUserId).firstOrNull;
     return battleUser?.score ?? 0;
   }
 }

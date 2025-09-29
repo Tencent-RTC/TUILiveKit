@@ -17,7 +17,7 @@ class _MeWidgetState extends State<MeWidget> {
 
   @override
   Widget build(BuildContext context) {
-    _screenWidth = MediaQuery.of(context).size.width;
+    _screenWidth = MediaQuery.sizeOf(context).width;
 
     return SizedBox(
       width: _screenWidth,

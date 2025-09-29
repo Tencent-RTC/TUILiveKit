@@ -44,6 +44,7 @@ class _CoHostManagementPanelWidgetState
     liveCoreController = widget.liveCoreController;
     _addObserver();
     _refreshRecommendUserList();
+    liveStreamManager.coHostManager.setCoHostLayoutTemplateId();
   }
 
   @override
@@ -451,9 +452,6 @@ extension on _CoHostManagementPanelWidgetState {
       if (cursor.isNotEmpty && !_isLoading.value) {
         _fetchMoreRecommendUsers();
       }
-      if (cursor != '') {
-        liveStreamManager.fetchRecommendedList(cursor: cursor);
-      }
     }
   }
 
@@ -527,16 +525,16 @@ extension on _CoHostManagementPanelWidgetState {
         description: LiveKitLocalizations.of(Global.appContext())!
             .common_disconnect_tips,
         defaultActionInfo: (
-          title: LiveKitLocalizations.of(Global.appContext())!
-              .common_end_connection,
+          title:
+              LiveKitLocalizations.of(Global.appContext())!.common_end_connect,
           titleColor: LiveColors.designStandardB1
         ),
-        defaultCallback: () async {
-          final result =
-              await liveCoreController.terminateCrossRoomConnection();
-          if (result.code == TUIError.success) {
-            liveStreamManager.onCrossRoomConnectionTerminated();
-          }
+        defaultCallback: () {
+          liveCoreController.terminateCrossRoomConnection().then((result){
+            if (result.code == TUIError.success) {
+              liveStreamManager.onCrossRoomConnectionTerminated();
+            }
+          });
 
           if (mounted) {
             Navigator.of(context).pop();

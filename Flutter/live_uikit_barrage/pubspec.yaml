@@ -1,6 +1,6 @@
 name: live_uikit_barrage
 description: "Barrage is an interactive bullet screen component in the interactive live broadcast scene."
-version: 1.0.1
+version: 1.0.2
 repository: https://github.com/Tencent-RTC/TUILiveKit
 homepage: https://trtc.io/
 
@@ -18,7 +18,7 @@ dependencies:
   tencent_cloud_chat_sdk: ^8.0.5901
   extended_text_field: '>= 11.0.0'
   extended_text: '>= 10.0.0'
-  intl: ^0.19.0
+  intl: '>= 0.19.0'
 
 dev_dependencies:
   flutter_test:

@@ -26,7 +26,7 @@ class _SeatModeSettingPanelWidgetState
 
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenWidth = MediaQuery.sizeOf(context).width;
     return SizedBox(
       width: screenWidth,
       height: 300,
@@ -53,8 +53,7 @@ class _SeatModeSettingPanelWidgetState
                           )))),
               Center(
                 child: Text(
-                  LiveKitLocalizations.of(Global.appContext())!
-                      .common_settings,
+                  LiveKitLocalizations.of(Global.appContext())!.common_settings,
                   style: const TextStyle(
                       color: LiveColors.designStandardFlowkitWhite,
                       fontSize: 16),
