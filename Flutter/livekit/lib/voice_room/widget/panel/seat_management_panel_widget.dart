@@ -33,7 +33,7 @@ class _SeatManagementPanelWidgetState extends State<SeatManagementPanelWidget> {
 
   @override
   Widget build(BuildContext context) {
-    _screenWidth = MediaQuery.of(context).size.width;
+    _screenWidth = MediaQuery.sizeOf(context).width;
     return Container(
       width: _screenWidth,
       decoration: BoxDecoration(

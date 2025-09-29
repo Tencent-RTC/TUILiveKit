@@ -1,41 +1,97 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
+import 'package:live_uikit_gift/manager/index.dart';
+import 'package:rtc_room_engine/rtc_room_engine.dart';
+
+import '../../../common/constants/constants.dart';
 import '../../../state/index.dart';
 
+class PendingCount {
+  int _count = 0;
+
+  void increment() {
+    _count++;
+  }
+
+  int getCount() {
+    return _count;
+  }
+
+  void reset() {
+    _count = 0;
+  }
+}
+
 class LikeSendController {
-  final int _maxLikeCount = 20;
-  final int _minDuration = 5;
-  int _currentLikeCount = 0;
-  int _lastSendLikeTime = 0;
+  final String roomId;
+  late LikeManager likeManager;
 
-  LikeSendController(
-      {required String roomId,
-      required GiftUser owner,
-      required GiftUser self}) {
-    GiftStore().likeManager.init(roomId, owner, self);
+  final int _minSendInterval = 6;
+  int _lastSendTime = 0;
+  Timer? _afterSendLikeTimer;
+  final PendingCount _pendingCount = PendingCount();
+
+  LikeSendController({required this.roomId}) {
+    likeManager = LikeManagerFactory.getLikeManager(roomId);
   }
 
-  void sendLikeMessage() {
-    debugPrint("LikeController sendLikeMessage");
-    if (_currentLikeCount >= _maxLikeCount) {
-      GiftStore().likeManager.sendLike();
-      _currentLikeCount = 0;
-      _lastSendLikeTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-    }
+  void dispose() {
+    _afterSendLikeTimer?.cancel();
+  }
 
-    int currentTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-    debugPrint("LikeController currentTime:{$currentTime}");
-    if (currentTime - _lastSendLikeTime > _minDuration) {
-      GiftStore().likeManager.sendLike();
-      _currentLikeCount = 0;
-      _lastSendLikeTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+  void sendLike() {
+    _showLikeAnimation();
+
+    _pendingCount.increment();
+
+    final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    final elapsed = now - _lastSendTime;
+    _afterSendLikeTimer?.cancel();
+
+    if (elapsed >= _minSendInterval) {
+      _sendLikeInternal();
+      _lastSendTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     } else {
-      _currentLikeCount += 1;
-      showLikeAnimation();
+      _afterSendLikeTimer = Timer(
+        Duration(seconds: _minSendInterval - elapsed),
+            () {
+          _sendLikeInternal();
+          _lastSendTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+        },
+      );
     }
   }
 
-  void showLikeAnimation() {
-    GiftStore().state.showLikeStart.value = _currentLikeCount + 1;
+  Future<TUIValueCallBack<int>> getLikesCount() {
+    return likeManager.getLikesCount();
+  }
+}
+
+extension on LikeSendController {
+  void _sendLikeInternal() {
+    final countToSend = _pendingCount.getCount();
+    if (countToSend <= 0) return;
+
+    try {
+      debugPrint("sendLike count: $countToSend");
+      likeManager.sendLike(countToSend);
+      _pendingCount.reset();
+    } catch (e) {
+      debugPrint("sendLike failed: $e");
+    }
+  }
+
+  void _showLikeAnimation() {
+    TUIGiftStore().localLikeCount += 1;
+    TUIGiftStore().showLikeStart.value = TUIGiftStore().localLikeCount;
+
+    final selfInfo = TUIRoomEngine.getSelfInfo();
+    final sender = TUIUserInfo(
+        userId: selfInfo.userId,
+        userName: selfInfo.userName ?? '',
+        avatarUrl: selfInfo.avatarUrl ?? Constants.defaultAvatar,
+        userRole: TUIRole.generalUser);
+    TUIGiftStore().likeDataMap.value[roomId] = TUILikeData(sender: sender);
   }
 }

@@ -1,7 +1,5 @@
 library state;
 
-export 'gift_message.dart';
-export 'gift_user.dart';
-export 'gift_state.dart';
-export 'gift_store.dart';
-export 'protocol/index.dart';
+export 'tui_gift_data.dart';
+export 'tui_like_data.dart';
+export 'tui_gift_store.dart';

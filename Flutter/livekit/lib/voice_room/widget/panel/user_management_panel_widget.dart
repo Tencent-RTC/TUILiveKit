@@ -65,7 +65,7 @@ class _UserManagementPanelWidgetState extends State<UserManagementPanelWidget> {
 
   @override
   Widget build(BuildContext context) {
-    _screenWidth = MediaQuery.of(context).size.width;
+    _screenWidth = MediaQuery.sizeOf(context).width;
     final isOwner =
         manager.roomState.ownerInfo.userId == manager.userState.selfInfo.userId;
     return Container(
@@ -73,7 +73,8 @@ class _UserManagementPanelWidgetState extends State<UserManagementPanelWidget> {
       constraints: BoxConstraints(minHeight: 88.height, maxHeight: 179.height),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(15.width), topRight: Radius.circular(15.width))),
+              topLeft: Radius.circular(15.width),
+              topRight: Radius.circular(15.width))),
       height: isOwner ? 179.height : 99.height,
       child: Column(children: [
         SizedBox(height: 24.height),
@@ -195,7 +196,8 @@ class _UserManagementPanelWidgetState extends State<UserManagementPanelWidget> {
                           Container(
                               decoration: BoxDecoration(
                                   color: LiveColors.designStandardG3,
-                                  borderRadius: BorderRadius.circular(12.radius)),
+                                  borderRadius:
+                                      BorderRadius.circular(12.radius)),
                               width: 50.radius,
                               height: 50.radius,
                               child: Center(

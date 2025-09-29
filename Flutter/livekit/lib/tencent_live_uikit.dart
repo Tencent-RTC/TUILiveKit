@@ -5,7 +5,6 @@ export 'voice_room/voice_room_widget.dart';
 export 'common/language/index.dart';
 export 'live_identity_generator.dart';
 export 'live_navigator_observer.dart';
-export 'live_list_widget.dart';
 
 export 'package:live_uikit_barrage/live_uikit_barrage.dart';
 export 'package:live_uikit_gift/live_uikit_gift.dart';

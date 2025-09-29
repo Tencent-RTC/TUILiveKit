@@ -37,7 +37,9 @@ class SeatPreviewWidget extends StatelessWidget {
             height: 50.radius,
             child: Center(
               child: Image.asset(LiveImages.emptySeat,
-                  package: Constants.pluginName, width: 22.radius, height: 22.radius),
+                  package: Constants.pluginName,
+                  width: 22.radius,
+                  height: 22.radius),
             ),
           );
         }),
@@ -46,7 +48,7 @@ class SeatPreviewWidget extends StatelessWidget {
   }
 
   double getHorizontalMargin(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenWidth = MediaQuery.sizeOf(context).width;
 
     switch (seatCount) {
       case 3:

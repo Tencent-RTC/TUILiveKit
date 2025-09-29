@@ -23,7 +23,6 @@ class MediaManager {
 
   void onCameraOpened() {
     service.enableGravitySensor(true);
-    service.setVideoResolutionMode(TUIResolutionMode.portrait);
   }
 
   void updateVideoQuality(TUIVideoQuality quality) {

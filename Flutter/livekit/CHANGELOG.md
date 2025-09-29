@@ -1,5 +1,25 @@
 # TUILiveKit
 
+## 3.4.0
+
+- Engine upgraded to v3.4.
+- Added multi-template seat layout for video live streaming.
+- Added network status panel.
+- Added OBS push streaming, anchor viewing.
+- New API Upgrade: `startLiveStreamV2`, `stopLiveStreamV2`, `joinLiveStreamV2` in LiveCoreController.
+- New API Upgrade: `startVoiceRoomV2`, `stopVoiceRoomV2`, `joinVoiceRoomV2` in SeatGridController.
+
+## 3.2.0
+
+- Supported playback of landscape video streams.
+- Updated the gift component dependency to version 2.0 and use the new gift solution.
+  When using the new version of the gift solution, please ensure that the corresponding sdkAppId has the gift feature enabled in the console. Also, configure the gift list in the gift backend before use.
+  Console:
+  China Region Console: <https://console.cloud.tencent.com/trtc/app>
+  Overseas Region Console: <https://console.trtc.io/app>
+  Gift Configuration Guide:
+  <https://cloud.tencent.com/document/product/647/121321>
+
 ## 3.1.0
 
 - Refactored the video live streaming module

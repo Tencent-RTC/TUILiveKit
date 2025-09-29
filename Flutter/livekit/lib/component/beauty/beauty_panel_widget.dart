@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tencent_live_uikit/common/index.dart';
 
+import 'manager/beauty_manager.dart';
 import 'state/beautyStateFactory.dart';
 import 'state/beauty_state.dart';
 

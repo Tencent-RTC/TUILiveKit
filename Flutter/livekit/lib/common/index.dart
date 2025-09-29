@@ -7,7 +7,6 @@ export 'language/index.dart';
 export 'logger/index.dart';
 export 'platform/index.dart';
 export 'resources/index.dart';
-export '../component/index.dart';
 export 'screen/index.dart';
 export 'widget/index.dart';
 export 'reporter/index.dart';

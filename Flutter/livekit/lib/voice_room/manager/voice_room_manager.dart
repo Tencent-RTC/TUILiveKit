@@ -54,9 +54,12 @@ extension VoiceRoomManagerWithRoom on VoiceRoomManager {
     return _roomManager.setRoomSeatModeByAdmin(seatMode);
   }
 
-  Future<void> setLiveInfo(
-      TUILiveInfo liveInfo, List<TUILiveModifyFlag> modifyFlags) {
+  Future<void> setLiveInfo(TUILiveInfo liveInfo, List<TUILiveModifyFlag> modifyFlags) {
     return _roomManager.setLiveInfo(liveInfo, modifyFlags);
+  }
+
+  void onLiveCreateTimeChanged(int time) {
+    _roomManager.onLiveCreateTimeChanged(time);
   }
 
   void onRoomIdChanged(String roomId) {
@@ -66,8 +69,6 @@ extension VoiceRoomManagerWithRoom on VoiceRoomManager {
   void onRoomNameChanged(String name) {
     return _roomManager.onRoomNameChanged(roomState.roomId, name);
   }
-
-  void onRoomInfoChanged(TUIRoomInfo roomInfo) {}
 
   void onRoomOwnerInfoChanged(User user) {
     _roomManager.onRoomOwnerInfoChanged(user);
@@ -87,6 +88,10 @@ extension VoiceRoomManagerWithRoom on VoiceRoomManager {
 
   void onLiveModeChanged(PrivacyStatus status) {
     return _roomManager.onLiveModeChanged(status);
+  }
+
+  void onLiveEnd(TUILiveStatisticsData? data) {
+    _roomManager.onEndLive(data);
   }
 }
 

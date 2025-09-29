@@ -39,7 +39,7 @@ class _LiveBackgroundSelectPanelWidgetState
 
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenWidth = MediaQuery.sizeOf(context).width;
     return SizedBox(
       height: 483.height,
       width: screenWidth,
@@ -168,7 +168,7 @@ extension on _LiveBackgroundSelectPanelWidgetState {
     manager.onBackgroundUrlChanged(backgroundUrl);
     if (manager.roomState.ownerInfo.userId.isNotEmpty) {
       final liveInfo = TUILiveInfo();
-      liveInfo.roomInfo.roomId = manager.roomState.roomId;
+      liveInfo.roomId = manager.roomState.roomId;
       liveInfo.backgroundUrl = backgroundUrl;
       manager.setLiveInfo(liveInfo, [TUILiveModifyFlag.backgroundUrl]);
     }

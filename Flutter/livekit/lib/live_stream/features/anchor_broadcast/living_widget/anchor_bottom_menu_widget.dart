@@ -11,7 +11,6 @@ import '../../../../common/constants/constants.dart';
 import '../../../../common/language/index.dart';
 import '../../../../common/resources/index.dart';
 import '../../../../common/widget/index.dart';
-import '../../../../component/beauty/index.dart';
 import '../../../live_define.dart';
 import '../../../manager/live_stream_manager.dart';
 import '../co_guest/co_guest_management_panel_widget.dart';
@@ -20,10 +19,7 @@ class AnchorBottomMenuWidget extends StatefulWidget {
   final LiveStreamManager liveStreamManager;
   final LiveCoreController liveCoreController;
 
-  const AnchorBottomMenuWidget(
-      {super.key,
-      required this.liveStreamManager,
-      required this.liveCoreController});
+  const AnchorBottomMenuWidget({super.key, required this.liveStreamManager, required this.liveCoreController});
 
   @override
   State<AnchorBottomMenuWidget> createState() => _AnchorBottomMenuWidgetState();
@@ -34,6 +30,7 @@ class _AnchorBottomMenuWidgetState extends State<AnchorBottomMenuWidget> {
   late final LiveCoreController liveCoreController;
   BarrageSendController? _barrageSendController;
   bool isShowingAlert = false;
+  bool isShowCoHostPanel = false;
 
   @override
   void initState() {
@@ -99,28 +96,20 @@ extension on _AnchorBottomMenuWidgetState {
         liveStreamManager.battleState.battleUsers
       ]),
       builder: (context, _) {
-        final hasCoGuestApplication =
-            liveCoreController.coGuestState.applicantList.value.isNotEmpty;
-        final filterCoGuestList =
-            liveStreamManager.coreCoGuestState.seatList.value.where((user) =>
-                user.userId.isNotEmpty &&
-                user.userId != liveStreamManager.coreUserState.selfInfo.userId);
-        final isInBattle = liveStreamManager.battleState.battleUsers.value.any(
-            (user) =>
-                user.userId == liveStreamManager.coreUserState.selfInfo.userId);
-        final isCoGuestConnected = filterCoGuestList.isNotEmpty;
-        final normalImageUrl =
-            (isInBattle || isCoGuestConnected || hasCoGuestApplication)
-                ? LiveImages.connectionDisable
-                : LiveImages.connection;
-
+        final hasCoGuestApplication = liveCoreController.coGuestState.applicantList.value.isNotEmpty;
+        final isInBattle = liveStreamManager.battleState.battleUsers.value
+            .any((user) => user.userId == liveStreamManager.coreUserState.selfInfo.userId);
+        final isCoGuesting = liveStreamManager.isCoGuesting();
+        final normalImageUrl = (isInBattle || isCoGuesting || hasCoGuestApplication)
+            ? LiveImages.connectionDisable
+            : LiveImages.connection;
+        if (isInBattle && isShowCoHostPanel) {
+          Navigator.of(Global.appContext()).pop();
+        }
         return BottomButtonWidget(
-            normalImage:
-                Image.asset(normalImageUrl, package: Constants.pluginName),
-            normalTitle: Text(
-                LiveKitLocalizations.of(Global.appContext())!.common_link_host,
-                style: const TextStyle(
-                    fontSize: 12, color: LiveColors.designStandardFlowkitWhite),
+            normalImage: Image.asset(normalImageUrl, package: Constants.pluginName),
+            normalTitle: Text(LiveKitLocalizations.of(Global.appContext())!.common_link_host,
+                style: const TextStyle(fontSize: 12, color: LiveColors.designStandardFlowkitWhite),
                 textAlign: TextAlign.center),
             imageSize: 28.radius,
             onPressed: () {
@@ -138,13 +127,9 @@ extension on _AnchorBottomMenuWidgetState {
       ]),
       builder: (context, _) {
         return BottomButtonWidget(
-            normalImage: Image.asset(_getBattleNormalImageUrl(),
-                package: Constants.pluginName),
-            normalTitle: Text(
-                LiveKitLocalizations.of(Global.appContext())!
-                    .common_anchor_battle,
-                style: const TextStyle(
-                    fontSize: 12, color: LiveColors.designStandardFlowkitWhite),
+            normalImage: Image.asset(_getBattleNormalImageUrl(), package: Constants.pluginName),
+            normalTitle: Text(LiveKitLocalizations.of(Global.appContext())!.common_anchor_battle,
+                style: const TextStyle(fontSize: 12, color: LiveColors.designStandardFlowkitWhite),
                 textAlign: TextAlign.center),
             imageSize: 28.radius,
             onPressed: () {
@@ -155,29 +140,19 @@ extension on _AnchorBottomMenuWidgetState {
     buttons.add(battle);
 
     final coGuest = ListenableBuilder(
-      listenable: Listenable.merge([
-        liveStreamManager.coreCoGuestState.applicantList,
-        liveStreamManager.coHostState.connectedUsers
-      ]),
+      listenable: Listenable.merge(
+          [liveStreamManager.coreCoGuestState.applicantList, liveStreamManager.coHostState.connectedUsers]),
       builder: (context, _) {
-        final filterApplications = List<TUIUserInfo>.from(
-            liveStreamManager.coreCoGuestState.applicantList.value);
-        filterApplications.removeWhere((application) =>
-            application.userId ==
-            liveStreamManager.coreUserState.selfInfo.userId);
-        final isInCoHost =
-            liveStreamManager.coHostState.connectedUsers.value.isNotEmpty;
-        final normalImageUrl = isInCoHost
-            ? LiveImages.functionLinkDisable
-            : LiveImages.functionLinkDefault;
+        final filterApplications = List<TUIUserInfo>.from(liveStreamManager.coreCoGuestState.applicantList.value);
+        filterApplications
+            .removeWhere((application) => application.userId == liveStreamManager.coreUserState.selfInfo.userId);
+        final isInCoHost = liveStreamManager.coHostState.connectedUsers.value.isNotEmpty;
+        final normalImageUrl = isInCoHost ? LiveImages.functionLinkDisable : LiveImages.functionLinkDefault;
 
         return BottomButtonWidget(
-            normalImage:
-                Image.asset(normalImageUrl, package: Constants.pluginName),
-            normalTitle: Text(
-                LiveKitLocalizations.of(Global.appContext())!.common_link_guest,
-                style: const TextStyle(
-                    fontSize: 12, color: LiveColors.designStandardFlowkitWhite),
+            normalImage: Image.asset(normalImageUrl, package: Constants.pluginName),
+            normalTitle: Text(LiveKitLocalizations.of(Global.appContext())!.common_link_guest,
+                style: const TextStyle(fontSize: 12, color: LiveColors.designStandardFlowkitWhite),
                 textAlign: TextAlign.center),
             imageSize: 28.radius,
             onPressed: () {
@@ -188,12 +163,9 @@ extension on _AnchorBottomMenuWidgetState {
     buttons.add(coGuest);
 
     final moreFeatures = BottomButtonWidget(
-        normalImage:
-            Image.asset(LiveImages.more, package: Constants.pluginName),
-        normalTitle: Text(
-            LiveKitLocalizations.of(Global.appContext())!.common_more,
-            style: const TextStyle(
-                fontSize: 12, color: LiveColors.designStandardFlowkitWhite),
+        normalImage: Image.asset(LiveImages.more, package: Constants.pluginName),
+        normalTitle: Text(LiveKitLocalizations.of(Global.appContext())!.common_more,
+            style: const TextStyle(fontSize: 12, color: LiveColors.designStandardFlowkitWhite),
             textAlign: TextAlign.center),
         imageSize: 28.radius,
         onPressed: () {
@@ -205,26 +177,24 @@ extension on _AnchorBottomMenuWidgetState {
   }
 
   void _handleCoHostClick() {
-    final hasCoGuestApplication =
-        liveStreamManager.coreCoGuestState.applicantList.value.isNotEmpty;
-    final hasCoGuested = liveStreamManager.coreCoGuestState.seatList.value
-        .where((user) =>
-            user.userId.isNotEmpty &&
-            user.userId != liveStreamManager.coreUserState.selfInfo.userId)
-        .isNotEmpty;
+    final hasCoGuestApplication = liveStreamManager.coreCoGuestState.applicantList.value.isNotEmpty;
+    final hasCoGuested = liveStreamManager.isCoGuesting();
     if (hasCoGuestApplication ||
         hasCoGuested ||
-        liveStreamManager.battleState.battleUsers.value.any((user) =>
-            user.userId == liveStreamManager.coreUserState.selfInfo.userId)) {
+        liveStreamManager.battleState.battleUsers.value
+            .any((user) => user.userId == liveStreamManager.coreUserState.selfInfo.userId)) {
       return;
     }
     _showCoHostPanel();
   }
 
   void _showCoHostPanel() {
-    popupWidget(CoHostManagementPanelWidget(
-        liveStreamManager: liveStreamManager,
-        liveCoreController: liveCoreController));
+    isShowCoHostPanel = true;
+    popupWidget(
+        CoHostManagementPanelWidget(liveStreamManager: liveStreamManager, liveCoreController: liveCoreController),
+        onDismiss: () {
+      isShowCoHostPanel = false;
+    });
   }
 
   String _getBattleNormalImageUrl() {
@@ -233,16 +203,13 @@ extension on _AnchorBottomMenuWidgetState {
       imageUrl = LiveImages.battleDisable;
     } else {
       final isSelfInBattle = liveStreamManager.battleState.battleUsers.value
-          .any((user) =>
-              user.userId == liveStreamManager.coreUserState.selfInfo.userId);
+          .any((user) => user.userId == liveStreamManager.coreUserState.selfInfo.userId);
       if (isSelfInBattle) {
         imageUrl = LiveImages.battleExit;
       } else {
-        final inSelfInConnection =
-            liveStreamManager.coHostState.connectedUsers.value.any((user) =>
-                user.userId == liveStreamManager.coreUserState.selfInfo.userId);
-        imageUrl =
-            inSelfInConnection ? LiveImages.battle : LiveImages.battleDisable;
+        final inSelfInConnection = liveStreamManager.coHostState.connectedUsers.value
+            .any((user) => user.userId == liveStreamManager.coreUserState.selfInfo.userId);
+        imageUrl = inSelfInConnection ? LiveImages.battle : LiveImages.battleDisable;
       }
     }
     return imageUrl;
@@ -250,15 +217,12 @@ extension on _AnchorBottomMenuWidgetState {
 
   void _handleBattleClick() async {
     final selfUserId = liveStreamManager.coreUserState.selfInfo.userId;
-    final isSelfInBattle = liveStreamManager.battleState.battleUsers.value
-        .any((user) => user.userId == selfUserId);
+    final isSelfInBattle = liveStreamManager.battleState.battleUsers.value.any((user) => user.userId == selfUserId);
     if (isSelfInBattle) {
       return _confirmToExitBattle();
     }
-    final isOnDisplayResult =
-        liveStreamManager.battleState.isOnDisplayResult.value;
-    final isSelfInCoHost = liveStreamManager.coHostState.connectedUsers.value
-        .any((user) => user.userId == selfUserId);
+    final isOnDisplayResult = liveStreamManager.battleState.isOnDisplayResult.value;
+    final isSelfInCoHost = liveStreamManager.coHostState.connectedUsers.value.any((user) => user.userId == selfUserId);
     if (isOnDisplayResult || !isSelfInCoHost) {
       return;
     }
@@ -270,16 +234,12 @@ extension on _AnchorBottomMenuWidgetState {
         .map((user) => user.userId)
         .toList();
 
-    final result = await liveCoreController.requestBattle(
-        config, inviteeUserIds, Constants.battleRequestTimeout);
+    final result = await liveCoreController.requestBattle(config, inviteeUserIds, Constants.battleRequestTimeout);
     if (result.code != TUIError.success || result.data == null) {
-      return liveStreamManager.toastSubject.add(
-          ErrorHandler.convertToErrorMessage(
-                  result.code.rawValue, result.message) ??
-              '');
+      return liveStreamManager.toastSubject
+          .add(ErrorHandler.convertToErrorMessage(result.code.rawValue, result.message) ?? '');
     }
-    liveStreamManager.onRequestBattle(
-        result.data!.battleId, result.data!.requestedUserList);
+    liveStreamManager.onRequestBattle(result.data!.battleId, result.data!.requestedUserList);
   }
 
   void _confirmToExitBattle() {
@@ -288,8 +248,7 @@ extension on _AnchorBottomMenuWidgetState {
     const lineColor = LiveColors.designStandardG8;
     final List<ActionSheetModel> menuData = List.empty(growable: true);
     final terminateBattle = ActionSheetModel(
-        text:
-            LiveKitLocalizations.of(Global.appContext())!.common_battle_end_pk,
+        text: LiveKitLocalizations.of(Global.appContext())!.common_battle_end_pk,
         textStyle: const TextStyle(
           color: LiveColors.notStandardRed,
           fontSize: 16,
@@ -322,8 +281,7 @@ extension on _AnchorBottomMenuWidgetState {
     }
 
     final alertInfo = AlertInfo(
-        description: LiveKitLocalizations.of(Global.appContext())!
-            .common_battle_end_pk_tips,
+        description: LiveKitLocalizations.of(Global.appContext())!.common_battle_end_pk_tips,
         cancelActionInfo: (
           title: LiveKitLocalizations.of(Global.appContext())!.common_cancel,
           titleColor: LiveColors.designStandardG3
@@ -333,13 +291,11 @@ extension on _AnchorBottomMenuWidgetState {
           isShowingAlert = false;
         },
         defaultActionInfo: (
-          title: LiveKitLocalizations.of(Global.appContext())!
-              .common_battle_end_pk,
+          title: LiveKitLocalizations.of(Global.appContext())!.common_battle_end_pk,
           titleColor: LiveColors.notStandardRed
         ),
         defaultCallback: () {
-          liveCoreController
-              .terminateBattle(liveStreamManager.battleState.battleId.value);
+          liveCoreController.terminateBattle(liveStreamManager.battleState.battleId.value);
           Navigator.of(context).pop();
           isShowingAlert = false;
         });
@@ -356,15 +312,11 @@ extension on _AnchorBottomMenuWidgetState {
   }
 
   void _showCoGuestPanel() {
-    popupWidget(CoGuestManagePanelWidget(
-        liveStreamManager: liveStreamManager,
-        liveCoreController: liveCoreController));
+    popupWidget(CoGuestManagePanelWidget(liveStreamManager: liveStreamManager, liveCoreController: liveCoreController));
   }
 
   void _showMoreFeaturesPanel() {
-    popupWidget(MoreFeaturesPanelWidget(
-        liveStreamManager: liveStreamManager,
-        liveCoreController: liveCoreController));
+    popupWidget(MoreFeaturesPanelWidget(liveStreamManager: liveStreamManager, liveCoreController: liveCoreController));
   }
 }
 
@@ -397,16 +349,14 @@ class BottomButtonWidget extends StatefulWidget {
   State<BottomButtonWidget> createState() => _BottomButtonWidgetState();
 }
 
-class _BottomButtonWidgetState extends State<BottomButtonWidget>
-    with SingleTickerProviderStateMixin {
+class _BottomButtonWidgetState extends State<BottomButtonWidget> with SingleTickerProviderStateMixin {
   late AnimationController _rotationController;
   late ValueNotifier<bool> _internalNotifier;
 
   @override
   void initState() {
     super.initState();
-    _rotationController =
-        AnimationController(duration: const Duration(seconds: 2), vsync: this);
+    _rotationController = AnimationController(duration: const Duration(seconds: 2), vsync: this);
 
     _internalNotifier = widget.rotationNotifier ?? ValueNotifier(false);
     _internalNotifier.addListener(_handleRotationState);
@@ -444,9 +394,7 @@ class _BottomButtonWidgetState extends State<BottomButtonWidget>
                 child: SizedBox(
                     width: 28.radius,
                     height: 28.radius,
-                    child: widget.isSelected
-                        ? _buildSelectedImage()
-                        : widget.normalImage),
+                    child: widget.isSelected ? _buildSelectedImage() : widget.normalImage),
               )),
           SizedBox(height: 2.height),
           widget.isSelected ? _buildSelectedTitle() : _buildNormalTitle(),
@@ -458,14 +406,10 @@ class _BottomButtonWidgetState extends State<BottomButtonWidget>
                   child: Container(
                     width: 20.radius,
                     height: 20.radius,
-                    decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(10.radius)),
+                    decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(10.radius)),
                     child: Text(
                       widget.markCount > 99 ? '99+' : '${widget.markCount}',
-                      style: const TextStyle(
-                          color: LiveColors.designStandardFlowkitWhite,
-                          fontSize: 12),
+                      style: const TextStyle(color: LiveColors.designStandardFlowkitWhite, fontSize: 12),
                       textAlign: TextAlign.center,
                     ),
                   )))
@@ -491,14 +435,12 @@ class _BottomButtonWidgetState extends State<BottomButtonWidget>
   Widget _buildNormalTitle() {
     return Visibility(
         visible: widget.normalTitle != null,
-        child: Positioned(
-            top: widget.imageSize, child: widget.normalTitle ?? Container()));
+        child: Positioned(top: widget.imageSize, child: widget.normalTitle ?? Container()));
   }
 
   Widget _buildSelectedTitle() {
     return Visibility(
         visible: widget.normalTitle != null,
-        child: Positioned(
-            top: widget.imageSize, child: widget.selectedTitle ?? Container()));
+        child: Positioned(top: widget.imageSize, child: widget.selectedTitle ?? Container()));
   }
 }

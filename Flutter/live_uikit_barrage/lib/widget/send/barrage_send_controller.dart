@@ -35,7 +35,7 @@ class BarrageSendController {
   double getInputKeyboardHeight(BuildContext context) {
     return _inputKeyboardHeight > 0
         ? _inputKeyboardHeight
-        : MediaQuery.of(context).viewInsets.bottom;
+        : MediaQuery.viewInsetsOf(context).bottom;
   }
 
   void inputEmoji(String displayText) {

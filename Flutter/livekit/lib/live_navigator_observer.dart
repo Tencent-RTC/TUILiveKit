@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:rtc_room_engine/rtc_room_engine.dart';
+import 'package:tencent_live_uikit/live_stream/features/index.dart';
 import 'package:tencent_live_uikit/live_stream/features/live_room_audience_widget.dart';
 import 'package:tencent_live_uikit/voice_room/index.dart';
 
 import '../../common/index.dart';
 
 class TUILiveKitNavigatorObserver extends RouteObserver {
-  static final TUILiveKitNavigatorObserver instance =
-      TUILiveKitNavigatorObserver._internal();
+  static final TUILiveKitNavigatorObserver instance = TUILiveKitNavigatorObserver._internal();
 
   factory TUILiveKitNavigatorObserver() {
     return instance;
@@ -27,6 +27,24 @@ class TUILiveKitNavigatorObserver extends RouteObserver {
     return navigator!.context;
   }
 
+  void enterLiveRoomAnchorPage(TUILiveInfo liveInfo) {
+    if (isRepeatClick) {
+      return;
+    }
+    Navigator.push(
+        getContext(),
+        MaterialPageRoute(
+          settings: const RouteSettings(name: routeLiveRoomAudience),
+          builder: (context) {
+            return TUILiveRoomAnchorWidget(
+              roomId: liveInfo.roomId,
+              needPrepare: false,
+            );
+          },
+        ));
+    isRepeatClick = false;
+  }
+
   void enterLiveRoomAudiencePage(TUILiveInfo liveInfo) {
     if (isRepeatClick) {
       return;
@@ -36,7 +54,9 @@ class TUILiveKitNavigatorObserver extends RouteObserver {
         MaterialPageRoute(
           settings: const RouteSettings(name: routeLiveRoomAudience),
           builder: (context) {
-            return TUILiveRoomAudienceWidget(roomId: liveInfo.roomInfo.roomId,);
+            return TUILiveRoomAudienceWidget(
+              roomId: liveInfo.roomId,
+            );
           },
         ));
     isRepeatClick = false;
@@ -61,12 +81,9 @@ class TUILiveKitNavigatorObserver extends RouteObserver {
         MaterialPageRoute(
           settings: const RouteSettings(name: routeVoiceRoomAudience),
           builder: (context) {
-            final isOwner =
-                liveInfo.roomInfo.ownerId == TUIRoomEngine.getSelfInfo().userId;
+            final isOwner = liveInfo.ownerId == TUIRoomEngine.getSelfInfo().userId;
             return TUIVoiceRoomWidget(
-                roomId: liveInfo.roomInfo.roomId,
-                behavior:
-                    isOwner ? RoomBehavior.autoCreate : RoomBehavior.join);
+                roomId: liveInfo.roomId, behavior: isOwner ? RoomBehavior.autoCreate : RoomBehavior.join);
           },
         ));
 

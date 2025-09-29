@@ -44,7 +44,7 @@ class _SeatInvitationPanelWidgetState extends State<SeatInvitationPanelWidget> {
 
   @override
   Widget build(BuildContext context) {
-    _screenWidth = MediaQuery.of(context).size.width;
+    _screenWidth = MediaQuery.sizeOf(context).width;
     return Container(
         decoration: BoxDecoration(
             borderRadius: BorderRadius.only(

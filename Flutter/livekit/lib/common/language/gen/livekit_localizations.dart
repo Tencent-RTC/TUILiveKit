@@ -100,11 +100,179 @@ abstract class LiveKitLocalizations {
     Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant')
   ];
 
-  /// No description provided for @common_go_live.
+  /// No description provided for @common_anchor_battle.
   ///
   /// In en, this message translates to:
-  /// **'Go Live'**
-  String get common_go_live;
+  /// **'Battle'**
+  String get common_anchor_battle;
+
+  /// No description provided for @common_anchor_end_link_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'You are currently co-guesting with other streamers. Would you like to [End Live] ?'**
+  String get common_anchor_end_link_tips;
+
+  /// No description provided for @common_battle_connecting.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting'**
+  String get common_battle_connecting;
+
+  /// No description provided for @common_battle_end_pk.
+  ///
+  /// In en, this message translates to:
+  /// **'End PK'**
+  String get common_battle_end_pk;
+
+  /// No description provided for @common_battle_end_pk_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to end the battle? The current result will be the final result after the end'**
+  String get common_battle_end_pk_tips;
+
+  /// No description provided for @common_battle_invitation_timeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Battle request has been timeout'**
+  String get common_battle_invitation_timeout;
+
+  /// No description provided for @common_battle_invitee_reject.
+  ///
+  /// In en, this message translates to:
+  /// **'rejected battle'**
+  String get common_battle_invitee_reject;
+
+  /// No description provided for @common_battle_inviter_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'canceled battle, please try to initiate it again'**
+  String get common_battle_inviter_cancel;
+
+  /// No description provided for @common_battle_inviting.
+  ///
+  /// In en, this message translates to:
+  /// **'invite you to battle together'**
+  String get common_battle_inviting;
+
+  /// No description provided for @common_battle_pk_end.
+  ///
+  /// In en, this message translates to:
+  /// **'PK End'**
+  String get common_battle_pk_end;
+
+  /// No description provided for @common_battle_wait_start.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for battle'**
+  String get common_battle_wait_start;
+
+  /// No description provided for @common_battle_wait_stop.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get common_battle_wait_stop;
+
+  /// No description provided for @common_connect_conflict.
+  ///
+  /// In en, this message translates to:
+  /// **'The room you are invited to connect to is connected to another room.'**
+  String get common_connect_conflict;
+
+  /// No description provided for @common_connect_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Other errors, cannot connect.'**
+  String get common_connect_error;
+
+  /// No description provided for @common_connect_inviting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting'**
+  String get common_connect_inviting;
+
+  /// No description provided for @common_connect_inviting_append.
+  ///
+  /// In en, this message translates to:
+  /// **'invite you to host together'**
+  String get common_connect_inviting_append;
+
+  /// No description provided for @common_connect_request_rejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection application has been rejected'**
+  String get common_connect_request_rejected;
+
+  /// No description provided for @common_connect_invitation_timeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitation has timed out'**
+  String get common_connect_invitation_timeout;
+
+  /// No description provided for @common_connection.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Co-hosting'**
+  String get common_connection;
+
+  /// No description provided for @common_connection_list_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting Streamers(xxx)'**
+  String get common_connection_list_title;
+
+  /// No description provided for @common_connection_room_full.
+  ///
+  /// In en, this message translates to:
+  /// **'The number of co-hosting has exceeded the maximum limit.'**
+  String get common_connection_room_full;
+
+  /// No description provided for @common_cover.
+  ///
+  /// In en, this message translates to:
+  /// **'Cover'**
+  String get common_cover;
+
+  /// No description provided for @common_disconnect_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to disconnect from other streamers?'**
+  String get common_disconnect_tips;
+
+  /// No description provided for @common_end_connect.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect'**
+  String get common_end_connect;
+
+  /// No description provided for @common_end_connection_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'You are currently co-hosting with other streamers. Would you like to [End Co-host] or [End Live] ?'**
+  String get common_end_connection_tips;
+
+  /// No description provided for @common_end_pk_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'You are currently in PK mode. Would you like to [End PK] or [End Live] ?'**
+  String get common_end_pk_tips;
+
+  /// No description provided for @common_more.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get common_more;
+
+  /// No description provided for @common_more_features.
+  ///
+  /// In en, this message translates to:
+  /// **'More Features'**
+  String get common_more_features;
+
+  /// No description provided for @common_recommended_list.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggested Hosts'**
+  String get common_recommended_list;
 
   /// No description provided for @common_link_mic_up_title.
   ///
@@ -112,10 +280,82 @@ abstract class LiveKitLocalizations {
   /// **'Current Mic'**
   String get common_link_mic_up_title;
 
+  /// No description provided for @common_send_message_disabled.
+  ///
+  /// In en, this message translates to:
+  /// **'You have been muted in the current room'**
+  String get common_send_message_disabled;
+
+  /// No description provided for @common_send_message_enable.
+  ///
+  /// In en, this message translates to:
+  /// **'You have been unmuted in the current room'**
+  String get common_send_message_enable;
+
+  /// No description provided for @common_start_live.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Live'**
+  String get common_start_live;
+
+  /// No description provided for @common_link_guest.
+  ///
+  /// In en, this message translates to:
+  /// **'Guest'**
+  String get common_link_guest;
+
+  /// No description provided for @common_link_host.
+  ///
+  /// In en, this message translates to:
+  /// **'Host'**
+  String get common_link_host;
+
+  /// No description provided for @live_error_connection_notexit.
+  ///
+  /// In en, this message translates to:
+  /// **'The room you are invited to connect to does not exist'**
+  String get live_error_connection_notexit;
+
+  /// No description provided for @live_error_connection_retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Internal error, it is recommended to try again.'**
+  String get live_error_connection_retry;
+
+  /// No description provided for @livelist_loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get livelist_loading;
+
+  /// No description provided for @livelist_no_more_data.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no more data'**
+  String get livelist_no_more_data;
+
+  /// No description provided for @livelist_viewed_audience_count.
+  ///
+  /// In en, this message translates to:
+  /// **'xxx people viewed'**
+  String get livelist_viewed_audience_count;
+
+  /// No description provided for @livestreamcore_battle_error_conflict.
+  ///
+  /// In en, this message translates to:
+  /// **'The anchor is in the battle and cannot initiate the battle'**
+  String get livestreamcore_battle_error_conflict;
+
+  /// No description provided for @livestreamcore_battle_error_other.
+  ///
+  /// In en, this message translates to:
+  /// **'The other error, cannot initiate the battle'**
+  String get livestreamcore_battle_error_other;
+
   /// No description provided for @common_audience_end_link_tips.
   ///
   /// In en, this message translates to:
-  /// **'You are currently co-guesting with other streamers. Would you like to[End Co-guest] or [Exit Live] ?'**
+  /// **'You are currently co-guesting with other streamers. Would you like to [End Co-guest] or [Exit Live] ?'**
   String get common_audience_end_link_tips;
 
   /// No description provided for @common_exit_live.
@@ -424,6 +664,30 @@ abstract class LiveKitLocalizations {
   /// **'User is not exist'**
   String get common_client_error_user_not_exist;
 
+  /// No description provided for @common_server_error_gift_ability_not_enabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Gift service is not enabled yet please check your package version'**
+  String get common_server_error_gift_ability_not_enabled;
+
+  /// No description provided for @common_server_error_gift_not_exist.
+  ///
+  /// In en, this message translates to:
+  /// **'Gift does not exist'**
+  String get common_server_error_gift_not_exist;
+
+  /// No description provided for @common_server_error_gift_server_pre_verification_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Gift server pre-verification failed please check console configuration'**
+  String get common_server_error_gift_server_pre_verification_failed;
+
+  /// No description provided for @common_server_error_call_in_progress.
+  ///
+  /// In en, this message translates to:
+  /// **'The device operation failed while in a call'**
+  String get common_server_error_call_in_progress;
+
   /// No description provided for @common_ear_return_volume.
   ///
   /// In en, this message translates to:
@@ -610,11 +874,11 @@ abstract class LiveKitLocalizations {
   /// **'Ear Monitor'**
   String get common_ear_return;
 
-  /// No description provided for @common_edit_cover.
+  /// No description provided for @common_set_cover.
   ///
   /// In en, this message translates to:
-  /// **'Modify the cover'**
-  String get common_edit_cover;
+  /// **'Set Cover'**
+  String get common_set_cover;
 
   /// No description provided for @common_end_link.
   ///
@@ -633,30 +897,6 @@ abstract class LiveKitLocalizations {
   /// In en, this message translates to:
   /// **'End'**
   String get common_end_user;
-
-  /// No description provided for @common_end_connection.
-  ///
-  /// In en, this message translates to:
-  /// **'End Co-host'**
-  String get common_end_connection;
-
-  /// No description provided for @common_end_connection_tips.
-  ///
-  /// In en, this message translates to:
-  /// **'You are currently co-hosting with other streamers. Would you like to [End Co-host] or [End Live] ?'**
-  String get common_end_connection_tips;
-
-  /// No description provided for @common_end_pk.
-  ///
-  /// In en, this message translates to:
-  /// **'End PK'**
-  String get common_end_pk;
-
-  /// No description provided for @common_end_pk_tips.
-  ///
-  /// In en, this message translates to:
-  /// **'You are currently in PK mode. Would you like to [End PK] or [End Live] ?'**
-  String get common_end_pk_tips;
 
   /// No description provided for @common_entered_room.
   ///
@@ -691,7 +931,7 @@ abstract class LiveKitLocalizations {
   /// No description provided for @common_kick_user_confirm_message.
   ///
   /// In en, this message translates to:
-  /// **'Are you sure you want to remove %s?'**
+  /// **'Are you sure you want to remove xxx?'**
   String get common_kick_user_confirm_message;
 
   /// No description provided for @common_link_mic_manager.
@@ -765,6 +1005,12 @@ abstract class LiveKitLocalizations {
   /// In en, this message translates to:
   /// **'Voice volume'**
   String get common_people_volume;
+
+  /// No description provided for @common_accept.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get common_accept;
 
   /// No description provided for @common_receive.
   ///
@@ -849,6 +1095,12 @@ abstract class LiveKitLocalizations {
   /// In en, this message translates to:
   /// **'Sent'**
   String get common_sent;
+
+  /// No description provided for @common_go_live.
+  ///
+  /// In en, this message translates to:
+  /// **'Go Live'**
+  String get common_go_live;
 
   /// No description provided for @common_server_error_already_on_the_mic.
   ///
@@ -1248,12 +1500,6 @@ abstract class LiveKitLocalizations {
   /// **'The screen effect will automatically take effect after connecting'**
   String get common_tips_apply_link_mic;
 
-  /// No description provided for @common_title_preset_cover.
-  ///
-  /// In en, this message translates to:
-  /// **'Preset Images'**
-  String get common_title_preset_cover;
-
   /// No description provided for @common_title_link_mic_selector.
   ///
   /// In en, this message translates to:
@@ -1347,7 +1593,7 @@ abstract class LiveKitLocalizations {
   /// No description provided for @common_voiceroom_receive_seat_invitation.
   ///
   /// In en, this message translates to:
-  /// **'%1\$s invites you to take seat'**
+  /// **'xxx invites you to take seat'**
   String get common_voiceroom_receive_seat_invitation;
 
   /// No description provided for @common_voiceroom_take_seat.
@@ -1422,245 +1668,275 @@ abstract class LiveKitLocalizations {
   /// **'Music Pitch'**
   String get live_music_pitch;
 
-  /// No description provided for @common_accept.
+  /// No description provided for @common_video_status.
   ///
   /// In en, this message translates to:
-  /// **'Accept'**
-  String get common_accept;
+  /// **'Video Status'**
+  String get common_video_status;
 
-  /// No description provided for @livelist_viewed_audience_count.
+  /// No description provided for @common_audio_status.
   ///
   /// In en, this message translates to:
-  /// **'xxx people viewed'**
-  String get livelist_viewed_audience_count;
+  /// **'Audio Status'**
+  String get common_audio_status;
 
-  /// No description provided for @livelist_loading.
+  /// No description provided for @common_device_temp.
   ///
   /// In en, this message translates to:
-  /// **'Loading...'**
-  String get livelist_loading;
+  /// **'Device Temperature'**
+  String get common_device_temp;
 
-  /// No description provided for @livelist_no_more_data.
+  /// No description provided for @common_wifi_or_mobile_network.
   ///
   /// In en, this message translates to:
-  /// **'There is no more data'**
-  String get livelist_no_more_data;
+  /// **'Wi-Fi/Mobile Network'**
+  String get common_wifi_or_mobile_network;
 
-  /// No description provided for @common_anchor_battle.
+  /// No description provided for @common_video_stream_smooth.
   ///
   /// In en, this message translates to:
-  /// **'Battle'**
-  String get common_anchor_battle;
+  /// **'Smooth streaming'**
+  String get common_video_stream_smooth;
 
-  /// No description provided for @common_anchor_end_link_tips.
+  /// No description provided for @common_video_stream_freezing.
   ///
   /// In en, this message translates to:
-  /// **'You are currently co-guesting with other streamers. Would you like to [End Live] ?'**
-  String get common_anchor_end_link_tips;
+  /// **'Freezing streaming'**
+  String get common_video_stream_freezing;
 
-  /// No description provided for @common_battle_connecting.
+  /// No description provided for @common_video_capture_closed.
   ///
   /// In en, this message translates to:
-  /// **'Connecting'**
-  String get common_battle_connecting;
+  /// **'Video capture disabled'**
+  String get common_video_capture_closed;
 
-  /// No description provided for @common_battle_end_pk.
+  /// No description provided for @common_audio_tips_proper_volume.
   ///
   /// In en, this message translates to:
-  /// **'End PK'**
-  String get common_battle_end_pk;
+  /// **'Proper volume ensures good viewing experience'**
+  String get common_audio_tips_proper_volume;
 
-  /// No description provided for @common_battle_end_pk_tips.
+  /// No description provided for @common_audio_tips_regular_checks.
   ///
   /// In en, this message translates to:
-  /// **'Are you sure you want to end the battle? The current result will be the final result after the end'**
-  String get common_battle_end_pk_tips;
+  /// **'Regular checks ensure good viewing experience'**
+  String get common_audio_tips_regular_checks;
 
-  /// No description provided for @common_battle_invitation_timeout.
+  /// No description provided for @common_network_switch_tips.
   ///
   /// In en, this message translates to:
-  /// **'Battle request has been timeout'**
-  String get common_battle_invitation_timeout;
+  /// **'Avoid frequent network switching'**
+  String get common_network_switch_tips;
 
-  /// No description provided for @common_battle_invitee_reject.
+  /// No description provided for @common_live_info.
   ///
   /// In en, this message translates to:
-  /// **'xxx rejected battle'**
-  String get common_battle_invitee_reject;
+  /// **'Live Information'**
+  String get common_live_info;
 
-  /// No description provided for @common_battle_inviter_cancel.
+  /// No description provided for @common_rtt.
   ///
   /// In en, this message translates to:
-  /// **'xxx canceled battle, please try to initiate it again'**
-  String get common_battle_inviter_cancel;
+  /// **'RTT'**
+  String get common_rtt;
 
-  /// No description provided for @common_battle_inviting.
+  /// No description provided for @common_down_loss.
   ///
   /// In en, this message translates to:
-  /// **'xxx invite you to battle together'**
-  String get common_battle_inviting;
+  /// **'Down Loss'**
+  String get common_down_loss;
 
-  /// No description provided for @common_battle_pk_end.
+  /// No description provided for @common_up_loss.
   ///
   /// In en, this message translates to:
-  /// **'PK End'**
-  String get common_battle_pk_end;
+  /// **'Up Loss'**
+  String get common_up_loss;
 
-  /// No description provided for @common_battle_wait_start.
+  /// No description provided for @common_normal.
   ///
   /// In en, this message translates to:
-  /// **'Waiting for battle'**
-  String get common_battle_wait_start;
+  /// **'normal'**
+  String get common_normal;
 
-  /// No description provided for @common_battle_wait_stop.
+  /// No description provided for @common_close.
   ///
   /// In en, this message translates to:
-  /// **'Cancel'**
-  String get common_battle_wait_stop;
+  /// **'close'**
+  String get common_close;
 
-  /// No description provided for @common_connect_conflict.
+  /// No description provided for @common_exception.
   ///
   /// In en, this message translates to:
-  /// **'The room you are invited to connect to is connected to another room.'**
-  String get common_connect_conflict;
+  /// **'exception'**
+  String get common_exception;
 
-  /// No description provided for @common_connect_error.
+  /// No description provided for @common_excellent.
   ///
   /// In en, this message translates to:
-  /// **'Other errors, cannot connect.'**
-  String get common_connect_error;
+  /// **'excellent'**
+  String get common_excellent;
 
-  /// No description provided for @common_connect_inviting.
+  /// No description provided for @common_good.
   ///
   /// In en, this message translates to:
-  /// **'Waiting'**
-  String get common_connect_inviting;
+  /// **'good'**
+  String get common_good;
 
-  /// No description provided for @common_connect_inviting_append.
+  /// No description provided for @common_poor.
   ///
   /// In en, this message translates to:
-  /// **'xxx invite you to host together'**
-  String get common_connect_inviting_append;
+  /// **'poor'**
+  String get common_poor;
 
-  /// No description provided for @common_connect_request_rejected.
+  /// No description provided for @common_bad.
   ///
   /// In en, this message translates to:
-  /// **'Connection application has been rejected'**
-  String get common_connect_request_rejected;
+  /// **'bad'**
+  String get common_bad;
 
-  /// No description provided for @common_connection.
+  /// No description provided for @common_verybad.
   ///
   /// In en, this message translates to:
-  /// **'Start Co-hosting'**
-  String get common_connection;
+  /// **'veryBad'**
+  String get common_verybad;
 
-  /// No description provided for @common_connection_list_title.
+  /// No description provided for @common_down.
   ///
   /// In en, this message translates to:
-  /// **'Connecting Streamers(xxx)'**
-  String get common_connection_list_title;
+  /// **'down'**
+  String get common_down;
 
-  /// No description provided for @common_connection_room_full.
+  /// No description provided for @common_audio_mode_default.
   ///
   /// In en, this message translates to:
-  /// **'The number of co-hosting has exceeded the maximum limit.'**
-  String get common_connection_room_full;
+  /// **'Default'**
+  String get common_audio_mode_default;
 
-  /// No description provided for @common_send_message_enable.
+  /// No description provided for @common_audio_mode_speech.
   ///
   /// In en, this message translates to:
-  /// **'You have been unmuted in the current room'**
-  String get common_send_message_enable;
+  /// **'Speech'**
+  String get common_audio_mode_speech;
 
-  /// No description provided for @common_link_host.
+  /// No description provided for @common_audio_mode_music.
   ///
   /// In en, this message translates to:
-  /// **'Host'**
-  String get common_link_host;
+  /// **'Music'**
+  String get common_audio_mode_music;
 
-  /// No description provided for @common_link_guest.
+  /// No description provided for @common_device_temp_fair.
   ///
   /// In en, this message translates to:
-  /// **'Guest'**
-  String get common_link_guest;
+  /// **'fair'**
+  String get common_device_temp_fair;
 
-  /// No description provided for @common_recommended_list.
+  /// No description provided for @common_device_temp_serious.
   ///
   /// In en, this message translates to:
-  /// **'Suggested Hosts'**
-  String get common_recommended_list;
+  /// **'serious'**
+  String get common_device_temp_serious;
 
-  /// No description provided for @common_disconnection.
+  /// No description provided for @common_network_bad_tips.
   ///
   /// In en, this message translates to:
-  /// **'Disconnect'**
-  String get common_disconnection;
+  /// **'Network lag detected suggestions'**
+  String get common_network_bad_tips;
 
-  /// No description provided for @common_disconnect_tips.
+  /// No description provided for @common_switch_network.
   ///
   /// In en, this message translates to:
-  /// **'Are you sure you want to disconnect from other streamers?'**
-  String get common_disconnect_tips;
+  /// **'Switch Network'**
+  String get common_switch_network;
 
-  /// No description provided for @common_end_connect.
+  /// No description provided for @common_wait_connection.
   ///
   /// In en, this message translates to:
-  /// **'Disconnect'**
-  String get common_end_connect;
+  /// **'Conn Wait'**
+  String get common_wait_connection;
 
-  /// No description provided for @common_more.
+  /// No description provided for @common_apply_connection.
   ///
   /// In en, this message translates to:
-  /// **'More'**
-  String get common_more;
+  /// **'Conn Join'**
+  String get common_apply_connection;
 
-  /// No description provided for @common_more_features.
+  /// No description provided for @common_template_select.
   ///
   /// In en, this message translates to:
-  /// **'More Features'**
-  String get common_more_features;
+  /// **'Template:'**
+  String get common_template_select;
 
-  /// No description provided for @live_error_connection_notexit.
+  /// No description provided for @common_template_dynamic_grid.
   ///
   /// In en, this message translates to:
-  /// **'The room you are invited to connect to does not exist'**
-  String get live_error_connection_notexit;
+  /// **'Dynamic grid layout'**
+  String get common_template_dynamic_grid;
 
-  /// No description provided for @live_error_connection_retry.
+  /// No description provided for @common_template_dynamic_float.
   ///
   /// In en, this message translates to:
-  /// **'Internal error, it is recommended to try again.'**
-  String get live_error_connection_retry;
+  /// **'Dynamic float layout'**
+  String get common_template_dynamic_float;
 
-  /// No description provided for @livestreamcore_battle_error_conflict.
+  /// No description provided for @common_template_static_grid.
   ///
   /// In en, this message translates to:
-  /// **'The anchor is in the battle and cannot initiate the battle'**
-  String get livestreamcore_battle_error_conflict;
+  /// **'Static grid layout'**
+  String get common_template_static_grid;
 
-  /// No description provided for @livestreamcore_battle_error_other.
+  /// No description provided for @common_template_static_float.
   ///
   /// In en, this message translates to:
-  /// **'The other error, cannot initiate the battle'**
-  String get livestreamcore_battle_error_other;
+  /// **'Static float layout'**
+  String get common_template_static_float;
 
-  /// No description provided for @common_text_terminate_connection.
+  /// No description provided for @common_template_layout_settings.
   ///
   /// In en, this message translates to:
-  /// **'Disconnect'**
-  String get common_text_terminate_connection;
+  /// **'Layout settings'**
+  String get common_template_layout_settings;
 
-  /// No description provided for @common_text_leave_room.
+  /// No description provided for @common_template_layout_co_guest.
   ///
   /// In en, this message translates to:
-  /// **'Leave live room'**
-  String get common_text_leave_room;
+  /// **'Layout co-guest'**
+  String get common_template_layout_co_guest;
 
-  /// No description provided for @common_text_terminate_connection_tips.
+  /// No description provided for @common_template_layout_co_host.
   ///
   /// In en, this message translates to:
-  /// **'You are currently connected, do you want to "DisConnection" or "Leave live room"?'**
-  String get common_text_terminate_connection_tips;
+  /// **'Layout co-host'**
+  String get common_template_layout_co_host;
+
+  /// No description provided for @common_template_layout.
+  ///
+  /// In en, this message translates to:
+  /// **'Layout'**
+  String get common_template_layout;
+
+  /// No description provided for @common_video_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Video settings'**
+  String get common_video_settings;
+
+  /// No description provided for @live_video_resolution.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolution'**
+  String get live_video_resolution;
+
+  /// No description provided for @live_video_reduce_resolution.
+  ///
+  /// In en, this message translates to:
+  /// **'Reduce resolution'**
+  String get live_video_reduce_resolution;
+
+  /// No description provided for @live_video_resolution_changed.
+  ///
+  /// In en, this message translates to:
+  /// **'resolution changed to'**
+  String get live_video_resolution_changed;
 }
 
 class _LiveKitLocalizationsDelegate

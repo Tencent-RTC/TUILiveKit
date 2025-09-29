@@ -3,7 +3,8 @@ import 'package:tencent_live_uikit/common/index.dart';
 
 void popupWidget(Widget widget,
     {Color? barrierColor,
-    Color? backgroundColor = LiveColors.designStandardG2}) {
+    Color? backgroundColor = LiveColors.designStandardG2,
+    VoidCallback? onDismiss}) {
   showModalBottomSheet(
     barrierColor: barrierColor,
     backgroundColor: backgroundColor,
@@ -19,5 +20,5 @@ void popupWidget(Widget widget,
       ),
       child: widget,
     ),
-  );
+  ).then((value) => onDismiss?.call());
 }

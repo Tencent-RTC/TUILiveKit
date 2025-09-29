@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rtc_room_engine/api/room/tui_room_engine.dart';
+import 'package:rtc_room_engine/rtc_room_engine.dart';
 
 import '../../../../common/index.dart';
 import 'manager/audience_list_manager.dart';
@@ -38,7 +38,7 @@ class _AudienceListWidgetState extends State<AudienceListWidget> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        _audienceListViewClick();
+        _audienceListViewClick(context);
       },
       child: ValueListenableBuilder(
         valueListenable: manager.state.audienceList,
@@ -76,6 +76,7 @@ class _AudienceListWidgetState extends State<AudienceListWidget> {
               reverse: true,
               scrollDirection: Axis.horizontal,
               itemCount: audienceList.length,
+              padding: EdgeInsets.zero,
               itemBuilder: (context, index) {
                 final user = audienceList[index];
                 final double padding = index == 0 ? 0 : 4.width;
@@ -149,7 +150,8 @@ class _AudienceListWidgetState extends State<AudienceListWidget> {
 }
 
 extension on _AudienceListWidgetState {
-  void _audienceListViewClick() {
+  void _audienceListViewClick(BuildContext context) {
+    if (MediaQuery.orientationOf(context) != Orientation.portrait) return;
     manager.getUserList();
     _popupWidget(AudienceListPanelWidget(manager: manager));
   }

@@ -10,13 +10,11 @@ class RoomManager {
   late final Context context;
   late final VoiceRoomService service;
   late final StreamController<String>? toastSubject;
-  late final StreamController<void>? exitSubject;
 
   void init(Context context) {
     this.context = context;
     service = context.service;
     toastSubject = context.toastSubject.target;
-    exitSubject = context.exitSubject.target;
   }
 
   Future<void> fetchRoomInfo() async {
@@ -75,8 +73,7 @@ class RoomManager {
         '');
   }
 
-  Future<void> setLiveInfo(
-      TUILiveInfo liveInfo, List<TUILiveModifyFlag> modifyFlags) async {
+  Future<void> setLiveInfo(TUILiveInfo liveInfo, List<TUILiveModifyFlag> modifyFlags) async {
     final result = await _setLiveInfoInternal(liveInfo, modifyFlags);
     if (result.code == TUIError.success) {
       return _updateLiveInfo(liveInfo, modifyFlags);
@@ -88,8 +85,11 @@ class RoomManager {
 }
 
 extension VoiceRoomRoomManagerCallback on RoomManager {
-  void onLiveInfoChanged(
-      TUILiveInfo liveInfo, List<TUILiveModifyFlag> modifyFlags) {
+  void onLiveCreateTimeChanged(int time) {
+    state.createTime = time;
+  }
+
+  void onLiveInfoChanged(TUILiveInfo liveInfo, List<TUILiveModifyFlag> modifyFlags) {
     _updateLiveInfo(liveInfo, modifyFlags);
   }
 
@@ -108,7 +108,8 @@ extension VoiceRoomRoomManagerCallback on RoomManager {
   }
 
   void onRoomDismissed(String roomId) {
-    exitSubject?.add(null);
+    if (roomId != state.roomId) return;
+    onEndLive(null);
   }
 
   void onRoomUserCountChanged(String roomId, int userCount) {
@@ -120,13 +121,12 @@ extension VoiceRoomRoomManagerCallback on RoomManager {
   }
 
   void onKickedOffLine(String message) {
-    exitSubject?.add(null);
+    onEndLive(null);
   }
 
-  void onKickedOutOfRoom(
-      String roomId, TUIKickedOutOfRoomReason reason, String message) {
+  void onKickedOutOfRoom(String roomId, TUIKickedOutOfRoomReason reason, String message) {
     if (roomId != state.roomId) return;
-    exitSubject?.add(null);
+    onEndLive(null);
   }
 }
 
@@ -159,6 +159,16 @@ extension VocieRoomRoomMangaerStateOperation on RoomManager {
   void onLiveModeChanged(PrivacyStatus status) {
     state.liveExtraInfo.value.liveMode.value = status;
   }
+
+  void onEndLive(TUILiveStatisticsData? data) {
+    if (data != null) {
+      state.liveExtraInfo.value.maxAudienceCount = data.totalViewers;
+      state.liveExtraInfo.value.giftIncome = data.totalGiftCoins;
+      state.liveExtraInfo.value.giftSenderCount = data.totalUniqueGiftSenders;
+      state.liveExtraInfo.value.likeCount = data.totalLikesReceived;
+    }
+    state.exitRoom.value = true;
+  }
 }
 
 extension on RoomManager {
@@ -188,7 +198,7 @@ extension on RoomManager {
         ? liveInfo.backgroundUrl
         : null;
 
-    final result = await service.setLiveInfo(liveInfo.roomInfo.roomId,
+    final result = await service.setLiveInfo(liveInfo.roomId,
         coverUrl: coverUrl,
         backgroundUrl: backgroundUrl,
         categoryList: categoryList,
@@ -197,8 +207,7 @@ extension on RoomManager {
     return result;
   }
 
-  void _updateLiveInfo(
-      TUILiveInfo liveInfo, List<TUILiveModifyFlag> modifyFlags) {
+  void _updateLiveInfo(TUILiveInfo liveInfo, List<TUILiveModifyFlag> modifyFlags) {
     final bitmask = modifyFlags.fold(0, (value, flag) => value | flag.value());
     if (_containsFlag(
         bitmask: bitmask, flag: TUILiveModifyFlag.coverUrl.value())) {

@@ -9,14 +9,10 @@ class CoGuestManagePanelWidget extends StatefulWidget {
   final LiveStreamManager liveStreamManager;
   final LiveCoreController liveCoreController;
 
-  const CoGuestManagePanelWidget(
-      {super.key,
-      required this.liveStreamManager,
-      required this.liveCoreController});
+  const CoGuestManagePanelWidget({super.key, required this.liveStreamManager, required this.liveCoreController});
 
   @override
-  State<CoGuestManagePanelWidget> createState() =>
-      _CoGuestManagePanelWidgetState();
+  State<CoGuestManagePanelWidget> createState() => _CoGuestManagePanelWidgetState();
 }
 
 class _CoGuestManagePanelWidgetState extends State<CoGuestManagePanelWidget> {
@@ -38,24 +34,20 @@ class _CoGuestManagePanelWidgetState extends State<CoGuestManagePanelWidget> {
       padding: EdgeInsets.only(bottom: 20.height),
       decoration: BoxDecoration(
         color: LiveColors.designStandardG2,
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20.radius),
-            topRight: Radius.circular(20.radius)),
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(20.radius), topRight: Radius.circular(20.radius)),
       ),
       child: SingleChildScrollView(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 20.height),
-              _buildTitleWidget(),
-              SizedBox(height: 20.height),
-              _buildCoGuestTitleWidget(),
-              _buildCoGuestListWidget(),
-              _buildSeparationWidget(),
-              _buildApplicantsTitleWidget(),
-              _buildApplicantsListWidget(),
-            ]),
+        child:
+            Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
+          SizedBox(height: 20.height),
+          _buildTitleWidget(),
+          SizedBox(height: 20.height),
+          _buildCoGuestTitleWidget(),
+          _buildCoGuestListWidget(),
+          _buildSeparationWidget(),
+          _buildApplicantsTitleWidget(),
+          _buildApplicantsListWidget(),
+        ]),
       ),
     );
   }
@@ -83,10 +75,8 @@ class _CoGuestManagePanelWidgetState extends State<CoGuestManagePanelWidget> {
           ),
           Center(
             child: Text(
-              LiveKitLocalizations.of(Global.appContext())!
-                  .common_link_mic_manager,
-              style: const TextStyle(
-                  color: LiveColors.designStandardG7, fontSize: 16),
+              LiveKitLocalizations.of(Global.appContext())!.common_link_mic_manager,
+              style: const TextStyle(color: LiveColors.designStandardG7, fontSize: 16),
             ),
           ),
         ],
@@ -98,17 +88,16 @@ class _CoGuestManagePanelWidgetState extends State<CoGuestManagePanelWidget> {
     return ValueListenableBuilder(
       valueListenable: manager.coreCoGuestState.seatList,
       builder: (context, seatList, _) {
-        final filterCoGuestList = seatList.where((seat) =>
-            seat.userId.isNotEmpty &&
-            seat.userId != manager.coreUserState.selfInfo.userId);
+        final filterCoGuestList =
+            seatList.where((seat) => seat.userId.isNotEmpty && seat.userId != manager.coreUserState.selfInfo.userId);
+        final isCoGuesting = filterCoGuestList.isNotEmpty;
         return Visibility(
-          visible: filterCoGuestList.isNotEmpty,
+          visible: isCoGuesting,
           child: Container(
             margin: EdgeInsets.only(left: 24.width),
             child: Text(
-              '${LiveKitLocalizations.of(Global.appContext())!.common_link_mic_up_title} (${filterCoGuestList.length}/${manager.coreRoomState.maxCoGuestCount - 1})',
-              style: const TextStyle(
-                  color: LiveColors.notStandardGrey, fontSize: 12),
+              '${LiveKitLocalizations.of(Global.appContext())!.common_link_mic_up_title} (${filterCoGuestList.length})',
+              style: const TextStyle(color: LiveColors.notStandardGrey, fontSize: 12),
             ),
           ),
         );
@@ -121,9 +110,7 @@ class _CoGuestManagePanelWidgetState extends State<CoGuestManagePanelWidget> {
       valueListenable: manager.coreCoGuestState.seatList,
       builder: (context, seatList, _) {
         final filterCoGuestList = seatList
-            .where((seat) =>
-                seat.userId.isNotEmpty &&
-                seat.userId != manager.coreUserState.selfInfo.userId)
+            .where((seat) => seat.userId.isNotEmpty && seat.userId != manager.coreUserState.selfInfo.userId)
             .toList();
         return Visibility(
           visible: filterCoGuestList.isNotEmpty,
@@ -146,18 +133,12 @@ class _CoGuestManagePanelWidgetState extends State<CoGuestManagePanelWidget> {
 
   Widget _buildSeparationWidget() {
     return ListenableBuilder(
-      listenable: Listenable.merge([
-        manager.coreCoGuestState.applicantList,
-        manager.coreCoGuestState.seatList
-      ]),
+      listenable: Listenable.merge([manager.coreCoGuestState.applicantList, manager.coreCoGuestState.seatList]),
       builder: (context, _) {
-        final filterCoGuestList = manager.coreCoGuestState.seatList.value.where(
-            (seat) =>
-                seat.userId.isNotEmpty &&
-                seat.userId != manager.coreUserState.selfInfo.userId);
+        final isCoGuesting = manager.isCoGuesting();
+        final hasCoGuestApplication = manager.coreCoGuestState.applicantList.value.isNotEmpty;
         return Visibility(
-          visible: filterCoGuestList.isNotEmpty &&
-              manager.coreCoGuestState.applicantList.value.isNotEmpty,
+          visible: isCoGuesting && hasCoGuestApplication,
           child: Container(
             color: LiveColors.designStandardG3Divider,
             height: 7.height,
@@ -177,8 +158,7 @@ class _CoGuestManagePanelWidgetState extends State<CoGuestManagePanelWidget> {
             margin: EdgeInsets.only(left: 24.width, top: 20.height),
             child: Text(
               '${LiveKitLocalizations.of(Global.appContext())!.common_apply_link_mic} (${applicantList.length})',
-              style: const TextStyle(
-                  color: LiveColors.notStandardGrey, fontSize: 12),
+              style: const TextStyle(color: LiveColors.notStandardGrey, fontSize: 12),
             ),
           ),
         );
@@ -243,11 +223,8 @@ class _CoGuestManagePanelWidgetState extends State<CoGuestManagePanelWidget> {
                 constraints: BoxConstraints(maxWidth: 135.width),
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  coGuest.userName != null && coGuest.userName!.isNotEmpty
-                      ? coGuest.userName!
-                      : coGuest.userId,
-                  style: const TextStyle(
-                      color: LiveColors.designStandardG7, fontSize: 16),
+                  coGuest.userName != null && coGuest.userName!.isNotEmpty ? coGuest.userName! : coGuest.userId,
+                  style: const TextStyle(color: LiveColors.designStandardG7, fontSize: 16),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -261,15 +238,13 @@ class _CoGuestManagePanelWidgetState extends State<CoGuestManagePanelWidget> {
               width: 64.width,
               height: 24.height,
               decoration: BoxDecoration(
-                border: Border.all(
-                    color: LiveColors.notStandardRed, width: 1.width),
+                border: Border.all(color: LiveColors.notStandardRed, width: 1.width),
                 borderRadius: BorderRadius.circular(12.height),
               ),
               alignment: Alignment.center,
               child: Text(
                 LiveKitLocalizations.of(Global.appContext())!.common_hang_up,
-                style: const TextStyle(
-                    color: LiveColors.notStandardRed, fontSize: 12),
+                style: const TextStyle(color: LiveColors.notStandardRed, fontSize: 12),
               ),
             ),
           )
@@ -311,11 +286,8 @@ class _CoGuestManagePanelWidgetState extends State<CoGuestManagePanelWidget> {
                 constraints: BoxConstraints(maxWidth: 135.width),
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  applicant.userName.isNotEmpty
-                      ? applicant.userName
-                      : applicant.userId,
-                  style: const TextStyle(
-                      color: LiveColors.designStandardG7, fontSize: 16),
+                  applicant.userName.isNotEmpty ? applicant.userName : applicant.userId,
+                  style: const TextStyle(color: LiveColors.designStandardG7, fontSize: 16),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -337,9 +309,7 @@ class _CoGuestManagePanelWidgetState extends State<CoGuestManagePanelWidget> {
                   alignment: Alignment.center,
                   child: Text(
                     LiveKitLocalizations.of(Global.appContext())!.common_accept,
-                    style: const TextStyle(
-                        color: LiveColors.designStandardFlowkitWhite,
-                        fontSize: 12),
+                    style: const TextStyle(color: LiveColors.designStandardFlowkitWhite, fontSize: 12),
                   ),
                 ),
               ),
@@ -352,15 +322,13 @@ class _CoGuestManagePanelWidgetState extends State<CoGuestManagePanelWidget> {
                   width: 64.width,
                   height: 24.height,
                   decoration: BoxDecoration(
-                    border: Border.all(
-                        color: LiveColors.designStandardB1, width: 1.width),
+                    border: Border.all(color: LiveColors.designStandardB1, width: 1.width),
                     borderRadius: BorderRadius.circular(12.height),
                   ),
                   alignment: Alignment.center,
                   child: Text(
                     LiveKitLocalizations.of(Global.appContext())!.common_reject,
-                    style: const TextStyle(
-                        color: LiveColors.designStandardB1, fontSize: 12),
+                    style: const TextStyle(color: LiveColors.designStandardB1, fontSize: 12),
                   ),
                 ),
               ),
@@ -376,9 +344,7 @@ extension on _CoGuestManagePanelWidgetState {
   void _acceptIntraRoomConnection(String userId) {
     liveCoreController.respondIntraRoomConnection(userId, true).then((result) {
       if (result.code != TUIError.success) {
-        manager.toastSubject.add(ErrorHandler.convertToErrorMessage(
-                result.code.rawValue, result.message) ??
-            '');
+        manager.toastSubject.add(ErrorHandler.convertToErrorMessage(result.code.rawValue, result.message) ?? '');
       }
     });
   }
@@ -386,9 +352,7 @@ extension on _CoGuestManagePanelWidgetState {
   void _rejectIntraRoomConnection(String userId) {
     liveCoreController.respondIntraRoomConnection(userId, false).then((result) {
       if (result.code != TUIError.success) {
-        manager.toastSubject.add(ErrorHandler.convertToErrorMessage(
-                result.code.rawValue, result.message) ??
-            '');
+        manager.toastSubject.add(ErrorHandler.convertToErrorMessage(result.code.rawValue, result.message) ?? '');
       }
     });
   }
@@ -396,9 +360,7 @@ extension on _CoGuestManagePanelWidgetState {
   void _disconnectUser(String userId) {
     liveCoreController.disconnectUser(userId).then((result) {
       if (result.code != TUIError.success) {
-        manager.toastSubject.add(ErrorHandler.convertToErrorMessage(
-                result.code.rawValue, result.message) ??
-            '');
+        manager.toastSubject.add(ErrorHandler.convertToErrorMessage(result.code.rawValue, result.message) ?? '');
       }
     });
   }
@@ -406,10 +368,8 @@ extension on _CoGuestManagePanelWidgetState {
   double _calculateCoGuestListHeight() {
     double totalHeight = 0;
     if (manager.coreCoGuestState.seatList.value.isNotEmpty) {
-      final filterCoGuestList = manager.coreCoGuestState.seatList.value.where(
-          (seat) =>
-              seat.userId.isNotEmpty &&
-              seat.userId != manager.coreUserState.selfInfo.userId);
+      final filterCoGuestList = manager.coreCoGuestState.seatList.value
+          .where((seat) => seat.userId.isNotEmpty && seat.userId != manager.coreUserState.selfInfo.userId);
       totalHeight = (filterCoGuestList.length) * 60.height;
     }
     return totalHeight > 280.height ? 280.height : totalHeight;
@@ -418,8 +378,7 @@ extension on _CoGuestManagePanelWidgetState {
   double _calculateApplicantListHeight() {
     double totalHeight = 0;
     if (manager.coreCoGuestState.applicantList.value.isNotEmpty) {
-      totalHeight =
-          manager.coreCoGuestState.applicantList.value.length * 60.height;
+      totalHeight = manager.coreCoGuestState.applicantList.value.length * 60.height;
     }
     return totalHeight > 280.height ? 280.height : totalHeight;
   }

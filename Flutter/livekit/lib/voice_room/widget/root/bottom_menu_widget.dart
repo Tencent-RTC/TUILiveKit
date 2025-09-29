@@ -11,11 +11,7 @@ class BottomMenuWidget extends StatefulWidget {
   final SeatGridController seatGridController;
   final bool isOwner;
 
-  const BottomMenuWidget(
-      {super.key,
-      required this.manager,
-      required this.seatGridController,
-      required this.isOwner});
+  const BottomMenuWidget({super.key, required this.manager, required this.seatGridController, required this.isOwner});
 
   @override
   State<BottomMenuWidget> createState() => _BottomMenuWidgetState();
@@ -24,8 +20,8 @@ class BottomMenuWidget extends StatefulWidget {
 class _BottomMenuWidgetState extends State<BottomMenuWidget> {
   late final VoiceRoomManager manager;
   late final SeatGridController seatGridController;
-  late final GiftSendController _giftSendController;
-  late final LikeSendController _likeSendController;
+  GiftListController? _giftListController;
+  LikeSendController? _likeSendController;
   late final bool isOwner;
 
   @override
@@ -34,30 +30,22 @@ class _BottomMenuWidgetState extends State<BottomMenuWidget> {
     manager = widget.manager;
     seatGridController = widget.seatGridController;
     isOwner = widget.isOwner;
-    _initGiftComponent();
   }
 
-  void _initGiftComponent() {
-    GiftUser ownerInfo = GiftUser(
-        userId: manager.roomState.ownerInfo.userId,
-        avatarUrl: manager.roomState.ownerInfo.avatarUrl,
-        userName: manager.roomState.ownerInfo.name,
-        level: "66");
-
-    GiftUser selfInfo = GiftUser(
-        userId: manager.userState.selfInfo.userId,
-        avatarUrl: manager.userState.selfInfo.avatarUrl,
-        userName: manager.userState.selfInfo.name,
-        level: "32");
-    _giftSendController = GiftSendController(
-        roomId: manager.roomState.roomId, owner: ownerInfo, self: selfInfo);
-    _likeSendController = LikeSendController(
-        roomId: manager.roomState.roomId, owner: ownerInfo, self: selfInfo);
-    GiftStore().giftManager.getGiftData();
+  @override
+  void dispose() {
+    _likeSendController?.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_giftListController == null) {
+      final language = DeviceLanguage.getCurrentLanguageCode(context);
+
+      _giftListController = GiftListController(roomId: manager.roomState.roomId, language: language);
+    }
+    _likeSendController ??= LikeSendController(roomId: manager.roomState.roomId);
     return Container(
         constraints: BoxConstraints(minWidth: 30.width, minHeight: 46.height),
         width: 50.width,
@@ -72,21 +60,16 @@ class _BottomMenuWidgetState extends State<BottomMenuWidget> {
 
 extension on _BottomMenuWidgetState {
   List<Widget> _generateBottomButtonWidgets() {
-    return widget.isOwner
-        ? _generateOwnerBottomButtonWidgets()
-        : _generateMemberBottomButtonWidgets();
+    return widget.isOwner ? _generateOwnerBottomButtonWidgets() : _generateMemberBottomButtonWidgets();
   }
 
   List<Widget> _generateOwnerBottomButtonWidgets() {
     final List<Widget> buttons = List.empty(growable: true);
 
     final setting = BottomButtonWidget(
-        normalImage: Image.asset(LiveImages.functionSettings,
-            package: Constants.pluginName),
-        normalTitle: Text(
-            LiveKitLocalizations.of(Global.appContext())!.common_settings,
-            style: const TextStyle(
-                fontSize: 12, color: LiveColors.designStandardFlowkitWhite),
+        normalImage: Image.asset(LiveImages.functionSettings, package: Constants.pluginName),
+        normalTitle: Text(LiveKitLocalizations.of(Global.appContext())!.common_settings,
+            style: const TextStyle(fontSize: 12, color: LiveColors.designStandardFlowkitWhite),
             textAlign: TextAlign.center),
         imageSize: 28.radius,
         onPressed: () {
@@ -98,16 +81,11 @@ extension on _BottomMenuWidgetState {
       valueListenable: manager.seatState.seatApplicationList,
       builder: (context, applications, child) {
         final filterApplications = List<SeatApplication>.from(applications);
-        filterApplications.removeWhere((application) =>
-            application.userId == manager.userState.selfInfo.userId);
+        filterApplications.removeWhere((application) => application.userId == manager.userState.selfInfo.userId);
         return BottomButtonWidget(
-            normalImage: Image.asset(LiveImages.functionSeatManagement,
-                package: Constants.pluginName),
-            normalTitle: Text(
-                LiveKitLocalizations.of(Global.appContext())!
-                    .common_seat_management,
-                style: const TextStyle(
-                    fontSize: 12, color: LiveColors.designStandardFlowkitWhite),
+            normalImage: Image.asset(LiveImages.functionSeatManagement, package: Constants.pluginName),
+            normalTitle: Text(LiveKitLocalizations.of(Global.appContext())!.common_seat_management,
+                style: const TextStyle(fontSize: 12, color: LiveColors.designStandardFlowkitWhite),
                 textAlign: TextAlign.center),
             imageSize: 28.radius,
             markCount: filterApplications.length,
@@ -125,31 +103,25 @@ extension on _BottomMenuWidgetState {
     final List<Widget> buttons = List.empty(growable: true);
 
     final gift = BottomButtonWidget(
-        normalImage:
-            Image.asset(LiveImages.functionGift, package: Constants.pluginName),
-        normalTitle: Text(
-            LiveKitLocalizations.of(Global.appContext())!.common_gift_title,
-            style: const TextStyle(
-                fontSize: 12, color: LiveColors.designStandardFlowkitWhite),
+        normalImage: Image.asset(LiveImages.functionGift, package: Constants.pluginName),
+        normalTitle: Text(LiveKitLocalizations.of(Global.appContext())!.common_gift_title,
+            style: const TextStyle(fontSize: 12, color: LiveColors.designStandardFlowkitWhite),
             textAlign: TextAlign.center),
         imageSize: 28.radius,
         onPressed: () {
-          _showGiftPanelWidget(context, _giftSendController);
+          _showGiftListWidget(context, _giftListController!);
         });
 
     buttons.add(gift);
 
     final like = BottomButtonWidget(
-        normalImage:
-            Image.asset(LiveImages.functionLike, package: Constants.pluginName),
-        normalTitle: Text(
-            LiveKitLocalizations.of(Global.appContext())!.common_like,
-            style: const TextStyle(
-                fontSize: 12, color: LiveColors.designStandardFlowkitWhite),
+        normalImage: Image.asset(LiveImages.functionLike, package: Constants.pluginName),
+        normalTitle: Text(LiveKitLocalizations.of(Global.appContext())!.common_like,
+            style: const TextStyle(fontSize: 12, color: LiveColors.designStandardFlowkitWhite),
             textAlign: TextAlign.center),
         imageSize: 28.radius,
         onPressed: () {
-          _likeSendController.sendLikeMessage();
+          _likeSendController?.sendLike();
         },
         delay: const Duration(milliseconds: 30));
     buttons.add(like);
@@ -160,39 +132,24 @@ extension on _BottomMenuWidgetState {
     });
 
     final linkMic = ListenableBuilder(
-        listenable: Listenable.merge([
-          manager.seatState.isApplyingToTakeSeat,
-          manager.seatState.seatList
-        ]),
+        listenable: Listenable.merge([manager.seatState.isApplyingToTakeSeat, manager.seatState.seatList]),
         builder: (context, _) {
           final isApplying = manager.seatState.isApplyingToTakeSeat.value;
-          final isOnSeat = manager.seatState.seatList.value.any((seatInfo) =>
-              seatInfo.userId == manager.userState.selfInfo.userId);
-          final normalImageUrl = isOnSeat
-              ? LiveImages.functionLinked
-              : LiveImages.functionVoiceRoomLink;
+          final isOnSeat =
+              manager.seatState.seatList.value.any((seatInfo) => seatInfo.userId == manager.userState.selfInfo.userId);
+          final normalImageUrl = isOnSeat ? LiveImages.functionLinked : LiveImages.functionVoiceRoomLink;
 
-          final hangupLocalization =
-              LiveKitLocalizations.of(Global.appContext())!.common_hang_up;
-          final linkMicLocalization =
-              LiveKitLocalizations.of(Global.appContext())!.common_link;
-          final normalTitle =
-              isOnSeat ? hangupLocalization : linkMicLocalization;
+          final hangupLocalization = LiveKitLocalizations.of(Global.appContext())!.common_hang_up;
+          final linkMicLocalization = LiveKitLocalizations.of(Global.appContext())!.common_link;
+          final normalTitle = isOnSeat ? hangupLocalization : linkMicLocalization;
           return BottomButtonWidget(
-              normalImage:
-                  Image.asset(normalImageUrl, package: Constants.pluginName),
-              selectedImage: Image.asset(LiveImages.functionVoiceRoomLinking,
-                  package: Constants.pluginName),
+              normalImage: Image.asset(normalImageUrl, package: Constants.pluginName),
+              selectedImage: Image.asset(LiveImages.functionVoiceRoomLinking, package: Constants.pluginName),
               normalTitle: Text(normalTitle,
-                  style: const TextStyle(
-                      fontSize: 12,
-                      color: LiveColors.designStandardFlowkitWhite),
+                  style: const TextStyle(fontSize: 12, color: LiveColors.designStandardFlowkitWhite),
                   textAlign: TextAlign.center),
-              selectedTitle: Text(
-                  LiveKitLocalizations.of(Global.appContext())!.common_cancel,
-                  style: const TextStyle(
-                      fontSize: 12,
-                      color: LiveColors.designStandardFlowkitWhite),
+              selectedTitle: Text(LiveKitLocalizations.of(Global.appContext())!.common_cancel,
+                  style: const TextStyle(fontSize: 12, color: LiveColors.designStandardFlowkitWhite),
                   textAlign: TextAlign.center),
               imageSize: 28.radius,
               onPressed: () {
@@ -214,16 +171,14 @@ extension on _BottomMenuWidgetState {
   }
 
   void _showSeatManagementPanel() {
-    popupWidget(SeatManagementPanelWidget(
-        manager: manager, seatGridController: seatGridController));
+    popupWidget(SeatManagementPanelWidget(manager: manager, seatGridController: seatGridController));
   }
 
-  void _showGiftPanelWidget(
-      BuildContext context, GiftSendController controller) {
+  void _showGiftListWidget(BuildContext context, GiftListController controller) {
     showModalBottomSheet(
         context: context,
         barrierColor: Colors.transparent,
-        builder: (context) => GiftPanelWidget(controller: controller));
+        builder: (context) => GiftListWidget(giftListController: controller));
   }
 
   void _handleAudienceLinkMic() async {
@@ -235,21 +190,16 @@ extension on _BottomMenuWidgetState {
       if (result.code == TUIError.success) {
         manager.onApplyingToSeatStateChanged(false);
       } else {
-        manager.toastSubject.add(ErrorHandler.convertToErrorMessage(
-                result.code.rawValue, result.message) ??
-            '');
+        manager.toastSubject.add(ErrorHandler.convertToErrorMessage(result.code.rawValue, result.message) ?? '');
       }
       return;
     }
 
-    final isOnSeat = manager.seatState.seatList.value
-        .any((seatInfo) => seatInfo.userId == selfUserId);
+    final isOnSeat = manager.seatState.seatList.value.any((seatInfo) => seatInfo.userId == selfUserId);
     if (isOnSeat) {
       final result = await seatGridController.leaveSeat();
       if (result.code != TUIError.success) {
-        manager.toastSubject.add(ErrorHandler.convertToErrorMessage(
-                result.code.rawValue, result.message) ??
-            '');
+        manager.toastSubject.add(ErrorHandler.convertToErrorMessage(result.code.rawValue, result.message) ?? '');
       }
       seatGridController.stopMicrophone();
       return;
@@ -265,25 +215,21 @@ extension on _BottomMenuWidgetState {
           break;
         case RequestResultType.onRejected:
           manager.onApplyingToSeatStateChanged(false);
-          manager.toastSubject.add(LiveKitLocalizations.of(Global.appContext())!
-              .common_voiceroom_take_seat_rejected);
+          manager.toastSubject.add(LiveKitLocalizations.of(Global.appContext())!.common_voiceroom_take_seat_rejected);
           break;
         case RequestResultType.onCancelled:
           manager.onApplyingToSeatStateChanged(false);
           break;
         case RequestResultType.onTimeout:
           manager.onApplyingToSeatStateChanged(false);
-          manager.toastSubject.add(LiveKitLocalizations.of(Global.appContext())!
-              .common_voiceroom_take_seat_timeout);
+          manager.toastSubject.add(LiveKitLocalizations.of(Global.appContext())!.common_voiceroom_take_seat_timeout);
           break;
         default:
           break;
       }
     } else {
       manager.onApplyingToSeatStateChanged(false);
-      manager.toastSubject.add(ErrorHandler.convertToErrorMessage(
-              result.code.rawValue, result.message) ??
-          '');
+      manager.toastSubject.add(ErrorHandler.convertToErrorMessage(result.code.rawValue, result.message) ?? '');
     }
   }
 }
@@ -317,16 +263,14 @@ class BottomButtonWidget extends StatefulWidget {
   State<BottomButtonWidget> createState() => _BottomButtonWidgetState();
 }
 
-class _BottomButtonWidgetState extends State<BottomButtonWidget>
-    with SingleTickerProviderStateMixin {
+class _BottomButtonWidgetState extends State<BottomButtonWidget> with SingleTickerProviderStateMixin {
   late AnimationController _rotationController;
   late ValueNotifier<bool> _internalNotifier;
 
   @override
   void initState() {
     super.initState();
-    _rotationController =
-        AnimationController(duration: const Duration(seconds: 2), vsync: this);
+    _rotationController = AnimationController(duration: const Duration(seconds: 2), vsync: this);
 
     _internalNotifier = widget.rotationNotifier ?? ValueNotifier(false);
     _internalNotifier.addListener(_handleRotationState);
@@ -364,9 +308,7 @@ class _BottomButtonWidgetState extends State<BottomButtonWidget>
                 child: SizedBox(
                     width: 28.radius,
                     height: 28.radius,
-                    child: widget.isSelected
-                        ? _initSelectedImage()
-                        : widget.normalImage),
+                    child: widget.isSelected ? _initSelectedImage() : widget.normalImage),
               )),
           SizedBox(height: 2.height),
           widget.isSelected ? _initSelectedTitle() : _initNormalTitle(),
@@ -378,14 +320,10 @@ class _BottomButtonWidgetState extends State<BottomButtonWidget>
                   child: Container(
                     width: 20.radius,
                     height: 20.radius,
-                    decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(10.radius)),
+                    decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(10.radius)),
                     child: Text(
                       widget.markCount > 99 ? '99+' : '${widget.markCount}',
-                      style: const TextStyle(
-                          color: LiveColors.designStandardFlowkitWhite,
-                          fontSize: 12),
+                      style: const TextStyle(color: LiveColors.designStandardFlowkitWhite, fontSize: 12),
                       textAlign: TextAlign.center,
                     ),
                   )))
@@ -411,14 +349,12 @@ class _BottomButtonWidgetState extends State<BottomButtonWidget>
   Widget _initNormalTitle() {
     return Visibility(
         visible: widget.normalTitle != null,
-        child: Positioned(
-            top: widget.imageSize, child: widget.normalTitle ?? Container()));
+        child: Positioned(top: widget.imageSize, child: widget.normalTitle ?? Container()));
   }
 
   Widget _initSelectedTitle() {
     return Visibility(
         visible: widget.normalTitle != null,
-        child: Positioned(
-            top: widget.imageSize, child: widget.selectedTitle ?? Container()));
+        child: Positioned(top: widget.imageSize, child: widget.selectedTitle ?? Container()));
   }
 }

@@ -5,12 +5,12 @@ import 'package:tencent_live_uikit/common/error/error_handler.dart';
 import 'package:tencent_live_uikit/common/screen/index.dart';
 import 'package:tencent_live_uikit/live_stream/features/anchor_prepare/anchor_preview_widget_define.dart';
 import 'package:tencent_live_uikit/live_stream/live_define.dart';
+import 'package:rtc_room_engine/api/common/tui_video_view.dart';
 
 import '../../../common/constants/constants.dart';
 import '../../../common/language/index.dart';
 import '../../../common/resources/index.dart';
 import '../../../common/widget/index.dart';
-import '../../../component/beauty/index.dart';
 import '../../manager/live_stream_manager.dart';
 import 'widgets/anchor_preview_info_edit_widget.dart';
 import 'widgets/anchor_preview_function_widget.dart';
@@ -52,9 +52,9 @@ class _AnchorPreviewWidgetState extends State<AnchorPreviewWidget> {
     return PopScope(
       canPop: false,
       child: Container(
-        color: LiveColors.notStandardBlack,
+        color: LiveColors.notStandardPureBlack,
         child: Stack(children: [
-          _buildCoreWidget(),
+          _buildVideoWidget(),
           _buildBackWidget(),
           _buildLiveInfoEditWidget(liveStreamManager),
           _buildFunctionWidget(),
@@ -64,12 +64,17 @@ class _AnchorPreviewWidgetState extends State<AnchorPreviewWidget> {
     );
   }
 
-  Widget _buildCoreWidget() {
+  Widget _buildVideoWidget() {
     return Padding(
       padding: EdgeInsets.only(top: 36.height, bottom: 96.height),
       child: ClipRRect(
           borderRadius: BorderRadius.circular(16.radius),
-          child: LiveCoreWidget(controller: liveCoreController)),
+          child: VideoView(
+            onViewCreated: (id) {
+              widget.liveCoreController.setLocalVideoView(id);
+            },
+          )
+      ),
     );
   }
 
@@ -106,6 +111,7 @@ class _AnchorPreviewWidgetState extends State<AnchorPreviewWidget> {
         width: 375.width,
         height: 62.height,
         child: AnchorPreviewFunctionWidget(
+            editInfo: _editInfo,
             liveStreamManager: liveStreamManager,
             liveCoreController: liveCoreController));
   }
@@ -127,7 +133,7 @@ class _AnchorPreviewWidgetState extends State<AnchorPreviewWidget> {
             color: LiveColors.designStandardB1,
           ),
           child: Text(
-            LiveKitLocalizations.of(Global.appContext())!.common_go_live,
+            LiveKitLocalizations.of(Global.appContext())!.common_start_live,
             style: const TextStyle(
                 color: LiveColors.designStandardFlowkitWhite,
                 fontSize: 16,
@@ -143,7 +149,6 @@ extension on _AnchorPreviewWidgetState {
   void _initEditInfo() {
     _editInfo = EditInfo(
         roomName: _getDefaultRoomName(),
-        coverUrl: widget.liveStreamManager.roomState.coverUrl.value,
         privacyMode: LiveStreamPrivacyStatus.public);
   }
 

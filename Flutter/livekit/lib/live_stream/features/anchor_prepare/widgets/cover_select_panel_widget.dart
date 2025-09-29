@@ -67,8 +67,7 @@ class _CoverSelectPanelWidgetState extends State<CoverSelectPanelWidget> {
                 ),
                 Center(
                   child: Text(
-                    LiveKitLocalizations.of(Global.appContext())!
-                        .common_title_preset_cover,
+                    LiveKitLocalizations.of(Global.appContext())!.common_cover,
                     style: const TextStyle(
                         color: LiveColors.designStandardFlowkitWhite,
                         fontSize: 16),

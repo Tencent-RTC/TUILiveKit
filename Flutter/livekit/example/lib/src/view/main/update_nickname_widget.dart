@@ -24,7 +24,7 @@ class _UpdateNicknameWidgetState extends State<UpdateNicknameWidget> {
 
   @override
   Widget build(BuildContext context) {
-    _screenWidth = MediaQuery.of(context).size.width;
+    _screenWidth = MediaQuery.sizeOf(context).width;
 
     return SizedBox(
       width: _screenWidth,
@@ -81,7 +81,7 @@ class _UpdateNicknameWidgetState extends State<UpdateNicknameWidget> {
     return Container(
       margin: const EdgeInsets.only(left: 30, top: 32, right: 30),
       padding: const EdgeInsets.only(left: 10),
-      width: MediaQuery.of(context).size.width - 60,
+      width: MediaQuery.sizeOf(context).width - 60,
       height: 52,
       decoration: BoxDecoration(
         color: Colors.transparent,
@@ -93,7 +93,7 @@ class _UpdateNicknameWidgetState extends State<UpdateNicknameWidget> {
         mainAxisSize: MainAxisSize.max,
         children: [
           SizedBox(
-            width: MediaQuery.of(context).size.width - 150,
+            width: MediaQuery.sizeOf(context).width - 150,
             child: TextField(
               controller: _controller,
               decoration: const InputDecoration(

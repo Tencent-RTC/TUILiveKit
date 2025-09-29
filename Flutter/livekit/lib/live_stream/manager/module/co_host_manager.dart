@@ -16,8 +16,7 @@ class CoHostManager {
   void init(Context context) {
     this.context = context;
     service = context.service;
-    coHostState.currentRoomId =
-        context.roomManager.target?.roomState.roomId ?? '';
+    coHostState.currentRoomId = context.roomManager.target?.roomState.roomId ?? '';
   }
 
   final int _listCount = 20;
@@ -30,8 +29,7 @@ class CoHostManager {
     final cursor = coHostState.recommendListCursor.value;
     final result = await service.fetchRecommendedList(cursor, _listCount);
     if (result.code != TUIError.success || result.data == null) {
-      LiveKitLogger.error(
-          'fetchRecommendedList failed. code:${result.code}, message:${result.message}');
+      LiveKitLogger.error('fetchRecommendedList failed. code:${result.code}, message:${result.message}');
     }
     final recommendListResult = result.data!;
     if (cursor.isEmpty) {
@@ -42,7 +40,7 @@ class CoHostManager {
         recommendListResult.liveInfoList
             .map((liveInfo) {
               final isConnected = coHostState.connectedUsers.value
-                  .any((user) => user.roomId == liveInfo.roomInfo.roomId);
+                  .any((user) => user.roomId == liveInfo.roomId);
               if (!isConnected) {
                 final user = _convertLiveInfo2ConnectionUser(liveInfo);
                 if (context.coreCoHostState.sentConnectionRequestList.value
@@ -57,12 +55,19 @@ class CoHostManager {
             .where((user) => user.roomId.isNotEmpty)
             .toList();
 
-    final List<TUIConnectionUser> newRecommendedUsers =
-        coHostState.recommendedUsers.value.toList();
+    final List<TUIConnectionUser> newRecommendedUsers = coHostState.recommendedUsers.value.toList();
     newRecommendedUsers.addAll(recommendUsers);
 
     coHostState.recommendedUsers.value = newRecommendedUsers;
     coHostState.recommendListCursor.value = recommendListResult.cursor;
+  }
+
+  void setLayoutTemplateId(int id) {
+    coHostState.templateId = id;
+  }
+
+  void setCoHostLayoutTemplateId() {
+    service.setCoHostLayoutTemplateId(coHostState.templateId);
   }
 }
 
@@ -72,7 +77,7 @@ extension CoHostManagerCallback on CoHostManager {
   }
 
   void onRequestConnection(TUIConnectionUser user) {
-    final newRecommendUsers = coHostState.recommendedUsers.value;
+    final newRecommendUsers = coHostState.recommendedUsers.value.toList();
     for (var recommendedUser in newRecommendUsers) {
       if (recommendedUser.roomId == user.roomId) {
         recommendedUser.connectionStatus = TUIConnectionStatus.inviting;
@@ -82,7 +87,7 @@ extension CoHostManagerCallback on CoHostManager {
   }
 
   void onRequestConnectionFailed(String roomId) {
-    final newRecommendUsers = coHostState.recommendedUsers.value;
+    final newRecommendUsers = coHostState.recommendedUsers.value.toList();
     for (var recommendedUser in newRecommendUsers) {
       if (recommendedUser.roomId == roomId) {
         recommendedUser.connectionStatus = TUIConnectionStatus.none;
@@ -97,7 +102,7 @@ extension CoHostManagerCallback on CoHostManager {
     }
     coHostState.connectedUsers.value = connectedUserList.toList();
 
-    final newRecommendUsers = coHostState.recommendedUsers.value;
+    final newRecommendUsers = coHostState.recommendedUsers.value.toList();
     newRecommendUsers.removeWhere((recommendUser) => connectedUserList
         .any((connectedUser) => connectedUser.roomId == recommendUser.roomId));
     coHostState.recommendedUsers.value = newRecommendUsers;
@@ -108,7 +113,7 @@ extension CoHostManagerCallback on CoHostManager {
   }
 
   void onConnectionRequestAccept(TUIConnectionUser invitee) {
-    final newRecommendUsers = coHostState.recommendedUsers.value;
+    final newRecommendUsers = coHostState.recommendedUsers.value.toList();
     for (var recommendedUser in newRecommendUsers) {
       if (recommendedUser.roomId == invitee.roomId) {
         recommendedUser.connectionStatus = TUIConnectionStatus.connected;
@@ -117,9 +122,8 @@ extension CoHostManagerCallback on CoHostManager {
     coHostState.recommendedUsers.value = newRecommendUsers;
   }
 
-  void onConnectionRequestTimeout(
-      TUIConnectionUser inviter, TUIConnectionUser invitee) {
-    final newRecommendUsers = coHostState.recommendedUsers.value;
+  void onConnectionRequestTimeout(TUIConnectionUser inviter, TUIConnectionUser invitee) {
+    final newRecommendUsers = coHostState.recommendedUsers.value.toList();
     for (var recommendedUser in newRecommendUsers) {
       if (inviter.roomId == coHostState.currentRoomId &&
           recommendedUser.roomId == invitee.roomId) {
@@ -130,7 +134,7 @@ extension CoHostManagerCallback on CoHostManager {
   }
 
   void onConnectionRequestReject(TUIConnectionUser invitee) {
-    final newRecommendUsers = coHostState.recommendedUsers.value;
+    final newRecommendUsers = coHostState.recommendedUsers.value.toList();
     for (var recommendedUser in newRecommendUsers) {
       if (recommendedUser.roomId == invitee.roomId) {
         recommendedUser.connectionStatus = TUIConnectionStatus.none;
@@ -138,8 +142,7 @@ extension CoHostManagerCallback on CoHostManager {
     }
     coHostState.recommendedUsers.value = newRecommendUsers;
 
-    final toast = LiveKitLocalizations.of(Global.appContext())!
-        .common_connect_request_rejected;
+    final toast = LiveKitLocalizations.of(Global.appContext())!.common_connect_request_rejected;
     context.toastSubject.target?.add(toast);
   }
 }
@@ -147,10 +150,10 @@ extension CoHostManagerCallback on CoHostManager {
 extension on CoHostManager {
   TUIConnectionUser _convertLiveInfo2ConnectionUser(TUILiveInfo liveInfo) {
     final connectionUser = TUIConnectionUser();
-    connectionUser.roomId = liveInfo.roomInfo.roomId;
-    connectionUser.userId = liveInfo.roomInfo.ownerId;
-    connectionUser.userName = liveInfo.roomInfo.ownerName ?? '';
-    connectionUser.avatarUrl = liveInfo.roomInfo.ownerAvatarUrl ?? '';
+    connectionUser.roomId = liveInfo.roomId;
+    connectionUser.userId = liveInfo.ownerId;
+    connectionUser.userName = liveInfo.ownerName;
+    connectionUser.avatarUrl = liveInfo.ownerAvatarUrl;
     connectionUser.joinConnectionTime = 0;
     return connectionUser;
   }

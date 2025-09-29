@@ -31,8 +31,6 @@ dependencies:
 
   crypto: ^3.0.3
 
-  rtc_room_engine: ^2.5.0
-
 dev_dependencies:
   integration_test:
     sdk: flutter

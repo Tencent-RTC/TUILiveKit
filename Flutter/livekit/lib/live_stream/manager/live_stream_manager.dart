@@ -1,11 +1,7 @@
 import 'dart:async';
 
-import 'package:live_stream_core/live_core_widget/index.dart'
-    hide CoGuestStatus;
-import 'package:rtc_room_engine/api/extension/tui_live_battle_manager.dart';
-import 'package:rtc_room_engine/api/extension/tui_live_connection_manager.dart';
-import 'package:rtc_room_engine/api/extension/tui_live_list_manager.dart';
-import 'package:rtc_room_engine/api/room/tui_room_define.dart';
+import 'package:live_stream_core/live_core_widget/index.dart' hide CoGuestStatus;
+import 'package:rtc_room_engine/rtc_room_engine.dart';
 import 'package:tencent_live_uikit/live_stream/live_define.dart';
 import 'package:tencent_live_uikit/live_stream/state/index.dart';
 
@@ -39,6 +35,7 @@ class LiveStreamManager {
   late final LiveListObserver _liveListObserver;
   late final LiveStreamObserver liveStreamObserver;
   late final BattleManagerObserver battleManagerObserver;
+  late final LiveLayoutObserver _liveLayoutObserver;
   late final Context _context;
   late final CoreStateProvider provider;
 
@@ -91,8 +88,8 @@ extension LiveStreamManagerWithAnchor on LiveStreamManager {
     return _roomManager.onStartPreview();
   }
 
-  void onStartLive(bool isJoinSelf, TUIRoomInfo roomInfo) {
-    return _roomManager.onStartLive(isJoinSelf, roomInfo);
+  void onStartLive(bool isJoinSelf, TUILiveInfo liveInfo) {
+    return _roomManager.onStartLive(isJoinSelf, liveInfo);
   }
 
   void onStopLive() {
@@ -150,8 +147,7 @@ extension LiveStreamManagerWithAnchor on LiveStreamManager {
     return _userManager.getUserInfo(userId);
   }
 
-  Future<TUIActionCallback> onDisableSendingMessageBtnClicked(
-      String userId, bool isDisable) {
+  Future<TUIActionCallback> onDisableSendingMessageBtnClicked(String userId, bool isDisable) {
     return _userManager.onDisableSendingMessageBtnClicked(userId, isDisable);
   }
 
@@ -159,15 +155,20 @@ extension LiveStreamManagerWithAnchor on LiveStreamManager {
     return _userManager.onKickedOutBtnClicked(userId);
   }
 
-  Future<TUIActionCallback> onLockMediaStatusBtnClicked(
-      String userId, TUISeatLockParams params) {
+  Future<TUIActionCallback> onLockMediaStatusBtnClicked(String userId, TUISeatLockParams params) {
     return _coGuestManager.onLockMediaStatusBtnClicked(userId, params);
+  }
+
+  bool isCoGuesting() {
+    return coreCoGuestState.seatList.value
+        .where((user) => user.userId.isNotEmpty && user.userId != coreUserState.selfInfo.userId)
+        .isNotEmpty;
   }
 }
 
 extension LiveStreamManagerWithAudience on LiveStreamManager {
-  void onJoinLive(TUIRoomInfo roomInfo) {
-    return _roomManager.onJoinLive(roomInfo);
+  void onJoinLive(TUILiveInfo liveInfo) {
+    return _roomManager.onJoinLive(liveInfo);
   }
 
   void onLeaveLive() {
@@ -255,6 +256,7 @@ extension on LiveStreamManager {
     _liveListObserver = LiveListObserver();
     liveStreamObserver = LiveStreamObserver();
     battleManagerObserver = BattleManagerObserver();
+    _liveLayoutObserver = LiveLayoutObserver();
 
     _context = Context(
         service: service,
@@ -271,6 +273,7 @@ extension on LiveStreamManager {
         liveListObserver: WeakReference(_liveListObserver),
         liveStreamObserver: WeakReference(liveStreamObserver),
         battleManagerObserver: WeakReference(battleManagerObserver),
+        liveLayoutObserver: WeakReference(_liveLayoutObserver),
         provider: WeakReference(provider));
 
     _roomManager.init(_context);
@@ -284,9 +287,11 @@ extension on LiveStreamManager {
     _liveListObserver.init(_context);
     liveStreamObserver.init(_context);
     battleManagerObserver.init(_context);
+    _liveLayoutObserver.init(_context);
 
     service.addEngineObserver(_roomEngineObserver);
     service.addLiveListManagerObserver(_liveListObserver);
+    service.addLiveLayoutObserver(_liveLayoutObserver);
   }
 
   void _unInit() {
@@ -299,6 +304,7 @@ extension on LiveStreamManager {
 
     service.removeEngineObserver(_roomEngineObserver);
     service.removeLiveListManagerObserver(_liveListObserver);
+    service.removeLiveLayoutObserver(_liveLayoutObserver);
     if (!toastSubject.isClosed) {
       toastSubject.close();
     }
@@ -328,6 +334,7 @@ class Context {
   late final WeakReference<LiveListObserver> liveListObserver;
   late final WeakReference<LiveStreamObserver> liveStreamObserver;
   late final WeakReference<BattleManagerObserver> battleManagerObserver;
+  late final WeakReference<LiveLayoutObserver> liveLayoutObserver;
   late final WeakReference<CoreStateProvider> provider;
 
   Context(
@@ -345,23 +352,18 @@ class Context {
       required this.liveListObserver,
       required this.liveStreamObserver,
       required this.battleManagerObserver,
+      required this.liveLayoutObserver,
       required this.provider});
 
-  RoomState get coreRoomState =>
-      provider.target?.getCoreState().roomState ?? RoomState();
+  RoomState get coreRoomState => provider.target?.getCoreState().roomState ?? RoomState();
 
-  UserState get coreUserState =>
-      provider.target?.getCoreState().userState ?? UserState();
+  UserState get coreUserState => provider.target?.getCoreState().userState ?? UserState();
 
-  MediaState get coreMediaState =>
-      provider.target?.getCoreState().mediaState ?? MediaState();
+  MediaState get coreMediaState => provider.target?.getCoreState().mediaState ?? MediaState();
 
-  CoGuestState get coreCoGuestState =>
-      provider.target?.getCoreState().coGuestState ?? CoGuestState();
+  CoGuestState get coreCoGuestState => provider.target?.getCoreState().coGuestState ?? CoGuestState();
 
-  CoHostState get coreCoHostState =>
-      provider.target?.getCoreState().coHostState ?? CoHostState();
+  CoHostState get coreCoHostState => provider.target?.getCoreState().coHostState ?? CoHostState();
 
-  BattleState get coreBattleState =>
-      provider.target?.getCoreState().battleState ?? BattleState();
+  BattleState get coreBattleState => provider.target?.getCoreState().battleState ?? BattleState();
 }

@@ -1,143 +1,121 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:tencent_cloud_chat_sdk/enum/V2TimAdvancedMsgListener.dart';
-import 'package:tencent_cloud_chat_sdk/enum/message_elem_type.dart';
-import 'package:tencent_cloud_chat_sdk/enum/message_priority_enum.dart';
-import 'package:tencent_cloud_chat_sdk/models/v2_tim_message.dart';
-import 'package:tencent_cloud_chat_sdk/models/v2_tim_msg_create_info_result.dart';
-import 'package:tencent_cloud_chat_sdk/models/v2_tim_value_callback.dart';
-import 'package:tencent_cloud_chat_sdk/tencent_im_sdk_plugin.dart';
+import 'package:live_uikit_gift/live_uikit_gift.dart';
 
-import '../common/constants/constants.dart';
-import '../state/index.dart';
-import '../gift_define.dart';
-import 'cache/gift_cache_manager.dart';
+import 'package:rtc_room_engine/rtc_room_engine.dart';
 
-class GiftManager {
-  late V2TimAdvancedMsgListener listener;
-  OnReceiveGiftCallback? _onReceiveGiftCallback;
-  OnSendGiftCallback? _onSendGiftCallback;
-  bool isInit = false;
+typedef OnReceiveGiftMessageCallback = void Function(
+    TUIGiftInfo giftInfo, int count, TUIUserInfo sender);
+typedef OnReceiveLikeMessageCallback = void Function(
+    int totalLikesReceived, TUIUserInfo sender);
 
-  void init(String roomId, GiftUser owner, GiftUser self) {
-    GiftStore().init(roomId, owner, self);
-    _initReceiveGiftMessageListener();
+class GiftManagerFactory {
+  static final Map<String, GiftManager> _giftManagerMap = {};
+
+  static GiftManager getGiftManager(String roomId) {
+    if (_giftManagerMap.containsKey(roomId)) {
+      return _giftManagerMap[roomId]!;
+    }
+
+    final giftManager = GiftManager(roomId: roomId);
+    _giftManagerMap[roomId] = giftManager;
+    return giftManager;
   }
 
-  void setOnReceiveGiftCallback(OnReceiveGiftCallback onReceiveGiftListener) {
-    _onReceiveGiftCallback = onReceiveGiftListener;
+  static void destroyGiftManager(String roomId) {
+    _giftManagerMap.remove(roomId);
   }
+}
 
-  void setOnSendGiftCallback(OnSendGiftCallback onSendGiftCallback) {
-    _onSendGiftCallback = onSendGiftCallback;
-  }
+class GiftManager extends TUILiveGiftObserver {
+  final String roomId;
+  OnReceiveGiftMessageCallback? onReceiveGiftMessageCallback;
+  OnReceiveLikeMessageCallback? onReceiveLikeMessageCallback;
 
-  void _initReceiveGiftMessageListener() {
-    if (isInit) {
-      return;
-    }
-    debugPrint("GiftManager _initReceiveBarrageListener");
-    isInit = true;
-    listener =
-        V2TimAdvancedMsgListener(onRecvNewMessage: _onReceiveGiftMessage);
-    TencentImSDKPlugin.v2TIMManager
-        .getMessageManager()
-        .addAdvancedMsgListener(listener: listener);
-  }
+  final TUILiveGiftManager _giftManager = TUIRoomEngine.sharedInstance()
+      .getExtension(TUIExtensionType.liveGiftManager);
 
-  Future<bool> sendGift(GiftMessage message) async {
-    debugPrint("GiftManager sendGift:GiftMessage:${message.toString()}");
-    if (message.sender == null ||
-        message.receiver == null ||
-        message.gift == null) {
-      debugPrint("GiftManager sendGift: fail, param is null}");
-      return false;
-    }
-    V2TimValueCallback<V2TimMsgCreateInfoResult> createCustomMessage =
-        await TencentImSDKPlugin.v2TIMManager
-            .getMessageManager()
-            .createCustomMessage(
-              data: jsonEncode(GiftJson.fromMessage(message)),
-            );
-    if (createCustomMessage.code == 0) {
-      String? id = createCustomMessage.data?.id;
-      V2TimValueCallback<V2TimMessage> sendMessageRes =
-          await TencentImSDKPlugin.v2TIMManager.getMessageManager().sendMessage(
-                id: id!,
-                receiver: "",
-                groupID: GiftStore().roomId,
-                priority: MessagePriorityEnum.V2TIM_PRIORITY_NORMAL,
-              );
-      if (sendMessageRes.code == 0) {
-        debugPrint("GiftManager sendGift success");
-        GiftStore().state.giftMessage.value = message;
-        if (_onSendGiftCallback != null) {
-          _onSendGiftCallback!(message);
-        }
-        return true;
-      } else {
-        GiftStore().onError?.call(sendMessageRes.code, sendMessageRes.desc);
-        debugPrint(
-            "GiftManager sendGift fail,{code:${sendMessageRes.code}, desc:${sendMessageRes.desc}");
-        return false;
-      }
-    } else {
-      GiftStore().onError?.call(createCustomMessage.code, createCustomMessage.desc);
-      debugPrint("GiftManager sendGift createTextMessage fail,"
-          "{code:${createCustomMessage.code}, desc:${createCustomMessage.desc}");
-      return false;
-    }
-  }
+  GiftManager(
+      {required this.roomId,
+      this.onReceiveGiftMessageCallback,
+      this.onReceiveLikeMessageCallback}) {
+    _addObserver();
 
-  void getGiftData() async {
-    if (GiftStore().giftModelList.isNotEmpty) {
-      return;
-    }
-    String dataJson =
-        await GiftCacheManager.getCachedJson(Constants.giftDataUrl);
-    debugPrint("GiftManager dataJson:${dataJson.length}");
-    if (dataJson.isNotEmpty) {
-      Map<String, dynamic> jsonMap = jsonDecode(dataJson);
-      if (jsonMap.containsKey("giftList")) {
-        List<GiftModel> giftList = (jsonMap['giftList'] as List)
-            .map((e) => GiftModel.fromJson(e))
-            .toList();
-        GiftStore().giftModelList = giftList;
-        debugPrint("GiftManager giftModelList:${GiftStore().giftModelList}");
-      } else {
-        debugPrint("GiftManager jsonMap:$jsonMap");
-      }
-    }
-  }
-
-  _onReceiveGiftMessage(V2TimMessage message) {
-    debugPrint(
-        "GiftManager receiveBarrage onRecvNewMessage{msgID:${message.msgID},groupID:${message.groupID},"
-        "sender:${message.sender},customData:${message.customElem?.toLogString()},message:${message.toLogString()}}");
-    if (message.elemType != MessageElemType.V2TIM_ELEM_TYPE_CUSTOM) {
-      return;
-    }
-    String? customData = message.customElem?.data;
-    if ((message.groupID != GiftStore().roomId) ||
-        customData == null ||
-        customData.isEmpty) {
-      return;
-    }
-    try {
-      GiftJson giftJson = GiftJson.fromJson(jsonDecode(customData));
-      if (giftJson.businessID != Constants.imCustomMessageValueBusinessIdGift) {
+    super.onReceiveGiftMessage = (roomId, giftInfo, count, sender) {
+      if (roomId != this.roomId) {
         return;
       }
-      if (giftJson.data != null) {
-        GiftStore().state.giftMessage.value = giftJson.data!;
-        if (_onReceiveGiftCallback != null) {
-          _onReceiveGiftCallback!(giftJson.data!);
-        }
+      onReceiveGiftMessageCallback?.call(giftInfo, count, sender);
+    };
+
+    super.onReceiveLikesMessage = (roomId, totalLikesReceived, sender) {
+      if (roomId != this.roomId) {
+        return;
       }
+      onReceiveLikeMessageCallback?.call(totalLikesReceived, sender);
+    };
+  }
+
+  void dispose() {
+    _removeObserver();
+  }
+
+  Future<TUIActionCallback> sendGift(TUIGiftInfo giftInfo, int count) {
+    return _giftManager.sendGift(roomId, giftInfo.giftId, count);
+  }
+
+  void setCurrentLanguage(String language) async {
+    Map<String, dynamic> params = {'language': language};
+    Map<String, dynamic> jsonObject = {
+      'api': 'setCurrentLanguage',
+      'params': params
+    };
+
+    try {
+      final jsonString = json.encode(jsonObject);
+      final result = await TUIRoomEngine.sharedInstance().invokeExperimentalAPI(jsonString);
     } catch (e) {
-      debugPrint(
-          "GiftManager GiftJson.fromJson jsonDecode Exception:${e.toString()}");
+      debugPrint('setCurrentLanguage failed.');
     }
+  }
+
+  Future<TUIActionCallback> getGiftList() async {
+    final result = await _giftManager.getGiftList(roomId);
+    if (result.code != TUIError.success || result.data == null) {
+      return TUIActionCallback(code: result.code, message: result.message);
+    }
+    final List<TUIGiftCategory> giftCategoryList = result.data!;
+    List<TUIGiftInfo> giftList = List.empty(growable: true);
+    for (final giftCategory in giftCategoryList) {
+      giftList.addAll(giftCategory.giftList);
+    }
+    _updateGiftListMap(roomId, giftList);
+
+    return TUIActionCallback(code: result.code, message: result.message);
+  }
+
+  Future<TUIValueCallBack<TUIGiftCountRequestResult>> getGiftCountByAnchor() {
+    return _giftManager.getGiftCountByAnchor(roomId);
+  }
+}
+
+extension on GiftManager {
+  void _addObserver() {
+    _giftManager.addObserver(this);
+  }
+
+  void _removeObserver() {
+    _giftManager.removeObserver(this);
+  }
+
+  void _updateGiftListMap(String roomId, List<TUIGiftInfo> giftList) {
+    final Map<String, List<TUIGiftInfo>> newGiftListMap = {};
+    TUIGiftStore()
+        .giftListMap
+        .value
+        .forEach((roomId, giftList) => {newGiftListMap[roomId] = giftList});
+    newGiftListMap[roomId] = giftList;
+    TUIGiftStore().giftListMap.value = newGiftListMap;
   }
 }

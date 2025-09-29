@@ -36,12 +36,6 @@ class BattleManager {
     battleState.isOnDisplayResult.value = false;
   }
 
-  void updateBattleUserRectFromIndex(Rect rect, int index) {
-    final newBattleUsers = battleState.battleUsers.value;
-    newBattleUsers[index].rect = rect;
-    battleState.battleUsers.value = newBattleUsers;
-  }
-
   void onRequestBattle(String battleId, List<TUIBattleUser> battleUserList) {
     battleState.battleId.value = battleId;
     battleState.isInWaiting.value = true;
@@ -87,7 +81,7 @@ extension BattlleManagerCallback on BattleManager {
     battleState.durationCountDown.value = battleInfo.config.duration;
 
     _startCountDown();
-    Future.delayed(const Duration(milliseconds: 500),(){
+    Future.delayed(const Duration(milliseconds: 500), () {
       battleState.isShowingStartWidget = false;
     });
 
@@ -160,9 +154,9 @@ extension BattlleManagerCallback on BattleManager {
       String battleId, TUIBattleUser inviter, TUIBattleUser invitee) {
     battleState.receivedBattleRequest.value = null;
 
-    final toast = LiveKitLocalizations.of(Global.appContext())!
-        .common_battle_inviter_cancel
-        .replaceAll('xxx', inviter.userName);
+    final toast = inviter.userName +
+        LiveKitLocalizations.of(Global.appContext())!
+            .common_battle_inviter_cancel;
     context.toastSubject.target?.add(toast);
   }
 
@@ -191,9 +185,9 @@ extension BattlleManagerCallback on BattleManager {
       battleState.isInWaiting.value = false;
     }
 
-    final toast = LiveKitLocalizations.of(Global.appContext())!
-        .common_battle_invitee_reject
-        .replaceAll('xxx', invitee.userName);
+    final toast = invitee.userName +
+        LiveKitLocalizations.of(Global.appContext())!
+            .common_battle_invitee_reject;
     context.toastSubject.target?.add(toast);
   }
 }
@@ -228,13 +222,6 @@ extension on BattleManager {
         updatedUser.ranking = battleUsers[index - 1].ranking;
       } else {
         updatedUser.ranking = index + 1;
-      }
-
-      for (BattleUser battleUser in battleState.battleUsers.value) {
-        if (battleUser.userId == updatedUser.userId) {
-          updatedUser.rect = battleUser.rect;
-          break;
-        }
       }
 
       finalUsers.add(updatedUser);

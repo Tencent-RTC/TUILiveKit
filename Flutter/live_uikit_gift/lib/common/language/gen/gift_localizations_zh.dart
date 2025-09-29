@@ -7,7 +7,7 @@ class GiftLocalizationsZh extends GiftLocalizations {
   GiftLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
-  String get gift_send => '发送';
+  String get gift_send => '赠送';
 
   @override
   String get gift_text => '礼物';

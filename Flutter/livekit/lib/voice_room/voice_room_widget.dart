@@ -22,9 +22,7 @@ class RoomParams {
   int maxSeatCount;
   TUISeatMode seatMode;
 
-  RoomParams(
-      {this.maxSeatCount = maxConnectedViewersCount,
-      this.seatMode = TUISeatMode.applyToTake});
+  RoomParams({this.maxSeatCount = maxConnectedViewersCount, this.seatMode = TUISeatMode.applyToTake});
 }
 
 class TUIVoiceRoomWidget extends StatefulWidget {
@@ -32,8 +30,7 @@ class TUIVoiceRoomWidget extends StatefulWidget {
   final RoomBehavior behavior;
   final RoomParams? params;
 
-  const TUIVoiceRoomWidget(
-      {super.key, required this.roomId, required this.behavior, this.params});
+  const TUIVoiceRoomWidget({super.key, required this.roomId, required this.behavior, this.params});
 
   @override
   State<TUIVoiceRoomWidget> createState() => _TUIVoiceRoomWidgetState();
@@ -63,12 +60,13 @@ class _TUIVoiceRoomWidgetState extends State<TUIVoiceRoomWidget> {
     _subscribeToast();
     manager.initManager(roomId: roomId, param: params);
 
-    _needToPrepare.value = behavior != RoomBehavior.join;
+    _needToPrepare.value = behavior == RoomBehavior.prepareCreate;
   }
 
   @override
   void dispose() {
     _unsubscribeToast();
+    seatGridController.dispose();
     manager.dispose();
     AudioEffectStateFactory.removeState(manager.roomState.roomId);
     _stopForegroundService();
@@ -126,19 +124,19 @@ extension on _TUIVoiceRoomWidgetState {
   }
 
   void _startForegroundService() async {
-    String description = LiveKitLocalizations.of(
-            TUILiveKitNavigatorObserver.instance.getContext())!
-        .common_app_running;
+    String description = LiveKitLocalizations.of(TUILiveKitNavigatorObserver.instance.getContext())!.common_app_running;
 
-    Permission.microphone.onGrantedCallback(() {
-      TUILiveKitPlatform.instance
-          .startForegroundService(ForegroundServiceType.audio, "", description);
-    });
+    final hasMicrophonePermission = await Permission.microphone.status == PermissionStatus.granted;
+    if (!hasMicrophonePermission) {
+      LiveKitLogger.error(
+          '[ForegroundService] failed to start audio foreground service. reason: without microphone permission');
+      return;
+    }
+    TUILiveKitPlatform.instance.startForegroundService(ForegroundServiceType.audio, "", description);
   }
 
   void _stopForegroundService() {
-    TUILiveKitPlatform.instance
-        .stopForegroundService(ForegroundServiceType.audio);
+    TUILiveKitPlatform.instance.stopForegroundService(ForegroundServiceType.audio);
     Permission.microphone.onGrantedCallback(null);
   }
 }

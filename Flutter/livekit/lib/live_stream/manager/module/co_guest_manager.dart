@@ -1,5 +1,4 @@
-import 'package:rtc_room_engine/api/common/tui_common_define.dart';
-import 'package:rtc_room_engine/api/room/tui_room_define.dart';
+import 'package:rtc_room_engine/rtc_room_engine.dart';
 import 'package:tencent_live_uikit/common/index.dart';
 
 import '../../api/live_stream_service.dart';
@@ -30,7 +29,7 @@ class CoGuestManager {
         ?.index;
 
     return seatIndex != null
-        ? service.lockSeatByAdmin(seatIndex!, params)
+        ? service.lockSeatByAdmin(seatIndex, params)
         : TUIActionCallback(
             code: TUIError.errUserNotInSeat, message: 'Not on the seat');
   }
@@ -100,8 +99,8 @@ extension on CoGuestManager {
   }
 
   void _updateMediaLockStatus(List<TUISeatInfo> seatList) {
-    final newLockAudioUserList = coGuestState.lockAudioUserList.value;
-    final newLockVideoUSerList = coGuestState.lockVideoUserList.value;
+    final newLockAudioUserList = coGuestState.lockAudioUserList.value.toSet();
+    final newLockVideoUSerList = coGuestState.lockVideoUserList.value.toSet();
     for (final seatInfo in seatList) {
       if (seatInfo.userId.isEmpty) {
         continue;

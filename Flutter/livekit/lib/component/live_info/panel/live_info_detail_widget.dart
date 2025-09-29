@@ -30,7 +30,7 @@ class _LiveInfoDetailWidgetState extends State<LiveInfoDetailWidget> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: MediaQuery.of(context).size.width,
+      width: MediaQuery.sizeOf(context).width,
       height: 241.height,
       child: Stack(
         alignment: Alignment.topCenter,
@@ -49,7 +49,7 @@ class _LiveInfoDetailWidgetState extends State<LiveInfoDetailWidget> {
   Widget _initBackground() {
     return Container(
         margin: EdgeInsets.only(top: 30.height),
-        width: MediaQuery.of(context).size.width,
+        width: MediaQuery.sizeOf(context).width,
         height: 211.height,
         decoration: BoxDecoration(
           color: LiveColors.designStandardG2,

@@ -24,19 +24,61 @@ abstract class TUILiveKitPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<void> apiLog(LiveKitLoggerLevel level, String module, String file,
-      int line, String logString) async {
+  Stream<dynamic> get onRawChanged;
+
+  Stream<ThermalState> get onThermalStateChanged;
+
+  static Stream<ThermalState> get thermalStateChanged => instance.onThermalStateChanged;
+
+  Stream<bool> get onNetworkConnectionStateChanged;
+
+  static Stream<bool> get networkConnectionStateChanged => instance.onNetworkConnectionStateChanged;
+
+  Future<void> apiLog(LiveKitLoggerLevel level, String module, String file, int line, String logString) async {
     await instance.apiLog(level, module, file, line, logString);
   }
 
-  Future<void> startForegroundService(
-      ForegroundServiceType type, String title, String description) async {
+  Future<void> startForegroundService(ForegroundServiceType type, String title, String description) async {
     await instance.startForegroundService(type, title, description);
   }
 
   Future<void> stopForegroundService(ForegroundServiceType type) async {
     await instance.stopForegroundService(type);
   }
+
+  Future<void> enableWakeLock(bool enable) async {
+    await instance.enableWakeLock(enable);
+  }
+
+  Future<void> openWifiSettings() async {
+    await instance.openWifiSettings();
+  }
+
+  Future<void> openAppSettings() async {
+    await instance.openAppSettings();
+  }
+
+  Future<bool> isNetworkConnected() {
+    return _instance.isNetworkConnected();
+  }
 }
 
 enum ForegroundServiceType { video, audio, media }
+
+enum ThermalState {
+  nominal(0),
+  fair(1),
+  serious(2),
+  critical(3);
+
+  final int value;
+
+  const ThermalState(this.value);
+
+  static ThermalState fromInt(int value) {
+    return ThermalState.values.firstWhere(
+      (e) => e.value == value,
+      orElse: () => ThermalState.nominal,
+    );
+  }
+}

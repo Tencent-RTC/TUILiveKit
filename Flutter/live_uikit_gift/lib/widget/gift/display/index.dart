@@ -1,4 +1,4 @@
 library display;
 
-export 'gift_display_controller.dart';
-export 'gift_display_widget.dart';
+export 'gift_play_controller.dart';
+export 'gift_play_widget.dart';

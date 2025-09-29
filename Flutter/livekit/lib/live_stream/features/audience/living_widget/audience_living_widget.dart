@@ -1,23 +1,19 @@
-import 'package:live_stream_core/live_core_widget/index.dart';
+import 'package:flutter/services.dart';
+import 'package:live_stream_core/live_core_widget/index.dart' hide LiveStatus;
 import 'package:live_uikit_barrage/live_uikit_barrage.dart';
 import 'package:live_uikit_gift/live_uikit_gift.dart';
 import 'package:flutter/material.dart';
-import 'package:tencent_live_uikit/common/constants/constants.dart';
-import 'package:tencent_live_uikit/common/language/gen/livekit_localizations.dart';
-import 'package:tencent_live_uikit/common/resources/colors.dart';
-import 'package:tencent_live_uikit/common/resources/images.dart';
-import 'package:tencent_live_uikit/common/screen/index.dart';
-import 'package:tencent_live_uikit/common/widget/action_sheet.dart';
-import 'package:tencent_live_uikit/common/widget/global.dart';
-import 'package:tencent_live_uikit/component/gift_access/gift_barrage_item_builder.dart';
+import 'package:tencent_live_uikit/common/index.dart';
+import 'package:tencent_live_uikit/component/index.dart';
+import 'package:tencent_live_uikit/component/network_info/manager/network_info_manager.dart';
 import 'package:tencent_live_uikit/live_stream/features/audience/living_widget/audience_bottom_menu_widget.dart';
 import 'package:tencent_live_uikit/live_stream/features/decorations/co_guest/co_guest_waiting_agree_widget.dart';
 import 'package:tencent_live_uikit/live_stream/manager/live_stream_manager.dart';
+import 'package:tencent_live_uikit/tencent_live_uikit.dart';
+import 'package:tencent_live_uikit/live_stream/state/co_guest_state.dart' as ls_co_guest;
 
-import '../../../../common/widget/toast.dart';
-import '../../../../component/audience_list/index.dart';
-import '../../../../component/live_info/index.dart';
-import '../../../../common/error/index.dart';
+import '../../../../component/network_info/index.dart';
+import '../../../live_define.dart';
 
 class AudienceLivingWidget extends StatefulWidget {
   final LiveCoreController liveCoreController;
@@ -35,19 +31,20 @@ class AudienceLivingWidget extends StatefulWidget {
 
 class _AudienceLivingWidgetState extends State<AudienceLivingWidget> {
   BarrageDisplayController? _barrageDisplayController;
-  GiftDisplayController? _giftDisplayController;
+  GiftPlayController? _giftPlayController;
+  final NetworkInfoManager _networkInfoManager = NetworkInfoManager();
+  late final VoidCallback _userEnterRoomListener = _onRemoteUserEnterRoom;
 
   @override
   void initState() {
     super.initState();
-    widget.liveStreamManager.userState.enterUser
-        .addListener(_onRemoteUserEnterRoom);
+    widget.liveStreamManager.userState.enterUser.addListener(_userEnterRoomListener);
   }
 
   @override
   void dispose() {
-    widget.liveStreamManager.userState.enterUser
-        .removeListener(_onRemoteUserEnterRoom);
+    _networkInfoManager.dispose();
+    widget.liveStreamManager.userState.enterUser.removeListener(_userEnterRoomListener);
     super.dispose();
   }
 
@@ -57,19 +54,22 @@ class _AudienceLivingWidgetState extends State<AudienceLivingWidget> {
     final screenHeight = 1.screenHeight;
     return Stack(
       children: [
-        _buildTopMeanWidget(),
+        _buildTopMeanWidget(context),
+        _buildNetworkInfoButtonWidget(),
         _buildCoGuestWaitingAgreeWidget(),
-        _buildBarrageDisplayWidget(screenWidth),
+        _buildBarrageDisplayWidget(screenWidth, context),
         _buildGiftDisplayWidget(screenWidth, screenHeight),
-        _buildBottomMenuWidget(screenWidth),
+        _buildBottomMenuWidget(screenWidth, context),
+        _buildRotateScreenButton(context),
+        _buildNetworkToastWidget()
       ],
     );
   }
 
-  Widget _buildTopMeanWidget() {
+  Widget _buildTopMeanWidget(BuildContext context) {
     return Positioned(
       left: 16.width,
-      top: 54.height,
+      top: MediaQuery.orientationOf(context) == Orientation.portrait ? 54.height : 20.width,
       right: 16.width,
       child: SizedBox(
         height: 40.height,
@@ -107,6 +107,38 @@ class _AudienceLivingWidgetState extends State<AudienceLivingWidget> {
     );
   }
 
+  Widget _buildNetworkInfoButtonWidget() {
+    return Positioned(
+        right: 12.width,
+        top: 100.height,
+        height: 20.height,
+        width: 78.width,
+        child: ListenableBuilder(
+            listenable: Listenable.merge(
+                [widget.liveStreamManager.roomState.liveStatus, widget.liveStreamManager.coGuestState.coGuestStatus]),
+            builder: (context, _) {
+              final liveStatus = widget.liveStreamManager.roomState.liveStatus.value;
+              if (liveStatus != LiveStatus.playing) {
+                return Container();
+              }
+              final isOnSeat =
+                  widget.liveStreamManager.coGuestState.coGuestStatus.value == ls_co_guest.CoGuestStatus.linking;
+              return NetworkInfoButton(
+                  manager: _networkInfoManager,
+                  createTime: widget.liveStreamManager.roomState.createTime,
+                  isAudience: !isOnSeat);
+            }));
+  }
+
+  Widget _buildNetworkToastWidget() {
+    return ValueListenableBuilder(
+        valueListenable: _networkInfoManager.state.showToast,
+        builder: (context, showToast, _) {
+          return Center(
+              child: Visibility(visible: showToast, child: NetworkStatusToastWidget(manager: _networkInfoManager)));
+        });
+  }
+
   Widget _buildCoGuestWaitingAgreeWidget() {
     return Positioned(
         right: 8.width,
@@ -117,17 +149,17 @@ class _AudienceLivingWidgetState extends State<AudienceLivingWidget> {
         ));
   }
 
-  Widget _buildBarrageDisplayWidget(double screenWidth) {
+  Widget _buildBarrageDisplayWidget(double screenWidth, BuildContext context) {
+    final orientation = MediaQuery.orientationOf(context);
     return Positioned(
-      left: 16.width,
-      bottom: 80.height,
+      left: orientation == Orientation.portrait ? 16.width : 35.height,
+      bottom: orientation == Orientation.portrait ? 80.height : 20.width,
       height: 182.height,
       width: screenWidth - 72.width,
       child: ValueListenableBuilder(
         valueListenable: widget.liveCoreController.roomState.liveStatus,
         builder: (BuildContext context, value, Widget? child) {
-          if (widget.liveCoreController.roomState.liveStatus.value !=
-              LiveStatus.playing) {
+          if (widget.liveStreamManager.roomState.liveStatus.value != LiveStatus.playing) {
             return const SizedBox.shrink();
           }
 
@@ -147,27 +179,59 @@ class _AudienceLivingWidgetState extends State<AudienceLivingWidget> {
       child: ValueListenableBuilder(
         valueListenable: widget.liveCoreController.roomState.liveStatus,
         builder: (BuildContext context, value, Widget? child) {
-          if (widget.liveCoreController.roomState.liveStatus.value !=
-              LiveStatus.playing) {
+          if (widget.liveStreamManager.roomState.liveStatus.value != LiveStatus.playing) {
             return const SizedBox.shrink();
           }
 
           _initGiftDisPlayController();
-          return GiftDisplayWidget(controller: _giftDisplayController!);
+          return GiftPlayWidget(giftPlayController: _giftPlayController!);
         },
       ),
     );
   }
 
-  Widget _buildBottomMenuWidget(double screenWidth) {
+  Widget _buildBottomMenuWidget(double screenWidth, BuildContext context) {
     return Positioned(
       left: 0,
       bottom: 34.height,
       height: 36.height,
       width: screenWidth,
-      child: AudienceBottomMenuWidget(
-        liveCoreController: widget.liveCoreController,
-        liveStreamManager: widget.liveStreamManager,
+      child: Visibility(
+        visible: MediaQuery.orientationOf(context) == Orientation.portrait,
+        child: AudienceBottomMenuWidget(
+          liveCoreController: widget.liveCoreController,
+          liveStreamManager: widget.liveStreamManager,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRotateScreenButton(BuildContext context) {
+    final orientation = MediaQuery.orientationOf(context);
+    return Positioned(
+      right: orientation == Orientation.portrait ? 10.width : 20.height,
+      top: orientation == Orientation.portrait ? 475.height : 185.width,
+      height: 32.radius,
+      width: 32.radius,
+      child: ValueListenableBuilder(
+        valueListenable: widget.liveStreamManager.roomState.roomVideoStreamIsLandscape,
+        builder: (BuildContext context, value, Widget? child) {
+          return Visibility(
+            visible: value,
+            child: IconButton(
+              icon: Image.asset(
+                LiveImages.rotateScreen,
+                package: Constants.pluginName,
+                width: 32.radius,
+                height: 32.radius,
+                fit: BoxFit.fill,
+              ),
+              iconSize: 32.radius,
+              padding: EdgeInsets.zero,
+              onPressed: () => _onRotateButtonTapped(orientation),
+            ),
+          );
+        },
       ),
     );
   }
@@ -186,7 +250,7 @@ extension on _AudienceLivingWidgetState {
   }
 
   void _initGiftDisPlayController() {
-    if (_giftDisplayController != null) {
+    if (_giftPlayController != null) {
       return;
     }
 
@@ -196,79 +260,60 @@ extension on _AudienceLivingWidgetState {
       selfUserId: widget.liveCoreController.userState.selfInfo.userId,
     ));
 
-    final ownerInfo = GiftUser(
-      userId: widget.liveCoreController.roomState.ownerInfo.userId,
-      avatarUrl: widget.liveCoreController.roomState.ownerInfo.avatarUrl,
-      userName: widget.liveCoreController.roomState.ownerInfo.userName,
-      level: "66",
-    );
-
-    final selfInfo = GiftUser(
-      userId: widget.liveCoreController.userState.selfInfo.userId,
-      avatarUrl: widget.liveCoreController.userState.selfInfo.avatarUrl,
-      userName: widget.liveCoreController.userState.selfInfo.userName,
-      level: "32",
-    );
-
-    _giftDisplayController = GiftDisplayController(
-      roomId: widget.liveCoreController.roomState.roomId,
-      owner: ownerInfo,
-      self: selfInfo,
-    );
-    _giftDisplayController?.setGiftCallback(
-      onReceiveGiftCallback: _insertToBarrageMessage,
-      onSendGiftCallback: _insertToBarrageMessage,
-    );
+    _giftPlayController = GiftPlayController(
+        roomId: widget.liveCoreController.roomState.roomId, language: DeviceLanguage.getCurrentLanguageCode(context));
+    _giftPlayController?.onReceiveGiftCallback = _insertToBarrageMessage;
   }
 
   void _onRemoteUserEnterRoom() {
     final userInfo = widget.liveStreamManager.userState.enterUser.value;
     BarrageUser barrageUser = BarrageUser();
     barrageUser.userId = userInfo.userId;
-    barrageUser.userName =
-        userInfo.userName.isNotEmpty ? userInfo.userName : userInfo.userId;
+    barrageUser.userName = userInfo.userName.isNotEmpty ? userInfo.userName : userInfo.userId;
     barrageUser.avatarUrl = userInfo.avatarUrl;
     barrageUser.level = "66";
 
     Barrage barrage = Barrage();
     barrage.user = barrageUser;
-    barrage.content =
-        LiveKitLocalizations.of(Global.appContext())!.common_entered_room;
+    barrage.content = LiveKitLocalizations.of(Global.appContext())!.common_entered_room;
     _barrageDisplayController?.insertMessage(barrage);
   }
 
-  void _insertToBarrageMessage(GiftMessage message) {
+  void _insertToBarrageMessage(TUIGiftInfo giftInfo, int count, TUIUserInfo sender) {
+    final receiver = widget.liveCoreController.roomState.ownerInfo;
+    if (receiver.userId == widget.liveCoreController.userState.selfInfo.userId) {
+      receiver.userName = LiveKitLocalizations.of(Global.appContext())!.common_gift_me;
+    }
+
     Barrage barrage = Barrage();
     barrage.content = "gift";
-    barrage.user.userId = message.sender?.userId ?? "";
-    barrage.user.userName =
-        message.sender?.userName ?? message.sender?.userId ?? "";
-    barrage.user.avatarUrl = message.sender?.avatarUrl ?? "";
-    barrage.user.level = message.sender?.level ?? "66";
+    barrage.user.userId = sender.userId;
+    barrage.user.userName = sender.userName.isNotEmpty ? sender.userName : sender.userId;
+    barrage.user.avatarUrl = sender.avatarUrl;
     barrage.extInfo[Constants.keyGiftViewType] = Constants.valueGiftViewType;
-    barrage.extInfo[Constants.keyGiftName] = message.gift?.giftName;
-    barrage.extInfo[Constants.keyGiftCount] = message.giftCount;
-    barrage.extInfo[Constants.keyGiftImage] = message.gift?.imageUrl;
-    barrage.extInfo[Constants.keyGiftReceiverUserId] =
-        message.receiver?.userId ?? "";
-    barrage.extInfo[Constants.keyGiftReceiverUsername] =
-        message.receiver?.userName ?? message.receiver?.userId ?? "";
+    barrage.extInfo[Constants.keyGiftName] = giftInfo.name;
+    barrage.extInfo[Constants.keyGiftCount] = count;
+    barrage.extInfo[Constants.keyGiftImage] = giftInfo.iconUrl;
+    barrage.extInfo[Constants.keyGiftReceiverUserId] = receiver.userId;
+
+    barrage.extInfo[Constants.keyGiftReceiverUsername] = receiver.userName;
     _barrageDisplayController?.insertMessage(barrage);
   }
 
   void _onCloseIconTap() {
-    if (widget.liveCoreController.coGuestState.coGuestStatus.value !=
-        CoGuestStatus.linking) {
+    if (widget.liveCoreController.coGuestState.coGuestStatus.value != CoGuestStatus.linking) {
       widget.liveCoreController.leaveLiveStream();
       Navigator.pop(context);
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+      ]);
       return;
     }
 
     final actionSheetItems = [
       ActionSheetModel(
         isCenter: true,
-        text: LiveKitLocalizations.of(Global.appContext())!
-            .common_text_terminate_connection_tips,
+        text: LiveKitLocalizations.of(Global.appContext())!.common_audience_end_link_tips,
         textStyle: const TextStyle(
           color: LiveColors.notStandardWhite30Transparency,
           fontSize: 12,
@@ -279,8 +324,7 @@ extension on _AudienceLivingWidgetState {
       ),
       ActionSheetModel(
         isCenter: true,
-        text: LiveKitLocalizations.of(Global.appContext())!
-            .common_text_terminate_connection,
+        text: LiveKitLocalizations.of(Global.appContext())!.common_end_link,
         textStyle: const TextStyle(
           color: LiveColors.designStandardFlowkitRed,
           fontSize: 16,
@@ -291,8 +335,7 @@ extension on _AudienceLivingWidgetState {
       ),
       ActionSheetModel(
         isCenter: true,
-        text: LiveKitLocalizations.of(Global.appContext())!
-            .common_text_leave_room,
+        text: LiveKitLocalizations.of(Global.appContext())!.common_exit_live,
         textStyle: const TextStyle(
           color: LiveColors.designStandardFlowkitWhite,
           fontSize: 16,
@@ -322,5 +365,18 @@ extension on _AudienceLivingWidgetState {
           break;
       }
     });
+  }
+
+  void _onRotateButtonTapped(Orientation currentOrientation) {
+    if (currentOrientation == Orientation.portrait) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ]);
+    } else {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+      ]);
+    }
   }
 }
