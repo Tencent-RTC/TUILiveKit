@@ -16,6 +16,15 @@
         android:src="@drawable/livekit_function_settings"
         tools:ignore="ContentDescription" />
 
+    <ImageView
+        android:id="@+id/iv_song_request"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="8dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/livekit_ic_music"
+        tools:ignore="ContentDescription" />
 
     <RelativeLayout
         android:layout_gravity="center_vertical"

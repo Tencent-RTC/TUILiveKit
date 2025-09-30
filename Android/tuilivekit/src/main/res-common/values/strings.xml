@@ -17,6 +17,7 @@
     <string name="common_connect_inviting">Waiting</string>
     <string name="common_connect_inviting_append">invite you to host together</string>
     <string name="common_connect_request_rejected">Connection application has been rejected</string>
+    <string name="common_connect_invitation_timeout">Invitation has timed out</string>
     <string name="common_connection">Start Co-hosting</string>
     <string name="common_connection_list_title">Connecting Streamers(%1$d)</string>
     <string name="common_connection_room_full">The number of co-hosting has exceeded the maximum limit.</string>
@@ -60,7 +61,7 @@
     <string name="common_mute_video_by_owner">The anchor disabled your video</string>
     <string name="common_recommended_list">Suggested Hosts</string>
     <string name="common_seat_application_title">Link Application(%1$d)</string>
-    <string name="common_seat_list_title">Current Mic (%1$d/%2$d)</string>
+    <string name="common_seat_list_title">Current Mic (%1$d)</string>
     <string name="common_send_message_disabled">You have been muted in the current room</string>
     <string name="common_send_message_enable">You have been unmuted in the current room</string>
     <string name="common_setting_done">Done</string>
@@ -81,6 +82,23 @@
     <string name="common_video_ultimate">Ultimate-Video</string>
     <string name="common_link_guest">Guest</string>
     <string name="common_link_host">Host</string>
+    <string name="live_barrage_anchor">Anchor</string>
+    <string name="live_barrage_error_content_is_long">The content is too long, please reduce the content and try again</string>
+    <string name="live_barrage_error_disable_message_by_admin">You have been muted in the current room</string>
+    <string name="live_barrage_error_failed">Temporarily Unclassified General Error</string>
+    <string name="live_barrage_error_freq_limit">Request Rate Limited, Please Try Again Later</string>
+    <string name="live_barrage_error_network">The network is abnormal, please try again later</string>
+    <string name="live_barrage_error_sensitive_word">Sensitive words are detected, please modify it and try again</string>
+    <string name="live_barrage_text_hint">Join Chat!</string>
+    <string name="live_error_connection_notexit">The room you are invited to connect to does not exist</string>
+    <string name="live_error_connection_retry">Internal error, it is recommended to try again.</string>
+    <string name="livelist_loading">Loading...</string>
+    <string name="livelist_no_more_data">There is no more data</string>
+    <string name="livelist_empty_data">Please start a live room</string>
+    <string name="livelist_viewed_audience_count">%1$d people viewed</string>
+    <string name="livelist_exit_float_window_tip">Live streaming in progress. Please try again later.</string>
+    <string name="livelist_click_enter_room">Click to enter the live room</string>
+    <string name="livelist_click_live">Live</string>
     <string name="common_audience_end_link_tips">You are currently co-guesting with other streamers. Would you like to [End Co-guest] or [Exit Live] ?</string>
     <string name="common_exit_live">Exit Live</string>
     <string name="common_gift_me">Me</string>
@@ -94,6 +112,7 @@
     <string name="common_client_error_camera_not_authorized">Camera has No System Authorization, Check System Authorization</string>
     <string name="common_client_error_camera_occupied">Camera is Occupied, Check if Other Process is Using Camera</string>
     <string name="common_client_error_camera_start_fail">System Issue, Failed to Open Camera. Check if Camera Device is Normal</string>
+    <string name="common_client_error_connection_connecting">The room you are invited to connect to is already in the invitation list or is already connected.</string>
     <string name="common_client_error_exit_not_supported_for_room_owner">Room Owner Does Not Support Leaving the Room, Room Owner Can Only Close the Room</string>
     <string name="common_client_error_failed">Temporarily Unclassified General Error</string>
     <string name="common_client_error_freq_limit">Request Rate Limited, Please Try Again Later</string>
@@ -137,6 +156,7 @@
     <string name="common_server_error_call_in_progress">The device operation failed while in a call</string>
     <string name="common_ear_return_volume">Ear Monitor Volume</string>
     <string name="common_fan_count">Fans</string>
+    <string name="live_barrage_warning_not_empty">input can\'t be empty!</string>
     <string name="common_seat_management">Seat</string>
     <string name="common_anchor_audience_list_panel_title">Online audience</string>
     <string name="common_app_running">Running</string>
@@ -281,7 +301,8 @@
     <string name="common_voiceroom_unlock">Unlock Seat</string>
     <string name="common_voiceroom_unmuted_seat">Unmute</string>
     <string name="common_waiting_pass">Waiting</string>
-    <string name="common_accept">Accept</string>
+    <string name="live_barrage_agree">Agree</string>
+    <string name="live_barrage_btn_send">Send</string>
     <string name="common_video_status">Video Status</string>
     <string name="common_audio_status">Audio Status</string>
     <string name="common_device_temp">Device Temperature</string>
@@ -325,4 +346,19 @@
     <string name="common_template_layout_co_guest">Layout co-guest</string>
     <string name="common_template_layout_co_host">Layout co-host</string>
     <string name="common_template_layout">Layout</string>
+    <string name="karaoke_chat_room">Chat Room</string>
+    <string name="karaoke_ktv_room">KTV Room</string>
+    <string name="common_video_settings">Video settings</string>
+    <string name="live_video_resolution">Resolution</string>
+    <string name="live_video_reduce_resolution">Reduce resolution</string>
+    <string name="live_video_resolution_changed">resolution changed to</string>
+    <string name="common_permission_camera">Camera</string>
+    <string name="common_permission_camera_reason">Needs access to your camera, and it can be used for functions such as Live etc. For beauty filters to work, we will collect the facial information captured by your camera in real time to detect your facial features.</string>
+    <string name="common_permission_mic_reason">Needs access to your microphone, and it can be used for functions such as Live etc. such as Live etc.</string>
+    <string name="common_permission_microphone">Microphone</string>
+    <string name="common_permission_separator">,</string>
+    <string name="common_permission_tips">Please turn on the %1$s permission first</string>
+    <string name="common_permission_title">%1$s applies for access to the %2$s</string>
+    <string name="common_seat_number">%d</string>
+    <string name="common_template_601_ui_exception_toast">This layout template may display abnormally on certain models. It is recommended to change to another layout template.</string>
 </resources>

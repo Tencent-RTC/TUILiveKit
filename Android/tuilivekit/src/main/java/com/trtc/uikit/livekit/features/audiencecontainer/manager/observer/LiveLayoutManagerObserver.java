@@ -33,6 +33,14 @@ public class LiveLayoutManagerObserver extends TUILiveLayoutManager.Observer {
         }
     }
 
+    @Override
+    public void onSeatLayoutChanged(String roomId, TUILiveLayoutManager.SeatLayout layout) {
+        AudienceManager manager = mLiveManager.get();
+        if (manager != null) {
+            manager.getRoomManager().onSeatLayoutChanged(roomId, layout);
+        }
+    }
+
     private class CanvasInfo {
         private int width;
         private int height;

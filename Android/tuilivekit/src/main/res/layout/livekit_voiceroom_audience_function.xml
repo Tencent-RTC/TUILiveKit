@@ -23,6 +23,16 @@
         android:src="@drawable/livekit_ic_hand_up"
         tools:ignore="ContentDescription" />
 
+    <ImageView
+        android:id="@+id/iv_ktv"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="8dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/livekit_ic_music"
+        tools:ignore="ContentDescription" />
+
     <RelativeLayout
         android:id="@+id/rl_like"
         android:layout_width="32dp"

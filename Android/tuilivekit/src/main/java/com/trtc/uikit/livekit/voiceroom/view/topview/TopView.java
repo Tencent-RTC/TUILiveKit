@@ -1,5 +1,8 @@
 package com.trtc.uikit.livekit.voiceroom.view.topview;
 
+import static com.trtc.uikit.livekit.common.ConstantsKt.EVENT_KEY_LIVE_KIT;
+import static com.trtc.uikit.livekit.common.ConstantsKt.EVENT_SUB_KEY_CLOSE_VOICE_ROOM;
+
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -15,7 +18,6 @@ import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.component.audiencelist.AudienceListView;
 import com.trtc.uikit.livekit.component.roominfo.LiveInfoView;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
-import com.trtc.uikit.livekit.voiceroom.manager.api.Constants;
 import com.trtc.uikit.livekit.voiceroom.view.BasicView;
 
 import java.util.HashMap;
@@ -83,7 +85,7 @@ public class TopView extends BasicView {
 
     private void initCloseView() {
         ImageView mImageClose = findViewById(R.id.iv_close);
-        mImageClose.setOnClickListener((view) -> TUICore.notifyEvent(Constants.EVENT_KEY_LIVE_KIT,
-                Constants.EVENT_SUB_KEY_CLOSE_VOICE_ROOM, null));
+        mImageClose.setOnClickListener((view) -> TUICore.notifyEvent(EVENT_KEY_LIVE_KIT,
+                EVENT_SUB_KEY_CLOSE_VOICE_ROOM, null));
     }
 }

@@ -15,7 +15,7 @@ import com.tencent.qcloud.tuicore.util.ScreenUtil;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.features.audiencecontainer.manager.AudienceManager;
-import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
+import io.trtc.tuikit.atomicxcore.api.LiveCoreView;
 
 @SuppressLint("ViewConstructor")
 public class EndLiveStreamDialog extends PopupDialog {

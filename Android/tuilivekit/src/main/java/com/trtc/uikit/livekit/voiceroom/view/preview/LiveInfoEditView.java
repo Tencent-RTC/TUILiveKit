@@ -17,8 +17,8 @@ import androidx.lifecycle.Observer;
 
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.ConstantsKt;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
-import com.trtc.uikit.livekit.voiceroom.manager.api.Constants;
 import com.trtc.uikit.livekit.voiceroom.state.RoomState;
 import com.trtc.uikit.livekit.voiceroom.view.BasicView;
 
@@ -123,7 +123,7 @@ public class LiveInfoEditView extends BasicView {
                 StreamPresetImagePicker.Config config = new StreamPresetImagePicker.Config();
                 config.title = mContext.getString(R.string.common_cover);
                 config.confirmButtonText = mContext.getString(R.string.common_set_as_cover);
-                config.data = Arrays.asList(Constants.COVER_URL_LIST);
+                config.data = ConstantsKt.getCOVER_URL_LIST();
                 config.currentImageUrl = mRoomState.coverURL.getValue();
                 mStreamPresetImagePicker = new StreamPresetImagePicker(mContext, config);
                 mStreamPresetImagePicker.setOnConfirmListener(imageUrl

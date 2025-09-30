@@ -16,8 +16,13 @@ import com.trtc.uikit.livekit.voiceroom.state.SeatState;
 import com.trtc.uikit.livekit.voiceroomcore.SeatGridView;
 import com.trtc.uikit.livekit.voiceroomcore.VoiceRoomDefine;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import io.trtc.tuikit.atomicxcore.api.CompletionHandler;
+import io.trtc.tuikit.atomicxcore.api.LiveSeatStore;
 
 public class SeatActionSheetGenerator {
     private static final LiveKitLogger LOGGER = LiveKitLogger.getVoiceRoomLogger("SeatActionSheetGenerator");
@@ -26,15 +31,18 @@ public class SeatActionSheetGenerator {
     private final VoiceRoomManager mVoiceRoomManager;
     private final SeatManager      mSeatManager;
     private final SeatGridView     mSeatGridView;
+    private final LiveSeatStore    mLiveSeatStore;
 
     private SeatInvitationDialog mSeatInvitationDialog;
     private UserManagerDialog    mUserManagerDialog;
 
+
     public SeatActionSheetGenerator(Context context, VoiceRoomManager voiceRoomManager, SeatGridView seatGridView) {
         mContext = context;
         mVoiceRoomManager = voiceRoomManager;
-        mSeatManager = mVoiceRoomManager.getSeatManager();
+        mSeatManager = voiceRoomManager.getSeatManager();
         mSeatGridView = seatGridView;
+        mLiveSeatStore = LiveSeatStore.create(voiceRoomManager.getRoomState().roomId);
     }
 
     public List<ListMenuInfo> generate(TUIRoomDefine.SeatInfo seatInfo) {
@@ -138,19 +146,20 @@ public class SeatActionSheetGenerator {
             }
 
             @Override
-            public void onCancelled(TUIRoomDefine.UserInfo userInfo) {
+            public void onCancelled(@NotNull TUIRoomDefine.UserInfo userInfo) {
                 mSeatManager.updateLinkState(SeatState.LinkStatus.NONE);
             }
 
             @Override
-            public void onTimeout(TUIRoomDefine.UserInfo userInfo) {
+            public void onTimeout(@NotNull TUIRoomDefine.UserInfo userInfo) {
                 mSeatManager.updateLinkState(SeatState.LinkStatus.NONE);
                 ToastUtil.toastShortMessage(TUIConfig.getAppContext().getString(
                         R.string.common_voiceroom_take_seat_timeout));
             }
 
             @Override
-            public void onError(TUIRoomDefine.UserInfo userInfo, TUICommonDefine.Error error, String message) {
+            public void onError(@NotNull TUIRoomDefine.UserInfo userInfo, @NotNull TUICommonDefine.Error error,
+                                @NotNull String message) {
                 LOGGER.error("takeSeat failed,error:" + error + ",message:" + message);
                 if (error != TUICommonDefine.Error.REQUEST_ID_REPEAT) {
                     mSeatManager.updateLinkState(SeatState.LinkStatus.NONE);
@@ -177,19 +186,30 @@ public class SeatActionSheetGenerator {
     }
 
     private void lockSeat(TUIRoomDefine.SeatInfo seatInfo) {
-        TUIRoomDefine.SeatLockParams params = new TUIRoomDefine.SeatLockParams();
-        params.lockAudio = seatInfo.isAudioLocked;
-        params.lockSeat = !seatInfo.isLocked;
-        mSeatGridView.lockSeat(seatInfo.index, params, new TUIRoomDefine.ActionCallback() {
-            @Override
-            public void onSuccess() {
-            }
+        if (seatInfo.isLocked) {
+            mLiveSeatStore.unlockSeat(seatInfo.index, new CompletionHandler() {
+                @Override
+                public void onSuccess() {
+                    LOGGER.info("unlockSeat success");
+                }
 
-            @Override
-            public void onError(TUICommonDefine.Error error, String message) {
-                LOGGER.error("lockSeat failed,error:" + error + ",message:" + message);
-                ErrorLocalized.onError(error);
-            }
-        });
+                @Override
+                public void onFailure(int code, @NotNull String desc) {
+                    LOGGER.error("unlockSeat failed,error:" + code + ",message:" + desc);
+                }
+            });
+        } else {
+            mLiveSeatStore.lockSeat(seatInfo.index, new CompletionHandler() {
+                @Override
+                public void onSuccess() {
+                    LOGGER.info("lockSeat success");
+                }
+
+                @Override
+                public void onFailure(int code, @NotNull String desc) {
+                    LOGGER.error("lockSeat failed,error:" + code + ",message:" + desc);
+                }
+            });
+        }
     }
 }

@@ -15,7 +15,7 @@ import com.trtc.uikit.livekit.common.ErrorLocalized;
 import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.features.anchorboardcast.manager.AnchorManager;
 import com.trtc.uikit.livekit.features.anchorboardcast.view.cohost.panel.StandardDialog;
-import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
+import io.trtc.tuikit.atomicxcore.api.LiveCoreView;
 
 public final class AnchorEndBattleDialog extends PopupDialog {
     private static final LiveKitLogger LOGGER = LiveKitLogger.getFeaturesLogger("AnchorEndBattleDialog");

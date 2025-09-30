@@ -28,11 +28,12 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.tencent.qcloud.tuicore.util.ScreenUtil;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.component.barrage.store.model.Barrage;
 import com.trtc.uikit.livekit.component.barrage.view.adapter.BarrageItemAdapter;
 import com.trtc.uikit.livekit.component.giftaccess.service.GiftConstants;
 
 import java.security.SecureRandom;
+
+import io.trtc.tuikit.atomicxcore.api.Barrage;
 
 public final class GiftBarrageAdapter implements BarrageItemAdapter {
 
@@ -47,15 +48,16 @@ public final class GiftBarrageAdapter implements BarrageItemAdapter {
         mDefaultGiftIcon.setBounds(bounds);
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent) {
         LinearLayout ll = new LinearLayout(mContext);
         ll.addView(new TextView(mContext));
         return new GiftViewHolder(ll, mDefaultGiftIcon);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position, Barrage barrage) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position, @NonNull Barrage barrage) {
         GiftViewHolder viewHolder = (GiftViewHolder) holder;
         viewHolder.bind(barrage);
     }
@@ -85,7 +87,7 @@ public final class GiftBarrageAdapter implements BarrageItemAdapter {
 
         public void bind(Barrage barrage) {
             SpannableStringBuilder sb = new SpannableStringBuilder();
-            String sender = barrage.user.userName;
+            String sender = barrage.getSender().getUserName();
             sender = TextUtils.isEmpty(sender) ? "" : sender;
             sb.append(sender);
             int userNameColor = context.getResources().getColor(R.color.common_barrage_user_name_color);
@@ -93,11 +95,11 @@ public final class GiftBarrageAdapter implements BarrageItemAdapter {
             sb.setSpan(senderSpan, 0, sender.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
             String send = " " + context.getString(R.string.common_sent) + " ";
             sb.append(send);
-            String receiver = barrage.extInfo.get(GiftConstants.GIFT_RECEIVER_USERNAME) + " ";
+            String receiver = barrage.getExtensionInfo().get(GiftConstants.GIFT_RECEIVER_USERNAME) + " ";
             sb.append(receiver);
             ForegroundColorSpan receiverSpan = new ForegroundColorSpan(senderSpan.getForegroundColor());
             sb.setSpan(receiverSpan, sb.length() - receiver.length(), sb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-            String giftName = String.valueOf(barrage.extInfo.get(GiftConstants.GIFT_NAME));
+            String giftName = String.valueOf(barrage.getExtensionInfo().get(GiftConstants.GIFT_NAME));
             sb.append(giftName);
             int giftNameColor = context.getResources().getColor(
                     GiftConstants.MESSAGE_COLOR[random.nextInt(GiftConstants.MESSAGE_COLOR.length)]);
@@ -109,11 +111,11 @@ public final class GiftBarrageAdapter implements BarrageItemAdapter {
             imageSpan.getDrawable().setBounds(defaultGiftIcon.getBounds());
             sb.setSpan(imageSpan, giftIconSpanStart, giftIconSpanStart + 1, SPAN_EXCLUSIVE_EXCLUSIVE);
 
-            String count = String.valueOf(barrage.extInfo.get(GiftConstants.GIFT_COUNT));
+            String count = String.valueOf(barrage.getExtensionInfo().get(GiftConstants.GIFT_COUNT));
             sb.append("x").append(count).append("   ");
             textView.setText(sb);
 
-            String url = String.valueOf(barrage.extInfo.get(GiftConstants.GIFT_ICON_URL));
+            String url = String.valueOf(barrage.getExtensionInfo().get(GiftConstants.GIFT_ICON_URL));
             loadGiftIcon(url, sb, giftIconSpanStart, giftIconSpanStart + 1);
         }
 

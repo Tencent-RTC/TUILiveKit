@@ -1,8 +1,10 @@
 package com.trtc.uikit.livekit.voiceroom.manager.module;
 
 import static com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.KickedOutOfRoomReason.BY_LOGGED_ON_OTHER_DEVICE;
-import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.EVENT_KEY_LIVE_KIT;
-import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.EVENT_SUB_KEY_FINISH_ACTIVITY;
+import static com.trtc.uikit.livekit.common.ConstantsKt.EVENT_KEY_LIVE_KIT;
+import static com.trtc.uikit.livekit.common.ConstantsKt.EVENT_SUB_KEY_FINISH_ACTIVITY;
+import static com.trtc.uikit.livekit.voiceroom.state.RoomState.LiveStatus.PLAYING;
+import static com.trtc.uikit.livekit.voiceroom.state.RoomState.LiveStatus.PUSHING;
 
 import android.text.TextUtils;
 
@@ -23,12 +25,14 @@ import com.trtc.uikit.livekit.voiceroom.state.RoomState;
 import com.trtc.uikit.livekit.voiceroom.state.VoiceRoomState;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class RoomManager extends BaseManager {
     private static final LiveKitLogger LOGGER = LiveKitLogger.getVoiceRoomLogger("RoomManager");
+    private static final String KEY_LAYOUT_TYPE = "LayoutType";
 
     public RoomManager(VoiceRoomState state, IVoiceRoom service) {
         super(state, service);
@@ -104,6 +108,50 @@ public class RoomManager extends BaseManager {
 
     public void setBackgroundURL(String backgroundURL) {
         mRoomState.backgroundURL.setValue(backgroundURL);
+    }
+
+    public void setVoiceRoomLayout(RoomState.LayoutType layout) {
+        if (mRoomState.liveStatus.getValue() == PLAYING) return;
+        if (mRoomState.liveStatus.getValue() == PUSHING) {
+            String layoutStr = layout.toString();
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put(KEY_LAYOUT_TYPE, layoutStr);
+            TUIRoomEngine.sharedInstance().setRoomMetadataByAdmin(hashMap, new TUIRoomDefine.ActionCallback() {
+                @Override
+                public void onSuccess() {
+                }
+
+                @Override
+                public void onError(TUICommonDefine.Error error, String message) {
+                    LOGGER.error("setRoomMetadataByAdmin failed:error:" + error + ",errorCode:" + error.getValue() +
+                            "message:" + message);
+                    ErrorLocalized.onError(error);
+                }
+            });
+        }
+        mRoomState.layoutType.setValue(layout);
+    }
+
+    public void updateVoiceRoomLayout() {
+        if (!TextUtils.equals(mRoomState.liveInfo.ownerId, mUserState.selfInfo.userId)) {
+            List<String> keys = Arrays.asList(KEY_LAYOUT_TYPE);
+            TUIRoomEngine.sharedInstance().getRoomMetadata(keys, new TUIRoomDefine.GetRoomMetadataCallback() {
+                @Override
+                public void onSuccess(HashMap<String, String> hashMap) {
+                    String layoutType = hashMap != null ? hashMap.get(KEY_LAYOUT_TYPE) : null;
+                    if (TextUtils.equals(RoomState.LayoutType.KTVRoom.toString(), layoutType)) {
+                        mRoomState.layoutType.setValue(RoomState.LayoutType.KTVRoom);
+                    } else {
+                        mRoomState.layoutType.setValue(RoomState.LayoutType.VoiceRoom);
+                    }
+                }
+
+                @Override
+                public void onError(TUICommonDefine.Error error, String s) {
+                }
+            });
+
+        }
     }
 
     public void updateLiveBackgroundURL(String backgroundURL) {

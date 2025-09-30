@@ -17,6 +17,7 @@
     <string name="common_connect_inviting">邀請中</string>
     <string name="common_connect_inviting_append">向你發來連線邀請</string>
     <string name="common_connect_request_rejected">連線申請被拒絕</string>
+    <string name="common_connect_invitation_timeout">邀請已超時</string>
     <string name="common_connection">發起連線</string>
     <string name="common_connection_list_title">連線中(%1$d)</string>
     <string name="common_connection_room_full">當前連線人數已達最大限制。</string>
@@ -60,7 +61,7 @@
     <string name="common_mute_video_by_owner">您已被主播關閉攝像頭</string>
     <string name="common_recommended_list">推薦列表</string>
     <string name="common_seat_application_title">申請連麥(%1$d)</string>
-    <string name="common_seat_list_title">當前麥位 (%1$d/%2$d)</string>
+    <string name="common_seat_list_title">當前麥位 (%1$d)</string>
     <string name="common_send_message_disabled">當前房間內，您已被禁言</string>
     <string name="common_send_message_enable">當前房間內，您已被解除禁言</string>
     <string name="common_setting_done">完成</string>
@@ -81,6 +82,23 @@
     <string name="common_video_ultimate">至臻畫質</string>
     <string name="common_link_guest">連觀眾</string>
     <string name="common_link_host">連主播</string>
+    <string name="live_barrage_anchor">主播</string>
+    <string name="live_barrage_error_content_is_long">內容太長，請縮減內容後再試</string>
+    <string name="live_barrage_error_disable_message_by_admin">當前房間內，您已被禁言</string>
+    <string name="live_barrage_error_failed">暫未歸類的通用錯誤</string>
+    <string name="live_barrage_error_freq_limit">請求被限頻，請稍後重試</string>
+    <string name="live_barrage_error_network">網絡異常，請稍後再試</string>
+    <string name="live_barrage_error_sensitive_word">檢測到敏感詞，請修改後重試</string>
+    <string name="live_barrage_text_hint">說點什麼…</string>
+    <string name="live_error_connection_notexit">邀請連線的房間不存在</string>
+    <string name="live_error_connection_retry">內部錯誤，推薦重試一次。</string>
+    <string name="livelist_loading">正在加載...</string>
+    <string name="livelist_no_more_data">沒有更多數據了</string>
+    <string name="livelist_empty_data">請先開啟一個直播間</string>
+    <string name="livelist_viewed_audience_count">%1$d人看過</string>
+    <string name="livelist_exit_float_window_tip">正在直播中，請稍後再試。</string>
+    <string name="livelist_click_enter_room">點擊進入直播間</string>
+    <string name="livelist_click_live">直播中</string>
     <string name="common_audience_end_link_tips">當前處於連麥狀態，是否需要「斷開連麥」或「退出直播間」</string>
     <string name="common_exit_live">退出直播間</string>
     <string name="common_gift_me">我</string>
@@ -94,6 +112,7 @@
     <string name="common_client_error_camera_not_authorized">攝像頭沒有系統授權, 檢查系統授權</string>
     <string name="common_client_error_camera_occupied">攝像頭被佔用，檢查是否有其他進程使用攝像頭</string>
     <string name="common_client_error_camera_start_fail">系統問題，打開攝像頭失敗。檢查攝像頭設備是否正常</string>
+    <string name="common_client_error_connection_connecting">被邀請連線的房間已在邀請列表或者已連線。</string>
     <string name="common_client_error_exit_not_supported_for_room_owner">房主不支持退房操作，房主只能解散房間</string>
     <string name="common_client_error_failed">暫未歸類的通用錯誤</string>
     <string name="common_client_error_freq_limit">請求被限頻，請稍後重試</string>
@@ -137,6 +156,7 @@
     <string name="common_server_error_call_in_progress">正在通話中，設備操作失敗</string>
     <string name="common_ear_return_volume">耳返音量</string>
     <string name="common_fan_count">粉絲</string>
+    <string name="live_barrage_warning_not_empty">輸入不能為空</string>
     <string name="common_seat_management">麥控</string>
     <string name="common_anchor_audience_list_panel_title">在線觀眾</string>
     <string name="common_app_running">運行中</string>
@@ -281,7 +301,8 @@
     <string name="common_voiceroom_unlock">解鎖麥位</string>
     <string name="common_voiceroom_unmuted_seat">解除靜音</string>
     <string name="common_waiting_pass">待通過</string>
-    <string name="common_accept">同意</string>
+    <string name="live_barrage_agree">同意</string>
+    <string name="live_barrage_btn_send">發送</string>
     <string name="common_video_status">視頻狀態</string>
     <string name="common_audio_status">音頻狀態</string>
     <string name="common_device_temp">設備溫度</string>
@@ -325,4 +346,19 @@
     <string name="common_template_layout_co_guest">連觀眾佈置</string>
     <string name="common_template_layout_co_host">主播PK佈局</string>
     <string name="common_template_layout">佈局</string>
+    <string name="karaoke_chat_room">聊天室</string>
+    <string name="karaoke_ktv_room">KTV</string>
+    <string name="common_video_settings">視頻設置</string>
+    <string name="live_video_resolution">清晰度</string>
+    <string name="live_video_reduce_resolution">降低清晰度</string>
+    <string name="live_video_resolution_changed">清晰度已切換至</string>
+    <string name="common_permission_camera">相機</string>
+    <string name="common_permission_camera_reason">需要訪問您的相機權限，開啟後用於視頻互動等功能，在您使用美顏功能時，我們會對您實時拍攝的面部的像素信息進行實時智能識別，在識別過程中會實時收集您面部的像素信息，以為您提供更好的美顏效果。</string>
+    <string name="common_permission_mic_reason">需要訪問您的麥克風權限，開啟後用於視頻互動等功能，並且開啟後錄製的視頻才會有聲音。</string>
+    <string name="common_permission_microphone">麥克風</string>
+    <string name="common_permission_separator">、</string>
+    <string name="common_permission_tips">請先打開%1$s權限</string>
+    <string name="common_permission_title">%1$s申請獲取%2$s權限</string>
+    <string name="common_seat_number">%d</string>
+    <string name="common_template_601_ui_exception_toast">此佈局模板在特定機型上會顯示異常，建議更換其他佈局模板</string>
 </resources>

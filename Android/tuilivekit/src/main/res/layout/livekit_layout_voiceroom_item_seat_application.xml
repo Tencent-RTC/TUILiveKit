@@ -50,7 +50,7 @@
         android:layout_toStartOf="@+id/tv_reject"
         android:background="@drawable/livekit_link_mic_accept_background"
         android:gravity="center"
-        android:text="@string/common_accept"
+        android:text="@string/common_receive"
         android:textColor="@color/common_design_standard_flowkit_white"
         android:textSize="12sp" />
 </RelativeLayout>

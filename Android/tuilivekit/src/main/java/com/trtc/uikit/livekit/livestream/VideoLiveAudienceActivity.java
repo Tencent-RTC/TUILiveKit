@@ -1,8 +1,8 @@
 package com.trtc.uikit.livekit.livestream;
 
-import static com.trtc.uikit.livekit.common.utils.MutableLiveDataUtils.setValue;
-import static com.trtc.uikit.livekit.features.audiencecontainer.manager.Constants.EVENT_KEY_LIVE_KIT;
-import static com.trtc.uikit.livekit.features.audiencecontainer.manager.Constants.EVENT_SUB_KEY_DESTROY_AUDIENCE_CONTAINER;
+import static com.trtc.uikit.livekit.common.ConstantsKt.EVENT_KEY_LIVE_KIT;
+import static com.trtc.uikit.livekit.common.ConstantsKt.EVENT_SUB_KEY_DESTROY_LIVE_VIEW;
+import static com.trtc.uikit.livekit.common.MutableLiveDataUtils.setValue;
 
 import android.content.Context;
 import android.content.Intent;
@@ -74,6 +74,7 @@ public class VideoLiveAudienceActivity extends FullScreenActivity implements ITU
         mAudienceContainerView.addListener(this);
         mLayoutContainer.addView(mAudienceContainerView);
         VideoLiveKitImpl.createInstance(getApplicationContext()).addCallingAPIListener(this);
+        TUICore.registerEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_DESTROY_LIVE_VIEW, this);
         startForegroundService();
     }
 
@@ -87,15 +88,30 @@ public class VideoLiveAudienceActivity extends FullScreenActivity implements ITU
             } else {
                 startActivity(intent);
             }
+        } else if (TextUtils.equals(key, EVENT_KEY_LIVE_KIT) && EVENT_SUB_KEY_DESTROY_LIVE_VIEW.equals(subKey)) {
+            destroyAudienceView();
+        }
+    }
+
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        if (PictureInPictureStore.sharedInstance().getState().audienceIsPictureInPictureMode) {
+            return;
+        }
+        if (mAudienceContainerView != null && mAudienceContainerView.isLiveStreaming()) {
+            onPictureInPictureClick();
         }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        PictureInPictureStore.sharedInstance().reset();
         VideoLiveKitImpl.createInstance(getApplicationContext()).removeCallingAPIListener(this);
         stopForegroundService();
         mAudienceContainerView.removeListener(this);
+        TUICore.unRegisterEvent(this);
         setValue(PictureInPictureStore.sharedInstance().getState().roomId, "");
     }
 
@@ -145,7 +161,7 @@ public class VideoLiveAudienceActivity extends FullScreenActivity implements ITU
             mAudienceContainerView.enablePictureInPictureMode(isInPictureInPictureMode);
         }
         if (!isInPictureInPictureMode && getLifecycle().getCurrentState() == Lifecycle.State.CREATED) {
-            TUICore.notifyEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_DESTROY_AUDIENCE_CONTAINER, null);
+            destroyAudienceView();
         }
     }
 
@@ -189,5 +205,15 @@ public class VideoLiveAudienceActivity extends FullScreenActivity implements ITU
             String roomId = mAudienceContainerView.getRoomId();
             setValue(PictureInPictureStore.sharedInstance().getState().roomId, roomId);
         }
+    }
+
+    private void destroyAudienceView() {
+        if (isFinishing() || isDestroyed()) {
+            return;
+        }
+        if (mAudienceContainerView != null) {
+            mAudienceContainerView.destroy();
+        }
+        finishAndRemoveTask();
     }
 }

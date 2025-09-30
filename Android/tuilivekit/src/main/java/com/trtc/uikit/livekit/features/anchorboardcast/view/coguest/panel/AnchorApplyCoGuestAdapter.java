@@ -21,15 +21,16 @@ import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
 import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.features.anchorboardcast.manager.AnchorManager;
-import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import io.trtc.tuikit.atomicxcore.api.LiveCoreView;
 
 public class AnchorApplyCoGuestAdapter extends RecyclerView.Adapter<AnchorApplyCoGuestAdapter.ApplyLinkMicViewHolder> {
     private static final LiveKitLogger LOGGER = LiveKitLogger.getFeaturesLogger("AnchorApplyCoGuestAdapter");
 
-    private final AnchorManager mLiveManage;
-    private final LiveCoreView  mLiveStream;
+    private final AnchorManager                                mLiveManage;
+    private final LiveCoreView                                 mLiveStream;
     private final Context                                      mContext;
     private final CopyOnWriteArrayList<TUIRoomDefine.UserInfo> mData = new CopyOnWriteArrayList<>();
 
@@ -84,22 +85,23 @@ public class AnchorApplyCoGuestAdapter extends RecyclerView.Adapter<AnchorApplyC
         holder.textAccept.setOnClickListener((view) -> {
             view.setEnabled(false);
             final TUIRoomDefine.UserInfo userInfo = (TUIRoomDefine.UserInfo) view.getTag();
-            mLiveStream.respondIntraRoomConnection(userInfo.userId, true, new TUIRoomDefine.ActionCallback() {
-                @Override
-                public void onSuccess() {
-                }
+            mLiveStream.respondIntraRoomConnection(userInfo.userId, true,
+                    new TUIRoomDefine.ActionCallback() {
+                        @Override
+                        public void onSuccess() {
+                        }
 
-                @Override
-                public void onError(TUICommonDefine.Error error, String message) {
-                    if (error == ALL_SEAT_OCCUPIED) {
-                        view.setEnabled(true);
-                    }
-                    ErrorLocalized.onError(error);
-                    LOGGER.error("AnchorApplyCoGuestAdapter" + " respondIntraRoomConnection failed:error:" + error +
-                            ",errorCode:" + error.getValue() + "message:" + message);
-                }
-            });
-
+                        @Override
+                        public void onError(TUICommonDefine.Error error, String message) {
+                            if (error == ALL_SEAT_OCCUPIED) {
+                                view.setEnabled(true);
+                            }
+                            ErrorLocalized.onError(error);
+                            LOGGER.error("AnchorApplyCoGuestAdapter" + " respondIntraRoomConnection " +
+                                    "failed:error:" + error +
+                                    ",errorCode:" + error.getValue() + "message:" + message);
+                        }
+                    });
         });
     }
 

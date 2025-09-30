@@ -16,9 +16,10 @@ import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
 import com.trtc.uikit.livekit.features.audiencecontainer.manager.AudienceManager;
-import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
-public class CancelRequestDialog extends PopupDialog {
+import io.trtc.tuikit.atomicxcore.api.LiveCoreView;
+
+public class CancelRequestDialog extends PopupDialog implements AudienceManager.AudienceViewListener {
 
     private final LiveCoreView    mLiveStream;
     private final AudienceManager mLiveManager;
@@ -60,5 +61,22 @@ public class CancelRequestDialog extends PopupDialog {
         });
 
         setView(view);
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mLiveManager.addAudienceViewListener(this);
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mLiveManager.removeAudienceViewListener(this);
+    }
+
+    @Override
+    public void onRoomDismissed(String roomId) {
+        dismiss();
     }
 }

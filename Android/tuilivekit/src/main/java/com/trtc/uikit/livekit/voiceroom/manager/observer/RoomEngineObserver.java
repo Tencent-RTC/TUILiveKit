@@ -1,6 +1,7 @@
 package com.trtc.uikit.livekit.voiceroom.manager.observer;
 
-import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.EVENT_SUB_KEY_FINISH_ACTIVITY;
+import static com.trtc.uikit.livekit.common.ConstantsKt.EVENT_KEY_LIVE_KIT;
+import static com.trtc.uikit.livekit.common.ConstantsKt.EVENT_SUB_KEY_FINISH_ACTIVITY;
 
 import com.google.gson.Gson;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
@@ -8,7 +9,6 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomObserver;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.uikit.livekit.common.LiveKitLogger;
-import com.trtc.uikit.livekit.features.audiencecontainer.manager.Constants;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
 
 import java.util.HashMap;
@@ -56,7 +56,7 @@ public class RoomEngineObserver extends TUIRoomObserver {
         if (mVoiceRoomManager != null) {
             Map<String, Object> params = new HashMap<>();
             params.put("roomId", mVoiceRoomManager.getRoomState().roomId);
-            TUICore.notifyEvent(Constants.EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_FINISH_ACTIVITY, params);
+            TUICore.notifyEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_FINISH_ACTIVITY, params);
         } else {
             LOGGER.error(hashCode() + " onKickedOffLine: mVoiceRoomManager is null");
         }

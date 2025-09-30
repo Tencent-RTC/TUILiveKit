@@ -1,4 +1,4 @@
 include ':app'
 include ':debug'
 include ':tuilivekit'
-include ':ktv'
+include(":atomic_x")

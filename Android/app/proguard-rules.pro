@@ -52,9 +52,12 @@
 -dontwarn okhttp3.**
 -dontwarn okio.**
 
+-keep class io.trtc.tuikit.atomicx.karaoke.** { *; }
+
 # TRTC SDK Viesion >= 12.5.0
 -dontwarn com.tencent.rtmp.video.BaseBridge$BaseBridgeCallback
 -dontwarn com.tencent.rtmp.video.BaseBridge
 -dontwarn com.tencent.rtmp.video.VirtualDisplayListener
 -dontwarn com.tencent.rtmp.video.VirtualDisplayManagerProxy
 -dontwarn com.tencent.rtmp.video.VirtualDisplayWrapper
+-dontwarn kotlinx.parcelize.Parcelize

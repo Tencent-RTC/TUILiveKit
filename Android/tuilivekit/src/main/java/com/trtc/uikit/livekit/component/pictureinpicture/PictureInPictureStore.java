@@ -1,6 +1,7 @@
 package com.trtc.uikit.livekit.component.pictureinpicture;
 
-import static com.trtc.uikit.livekit.common.utils.MutableLiveDataUtils.setValue;
+
+import static com.trtc.uikit.livekit.common.MutableLiveDataUtils.setValue;
 
 public class PictureInPictureStore {
     private volatile static PictureInPictureStore sInstance;
@@ -28,5 +29,12 @@ public class PictureInPictureStore {
 
     public PictureInPictureState getState() {
         return mState;
+    }
+
+    public void reset() {
+        mState.roomId.setValue("");
+        mState.anchorIsPictureInPictureMode = false;
+        mState.audienceIsPictureInPictureMode = false;
+        mState.isAnchorStreaming = false;
     }
 }

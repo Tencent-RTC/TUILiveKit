@@ -1,6 +1,8 @@
 package com.trtc.uikit.livekit.livestream;
 
-import static com.trtc.uikit.livekit.common.utils.MutableLiveDataUtils.setValue;
+import static com.trtc.uikit.livekit.common.ConstantsKt.EVENT_KEY_LIVE_KIT;
+import static com.trtc.uikit.livekit.common.ConstantsKt.EVENT_SUB_KEY_DESTROY_LIVE_VIEW;
+import static com.trtc.uikit.livekit.common.MutableLiveDataUtils.setValue;
 import static com.trtc.uikit.livekit.features.anchorboardcast.AnchorViewDefine.RoomBehavior.CREATE_ROOM;
 import static com.trtc.uikit.livekit.features.anchorboardcast.AnchorViewDefine.RoomBehavior.ENTER_ROOM;
 
@@ -13,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -91,6 +94,7 @@ public class VideoLiveAnchorActivity extends FullScreenActivity implements Video
             addAnchorView();
         }
         TUICore.registerEvent(KEY_EXTENSION_NAME, NOTIFY_START_ACTIVITY, this);
+        TUICore.registerEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_DESTROY_LIVE_VIEW, this);
         VideoLiveKitImpl.createInstance(getApplicationContext()).addCallingAPIListener(this);
     }
 
@@ -109,8 +113,20 @@ public class VideoLiveAnchorActivity extends FullScreenActivity implements Video
     }
 
     @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        if (PictureInPictureStore.sharedInstance().getState().anchorIsPictureInPictureMode) {
+            return;
+        }
+        if (PictureInPictureStore.sharedInstance().getState().isAnchorStreaming) {
+            onClickFloatWindow();
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+        PictureInPictureStore.sharedInstance().reset();
         TUICore.unRegisterEvent(this);
         if (mAnchorPrepareView != null) {
             mAnchorPrepareView.removeAnchorPrepareViewListener(this);
@@ -136,7 +152,9 @@ public class VideoLiveAnchorActivity extends FullScreenActivity implements Video
         }
         if (!isInPictureInPictureMode && getLifecycle().getCurrentState() == Lifecycle.State.CREATED) {
             finishAndRemoveTask();
-            mAnchorView.unInit();
+            if (mAnchorView != null) {
+                mAnchorView.unInit();
+            }
         }
     }
 
@@ -208,7 +226,7 @@ public class VideoLiveAnchorActivity extends FullScreenActivity implements Video
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.MATCH_PARENT);
         mLayoutContainer.addView(mAnchorEndStatisticsView, layoutParams);
-        mAnchorEndStatisticsView.setListener(this::finish);
+        mAnchorEndStatisticsView.setListener(this::finishAndRemoveTask);
     }
 
     @Override
@@ -273,6 +291,9 @@ public class VideoLiveAnchorActivity extends FullScreenActivity implements Video
                     }
                 }
             }
+        } else if (TextUtils.equals(key, EVENT_KEY_LIVE_KIT) && TextUtils.equals(subKey,
+                EVENT_SUB_KEY_DESTROY_LIVE_VIEW)) {
+            destroyAnchorView();
         }
     }
 
@@ -298,5 +319,12 @@ public class VideoLiveAnchorActivity extends FullScreenActivity implements Video
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+    }
+
+    private void destroyAnchorView() {
+        if (isFinishing() || isDestroyed()) {
+            return;
+        }
+        finishAndRemoveTask();
     }
 }

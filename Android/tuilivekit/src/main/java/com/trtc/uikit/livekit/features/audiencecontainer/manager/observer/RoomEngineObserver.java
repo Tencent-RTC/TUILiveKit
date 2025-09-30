@@ -1,11 +1,12 @@
 package com.trtc.uikit.livekit.features.audiencecontainer.manager.observer;
 
-import static com.trtc.uikit.livekit.features.audiencecontainer.manager.Constants.EVENT_KEY_LIVE_KIT;
-import static com.trtc.uikit.livekit.features.audiencecontainer.manager.Constants.EVENT_SUB_KEY_DESTROY_AUDIENCE_CONTAINER;
+import static com.trtc.uikit.livekit.common.ConstantsKt.EVENT_KEY_LIVE_KIT;
+import static com.trtc.uikit.livekit.common.ConstantsKt.EVENT_SUB_KEY_DESTROY_LIVE_VIEW;
 
 import com.google.gson.Gson;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomObserver;
+import com.tencent.qcloud.tuicore.TUIConstants;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.tuikit.common.system.ContextProvider;
@@ -31,6 +32,9 @@ public class RoomEngineObserver extends TUIRoomObserver {
         LOGGER.info(hashCode() + " onRoomDismissed:[roomId" + roomId + "]");
         ToastUtil.toastShortMessage(ContextProvider.getApplicationContext().getResources()
                 .getString(R.string.common_room_destroy));
+        TUICore.notifyEvent(
+                TUIConstants.Privacy.EVENT_ROOM_STATE_CHANGED, TUIConstants.Privacy.EVENT_SUB_KEY_ROOM_STATE_STOP, null
+        );
         AudienceManager manager = mLiveManager.get();
         if (manager != null) {
             manager.notifyOnRoomDismissed(roomId);
@@ -71,6 +75,15 @@ public class RoomEngineObserver extends TUIRoomObserver {
     }
 
     @Override
+    public void onUserVideoSizeChanged(String roomId, String userId, TUIRoomDefine.VideoStreamType streamType,
+                                       int width, int height) {
+        AudienceManager manager = mLiveManager.get();
+        if (manager != null) {
+            manager.getMediaManager().onUserVideoSizeChanged(roomId, userId, streamType, width, height);
+        }
+    }
+
+    @Override
     public void onUserVoiceVolumeChanged(Map<String, Integer> volumeMap) {
         AudienceManager manager = mLiveManager.get();
         if (manager != null) {
@@ -101,8 +114,11 @@ public class RoomEngineObserver extends TUIRoomObserver {
         LOGGER.info(hashCode() + " onKickedOffLine:[message:" + message + "]");
         ToastUtil.toastShortMessage(message);
         AudienceManager manager = mLiveManager.get();
+        TUICore.notifyEvent(
+                TUIConstants.Privacy.EVENT_ROOM_STATE_CHANGED, TUIConstants.Privacy.EVENT_SUB_KEY_ROOM_STATE_STOP, null
+        );
         if (manager != null) {
-            TUICore.notifyEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_DESTROY_AUDIENCE_CONTAINER, null);
+            TUICore.notifyEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_DESTROY_LIVE_VIEW, null);
         } else {
             LOGGER.error(hashCode() + " onKickedOffLine: AudienceManager is null");
         }
@@ -112,6 +128,9 @@ public class RoomEngineObserver extends TUIRoomObserver {
     public void onKickedOutOfRoom(String roomId, TUIRoomDefine.KickedOutOfRoomReason reason, String message) {
         LOGGER.info(hashCode() + " onKickedOutOfRoom:[roomId:" + roomId + ",reason:" + reason + ",message:"
                 + message + "]");
+        TUICore.notifyEvent(
+                TUIConstants.Privacy.EVENT_ROOM_STATE_CHANGED, TUIConstants.Privacy.EVENT_SUB_KEY_ROOM_STATE_STOP, null
+        );
         AudienceManager manager = mLiveManager.get();
         if (manager != null) {
             manager.getRoomManager().onKickedOutOfRoom(roomId, reason);

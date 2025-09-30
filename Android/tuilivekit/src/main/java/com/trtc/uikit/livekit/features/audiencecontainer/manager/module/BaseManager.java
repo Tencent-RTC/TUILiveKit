@@ -7,8 +7,8 @@ import com.trtc.uikit.livekit.features.audiencecontainer.state.CoGuestState;
 import com.trtc.uikit.livekit.features.audiencecontainer.state.MediaState;
 import com.trtc.uikit.livekit.features.audiencecontainer.state.RoomState;
 import com.trtc.uikit.livekit.features.audiencecontainer.state.UserState;
-import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine;
-import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine.CoreState;
+import io.trtc.tuikit.atomicxcore.api.deprecated.LiveCoreViewDefine;
+import io.trtc.tuikit.atomicxcore.api.deprecated.LiveCoreViewDefine.CoreState;
 
 public abstract class BaseManager {
     protected AudienceState mState;

@@ -6,7 +6,7 @@ import com.tencent.cloud.tuikit.engine.extension.TUILiveBattleManager.BattleUser
 import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.features.anchorboardcast.manager.AnchorManager;
 import com.trtc.uikit.livekit.features.anchorboardcast.manager.module.BattleManager;
-import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine;
+import io.trtc.tuikit.atomicxcore.api.deprecated.LiveCoreViewDefine;
 
 import java.lang.ref.WeakReference;
 import java.util.List;

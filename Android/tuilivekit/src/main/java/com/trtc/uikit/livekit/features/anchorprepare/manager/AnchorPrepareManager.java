@@ -5,14 +5,18 @@ import android.text.TextUtils;
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.qcloud.tuicore.TUILogin;
+import com.trtc.tuikit.common.permission.PermissionCallback;
+import com.trtc.tuikit.common.system.ContextProvider;
 import com.trtc.uikit.livekit.common.LiveKitLogger;
+import com.trtc.uikit.livekit.common.PermissionRequest;
 import com.trtc.uikit.livekit.features.anchorprepare.AnchorPrepareViewDefine;
 import com.trtc.uikit.livekit.features.anchorprepare.AnchorPrepareViewDefine.AnchorPrepareViewListener;
 import com.trtc.uikit.livekit.features.anchorprepare.AnchorPrepareViewDefine.PrepareState;
 import com.trtc.uikit.livekit.features.anchorprepare.state.AnchorPrepareConfig;
 import com.trtc.uikit.livekit.features.anchorprepare.state.AnchorPrepareState;
 import com.trtc.uikit.livekit.features.anchorprepare.state.mediator.PrepareStateMediator;
-import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
+
+import io.trtc.tuikit.atomicxcore.api.LiveCoreView;
 
 public class AnchorPrepareManager {
     private final LiveKitLogger                LOGGER = LiveKitLogger.getFeaturesLogger("AnchorPrepareManager");
@@ -70,6 +74,10 @@ public class AnchorPrepareManager {
         }
     }
 
+    public LiveCoreView getCoreView() {
+        return mCoreView;
+    }
+
     public void destroy() {
         mPrepareStateMediator.destroy();
         mListenerManager.clearAnchorPrepareViewListeners();
@@ -88,39 +96,77 @@ public class AnchorPrepareManager {
     }
 
     public void startPreview(TUIRoomDefine.ActionCallback callback) {
-        mCoreView.startCamera(Boolean.TRUE.equals(mInternalState.useFrontCamera.getValue()),
-                new TUIRoomDefine.ActionCallback() {
-                    @Override
-                    public void onSuccess() {
-                        LOGGER.info("startCamera success");
-                        mCoreView.startMicrophone(new TUIRoomDefine.ActionCallback() {
+        LOGGER.info("requestCameraPermissions:[]");
+        PermissionRequest.requestCameraPermissions(ContextProvider.getApplicationContext(), new PermissionCallback() {
+            @Override
+            public void onRequesting() {
+                LOGGER.info("requestCameraPermissions:[onRequesting]");
+            }
+
+            @Override
+            public void onGranted() {
+                LOGGER.info("requestCameraPermissions:[onGranted]");
+                mCoreView.startCamera(Boolean.TRUE.equals(mInternalState.useFrontCamera.getValue()),
+                        new TUIRoomDefine.ActionCallback() {
                             @Override
                             public void onSuccess() {
-                                LOGGER.info("startMicrophone success");
-                                if (callback != null) {
-                                    callback.onSuccess();
-                                }
+                                LOGGER.info("startCamera success, requestMicrophonePermissions");
+                                PermissionRequest.requestMicrophonePermissions(ContextProvider.getApplicationContext(), new PermissionCallback() {
+                                    @Override
+                                    public void onGranted() {
+                                        LOGGER.info("requestMicrophonePermissions success");
+                                        mCoreView.startMicrophone(new TUIRoomDefine.ActionCallback() {
+                                            @Override
+                                            public void onSuccess() {
+                                                if (callback != null) {
+                                                    callback.onSuccess();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onError(TUICommonDefine.Error error, String message) {
+                                                LOGGER.error("startMicrophone failed:error:" + error + ",message:" + message);
+                                                if (callback != null) {
+                                                    callback.onError(error, message);
+                                                }
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onDenied() {
+                                        LOGGER.error("requestCameraPermissions:[onDenied]");
+                                        if (callback != null) {
+                                            callback.onError(TUICommonDefine.Error.CAMERA_NOT_AUTHORIZED,
+                                                    "requestCameraPermissions:[onDenied"
+                                                    + "]");
+                                        }
+                                    }
+                                });
                             }
 
                             @Override
                             public void onError(TUICommonDefine.Error error, String message) {
-                                LOGGER.error("startMicrophone failed:error:" + error + ",message:" + message);
+                                LOGGER.error("startCamera failed:error:" + error + ",message:" + message);
                                 if (callback != null) {
                                     callback.onError(error, message);
                                 }
+
                             }
                         });
-                    }
+            }
 
-                    @Override
-                    public void onError(TUICommonDefine.Error error, String message) {
-                        LOGGER.error("startCamera failed:error:" + error + ",message:" + message);
-                        if (callback != null) {
-                            callback.onError(error, message);
-                        }
+            @Override
+            public void onDenied() {
+                LOGGER.error("requestCameraPermissions:[onDenied]");
+                if (callback != null) {
+                    callback.onError(TUICommonDefine.Error.CAMERA_NOT_AUTHORIZED, "requestCameraPermissions:[onDenied"
+                            + "]");
+                }
+            }
+        });
 
-                    }
-                });
+
     }
 
     public void stopPreview() {

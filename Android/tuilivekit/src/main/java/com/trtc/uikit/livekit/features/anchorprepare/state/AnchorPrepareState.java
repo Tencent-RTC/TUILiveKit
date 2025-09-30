@@ -1,5 +1,6 @@
 package com.trtc.uikit.livekit.features.anchorprepare.state;
 
+import static com.trtc.uikit.livekit.common.ConstantsKt.DEFAULT_COVER_URL;
 import static com.trtc.uikit.livekit.features.anchorprepare.AnchorPrepareViewDefine.LiveStreamPrivacyStatus.PUBLIC;
 
 import androidx.lifecycle.MutableLiveData;
@@ -7,8 +8,6 @@ import androidx.lifecycle.MutableLiveData;
 import com.trtc.uikit.livekit.features.anchorprepare.AnchorPrepareViewDefine.LiveStreamPrivacyStatus;
 
 public class AnchorPrepareState {
-    public static final String   DEFAULT_COVER_URL     = "https://liteav-test-1252463788.cos.ap-guangzhou.myqcloud.com"
-            + "/voice_room/voice_room_cover1.png";
     public static final int      MAX_INPUT_BYTE_LENGTH = 100;
     public static final String[] COVER_URL_LIST        = {
             "https://liteav-test-1252463788.cos.ap-guangzhou.myqcloud.com/voice_room/voice_room_cover1.png",

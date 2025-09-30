@@ -1,5 +1,7 @@
 package com.trtc.uikit.livekit.features.anchorprepare;
 
+import static com.trtc.uikit.livekit.component.beauty.BeautyUtils.resetBeauty;
+
 import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
@@ -25,7 +27,11 @@ import com.trtc.uikit.livekit.features.anchorprepare.state.AnchorPrepareState;
 import com.trtc.uikit.livekit.features.anchorprepare.view.function.PrepareFunctionView;
 import com.trtc.uikit.livekit.features.anchorprepare.view.liveinfoedit.LiveInfoEditView;
 import com.trtc.uikit.livekit.features.anchorprepare.view.startlive.StartLiveButton;
-import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
+
+import io.trtc.tuikit.atomicxcore.api.AudioEffectStore;
+import io.trtc.tuikit.atomicxcore.api.CoreViewType;
+import io.trtc.tuikit.atomicxcore.api.DeviceStore;
+import io.trtc.tuikit.atomicxcore.api.LiveCoreView;
 
 public class AnchorPrepareView extends FrameLayout {
     private final LiveKitLogger        LOGGER               = LiveKitLogger.getFeaturesLogger("AnchorPrepareView");
@@ -35,6 +41,7 @@ public class AnchorPrepareView extends FrameLayout {
     private       LiveCoreView         mLiveCoreView;
     private       PrepareFunctionView  mFunctionView;
     private       ImageView            mImageBack;
+    private       boolean              mIsDestroy           = false;
     private final Observer<Boolean>    mDisableMenuObserver = this::onFeatureMenuDisable;
 
     public AnchorPrepareView(Context context) {
@@ -60,7 +67,8 @@ public class AnchorPrepareView extends FrameLayout {
     public void init(String roomId, LiveCoreView liveCoreView) {
         LOGGER.info("AnchorPrepareView init. roomId:" + roomId + ",liveCoreView:" + liveCoreView);
         if (liveCoreView == null) {
-            mLiveCoreView = new LiveCoreView(getContext());
+            mLiveCoreView = new LiveCoreView(getContext(), null, 0, CoreViewType.PUSH_VIEW);
+            mLiveCoreView.setLiveId(roomId);
         } else {
             mLiveCoreView = liveCoreView;
         }
@@ -117,7 +125,10 @@ public class AnchorPrepareView extends FrameLayout {
     private void initBackView() {
         mImageBack.setOnClickListener(v -> {
             mManager.stopPreview();
-            TEBeautyStore.getInstance().unInit();
+            resetBeauty();
+            TEBeautyStore.unInit();
+            AudioEffectStore.shared().reset();
+            DeviceStore.shared().reset();
         });
     }
 
@@ -220,17 +231,35 @@ public class AnchorPrepareView extends FrameLayout {
         AnchorPrepareManager.disableFeatureMenu(disable);
     }
 
+    @Deprecated
     public void disableMenuSwitchButton(boolean disable) {
         LOGGER.info("disableMenuSwitchButton: disable = " + disable);
         AnchorPrepareManager.disableMenuSwitchButton(disable);
     }
 
+    @Deprecated
     public void disableMenuBeautyButton(boolean disable) {
         LOGGER.info("disableMenuBeautyButton: disable = " + disable);
         AnchorPrepareManager.disableMenuBeautyButton(disable);
     }
 
+    @Deprecated
     public void disableMenuAudioEffectButton(boolean disable) {
+        LOGGER.info("disableMenuAudioEffectButton: disable = " + disable);
+        AnchorPrepareManager.disableMenuAudioEffectButton(disable);
+    }
+
+    public void disableMenuSwitchCamera(boolean disable) {
+        LOGGER.info("disableMenuSwitchButton: disable = " + disable);
+        AnchorPrepareManager.disableMenuSwitchButton(disable);
+    }
+
+    public void disableMenuBeauty(boolean disable) {
+        LOGGER.info("disableMenuBeautyButton: disable = " + disable);
+        AnchorPrepareManager.disableMenuBeautyButton(disable);
+    }
+
+    public void disableMenuAudioEffect(boolean disable) {
         LOGGER.info("disableMenuAudioEffectButton: disable = " + disable);
         AnchorPrepareManager.disableMenuAudioEffectButton(disable);
     }

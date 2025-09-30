@@ -1,6 +1,6 @@
 package com.trtc.uikit.livekit.features.audiencecontainer.manager;
 
-import static com.trtc.uikit.livekit.common.utils.MutableLiveDataUtils.setValue;
+import static com.trtc.uikit.livekit.common.MutableLiveDataUtils.setValue;
 
 import com.trtc.uikit.livekit.features.audiencecontainer.AudienceContainerViewDefine;
 import com.trtc.uikit.livekit.features.audiencecontainer.manager.observer.AudienceContainerViewListenerList;

@@ -3,6 +3,8 @@ package com.trtc.uikit.livekit.voiceroom.manager.observer;
 import android.content.Context;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
@@ -30,7 +32,7 @@ public class SeatGridViewCoreObserver extends SeatGridViewObserver {
     }
 
     @Override
-    public void onSeatViewClicked(View seatView, TUIRoomDefine.SeatInfo seatInfo) {
+    public void onSeatViewClicked(@NonNull View seatView, TUIRoomDefine.SeatInfo seatInfo) {
         LOGGER.info(hashCode() + "onSeatViewClicked userId: " + seatInfo.userId);
         List<ListMenuInfo> listMenuInfoList = mSeatActionSheetGenerator.generate(seatInfo);
         if (listMenuInfoList.isEmpty()) {
@@ -44,37 +46,32 @@ public class SeatGridViewCoreObserver extends SeatGridViewObserver {
     }
 
     @Override
-    public void onUserAudioStateChanged(TUIRoomDefine.UserInfo userInfo, boolean hasAudio,
-                                        TUIRoomDefine.ChangeReason reason) {
-        LOGGER.info(hashCode() + "onUserAudioStateChanged: " + userInfo.userId + ",hasAudio:" + hasAudio);
-    }
-
-    @Override
     public void onKickedOffSeat(TUIRoomDefine.UserInfo userInfo) {
         LOGGER.info(hashCode() + "onKickedOffSeat: " + userInfo.userId);
         mVoiceRoomManager.getSeatManager().onKickedOffSeat(userInfo);
     }
 
     @Override
-    public void onSeatRequestCancelled(VoiceRoomDefine.RequestType type, TUIRoomDefine.UserInfo userInfo) {
+    public void onSeatRequestCancelled(@NonNull VoiceRoomDefine.RequestType type, TUIRoomDefine.UserInfo userInfo) {
         LOGGER.info(hashCode() + "onSeatRequestCancelled type: " + type + ",userInfo:" + userInfo.userId);
         mVoiceRoomManager.getSeatManager().onSeatRequestCancelled(type, userInfo);
     }
 
     @Override
-    public void onSeatRequestReceived(VoiceRoomDefine.RequestType type, TUIRoomDefine.UserInfo userInfo) {
+    public void onSeatRequestReceived(@NonNull VoiceRoomDefine.RequestType type, TUIRoomDefine.UserInfo userInfo) {
         LOGGER.info(hashCode() + "onSeatRequestReceived type: " + type + ",userInfo:" + userInfo.userId);
         mVoiceRoomManager.getSeatManager().onSeatRequestReceived(type, userInfo);
     }
 
     @Override
-    public void onKickedOutOfRoom(String roomId, TUIRoomDefine.KickedOutOfRoomReason reason, String message) {
+    public void onKickedOutOfRoom(@NonNull String roomId, @NonNull TUIRoomDefine.KickedOutOfRoomReason reason,
+                                  @NonNull String message) {
         LOGGER.info(hashCode() + "onKickedOutOfRoom roomId: " + roomId + ",reason:" + reason + ",message:" + message);
         mVoiceRoomManager.getRoomManager().onKickedOutOfRoom(roomId, reason, message);
     }
 
     @Override
-    public void onRoomDismissed(String roomId) {
+    public void onRoomDismissed(@NonNull String roomId) {
         LOGGER.info(hashCode() + "onRoomDismissed roomId: " + roomId);
         mVoiceRoomManager.getRoomManager().onRoomDismissed(roomId);
         mSeatActionSheetGenerator.destroy();

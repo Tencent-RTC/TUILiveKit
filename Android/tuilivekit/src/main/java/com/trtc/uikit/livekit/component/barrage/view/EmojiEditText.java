@@ -20,7 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatEditText;
 
-import com.trtc.uikit.livekit.component.barrage.service.IEmojiResource;
+import com.trtc.uikit.livekit.component.barrage.viewmodel.IEmojiResource;
 
 public class EmojiEditText extends AppCompatEditText implements EmojiLayout.EmojiListener {
 

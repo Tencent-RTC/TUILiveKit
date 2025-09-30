@@ -1,11 +1,11 @@
 package com.trtc.uikit.livekit.voiceroom.view;
 
-import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.DEFAULT_MAX_SEAT_COUNT;
-import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.EVENT_KEY_LIVE_KIT;
-import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.EVENT_PARAMS_KEY_ENABLE_SLIDE;
-import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.EVENT_SUB_KEY_CLOSE_VOICE_ROOM;
-import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.EVENT_SUB_KEY_FINISH_ACTIVITY;
-import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.EVENT_SUB_KEY_LINK_STATUS_CHANGE;
+import static com.trtc.uikit.livekit.common.ConstantsKt.DEFAULT_MAX_SEAT_COUNT;
+import static com.trtc.uikit.livekit.common.ConstantsKt.EVENT_KEY_LIVE_KIT;
+import static com.trtc.uikit.livekit.common.ConstantsKt.EVENT_PARAMS_IS_LINKING;
+import static com.trtc.uikit.livekit.common.ConstantsKt.EVENT_SUB_KEY_CLOSE_VOICE_ROOM;
+import static com.trtc.uikit.livekit.common.ConstantsKt.EVENT_SUB_KEY_FINISH_ACTIVITY;
+import static com.trtc.uikit.livekit.common.ConstantsKt.EVENT_SUB_KEY_LINK_STATUS_CHANGE;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -26,9 +26,6 @@ import com.trtc.tuikit.common.foregroundservice.AudioForegroundService;
 import com.trtc.tuikit.common.system.ContextProvider;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.LiveKitLogger;
-import com.trtc.uikit.livekit.component.audioeffect.store.AudioEffectStore;
-import com.trtc.uikit.livekit.component.barrage.store.BarrageStore;
-import com.trtc.uikit.livekit.component.gift.store.TUIGiftStore;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
 import com.trtc.uikit.livekit.voiceroom.state.RoomState;
 import com.trtc.uikit.livekit.voiceroom.state.SeatState;
@@ -36,6 +33,9 @@ import com.trtc.uikit.livekit.voiceroom.state.SeatState;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
+import io.trtc.tuikit.atomicxcore.api.AudioEffectStore;
+import io.trtc.tuikit.atomicxcore.api.DeviceStore;
 
 public class TUIVoiceRoomFragment extends Fragment implements ITUINotification {
     private static final LiveKitLogger LOGGER = LiveKitLogger.getVoiceRoomLogger("TUIVoiceRoomFragment");
@@ -80,7 +80,6 @@ public class TUIVoiceRoomFragment extends Fragment implements ITUINotification {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.livekit_voiceroom_fragment_main, container, false);
         mVoiceRoomRootView = contentView.findViewById(R.id.root_view);
-        mVoiceRoomManager.setCoreStateProvider(() -> mVoiceRoomRootView.getCoreState());
         mVoiceRoomRootView.init(mVoiceRoomManager, mRoomBehavior, mRoomParams);
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), mBackPressedCallback);
         return contentView;
@@ -118,10 +117,9 @@ public class TUIVoiceRoomFragment extends Fragment implements ITUINotification {
         super.onDestroy();
         removeObserver();
         TUICore.unRegisterEvent(this);
-        TUIGiftStore.sharedInstance().unInit(mRoomId);
-        AudioEffectStore.sharedInstance().unInit();
-        BarrageStore.sharedInstance().unInit(mRoomId);
         mVoiceRoomManager.destroy();
+        AudioEffectStore.shared().reset();
+        DeviceStore.shared().reset();
         stopForegroundService();
     }
 
@@ -142,9 +140,9 @@ public class TUIVoiceRoomFragment extends Fragment implements ITUINotification {
             mCurrentLinkStatus = linkStatus;
             Map<String, Object> params = new HashMap<>();
             if (SeatState.LinkStatus.NONE == mCurrentLinkStatus) {
-                params.put(EVENT_PARAMS_KEY_ENABLE_SLIDE, true);
+                params.put(EVENT_PARAMS_IS_LINKING, false);
             } else {
-                params.put(EVENT_PARAMS_KEY_ENABLE_SLIDE, false);
+                params.put(EVENT_PARAMS_IS_LINKING, true);
             }
             TUICore.notifyEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_LINK_STATUS_CHANGE, params);
         }

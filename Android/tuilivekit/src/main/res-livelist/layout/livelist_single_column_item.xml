@@ -10,7 +10,7 @@
         android:importantForAccessibility="no"
         android:scaleType="centerCrop" />
 
-    <com.trtc.uikit.livekit.livestreamcore.LiveCoreView
+    <io.trtc.tuikit.atomicxcore.api.LiveCoreView
         android:id="@+id/live_core_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

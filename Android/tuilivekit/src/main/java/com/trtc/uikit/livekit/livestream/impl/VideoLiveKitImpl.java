@@ -1,8 +1,9 @@
 package com.trtc.uikit.livekit.livestream.impl;
 
 import static android.content.Context.APP_OPS_SERVICE;
-import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.DEFAULT_BACKGROUND_URL;
-import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.DEFAULT_COVER_URL;
+
+import static com.trtc.uikit.livekit.common.ConstantsKt.DEFAULT_BACKGROUND_URL;
+import static com.trtc.uikit.livekit.common.ConstantsKt.DEFAULT_COVER_URL;
 
 import android.app.Activity;
 import android.app.AppOpsManager;

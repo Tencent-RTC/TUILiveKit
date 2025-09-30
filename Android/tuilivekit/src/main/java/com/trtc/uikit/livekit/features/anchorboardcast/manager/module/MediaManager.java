@@ -21,42 +21,23 @@ public class MediaManager extends BaseManager {
 
     public MediaManager(AnchorState state, IAnchorAPI service) {
         super(state, service);
-        enableUltimate(true);
-        enableH265(true);
     }
 
     @Override
     public void destroy() {
         LOGGER.info("destroy");
-        enableUltimate(false);
-        enableH265(false);
         releaseVideoMuteBitmap();
+        enableMultiPlaybackQuality(false);
     }
 
     public void setLocalVideoView(TUIVideoView view) {
         mLiveService.setLocalVideoView(view);
     }
 
-    public void enableUltimate(boolean enable) {
+    public void enableMultiPlaybackQuality(boolean enable) {
         Map<String, Object> params = new HashMap<>();
         params.put("enable", enable);
-        TUICore.callService("AdvanceSettingManager", "enableUltimate", params);
-
-        if (enable) {
-            enableBFrame(false);
-        }
-    }
-
-    public void enableBFrame(boolean enable) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("enable", enable);
-        TUICore.callService("AdvanceSettingManager", "enableBFrame", params);
-    }
-
-    public void enableH265(boolean enable) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("enable", enable);
-        TUICore.callService("AdvanceSettingManager", "enableH265", params);
+        TUICore.callService("AdvanceSettingManager", "enableMultiPlaybackQuality", params);
     }
 
     public void createVideoMuteBitmap(Context context, int bigResId, int smallResId) {
@@ -84,7 +65,7 @@ public class MediaManager extends BaseManager {
     }
 
     public void setCustomVideoProcess() {
-        TEBeautyManager.getInstance().setCustomVideoProcess();
+        TEBeautyManager.INSTANCE.setCustomVideoProcess();
     }
 
     public void enablePipMode(boolean enable) {

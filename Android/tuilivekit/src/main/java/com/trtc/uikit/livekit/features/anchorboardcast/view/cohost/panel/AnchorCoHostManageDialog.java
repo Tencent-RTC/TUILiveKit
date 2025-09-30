@@ -2,8 +2,8 @@ package com.trtc.uikit.livekit.features.anchorboardcast.view.cohost.panel;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.trtc.uikit.livekit.features.anchorboardcast.manager.Constants.EVENT_KEY_LIVE_KIT;
-import static com.trtc.uikit.livekit.features.anchorboardcast.manager.Constants.EVENT_SUB_KEY_REQUEST_CONNECTION;
+import static com.trtc.uikit.livekit.common.ConstantsKt.EVENT_KEY_LIVE_KIT;
+import static com.trtc.uikit.livekit.common.ConstantsKt.EVENT_SUB_KEY_REQUEST_CONNECTION;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,11 +11,9 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.widget.NestedScrollView;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,13 +26,18 @@ import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.common.Debug;
 import com.trtc.uikit.livekit.features.anchorboardcast.manager.AnchorManager;
+import com.trtc.uikit.livekit.features.anchorboardcast.manager.error.ConnectionErrorHandler;
 import com.trtc.uikit.livekit.features.anchorboardcast.state.CoHostState;
-import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
 import java.util.List;
 import java.util.Map;
+
+import io.trtc.tuikit.atomicxcore.api.BattleInfo;
+import io.trtc.tuikit.atomicxcore.api.BattleListener;
+import io.trtc.tuikit.atomicxcore.api.BattleStore;
+import io.trtc.tuikit.atomicxcore.api.LiveCoreView;
+import io.trtc.tuikit.atomicxcore.api.SeatUserInfo;
 
 @SuppressLint("ViewConstructor")
 public class AnchorCoHostManageDialog extends PopupDialog implements ITUINotification {
@@ -53,6 +56,16 @@ public class AnchorCoHostManageDialog extends PopupDialog implements ITUINotific
     private final Observer<List<CoHostState.ConnectionUser>> mRecommendObserver = this::onRecommendListChange;
     private final Observer<List<ConnectionUser>>             mConnectedObserver = this::onConnectedUserChange;
     private       TextView                                   mTextRecommendTitle;
+    private final BattleListener                             mBattleListener    = new BattleListener() {
+        @Override
+        public void onBattleStarted(@NonNull BattleInfo battleInfo, @NonNull SeatUserInfo inviter,
+                                    @NonNull List<SeatUserInfo> invitees) {
+            super.onBattleStarted(battleInfo, inviter, invitees);
+            if (isShowing()) {
+                dismiss();
+            }
+        }
+    };
 
     public AnchorCoHostManageDialog(Context context, AnchorManager manager, LiveCoreView liveStream) {
         super(context);
@@ -88,12 +101,14 @@ public class AnchorCoHostManageDialog extends PopupDialog implements ITUINotific
     }
 
     protected void addObserver() {
+        BattleStore.create(mAnchorManager.getCoreState().roomState.roomId.getValue()).addBattleListener(mBattleListener);
         mAnchorManager.getCoHostState().recommendUsers.observeForever(mRecommendObserver);
         mAnchorManager.getCoreState().coHostState.connectedUserList.observeForever(mConnectedObserver);
         TUICore.registerEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_REQUEST_CONNECTION, this);
     }
 
     protected void removeObserver() {
+        BattleStore.create(mAnchorManager.getCoreState().roomState.roomId.getValue()).removeBattleListener(mBattleListener);
         mAnchorManager.getCoHostState().recommendUsers.removeObserver(mRecommendObserver);
         mAnchorManager.getCoreState().coHostState.connectedUserList.removeObserver(mConnectedObserver);
         TUICore.unRegisterEvent(this);
@@ -216,40 +231,11 @@ public class AnchorCoHostManageDialog extends PopupDialog implements ITUINotific
     public void onNotifyEvent(String key, String subKey, Map<String, Object> param) {
         if (TextUtils.equals(key, EVENT_KEY_LIVE_KIT) && TextUtils.equals(subKey, EVENT_SUB_KEY_REQUEST_CONNECTION)) {
             if (param == null) {
-                showConnectionErrorToast(TUILiveConnectionManager.ConnectionCode.UNKNOWN);
+                ConnectionErrorHandler.onError(TUILiveConnectionManager.ConnectionCode.UNKNOWN);
             } else {
                 Map.Entry<String, Object> entry = param.entrySet().iterator().next();
-                showConnectionErrorToast((TUILiveConnectionManager.ConnectionCode) entry.getValue());
+                ConnectionErrorHandler.onError((TUILiveConnectionManager.ConnectionCode) entry.getValue());
             }
         }
-    }
-
-    private void showConnectionErrorToast(TUILiveConnectionManager.ConnectionCode resultCode) {
-        switch (resultCode) {
-            case CONNECTING:
-            case CONNECTING_OTHER_ROOM:
-                showConnectionToast(getContext().getString(R.string.common_connect_conflict));
-                break;
-            case CONNECTION_FULL:
-                showConnectionToast(getContext().getString(R.string.common_connection_room_full));
-                break;
-            default:
-                showConnectionToast(getContext().getString(R.string.common_connect_error));
-                break;
-        }
-    }
-
-    private void showConnectionToast(String tips) {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.livekit_connection_toast, null, true);
-
-        TextView text = view.findViewById(R.id.tv_toast_text);
-        text.setText(tips);
-        ImageView image = view.findViewById(R.id.iv_toast_image);
-        image.setImageResource(R.drawable.livekit_connection_toast_icon);
-
-        Toast toast = new Toast(view.getContext());
-        toast.setDuration(Toast.LENGTH_SHORT);
-        toast.setView(view);
-        toast.show();
     }
 }

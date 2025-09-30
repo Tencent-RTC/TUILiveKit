@@ -11,6 +11,18 @@ public class MediaManager extends BaseManager {
         super(state, service);
     }
 
+    public void updateMicrophonePermissionState(boolean hasMicrophonePermission) {
+        mMediaState.hasMicrophonePermission.setValue(hasMicrophonePermission);
+    }
+
+    public void updateMicrophoneMuteState(boolean isMuted) {
+        mMediaState.isMicrophoneMuted.setValue(isMuted);
+    }
+
+    public void updateMicrophoneOpenState(boolean isMuted) {
+        mMediaState.isMicrophoneOpened.setValue(isMuted);
+    }
+
     @Override
     public void destroy() {
         LOGGER.info("destroy");

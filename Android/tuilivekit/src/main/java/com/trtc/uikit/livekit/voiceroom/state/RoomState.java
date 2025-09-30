@@ -1,11 +1,14 @@
 package com.trtc.uikit.livekit.voiceroom.state;
 
+import static com.trtc.uikit.livekit.common.ConstantsKt.DEFAULT_BACKGROUND_URL;
+import static com.trtc.uikit.livekit.common.ConstantsKt.DEFAULT_COVER_URL;
+
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.voiceroom.manager.api.Constants;
 
 public class RoomState {
     public String                                  roomId        = "";
@@ -13,21 +16,22 @@ public class RoomState {
     public long                                    createTime    = 0;
     public TUIRoomDefine.UserInfo                  ownerInfo     = new TUIRoomDefine.UserInfo();
     public MutableLiveData<String>                 roomName      = new MutableLiveData<>("");
-    public MutableLiveData<String>                 coverURL      = new MutableLiveData<>(Constants.DEFAULT_COVER_URL);
+    public MutableLiveData<String>                 coverURL      = new MutableLiveData<>(DEFAULT_COVER_URL);
     public MutableLiveData<String>                 backgroundURL =
-            new MutableLiveData<>(Constants.DEFAULT_BACKGROUND_URL);
+            new MutableLiveData<>(DEFAULT_BACKGROUND_URL);
     public MutableLiveData<TUIRoomDefine.SeatMode> seatMode      =
             new MutableLiveData<>(TUIRoomDefine.SeatMode.FREE_TO_TAKE);
     public MutableLiveData<Integer>                userCount     = new MutableLiveData<>(0);
     public MutableLiveData<Integer>                maxSeatCount  = new MutableLiveData<>(0);
     public LiveExtraInfo                           liveExtraInfo = new LiveExtraInfo();
     public MutableLiveData<LiveStatus>             liveStatus    = new MutableLiveData<>(LiveStatus.NONE);
+    public MutableLiveData<LayoutType> layoutType = new MutableLiveData<>(LayoutType.VoiceRoom);
 
     public void reset() {
         createTime = 0;
         roomName.setValue("");
-        coverURL.setValue(Constants.DEFAULT_COVER_URL);
-        backgroundURL.setValue(Constants.DEFAULT_COVER_URL);
+        coverURL.setValue(DEFAULT_COVER_URL);
+        backgroundURL.setValue(DEFAULT_COVER_URL);
         seatMode.setValue(TUIRoomDefine.SeatMode.FREE_TO_TAKE);
         userCount.setValue(0);
         maxSeatCount.setValue(0);
@@ -90,6 +94,22 @@ public class RoomState {
         }
     }
 
+    public enum LayoutType {
+        KTVRoom("KTVRoom"),
+        VoiceRoom("ChatRoom");
+
+        private final String desc;
+
+        LayoutType(String desc) {
+            this.desc = desc;
+        }
+
+        @NonNull
+        @Override
+        public String toString() {
+            return desc;
+        }
+    }
     public static class LiveExtraInfo {
         public MutableLiveData<LiveStreamPrivacyStatus> liveMode =
                 new MutableLiveData<>(LiveStreamPrivacyStatus.PUBLIC);

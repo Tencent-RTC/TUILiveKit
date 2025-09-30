@@ -17,15 +17,22 @@ import com.tencent.cloud.tuikit.engine.common.TUIVideoView;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.qcloud.tuicore.util.ScreenUtil;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
+import com.trtc.tuikit.common.permission.PermissionCallback;
+import com.trtc.tuikit.common.system.ContextProvider;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
+import com.trtc.uikit.livekit.common.PermissionRequest;
 import com.trtc.uikit.livekit.common.ui.RoundFrameLayout;
+import com.trtc.uikit.livekit.component.beauty.BeautyUtils;
 import com.trtc.uikit.livekit.features.audiencecontainer.manager.AudienceManager;
-import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
+
+import io.trtc.tuikit.atomicxcore.api.LiveCoreView;
 
 @SuppressLint("ViewConstructor")
 public class VideoCoGuestSettingsDialog extends PopupDialog implements AudienceManager.AudienceViewListener {
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getLiveStreamLogger("VideoCoGuestSettingsDialog");
 
     private       RoundFrameLayout mRoundFrameLayout;
     private       TUIVideoView     mPreviewVideoView;
@@ -35,11 +42,11 @@ public class VideoCoGuestSettingsDialog extends PopupDialog implements AudienceM
     private final LiveCoreView     mLiveStream;
     private final AudienceManager  mAudienceManager;
 
-    public VideoCoGuestSettingsDialog(@NonNull Context context, AudienceManager manager, LiveCoreView liveStream) {
+    public VideoCoGuestSettingsDialog(@NonNull Context context, AudienceManager manager, LiveCoreView liveCoreView) {
         super(context);
         mContext = context;
         mAudienceManager = manager;
-        mLiveStream = liveStream;
+        mLiveStream = liveCoreView;
         initView();
     }
 
@@ -86,17 +93,43 @@ public class VideoCoGuestSettingsDialog extends PopupDialog implements AudienceM
             }
             view.setEnabled(false);
             ToastUtil.toastShortMessageCenter(getContext().getString(R.string.common_toast_apply_link_mic));
-            mLiveStream.requestIntraRoomConnection("", 60, true, new TUIRoomDefine.ActionCallback() {
-                @Override
-                public void onSuccess() {
-                    mAudienceManager.getCoGuestManager().updateCoGuestStates(APPLYING);
-                }
+            LOGGER.info("requestMicrophonePermissions success");
+            PermissionRequest.requestCameraPermissions(ContextProvider.getApplicationContext(),
+                    new PermissionCallback() {
+                        @Override
+                        public void onGranted() {
+                            LOGGER.info("requestCameraPermissions:[onGranted]");
+                            PermissionRequest.requestMicrophonePermissions(ContextProvider.getApplicationContext(),
+                                    new PermissionCallback() {
+                                        @Override
+                                        public void onGranted() {
+                                            mLiveStream.requestIntraRoomConnection("", 60, true,
+                                                    new TUIRoomDefine.ActionCallback() {
+                                                        @Override
+                                                        public void onSuccess() {
+                                                            mAudienceManager.getCoGuestManager().updateCoGuestStates(APPLYING);
+                                                        }
 
-                @Override
-                public void onError(TUICommonDefine.Error error, String message) {
-                    ErrorLocalized.onError(error);
-                }
-            });
+                                                        @Override
+                                                        public void onError(TUICommonDefine.Error error,
+                                                                            String message) {
+                                                            ErrorLocalized.onError(error);
+                                                        }
+                                                    });
+                                        }
+
+                                        @Override
+                                        public void onDenied() {
+                                            LOGGER.error("requestCameraPermissions:[onDenied]");
+                                        }
+                                    });
+                        }
+
+                        @Override
+                        public void onDenied() {
+                            LOGGER.error("requestCameraPermissions:[onDenied]");
+                        }
+                    });
             dismiss();
         });
     }
@@ -104,18 +137,43 @@ public class VideoCoGuestSettingsDialog extends PopupDialog implements AudienceM
     private void initPreviewVideoView() {
         mAudienceManager.getMediaManager().setLocalVideoView(mPreviewVideoView);
         boolean isFront = Boolean.TRUE.equals(mLiveStream.getCoreState().mediaState.isFrontCamera.getValue());
-        mLiveStream.startCamera(isFront, null);
+        PermissionRequest.requestCameraPermissions(ContextProvider.getApplicationContext(), new PermissionCallback() {
+            @Override
+            public void onGranted() {
+                mLiveStream.startCamera(isFront, null);
+            }
+        });
+
     }
 
     private void initRecycleSettingsOption() {
         mRecycleSettingsOption.setLayoutManager(new GridLayoutManager(mContext, 2));
         VideoCoGuestSettingsAdapter adapter = new VideoCoGuestSettingsAdapter(mContext, mAudienceManager,
                 mLiveStream);
+        adapter.setOnItemClickListener(mOnItemClickListener);
         mRecycleSettingsOption.setAdapter(adapter);
     }
 
     @Override
     public void onRoomDismissed(String roomId) {
         dismiss();
+        BeautyUtils.resetBeauty();
+        BeautyUtils.dismissBeautyDialog();
     }
+
+    private final VideoCoGuestSettingsAdapter.OnItemClickListener mOnItemClickListener =
+            new VideoCoGuestSettingsAdapter.OnItemClickListener() {
+                @Override
+                public void onBeautyItemClicked() {
+                    BeautyUtils.showBeautyDialog(mContext);
+                }
+
+                @Override
+                public void onFlipItemClicked() {
+                    boolean isFront =
+                            Boolean.TRUE.equals(mLiveStream.getCoreState().mediaState.isFrontCamera.getValue());
+                    mLiveStream.switchCamera(!isFront);
+                }
+            };
+
 }

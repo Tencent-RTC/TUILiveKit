@@ -5,11 +5,12 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.tencent.cloud.tuikit.engine.extension.TUILiveGiftManager;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.component.gift.GiftListPanelView;
+import com.trtc.uikit.livekit.component.gift.GiftListView;
 
-public final class GiftSendDialog extends BottomSheetDialog implements GiftListPanelView.OnSendGiftListener {
+import io.trtc.tuikit.atomicxcore.api.Gift;
+
+public final class GiftSendDialog extends BottomSheetDialog implements GiftListView.OnSendGiftListener {
 
     public static final String TAG = "GiftSendDialog";
 
@@ -29,7 +30,7 @@ public final class GiftSendDialog extends BottomSheetDialog implements GiftListP
     }
 
     private void init() {
-        GiftListPanelView mGiftListView = findViewById(R.id.gift_list_view);
+        GiftListView mGiftListView = findViewById(R.id.gift_list_view);
         if (mGiftListView != null) {
             mGiftListView.init(mRoomId);
             mGiftListView.setListener(this);
@@ -47,7 +48,7 @@ public final class GiftSendDialog extends BottomSheetDialog implements GiftListP
     }
 
     @Override
-    public void onSendGift(GiftListPanelView view, TUILiveGiftManager.GiftInfo gift, int count) {
+    public void onSendGift(GiftListView view, Gift gift, int count) {
         view.sendGift(gift, count);
     }
 }

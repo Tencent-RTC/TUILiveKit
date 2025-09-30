@@ -16,7 +16,7 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.features.audiencecontainer.state.BattleState.BattleUser;
 import com.trtc.uikit.livekit.features.audiencecontainer.view.BasicView;
-import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine;
+import io.trtc.tuikit.atomicxcore.api.deprecated.LiveCoreViewDefine;
 
 import java.util.ArrayList;
 import java.util.HashMap;

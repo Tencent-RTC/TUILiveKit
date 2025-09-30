@@ -23,7 +23,7 @@ import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.features.anchorboardcast.manager.AnchorManager;
 import com.trtc.uikit.livekit.features.anchorboardcast.manager.error.ConnectionErrorHandler;
 import com.trtc.uikit.livekit.features.anchorboardcast.state.CoHostState;
-import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
+import io.trtc.tuikit.atomicxcore.api.LiveCoreView;
 
 import java.util.List;
 import java.util.Map;

@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager.ConnectionUser;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
+import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.tuikit.common.system.ContextProvider;
 import com.trtc.uikit.livekit.R;
@@ -15,9 +16,13 @@ import com.trtc.uikit.livekit.features.anchorboardcast.manager.api.IAnchorAPI;
 import com.trtc.uikit.livekit.features.anchorboardcast.state.AnchorState;
 import com.trtc.uikit.livekit.features.anchorboardcast.state.CoHostState;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import io.trtc.tuikit.atomicxcore.api.LiveCoreView;
 
 public class CoHostManager extends BaseManager {
     private static final LiveKitLogger LOGGER           = LiveKitLogger.getFeaturesLogger("CoHostManager");
@@ -90,14 +95,16 @@ public class CoHostManager extends BaseManager {
     }
 
     public void onConnectionRequestReject(ConnectionUser invitee) {
-        updateRecommendListStatus();
+        updateRecommendListStatus(invitee);
         ToastUtil.toastShortMessage(ContextProvider.getApplicationContext().getResources()
                 .getString(R.string.common_connect_request_rejected));
     }
 
     public void onConnectionRequestTimeout(ConnectionUser inviter, ConnectionUser invitee) {
-        if (TextUtils.equals(inviter.roomId, mRoomState.roomId)) {
-            updateRecommendListStatus();
+        updateRecommendListStatus(invitee);
+        if (inviter.userId.equals(TUIRoomEngine.getSelfInfo().userId)) {
+            ToastUtil.toastShortMessage(ContextProvider.getApplicationContext().getResources()
+                    .getString(R.string.common_connect_invitation_timeout));
         }
     }
 
@@ -156,17 +163,9 @@ public class CoHostManager extends BaseManager {
         return false;
     }
 
-    private void updateRecommendListStatus() {
+    private void updateRecommendListStatus(ConnectionUser invitee) {
         for (CoHostState.ConnectionUser user : mCoHostState.recommendUsers.getValue()) {
-            boolean isInviting = false;
-            for (ConnectionUser requestUser : mCoreState.coHostState.sentConnectionRequestList.getValue()) {
-                if (user.roomId.equals(requestUser.roomId)) {
-                    user.connectionStatus = CoHostState.ConnectionStatus.INVITING;
-                    isInviting = true;
-                    break;
-                }
-            }
-            if (!isInviting) {
+            if (user.roomId.equals(invitee.roomId)) {
                 user.connectionStatus = CoHostState.ConnectionStatus.UNKNOWN;
             }
         }
@@ -182,6 +181,15 @@ public class CoHostManager extends BaseManager {
     }
 
     public void setCoHostLayoutTemplateId(int templateId) {
-        mLiveService.setCoHostLayoutTemplateId(templateId);
+        try {
+            JSONObject jsonObject = new JSONObject();
+            JSONObject params = new JSONObject();
+            params.put("templateId", templateId);
+            jsonObject.put("api", "setCoHostTemplateId");
+            jsonObject.put("params", params);
+            LiveCoreView.callExperimentalAPI(jsonObject.toString());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

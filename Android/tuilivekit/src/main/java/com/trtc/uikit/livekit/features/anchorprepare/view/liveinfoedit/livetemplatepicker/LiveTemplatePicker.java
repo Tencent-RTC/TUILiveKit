@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.trtc.tuikit.common.ui.PopupDialog;
+import com.trtc.tuikit.common.util.ToastUtil;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.features.anchorprepare.manager.AnchorPrepareManager;
 
@@ -37,6 +38,11 @@ public class LiveTemplatePicker extends PopupDialog {
         CoHostTemplatePickAdapter adapter = new CoHostTemplatePickAdapter(getContext(), mManager,
                 Arrays.asList(TemplateType.VERTICAL_DYNAMIC_GRID_CO_HOST, TemplateType.VERTICAL_DYNAMIC_FLOAT_CO_HOST),
                 type -> {
+                    double viewRatio = mManager.getCoreView().getWidth() / (double) mManager.getCoreView().getHeight();
+                    double canvasRatio = 9 / 16.0;
+                    if (type == TemplateType.VERTICAL_DYNAMIC_FLOAT_CO_HOST && viewRatio > canvasRatio) {
+                        ToastUtil.toastShortMessage(getContext().getString(R.string.common_template_601_ui_exception_toast));
+                    }
                     mManager.setCoHostTemplate(type.id);
                     dismiss();
                 });
@@ -51,6 +57,11 @@ public class LiveTemplatePicker extends PopupDialog {
         CoGuestTemplatePickAdapter adapter = new CoGuestTemplatePickAdapter(getContext(), mManager,
                 Arrays.asList(TemplateType.VERTICAL_DYNAMIC_GRID, TemplateType.VERTICAL_DYNAMIC_FLOAT,
                         TemplateType.VERTICAL_STATIC_GRID, TemplateType.VERTICAL_STATIC_FLOAT), type -> {
+            double viewRatio = mManager.getCoreView().getWidth() / (double) mManager.getCoreView().getHeight();
+            double canvasRatio = 9 / 16.0;
+            if (type == TemplateType.VERTICAL_DYNAMIC_FLOAT && viewRatio > canvasRatio) {
+                ToastUtil.toastShortMessage(getContext().getString(R.string.common_template_601_ui_exception_toast));
+            }
             mManager.setCoGuestTemplate(type.id);
             dismiss();
         });
