@@ -8,11 +8,12 @@
 import RTCCommon
 import SnapKit
 import UIKit
+import AtomicXCore
 
 fileprivate let cellMargin: CGFloat = 6.scale375Height()
 fileprivate let barrageContentMaxWidth: CGFloat = 240.scale375Width()
 
-class TUIBarrageCell: UITableViewCell {
+class BarrageCell: UITableViewCell {
     static let identifier: String = "BarrageCell"
     private var contentCell: UIView?
     
@@ -26,11 +27,11 @@ class TUIBarrageCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func setContent(_ barrage: TUIBarrage, ownerId: String) {
+    func setContent(_ barrage: Barrage, ownerId: String) {
         if let cell = contentCell {
             cell.safeRemoveFromSuperview()
         }
-        let cell = TUIBarrageDefaultCell(barrage: barrage, ownerId: ownerId)
+        let cell = BarrageDefaultCell(barrage: barrage, ownerId: ownerId)
         contentView.addSubview(cell)
         contentCell = cell
         cell.snp.makeConstraints { make in
@@ -42,7 +43,7 @@ class TUIBarrageCell: UITableViewCell {
         if let cell = contentCell {
             cell.safeRemoveFromSuperview()
         }
-        let cell = TUIBarrageCustomCell(customView: view)
+        let cell = BarrageCustomCell(customView: view)
         contentView.addSubview(cell)
         contentCell = cell
         cell.snp.makeConstraints { make in
@@ -51,11 +52,11 @@ class TUIBarrageCell: UITableViewCell {
     }
 }
 
-class TUIBarrageDefaultCell: UIView {
-    private let barrage: TUIBarrage
+class BarrageDefaultCell: UIView {
+    private let barrage: Barrage
     private let ownerId: String
     private var isOwner: Bool {
-        barrage.user.userId == ownerId
+        barrage.sender.userId == ownerId
     }
 
     private let anchorButton: UIButton = {
@@ -86,7 +87,7 @@ class TUIBarrageDefaultCell: UIView {
         return view
     }()
 
-    init(barrage: TUIBarrage, ownerId: String) {
+    init(barrage: Barrage, ownerId: String) {
         self.barrage = barrage
         self.ownerId = ownerId
         super.init(frame: .zero)
@@ -138,15 +139,16 @@ class TUIBarrageDefaultCell: UIView {
         }
     }
 
-    func getBarrageLabelAttributedText(barrage: TUIBarrage) -> NSMutableAttributedString {
+    func getBarrageLabelAttributedText(barrage: Barrage) -> NSMutableAttributedString {
         let placeholderString = String(repeating: " ", count: isOwner ? 12 : 0)
-        let userName = (barrage.user.userName.isEmpty ? barrage.user.userId : barrage.user.userName) + "："
+        let userName = barrage.sender.userName ?? ""
+        let displayName = (userName.isEmpty ? barrage.sender.userId : userName) + "："
         let userNameAttributes: [NSAttributedString.Key: Any] =
         [.foregroundColor: UIColor.lightBlueColor, .font: UIFont.customFont(ofSize: 12, weight: .semibold)]
-        let userNameAttributedText = NSMutableAttributedString(string: "\(placeholderString)\(userName)",
+        let userNameAttributedText = NSMutableAttributedString(string: "\(placeholderString)\(displayName)",
                                                                attributes: userNameAttributes)
         
-        userNameAttributedText.append(getBarrageContentAttributedText(content: barrage.content))
+        userNameAttributedText.append(getBarrageContentAttributedText(content: barrage.textContent))
         return userNameAttributedText
     }
     
@@ -157,7 +159,7 @@ class TUIBarrageDefaultCell: UIView {
     }
 }
 
-class TUIBarrageCustomCell: UIView {
+class BarrageCustomCell: UIView {
     private var customView: UIView
     init(customView: UIView) {
         self.customView = customView

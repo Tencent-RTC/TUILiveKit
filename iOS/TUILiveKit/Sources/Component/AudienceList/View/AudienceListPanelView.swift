@@ -8,17 +8,24 @@
 import Foundation
 import Combine
 import RTCCommon
-import RTCRoomEngine
+import AtomicXCore
 
 class AudienceListPanelView: UIView {
     var onBackButtonClickedClosure: (() -> Void)?
-    var onUserManageButtonClicked: ((TUIUserInfo) -> Void)? 
-    private let state: AudienceListState
+    var onUserManageButtonClicked: ((LiveUserInfo) -> Void)?
+    
+    private let liveId: String
+    private var store: LiveAudienceStore {
+        LiveAudienceStore.create(liveId: liveId)
+    }
+    private var liveListStore: LiveListStore {
+        LiveListStore.shared
+    }
     private var cancellableSet = Set<AnyCancellable>()
     private var isPortrait: Bool = {
         return WindowUtils.isPortrait
     }()
-    private var listUser:[TUIUserInfo] = []
+    private var listUser:[LiveUserInfo] = []
     
     private lazy var backButton: UIButton = {
         let view = UIButton(type: .system)
@@ -46,9 +53,9 @@ class AudienceListPanelView: UIView {
         return tableView
     }()
     
-    init(state: AudienceListState) {
-        self.state = state
-        super.init(frame: .zero)
+    init(liveId: String, frame: CGRect = .zero) {
+        self.liveId = liveId
+        super.init(frame: frame)
     }
     
     required init?(coder: NSCoder) {
@@ -67,11 +74,14 @@ class AudienceListPanelView: UIView {
     }
   
     private func subscribe() {
-        state.$audienceList
+        store.state.subscribe(StatePublisherSelector(keyPath: \LiveAudienceState.audienceList))
             .receive(on: RunLoop.main)
+            .removeDuplicates()
             .sink { [weak self] audienceList in
                 guard let self = self else { return }
-                self.listUser = audienceList
+                let currentLive = liveListStore.state.value.currentLive
+                guard !currentLive.isEmpty else { return }
+                self.listUser = audienceList.filter {$0.userId != currentLive.liveOwner.userId }
                 self.userListTableView.reloadData()
             }
             .store(in: &cancellableSet)

@@ -7,9 +7,11 @@
 
 import Foundation
 import RTCRoomEngine
-import LiveStreamCore
+import AtomicXCore
 
 class AnchorBattleObserver: NSObject {
+    var onBattleStarted: (()->())?
+    
     private weak var manager: AnchorBattleManager?
     init(battleManager: AnchorBattleManager) {
         self.manager = battleManager
@@ -20,6 +22,7 @@ class AnchorBattleObserver: NSObject {
 extension AnchorBattleObserver: BattleObserver {
     func onBattleStarted(battleInfo: TUIBattleInfo) {
         manager?.onBattleStarted(battleInfo: battleInfo)
+        onBattleStarted?()
     }
     
     func onBattleEnded(battleInfo: TUIBattleInfo) {

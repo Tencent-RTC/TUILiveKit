@@ -9,11 +9,11 @@ import UIKit
 import RTCCommon
 import Combine
 import RTCRoomEngine
-import LiveStreamCore
+import AtomicXCore
 
 class AudienceBattleMemberInfoView: RTCBaseView {
     private lazy var battleIdPublisher = manager.subscribeState(StateSelector(keyPath: \AudienceBattleState.battleId))
-    private lazy var connectedUserPublisher = manager.subscribeCoreViewState(StateSelector(keyPath: \CoHostState.connectedUserList))
+    private lazy var connectedUserPublisher = manager.subscribeCoreViewState(StatePublisherSelector(keyPath: \CoHostState.connectedUserList))
     private lazy var isBattleRunningPublisher = manager.subscribeState(StateSelector(keyPath: \AudienceBattleState.isBattleRunning))
     private lazy var battleUsersPublisher = manager.subscribeState(StateSelector(keyPath: \AudienceBattleState.battleUsers))
     private lazy var isOnDisplayResultPublisher = manager.subscribeState(StateSelector(keyPath: \AudienceBattleState.isOnDisplayResult))

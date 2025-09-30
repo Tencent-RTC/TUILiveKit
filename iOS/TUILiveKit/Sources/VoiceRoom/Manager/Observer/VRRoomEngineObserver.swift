@@ -47,6 +47,9 @@ extension VRRoomEngineObserver: TUIRoomObserver {
         if errorCode == .success {
             return
         }
+        if errorCode == .audioCaptureDeviceUnavailable && roomManager?.state.hasKTVAbility != false{
+            return 
+        }
         let error = InternalError(code: errorCode.rawValue, message: message)
         context?.toastSubject.send(error.localizedMessage)
     }

@@ -7,7 +7,7 @@
 
 import Foundation
 import SnapKit
-import LiveStreamCore
+import AtomicXCore
 import Combine
 import RTCCommon
 
@@ -78,6 +78,12 @@ class FloatView: UIView {
             make.leading.trailing.top.equalToSuperview()
             make.height.equalTo(snp.width).multipliedBy(size.height / size.width)
         }
+        
+        let windowW = frame.width
+        let windowH = windowW * (size.height / size.width)
+        let windowX = UIScreen.main.bounds.width - windowW - margin
+        let windowY = frame.origin.y
+        frame = CGRect(x: windowX, y: windowY, width: windowW, height: windowH)
         
         gestureOverlayView.snp.makeConstraints{ make in
             make.size.equalToSuperview()

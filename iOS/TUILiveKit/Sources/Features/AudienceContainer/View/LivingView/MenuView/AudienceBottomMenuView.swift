@@ -9,7 +9,7 @@ import UIKit
 import RTCCommon
 import SnapKit
 import Combine
-import LiveStreamCore
+import AtomicXCore
 
 protocol AudienceBottomMenuViewDelegate: NSObjectProtocol {
     func likeButtonClicked()
@@ -31,8 +31,8 @@ class AudienceBottomMenuView: RTCBaseView {
     private lazy var creator = AudienceRootMenuDataCreator(coreView: coreView, manager: manager, routerManager: routerManager)
     private var menus = [AudienceButtonMenuInfo]()
     
-    private lazy var likeButton: TUILikeButton = {
-        let likeButton = TUILikeButton(roomId: manager.roomState.roomId)
+    private lazy var likeButton: LikeButton = {
+        let likeButton = LikeButton(roomId: manager.roomState.roomId)
         return likeButton
     }()
     
@@ -113,6 +113,22 @@ class AudienceBottomMenuView: RTCBaseView {
             make.centerY.equalToSuperview()
         }
         buttons.append(likeButton)
+        
+        var settingItem = AudienceButtonMenuInfo(normalIcon: "live_more_btn_icon")
+        settingItem.tapAction = { [weak self] _ in
+            guard let self = self else { return }
+            self.routerManager.router(action: .present(.featureSetting))
+        }
+        let settingButton = createButtonFromMenuItem(index: menus.count, item: settingItem, isOwner: isOwner)
+        settingButton.addTarget(self, action: #selector(menuTapAction(sender:)), for: .touchUpInside)
+        stackView.addArrangedSubview(settingButton)
+        settingButton.snp.makeConstraints { make in
+            make.width.equalTo(isOwner ? 34.scale375() : 32.scale375())
+            make.height.equalTo(isOwner ? 46.scale375() : 32.scale375())
+            make.centerY.equalToSuperview()
+        }
+        buttons.append(settingButton)
+        menus.append(settingItem)
     }
     
     private func createButtonFromMenuItem(index: Int, item: AudienceButtonMenuInfo, isOwner: Bool) -> AudienceMenuButton {

@@ -9,7 +9,7 @@ import UIKit
 import Combine
 import RTCCommon
 import RTCRoomEngine
-import LiveStreamCore
+import AtomicXCore
 
 public enum AnchorBattleResultType {
     case draw
@@ -147,7 +147,7 @@ class AnchorBattleInfoView: RTCBaseView {
             .store(in: &cancellableSet)
     }
 
-    func updateView(userInfos: [LiveStreamCore.BattleUserViewModel]) {
+    func updateView(userInfos: [AtomicXCore.BattleUserViewModel]) {
         userInfos.forEach { battleUserViewModel in
             for (index, battleUser) in manager.battleManager.state.battleUsers.enumerated() {
                 if battleUser.userId == battleUserViewModel.battleUser.userId {

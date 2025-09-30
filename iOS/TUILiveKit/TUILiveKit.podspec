@@ -21,28 +21,32 @@ Pod::Spec.new do |spec|
   spec.dependency 'Kingfisher'
   spec.dependency 'SVGAPlayer', '~> 2.5.7'
   spec.dependency 'Protobuf', '~> 3.22.1'
-  spec.dependency 'RTCCommon'
+  spec.dependency 'RTCCommon', '>= 1.1.0'
   spec.dependency "MJRefresh"
+  spec.dependency 'AtomicX'
+  spec.dependency 'TXIMSDK_Plus_iOS_XCFramework', '>= 8.7.7021'
 
   spec.default_subspec = 'Professional'
   
   spec.subspec 'Professional' do |professional|
     professional.dependency 'RTCRoomEngine/Professional'
-    professional.dependency 'LiveStreamCore/Professional'
+    professional.dependency 'AtomicXCore'
 
-    professional.source_files = 'Sources/**/*', 'VideoLiveKit.swift', 'VoiceRoomKit.swift', 'VoiceRoomDefine.swift', 'KTVRoomKit.swift'
+    professional.source_files = 'Sources/**/*', 'VideoLiveKit.swift', 'VoiceRoomKit.swift', 'VoiceRoomDefine.swift'
+    professional.exclude_files = 'Sources/KTV/**/*'
     professional.resource_bundles = {
-      'TUILiveKitBundle' => ['Resources/*.xcassets', 'Resources/Localized/**/*.xcstrings', 'Resources/KTVResource/*']
+      'TUILiveKitBundle' => ['Resources/*.xcassets', 'Resources/Localized/**/*.xcstrings']
     }
   end
   
   spec.subspec 'TRTC' do |trtc|
     trtc.dependency 'RTCRoomEngine/TRTC'
-    trtc.dependency 'LiveStreamCore/TRTC'
+    trtc.dependency 'AtomicXCore'
 
-    trtc.source_files = 'Sources/**/*', 'VideoLiveKit.swift', 'VoiceRoomKit.swift', 'VoiceRoomDefine.swift', 'KTVRoomKit.swift'
+    trtc.source_files = 'Sources/**/*', 'VideoLiveKit.swift', 'VoiceRoomKit.swift', 'VoiceRoomDefine.swift'
+    trtc.exclude_files = 'Sources/KTV/**/*'
     trtc.resource_bundles = {
-      'TUILiveKitBundle' => ['Resources/*.xcassets', 'Resources/Localized/**/*.xcstrings', 'Resources/KTVResource/*']
+      'TUILiveKitBundle' => ['Resources/*.xcassets', 'Resources/Localized/**/*.xcstrings']
     }
   end
   

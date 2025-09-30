@@ -134,7 +134,7 @@ extension VRLiveInfoEditView {
     func constructViewHierarchy() {
         layer.cornerRadius = 16
         layer.masksToBounds = true
-        backgroundColor = .g2.withAlphaComponent(0.4)
+        backgroundColor = .pureBlackColor.withAlphaComponent(0.75)
         addSubview(coverButtonView)
         addSubview(inputBackgroundView)
         addSubview(modeBackgroundView)

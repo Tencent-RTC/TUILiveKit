@@ -10,7 +10,7 @@ import TUICore
 import Combine
 import RTCRoomEngine
 import RTCCommon
-import LiveStreamCore
+import AtomicXCore
 
 class AnchorUserStatusView: UIView {
     private let manager: AnchorManager

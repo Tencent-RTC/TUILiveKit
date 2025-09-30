@@ -9,7 +9,7 @@ import Foundation
 import RTCCommon
 import RTCRoomEngine
 import Combine
-import LiveStreamCore
+import AtomicXCore
 
 class AudienceUserManager {
     private let observerState = ObservableState<AudienceUserState>(initialState: AudienceUserState())

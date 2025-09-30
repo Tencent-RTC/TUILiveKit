@@ -5,26 +5,26 @@
 //  Created by jeremiawang on 2024/11/18.
 //
 
-import Foundation
+import AtomicXCore
 import Combine
+import Foundation
 import RTCCommon
 import RTCRoomEngine
-import LiveStreamCore
 
 typealias AnchorRoomStateUpdateClosure = (inout AnchorRoomState) -> Void
 typealias AnchorUserStateUpdateClosure = (inout AnchorUserState) -> Void
 typealias AnchorMediaStateUpdateClosure = (inout AnchorMediaState) -> Void
 typealias AnchorCoGuestStateUpdateClosure = (inout AnchorCoGuestState) -> Void
 
-typealias InternalErrorBlock = (_ error: InternalError) -> Void
+public typealias InternalErrorBlock = (_ error: InternalError) -> Void
 
-typealias StateSelector = RTCCommon.StateSelector
-typealias CoHostState = LiveStreamCore.CoHostState
-typealias CoGuestState = LiveStreamCore.CoGuestState
+public typealias StateSelector = RTCCommon.StateSelector
+public typealias CoHostState = AtomicXCore.CoHostState
+public typealias CoGuestState = AtomicXCore.CoGuestState
 
 protocol AnchorManagerProvider: NSObject {
-    func getCoreViewState<T: State>() -> T
-    func subscribeCoreViewState<State, Value>(_ selector: StateSelector<State, Value>) -> AnyPublisher<Value, Never>
+    func getCoreViewState<T: CoreViewState>() -> T
+    func subscribeCoreViewState<State, Value>(_ selector: StatePublisherSelector<State, Value>) -> AnyPublisher<Value, Never>
 }
 
 class AnchorManager {
@@ -93,6 +93,7 @@ extension AnchorManager {
 // MARK: - Anchor
 extension AnchorManager {
     func prepareLiveInfoBeforeEnterRoom(liveInfo: LiveInfo) {
+        context.mediaManager.prepareLiveInfoBeforeEnterRoom(liveInfo: liveInfo)
         context.roomManager.prepareLiveInfoBeforeEnterRoom(liveInfo: liveInfo)
     }
     
@@ -308,11 +309,11 @@ extension AnchorManager {
         } else if let sel = selector as? StateSelector<AnchorCoGuestState, Value> {
             return context.coGuestManager.subscribeState(sel)
         }
-        assert(false, "Not impl")
+        assertionFailure("Not impl")
         return Empty<Value, Never>().eraseToAnyPublisher()
     }
     
-    func subscribeCoreViewState<State, Value>(_ selector: StateSelector<State, Value>) -> AnyPublisher<Value, Never> {
+    func subscribeCoreViewState<State, Value>(_ selector: StatePublisherSelector<State, Value>) -> AnyPublisher<Value, Never> {
         guard let provider = context.provider else { return Empty<Value, Never>().eraseToAnyPublisher() }
         return provider.subscribeCoreViewState(selector)
     }

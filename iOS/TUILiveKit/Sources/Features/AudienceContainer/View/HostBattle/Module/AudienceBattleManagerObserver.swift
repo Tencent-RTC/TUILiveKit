@@ -7,7 +7,7 @@
 
 import Foundation
 import RTCRoomEngine
-import LiveStreamCore
+import AtomicXCore
 
 class AudienceBattleManagerObserver: NSObject {
     private weak var manager: AudienceBattleManager?

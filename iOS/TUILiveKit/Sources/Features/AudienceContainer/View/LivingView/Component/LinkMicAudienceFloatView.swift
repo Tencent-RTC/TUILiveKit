@@ -10,7 +10,7 @@ import TUICore
 import Combine
 import RTCCommon
 import RTCRoomEngine
-import LiveStreamCore
+import AtomicXCore
 
 class UserImageCell: UICollectionViewCell {
     var user: TUIUserInfo? {

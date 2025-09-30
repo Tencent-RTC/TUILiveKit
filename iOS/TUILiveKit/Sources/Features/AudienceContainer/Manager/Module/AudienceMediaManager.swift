@@ -11,7 +11,7 @@ import RTCRoomEngine
 import Combine
 import TUICore
 
-class AudienceMediaManager {
+class AudienceMediaManager: NSObject {
     private let observerState = ObservableState<AudienceMediaState>(initialState: AudienceMediaState())
     var mediaState: AudienceMediaState {
         observerState.state
@@ -27,6 +27,7 @@ class AudienceMediaManager {
         self.context = context
         self.service = context.service
         self.toastSubject = context.toastSubject
+        super.init()
         initVideoAdvanceSettings()
     }
     
@@ -51,6 +52,10 @@ extension AudienceMediaManager {
         update { state in
             state.videoQuality = quality
         }
+    }
+    
+    func onJoinLive(liveInfo: TUILiveInfo) {
+        getMultiPlaybackQuality(roomId: liveInfo.roomId)
     }
     
     func onLeaveLive() {
@@ -87,53 +92,72 @@ extension AudienceMediaManager {
         }
     }
     
-    func enableUltimate(_ enable: Bool) {
-        TUICore.callService(.TUICore_VideoAdvanceService,
-                            method: .TUICore_VideoAdvanceService_EnableUltimate,
-                            param: ["enable" : NSNumber(value: enable)])
-        observerState.update { state in
-            state.videoAdvanceSettings.isUltimateEnabled = enable
-        }
-        if enable {
-            enableBFrame(false)
-        }
-    }
-    
-    func enableBFrame(_ enable: Bool) {
-        TUICore.callService(.TUICore_VideoAdvanceService,
-                            method: .TUICore_VideoAdvanceService_EnableBFrame,
-                            param: ["enable" : NSNumber(value: enable)])
-        observerState.update { state in
-            state.videoAdvanceSettings.isBFrameEnabled = enable
-        }
-    }
-    
-    func enableH265(_ enable: Bool) {
-        TUICore.callService(.TUICore_VideoAdvanceService,
-                            method: .TUICore_VideoAdvanceService_EnableH265,
-                            param: ["enable" : NSNumber(value: enable)])
-        observerState.update { state in
-            state.videoAdvanceSettings.isH265Enabled = enable
-        }
-    }
-    
-    func enableHDR(_ renderType: AudienceHDRRenderType) {
-        TUICore.callService(.TUICore_VideoAdvanceService,
-                            method: .TUICore_VideoAdvanceService_EnableHDR,
-                            param: ["renderType" : NSNumber(value: renderType.rawValue)])
-        observerState.update { state in
-            state.videoAdvanceSettings.hdrRenderType = renderType
-        }
-    }
-    
     private func initVideoAdvanceSettings() {
-        enableUltimate(true)
-        enableH265(true)
+        enableSwitchPlaybackQuality(true)
     }
     
     private func unInitVideoAdvanceSettings() {
-        enableUltimate(false)
-        enableH265(false)
+        enableSwitchPlaybackQuality(false)
+    }
+}
+
+// MARK: - Multi Playback Quality
+extension AudienceMediaManager {
+    
+    func switchPlaybackQuality(quality: TUIVideoQuality) {
+        service.switchPlaybackQuality(quality)
+    }
+    
+    func getMultiPlaybackQuality(roomId: String) {
+        service.getMultiPlaybackQuality(roomId: roomId) { [weak self] qualityList in
+            guard let self = self else { return }
+            self.observerState.update { mediaState in
+                mediaState.playbackQualityList = qualityList
+                mediaState.playbackQuality = qualityList.first
+            }
+        }
+    }
+    
+    func enableSwitchPlaybackQuality(_ enable: Bool) {
+        TUICore.callService(.TUICore_VideoAdvanceService,
+                            method: .TUICore_VideoAdvanceService_EnableSwitchMultiPlayback,
+                            param: ["enable" : NSNumber(value: enable)])
+    }
+    
+    func onUserVideoSizeChanged(roomId: String,
+                                userId: String,
+                                streamType: TUIVideoStreamType,
+                                width: Int32,
+                                height: Int32) {
+        guard let context = context else {
+            return
+        }
+        let playbackQuality = getVideoQuality(width: width, height: height)
+        guard playbackQuality != mediaState.playbackQuality else {
+            return
+        }
+        guard mediaState.playbackQualityList.count > 1, mediaState.playbackQualityList.contains(playbackQuality) else {
+            return
+        }
+        guard context.coGuestManager.coGuestState.coGuestStatus == .none else {
+            return
+        }
+        observerState.update { mediaState in
+            mediaState.playbackQuality = playbackQuality
+        }
+    }
+    
+    private func getVideoQuality(width: Int32, height: Int32) -> TUIVideoQuality {
+        if (width * height) <= (360 * 640) {
+            return TUIVideoQuality.quality360P
+        }
+        if (width * height) <= (540 * 960){
+            return TUIVideoQuality.quality540P
+        }
+        if (width * height) <= (720 * 1280) {
+            return TUIVideoQuality.quality720P
+        }
+        return TUIVideoQuality.quality1080P
     }
 }
 
@@ -148,8 +172,5 @@ fileprivate extension String {
     
     static let TUICore_VideoAdvanceService = "TUICore_VideoAdvanceService"
     
-    static let TUICore_VideoAdvanceService_EnableUltimate = "TUICore_VideoAdvanceService_EnableUltimate"
-    static let TUICore_VideoAdvanceService_EnableH265 = "TUICore_VideoAdvanceService_EnableH265"
-    static let TUICore_VideoAdvanceService_EnableHDR = "TUICore_VideoAdvanceService_EnableHDR"
-    static let TUICore_VideoAdvanceService_EnableBFrame = "TUICore_VideoAdvanceService_EnableBFrame"
+    static let TUICore_VideoAdvanceService_EnableSwitchMultiPlayback = "TUICore_VideoAdvanceService_EnableSwitchMultiPlayback"
 }

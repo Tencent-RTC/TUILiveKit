@@ -6,7 +6,7 @@
 //
 
 import RTCRoomEngine
-import LiveStreamCore
+import AtomicXCore
 import RTCCommon
 import Combine
 import ImSDK_Plus
@@ -204,8 +204,8 @@ class AnchorUserManagePanelView: RTCBaseView {
             }
             .store(in: &cancellableSet)
         
-        let isCameraOpenedPublisher = manager.subscribeCoreViewState(StateSelector(keyPath: \MediaState.isCameraOpened))
-        let isMicrophoneMutedPublisher = manager.subscribeCoreViewState(StateSelector(keyPath: \MediaState.isMicrophoneMuted))
+        let isCameraOpenedPublisher = manager.subscribeCoreViewState(StatePublisherSelector(keyPath: \MediaState.isCameraOpened))
+        let isMicrophoneMutedPublisher = manager.subscribeCoreViewState(StatePublisherSelector(keyPath: \MediaState.isMicrophoneMuted))
         let isAudioLockedPublisher = manager.subscribeState(StateSelector(keyPath: \AnchorMediaState.isAudioLocked))
         let isVideoLockedPublisher = manager.subscribeState(StateSelector(keyPath: \AnchorMediaState.isVideoLocked))
         let lockAudioUserListPublisher = manager.subscribeState(StateSelector(keyPath: \AnchorCoGuestState.lockAudioUserList))
@@ -231,7 +231,7 @@ class AnchorUserManagePanelView: RTCBaseView {
             }
             .store(in: &cancellableSet)
         
-        manager.subscribeCoreViewState(StateSelector(keyPath: \CoGuestState.connectedUserList))
+        manager.subscribeCoreViewState(StatePublisherSelector(keyPath: \CoGuestState.connectedUserList))
             .removeDuplicates()
             .receive(on: RunLoop.main)
             .sink { [weak self] seatList in
@@ -268,7 +268,9 @@ class AnchorUserManagePanelView: RTCBaseView {
         case .mediaAndSeat:
             if isSelf {
                 model.items.append(muteSelfAudioItem)
-                model.items.append(closeSelfCameraItem)
+                if !isOwner {
+                    model.items.append(closeSelfCameraItem)
+                }
                 if isSelfCameraOpened {
                     model.items.append(flipItem)
                 }

@@ -8,12 +8,7 @@
 import RTCRoomEngine
 import RTCCommon
 import Combine
-import LiveStreamCore
-
-protocol VoiceRoomManagerProvider: NSObject {
-    func getCoreViewState<T: State>() -> T
-    func subscribeCoreViewState<State, Value>(_ selector: StateSelector<State, Value>) -> AnyPublisher<Value, Never>
-}
+import AtomicXCore
 
 class VoiceRoomManager {
     // Event for show toast
@@ -21,22 +16,25 @@ class VoiceRoomManager {
     // Event for exit room
     public let exitSubject = PassthroughSubject<Void, Never>()
     
+    private let liveId: String
     private let context: Context
-    init(provider: VoiceRoomManagerProvider) {
-        self.context = Context(provider: provider, toastSubject: toastSubject, exitSubject: exitSubject)
-        provider.subscribeCoreViewState(StateSelector(keyPath: \SGSeatState.seatList))
+    init( liveId: String) {
+        self.liveId = liveId
+        self.context = Context(toastSubject: toastSubject, exitSubject: exitSubject)
+        
+        subscribeCoreState(StatePublisherSelector(keyPath: \LiveSeatState.seatList))
             .receive(on: RunLoop.main)
             .removeDuplicates()
             .sink { [weak self] seatList in
                 guard let self = self else { return }
-                userManager.onSeatListChanged(seatList: seatList)
+                let tuiSeatLinfoList = seatList.map { TUISeatInfo(from: $0) }
+                userManager.onSeatListChanged(seatList: tuiSeatLinfoList)
             }
             .store(in: &context.cancellableSet)
     }
     
     class Context {
         let service = VRRoomEngineService()
-        weak var provider: VoiceRoomManagerProvider?
         
         var cancellableSet = Set<AnyCancellable>()
         
@@ -51,10 +49,9 @@ class VoiceRoomManager {
         let toastSubject: PassthroughSubject<String, Never>
         let exitSubject: PassthroughSubject<Void, Never>
         
-        init(provider: VoiceRoomManagerProvider, toastSubject: PassthroughSubject<String, Never>, exitSubject: PassthroughSubject<Void, Never>) {
+        init(toastSubject: PassthroughSubject<String, Never>, exitSubject: PassthroughSubject<Void, Never>) {
             self.toastSubject = toastSubject
             self.exitSubject = exitSubject
-            self.provider = provider
             service.addEngineObserver(engineObserver)
             service.addLiveListObserver(liveListObserver)
             service.addIMFriendshipObserver(imObserver)
@@ -81,6 +78,10 @@ extension VoiceRoomManager {
     
     func prepareRoomIdBeforeEnterRoom(roomId: String, roomParams: RoomParams?) {
         roomManager.prepareRoomIdBeforeEnterRoom(roomId: roomId, roomParams: roomParams)
+    }
+    
+    func refreshSelfInfo() {
+        userManager.refreshSelfInfo()
     }
     
     func onJoinVoiceRoom(liveInfo: TUILiveInfo) {
@@ -139,7 +140,11 @@ extension VoiceRoomManager {
     func onSetRoomCoverUrl(_ coverUrl: String) {
         roomManager.onSetRoomCoverUrl(coverUrl)
     }
-    
+
+    func onSetlayoutType(layoutType: VoiceRoomLayoutType) {
+        roomManager.onSetlayoutType(layoutType: layoutType)
+    }
+
     func onSetRoomBackgroundUrl(_ backgroundUrl: String, isSetToService: Bool = false) {
         roomManager.onSetRoomBackgroundUrl(backgroundUrl, isSetToService: isSetToService)
     }
@@ -171,6 +176,10 @@ extension VoiceRoomManager {
     
     func onRespondedSeatInvitation(of userId: String) {
         seatManager.onRespondedSeatInvitation(of: userId)
+    }
+
+    func onSetHasKTVAbility(hasKTVAbility: Bool) {
+        roomManager.onSetHasKTVAbility(hasKTVAbility: hasKTVAbility)
     }
 }
 
@@ -212,9 +221,14 @@ extension VoiceRoomManager {
         return Empty<Value, Never>().eraseToAnyPublisher()
     }
     
-    func subscribeCoreState<State, Value>(_ selector: StateSelector<State, Value>) -> AnyPublisher<Value, Never> {
-        guard let provider = context.provider else { return Empty<Value, Never>().eraseToAnyPublisher() }
-        return provider.subscribeCoreViewState(selector)
+    func subscribeCoreState<State, Value>(_ selector: StatePublisherSelector<State, Value>) -> AnyPublisher<Value, Never> {
+        if let sel = selector as? StatePublisherSelector<LiveListState, Value> {
+            return liveListStore.state.subscribe(sel)
+        } else if let sel = selector as? StatePublisherSelector<LiveSeatState, Value> {
+            return liveSeatStore.state.subscribe(sel)
+        }
+        assert(false, "Not impl")
+        return Empty<Value, Never>().eraseToAnyPublisher()
     }
 }
 // MARK: - Tools
@@ -245,35 +259,19 @@ extension VoiceRoomManager {
 }
 
 extension VoiceRoomManager {
-    var coreRoomState: SGRoomState {
-        context.coreRoomState
+    var liveListStore: LiveListStore {
+        return LiveListStore.shared
     }
-    var coreUserState: SGUserState {
-        context.coreUserState
+    
+    var liveSeatStore: LiveSeatStore {
+        return LiveSeatStore.create(liveId: liveId)
     }
-    var coreMediaState: SGMediaState {
-        context.coreMediaState
+    
+    var coreLiveState: AtomicLiveInfo {
+        liveListStore.state.value.currentLive ?? AtomicLiveInfo()
     }
-    var coreSeatState: SGSeatState {
-        context.coreSeatState
-    }
-}
-
-extension VoiceRoomManager.Context {
-    var coreRoomState: SGRoomState {
-        guard let provider = provider else { return SGRoomState() }
-        return provider.getCoreViewState()
-    }
-    var coreUserState: SGUserState {
-        guard let provider = provider else { return SGUserState() }
-        return provider.getCoreViewState()
-    }
-    var coreMediaState: SGMediaState {
-        guard let provider = provider else { return SGMediaState() }
-        return provider.getCoreViewState()
-    }
-    var coreSeatState: SGSeatState {
-        guard let provider = provider else { return SGSeatState() }
-        return provider.getCoreViewState()
+    
+    var coreSeatState: LiveSeatState {
+        liveSeatStore.state.value
     }
 }

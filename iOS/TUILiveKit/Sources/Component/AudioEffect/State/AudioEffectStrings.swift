@@ -30,8 +30,8 @@ public extension String {
     
     static var reverbText: String = internalLocalized("Reverb")
     
-    static var originVoiceText: String = internalLocalized("Original")
-    
+    static var noneVoiceText: String = internalLocalized("Original")
+
     static var childText: String = internalLocalized("Naughty child")
 
     static var girlText: String = internalLocalized("Loli")

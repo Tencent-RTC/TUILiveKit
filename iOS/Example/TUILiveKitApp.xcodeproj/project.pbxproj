@@ -410,13 +410,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-TUILiveKitApp/Pods-TUILiveKitApp-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-TUILiveKitApp/Pods-TUILiveKitApp-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -431,13 +427,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-TUILiveKitApp/Pods-TUILiveKitApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-TUILiveKitApp/Pods-TUILiveKitApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -729,7 +721,6 @@
 					"-l\"sqlite3\"",
 					"-l\"stdc++\"",
 					"-l\"z\"",
-					"-ld_classic",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.aby.livekit.demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -778,7 +769,6 @@
 					"-l\"sqlite3\"",
 					"-l\"stdc++\"",
 					"-l\"z\"",
-					"-ld_classic",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tencent.fx.livekit.demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";

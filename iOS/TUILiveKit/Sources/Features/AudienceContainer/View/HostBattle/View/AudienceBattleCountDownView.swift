@@ -8,7 +8,7 @@
 import UIKit
 import Combine
 import RTCCommon
-import LiveStreamCore
+import AtomicXCore
 
 class AudienceBattleCountDownView: UIView {
     private weak var coreView: LiveCoreView?

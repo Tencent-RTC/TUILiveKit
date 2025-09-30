@@ -5,14 +5,14 @@
 //  Created by jeremiawang on 2025/4/15.
 //
 
-import LiveStreamCore
+import AtomicXCore
 import TUICore
 
 class LiveListViewCell: UICollectionViewCell {
     static let identifier = "LiveListViewCell"
     
     private var roomId: String?
-    private lazy var coreView = LiveCoreView()
+    private lazy var coreView = LiveCoreView(viewType: .playView)
     
     private lazy var imageBgView: UIImageView = {
         let view = UIImageView(frame: .zero)

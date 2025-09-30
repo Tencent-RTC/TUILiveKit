@@ -9,7 +9,7 @@ import Foundation
 import Combine
 import RTCCommon
 import RTCRoomEngine
-import LiveStreamCore
+import AtomicXCore
 
 typealias AudienceRoomStateUpdateClosure = (inout AudienceRoomState) -> Void
 typealias AudienceUserStateUpdateClosure = (inout AudienceUserState) -> Void
@@ -17,8 +17,8 @@ typealias AudienceMediaStateUpdateClosure = (inout AudienceMediaState) -> Void
 typealias AudienceCoGuestStateUpdateClosure = (inout AudienceCoGuestState) -> Void
 
 protocol AudienceManagerProvider: NSObject {
-    func getCoreViewState<T: State>() -> T
-    func subscribeCoreViewState<State, Value>(_ selector: StateSelector<State, Value>) -> AnyPublisher<Value, Never>
+    func getCoreViewState<T: CoreViewState>() -> T
+    func subscribeCoreViewState<State, Value>(_ selector: StatePublisherSelector<State, Value>) -> AnyPublisher<Value, Never>
 }
 
 class AudienceManager {
@@ -122,6 +122,7 @@ extension AudienceManager {
     
     func onJoinLive(liveInfo: TUILiveInfo) {
         context.roomManager.onJoinLive(liveInfo: liveInfo)
+        context.mediaManager.onJoinLive(liveInfo: liveInfo)
     }
     
     func onLeaveLive() {
@@ -221,7 +222,7 @@ extension AudienceManager {
         return Empty<Value, Never>().eraseToAnyPublisher()
     }
     
-    func subscribeCoreViewState<State, Value>(_ selector: StateSelector<State, Value>) -> AnyPublisher<Value, Never> {
+    func subscribeCoreViewState<State, Value>(_ selector: StatePublisherSelector<State, Value>) -> AnyPublisher<Value, Never> {
         guard let provider = context.provider else { return Empty<Value, Never>().eraseToAnyPublisher() }
         return provider.subscribeCoreViewState(selector)
     }

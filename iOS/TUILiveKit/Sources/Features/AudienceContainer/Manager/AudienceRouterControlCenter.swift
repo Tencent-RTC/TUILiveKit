@@ -9,7 +9,7 @@ import Combine
 import TUICore
 import RTCCommon
 import RTCRoomEngine
-import LiveStreamCore
+import AtomicXCore
 
 class AudienceRouterControlCenter {
     private var coreView: LiveCoreView?
@@ -201,6 +201,15 @@ extension AudienceRouterControlCenter {
             view = actionPanel
         case .linkSetting:
             view = VideoLinkSettingPanel(manager: manager, routerManager: routerManager, coreView: coreView)
+        case .featureSetting:
+            view = AudienceSettingPanel(manager: manager, routerManager: routerManager)
+        case .videoQualitySelection(let resolutions, let selectedClosure):
+            let selection = VideoQualitySelectionPanel(resolutions: resolutions, selectedClosure: selectedClosure)
+            selection.cancelClosure = { [weak self] in
+                guard let self = self else { return }
+                routerManager.router(action: .dismiss())
+            }
+            view = selection
         case .alert(let info):
             view = AudienceAlertPanel(alertInfo: info)
         case .streamDashboard:
@@ -241,7 +250,8 @@ extension AudienceRouterControlCenter {
         case .alert(_),
              .streamDashboard,
              .linkType(_),
-             .userManagement(_, _):
+             .userManagement(_, _),
+             .videoQualitySelection(_, _):
             return true
         default:
             return false
@@ -256,7 +266,8 @@ extension AudienceRouterControlCenter {
              .giftView,
              .listMenu(_),
              .userManagement(_, _),
-             .netWorkInfo(_, _):
+             .netWorkInfo(_, _),
+             .videoQualitySelection(_, _):
             return false
         default:
             return true
@@ -277,7 +288,7 @@ extension AudienceRouterControlCenter {
         switch route {
         case .listMenu(_):
             safeBottomViewBackgroundColor = .white
-        case .streamDashboard, .giftView, .beauty:
+        case .streamDashboard, .giftView, .beauty, .featureSetting, .videoQualitySelection:
             safeBottomViewBackgroundColor = .bgOperateColor
         default:
             break

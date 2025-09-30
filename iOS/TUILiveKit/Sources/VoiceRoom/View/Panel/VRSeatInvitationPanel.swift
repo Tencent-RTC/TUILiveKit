@@ -8,8 +8,9 @@
 import RTCCommon
 import Combine
 import TUICore
-import LiveStreamCore
+import AtomicXCore
 import RTCRoomEngine
+import AtomicXCore
 
 class VRSeatInvitationPanel: RTCBaseView {
     private let manager: VoiceRoomManager
@@ -92,7 +93,7 @@ class VRSeatInvitationPanel: RTCBaseView {
 extension VRSeatInvitationPanel {
     private func subscribeUserListState() {
         let userListPublisher = manager.subscribeState(StateSelector(keyPath: \VRUserState.userList))
-        let seatListPublisher = manager.subscribeCoreState(StateSelector(keyPath: \SGSeatState.seatList))
+        let seatListPublisher = manager.subscribeCoreState(StatePublisherSelector(keyPath: \LiveSeatState.seatList))
         let invitedUserIdsPublisher = manager.subscribeState(StateSelector(keyPath: \VRSeatState.invitedUserIds))
         userListPublisher
             .combineLatest(seatListPublisher, invitedUserIdsPublisher)
@@ -101,10 +102,10 @@ extension VRSeatInvitationPanel {
                 guard let self = self else { return }
                 let audienceList = userList.filter { [weak self] user in
                     guard let self = self else { return false }
-                    return user.userId != self.manager.coreUserState.selfInfo.userId
+                    return user.userId != self.manager.userState.selfInfo.userId
                 }
                 self.audienceTupleList = audienceList.filter { user in
-                    !seatList.contains { $0.userId == user.userId }
+                    !seatList.contains { $0.userInfo.userId == user.userId }
                 }.map { audience in
                     (audience, self.manager.seatState.invitedUserIds.contains(where: {$0 == audience.userId}))
                 }

@@ -9,11 +9,11 @@ import Foundation
 import RTCRoomEngine
 import TUICore
 import RTCCommon
-import LiveStreamCore
+import AtomicXCore
 
 class AnchorMenuDataCreator {
     
-    private let coreView: LiveCoreView
+    private weak var coreView: LiveCoreView?
     private let manager: AnchorManager
     private let routerManager: AnchorRouterManager
     
@@ -49,7 +49,7 @@ extension AnchorMenuDataCreator {
             
             connection.bindStateClosure = { [weak self] button, cancellableSet in
                 guard let self = self else { return }
-                let connectedUserListPublisher = manager.subscribeCoreViewState(StateSelector(keyPath: \CoGuestState.connectedUserList))
+                let connectedUserListPublisher = manager.subscribeCoreViewState(StatePublisherSelector(keyPath: \CoGuestState.connectedUserList))
                 let battleUsersPublisher = manager.subscribeState(StateSelector(keyPath: \AnchorBattleState.battleUsers))
                 connectedUserListPublisher
                     .removeDuplicates()
@@ -87,7 +87,7 @@ extension AnchorMenuDataCreator {
                     let requestUserIds = manager.coHostState.connectedUsers
                         .filter { $0.userId != selfUserId }
                         .map { $0.userId }
-                    coreView.requestBattle(config: config, userIdList: requestUserIds, timeout: anchorBattleRequestTimeout) { [weak self] (battleId, battleUserList) in
+                    coreView?.requestBattle(config: config, userIdList: requestUserIds, timeout: anchorBattleRequestTimeout) { [weak self] (battleId, battleUserList) in
                         guard let self = self else { return }
                         manager.onRequestBattle(battleId: battleId, battleUserList: battleUserList)
                     } onError: { [weak self] code, message in
@@ -154,20 +154,25 @@ extension AnchorMenuDataCreator {
             }
             linkMic.bindStateClosure = { [weak self] button, cancellableSet in
                 guard let self = self else { return }
-                manager.subscribeState(StateSelector(keyPath: \AnchorCoHostState.connectedUsers))
+                manager.subscribeCoreViewState(StatePublisherSelector(keyPath: \CoHostState.connectedUserList))
                     .map { !$0.isEmpty }
                     .receive(on: RunLoop.main)
+                    .removeDuplicates()
                     .sink { [weak button] isConnecting in
                         let imageName = isConnecting ? "live_link_disable_icon" : "live_link_icon"
                         button?.setImage(internalImage(imageName), for: .normal)
                     }
                     .store(in: &cancellableSet)
                 
-                manager.subscribeCoreViewState(StateSelector(keyPath: \CoGuestState.connectedUserList))
-                    .removeDuplicates()
+                manager.subscribeCoreViewState(StatePublisherSelector(keyPath: \CoGuestState.connectedUserList))
+                    .map { $0.count > 1 }
+                    .combineLatest(manager.subscribeCoreViewState(StatePublisherSelector(keyPath: \CoHostState.connectedUserList)).map { !$0.isEmpty })
                     .receive(on: RunLoop.main)
-                    .sink { [weak button] list in
-                        list.count > 1 ? button?.startAnimating() : button?.stopAnimating()
+                    .sink { [weak button] isGuestLinking, isHostConnecting in
+                        if isHostConnecting {
+                            return
+                        }
+                        isGuestLinking ? button?.startAnimating() : button?.stopAnimating()
                     }
                     .store(in: &cancellableSet)
             }
@@ -198,12 +203,15 @@ extension AnchorMenuDataCreator {
                 routerManager.router(action: .routeTo(.anchor))
             } defaultClosure: { [weak self] alertPanel in
                 guard let self = self else { return }
-                coreView.terminateBattle(battleId: manager.battleState.battleId) {
+                coreView?.terminateBattle(battleId: manager.battleState.battleId) {
                 } onError: { _, _ in
                 }
                 routerManager.router(action: .routeTo(.anchor))
             }
-            routerManager.router(action: .present(.alert(info: alertInfo)))
+            routerManager.router(action: .dismiss(.panel, completion: { [weak self] in
+                guard let self = self else { return }
+                routerManager.router(action: .present(.alert(info: alertInfo)))
+            }))
         })
         items.append(endBattleItem)
         routerManager.router(action: .present(.listMenu(ActionPanelData(items: items, cancelText: .cancelText))))
@@ -248,14 +256,14 @@ extension AnchorMenuDataCreator {
                                              designConfig: designConfig,
                                              actionClosure: { [weak self] _ in
             guard let self = self else { return }
-            coreView.switchCamera(isFront: !manager.coreMediaState.isFrontCamera)
+            coreView?.switchCamera(isFront: !manager.coreMediaState.isFrontCamera)
         }))
         model.items.append(AnchorFeatureItem(normalTitle: .mirrorText,
                                              normalImage: internalImage("live_video_setting_mirror")?.withTintColor(.textPrimaryColor),
                                              designConfig: designConfig,
                                              actionClosure: { [weak self] _ in
             guard let self = self else { return }
-            coreView.enableMirror(enable: !manager.coreMediaState.isMirrorEnabled)
+            coreView?.enableMirror(enable: !manager.coreMediaState.isMirrorEnabled)
         }))
         model.items.append(AnchorFeatureItem(normalTitle: .streamDashboardText,
                                              normalImage: internalImage("live_setting_stream_dashboard")?.withTintColor(.textPrimaryColor),

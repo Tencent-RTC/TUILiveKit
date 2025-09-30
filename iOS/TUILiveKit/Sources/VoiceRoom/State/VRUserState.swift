@@ -10,6 +10,7 @@ import RTCRoomEngine
 import ImSDK_Plus
 
 struct VRUserState {
+    var selfInfo: TUIUserInfo = TUIUserInfo()
     var userList: [TUIUserInfo] = []
     var myFollowingUserList: Set<TUIUserInfo> = []
     var speakingUserList: Set<String> = []
@@ -33,3 +34,4 @@ extension TUIUserInfo {
         avatarUrl = seatInfo.avatarUrl ?? ""
     }
 }
+

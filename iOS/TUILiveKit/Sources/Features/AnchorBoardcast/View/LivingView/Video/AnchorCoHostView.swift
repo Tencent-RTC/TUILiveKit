@@ -9,7 +9,7 @@ import Foundation
 import RTCCommon
 import Combine
 import RTCRoomEngine
-import LiveStreamCore
+import AtomicXCore
 
 class AnchorCoHostView: UIView {
     private let manager: AnchorManager
@@ -35,9 +35,17 @@ class AnchorCoHostView: UIView {
         isViewReady = true
         constructViewHierarchy()
         activateConstraints()
-        initViewState()
         subscribeState()
         self.isUserInteractionEnabled = false
+        
+        manager.subscribeCoreViewState(StatePublisherSelector(keyPath: \CoHostState.connectedUserList))
+            .combineLatest(manager.subscribeCoreViewState(StatePublisherSelector(keyPath: \CoGuestState.connectedUserList)))
+            .receive(on: RunLoop.main)
+            .sink { [weak self] coHostList, coGuestList in
+                guard let self = self else { return }
+                userInfoView.isHidden = !(coHostList.count > 1 || coGuestList.count > 1)
+            }
+            .store(in: &cancellableSet)
     }
     
     private lazy var userInfoView = AnchorUserStatusView(userInfo: TUIUserInfo(coHostUser: coHostUser), manager: manager)
@@ -52,14 +60,6 @@ class AnchorCoHostView: UIView {
             make.bottom.equalToSuperview().offset(-5)
             make.leading.equalToSuperview().offset(5)
             make.width.lessThanOrEqualTo(self).multipliedBy(0.9)
-        }
-    }
-    
-    private func initViewState() {
-        if manager.coreCoHostState.connectedUserList.count > 1 || manager.coreCoGuestState.connectedUserList.count > 1 {
-            userInfoView.isHidden = false
-        } else {
-            userInfoView.isHidden = true
         }
     }
 }

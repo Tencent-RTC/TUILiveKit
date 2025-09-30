@@ -8,30 +8,19 @@
 import Foundation
 import RTCCommon
 import Combine
-import RTCRoomEngine
+import AtomicXCore
 
-protocol AudioEffectManagerInterface {
-    func setMicrophoneVolume(_ volume: Int)
-    func setVoiceEarMonitorVolume(_ volume: Int)
-    
-    func setVoiceEarMonitorEnable(_ enable: Bool)
-    
-    func setMusicPitch(_ pitch: Double)
-    func setChangerType(_ type: AudioChangerType)
-    func setReverbType(_ type: AudioReverbType)
-}
-
-class AudioEffectManager: AudioEffectManagerInterface {
-    private let stateKey = "__kAudioEffectManager_state_key__"
-    
-    private let service = AudioEffectService()
+class AudioEffectManager {
     private lazy var provider = AudioEffectDataProvider(manager: self)
     
-    init() {
-        StateCache.shared.subscribeToObjectRemoval(key: stateKey) {
-            AudioEffectService.resetAudioSettings()
-        }
+    private var audioEffectStore: AudioEffectStore {
+        return AudioEffectStore.shared
     }
+    
+    private var deviceStore: DeviceStore {
+        return DeviceStore.shared
+    }
+    
 }
 
 // MARK: - AudioEffectMenuDateGenerator
@@ -48,78 +37,42 @@ extension AudioEffectManager: AudioEffectMenuDateGenerator {
 // MARK: - AudioEffectManagerInterface
 extension AudioEffectManager {
     func setMicrophoneVolume(_ volume: Int) {
-        service.setMicrophoneVolume(volume)
-        update { state in
-            state.microphoneVolume = volume
-        }
-    }
-    
-    func setMusicPitch(_ pitch: Double) {
-        service.setMusicPitch(pitch)
-        update { state in
-            state.voicePitch = pitch
-        }
+        deviceStore.setOutputVolume(volume)
     }
     
     func setVoiceEarMonitorEnable(_ enable: Bool) {
-        service.setVoiceEarMonitorEnable(enable)
-        update { state in
-            state.isEarMonitorOpened = enable
-        }
+        audioEffectStore.setVoiceEarMonitorEnable(enable: enable)
     }
     
     func setVoiceEarMonitorVolume(_ volume: Int) {
-        service.setVoiceEarMonitorVolume(volume)
-        update { state in
-            state.earMonitorVolume = volume
-        }
+        audioEffectStore.setVoiceEarMonitorVolume(volume: volume)
     }
     
     func setChangerType(_ type: AudioChangerType) {
-        service.setChangerType(type)
-        update { state in
-            state.changerType = type
-        }
+        audioEffectStore.setAudioChangerType(type: type)
     }
     
     func setReverbType(_ type: AudioReverbType) {
-        service.setReverbType(type)
-        update { state in
-            state.reverbType = type
-        }
+        audioEffectStore.setAudioReverbType(type: type)
     }
 }
 
 // MARK: - Tools
 extension AudioEffectManager {
-    var state: AudioEffectState {
-        observerState.state
+    var audioState: AudioEffectState {
+        audioEffectStore.state.value
     }
     
-    func subscribeState<Value>(_ selector: StateSelector<AudioEffectState, Value>) -> AnyPublisher<Value, Never> {
-        return observerState.subscribe(selector)
+    var deviceState: DeviceState {
+        deviceStore.state.value
     }
     
-    func subscribeState() -> AnyPublisher<AudioEffectState, Never> {
-        return observerState.subscribe()
+    func subscribeState<Value>(_ selector: StatePublisherSelector<AudioEffectState, Value>) -> AnyPublisher<Value, Never> {
+        return audioEffectStore.state.subscribe(selector)
+    }
+    
+    func subscribeState<Value>(_ selector: StatePublisherSelector<DeviceState, Value>) -> AnyPublisher<Value, Never> {
+        return deviceStore.state.subscribe(selector)
     }
 }
 
-// MARK: - Private functions
-extension AudioEffectManager {
-    private typealias AudioEffectStateUpdateClosure = (inout AudioEffectState) -> Void
-    private var observerState: ObservableState<AudioEffectState> {
-        if let state: ObservableState<AudioEffectState> = StateCache.shared[stateKey] {
-            return state
-        }
-        let newState = ObservableState<AudioEffectState>(initialState: AudioEffectState())
-        StateCache.shared.setObject(key: stateKey, obj: newState)
-        if let state: ObservableState<AudioEffectState> = StateCache.shared[stateKey] {
-            return state
-        }
-        return newState
-    }
-    private func update(state: AudioEffectStateUpdateClosure) {
-        observerState.update(reduce: state)
-    }
-}

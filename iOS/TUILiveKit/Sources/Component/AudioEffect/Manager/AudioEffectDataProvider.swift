@@ -6,6 +6,7 @@
 //
 import Combine
 import RTCCommon
+import AtomicXCore
 
 protocol AudioEffectMenuDateGenerator {
     typealias Section = Int
@@ -25,7 +26,7 @@ class AudioEffectDataProvider {
     
     let changerDataSource: [AudioChangerDataSource] = [
         (
-            title: .originVoiceText,
+            title: .noneVoiceText,
             icon: internalImage("live_audio_none"),
             changerType: .none
         ),
@@ -60,7 +61,7 @@ class AudioEffectDataProvider {
         (
             title: .karaokeText,
             icon: internalImage("live_audio_reverb_karaoke"),
-            reverbType: .KTV
+            reverbType: .ktv
         ),
         (
             title: .metalText,
@@ -111,7 +112,7 @@ extension AudioEffectDataProvider: AudioEffectMenuDateGenerator {
     private func firstSectionMenus() -> [SettingItem] {
         guard let manager = manager else { return [] }
         var firstSection: [SettingItem] = []
-        var earMonitor = SwitchItem(title: .voiceEarMonitorText, isOn: manager.state.isEarMonitorOpened)
+        var earMonitor = SwitchItem(title: .voiceEarMonitorText, isOn: manager.audioState.isEarMonitorOpened)
         earMonitor.action = { [weak self] isOpened in
             guard let self = self else { return }
             self.manager?.setVoiceEarMonitorEnable(isOpened)
@@ -120,14 +121,14 @@ extension AudioEffectDataProvider: AudioEffectMenuDateGenerator {
         var earMonitorVolume = SliderItem(title: .voiceEarMonitorVolumeText)
         earMonitorVolume.min = 0
         earMonitorVolume.max = 100
-        earMonitorVolume.currentValue = Float(manager.state.earMonitorVolume)
+        earMonitorVolume.currentValue = Float(manager.audioState.earMonitorVolume)
         earMonitorVolume.valueDidChanged = { [weak self] value in
             guard let self = self else { return }
             self.manager?.setVoiceEarMonitorVolume(Int(value))
         }
         earMonitorVolume.subscribeState = { [weak self] cell, cancellables in
             guard let self = self else { return }
-            self.manager?.subscribeState(StateSelector(keyPath: \.earMonitorVolume))
+            self.manager?.subscribeState(StatePublisherSelector(keyPath: \AudioEffectState.earMonitorVolume))
                 .receive(on: DispatchQueue.main)
                 .sink { [weak cell] value in
                     guard let sliderCell = cell else { return }
@@ -146,14 +147,14 @@ extension AudioEffectDataProvider: AudioEffectMenuDateGenerator {
         var microphoneVolume = SliderItem(title: .microphoneVolumeText)
         microphoneVolume.min = 0
         microphoneVolume.max = 100
-        microphoneVolume.currentValue = Float(manager.state.microphoneVolume)
+        microphoneVolume.currentValue = Float(manager.deviceState.outputVolume)
         microphoneVolume.valueDidChanged = { [weak self] value in
             guard let self = self else { return }
             self.manager?.setMicrophoneVolume(Int(value))
         }
         microphoneVolume.subscribeState = { [weak self] cell, cancellableSet in
             guard let self = self else { return }
-            self.manager?.subscribeState(StateSelector(keyPath: \.microphoneVolume))
+            self.manager?.subscribeState(StatePublisherSelector(keyPath: \DeviceState.outputVolume))
                 .receive(on: DispatchQueue.main)
                 .sink { [weak cell] value in
                     guard let sliderCell = cell else { return }
@@ -176,7 +177,7 @@ extension AudioEffectDataProvider: AudioEffectMenuDateGenerator {
         var item = ButtonItem(buttonTitle: title)
         guard let manager = manager else { return item }
         item.icon = icon
-        item.isSelected = manager.state.changerType == changerType
+        item.isSelected = manager.audioState.audioChangerType == changerType
         item.action = { [weak self] in
             guard let self = self else { return }
             self.manager?.setChangerType(changerType)
@@ -194,7 +195,7 @@ extension AudioEffectDataProvider: AudioEffectMenuDateGenerator {
         var item = ButtonItem(buttonTitle: title)
         guard let manager = manager else { return item }
         item.icon = icon
-        item.isSelected = manager.state.reverbType == reverbType
+        item.isSelected = manager.audioState.audioReverbType == reverbType
         item.action = { [weak self] in
             guard let self = self else { return }
             self.manager?.setReverbType(reverbType)

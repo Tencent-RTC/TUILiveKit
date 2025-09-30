@@ -9,22 +9,21 @@ import UIKit
 import RTCCommon
 import RTCRoomEngine
 import Combine
+import AtomicXCore
 
 public protocol BarrageStreamViewDelegate: AnyObject {
-    func barrageDisplayView(_ barrageDisplayView: BarrageStreamView, createCustomCell barrage: TUIBarrage) -> UIView?
-    func onBarrageClicked(user: TUIUserInfo)
+    func barrageDisplayView(_ barrageDisplayView: BarrageStreamView, createCustomCell barrage: Barrage) -> UIView?
+    func onBarrageClicked(user: LiveUserInfo)
 }
 
 public class BarrageStreamView: UIView {
     public weak var delegate: BarrageStreamViewDelegate?
     
-    private let roomId: String
+    private let liveId: String
     private var ownerId: String = ""
-    private let manager: BarrageDisplayManager
     private var lastReloadDate: Date?
     
-    // Max count of dataSource, default is 1000
-    private let dataSource = ListManager<TUIBarrage>(maxLength: 1000)
+    private var dataSource: [Barrage] = []
     private var reloadWorkItem: DispatchWorkItem?
     private var cancellableSet = Set<AnyCancellable>()
     
@@ -39,16 +38,14 @@ public class BarrageStreamView: UIView {
         view.separatorStyle = .none
         view.contentInsetAdjustmentBehavior = .never
         view.estimatedRowHeight = 30.scale375Height()
-        view.register(TUIBarrageCell.self, forCellReuseIdentifier: TUIBarrageCell.cellReuseIdentifier)
+        view.register(BarrageCell.self, forCellReuseIdentifier: BarrageCell.cellReuseIdentifier)
         view.contentInset = UIEdgeInsets(top: bounds.height - view.estimatedRowHeight, left: 0, bottom: 0, right: 0)
         return view
     }()
 
-    public init(roomId: String) {
-        self.roomId = roomId
-        self.manager = BarrageDisplayManager(roomId: roomId)
+    public init(liveId: String) {
+        self.liveId = liveId
         super.init(frame: .zero)
-        manager.delegate = self
         initEmotions()
         
         BarrageManager.shared.toastSubject
@@ -84,15 +81,16 @@ public class BarrageStreamView: UIView {
         bindInteraction()
         isViewReady = true
     }
-
-    public func insertBarrages(_ barrages: [TUIBarrage]) {
+    
+    func reloadBarrages(_ barrages: [Barrage]) {
         barrageTableView.layer.removeAllAnimations()
-        dataSource.append(contentsOf: barrages)
+        dataSource = barrages
         setNeedsReloadData()
     }
     
     public func getBarrageCount() -> Int {
-        dataSource.totalCount
+        // TODO: chengyu summaryData明确后删除
+        return dataSource.count
     }
     
     public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
@@ -104,22 +102,19 @@ public class BarrageStreamView: UIView {
     }
     
     private func bindInteraction() {
-        BarrageManager.shared.sendBarrageSubject
-            .receive(on: RunLoop.main)
-            .sink { [weak self] roomId, barrage in
-                guard let self = self, roomId == self.roomId else { return }
-                insertBarrages([barrage])
-            }
-            .store(in: &cancellableSet)
+        setupBarrageListener()
+        setupAudienceEvent()
     }
+    
 }
 
 extension BarrageStreamView: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: TUIBarrageCell.cellReuseIdentifier, for: indexPath) as? TUIBarrageCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: BarrageCell.cellReuseIdentifier, for: indexPath) as? BarrageCell else {
             return UITableViewCell()
         }
-        guard let barrage = dataSource[indexPath.row] else { return cell }
+        guard dataSource.count > indexPath.row else { return cell }
+        let barrage = dataSource[indexPath.row]
         if let view = delegate?.barrageDisplayView(self, createCustomCell: barrage) {
             cell.setContent(view)
         } else {
@@ -135,12 +130,9 @@ extension BarrageStreamView: UITableViewDataSource {
 
 extension BarrageStreamView: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let barrageUser = dataSource[indexPath.row]?.user else { return }
-        let user = TUIUserInfo()
-        user.userId = barrageUser.userId
-        user.userName = barrageUser.userName
-        user.avatarUrl = barrageUser.avatarUrl
-        delegate?.onBarrageClicked(user: user)
+        guard dataSource.count > indexPath.row else { return }
+        let barrageUser = dataSource[indexPath.row].sender
+        delegate?.onBarrageClicked(user: barrageUser)
     }
     
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -157,14 +149,53 @@ extension BarrageStreamView: UITableViewDelegate {
     }
 }
 
-extension BarrageStreamView: BarrageDisplayManagerDelegate {
-    func didReceiveBarrage(_ barrage: TUIBarrage) {
-        insertBarrages([barrage])
+extension BarrageStreamView {    
+    var liveListStore: LiveListStore {
+        return LiveListStore.shared
+    }
+    
+    var barrageStore: BarrageStore {
+        return BarrageStore.create(liveId: liveId)
+    }
+    
+    var liveAudienceStore: LiveAudienceStore {
+        return LiveAudienceStore.create(liveId: liveId)
     }
 }
 
 // MARK: - Private functions
 extension BarrageStreamView {
+    private func setupBarrageListener() {
+        barrageStore.state.subscribe(StatePublisherSelector(keyPath: \BarrageState.messageList))
+            .receive(on: RunLoop.main)
+            .sink { [weak self] messageList in
+                guard let self = self else { return }
+                guard !messageList.isEmpty else { return }
+                reloadBarrages(messageList)
+            }
+            .store(in: &cancellableSet)
+    }
+    
+    private func setupAudienceEvent() {
+        liveAudienceStore.liveAudienceEventPublisher
+            .receive(on: RunLoop.main)
+            .sink { [weak self] event in
+                guard let self = self else { return }
+                switch event {
+                case .onAudienceJoined(audience: let audience):
+                    var barrage = Barrage()
+                    barrage.liveId = liveId
+                    barrage.sender = audience
+                    barrage.textContent = " \(String.comingText)"
+                    barrage.timestampInSecond = Date().timeIntervalSince1970
+                    barrageStore.appendLocalTip(message: barrage)
+                case .onAudienceLeft(audience: _):
+                    break
+                }
+            }
+            .store(in: &cancellableSet)
+    }
+    
     private func setNeedsReloadData() {
         let current = Date()
         if let last = lastReloadDate {
@@ -216,4 +247,8 @@ extension BarrageStreamView {
     private func initEmotions() {
         EmotionHelper.shared.useDefaultEmotions()
     }
+}
+
+private extension String {
+    static let comingText: String = internalLocalized("Entered room")
 }

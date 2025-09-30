@@ -13,6 +13,10 @@ func internalLocalized(_ key: String) -> String {
     return .localized(key, inBundle: internalBundle, table: "TUILiveKitLocalized")
 }
 
+func sgLocalized(_ key: String) -> String {
+    return .localized(key, inBundle: internalBundle, table: "SeatGridViewLocalized")
+}
+
 func internalImage(_ named: String) -> UIImage? {
     return UIImage(named: named, in: internalBundle, with: nil) ?? UIImage(named: named)
 }

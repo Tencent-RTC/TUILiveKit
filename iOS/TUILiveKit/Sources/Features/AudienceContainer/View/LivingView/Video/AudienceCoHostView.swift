@@ -9,7 +9,7 @@ import Foundation
 import RTCCommon
 import Combine
 import RTCRoomEngine
-import LiveStreamCore
+import AtomicXCore
 
 class AudienceCoHostView: UIView {
     private let manager: AudienceManager
@@ -66,7 +66,7 @@ class AudienceCoHostView: UIView {
 
 extension AudienceCoHostView {
     func subscribeState() {
-        manager.subscribeCoreViewState(StateSelector(keyPath: \CoHostState.connectedUserList))
+        manager.subscribeCoreViewState(StatePublisherSelector(keyPath: \CoHostState.connectedUserList))
             .receive(on: RunLoop.main)
             .removeDuplicates()
             .sink { [weak self] connectedUsers in

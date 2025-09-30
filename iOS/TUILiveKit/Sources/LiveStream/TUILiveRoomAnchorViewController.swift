@@ -10,7 +10,7 @@ import Foundation
 import TUICore
 import RTCRoomEngine
 import Combine
-import LiveStreamCore
+import AtomicXCore
 import RTCCommon
 
 @objcMembers
@@ -45,7 +45,7 @@ public class TUILiveRoomAnchorViewController: UIViewController {
             } catch {
                 LiveKitLog.error("\(#file)","\(#line)", "dataReport: \(error.localizedDescription)")
             }
-            self.coreView = LiveCoreView()
+            self.coreView = LiveCoreView(viewType: .pushView)
         }
         self.anchorView = AnchorView(liveInfo: liveInfo, coreView: self.coreView, behavior: behavior)
         super.init(nibName: nil, bundle: nil)
@@ -63,8 +63,10 @@ public class TUILiveRoomAnchorViewController: UIViewController {
     
     deinit {
         StateCache.shared.clear()
+        AudioEffectStore.shared.reset()
+        DeviceStore.shared.reset()
+        BaseBeautyStore.shared.reset()
         LiveKitLog.info("\(#file)", "\(#line)", "deinit TUILiveRoomAnchorViewController \(self)")
-        TUIGiftStore.shared.reset()
 #if DEV_MODE
         TestTool.shared.unregisterCaseFrom(self)
 #endif
@@ -163,7 +165,7 @@ extension TUILiveRoomAnchorViewController: FloatWindowProvider {
         return roomState.ownerInfo.userId
     }
     
-    public func getCoreView() -> LiveStreamCore.LiveCoreView {
+    public func getCoreView() -> AtomicXCore.LiveCoreView {
         coreView
     }
     

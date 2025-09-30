@@ -1,4 +1,4 @@
-source 'https://github.com/CocoaPods/Specs.git'
+source 'https://cdn.cocoapods.org/'
 
 use_frameworks!
 
@@ -12,6 +12,7 @@ target 'TUILiveKitApp' do
   pod 'Alamofire'
   # Local Library
   pod 'TUILiveKit', :path => '../TUILiveKit'
+  pod 'AtomicX', :path => '../atomicX'
   pod 'RTCCommon', '>= 1.3.3'
 
 end

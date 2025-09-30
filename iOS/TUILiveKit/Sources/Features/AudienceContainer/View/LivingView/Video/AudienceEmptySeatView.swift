@@ -7,7 +7,7 @@
 
 import RTCRoomEngine
 import SnapKit
-import LiveStreamCore
+import AtomicXCore
 import Combine
 
 class AudienceEmptySeatView: UIView {

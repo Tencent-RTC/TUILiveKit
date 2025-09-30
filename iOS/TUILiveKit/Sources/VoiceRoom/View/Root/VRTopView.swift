@@ -67,7 +67,7 @@ class VRTopView: UIView {
     
     func initialize(roomId: String) {
         liveInfoView.initialize(liveInfo: manager.roomState.liveInfo)
-        audienceListView.initialize(liveInfo: manager.roomState.liveInfo)
+        audienceListView.initialize(liveId: roomId)
     }
     
     required init?(coder: NSCoder) {
@@ -152,7 +152,7 @@ extension VRTopView {
     private func clickReport() {
         let selector = NSSelectorFromString("showReportAlertWithRoomId:ownerId:")
         if responds(to: selector) {
-            perform(selector, with: manager.roomState.roomId, with: manager.coreRoomState.ownerId)
+            perform(selector, with: manager.roomState.roomId, with: manager.coreLiveState.liveOwner.userId)
         }
     }
 }

@@ -14,7 +14,7 @@ class VRPrepareSettingPanel: UIView {
     private let routerManager: VRRouterManager
     private var cancellableSet = Set<AnyCancellable>()
     private lazy var menus: [SwitchItem] = {
-        var item = SwitchItem(title: .needRequestText, isOn: manager.coreRoomState.seatMode == .applyToTake)
+        var item = SwitchItem(title: .needRequestText, isOn: manager.coreLiveState.seatMode == .apply)
         item.action = { [weak self] isNeedToApply in
             guard let self = self else { return }
             manager.onChangedSeatMode(isNeedToApply ? .applyToTake : .freeToTake)

@@ -31,12 +31,18 @@ class AnchorMediaManager {
     }
     
     deinit {
+        enableMultiPlaybackQuality(false)
         unInitVideoAdvanceSettings()
     }
 }
 
 // MARK: - Interface
 extension AnchorMediaManager {
+
+    func prepareLiveInfoBeforeEnterRoom(liveInfo: LiveInfo) {
+        enableMultiPlaybackQuality(true)
+    }
+    
     func setLocalVideoView(view: UIView) {
         service.setLocalVideoView(view: view)
     }
@@ -54,6 +60,7 @@ extension AnchorMediaManager {
     }
     
     func onLeaveLive() {
+        enableMultiPlaybackQuality(false)
         unInitVideoAdvanceSettings()
         observerState.update(isPublished: false) { state in
             state = AnchorMediaState()
@@ -86,54 +93,19 @@ extension AnchorMediaManager {
             state.videoAdvanceSettings.isVisible = visible
         }
     }
-    
-    func enableUltimate(_ enable: Bool) {
+   
+    func enableMultiPlaybackQuality(_ enable: Bool) {
         TUICore.callService(.TUICore_VideoAdvanceService,
-                            method: .TUICore_VideoAdvanceService_EnableUltimate,
+                            method: .TUICore_VideoAdvanceService_EnableMultiPlaybackQuality,
                             param: ["enable" : NSNumber(value: enable)])
-        observerState.update { state in
-            state.videoAdvanceSettings.isUltimateEnabled = enable
-        }
-        if enable {
-            enableBFrame(false)
-        }
-    }
-    
-    func enableBFrame(_ enable: Bool) {
-        TUICore.callService(.TUICore_VideoAdvanceService,
-                            method: .TUICore_VideoAdvanceService_EnableBFrame,
-                            param: ["enable" : NSNumber(value: enable)])
-        observerState.update { state in
-            state.videoAdvanceSettings.isBFrameEnabled = enable
-        }
-    }
-    
-    func enableH265(_ enable: Bool) {
-        TUICore.callService(.TUICore_VideoAdvanceService,
-                            method: .TUICore_VideoAdvanceService_EnableH265,
-                            param: ["enable" : NSNumber(value: enable)])
-        observerState.update { state in
-            state.videoAdvanceSettings.isH265Enabled = enable
-        }
-    }
-    
-    func enableHDR(_ renderType: AnchorHDRRenderType) {
-        TUICore.callService(.TUICore_VideoAdvanceService,
-                            method: .TUICore_VideoAdvanceService_EnableHDR,
-                            param: ["renderType" : NSNumber(value: renderType.rawValue)])
-        observerState.update { state in
-            state.videoAdvanceSettings.hdrRenderType = renderType
-        }
     }
     
     private func initVideoAdvanceSettings() {
-        enableUltimate(true)
-        enableH265(true)
+        enableMultiPlaybackQuality(true)
     }
     
     private func unInitVideoAdvanceSettings() {
-        enableUltimate(false)
-        enableH265(false)
+        enableMultiPlaybackQuality(false)
     }
 }
 
@@ -148,8 +120,5 @@ fileprivate extension String {
     
     static let TUICore_VideoAdvanceService = "TUICore_VideoAdvanceService"
     
-    static let TUICore_VideoAdvanceService_EnableUltimate = "TUICore_VideoAdvanceService_EnableUltimate"
-    static let TUICore_VideoAdvanceService_EnableH265 = "TUICore_VideoAdvanceService_EnableH265"
-    static let TUICore_VideoAdvanceService_EnableHDR = "TUICore_VideoAdvanceService_EnableHDR"
-    static let TUICore_VideoAdvanceService_EnableBFrame = "TUICore_VideoAdvanceService_EnableBFrame"
+    static let TUICore_VideoAdvanceService_EnableMultiPlaybackQuality = "TUICore_VideoAdvanceService_EnableMultiPlaybackQuality"
 }

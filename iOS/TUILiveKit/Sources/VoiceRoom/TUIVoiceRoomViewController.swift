@@ -10,7 +10,7 @@ import RTCCommon
 import Combine
 import RTCRoomEngine
 import TUICore
-import LiveStreamCore
+import AtomicXCore
 
 let defaultMaxSeatCount = 10
 
@@ -42,7 +42,7 @@ public class TUIVoiceRoomViewController: UIViewController {
     // MARK: - Private property.
    
     private let roomId: String
-    private lazy var manager = VoiceRoomManager(provider: self)
+    private lazy var manager = VoiceRoomManager(liveId: roomId)
     private let routerManager: VRRouterManager = VRRouterManager()
     private var needRestoreNavigationBarHiddenState: Bool = false
     private var cancellableSet = Set<AnyCancellable>()
@@ -70,7 +70,9 @@ public class TUIVoiceRoomViewController: UIViewController {
             }
         }
         setComponent()
-        return SeatGridView()
+        let seatGridView = SeatGridView()
+        seatGridView.setLiveId(roomId)
+        return seatGridView
     }()
     
     private lazy var voicePrepareView: VoiceRoomPrepareView = {
@@ -111,7 +113,9 @@ public class TUIVoiceRoomViewController: UIViewController {
         cancellableSet.forEach { $0.cancel() }
         cancellableSet.removeAll()
         StateCache.shared.clear()
-        TUIGiftStore.shared.reset()
+        AudioEffectStore.shared.reset()
+        DeviceStore.shared.reset()
+        BaseBeautyStore.shared.reset()
         print("deinit \(type(of: self))")
     }
     
@@ -248,15 +252,5 @@ extension TUIVoiceRoomViewController {
         guard let navigationController = self.navigationController, needRestoreNavigationBarHiddenState else { return }
         navigationController.setNavigationBarHidden(false, animated: true)
         needRestoreNavigationBarHiddenState = false
-    }
-}
-
-extension TUIVoiceRoomViewController: VoiceRoomManagerProvider {
-    func subscribeCoreViewState<State, Value>(_ selector: StateSelector<State, Value>) -> AnyPublisher<Value, Never> {
-        seatGridView.subscribeState(selector)
-    }
-    
-    func getCoreViewState<T>() -> T where T : State {
-        seatGridView.getState()
     }
 }

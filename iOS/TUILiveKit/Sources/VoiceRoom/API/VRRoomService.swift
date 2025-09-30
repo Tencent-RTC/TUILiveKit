@@ -117,4 +117,18 @@ class VRRoomService: BaseServiceProtocol {
             }
         }
     }
+
+    func setRoomMetadataByAdmin(metadata: [String: String]) async throws {
+        return try await withCheckedThrowingContinuation { [weak self] continuation in
+            guard let self = self else { return }
+            LiveKitLog.info("\(#file)", "\(#line)","setRoomMetadataByAdmin:")
+
+            self.roomEngine.setRoomMetadataByAdmin(metadata) {
+                continuation.resume()
+            } onError: { err, message in
+                let error = InternalError(code: err.rawValue, message: message)
+                continuation.resume(throwing: error)
+            }
+        }
+    }
 }

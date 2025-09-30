@@ -35,6 +35,12 @@ class VRUserManager: VRIMObserverInterface, VRRoomEngineObserverUserInterface {
             state.userList = []
         }
     }
+    
+    func refreshSelfInfo() {
+        guard let service = service else { return }
+        let selfInfo = service.getSelfInfo()
+        update(login: selfInfo)
+    }
 }
 
 extension VRUserManager {
@@ -45,7 +51,7 @@ extension VRUserManager {
     func onSeatListChanged(seatList: [TUISeatInfo]) {
         guard let context = context else { return }
         var linkStatus: LinkStatus = .none
-        let selfUserId = context.coreUserState.selfInfo.userId
+        let selfUserId = state.selfInfo.userId
         if seatList.contains(where: { $0.userId == selfUserId }) {
             linkStatus = .linking
         }
@@ -59,7 +65,7 @@ extension VRUserManager {
     func onJoinVoiceRoom(ownerId: String) {
         fetchUserList()
         guard let context = context else { return }
-        if context.coreUserState.selfInfo.userId != ownerId {
+        if state.selfInfo.userId != ownerId {
             checkFollowType(ownerId)
         }
     }
@@ -185,5 +191,11 @@ extension VRUserManager {
                 }
             }
         }
+    }
+    
+    private func update(login userInfo: TUILoginUserInfo) {
+        observerState.state.selfInfo.userId = userInfo.userId
+        observerState.state.selfInfo.userName = userInfo.userName
+        observerState.state.selfInfo.avatarUrl = userInfo.avatarUrl
     }
 }

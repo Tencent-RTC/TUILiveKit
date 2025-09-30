@@ -11,9 +11,9 @@ import Kingfisher
 import Combine
 
 class VRSeatPreviewView: UIView {
-    var itemSize = CGSize(width: 70, height: 105)
-    var verticalMargin = 20.0
-    
+    var itemSize = CGSize(width: 50, height: 50)
+    var verticalMargin = 23.0
+
     var seatCount: Int = 10
     
     lazy var seatCollection: UICollectionView = {

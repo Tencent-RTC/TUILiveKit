@@ -21,6 +21,12 @@
             "state": "translated",
             "value": "取消"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "キャンセル"
+          }
         }
       }
     },
@@ -43,6 +49,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "溫馨提示"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "親切なヒント"
           }
         }
       }
@@ -67,6 +79,12 @@
             "state": "translated",
             "value": "登錄失敗"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ログインに失敗しました"
+          }
         }
       }
     },
@@ -89,6 +107,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "登錄成功"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正常にログインします"
           }
         }
       }
@@ -113,6 +137,12 @@
             "state": "translated",
             "value": "確定要刪除xxx嗎？"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "XXXを削除したいですか？"
+          }
         }
       }
     },
@@ -135,6 +165,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "確定要斷開xxx的連麥嗎？"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "XXXの接続を切断したいですか？"
           }
         }
       }
@@ -159,6 +195,12 @@
             "state": "translated",
             "value": "確定要移除xxx嗎？"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "xxxを削除したいですか？"
+          }
         }
       }
     },
@@ -181,6 +223,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "主播PK"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アンカーPK"
           }
         }
       }
@@ -205,6 +253,12 @@
             "state": "translated",
             "value": "當前處於連麥狀態，是否需要「關閉直播間」"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "現在、接続されている州では、「ライブブロードキャストルームを閉じる」必要がありますか？"
+          }
         }
       }
     },
@@ -227,6 +281,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "連線中"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接続"
           }
         }
       }
@@ -251,6 +311,12 @@
             "state": "translated",
             "value": "結束PK"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PKを終了します"
+          }
         }
       }
     },
@@ -273,6 +339,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "確定要結束PK嗎？結束後將以當前結果為最終結果"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PKを終了したいですか？終了後、現在の結果が最終結果になります"
           }
         }
       }
@@ -297,6 +369,12 @@
             "state": "translated",
             "value": "PK邀請已超時"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PKの招待状がタイムアウトしました"
+          }
         }
       }
     },
@@ -319,6 +397,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "PK結束"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PKは終了します"
           }
         }
       }
@@ -343,6 +427,12 @@
             "state": "translated",
             "value": "被邀請連線的房間與其他房間連線中。"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接続に招待された部屋は、他の部屋に接続されています。"
+          }
         }
       }
     },
@@ -365,6 +455,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "其他錯誤，無法發起連線"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接続を開始できない他のエラー"
           }
         }
       }
@@ -389,6 +485,12 @@
             "state": "translated",
             "value": "邀請中"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "招待"
+          }
         }
       }
     },
@@ -411,6 +513,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "連線申請被拒絕"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オンラインアプリケーションは拒否されました"
+          }
+        }
+      }
+    },
+    "Invitation has timed out": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invitation has timed out"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "邀请已超时"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "邀請已超時"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "招待がタイムアウトしました"
           }
         }
       }
@@ -435,6 +572,12 @@
             "state": "translated",
             "value": "發起連線"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接続を開始します"
+          }
         }
       }
     },
@@ -457,6 +600,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "當前連線人數已達最大限制。"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接続されている人の現在の数は、最大制限に達しました。"
           }
         }
       }
@@ -481,6 +630,12 @@
             "state": "translated",
             "value": "封面"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "カバー"
+          }
         }
       }
     },
@@ -503,6 +658,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "音頻信息"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オーディオ情報"
           }
         }
       }
@@ -527,6 +688,12 @@
             "state": "translated",
             "value": "採樣率"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サンプリングレート"
+          }
         }
       }
     },
@@ -549,6 +716,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "下行丟包率"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ダウンリンクパケット損失率"
           }
         }
       }
@@ -573,6 +746,12 @@
             "state": "translated",
             "value": "本地用戶"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ローカルユーザー"
+          }
         }
       }
     },
@@ -595,6 +774,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "遠端用戶"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "リモートユーザー"
           }
         }
       }
@@ -619,6 +804,12 @@
             "state": "translated",
             "value": "往返延時"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "往復遅延"
+          }
         }
       }
     },
@@ -641,6 +832,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "儀錶盤"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ダッシュボード"
           }
         }
       }
@@ -665,6 +862,12 @@
             "state": "translated",
             "value": "上行丟包率"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アップリンクパケット損失率"
+          }
         }
       }
     },
@@ -687,6 +890,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "碼率"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "コードレート"
           }
         }
       }
@@ -711,6 +920,12 @@
             "state": "translated",
             "value": "幀率"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "フレームレート"
+          }
         }
       }
     },
@@ -734,6 +949,12 @@
             "state": "translated",
             "value": "視頻信息"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ビデオ情報"
+          }
         }
       }
     },
@@ -749,13 +970,19 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "分辨率"
+            "value": "清晰度"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "解析度"
+            "value": "清晰度"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": ""
           }
         }
       }
@@ -780,6 +1007,12 @@
             "state": "translated",
             "value": "禁用音頻"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オーディオを無効にします"
+          }
         }
       }
     },
@@ -802,6 +1035,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "禁言"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "禁断"
           }
         }
       }
@@ -826,6 +1065,12 @@
             "state": "translated",
             "value": "禁用視頻"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ビデオを無効にします"
+          }
         }
       }
     },
@@ -848,6 +1093,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "確定要斷開與其他主播的連線嗎?"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "他のアンカーから切断したいですか？"
           }
         }
       }
@@ -872,6 +1123,12 @@
             "state": "translated",
             "value": "斷開連線"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "切断された"
+          }
         }
       }
     },
@@ -894,6 +1151,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "允許觀眾申請連麥"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "視聴者が接続を申請できるようにします"
           }
         }
       }
@@ -918,6 +1181,12 @@
             "state": "translated",
             "value": "啟用音頻"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オーディオを有効にします"
+          }
         }
       }
     },
@@ -940,6 +1209,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "解除禁言"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "禁止を解放します"
           }
         }
       }
@@ -964,6 +1239,12 @@
             "state": "translated",
             "value": "啟用視頻"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ビデオを有効にします"
+          }
         }
       }
     },
@@ -986,6 +1267,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "斷開連線"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "切断された"
           }
         }
       }
@@ -1010,6 +1297,12 @@
             "state": "translated",
             "value": "當前處於連線狀態，是否需要「斷開連線」或「關閉直播間」"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "現在、接続されている州では、「ライブブロードキャストルームを閉じる」または「閉じる」必要がありますか？"
+          }
         }
       }
     },
@@ -1032,6 +1325,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "當前處於PK狀態，是否需要「結束PK」或「關閉直播間」"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "現在、PKステータスでは、「PKを終了」する必要がありますか、それとも「ライブブロードキャストルームを閉じる」必要がありますか？"
           }
         }
       }
@@ -1056,6 +1355,12 @@
             "state": "translated",
             "value": "移除"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取り除く"
+          }
         }
       }
     },
@@ -1078,6 +1383,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "您已被踢出房間"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あなたは部屋から追い出されました"
           }
         }
       }
@@ -1102,6 +1413,12 @@
             "state": "translated",
             "value": "更多"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "もっと"
+          }
         }
       }
     },
@@ -1124,6 +1441,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "更多功能"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "その他の機能"
           }
         }
       }
@@ -1148,6 +1471,12 @@
             "state": "translated",
             "value": "您已被主播靜音"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あなたはアンカーによってミュートされました"
+          }
         }
       }
     },
@@ -1170,6 +1499,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "您已被主播關閉攝像頭"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あなたはアンカーによってオフにされました"
           }
         }
       }
@@ -1194,6 +1529,12 @@
             "state": "translated",
             "value": "當前房間內您已被禁言，無法發送禮物"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あなたは部屋で禁止されており、贈り物を送ることができません"
+          }
         }
       }
     },
@@ -1216,6 +1557,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "視頻直播"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ライブビデオ"
           }
         }
       }
@@ -1240,6 +1587,12 @@
             "state": "translated",
             "value": "推薦列表"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "推奨リスト"
+          }
         }
       }
     },
@@ -1262,6 +1615,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "申請連麥(xxx)"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接続を申請する（xxx）"
           }
         }
       }
@@ -1286,6 +1645,12 @@
             "state": "translated",
             "value": "直播房間ID：xxx"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ライブルームID：xxx"
+          }
         }
       }
     },
@@ -1309,28 +1674,40 @@
             "state": "translated",
             "value": "申請連麥(xxx)"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接続を申請する（xxx）"
+          }
         }
       }
     },
-    "Current Mic (xxx/yyy)": {
+    "Current Mic (xxx)": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Current Mic (xxx/yyy)"
+            "value": "Current Mic (xxx)"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "当前麦位 (xxx/yyy)"
+            "value": "当前麦位 (xxx)"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "當前麥位 (xxx/yyy)"
+            "value": "當前麥位 (xxx)"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "現在の位置（xxx）"
           }
         }
       }
@@ -1355,6 +1732,12 @@
             "state": "translated",
             "value": "當前房間內，您已被禁言"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あなたは現在の部屋で禁止されています"
+          }
         }
       }
     },
@@ -1377,6 +1760,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "當前房間內，您已被解除禁言"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "現在の部屋で、あなたは禁止から持ち上げられました"
           }
         }
       }
@@ -1401,6 +1790,12 @@
             "state": "translated",
             "value": "完成"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "仕上げる"
+          }
         }
       }
     },
@@ -1423,6 +1818,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "邀請"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "招待する"
           }
         }
       }
@@ -1447,6 +1848,12 @@
             "state": "translated",
             "value": "開始直播"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ライブブロードキャストを開始します"
+          }
         }
       }
     },
@@ -1469,6 +1876,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "開啟視頻"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ビデオをオンにします"
           }
         }
       }
@@ -1493,6 +1906,12 @@
             "state": "translated",
             "value": "關閉視頻"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ビデオを閉じます"
+          }
         }
       }
     },
@@ -1515,6 +1934,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "確定要斷開連麥嗎？"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "切断したいですか？"
           }
         }
       }
@@ -1539,6 +1964,12 @@
             "state": "translated",
             "value": "主播解除了您的靜音"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アンカーはあなたを解きません"
+          }
         }
       }
     },
@@ -1561,6 +1992,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "主播解禁了你的攝像頭"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アンカーはカメラのロックを解除しました"
           }
         }
       }
@@ -1585,6 +2022,12 @@
             "state": "translated",
             "value": "視頻碼率"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ビデオコードレート"
+          }
         }
       }
     },
@@ -1607,6 +2050,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "視頻幀率"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ビデオフレームレート"
           }
         }
       }
@@ -1631,6 +2080,12 @@
             "state": "translated",
             "value": "視頻解析度"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ビデオ解像度"
+          }
         }
       }
     },
@@ -1653,6 +2108,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "至臻畫質"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "究極の画質"
           }
         }
       }
@@ -1677,6 +2138,12 @@
             "state": "translated",
             "value": "連觀眾"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "聴衆でさえ"
+          }
         }
       }
     },
@@ -1699,6 +2166,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "連主播"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アンカーでさえ"
           }
         }
       }
@@ -1723,6 +2196,12 @@
             "state": "translated",
             "value": "直播模式:xxx"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ライブブロードキャストモード：xxx"
+          }
         }
       }
     },
@@ -1745,6 +2224,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "直播分類:xxx"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ライブブロードキャストカテゴリ：xxx"
           }
         }
       }
@@ -1769,6 +2254,12 @@
             "state": "translated",
             "value": "申請列表 (xxx)"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アプリケーションリスト（xxx）"
+          }
         }
       }
     },
@@ -1791,6 +2282,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "主播"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アンカー"
           }
         }
       }
@@ -1815,6 +2312,12 @@
             "state": "translated",
             "value": "內容太長，請縮減內容後再試"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "コンテンツが長すぎるので、試す前にコンテンツを減らしてください"
+          }
         }
       }
     },
@@ -1837,6 +2340,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "網絡異常，請稍後再試"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ネットワークの異常、後でもう一度やり直してください"
           }
         }
       }
@@ -1861,6 +2370,12 @@
             "state": "translated",
             "value": "檢測到敏感詞，請修改後重試"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "敏感な単語が検出されました。それらを変更して、もう一度やり直してください"
+          }
         }
       }
     },
@@ -1883,6 +2398,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "說點什麼…"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "何か言って..."
           }
         }
       }
@@ -1907,6 +2428,12 @@
             "state": "translated",
             "value": "請輸入房間名"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "部屋の名前を入力してください"
+          }
         }
       }
     },
@@ -1929,6 +2456,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "邀請連線的房間不存在"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "招待状リンクが存在しない部屋"
           }
         }
       }
@@ -1953,6 +2486,12 @@
             "state": "translated",
             "value": "內部錯誤，推薦重試一次。"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "内部エラー、再試行することをお勧めします。"
+          }
         }
       }
     },
@@ -1975,6 +2514,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "禮物動畫不是MP4資源"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ギフトアニメーションはMP4リソースではありません"
           }
         }
       }
@@ -1999,6 +2544,12 @@
             "state": "translated",
             "value": "禮物動畫不是SVGA資源"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ギフトアニメーションはSVGAリソースではありません"
+          }
         }
       }
     },
@@ -2021,6 +2572,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "切換至橫屏"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "水平面画面に切り替えます"
           }
         }
       }
@@ -2045,6 +2602,12 @@
             "state": "translated",
             "value": "音樂播放失敗"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音楽の再生は失敗しました"
+          }
         }
       }
     },
@@ -2067,6 +2630,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "麥上列表 (xxx)"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MAIリスト（xxx）"
           }
         }
       }
@@ -2091,6 +2660,12 @@
             "state": "translated",
             "value": "切換至豎屏"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "垂直画面に切り替えます"
+          }
         }
       }
     },
@@ -2113,6 +2688,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "加載更多"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "もっとロードします"
           }
         }
       }
@@ -2137,6 +2718,12 @@
             "state": "translated",
             "value": "下拉刷新"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "プルダウンして更新します"
+          }
         }
       }
     },
@@ -2159,6 +2746,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "鬆開刷新"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "更新をリリースします"
           }
         }
       }
@@ -2183,6 +2776,12 @@
             "state": "translated",
             "value": "等待連麥 xxx"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ツイートxxxを待っています"
+          }
         }
       }
     },
@@ -2205,6 +2804,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "正在加載..."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読み込み..."
           }
         }
       }
@@ -2229,6 +2834,12 @@
             "state": "translated",
             "value": "沒有更多數據了"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "これ以上のデータはありません"
+          }
         }
       }
     },
@@ -2251,6 +2862,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "xxx人看過"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "xxx人々はそれを見ました"
           }
         }
       }
@@ -2275,6 +2892,12 @@
             "state": "translated",
             "value": "正在直播中，請稍後再試。"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "現在放送されています。後でもう一度やり直してください。"
+          }
         }
       }
     },
@@ -2297,6 +2920,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "點擊進入直播間"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "クリックしてライブブロードキャストルームに入ります"
           }
         }
       }
@@ -2321,6 +2950,12 @@
             "state": "translated",
             "value": "主播正在PK中，無法發起PK"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アンカーはPKにあり、PKを開始できません"
+          }
         }
       }
     },
@@ -2343,6 +2978,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "其他錯誤，無法發起PK"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PKを開始できない他のエラー"
           }
         }
       }
@@ -2367,6 +3008,12 @@
             "state": "translated",
             "value": "充值"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "補充します"
+          }
         }
       }
     },
@@ -2389,6 +3036,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "移出房間"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "部屋から出ます"
           }
         }
       }
@@ -2413,6 +3066,12 @@
             "state": "translated",
             "value": "關閉"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "閉鎖"
+          }
         }
       }
     },
@@ -2435,6 +3094,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "濾鏡"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "フィルター"
           }
         }
       }
@@ -2459,6 +3124,12 @@
             "state": "translated",
             "value": "美妝"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "美容メイク"
+          }
         }
       }
     },
@@ -2481,6 +3152,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "等待同意PKxxx"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "同意を待っていますpkxxx"
           }
         }
       }
@@ -2505,6 +3182,12 @@
             "state": "translated",
             "value": "待通過xxx"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "xxxを通過するのを待っています"
+          }
         }
       }
     },
@@ -2527,6 +3210,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "xxx 取消了 PK，請嘗試再次發起"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "XXXはPKをキャンセルしました、もう一度開始してみてください"
           }
         }
       }
@@ -2551,6 +3240,12 @@
             "state": "translated",
             "value": "xxx 粉絲"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "xxxファン"
+          }
         }
       }
     },
@@ -2573,6 +3268,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "xxx 向你發來PK邀請"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "XXXはPK招待状を送信します"
           }
         }
       }
@@ -2597,6 +3298,12 @@
             "state": "translated",
             "value": "xxx 向你發來連線邀請"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "XXXは、接続への招待状をお送りします"
+          }
         }
       }
     },
@@ -2619,6 +3326,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "xxx 拒絕了 PK"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "XXXはPKを拒否しました"
           }
         }
       }
@@ -2643,6 +3356,12 @@
             "state": "translated",
             "value": "當前處於連麥狀態，是否需要「斷開連麥」或「退出直播間」"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "現在、接続されているマイク状態で、「接続されたマイクを切断する」または「ライブブロードキャストルームを終了する」必要がありますか？"
+          }
         }
       }
     },
@@ -2665,6 +3384,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "退出直播間"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ライブブロードキャストルームを出ます"
           }
         }
       }
@@ -2689,6 +3414,12 @@
             "state": "translated",
             "value": "我"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "私"
+          }
         }
       }
     },
@@ -2708,6 +3439,12 @@
           }
         },
         "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1080p"
+          }
+        },
+        "ja": {
           "stringUnit": {
             "state": "translated",
             "value": "1080p"
@@ -2735,6 +3472,12 @@
             "state": "translated",
             "value": "被主持人踢下麥位"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ホストによってマイクをキックオフしました"
+          }
         }
       }
     },
@@ -2757,6 +3500,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "申請連麥"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ツイートを申請してください"
           }
         }
       }
@@ -2781,6 +3530,12 @@
             "state": "translated",
             "value": "當前用戶已在別的房間內，單個 roomEngine 實例只支持用戶進入一個房間，如果要進入不同的房間請先退房或者使用新的 roomEngine 實例"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "現在のユーザーは別の部屋にいます。単一のルームエンジンインスタンスは、ユーザーのみが1つの部屋に入るのをサポートします。別の部屋に入りたい場合は、最初にチェックアウトするか、新しいルームエンジンインスタンスを使用してください。"
+          }
         }
       }
     },
@@ -2803,6 +3558,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "當前無攝像頭設備，請插入攝像頭設備解決該問題"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "現在、カメラデバイスはありません。カメラデバイスを挿入して問題を解決してください"
           }
         }
       }
@@ -2827,6 +3588,12 @@
             "state": "translated",
             "value": "攝像頭沒有系統授權, 檢查系統授權"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "カメラにはシステム承認がありません。システム認証を確認してください"
+          }
         }
       }
     },
@@ -2849,6 +3616,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "攝像頭被佔用，檢查是否有其他進程使用攝像頭"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "カメラが占有されています。カメラを使用して他のプロセスがあるかどうかを確認してください"
           }
         }
       }
@@ -2873,6 +3646,12 @@
             "state": "translated",
             "value": "系統問題，打開攝像頭失敗。檢查攝像頭設備是否正常"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "システムの問題は、カメラをオンにすることができませんでした。カメラデバイスが正常かどうかを確認してください"
+          }
         }
       }
     },
@@ -2895,6 +3674,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "被邀請連線的房間已在邀請列表或者已連線。"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接続するために招待されている部屋は、すでに招待リストに載っているか、接続されています。"
           }
         }
       }
@@ -2919,6 +3704,12 @@
             "state": "translated",
             "value": "房主不支持退房操作，房主只能解散房間"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "住宅所有者はチェックアウト操作をサポートしていません、住宅所有者は部屋を解散することしかできません"
+          }
         }
       }
     },
@@ -2941,6 +3732,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "暫未歸類的通用錯誤"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "まだ分​​類されていない一般的なエラー"
           }
         }
       }
@@ -2965,6 +3762,12 @@
             "state": "translated",
             "value": "請求被限頻，請稍後重試"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "リクエストは制限されています。後でもう一度やり直してください"
+          }
         }
       }
     },
@@ -2987,6 +3790,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "獲取屏幕分享源（屏幕和窗口）失敗，檢查屏幕錄製權限"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "画面共有ソース（画面とウィンドウ）を取得し、画面録音の許可を確認できませんでした"
           }
         }
       }
@@ -3011,6 +3820,12 @@
             "state": "translated",
             "value": "調用 API 時，傳入的參數不合法，檢查入參是否合法"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "APIを呼び出すと、合格したパラメーターは違法です。パラメーターが合法かどうかを確認してください。"
+          }
         }
       }
     },
@@ -3033,6 +3848,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "最大麥位超出套餐包數量限制"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "クロワッサンの最大位置は、パッケージパッケージの数の制限を超えています"
           }
         }
       }
@@ -3057,6 +3878,12 @@
             "state": "translated",
             "value": "當前無麥克風設備"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "現在、マイクデバイスはありません"
+          }
         }
       }
     },
@@ -3079,6 +3906,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "麥克風沒有系統授權，檢查系統授權"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "マイクにはシステム認証がありません。システム認証を確認してください"
           }
         }
       }
@@ -3103,6 +3936,12 @@
             "state": "translated",
             "value": "麥克風被佔用"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "マイクが占有されました"
+          }
         }
       }
     },
@@ -3125,6 +3964,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "系統問題，打開麥克風失敗。檢查麥克風設備是否正常"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "システムの問題は、マイクをオンにすることができませんでした。マイクデバイスが正常かどうかを確認してください"
           }
         }
       }
@@ -3149,6 +3994,12 @@
             "state": "translated",
             "value": "需要向房主或管理員申請後打開攝像頭"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "住宅所有者または管理者に申請してカメラをオンにする必要があります"
+          }
         }
       }
     },
@@ -3171,6 +4022,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "當前麥位視頻被鎖, 需要由房主解鎖麥位後，才能打開攝像頭"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "現在のマイクのビデオはロックされており、住宅所有者はカメラをオンにする前にマイクのロックを解除する必要があります。"
           }
         }
       }
@@ -3195,6 +4052,12 @@
             "state": "translated",
             "value": "需要向房主或管理員申請後打開麥克風"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "住宅所有者または管理者に申請し、マイクをオンにする必要があります"
+          }
         }
       }
     },
@@ -3217,6 +4080,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "當前麥位音頻被鎖"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "現在のマイクオーディオがロックされています"
           }
         }
       }
@@ -3241,6 +4110,12 @@
             "state": "translated",
             "value": "需要向房主或管理員申請後打開屏幕分享"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "住宅所有者または管理者に申請し、画面を開いて共有する必要があります"
+          }
         }
       }
     },
@@ -3263,6 +4138,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "當前麥位視頻被鎖, 需要由房主解鎖麥位後，才能打開屏幕分享"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "現在のマイクビデオがロックされています。住宅所有者は、画面を開いて共有する前にマイクのロックを解除する必要があります。"
           }
         }
       }
@@ -3287,6 +4168,12 @@
             "state": "translated",
             "value": "需要進房後才可使用此功能"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この機能を使用する前に部屋に入る必要があります"
+          }
         }
       }
     },
@@ -3309,6 +4196,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "當前房間類型下不支持該操作"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この操作は現在の部屋の種類ではサポートされていません"
           }
         }
       }
@@ -3333,6 +4226,12 @@
             "state": "translated",
             "value": "獲取權限失敗，當前未授權音/視頻權限，請查看是否開啟設備權限"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アクセス許可の取得に失敗し、オーディオ/ビデオ許可は現在許可されていません。デバイスのアクセス許可が有効かどうかを確認してください。"
+          }
         }
       }
     },
@@ -3355,6 +4254,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "重複操作"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "操作を繰り返します"
           }
         }
       }
@@ -3379,6 +4284,12 @@
             "state": "translated",
             "value": "信令請求 ID 無效或已經被處理過"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "信号要求IDが無効であるか、処理されています"
+          }
         }
       }
     },
@@ -3401,6 +4312,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "信令請求重複"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "シグナリングリクエストを繰り返します"
           }
         }
       }
@@ -3425,6 +4342,12 @@
             "state": "translated",
             "value": "信令請求無權限，例如取消非自己發起的邀請"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "シグナリングリクエストには、自分で開始されない招待状のキャンセルなど、権限がありません"
+          }
         }
       }
     },
@@ -3447,6 +4370,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "該功能需要開通額外的套餐，請在 騰訊雲視立方 SDK 控制臺 按需開通對應套餐"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この関数では、追加のパッケージを有効にする必要があります。 Tencent CloudビデオキューブSDKコンソールで必要に応じて、対応するパッケージを有効にしてください"
           }
         }
       }
@@ -3471,6 +4400,12 @@
             "state": "translated",
             "value": "創建房間 ID 非法，自定義 ID 必須為可列印 ASCII 字符（0x20-0x7e），最長48個字節"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "部屋IDの作成は違法であり、カスタムIDは印刷可能なASCII文字（0x20-0x7E）で、最大48バイトである必要があります"
+          }
         }
       }
     },
@@ -3493,6 +4428,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "房間名稱非法，名稱最長30位元組，字符編碼必須是 UTF-8 ，如果包含中文"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "部屋の名前は違法で、名前の長さは最大30バイトです。中国語が含まれている場合は、キャラクターエンコードがUTF-8でなければなりません"
           }
         }
       }
@@ -3517,6 +4458,12 @@
             "state": "translated",
             "value": "當前房間不支持預加載"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "プリロードは現在の部屋ではサポートされていません"
+          }
         }
       }
     },
@@ -3539,6 +4486,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "未找到 SDKAppID，請在 騰訊雲視立方 SDK 控制臺 確認應用信息"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sdkappidは見つかりませんでした、Tencent CloudビデオキューブSDKコンソールのアプリケーション情報を確認してください"
           }
         }
       }
@@ -3563,6 +4516,12 @@
             "state": "translated",
             "value": "未登錄,請調用 Login 接口"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ログインしていないので、ログインインターフェイスに電話してください"
+          }
         }
       }
     },
@@ -3585,6 +4544,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "麥位編號不存在"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "位置番号は存在しません"
           }
         }
       }
@@ -3609,6 +4574,12 @@
             "state": "translated",
             "value": "當前房間已開啟全員禁言"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "部屋は禁止されています"
+          }
         }
       }
     },
@@ -3631,6 +4602,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "當前房間內，您已被禁言"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あなたは現在の部屋で禁止されています"
           }
         }
       }
@@ -3655,6 +4632,12 @@
             "state": "translated",
             "value": "開啟屏幕分享失敗，檢查房間內是否有人正在屏幕分享"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "画面共有を有効にすることができませんでした、部屋の誰かが画面を共有しているかどうかを確認しました"
+          }
         }
       }
     },
@@ -3677,6 +4660,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "操作成功"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "操作は成功しました"
           }
         }
       }
@@ -3701,6 +4690,12 @@
             "state": "translated",
             "value": "需要房主或者管理員權限才能操作"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "運営するには、住宅所有者または管理者からの許可が必要です"
+          }
         }
       }
     },
@@ -3723,6 +4718,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "需要房主權限才能操作"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "運営するには、住宅所有者からの許可が必要です"
           }
         }
       }
@@ -3747,6 +4748,12 @@
             "state": "translated",
             "value": "用戶不存在"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ユーザーは存在しません"
+          }
         }
       }
     },
@@ -3769,6 +4776,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "禮物功能服務暫未開啟，請檢查套餐包版本"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ギフト機能サービスはまだ有効になっていません。パッケージバージョンを確認してください"
           }
         }
       }
@@ -3793,6 +4806,12 @@
             "state": "translated",
             "value": "禮物不存在"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "贈り物は存在しません"
+          }
         }
       }
     },
@@ -3815,6 +4834,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "禮物伺服器預驗證失敗，請檢查控制台配置"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ギフトサーバーの事前確認が失敗しました。コンソールの構成を確認してください"
           }
         }
       }
@@ -3839,6 +4864,12 @@
             "state": "translated",
             "value": "正在通話中，設備操作失敗"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "呼び出しでは、デバイスの操作に失敗しました"
+          }
         }
       }
     },
@@ -3861,6 +4892,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "耳返音量"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "耳のリベート量"
           }
         }
       }
@@ -3885,6 +4922,12 @@
             "state": "translated",
             "value": "清晰度"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "明確さ"
+          }
         }
       }
     },
@@ -3907,6 +4950,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "麥控"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "マイクロコントローラー"
           }
         }
       }
@@ -3931,6 +4980,12 @@
             "state": "translated",
             "value": "在線觀眾"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オンラインオーディエンス"
+          }
         }
       }
     },
@@ -3953,6 +5008,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "音效"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "効果音"
           }
         }
       }
@@ -3977,6 +5038,12 @@
             "state": "translated",
             "value": "音效設置"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サウンドエフェクト設定"
+          }
         }
       }
     },
@@ -3999,6 +5066,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "音頻設置"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オーディオ設定"
           }
         }
       }
@@ -4023,6 +5096,12 @@
             "state": "translated",
             "value": "關閉"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "閉鎖"
+          }
         }
       }
     },
@@ -4045,6 +5124,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "紅潤"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "バラ色"
           }
         }
       }
@@ -4069,6 +5154,12 @@
             "state": "translated",
             "value": "磨皮"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "皮膚研削"
+          }
         }
       }
     },
@@ -4091,6 +5182,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "美白"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ホワイトニング"
           }
         }
       }
@@ -4115,6 +5212,12 @@
             "state": "translated",
             "value": "一鍵美顏"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ワンクリックの美しさ"
+          }
         }
       }
     },
@@ -4137,6 +5240,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "變聲"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音声の変化"
           }
         }
       }
@@ -4161,6 +5270,12 @@
             "state": "translated",
             "value": "熊孩子"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "クマの子供"
+          }
         }
       }
     },
@@ -4183,6 +5298,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "空靈"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "空の精神"
           }
         }
       }
@@ -4207,6 +5328,12 @@
             "state": "translated",
             "value": "蘿莉"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ロリ"
+          }
         }
       }
     },
@@ -4229,6 +5356,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "原聲"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オリジナルのサウンドトラック"
           }
         }
       }
@@ -4253,6 +5386,12 @@
             "state": "translated",
             "value": "大叔"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "叔父"
+          }
         }
       }
     },
@@ -4275,6 +5414,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "禮物收入"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ギフト収入"
           }
         }
       }
@@ -4299,6 +5444,12 @@
             "state": "translated",
             "value": "點讚數量"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "いいね"
+          }
         }
       }
     },
@@ -4321,6 +5472,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "直播時長"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ライブブロードキャスト期間"
           }
         }
       }
@@ -4345,6 +5502,12 @@
             "state": "translated",
             "value": "累計觀看"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "累積視聴"
+          }
         }
       }
     },
@@ -4367,6 +5530,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "消息數量"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "メッセージの数"
           }
         }
       }
@@ -4391,6 +5560,12 @@
             "state": "translated",
             "value": "送禮人數"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ギフトの数"
+          }
         }
       }
     },
@@ -4413,6 +5588,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "本場直播數據"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ライブブロードキャストデータ"
           }
         }
       }
@@ -4437,6 +5618,12 @@
             "state": "translated",
             "value": "耳返"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "耳の復帰"
+          }
         }
       }
     },
@@ -4459,6 +5646,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "修改封面"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "カバーを変更します"
           }
         }
       }
@@ -4483,6 +5676,12 @@
             "state": "translated",
             "value": "斷開連麥"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接続を切断します"
+          }
         }
       }
     },
@@ -4505,6 +5704,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "關閉直播間"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ライブブロードキャストルームを閉じます"
           }
         }
       }
@@ -4529,6 +5734,12 @@
             "state": "translated",
             "value": "掛斷"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "電話を切る"
+          }
         }
       }
     },
@@ -4551,6 +5762,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "進入房間"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "部屋に入ります"
           }
         }
       }
@@ -4575,6 +5792,12 @@
             "state": "translated",
             "value": "關注"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "焦点を当てる"
+          }
         }
       }
     },
@@ -4597,6 +5820,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "贈送"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "贈り物"
           }
         }
       }
@@ -4621,6 +5850,12 @@
             "state": "translated",
             "value": "禮物"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "贈り物"
+          }
         }
       }
     },
@@ -4643,6 +5878,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "掛斷"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "電話を切る"
           }
         }
       }
@@ -4667,6 +5908,12 @@
             "state": "translated",
             "value": "連麥管理"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "マイク管理への接続"
+          }
         }
       }
     },
@@ -4689,6 +5936,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "直播已結束"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ライブブロードキャストは終了しました"
           }
         }
       }
@@ -4713,6 +5966,12 @@
             "state": "translated",
             "value": "更多設置"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "その他の設定"
+          }
         }
       }
     },
@@ -4735,6 +5994,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "音樂模式"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音楽モード"
           }
         }
       }
@@ -4759,6 +6024,12 @@
             "state": "translated",
             "value": "歡快"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ハッピー"
+          }
         }
       }
     },
@@ -4782,6 +6053,12 @@
             "state": "translated",
             "value": "確認"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "確認する"
+          }
         }
       }
     },
@@ -4801,6 +6078,12 @@
           }
         },
         "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "憂鬱"
+          }
+        },
+        "ja": {
           "stringUnit": {
             "state": "translated",
             "value": "憂鬱"
@@ -4828,6 +6111,12 @@
             "state": "translated",
             "value": "音樂音量"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音楽のボリューム"
+          }
         }
       }
     },
@@ -4850,6 +6139,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "神奇世界"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "魔法の世界"
           }
         }
       }
@@ -4874,6 +6169,12 @@
             "state": "translated",
             "value": "人聲音量"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "人間の音量"
+          }
         }
       }
     },
@@ -4889,13 +6190,19 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "同意"
+            "value": "接受"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "同意"
+            "value": "接受"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "受け入れる"
           }
         }
       }
@@ -4920,6 +6227,12 @@
             "state": "translated",
             "value": "拒絕"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "拒否する"
+          }
         }
       }
     },
@@ -4939,6 +6252,12 @@
           }
         },
         "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "360p"
+          }
+        },
+        "ja": {
           "stringUnit": {
             "state": "translated",
             "value": "360p"
@@ -4966,6 +6285,12 @@
             "state": "translated",
             "value": "540p"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "540p"
+          }
         }
       }
     },
@@ -4985,6 +6310,12 @@
           }
         },
         "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "720p"
+          }
+        },
+        "ja": {
           "stringUnit": {
             "state": "translated",
             "value": "720p"
@@ -5012,6 +6343,12 @@
             "state": "translated",
             "value": "混響"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "残響"
+          }
         }
       }
     },
@@ -5031,6 +6368,12 @@
           }
         },
         "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KTV"
+          }
+        },
+        "ja": {
           "stringUnit": {
             "state": "translated",
             "value": "KTV"
@@ -5058,6 +6401,12 @@
             "state": "translated",
             "value": "洪亮"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ホン・リアン"
+          }
         }
       }
     },
@@ -5080,6 +6429,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "低沉"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "低い"
           }
         }
       }
@@ -5104,6 +6459,12 @@
             "state": "translated",
             "value": "金屬聲"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "メタルサウンド"
+          }
         }
       }
     },
@@ -5126,6 +6487,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "無效果"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "効果はありません"
           }
         }
       }
@@ -5150,6 +6517,12 @@
             "state": "translated",
             "value": "直播已結束"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ライブブロードキャストは終了しました"
+          }
         }
       }
     },
@@ -5172,6 +6545,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "直播房間ID："
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ライブルームID："
           }
         }
       }
@@ -5196,6 +6575,12 @@
             "state": "translated",
             "value": "送給"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "に与える"
+          }
         }
       }
     },
@@ -5218,6 +6603,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "在線直播"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オンラインでライブブロードキャスト"
           }
         }
       }
@@ -5242,6 +6633,12 @@
             "state": "translated",
             "value": "開直播"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ライブブロードキャストを開始します"
+          }
         }
       }
     },
@@ -5264,6 +6661,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "語聊房"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "言語チャットルーム"
           }
         }
       }
@@ -5288,6 +6691,12 @@
             "state": "translated",
             "value": "已經處於麥上狀態"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "すでに小麦の上に"
+          }
         }
       }
     },
@@ -5310,6 +6719,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "已經處於排麥狀態"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "すでにフェリー状態にあります"
           }
         }
       }
@@ -5334,6 +6749,12 @@
             "state": "translated",
             "value": "該場次 battle 不存在或已結束"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "戦いは存在しないか、終わっていません"
+          }
         }
       }
     },
@@ -5356,6 +6777,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "該 battle 場次已經結束"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "戦いは終わりました"
           }
         }
       }
@@ -5380,6 +6807,12 @@
             "state": "translated",
             "value": "當前連線不存在或結束"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "現在の接続は存在しません"
+          }
         }
       }
     },
@@ -5402,6 +6835,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "短時間內頻繁發起 battle, 稍等一會再試"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "頻繁に戦闘を短時間で開始し、試してみる前に少し待ってください"
           }
         }
       }
@@ -5426,6 +6865,12 @@
             "state": "translated",
             "value": "短時間內連線過於頻繁，稍等一會再試"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "短期間で頻繁に接続しすぎて、試してみる前にしばらく待ちます"
+          }
         }
       }
     },
@@ -5448,6 +6893,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "頻率超過限制，例如創建房間超過頻率超限，同一房間 ID， 1秒內只能創建一次"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "頻度は制限を超えます。たとえば、部屋の作成は制限を超え、同じ部屋IDは1秒に1回しか作成できません"
           }
         }
       }
@@ -5472,6 +6923,12 @@
             "state": "translated",
             "value": "超過付費上限，例如麥位數，pk場次房間數量等超過付費限制"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "支払い制限は、クロークの最大数、PKセッションの数などを超えて支払い制限を超えます。"
+          }
         }
       }
     },
@@ -5494,6 +6951,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "超過連線和 battle 房間數量上限"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接続部屋とバトルルームの最大数を超えました"
           }
         }
       }
@@ -5518,6 +6981,12 @@
             "state": "translated",
             "value": "該房間處於其他的 battle 場次中"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この部屋は他の戦闘セッションにあります"
+          }
         }
       }
     },
@@ -5540,6 +7009,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "您無權執行此操作"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "これを行う許可はありません"
           }
         }
       }
@@ -5564,6 +7039,12 @@
             "state": "translated",
             "value": "無效的房間類型"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無効な部屋の種類"
+          }
         }
       }
     },
@@ -5586,6 +7067,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "當前房間與其他房間連線中"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "現在の部屋は他の部屋に接続されています"
           }
         }
       }
@@ -5610,6 +7097,12 @@
             "state": "translated",
             "value": "該房間處於 battle 中"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "部屋は戦いにあります"
+          }
         }
       }
     },
@@ -5632,6 +7125,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "刪除房間 meta 數據時候，被刪除的 key 沒有一個存在"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ルームメタデータを削除するとき、削除されたキーはどれも存在しません"
           }
         }
       }
@@ -5656,6 +7155,12 @@
             "state": "translated",
             "value": "房間 meta 數據中的 key 數量超過上限"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ルームメタデータのキーの数は上限を超えています"
+          }
         }
       }
     },
@@ -5678,6 +7183,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "房間 meta 數據中單個 key 對應的 val 超過最大字節數限制"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ルームメタデータの単一キーに対応するVALは、バイト制限の最大数を超えています"
           }
         }
       }
@@ -5702,6 +7213,12 @@
             "state": "translated",
             "value": "房間 meta 數據中的 key 大小超過了最大字節數限制"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ルームメタデータのキーサイズは、バイト制限の最大数を超えています"
+          }
         }
       }
     },
@@ -5724,6 +7241,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "房間 meta數據中所有 key 對應的 val 總和超過最大字節數限制"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ルームメタデータのすべてのキーに対応するバルの合計は、バイト制限の最大数を超えています"
           }
         }
       }
@@ -5748,6 +7271,12 @@
             "state": "translated",
             "value": "麥位已鎖定，可以嘗試換一個麥位"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "マットレスの位置がロックされています、マットレスの位置を変更してみることができます"
+          }
         }
       }
     },
@@ -5770,6 +7299,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "無付費信息，需在控制臺購買套餐包"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "有料情報はありません、コンソールでパッケージを購入する必要があります"
           }
         }
       }
@@ -5794,6 +7329,12 @@
             "state": "translated",
             "value": "發起的 battle 裡沒有一個有效的房間"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開始された戦いには有効な部屋はありません"
+          }
         }
       }
     },
@@ -5816,6 +7357,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "非房間成員"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "部屋以外のメンバー"
           }
         }
       }
@@ -5840,6 +7387,12 @@
             "state": "translated",
             "value": "沒有在排麥列表中"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "配置リストにはありません"
+          }
         }
       }
     },
@@ -5862,6 +7415,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "未在麥上"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "小麦の上ではありません"
           }
         }
       }
@@ -5886,6 +7445,12 @@
             "state": "translated",
             "value": "該 battle 場次還未開始"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "戦いはまだ始まっていません"
+          }
         }
       }
     },
@@ -5908,6 +7473,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "請參數非法，請根據錯誤描述檢查請求是否正確"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "違法なパラメーターをご覧ください。エラーの説明に従ってリクエストが正しいかどうかを確認してください。"
           }
         }
       }
@@ -5932,6 +7503,12 @@
             "state": "translated",
             "value": "當前房間需要密碼才能進入"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "現在の部屋では、入力するにはパスワードが必要です"
+          }
         }
       }
     },
@@ -5954,6 +7531,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "管理員數量超過上限"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "管理者の数は制限を超えています"
           }
         }
       }
@@ -5978,6 +7561,12 @@
             "state": "translated",
             "value": "房間不存在，或者曾經存在過，但是目前已經被解散"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "部屋は存在せず、存在していませんが、解散しました"
+          }
         }
       }
     },
@@ -6000,6 +7589,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "該房間不支持連麥"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この部屋はMSをサポートしていません"
           }
         }
       }
@@ -6024,6 +7619,12 @@
             "state": "translated",
             "value": "進房密碼錯誤"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "部屋に入るためのパスワードが誤っていません"
+          }
         }
       }
     },
@@ -6046,6 +7647,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "房間ID 已被使用，請選擇別的房間ID"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "部屋IDが使用されました、別の部屋IDを選択してください"
           }
         }
       }
@@ -6070,6 +7677,12 @@
             "state": "translated",
             "value": "房間 ID 已被 IM 佔用，可以換一個房間 ID 使用，或者先通過 IM 接口解散該群"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "部屋IDはIMによって占有されています。別の部屋IDで使用するか、最初にIMインターフェイスを介してグループを解散させることができます。"
+          }
         }
       }
     },
@@ -6092,6 +7705,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "房間 ID 已被使用，並且操作者為房主，可以直接使用"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "部屋IDが使用されており、オペレーターは住宅所有者であり、直接使用できます"
           }
         }
       }
@@ -6116,6 +7735,12 @@
             "state": "translated",
             "value": "房間成員已滿"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "部屋のメンバーはいっぱいです"
+          }
         }
       }
     },
@@ -6138,6 +7763,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "該房間已經在連線中"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "部屋はすでに接続されています"
           }
         }
       }
@@ -6162,6 +7793,12 @@
             "state": "translated",
             "value": "當前麥位已經有人了"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "現時点ではすでに人がいます"
+          }
         }
       }
     },
@@ -6184,6 +7821,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "信令請求衝突"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "シグナリングリクエストの競合"
           }
         }
       }
@@ -6208,6 +7851,12 @@
             "state": "translated",
             "value": "伺服器內部錯誤，請重試"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "内部サーバーエラー、もう一度やり直してください"
+          }
         }
       }
     },
@@ -6230,6 +7879,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "標籤數量超上限"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "タグの数は上限を超えています"
           }
         }
       }
@@ -6254,6 +7909,12 @@
             "state": "translated",
             "value": "該房間已經不在 battle 中"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "部屋はもはや戦いにありません"
+          }
         }
       }
     },
@@ -6276,6 +7937,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "連麥列表為空"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接続されたマイクのリストは空です"
           }
         }
       }
@@ -6300,6 +7967,12 @@
             "state": "translated",
             "value": "麥位已滿"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "座席はいっぱいです"
+          }
         }
       }
     },
@@ -6322,6 +7995,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "該房間存在待處理的 battle 請求"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この部屋には、保留中の戦闘リクエストがあります"
           }
         }
       }
@@ -6346,6 +8025,12 @@
             "state": "translated",
             "value": "該房間存在待處理的連線請求"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この部屋には保留中の接続リクエストがあります"
+          }
         }
       }
     },
@@ -6368,6 +8053,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "該成員已經被封禁"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "このメンバーは禁止されています"
           }
         }
       }
@@ -6392,6 +8083,12 @@
             "state": "translated",
             "value": "該成員已經被禁言"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "このメンバーは禁止されています"
+          }
         }
       }
     },
@@ -6414,6 +8111,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "已經有用戶在麥位上"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "マイクにはすでにユーザーがいます"
           }
         }
       }
@@ -6438,6 +8141,12 @@
             "state": "translated",
             "value": "設為背景"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "背景として設定します"
+          }
         }
       }
     },
@@ -6460,6 +8169,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "設為封面"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "カバーとして設定します"
           }
         }
       }
@@ -6484,6 +8199,12 @@
             "state": "translated",
             "value": "設置"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "設定"
+          }
         }
       }
     },
@@ -6503,6 +8224,12 @@
           }
         },
         "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "背景"
+          }
+        },
+        "ja": {
           "stringUnit": {
             "state": "translated",
             "value": "背景"
@@ -6530,6 +8257,12 @@
             "state": "translated",
             "value": "美顏"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "美化します"
+          }
         }
       }
     },
@@ -6552,6 +8285,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "日常聊天"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "毎日のチャット"
           }
         }
       }
@@ -6576,6 +8315,12 @@
             "state": "translated",
             "value": "購物"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "買い物"
+          }
         }
       }
     },
@@ -6598,6 +8343,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "知識教學"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "知識教育"
           }
         }
       }
@@ -6622,6 +8373,12 @@
             "state": "translated",
             "value": "公開"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "公共"
+          }
         }
       }
     },
@@ -6644,6 +8401,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "隱私"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "プライバシー"
           }
         }
       }
@@ -6668,6 +8431,12 @@
             "state": "translated",
             "value": "取消連麥申請"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "電話に接続するためのアプリケーションをキャンセルします"
+          }
         }
       }
     },
@@ -6690,6 +8459,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "結束連麥"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "分隊の終わり"
           }
         }
       }
@@ -6714,6 +8489,12 @@
             "state": "translated",
             "value": "申請語音連麥"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音声接続を申請します"
+          }
         }
       }
     },
@@ -6736,6 +8517,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "選擇連麥方式，主播同意後接通"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接続方法を選択すると、アンカーは接続することに同意します"
           }
         }
       }
@@ -6760,6 +8547,12 @@
             "state": "translated",
             "value": "申請視頻連麥"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ビデオリンクを申請してください"
+          }
         }
       }
     },
@@ -6782,6 +8575,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "接通後畫面效果將自動生效"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "画面効果がオンになった後、自動的に有効になります"
           }
         }
       }
@@ -6806,6 +8605,12 @@
             "state": "translated",
             "value": "選擇連麥方式"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接続する方法を選択してください"
+          }
         }
       }
     },
@@ -6828,6 +8633,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "調整視頻連麥畫面"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ビデオ接続画面を調整します"
           }
         }
       }
@@ -6852,6 +8663,12 @@
             "state": "translated",
             "value": "你提交了連麥申請，請等待主播同意"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あなたは電気通信申請書を提出しました、アンカーが同意するのを待ってください"
+          }
         }
       }
     },
@@ -6874,6 +8691,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "取消關注"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "解除してください"
           }
         }
       }
@@ -6898,6 +8721,12 @@
             "state": "translated",
             "value": "視頻參數"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ビデオパラメーター"
+          }
         }
       }
     },
@@ -6920,6 +8749,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "視頻參數"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ビデオパラメーター"
           }
         }
       }
@@ -6944,6 +8779,12 @@
             "state": "translated",
             "value": "翻轉"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "フリップ"
+          }
         }
       }
     },
@@ -6966,6 +8807,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "鏡像"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "鏡"
           }
         }
       }
@@ -6990,6 +8837,12 @@
             "state": "translated",
             "value": "麥位沒有用戶，去邀請"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "マイクにはユーザーがいません。"
+          }
         }
       }
     },
@@ -7012,6 +8865,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "上麥邀請已被取消"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shangmaiへの招待状がキャンセルされました"
           }
         }
       }
@@ -7036,6 +8895,12 @@
             "state": "translated",
             "value": "鎖定麥位"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "位置をロックします"
+          }
         }
       }
     },
@@ -7058,6 +8923,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "靜音"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ミュート"
           }
         }
       }
@@ -7082,6 +8953,12 @@
             "state": "translated",
             "value": "上麥需要房主同意"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "住宅所有者は同意する必要があります"
+          }
         }
       }
     },
@@ -7104,6 +8981,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "xxx 向你發來上麥邀請"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "xxxマイへの招待状を送信します"
           }
         }
       }
@@ -7128,6 +9011,12 @@
             "state": "translated",
             "value": "上麥"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "小麦に行きます"
+          }
         }
       }
     },
@@ -7150,6 +9039,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "上麥申請被拒絕"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MAIの申請は拒否されました"
           }
         }
       }
@@ -7174,6 +9069,12 @@
             "state": "translated",
             "value": "上麥申請超時"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MSMEタイムアウトを申請します"
+          }
         }
       }
     },
@@ -7196,6 +9097,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "解鎖麥位"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "マイクのロックを解除します"
           }
         }
       }
@@ -7220,6 +9127,12 @@
             "state": "translated",
             "value": "解除靜音"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ミュート"
+          }
         }
       }
     },
@@ -7242,6 +9155,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "同意"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "同意する"
           }
         }
       }
@@ -7266,6 +9185,12 @@
             "state": "translated",
             "value": "發送"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "送信"
+          }
         }
       }
     },
@@ -7288,6 +9213,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "選擇音樂"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音楽を選択します"
           }
         }
       }
@@ -7312,6 +9243,12 @@
             "state": "translated",
             "value": "進房失敗"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "部屋に入ることができませんでした"
+          }
         }
       }
     },
@@ -7334,6 +9271,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "非法的userId"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "違法なユーザーID"
           }
         }
       }
@@ -7358,6 +9301,12 @@
             "state": "translated",
             "value": "音樂升降調"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上下にミュージカル"
+          }
         }
       }
     },
@@ -7380,6 +9329,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "視頻狀態"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ビデオステータス"
           }
         }
       }
@@ -7404,6 +9359,12 @@
             "state": "translated",
             "value": "音頻狀態"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オーディオステータス"
+          }
         }
       }
     },
@@ -7426,6 +9387,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "設備溫度"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "機器の温度"
           }
         }
       }
@@ -7450,6 +9417,12 @@
             "state": "translated",
             "value": "Wi-Fi/移動網絡"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wi-Fi/モバイルネットワーク"
+          }
         }
       }
     },
@@ -7472,6 +9445,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "開播畫面流暢"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ブロードキャスト画面は滑らかです"
           }
         }
       }
@@ -7496,6 +9475,12 @@
             "state": "translated",
             "value": "開播畫面卡頓"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ブロードキャストの画面が立ち往生しています"
+          }
         }
       }
     },
@@ -7518,6 +9503,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "視頻採集已關閉"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ビデオコレクションは閉鎖されています"
           }
         }
       }
@@ -7542,6 +9533,12 @@
             "state": "translated",
             "value": "適當音量確保良好觀看體驗"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "適切なボリュームは、良い視聴体験を保証します"
+          }
         }
       }
     },
@@ -7564,6 +9561,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "定期檢查確保良好觀看體驗"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "定期的な検査により、良い視聴体験が保証されます"
           }
         }
       }
@@ -7588,6 +9591,12 @@
             "state": "translated",
             "value": "避免頻繁切換網絡"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "頻繁にネットワークの切り替えを避けてください"
+          }
         }
       }
     },
@@ -7610,6 +9619,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "直播資訊"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ライブブロードキャスト情報"
           }
         }
       }
@@ -7634,6 +9649,12 @@
             "state": "translated",
             "value": "下行丟包"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下流のパケットが失われました"
+          }
         }
       }
     },
@@ -7656,6 +9677,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "上行丟包"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アップリンクパケット損失"
           }
         }
       }
@@ -7680,6 +9707,12 @@
             "state": "translated",
             "value": "正常"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "普通"
+          }
         }
       }
     },
@@ -7702,6 +9735,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "關閉"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "閉鎖"
           }
         }
       }
@@ -7726,6 +9765,12 @@
             "state": "translated",
             "value": "異常"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "異常な"
+          }
         }
       }
     },
@@ -7748,6 +9793,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "優秀"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "素晴らしい"
           }
         }
       }
@@ -7772,6 +9823,12 @@
             "state": "translated",
             "value": "良好"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "良い"
+          }
         }
       }
     },
@@ -7794,6 +9851,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "較差"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "貧しい"
           }
         }
       }
@@ -7818,6 +9881,12 @@
             "state": "translated",
             "value": "差"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "違い"
+          }
         }
       }
     },
@@ -7840,6 +9909,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "非常差"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "非常に悪い"
           }
         }
       }
@@ -7864,6 +9939,12 @@
             "state": "translated",
             "value": "斷開"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "切断します"
+          }
         }
       }
     },
@@ -7886,6 +9967,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "預設模式"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "デフォルトモード"
           }
         }
       }
@@ -7910,6 +9997,12 @@
             "state": "translated",
             "value": "人聲模式"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音声モード"
+          }
         }
       }
     },
@@ -7932,6 +10025,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "輕微發熱"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "微熱"
           }
         }
       }
@@ -7956,6 +10055,12 @@
             "state": "translated",
             "value": "嚴重發熱"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重度の発熱"
+          }
         }
       }
     },
@@ -7978,6 +10083,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "網路狀態不佳，建議"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "現在のネットワークはutter音を立てていますが、お勧めします"
           }
         }
       }
@@ -8002,6 +10113,12 @@
             "state": "translated",
             "value": "切換網路"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "スイッチネットワーク"
+          }
         }
       }
     },
@@ -8024,6 +10141,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "等待連線"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接続を待っています"
           }
         }
       }
@@ -8048,6 +10171,12 @@
             "state": "translated",
             "value": "申請連線"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接続を申請します"
+          }
         }
       }
     },
@@ -8070,6 +10199,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "模板選擇:"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "テンプレートの選択："
           }
         }
       }
@@ -8094,6 +10229,12 @@
             "state": "translated",
             "value": "動態宮格"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "動的グリッド"
+          }
         }
       }
     },
@@ -8116,6 +10257,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "浮動小窗"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "フローティングウィンドウ"
           }
         }
       }
@@ -8140,6 +10287,12 @@
             "state": "translated",
             "value": "靜態宮格"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "静的グリッド"
+          }
         }
       }
     },
@@ -8162,6 +10315,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "固定小窗"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "固定ウィンドウ"
           }
         }
       }
@@ -8186,6 +10345,12 @@
             "state": "translated",
             "value": "佈局設定"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "レイアウト設定"
+          }
         }
       }
     },
@@ -8208,6 +10373,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "連觀眾佈置"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オーディエンスのレイアウトでさえ"
           }
         }
       }
@@ -8232,6 +10403,12 @@
             "state": "translated",
             "value": "主播PK佈局"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アンカーPKレイアウト"
+          }
         }
       }
     },
@@ -8254,6 +10431,186 @@
           "stringUnit": {
             "state": "translated",
             "value": "佈局"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "レイアウト"
+          }
+        }
+      }
+    },
+    "Chat Room": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chat Room"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "聊天室"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "聊天室"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chat Room"
+          }
+        }
+      }
+    },
+    "KTV Room": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KTV Room"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KTV"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KTV"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KTV Room"
+          }
+        }
+      }
+    },
+    "Video settings": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Video settings"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "视频设置"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "視頻設置"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": ""
+          }
+        }
+      }
+    },
+    "Reduce resolution": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reduce resolution"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "降低清晰度"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "降低清晰度"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": ""
+          }
+        }
+      }
+    },
+    "resolution changed to": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "resolution changed to"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清晰度已切换至"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清晰度已切換至"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": ""
+          }
+        }
+      }
+    },
+    "This layout template may display abnormally on certain models. It is recommended to change to another layout template.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This layout template may display abnormally on certain models. It is recommended to change to another layout template."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "该布局模板在特定机型上会显示异常，建议更换其他布局模板"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "此佈局模板在特定機型上會顯示異常，建議更換其他佈局模板"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "このレイアウトテンプレートは、一部の機種で正常に表示されない場合があります。別のレイアウトテンプレートに変更することをお勧めします。"
           }
         }
       }

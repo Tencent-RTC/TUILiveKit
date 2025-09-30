@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import LiveStreamCore
+import AtomicXCore
 import RTCRoomEngine
 import RTCCommon
 
@@ -39,6 +39,8 @@ enum AudienceRoute {
     case streamDashboard
     case userManagement(_ user: TUIUserInfo, type: AudienceUserManagePanelType)
     case netWorkInfo(_ manager: NetWorkInfoManager, isAudience: Bool)
+    case featureSetting
+    case videoQualitySelection(resolutions: [TUIVideoQuality], selectedClosure: ((TUIVideoQuality) -> Void))
 }
 
 extension AudienceRoute: Equatable {
@@ -47,6 +49,8 @@ extension AudienceRoute: Equatable {
             case (.audience,.audience),
                 (.linkType, .linkType),
                 (.linkSetting, .linkSetting),
+                (.featureSetting, .featureSetting),
+                (.videoQualitySelection, .videoQualitySelection),
                 (.audioEffect,.audioEffect),
                 (.beauty, .beauty),
                 (.giftView, .giftView),
@@ -62,6 +66,8 @@ extension AudienceRoute: Equatable {
             case (.audience, _),
                 (.linkType, _),
                 (.linkSetting, _),
+                (.featureSetting, _),
+                (.videoQualitySelection, _),
                 (.listMenu, _),
                 (.audioEffect, _),
                 (.beauty, _),
@@ -106,6 +112,10 @@ extension AudienceRoute: Hashable {
                 return "userManagement \(user.userId) type: \(type)"
             case .netWorkInfo:
                 return "netWorkInfo"
+            case .featureSetting:
+                return "featureSetting"
+            case .videoQualitySelection:
+                return "videoQualitySelection"
         }
     }
     

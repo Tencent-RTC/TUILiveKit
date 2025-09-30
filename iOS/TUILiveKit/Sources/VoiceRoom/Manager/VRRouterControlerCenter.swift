@@ -210,6 +210,8 @@ extension VRRouterControlCenter {
             view = VRAlertPanel(alertInfo: info)
         case .giftView:
             view = GiftListPanel(roomId: manager.roomState.roomId)
+        case .layout:
+            view = VRLayoutPanel(manager: manager,routerManager: routerManager)
         default:
             break
         }
@@ -231,6 +233,8 @@ extension VRRouterControlCenter {
     private func supportBlurView(route: VRRoute) -> Bool {
         switch route {
         case .giftView:
+            return false
+        case .layout:
             return false
         default:
             return true

@@ -5,19 +5,19 @@
 //  Created by krabyu on 2024/1/2.
 //
 
+import AtomicXCore
+import Combine
+import RTCCommon
+import RTCRoomEngine
 import SVGAPlayer
 import TUICore
 import UIKit
-import RTCCommon
-import RTCRoomEngine
-import Combine
 
 public protocol GiftPlayViewDelegate: AnyObject {
-    func giftPlayView(_ giftPlayView: GiftPlayView, onReceiveGift gift: TUIGiftInfo, giftCount: Int, sender: TUIUserInfo)
-    func giftPlayView(_ giftPlayView: GiftPlayView, onPlayGiftAnimation gift: TUIGiftInfo)
+    func giftPlayView(_ giftPlayView: GiftPlayView, onReceiveGift gift: Gift, giftCount: Int, sender: LiveUserInfo)
+    func giftPlayView(_ giftPlayView: GiftPlayView, onPlayGiftAnimation gift: Gift)
 }
 
-let gLikeMaxAnimationCount: Int = 10
 let gLikeMaxAnimationIntervalMS: TimeInterval = 100
 let Screen_Width = UIScreen.main.bounds.size.width
 let Screen_Height = UIScreen.main.bounds.size.height
@@ -26,11 +26,17 @@ let Bottom_SafeHeight = WindowUtils.bottomSafeHeight
 public class GiftPlayView: UIView {
     public weak var delegate: GiftPlayViewDelegate?
     
-    private let roomId: String
-    private let service: GiftService
-    private var currentLikeAnimationCount: Int = 0
+    private let liveId: String
+    private var giftStore: GiftStore {
+        GiftStore.create(liveId: liveId)
+    }
+
+    private var likeStore: LikeStore {
+        LikeStore.create(liveId: liveId)
+    }
+
     private var giftCacheKey = ""
-    private let animationView: AnimationViewWrapper = AnimationViewWrapper()
+    private let animationView: AnimationViewWrapper = .init()
     private var isPureMode: Bool = false
     private var cancellableSet: Set<AnyCancellable> = []
     
@@ -55,22 +61,24 @@ public class GiftPlayView: UIView {
     
     private let likeColors: [UIColor] = [.red, .purple, .orange,
                                          .yellow, .green, .blue,
-                                         .gray, .cyan, .brown,]
+                                         .gray, .cyan, .brown]
+    
+    private var localLikeCount = 0
     
     public init(roomId: String) {
-        self.roomId = roomId
-        self.service = GiftService(roomId: roomId)
+        self.liveId = roomId
         super.init(frame: .zero)
         isUserInteractionEnabled = false
         addObserver()
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     private var isViewReady = false
-    public override func didMoveToWindow() {
+    override public func didMoveToWindow() {
         super.didMoveToWindow()
         guard !isViewReady else { return }
         constructViewHierarchy()
@@ -88,21 +96,38 @@ public class GiftPlayView: UIView {
     }
     
     private func addObserver() {
-        service.delegate = self
+        giftStore.giftEventPublisher
+            .receive(on: RunLoop.main)
+            .sink { [weak self] event in
+                guard let self = self else { return }
+                switch event {
+                case .onReceiveGift(liveId: let liveId, gift: let gift, count: let count, sender: let sender):
+                    guard liveId == self.liveId else { return }
+                    delegate?.giftPlayView(self, onReceiveGift: gift, giftCount: Int(count), sender: sender)
+                    playGift(TUIGiftData(count, giftInfo: gift, sender: sender))
+                }
+            }
+            .store(in: &cancellableSet)
         
-        TUIGiftStore.shared.giftDataMap.addObserver(self) { [weak self] giftDataMap, _ in
-            guard let self = self, let giftData = giftDataMap[self.roomId] else { return }
-            self.delegate?.giftPlayView(self,
-                                        onReceiveGift: giftData.giftInfo,
-                                        giftCount: giftData.giftCount,
-                                        sender: giftData.sender)
-            playGift(giftData)
-        }
-        TUIGiftStore.shared.likeDataMap.addObserver(self) { [weak self] likeDataMap, _ in
-            guard let self = self, let likeData = likeDataMap[self.roomId]  else { return }
-            self.playLikeModel(sender: likeData.sender)
-        }
-        TUIGiftStore.shared.toastSubject
+        likeStore.likeEventPublisher
+            .receive(on: RunLoop.main)
+            .sink { [weak self] event in
+                guard let self = self else { return }
+                switch event {
+                case .onReceiveLikesMessage(liveId: let liveId, totalLikesReceived: _, sender: let sender):
+                    guard self.liveId == liveId else { return }
+                    for i in 0 ..< 3 {
+                        let delay = Double(i) * gLikeMaxAnimationIntervalMS / 1000
+                        DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
+                            guard let self = self else { return }
+                            playLikeModel(sender: sender)
+                        }
+                    }
+                }
+            }
+            .store(in: &cancellableSet)
+        
+        GiftManager.shared.toastSubject
             .receive(on: RunLoop.main)
             .sink { [weak self] message in
                 guard let self = self else { return }
@@ -120,16 +145,15 @@ public class GiftPlayView: UIView {
     }
     
     private func removeObserver() {
-        service.delegate = nil
-        TUIGiftStore.shared.giftDataMap.removeObserver(self)
-        TUIGiftStore.shared.likeDataMap.removeObserver(self)
+        cancellableSet.forEach { $0.cancel() }
+        cancellableSet.removeAll()
     }
 }
 
 // MARK: interface
 
-extension GiftPlayView {
-    public func playGiftAnimation(playUrl: String) {
+public extension GiftPlayView {
+    func playGiftAnimation(playUrl: String) {
         animationView.playAnimation(playUrl: playUrl) { [weak self] code in
             guard let self = self else { return }
             if code != 0 {
@@ -139,7 +163,7 @@ extension GiftPlayView {
         }
     }
     
-    public func onPureModeSet(isPureMode: Bool) {
+    func onPureModeSet(isPureMode: Bool) {
         self.isPureMode = isPureMode
     }
 }
@@ -157,7 +181,6 @@ extension GiftPlayView {
         }
     }
 }
-
 
 // MARK: Normal Animation
 
@@ -200,11 +223,7 @@ extension GiftPlayView {
 // MARK: Like Animation
 
 private extension GiftPlayView {
-    private func playLikeModel(sender: TUIUserInfo) {
-        if currentLikeAnimationCount >= gLikeMaxAnimationCount {
-            return
-        }
-        
+    private func playLikeModel(sender: LiveUserInfo) {
         let startFrame = CGRect(x: (Screen_Width * 5) / 6, y: Screen_Height - Bottom_SafeHeight - 30 - 44, width: 44, height: 44)
         let heartImageView = UIImageView(frame: startFrame)
         heartImageView.image = internalImage("live_gift_like_icon")
@@ -213,11 +232,9 @@ private extension GiftPlayView {
         addSubview(heartImageView)
         heartImageView.alpha = 0
         heartImageView.layer.add(likeAnimation(startFrame), forKey: nil)
-        currentLikeAnimationCount += 1
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
-            heartImageView.safeRemoveFromSuperview()
-            self?.currentLikeAnimationCount -= 1
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak heartImageView] in
+            heartImageView?.safeRemoveFromSuperview()
         }
     }
     
@@ -281,32 +298,6 @@ private extension GiftPlayView {
     }
 }
 
-// MARK: TUIGiftPresenterDelegate
-
-extension GiftPlayView: GiftServiceDelegate {
-    func onReceiveGiftMessage(giftInfo: TUIGiftInfo, count: Int, sender: TUIUserInfo) {
-        playGift(TUIGiftData(count, giftInfo: giftInfo, sender: sender))
-        delegate?.giftPlayView(self, onReceiveGift: giftInfo, giftCount: count, sender: sender)
-    }
-    
-    func onReceiveLikeMessage(totalLikesReceived: Int, sender: TUIUserInfo) {
-        let localLikeCount = TUIGiftStore.shared.localLikeCount
-        let delta = totalLikesReceived - localLikeCount
-        guard delta > 0 else { return }
-        
-        let playCount = min(gLikeMaxAnimationCount, delta)
-        TUIGiftStore.shared.localLikeCount = totalLikesReceived
-        
-        for i in 0..<playCount {
-            let delay = Double(i) * gLikeMaxAnimationIntervalMS / 1000
-            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-                self.playLikeModel(sender: sender)
-            }
-        }
-    }
-}
-
-
 // MARK: DataReport
 
 extension GiftPlayView {
@@ -315,10 +306,10 @@ extension GiftPlayView {
         var key = Constants.DataReport.kDataReportLiveGiftSVGAPlayCount
         if DataReporter.componentType == .liveRoom {
             key = isSupportEffectPlayer ? Constants.DataReport.kDataReportLiveGiftEffectPlayCount :
-            Constants.DataReport.kDataReportLiveGiftSVGAPlayCount
+                Constants.DataReport.kDataReportLiveGiftSVGAPlayCount
         } else if DataReporter.componentType == .voiceRoom {
             key = isSupportEffectPlayer ? Constants.DataReport.kDataReportVoiceGiftEffectPlayCount :
-            Constants.DataReport.kDataReportVoiceGiftSVGAPlayCount
+                Constants.DataReport.kDataReportVoiceGiftSVGAPlayCount
         }
         return key
     }

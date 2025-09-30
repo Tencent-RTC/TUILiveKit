@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 import TUICore
 import Kingfisher
+import AtomicXCore
 
 public class GiftBarrageCell: UIView {
     
@@ -40,7 +41,7 @@ public class GiftBarrageCell: UIView {
     
     private let cellHeight: CGFloat = 26
     
-    public init(barrage: TUIBarrage) {
+    public init(barrage: Barrage) {
         super.init(frame: .zero)
         backgroundColor = .clear
         updateViewContent(barrage: barrage)
@@ -59,21 +60,22 @@ public class GiftBarrageCell: UIView {
         isViewReady = true
     }
     
-    private func updateViewContent(barrage: TUIBarrage) {
+    private func updateViewContent(barrage: Barrage) {
         let barrageAttributedText = getBarrageAttributedText(barrage: barrage)
         barrageLabel.attributedText = barrageAttributedText
         
-        if let giftIconUrlString = barrage.extInfo["gift_icon_url"]?.value as? String,
+        if let extensionInfo = barrage.extensionInfo,
+           let giftIconUrlString = extensionInfo["gift_icon_url"],
            let giftIconUrl = URL(string: giftIconUrlString) {
-            giftImageView.kf.setImage(with: giftIconUrl)
-        }
+                giftImageView.kf.setImage(with: giftIconUrl)
+            }
         
         let countAttributedText = getCountAttributedText(barrage: barrage)
         countLabel.attributedText = countAttributedText
     }
     
-    private func getBarrageAttributedText(barrage: TUIBarrage) -> NSMutableAttributedString {
-        let userName = barrage.user.userName
+    private func getBarrageAttributedText(barrage: Barrage) -> NSMutableAttributedString {
+        let userName = barrage.sender.userName ?? ""
         let userNameAttributes: [NSAttributedString.Key: Any] =
             [.foregroundColor: UIColor.lightBlueColor, .font: UIFont.customFont(ofSize: 12, weight: .semibold)]
         let mutableAttributedString = NSMutableAttributedString(string: userName, attributes: userNameAttributes)
@@ -82,8 +84,9 @@ public class GiftBarrageCell: UIView {
         mutableAttributedString.append(sendAttributedText)
         
         let colors: [UIColor] = [.red, .blue, .yellow]
-        guard let giftName = barrage.extInfo["gift_name"]?.value as? String,
-              let receiver = barrage.extInfo["gift_receiver_username"]?.value as? String else {
+        guard let extensionInfo = barrage.extensionInfo,
+              let giftName = extensionInfo["gift_name"],
+              let receiver = extensionInfo["gift_receiver_username"] else {
             return NSMutableAttributedString()
         }
         
@@ -100,8 +103,8 @@ public class GiftBarrageCell: UIView {
         return mutableAttributedString
     }
     
-    private func getCountAttributedText(barrage: TUIBarrage ) -> NSAttributedString {
-        let giftCount = barrage.extInfo["gift_count"]?.value as? Int ?? 0
+    private func getCountAttributedText(barrage: Barrage ) -> NSAttributedString {
+        let giftCount = barrage.extensionInfo?["gift_count"] ?? "0"
         return NSAttributedString(string: " x\(giftCount)", attributes: [.foregroundColor: UIColor.white])
     }
 }

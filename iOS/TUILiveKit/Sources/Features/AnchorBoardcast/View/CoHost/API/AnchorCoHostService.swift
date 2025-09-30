@@ -7,7 +7,7 @@
 
 import Foundation
 import RTCRoomEngine
-import LiveStreamCore
+import AtomicXCore
 
 protocol AnchorCoHostService {
     func fetchRecommendedList(cursor: String, count: Int) async throws -> (String, [TUILiveInfo])
@@ -55,9 +55,7 @@ extension AnchorCoHostServiceImpl: AnchorCoHostService {
         ]
         if let jsonData = try? JSONSerialization.data(withJSONObject: obj, options: []),
            let jsonString = String(data: jsonData, encoding: .utf8) {
-            roomEngine.callExperimentalAPI(jsonStr: jsonString) { res in
-                
-            }
+            LiveCoreView.callExperimentalAPI(jsonString)
         }
     }
 }

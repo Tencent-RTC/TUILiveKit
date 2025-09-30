@@ -6,9 +6,10 @@
 //
 
 import Foundation
-import LiveStreamCore
+import AtomicXCore
 import RTCRoomEngine
 import RTCCommon
+import AtomicX
 
 enum VRDismissType {
     case panel
@@ -37,6 +38,7 @@ enum VRRoute {
     case systemImageSelection(_ imageType: VRImageType, isSetToService: Bool = false)
     case prepareSetting
     case alert(info: VRAlertInfo)
+    case layout
 }
 
 extension VRRoute: Equatable {
@@ -50,7 +52,8 @@ extension VRRoute: Equatable {
                 (.audioEffect,.audioEffect),
                 (.giftView, .giftView),
                 (.prepareSetting, .prepareSetting),
-                (.alert, .alert):
+                (.alert, .alert),
+                (.layout, .layout):
                 return true
             case let (.featureSetting(l), .featureSetting(r)):
                 return l == r
@@ -75,7 +78,8 @@ extension VRRoute: Equatable {
                 (.giftView, _),
                 (.systemImageSelection, _),
                 (.prepareSetting, _),
-                (.alert, _):
+                (.alert, _),
+                (.layout,_):
                 return false
             default:
                 break
@@ -118,6 +122,8 @@ extension VRRoute: Hashable {
                 return "prepareSetting"
             case .alert(let alertInfo):
                 return "alert \(alertInfo.description)"
+            case .layout:
+                return "VoiceRoomlayout"
         }
     }
     

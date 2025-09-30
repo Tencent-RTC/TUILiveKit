@@ -317,9 +317,9 @@ fileprivate extension String {
     static let remoteText = internalLocalized("Remote User")
     
     static let videoText = internalLocalized("Video Information")
-    static let videoResolutionText = internalLocalized("Resolution")
-    static let bitrateText = internalLocalized("Bitrate")
-    static let videoFrameRateText = internalLocalized("FPS")
+    static let videoResolutionText = internalLocalized("Video Resolution")
+    static let bitrateText = internalLocalized("Video Bitrate")
+    static let videoFrameRateText = internalLocalized("Video FPS")
     
     static let audioText = internalLocalized("Audio Information")
     static let audioSampleRateText = internalLocalized("Sample Rate")

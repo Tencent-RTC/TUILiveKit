@@ -10,7 +10,7 @@ import Foundation
 import RTCRoomEngine
 import RTCCommon
 import TUICore
-import LiveStreamCore
+import AtomicXCore
 
 class VideoLinkSettingPanel: RTCBaseView {
     private weak var coreView: LiveCoreView?

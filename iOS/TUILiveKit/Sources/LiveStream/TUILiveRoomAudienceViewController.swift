@@ -5,7 +5,7 @@
 //  Created by WesleyLei on 2023/12/11.
 //
 import UIKit
-import LiveStreamCore
+import AtomicXCore
 import RTCRoomEngine
 
 public class TUILiveRoomAudienceViewController: UIViewController {
@@ -40,7 +40,6 @@ public class TUILiveRoomAudienceViewController: UIViewController {
 #if DEV_MODE
         TestTool.shared.unregisterCaseFrom(self)
 #endif
-        TUIGiftStore.shared.reset()
         unregisterApplicationObserver()
     }
     
