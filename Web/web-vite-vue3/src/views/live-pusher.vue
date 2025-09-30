@@ -6,6 +6,7 @@
 </template>
 
 <script lang="ts" setup>
+import TUIRoomEngine from '@tencentcloud/tuiroom-engine-js';
 import { useLiveState, LiveStatus, useLoginState, useDeviceState } from 'tuikit-atomicx-vue3';
 import { LivePusherView } from '@tencentcloud/livekit-web-vue3';
 import { TUIMessageBox, useUIKit } from '@tencentcloud/uikit-base-component-vue3';
@@ -16,6 +17,15 @@ const { localLiveStatus, currentLive, joinLive } = useLiveState();
 const { loginUserInfo } = useLoginState();
 const { openLocalMicrophone } = useDeviceState();
 const { t } = useUIKit();
+
+TUIRoomEngine.once('ready', () => {
+  TUIRoomEngine.callExperimentalAPI(JSON.stringify({
+    api: 'enableMultiPlaybackQuality',
+    params: {
+      enable: true,
+    },
+  }));
+});
 
 watch(localLiveStatus, (newVal, oldVal) => {
   if (newVal === LiveStatus.Live) {
@@ -50,7 +60,6 @@ const restoreLive = async () => {
     });
   }
 };
-
 
 watch(loginUserInfo, (newVal) => {
   if (newVal && newVal.userId) {
