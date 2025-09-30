@@ -21,6 +21,12 @@
             "state": "translated",
             "value": "設置名字"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "名前を設定します"
+          }
         }
       }
     },
@@ -43,6 +49,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "粉絲"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ファン"
           }
         }
       }
@@ -67,6 +79,12 @@
             "state": "translated",
             "value": "點讚"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "のように"
+          }
         }
       }
     },
@@ -89,6 +107,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "開直播"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ライブブロードキャストを開始します"
           }
         }
       }
@@ -113,6 +137,12 @@
             "state": "translated",
             "value": "請輸入用戶名"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ユーザー名を入力してください"
+          }
         }
       }
     },
@@ -135,6 +165,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "登錄"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ログイン"
           }
         }
       }
@@ -159,6 +195,12 @@
             "state": "translated",
             "value": "確定"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "もちろん"
+          }
         }
       }
     },
@@ -181,6 +223,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "確定退出當前帳號嗎?"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "現在のアカウントからログアウトしますか？"
           }
         }
       }
@@ -205,6 +253,12 @@
             "state": "translated",
             "value": "在線直播"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オンラインでライブブロードキャスト"
+          }
         }
       }
     },
@@ -227,6 +281,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "通過 Live API 構建互動視頻直播，為您帶來清晰流暢的直播體驗。"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ライブAPIを介してインタラクティブなビデオライブストリーミングを構築して、明確でスムーズなライブストリーミングエクスペリエンスを提供します。"
           }
         }
       }
@@ -251,6 +311,12 @@
             "state": "translated",
             "value": "語聊房"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "言語チャットルーム"
+          }
         }
       }
     },
@@ -273,6 +339,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "通過 Live API 搭建互動語音聊天室，為您帶來低延遲高音質的體驗。"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Live APIを使用してインタラクティブな音声チャットルームを構築して、低レイテンシと高品質のエクスペリエンスを提供します。"
           }
         }
       }
@@ -297,6 +369,12 @@
             "state": "translated",
             "value": "騰訊雲音視頻"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tencent Cloud Audioビデオ"
+          }
         }
       }
     },
@@ -320,6 +398,12 @@
             "state": "translated",
             "value": "TUILiveKit"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tuilivekit"
+          }
         }
       }
     },
@@ -339,6 +423,12 @@
           }
         },
         "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存"
+          }
+        },
+        "ja": {
           "stringUnit": {
             "state": "translated",
             "value": "保存"
@@ -366,6 +456,12 @@
             "state": "translated",
             "value": "僅限中文、字母、數字和下劃線，1–20個字"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "中国語、文字、数字、アンダースコアのみ、1〜20語"
+          }
         }
       }
     },
@@ -388,6 +484,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "註冊"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "登録する"
           }
         }
       }
@@ -412,6 +514,12 @@
             "state": "translated",
             "value": "登錄成功"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正常にログインします"
+          }
         }
       }
     },
@@ -434,6 +542,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "註冊成功"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正常に登録されています"
           }
         }
       }
@@ -458,6 +572,12 @@
             "state": "translated",
             "value": "直播"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ライブストリーミング"
+          }
         }
       }
     },
@@ -480,6 +600,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "取消"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "キャンセル"
           }
         }
       }
@@ -504,6 +630,12 @@
             "state": "translated",
             "value": "通用布局：xxx"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一般的なレイアウト：xxx"
+          }
         }
       }
     },
@@ -526,6 +658,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "操作成功"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "操作は成功しました"
           }
         }
       }
@@ -550,6 +688,12 @@
             "state": "translated",
             "value": "我"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "私"
+          }
         }
       }
     },
@@ -572,6 +716,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "點讚數量"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "いいね"
           }
         }
       }

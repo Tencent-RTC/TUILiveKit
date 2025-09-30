@@ -6,12 +6,13 @@
 //
 
 import UIKit
-import RTCRoomEngine
+import AtomicXCore
 
 class TUIGiftCell: UICollectionViewCell {
     var sendBlock: TUIActionSendBlock?
-    var giftInfo: TUIGiftInfo = TUIGiftInfo() {
+    var giftInfo: Gift? {
         didSet {
+            guard let giftInfo = giftInfo else { return }
             setGiftInfo(giftInfo: giftInfo)
         }
     }
@@ -41,7 +42,7 @@ class TUIGiftCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func setGiftInfo(giftInfo: TUIGiftInfo) {
+    private func setGiftInfo(giftInfo: Gift) {
         giftBaseView.giftInfo = giftInfo
     }
     

@@ -20,6 +20,7 @@ import TXLiteAVSDK_Professional
 class NetWorkInfoManager: NSObject {
     private(set) var state: ObservableState<NetWorkInfoState>
     var netWorkInfoState: NetWorkInfoState { state.state }
+    let kickedOutSubject = PassthroughSubject<Void, Never>()
     private let service: NetWorkInfoService
     private var poorNetworkTimer: Timer?
     private var poorNetworkStartTime: Date?
@@ -259,6 +260,14 @@ extension NetWorkInfoManager: TUIRoomObserver {
                 }
             }
         }
+    }
+    
+    func onRoomDismissed(roomId: String, reason: TUIRoomDismissedReason) {
+        kickedOutSubject.send()
+    }
+    
+    func onKickedOutOfRoom(roomId: String, reason: TUIKickedOutOfRoomReason, message: String) {
+        kickedOutSubject.send()
     }
 }
 

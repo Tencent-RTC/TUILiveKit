@@ -8,7 +8,8 @@
 import UIKit
 import Combine
 import RTCCommon
-import LiveStreamCore
+import AtomicXCore
+import RTCRoomEngine
 
 class AnchorBattleCountDownView: UIView {
     private weak var coreView: LiveCoreView?
@@ -136,8 +137,12 @@ class AnchorBattleCountDownView: UIView {
     }
     
     @objc private func cancelButtonClick() {
-        let inviteeIdList = manager.coreBattleState.inviteeList.map { $0.userId }
-        coreView?.cancelBattle(battleId: manager.state.battleId, userIdList: inviteeIdList, onSuccess: { [weak self] in
+        guard let coreView = coreView else { return }
+        let coHostState: CoHostState = coreView.getState()
+        let userState: UserState = coreView.getState()
+        let selfUserId = userState.selfInfo.userId
+        let inviteeIdList = coHostState.connectedUserList.map { $0.userId }.filter({ $0 != selfUserId })
+        coreView.cancelBattle(battleId: manager.state.battleId, userIdList: inviteeIdList, onSuccess: { [weak self] in
             guard let self = self else { return }
             self.manager.onCanceledBattle()
         }, onError: { _, _ in

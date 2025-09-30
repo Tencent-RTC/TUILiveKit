@@ -5,7 +5,7 @@
 //  Created by gg on 2025/4/17.
 //
 
-import LiveStreamCore
+import AtomicXCore
 import RTCCommon
 import Combine
 import TUICore
@@ -30,10 +30,10 @@ public class TUILiveRoomAnchorPrepareViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private let coreView = LiveCoreView()
+    private let coreView = LiveCoreView(viewType: .pushView)
     
     private lazy var rootView: AnchorPrepareView = {
-        let view = AnchorPrepareView(coreView: coreView)
+        let view = AnchorPrepareView(roomId: roomId, coreView: coreView)
         view.delegate = self
         return view
     }()
@@ -72,6 +72,9 @@ extension TUILiveRoomAnchorPrepareViewController : AnchorPrepareViewDelegate {
             dismiss(animated: true)
         }
         StateCache.shared.clear()
+        AudioEffectStore.shared.reset()
+        DeviceStore.shared.reset()
+        BaseBeautyStore.shared.reset()
     }
     
     public func onClickStartButton(state: PrepareState) {

@@ -6,7 +6,7 @@
 //
 
 import RTCRoomEngine
-import LiveStreamCore
+import AtomicXCore
 
 struct AnchorUserState {
     var userList: Set<TUIUserInfo> = []

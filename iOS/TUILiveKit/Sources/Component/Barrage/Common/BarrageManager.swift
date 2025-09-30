@@ -15,7 +15,6 @@ class BarrageManager: NSObject {
     private static let stateKey = "__kBarrageManager_state_key__"
     private override init() {
         super.init()
-        engineManager.addObserver(self)
         subscribe()
     }
     
@@ -28,24 +27,6 @@ class BarrageManager: NSObject {
         }
     }
     
-    deinit {
-        engineManager.removeObserver(self)
-    }
-    
-    private var engineManager: TUIRoomEngine {
-        TUIRoomEngine.sharedInstance()
-    }
-    
-    typealias RoomBarrage = (roomId: String, barrage: TUIBarrage)
-    
     var inputString: String = ""
     let toastSubject = PassthroughSubject<String, Never>()
-    let sendBarrageSubject = PassthroughSubject<RoomBarrage, Never>()
-    let roomDismissedSubject = PassthroughSubject<String, Never>()
-}
-
-extension BarrageManager: TUIRoomObserver {
-    func onRoomDismissed(roomId: String, reason: TUIRoomDismissedReason) {
-        roomDismissedSubject.send(roomId)
-    }
 }

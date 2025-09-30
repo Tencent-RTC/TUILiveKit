@@ -9,7 +9,7 @@ import Foundation
 import RTCCommon
 import RTCRoomEngine
 import Combine
-import LiveStreamCore
+import AtomicXCore
 
 class AnchorCoGuestManager {
     private let observerState = ObservableState<AnchorCoGuestState>(initialState: AnchorCoGuestState())
@@ -29,7 +29,7 @@ class AnchorCoGuestManager {
     }
     
     private func subscribeCoreCoGuestState() {
-        context?.provider?.subscribeCoreViewState(StateSelector(keyPath: \CoGuestState.seatList))
+        context?.provider?.subscribeCoreViewState(StatePublisherSelector(keyPath: \CoGuestState.seatList))
             .receive(on: RunLoop.main)
             .removeDuplicates()
             .sink(receiveValue: { [weak self] seatList in

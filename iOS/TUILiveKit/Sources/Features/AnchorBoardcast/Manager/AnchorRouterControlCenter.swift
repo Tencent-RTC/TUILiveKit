@@ -9,7 +9,7 @@ import Combine
 import TUICore
 import RTCCommon
 import RTCRoomEngine
-import LiveStreamCore
+import AtomicXCore
 
 class AnchorRouterControlCenter {
     private var coreView: LiveCoreView?

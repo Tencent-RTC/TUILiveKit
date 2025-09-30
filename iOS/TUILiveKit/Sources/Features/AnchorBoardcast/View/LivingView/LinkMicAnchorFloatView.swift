@@ -10,7 +10,7 @@ import UIKit
 import Combine
 import RTCCommon
 import RTCRoomEngine
-import LiveStreamCore
+import AtomicXCore
 
 class LinkMicAnchorFloatView: UIView {
     private let manager: AnchorManager
@@ -68,7 +68,7 @@ class LinkMicAnchorFloatView: UIView {
     }
 
     private func subscribeSeatState() {
-        manager.subscribeCoreViewState(StateSelector(keyPath: \CoGuestState.applicantList))
+        manager.subscribeCoreViewState(StatePublisherSelector(keyPath: \CoGuestState.applicantList))
             .receive(on: RunLoop.main)
             .sink { [weak self] applyList in
                 guard let self = self else { return }

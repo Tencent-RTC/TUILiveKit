@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 import RTCCommon
-import LiveStreamCore
+import AtomicXCore
 import RTCRoomEngine
 
 class AnchorLinkControlPanel: UIView {
@@ -74,7 +74,7 @@ class AnchorLinkControlPanel: UIView {
     }
 
     private func subscribeSeatState() {
-        manager.subscribeCoreViewState(StateSelector(keyPath: \CoGuestState.applicantList))
+        manager.subscribeCoreViewState(StatePublisherSelector(keyPath: \CoGuestState.applicantList))
             .receive(on: RunLoop.main)
             .removeDuplicates()
             .sink { [weak self] seatApplicationList in
@@ -83,7 +83,7 @@ class AnchorLinkControlPanel: UIView {
                 self.userListTableView.reloadData()
             }
             .store(in: &cancellable)
-        manager.subscribeCoreViewState(StateSelector(keyPath: \CoGuestState.seatList))
+        manager.subscribeCoreViewState(StatePublisherSelector(keyPath: \CoGuestState.seatList))
             .receive(on: RunLoop.main)
             .removeDuplicates()
             .sink { [weak self] seatList in
@@ -192,8 +192,7 @@ extension AnchorLinkControlPanel: UITableViewDelegate {
         headerView.backgroundColor = .g2
         let label = UILabel(frame: CGRect(x: 24, y: 0, width: headerView.frame.width , height: headerView.frame.height))
         if section == 0 {
-            let maxSeatCount = manager.coreRoomState.maxCoGuestCount
-            label.text = .localizedReplaceTwoCharacter(origin: .anchorLinkControlSeatCount, firstReplace: String(linkingList.count), secondReplace: String(max(maxSeatCount,1) - 1))
+            label.text = .localizedReplace(.anchorLinkControlSeatCount, replace: String(linkingList.count))
         } else if section == 1 {
             label.text = .localizedReplace(.anchorLinkControlRequestCount,
                                           replace: "\(applyList.count)")
@@ -288,7 +287,7 @@ private extension String {
     }
     
     static var anchorLinkControlSeatCount: String {
-        internalLocalized("Current Mic (xxx/yyy)")
+        internalLocalized("Current Mic (xxx)")
     }
     
     static var anchorLinkControlRequestCount: String {

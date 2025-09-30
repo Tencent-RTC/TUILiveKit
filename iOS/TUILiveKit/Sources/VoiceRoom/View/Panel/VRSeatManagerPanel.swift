@@ -8,8 +8,9 @@
 import UIKit
 import RTCCommon
 import Combine
-import LiveStreamCore
+import AtomicXCore
 import RTCRoomEngine
+import AtomicXCore
 
 class VRSeatManagerPanel: RTCBaseView {
     private let manager: VoiceRoomManager
@@ -18,7 +19,7 @@ class VRSeatManagerPanel: RTCBaseView {
     private var cancellableSet: Set<AnyCancellable> = []
     private var onTheSeatList: [TUISeatInfo] = []
     private var applySeatList: [VRSeatApplication] = []
-    private lazy var seatListPublisher = manager.subscribeCoreState(StateSelector(keyPath: \SGSeatState.seatList))
+    private lazy var seatListPublisher = manager.subscribeCoreState(StatePublisherSelector(keyPath: \LiveSeatState.seatList))
     private lazy var seatApplicationPublisher = manager.subscribeState(StateSelector(keyPath: \VRSeatState.seatApplicationList))
     
     private let titleLabel: UILabel = {
@@ -210,10 +211,11 @@ class VRSeatManagerPanel: RTCBaseView {
             .receive(on: RunLoop.main)
             .sink { [weak self] seatList in
                 guard let self = self else { return }
-                self.onTheSeatList = seatList.filter{ [weak self] in
+                let seatList = seatList.filter{ [weak self] in
                     guard let self = self else { return true }
-                    return !($0.userId ?? "").isEmpty && $0.userId != manager.coreUserState.selfInfo.userId
+                    return !($0.userInfo.userId).isEmpty && $0.userInfo.userId != manager.userState.selfInfo.userId
                 }
+                self.onTheSeatList = seatList.map { TUISeatInfo(from: $0) }
                 let seatListCount = manager.coreSeatState.seatList.count
                 self.onTheSeatHeaderLabel.text = .localizedReplace(.onSeatListText, replace: "\(onTheSeatList.count) / \(seatListCount - 1)")
                 self.tableView.reloadData()
@@ -242,7 +244,7 @@ class VRSeatManagerPanel: RTCBaseView {
                 guard let self = self else { return }
                 let onSeatList = seatList.filter{ [weak self] in
                     guard let self = self else { return true }
-                    return !($0.userId ?? "").isEmpty && $0.userId != self.manager.coreUserState.selfInfo.userId
+                    return !($0.userInfo.userId ?? "").isEmpty && $0.userInfo.userId != self.manager.userState.selfInfo.userId
                 }
                 self.inviteContentView.isHidden = (onSeatList.count != 0 || applicationSeatList.count != 0)
             }
@@ -258,11 +260,12 @@ class VRSeatManagerPanel: RTCBaseView {
     }
     
     private func subscribeSeatModeState() {
-        manager.subscribeCoreState(StateSelector(keyPath: \SGRoomState.seatMode))
+        manager.subscribeCoreState(StatePublisherSelector(keyPath: \LiveListState.currentLive.seatMode))
+            .compactMap { $0 }
             .receive(on: RunLoop.main)
             .sink { [weak self] seatMode in
                 guard let self = self else { return }
-                self.seatModeSwitch.isOn = seatMode == .applyToTake
+                self.seatModeSwitch.isOn = seatMode == .apply
             }
             .store(in: &cancellableSet)
     }

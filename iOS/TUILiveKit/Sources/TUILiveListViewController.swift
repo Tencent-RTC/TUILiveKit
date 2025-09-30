@@ -34,6 +34,7 @@ public class TUILiveListViewController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        enableSwitchPlaybackQuality(true)
         initNavigationItemTitleView()
     }
     
@@ -85,7 +86,14 @@ public class TUILiveListViewController: UIViewController {
         rootView.setColumnStyle(style: style)
     }
     
+    private func enableSwitchPlaybackQuality(_ enable: Bool) {
+        TUICore.callService(.TUICore_VideoAdvanceService,
+                            method: .TUICore_VideoAdvanceService_EnableSwitchMultiPlayback,
+                            param: ["enable" : NSNumber(value: enable)])
+    }
+    
     deinit {
+        enableSwitchPlaybackQuality(false)
         print("deinit \(type(of: self))")
     }
 }
@@ -211,4 +219,8 @@ class LiveTransitioningDelegate: NSObject, UIViewControllerTransitioningDelegate
 extension String {
     fileprivate static let liveTitleText = internalLocalized("Live Video")
     fileprivate static let pushingToReturnText = internalLocalized("Live streaming in progress. Please try again later.")
+    
+    fileprivate static let TUICore_VideoAdvanceService = "TUICore_VideoAdvanceService"
+    fileprivate static let TUICore_VideoAdvanceService_EnableSwitchMultiPlayback = "TUICore_VideoAdvanceService_EnableSwitchMultiPlayback"
+
 }

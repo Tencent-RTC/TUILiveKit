@@ -9,7 +9,7 @@ import UIKit
 import RTCCommon
 import Combine
 import RTCRoomEngine
-import LiveStreamCore
+import AtomicXCore
 
 class VRUserManagerPanel: RTCBaseView {
     private let manager: VoiceRoomManager
@@ -18,7 +18,7 @@ class VRUserManagerPanel: RTCBaseView {
     private var cancellableSet: Set<AnyCancellable> = []
     private var seatInfo: TUISeatInfo
     private var isOwner: Bool {
-        manager.coreUserState.selfInfo.userId == manager.coreRoomState.ownerId
+        manager.userState.selfInfo.userId == manager.coreLiveState.liveOwner.userId
     }
     
     private let avatarImageView: UIImageView = {
@@ -197,12 +197,12 @@ extension VRUserManagerPanel {
     }
     
     private func subscribeSeatInfoState() {
-        manager.subscribeCoreState(StateSelector(keyPath: \SGSeatState.seatList))
+        manager.subscribeCoreState(StatePublisherSelector(keyPath: \LiveSeatState.seatList))
             .removeDuplicates()
             .receive(on: RunLoop.main)
             .sink { [weak self] seatInfoList in
                 guard let self = self else { return }
-                self.seatInfo = seatInfoList[seatInfo.index]
+                self.seatInfo =   TUISeatInfo(from: seatInfoList[seatInfo.index])
                 if (seatInfo.userId ?? "").isEmpty {
                     routerManager.router(action: .dismiss())
                 }

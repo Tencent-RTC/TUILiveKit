@@ -9,6 +9,7 @@ import UIKit
 import Combine
 import RTCCommon
 import RTCRoomEngine
+import AtomicXCore
 
 class BarrageSendViewController: UIViewController {
     
@@ -20,7 +21,6 @@ class BarrageSendViewController: UIViewController {
     
     private let roomId: String
     private var cancellableSet = Set<AnyCancellable>()
-    private let manager: BarrageInputManager
         
     private lazy var inputBarView: InputBarView = {
         let inputBarView = InputBarView()
@@ -62,7 +62,6 @@ class BarrageSendViewController: UIViewController {
     
     init(roomId: String, isShowEmotion: Bool = false) {
         self.roomId = roomId
-        self.manager = BarrageInputManager(roomId: roomId)
         self.isShowEmotion = isShowEmotion
         super.init(nibName: nil, bundle: nil)
     }
@@ -99,11 +98,14 @@ class BarrageSendViewController: UIViewController {
         constructViewHierarchy()
         activateConstraints()
         
-        BarrageManager.shared.roomDismissedSubject
+        liveListStore.liveListEventPublisher
             .receive(on: RunLoop.main)
-            .sink { [weak self] dismissedRoomId in
-                guard let self = self, roomId == dismissedRoomId else { return }
-                dismiss(animated: true)
+            .sink { [weak self] event in
+                guard let self = self else { return }
+                if case .onLiveEnded(liveId: let liveId, reason: _, message: _) = event,
+                   liveId == roomId {
+                    dismiss(animated: true)
+                }
             }
             .store(in: &cancellableSet)
         
@@ -201,7 +203,15 @@ extension BarrageSendViewController {
 // MARK: - InputBarViewDelegate
 extension BarrageSendViewController: InputBarViewDelegate {
     func inputBarView(inputBarView: InputBarView, onSendText inputNormalText: String) {
-        manager.send(text: inputNormalText)
+        barrageStore.sendTextMessage(text: inputNormalText, extensionInfo: nil) { result in
+            switch result {
+            case .success(()):
+                BarrageManager.shared.inputString = ""
+            case .failure(let errorInfo):
+                let error = InternalError(errorInfo: errorInfo)
+                BarrageManager.shared.toastSubject.send(error.localizedMessage)
+            }
+        }
         close()
     }
     
@@ -221,6 +231,16 @@ extension BarrageSendViewController: InputBarViewDelegate {
     
     func inputBarEmptyChanged(isEmpty: Bool) {
         emotionBoardView.setDeleteBtnEnable(!isEmpty)
+    }
+}
+
+extension BarrageSendViewController {
+    var barrageStore: BarrageStore {
+        return BarrageStore.create(liveId: roomId)
+    }
+    
+    var liveListStore: LiveListStore {
+        return LiveListStore.shared
     }
 }
 

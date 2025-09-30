@@ -8,7 +8,7 @@
 import Foundation
 import RTCCommon
 import TUICore
-import LiveStreamCore
+import AtomicXCore
 
 public class AnchorPrepareView: UIView {
     public weak var delegate: AnchorPrepareViewDelegate?
@@ -69,12 +69,19 @@ public class AnchorPrepareView: UIView {
             guard let self = self else { return }
             self.flipClick()
         }))
-        items.append(PrepareFeatureItem(normalTitle: .layouteText,
+        items.append(PrepareFeatureItem(normalTitle: .layoutText,
                                        normalImage: internalImage("layoutSetting"),
                                        designConfig: designConfig,
                                         actionClosure: { [weak self] _ in
             guard let self = self else { return }
             layoutClick()
+        }))
+        items.append(PrepareFeatureItem(normalTitle: .videoSettingsText,
+                                       normalImage: internalImage("live_prepare_video_settings_icon"),
+                                       designConfig: designConfig,
+                                        actionClosure: { [weak self] _ in
+            guard let self = self else { return }
+            videoSettingsClick()
         }))
         return items
     }()
@@ -83,10 +90,15 @@ public class AnchorPrepareView: UIView {
     
     private lazy var featureClickPanel: PrepareFeatureClickPanel = {
         let model = PrepareFeatureClickPanelModel()
-        model.itemSize = CGSize(width: 63.scale375(), height: 56.scale375Height())
-        model.itemDiff = 25.scale375()
+        model.itemSize = CGSize(width: 60.scale375(), height: 56.scale375Height())
+        model.itemDiff = 10.scale375()
         model.items = currentPanelModelItems
         return PrepareFeatureClickPanel(model: model)
+    }()
+    
+    private lazy var videoSettingPanel: PrepareVideoSettingPanel = {
+        let view = PrepareVideoSettingPanel(coreView: coreView)
+        return view
     }()
     
     private lazy var startButton: UIButton = {
@@ -111,9 +123,10 @@ public class AnchorPrepareView: UIView {
         isViewReady = true
     }
     
-    public init(coreView: LiveCoreView) {
+    public init(roomId: String, coreView: LiveCoreView) {
         self.coreView = coreView
         super.init(frame: .zero)
+        coreView.setLiveId(roomId)
         registerObserver()
     }
     
@@ -190,6 +203,25 @@ public class AnchorPrepareView: UIView {
     }
 }
 
+// MARK: - Deprecated API
+
+extension AnchorPrepareView {
+    @available(*, deprecated, renamed: "disableMenuSwitchCamera")
+    public func disableMenuSwitchCameraBtn(_ isDisable: Bool) {
+        disableMenuSwitchCamera(isDisable)
+    }
+    
+    @available(*, deprecated, renamed: "disableMenuBeauty")
+    public func disableMenuBeautyBtn(_ isDisable: Bool) {
+        disableMenuBeauty(isDisable)
+    }
+    
+    @available(*, deprecated, renamed: "disableMenuAudioEffect")
+    public func disableMenuAudioEffectBtn(_ isDisable: Bool) {
+        disableMenuAudioEffect(isDisable)
+    }
+}
+
 extension AnchorPrepareView {
     public func disableFeatureMenu(_ isDisable: Bool) {
         if isDisable {
@@ -200,7 +232,7 @@ extension AnchorPrepareView {
         featureClickPanel.updateFeatureItems(newItems: currentPanelModelItems)
     }
     
-    public func disableMenuSwitchCameraBtn(_ isDisable: Bool) {
+    public func disableMenuSwitchCamera(_ isDisable: Bool) {
         if isDisable {
             currentPanelModelItems.removeAll(where: { $0.normalTitle == .flipText })
         } else {
@@ -214,7 +246,7 @@ extension AnchorPrepareView {
         featureClickPanel.updateFeatureItems(newItems: currentPanelModelItems)
     }
     
-    public func disableMenuBeautyBtn(_ isDisable: Bool) {
+    public func disableMenuBeauty(_ isDisable: Bool) {
         if isDisable {
             currentPanelModelItems.removeAll(where: { $0.normalTitle == .beautyText })
         } else {
@@ -228,7 +260,7 @@ extension AnchorPrepareView {
         featureClickPanel.updateFeatureItems(newItems: currentPanelModelItems)
     }
     
-    public func disableMenuAudioEffectBtn(_ isDisable: Bool) {
+    public func disableMenuAudioEffect(_ isDisable: Bool) {
         if isDisable {
             currentPanelModelItems.removeAll(where: { $0.normalTitle == .audioText })
         } else {
@@ -500,19 +532,43 @@ extension AnchorPrepareView {
     
     private func layoutClick() {
         let view = TemplateSelectionView(defaultMode: state.templateMode, defaultPkMode: state.pkTemplateMode, frame: .zero)
-        view.onSelectMode = { [weak self] mode in
+        view.onSelectMode = { [weak self, weak view] mode in
             guard let self = self else { return }
             state.templateMode = mode
+            guard let view = view else { return }
+            showTemplate601ExceptionToastIfNeeded(mode: mode, from: view)
         }
-        view.onSelectPkMode = { [weak self] mode in
+        view.onSelectPkMode = { [weak self, weak view] mode in
             guard let self = self else { return }
             state.pkTemplateMode = mode
+            guard let view = view else { return }
+            showTemplate601ExceptionToastIfNeeded(mode: mode, from: view)
         }
         view.onCloseClosure = { [weak self] in
             guard let self = self else { return }
             self.popupViewController?.dismiss(animated: true)
         }
-        let menuContainerView = MenuContainerView(contentView: view, safeBottomViewBackgroundColor: .black)
+        let menuContainerView = MenuContainerView(contentView: view, safeBottomViewBackgroundColor: .bgOperateColor)
+        let popupViewController = PopupViewController(contentView: menuContainerView, supportBlurView: false)
+        menuContainerView.blackAreaClickClosure = { [weak self] in
+            guard let self = self else { return }
+            self.popupViewController?.dismiss(animated: true)
+        }
+        guard let presentingViewController = getCurrentViewController() else { return }
+        presentingViewController.present(popupViewController, animated: true)
+        self.popupViewController = popupViewController
+    }
+    
+    private func showTemplate601ExceptionToastIfNeeded(mode: LiveTemplateMode, from view: UIView) {
+        let viewRatio = coreView.bounds.width / coreView.bounds.height
+        let canvasRatio: CGFloat = 9.0 / 16.0
+        if mode == .verticalFloatDynamic && viewRatio > canvasRatio {
+            view.makeToast(.template601ExceptionText)
+        }
+    }
+    
+    private func videoSettingsClick() {
+        let menuContainerView = MenuContainerView(contentView: videoSettingPanel, safeBottomViewBackgroundColor: .bgOperateColor)
         let popupViewController = PopupViewController(contentView: menuContainerView, supportBlurView: false)
         menuContainerView.blackAreaClickClosure = { [weak self] in
             guard let self = self else { return }
@@ -531,15 +587,15 @@ extension AnchorPrepareView {
     }
     
     @objc func disableMenuSwitchCameraBtnForTest(_ isDisable: NSNumber) {
-        disableMenuSwitchCameraBtn(isDisable.boolValue)
+        disableMenuSwitchCamera(isDisable.boolValue)
     }
     
     @objc func disableMenuBeautyBtnForTest(_ isDisable: NSNumber) {
-        disableMenuBeautyBtn(isDisable.boolValue)
+        disableMenuBeauty(isDisable.boolValue)
     }
     
     @objc func disableMenuAudioEffectBtnForTest(_ isDisable: NSNumber) {
-        disableMenuAudioEffectBtn(isDisable.boolValue)
+        disableMenuAudioEffect(isDisable.boolValue)
     }
 }
 
@@ -548,5 +604,7 @@ private extension String {
     static let beautyText: String = internalLocalized("Beauty")
     static let audioText: String = internalLocalized("Audio")
     static let flipText: String = internalLocalized("Flip")
-    static let layouteText: String = internalLocalized("Layout")
+    static let layoutText: String = internalLocalized("Layout")
+    static let videoSettingsText: String = internalLocalized("Video settings")
+    static let template601ExceptionText: String = internalLocalized("This layout template may display abnormally on certain models. It is recommended to change to another layout template.")
 }

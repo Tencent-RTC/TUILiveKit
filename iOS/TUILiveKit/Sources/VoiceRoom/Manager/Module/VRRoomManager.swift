@@ -34,6 +34,7 @@ class VRRoomManager: VRLiveListObserverInterface, VRRoomEngineObserverRoomInterf
             state.createTime = 0
             state.roomName = ""
             state.userCount = 0
+            state.layoutType = .chatRoom
             state.liveExtraInfo.category = .chat
             state.liveExtraInfo.liveMode = .public
             state.liveExtraInfo.maxAudienceCount = 0
@@ -128,6 +129,18 @@ extension VRRoomManager {
             liveInfo.roomInfo.roomId = state.roomId
             liveInfo.backgroundUrl = backgroundUrl
             setLiveInfo(liveInfo: liveInfo, modifyFlag: .backgroundUrl)
+        }
+    }
+
+    func onSetlayoutType(layoutType: VoiceRoomLayoutType) {
+        update { state in
+            state.layoutType = layoutType
+        }
+    }
+
+    func onSetHasKTVAbility(hasKTVAbility: Bool) {
+        update { state in
+            state.hasKTVAbility = hasKTVAbility
         }
     }
 }

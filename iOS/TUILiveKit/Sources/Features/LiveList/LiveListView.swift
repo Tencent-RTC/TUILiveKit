@@ -309,6 +309,8 @@ extension LiveListView {
         })
         header.setTitle(.pullToRefreshText, for: .idle)
         header.setTitle(.releaseToRefreshText, for: .pulling)
+        header.setTitle(.loadingText, for: .refreshing)
+        header.lastUpdatedTimeLabel?.isHidden = true
         header.ignoredScrollViewContentInsetTop = collectionView.contentInset.top
         collectionView.mj_header = header
         

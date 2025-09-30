@@ -6,11 +6,11 @@
 //
 
 import Foundation
-import RTCRoomEngine
+import AtomicXCore
 import RTCCommon
 
 class AudienceMemberCell: UITableViewCell {
-    var onUserManageButtonClicked: ((TUIUserInfo) -> Void)? {
+    var onUserManageButtonClicked: ((LiveUserInfo) -> Void)? {
         didSet {
             if onUserManageButtonClicked != nil {
                 setupUserManageButton()
@@ -18,16 +18,18 @@ class AudienceMemberCell: UITableViewCell {
         }
     }
     
-    var user: TUIUserInfo? {
+    var user: LiveUserInfo? {
         didSet {
             guard let user = user else {
                 return
             }
-            if let url = URL(string: user.avatarUrl) {
+            
+            if let url = URL(string: user.avatarURL) {
                 avatarImageView.kf.setImage(with: url,placeholder: avatarPlaceholderImage)
             } else {
                 avatarImageView.image = avatarPlaceholderImage
             }
+            
             nameLabel.text = user.userName.isEmpty ? user.userId : user.userName
         }
     }

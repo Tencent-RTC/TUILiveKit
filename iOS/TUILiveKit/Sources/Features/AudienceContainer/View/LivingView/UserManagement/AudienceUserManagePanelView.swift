@@ -6,7 +6,7 @@
 //
 
 import RTCRoomEngine
-import LiveStreamCore
+import AtomicXCore
 import RTCCommon
 import Combine
 import ImSDK_Plus
@@ -178,8 +178,8 @@ class AudienceUserManagePanelView: RTCBaseView {
             }
             .store(in: &cancellableSet)
         
-        let isCameraOpenedPublisher = manager.subscribeCoreViewState(StateSelector(keyPath: \MediaState.isCameraOpened))
-        let isMicrophoneMutedPublisher = manager.subscribeCoreViewState(StateSelector(keyPath: \MediaState.isMicrophoneMuted))
+        let isCameraOpenedPublisher = manager.subscribeCoreViewState(StatePublisherSelector(keyPath: \MediaState.isCameraOpened))
+        let isMicrophoneMutedPublisher = manager.subscribeCoreViewState(StatePublisherSelector(keyPath: \MediaState.isMicrophoneMuted))
         let isAudioLockedPublisher = manager.subscribeState(StateSelector(keyPath: \AudienceMediaState.isAudioLocked))
         let isVideoLockedPublisher = manager.subscribeState(StateSelector(keyPath: \AudienceMediaState.isVideoLocked))
         let lockAudioUserListPublisher = manager.subscribeState(StateSelector(keyPath: \AudienceCoGuestState.lockAudioUserList))
@@ -205,7 +205,7 @@ class AudienceUserManagePanelView: RTCBaseView {
             }
             .store(in: &cancellableSet)
         
-        manager.subscribeCoreViewState(StateSelector(keyPath: \CoGuestState.connectedUserList))
+        manager.subscribeCoreViewState(StatePublisherSelector(keyPath: \CoGuestState.connectedUserList))
             .removeDuplicates()
             .receive(on: RunLoop.main)
             .sink { [weak self] seatList in

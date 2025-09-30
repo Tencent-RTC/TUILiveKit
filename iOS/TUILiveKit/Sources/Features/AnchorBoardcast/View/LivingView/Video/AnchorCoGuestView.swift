@@ -10,7 +10,7 @@ import Kingfisher
 import Combine
 import RTCRoomEngine
 import RTCCommon
-import LiveStreamCore
+import AtomicXCore
 
 class AnchorCoGuestView: UIView {
     private let manager: AnchorManager

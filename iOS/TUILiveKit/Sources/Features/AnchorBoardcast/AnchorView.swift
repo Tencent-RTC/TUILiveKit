@@ -9,7 +9,7 @@ import Foundation
 import Combine
 import TUICore
 import RTCRoomEngine
-import LiveStreamCore
+import AtomicXCore
 import RTCCommon
 
 public enum AnchorViewFeature {
@@ -37,7 +37,7 @@ public class AnchorView: UIView {
     private lazy var routerManager: AnchorRouterManager = AnchorRouterManager()
     private lazy var routerCenter = AnchorRouterControlCenter(rootViewController: getCurrentViewController() ?? (TUITool.applicationKeywindow().rootViewController ?? UIViewController()), rootRoute: .anchor, routerManager: routerManager, manager: manager, coreView: videoView)
     
-    private lazy var coHostRequestPublisher = manager.subscribeCoreViewState(StateSelector(keyPath: \CoHostState.receivedConnectionRequest))
+    private lazy var coHostRequestPublisher = manager.subscribeCoreViewState(StatePublisherSelector(keyPath: \CoHostState.receivedConnectionRequest))
     private lazy var receivedBattleRequestPublisher = manager.subscribeState(StateSelector(keyPath: \AnchorBattleState.receivedBattleRequest))
     private lazy var isInWaitingPublisher = manager.subscribeState(StateSelector(keyPath: \AnchorBattleState.isInWaiting))
     private var cancellableSet = Set<AnyCancellable>()
@@ -69,6 +69,7 @@ public class AnchorView: UIView {
         self.liveInfo = liveInfo
         self.videoView = coreView
         super.init(frame: .zero)
+        videoView.setLiveId(liveInfo.roomId)
         backgroundColor = .black
         self.manager.prepareLiveInfoBeforeEnterRoom(liveInfo: liveInfo)
         self.videoView.videoViewDelegate = self
@@ -81,6 +82,11 @@ public class AnchorView: UIView {
         case .enterRoom:
             joinSelfCreatedRoom()
         }
+        
+        battleObserver.onBattleStarted = { [weak self] in
+            guard let self = self else { return }
+            routerManager.router(action: .dismiss(AnchorDismissType.panel, completion: nil))
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -92,6 +98,10 @@ public class AnchorView: UIView {
         videoView.stopMicrophone()
         videoView.unregisterConnectionObserver(observer: liveStreamObserver)
         videoView.unregisterBattleObserver(observer: battleObserver)
+        TUICore.notifyEvent(TUICore_PrivacyService_ROOM_STATE_EVENT_CHANGED,
+                            subKey: TUICore_PrivacyService_ROOM_STATE_EVENT_SUB_KEY_END,
+                            object: nil,
+                            param: nil)
         LiveKitLog.info("\(#file)", "\(#line)", "deinit AnchorView \(self)")
     }
     
@@ -273,7 +283,10 @@ extension AnchorView {
         coHostRequestPublisher.receive(on: RunLoop.main)
             .sink { [weak self] connectionRequest in
                 guard let self = self else { return }
-                if !manager.coreCoGuestState.applicantList.isEmpty {
+                let selfUserId = manager.coreUserState.selfInfo.userId
+                if !manager.coreCoGuestState.applicantList.isEmpty
+                    || !manager.coreCoGuestState.connectedUserList.filter({ $0.userId != selfUserId }).isEmpty
+                    || !manager.coreCoGuestState.inviteeList.isEmpty {
                     // If received linkmic request first, reject connection auto.
                     if let request = connectionRequest {
                         videoView.respondToCrossRoomConnection(roomId: request.roomId, isAccepted: false) {
@@ -325,7 +338,8 @@ extension AnchorView {
     }
 
     private func openLocalCamera() {
-        videoView.startCamera(useFrontCamera: true) {
+        guard !manager.coreMediaState.isCameraOpened else { return }
+        videoView.startCamera(useFrontCamera: manager.coreMediaState.isFrontCamera) {
         } onError: { [weak self] code, message in
             guard let self = self else { return }
             let error = InternalError(code: code.rawValue, message: message)
@@ -338,6 +352,7 @@ extension AnchorView {
     }
 
     private func openLocalMicrophone() {
+        guard !manager.coreMediaState.isMicrophoneOpened else { return }
         videoView.startMicrophone() {
         } onError: { [weak self] code, message in
             guard let self = self else { return }
@@ -503,7 +518,7 @@ extension AnchorView: VideoViewDelegate {
         return AnchorBattleInfoView(manager: manager, routerManager: routerManager, coreView: videoView)
     }
     
-    public func updateBattleContainerView(battleContainerView: UIView, userInfos: [LiveStreamCore.BattleUserViewModel]) {
+    public func updateBattleContainerView(battleContainerView: UIView, userInfos: [AtomicXCore.BattleUserViewModel]) {
         if let battleInfoView = battleContainerView as? AnchorBattleInfoView {
             battleInfoView.updateView(userInfos: userInfos)
         }
@@ -536,11 +551,11 @@ extension AnchorView: VideoViewDelegate {
 }
 
 extension AnchorView: AnchorManagerProvider {
-    func subscribeCoreViewState<State, Value>(_ selector: StateSelector<State, Value>) -> AnyPublisher<Value, Never> {
+    func subscribeCoreViewState<State, Value>(_ selector: StatePublisherSelector<State, Value>) -> AnyPublisher<Value, Never> {
         videoView.subscribeState(selector)
     }
     
-    func getCoreViewState<T>() -> T where T : State {
+    func getCoreViewState<T>() -> T where T : CoreViewState {
         videoView.getState()
     }
 }

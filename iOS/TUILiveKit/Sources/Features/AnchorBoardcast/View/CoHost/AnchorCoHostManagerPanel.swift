@@ -10,7 +10,7 @@ import RTCCommon
 import Combine
 import TUICore
 import MJRefresh
-import LiveStreamCore
+import AtomicXCore
 import RTCRoomEngine
 
 class AnchorCoHostManagerPanel: RTCBaseView {
@@ -133,6 +133,8 @@ extension AnchorCoHostManagerPanel {
         })
         header.setTitle(.pullToRefreshText, for: .idle)
         header.setTitle(.releaseToRefreshText, for: .pulling)
+        header.setTitle(.loadingText, for: .refreshing)
+        header.lastUpdatedTimeLabel?.isHidden = true
         header.ignoredScrollViewContentInsetTop = tableView.contentInset.top
         tableView.mj_header = header
         
@@ -163,7 +165,7 @@ extension AnchorCoHostManagerPanel {
         guard let coreView = coreView else { return }
         let connectedUsersSelector = StateSelector(keyPath: \AnchorCoHostState.connectedUsers)
         let connectedUsersPublisher = manager.subscribeCoHostState(connectedUsersSelector)
-        let sendRequestsSelector = StateSelector(keyPath: \CoHostState.sentConnectionRequestList)
+        let sendRequestsSelector = StatePublisherSelector(keyPath: \CoHostState.sentConnectionRequestList)
         let sendRequestsPublisher = coreView.subscribeState(sendRequestsSelector)
         let recommendedUsersSelector = StateSelector(keyPath: \AnchorCoHostState.recommendedUsers)
         let recommendedUsersPublisher = manager.subscribeCoHostState(recommendedUsersSelector)

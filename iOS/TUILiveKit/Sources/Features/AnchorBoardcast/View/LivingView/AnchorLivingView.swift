@@ -9,7 +9,7 @@ import Foundation
 import TUICore
 import RTCCommon
 import Combine
-import LiveStreamCore
+import AtomicXCore
 import RTCRoomEngine
 
 class AnchorLivingView: UIView {
@@ -27,7 +27,7 @@ class AnchorLivingView: UIView {
     private var isPortrait: Bool = {
         return WindowUtils.isPortrait
     }()
-    private let giftCacheService = TUIGiftStore.shared.giftCacheService
+    private let giftCacheService = GiftManager.shared.giftCacheService
     
     private let liveInfoView: LiveInfoView = {
         let view = LiveInfoView(enableFollow: VideoLiveKit.createInstance().enableFollow)
@@ -47,15 +47,15 @@ class AnchorLivingView: UIView {
     
     private lazy var audienceListView: AudienceListView = {
         let view = AudienceListView()
-        view.onUserManageButtonClicked = { [weak self] userId in
+        view.onUserManageButtonClicked = { [weak self] user in
             guard let self = self else { return }
-            routerManager.router(action: .present(.userManagement(userId, type: .messageAndKickOut)))
+            routerManager.router(action: .present(.userManagement(TUIUserInfo(from: user), type: .messageAndKickOut)))
         }
         return view
     }()
     
     private lazy var bottomMenu: AnchorBottomMenuView = {
-        let view = AnchorBottomMenuView(mananger: manager, routerManager: routerManager, coreView: coreView)
+        let view = AnchorBottomMenuView(manager: manager, routerManager: routerManager, coreView: coreView)
         return view
     }()
     
@@ -67,7 +67,7 @@ class AnchorLivingView: UIView {
     
     private lazy var barrageDisplayView: BarrageStreamView = {
         let ownerId = manager.coreRoomState.ownerInfo.userId
-        let view = BarrageStreamView(roomId: roomId)
+        let view = BarrageStreamView(liveId: roomId)
         view.delegate = self
         return view
     }()
@@ -93,8 +93,8 @@ class AnchorLivingView: UIView {
         return button
     }()
     
-    private lazy var netWorkInfoButtom: NetworkInfoButton = {
-        let button = NetworkInfoButton(manager: netWorkInfoManager)
+    private lazy var netWorkInfoButton: NetworkInfoButton = {
+        let button = NetworkInfoButton(liveId: roomId, manager: netWorkInfoManager)
         button.onNetWorkInfoButtonClicked = { [weak self] in
             guard let self = self else { return }
             routerManager.router(action: .present(.netWorkInfo(netWorkInfoManager,isAudience: !manager.roomState.liveInfo.keepOwnerOnSeat)))
@@ -153,11 +153,15 @@ class AnchorLivingView: UIView {
     }
     
     private func subscribeState() {
-        manager.subscribeCoreViewState(StateSelector(keyPath: \CoGuestState.applicantList))
+        manager.subscribeCoreViewState(StatePublisherSelector(keyPath: \CoGuestState.applicantList))
             .receive(on: RunLoop.main)
+            .removeDuplicates()
             .sink { [weak self] seatApplicationList in
                 guard let self = self else { return }
-                if manager.coreCoHostState.receivedConnectionRequest != nil || manager.coreCoHostState.sentConnectionRequestList.count > 0 {
+                if manager.coreCoHostState.receivedConnectionRequest != nil
+                    || !manager.coreCoHostState.sentConnectionRequestList.isEmpty
+                    || !manager.coreCoHostState.connectedUserList.isEmpty
+                {
                     // If received connection request first, reject all linkmic auto.
                     for seatApplication in seatApplicationList {
                         coreView.respondIntraRoomConnection(userId: seatApplication.userId, isAccepted: false) {} onError: { _, _ in }
@@ -167,7 +171,7 @@ class AnchorLivingView: UIView {
                 self.showLinkMicFloatView(isPresent: seatApplicationList.count > 0)
             }
             .store(in: &cancellableSet)
-        manager.subscribeCoreViewState(StateSelector(keyPath: \RoomState.ownerInfo))
+        manager.subscribeCoreViewState(StatePublisherSelector(keyPath: \RoomState.ownerInfo))
             .receive(on: RunLoop.main)
             .sink { [weak self] ownerInfo in
                 guard let self = self else { return }
@@ -187,15 +191,6 @@ class AnchorLivingView: UIView {
                     default:
                         break
                 }
-            }
-            .store(in: &cancellableSet)
-
-        manager.subscribeState(StateSelector(keyPath: \AnchorRoomState.createTime))
-            .receive(on: RunLoop.main)
-            .removeDuplicates()
-            .dropFirst()
-            .sink { [weak self] createTime in
-                self?.netWorkInfoButtom.onRecivedCreateTime(timer: TimeInterval(createTime))
             }
             .store(in: &cancellableSet)
 
@@ -219,14 +214,18 @@ class AnchorLivingView: UIView {
             .receive(on: RunLoop.main)
             .sink { [weak self] isDismissed in
                 guard let self = self else { return }
+                isUserInteractionEnabled = false
+                coreView.isUserInteractionEnabled = false
                 routerManager.router(action: .dismiss())
                 if isDismissed {
                     makeToast(.roomDismissText)
                 } else {
                     makeToast(.kickedOutText)
                 }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
                     guard let self = self else { return }
+                    isUserInteractionEnabled = true
+                    coreView.isUserInteractionEnabled = true
                     routerManager.router(action: .exit)
                 }
             }.store(in: &cancellableSet)
@@ -245,7 +244,7 @@ class AnchorLivingView: UIView {
     }
     
     func initAudienceListView() {
-        audienceListView.initialize(liveInfo: manager.roomState.liveInfo)
+        audienceListView.initialize(liveId: manager.roomState.liveInfo.roomId)
     }
     
     func initLiveInfoView() {
@@ -295,7 +294,7 @@ extension AnchorLivingView {
         addSubview(floatView)
         addSubview(barrageSendView)
         addSubview(floatWindowButton)
-        addSubview(netWorkInfoButtom)
+        addSubview(netWorkInfoButton)
         addSubview(netWorkStatusToastView)
     }
     
@@ -363,7 +362,7 @@ extension AnchorLivingView {
             make.centerY.equalTo(bottomMenu)
         }
 
-        netWorkInfoButtom.snp.makeConstraints { make in
+        netWorkInfoButton.snp.makeConstraints { make in
             make.top.equalTo(floatWindowButton.snp.bottom).offset(10.scale375())
             make.height.equalTo(20.scale375())
             make.width.equalTo(74.scale375())
@@ -492,42 +491,42 @@ extension AnchorLivingView {
 }
 
 extension AnchorLivingView: BarrageStreamViewDelegate {
-    func barrageDisplayView(_ barrageDisplayView: BarrageStreamView, createCustomCell barrage: TUIBarrage) -> UIView? {
-        guard let type = barrage.extInfo["TYPE"], type.value as? String == "GIFTMESSAGE" else {
-            return nil
-        }
+    func barrageDisplayView(_ barrageDisplayView: BarrageStreamView, createCustomCell barrage: Barrage) -> UIView? {
+        guard let extensionInfo = barrage.extensionInfo,
+              let typeValue = extensionInfo["TYPE"],
+                  typeValue == "GIFTMESSAGE" else {
+                return nil
+            }
         return GiftBarrageCell(barrage: barrage)
     }
 
-    func onBarrageClicked(user: TUIUserInfo) {
+    func onBarrageClicked(user: LiveUserInfo) {
         if user.userId == manager.coreUserState.selfInfo.userId { return }
-        routerManager.router(action: .present(.userManagement(user, type: .messageAndKickOut)))
+        routerManager.router(action: .present(.userManagement(TUIUserInfo(from: user), type: .messageAndKickOut)))
     }
 }
 
 extension AnchorLivingView: GiftPlayViewDelegate {
-    func giftPlayView(_ giftPlayView: GiftPlayView, onReceiveGift gift: TUIGiftInfo, giftCount: Int, sender: TUIUserInfo) {
-        let barrage = TUIBarrage()
-        barrage.content = "gift"
-        barrage.user.userId = sender.userId
-        barrage.user.userName = sender.userName
-        barrage.user.avatarUrl = sender.avatarUrl
-        barrage.user.level = "0"
-        barrage.extInfo["TYPE"] = AnyCodable("GIFTMESSAGE")
-        barrage.extInfo["gift_name"] = AnyCodable(gift.name)
-        barrage.extInfo["gift_count"] = AnyCodable(giftCount)
-        barrage.extInfo["gift_icon_url"] = AnyCodable(gift.iconUrl)
-        
+    func giftPlayView(_ giftPlayView: GiftPlayView, onReceiveGift gift: Gift, giftCount: Int, sender: LiveUserInfo) {
         let receiver = manager.coreRoomState.ownerInfo
         if receiver.userId == TUILogin.getUserID() {
             receiver.userName = .meText
         }
-        barrage.extInfo["gift_receiver_username"] = AnyCodable(receiver.userName)
-        barrageDisplayView.insertBarrages([barrage])
+        var barrage = Barrage()
+        barrage.textContent = "gift"
+        barrage.sender = sender
+        barrage.extensionInfo = [
+            "TYPE": "GIFTMESSAGE",
+            "gift_name": gift.name,
+            "gift_count": "\(giftCount)",
+            "gift_icon_url": gift.iconURL,
+            "gift_receiver_username": receiver.userName
+        ]
+        barrageStore.appendLocalTip(message: barrage)
     }
     
-    func giftPlayView(_ giftPlayView: GiftPlayView, onPlayGiftAnimation gift: TUIGiftInfo) {
-        guard let url = URL(string: gift.resourceUrl) else { return }
+    func giftPlayView(_ giftPlayView: GiftPlayView, onPlayGiftAnimation gift: Gift) {
+        guard let url = URL(string: gift.resourceURL) else { return }
         giftCacheService.request(withURL: url) { error, fileUrl in
             if error == 0 {
                 DispatchQueue.main.async {
@@ -535,6 +534,12 @@ extension AnchorLivingView: GiftPlayViewDelegate {
                 }
             }
         }
+    }
+}
+
+extension AnchorLivingView {
+    var barrageStore: BarrageStore {
+        return BarrageStore.create(liveId: roomId)
     }
 }
 

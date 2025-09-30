@@ -11,7 +11,8 @@ import SnapKit
 import TUICore
 import RTCCommon
 import RTCRoomEngine
-import LiveStreamCore
+import AtomicXCore
+import AtomicX
 
 protocol VoiceRoomRootViewDelegate: AnyObject {
     func rootView(_ view: VoiceRoomRootView, showEndView endInfo: [String:Any], isAnchor: Bool)
@@ -25,28 +26,45 @@ class VoiceRoomRootView: RTCBaseView {
     private let routerManager: VRRouterManager
     private let kTimeoutValue: TimeInterval = 60
     private let isOwner: Bool
-    private let giftCacheService = TUIGiftStore.shared.giftCacheService
+    private let giftCacheService = GiftManager.shared.giftCacheService
     private var cancellableSet = Set<AnyCancellable>()
     private var isExited: Bool = false
+    private let defaultTemplateId: UInt = 70
     
     private let backgroundImageView: UIImageView = {
         let backgroundImageView = UIImageView(frame: .zero)
         backgroundImageView.contentMode = .scaleAspectFill
         return backgroundImageView
     }()
-    
+
+    private lazy var karaokeManager: KaraokeManager = {
+        let manager = KaraokeManager(roomId: self.manager.roomState.roomId)
+        return manager
+    }()
+
+    private var ktvView: KtvView?
+
     private let backgroundGradientView: UIView = {
         var view = UIView()
         return view
     }()
-    
+
     private lazy var topView: VRTopView = {
         let view = VRTopView(manager: manager, routerManager: routerManager)
         return view
     }()
     
-    private lazy var bottomMenu = VRBottomMenuView(manager: manager, routerManager: routerManager, coreView: seatGridView, isOwner: isOwner)
-    
+    private lazy var bottomMenu : VRBottomMenuView = {
+        let view = VRBottomMenuView(manager: manager, routerManager: routerManager, coreView: seatGridView, isOwner: isOwner)
+        view.songListButtonAction = { [weak self] in
+            guard let self = self , let vc = WindowUtils.getCurrentWindowViewController() else { return }
+            let isKTV = manager.roomState.layoutType == .KTVRoom
+            let songListView = SongListViewController(karaokeManager: self.karaokeManager,isOwner: isOwner,isKTV: isKTV)
+            vc.present(songListView, animated: true)
+        }
+        return view
+    }()
+
     private let muteMicrophoneButton: UIButton = {
         let button = UIButton(frame: .zero)
         button.setImage(internalImage("live_open_mic_icon"), for: .normal)
@@ -67,7 +85,7 @@ class VoiceRoomRootView: RTCBaseView {
     }()
     
     private lazy var barrageDisplayView: BarrageStreamView = {
-        let view = BarrageStreamView(roomId: manager.roomState.roomId)
+        let view = BarrageStreamView(liveId: manager.roomState.roomId)
         view.delegate = self
         return view
     }()
@@ -99,12 +117,11 @@ class VoiceRoomRootView: RTCBaseView {
     
     deinit {
         seatGridView.removeObserver(observer: self)
+        TUICore.notifyEvent(TUICore_PrivacyService_ROOM_STATE_EVENT_CHANGED,
+                            subKey: TUICore_PrivacyService_ROOM_STATE_EVENT_SUB_KEY_END,
+                            object: nil,
+                            param: nil)
         print("deinit \(type(of: self))")
-    }
-    
-    override func draw(_ rect: CGRect) {
-        super.draw(rect)
-        backgroundGradientView.gradient(colors: [.g1, .g1.withAlphaComponent(0.5), .g1,], isVertical: true)
     }
     
     override func constructViewHierarchy() {
@@ -130,12 +147,13 @@ class VoiceRoomRootView: RTCBaseView {
             make.left.right.equalToSuperview()
             make.top.equalToSuperview().offset(54.scale375Height())
         }
+
         seatGridView.snp.makeConstraints { make in
             make.top.equalTo(topView.snp.bottom).offset(40.scale375())
-            make.height.equalTo(230)
-            make.left.equalToSuperview()
-            make.right.equalToSuperview()
+            make.height.equalTo(230.scale375())
+            make.left.right.equalToSuperview()
         }
+
         bottomMenu.snp.makeConstraints { make in
             make.bottom.equalToSuperview().offset(-34.scale375Height())
             make.trailing.equalToSuperview()
@@ -169,6 +187,7 @@ class VoiceRoomRootView: RTCBaseView {
         subscribeRoomState()
         subscribeUserState()
         muteMicrophoneButton.addTarget(self, action: #selector(muteMicrophoneButtonClick(sender:)), for: .touchUpInside)
+        manager.refreshSelfInfo()
     }
 }
 
@@ -223,6 +242,7 @@ extension VoiceRoomRootView {
         liveInfo.maxSeatCount = manager.roomParams.maxSeatCount
         liveInfo.isSeatEnabled = true
         liveInfo.keepOwnerOnSeat = true
+        liveInfo.seatLayoutTemplateId = defaultTemplateId
 
         seatGridView.startVoiceRoom(liveInfo: liveInfo) { [weak self] liveInfo in
             guard let self = self else { return }
@@ -253,21 +273,87 @@ extension VoiceRoomRootView {
     }
     
     func didEnterRoom() {
-        subscribeMicrophoneState()
-        TUICore.notifyEvent(TUICore_PrivacyService_ROOM_STATE_EVENT_CHANGED,
-                            subKey: TUICore_PrivacyService_ROOM_STATE_EVENT_SUB_KEY_START,
-                            object: nil,
-                            param: nil)
+        if isOwner {
+            TUICore.notifyEvent(TUICore_PrivacyService_ROOM_STATE_EVENT_CHANGED,
+                                subKey: TUICore_PrivacyService_ROOM_STATE_EVENT_SUB_KEY_START,
+                                object: nil,
+                                param: nil)
+        }
         initComponentView()
+        karaokeManager.synchronizeMetadata(isOwner: isOwner)
+        handleRoomLayoutType()
     }
-    
+
+    func handleRoomLayoutType() {
+        manager.onSetHasKTVAbility(hasKTVAbility: true)
+        func setupKTVView(isOwner: Bool, isKTV: Bool) {
+            ktvView = KtvView(
+                karaokeManager: karaokeManager,
+                isOwner: isOwner,
+                isKTV: isKTV
+            )
+
+            guard let ktvView = ktvView else { return }
+            addSubview(ktvView)
+
+            if isKTV {
+                seatGridView.snp.remakeConstraints { make in
+                    make.top.equalTo(ktvView.snp.bottom).offset(20.scale375())
+                    make.height.equalTo(230.scale375())
+                    make.left.right.equalToSuperview()
+                }
+
+                ktvView.snp.remakeConstraints { make in
+                    make.top.equalTo(topView.snp.bottom).offset(20.scale375())
+                    make.height.equalTo(168.scale375())
+                    make.left.equalToSuperview().offset(16.scale375())
+                    make.right.equalToSuperview().offset(-16.scale375())
+                }
+            } else {
+                seatGridView.snp.remakeConstraints { make in
+                    make.top.equalTo(topView.snp.bottom).offset(40.scale375())
+                    make.height.equalTo(230.scale375())
+                    make.left.right.equalToSuperview()
+                }
+
+                ktvView.snp.remakeConstraints { make in
+                    make.top.equalTo(seatGridView.snp.bottom).offset(20.scale375())
+                    make.trailing.equalToSuperview().inset(20.scale375())
+                    make.width.equalTo(160.scale375())
+                    make.height.equalTo(137.scale375())
+                }
+            }
+        }
+
+        if isOwner {
+            let isKTV = manager.roomState.layoutType == .KTVRoom
+            let layoutType = isKTV ? "KTVRoom" : "ChatRoom"
+            let metadata = ["LayoutType": layoutType]
+
+            TUIRoomEngine.sharedInstance().setRoomMetadataByAdmin(metadata, onSuccess: { [weak self] in
+                setupKTVView(isOwner: true, isKTV: isKTV)
+            }, onError: { error, message in
+            })
+        }
+        else {
+            TUIRoomEngine.sharedInstance().getRoomMetadata(["LayoutType"], onSuccess: { [weak self] response in
+                guard let layoutType = response["LayoutType"] else {
+                    return
+                }
+                setupKTVView(isOwner: false, isKTV: layoutType == "KTVRoom")
+            }, onError: { error, message in
+            })
+        }
+    }
+
+
     func onExit() {
         isExited = true
     }
     
     private func handleAbnormalExitedSence() {
         if isExited {
-            seatGridView.stopVoiceRoom {
+            seatGridView.stopVoiceRoom {_ in 
             } onError: { code, message in
             }
         }
@@ -300,9 +386,10 @@ extension VoiceRoomRootView {
     func stopVoiceRoom() {
         fetchRoomStatistics { [weak self] in
             guard let self = self else { return }
-            self.seatGridView.stopVoiceRoom { [weak self] in
+            self.seatGridView.stopVoiceRoom { [weak self] _ in
                 guard let self = self else { return }
                 manager.onStopVoiceRoom()
+                karaokeManager.exit()
                 showAnchorEndView()
             } onError: { [weak self] code, message in
                 guard let self = self else { return }
@@ -355,8 +442,8 @@ extension VoiceRoomRootView {
         if !isOwner {
             let info: [String: Any] = [
                 "roomId": manager.roomState.roomId,
-                "avatarUrl": manager.coreRoomState.ownerAvatar,
-                "userName": manager.coreUserState.selfInfo.userName
+                "avatarUrl": manager.coreLiveState.liveOwner.avatarURL,
+                "userName": manager.userState.selfInfo.userName
             ]
             delegate?.rootView(self, showEndView: info, isAnchor: false)
         }
@@ -391,7 +478,8 @@ extension VoiceRoomRootView {
     }
     
     private func subscribeRoomOwnerState() {
-        manager.subscribeCoreState(StateSelector(keyPath: \SGRoomState.ownerId))
+        manager.subscribeCoreState(StatePublisherSelector(keyPath: \LiveListState.currentLive.liveOwner.userId))
+            .compactMap { $0 }
             .receive(on: RunLoop.main)
             .sink { [weak self] ownerId in
                 guard let self = self else { return }
@@ -405,14 +493,19 @@ extension VoiceRoomRootView {
 
 extension VoiceRoomRootView {
     private func subscribeUserIsOnSeatState() {
-        let selfInfoPublisher = manager.subscribeCoreState(StateSelector(keyPath: \SGUserState.selfInfo))
-        let seatListPublisher = manager.subscribeCoreState(StateSelector(keyPath: \SGSeatState.seatList))
+        let selfInfoPublisher = manager.subscribeState(StateSelector(keyPath: \VRUserState.selfInfo))
+        let seatListPublisher = manager.subscribeCoreState(StatePublisherSelector(keyPath: \LiveSeatState.seatList))
         seatListPublisher
             .combineLatest(selfInfoPublisher)
             .receive(on: RunLoop.main)
             .sink { [weak self] seatList, selfInfo in
                 guard let self = self else { return }
-                muteMicrophoneButton.isHidden = !(seatList.contains { $0.userId == selfInfo.userId })
+                guard let seatInfo = seatList.first(where: { $0.userInfo.userId == selfInfo.userId }) else {
+                    muteMicrophoneButton.isHidden = true
+                    return
+                }
+                muteMicrophoneButton.isHidden = false
+                muteMicrophoneButton.isSelected = seatInfo.userInfo.microphoneStatus == .off
             }
             .store(in: &cancellableSet)
     }
@@ -432,20 +525,6 @@ extension VoiceRoomRootView {
                 default: break
                 }
             }.store(in: &cancellableSet)
-    }
-}
-
-// MARK: - SubscribeViewState
-
-extension VoiceRoomRootView {
-    private func subscribeMicrophoneState() {
-        manager.subscribeCoreState(StateSelector(keyPath: \SGMediaState.isMicrophoneMuted))
-            .receive(on: RunLoop.main)
-            .sink(receiveValue: { [weak self] microphoneMuted in
-                guard let self = self else { return }
-                self.muteMicrophoneButton.isSelected = microphoneMuted
-            })
-            .store(in: &cancellableSet)
     }
 }
 
@@ -480,8 +559,8 @@ extension VoiceRoomRootView: VRTopViewDelegate {
     }
     
     private func audienceLeaveButtonClick() {
-        let selfUserId = manager.coreUserState.selfInfo.userId
-        if !manager.coreSeatState.seatList.contains(where: { $0.userId == selfUserId }) {
+        let selfUserId = manager.userState.selfInfo.userId
+        if !manager.coreSeatState.seatList.contains(where: { $0.userInfo.userId == selfUserId }) {
             leaveRoom()
             routerManager.router(action: .exit)
             return
@@ -530,11 +609,33 @@ extension VoiceRoomRootView: VRTopViewDelegate {
     }
 }
 
+extension VoiceRoomRootView {
+    var deviceStore: DeviceStore {
+        return DeviceStore.shared
+    }
+    
+    var liveListStore: LiveListStore {
+        return LiveListStore.shared
+    }
+    
+    var coGuestStore: CoGuestStore {
+        return CoGuestStore.create(liveId: manager.roomState.roomId)
+    }
+    
+    var seatStore: LiveSeatStore {
+        return LiveSeatStore.create(liveId: manager.roomState.roomId)
+    }
+    
+    var barrageStore: BarrageStore {
+        return BarrageStore.create(liveId: manager.roomState.roomId)
+    }
+}
+
 // MARK: - SeatGridViewObserver
 extension VoiceRoomRootView: SeatGridViewObserver {
     func onKickedOutOfRoom(roomId: String, reason: TUIKickedOutOfRoomReason, message: String) {
         guard reason != .byLoggedOnOtherDevice else { return }
-        let isOwner = manager.coreUserState.selfInfo.userId == manager.coreRoomState.ownerId
+        let isOwner = manager.userState.selfInfo.userId == manager.coreLiveState.liveOwner.userId
         isOwner ? routeToAnchorView() : routeToAudienceView()
         manager.onError(.kickedOutText)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
@@ -547,20 +648,23 @@ extension VoiceRoomRootView: SeatGridViewObserver {
         manager.onError(.onKickedOutOfSeatText)
     }
     
-    func onUserAudioStateChanged(userInfo: TUIUserInfo, hasAudio: Bool, reason: TUIChangeReason) {
-        
-    }
-    
     func onRoomDismissed(roomId: String) {
-        routeToAudienceView()
-        showAudienceEndView()
+        if isOwner {
+            routeToAnchorView()
+            showAnchorEndView()
+        } else {
+            routeToAudienceView()
+            showAudienceEndView()
+        }
     }
     
     func onSeatRequestReceived(type: SGRequestType, userInfo: TUIUserInfo) {
         if type == .inviteToTakeSeat {
+            let liveOwner = liveListStore.state.value.currentLive.liveOwner
             guard !userInfo.userId.isEmpty else { return }
-            let alertInfo = VRAlertInfo(description: String.localizedReplace(.inviteLinkText, replace: "\(userInfo.userName)"),
-                                        imagePath: userInfo.avatarUrl,
+            guard !liveOwner.userId.isEmpty else { return }
+            let alertInfo = VRAlertInfo(description: String.localizedReplace(.inviteLinkText, replace: "\(liveOwner.userName)"),
+                                        imagePath: liveOwner.avatarURL,
                                         cancelButtonInfo: (String.rejectText, .g3),
                                         defaultButtonInfo: (String.agreeText, .b1)) { [weak self] _ in
                 guard let self = self else { return }
@@ -646,7 +750,7 @@ extension VoiceRoomRootView {
             return menus
         }
         
-        let isSelf = seat.userId == manager.coreUserState.selfInfo.userId
+        let isSelf = seat.userId == manager.userState.selfInfo.userId
         if !isSelf {
             routerManager.router(action: .present(.userControl(seatGridView, seat)))
         }
@@ -655,7 +759,7 @@ extension VoiceRoomRootView {
     
     private func generateNormalUserOperateSeatMenuData(seat: TUISeatInfo) -> [ActionItem] {
         var menus: [ActionItem] = []
-        let isOnSeat = manager.coreSeatState.seatList.contains { $0.userId == manager.coreUserState.selfInfo.userId}
+        let isOnSeat = manager.coreSeatState.seatList.contains { $0.userInfo.userId == manager.userState.selfInfo.userId}
         if (seat.userId ?? "").isEmpty && !seat.isLocked {
             let takeSeatItem = ActionItem(title: .takeSeat, designConfig: designConfig())
             takeSeatItem.actionClosure = { [weak self] _ in
@@ -671,7 +775,7 @@ extension VoiceRoomRootView {
             return menus
         }
         
-        if !(seat.userId ?? "").isEmpty && seat.userId != manager.coreUserState.selfInfo.userId {
+        if !(seat.userId ?? "").isEmpty && seat.userId != manager.userState.selfInfo.userId {
             routerManager.router(action: .present(.userControl(seatGridView, seat)))
         }
         return menus
@@ -689,9 +793,8 @@ extension VoiceRoomRootView {
         lockSeat.lockAudio = seat.isAudioLocked
         lockSeat.lockVideo = seat.isVideoLocked
         lockSeat.lockSeat = !seat.isLocked
-        seatGridView.lockSeat(index: seat.index, lockMode: lockSeat) { [weak self] in
-            guard let self = self else { return }
-            makeToast(.operationSuccessful)
+        seatGridView.lockSeat(index: seat.index, lockMode: lockSeat) {
+  
         } onError: { [weak self] code, message in
             guard let self = self else { return }
             let error = InternalError(code: code, message: message)
@@ -740,45 +843,44 @@ extension VoiceRoomRootView {
 // MARK: - BarrageStreamViewDelegate
 
 extension VoiceRoomRootView: BarrageStreamViewDelegate {
-    func barrageDisplayView(_ barrageDisplayView: BarrageStreamView, createCustomCell barrage: TUIBarrage) -> UIView? {
-        guard let type = barrage.extInfo["TYPE"], type.value as? String == "GIFTMESSAGE" else {
+    func barrageDisplayView(_ barrageDisplayView: BarrageStreamView, createCustomCell barrage: Barrage) -> UIView? {
+        guard let type = barrage.extensionInfo?["TYPE"], type == "GIFTMESSAGE" else {
             return nil
         }
         return GiftBarrageCell(barrage: barrage)
     }
     
-    func onBarrageClicked(user: TUIUserInfo) {
+    func onBarrageClicked(user: LiveUserInfo) {
     }
 }
 
 // MARK: - GiftPlayViewDelegate
 
 extension VoiceRoomRootView: GiftPlayViewDelegate {
-    func giftPlayView(_ giftPlayView: GiftPlayView, onReceiveGift gift: TUIGiftInfo, giftCount: Int, sender: TUIUserInfo) {        
+    func giftPlayView(_ giftPlayView: GiftPlayView, onReceiveGift gift: Gift, giftCount: Int, sender: LiveUserInfo) {
         let receiver = TUIUserInfo()
-        receiver.userId = manager.coreRoomState.ownerId
-        receiver.userName = manager.coreRoomState.ownerName
-        receiver.avatarUrl = manager.coreRoomState.ownerAvatar
-  
-        let barrage = TUIBarrage()
-        barrage.content = "gift"
-        barrage.user.userId = sender.userId
-        barrage.user.userName = sender.userName
-        barrage.user.avatarUrl = sender.avatarUrl
-        barrage.user.level = "0"
-        barrage.extInfo["TYPE"] = AnyCodable("GIFTMESSAGE")
-        barrage.extInfo["gift_name"] = AnyCodable(gift.name)
-        barrage.extInfo["gift_count"] = AnyCodable(giftCount)
-        barrage.extInfo["gift_icon_url"] = AnyCodable(gift.iconUrl)
+        receiver.userId = manager.coreLiveState.liveOwner.userId
+        receiver.userName = manager.coreLiveState.liveOwner.userName
+        receiver.avatarUrl = manager.coreLiveState.liveOwner.avatarURL
         if receiver.userId == TUILogin.getUserID() {
             receiver.userName = .meText
         }
-        barrage.extInfo["gift_receiver_username"] = AnyCodable(receiver.userName)
-        barrageDisplayView.insertBarrages([barrage])
+        
+        var barrage = Barrage()
+        barrage.textContent = "gift"
+        barrage.sender = sender
+        barrage.extensionInfo = [
+            "TYPE": "GIFTMESSAGE",
+            "gift_name": gift.name,
+            "gift_count": "\(giftCount)",
+            "gift_icon_url": gift.iconURL,
+            "gift_receiver_username": receiver.userName
+        ]
+        barrageStore.appendLocalTip(message: barrage)
     }
     
-    func giftPlayView(_ giftPlayView: GiftPlayView, onPlayGiftAnimation gift: TUIGiftInfo) {
-        guard let url = URL(string: gift.resourceUrl) else { return }
+    func giftPlayView(_ giftPlayView: GiftPlayView, onPlayGiftAnimation gift: Gift) {
+        guard let url = URL(string: gift.resourceURL) else { return }
         giftCacheService.request(withURL: url) { error, fileUrl in
             if error == 0 {
                 DispatchQueue.main.async {

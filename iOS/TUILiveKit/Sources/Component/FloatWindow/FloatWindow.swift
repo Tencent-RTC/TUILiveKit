@@ -7,7 +7,7 @@
 import SnapKit
 import Foundation
 import TUICore
-import LiveStreamCore
+import AtomicXCore
 import Combine
 import RTCRoomEngine
 

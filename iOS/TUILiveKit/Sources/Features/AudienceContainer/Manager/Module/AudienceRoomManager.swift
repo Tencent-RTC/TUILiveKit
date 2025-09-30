@@ -50,6 +50,7 @@ extension AudienceRoomManager {
     func onAudienceSliderCellInit(liveInfo: LiveInfo) {
         update { state in
             state.coverURL = liveInfo.coverUrl
+            state.backgroundUrl = liveInfo.backgroundUrl.isEmpty ? liveInfo.coverUrl : liveInfo.backgroundUrl
             state.roomId = liveInfo.roomId
             state.roomName = liveInfo.name
         }
@@ -132,6 +133,8 @@ extension AudienceRoomManager {
         update { state in
             state.roomId = liveInfo.roomId
             state.createTime = liveInfo.createTime
+            state.coverURL = liveInfo.coverUrl
+            state.backgroundUrl = liveInfo.backgroundUrl.isEmpty ? liveInfo.coverUrl : liveInfo.backgroundUrl
             state.roomName = liveInfo.name
             state.liveInfo = liveInfo
         }

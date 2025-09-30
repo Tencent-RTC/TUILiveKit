@@ -56,4 +56,8 @@ extension AudienceRoomEngineObserver: TUIRoomObserver {
     func onSeatListChanged(seatList: [TUISeatInfo], seated seatedList: [TUISeatInfo], left leftList: [TUISeatInfo]) {
         context?.coGuestManager.onSeatListChanged(seatList: seatList, seated: seatedList, left: leftList)
     }
+    
+    func onUserVideoSizeChanged(roomId: String, userId: String, streamType: TUIVideoStreamType, width: Int32, height: Int32) {
+        context?.mediaManager.onUserVideoSizeChanged(roomId: roomId, userId: userId, streamType: streamType, width: width, height: height)
+    }
 }

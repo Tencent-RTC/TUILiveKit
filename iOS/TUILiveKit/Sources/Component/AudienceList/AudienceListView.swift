@@ -5,17 +5,17 @@
 //  Created by WesleyLei on 2023/10/20.
 //
 
-import Foundation
-import RTCCommon
-import RTCRoomEngine
+import AtomicXCore
 import Combine
+import Foundation
 import Kingfisher
+import RTCCommon
 import SnapKit
 
 class UserInfoCell: UICollectionViewCell {
-    var userInfo: TUIUserInfo? {
+    var userInfo: LiveUserInfo? {
         didSet {
-            if let url = URL(string: userInfo?.avatarUrl ?? "") {
+            if let url = URL(string: userInfo?.avatarURL ?? "") {
                 avatarImageView.kf.setImage(with: url, placeholder: avatarPlaceholderImage)
             } else {
                 avatarImageView.image = avatarPlaceholderImage
@@ -48,22 +48,29 @@ class UserInfoCell: UICollectionViewCell {
 }
 
 public class AudienceListView: RTCBaseView {
-    public var onUserManageButtonClicked: ((TUIUserInfo) -> Void)?
+    public var onUserManageButtonClicked: ((LiveUserInfo) -> Void)?
+
     private let cellId = "TUIVideoSeatCell_Normal"
-    
+
     // Set this value to change max display count
     private let displayAvatarCount = 2
-    
+    private let kMaxShowUserCount = 100
+
     // MARK: - private property.
-    private let service: AudienceListService = AudienceListService()
-    private var state: AudienceListState {
-        service.state
+
+    private var liveId: String = ""
+    private var store: LiveAudienceStore {
+        LiveAudienceStore.create(liveId: liveId)
     }
-    private lazy var observer: AudienceListObserver = AudienceListObserver(state: state, service: service)
-    private var listUser: [TUIUserInfo] = []
+
+    private var liveListStore: LiveListStore {
+        LiveListStore.shared
+    }
+
+    private var listUser: [LiveUserInfo] = []
     private var cancellableSet: Set<AnyCancellable> = []
     private weak var popupViewController: UIViewController?
-    
+
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -82,14 +89,14 @@ public class AudienceListView: RTCBaseView {
         collectionView.register(UserInfoCell.self, forCellWithReuseIdentifier: cellId)
         return collectionView
     }()
-    
+
     private lazy var numberBackgroundView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.g1.withAlphaComponent(0.4)
         view.layer.cornerRadius = 12.scale375()
         return view
     }()
-    
+
     private let numberLabel: UILabel = {
         let label = UILabel()
         label.textColor = .g7
@@ -98,19 +105,43 @@ public class AudienceListView: RTCBaseView {
         return label
     }()
 
-    public func initialize(liveInfo: TUILiveInfo) {
-        TUIRoomEngine.sharedInstance().addObserver(observer)
-        service.initLiveInfo(liveInfo: liveInfo)
+    public func initialize(liveId: String) {
+        self.liveId = liveId
+        store.fetchAudienceList(completion: nil)
+        store.state.subscribe(StatePublisherSelector(keyPath: \LiveAudienceState.audienceList))
+            .combineLatest(store.state.subscribe(StatePublisherSelector(keyPath: \LiveAudienceState.audienceCount)))
+            .receive(on: RunLoop.main)
+            .sink { [weak self] list, audienceCount in
+                guard let self = self else { return }
+                let currentLive = liveListStore.state.value.currentLive
+                guard !currentLive.isEmpty else { return }
+                let audienceList = list.filter { $0.userId != currentLive.liveOwner.userId }
+                self.listUser = audienceList
+                self.collectionView.reloadData()
+
+                let count = audienceCount > kMaxShowUserCount ? Int(audienceCount) : audienceList.count
+                self.updateUserCount(count: count)
+            }
+            .store(in: &cancellableSet)
+
+        liveListStore.state.subscribe(StatePublisherSelector(keyPath: \LiveListState.currentLive))
+            .removeDuplicates()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] currentLive in
+                guard let self = self, currentLive.isEmpty else { return }
+                popupViewController?.dismiss(animated: true)
+                popupViewController = nil
+            }.store(in: &cancellableSet)
     }
-    
-    public override func constructViewHierarchy() {
+
+    override public func constructViewHierarchy() {
         backgroundColor = .clear
         addSubview(collectionView)
         addSubview(numberBackgroundView)
         numberBackgroundView.addSubview(numberLabel)
     }
-    
-    public override func activateConstraints() {
+
+    override public func activateConstraints() {
         collectionView.snp.makeConstraints { make in
             make.leading.top.bottom.equalToSuperview()
             make.height.equalTo(24.scale375())
@@ -122,15 +153,13 @@ public class AudienceListView: RTCBaseView {
             make.width.greaterThanOrEqualTo(24.scale375())
             make.trailing.equalToSuperview()
         }
-        let numberMaxWidth = getMaxWidthFromLabel(numberLabel, maxText: "999999")
-        let numberMinWidth = getMaxWidthFromLabel(numberLabel, maxText: "0")
+        numberLabel.sizeToFit()
         numberLabel.snp.makeConstraints { make in
-            make.centerY.centerX.height.equalToSuperview()
-            make.width.lessThanOrEqualTo(numberMaxWidth)
-            make.width.greaterThanOrEqualTo(numberMinWidth)
+            make.leading.trailing.equalToSuperview().inset(4.scale375())
+            make.centerY.height.equalToSuperview()
         }
     }
-    
+
     private func getMaxWidthFromLabel(_ label: UILabel, maxText: String) -> CGFloat {
         let tmpLabel = UILabel(frame: .zero)
         tmpLabel.numberOfLines = 1
@@ -139,42 +168,17 @@ public class AudienceListView: RTCBaseView {
         tmpLabel.sizeToFit()
         return tmpLabel.frame.size.width
     }
-    
-    public override func setupViewStyle() {
+
+    override public func setupViewStyle() {
         backgroundColor = .clear
     }
-    
-    public override func bindInteraction() {
-        state.$audienceList
-            .combineLatest(state.$audienceCount)
-            .receive(on: RunLoop.main)
-            .sink { [weak self] audienceList, audienceCount in
-                guard let self = self else { return }
-                self.listUser = audienceList
-                self.collectionView.reloadData()
-                
-                let count = audienceCount > kMaxShowUserCount ? audienceCount : audienceList.count
-                self.updateUserCount(count: count)
-            }
-            .store(in: &cancellableSet)
-        
-        state.roomDismissedSubject
-            .receive(on: RunLoop.main)
-            .sink { [weak self] dismissedRoomId in
-                guard let self = self, dismissedRoomId == state.roomId else { return }
-                popupViewController?.dismiss(animated: true)
-                popupViewController = nil
-            }.store(in: &cancellableSet)
-        
+
+    override public func bindInteraction() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(containerTapAction))
         addGestureRecognizer(tap)
         isUserInteractionEnabled = true
     }
-    
-    deinit {
-        TUIRoomEngine.sharedInstance().removeObserver(observer)
-    }
-    
+
     private func updateUserCount(count: Int) {
         numberLabel.text = "\(count)"
         numberLabel.sizeToFit()
@@ -190,6 +194,7 @@ public class AudienceListView: RTCBaseView {
 }
 
 // MARK: - UICollectionViewDataSource
+
 extension AudienceListView: UICollectionViewDataSource {
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -213,9 +218,9 @@ extension AudienceListView: UICollectionViewDataSource {
 extension AudienceListView {
     @objc func containerTapAction() {
         if !WindowUtils.isPortrait { return }
-        service.getUserList()
+        store.fetchAudienceList(completion: nil)
         if let vc = WindowUtils.getCurrentWindowViewController() {
-            let audienceListPanel = AudienceListPanelView(state: state)
+            let audienceListPanel = AudienceListPanelView(liveId: liveId)
             audienceListPanel.onUserManageButtonClicked = onUserManageButtonClicked
             popupViewController = vc
             let menuContainerView = MenuContainerView(contentView: audienceListPanel)

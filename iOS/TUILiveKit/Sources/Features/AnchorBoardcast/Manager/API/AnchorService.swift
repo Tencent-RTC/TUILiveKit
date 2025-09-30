@@ -18,14 +18,12 @@ class AnchorService {
     let liveListManager: TUILiveListManager?
     let liveGiftManager: TUILiveGiftManager?
     let trtcCloud: TRTCCloud
-    let beautyService: BeautyService
     
     init() {
         self.roomEngine = TUIRoomEngine.sharedInstance()
         self.liveListManager = roomEngine.getExtension(extensionType: .liveListManager) as? TUILiveListManager
         self.liveGiftManager = roomEngine.getExtension(extensionType: .liveGiftManager) as? TUILiveGiftManager
         self.trtcCloud = roomEngine.getTRTCCloud()
-        self.beautyService = BeautyService(roomEngine: roomEngine)
     }
     
     func addEngineObserver(_ engineObserver: TUIRoomObserver) {

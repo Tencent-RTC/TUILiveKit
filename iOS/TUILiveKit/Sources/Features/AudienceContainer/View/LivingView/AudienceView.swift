@@ -9,7 +9,7 @@ import Foundation
 import RTCCommon
 import Combine
 import TUICore
-import LiveStreamCore
+import AtomicXCore
 import RTCRoomEngine
 
 public protocol RotateScreenDelegate: AnyObject {
@@ -87,6 +87,7 @@ class AudienceView: RTCBaseView {
         self.routerManager = routerManager
         self.videoView = coreView
         super.init(frame: .zero)
+        videoView.setLiveId(roomId)
         self.videoView.videoViewDelegate = self
         self.videoView.registerConnectionObserver(observer: liveStreamObserver)
         self.videoView.registerBattleObserver(observer: battleObserver)
@@ -218,7 +219,7 @@ extension AudienceView {
             }
             .store(in: &cancellableSet)
         
-        manager.subscribeState(StateSelector(keyPath: \AudienceRoomState.coverURL))
+        manager.subscribeState(StateSelector(keyPath: \AudienceRoomState.backgroundUrl))
             .receive(on: RunLoop.main)
             .removeDuplicates()
             .sink { [weak self] url in
@@ -267,8 +268,10 @@ extension AudienceView {
         
     private func onKickedByAdmin() {
         manager.toastSubject.send(.kickedOutText)
+        isUserInteractionEnabled = false
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
             guard let self = self else { return }
+            isUserInteractionEnabled = true
             routerManager.router(action: .exit)
         }
     }
@@ -317,6 +320,10 @@ extension AudienceView {
         } onError: { _, _ in
         }
         routerManager.router(action: .exit)
+        TUICore.notifyEvent(TUICore_PrivacyService_ROOM_STATE_EVENT_CHANGED,
+                            subKey: TUICore_PrivacyService_ROOM_STATE_EVENT_SUB_KEY_END,
+                            object: nil,
+                            param: nil)
     }
 }
 
@@ -461,7 +468,7 @@ extension AudienceView: VideoViewDelegate {
         return AudienceBattleInfoView(manager: manager, routerManager: routerManager, isOwner: true, coreView: videoView)
     }
     
-    func updateBattleContainerView(battleContainerView: UIView, userInfos: [LiveStreamCore.BattleUserViewModel]) {
+    func updateBattleContainerView(battleContainerView: UIView, userInfos: [AtomicXCore.BattleUserViewModel]) {
         if let battleInfoView = battleContainerView as? AudienceBattleInfoView {
             battleInfoView.updateView(userInfos: userInfos)
         }

@@ -17,6 +17,7 @@ struct AudienceRoomState {
     var liveStatus: LiveStatus = .none
     var liveExtraInfo: LiveExtraInfo = LiveExtraInfo()
     var roomVideoStreamIsLandscape: Bool = false
+    var backgroundUrl: String = ""
     
     struct LiveExtraInfo: Codable {
         var liveMode: LiveStreamPrivacyStatus = .public

@@ -9,7 +9,7 @@ import UIKit
 import Combine
 import RTCCommon
 import RTCRoomEngine
-import LiveStreamCore
+import AtomicXCore
 
 public enum AudienceBattleResultType {
     case draw
@@ -19,7 +19,7 @@ public enum AudienceBattleResultType {
 
 class AudienceBattleInfoView: RTCBaseView {
     private lazy var battleIdPublisher = manager.subscribeState(StateSelector(keyPath: \AudienceBattleState.battleId))
-    private lazy var connectedUsersPublisher = manager.subscribeCoreViewState(StateSelector(keyPath: \CoHostState.connectedUserList))
+    private lazy var connectedUsersPublisher = manager.subscribeCoreViewState(StatePublisherSelector(keyPath: \CoHostState.connectedUserList))
     private lazy var battleUsersPublisher = manager.subscribeState(StateSelector(keyPath: \AudienceBattleState.battleUsers))
     private lazy var isBattleRunningPublisher = manager.subscribeState(StateSelector(keyPath: \AudienceBattleState.isBattleRunning))
     private lazy var durationCountDownPublisher = manager.subscribeState(StateSelector(keyPath: \AudienceBattleState.durationCountDown))
@@ -139,7 +139,7 @@ class AudienceBattleInfoView: RTCBaseView {
         }
     }
 
-    func updateView(userInfos: [LiveStreamCore.BattleUserViewModel]) {
+    func updateView(userInfos: [AtomicXCore.BattleUserViewModel]) {
         userInfos.forEach { battleUserViewModel in
             for (index, battleUser) in manager.battleManager.state.battleUsers.enumerated() {
                 if battleUser.userId == battleUserViewModel.battleUser.userId {

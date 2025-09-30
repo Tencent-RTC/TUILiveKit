@@ -9,7 +9,7 @@ import TUICore
 import UIKit
 import RTCCommon
 import Combine
-import LiveStreamCore
+import AtomicXCore
 import RTCRoomEngine
 
 class AudienceLivingView: RTCBaseView {
@@ -25,8 +25,8 @@ class AudienceLivingView: RTCBaseView {
         )
     )
     private var cancellableSet = Set<AnyCancellable>()
-    private let giftCacheService = TUIGiftStore.shared.giftCacheService
-    private lazy var ownerInfoPublisher  = manager.subscribeCoreViewState(StateSelector(keyPath: \RoomState.ownerInfo))
+    private let giftCacheService = GiftManager.shared.giftCacheService
+    private lazy var ownerInfoPublisher  = manager.subscribeCoreViewState(StatePublisherSelector(keyPath: \RoomState.ownerInfo))
     private let liveInfoView: LiveInfoView = {
         let view = LiveInfoView(enableFollow: VideoLiveKit.createInstance().enableFollow)
         view.mm_h = 40.scale375()
@@ -91,7 +91,7 @@ class AudienceLivingView: RTCBaseView {
     private lazy var barrageDisplayView: BarrageStreamView = {
         let roomId = manager.roomState.roomId
         let ownerId = manager.coreRoomState.ownerInfo.userId
-        let view = BarrageStreamView(roomId: roomId)
+        let view = BarrageStreamView(liveId: roomId)
         view.delegate = self
         return view
     }()
@@ -102,8 +102,8 @@ class AudienceLivingView: RTCBaseView {
         return view
     }()
     
-    private lazy var netWorkInfoButtom: NetworkInfoButton = {
-        let button = NetworkInfoButton(manager: netWorkInfoManager)
+    private lazy var netWorkInfoButton: NetworkInfoButton = {
+        let button = NetworkInfoButton(liveId: manager.roomState.roomId, manager: netWorkInfoManager)
         button.onNetWorkInfoButtonClicked = { [weak self] in
             guard let self = self else { return }
             if !WindowUtils.isPortrait { return }
@@ -124,6 +124,8 @@ class AudienceLivingView: RTCBaseView {
         return view
     }()
 
+    private var playbackQuality: TUIVideoQuality? = nil
+    
     init(manager: AudienceManager, routerManager: AudienceRouterManager, coreView: LiveCoreView) {
         self.manager = manager
         self.routerManager = routerManager
@@ -148,7 +150,7 @@ class AudienceLivingView: RTCBaseView {
         addSubview(bottomMenu)
         addSubview(floatView)
         addSubview(barrageSendView)
-        addSubview(netWorkInfoButtom)
+        addSubview(netWorkInfoButton)
         addSubview(netWorkStatusToastView)
         addSubview(rotateScreenButton)
     }
@@ -226,7 +228,7 @@ class AudienceLivingView: RTCBaseView {
                 make.trailing.equalToSuperview().offset(-8.scale375())
             }
 
-            netWorkInfoButtom.snp.remakeConstraints { make in
+            netWorkInfoButton.snp.remakeConstraints { make in
                 make.top.equalTo(floatWindowButton.snp.bottom).offset(10.scale375())
                 make.height.equalTo(20.scale375())
                 make.width.equalTo(74.scale375())
@@ -307,7 +309,7 @@ class AudienceLivingView: RTCBaseView {
                 make.trailing.equalToSuperview().offset(-8.scale375())
             }
 
-            netWorkInfoButtom.snp.remakeConstraints { make in
+            netWorkInfoButton.snp.remakeConstraints { make in
                 make.top.equalTo(floatWindowButton.snp.bottom).offset(10.scale375())
                 make.height.equalTo(20.scale375())
                 make.width.equalTo(74.scale375())
@@ -327,6 +329,7 @@ class AudienceLivingView: RTCBaseView {
     override func bindInteraction() {
         subscribeOrientationChange()
         subscribeRoomState()
+        subscribeMediaState()
         subscribeSeatSubject()
         subscribeNetWorkInfoSubject()
         subscribeAudienceConfig()
@@ -338,7 +341,7 @@ class AudienceLivingView: RTCBaseView {
     }
     
     func initAudienceListView() {
-        audienceListView.initialize(liveInfo: manager.roomState.liveInfo)
+        audienceListView.initialize(liveId: manager.roomState.liveInfo.roomId)
     }
     
     func initLiveInfoView() {
@@ -379,6 +382,22 @@ extension AudienceLivingView {
             .store(in: &cancellableSet)
     }
     
+    private func subscribeMediaState() {
+        manager.subscribeState(StateSelector(keyPath: \AudienceMediaState.playbackQuality))
+            .receive(on: RunLoop.main)
+            .removeDuplicates()
+            .sink { [weak self] playbackQuality in
+                guard let self = self else {
+                    return
+                }
+                if let quality = playbackQuality, self.playbackQuality != nil {
+                    self.makeToast(.resolutionChangedText + .videoQualityToString(quality: quality))
+                }
+                self.playbackQuality = playbackQuality
+            }
+            .store(in: &cancellableSet)
+    }
+    
     private func subscribeSeatSubject() {
         ownerInfoPublisher
             .receive(on: RunLoop.main)
@@ -390,15 +409,6 @@ extension AudienceLivingView {
     }
 
     private func subscribeNetWorkInfoSubject() {
-        manager.subscribeState(StateSelector(keyPath: \AudienceRoomState.createTime))
-            .receive(on: RunLoop.main)
-            .removeDuplicates()
-            .dropFirst()
-            .sink { [weak self] createTime in
-                self?.netWorkInfoButtom.onRecivedCreateTime(timer: TimeInterval(createTime))
-            }
-            .store(in: &cancellableSet)
-            
         netWorkInfoManager
             .subscribe(StateSelector(keyPath: \NetWorkInfoState.showToast))
             .receive(on: RunLoop.main)
@@ -518,42 +528,41 @@ extension AudienceLivingView {
 }
 
 extension AudienceLivingView: BarrageStreamViewDelegate {
-    func barrageDisplayView(_ barrageDisplayView: BarrageStreamView, createCustomCell barrage: TUIBarrage) -> UIView? {
-        guard let type = barrage.extInfo["TYPE"], type.value as? String == "GIFTMESSAGE" else {
+    func barrageDisplayView(_ barrageDisplayView: BarrageStreamView, createCustomCell barrage: Barrage) -> UIView? {
+        guard let type = barrage.extensionInfo?["TYPE"], type == "GIFTMESSAGE" else {
             return nil
         }
         return GiftBarrageCell(barrage: barrage)
     }
     
-    func onBarrageClicked(user: TUIUserInfo) {
+    func onBarrageClicked(user: LiveUserInfo) {
         if user.userId == manager.coreUserState.selfInfo.userId { return }
-        routerManager.router(action: .present(.userManagement(user, type: .userInfo)))
+        routerManager.router(action: .present(.userManagement(TUIUserInfo(from: user), type: .userInfo)))
     }
 }
 
 extension AudienceLivingView: GiftPlayViewDelegate {
-    func giftPlayView(_ giftPlayView: GiftPlayView, onReceiveGift gift: TUIGiftInfo, giftCount: Int, sender: TUIUserInfo) {
+    func giftPlayView(_ giftPlayView: GiftPlayView, onReceiveGift gift: Gift, giftCount: Int, sender: LiveUserInfo) {
         let receiver = manager.coreRoomState.ownerInfo
-       
-        let barrage = TUIBarrage()
-        barrage.content = "gift"
-        barrage.user.userId = sender.userId
-        barrage.user.userName = sender.userName
-        barrage.user.avatarUrl = sender.avatarUrl
-        barrage.user.level = "0"
-        barrage.extInfo["TYPE"] = AnyCodable("GIFTMESSAGE")
-        barrage.extInfo["gift_name"] = AnyCodable(gift.name)
-        barrage.extInfo["gift_count"] = AnyCodable(giftCount)
-        barrage.extInfo["gift_icon_url"] = AnyCodable(gift.iconUrl)
         if receiver.userId == TUILogin.getUserID() {
             receiver.userName = .meText
         }
-        barrage.extInfo["gift_receiver_username"] = AnyCodable(receiver.userName)
-        barrageDisplayView.insertBarrages([barrage])
+        
+        var barrage = Barrage()
+        barrage.textContent = "gift"
+        barrage.sender = sender
+        barrage.extensionInfo = [
+            "TYPE": "GIFTMESSAGE",
+            "gift_name": gift.name,
+            "gift_count": "\(giftCount)",
+            "gift_icon_url": gift.iconURL,
+            "gift_receiver_username": receiver.userName
+        ]
+        barrageStore.appendLocalTip(message: barrage)
     }
     
-    func giftPlayView(_ giftPlayView: GiftPlayView, onPlayGiftAnimation gift: TUIGiftInfo) {
-        guard let url = URL(string: gift.resourceUrl) else { return }
+    func giftPlayView(_ giftPlayView: GiftPlayView, onPlayGiftAnimation gift: Gift) {
+        guard let url = URL(string: gift.resourceURL) else { return }
         giftCacheService.request(withURL: url) { error, fileUrl in
             if error == 0 {
                 DispatchQueue.main.async {
@@ -561,6 +570,12 @@ extension AudienceLivingView: GiftPlayViewDelegate {
                 }
             }
         }
+    }
+}
+
+extension AudienceLivingView {
+    var barrageStore: BarrageStore {
+        return BarrageStore.create(liveId: manager.roomState.roomId)
     }
 }
 
@@ -581,4 +596,20 @@ extension AudienceLivingView: LinkMicAudienceFloatViewDelegate {
 
 private extension String {
     static let meText = internalLocalized("Me")
+    static let resolutionChangedText = internalLocalized("resolution changed to")
+    
+    static func videoQualityToString(quality: TUIVideoQuality) -> String {
+        switch quality {
+        case .quality1080P:
+            return "1080P"
+        case .quality720P:
+            return "720P"
+        case .quality540P:
+            return "540P"
+        case .quality360P:
+            return "360P"
+        default:
+            return "Original"
+        }
+    }
 }

@@ -9,11 +9,13 @@ import UIKit
 import RTCCommon
 import SnapKit
 import Combine
-import LiveStreamCore
+import AtomicXCore
 import RTCRoomEngine
+import AtomicXCore
 
 class VRBottomMenuView: UIView {
     var cancellableSet = Set<AnyCancellable>()
+    var songListButtonAction: (() -> Void)?
     
     private let manager: VoiceRoomManager
     private let routerManager: VRRouterManager
@@ -45,8 +47,8 @@ class VRBottomMenuView: UIView {
     
     private var buttons: [UIButton] = []
     
-    private lazy var likeButton: TUILikeButton = {
-        let likeButton = TUILikeButton(roomId: manager.roomState.roomId)
+    private lazy var likeButton: LikeButton = {
+        let likeButton = LikeButton(roomId: manager.roomState.roomId)
         return likeButton
     }()
     
@@ -131,6 +133,7 @@ class VRBottomMenuView: UIView {
         button.setImage(internalImage(item.selectIcon), for: .selected)
         button.setTitle(item.normalTitle, for: .normal)
         button.setTitle(item.selectTitle, for: .selected)
+        button.imageEdgeInsets = .zero
         button.tag = index + 1_000
         item.bindStateClosure?(button, &cancellableSet)
         return button
@@ -237,7 +240,14 @@ extension VRBottomMenuView {
             self.routerManager.router(action: .present(.featureSetting(settingItems)))
         }
         menus.append(setting)
-        
+
+        var songListButton = VRButtonMenuInfo(normalIcon: "ktv_songList")
+        songListButton.tapAction = { [weak self] sender in
+            guard let self = self else { return }
+            self.songListButtonAction?()
+        }
+        menus.append(songListButton)
+
         var linkMic = VRButtonMenuInfo(normalIcon: "live_link_voice_room", normalTitle: "")
         linkMic.tapAction = { [weak self] sender in
             guard let self = self else { return }
@@ -295,7 +305,7 @@ extension VRBottomMenuView {
         var linkMic = VRButtonMenuInfo(normalIcon: "live_voice_room_link_icon", selectIcon: "live_voice_room_linking_icon")
         linkMic.tapAction = { [weak self] sender in
             guard let self = self, !isPending else { return }
-            let selfUserId = manager.coreUserState.selfInfo.userId
+            let selfUserId = manager.userState.selfInfo.userId
             let isApplying = manager.seatState.isApplyingToTakeSeat
             if isApplying {
                 isPending = true
@@ -310,7 +320,7 @@ extension VRBottomMenuView {
                     self.manager.onError(error.localizedMessage)
                 }
             } else {
-                let isOnSeat = manager.coreSeatState.seatList.contains(where: { $0.userId == selfUserId })
+                let isOnSeat = manager.coreSeatState.seatList.contains(where: { $0.userInfo.userId == selfUserId })
                 if isOnSeat {
                     coreView.leaveSeat {
                     } onError: { [weak self] code, message in
@@ -365,17 +375,23 @@ extension VRBottomMenuView {
                 .store(in: &cancellableSet)
             
             
-            manager.subscribeCoreState(StateSelector(keyPath: \SGSeatState.seatList))
+            manager.subscribeCoreState(StatePublisherSelector(keyPath: \LiveSeatState.seatList))
                 .receive(on: RunLoop.main)
                 .sink { [weak self] seatInfoList in
                     guard let self = self else { return }
-                    let isOnSeat = seatInfoList.contains(where: { $0.userId == self.manager.coreUserState.selfInfo.userId })
+                    let isOnSeat = seatInfoList.contains(where: { $0.userInfo.userId == self.manager.userState.selfInfo.userId })
                     let imageName = isOnSeat ? "live_linked_icon" : "live_voice_room_link_icon"
                     button.setImage(internalImage(imageName), for: .normal)
                 }
                 .store(in: &cancellableSet)
         }
         menus.append(linkMic)
+        var songListButton = VRButtonMenuInfo(normalIcon: "ktv_songList")
+        songListButton.tapAction = { [weak self] sender in
+            guard let self = self else { return }
+            self.songListButtonAction?()
+        }
+        menus.append(songListButton)
         return menus
     }
 }
@@ -383,6 +399,7 @@ extension VRBottomMenuView {
 private extension String {
     static let backgroundText = internalLocalized("Background")
     static let audioEffectsText = internalLocalized("Audio")
+    static let songText = internalLocalized("Song")
     static let repeatRequest = internalLocalized("Signal request repetition")
     static let takeSeatApplicationRejected = internalLocalized("Take seat application has been rejected")
     static let takeSeatApplicationTimeout = internalLocalized("Take seat application timeout")

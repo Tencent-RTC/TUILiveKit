@@ -5,20 +5,25 @@
 //  Created by krabyu on 2024/1/2.
 //
 
-import SnapKit
-import UIKit
-import TUICore
+import AtomicXCore
+import Combine
 import RTCRoomEngine
+import SnapKit
+import TUICore
 
 public class GiftListView: UIView {
-    private let roomId: String
-    private let service: GiftService
-    private var giftDataSource: [TUIGiftInfo] = []
-    private var currentSelectedCellIndex: IndexPath = IndexPath(row: 0, section: 0)
-    
+    private let liveId: String
+    private var store: GiftStore {
+        GiftStore.create(liveId: liveId)
+    }
+
+    private var giftDataSource: [Gift] = []
+    private var currentSelectedCellIndex: IndexPath = .init(row: 0, section: 0)
+    private var cancellableSet: Set<AnyCancellable> = []
+
     private var rows: Int = 2
-    private var itemSize: CGSize = CGSize(width: 74, height: 74 + 53)
-    
+    private var itemSize: CGSize = .init(width: 74, height: 74 + 53)
+
     private lazy var flowLayout: TUIGiftSideslipLayout = {
         let layout = TUIGiftSideslipLayout()
         layout.scrollDirection = .horizontal
@@ -26,7 +31,7 @@ public class GiftListView: UIView {
         layout.rows = rows
         return layout
     }()
-    
+
     private lazy var collectionView: UICollectionView = {
         let view = UICollectionView(frame: self.bounds, collectionViewLayout: self.flowLayout)
         if #available(iOS 11.0, *) {
@@ -42,26 +47,31 @@ public class GiftListView: UIView {
         view.backgroundColor = .clear
         return view
     }()
-    
+
     public init(roomId: String) {
-        self.roomId = roomId
-        self.service = GiftServiceFactory.getGiftService(roomId: roomId)
+        self.liveId = roomId
         super.init(frame: .zero)
         addObserver()
         setupUI()
-        getGiftList()
+        var language = TUIGlobalization.getPreferredLanguage() ?? "en"
+        if language != "en", language != "zh-Hans", language != "zh-Hant" {
+            language = "en"
+        }
+        store.setLanguage(language)
+        store.refreshUsableGifts(completion: nil)
     }
-    
+
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     deinit {
         removeObserver()
     }
-    
+
     private var isViewReady = false
-    public override func didMoveToWindow() {
+    override public func didMoveToWindow() {
         super.didMoveToWindow()
         guard !isViewReady else { return }
         isViewReady = true
@@ -69,15 +79,16 @@ public class GiftListView: UIView {
 }
 
 // MARK: - Special config
-extension GiftListView {
-    public func setRows(rows: Int) {
+
+public extension GiftListView {
+    func setRows(rows: Int) {
         if flowLayout.rows != rows {
             flowLayout.rows = rows
             collectionView.reloadData()
         }
     }
-    
-    public func setItemSize(itemSize: CGSize) {
+
+    func setItemSize(itemSize: CGSize) {
         if flowLayout.itemSize == itemSize {
             flowLayout.itemSize = itemSize
             collectionView.reloadData()
@@ -96,50 +107,28 @@ extension GiftListView {
     }
 
     private func addObserver() {
-        TUIGiftStore.shared.giftListMap.addObserver(self) { [weak self] giftListData, _ in
-            guard let self = self, let giftList = giftListData[self.roomId] else { return }
-            self.giftDataSource = giftList
-            DispatchQueue.main.async {
-                self.collectionView.reloadData()
-                self.collectionView.layoutIfNeeded()
-                if self.currentSelectedCellIndex.row < self.giftDataSource.count {
-                    self.collectionView.selectItem(at: self.currentSelectedCellIndex, animated: false, scrollPosition: [])
+        store.state.subscribe(StatePublisherSelector(keyPath: \GiftState.usableGifts))
+            .receive(on: RunLoop.main)
+            .sink { [weak self] categories in
+                guard let self = self else { return }
+                var all: [Gift] = []
+                categories.forEach { all.append(contentsOf: $0.giftList) }
+                giftDataSource = all
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    collectionView.reloadData()
+                    collectionView.layoutIfNeeded()
+                    if currentSelectedCellIndex.row < giftDataSource.count {
+                        collectionView.selectItem(at: currentSelectedCellIndex, animated: false, scrollPosition: [])
+                    }
                 }
             }
-        }
+            .store(in: &cancellableSet)
     }
-    
+
     private func removeObserver() {
-        TUIGiftStore.shared.giftListMap.removeObserver(self)
-    }
-    
-    private func getGiftList() {
-        Task {
-            do {
-                LiveKitLog.info("\(#file)", "\(#line)", "getGiftList")
-                try await service.getGiftList()
-            } catch let err as InternalError {
-                LiveKitLog.error("\(#file)", "\(#line)", "getGiftList failed:\(err.localizedMessage)")
-                DispatchQueue.main.async {
-                    self.makeToast(err.localizedMessage)
-                }
-            }
-        }
-    }
-    
-    private func sendGift(giftInfo: TUIGiftInfo, giftCount: Int) {
-        DataReporter.reportEventData(eventKey: getReportKey())
-        Task {
-            do {
-                LiveKitLog.info("\(#file)", "\(#line)", "sendGift giftId: \(giftInfo.giftId), giftCount: \(giftCount)")
-                try await service.sendGift(giftInfo: giftInfo, giftCount: giftCount)
-            } catch let err as InternalError {
-                LiveKitLog.error("\(#file)", "\(#line)", "sendGift failed:\(err.localizedMessage)")
-                DispatchQueue.main.async {
-                    self.makeToast(err.localizedMessage)
-                }
-            }
-        }
+        cancellableSet.forEach { $0.cancel() }
+        cancellableSet.removeAll()
     }
 }
 
@@ -164,7 +153,7 @@ extension GiftListView: UICollectionViewDataSource {
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return giftDataSource.count
     }
-    
+
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let reuseCell = collectionView.dequeueReusableCell(withReuseIdentifier: TUIGiftCell.cellReuseIdentifier, for: indexPath)
         guard let cell = reuseCell as? TUIGiftCell else { return reuseCell }
@@ -172,10 +161,21 @@ extension GiftListView: UICollectionViewDataSource {
             let giftInfo = giftDataSource[indexPath.row]
             cell.giftInfo = giftInfo
             cell.sendBlock = { [weak self, weak cell] giftInfo in
-                guard let self = self else { return }
-                guard let cell = cell else { return }
-                self.sendGift(giftInfo: giftInfo, giftCount: 1)
-                cell.isSelected = false
+                if let self = self {
+                    DataReporter.reportEventData(eventKey: getReportKey())
+                    store.sendGift(giftId: giftInfo.giftId, count: 1) { [weak self] result in
+                        guard let self = self else { return }
+                        switch result {
+                        case .failure(let error):
+                            let err = InternalError(code: error.code, message: error.message)
+                            GiftManager.shared.toastSubject.send(err.localizedMessage)
+                        default: break
+                        }
+                    }
+                }
+                if let cell = cell {
+                    cell.isSelected = false
+                }
             }
         }
         return cell
@@ -183,6 +183,7 @@ extension GiftListView: UICollectionViewDataSource {
 }
 
 // MARK: DataReport
+
 private extension GiftListView {
     private func getReportKey() -> Int {
         let isSupportEffectPlayer = isSupportEffectPlayer()
@@ -190,14 +191,14 @@ private extension GiftListView {
         switch DataReporter.componentType {
         case .liveRoom:
             key = isSupportEffectPlayer ? Constants.DataReport.kDataReportLiveGiftEffectSendCount :
-            Constants.DataReport.kDataReportLiveGiftSVGASendCount
+                Constants.DataReport.kDataReportLiveGiftSVGASendCount
         case .voiceRoom:
             key = isSupportEffectPlayer ? Constants.DataReport.kDataReportVoiceGiftEffectSendCount :
-            Constants.DataReport.kDataReportVoiceGiftSVGASendCount
+                Constants.DataReport.kDataReportVoiceGiftSVGASendCount
         }
         return key
     }
-    
+
     private func isSupportEffectPlayer() -> Bool {
         let service = TUICore.getService("TUIEffectPlayerService")
         return service != nil

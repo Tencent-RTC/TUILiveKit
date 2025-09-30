@@ -148,6 +148,9 @@ extension AnchorCoHostManager {
                 state.removeSentConnectionRequest(invitee.roomId)
             }
         }
+        if inviter.userId == TUIRoomEngine.getSelfInfo().userId {
+            toastSubject.send(.requestTimeoutText)
+        }
     }
     
     func onConnectionRequestReject(invitee: TUIConnectionUser) {
@@ -170,4 +173,5 @@ extension AnchorCoHostManager {
 
 fileprivate extension String {
     static let requestRejectedText = internalLocalized("Connection application has been rejected")
+    static let requestTimeoutText = internalLocalized("Invitation has timed out")
 }

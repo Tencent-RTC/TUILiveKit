@@ -14,8 +14,9 @@ typealias TUIGiftAnimationCompletionBlock = (Bool) -> Void
 class TUIGiftBulletView: UIView {
     var isAnimationPlaying: Bool = false
     var completionBlock: TUIGiftAnimationCompletionBlock?
-    var giftData: TUIGiftData = TUIGiftData() {
+    var giftData: TUIGiftData? {
         didSet {
+            guard let giftData = giftData else { return }
             setGiftData(giftData)
         }
     }
@@ -64,8 +65,8 @@ class TUIGiftBulletView: UIView {
 
     func setGiftData(_ giftData: TUIGiftData) {
         let userID = giftData.sender.userId
-        var nickName = giftData.sender.userName
-        let avatarUrl = giftData.sender.avatarUrl
+        var nickName = giftData.sender.userName.isEmpty ? userID : giftData.sender.userName
+        let avatarUrl = giftData.sender.avatarURL
         if userID == (TUILogin.getUserID() ?? "") {
             nickName = .meText
         } else {
@@ -84,7 +85,7 @@ class TUIGiftBulletView: UIView {
 
         let width = max(giveDescLabel.mm_w, nickNameLabel.mm_w)
         mm_w = avatarView.mm_w + width + giftIconView.mm_w + 30
-        giftIconView.kf.setImage(with: URL(string: giftData.giftInfo.iconUrl))
+        giftIconView.kf.setImage(with: URL(string: giftData.giftInfo.iconURL))
         avatarView.kf.setImage(with: URL(string: avatarUrl))
     }
 

@@ -11,7 +11,7 @@ import SnapKit
 import TUICore
 import Combine
 import RTCCommon
-import LiveStreamCore
+import AtomicXCore
 
 class LSLiveInfoEditView: UIView {
     private var cancellableSet = Set<AnyCancellable>()

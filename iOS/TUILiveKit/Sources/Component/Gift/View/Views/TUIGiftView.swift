@@ -5,26 +5,27 @@
 //  Created by krabyu on 2024/1/2.
 //
 
-import UIKit
+import AtomicXCore
 import Kingfisher
-import RTCRoomEngine
+import UIKit
 
-
-typealias TUIActionSendBlock = (TUIGiftInfo) -> Void
+typealias TUIActionSendBlock = (Gift) -> Void
 
 class TUIGiftView: UIView {
     var sendBlock: TUIActionSendBlock?
-    var giftInfo: TUIGiftInfo = TUIGiftInfo() {
+    var giftInfo: Gift? {
         didSet {
+            guard let giftInfo = giftInfo else { return }
             setGiftInfo(giftInfo: giftInfo)
         }
     }
+
     var isSelected: Bool = false {
         didSet {
-           setSelectedState(isSelected)
+            setSelectedState(isSelected)
         }
     }
-    
+
     private lazy var selectedView: UIView = {
         let view = UIView(frame: CGRect(x: 0, y: 0, width: self.mm_w, height: imageBgView.mm_h + sendButton.mm_h + 4))
         view.layer.masksToBounds = true
@@ -94,17 +95,18 @@ class TUIGiftView: UIView {
         setupUI()
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    private func setGiftInfo(giftInfo: TUIGiftInfo) {
-        normalImageView.kf.setImage(with: URL(string: giftInfo.iconUrl))
-        selectedImageView.kf.setImage(with: URL(string: giftInfo.iconUrl))
+
+    private func setGiftInfo(giftInfo: Gift) {
+        normalImageView.kf.setImage(with: URL(string: giftInfo.iconURL))
+        selectedImageView.kf.setImage(with: URL(string: giftInfo.iconURL))
         giftNameLabel.text = giftInfo.name
         pointLabel.text = "\(giftInfo.coins)"
     }
-    
+
     private func setSelectedState(_ isSelected: Bool) {
         selectedView.backgroundColor = isSelected ? .buttonPrimaryDefaultColor : .clear
         selectedView.layer.borderWidth = isSelected ? 2 : 0
@@ -135,6 +137,7 @@ extension TUIGiftView {
 
 extension TUIGiftView {
     @objc func sendButtonClick() {
+        guard let giftInfo = giftInfo else { return }
         sendBlock?(giftInfo)
     }
 }

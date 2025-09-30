@@ -9,7 +9,7 @@ import Foundation
 import RTCCommon
 import RTCRoomEngine
 import Combine
-import LiveStreamCore
+import AtomicXCore
 
 typealias AnchorBattleStateUpdateClosure = (inout AnchorBattleState) -> Void
 

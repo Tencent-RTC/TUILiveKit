@@ -12,7 +12,9 @@ struct AudienceMediaState {
     var videoQuality: TUIVideoQuality = .quality1080P
     var isAudioLocked: Bool = false
     var isVideoLocked: Bool = false
-    
+   
+    var playbackQuality: TUIVideoQuality? = nil
+    var playbackQualityList: [TUIVideoQuality] = []
     var videoAdvanceSettings: AudienceVideoAdvanceSetting = AudienceVideoAdvanceSetting()
 }
 

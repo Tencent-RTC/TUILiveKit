@@ -7,7 +7,7 @@
 
 import UIKit
 import TUICore
-import LiveStreamCore
+import AtomicXCore
 
 class AppNavigationController: UINavigationController {
     override init(rootViewController: UIViewController) {
@@ -165,6 +165,4 @@ private extension String {
     static let videoLiveDesc = TUILiveKitAppLocalize("Create Interactive Video Live with Live API for a Seamless Streaming Experience.")
     static let voiceRoomTitle = TUILiveKitAppLocalize("Voice Room")
     static let voiceRoomDesc = TUILiveKitAppLocalize("Enable Interactive Voice Room with Live API for an Enhanced Communication Experience.")
-    static let KTVRoomTitle = TUILiveKitAppLocalize("KTV")
-    static let KTVRoomDesc = TUILiveKitAppLocalize("Enable Interactive KTV Room with Live API for an Enhanced Communication Experience.")
 }

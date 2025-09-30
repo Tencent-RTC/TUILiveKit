@@ -1,3 +1,15 @@
+## 3.4.0
+- Replaced LiveStreamCore dependency with AtomicXCore.
+- Added support for KTV features.
+- Refactored Android basic components such as live list, gifts, and bullet comments to Kotlin.
+- Fixed Android picture-in-picture abnormal UI issue.
+- Video live streaming now supports resolution switching.
+- On iOS, switched dependency from ESPullToRefresh to MJRefresh.
+- Open sourced the SeatGridView code.
+- Adapted to the new setLiveId interface in LiveCoreView.
+- Optimized logic for likes playback.
+- Likes, gifts, audience list, bullet comments, sound effects, and beauty filters are now implemented using AtomicXCore.
+
 ## 2.4.0
 ### New Features
 - Android&iOS: Add new feature for room owners change room background in voice rooms

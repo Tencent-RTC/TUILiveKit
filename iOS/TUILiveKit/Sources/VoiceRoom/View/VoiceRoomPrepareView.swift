@@ -8,7 +8,9 @@ import UIKit
 import RTCRoomEngine
 import Combine
 import RTCCommon
-import LiveStreamCore
+import AtomicXCore
+import AtomicX
+import TUICore
 
 protocol VoiceRoomPrepareViewDelegate: AnyObject {
     func prepareView(_ view: VoiceRoomPrepareView, didClickStart button: UIButton)
@@ -36,9 +38,19 @@ class VoiceRoomPrepareView: RTCBaseView {
         let view = VRSeatPreviewView(frame: .zero)
         view.itemSize = CGSize(width: 70, height: 70)
         view.verticalMargin = 0
+        view.alpha = 0.3
         return view
     }()
-    
+
+    private lazy var ktvView: UIImageView = {
+        let view = UIImageView()
+        let imageName = TUIGlobalization.getPreferredLanguage() == "en" ? "live_prepare_song_en" : "live_prepare_song_zh"
+        view.image = internalImage(imageName)
+        view.isHidden = true
+        view.isUserInteractionEnabled = false
+        return view
+    }()
+
     private let backButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setBackgroundImage(internalImage("live_back_icon"), for: .normal)
@@ -80,6 +92,14 @@ class VoiceRoomPrepareView: RTCBaseView {
             guard let self = self else { return }
             self.routerManager.router(action: .present(.prepareSetting))
         }))
+
+        model.items.append(VRFeatureItem(normalTitle: .layoutText,
+                                         normalImage: internalImage("ktv_layout"),
+                                         designConfig: designConfig,
+                                         actionClosure: { [weak self] _ in
+            guard let self = self else { return }
+            self.routerManager.router(action: .present(.layout))
+        }))
         let featureClickPanel = VRFeatureClickPanel(model: model)
         return featureClickPanel
     }()
@@ -90,7 +110,7 @@ class VoiceRoomPrepareView: RTCBaseView {
         button.layer.cornerRadius = 26.scale375()
         button.layer.masksToBounds = true
         button.titleLabel?.font = .customFont(ofSize: 20, weight: .semibold)
-        button.setBackgroundImage(UIColor.brandBlueColor.trans2Image(), for: .normal)
+        button.setBackgroundImage(UIColor.b1.trans2Image(), for: .normal)
         return button
     }()
     
@@ -105,12 +125,7 @@ class VoiceRoomPrepareView: RTCBaseView {
         unRegisterObserver()
         debugPrint("deinit \(type(of: self))")
     }
-    
-    override func draw(_ rect: CGRect) {
-        super.draw(rect)
-        backgroundGradientView.gradient(colors: [.g1, .g1.withAlphaComponent(0.5), .g1,], isVertical: true)
-    }
-    
+
     private func registerObserver() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(keyboardWillShow),
@@ -134,6 +149,7 @@ class VoiceRoomPrepareView: RTCBaseView {
         addSubview(featureClickPanel)
         addSubview(startButton)
         addSubview(seatPreviewView)
+        addSubview(ktvView)
     }
     
     override func activateConstraints() {
@@ -147,26 +163,26 @@ class VoiceRoomPrepareView: RTCBaseView {
             make.height.equalTo(24.scale375())
             make.width.equalTo(24.scale375())
             make.leading.equalToSuperview().inset(14)
-            make.top.equalToSuperview().offset(64.scale375Height())
+            make.top.equalToSuperview().offset(56.scale375Height())
         }
         editView.snp.makeConstraints { make in
             make.width.equalTo(343.scale375())
             make.height.equalTo(112.scale375())
             make.centerX.equalToSuperview()
-            make.top.equalToSuperview().offset(CGFloat(120.0).scale375Height())
+            make.top.equalToSuperview().offset(CGFloat(96.0).scale375Height())
         }
         seatPreviewView.snp.makeConstraints { make in
-            make.top.equalTo(editView.snp.bottom).offset(40.scale375())
+            make.top.equalTo(editView.snp.bottom).offset(36.scale375())
             make.height.equalTo(seatPreviewView.getHeight())
             make.left.equalToSuperview()
             make.right.equalToSuperview()
         }
         startButton.snp.makeConstraints { make in
-            make.height.equalTo(52.scale375())
+            make.height.equalTo(48.scale375())
             if WindowUtils.isPortrait {
-                make.leading.equalToSuperview().offset(15)
-                make.trailing.equalToSuperview().offset(-15)
-                make.bottom.equalToSuperview().inset(WindowUtils.bottomSafeHeight + 30.scale375Height())
+                make.width.equalTo(327.scale375())
+                make.centerX.equalToSuperview()
+                make.bottom.equalToSuperview().inset(WindowUtils.bottomSafeHeight + 6.scale375Height())
             } else {
                 make.width.equalTo(101.scale375())
                 make.trailing.equalToSuperview().inset(16)
@@ -176,7 +192,7 @@ class VoiceRoomPrepareView: RTCBaseView {
         featureClickPanel.snp.remakeConstraints { make in
             if WindowUtils.isPortrait {
                 make.centerX.equalToSuperview()
-                make.bottom.equalTo(startButton.snp.top).offset(-30.scale375Height())
+                make.bottom.equalTo(startButton.snp.top).offset(-36.scale375Height())
             } else {
                 make.trailing.equalTo(startButton.snp.leading).offset(-12)
                 make.centerY.equalTo(startButton)
@@ -188,6 +204,7 @@ class VoiceRoomPrepareView: RTCBaseView {
         backButton.addTarget(self, action: #selector(clickBack(sender:)), for: .touchUpInside)
         startButton.addTarget(self, action: #selector(clickStart(sender:)), for: .touchUpInside)
         subscribeRoomBackgroundState()
+        subscribeRoomLayoutState()
     }
 }
 
@@ -199,6 +216,17 @@ extension VoiceRoomPrepareView {
             .sink { [weak self] url in
                 guard let self = self else { return }
                 self.backgroundImageView.kf.setImage(with: URL(string: url), placeholder: UIImage.placeholderImage)
+            }
+            .store(in: &cancellableSet)
+    }
+
+    private func subscribeRoomLayoutState() {
+        manager.subscribeState(StateSelector(keyPath: \VRRoomState.layoutType))
+            .receive(on: RunLoop.main)
+            .dropFirst()
+            .sink { [weak self] layoutType in
+                guard let self = self else { return }
+                self.onSeatLayoutChanged(isKTV: layoutType == .KTVRoom)
             }
             .store(in: &cancellableSet)
     }
@@ -242,6 +270,32 @@ extension VoiceRoomPrepareView {
             }
         }
     }
+
+    private func onSeatLayoutChanged(isKTV: Bool) {
+        if isKTV == true {
+            ktvView.isHidden = false
+            seatPreviewView.snp.remakeConstraints { make in
+                make.top.equalTo(ktvView.snp.bottom).offset(24.scale375())
+                make.height.equalTo(seatPreviewView.getHeight())
+                make.left.equalToSuperview()
+                make.right.equalToSuperview()
+            }
+            ktvView.snp.makeConstraints { make in
+                make.top.equalTo(editView.snp.bottom).offset(26.scale375())
+                make.width.equalTo(343.scale375())
+                make.centerX.equalToSuperview()
+                make.height.equalTo(120.scale375())
+            }
+        }else {
+            ktvView.isHidden = true
+            seatPreviewView.snp.remakeConstraints { make in
+                make.top.equalTo(editView.snp.bottom).offset(36.scale375())
+                make.height.equalTo(seatPreviewView.getHeight())
+                make.left.equalToSuperview()
+                make.right.equalToSuperview()
+            }
+        }
+    }
 }
 
 extension VoiceRoomPrepareView {
@@ -261,4 +315,5 @@ private extension String {
     static let backgroundText: String = internalLocalized("Background")
     static let audioEffectsText: String = internalLocalized("Audio")
     static let settingText: String = internalLocalized("Settings")
+    static let layoutText: String = internalLocalized("Layout")
 }

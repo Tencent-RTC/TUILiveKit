@@ -9,11 +9,11 @@ import Foundation
 import RTCRoomEngine
 import TUICore
 import RTCCommon
-import LiveStreamCore
+import AtomicXCore
 
 class AudienceRootMenuDataCreator {
     
-    private let coreView: LiveCoreView
+    private weak var coreView: LiveCoreView?
     private let manager: AudienceManager
     private let routerManager: AudienceRouterManager
     
@@ -35,7 +35,7 @@ class AudienceRootMenuDataCreator {
                                         action: { [weak self] in
             guard let self = self else { return }
             manager.onStartRequestIntraRoomConnection()
-            coreView.requestIntraRoomConnection(userId: "", timeOut: timeOutValue, openCamera: true, seatIndex: seatIndex) { [weak self] in
+            coreView?.requestIntraRoomConnection(userId: "", timeOut: timeOutValue, openCamera: true, seatIndex: seatIndex) { [weak self] in
                 guard let self = self else { return }
                 manager.toastSubject.send(.waitToLinkText)
             } onError: { [weak self] code, message in
@@ -52,7 +52,7 @@ class AudienceRootMenuDataCreator {
                                         action: { [weak self] in
             guard let self = self else { return }
             manager.onStartRequestIntraRoomConnection()
-            coreView.requestIntraRoomConnection(userId: "", timeOut: timeOutValue, openCamera: false, seatIndex: seatIndex) { [weak self] in
+            coreView?.requestIntraRoomConnection(userId: "", timeOut: timeOutValue, openCamera: false, seatIndex: seatIndex) { [weak self] in
                 guard let self = self else { return }
                 manager.toastSubject.send(.waitToLinkText)
             } onError: { [weak self] code, message in
@@ -74,12 +74,6 @@ class AudienceRootMenuDataCreator {
 extension AudienceRootMenuDataCreator {
     func memberBottomMenu(isDisableCoGuest: Bool = false) -> [AudienceButtonMenuInfo] {
         var menus: [AudienceButtonMenuInfo] = []
-        var streamDashboard = AudienceButtonMenuInfo(normalIcon: "live_stream_dashboard_icon", normalTitle: "")
-        streamDashboard.tapAction = { [weak self] sender in
-            guard let self = self else { return }
-            routerManager.router(action: .present(.streamDashboard))
-        }
-        menus.append(streamDashboard)
         var gift = AudienceButtonMenuInfo(normalIcon: "live_gift_icon", normalTitle: "")
         gift.tapAction = { [weak self] sender in
             guard let self = self else { return }
@@ -101,7 +95,7 @@ extension AudienceRootMenuDataCreator {
                         guard let self = self else { return }
                         routerManager.router(action: .dismiss())
                         manager.onStartCancelIntraRoomConnection()
-                        coreView.cancelIntraRoomConnection(userId: "") { [weak self] in
+                        coreView?.cancelIntraRoomConnection(userId: "") { [weak self] in
                             guard let self = self else { return }
                             manager.onCancelIntraRoomConnection()
                         } onError: { [weak self] code, message in
@@ -134,7 +128,7 @@ extension AudienceRootMenuDataCreator {
                     }
                     .store(in: &cancellableSet)
                 
-                manager.subscribeCoreViewState(StateSelector(keyPath: \CoHostState.connectedUserList))
+                manager.subscribeCoreViewState(StatePublisherSelector(keyPath: \CoHostState.connectedUserList))
                     .removeDuplicates()
                     .receive(on: RunLoop.main)
                     .sink { [weak self] users in
@@ -176,7 +170,7 @@ extension AudienceRootMenuDataCreator {
         
         let terminteGoGuestItem = ActionItem(title: .confirmTerminateCoGuestText, designConfig: designConfig, actionClosure: { [weak self] _ in
             guard let self = self else { return }
-            coreView.terminateIntraRoomConnection()
+            coreView?.terminateIntraRoomConnection()
             routerManager.router(action: .routeTo(.audience))
         })
         items.append(terminteGoGuestItem)

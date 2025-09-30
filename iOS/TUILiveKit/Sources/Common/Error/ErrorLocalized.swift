@@ -10,6 +10,7 @@ import RTCRoomEngine
 import Combine
 import ImSDK_Plus
 import RTCCommon
+import AtomicXCore
 
 public protocol LocalizedError: Error {
     var description: String { get }
@@ -55,6 +56,10 @@ public class ErrorLocalized {
                 self.code = code
             }
             self.message = message
+        }
+        
+        public init(errorInfo: ErrorInfo) {
+            self.init(code: errorInfo.code, message: errorInfo.message)
         }
     }
 }

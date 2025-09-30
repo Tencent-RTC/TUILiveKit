@@ -9,7 +9,7 @@ import Foundation
 import RTCCommon
 import RTCRoomEngine
 import Combine
-import LiveStreamCore
+import AtomicXCore
 
 class AnchorUserManager {
     private let observerState = ObservableState<AnchorUserState>(initialState: AnchorUserState())

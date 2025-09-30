@@ -8,7 +8,7 @@
 import TUICore
 import RTCCommon
 import RTCRoomEngine
-import LiveStreamCore
+import AtomicXCore
 
 public enum AudienceViewFeature {
     case sliding
@@ -74,6 +74,9 @@ public class AudienceContainerView: UIView {
     
     deinit {
         StateCache.shared.clear()
+        AudioEffectStore.shared.reset()
+        DeviceStore.shared.reset()
+        BaseBeautyStore.shared.reset()
         LiveKitLog.info("\(#file)","\(#line)","deinit AudienceContainerView: \(self)")
     }
     
@@ -303,7 +306,7 @@ extension AudienceContainerView: FloatWindowProvider {
     }
 
     public func getCoreView() -> LiveCoreView {
-        return coreView ?? LiveCoreView()
+        return coreView ?? LiveCoreView(viewType: .playView)
     }
     
     public func relayoutCoreView() {

@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import LiveStreamCore
+import AtomicXCore
 import RTCRoomEngine
 
 class AudienceConnectionObserver: NSObject {

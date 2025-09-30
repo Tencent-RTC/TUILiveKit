@@ -5,10 +5,11 @@
 //  Created by jeremiawang on 2024/12/30.
 //
 
-import LiveStreamCore
+import AtomicXCore
 import RTCRoomEngine
 import RTCCommon
 import Combine
+import TUICore
 
 protocol AudienceListCellDelegate: AnyObject {
     func handleScrollToNewRoom(roomId: String, ownerId: String, manager: AudienceManager, coreView: LiveCoreView, relayoutCoreViewClosure: @escaping () -> Void)
@@ -24,7 +25,7 @@ class AudienceSliderCell: UIView {
     weak var delegate: AudienceListCellDelegate?
     weak var rotateScreenDelegate: RotateScreenDelegate?
 
-    private var roomId: String
+    private let roomId: String
     private var isViewReady = false
     private var isCurrentShowCell = false
     private weak var routerCenter: AudienceRouterControlCenter?
@@ -45,7 +46,9 @@ class AudienceSliderCell: UIView {
             }
         }
         setComponent()
-        return LiveCoreView()
+        let view = LiveCoreView(viewType: .playView)
+        view.setLiveId(roomId)
+        return view
     }()
 
     private lazy var manager = AudienceManager(provider: self)
@@ -115,6 +118,10 @@ class AudienceSliderCell: UIView {
             } onError: { _, _ in
             }
             isStartedPreload = false
+            TUICore.notifyEvent(TUICore_PrivacyService_ROOM_STATE_EVENT_CHANGED,
+                                subKey: TUICore_PrivacyService_ROOM_STATE_EVENT_SUB_KEY_END,
+                                object: nil,
+                                param: nil)
         }
         isCurrentShowCell = false
     }
@@ -221,11 +228,11 @@ extension AudienceSliderCell {
 }
 
 extension AudienceSliderCell: AudienceManagerProvider {
-    func subscribeCoreViewState<State, Value>(_ selector: StateSelector<State, Value>) -> AnyPublisher<Value, Never> {
+    func subscribeCoreViewState<State, Value>(_ selector: StatePublisherSelector<State, Value>) -> AnyPublisher<Value, Never> {
         coreView.subscribeState(selector)
     }
     
-    func getCoreViewState<T: State>() -> T {
+    func getCoreViewState<T: CoreViewState>() -> T {
         coreView.getState()
     }
 }

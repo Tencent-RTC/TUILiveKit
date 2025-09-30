@@ -9,7 +9,7 @@ import UIKit
 import RTCCommon
 import SnapKit
 import Combine
-import LiveStreamCore
+import AtomicXCore
 
 protocol AnchorBottomMenuViewDelegate: NSObjectProtocol {
     func likeButtonClicked()
@@ -52,8 +52,8 @@ class AnchorBottomMenuView: RTCBaseView {
     
     var buttons: [UIButton] = []
     
-    init(mananger: AnchorManager, routerManager: AnchorRouterManager, coreView: LiveCoreView) {
-        self.manager = mananger
+    init(manager: AnchorManager, routerManager: AnchorRouterManager, coreView: LiveCoreView) {
+        self.manager = manager
         self.routerManager = routerManager
         self.coreView = coreView
         super.init(frame: .zero)

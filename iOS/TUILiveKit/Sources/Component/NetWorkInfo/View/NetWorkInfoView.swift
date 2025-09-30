@@ -334,6 +334,13 @@ class NetWorkInfoView: UIView {
                 self?.onVolumeChanged(volume)
             }
             .store(in: &cancellables)
+        manager.kickedOutSubject
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in
+                guard let self = self else { return }
+                self.dismissPanel()
+            }
+            .store(in: &cancellables)
     }
 
     private func onDownLossChanged(_ downLoss: UInt32) {
