@@ -21,26 +21,8 @@ class MusicLibrary private constructor() {
     }
 
     private fun initLocalData(context: Context) {
-        copyAssetsToFile(context, "houlai_bz.mp3")
-        copyAssetsToFile(context, "houlai_yc.mp3")
-
-        copyAssetsToFile(context, "qfdy_yc.mp3")
-        copyAssetsToFile(context, "qfdy_bz.mp3")
-
-        copyAssetsToFile(context, "xq_bz.mp3")
-        copyAssetsToFile(context, "xq_yc.mp3")
-
-        copyAssetsToFile(context, "nuannuan_bz.mp3")
-        copyAssetsToFile(context, "nuannuan_yc.mp3")
-
-        copyAssetsToFile(context, "jda_yc.mp3")
-        copyAssetsToFile(context, "jda_bz.mp3")
-
-        copyAssetsToFile(context, "houlai_lrc.vtt")
-        copyAssetsToFile(context, "qfdy_lrc.vtt")
-        copyAssetsToFile(context, "xq_lrc.vtt")
-        copyAssetsToFile(context, "nuannuan_lrc.vtt")
-        copyAssetsToFile(context, "jda_lrc.vtt")
+        copyAssetsToFile(context, "local_music_accompany.mp3")
+        copyAssetsToFile(context, "local_music_origin.mp3")
     }
 
     fun copyAssetsToFile(context: Context, name: String) {

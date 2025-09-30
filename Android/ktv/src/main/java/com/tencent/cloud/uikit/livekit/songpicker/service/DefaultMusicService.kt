@@ -57,54 +57,14 @@ class DefaultMusicService(private val contextInfo: ContextInfo) : MusicService {
             ContextCompat.getExternalFilesDirs(context, null)[0].getAbsolutePath() + "/"
         val list = mutableListOf<Song>()
         list.add(Song().apply {
-            id = "1001"
-            name = "后来"
-            singers = mutableListOf<String>("刘若英")
+            id = "music_id"
+            name = "music_name"
+            singers = mutableListOf<String>("music_singers")
             coverUrl = DEFAULT_COVER_URL
-            lrcUrl = localPath + "houlai_lrc.vtt"
-            performId = "1001"
-            originUrl = localPath + "houlai_yc.mp3"
-            accompanyUrl = localPath + "houlai_bz.mp3"
-        })
-        list.add(Song().apply {
-            id = "1002"
-            name = "情非得已"
-            singers = mutableListOf<String>("庾澄庆")
-            coverUrl = DEFAULT_COVER_URL
-            lrcUrl = localPath + "qfdy_lrc.vtt"
-            performId = "1002"
-            originUrl = localPath + "qfdy_yc.mp3"
-            accompanyUrl = localPath + "qfdy_bz.mp3"
-        })
-        list.add(Song().apply {
-            id = "1003"
-            name = "星晴"
-            singers = mutableListOf<String>("周杰伦")
-            coverUrl = DEFAULT_COVER_URL
-            lrcUrl = localPath + "xq_lrc.vtt"
-            performId = "1003"
-            originUrl = localPath + "xq_yc.mp3"
-            accompanyUrl = localPath + "xq_bz.mp3"
-        })
-        list.add(Song().apply {
-            id = "1004"
-            name = "暖暖"
-            singers = mutableListOf<String>("梁静茹")
-            coverUrl = DEFAULT_COVER_URL
-            lrcUrl = localPath + "nuannuan_lrc.vtt"
-            performId = "1004"
-            originUrl = localPath + "nuannuan_yc.mp3"
-            accompanyUrl = localPath + "nuannuan_bz.mp3"
-        })
-        list.add(Song().apply {
-            id = "1005"
-            name = "简单爱"
-            singers = mutableListOf<String>("周杰伦")
-            coverUrl = DEFAULT_COVER_URL
-            lrcUrl = localPath + "jda_lrc.vtt"
-            performId = "1005"
-            originUrl = localPath + "jda_yc.mp3"
-            accompanyUrl = localPath + "jda_bz.mp3"
+            lrcUrl = localPath + "local_music_lrc.vtt"
+            performId = "music_performId"
+            originUrl = localPath + "local_music_origin.mp3"
+            accompanyUrl = localPath + "local_music_accompany.mp3"
         })
         musicLibraryList.addAll(list)
     }
@@ -149,7 +109,7 @@ class DefaultMusicService(private val contextInfo: ContextInfo) : MusicService {
 
     override fun getMusicTagList(callback: MusicService.ValueCallback<List<SongTag>>?) {
         val musicTagList = mutableListOf<SongTag>()
-        musicTagList.add(SongTag("-10005", "本地歌曲"))
+        musicTagList.add(SongTag("-10005", "local_demo_music"))
         callback?.onSuccess(musicTagList)
     }
 
