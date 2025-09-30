@@ -26,15 +26,15 @@ public class ConnectionErrorHandler {
 
     private static String convertToErrorMessage(TUILiveConnectionManager.ConnectionCode resultCode) {
         Context context = ContextProvider.getApplicationContext();
-        switch (resultCode) {
-            case CONNECTING:
-            case CONNECTING_OTHER_ROOM:
-                return context.getString(R.string.common_connect_conflict);
-            case CONNECTION_FULL:
-                return context.getString(R.string.common_connection_room_full);
-            default:
-                return context.getString(R.string.common_connect_error);
-        }
+        return switch (resultCode) {
+            case SUCCESS -> context.getString(R.string.common_client_error_success);
+            case ROOM_NOT_EXISTS -> context.getString(R.string.live_error_connection_notexit);
+            case CONNECTING -> context.getString(R.string.common_client_error_connection_connecting);
+            case CONNECTING_OTHER_ROOM -> context.getString(R.string.common_connect_conflict);
+            case CONNECTION_FULL -> context.getString(R.string.common_connection_room_full);
+            case RETRY -> context.getString(R.string.live_error_connection_retry);
+            default -> context.getString(R.string.common_client_error_failed);
+        };
     }
 
     private static void showToast(String tips) {

@@ -24,7 +24,7 @@ import com.trtc.uikit.livekit.features.anchorboardcast.state.CoHostState;
 import com.trtc.uikit.livekit.features.anchorboardcast.state.MediaState;
 import com.trtc.uikit.livekit.features.anchorboardcast.state.RoomState;
 import com.trtc.uikit.livekit.features.anchorboardcast.state.UserState;
-import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine.CoreState;
+import io.trtc.tuikit.atomicxcore.api.deprecated.LiveCoreViewDefine.CoreState;
 
 public class AnchorManager {
     private static final LiveKitLogger LOGGER = LiveKitLogger.getFeaturesLogger("AnchorManager");
@@ -63,6 +63,7 @@ public class AnchorManager {
         addObserver();
         setRoomId(liveInfo.roomId);
         mMediaManager.setCustomVideoProcess();
+        mMediaManager.enableMultiPlaybackQuality(true);
         mRoomManager.initCreateRoomState(liveInfo);
 
         mExternalState = new AnchorViewDefine.AnchorState();

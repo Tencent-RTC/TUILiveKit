@@ -6,4 +6,5 @@ public class PictureInPictureState {
     public MutableLiveData<String> roomId = new MutableLiveData<>("");
     public boolean anchorIsPictureInPictureMode = false;
     public boolean audienceIsPictureInPictureMode = false;
+    public boolean isAnchorStreaming = false;
 }

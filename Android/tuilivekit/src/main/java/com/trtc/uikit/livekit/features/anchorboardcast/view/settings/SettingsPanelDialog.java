@@ -14,7 +14,7 @@ import com.tencent.qcloud.tuicore.util.ScreenUtil;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.features.anchorboardcast.manager.AnchorManager;
-import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
+import io.trtc.tuikit.atomicxcore.api.LiveCoreView;
 
 @SuppressLint("ViewConstructor")
 public class SettingsPanelDialog extends PopupDialog {

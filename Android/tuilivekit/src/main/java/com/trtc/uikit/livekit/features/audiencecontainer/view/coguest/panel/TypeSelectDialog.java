@@ -14,14 +14,21 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
+import com.trtc.tuikit.common.permission.PermissionCallback;
+import com.trtc.tuikit.common.system.ContextProvider;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
+import com.trtc.uikit.livekit.common.PermissionRequest;
 import com.trtc.uikit.livekit.features.audiencecontainer.manager.AudienceManager;
-import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
+
+import io.trtc.tuikit.atomicxcore.api.LiveCoreView;
 
 @SuppressLint("ViewConstructor")
 public class TypeSelectDialog extends PopupDialog implements AudienceManager.AudienceViewListener {
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getLiveStreamLogger("TypeSelectDialog");
+
     private       ImageView        mImageLinkSettings;
     private       ConstraintLayout mLayoutLinkVideo;
     private       ConstraintLayout mLayoutLinkAudio;
@@ -100,17 +107,57 @@ public class TypeSelectDialog extends PopupDialog implements AudienceManager.Aud
 
     private void applyLinkMic(boolean openCamera) {
         ToastUtil.toastShortMessageCenter(getContext().getString(R.string.common_toast_apply_link_mic));
-        mLiveStream.requestIntraRoomConnection("", mSeatIndex, 60, openCamera, new TUIRoomDefine.ActionCallback() {
-            @Override
-            public void onSuccess() {
-                mAudienceManager.getCoGuestManager().updateCoGuestStates(APPLYING);
-            }
+        PermissionRequest.requestMicrophonePermissions(ContextProvider.getApplicationContext(),
+                new PermissionCallback() {
+                    @Override
+                    public void onGranted() {
+                        if (openCamera) {
+                            PermissionRequest.requestCameraPermissions(ContextProvider.getApplicationContext(),
+                                    new PermissionCallback() {
+                                        @Override
+                                        public void onGranted() {
+                                            LOGGER.info("requestCameraPermissions:[onGranted]");
+                                            mLiveStream.requestIntraRoomConnection("", mSeatIndex, 60, openCamera,
+                                                    new TUIRoomDefine.ActionCallback() {
+                                                        @Override
+                                                        public void onSuccess() {
+                                                            mAudienceManager.getCoGuestManager().updateCoGuestStates(APPLYING);
+                                                        }
 
-            @Override
-            public void onError(TUICommonDefine.Error error, String message) {
-                ErrorLocalized.onError(error);
-            }
-        });
+                                                        @Override
+                                                        public void onError(TUICommonDefine.Error error,
+                                                                            String message) {
+                                                            ErrorLocalized.onError(error);
+                                                        }
+                                                    });
+                                        }
+
+                                        @Override
+                                        public void onDenied() {
+                                            LOGGER.error("requestCameraPermissions:[onDenied]");
+                                        }
+                                    });
+                        } else {
+                            mLiveStream.requestIntraRoomConnection("", mSeatIndex, 60, openCamera,
+                                    new TUIRoomDefine.ActionCallback() {
+                                        @Override
+                                        public void onSuccess() {
+                                            mAudienceManager.getCoGuestManager().updateCoGuestStates(APPLYING);
+                                        }
+
+                                        @Override
+                                        public void onError(TUICommonDefine.Error error, String message) {
+                                            ErrorLocalized.onError(error);
+                                        }
+                                    });
+                        }
+                    }
+
+                    @Override
+                    public void onDenied() {
+                        LOGGER.error("requestCameraPermissions:[onDenied]");
+                    }
+                });
         dismiss();
     }
 

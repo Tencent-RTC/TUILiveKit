@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/common_gray_dark_2"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:gravity="center"
+        android:text="@string/common_video_settings"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/livekit_anchor_prepare_bg_video_settings"
+        android:orientation="vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingTop="18dp"
+            android:paddingBottom="18dp">
+
+            <TextView
+                android:id="@+id/tv_mirror_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/common_video_settings_item_mirror"
+                android:textColor="@color/common_text_color_primary"
+                android:textSize="16sp" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_mirror"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:checked="false"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                app:thumbTint="@color/audio_effect_switch_thumb_bg"
+                app:trackTint="@color/audio_effect_switch_track_bg" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#3A3C42" />
+
+        <LinearLayout
+            android:id="@+id/layout_quality"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingTop="18dp"
+            android:paddingBottom="18dp">
+
+            <TextView
+                android:id="@+id/tv_quality_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/live_video_resolution"
+                android:textColor="@color/common_text_color_primary"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tv_quality_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:drawableEnd="@drawable/livekit_down_arrow"
+                android:drawablePadding="4dp"
+                android:text="1080P"
+                android:textColor="@color/common_text_color_primary"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

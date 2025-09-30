@@ -5,7 +5,7 @@ import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager.Connec
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.UserInfo;
 import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.features.audiencecontainer.manager.AudienceManager;
-import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine.ConnectionObserver;
+import io.trtc.tuikit.atomicxcore.api.deprecated.LiveCoreViewDefine.ConnectionObserver;
 
 import java.lang.ref.WeakReference;
 import java.util.List;

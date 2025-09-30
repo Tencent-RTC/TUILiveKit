@@ -1,0 +1,8 @@
+package com.trtc.uikit.livekit.component.barrage.viewmodel
+
+object BarrageConstants {
+    const val LIVEKIT_METRICS_PANEL_SHOW_LIVE_ROOM_BARRAGE_SEND = 190012
+    const val LIVEKIT_METRICS_PANEL_SHOW_LIVE_ROOM_BARRAGE_SHOW = 190013
+    const val LIVEKIT_METRICS_PANEL_SHOW_VOICE_ROOM_BARRAGE_SEND = 191011
+    const val LIVEKIT_METRICS_PANEL_SHOW_VOICE_ROOM_BARRAGE_SHOW = 191012
+}

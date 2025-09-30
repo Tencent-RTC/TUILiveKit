@@ -13,12 +13,14 @@ import androidx.annotation.NonNull;
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
+import com.tencent.qcloud.tuicore.TUIConstants;
+import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.util.ScreenUtil;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.features.anchorboardcast.manager.AnchorManager;
-import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
+import io.trtc.tuikit.atomicxcore.api.LiveCoreView;
 
 @SuppressLint("ViewConstructor")
 public class EndLiveStreamDialog extends PopupDialog {
@@ -29,6 +31,9 @@ public class EndLiveStreamDialog extends PopupDialog {
     private final AnchorManager               mAnchorManager;
     private       LinearLayout                mRootLayout;
     private final EndLiveStreamDialogListener mListener;
+
+    private static final String EVENT_KEY_TIME_LIMIT        = "RTCRoomTimeLimitService";
+    private static final String EVENT_SUB_KEY_COUNTDOWN_END = "CountdownEnd";
 
     public EndLiveStreamDialog(@NonNull Context context, LiveCoreView liveStream, AnchorManager liveManager,
                                EndLiveStreamDialogListener listener) {
@@ -169,6 +174,11 @@ public class EndLiveStreamDialog extends PopupDialog {
                 mListener.onRoomExit();
             }
         }
+        TUICore.notifyEvent(
+                TUIConstants.Privacy.EVENT_ROOM_STATE_CHANGED,
+                TUIConstants.Privacy.EVENT_SUB_KEY_ROOM_STATE_STOP, null
+        );
+        TUICore.notifyEvent(EVENT_KEY_TIME_LIMIT, EVENT_SUB_KEY_COUNTDOWN_END, null);
         mCoreView.setLocalVideoMuteImage(null, null);
     }
 

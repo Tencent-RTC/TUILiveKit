@@ -10,15 +10,14 @@ import androidx.annotation.Nullable;
 
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.ConstantsKt;
 import com.trtc.uikit.livekit.component.audioeffect.AudioEffectPanel;
-import com.trtc.uikit.livekit.voiceroom.manager.api.Constants;
 import com.trtc.uikit.livekit.voiceroom.view.BasicView;
 
-import java.util.Arrays;
-
 public class AnchorPreviewFunctionView extends BasicView {
-    private SettingsDialog          mSettingsDialog;
-    private PopupDialog             mAudioEffectPanel;
+    private SettingsDialog mSettingsDialog;
+    private LayoutSettingPanel mLayoutSettingPanel;
+    private PopupDialog mAudioEffectPanel;
     private StreamPresetImagePicker mStreamPresetImagePicker;
 
     public AnchorPreviewFunctionView(@NonNull Context context) {
@@ -39,6 +38,7 @@ public class AnchorPreviewFunctionView extends BasicView {
         initBackgroundImageButton();
         initAudioEffectButton();
         initSettingsButton();
+        initLayoutButton();
     }
 
     @Override
@@ -57,7 +57,7 @@ public class AnchorPreviewFunctionView extends BasicView {
                 StreamPresetImagePicker.Config config = new StreamPresetImagePicker.Config();
                 config.title = mContext.getString(R.string.common_settings_bg_image);
                 config.confirmButtonText = mContext.getString(R.string.common_set_as_background);
-                config.data = Arrays.asList(Constants.BACKGROUND_THUMB_URL_LIST);
+                config.data = ConstantsKt.getBACKGROUND_THUMB_URL_LIST();
                 config.currentImageUrl = transferThumbUrlFromImage(mRoomState.backgroundURL.getValue());
                 mStreamPresetImagePicker = new StreamPresetImagePicker(mContext, config);
                 mStreamPresetImagePicker.setOnConfirmListener(imageUrl
@@ -87,6 +87,15 @@ public class AnchorPreviewFunctionView extends BasicView {
                 mSettingsDialog = new SettingsDialog(mContext, mVoiceRoomManager);
             }
             mSettingsDialog.show();
+        });
+    }
+
+    private void initLayoutButton() {
+        findViewById(R.id.iv_layout).setOnClickListener(view -> {
+            if (mLayoutSettingPanel == null) {
+                mLayoutSettingPanel = new LayoutSettingPanel(mContext, mVoiceRoomManager);
+            }
+            mLayoutSettingPanel.show();
         });
     }
 

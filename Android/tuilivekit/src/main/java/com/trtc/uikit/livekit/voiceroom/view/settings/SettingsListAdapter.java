@@ -1,7 +1,5 @@
 package com.trtc.uikit.livekit.voiceroom.view.settings;
 
-import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.BACKGROUND_THUMB_URL_LIST;
-
 import android.content.Context;
 import android.graphics.Rect;
 import android.text.TextUtils;
@@ -19,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
+import com.trtc.uikit.livekit.common.ConstantsKt;
 import com.trtc.uikit.livekit.component.audioeffect.AudioEffectPanel;
 import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
 import com.trtc.uikit.livekit.voiceroom.state.RoomState;
@@ -105,7 +104,7 @@ public class SettingsListAdapter extends RecyclerView.Adapter<SettingsListAdapte
             StreamPresetImagePicker.Config config = new StreamPresetImagePicker.Config();
             config.title = mContext.getString(R.string.common_settings_bg_image);
             config.confirmButtonText = mContext.getString(R.string.common_set_as_background);
-            config.data = Arrays.asList(BACKGROUND_THUMB_URL_LIST);
+            config.data = ConstantsKt.getBACKGROUND_THUMB_URL_LIST();
             config.currentImageUrl = transferThumbUrlFromImage(mRoomState.backgroundURL.getValue());
             mStreamPresetImagePicker = new StreamPresetImagePicker(mContext, config);
             mStreamPresetImagePicker.setOnConfirmListener(imageUrl

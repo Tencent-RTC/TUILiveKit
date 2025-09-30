@@ -1,9 +1,8 @@
 package com.trtc.uikit.livekit.features.audiencecontainer;
 
-import static com.trtc.uikit.livekit.features.audiencecontainer.manager.Constants.EVENT_KEY_LIVE_KIT;
-import static com.trtc.uikit.livekit.features.audiencecontainer.manager.Constants.EVENT_PARAMS_KEY_ENABLE_SLIDE;
-import static com.trtc.uikit.livekit.features.audiencecontainer.manager.Constants.EVENT_SUB_KEY_DESTROY_AUDIENCE_CONTAINER;
-import static com.trtc.uikit.livekit.features.audiencecontainer.manager.Constants.EVENT_SUB_KEY_LINK_STATUS_CHANGE;
+import static com.trtc.uikit.livekit.common.ConstantsKt.EVENT_KEY_LIVE_KIT;
+import static com.trtc.uikit.livekit.common.ConstantsKt.EVENT_PARAMS_IS_LINKING;
+import static com.trtc.uikit.livekit.common.ConstantsKt.EVENT_SUB_KEY_LINK_STATUS_CHANGE;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,7 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
-import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
 import com.trtc.uikit.livekit.common.LiveKitLogger;
@@ -37,6 +35,9 @@ public class AudienceContainerView extends FrameLayout implements AudienceView.V
     private       LiveListViewPagerAdapter mLiveListViewPagerAdapter;
     private       AudienceView             mAudienceView;
     private final AudienceContainerManager mAudienceContainerManager;
+    private       boolean                  mIsLandscape;
+    private       boolean                  mIsLoading;
+    private       boolean                  mIsLinking;
 
     public AudienceContainerView(@NonNull Context context) {
         this(context, null, 0);
@@ -128,9 +129,8 @@ public class AudienceContainerView extends FrameLayout implements AudienceView.V
     }
 
     public void setScreenOrientation(boolean isPortrait) {
-        if (mLiveListViewPager != null) {
-            mLiveListViewPager.enableSliding(isPortrait);
-        }
+        mIsLandscape = !isPortrait;
+        enableSliding();
     }
 
     public void disableSliding(boolean disable) {
@@ -181,18 +181,23 @@ public class AudienceContainerView extends FrameLayout implements AudienceView.V
         return "";
     }
 
+    public boolean isLiveStreaming() {
+        if (mAudienceView != null) {
+            return mAudienceView.isLiveStreaming();
+        }
+        return false;
+    }
+
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         TUICore.registerEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_LINK_STATUS_CHANGE, this);
-        TUICore.registerEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_DESTROY_AUDIENCE_CONTAINER, this);
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         TUICore.unRegisterEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_LINK_STATUS_CHANGE, this);
-        TUICore.unRegisterEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_DESTROY_AUDIENCE_CONTAINER, this);
         if (mAudienceView != null) {
             mAudienceView.leaveRoom();
         }
@@ -206,32 +211,26 @@ public class AudienceContainerView extends FrameLayout implements AudienceView.V
 
     @Override
     public void onLoading() {
-        if (Boolean.TRUE.equals(AudienceContainerConfig.disableSliding.getValue())) {
-            return;
-        }
-        mLiveListViewPager.enableSliding(false);
+        mIsLoading = true;
+        enableSliding();
     }
 
     @Override
     public void onFinished() {
-        if (Boolean.TRUE.equals(AudienceContainerConfig.disableSliding.getValue())) {
-            return;
-        }
-        mLiveListViewPager.enableSliding(true);
+        mIsLoading = false;
+        enableSliding();
     }
 
     @Override
     public void onNotifyEvent(String key, String subKey, Map<String, Object> param) {
         if (EVENT_SUB_KEY_LINK_STATUS_CHANGE.equals(subKey)) {
             onLinkStatusChanged(param);
-        } else if (EVENT_SUB_KEY_DESTROY_AUDIENCE_CONTAINER.equals(subKey)) {
-            if (mFragmentActivity == null || mFragmentActivity.isFinishing() || mFragmentActivity.isDestroyed()) {
-                return;
-            }
-            if (mAudienceView != null) {
-                mAudienceView.leaveRoom();
-            }
-            mFragmentActivity.finishAndRemoveTask();
+        }
+    }
+
+    public void destroy() {
+        if (mAudienceView != null) {
+            mAudienceView.leaveRoom();
         }
     }
 
@@ -240,10 +239,19 @@ public class AudienceContainerView extends FrameLayout implements AudienceView.V
             return;
         }
         if (mLiveListViewPager != null && param != null) {
-            Boolean enableSlide = (Boolean) param.get(EVENT_PARAMS_KEY_ENABLE_SLIDE);
-            if (enableSlide != null) {
-                mLiveListViewPager.enableSliding(enableSlide);
+            Boolean isLinking = (Boolean) param.get(EVENT_PARAMS_IS_LINKING);
+            if (isLinking != null) {
+                mIsLinking = isLinking;
+                enableSliding();
             }
         }
+    }
+
+    private void enableSliding() {
+        if (Boolean.TRUE.equals(AudienceContainerConfig.disableSliding.getValue())) {
+            return;
+        }
+        boolean enabled = !mIsLinking && !mIsLoading && !mIsLandscape;
+        mLiveListViewPager.enableSliding(enabled);
     }
 }

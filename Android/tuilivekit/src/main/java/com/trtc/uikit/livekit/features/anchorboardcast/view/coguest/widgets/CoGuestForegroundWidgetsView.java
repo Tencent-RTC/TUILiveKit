@@ -3,6 +3,7 @@ package com.trtc.uikit.livekit.features.anchorboardcast.view.coguest.widgets;
 import static com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.DeviceStatus.OPENED;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
@@ -88,7 +89,7 @@ public class CoGuestForegroundWidgetsView extends BasicView {
         } else {
             mLayoutUserInfo.setVisibility(GONE);
         }
-        mTextName.setText(mSeatInfo.userName);
+        mTextName.setText(TextUtils.isEmpty(mSeatInfo.userName) ? mSeatInfo.userId : mSeatInfo.userName);
     }
 
     @Override

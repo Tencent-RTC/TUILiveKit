@@ -6,7 +6,8 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.UserInfo;
 import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.features.anchorboardcast.manager.AnchorManager;
-import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine.ConnectionObserver;
+
+import io.trtc.tuikit.atomicxcore.api.deprecated.LiveCoreViewDefine.ConnectionObserver;
 
 import java.lang.ref.WeakReference;
 import java.util.List;

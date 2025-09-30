@@ -1,16 +1,17 @@
 package com.trtc.uikit.livekit.features.audiencecontainer.view;
 
 import static com.tencent.qcloud.tuicore.util.ScreenUtil.dip2px;
+import static com.trtc.uikit.livekit.common.ConstantsKt.EVENT_KEY_LIVE_KIT;
+import static com.trtc.uikit.livekit.common.ConstantsKt.EVENT_PARAMS_IS_LINKING;
+import static com.trtc.uikit.livekit.common.ConstantsKt.EVENT_SUB_KEY_DESTROY_LIVE_VIEW;
+import static com.trtc.uikit.livekit.common.ConstantsKt.EVENT_SUB_KEY_LINK_STATUS_CHANGE;
+import static com.trtc.uikit.livekit.component.beauty.BeautyUtils.resetBeauty;
 import static com.trtc.uikit.livekit.component.giftaccess.service.GiftConstants.GIFT_COUNT;
 import static com.trtc.uikit.livekit.component.giftaccess.service.GiftConstants.GIFT_ICON_URL;
 import static com.trtc.uikit.livekit.component.giftaccess.service.GiftConstants.GIFT_NAME;
 import static com.trtc.uikit.livekit.component.giftaccess.service.GiftConstants.GIFT_RECEIVER_USERNAME;
 import static com.trtc.uikit.livekit.component.giftaccess.service.GiftConstants.GIFT_VIEW_TYPE;
 import static com.trtc.uikit.livekit.component.giftaccess.service.GiftConstants.GIFT_VIEW_TYPE_1;
-import static com.trtc.uikit.livekit.features.audiencecontainer.manager.Constants.EVENT_KEY_LIVE_KIT;
-import static com.trtc.uikit.livekit.features.audiencecontainer.manager.Constants.EVENT_PARAMS_KEY_ENABLE_SLIDE;
-import static com.trtc.uikit.livekit.features.audiencecontainer.manager.Constants.EVENT_SUB_KEY_DESTROY_AUDIENCE_CONTAINER;
-import static com.trtc.uikit.livekit.features.audiencecontainer.manager.Constants.EVENT_SUB_KEY_LINK_STATUS_CHANGE;
 import static com.trtc.uikit.livekit.features.audiencecontainer.state.CoGuestState.CoGuestStatus.APPLYING;
 import static com.trtc.uikit.livekit.features.audiencecontainer.state.CoGuestState.CoGuestStatus.LINKING;
 import static com.trtc.uikit.livekit.features.audiencecontainer.state.CoGuestState.CoGuestStatus.NONE;
@@ -42,7 +43,6 @@ import com.google.gson.Gson;
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveBattleManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager.ConnectionUser;
-import com.tencent.cloud.tuikit.engine.extension.TUILiveGiftManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.UserInfo;
@@ -50,22 +50,16 @@ import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.TUIThemeManager;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.tuikit.common.imageloader.ImageOptions;
-import com.trtc.tuikit.common.system.ContextProvider;
+import com.trtc.tuikit.common.util.ToastUtil;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.common.Constants;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
 import com.trtc.uikit.livekit.common.LiveKitLogger;
 import com.trtc.uikit.livekit.component.audiencelist.AudienceListView;
 import com.trtc.uikit.livekit.component.barrage.BarrageInputView;
 import com.trtc.uikit.livekit.component.barrage.BarrageStreamView;
-import com.trtc.uikit.livekit.component.barrage.store.BarrageStore;
-import com.trtc.uikit.livekit.component.barrage.store.model.Barrage;
-import com.trtc.uikit.livekit.component.beauty.basicbeauty.store.BasicBeautyStore;
 import com.trtc.uikit.livekit.component.beauty.tebeauty.store.TEBeautyStore;
-import com.trtc.uikit.livekit.component.dashboard.StreamDashboardDialog;
 import com.trtc.uikit.livekit.component.gift.GiftPlayView;
 import com.trtc.uikit.livekit.component.gift.LikeButton;
-import com.trtc.uikit.livekit.component.gift.store.TUIGiftStore;
 import com.trtc.uikit.livekit.component.giftaccess.GiftButton;
 import com.trtc.uikit.livekit.component.giftaccess.service.GiftCacheService;
 import com.trtc.uikit.livekit.component.giftaccess.store.GiftStore;
@@ -91,9 +85,8 @@ import com.trtc.uikit.livekit.features.audiencecontainer.view.coguest.widgets.Co
 import com.trtc.uikit.livekit.features.audiencecontainer.view.coguest.widgets.CoGuestForegroundWidgetsView;
 import com.trtc.uikit.livekit.features.audiencecontainer.view.cohost.widgets.CoHostBackgroundWidgetsView;
 import com.trtc.uikit.livekit.features.audiencecontainer.view.cohost.widgets.CoHostForegroundWidgetsView;
+import com.trtc.uikit.livekit.features.audiencecontainer.view.settings.AudienceSettingsPanelDialog;
 import com.trtc.uikit.livekit.features.audiencecontainer.view.userinfo.UserInfoDialog;
-import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
-import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -104,57 +97,73 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import io.trtc.tuikit.atomicxcore.api.Barrage;
+import io.trtc.tuikit.atomicxcore.api.Gift;
+import io.trtc.tuikit.atomicxcore.api.LiveCoreView;
+import io.trtc.tuikit.atomicxcore.api.LiveSummaryStore;
+import io.trtc.tuikit.atomicxcore.api.LiveUserInfo;
+import io.trtc.tuikit.atomicxcore.api.deprecated.LiveCoreViewDefine;
+
 @SuppressLint("ViewConstructor")
-public class AudienceView extends BasicView {
+public class AudienceView extends BasicView implements AudienceManager.AudienceViewListener {
     private static final LiveKitLogger LOGGER            = LiveKitLogger.getLiveStreamLogger("AudienceView");
     private static final String        DEFAULT_COVER_URL =
             "https://liteav-test-1252463788.cos.ap-guangzhou.myqcloud.com/voice_room/voice_room_cover1.png";
 
-    private TUILiveListManager.LiveInfo mLiveInfo;
-    private AudienceManager             mAudienceManager;
-    private LiveCoreView                mLiveCoreView;
-    private FrameLayout                 mLayoutPlaying;
-    private FrameLayout                 mLayoutLiveCoreView;
-    private ImageView                   mIvVideoViewBackground;
-    private ImageView                   mImageDashboard;
-    private GiftButton                  mButtonGift;
-    private LikeButton                  mButtonLike;
-    private ImageView                   mImageCoGuest;
-    private BarrageInputView            mBarrageInputView;
-    private LiveInfoView                mRoomInfoView;
-    private GiftPlayView                mGiftPlayView;
-    private AudienceListView            mAudienceListView;
-    private BarrageStreamView           mBarrageStreamView;
-    private NetworkInfoView             mNetworkInfoView;
-    private ImageView                   mImageFloatWindow;
-    private ImageView                   mImageStandardExit;
-    private ImageView                   mImageCompactExit;
-    private FrameLayout                 mLayoutSwitchOrientationButton;
-    private ImageView                   mImageSwitchOrientationIcon;
-    private CoGuestRequestFloatView     mWaitingCoGuestPassView;
-    private AudiencePlayingRootView     mAudiencePlayingRootView;
-    private UserInfoDialog              mUserInfoDialog;
-    private AnchorManagerDialog         mAnchorManagerDialog;
-    private ViewObserver                mViewObserver;
-    private boolean                     mIsLoading;
-    private LiveStreamObserver          mLiveStreamObserver;
-    private LiveBattleManagerObserver   mLiveBattleManagerObserver;
-    private VideoViewAdapterImpl        mVideoViewAdapterImpl;
+    private TUILiveListManager.LiveInfo    mLiveInfo;
+    private AudienceManager                mAudienceManager;
+    private LiveCoreView                   mLiveCoreView;
+    private LiveCoreViewMaskBackgroundView mLiveCoreViewMaskBackgroundView;
+    private FrameLayout                    mLayoutPlaying;
+    private FrameLayout                    mLayoutLiveCoreView;
+    private FrameLayout                    mLayoutLiveCoreViewMask;
+    private ImageView                      mIvVideoViewBackground;
+    private ImageView                      mImageMore;
+    private GiftButton                     mButtonGift;
+    private LikeButton                     mButtonLike;
+    private ImageView                      mImageCoGuest;
+    private BarrageInputView               mBarrageInputView;
+    private LiveInfoView                   mRoomInfoView;
+    private GiftPlayView                   mGiftPlayView;
+    private AudienceListView               mAudienceListView;
+    private BarrageStreamView              mBarrageStreamView;
+    private NetworkInfoView                mNetworkInfoView;
+    private ImageView                      mImageFloatWindow;
+    private ImageView                      mImageStandardExit;
+    private ImageView                      mImageCompactExit;
+    private FrameLayout                    mLayoutSwitchOrientationButton;
+    private ImageView                      mImageSwitchOrientationIcon;
+    private CoGuestRequestFloatView        mWaitingCoGuestPassView;
+    private AudiencePlayingRootView        mAudiencePlayingRootView;
+    private UserInfoDialog                 mUserInfoDialog;
+    private AnchorManagerDialog            mAnchorManagerDialog;
+    private ViewObserver                   mViewObserver;
+    private boolean                        mIsLoading;
+    private LiveStreamObserver             mLiveStreamObserver;
+    private LiveBattleManagerObserver      mLiveBattleManagerObserver;
+    private VideoViewAdapterImpl           mVideoViewAdapterImpl;
 
     private       float   mTouchX;
     private       float   mTouchY;
     private final int     mTouchSlop;
     private       boolean mIsSwiping;
-    private       boolean mIsJoinRoom;
+    private       boolean mIsLiveStreaming;
     private       boolean mIsClickEmptySeat = false;
 
-    private final Observer<List<ConnectionUser>> mCoHostConnectedUsersObserver    = this::onCoHostConnectedUsersChanged;
-    private final Observer<CoGuestStatus>        mLinkStatusObserver              = this::onLinkStatusChange;
-    private final Observer<Boolean>              mDisableHeaderFloatWinObserver   = this::onHeaderFloatWinDisable;
-    private final Observer<Boolean>              mDisableHeaderLiveDataObserver   = this::onHeaderLiveDataDisable;
-    private final Observer<Boolean>              mDisableHeaderVisitorCntObserver = this::onHeaderVisitorCntDisable;
-    private final Observer<Boolean>              mDisableFooterCoGuestObserver    = this::onFooterCoGuestDisable;
-    private final Observer<Boolean>              mVideoOrientationObserver        = this::onVideoOrientationChanged;
+    private TUIRoomDefine.VideoQuality mPlaybackQuality = null;
+
+    private final Observer<List<ConnectionUser>>       mCoHostConnectedUsersObserver    =
+            this::onCoHostConnectedUsersChanged;
+    private final Observer<CoGuestStatus>              mLinkStatusObserver              = this::onLinkStatusChange;
+    private final Observer<Boolean>                    mDisableHeaderFloatWinObserver   = this::onHeaderFloatWinDisable;
+    private final Observer<Boolean>                    mDisableHeaderLiveDataObserver   = this::onHeaderLiveDataDisable;
+    private final Observer<Boolean>                    mDisableHeaderVisitorCntObserver =
+            this::onHeaderVisitorCntDisable;
+    private final Observer<Boolean>                    mDisableFooterCoGuestObserver    = this::onFooterCoGuestDisable;
+    private final Observer<Boolean>                    mVideoOrientationObserver        =
+            this::onVideoOrientationChanged;
+    private final Observer<TUIRoomDefine.VideoQuality> mPlaybackQualityObserver         =
+            this::onPlaybackQualityChanged;
 
     public AudienceView(@NonNull Context context) {
         this(context, null);
@@ -173,15 +182,18 @@ public class AudienceView extends BasicView {
         LOGGER.info("AudienceView init:" + this);
         mLiveInfo = liveInfo;
         mLiveCoreView = new LiveCoreView(getContext());
+        mLiveCoreView.setLiveId(liveInfo.roomId);
         mAudienceManager = new AudienceManager();
         mAudienceManager.setCoreState(mLiveCoreView.getCoreState());
         init(mAudienceManager);
         mRoomManager.updateRoomState(liveInfo);
         mAudienceManager.getMediaManager().setCustomVideoProcess();
         mLayoutLiveCoreView.addView(mLiveCoreView);
+        mLiveCoreViewMaskBackgroundView = new LiveCoreViewMaskBackgroundView(getContext());
+        mLiveCoreViewMaskBackgroundView.init(mAudienceManager);
+        mLayoutLiveCoreViewMask.addView(mLiveCoreViewMaskBackgroundView);
         createVideoMuteBitmap();
         setComponent();
-        setVideoViewAdapter();
         setLayoutBackground(mLiveInfo.coverUrl);
     }
 
@@ -198,10 +210,10 @@ public class AudienceView extends BasicView {
         LayoutInflater.from(mContext).inflate(R.layout.livekit_livestream_audience_view, this, true);
         mLayoutPlaying = findViewById(R.id.fl_playing);
         mImageCoGuest = findViewById(R.id.iv_co_guest);
+        mImageMore = findViewById(R.id.iv_more);
         mButtonGift = findViewById(R.id.btn_gift);
         mButtonLike = findViewById(R.id.btn_like);
         mBarrageInputView = findViewById(R.id.barrage_input_view);
-        mImageDashboard = findViewById(R.id.iv_dashboard);
         mRoomInfoView = findViewById(R.id.room_info_view);
         mAudienceListView = findViewById(R.id.audience_list_view);
         mBarrageStreamView = findViewById(R.id.barrage_stream_view);
@@ -213,6 +225,7 @@ public class AudienceView extends BasicView {
         mImageCompactExit = findViewById(R.id.iv_compact_exit_room);
         mIvVideoViewBackground = findViewById(R.id.video_view_background);
         mLayoutLiveCoreView = findViewById(R.id.live_core_view);
+        mLayoutLiveCoreViewMask = findViewById(R.id.live_core_view_mask);
         mAudiencePlayingRootView = findViewById(R.id.fl_playing_root);
         mLayoutSwitchOrientationButton = findViewById(R.id.fl_switch_orientation_button);
         mImageSwitchOrientationIcon = findViewById(R.id.img_switch_orientation_button_icon);
@@ -274,7 +287,7 @@ public class AudienceView extends BasicView {
     }
 
     public void joinRoom() {
-        mIsJoinRoom = true;
+        mIsLiveStreaming = true;
         if (mLiveStreamObserver == null) {
             mLiveStreamObserver = new LiveStreamObserver(mAudienceManager);
             mLiveCoreView.registerConnectionObserver(mLiveStreamObserver);
@@ -289,6 +302,7 @@ public class AudienceView extends BasicView {
         onViewLoading();
         mAudienceManager.getMediaManager().setCustomVideoProcess();
         mLiveCoreView.setLocalVideoMuteImage(mMediaState.bigMuteBitmap, mMediaState.smallMuteBitmap);
+        setVideoViewAdapter();
         mLiveCoreView.joinLiveStream(mLiveInfo.roomId, new TUILiveListManager.LiveInfoCallback() {
             @Override
             public void onSuccess(TUILiveListManager.LiveInfo liveInfo) {
@@ -299,28 +313,34 @@ public class AudienceView extends BasicView {
                     mLiveCoreView.setLocalVideoMuteImage(null, null);
                     mLiveCoreView.unregisterConnectionObserver(mLiveStreamObserver);
                     mLiveCoreView.unregisterBattleObserver(mLiveBattleManagerObserver);
+                    mIsLiveStreaming = false;
                     return;
                 }
+                mLiveCoreViewMaskBackgroundView.setBackgroundUrl(TextUtils.isEmpty(liveInfo.backgroundUrl) ?
+                        liveInfo.coverUrl : liveInfo.backgroundUrl);
+                mLiveCoreView.setBackgroundColor(getResources().getColor(android.R.color.black));
                 mRoomManager.updateRoomState(liveInfo);
+                mMediaManager.getMultiPlaybackQuality(liveInfo.roomId);
                 initComponentView(liveInfo);
                 onViewFinished();
             }
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
+                mIsLiveStreaming = false;
                 onViewFinished();
                 ErrorLocalized.onError(error);
-                TUICore.notifyEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_DESTROY_AUDIENCE_CONTAINER, null);
+                TUICore.notifyEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_DESTROY_LIVE_VIEW, null);
             }
         });
     }
 
     public void leaveRoom() {
-        if (!mIsJoinRoom) {
+        mLiveCoreView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+        if (!mIsLiveStreaming) {
             return;
         }
-        mIsJoinRoom = false;
-        String roomId = mLiveInfo.roomId;
+        mIsLiveStreaming = false;
         stopPreviewLiveStream();
         mAudienceManager.removeObserver();
         mLiveCoreView.unregisterConnectionObserver(mLiveStreamObserver);
@@ -332,14 +352,17 @@ public class AudienceView extends BasicView {
         mMediaManager.releaseVideoMuteBitmap();
         mAudienceManager.getState().reset();
         mRoomInfoView.unInit();
-        BarrageStore.sharedInstance().unInit(roomId);
-        TUIGiftStore.sharedInstance().unInit(roomId);
-        BasicBeautyStore.getInstance().unInit();
-        TEBeautyStore.getInstance().unInit();
+        resetBeauty();
+        TEBeautyStore.unInit();
+        mPlaybackQuality = null;
     }
 
     public void setViewObserver(ViewObserver observer) {
         mViewObserver = observer;
+    }
+
+    public boolean isLiveStreaming() {
+        return mIsLiveStreaming;
     }
 
     private void initSwitchOrientationButtonView() {
@@ -363,7 +386,7 @@ public class AudienceView extends BasicView {
                 R.drawable.livekit_ic_switch_landscape_button : R.drawable.livekit_ic_switch_portrait_button);
         mBarrageInputView.setVisibility(isPortrait ? VISIBLE : GONE);
         mButtonGift.setVisibility(isPortrait ? VISIBLE : GONE);
-        mImageDashboard.setVisibility(isPortrait ? VISIBLE : GONE);
+        mImageMore.setVisibility(isPortrait ? VISIBLE : GONE);
         mButtonLike.setVisibility(isPortrait ? VISIBLE : GONE);
 
         FrameLayout.LayoutParams audienceListParams = (FrameLayout.LayoutParams) mAudienceListView.getLayoutParams();
@@ -455,7 +478,7 @@ public class AudienceView extends BasicView {
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("api", "component");
-            jsonObject.put("component", Constants.DATA_REPORT_COMPONENT_LIVE_ROOM);
+            jsonObject.put("component", 21);
             LiveCoreView.callExperimentalAPI(jsonObject.toString());
         } catch (JSONException e) {
             LOGGER.error("dataReport:" + Log.getStackTraceString(e));
@@ -510,9 +533,16 @@ public class AudienceView extends BasicView {
     }
 
     @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mAudienceManager.addAudienceViewListener(this);
+    }
+
+    @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mLiveCoreView.setVideoViewAdapter(null);
+        mAudienceManager.removeAudienceViewListener(this);
     }
 
     private void initComponentView(TUILiveListManager.LiveInfo liveInfo) {
@@ -524,11 +554,19 @@ public class AudienceView extends BasicView {
         initExitRoomView();
         initBarrageStreamView(liveInfo);
         initBarrageInputView(liveInfo);
-        initDashboardIcon();
         initGiftView(liveInfo);
         initLikeView(liveInfo);
         initGiftPlayView(liveInfo);
         initWaitingCoGuestPassView();
+        initMoreIcon();
+    }
+
+    private void initMoreIcon() {
+        mImageMore.setOnClickListener(view -> {
+            AudienceSettingsPanelDialog audienceSettingsPanelDialog = new AudienceSettingsPanelDialog(mContext,
+                    mAudienceManager);
+            audienceSettingsPanelDialog.show();
+        });
     }
 
     private void initAudienceListView(TUILiveListManager.LiveInfo liveInfo) {
@@ -585,28 +623,31 @@ public class AudienceView extends BasicView {
         GiftCacheService giftCacheService = GiftStore.getInstance().mGiftCacheService;
         mGiftPlayView.setListener(new GiftPlayView.TUIGiftPlayViewListener() {
             @Override
-            public void onReceiveGift(GiftPlayView view, TUILiveGiftManager.GiftInfo gift, int giftCount,
-                                      UserInfo sender) {
+            public void onReceiveGift(GiftPlayView view, @NonNull Gift gift, int giftCount,
+                                      @NonNull LiveUserInfo sender) {
                 if (mBarrageStreamView == null) {
                     return;
                 }
                 Barrage barrage = new Barrage();
-                barrage.content = "gift";
-                barrage.user.userId = sender.userId;
-                barrage.user.userName = TextUtils.isEmpty(sender.userName) ? sender.userId : sender.userName;
-                barrage.user.avatarUrl = sender.avatarUrl;
-                barrage.extInfo.put(GIFT_VIEW_TYPE, GIFT_VIEW_TYPE_1);
-                barrage.extInfo.put(GIFT_NAME, gift.name);
-                barrage.extInfo.put(GIFT_COUNT, giftCount);
-                barrage.extInfo.put(GIFT_ICON_URL, gift.iconUrl);
-                barrage.extInfo.put(GIFT_RECEIVER_USERNAME, TextUtils.isEmpty(mRoomState.liveInfo.ownerName)
+                barrage.setTextContent("gift");
+                barrage.getSender().setUserId(sender.getUserId());
+                barrage.getSender().setUserName(TextUtils.isEmpty(sender.getUserName()) ? sender.getUserId() :
+                        sender.getUserName());
+                barrage.getSender().setAvatarURL(sender.getAvatarURL());
+                Map<String, String> extInfo = new HashMap<>();
+                extInfo.put(GIFT_VIEW_TYPE, String.valueOf(GIFT_VIEW_TYPE_1));
+                extInfo.put(GIFT_NAME, gift.getName());
+                extInfo.put(GIFT_COUNT, String.valueOf(giftCount));
+                extInfo.put(GIFT_ICON_URL, gift.getIconURL());
+                extInfo.put(GIFT_RECEIVER_USERNAME, TextUtils.isEmpty(mRoomState.liveInfo.ownerName)
                         ? mRoomState.liveInfo.ownerId : mRoomState.liveInfo.ownerName);
+                barrage.setExtensionInfo(extInfo);
                 mBarrageStreamView.insertBarrages(barrage);
             }
 
             @Override
-            public void onPlayGiftAnimation(GiftPlayView view, TUILiveGiftManager.GiftInfo gift) {
-                giftCacheService.request(gift.resourceUrl, (error, result) -> {
+            public void onPlayGiftAnimation(GiftPlayView view, @NonNull Gift gift) {
+                giftCacheService.request(gift.getResourceURL(), (error, result) -> {
                     if (error == 0) {
                         view.playGiftAnimation(result);
                     }
@@ -625,13 +666,6 @@ public class AudienceView extends BasicView {
             TypeSelectDialog typeSelectDialog = new TypeSelectDialog(mContext, mAudienceManager, mLiveCoreView, -1);
             typeSelectDialog.setOnDismissListener(dialog -> mIsClickEmptySeat = false);
             typeSelectDialog.show();
-        });
-    }
-
-    private void initDashboardIcon() {
-        mImageDashboard.setOnClickListener(view -> {
-            StreamDashboardDialog streamDashboardDialog = new StreamDashboardDialog(mContext);
-            streamDashboardDialog.show();
         });
     }
 
@@ -664,6 +698,7 @@ public class AudienceView extends BasicView {
     @Override
     protected void addObserver() {
         mRoomState.videoStreamIsLandscape.observeForever(mVideoOrientationObserver);
+        mMediaState.playbackQuality.observeForever(mPlaybackQualityObserver);
         mCoGuestState.coGuestStatus.observeForever(mLinkStatusObserver);
         mCoreState.coHostState.connectedUserList.observeForever(mCoHostConnectedUsersObserver);
         AudienceContainerConfig.disableHeaderFloatWin.observeForever(mDisableHeaderFloatWinObserver);
@@ -675,6 +710,7 @@ public class AudienceView extends BasicView {
     @Override
     protected void removeObserver() {
         mRoomState.videoStreamIsLandscape.removeObserver(mVideoOrientationObserver);
+        mMediaState.playbackQuality.removeObserver(mPlaybackQualityObserver);
         mCoGuestState.coGuestStatus.removeObserver(mLinkStatusObserver);
         mCoreState.coHostState.connectedUserList.removeObserver(mCoHostConnectedUsersObserver);
         AudienceContainerConfig.disableHeaderFloatWin.removeObserver(mDisableHeaderFloatWinObserver);
@@ -691,11 +727,12 @@ public class AudienceView extends BasicView {
         if (mCoGuestState.coGuestStatus.getValue() == LINKING) {
             showLiveStreamEndDialog();
         } else {
-            TUICore.notifyEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_DESTROY_AUDIENCE_CONTAINER, null);
+            TUICore.notifyEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_DESTROY_LIVE_VIEW, null);
         }
     }
 
     private void onLinkStatusChange(CoGuestStatus linkStatus) {
+        LOGGER.info("onLinkStatusChange, linkStatus:" + linkStatus);
         switch (linkStatus) {
             case NONE:
                 mWaitingCoGuestPassView.setVisibility(GONE);
@@ -714,9 +751,9 @@ public class AudienceView extends BasicView {
         }
         Map<String, Object> params = new HashMap<>();
         if (LINKING == linkStatus || APPLYING == linkStatus) {
-            params.put(EVENT_PARAMS_KEY_ENABLE_SLIDE, false);
+            params.put(EVENT_PARAMS_IS_LINKING, true);
         } else {
-            params.put(EVENT_PARAMS_KEY_ENABLE_SLIDE, true);
+            params.put(EVENT_PARAMS_IS_LINKING, false);
         }
         TUICore.notifyEvent("EVENT_KEY_LIVE_KIT", EVENT_SUB_KEY_LINK_STATUS_CHANGE, params);
     }
@@ -764,6 +801,14 @@ public class AudienceView extends BasicView {
         }
     }
 
+    private void onPlaybackQualityChanged(TUIRoomDefine.VideoQuality videoQuality) {
+        if (mPlaybackQuality != null && mPlaybackQuality != videoQuality) {
+            ToastUtil.toastShortMessage(mContext.getString(R.string.live_video_resolution_changed) + videoQualityToString(videoQuality));
+        }
+
+        mPlaybackQuality = videoQuality;
+    }
+
     private void enableView(View view, boolean enable) {
         view.setEnabled(enable);
         view.setAlpha(enable ? 1.0f : 0.5f);
@@ -771,7 +816,7 @@ public class AudienceView extends BasicView {
 
     private void showLiveStreamEndDialog() {
         EndLiveStreamDialog dialog = new EndLiveStreamDialog(mContext, mLiveCoreView, mAudienceManager,
-                view -> TUICore.notifyEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_DESTROY_AUDIENCE_CONTAINER, null)
+                view -> TUICore.notifyEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_DESTROY_LIVE_VIEW, null)
         );
         dialog.show();
     }
@@ -900,6 +945,26 @@ public class AudienceView extends BasicView {
                                               List<LiveCoreViewDefine.BattleUserViewModel> userInfos) {
             BattleInfoView battleInfoView = (BattleInfoView) battleContainnerView;
             battleInfoView.updateView(userInfos);
+        }
+    }
+
+    @Override
+    public void onRoomDismissed(String roomId) {
+        mIsLiveStreaming = false;
+    }
+
+    private String videoQualityToString(TUIRoomDefine.VideoQuality quality) {
+        switch (quality) {
+            case Q_1080P:
+                return "1080P";
+            case Q_720P:
+                return "720P";
+            case Q_540P:
+                return "540P";
+            case Q_360P:
+                return "360P";
+            default:
+                return "original";
         }
     }
 

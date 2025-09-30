@@ -1,12 +1,14 @@
 package com.trtc.uikit.livekit.features.anchorboardcast.manager.module;
 
+import static com.trtc.uikit.livekit.common.ConstantsKt.DEFAULT_BACKGROUND_URL;
+import static com.trtc.uikit.livekit.common.ConstantsKt.DEFAULT_COVER_URL;
+
 import android.text.TextUtils;
 
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfo;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveModifyFlag;
 import com.trtc.uikit.livekit.common.LiveKitLogger;
-import com.trtc.uikit.livekit.features.anchorboardcast.manager.Constants;
 import com.trtc.uikit.livekit.features.anchorboardcast.manager.api.IAnchorAPI;
 import com.trtc.uikit.livekit.features.anchorboardcast.state.AnchorState;
 
@@ -28,10 +30,10 @@ public class RoomManager extends BaseManager {
         mRoomState.roomId = liveInfo.roomId;
         liveInfo.createTime = System.currentTimeMillis();
         if (TextUtils.isEmpty(liveInfo.coverUrl)) {
-            liveInfo.coverUrl = Constants.DEFAULT_COVER_URL;
+            liveInfo.coverUrl = DEFAULT_COVER_URL;
         }
         if (TextUtils.isEmpty(liveInfo.backgroundUrl)) {
-            liveInfo.backgroundUrl = Constants.DEFAULT_BACKGROUND_URL;
+            liveInfo.backgroundUrl = DEFAULT_BACKGROUND_URL;
         }
     }
 

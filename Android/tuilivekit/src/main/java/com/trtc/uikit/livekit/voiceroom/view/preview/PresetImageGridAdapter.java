@@ -19,10 +19,9 @@ import com.trtc.uikit.livekit.R;
 import java.util.List;
 
 public class PresetImageGridAdapter extends RecyclerView.Adapter<PresetImageGridAdapter.ImageViewHolder> {
-    private final Context      mContext;
+    private final Context mContext;
     private final List<String> mDataList;
-    private       int          mSelectedPosition;
-
+    private int mSelectedPosition;
     private final OnItemClickListener mItemClickListener;
 
     public PresetImageGridAdapter(Context context, List<String> dataList, int selectedPosition,
@@ -61,7 +60,7 @@ public class PresetImageGridAdapter extends RecyclerView.Adapter<PresetImageGrid
 
     public static class ImageViewHolder extends RecyclerView.ViewHolder {
         private final ImageFilterView mImage;
-        private final View            mImageSelectedContainer;
+        private final View mImageSelectedContainer;
 
         public ImageViewHolder(@NonNull View itemView) {
             super(itemView);

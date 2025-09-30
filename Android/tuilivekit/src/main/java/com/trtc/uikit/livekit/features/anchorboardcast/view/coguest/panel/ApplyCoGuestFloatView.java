@@ -18,7 +18,7 @@ import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.features.anchorboardcast.manager.AnchorManager;
 import com.trtc.uikit.livekit.features.anchorboardcast.view.BasicView;
-import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
+import io.trtc.tuikit.atomicxcore.api.LiveCoreView;
 
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;

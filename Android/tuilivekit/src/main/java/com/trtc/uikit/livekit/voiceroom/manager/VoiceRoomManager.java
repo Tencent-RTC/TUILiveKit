@@ -15,7 +15,6 @@ import com.trtc.uikit.livekit.voiceroom.state.RoomState;
 import com.trtc.uikit.livekit.voiceroom.state.SeatState;
 import com.trtc.uikit.livekit.voiceroom.state.UserState;
 import com.trtc.uikit.livekit.voiceroom.state.VoiceRoomState;
-import com.trtc.uikit.livekit.voiceroomcore.VoiceRoomDefine.CoreState;
 
 public class VoiceRoomManager {
     private static final LiveKitLogger LOGGER = LiveKitLogger.getVoiceRoomLogger("VoiceRoomManager");
@@ -30,7 +29,6 @@ public class VoiceRoomManager {
     private final RoomEngineObserver      mRoomEngineObserver;
     private final LiveListManagerObserver mLiveListManagerObserver;
     private final IMFriendshipListener    mIMFriendshipListener;
-    private       CoreStateProvider       mCoreStateProvider;
 
     public VoiceRoomManager() {
         mState = new VoiceRoomState();
@@ -48,11 +46,6 @@ public class VoiceRoomManager {
     }
 
     public void destroy() {
-        destroyWithoutLiveService();
-        mVoiceRoom.destroy();
-    }
-
-    public void destroyWithoutLiveService() {
         mVoiceRoom.removeRoomEngineObserver(mRoomEngineObserver);
         mVoiceRoom.removeLiveListManagerObserver(mLiveListManagerObserver);
         mVoiceRoom.removeFriendListener(mIMFriendshipListener);
@@ -102,17 +95,5 @@ public class VoiceRoomManager {
         getRoomState().roomId = roomId;
         LOGGER.info(hashCode() + " setRoomId:[mRoomId=" + roomId + ",mLiveService:" + ",mLiveObserver:"
                 + mRoomEngineObserver.hashCode() + "]");
-    }
-
-    public CoreState getCoreState() {
-        return mCoreStateProvider.getCoreState();
-    }
-
-    public void setCoreStateProvider(CoreStateProvider provider) {
-        mCoreStateProvider = provider;
-    }
-
-    public interface CoreStateProvider {
-        CoreState getCoreState();
     }
 }

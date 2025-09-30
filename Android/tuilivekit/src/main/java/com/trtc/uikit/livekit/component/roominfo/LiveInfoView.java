@@ -1,5 +1,7 @@
 package com.trtc.uikit.livekit.component.roominfo;
 
+import static com.trtc.uikit.livekit.common.DataReporterKt.reportEventData;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
@@ -20,7 +22,6 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomObserver;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.common.DataReporter;
 import com.trtc.uikit.livekit.component.roominfo.service.RoomInfoService;
 import com.trtc.uikit.livekit.component.roominfo.store.RoomInfoState;
 import com.trtc.uikit.livekit.component.roominfo.view.RoomInfoPopupDialog;
@@ -232,9 +233,9 @@ public class LiveInfoView extends FrameLayout {
     private void reportData(String roomId) {
         boolean isVoiceRoom = !TextUtils.isEmpty(roomId) && roomId.startsWith("voice_");
         if (isVoiceRoom) {
-            DataReporter.reportEventData(LIVEKIT_METRICS_PANEL_SHOW_VOICE_ROOM_LIVE_INFO);
+            reportEventData(LIVEKIT_METRICS_PANEL_SHOW_VOICE_ROOM_LIVE_INFO);
         } else {
-            DataReporter.reportEventData(LIVEKIT_METRICS_PANEL_SHOW_LIVE_ROOM_LIVE_INFO);
+            reportEventData(LIVEKIT_METRICS_PANEL_SHOW_LIVE_ROOM_LIVE_INFO);
         }
     }
 }

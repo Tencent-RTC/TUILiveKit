@@ -168,8 +168,7 @@ public class SeatManagerDialog extends PopupDialog {
             mSeatListTitle.setVisibility(View.GONE);
         } else {
             mSeatListTitle.setVisibility(VISIBLE);
-            mSeatListTitle.setText(mContext.getString(R.string.common_seat_list_title, seatList.size()
-                    , mVoiceRoomManager.getRoomState().maxSeatCount.getValue() - 1));
+            mSeatListTitle.setText(mContext.getString(R.string.common_seat_list_title, seatList.size()));
         }
     }
 

@@ -18,7 +18,7 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.features.anchorboardcast.manager.AnchorManager;
-import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
+import io.trtc.tuikit.atomicxcore.api.LiveCoreView;
 
 import java.util.List;
 import java.util.Set;
@@ -141,8 +141,7 @@ public class AnchorCoGuestManageDialog extends PopupDialog {
             int connectedUserSize = Math.max(mAnchorManager.getCoreState().roomState.maxCoGuestCount.getValue() - 1, 0);
             mTextMicUpTitle.setVisibility(VISIBLE);
             mTextMicUpTitle.setText(getContext().getString(R.string.common_seat_list_title,
-                    mAnchorManager.getCoreState().coGuestState.connectedUserList.getValue().size() - 1,
-                    connectedUserSize));
+                    mAnchorManager.getCoreState().coGuestState.connectedUserList.getValue().size() - 1));
         } else {
             mTextMicUpTitle.setVisibility(GONE);
         }

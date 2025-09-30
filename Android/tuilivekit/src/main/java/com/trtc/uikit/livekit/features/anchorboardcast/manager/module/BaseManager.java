@@ -8,7 +8,7 @@ import com.trtc.uikit.livekit.features.anchorboardcast.state.CoHostState;
 import com.trtc.uikit.livekit.features.anchorboardcast.state.MediaState;
 import com.trtc.uikit.livekit.features.anchorboardcast.state.RoomState;
 import com.trtc.uikit.livekit.features.anchorboardcast.state.UserState;
-import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine.CoreState;
+import io.trtc.tuikit.atomicxcore.api.deprecated.LiveCoreViewDefine.CoreState;
 
 public abstract class BaseManager {
     protected AnchorState  mState;

@@ -1,6 +1,7 @@
 package com.trtc.uikit.livekit.voiceroom.manager.module;
 
-import static com.trtc.uikit.livekit.common.utils.MutableLiveDataUtils.setValue;
+
+import static com.trtc.uikit.livekit.common.MutableLiveDataUtils.setValue;
 
 import android.text.TextUtils;
 

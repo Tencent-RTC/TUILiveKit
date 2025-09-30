@@ -18,14 +18,17 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomObserver;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
+import com.trtc.tuikit.common.permission.PermissionCallback;
+import com.trtc.tuikit.common.system.ContextProvider;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
 import com.trtc.uikit.livekit.common.LiveKitLogger;
+import com.trtc.uikit.livekit.common.PermissionRequest;
 import com.trtc.uikit.livekit.features.anchorboardcast.manager.AnchorManager;
 import com.trtc.uikit.livekit.features.anchorboardcast.manager.module.CoGuestManager;
 import com.trtc.uikit.livekit.features.anchorboardcast.view.usermanage.ConfirmDialog;
-import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
+import io.trtc.tuikit.atomicxcore.api.LiveCoreView;
 
 import java.util.List;
 import java.util.Set;
@@ -150,10 +153,12 @@ public class AnchorManagerDialog extends PopupDialog {
             mFlipCameraContainer.setVisibility(VISIBLE);
             mHandUpContainer.setVisibility(GONE);
             mFollowContainer.setVisibility(GONE);
+            mVideoContainer.setVisibility(GONE);
         } else {
             mFlipCameraContainer.setVisibility(GONE);
             mHandUpContainer.setVisibility(VISIBLE);
             mFollowContainer.setVisibility(VISIBLE);
+            mVideoContainer.setVisibility(VISIBLE);
         }
     }
 
@@ -343,16 +348,27 @@ public class AnchorManagerDialog extends PopupDialog {
 
     private void startCamera() {
         boolean isFrontCamera = Boolean.TRUE.equals(mLiveCoreView.getCoreState().mediaState.isFrontCamera.getValue());
-        mLiveCoreView.startCamera(isFrontCamera, new TUIRoomDefine.ActionCallback() {
+        PermissionRequest.requestCameraPermissions(ContextProvider.getApplicationContext(), new PermissionCallback() {
             @Override
-            public void onSuccess() {
+            public void onRequesting() {
+                LOGGER.info("requestCameraPermissions:[onRequesting]");
             }
 
             @Override
-            public void onError(TUICommonDefine.Error error, String message) {
-                LOGGER.error("startCamera failed:error:" + error + "," +
-                        "errorCode:" + error.getValue() + "message:" + message);
-                ErrorLocalized.onError(error);
+            public void onGranted() {
+                LOGGER.info("requestCameraPermissions:[onGranted]");
+                mLiveCoreView.startCamera(isFrontCamera, new TUIRoomDefine.ActionCallback() {
+                    @Override
+                    public void onSuccess() {
+                    }
+
+                    @Override
+                    public void onError(TUICommonDefine.Error error, String message) {
+                        LOGGER.error("startCamera failed:error:" + error + "," +
+                                "errorCode:" + error.getValue() + "message:" + message);
+                        ErrorLocalized.onError(error);
+                    }
+                });
             }
         });
     }

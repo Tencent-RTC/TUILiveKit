@@ -2,13 +2,13 @@ package com.trtc.uikit.livekit.features.anchorprepare.state.mediator;
 
 import androidx.lifecycle.LiveData;
 
-import com.trtc.uikit.livekit.common.utils.Logger;
-import com.trtc.uikit.livekit.common.utils.ReadOnlyLiveData;
+import com.trtc.uikit.livekit.common.LiveKitLogger;
+import com.trtc.uikit.livekit.common.ReadOnlyLiveData;
 import com.trtc.uikit.livekit.features.anchorprepare.AnchorPrepareViewDefine;
 import com.trtc.uikit.livekit.features.anchorprepare.state.AnchorPrepareState;
 
 public final class PrepareStateMediator {
-    private static final Logger LOGGER = Logger.getLiveStreamLogger("PrepareStateMediator");
+    private static final LiveKitLogger LOGGER = LiveKitLogger.getFeaturesLogger("PrepareStateMediator");
 
     public LiveData<String>                                          coverURL;
     public LiveData<AnchorPrepareViewDefine.LiveStreamPrivacyStatus> liveMode;

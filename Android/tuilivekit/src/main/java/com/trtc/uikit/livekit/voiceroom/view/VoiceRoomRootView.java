@@ -1,14 +1,16 @@
 package com.trtc.uikit.livekit.voiceroom.view;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.EVENT_KEY_LIVE_KIT;
-import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.EVENT_SUB_KEY_CLOSE_VOICE_ROOM;
-import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.GIFT_COUNT;
-import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.GIFT_ICON_URL;
-import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.GIFT_NAME;
-import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.GIFT_RECEIVER_USERNAME;
-import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.GIFT_VIEW_TYPE;
-import static com.trtc.uikit.livekit.voiceroom.manager.api.Constants.GIFT_VIEW_TYPE_1;
+import static com.trtc.uikit.livekit.common.ConstantsKt.EVENT_KEY_LIVE_KIT;
+import static com.trtc.uikit.livekit.common.ConstantsKt.EVENT_SUB_KEY_CLOSE_VOICE_ROOM;
+import static com.trtc.uikit.livekit.common.ConstantsKt.TEMPLATE_ID_VOICE_ROOM;
+import static com.trtc.uikit.livekit.component.giftaccess.service.GiftConstants.GIFT_COUNT;
+import static com.trtc.uikit.livekit.component.giftaccess.service.GiftConstants.GIFT_ICON_URL;
+import static com.trtc.uikit.livekit.component.giftaccess.service.GiftConstants.GIFT_NAME;
+import static com.trtc.uikit.livekit.component.giftaccess.service.GiftConstants.GIFT_RECEIVER_USERNAME;
+import static com.trtc.uikit.livekit.component.giftaccess.service.GiftConstants.GIFT_VIEW_TYPE;
+import static com.trtc.uikit.livekit.component.giftaccess.service.GiftConstants.GIFT_VIEW_TYPE_1;
+import static com.trtc.uikit.livekit.voiceroom.state.RoomState.LayoutType.KTVRoom;
 import static com.trtc.uikit.livekit.voiceroom.view.TUIVoiceRoomFragment.RoomBehavior.JOIN;
 
 import android.annotation.SuppressLint;
@@ -17,6 +19,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -26,19 +29,19 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
-import com.tencent.cloud.tuikit.engine.extension.TUILiveGiftManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
+import com.tencent.qcloud.tuicore.TUIConstants;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.qcloud.tuicore.interfaces.ITUINotification;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
+import com.trtc.tuikit.common.permission.PermissionCallback;
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.common.Constants;
 import com.trtc.uikit.livekit.common.ErrorLocalized;
 import com.trtc.uikit.livekit.common.LiveKitLogger;
+import com.trtc.uikit.livekit.common.PermissionRequest;
 import com.trtc.uikit.livekit.component.barrage.BarrageStreamView;
-import com.trtc.uikit.livekit.component.barrage.store.model.Barrage;
 import com.trtc.uikit.livekit.component.gift.GiftPlayView;
 import com.trtc.uikit.livekit.component.giftaccess.service.GiftCacheService;
 import com.trtc.uikit.livekit.component.giftaccess.store.GiftStore;
@@ -60,10 +63,14 @@ import com.trtc.uikit.livekit.voiceroom.view.topview.TopView;
 import com.trtc.uikit.livekit.voiceroomcore.SeatGridView;
 import com.trtc.uikit.livekit.voiceroomcore.VoiceRoomDefine;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import java.util.HashMap;
 import java.util.Map;
+
+import io.trtc.tuikit.atomicx.karaoke.KaraokeControlView;
+import io.trtc.tuikit.atomicx.karaoke.KaraokeFloatingView;
+import io.trtc.tuikit.atomicxcore.api.Barrage;
+import io.trtc.tuikit.atomicxcore.api.Gift;
+import io.trtc.tuikit.atomicxcore.api.LiveUserInfo;
 
 public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
     private static final LiveKitLogger LOGGER = LiveKitLogger.getVoiceRoomLogger("VoiceRoomRootView");
@@ -77,6 +84,7 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
     private RelativeLayout    mLayoutEndViewContainer;
     private AnchorPreviewView mAnchorPreviewView;
     private TopView           mTopView;
+    private FrameLayout       mSeatGridContainer;
     private SeatGridView      mSeatGridView;
     private BottomMenuView    mBottomMenuView;
     private ImageView         mRootBg;
@@ -89,10 +97,18 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
 
     private SeatGridViewCoreObserver mSeatGridViewCoreObserver;
 
-    private final Observer<String>                   mBackgroundURLObserver  = this::updateRoomBackground;
-    private final Observer<RoomState.LiveStatus>     mLiveStateObserver      = this::onLiveStateChanged;
-    private final Observer<SeatState.SeatInvitation> mSeatInvitationObserver = this::onSeatInvitationChanged;
-    private final Observer<SeatState.LinkStatus>     mLinkStateObserver      = this::onLinkStateChanged;
+    private final Observer<String>                   mBackgroundURLObserver   = this::updateRoomBackground;
+    private final Observer<RoomState.LiveStatus>     mLiveStateObserver       = this::onLiveStateChanged;
+    private final Observer<RoomState.LayoutType>     mVoiceRoomLayoutObserver = this::onVoiceRoomLayoutChanged;
+    private final Observer<SeatState.SeatInvitation> mSeatInvitationObserver  = this::onSeatInvitationChanged;
+    private final Observer<SeatState.LinkStatus>     mLinkStateObserver       = this::onLinkStateChanged;
+    private       KaraokeFloatingView                mKaraokeFloatingView;
+    private       KaraokeControlView                 mKaraokeControlView;
+    private       ViewGroup                          mLayoutRoot;
+
+    private static final String EVENT_KEY_TIME_LIMIT          = "RTCRoomTimeLimitService";
+    private static final String EVENT_SUB_KEY_COUNTDOWN_START = "CountdownStart";
+    private static final String EVENT_SUB_KEY_COUNTDOWN_END   = "CountdownEnd";
 
     public VoiceRoomRootView(@NonNull Context context) {
         this(context, null);
@@ -111,28 +127,20 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
 
     public void init(VoiceRoomManager voiceRoomManager, TUIVoiceRoomFragment.RoomBehavior behavior,
                      TUIVoiceRoomFragment.RoomParams params) {
-        setComponent();
         mVoiceRoomManager = voiceRoomManager;
         mRoomBehavior = behavior;
         mRoomParams = params;
         mGiftCacheService = GiftStore.getInstance().mGiftCacheService;
+        mSeatGridView = new SeatGridView(mContext);
+        mSeatGridContainer.removeAllViews();
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
+        mSeatGridContainer.addView(mSeatGridView, layoutParams);
         initView();
         if (!mIsAddObserver) {
             addObserver();
             mIsAddObserver = true;
         }
         enterRoom();
-    }
-
-    private void setComponent() {
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("api", "component");
-            jsonObject.put("component", Constants.DATA_REPORT_COMPONENT_VOICE_ROOM);
-            SeatGridView.callExperimentalAPI(jsonObject.toString());
-        } catch (JSONException e) {
-            LOGGER.error("setComponent:" + e);
-        }
     }
 
     public void updateStatus(VoiceRoomViewStatus status) {
@@ -149,10 +157,6 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
             default:
                 break;
         }
-    }
-
-    public VoiceRoomDefine.CoreState getCoreState() {
-        return mSeatGridView.getCoreState();
     }
 
     private void initView() {
@@ -185,19 +189,23 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
     }
 
     private void bindViewId() {
+        mLayoutRoot = findViewById(R.id.cl_root);
         mRootBg = findViewById(R.id.root_bg);
         mTopView = findViewById(R.id.top_view);
-        mSeatGridView = findViewById(R.id.seat_grid_view);
+        mSeatGridContainer = findViewById(R.id.seat_grid_container);
         mBottomMenuView = findViewById(R.id.bottom_menu);
         mBarrageStreamView = findViewById(R.id.barrage_stream_view);
         mGiftPlayView = findViewById(R.id.gift_play_view);
         mLayoutEndViewContainer = findViewById(R.id.rl_end_view);
         mAnchorPreviewView = findViewById(R.id.anchor_preview_view);
+        mKaraokeControlView = findViewById(R.id.ktv_view);
+        mKaraokeFloatingView = new KaraokeFloatingView(mContext);
     }
 
     private void addObserver() {
         mVoiceRoomManager.getRoomState().backgroundURL.observeForever(mBackgroundURLObserver);
         mVoiceRoomManager.getRoomState().liveStatus.observeForever(mLiveStateObserver);
+        mVoiceRoomManager.getRoomState().layoutType.observeForever(mVoiceRoomLayoutObserver);
         mVoiceRoomManager.getSeatState().receivedSeatInvitation.observeForever(mSeatInvitationObserver);
         mVoiceRoomManager.getSeatState().linkStatus.observeForever(mLinkStateObserver);
         mSeatGridViewCoreObserver = new SeatGridViewCoreObserver(mContext, mVoiceRoomManager, mSeatGridView);
@@ -208,6 +216,7 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
     private void removeObserver() {
         mVoiceRoomManager.getRoomState().backgroundURL.removeObserver(mBackgroundURLObserver);
         mVoiceRoomManager.getRoomState().liveStatus.removeObserver(mLiveStateObserver);
+        mVoiceRoomManager.getRoomState().layoutType.observeForever(mVoiceRoomLayoutObserver);
         mVoiceRoomManager.getSeatState().receivedSeatInvitation.removeObserver(mSeatInvitationObserver);
         mVoiceRoomManager.getSeatState().linkStatus.removeObserver(mLinkStateObserver);
         mSeatGridView.removeObserver(mSeatGridViewCoreObserver);
@@ -220,6 +229,9 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
         mTopView.setVisibility(VISIBLE);
         mBottomMenuView.init(mVoiceRoomManager, mSeatGridView);
         mBottomMenuView.setVisibility(VISIBLE);
+        mKaraokeFloatingView.init(mVoiceRoomManager.getRoomState().roomId,
+                mVoiceRoomManager.getRoomManager().isOwner());
+        mKaraokeControlView.init(mVoiceRoomManager.getRoomState().roomId, mVoiceRoomManager.getRoomManager().isOwner());
     }
 
     private void onLinkStateChanged(SeatState.LinkStatus status) {
@@ -233,7 +245,7 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
         mSeatGridView.unmuteMicrophone(new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
-
+                mVoiceRoomManager.getMediaManager().updateMicrophoneMuteState(false);
             }
 
             @Override
@@ -245,10 +257,36 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
     }
 
     private void startMicrophone() {
+        if (Boolean.TRUE.equals(mVoiceRoomManager.getMediaState().hasMicrophonePermission.getValue())) {
+            startMicrophoneInternal();
+            return;
+        }
+        PermissionRequest.requestMicrophonePermissions(getContext(), new PermissionCallback() {
+            @Override
+            public void onRequesting() {
+                LOGGER.info("requestMicrophonePermissions");
+            }
+
+            @Override
+            public void onGranted() {
+                LOGGER.info("requestMicrophonePermissions:[onGranted]");
+                startMicrophoneInternal();
+            }
+
+            @Override
+            public void onDenied() {
+                LOGGER.info("onDenied");
+            }
+        });
+
+    }
+
+    private void startMicrophoneInternal() {
         mSeatGridView.startMicrophone(new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
-
+                mVoiceRoomManager.getMediaManager().updateMicrophoneOpenState(true);
+                mSeatGridView.unmuteMicrophone(null);
             }
 
             @Override
@@ -282,31 +320,36 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
         mGiftPlayView.init(mVoiceRoomManager.getRoomState().roomId);
         mGiftPlayView.setListener(new GiftPlayView.TUIGiftPlayViewListener() {
             @Override
-            public void onReceiveGift(GiftPlayView view, TUILiveGiftManager.GiftInfo gift, int giftCount, TUIRoomDefine.UserInfo sender) {
+            public void onReceiveGift(GiftPlayView view, @NonNull Gift gift, int giftCount,
+                                      @NonNull LiveUserInfo sender) {
                 if (mBarrageStreamView == null) {
                     return;
                 }
+
                 Barrage barrage = new Barrage();
-                barrage.content = "gift";
-                barrage.user.userId = sender.userId;
-                barrage.user.userName = TextUtils.isEmpty(sender.userName) ? sender.userId : sender.userName;
-                barrage.user.avatarUrl = sender.avatarUrl;
-                barrage.extInfo.put(GIFT_VIEW_TYPE, GIFT_VIEW_TYPE_1);
-                barrage.extInfo.put(GIFT_NAME, gift.name);
-                barrage.extInfo.put(GIFT_COUNT, giftCount);
-                barrage.extInfo.put(GIFT_ICON_URL, gift.iconUrl);
-                TUIRoomDefine.UserInfo ownerInfo = mVoiceRoomManager.getCoreState().roomState.ownerInfo.getValue();
+                barrage.setTextContent("gift");
+                barrage.getSender().setUserId(sender.getUserId());
+                barrage.getSender().setUserName(TextUtils.isEmpty(sender.getUserName()) ? sender.getUserId() :
+                        sender.getUserName());
+                barrage.getSender().setAvatarURL(sender.getAvatarURL());
+                Map<String, String> extInfo = new HashMap<>();
+                extInfo.put(GIFT_VIEW_TYPE, String.valueOf(GIFT_VIEW_TYPE_1));
+                extInfo.put(GIFT_NAME, gift.getName());
+                extInfo.put(GIFT_COUNT, String.valueOf(giftCount));
+                extInfo.put(GIFT_ICON_URL, gift.getIconURL());
+                TUIRoomDefine.UserInfo ownerInfo = mVoiceRoomManager.getRoomState().ownerInfo;
                 String receiverName = TextUtils.isEmpty(ownerInfo.userName) ? ownerInfo.userId : ownerInfo.userName;
                 if (TextUtils.equals(ownerInfo.userId, TUILogin.getUserId())) {
                     receiverName = getContext().getString(R.string.common_gift_me);
                 }
-                barrage.extInfo.put(GIFT_RECEIVER_USERNAME, receiverName);
+                extInfo.put(GIFT_RECEIVER_USERNAME, receiverName);
+                barrage.setExtensionInfo(extInfo);
                 mBarrageStreamView.insertBarrages(barrage);
             }
 
             @Override
-            public void onPlayGiftAnimation(GiftPlayView view, TUILiveGiftManager.GiftInfo gift) {
-                mGiftCacheService.request(gift.resourceUrl, (error, result) -> {
+            public void onPlayGiftAnimation(GiftPlayView view, @NonNull Gift gift) {
+                mGiftCacheService.request(gift.getResourceURL(), (error, result) -> {
                     if (error == 0) {
                         view.playGiftAnimation(result);
                     }
@@ -366,13 +409,16 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
         RoomState roomState = mVoiceRoomManager.getRoomState();
         TUILiveListManager.LiveInfo liveInfo = new TUILiveListManager.LiveInfo();
         liveInfo.isSeatEnabled = true;
+        liveInfo.keepOwnerOnSeat = true;
+        liveInfo.seatLayoutTemplateId = TEMPLATE_ID_VOICE_ROOM;
         liveInfo.roomId = roomState.roomId;
         liveInfo.name = roomState.roomName.getValue();
         liveInfo.maxSeatCount = roomState.maxSeatCount.getValue() == null ? 9 : roomState.maxSeatCount.getValue();
         liveInfo.seatMode = roomState.seatMode.getValue();
         liveInfo.backgroundUrl = roomState.backgroundURL.getValue();
         liveInfo.coverUrl = roomState.coverURL.getValue();
-        liveInfo.isPublicVisible = roomState.liveExtraInfo.liveMode.getValue() == RoomState.LiveStreamPrivacyStatus.PUBLIC;
+        liveInfo.isPublicVisible =
+                roomState.liveExtraInfo.liveMode.getValue() == RoomState.LiveStreamPrivacyStatus.PUBLIC;
         mSeatGridView.startVoiceRoom(liveInfo, new TUILiveListManager.LiveInfoCallback() {
             @Override
             public void onSuccess(TUILiveListManager.LiveInfo liveInfo) {
@@ -382,6 +428,7 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
                 mVoiceRoomManager.getUserManager().getAudienceList();
                 mVoiceRoomManager.getUserManager().updateOwnerUserInfo();
                 mVoiceRoomManager.getSeatManager().getSeatList();
+                TUICore.notifyEvent(EVENT_KEY_TIME_LIMIT, EVENT_SUB_KEY_COUNTDOWN_START, null);
             }
 
             @Override
@@ -431,9 +478,18 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
         }
     }
 
+    private void hideKTVView() {
+        mKaraokeControlView.setVisibility(GONE);
+        mKaraokeFloatingView.detachFromFloating();
+    }
+
     private void exit() {
         RoomManager roomManager = mVoiceRoomManager.getRoomManager();
         roomManager.updateMessageCount(mBarrageStreamView.getBarrageCount());
+        TUICore.notifyEvent(
+                TUIConstants.Privacy.EVENT_ROOM_STATE_CHANGED, TUIConstants.Privacy.EVENT_SUB_KEY_ROOM_STATE_STOP, null
+        );
+        TUICore.notifyEvent(EVENT_KEY_TIME_LIMIT, EVENT_SUB_KEY_COUNTDOWN_END, null);
         if (roomManager.isOwner()) {
             mSeatGridView.stopVoiceRoom(new TUILiveListManager.StopLiveCallback() {
                 @Override
@@ -444,7 +500,8 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
 
                 @Override
                 public void onError(TUICommonDefine.Error error, String message) {
-                    LOGGER.error("stopVoiceRoom onError:error:" + error + ", errorCode:" + error.getValue() + ", message:" + message);
+                    LOGGER.error("stopVoiceRoom onError:error:" + error + ", errorCode:" + error.getValue() + ", " +
+                            "message:" + message);
                     if (mContext instanceof Activity) {
                         ((Activity) mContext).finish();
                     }
@@ -456,6 +513,8 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
                 ((Activity) mContext).finish();
             }
         }
+        mKaraokeFloatingView.release();
+        mKaraokeControlView.release();
     }
 
     private boolean checkActivityStatus() {
@@ -468,10 +527,14 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
             initBarrageView();
             showMainView();
             removePreviewView();
+            mVoiceRoomManager.getRoomManager().setVoiceRoomLayout(mVoiceRoomManager.getRoomState().layoutType.getValue());
+            mVoiceRoomManager.getRoomManager().updateVoiceRoomLayout();
         } else if (status == RoomState.LiveStatus.DASHBOARD) {
             showEndView();
+            hideKTVView();
         } else if (status == RoomState.LiveStatus.PREVIEWING) {
             showPreviewView();
+            hideKTVView();
         }
     }
 
@@ -485,11 +548,24 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
         }
     }
 
+    private void onVoiceRoomLayoutChanged(RoomState.LayoutType layoutType) {
+        if (mVoiceRoomManager.getRoomState().liveStatus.getValue() == RoomState.LiveStatus.PUSHING ||
+                mVoiceRoomManager.getRoomState().liveStatus.getValue() == RoomState.LiveStatus.PLAYING) {
+            if (KTVRoom == layoutType) {
+                mKaraokeControlView.setVisibility(VISIBLE);
+                mKaraokeFloatingView.detachFromFloating();
+            } else {
+                mKaraokeFloatingView.attachAsFloating(mLayoutRoot, KaraokeFloatingView.FloatingMode.RIGHT_HALF_MOVE);
+                mKaraokeControlView.setVisibility(GONE);
+            }
+        }
+    }
+
     private void showInvitationDialog(SeatState.SeatInvitation seatInvitation) {
         if (mInvitationDialog == null) {
             mInvitationDialog = new ConfirmDialog(mContext);
         }
-        mInvitationDialog.setPositiveText(mContext.getString(R.string.common_accept),
+        mInvitationDialog.setPositiveText(mContext.getString(R.string.common_receive),
                 v -> responseSeatInvitation(seatInvitation.userId, true));
 
         mInvitationDialog.setNegativeText(mContext.getString(R.string.common_reject),

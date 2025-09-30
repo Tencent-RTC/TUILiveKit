@@ -17,15 +17,16 @@ import com.trtc.uikit.livekit.component.beauty.tebeauty.TEBeautyManager;
 import com.trtc.uikit.livekit.features.anchorprepare.manager.AnchorPrepareManager;
 import com.trtc.uikit.livekit.features.anchorprepare.state.AnchorPrepareConfig;
 import com.trtc.uikit.livekit.features.anchorprepare.view.liveinfoedit.livetemplatepicker.LiveTemplatePicker;
-import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
+import io.trtc.tuikit.atomicxcore.api.LiveCoreView;
 
 public class PrepareFunctionView extends FrameLayout {
-    private       PopupDialog          mAudioEffectPanel;
-    private       AnchorPrepareManager mManager;
-    private       LiveCoreView         mLiveCoreView;
-    private final Observer<Boolean>    mDisableAudioEffectObserver = this::onAudioEffectDisableChange;
-    private final Observer<Boolean>    mDisableBeautyObserver      = this::onBeautyDisableChange;
-    private final Observer<Boolean>    mDisableMirrorObserver      = this::onMirrorDisableChange;
+    private       PopupDialog              mAudioEffectPanel;
+    private       PrepareVideoSettingPanel mVideoSettingPanel;
+    private       AnchorPrepareManager     mManager;
+    private       LiveCoreView             mLiveCoreView;
+    private final Observer<Boolean>        mDisableAudioEffectObserver = this::onAudioEffectDisableChange;
+    private final Observer<Boolean>        mDisableBeautyObserver      = this::onBeautyDisableChange;
+    private final Observer<Boolean>        mDisableMirrorObserver      = this::onMirrorDisableChange;
 
     public PrepareFunctionView(@NonNull Context context) {
         this(context, null);
@@ -43,7 +44,7 @@ public class PrepareFunctionView extends FrameLayout {
     public void init(AnchorPrepareManager manager, LiveCoreView liveCoreView) {
         mManager = manager;
         mLiveCoreView = liveCoreView;
-        TEBeautyManager.getInstance().setCustomVideoProcess();
+        TEBeautyManager.INSTANCE.setCustomVideoProcess();
 
         initView();
         addObserver();
@@ -72,6 +73,7 @@ public class PrepareFunctionView extends FrameLayout {
         initAudioEffectButton();
         initFlipButton();
         initLayoutButton();
+        initVideoSettingButton();
     }
 
     private void initBeautyButton() {
@@ -104,6 +106,15 @@ public class PrepareFunctionView extends FrameLayout {
         findViewById(R.id.iv_layout).setOnClickListener(view -> {
             LiveTemplatePicker picker = new LiveTemplatePicker(getContext(), mManager);
             picker.show();
+        });
+    }
+
+    private void initVideoSettingButton() {
+        findViewById(R.id.iv_video_setting).setOnClickListener(v -> {
+            if (mVideoSettingPanel == null) {
+                mVideoSettingPanel = new PrepareVideoSettingPanel(getContext(), mLiveCoreView);
+            }
+            mVideoSettingPanel.show();
         });
     }
 

@@ -24,17 +24,26 @@ import com.trtc.uikit.livekit.voiceroom.manager.VoiceRoomManager;
 import com.trtc.uikit.livekit.voiceroom.state.SeatState;
 import com.trtc.uikit.livekit.voiceroomcore.SeatGridView;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+
+import io.trtc.tuikit.atomicxcore.api.CompletionHandler;
+import io.trtc.tuikit.atomicxcore.api.DeviceControlPolicy;
+import io.trtc.tuikit.atomicxcore.api.LiveSeatStore;
 
 public class UserManagerDialog extends PopupDialog {
     private static final LiveKitLogger LOGGER = LiveKitLogger.getVoiceRoomLogger("UserManagerDialog");
 
-    private final Context            mContext;
-    private final VoiceRoomManager   mVoiceRoomManager;
-    private final SeatGridView       mSeatGridView;
-    private       int                mSeatIndex = -1;
-    private       SeatState.SeatInfo mSeatInfo;
+    private final Context          mContext;
+    private final VoiceRoomManager mVoiceRoomManager;
+    private final SeatGridView     mSeatGridView;
+    private final LiveSeatStore    mLiveSeatStore;
+
+    private int                mSeatIndex = -1;
+    private SeatState.SeatInfo mSeatInfo;
 
     private ImageFilterView mImageHeadView;
     private TextView        mUserIdText;
@@ -54,6 +63,7 @@ public class UserManagerDialog extends PopupDialog {
         mContext = context;
         mVoiceRoomManager = voiceRoomManager;
         mSeatGridView = seatGridView;
+        mLiveSeatStore = LiveSeatStore.create(mVoiceRoomManager.getRoomState().roomId);
         initView();
     }
 
@@ -125,7 +135,7 @@ public class UserManagerDialog extends PopupDialog {
         }
         mUserNameText.setText(mSeatInfo.name.getValue());
         mUserIdText.setText(mContext.getString(R.string.common_user_id, mSeatInfo.userId.getValue()));
-        updateAudioLockState(mSeatInfo.isAudioLocked.getValue());
+        updateAudioLockState(Boolean.TRUE.equals(mSeatInfo.isAudioLocked.getValue()));
     }
 
     private void addObserver() {
@@ -176,19 +186,32 @@ public class UserManagerDialog extends PopupDialog {
         if (mSeatInfo == null) {
             return;
         }
-        TUIRoomDefine.SeatLockParams params = new TUIRoomDefine.SeatLockParams();
-        params.lockAudio = !mSeatInfo.isAudioLocked.getValue();
-        params.lockSeat = mSeatInfo.isLocked.getValue();
-        mSeatGridView.lockSeat(mSeatInfo.index, params, new TUIRoomDefine.ActionCallback() {
-            @Override
-            public void onSuccess() {
-            }
+        if (Boolean.TRUE.equals(mSeatInfo.isAudioLocked.getValue())) {
+            mLiveSeatStore.openRemoteMicrophone(mSeatInfo.userId.getValue(), DeviceControlPolicy.UNLOCK_ONLY,
+                    new CompletionHandler() {
+                @Override
+                public void onSuccess() {
+                    LOGGER.info("openRemoteMicrophone success");
+                }
 
-            @Override
-            public void onError(TUICommonDefine.Error error, String message) {
-                ErrorLocalized.onError(error);
-            }
-        });
+                @Override
+                public void onFailure(int code, @NotNull String desc) {
+                    LOGGER.error("openRemoteMicrophone failed,error:" + code + ",message:" + desc);
+                }
+            });
+        } else {
+            mLiveSeatStore.closeRemoteMicrophone(mSeatInfo.userId.getValue(), new CompletionHandler() {
+                @Override
+                public void onSuccess() {
+                    LOGGER.info("closeRemoteCamera success");
+                }
+
+                @Override
+                public void onFailure(int code, @NotNull String desc) {
+                    LOGGER.error("closeRemoteCamera failed,error:" + code + ",message:" + desc);
+                }
+            });
+        }
     }
 
     private void updateAudioLockState(boolean isAudioLocked) {
@@ -211,7 +234,8 @@ public class UserManagerDialog extends PopupDialog {
         if (mSeatInfo == null) {
             return;
         }
-        mSeatGridView.kickUserOffSeatByAdmin(mSeatInfo.userId.getValue(), new TUIRoomDefine.ActionCallback() {
+        mSeatGridView.kickUserOffSeatByAdmin(Objects.requireNonNull(mSeatInfo.userId.getValue()),
+                new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
             }

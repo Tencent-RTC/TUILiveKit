@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/seat_container"
+    android:layout_width="70dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
+
+    <FrameLayout
+        android:id="@+id/head_icon_group"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <FrameLayout
+            android:id="@+id/header_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <androidx.constraintlayout.utils.widget.ImageFilterView
+                android:id="@+id/iv_head"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/livekit_ic_avatar"
+                android:visibility="gone"
+                app:round="32dp" />
+
+            <ImageView
+                android:id="@+id/iv_mute"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_gravity="bottom|end"
+                android:src="@drawable/livekit_ic_mic_mute"
+                android:visibility="gone"
+                tools:ignore="ContentDescription" />
+        </FrameLayout>
+
+        <RelativeLayout
+            android:id="@+id/empty_seat_container"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:background="@drawable/livekit_bg_empty_seat"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/iv_empty_seat"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/livekit_empty_seat"
+                tools:ignore="ContentDescription" />
+        </RelativeLayout>
+
+        <com.trtc.uikit.livekit.voiceroomcore.view.RippleView
+            android:id="@+id/iv_talk_border"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:color="@color/common_speak_ripple_color"
+            app:start_radius="25dp" />
+    </FrameLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:foregroundGravity="center_vertical"
+        app:layout_constraintTop_toBottomOf="@id/head_icon_group"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_room_owner"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/livekit_ic_room_owner"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:maxLines="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            app:layout_constraintStart_toEndOf="@id/iv_room_owner"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:gravity="center_vertical"
+            android:ellipsize="end"
+            android:maxWidth="50dp"
+            android:textColor="@color/common_design_standard_g7"
+            android:textSize="12sp"
+            tools:text="123123" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

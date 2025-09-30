@@ -13,50 +13,53 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.trtc.uikit.livekit.R;
-import com.trtc.uikit.livekit.component.beauty.BeautyUtils;
 import com.trtc.uikit.livekit.features.audiencecontainer.manager.AudienceManager;
-import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.trtc.tuikit.atomicxcore.api.LiveCoreView;
 
 public class VideoCoGuestSettingsAdapter extends RecyclerView.Adapter<VideoCoGuestSettingsAdapter.BaseViewHolder> {
     private static final int ITEM_SETTINGS_BEAUTY = 101;
     private static final int ITEM_SETTINGS_FLIP   = 105;
 
-    private final Context            mContext;
-    private final List<SettingsItem> mSettingsItem = new ArrayList<>();
-    private final LiveCoreView       mLiveCoreView;
-    private final List<SettingsItem> mData;
-
+    private final Context             mContext;
+    private final List<SettingsItem>  mSettingsItem = new ArrayList<>();
+    private final List<SettingsItem>  mData;
+    private       OnItemClickListener mOnItemClickListener;
 
     @SuppressLint("NotifyDataSetChanged")
     public VideoCoGuestSettingsAdapter(Context context, AudienceManager manager, LiveCoreView liveCoreView) {
         mContext = context;
-        mLiveCoreView = liveCoreView;
         initSettingsItem();
 
         mData = mSettingsItem;
         notifyDataSetChanged();
     }
 
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        mOnItemClickListener = listener;
+    }
+
     private void initSettingsItem() {
         mSettingsItem.add(new SettingsItem(mContext.getString(R.string.common_video_settings_item_beauty),
                 R.drawable.livekit_video_settings_beauty, ITEM_SETTINGS_BEAUTY, view -> {
-            popUpBeautyPanel();
+            if (mOnItemClickListener != null) {
+                mOnItemClickListener.onBeautyItemClicked();
+            }
         }));
 
         mSettingsItem.add(new SettingsItem(mContext.getString(R.string.common_video_settings_item_flip),
                 R.drawable.livekit_video_settings_flip, ITEM_SETTINGS_FLIP, view -> {
-            boolean isFront = Boolean.TRUE.equals(mLiveCoreView.getCoreState().mediaState.isFrontCamera.getValue());
-            mLiveCoreView.switchCamera(!isFront);
+            if (mOnItemClickListener != null) {
+                mOnItemClickListener.onFlipItemClicked();
+            }
         }));
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private void popUpBeautyPanel() {
-        BeautyUtils.showBeautyDialog(mContext);
-    }
+
 
     @NonNull
     @Override
@@ -118,5 +121,11 @@ public class VideoCoGuestSettingsAdapter extends RecyclerView.Adapter<VideoCoGue
             this.type = type;
             this.listener = listener;
         }
+    }
+
+    public interface OnItemClickListener {
+        void onBeautyItemClicked();
+
+        void onFlipItemClicked();
     }
 }

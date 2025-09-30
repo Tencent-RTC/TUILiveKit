@@ -18,7 +18,7 @@ import com.trtc.uikit.livekit.features.audiencecontainer.state.CoGuestState;
 import com.trtc.uikit.livekit.features.audiencecontainer.state.MediaState;
 import com.trtc.uikit.livekit.features.audiencecontainer.state.RoomState;
 import com.trtc.uikit.livekit.features.audiencecontainer.state.UserState;
-import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine;
+import io.trtc.tuikit.atomicxcore.api.deprecated.LiveCoreViewDefine;
 
 public abstract class BasicView extends FrameLayout {
     protected final Context                      mContext;

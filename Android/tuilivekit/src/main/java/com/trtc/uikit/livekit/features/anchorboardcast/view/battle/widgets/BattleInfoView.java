@@ -16,7 +16,7 @@ import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.features.anchorboardcast.state.BattleState;
 import com.trtc.uikit.livekit.features.anchorboardcast.state.BattleState.BattleUser;
 import com.trtc.uikit.livekit.features.anchorboardcast.view.BasicView;
-import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine;
+import io.trtc.tuikit.atomicxcore.api.deprecated.LiveCoreViewDefine;
 
 import java.util.ArrayList;
 import java.util.HashMap;
