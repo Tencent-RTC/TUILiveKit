@@ -18,7 +18,7 @@ class VRUserManagerPanel: RTCBaseView {
     private var cancellableSet: Set<AnyCancellable> = []
     private var seatInfo: TUISeatInfo
     private var isOwner: Bool {
-        manager.userState.selfInfo.userId == manager.coreLiveState.liveOwner.userId
+        manager.userState.selfInfo.userId == manager.coreLiveState.liveOwner.userID
     }
     
     private let avatarImageView: UIImageView = {

@@ -29,7 +29,7 @@ public class TUIGiftData {
 
 extension LiveUserInfo {
     var isSelf: Bool {
-        userId == TUILogin.getUserID()
+        userID == TUILogin.getUserID()
     }
 }
 
@@ -45,7 +45,7 @@ extension LiveUserInfo {
     static var selfInfo: LiveUserInfo {
         let selfUserInfo = TUIRoomEngine.getSelfInfo()
         var user = LiveUserInfo()
-        user.userId = selfUserInfo.userId
+        user.userID = selfUserInfo.userId
         user.userName = selfUserInfo.userName
         user.avatarURL = selfUserInfo.avatarUrl
         return user

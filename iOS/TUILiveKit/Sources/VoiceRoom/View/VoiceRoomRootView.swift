@@ -478,7 +478,7 @@ extension VoiceRoomRootView {
     }
     
     private func subscribeRoomOwnerState() {
-        manager.subscribeCoreState(StatePublisherSelector(keyPath: \LiveListState.currentLive.liveOwner.userId))
+        manager.subscribeCoreState(StatePublisherSelector(keyPath: \LiveListState.currentLive.liveOwner.userID))
             .compactMap { $0 }
             .receive(on: RunLoop.main)
             .sink { [weak self] ownerId in
@@ -500,7 +500,7 @@ extension VoiceRoomRootView {
             .receive(on: RunLoop.main)
             .sink { [weak self] seatList, selfInfo in
                 guard let self = self else { return }
-                guard let seatInfo = seatList.first(where: { $0.userInfo.userId == selfInfo.userId }) else {
+                guard let seatInfo = seatList.first(where: { $0.userInfo.userID == selfInfo.userId }) else {
                     muteMicrophoneButton.isHidden = true
                     return
                 }
@@ -560,7 +560,7 @@ extension VoiceRoomRootView: VRTopViewDelegate {
     
     private func audienceLeaveButtonClick() {
         let selfUserId = manager.userState.selfInfo.userId
-        if !manager.coreSeatState.seatList.contains(where: { $0.userInfo.userId == selfUserId }) {
+        if !manager.coreSeatState.seatList.contains(where: { $0.userInfo.userID == selfUserId }) {
             leaveRoom()
             routerManager.router(action: .exit)
             return
@@ -619,15 +619,15 @@ extension VoiceRoomRootView {
     }
     
     var coGuestStore: CoGuestStore {
-        return CoGuestStore.create(liveId: manager.roomState.roomId)
+        return CoGuestStore.create(liveID: manager.roomState.roomId)
     }
     
     var seatStore: LiveSeatStore {
-        return LiveSeatStore.create(liveId: manager.roomState.roomId)
+        return LiveSeatStore.create(liveID: manager.roomState.roomId)
     }
     
     var barrageStore: BarrageStore {
-        return BarrageStore.create(liveId: manager.roomState.roomId)
+        return BarrageStore.create(liveID: manager.roomState.roomId)
     }
 }
 
@@ -635,7 +635,7 @@ extension VoiceRoomRootView {
 extension VoiceRoomRootView: SeatGridViewObserver {
     func onKickedOutOfRoom(roomId: String, reason: TUIKickedOutOfRoomReason, message: String) {
         guard reason != .byLoggedOnOtherDevice else { return }
-        let isOwner = manager.userState.selfInfo.userId == manager.coreLiveState.liveOwner.userId
+        let isOwner = manager.userState.selfInfo.userId == manager.coreLiveState.liveOwner.userID
         isOwner ? routeToAnchorView() : routeToAudienceView()
         manager.onError(.kickedOutText)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
@@ -662,7 +662,7 @@ extension VoiceRoomRootView: SeatGridViewObserver {
         if type == .inviteToTakeSeat {
             let liveOwner = liveListStore.state.value.currentLive.liveOwner
             guard !userInfo.userId.isEmpty else { return }
-            guard !liveOwner.userId.isEmpty else { return }
+            guard !liveOwner.userID.isEmpty else { return }
             let alertInfo = VRAlertInfo(description: String.localizedReplace(.inviteLinkText, replace: "\(liveOwner.userName)"),
                                         imagePath: liveOwner.avatarURL,
                                         cancelButtonInfo: (String.rejectText, .g3),
@@ -759,7 +759,7 @@ extension VoiceRoomRootView {
     
     private func generateNormalUserOperateSeatMenuData(seat: TUISeatInfo) -> [ActionItem] {
         var menus: [ActionItem] = []
-        let isOnSeat = manager.coreSeatState.seatList.contains { $0.userInfo.userId == manager.userState.selfInfo.userId}
+        let isOnSeat = manager.coreSeatState.seatList.contains { $0.userInfo.userID == manager.userState.selfInfo.userId}
         if (seat.userId ?? "").isEmpty && !seat.isLocked {
             let takeSeatItem = ActionItem(title: .takeSeat, designConfig: designConfig())
             takeSeatItem.actionClosure = { [weak self] _ in
@@ -859,7 +859,7 @@ extension VoiceRoomRootView: BarrageStreamViewDelegate {
 extension VoiceRoomRootView: GiftPlayViewDelegate {
     func giftPlayView(_ giftPlayView: GiftPlayView, onReceiveGift gift: Gift, giftCount: Int, sender: LiveUserInfo) {
         let receiver = TUIUserInfo()
-        receiver.userId = manager.coreLiveState.liveOwner.userId
+        receiver.userId = manager.coreLiveState.liveOwner.userID
         receiver.userName = manager.coreLiveState.liveOwner.userName
         receiver.avatarUrl = manager.coreLiveState.liveOwner.avatarURL
         if receiver.userId == TUILogin.getUserID() {

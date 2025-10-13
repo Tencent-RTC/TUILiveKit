@@ -56,7 +56,7 @@ class BarrageDefaultCell: UIView {
     private let barrage: Barrage
     private let ownerId: String
     private var isOwner: Bool {
-        barrage.sender.userId == ownerId
+        barrage.sender.userID == ownerId
     }
 
     private let anchorButton: UIButton = {
@@ -141,8 +141,8 @@ class BarrageDefaultCell: UIView {
 
     func getBarrageLabelAttributedText(barrage: Barrage) -> NSMutableAttributedString {
         let placeholderString = String(repeating: " ", count: isOwner ? 12 : 0)
-        let userName = barrage.sender.userName ?? ""
-        let displayName = (userName.isEmpty ? barrage.sender.userId : userName) + "："
+        let userName = barrage.sender.userName
+        let displayName = (userName.isEmpty ? barrage.sender.userID : userName) + "："
         let userNameAttributes: [NSAttributedString.Key: Any] =
         [.foregroundColor: UIColor.lightBlueColor, .font: UIFont.customFont(ofSize: 12, weight: .semibold)]
         let userNameAttributedText = NSMutableAttributedString(string: "\(placeholderString)\(displayName)",

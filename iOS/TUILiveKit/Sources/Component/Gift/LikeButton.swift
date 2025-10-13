@@ -12,7 +12,7 @@ import UIKit
 public class LikeButton: UIButton {
     private let liveId: String
     private var store: LikeStore {
-        LikeStore.create(liveId: liveId)
+        LikeStore.create(liveID: liveId)
     }
     
     private let DEFAULT_AVATAR = "https://liteav.sdk.qcloud.com/app/res/picture/voiceroom/avatar/user_avatar1.png"

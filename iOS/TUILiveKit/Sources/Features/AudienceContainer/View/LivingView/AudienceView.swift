@@ -87,7 +87,7 @@ class AudienceView: RTCBaseView {
         self.routerManager = routerManager
         self.videoView = coreView
         super.init(frame: .zero)
-        videoView.setLiveId(roomId)
+        videoView.setLiveID(roomId)
         self.videoView.videoViewDelegate = self
         self.videoView.registerConnectionObserver(observer: liveStreamObserver)
         self.videoView.registerBattleObserver(observer: battleObserver)

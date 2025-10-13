@@ -16,7 +16,7 @@ class AudienceListPanelView: UIView {
     
     private let liveId: String
     private var store: LiveAudienceStore {
-        LiveAudienceStore.create(liveId: liveId)
+        LiveAudienceStore.create(liveID: liveId)
     }
     private var liveListStore: LiveListStore {
         LiveListStore.shared
@@ -81,7 +81,7 @@ class AudienceListPanelView: UIView {
                 guard let self = self else { return }
                 let currentLive = liveListStore.state.value.currentLive
                 guard !currentLive.isEmpty else { return }
-                self.listUser = audienceList.filter {$0.userId != currentLive.liveOwner.userId }
+                self.listUser = audienceList.filter {$0.userID != currentLive.liveOwner.userID }
                 self.userListTableView.reloadData()
             }
             .store(in: &cancellableSet)

@@ -30,7 +30,7 @@ class AudienceMemberCell: UITableViewCell {
                 avatarImageView.image = avatarPlaceholderImage
             }
             
-            nameLabel.text = user.userName.isEmpty ? user.userId : user.userName
+            nameLabel.text = user.userName.isEmpty ? user.userID : user.userName
         }
     }
     

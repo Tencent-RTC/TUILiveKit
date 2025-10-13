@@ -14,7 +14,7 @@ typealias AtomicLiveInfo = AtomicXCore.LiveInfo
 extension AtomicLiveInfo {
     init(from tuiLiveInfo: TUILiveInfo) {
         self.init()
-        liveId = tuiLiveInfo.roomId
+        liveID = tuiLiveInfo.roomId
         liveName = tuiLiveInfo.name
         notice = tuiLiveInfo.notice
         isMessageDisable = tuiLiveInfo.isMessageDisableForAllUser
@@ -23,7 +23,7 @@ extension AtomicLiveInfo {
         keepOwnerOnSeat = tuiLiveInfo.keepOwnerOnSeat
         maxSeatCount = tuiLiveInfo.maxSeatCount
         seatMode = tuiLiveInfo.seatMode == .applyToTake ? .apply : .free
-        seatLayoutTemplateId = tuiLiveInfo.seatLayoutTemplateId
+        seatLayoutTemplateID = tuiLiveInfo.seatLayoutTemplateId
         coverURL = tuiLiveInfo.coverUrl
         backgroundURL = tuiLiveInfo.backgroundUrl
         categoryList = tuiLiveInfo.categoryList
@@ -34,7 +34,7 @@ extension AtomicLiveInfo {
 extension TUILiveInfo {
     convenience init(from liveInfo: AtomicLiveInfo) {
         self.init()
-        roomId = liveInfo.liveId
+        roomId = liveInfo.liveID
         name = liveInfo.liveName
         notice = liveInfo.notice
         isMessageDisableForAllUser = liveInfo.isMessageDisable
@@ -43,12 +43,12 @@ extension TUILiveInfo {
         keepOwnerOnSeat = liveInfo.keepOwnerOnSeat
         maxSeatCount = liveInfo.maxSeatCount
         seatMode = TUISeatMode(from: liveInfo.seatMode)
-        seatLayoutTemplateId = liveInfo.seatLayoutTemplateId
+        seatLayoutTemplateId = liveInfo.seatLayoutTemplateID
         coverUrl = liveInfo.coverURL
         backgroundUrl = liveInfo.backgroundURL
         categoryList = liveInfo.categoryList
         activityStatus = liveInfo.activityStatus
-        safeSetPropertyIfSetterExists(liveInfo.liveOwner.userId, forKey: "ownerId")
+        safeSetPropertyIfSetterExists(liveInfo.liveOwner.userID, forKey: "ownerId")
         safeSetPropertyIfSetterExists(liveInfo.liveOwner.userName, forKey: "ownerName")
         safeSetPropertyIfSetterExists(liveInfo.liveOwner.avatarURL, forKey: "ownerAvatarUrl")
         safeSetPropertyIfSetterExists(liveInfo.createTime, forKey: "createTime")
@@ -81,7 +81,7 @@ extension TakeSeatMode {
 extension TUIUserInfo {
     convenience init(from liveUserInfo: LiveUserInfo) {
         self.init()
-        userId = liveUserInfo.userId
+        userId = liveUserInfo.userID
         userName = liveUserInfo.userName
         avatarUrl = liveUserInfo.avatarURL
     }
@@ -96,8 +96,8 @@ extension TUISeatInfo {
     convenience init(from seatInfo: SeatInfo) {
         self.init()
         index = seatInfo.index
-        userId = seatInfo.userInfo.userId
-        userName = seatInfo.userInfo.name
+        userId = seatInfo.userInfo.userID
+        userName = seatInfo.userInfo.userName
         avatarUrl = seatInfo.userInfo.avatarURL
         isLocked = seatInfo.isLocked
         isVideoLocked = !seatInfo.userInfo.allowOpenCamera

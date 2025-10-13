@@ -536,7 +536,7 @@ extension AudienceLivingView: BarrageStreamViewDelegate {
     }
     
     func onBarrageClicked(user: LiveUserInfo) {
-        if user.userId == manager.coreUserState.selfInfo.userId { return }
+        if user.userID == manager.coreUserState.selfInfo.userId { return }
         routerManager.router(action: .present(.userManagement(TUIUserInfo(from: user), type: .userInfo)))
     }
 }
@@ -575,7 +575,7 @@ extension AudienceLivingView: GiftPlayViewDelegate {
 
 extension AudienceLivingView {
     var barrageStore: BarrageStore {
-        return BarrageStore.create(liveId: manager.roomState.roomId)
+        return BarrageStore.create(liveID: manager.roomState.roomId)
     }
 }
 

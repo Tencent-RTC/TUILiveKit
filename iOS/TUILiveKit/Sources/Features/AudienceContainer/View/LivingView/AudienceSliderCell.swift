@@ -47,7 +47,7 @@ class AudienceSliderCell: UIView {
         }
         setComponent()
         let view = LiveCoreView(viewType: .playView)
-        view.setLiveId(roomId)
+        view.setLiveID(roomId)
         return view
     }()
 

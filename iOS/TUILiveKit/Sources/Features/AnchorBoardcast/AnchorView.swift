@@ -69,7 +69,7 @@ public class AnchorView: UIView {
         self.liveInfo = liveInfo
         self.videoView = coreView
         super.init(frame: .zero)
-        videoView.setLiveId(liveInfo.roomId)
+        videoView.setLiveID(liveInfo.roomId)
         backgroundColor = .black
         self.manager.prepareLiveInfoBeforeEnterRoom(liveInfo: liveInfo)
         self.videoView.videoViewDelegate = self

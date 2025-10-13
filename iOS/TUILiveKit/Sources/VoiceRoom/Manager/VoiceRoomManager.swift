@@ -264,11 +264,11 @@ extension VoiceRoomManager {
     }
     
     var liveSeatStore: LiveSeatStore {
-        return LiveSeatStore.create(liveId: liveId)
+        return LiveSeatStore.create(liveID: liveId)
     }
     
     var coreLiveState: AtomicLiveInfo {
-        liveListStore.state.value.currentLive ?? AtomicLiveInfo()
+        liveListStore.state.value.currentLive
     }
     
     var coreSeatState: LiveSeatState {

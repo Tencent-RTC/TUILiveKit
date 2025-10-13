@@ -14,7 +14,7 @@ import TUICore
 public class GiftListView: UIView {
     private let liveId: String
     private var store: GiftStore {
-        GiftStore.create(liveId: liveId)
+        GiftStore.create(liveID: liveId)
     }
 
     private var giftDataSource: [Gift] = []
@@ -163,7 +163,7 @@ extension GiftListView: UICollectionViewDataSource {
             cell.sendBlock = { [weak self, weak cell] giftInfo in
                 if let self = self {
                     DataReporter.reportEventData(eventKey: getReportKey())
-                    store.sendGift(giftId: giftInfo.giftId, count: 1) { [weak self] result in
+                    store.sendGift(giftID: giftInfo.giftID, count: 1) { [weak self] result in
                         guard let self = self else { return }
                         switch result {
                         case .failure(let error):

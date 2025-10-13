@@ -60,7 +60,7 @@ public class AudienceListView: RTCBaseView {
 
     private var liveId: String = ""
     private var store: LiveAudienceStore {
-        LiveAudienceStore.create(liveId: liveId)
+        LiveAudienceStore.create(liveID: liveId)
     }
 
     private var liveListStore: LiveListStore {
@@ -115,7 +115,7 @@ public class AudienceListView: RTCBaseView {
                 guard let self = self else { return }
                 let currentLive = liveListStore.state.value.currentLive
                 guard !currentLive.isEmpty else { return }
-                let audienceList = list.filter { $0.userId != currentLive.liveOwner.userId }
+                let audienceList = list.filter { $0.userID != currentLive.liveOwner.userID }
                 self.listUser = audienceList
                 self.collectionView.reloadData()
 

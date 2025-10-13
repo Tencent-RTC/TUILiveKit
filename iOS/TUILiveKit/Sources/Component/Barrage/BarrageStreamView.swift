@@ -155,11 +155,11 @@ extension BarrageStreamView {
     }
     
     var barrageStore: BarrageStore {
-        return BarrageStore.create(liveId: liveId)
+        return BarrageStore.create(liveID: liveId)
     }
     
     var liveAudienceStore: LiveAudienceStore {
-        return LiveAudienceStore.create(liveId: liveId)
+        return LiveAudienceStore.create(liveID: liveId)
     }
 }
 
@@ -184,7 +184,7 @@ extension BarrageStreamView {
                 switch event {
                 case .onAudienceJoined(audience: let audience):
                     var barrage = Barrage()
-                    barrage.liveId = liveId
+                    barrage.liveID = liveId
                     barrage.sender = audience
                     barrage.textContent = " \(String.comingText)"
                     barrage.timestampInSecond = Date().timeIntervalSince1970

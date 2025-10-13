@@ -64,7 +64,7 @@ class TUIGiftBulletView: UIView {
     }
 
     func setGiftData(_ giftData: TUIGiftData) {
-        let userID = giftData.sender.userId
+        let userID = giftData.sender.userID
         var nickName = giftData.sender.userName.isEmpty ? userID : giftData.sender.userName
         let avatarUrl = giftData.sender.avatarURL
         if userID == (TUILogin.getUserID() ?? "") {
