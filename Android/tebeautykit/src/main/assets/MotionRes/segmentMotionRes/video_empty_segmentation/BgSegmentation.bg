@@ -1,0 +1,5 @@
+{
+  "type": "BackgroundSegmentation",
+  "key": "BackgroundSegmentation",
+  "input": ""
+}

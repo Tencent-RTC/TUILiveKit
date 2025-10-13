@@ -1,0 +1,5 @@
+{
+  "type": "RenderTarget",
+  "key": "RenderTarget",
+  "input": "DeviceCameraTexture"
+}
