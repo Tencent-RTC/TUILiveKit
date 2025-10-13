@@ -105,7 +105,7 @@ extension VRSeatInvitationPanel {
                     return user.userId != self.manager.userState.selfInfo.userId
                 }
                 self.audienceTupleList = audienceList.filter { user in
-                    !seatList.contains { $0.userInfo.userId == user.userId }
+                    !seatList.contains { $0.userInfo.userID == user.userId }
                 }.map { audience in
                     (audience, self.manager.seatState.invitedUserIds.contains(where: {$0 == audience.userId}))
                 }

@@ -152,7 +152,7 @@ extension VRTopView {
     private func clickReport() {
         let selector = NSSelectorFromString("showReportAlertWithRoomId:ownerId:")
         if responds(to: selector) {
-            perform(selector, with: manager.roomState.roomId, with: manager.coreLiveState.liveOwner.userId)
+            perform(selector, with: manager.roomState.roomId, with: manager.coreLiveState.liveOwner.userID)
         }
     }
 }

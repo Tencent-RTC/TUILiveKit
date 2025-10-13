@@ -320,7 +320,7 @@ extension VRBottomMenuView {
                     self.manager.onError(error.localizedMessage)
                 }
             } else {
-                let isOnSeat = manager.coreSeatState.seatList.contains(where: { $0.userInfo.userId == selfUserId })
+                let isOnSeat = manager.coreSeatState.seatList.contains(where: { $0.userInfo.userID == selfUserId })
                 if isOnSeat {
                     coreView.leaveSeat {
                     } onError: { [weak self] code, message in
@@ -379,7 +379,7 @@ extension VRBottomMenuView {
                 .receive(on: RunLoop.main)
                 .sink { [weak self] seatInfoList in
                     guard let self = self else { return }
-                    let isOnSeat = seatInfoList.contains(where: { $0.userInfo.userId == self.manager.userState.selfInfo.userId })
+                    let isOnSeat = seatInfoList.contains(where: { $0.userInfo.userID == self.manager.userState.selfInfo.userId })
                     let imageName = isOnSeat ? "live_linked_icon" : "live_voice_room_link_icon"
                     button.setImage(internalImage(imageName), for: .normal)
                 }

@@ -28,11 +28,11 @@ public class GiftPlayView: UIView {
     
     private let liveId: String
     private var giftStore: GiftStore {
-        GiftStore.create(liveId: liveId)
+        GiftStore.create(liveID: liveId)
     }
 
     private var likeStore: LikeStore {
-        LikeStore.create(liveId: liveId)
+        LikeStore.create(liveID: liveId)
     }
 
     private var giftCacheKey = ""
@@ -53,7 +53,7 @@ public class GiftPlayView: UIView {
         let manager = TUIGiftAnimationManager(simulcastCount: 1)
         manager.dequeueClosure = { [weak self] giftData in
             guard let self = self else { return }
-            self.giftCacheKey = giftData.giftInfo.giftId
+            self.giftCacheKey = giftData.giftInfo.giftID
             self.showAdvancedAnimation(giftData: giftData)
         }
         return manager
@@ -101,7 +101,7 @@ public class GiftPlayView: UIView {
             .sink { [weak self] event in
                 guard let self = self else { return }
                 switch event {
-                case .onReceiveGift(liveId: let liveId, gift: let gift, count: let count, sender: let sender):
+                case .onReceiveGift(liveID: let liveId, gift: let gift, count: let count, sender: let sender):
                     guard liveId == self.liveId else { return }
                     delegate?.giftPlayView(self, onReceiveGift: gift, giftCount: Int(count), sender: sender)
                     playGift(TUIGiftData(count, giftInfo: gift, sender: sender))
@@ -114,7 +114,7 @@ public class GiftPlayView: UIView {
             .sink { [weak self] event in
                 guard let self = self else { return }
                 switch event {
-                case .onReceiveLikesMessage(liveId: let liveId, totalLikesReceived: _, sender: let sender):
+                case .onReceiveLikesMessage(liveID: let liveId, totalLikesReceived: _, sender: let sender):
                     guard self.liveId == liveId else { return }
                     for i in 0 ..< 3 {
                         let delay = Double(i) * gLikeMaxAnimationIntervalMS / 1000

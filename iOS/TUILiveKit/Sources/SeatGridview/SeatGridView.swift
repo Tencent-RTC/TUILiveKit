@@ -79,7 +79,7 @@ public class SeatGridView: UIView {
     
     private var isSelfOwner: Bool {
         let selfId = TUIRoomEngine.getSelfInfo().userId
-        let ownerId = liveListStore.state.value.currentLive.liveOwner.userId
+        let ownerId = liveListStore.state.value.currentLive.liveOwner.userID
         if selfId.isEmpty || ownerId.isEmpty {
             return false
         }
@@ -203,7 +203,7 @@ extension SeatGridView {
     public func joinVoiceRoom(roomId: String, onSuccess: @escaping TUILiveInfoBlock, onError: @escaping SGOnError) {
         SGDataReporter.reportEventData(event: .methodCallSeatGridViewJoinRoom)
 
-        liveListStore.joinLive(liveId: roomId) { [weak self] result in
+        liveListStore.joinLive(liveID: roomId) { [weak self] result in
             guard let self = self else { return }
             
             switch result {
@@ -314,7 +314,7 @@ extension SeatGridView {
                 }
             }
         } else {
-            coGuestStore.cancelInvitation(inviteeId: userId) { [weak self] result in
+            coGuestStore.cancelInvitation(inviteeID: userId) { [weak self] result in
                 guard let self = self else { return }
             
                 switch result {
@@ -342,7 +342,7 @@ extension SeatGridView {
     public func moveToSeat(index: Int, onSuccess: @escaping SGOnSuccess, onError: @escaping SGOnError) {
         SGDataReporter.reportEventData(event: .methodCallSeatGridViewMoveToSeat)
         
-        seatStore.moveUserToSeat(userId: selfInfo.userId, targetIndex: index, policy: .abortWhenOccupied) { result in
+        seatStore.moveUserToSeat(userID: selfInfo.userId, targetIndex: index, policy: .abortWhenOccupied) { result in
             switch result {
             case .success():
                 onSuccess()
@@ -392,7 +392,7 @@ extension SeatGridView {
                                                   onTimeout: onTimeout,
                                                   onError: onError)
         
-        coGuestStore.inviteToSeat(userId: userId,
+        coGuestStore.inviteToSeat(userID: userId,
                                   seatIndex: index,
                                   timeout: TimeInterval(timeout),
                                   extraInfo: nil) { [weak self] result in
@@ -409,7 +409,7 @@ extension SeatGridView {
     public func kickUserOffSeatByAdmin(userId: String, onSuccess: @escaping SGOnSuccess, onError: @escaping SGOnError) {
         SGDataReporter.reportEventData(event: .methodCallSeatGridViewKickUserOffSeat)
         
-        seatStore.kickUserOutOfSeat(userId: userId) { result in
+        seatStore.kickUserOutOfSeat(userID: userId) { result in
             switch result {
             case .success():
                 onSuccess()
@@ -471,11 +471,11 @@ extension SeatGridView: SGViewManagerDataProvider {
     }
     
     var coGuestStore: CoGuestStore {
-        return CoGuestStore.create(liveId: liveId)
+        return CoGuestStore.create(liveID: liveId)
     }
     
     var seatStore: LiveSeatStore {
-        return LiveSeatStore.create(liveId: liveId)
+        return LiveSeatStore.create(liveID: liveId)
     }
     
     var seatListCount: Int {
@@ -491,12 +491,12 @@ extension SeatGridView {
                 guard let self = self else { return }
                 
                 switch event {
-                case .onLiveEnded(liveId: let liveId, reason: _, message: _):
+                case .onLiveEnded(liveID: let liveId, reason: _, message: _):
                     guard self.liveId == liveId else { return }
                     notifyObserverEvent { observer in
                         observer.onRoomDismissed(roomId: liveId)
                     }
-                case  .onKickedOutOfLive(liveId: let liveId, reason: let reason, message: let message):
+                case  .onKickedOutOfLive(liveID: let liveId, reason: let reason, message: let message):
                     notifyObserverEvent { observer in
                         observer.onKickedOutOfRoom(roomId: liveId, reason: .init(from: reason), message: message)
                     }
@@ -562,24 +562,24 @@ extension SeatGridView {
                     break
                 case .onHostInvitationResponded(isAccept: let isAccept, guestUser: let guestUser):
                     if isAccept {
-                        inviteCallbacks[guestUser.userId]?.onAccepted(.init(from: guestUser))
+                        inviteCallbacks[guestUser.userID]?.onAccepted(.init(from: guestUser))
                     } else {
-                        inviteCallbacks[guestUser.userId]?.onRejected(.init(from: guestUser))
+                        inviteCallbacks[guestUser.userID]?.onRejected(.init(from: guestUser))
                     }
-                    inviteCallbacks.removeValue(forKey: guestUser.userId)
+                    inviteCallbacks.removeValue(forKey: guestUser.userID)
                 case .onHostInvitationNoResponse(guestUser: let guestUser, reason: let reason):
                     if reason == .timeout {
-                        inviteCallbacks[guestUser.userId]?.onTimeout(.init(from: guestUser))
+                        inviteCallbacks[guestUser.userID]?.onTimeout(.init(from: guestUser))
                     }
-                    inviteCallbacks.removeValue(forKey: guestUser.userId)
+                    inviteCallbacks.removeValue(forKey: guestUser.userID)
                 }
             }
             .store(in: &cancellableSet)
     }
     
     func acceptRemoteRequest(userId: String, onSuccess: @escaping SGOnSuccess, onError: @escaping SGOnError) {
-        if let receivedInvitation = invitation, receivedInvitation.userId == userId {
-            coGuestStore.acceptInvitation(inviterId: userId) { [weak self] result in
+        if let receivedInvitation = invitation, receivedInvitation.userID == userId {
+            coGuestStore.acceptInvitation(inviterID: userId) { [weak self] result in
                 guard let self = self else { return }
                 
                 switch result {
@@ -593,8 +593,8 @@ extension SeatGridView {
             return
         }
         
-        if coGuestStore.state.value.applicants.contains(where: { $0.userId == userId }) {
-            coGuestStore.acceptApplication(userId: userId) { result in
+        if coGuestStore.state.value.applicants.contains(where: { $0.userID == userId }) {
+            coGuestStore.acceptApplication(userID: userId) { result in
                 switch result {
                 case .success():
                     onSuccess()
@@ -607,8 +607,8 @@ extension SeatGridView {
     }
     
     func rejectRemoteRequest(userId: String, onSuccess: @escaping SGOnSuccess, onError: @escaping SGOnError) {
-        if let receivedInvitation = invitation, receivedInvitation.userId == userId {
-            coGuestStore.rejectInvitation(inviterId: userId) { [weak self] result in
+        if let receivedInvitation = invitation, receivedInvitation.userID == userId {
+            coGuestStore.rejectInvitation(inviterID: userId) { [weak self] result in
                 guard let self = self else { return }
                 
                 switch result {
@@ -622,8 +622,8 @@ extension SeatGridView {
             return
         }
         
-        if coGuestStore.state.value.applicants.contains(where: { $0.userId == userId }) {
-            coGuestStore.rejectApplication(userId: userId) { result in
+        if coGuestStore.state.value.applicants.contains(where: { $0.userID == userId }) {
+            coGuestStore.rejectApplication(userID: userId) { result in
                 switch result {
                 case .success():
                     onSuccess()
@@ -668,7 +668,7 @@ extension SeatGridView: UICollectionViewDataSource, UICollectionViewDelegate {
         let seatInfo = seatStore.state.value.seatList[indexPath.row]
         let tuiSeatInfo =  TUISeatInfo(from: seatInfo)
         let customView = self.delegate?.seatGridView(self, createSeatView: tuiSeatInfo)
-        let ownerId = liveListStore.state.value.currentLive.liveOwner.userId
+        let ownerId = liveListStore.state.value.currentLive.liveOwner.userID
         view.configure(with: SeatContainerCellModel(customView: customView, seatInfo: tuiSeatInfo, ownerId: ownerId))
     }
     
@@ -705,7 +705,7 @@ extension SeatGridView: UICollectionViewDataSource, UICollectionViewDelegate {
             .receive(on: RunLoop.main)
             .sink { [weak view] userVolumeMap, seatInfo in
                 guard let seatView = view else { return }
-                let userId = seatInfo.userInfo.userId
+                let userId = seatInfo.userInfo.userID
                 if !userId.isEmpty {
                     if let volume = userVolumeMap[userId], volume > 25 {
                         seatView.isSpeaking = true
@@ -721,7 +721,7 @@ extension SeatGridView: UICollectionViewDataSource, UICollectionViewDelegate {
             .receive(on: RunLoop.main)
             .sink { [weak view] seatInfo in
                 guard let seatView = view else { return }
-                let userId = seatInfo.userInfo.userId
+                let userId = seatInfo.userInfo.userID
                 if !userId.isEmpty {
                     seatView.isAudioMuted = (seatInfo.userInfo.microphoneStatus == .off)
                 }
@@ -791,7 +791,7 @@ private extension SeatGridView {
         let selfId = TUIRoomEngine.getSelfInfo().userId
         let liveInfo = liveListStore.state.value.currentLive
         
-        return selfId == liveInfo.liveOwner.userId ||
+        return selfId == liveInfo.liveOwner.userID ||
                liveInfo.seatMode == .free
     }
     

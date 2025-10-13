@@ -152,7 +152,7 @@ class NetworkInfoButton: UIView {
             .receive(on: RunLoop.main)
             .sink { [weak self] currentLive in
                 guard let self = self else { return }
-                if currentLive.liveId == liveId {
+                if currentLive.liveID == liveId {
                     durationTimestamp = Date().timeIntervalSince1970 - TimeInterval(currentLive.createTime) / 1000
                     if currentLive.createTime == 0 || durationTimestamp < 0 {
                         durationTimestamp = 0

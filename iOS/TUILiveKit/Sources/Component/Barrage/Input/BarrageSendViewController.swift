@@ -102,7 +102,7 @@ class BarrageSendViewController: UIViewController {
             .receive(on: RunLoop.main)
             .sink { [weak self] event in
                 guard let self = self else { return }
-                if case .onLiveEnded(liveId: let liveId, reason: _, message: _) = event,
+                if case .onLiveEnded(liveID: let liveId, reason: _, message: _) = event,
                    liveId == roomId {
                     dismiss(animated: true)
                 }
@@ -236,7 +236,7 @@ extension BarrageSendViewController: InputBarViewDelegate {
 
 extension BarrageSendViewController {
     var barrageStore: BarrageStore {
-        return BarrageStore.create(liveId: roomId)
+        return BarrageStore.create(liveID: roomId)
     }
     
     var liveListStore: LiveListStore {

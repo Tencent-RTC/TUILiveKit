@@ -126,7 +126,7 @@ public class AnchorPrepareView: UIView {
     public init(roomId: String, coreView: LiveCoreView) {
         self.coreView = coreView
         super.init(frame: .zero)
-        coreView.setLiveId(roomId)
+        coreView.setLiveID(roomId)
         registerObserver()
     }
     

@@ -501,7 +501,7 @@ extension AnchorLivingView: BarrageStreamViewDelegate {
     }
 
     func onBarrageClicked(user: LiveUserInfo) {
-        if user.userId == manager.coreUserState.selfInfo.userId { return }
+        if user.userID == manager.coreUserState.selfInfo.userId { return }
         routerManager.router(action: .present(.userManagement(TUIUserInfo(from: user), type: .messageAndKickOut)))
     }
 }
@@ -539,7 +539,7 @@ extension AnchorLivingView: GiftPlayViewDelegate {
 
 extension AnchorLivingView {
     var barrageStore: BarrageStore {
-        return BarrageStore.create(liveId: roomId)
+        return BarrageStore.create(liveID: roomId)
     }
 }
 

@@ -213,7 +213,7 @@ class VRSeatManagerPanel: RTCBaseView {
                 guard let self = self else { return }
                 let seatList = seatList.filter{ [weak self] in
                     guard let self = self else { return true }
-                    return !($0.userInfo.userId).isEmpty && $0.userInfo.userId != manager.userState.selfInfo.userId
+                    return !($0.userInfo.userID).isEmpty && $0.userInfo.userID != manager.userState.selfInfo.userId
                 }
                 self.onTheSeatList = seatList.map { TUISeatInfo(from: $0) }
                 let seatListCount = manager.coreSeatState.seatList.count
@@ -244,7 +244,7 @@ class VRSeatManagerPanel: RTCBaseView {
                 guard let self = self else { return }
                 let onSeatList = seatList.filter{ [weak self] in
                     guard let self = self else { return true }
-                    return !($0.userInfo.userId ?? "").isEmpty && $0.userInfo.userId != self.manager.userState.selfInfo.userId
+                    return !($0.userInfo.userID ?? "").isEmpty && $0.userInfo.userID != self.manager.userState.selfInfo.userId
                 }
                 self.inviteContentView.isHidden = (onSeatList.count != 0 || applicationSeatList.count != 0)
             }
