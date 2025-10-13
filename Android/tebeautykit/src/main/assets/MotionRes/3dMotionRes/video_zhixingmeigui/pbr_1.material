@@ -1,0 +1,264 @@
+{
+    "ao_enable_texture_": false,
+    "ao_index_": 0,
+    "ao_sampling_channel_": "r",
+    "ao_strength_": 1,
+    "base_color_enable_texture_": false,
+    "base_color_factor_": [
+        1,
+        1,
+        1,
+        1
+    ],
+    "base_color_index_": 0,
+    "base_color_texture_bind_": {
+        "sampler_": {
+            "compare_func": "le",
+            "compare_mode_": "none",
+            "mag_filter_": "linear",
+            "min_filter_": "linear_mipmap_linear",
+            "wrap_mode_r_": "repeat",
+            "wrap_mode_s_": "repeat",
+            "wrap_mode_t_": "repeat"
+        },
+        "srgb_": true,
+        "uri_": ""
+    },
+    "base_color_texture_premultiplied_": false,
+    "base_color_uv_matrix_": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+    ],
+    "blending_": "masked",
+    "clear_coat_enable_texture_": false,
+    "clear_coat_factor_": 0,
+    "clear_coat_index_": -1,
+    "clear_coat_normal_enable_texture_": false,
+    "clear_coat_normal_index_": -1,
+    "clear_coat_normal_scale_": 0,
+    "clear_coat_normal_texture_bind_": {
+        "sampler_": {
+            "compare_func": "le",
+            "compare_mode_": "none",
+            "mag_filter_": "linear",
+            "min_filter_": "linear_mipmap_linear",
+            "wrap_mode_r_": "repeat",
+            "wrap_mode_s_": "repeat",
+            "wrap_mode_t_": "repeat"
+        },
+        "srgb_": false,
+        "uri_": ""
+    },
+    "clear_coat_normal_uv_matrix_": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+    ],
+    "clear_coat_roughness_enable_texture_": false,
+    "clear_coat_roughness_factor_": 0,
+    "clear_coat_roughness_index_": -1,
+    "clear_coat_roughness_texture_bind_": {
+        "sampler_": {
+            "compare_func": "le",
+            "compare_mode_": "none",
+            "mag_filter_": "linear",
+            "min_filter_": "linear_mipmap_linear",
+            "wrap_mode_r_": "repeat",
+            "wrap_mode_s_": "repeat",
+            "wrap_mode_t_": "repeat"
+        },
+        "srgb_": false,
+        "uri_": ""
+    },
+    "clear_coat_roughness_uv_matrix_": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+    ],
+    "clear_coat_texture_bind_": {
+        "sampler_": {
+            "compare_func": "le",
+            "compare_mode_": "none",
+            "mag_filter_": "linear",
+            "min_filter_": "linear_mipmap_linear",
+            "wrap_mode_r_": "repeat",
+            "wrap_mode_s_": "repeat",
+            "wrap_mode_t_": "repeat"
+        },
+        "srgb_": false,
+        "uri_": ""
+    },
+    "clear_coat_uv_matrix_": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+    ],
+    "color_write_": false,
+    "culling_mode_": "back",
+    "depth_culling_": true,
+    "depth_write_": true,
+    "double_side_": false,
+    "emissive_enable_texture_": false,
+    "emissive_enable_texture_color_multiply_": true,
+    "emissive_factor_": [
+        0,
+        0,
+        0,
+        1
+    ],
+    "emissive_index_": 0,
+    "emissive_strength_": 1,
+    "emissive_texture_bind_": {
+        "sampler_": {
+            "compare_func": "le",
+            "compare_mode_": "none",
+            "mag_filter_": "linear",
+            "min_filter_": "linear_mipmap_linear",
+            "wrap_mode_r_": "repeat",
+            "wrap_mode_s_": "repeat",
+            "wrap_mode_t_": "repeat"
+        },
+        "srgb_": true,
+        "uri_": ""
+    },
+    "emissive_uv_matrix_": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+    ],
+    "flipUV_": false,
+    "metallic_factor_": 1,
+    "metallic_roughness_enable_texture_": false,
+    "metallic_roughness_index_": 0,
+    "metallic_roughness_texture_bind_": {
+        "sampler_": {
+            "compare_func": "le",
+            "compare_mode_": "none",
+            "mag_filter_": "linear",
+            "min_filter_": "linear_mipmap_linear",
+            "wrap_mode_r_": "repeat",
+            "wrap_mode_s_": "repeat",
+            "wrap_mode_t_": "repeat"
+        },
+        "srgb_": false,
+        "uri_": ""
+    },
+    "metallic_roughness_uv_matrix_": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+    ],
+    "metallic_sampling_channel_": "b",
+    "normal_enable_g_reverse_": false,
+    "normal_enable_texture_": false,
+    "normal_index_": 0,
+    "normal_scale_": 1,
+    "normal_texture_bind_": {
+        "sampler_": {
+            "compare_func": "le",
+            "compare_mode_": "none",
+            "mag_filter_": "linear",
+            "min_filter_": "linear_mipmap_linear",
+            "wrap_mode_r_": "repeat",
+            "wrap_mode_s_": "repeat",
+            "wrap_mode_t_": "repeat"
+        },
+        "srgb_": false,
+        "uri_": ""
+    },
+    "normal_uv_matrix_": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+    ],
+    "occlusion_texture_bind_": {
+        "sampler_": {
+            "compare_func": "le",
+            "compare_mode_": "none",
+            "mag_filter_": "linear",
+            "min_filter_": "linear_mipmap_linear",
+            "wrap_mode_r_": "repeat",
+            "wrap_mode_s_": "repeat",
+            "wrap_mode_t_": "repeat"
+        },
+        "srgb_": false,
+        "uri_": ""
+    },
+    "occlusion_uv_matrix_": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+    ],
+    "roughness_factor_": 0,
+    "roughness_sampling_channel_": "g",
+    "shading_model_": "lit",
+    "specular_ambient_occlusion_": "simple",
+    "type_": "pbr",
+    "vertex_transform_": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+    ]
+}

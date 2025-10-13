@@ -1,0 +1,1811 @@
+{
+   "name": "template",
+   "type": "empty_shooting",
+   "author": "happy",
+   "category": 1,
+   "scene": {
+      "id": 16,
+      "name": "拍摄模板",
+      "children": [
+         {
+            "id": 18,
+            "name": "2D画板",
+            "children": [
+               {
+                  "id": 22,
+                  "name": "人脸跟随贴纸",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "type": "ScreenTransform",
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "anchor": {
+                           "left": 0,
+                           "right": 0,
+                           "top": 0,
+                           "bottom": 0
+                        },
+                        "offset": {
+                           "left": -206,
+                           "right": 206,
+                           "top": 49,
+                           "bottom": -49
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 0,
+                        "eFixSize": 3,
+                        "eEditingMode": 0,
+                        "eKeepRatio": true,
+                        "entityId": 22,
+                        "objectEnabled": true,
+                        "version": 1,
+                        "enabled": true,
+                        "componentID": 0
+                     },
+                     {
+                        "componentID": 12,
+                        "enabled": true,
+                        "entityId": 22,
+                        "scaleMode": 1,
+                        "src": "84eecb90-ca0a-43a6-9886-b9326ab9a6a2",
+                        "type": "Image",
+                        "version": 2
+                     },
+                     {
+                        "alpha": 1,
+                        "mode": "normal",
+                        "type": "BlendMode",
+                        "enabled": true,
+                        "entityId": 22,
+                        "componentID": 13
+                     },
+                     {
+                        "alignPoints": [
+                           64
+                        ],
+                        "scalePivotPoint1": 0,
+                        "scalePivotPoint2": 18,
+                        "faceIndex": [
+                           0,
+                           1,
+                           2,
+                           3,
+                           4
+                        ],
+                        "isRefine": true,
+                        "isWaitFirstFrameDetect": false,
+                        "isAllFrameFaceDetect": false,
+                        "type": "FaceTracking",
+                        "enabled": true,
+                        "entityId": 22,
+                        "componentID": 14,
+                        "xAxisTrack": true,
+                        "yAxisTrack": true,
+                        "xAxisRotateTrack": true,
+                        "yAxisRotateTrack": true,
+                        "zAxisRotateTrack": true,
+                        "xAxisScale": true,
+                        "yAxisScale": true
+                     }
+                  ]
+               },
+               {
+                  "id": 24,
+                  "name": "前景贴纸",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "anchor": {
+                           "bottom": -1,
+                           "left": -1,
+                           "right": 1,
+                           "top": 1
+                        },
+                        "offset": {
+                           "bottom": 0,
+                           "left": 0,
+                           "right": 0,
+                           "top": 0
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 15,
+                        "eFixSize": 0,
+                        "eEditingMode": 1,
+                        "eKeepRatio": true,
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "rotation": {
+                           "w": 1,
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "objectEnabled": true,
+                        "entityId": 24,
+                        "type": "ScreenTransform",
+                        "version": 3,
+                        "enabled": true,
+                        "componentID": 17
+                     },
+                     {
+                        "componentID": 18,
+                        "enabled": true,
+                        "entityId": 24,
+                        "scaleMode": 3,
+                        "src": "55b15b87-7236-4c24-81f6-d71596363f4f",
+                        "type": "Image",
+                        "version": 4
+                     },
+                     {
+                        "alpha": 1,
+                        "componentID": 19,
+                        "enabled": true,
+                        "entityId": 24,
+                        "mode": "add",
+                        "type": "BlendMode",
+                        "version": 2
+                     }
+                  ]
+               },
+               {
+                  "id": 42,
+                  "name": "custom",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "type": "ScreenTransform",
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "eEuler": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "anchor": {
+                           "left": 0,
+                           "right": 0,
+                           "top": 0,
+                           "bottom": 0
+                        },
+                        "offset": {
+                           "left": -360,
+                           "right": 360,
+                           "top": 640,
+                           "bottom": -640
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 0,
+                        "eFixSize": 3,
+                        "eEditingMode": 0,
+                        "eKeepRatio": true,
+                        "objectEnabled": true,
+                        "enabled": true,
+                        "entityId": 42,
+                        "componentID": 54
+                     },
+                     {
+                        "componentID": 60,
+                        "enabled": true,
+                        "entityId": 42,
+                        "type": "CustomGraph",
+                        "version": 3,
+                        "resourcePath": "b44ab9a7-3987-46f1-8107-2a9adc2c7e8d"
+                     }
+                  ]
+               },
+               {
+                  "id": 83,
+                  "name": "截帧",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "type": "ScreenTransform",
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "eEuler": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "anchor": {
+                           "left": 0,
+                           "right": 0,
+                           "top": 0,
+                           "bottom": 0
+                        },
+                        "offset": {
+                           "left": -360,
+                           "right": 360,
+                           "top": 640,
+                           "bottom": -640
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 0,
+                        "eFixSize": 3,
+                        "eEditingMode": 0,
+                        "eKeepRatio": true,
+                        "objectEnabled": true,
+                        "enabled": true,
+                        "entityId": 83,
+                        "componentID": 61
+                     },
+                     {
+                        "type": "Snapshot",
+                        "enabled": true,
+                        "outTextureId": "RenderTarget2",
+                        "entityId": 83,
+                        "componentID": 62
+                     }
+                  ]
+               },
+               {
+                  "id": 23,
+                  "name": "背景音乐",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "type": "ScreenTransform",
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "anchor": {
+                           "left": 0,
+                           "right": 0,
+                           "top": 0,
+                           "bottom": 0
+                        },
+                        "offset": {
+                           "left": -360,
+                           "right": 360,
+                           "top": 640,
+                           "bottom": -640
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 0,
+                        "eFixSize": 3,
+                        "eEditingMode": 0,
+                        "eKeepRatio": true,
+                        "enabled": true,
+                        "entityId": 23,
+                        "componentID": 11,
+                        "objectEnabled": true
+                     },
+                     {
+                        "componentID": 15,
+                        "eAudioMeta": {
+                           "rhythmPath": "",
+                           "startTime": 0,
+                           "duration": 6520000,
+                           "enableRhythm": true
+                        },
+                        "eAudioType": 1,
+                        "eHasVolumeEffects": false,
+                        "eKey": "audioSource",
+                        "enabled": true,
+                        "entityId": 23,
+                        "speed": 1,
+                        "type": "AudioSource",
+                        "version": 6,
+                        "volume": 1,
+                        "volumeEffects": [
+                           {
+                              "duration": 2000000,
+                              "eAlignMode": 2,
+                              "end": 1,
+                              "endOffset": 0,
+                              "interpolationType": 1,
+                              "start": 1,
+                              "startOffset": 0
+                           }
+                        ],
+                        "ePath": "27457a4c-498a-48c1-9ee0-58b82e1453ec",
+                        "audioSourceType": 1
+                     }
+                  ]
+               },
+               {
+                  "id": 21,
+                  "name": "PAG",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "anchor": {
+                           "bottom": -1,
+                           "left": -1,
+                           "right": 1,
+                           "top": 1
+                        },
+                        "offset": {
+                           "bottom": 0,
+                           "left": 0,
+                           "right": 0,
+                           "top": 0
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 15,
+                        "eFixSize": 0,
+                        "eEditingMode": 1,
+                        "eKeepRatio": true,
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "rotation": {
+                           "w": 1,
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "entityId": 21,
+                        "componentID": 9,
+                        "type": "ScreenTransform",
+                        "enabled": true,
+                        "version": 2,
+                        "objectEnabled": true
+                     },
+                     {
+                        "componentID": 10,
+                        "enabled": true,
+                        "entityId": 21,
+                        "imageLayers": [
+                           {
+                              "index": 0,
+                              "key": "RenderTarget2",
+                              "name": "timg-2.jpeg 3",
+                              "scaleMode": 3,
+                              "sourceIndex": -1
+                           },
+                           {
+                              "index": 1,
+                              "key": "RenderTarget2",
+                              "name": "timg-2.jpeg 2",
+                              "scaleMode": 3,
+                              "sourceIndex": -1
+                           },
+                           {
+                              "index": 2,
+                              "key": "RenderTarget2",
+                              "name": "timg-2.jpeg",
+                              "scaleMode": 3,
+                              "sourceIndex": -1
+                           },
+                           {
+                              "index": 3,
+                              "key": "RenderTarget2",
+                              "name": "timg-2.jpeg 4",
+                              "scaleMode": 3,
+                              "sourceIndex": -1
+                           }
+                        ],
+                        "musicID": "",
+                        "scaleMode": 3,
+                        "src": "6f018db8-ecb5-4dd4-b07c-f39dacfd5413",
+                        "textLayers": [],
+                        "type": "PAGAsset",
+                        "usage": 0,
+                        "version": 44
+                     }
+                  ]
+               },
+               {
+                  "id": 20,
+                  "name": "PAG",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "anchor": {
+                           "bottom": -1,
+                           "left": -1,
+                           "right": 1,
+                           "top": 1
+                        },
+                        "offset": {
+                           "bottom": 0,
+                           "left": 0,
+                           "right": 0,
+                           "top": 0
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 15,
+                        "eFixSize": 0,
+                        "eEditingMode": 1,
+                        "eKeepRatio": true,
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "rotation": {
+                           "w": 1,
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "entityId": 20,
+                        "componentID": 8,
+                        "type": "ScreenTransform",
+                        "enabled": true,
+                        "version": 2,
+                        "objectEnabled": true
+                     },
+                     {
+                        "componentID": 16,
+                        "enabled": true,
+                        "entityId": 20,
+                        "imageLayers": [
+                           {
+                              "index": 0,
+                              "key": "RenderTarget2",
+                              "name": "720x1280 copy.png",
+                              "scaleMode": 3,
+                              "sourceIndex": -1
+                           },
+                           {
+                              "index": 1,
+                              "key": "RenderTarget2",
+                              "name": "720x1280 copy.png 2",
+                              "scaleMode": 3,
+                              "sourceIndex": -1
+                           },
+                           {
+                              "index": 2,
+                              "key": "RenderTarget2",
+                              "name": "720x1280 copy.png 3",
+                              "scaleMode": 3,
+                              "sourceIndex": -1
+                           },
+                           {
+                              "index": 3,
+                              "key": "RenderTarget2",
+                              "name": "720x1280 copy.png 4",
+                              "scaleMode": 3,
+                              "sourceIndex": -1
+                           },
+                           {
+                              "index": 4,
+                              "key": "RenderTarget2",
+                              "name": "720x1280 copy.png 5",
+                              "scaleMode": 3,
+                              "sourceIndex": -1
+                           },
+                           {
+                              "index": 5,
+                              "key": "RenderTarget2",
+                              "name": "720x1280 copy.png 6",
+                              "scaleMode": 3,
+                              "sourceIndex": -1
+                           },
+                           {
+                              "index": 6,
+                              "key": "RenderTarget2",
+                              "name": "720x1280 copy.png 7",
+                              "scaleMode": 3,
+                              "sourceIndex": -1
+                           },
+                           {
+                              "index": 7,
+                              "key": "RenderTarget2",
+                              "name": "720x1280 copy.png 8",
+                              "scaleMode": 3,
+                              "sourceIndex": -1
+                           },
+                           {
+                              "index": 8,
+                              "key": "RenderTarget2",
+                              "name": "720x1280 copy.png 9",
+                              "scaleMode": 3,
+                              "sourceIndex": -1
+                           }
+                        ],
+                        "musicID": "",
+                        "scaleMode": 3,
+                        "src": "762d5244-7d17-4589-86e5-1e37ada36a4a",
+                        "textLayers": [],
+                        "type": "PAGAsset",
+                        "usage": 0,
+                        "version": 96
+                     }
+                  ]
+               },
+               {
+                  "id": 19,
+                  "name": "PAG",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "anchor": {
+                           "bottom": -1,
+                           "left": -1,
+                           "right": 1,
+                           "top": 1
+                        },
+                        "offset": {
+                           "bottom": 0,
+                           "left": 0,
+                           "right": 0,
+                           "top": 0
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 15,
+                        "eFixSize": 0,
+                        "eEditingMode": 1,
+                        "eKeepRatio": true,
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "rotation": {
+                           "w": 1,
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "objectEnabled": true,
+                        "entityId": 19,
+                        "componentID": 20,
+                        "type": "ScreenTransform",
+                        "enabled": true,
+                        "version": 4
+                     },
+                     {
+                        "backgroundVolume": 1,
+                        "componentID": 21,
+                        "enabled": true,
+                        "entityId": 19,
+                        "imageLayers": [
+                           {
+                              "index": 0,
+                              "key": "RenderTarget2",
+                              "name": "Untitled.png",
+                              "scaleMode": 3,
+                              "sourceIndex": -1
+                           },
+                           {
+                              "index": 1,
+                              "key": "RenderTarget2",
+                              "name": "Untitled.png",
+                              "scaleMode": 3,
+                              "sourceIndex": -1
+                           }
+                        ],
+                        "musicID": "",
+                        "scaleMode": 3,
+                        "src": "8c27dce9-cf85-4fc9-a4a1-e04de9ee0e3e",
+                        "textLayers": [],
+                        "type": "PAGAsset",
+                        "usage": 0,
+                        "version": 38
+                     }
+                  ]
+               },
+               {
+                  "id": 25,
+                  "name": "前景贴纸",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "anchor": {
+                           "bottom": -1,
+                           "left": -1,
+                           "right": 1,
+                           "top": 1
+                        },
+                        "offset": {
+                           "bottom": 0,
+                           "left": 0,
+                           "right": 0,
+                           "top": 0
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 15,
+                        "eFixSize": 0,
+                        "eEditingMode": 1,
+                        "eKeepRatio": true,
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "rotation": {
+                           "w": 1,
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "objectEnabled": true,
+                        "entityId": 25,
+                        "type": "ScreenTransform",
+                        "version": 3,
+                        "enabled": true,
+                        "componentID": 22
+                     },
+                     {
+                        "componentID": 23,
+                        "enabled": true,
+                        "entityId": 25,
+                        "scaleMode": 1,
+                        "src": "02eb4036-3742-4855-9322-7584bc2a04d1",
+                        "type": "Image",
+                        "version": 2
+                     },
+                     {
+                        "alpha": 1,
+                        "componentID": 24,
+                        "enabled": true,
+                        "entityId": 25,
+                        "mode": "screen",
+                        "type": "BlendMode",
+                        "version": 2
+                     }
+                  ]
+               },
+               {
+                  "id": 26,
+                  "name": "前景贴纸",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "anchor": {
+                           "bottom": -1,
+                           "left": -1,
+                           "right": 1,
+                           "top": 1
+                        },
+                        "offset": {
+                           "bottom": 0,
+                           "left": 0,
+                           "right": 0,
+                           "top": 0
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 15,
+                        "eFixSize": 0,
+                        "eEditingMode": 1,
+                        "eKeepRatio": true,
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "rotation": {
+                           "w": 1,
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "objectEnabled": true,
+                        "entityId": 26,
+                        "type": "ScreenTransform",
+                        "version": 3,
+                        "enabled": true,
+                        "componentID": 25
+                     },
+                     {
+                        "componentID": 26,
+                        "enabled": true,
+                        "entityId": 26,
+                        "scaleMode": 3,
+                        "src": "db027b98-90d7-4566-8268-c99efb4cc859",
+                        "type": "Image",
+                        "version": 4
+                     },
+                     {
+                        "alpha": 1,
+                        "componentID": 27,
+                        "enabled": true,
+                        "entityId": 26,
+                        "mode": "screen",
+                        "type": "BlendMode",
+                        "version": 2
+                     }
+                  ]
+               },
+               {
+                  "id": 27,
+                  "name": "前景贴纸",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "anchor": {
+                           "bottom": -1,
+                           "left": -1,
+                           "right": 1,
+                           "top": 1
+                        },
+                        "offset": {
+                           "bottom": 0,
+                           "left": 0,
+                           "right": 0,
+                           "top": 0
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 15,
+                        "eFixSize": 0,
+                        "eEditingMode": 1,
+                        "eKeepRatio": true,
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "rotation": {
+                           "w": 1,
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "objectEnabled": true,
+                        "entityId": 27,
+                        "type": "ScreenTransform",
+                        "version": 3,
+                        "enabled": true,
+                        "componentID": 28
+                     },
+                     {
+                        "componentID": 29,
+                        "enabled": true,
+                        "entityId": 27,
+                        "scaleMode": 3,
+                        "src": "be5ffa99-c1f1-4722-8cb6-b56424fdc7be",
+                        "type": "Image",
+                        "version": 4
+                     },
+                     {
+                        "alpha": 1,
+                        "componentID": 30,
+                        "enabled": true,
+                        "entityId": 27,
+                        "mode": "screen",
+                        "type": "BlendMode",
+                        "version": 2
+                     }
+                  ]
+               },
+               {
+                  "id": 28,
+                  "name": "前景贴纸",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "anchor": {
+                           "bottom": -1,
+                           "left": -1,
+                           "right": 1,
+                           "top": 1
+                        },
+                        "offset": {
+                           "bottom": 0,
+                           "left": 0,
+                           "right": 0,
+                           "top": 0
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 15,
+                        "eFixSize": 0,
+                        "eEditingMode": 1,
+                        "eKeepRatio": true,
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "rotation": {
+                           "w": 1,
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "objectEnabled": true,
+                        "entityId": 28,
+                        "type": "ScreenTransform",
+                        "version": 5,
+                        "enabled": true,
+                        "componentID": 31
+                     },
+                     {
+                        "componentID": 32,
+                        "enabled": true,
+                        "entityId": 28,
+                        "scaleMode": 3,
+                        "src": "ee54419a-76a8-4cc4-b17e-04dc150c78f3",
+                        "type": "Image",
+                        "version": 4
+                     },
+                     {
+                        "alpha": 1,
+                        "componentID": 33,
+                        "enabled": true,
+                        "entityId": 28,
+                        "mode": "screen",
+                        "type": "BlendMode",
+                        "version": 2
+                     }
+                  ]
+               },
+               {
+                  "id": 29,
+                  "name": "前景贴纸",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "anchor": {
+                           "bottom": -1,
+                           "left": -1,
+                           "right": 1,
+                           "top": 1
+                        },
+                        "offset": {
+                           "bottom": 0,
+                           "left": 0,
+                           "right": 0,
+                           "top": 0
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 15,
+                        "eFixSize": 0,
+                        "eEditingMode": 1,
+                        "eKeepRatio": true,
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "rotation": {
+                           "w": 1,
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "objectEnabled": true,
+                        "entityId": 29,
+                        "type": "ScreenTransform",
+                        "version": 3,
+                        "enabled": true,
+                        "componentID": 34
+                     },
+                     {
+                        "componentID": 35,
+                        "enabled": true,
+                        "entityId": 29,
+                        "scaleMode": 1,
+                        "src": "76a87db0-c594-4065-a056-8552a435d4f3",
+                        "type": "Image",
+                        "version": 2
+                     },
+                     {
+                        "alpha": 1,
+                        "componentID": 36,
+                        "enabled": true,
+                        "entityId": 29,
+                        "mode": "screen",
+                        "type": "BlendMode",
+                        "version": 2
+                     }
+                  ]
+               },
+               {
+                  "id": 30,
+                  "name": "前景贴纸",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "anchor": {
+                           "bottom": -1,
+                           "left": -1,
+                           "right": 1,
+                           "top": 1
+                        },
+                        "offset": {
+                           "bottom": 0,
+                           "left": 0,
+                           "right": 0,
+                           "top": 0
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 15,
+                        "eFixSize": 0,
+                        "eEditingMode": 1,
+                        "eKeepRatio": true,
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "rotation": {
+                           "w": 1,
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "objectEnabled": true,
+                        "entityId": 30,
+                        "type": "ScreenTransform",
+                        "version": 3,
+                        "enabled": true,
+                        "componentID": 37
+                     },
+                     {
+                        "componentID": 38,
+                        "enabled": true,
+                        "entityId": 30,
+                        "scaleMode": 3,
+                        "src": "bdf222d6-2f9d-4546-a1ce-d510fdcb5a2d",
+                        "type": "Image",
+                        "version": 4
+                     },
+                     {
+                        "alpha": 1,
+                        "componentID": 39,
+                        "enabled": true,
+                        "entityId": 30,
+                        "mode": "screen",
+                        "type": "BlendMode",
+                        "version": 2
+                     }
+                  ]
+               },
+               {
+                  "id": 31,
+                  "name": "前景贴纸",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "anchor": {
+                           "bottom": -1,
+                           "left": -1,
+                           "right": 1,
+                           "top": 1
+                        },
+                        "offset": {
+                           "bottom": 0,
+                           "left": 0,
+                           "right": 0,
+                           "top": 0
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 15,
+                        "eFixSize": 0,
+                        "eEditingMode": 1,
+                        "eKeepRatio": true,
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "rotation": {
+                           "w": 1,
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "objectEnabled": true,
+                        "entityId": 31,
+                        "type": "ScreenTransform",
+                        "version": 5,
+                        "enabled": true,
+                        "componentID": 40
+                     },
+                     {
+                        "componentID": 41,
+                        "enabled": true,
+                        "entityId": 31,
+                        "scaleMode": 3,
+                        "src": "5b4091d5-84d4-4f8f-aa43-9faf5e63a334",
+                        "type": "Image",
+                        "version": 4
+                     },
+                     {
+                        "alpha": 1,
+                        "componentID": 42,
+                        "enabled": true,
+                        "entityId": 31,
+                        "mode": "screen",
+                        "type": "BlendMode",
+                        "version": 2
+                     }
+                  ]
+               },
+               {
+                  "id": 32,
+                  "name": "前景贴纸",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "anchor": {
+                           "bottom": -1,
+                           "left": -1,
+                           "right": 1,
+                           "top": 1
+                        },
+                        "offset": {
+                           "bottom": 0,
+                           "left": 0,
+                           "right": 0,
+                           "top": 0
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 15,
+                        "eFixSize": 0,
+                        "eEditingMode": 1,
+                        "eKeepRatio": true,
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "rotation": {
+                           "w": 1,
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "objectEnabled": true,
+                        "entityId": 32,
+                        "type": "ScreenTransform",
+                        "version": 3,
+                        "enabled": true,
+                        "componentID": 43
+                     },
+                     {
+                        "componentID": 44,
+                        "enabled": true,
+                        "entityId": 32,
+                        "scaleMode": 3,
+                        "src": "e11ce1d5-f4f2-4f57-97aa-0481ffde59b3",
+                        "type": "Image",
+                        "version": 4
+                     },
+                     {
+                        "alpha": 1,
+                        "componentID": 45,
+                        "enabled": true,
+                        "entityId": 32,
+                        "mode": "screen",
+                        "type": "BlendMode",
+                        "version": 2
+                     }
+                  ]
+               },
+               {
+                  "id": 33,
+                  "name": "前景贴纸",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "anchor": {
+                           "bottom": -1,
+                           "left": -1,
+                           "right": 1,
+                           "top": 1
+                        },
+                        "offset": {
+                           "bottom": 0,
+                           "left": 0,
+                           "right": 0,
+                           "top": 0
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 15,
+                        "eFixSize": 0,
+                        "eEditingMode": 1,
+                        "eKeepRatio": true,
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "rotation": {
+                           "w": 1,
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "objectEnabled": true,
+                        "entityId": 33,
+                        "type": "ScreenTransform",
+                        "version": 3,
+                        "enabled": true,
+                        "componentID": 46
+                     },
+                     {
+                        "componentID": 47,
+                        "enabled": true,
+                        "entityId": 33,
+                        "scaleMode": 1,
+                        "src": "fb609a81-0d61-4c53-830f-1f2ea69403b1",
+                        "type": "Image",
+                        "version": 2
+                     },
+                     {
+                        "alpha": 1,
+                        "componentID": 48,
+                        "enabled": true,
+                        "entityId": 33,
+                        "mode": "screen",
+                        "type": "BlendMode",
+                        "version": 2
+                     }
+                  ]
+               },
+               {
+                  "id": 34,
+                  "name": "前景贴纸",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "anchor": {
+                           "bottom": -1,
+                           "left": -1,
+                           "right": 1,
+                           "top": 1
+                        },
+                        "offset": {
+                           "bottom": 0,
+                           "left": 0,
+                           "right": 0,
+                           "top": 0
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 15,
+                        "eFixSize": 0,
+                        "eEditingMode": 1,
+                        "eKeepRatio": true,
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "rotation": {
+                           "w": 1,
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "objectEnabled": true,
+                        "entityId": 34,
+                        "type": "ScreenTransform",
+                        "version": 5,
+                        "enabled": true,
+                        "componentID": 49
+                     },
+                     {
+                        "componentID": 50,
+                        "enabled": true,
+                        "entityId": 34,
+                        "scaleMode": 3,
+                        "src": "56de3641-4ca7-4f75-b152-3187ea9a85b4",
+                        "type": "Image",
+                        "version": 4
+                     },
+                     {
+                        "alpha": 1,
+                        "componentID": 51,
+                        "enabled": true,
+                        "entityId": 34,
+                        "mode": "screen",
+                        "type": "BlendMode",
+                        "version": 2
+                     }
+                  ]
+               },
+               {
+                  "id": 36,
+                  "name": "脚本",
+                  "children": [],
+                  "enabled": true,
+                  "version": 0,
+                  "components": [
+                     {
+                        "type": "ScreenTransform",
+                        "position": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0
+                        },
+                        "rotation": {
+                           "x": 0,
+                           "y": 0,
+                           "z": 0,
+                           "w": 1
+                        },
+                        "scale": {
+                           "x": 1,
+                           "y": 1,
+                           "z": 1
+                        },
+                        "anchor": {
+                           "left": 0,
+                           "right": 0,
+                           "top": 0,
+                           "bottom": 0
+                        },
+                        "offset": {
+                           "left": -360,
+                           "right": 360,
+                           "top": 640,
+                           "bottom": -640
+                        },
+                        "pivot": {
+                           "x": 0,
+                           "y": 0
+                        },
+                        "ePinToEdge": 0,
+                        "eFixSize": 3,
+                        "eEditingMode": 0,
+                        "eKeepRatio": true,
+                        "enabled": true,
+                        "entityId": 36,
+                        "componentID": 52,
+                        "objectEnabled": true
+                     },
+                     {
+                        "componentID": 53,
+                        "enabled": true,
+                        "entityId": 36,
+                        "scriptPath": "de372300-3af6-4d91-9bf0-0236bdafe701",
+                        "type": "Script",
+                        "version": 8
+                     }
+                  ]
+               }
+            ],
+            "enabled": true,
+            "version": 0,
+            "components": [
+               {
+                  "type": "ScreenTransform",
+                  "position": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "rotation": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0,
+                     "w": 1
+                  },
+                  "scale": {
+                     "x": 1,
+                     "y": 1,
+                     "z": 1
+                  },
+                  "anchor": {
+                     "top": 1,
+                     "bottom": -1,
+                     "left": -1,
+                     "right": 1
+                  },
+                  "offset": {
+                     "top": 0,
+                     "bottom": 0,
+                     "left": 0,
+                     "right": 0
+                  },
+                  "pivot": {
+                     "x": 0,
+                     "y": 0
+                  },
+                  "ePinToEdge": 15,
+                  "eFixSize": 0,
+                  "eEditingMode": 1,
+                  "eKeepRatio": true,
+                  "objectEnabled": true,
+                  "enabled": true,
+                  "entityId": 18,
+                  "componentID": 4
+               },
+               {
+                  "renderTargetKey": "RenderTarget",
+                  "type": "Camera",
+                  "enabled": true,
+                  "entityId": 18,
+                  "componentID": 5
+               }
+            ]
+         }
+      ],
+      "components": [
+         {
+            "anchor": {
+               "bottom": -1,
+               "left": -1,
+               "right": 1,
+               "top": 1
+            },
+            "offset": {
+               "bottom": 0,
+               "left": 0,
+               "right": 0,
+               "top": 0
+            },
+            "pivot": {
+               "x": 0,
+               "y": 0
+            },
+            "ePinToEdge": 15,
+            "eFixSize": 0,
+            "eEditingMode": 1,
+            "eKeepRatio": false,
+            "position": {
+               "x": 0,
+               "y": 0,
+               "z": 0
+            },
+            "scale": {
+               "x": 1,
+               "y": 1,
+               "z": 1
+            },
+            "rotation": {
+               "w": 0,
+               "x": 0,
+               "y": 0,
+               "z": 0
+            },
+            "entityId": 16,
+            "componentID": 1,
+            "type": "ScreenTransform",
+            "enabled": true,
+            "version": 2,
+            "objectEnabled": true
+         }
+      ],
+      "enabled": true,
+      "version": 0
+   },
+   "path": "/Users/ash/Desktop/表情包线上素材/video_boys/",
+   "resources": {
+      "items": [
+         {
+            "key": "6f018db8-ecb5-4dd4-b07c-f39dacfd5413",
+            "type": "PAGFileData",
+            "path": "4pic.pag",
+            "label": "4pic.pag",
+            "timeRange": {
+               "startTime": 0,
+               "duration": 0
+            },
+            "loopCount": -1
+         },
+         {
+            "key": "762d5244-7d17-4589-86e5-1e37ada36a4a",
+            "type": "PAGFileData",
+            "path": "9pic.pag",
+            "label": "9pic.pag",
+            "timeRange": {
+               "startTime": 0,
+               "duration": 0
+            },
+            "loopCount": -1
+         },
+         {
+            "key": "55b15b87-7236-4c24-81f6-d71596363f4f",
+            "type": "PAGFileData",
+            "path": "B.pag",
+            "label": "B.pag",
+            "timeRange": {
+               "startTime": 0,
+               "duration": 0
+            },
+            "loopCount": -1
+         },
+         {
+            "key": "27457a4c-498a-48c1-9ee0-58b82e1453ec",
+            "type": "AudioClipData",
+            "path": "bg1.mp3",
+            "label": "bg1.mp3",
+            "timeRange": {
+               "startTime": 0,
+               "duration": 6523625
+            },
+            "loopCount": -1
+         },
+         {
+            "key": "a12c0ba0-c70f-4031-9a9d-f5cb7fa9795e",
+            "type": "JsonData",
+            "path": "CustomGraph/CustomRender.json",
+            "label": "CustomRender.json"
+         },
+         {
+            "key": "68fdc051-1d25-4688-97c7-eb6ec556533a",
+            "type": "gltf_bin",
+            "path": "CustomGraph/fs_shaka_triple_fade_transform.bin",
+            "label": "fs_shaka_triple_fade_transform.bin"
+         },
+         {
+            "key": "4636bc51-e2ad-443e-ade4-683674386727",
+            "type": "gltf_bin",
+            "path": "CustomGraph/vs_shaka_triple_fade_transform.bin",
+            "label": "vs_shaka_triple_fade_transform.bin"
+         },
+         {
+            "key": "b44ab9a7-3987-46f1-8107-2a9adc2c7e8d",
+            "type": "zip",
+            "path": "CustomGraph.zip",
+            "label": "CustomGraph.zip"
+         },
+         {
+            "key": "DeviceCameraTexture",
+            "type": "TextureData",
+            "path": "DeviceCameraTexture.tex",
+            "label": "DeviceCameraTexture.tex"
+         },
+         {
+            "key": "8c27dce9-cf85-4fc9-a4a1-e04de9ee0e3e",
+            "type": "PAGFileData",
+            "path": "gridViewTwo.pag",
+            "label": "gridViewTwo.pag",
+            "timeRange": {
+               "startTime": 0,
+               "duration": 0
+            },
+            "loopCount": -1
+         },
+         {
+            "key": "RenderTarget",
+            "type": "RenderTarget",
+            "path": "RenderTarget.rdt",
+            "label": "RenderTarget.rdt",
+            "inputKey": "DeviceCameraTexture"
+         },
+         {
+            "key": "RenderTarget2",
+            "type": "RenderTarget",
+            "path": "RenderTarget_Snapshot_2.rdt",
+            "label": "RenderTarget_Snapshot_2.rdt",
+            "inputKey": ""
+         },
+         {
+            "key": "02eb4036-3742-4855-9322-7584bc2a04d1",
+            "type": "PAGFileData",
+            "path": "screen_A.pag",
+            "label": "screen_A.pag",
+            "timeRange": {
+               "startTime": 0,
+               "duration": 0
+            },
+            "loopCount": -1
+         },
+         {
+            "key": "db027b98-90d7-4566-8268-c99efb4cc859",
+            "type": "PAGFileData",
+            "path": "screen_B.pag",
+            "label": "screen_B.pag",
+            "timeRange": {
+               "startTime": 0,
+               "duration": 0
+            },
+            "loopCount": -1
+         },
+         {
+            "key": "be5ffa99-c1f1-4722-8cb6-b56424fdc7be",
+            "type": "PAGFileData",
+            "path": "screen_C.pag",
+            "label": "screen_C.pag",
+            "timeRange": {
+               "startTime": 0,
+               "duration": 0
+            },
+            "loopCount": -1
+         },
+         {
+            "key": "ee54419a-76a8-4cc4-b17e-04dc150c78f3",
+            "type": "PAGFileData",
+            "path": "screen_D.pag",
+            "label": "screen_D.pag",
+            "timeRange": {
+               "startTime": 0,
+               "duration": 0
+            },
+            "loopCount": -1
+         },
+         {
+            "key": "76a87db0-c594-4065-a056-8552a435d4f3",
+            "type": "PAGFileData",
+            "path": "screen_E.pag",
+            "label": "screen_E.pag",
+            "timeRange": {
+               "startTime": 0,
+               "duration": 0
+            },
+            "loopCount": -1
+         },
+         {
+            "key": "bdf222d6-2f9d-4546-a1ce-d510fdcb5a2d",
+            "type": "PAGFileData",
+            "path": "screen_F.pag",
+            "label": "screen_F.pag",
+            "timeRange": {
+               "startTime": 0,
+               "duration": 0
+            },
+            "loopCount": -1
+         },
+         {
+            "key": "5b4091d5-84d4-4f8f-aa43-9faf5e63a334",
+            "type": "PAGFileData",
+            "path": "screen_G.pag",
+            "label": "screen_G.pag",
+            "timeRange": {
+               "startTime": 0,
+               "duration": 0
+            },
+            "loopCount": -1
+         },
+         {
+            "key": "e11ce1d5-f4f2-4f57-97aa-0481ffde59b3",
+            "type": "PAGFileData",
+            "path": "screen_H.pag",
+            "label": "screen_H.pag",
+            "timeRange": {
+               "startTime": 0,
+               "duration": 0
+            },
+            "loopCount": -1
+         },
+         {
+            "key": "fb609a81-0d61-4c53-830f-1f2ea69403b1",
+            "type": "PAGFileData",
+            "path": "screen_I.pag",
+            "label": "screen_I.pag",
+            "timeRange": {
+               "startTime": 0,
+               "duration": 0
+            },
+            "loopCount": -1
+         },
+         {
+            "key": "56de3641-4ca7-4f75-b152-3187ea9a85b4",
+            "type": "PAGFileData",
+            "path": "screen_J.pag",
+            "label": "screen_J.pag",
+            "timeRange": {
+               "startTime": 0,
+               "duration": 0
+            },
+            "loopCount": -1
+         },
+         {
+            "key": "de372300-3af6-4d91-9bf0-0236bdafe701",
+            "type": "js",
+            "path": "script_mv.js",
+            "label": "script_mv.js"
+         },
+         {
+            "key": "84eecb90-ca0a-43a6-9886-b9326ab9a6a2",
+            "type": "PAGFileData",
+            "path": "sh.pag",
+            "label": "sh.pag",
+            "timeRange": {
+               "startTime": 0,
+               "duration": 0
+            },
+            "loopCount": -1
+         }
+      ]
+   },
+   "cloudResourceData": [],
+   "componentLevel": 3
+}

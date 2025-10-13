@@ -1,0 +1,423 @@
+{
+   "name": "video_yunjing",
+   "author": "jiangpeng",
+   "category": 1,
+   "scene": {
+      "id": 16,
+      "name": "CanvasTemplate",
+      "children": [
+         {
+            "id": 17,
+            "name": "2DCanvas",
+            "children": [],
+            "enabled": true,
+            "version": 0,
+            "components": [
+               {
+                  "anchor": {
+                     "bottom": -1,
+                     "left": -1,
+                     "right": 1,
+                     "top": 1
+                  },
+                  "offset": {
+                     "bottom": 0,
+                     "left": 0,
+                     "right": 0,
+                     "top": 0
+                  },
+                  "pivot": {
+                     "x": 0,
+                     "y": 0
+                  },
+                  "ePinToEdge": 15,
+                  "eFixSize": 0,
+                  "eEditingMode": 1,
+                  "eKeepRatio": false,
+                  "position": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "scale": {
+                     "x": 1,
+                     "y": 1,
+                     "z": 1
+                  },
+                  "rotation": {
+                     "w": 0,
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "objectEnabled": true,
+                  "entityId": 17,
+                  "componentID": 17001,
+                  "type": "ScreenTransform",
+                  "enabled": true,
+                  "version": 6,
+                  "level": 350
+               },
+               {
+                  "componentID": 17002,
+                  "duplicateInput": 0,
+                  "enabled": true,
+                  "entityId": 17,
+                  "level": 2,
+                  "renderTargetKey": "RenderTarget",
+                  "type": "Camera",
+                  "version": 7
+               },
+               {
+                  "componentID": 17003,
+                  "enabled": true,
+                  "entityId": 17,
+                  "level": 4,
+                  "scriptPath": "8676d86b-a169-4f92-b7f8-f6bb470123e2",
+                  "type": "Script",
+                  "version": 32
+               }
+            ]
+         },
+         {
+            "id": 19,
+            "name": "canvas_yunjing",
+            "children": [],
+            "enabled": true,
+            "version": 0,
+            "components": [
+               {
+                  "anchor": {
+                     "bottom": -1,
+                     "left": -1,
+                     "right": 1,
+                     "top": 1
+                  },
+                  "offset": {
+                     "bottom": 0,
+                     "left": 0,
+                     "right": 0,
+                     "top": 0
+                  },
+                  "pivot": {
+                     "x": 0,
+                     "y": 0
+                  },
+                  "ePinToEdge": 15,
+                  "eFixSize": 0,
+                  "eEditingMode": 1,
+                  "eKeepRatio": true,
+                  "position": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "scale": {
+                     "x": 1,
+                     "y": 1,
+                     "z": 1
+                  },
+                  "rotation": {
+                     "w": 1,
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "objectEnabled": true,
+                  "entityId": 19,
+                  "componentID": 19001,
+                  "type": "ScreenTransform",
+                  "enabled": true,
+                  "version": 3051,
+                  "interactive": false,
+                  "attachToParent": true,
+                  "level": 350
+               },
+               {
+                  "componentID": 19002,
+                  "enabled": true,
+                  "entityId": 19,
+                  "level": 1,
+                  "scaleMode": 2,
+                  "src": "RenderTarget",
+                  "type": "Image",
+                  "version": 4
+               },
+               {
+                  "alpha": 1,
+                  "componentID": 19003,
+                  "enabled": true,
+                  "entityId": 19,
+                  "level": 2,
+                  "mode": "normal",
+                  "type": "BlendMode",
+                  "version": 44
+               },
+               {
+                  "eAlignMode": 2,
+                  "startOffset": 0,
+                  "duration": 2000000,
+                  "endOffset": 0,
+                  "loopCount": -1,
+                  "type": "TimeOffset",
+                  "enabled": true,
+                  "entityId": 19,
+                  "componentID": 19004,
+                  "level": 1,
+                  "version": 1
+               }
+            ]
+         },
+         {
+            "id": 23,
+            "name": "canvas_shadow",
+            "children": [],
+            "enabled": true,
+            "version": 0,
+            "components": [
+               {
+                  "anchor": {
+                     "bottom": -1,
+                     "left": -1,
+                     "right": 1,
+                     "top": 1
+                  },
+                  "offset": {
+                     "bottom": 0,
+                     "left": 0,
+                     "right": 0,
+                     "top": 0
+                  },
+                  "pivot": {
+                     "x": 0,
+                     "y": 0
+                  },
+                  "ePinToEdge": 15,
+                  "eFixSize": 0,
+                  "eEditingMode": 1,
+                  "eKeepRatio": true,
+                  "position": {
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "scale": {
+                     "eKeepRatio": true,
+                     "x": 1,
+                     "y": 1,
+                     "z": 1
+                  },
+                  "rotation": {
+                     "w": 1,
+                     "x": 0,
+                     "y": 0,
+                     "z": 0
+                  },
+                  "objectEnabled": true,
+                  "entityId": 23,
+                  "componentID": 23001,
+                  "type": "ScreenTransform",
+                  "enabled": true,
+                  "version": 2,
+                  "interactive": false,
+                  "attachToParent": true,
+                  "level": 350
+               },
+               {
+                  "componentID": 23002,
+                  "enabled": true,
+                  "entityId": 23,
+                  "level": 1,
+                  "scaleMode": 2,
+                  "src": "RenderTarget",
+                  "type": "Image",
+                  "version": 6
+               },
+               {
+                  "alpha": 0,
+                  "componentID": 23003,
+                  "enabled": true,
+                  "entityId": 23,
+                  "level": 2,
+                  "mode": "multiply",
+                  "type": "BlendMode",
+                  "version": 237
+               },
+               {
+                  "eAlignMode": 2,
+                  "startOffset": 0,
+                  "duration": 2000000,
+                  "endOffset": 0,
+                  "loopCount": -1,
+                  "type": "TimeOffset",
+                  "enabled": true,
+                  "entityId": 23,
+                  "componentID": 23004,
+                  "level": 1,
+                  "version": 2
+               }
+            ]
+         }
+      ],
+      "components": [
+         {
+            "anchor": {
+               "bottom": -1,
+               "left": -1,
+               "right": 1,
+               "top": 1
+            },
+            "offset": {
+               "bottom": 0,
+               "left": 0,
+               "right": 0,
+               "top": 0
+            },
+            "pivot": {
+               "x": 0,
+               "y": 0
+            },
+            "ePinToEdge": 15,
+            "eFixSize": 0,
+            "eEditingMode": 1,
+            "eKeepRatio": false,
+            "position": {
+               "x": 0,
+               "y": 0,
+               "z": 0
+            },
+            "scale": {
+               "x": 1,
+               "y": 1,
+               "z": 1
+            },
+            "rotation": {
+               "w": 0,
+               "x": 0,
+               "y": 0,
+               "z": 0
+            },
+            "objectEnabled": true,
+            "entityId": 16,
+            "componentID": 16001,
+            "type": "ScreenTransform",
+            "enabled": true,
+            "version": 4,
+            "level": 350
+         },
+         {
+            "defaultCameraPosition": 0,
+            "enableDowngradeAsset": true,
+            "enableRotation": true,
+            "needAutoBeauty": false,
+            "needVoiceDecibel": false,
+            "resetWhenStartRecord": true,
+            "supportCameraPosition": 0,
+            "sync3dRenderEnable": false,
+            "type": "ExtraSetting",
+            "enabled": true,
+            "version": 1,
+            "entityId": 16,
+            "componentID": 16002,
+            "level": 4
+         }
+      ],
+      "enabled": true,
+      "version": 0
+   },
+   "resources": {
+      "items": [
+         {
+            "type": "folder",
+            "commandMap": {},
+            "key": "9ac4a680-c97e-442f-9520-364a5c2a85ea",
+            "label": "root",
+            "path": "./",
+            "level": 2
+         },
+         {
+            "type": "folder",
+            "commandMap": {},
+            "key": "ae612a09-c6f8-469a-b866-e536cf7b93bb",
+            "label": "cropImage",
+            "path": "cropImage",
+            "level": 2
+         },
+         {
+            "type": "ImageData",
+            "commandMap": {},
+            "compression": 0,
+            "reSize": 1,
+            "textureOptions": {
+               "wrapS": "REPEAT",
+               "wrapT": "REPEAT",
+               "magFilter": "LINEAR",
+               "minFilter": "LINEAR_MIPMAP_LINEAR",
+               "sRGB": false,
+               "mipmap": true,
+               "samplerType": "SAMPLER_2D"
+            },
+            "key": "9ca19259-3b9f-47a9-8882-a15ecfcf0772",
+            "label": "default_lut.png",
+            "path": "cropImage/default_lut.png",
+            "level": 2,
+            "actualSize": 219654,
+            "resolution": {
+               "height": 512,
+               "width": 512
+            },
+            "width": 512,
+            "height": 512
+         },
+         {
+            "type": "TextureData",
+            "commandMap": {},
+            "key": "DeviceCameraTexture",
+            "path": "DeviceCameraTexture.tex",
+            "label": "DeviceCameraTexture.tex",
+            "level": 2
+         },
+         {
+            "type": "RenderTarget",
+            "commandMap": {},
+            "inputColor": "#ffffffff",
+            "sizeType": 0,
+            "useForDisplay": false,
+            "compatibilityMode": true,
+            "depthType": "DEPTH24",
+            "textureOptions": {
+               "wrapS": "REPEAT",
+               "wrapT": "REPEAT",
+               "magFilter": "LINEAR",
+               "minFilter": "LINEAR_MIPMAP_LINEAR",
+               "sRGB": false,
+               "mipmap": false,
+               "samplerType": "SAMPLER_2D"
+            },
+            "key": "RenderTarget",
+            "path": "RenderTarget.rdt",
+            "label": "RenderTarget.rdt",
+            "inputKey": "DeviceCameraTexture",
+            "input": "DeviceCameraTexture",
+            "level": 2,
+            "width": 0,
+            "height": 0
+         },
+         {
+            "type": "js",
+            "commandMap": {},
+            "key": "8676d86b-a169-4f92-b7f8-f6bb470123e2",
+            "label": "script_yunjing.js",
+            "path": "script_yunjing.js",
+            "level": 2,
+            "requireAbilities": []
+         }
+      ]
+   },
+   "cloudResourceData": [],
+   "componentLevel": 350,
+   "creationTime": "2023-11-28 11:19:28",
+   "updateTime": "2024-01-18 16:43:34",
+   "path": "/Users/jiangpeng/XMagic/light-sdk-youtu/assets/MotionRes/2dMotionRes/video_camera_move_face_rhythm/",
+   "downloadMusicList": []
+}
