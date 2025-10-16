@@ -5,32 +5,32 @@ import android.view.View
 import android.view.ViewTreeObserver
 
 class OnDecorViewListener(
-    private val mDecorView: View,
-    private val mListener: OnKeyboardCallback?
+    private val decorView: View,
+    private val listener: OnKeyboardCallback?
 ) : ViewTreeObserver.OnGlobalLayoutListener {
 
-    private var mScreenHeight = 0
-    private var mCurrentKeyboardHeight = 0
+    private var screenHeight = 0
+    private var currentKeyboardHeight = 0
 
     override fun onGlobalLayout() {
-        Rect().apply {
-            mDecorView.getWindowVisibleDisplayFrame(this)
-            mScreenHeight = if (mScreenHeight == 0) bottom else mScreenHeight
-            val nowHeight = mScreenHeight - bottom
-
-            if (mCurrentKeyboardHeight != -1 && mCurrentKeyboardHeight != nowHeight) {
-                mListener?.onKeyboardHeightUpdated(nowHeight)
+        with(Rect()) {
+            decorView.getWindowVisibleDisplayFrame(this)
+            screenHeight = screenHeight.takeIf { it != 0 } ?: bottom
+            val newHeight = screenHeight - bottom
+            
+            if (currentKeyboardHeight != -1 && currentKeyboardHeight != newHeight) {
+                listener?.onKeyboardHeightUpdated(newHeight)
             }
-            mCurrentKeyboardHeight = nowHeight
+            currentKeyboardHeight = newHeight
         }
     }
 
     fun clear() {
-        mCurrentKeyboardHeight = -1
-        mScreenHeight = 0
+        currentKeyboardHeight = -1
+        screenHeight = 0
     }
 
-    interface OnKeyboardCallback {
+    fun interface OnKeyboardCallback {
         fun onKeyboardHeightUpdated(keyboardHeight: Int)
     }
 }

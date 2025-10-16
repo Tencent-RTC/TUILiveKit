@@ -30,7 +30,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 
-import com.google.gson.Gson;
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveBattleManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager.ConnectionUser;
@@ -111,6 +110,8 @@ import io.trtc.tuikit.atomicxcore.api.HostListener;
 import io.trtc.tuikit.atomicxcore.api.LiveCoreView;
 import io.trtc.tuikit.atomicxcore.api.LiveUserInfo;
 import io.trtc.tuikit.atomicxcore.api.SeatUserInfo;
+import io.trtc.tuikit.atomicxcore.api.VideoViewAdapter;
+import io.trtc.tuikit.atomicxcore.api.ViewLayer;
 import io.trtc.tuikit.atomicxcore.api.deprecated.LiveCoreViewDefine;
 
 @SuppressLint("ViewConstructor")
@@ -168,7 +169,7 @@ public class AnchorView extends BasicView implements EndLiveStreamDialog.EndLive
             CoHostStore coHostStore = CoHostStore.create(mLiveInfo.roomId);
             List<SeatUserInfo> list = new ArrayList<>();
             for (SeatUserInfo userInfo : coGuestStore.getCoGuestState().getConnected().getValue()) {
-                if (!userInfo.getUserId().equals(TUIRoomEngine.getSelfInfo().userId) && userInfo.getLiveId().equals(mLiveInfo.roomId)) {
+                if (!userInfo.getUserID().equals(TUIRoomEngine.getSelfInfo().userId) && userInfo.getLiveID().equals(mLiveInfo.roomId)) {
                     list.add(userInfo);
                 }
             }
@@ -176,7 +177,7 @@ public class AnchorView extends BasicView implements EndLiveStreamDialog.EndLive
             if (!list.isEmpty()
                     || !coGuestStore.getCoGuestState().getApplicants().getValue().isEmpty()
                     || !coGuestStore.getCoGuestState().getInvitees().getValue().isEmpty()) {
-                coHostStore.rejectHostConnection(inviter.getLiveId(), null);
+                coHostStore.rejectHostConnection(inviter.getLiveID(), null);
             }
         }
     };
@@ -186,10 +187,10 @@ public class AnchorView extends BasicView implements EndLiveStreamDialog.EndLive
         public void onGuestApplicationReceived(@NotNull LiveUserInfo guestUser) {
             CoGuestStore coGuestStore = CoGuestStore.create(mLiveInfo.roomId);
             CoHostStore coHostStore = CoHostStore.create(mLiveInfo.roomId);
-            if (!coHostStore.getCoHostState().getApplicants().getValue().isEmpty()
+            if (!coHostStore.getCoHostState().getInvitees().getValue().isEmpty()
                     || !coHostStore.getCoHostState().getConnected().getValue().isEmpty()
-                    || coHostStore.getCoHostState().getInvitee().getValue() != null) {
-                coGuestStore.rejectApplication(guestUser.getUserId(), null);
+                    || coHostStore.getCoHostState().getApplicant().getValue() != null) {
+                coGuestStore.rejectApplication(guestUser.getUserID(), null);
             }
         }
     };
@@ -384,11 +385,11 @@ public class AnchorView extends BasicView implements EndLiveStreamDialog.EndLive
         mLiveBattleManagerObserver = new AnchorBattleObserver(mAnchorManager);
         mLiveCoreView.registerConnectionObserver(mLiveStreamObserver);
         mLiveCoreView.registerBattleObserver(mLiveBattleManagerObserver);
-        mLiveCoreView.setVideoViewAdapter(new LiveCoreViewDefine.VideoViewAdapter() {
+        mLiveCoreView.setVideoViewAdapter(new VideoViewAdapter() {
             @Override
-            public View createCoGuestView(SeatFullInfo seatInfo, LiveCoreViewDefine.ViewLayer viewLayer) {
+            public View createCoGuestView(SeatFullInfo seatInfo, ViewLayer viewLayer) {
                 if (TextUtils.isEmpty(seatInfo.userId)) {
-                    if (viewLayer == LiveCoreViewDefine.ViewLayer.BACKGROUND) {
+                    if (viewLayer == ViewLayer.BACKGROUND) {
                         AnchorEmptySeatView anchorEmptySeatView = new AnchorEmptySeatView(getContext());
                         anchorEmptySeatView.init(mAnchorManager, seatInfo);
                         return anchorEmptySeatView;
@@ -396,7 +397,7 @@ public class AnchorView extends BasicView implements EndLiveStreamDialog.EndLive
                         return null;
                     }
                 }
-                if (viewLayer == LiveCoreViewDefine.ViewLayer.BACKGROUND) {
+                if (viewLayer == ViewLayer.BACKGROUND) {
                     CoGuestBackgroundWidgetsView backgroundWidgetsView = new CoGuestBackgroundWidgetsView(getContext());
                     backgroundWidgetsView.init(mAnchorManager, seatInfo);
                     return backgroundWidgetsView;
@@ -412,8 +413,8 @@ public class AnchorView extends BasicView implements EndLiveStreamDialog.EndLive
 
             @Override
             public View createCoHostView(SeatFullInfo coHostUser,
-                                         LiveCoreViewDefine.ViewLayer viewLayer) {
-                if (viewLayer == LiveCoreViewDefine.ViewLayer.BACKGROUND) {
+                                         ViewLayer viewLayer) {
+                if (viewLayer == ViewLayer.BACKGROUND) {
                     CoHostBackgroundWidgetsView backgroundWidgetsView = new CoHostBackgroundWidgetsView(mContext);
                     backgroundWidgetsView.init(mAnchorManager, coHostUser);
                     return backgroundWidgetsView;
@@ -437,37 +438,6 @@ public class AnchorView extends BasicView implements EndLiveStreamDialog.EndLive
                 BattleInfoView battleInfoView = new BattleInfoView(mContext);
                 battleInfoView.init(mAnchorManager);
                 return battleInfoView;
-            }
-
-            @Override
-            public View createCoGuestView(UserInfo userInfo) {
-                return null;
-            }
-
-            @Override
-            public void updateCoGuestView(View coGuestView, UserInfo userInfo,
-                                          List<LiveCoreViewDefine.UserInfoModifyFlag> modifyFlag) {
-                LOGGER.info("updateCoGuestView: userInfo = " + new Gson().toJson(userInfo) + ",modifyFlag = " + new Gson().toJson(modifyFlag) + ",coGuestView = " + coGuestView);
-            }
-
-            @Override
-            public View createCoHostView(LiveCoreViewDefine.CoHostUser coHostUser) {
-                return null;
-            }
-
-            @Override
-            public void updateCoHostView(View coHostView, LiveCoreViewDefine.CoHostUser coHostUser,
-                                         List<LiveCoreViewDefine.UserInfoModifyFlag> modifyFlag) {
-                LOGGER.info("updateCoHostView: coHostUser = " + new Gson().toJson(coHostUser) + ",modifyFlag = " + new Gson().toJson(modifyFlag) + ",coHostView = " + coHostView);
-            }
-
-            @Override
-            public void updateBattleView(View battleView, TUILiveBattleManager.BattleUser battleUser) {
-            }
-
-            @Override
-            public void updateBattleContainerView(View battleContainnerView,
-                                                  List<LiveCoreViewDefine.BattleUserViewModel> userInfos) {
             }
         });
 
@@ -777,8 +747,8 @@ public class AnchorView extends BasicView implements EndLiveStreamDialog.EndLive
 
                 Barrage barrage = new Barrage();
                 barrage.setTextContent("gift");
-                barrage.getSender().setUserId(sender.getUserId());
-                barrage.getSender().setUserName(TextUtils.isEmpty(sender.getUserName()) ? sender.getUserId() :
+                barrage.getSender().setUserID(sender.getUserID());
+                barrage.getSender().setUserName(TextUtils.isEmpty(sender.getUserName()) ? sender.getUserID() :
                         sender.getUserName());
                 barrage.getSender().setAvatarURL(sender.getAvatarURL());
                 Map<String, String> extInfo = new HashMap<>();

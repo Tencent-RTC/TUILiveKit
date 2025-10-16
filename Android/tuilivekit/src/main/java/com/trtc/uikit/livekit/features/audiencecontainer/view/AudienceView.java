@@ -39,13 +39,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 
-import com.google.gson.Gson;
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveBattleManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveConnectionManager.ConnectionUser;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
-import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.UserInfo;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.TUIThemeManager;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
@@ -100,9 +98,9 @@ import java.util.Map;
 import io.trtc.tuikit.atomicxcore.api.Barrage;
 import io.trtc.tuikit.atomicxcore.api.Gift;
 import io.trtc.tuikit.atomicxcore.api.LiveCoreView;
-import io.trtc.tuikit.atomicxcore.api.LiveSummaryStore;
 import io.trtc.tuikit.atomicxcore.api.LiveUserInfo;
-import io.trtc.tuikit.atomicxcore.api.deprecated.LiveCoreViewDefine;
+import io.trtc.tuikit.atomicxcore.api.VideoViewAdapter;
+import io.trtc.tuikit.atomicxcore.api.ViewLayer;
 
 @SuppressLint("ViewConstructor")
 public class AudienceView extends BasicView implements AudienceManager.AudienceViewListener {
@@ -630,8 +628,8 @@ public class AudienceView extends BasicView implements AudienceManager.AudienceV
                 }
                 Barrage barrage = new Barrage();
                 barrage.setTextContent("gift");
-                barrage.getSender().setUserId(sender.getUserId());
-                barrage.getSender().setUserName(TextUtils.isEmpty(sender.getUserName()) ? sender.getUserId() :
+                barrage.getSender().setUserID(sender.getUserID());
+                barrage.getSender().setUserName(TextUtils.isEmpty(sender.getUserName()) ? sender.getUserID() :
                         sender.getUserName());
                 barrage.getSender().setAvatarURL(sender.getAvatarURL());
                 Map<String, String> extInfo = new HashMap<>();
@@ -821,7 +819,7 @@ public class AudienceView extends BasicView implements AudienceManager.AudienceV
         dialog.show();
     }
 
-    public class VideoViewAdapterImpl implements LiveCoreViewDefine.VideoViewAdapter {
+    public class VideoViewAdapterImpl implements VideoViewAdapter {
 
         private final WeakReference<Context> mWeakContext;
 
@@ -830,14 +828,14 @@ public class AudienceView extends BasicView implements AudienceManager.AudienceV
         }
 
         @Override
-        public View createCoGuestView(TUIRoomDefine.SeatFullInfo seatInfo, LiveCoreViewDefine.ViewLayer viewLayer) {
+        public View createCoGuestView(TUIRoomDefine.SeatFullInfo seatInfo, ViewLayer viewLayer) {
             Context context = mWeakContext.get();
             if (context == null) {
                 LOGGER.error("createCoGuestView: context is null");
                 return null;
             }
             if (TextUtils.isEmpty(seatInfo.userId)) {
-                if (viewLayer == LiveCoreViewDefine.ViewLayer.BACKGROUND) {
+                if (viewLayer == ViewLayer.BACKGROUND) {
                     AudienceEmptySeatView emptySeatView = new AudienceEmptySeatView(getContext());
                     emptySeatView.init(mAudienceManager, seatInfo);
                     emptySeatView.setTag(seatInfo);
@@ -857,7 +855,7 @@ public class AudienceView extends BasicView implements AudienceManager.AudienceV
                     return null;
                 }
             }
-            if (LiveCoreViewDefine.ViewLayer.BACKGROUND == viewLayer) {
+            if (ViewLayer.BACKGROUND == viewLayer) {
                 CoGuestBackgroundWidgetsView backgroundWidgetsView = new CoGuestBackgroundWidgetsView(context);
                 backgroundWidgetsView.init(mAudienceManager, seatInfo);
                 return backgroundWidgetsView;
@@ -870,13 +868,13 @@ public class AudienceView extends BasicView implements AudienceManager.AudienceV
         }
 
         @Override
-        public View createCoHostView(TUIRoomDefine.SeatFullInfo coHostUser, LiveCoreViewDefine.ViewLayer viewLayer) {
+        public View createCoHostView(TUIRoomDefine.SeatFullInfo coHostUser, ViewLayer viewLayer) {
             Context context = mWeakContext.get();
             if (context == null) {
                 LOGGER.error("createCoHostView: context is null");
                 return null;
             }
-            if (LiveCoreViewDefine.ViewLayer.BACKGROUND == viewLayer) {
+            if (ViewLayer.BACKGROUND == viewLayer) {
                 CoHostBackgroundWidgetsView backgroundWidgetsView = new CoHostBackgroundWidgetsView(context);
                 backgroundWidgetsView.init(mAudienceManager, coHostUser);
                 return backgroundWidgetsView;
@@ -885,30 +883,6 @@ public class AudienceView extends BasicView implements AudienceManager.AudienceV
                 foregroundWidgetsView.init(mAudienceManager, coHostUser);
                 return foregroundWidgetsView;
             }
-        }
-
-        @Override
-        public View createCoGuestView(UserInfo userInfo) {
-            return null;
-        }
-
-        @Override
-        public void updateCoGuestView(View coGuestView, UserInfo userInfo,
-                                      List<LiveCoreViewDefine.UserInfoModifyFlag> modifyFlag) {
-            LOGGER.info("updateCoGuestView: userInfo = " + new Gson().toJson(userInfo)
-                    + ",modifyFlag = " + new Gson().toJson(modifyFlag) + ",coGuestView = " + coGuestView);
-        }
-
-        @Override
-        public View createCoHostView(LiveCoreViewDefine.CoHostUser coHostUser) {
-            return null;
-        }
-
-        @Override
-        public void updateCoHostView(View coHostView, LiveCoreViewDefine.CoHostUser coHostUser,
-                                     List<LiveCoreViewDefine.UserInfoModifyFlag> modifyFlag) {
-            LOGGER.info("updateCoHostView: coHostUser = " + new Gson().toJson(coHostUser)
-                    + ",modifyFlag = " + new Gson().toJson(modifyFlag) + ",coHostView = " + coHostView);
         }
 
         @Override
@@ -924,11 +898,6 @@ public class AudienceView extends BasicView implements AudienceManager.AudienceV
         }
 
         @Override
-        public void updateBattleView(View battleView, TUILiveBattleManager.BattleUser battleUser) {
-
-        }
-
-        @Override
         public View createBattleContainerView() {
             Context context = mWeakContext.get();
             if (context == null) {
@@ -938,13 +907,6 @@ public class AudienceView extends BasicView implements AudienceManager.AudienceV
             BattleInfoView battleInfoView = new BattleInfoView(context);
             battleInfoView.init(mAudienceManager);
             return battleInfoView;
-        }
-
-        @Override
-        public void updateBattleContainerView(View battleContainnerView,
-                                              List<LiveCoreViewDefine.BattleUserViewModel> userInfos) {
-            BattleInfoView battleInfoView = (BattleInfoView) battleContainnerView;
-            battleInfoView.updateView(userInfos);
         }
     }
 

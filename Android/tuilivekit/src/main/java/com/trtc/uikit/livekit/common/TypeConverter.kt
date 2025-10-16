@@ -27,7 +27,7 @@ import java.util.Collections
 
 fun liveInfoFromEngineLiveInfo(liveInfo: TUILiveListManager.LiveInfo): LiveInfo {
     val owner = LiveUserInfo().apply {
-        userId = liveInfo.ownerId ?: ""
+        userID = liveInfo.ownerId ?: ""
         userName = liveInfo.ownerName ?: ""
         avatarURL = liveInfo.ownerAvatarUrl ?: ""
     }
@@ -73,7 +73,7 @@ fun liveInfoFromEngineRoomInfo(roomInfo: TUIRoomDefine.RoomInfo): TUILiveListMan
 
 fun liveInfoToEngineLiveInfo(liveInfo: LiveInfo): TUILiveListManager.LiveInfo {
     return TUILiveListManager.LiveInfo().apply {
-        roomId = liveInfo.liveId
+        roomId = liveInfo.liveID
         name = liveInfo.liveName
         notice = liveInfo.notice
         isMessageDisableForAllUser = liveInfo.isMessageDisable
@@ -82,17 +82,17 @@ fun liveInfoToEngineLiveInfo(liveInfo: LiveInfo): TUILiveListManager.LiveInfo {
         keepOwnerOnSeat = liveInfo.keepOwnerOnSeat
         maxSeatCount = liveInfo.maxSeatCount
         seatMode = seatModeToEngineSeatMode(liveInfo.seatMode)
-        seatLayoutTemplateId = liveInfo.seatLayoutTemplateId
+        seatLayoutTemplateId = liveInfo.seatLayoutTemplateID
         coverUrl = liveInfo.coverURL
         backgroundUrl = liveInfo.backgroundURL
         categoryList = liveInfo.categoryList
         activityStatus = liveInfo.activityStatus
-        ownerId = liveInfo.liveOwner.userId
+        ownerId = liveInfo.liveOwner.userID
         ownerName = liveInfo.liveOwner.userName
         ownerAvatarUrl = liveInfo.liveOwner.avatarURL
         roomInfo = TUIRoomDefine.RoomInfo().apply {
-            roomId = liveInfo.liveId
-            ownerId = liveInfo.liveOwner.userId
+            roomId = liveInfo.liveID
+            ownerId = liveInfo.liveOwner.userID
             ownerName = liveInfo.liveOwner.userName
             ownerAvatarUrl = liveInfo.liveOwner.avatarURL
             name = liveInfo.liveName
@@ -204,11 +204,11 @@ fun convertToSeatUserInfo(battleInfo: TUILiveBattleManager.BattleUser?): SeatUse
 
 fun convertToSeatFullInfo(data: SeatInfo): TUIRoomDefine.SeatFullInfo {
     return TUIRoomDefine.SeatFullInfo().apply {
-        roomId = data.userInfo.liveId
+        roomId = data.userInfo.liveID
         seatIndex = data.index
         isSeatLocked = data.isLocked
-        userId = data.userInfo.userId
-        userName = data.userInfo.name
+        userId = data.userInfo.userID
+        userName = data.userInfo.userName
         userAvatar = data.userInfo.avatarURL
         userMicrophoneStatus =
             if (data.userInfo.microphoneStatus == DeviceStatus.ON) TUIRoomDefine.DeviceStatus.OPENED else TUIRoomDefine.DeviceStatus.CLOSED_BY_SELF
@@ -226,10 +226,10 @@ fun convertToSeatFullInfo(data: SeatInfo): TUIRoomDefine.SeatFullInfo {
 
 fun convertToSeatInfo(seatFullInfo: TUIRoomDefine.SeatFullInfo): SeatInfo {
     val seatUserInfo = SeatUserInfo(
-        userId = seatFullInfo.userId,
-        name = seatFullInfo.userName,
+        userID = seatFullInfo.userId,
+        userName = seatFullInfo.userName,
         avatarURL = seatFullInfo.userAvatar,
-        liveId = seatFullInfo.roomId,
+        liveID = seatFullInfo.roomId,
         microphoneStatus = convertToDeviceStatus(seatFullInfo.userMicrophoneStatus),
         cameraStatus = convertToDeviceStatus(seatFullInfo.userCameraStatus)
     )
@@ -250,10 +250,10 @@ fun convertToSeatInfo(seatFullInfo: TUIRoomDefine.SeatFullInfo): SeatInfo {
 
 fun convertToSeatUserInfo(seatFullInfo: TUIRoomDefine.SeatFullInfo): SeatUserInfo {
     return SeatUserInfo(
-        userId = seatFullInfo.userId,
-        name = seatFullInfo.userName,
+        userID = seatFullInfo.userId,
+        userName = seatFullInfo.userName,
         avatarURL = seatFullInfo.userAvatar,
-        liveId = seatFullInfo.roomId,
+        liveID = seatFullInfo.roomId,
         microphoneStatus = convertToDeviceStatus(seatFullInfo.userMicrophoneStatus),
         cameraStatus = convertToDeviceStatus(seatFullInfo.userCameraStatus)
     )
@@ -278,7 +278,7 @@ fun convertToUserInfo(seatInfo: TUIRoomDefine.SeatInfo?): TUIRoomDefine.UserInfo
 
 fun convertToUserInfo(userInfo: TUIRoomDefine.UserInfo): LiveUserInfo {
     return LiveUserInfo(
-        userId = userInfo.userId,
+        userID = userInfo.userId,
         userName = userInfo.userName,
         avatarURL = userInfo.avatarUrl
     )
@@ -294,7 +294,7 @@ fun convertToUserInfo(request: TUIRoomDefine.Request): TUIRoomDefine.UserInfo {
 
 fun convertToUserInfo(liveUserInfo: LiveUserInfo): TUIRoomDefine.UserInfo {
     val userInfo = TUIRoomDefine.UserInfo()
-    userInfo.userId = liveUserInfo.userId
+    userInfo.userId = liveUserInfo.userID
     userInfo.userName = liveUserInfo.userName
     userInfo.avatarUrl = liveUserInfo.avatarURL
     return userInfo
@@ -302,8 +302,8 @@ fun convertToUserInfo(liveUserInfo: LiveUserInfo): TUIRoomDefine.UserInfo {
 
 fun convertToUserInfo(audienceInfo: SeatUserInfo): TUIRoomDefine.UserInfo {
     val userInfo = TUIRoomDefine.UserInfo()
-    userInfo.userId = audienceInfo.userId
-    userInfo.userName = audienceInfo.name
+    userInfo.userId = audienceInfo.userID
+    userInfo.userName = audienceInfo.userName
     userInfo.avatarUrl = audienceInfo.avatarURL
     return userInfo
 }
@@ -318,9 +318,9 @@ fun convertToUserInfo(login: TUIRoomDefine.LoginUserInfo): TUIRoomDefine.UserInf
 
 fun convertToBattleUserInfo(battleUserInfo: SeatUserInfo): TUILiveBattleManager.BattleUser {
     return TUILiveBattleManager.BattleUser().apply {
-        roomId = battleUserInfo.liveId
-        userId = battleUserInfo.userId
-        userName = battleUserInfo.name
+        roomId = battleUserInfo.liveID
+        userId = battleUserInfo.userID
+        userName = battleUserInfo.userName
         avatarUrl = battleUserInfo.avatarURL
     }
 }
@@ -328,9 +328,9 @@ fun convertToBattleUserInfo(battleUserInfo: SeatUserInfo): TUILiveBattleManager.
 fun convertToSeatInfo(audienceInfo: SeatInfo): TUIRoomDefine.SeatInfo {
     return TUIRoomDefine.SeatInfo().apply {
         index = audienceInfo.index
-        userId = audienceInfo.userInfo.userId
-        userName = audienceInfo.userInfo.name
-        nameCard = audienceInfo.userInfo.name
+        userId = audienceInfo.userInfo.userID
+        userName = audienceInfo.userInfo.userName
+        nameCard = audienceInfo.userInfo.userName
         avatarUrl = audienceInfo.userInfo.avatarURL
         isLocked = audienceInfo.isLocked
         isVideoLocked = audienceInfo.userInfo.allowOpenCamera
@@ -395,7 +395,7 @@ fun videoQualityToEngineVideoQuality(videoQuality: VideoQuality): TUIRoomDefine.
 
 fun networkInfoFromEngineNetworkInfo(networkInfo: TUICommonDefine.NetworkInfo): NetworkInfo {
     return NetworkInfo(
-        userId = networkInfo.userId ?: "",
+        userID = networkInfo.userId ?: "",
         quality = networkQualityFromEngineNetworkQuality(networkInfo.quality),
         upLoss = networkInfo.upLoss,
         downLoss = networkInfo.downLoss,
@@ -417,8 +417,8 @@ fun networkQualityFromEngineNetworkQuality(networkQuality: TUICommonDefine.Netwo
 
 fun convertToSeatUserInfo(seatInfo: TUIRoomDefine.SeatInfo, hasAudio: Boolean): SeatUserInfo {
     return SeatUserInfo(
-        userId = seatInfo.userId,
-        name = seatInfo.userName,
+        userID = seatInfo.userId,
+        userName = seatInfo.userName,
         avatarURL = seatInfo.avatarUrl,
         allowOpenMicrophone = !seatInfo.isAudioLocked,
         allowOpenCamera = !seatInfo.isVideoLocked,
@@ -432,7 +432,7 @@ fun convertToSeatUserInfo(seatInfo: TUIRoomDefine.SeatInfo, hasAudio: Boolean): 
 
 fun convertToLiveUserInfo(request: TUIRoomDefine.Request): LiveUserInfo {
     val userInfo = LiveUserInfo().apply {
-        userId = request.userId
+        userID = request.userId
         userName = request.userName
         avatarURL = request.avatarUrl
     }
@@ -441,19 +441,19 @@ fun convertToLiveUserInfo(request: TUIRoomDefine.Request): LiveUserInfo {
 
 fun convertToConnectionUser(request: SeatUserInfo?): ConnectionUser {
     val userInfo = ConnectionUser().apply {
-        userId = request?.userId
-        userName = request?.name
+        userId = request?.userID
+        userName = request?.userName
         avatarUrl = request?.avatarURL
-        roomId = request?.liveId
+        roomId = request?.liveID
     }
     return userInfo
 }
 
 fun convertToBattleUser(userInfo: SeatUserInfo): TUILiveBattleManager.BattleUser {
     return TUILiveBattleManager.BattleUser().apply {
-        roomId = userInfo.liveId
-        userId = userInfo.userId
-        userName = userInfo.name
+        roomId = userInfo.liveID
+        userId = userInfo.userID
+        userName = userInfo.userName
         avatarUrl = userInfo.avatarURL
         score = 0
     }
@@ -461,9 +461,9 @@ fun convertToBattleUser(userInfo: SeatUserInfo): TUILiveBattleManager.BattleUser
 
 fun convertToSeatUserInfo(seatInfo: ConnectionUser): SeatUserInfo {
     return SeatUserInfo(
-        liveId = seatInfo.roomId,
-        userId = seatInfo.userId,
-        name = seatInfo.userName,
+        liveID = seatInfo.roomId,
+        userID = seatInfo.userId,
+        userName = seatInfo.userName,
         avatarURL = seatInfo.avatarUrl,
     )
 }

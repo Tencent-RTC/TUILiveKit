@@ -88,7 +88,7 @@ class SeatLayoutConfigManager {
             val newSeatInfo = list[i]
             if (isSeatInfoChanged(newSeatInfo, seatInfoWrapper)) {
                 seatInfoWrapper.seatInfo = newSeatInfo
-                val userId = newSeatInfo.userInfo.userId
+                val userId = newSeatInfo.userInfo.userID
                 if (userId.isNotEmpty()) {
                     _seatUserMap[userId] = seatInfoWrapper
                 }
@@ -171,7 +171,7 @@ class SeatLayoutConfigManager {
             return newSeatInfo.isLocked != it.isLocked
                     || newSeatInfo.userInfo.allowOpenMicrophone != it.userInfo.allowOpenMicrophone
                     || newSeatInfo.userInfo.microphoneStatus != it.userInfo.microphoneStatus
-                    || newSeatInfo.userInfo.userId != it.userInfo.userId
+                    || newSeatInfo.userInfo.userID != it.userInfo.userID
         }
         return true
     }

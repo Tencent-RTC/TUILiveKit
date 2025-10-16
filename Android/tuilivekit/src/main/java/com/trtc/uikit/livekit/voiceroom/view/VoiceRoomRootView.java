@@ -328,8 +328,8 @@ public class VoiceRoomRootView extends FrameLayout implements ITUINotification {
 
                 Barrage barrage = new Barrage();
                 barrage.setTextContent("gift");
-                barrage.getSender().setUserId(sender.getUserId());
-                barrage.getSender().setUserName(TextUtils.isEmpty(sender.getUserName()) ? sender.getUserId() :
+                barrage.getSender().setUserID(sender.getUserID());
+                barrage.getSender().setUserName(TextUtils.isEmpty(sender.getUserName()) ? sender.getUserID() :
                         sender.getUserName());
                 barrage.getSender().setAvatarURL(sender.getAvatarURL());
                 Map<String, String> extInfo = new HashMap<>();

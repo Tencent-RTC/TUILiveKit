@@ -179,7 +179,7 @@ class BottomMenuView @JvmOverloads constructor(
     }
 
     private fun onSeatMutedStateChanged(seatList: List<SeatInfo>) {
-        val seatInfo = seatList.firstOrNull { it.userInfo.userId == TUIRoomEngine.getSelfInfo().userId }
+        val seatInfo = seatList.firstOrNull { it.userInfo.userID == TUIRoomEngine.getSelfInfo().userId }
         seatInfo?.let {
             if (!it.userInfo.allowOpenMicrophone) {
                 mMediaManager.updateMicrophoneMuteState(true)

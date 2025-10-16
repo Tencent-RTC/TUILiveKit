@@ -65,7 +65,7 @@ class SeatInfoView @JvmOverloads constructor(
 
     fun updateUserVolume(seatInfo: SeatInfo?, volume: Int) {
         seatInfo?.userInfo?.let { userInfo ->
-            if (userInfo.userId.isEmpty()) {
+            if (userInfo.userID.isEmpty()) {
                 return
             }
             if (userInfo.microphoneStatus == DeviceStatus.OFF) {
@@ -84,7 +84,7 @@ class SeatInfoView @JvmOverloads constructor(
 
     private fun updateView(seatInfo: SeatInfo?) {
         seatInfo?.let {
-            if (seatInfo.userInfo.userId.isEmpty()) updateEmptySeatView(seatInfo)
+            if (seatInfo.userInfo.userID.isEmpty()) updateEmptySeatView(seatInfo)
             else updateSeatedView(seatInfo)
         }
     }
@@ -103,7 +103,7 @@ class SeatInfoView @JvmOverloads constructor(
 
     private fun updateSeatedView(seatInfo: SeatInfo) {
         emptyViewContainer.visibility = GONE
-        textName.text = seatInfo.userInfo.name.ifEmpty { seatInfo.userInfo.userId }
+        textName.text = seatInfo.userInfo.userName.ifEmpty { seatInfo.userInfo.userID }
         updateUserAvatar(seatInfo.userInfo.avatarURL)
         updateUserRole(seatInfo)
         if (!seatInfo.userInfo.allowOpenMicrophone || seatInfo.userInfo.microphoneStatus == DeviceStatus.OFF) {
