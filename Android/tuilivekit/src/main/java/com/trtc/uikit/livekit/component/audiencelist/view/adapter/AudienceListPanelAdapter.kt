@@ -55,13 +55,13 @@ class AudienceListPanelAdapter(
         }
 
         if (TextUtils.isEmpty(data[position].userName)) {
-            holder.textName.text = data[position].userId
+            holder.textName.text = data[position].userID
         } else {
             holder.textName.text = data[position].userName
         }
 
         val selfUserId = TUIRoomEngine.getSelfInfo().userId
-        if (!TextUtils.isEmpty(selfUserId) && selfUserId == LiveListStore.shared().liveState.currentLive.value.liveOwner.userId) {
+        if (!TextUtils.isEmpty(selfUserId) && selfUserId == LiveListStore.shared().liveState.currentLive.value.liveOwner.userID) {
             holder.more.visibility = if (onItemClickListener == null) View.GONE else View.VISIBLE
         } else {
             holder.more.visibility = View.GONE

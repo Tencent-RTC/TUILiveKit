@@ -150,7 +150,7 @@ class GiftListView : ViewPager, LifecycleOwner {
     }
 
     fun sendGift(gift: Gift, giftCount: Int) {
-        giftStore?.sendGift(gift.giftId, giftCount, null)
+        giftStore?.sendGift(gift.giftID, giftCount, null)
         if (!TextUtils.isEmpty(gift.resourceURL)) {
             val isSvgGift = gift.resourceURL.lowercase(Locale.getDefault()).endsWith(".svga")
             val key = getReportKey(isSvgGift)

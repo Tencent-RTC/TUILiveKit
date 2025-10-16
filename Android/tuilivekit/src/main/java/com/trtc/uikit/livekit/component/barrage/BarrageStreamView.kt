@@ -148,7 +148,7 @@ class BarrageStreamView @JvmOverloads constructor(
             val barrage = Barrage().apply {
                 textContent = this@BarrageStreamView.context.getString(R.string.common_entered_room)
                 sender.apply {
-                    userId = audience.userId
+                    userID = audience.userID
                     userName = audience.userName
                     avatarURL = audience.avatarURL
                 }

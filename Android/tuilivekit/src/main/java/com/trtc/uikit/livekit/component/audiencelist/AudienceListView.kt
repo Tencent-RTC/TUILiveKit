@@ -92,7 +92,7 @@ class AudienceListView @JvmOverloads constructor(
 
     override fun initStore() {
         liveListStore = LiveListStore.shared()
-        audienceStore = LiveAudienceStore.create(liveId = roomId)
+        audienceStore = LiveAudienceStore.create(liveID = roomId)
     }
 
     override fun addObserver() {
@@ -147,7 +147,7 @@ class AudienceListView @JvmOverloads constructor(
             AudienceListIconAdapter(
                 context,
                 audienceStore?.liveAudienceState
-                ?: LiveAudienceStore.create(liveId = roomId).liveAudienceState
+                ?: LiveAudienceStore.create(liveID = roomId).liveAudienceState
             )
         recycleAudienceList.adapter = adapter
         recycleAudienceList.setOnTouchListener(object : OnTouchListener {
@@ -183,7 +183,7 @@ class AudienceListView @JvmOverloads constructor(
         if (audienceListPopupDialog == null) {
             audienceListPopupDialog = AudienceListPopupDialog(
                 context, audienceStore?.liveAudienceState
-                         ?: LiveAudienceStore.create(liveId = roomId).liveAudienceState
+                         ?: LiveAudienceStore.create(liveID = roomId).liveAudienceState
             )
             audienceListPopupDialog?.setOnUserItemClickListener(onUserItemClickListener)
         }

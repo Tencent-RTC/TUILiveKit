@@ -218,7 +218,7 @@ class SeatGridView @JvmOverloads constructor(
     ) {
         LOGGER.info("API updateRoomSeatMode seatMode:$seatMode")
         reportEventData(LIVEKIT_METRICS_METHOD_CALL_SEAT_GRID_VIEW_UPDATE_SEAT_MODE)
-        val liveId = liveInfo?.liveId
+        val liveId = liveInfo?.liveID
         if (liveId.isNullOrEmpty()) {
             callback?.onError(TUICommonDefine.Error.FAILED, "please enter room first")
             LOGGER.error("not enter room")
@@ -227,7 +227,7 @@ class SeatGridView @JvmOverloads constructor(
 
         val info = LiveInfo().apply {
             this.seatMode = seatModeFromEngineSeatMode(seatMode)
-            this.liveId = liveId
+            this.liveID = liveId
         }
         val flagList = ArrayList<LiveInfo.ModifyFlag>()
         flagList.add(LiveInfo.ModifyFlag.SEAT_MODE)
@@ -300,7 +300,7 @@ class SeatGridView @JvmOverloads constructor(
             return
         }
         val liveInfo = liveListStore.liveState.currentLive.value
-        val isOwner = TUIRoomEngine.getSelfInfo().userId == liveInfo.liveOwner.userId
+        val isOwner = TUIRoomEngine.getSelfInfo().userId == liveInfo.liveOwner.userID
         if (liveInfo.seatMode == TakeSeatMode.FREE || isOwner) {
             seatStore?.takeSeat(index, object : CompletionHandler {
                 override fun onSuccess() {
@@ -589,10 +589,10 @@ class SeatGridView @JvmOverloads constructor(
 
     private fun isOwner(): Boolean {
         val liveInfo = liveListStore.liveState.currentLive.value
-        if (liveInfo.liveOwner.userId.isEmpty()) {
+        if (liveInfo.liveOwner.userID.isEmpty()) {
             return false
         }
-        return TUIRoomEngine.getSelfInfo().userId == liveInfo.liveOwner.userId
+        return TUIRoomEngine.getSelfInfo().userId == liveInfo.liveOwner.userID
     }
 
     private val seatGridLayoutAdapter = object : SeatGridLayout.Adapter {
@@ -658,24 +658,24 @@ class SeatGridView @JvmOverloads constructor(
                 VoiceRoomDefine.RequestType.APPLY_TO_TAKE_SEAT,
                 convertToUserInfo(guestUser)
             )
-            inviteCallbackMap.remove(guestUser.userId)
+            inviteCallbackMap.remove(guestUser.userID)
         }
 
         override fun onHostInvitationResponded(isAccept: Boolean, guestUser: LiveUserInfo) {
             if (isAccept) {
-                inviteCallbackMap.get(guestUser.userId)?.onAccepted(convertToUserInfo(guestUser))
+                inviteCallbackMap.get(guestUser.userID)?.onAccepted(convertToUserInfo(guestUser))
             } else {
-                inviteCallbackMap.get(guestUser.userId)?.onRejected(convertToUserInfo(guestUser))
+                inviteCallbackMap.get(guestUser.userID)?.onRejected(convertToUserInfo(guestUser))
             }
-            inviteCallbackMap.remove(guestUser.userId)
+            inviteCallbackMap.remove(guestUser.userID)
         }
 
         override fun onHostInvitationNoResponse(guestUser: LiveUserInfo, reason: NoResponseReason) {
             when (reason) {
-                NoResponseReason.TIMEOUT -> inviteCallbackMap.get(guestUser.userId)
+                NoResponseReason.TIMEOUT -> inviteCallbackMap.get(guestUser.userID)
                     ?.onTimeout(convertToUserInfo(guestUser))
 
-                NoResponseReason.ALREADY_SEATED -> inviteCallbackMap.get(guestUser.userId)
+                NoResponseReason.ALREADY_SEATED -> inviteCallbackMap.get(guestUser.userID)
                     ?.onAccepted(
                         convertToUserInfo(guestUser)
                     )

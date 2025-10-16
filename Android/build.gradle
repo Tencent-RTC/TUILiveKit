@@ -39,8 +39,8 @@ ext {
     minSdkVersion = 21
     targetSdkVersion = 34
     liteavSdk = "com.tencent.liteav:LiteAVSDK_Professional:12.8.0.19279"
-    roomEngineSdk = "io.trtc.uikit:rtc_room_engine:3.4.0.1306"
-    atomicxCoreSdk = "io.trtc.uikit:atomicx-core:3.4.0.1307"
+    roomEngineSdk = "io.trtc.uikit:rtc_room_engine:3.4.0.1335"
+    atomicxCoreSdk = "io.trtc.uikit:atomicx-core:3.4.0.1335"
     imSdk = "com.tencent.imsdk:imsdk-plus:8.7.7201"
     common = "io.trtc.uikit:common:3.3.0.1194"
 }

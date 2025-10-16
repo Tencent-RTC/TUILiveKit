@@ -181,7 +181,7 @@ class GiftPlayView @JvmOverloads constructor(
         giftModel.gift = gift
         giftModel.giftCount = giftCount
         giftModel.sender = sender
-        giftModel.isFromSelf = TextUtils.equals(sender.userId, TUILogin.getUserId())
+        giftModel.isFromSelf = TextUtils.equals(sender.userID, TUILogin.getUserId())
         if (TextUtils.isEmpty(gift.resourceURL)) {
             giftImageAnimationManager.add(giftModel)
         } else {

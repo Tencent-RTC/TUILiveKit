@@ -34,7 +34,7 @@ class BarrageItemDefaultAdapter(
         val viewHolder = holder as ViewHolder
         val fontSize = getFontSize(viewHolder.textMsgContent)
 
-        if (TextUtils.equals(ownerId, barrage.sender.userId)) {
+        if (TextUtils.equals(ownerId, barrage.sender.userID)) {
             viewHolder.textAnchorFlag.visibility = View.VISIBLE
             val placeHolder = getSpacesStringByDP(viewHolder.textMsgContent)
             viewHolder.textMsgContent.apply {
@@ -87,7 +87,7 @@ class BarrageItemDefaultAdapter(
         val textAnchorFlag: TextView = itemView.findViewById(R.id.tv_anchor_flag)
 
         fun getMessageBuilder(barrage: Barrage, fontSize: Int, placeHolder: String): SpannableStringBuilder {
-            val userName = barrage.sender.userName.takeIf { !TextUtils.isEmpty(it) } ?: barrage.sender.userId
+            val userName = barrage.sender.userName.takeIf { !TextUtils.isEmpty(it) } ?: barrage.sender.userID
             val userNameSplicing = if (placeHolder.isEmpty()) {
                 "$userName: "
             } else {

@@ -47,7 +47,7 @@ class BarrageMsgListAdapter(
             adapter.onBindViewHolder(holder, position, barrage)
             holder.itemView.setOnClickListener {
                 val userInfo = TUIRoomDefine.UserInfo().apply {
-                    userId = barrage.sender.userId
+                    userId = barrage.sender.userID
                     userName = barrage.sender.userName
                     avatarUrl = barrage.sender.avatarURL
                 }
