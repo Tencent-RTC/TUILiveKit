@@ -12,4 +12,7 @@ export const resource = {
   'Switch Account': 'Switch Account',
   'Please enter a valid userID': 'Please enter a valid userID',
   'Please provide a function to generate userSig': 'Please provide a function to generate userSig',
+  'Start live': 'Start live',
+  'Copy successful': 'Copy successful',
+  'Copy failed': 'Copy failed',
 };

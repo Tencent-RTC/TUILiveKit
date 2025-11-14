@@ -12,4 +12,7 @@ export const resource = {
   'Switch Account': '切换其他账号',
   'Please enter a valid userID': '请输入正确的userID',
   'Please provide a function to generate userSig': '请传入生成 userSig 的函数',
+  'Start live': '开始直播',
+  'Copy successful': '复制成功',
+  'Copy failed': '复制失败',
 };

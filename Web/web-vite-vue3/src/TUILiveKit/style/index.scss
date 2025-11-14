@@ -1,0 +1,83 @@
+$icon-color: var(--text-color-primary);
+$icon-hover-color: var(--text-color-link);
+$text-color1: var(--text-color-primary);
+$text-color2: var(--text-color-secondary);
+$text-color3: var(--text-color-tertiary);
+
+$h5Breakpoint: 992px;
+
+@mixin text-size-16 {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+@mixin text-size-12 {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+@mixin text-size-14 {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+@mixin text-size-24 {
+  font-size: 24px;
+  font-weight: 500;
+}
+
+@mixin icon-size-base($size) {
+  display: inline-block;
+  width: $size;
+  height: $size;
+  mask-repeat: no-repeat;
+  mask-size: 100% 100%;
+  background-color: $icon-color;
+  cursor: pointer;
+}
+
+@mixin icon-size-12 {
+  @include icon-size-base(12px);
+}
+
+@mixin icon-size-24 {
+  @include icon-size-base(24px);
+}
+
+@mixin dividing-line($direction: 'bottom') {
+  @if $direction == 'bottom' {
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--stroke-color-primary);
+  } @else if $direction == 'top' {
+    padding-top: 16px;
+    border-top: 1px solid var(--stroke-color-primary);
+  }
+}
+
+@mixin scrollbar {
+  &::-webkit-scrollbar {
+    width: 6px;
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--uikit-color-gray-3);
+    border-radius: 3px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+
+    &:hover {
+      background: var(--uikit-color-gray-3);
+    }
+  }
+}
+
+@mixin ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

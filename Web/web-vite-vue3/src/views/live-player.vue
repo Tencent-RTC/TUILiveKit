@@ -1,14 +1,14 @@
 <template>
   <div class="live-player-container">
     <LiveHeader v-show="!isMobile" class="live-player-header" :login-button-visible="false"></LiveHeader>
-    <LivePlayerView v-if="loginUserInfo" :live-id="liveId" @leave-live="leaveLive" />
+    <LivePlayerView v-if="loginUserInfo" :live-id="liveId as string" @leave-live="leaveLive" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { useRouter, useRoute } from 'vue-router';
-import { LivePlayerView, isMobile } from '@tencentcloud/livekit-web-vue3';
 import { useLoginState } from 'tuikit-atomicx-vue3';
+import { LivePlayerView, isMobile } from '../TUILiveKit';
 import LiveHeader from '../components/LiveHeader.vue';
 import { deepClone } from '../utils/utils';
 

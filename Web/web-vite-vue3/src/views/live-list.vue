@@ -9,7 +9,7 @@
 import { useRouter, useRoute } from 'vue-router';
 import { LiveInfo, useLoginState } from 'tuikit-atomicx-vue3';
 import { useUIKit, TUIMessageBox } from '@tencentcloud/uikit-base-component-vue3';
-import { LiveListView } from '@tencentcloud/livekit-web-vue3';
+import { LiveListView } from '../TUILiveKit';
 import LiveHeader from '../components/LiveHeader.vue';
 
 const router = useRouter();
