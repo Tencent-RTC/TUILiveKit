@@ -1,24 +1,25 @@
 {
   "name": "@tencentcloud/live-uikit-vue",
-  "version": "3.4.2",
+  "version": "4.3.1",
   "scripts": {
     "dev": "vite --force",
     "dev:deep": "vite",
+    "dev:local": "vite --force",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "./node_modules/.bin/eslint ./src --no-error-on-unmatched-pattern"
   },
   "dependencies": {
-    "@tencentcloud/livekit-web-vue3": "~3.4.2",
-    "@tencentcloud/tuiroom-engine-js": "~3.4.2",
-    "@tencentcloud/uikit-base-component-vue3": "1.1.0",
+    "@tencentcloud/tuiroom-engine-js": "~3.4.3",
+    "@tencentcloud/uikit-base-component-vue3": "1.1.1",
+    "@tencentcloud/universal-api": "^2.0.9",
     "axios": "^0.27.2",
     "js-cookie": "^3.0.1",
     "mitt": "^3.0.0",
     "pinia": "^2.0.13",
     "qs": "^6.10.3",
     "rtc-detect": "^1.0.3",
-    "tuikit-atomicx-vue3": "3.4.2",
+    "tuikit-atomicx-vue3": "4.3.1",
     "vue": "^3.2.25",
     "vue-i18n": "^9.10.2",
     "vue-router": "^4.0.14"

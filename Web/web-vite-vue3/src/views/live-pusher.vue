@@ -1,19 +1,21 @@
 <template>
   <div class="live-pusher-container">
     <LiveHeader />
-    <LivePusherView />
+    <LivePusherView @leave-live="onLeaveLive" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import TUIRoomEngine from '@tencentcloud/tuiroom-engine-js';
-import { useLiveState, LiveStatus, useLoginState, useDeviceState } from 'tuikit-atomicx-vue3';
-import { LivePusherView } from '@tencentcloud/livekit-web-vue3';
-import { TUIMessageBox, useUIKit } from '@tencentcloud/uikit-base-component-vue3';
 import { watch } from 'vue';
+import { useRouter } from 'vue-router';
+import TUIRoomEngine from '@tencentcloud/tuiroom-engine-js';
+import { TUIMessageBox, useUIKit } from '@tencentcloud/uikit-base-component-vue3';
+import { useLiveListState, useLoginState, useDeviceState } from 'tuikit-atomicx-vue3';
+import { LivePusherView } from '../TUILiveKit';
 import LiveHeader from '@/components/LiveHeader.vue';
 
-const { localLiveStatus, currentLive, joinLive } = useLiveState();
+const router = useRouter();
+const { currentLive, joinLive } = useLiveListState();
 const { loginUserInfo } = useLoginState();
 const { openLocalMicrophone } = useDeviceState();
 const { t } = useUIKit();
@@ -27,14 +29,18 @@ TUIRoomEngine.once('ready', () => {
   }));
 });
 
-watch(localLiveStatus, (newVal, oldVal) => {
-  if (newVal === LiveStatus.Live) {
+watch(() => currentLive.value?.liveId, (newVal, oldVal) => {
+  if (newVal) {
     localStorage.setItem('livekit-live-id', currentLive.value?.liveId || '');
   }
-  if (oldVal === LiveStatus.Live && newVal !== LiveStatus.Live) {
+  if (oldVal && !newVal) {
     localStorage.removeItem('livekit-live-id');
   }
 });
+
+const onLeaveLive = () => {
+  router.push({ path: '/live-list' });
+};
 
 const restoreLive = async () => {
   const liveId = localStorage.getItem('livekit-live-id');

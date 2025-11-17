@@ -5,6 +5,7 @@
       <div class="header-left-title">LiveKit</div>
     </div>
     <div class="header-right">
+      <TUIButton v-if="isLiveListPage && !isH5" class="btn-start-live" type="primary" @click="gotoPusher">{{ t('Start live') }}</TUIButton>
       <Avatar :src="loginUserInfo?.avatarUrl" :size="24" />
       <div class="header-right-name">
         {{ loginUserInfo?.userName || loginUserInfo?.userId }}
@@ -19,10 +20,11 @@
 
 
 <script lang="ts" setup>
-import { onMounted, ref, defineProps } from 'vue';
+import { onMounted, ref, defineProps, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { TUIButton, useUIKit } from '@tencentcloud/uikit-base-component-vue3';
 import { useLoginState, Avatar } from 'tuikit-atomicx-vue3';
+import { isH5 } from '../TUILiveKit/utils/environment';
 
 const props = defineProps({
   loginButtonVisible: {
@@ -35,6 +37,11 @@ const route = useRoute();
 const { t } = useUIKit();
 const { login, loginUserInfo, logout } = useLoginState();
 const loginLoading = ref(false);
+const isLiveListPage = ref(route.path === '/live-list');
+
+function gotoPusher() {
+  router.push({ path: '/live-pusher' });
+};
 
 async function handleLogin() {
   try {
@@ -49,7 +56,7 @@ async function handleLogin() {
     });
   } catch (error) {
     console.error(error);
-    router.push({ path: '/login', query: route.query });
+    router.push({ path: '/login', query: { from: router.currentRoute.value.path, ...route.query } });
   } finally {
     loginLoading.value = false;
   }
@@ -76,6 +83,14 @@ onMounted(async () => {
   }
   await handleLogin();
 });
+
+watch(
+  () => route.path,
+  (newPath) => {
+    isLiveListPage.value = newPath === '/live-list';
+  },
+  { immediate: true },
+);
 
 </script>
 
@@ -111,6 +126,10 @@ onMounted(async () => {
     display: flex;
     align-items: center;
     gap: 8px;
+
+    .btn-start-live {
+      margin-right: 20px;
+    }
 
     .header-right-name {
       font-size: 14px;
