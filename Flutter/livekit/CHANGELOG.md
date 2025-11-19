@@ -1,5 +1,10 @@
 # TUILiveKit
 
+## 3.5.0
+
+- Video livestream supports picture-in-picture (PiP)
+- Video livestream supports user management (disable sending messages, kick out of room, kick out of seat, local and remote audio/video management)
+
 ## 3.4.0
 
 - Engine upgraded to v3.4.

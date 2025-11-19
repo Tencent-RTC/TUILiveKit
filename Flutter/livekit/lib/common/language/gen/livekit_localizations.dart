@@ -100,6 +100,12 @@ abstract class LiveKitLocalizations {
     Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant')
   ];
 
+  /// No description provided for @common_disconnect_guest_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to disconnect xxx?'**
+  String get common_disconnect_guest_tips;
+
   /// No description provided for @common_anchor_battle.
   ///
   /// In en, this message translates to:
@@ -139,19 +145,19 @@ abstract class LiveKitLocalizations {
   /// No description provided for @common_battle_invitee_reject.
   ///
   /// In en, this message translates to:
-  /// **'rejected battle'**
+  /// **'xxx rejected battle'**
   String get common_battle_invitee_reject;
 
   /// No description provided for @common_battle_inviter_cancel.
   ///
   /// In en, this message translates to:
-  /// **'canceled battle, please try to initiate it again'**
+  /// **'xxx canceled battle, please try to initiate it again'**
   String get common_battle_inviter_cancel;
 
   /// No description provided for @common_battle_inviting.
   ///
   /// In en, this message translates to:
-  /// **'invite you to battle together'**
+  /// **'xxx invite you to battle together'**
   String get common_battle_inviting;
 
   /// No description provided for @common_battle_pk_end.
@@ -193,7 +199,7 @@ abstract class LiveKitLocalizations {
   /// No description provided for @common_connect_inviting_append.
   ///
   /// In en, this message translates to:
-  /// **'invite you to host together'**
+  /// **'xxx invite you to host together'**
   String get common_connect_inviting_append;
 
   /// No description provided for @common_connect_request_rejected.
@@ -232,11 +238,47 @@ abstract class LiveKitLocalizations {
   /// **'Cover'**
   String get common_cover;
 
+  /// No description provided for @common_disable_audio.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable Audio'**
+  String get common_disable_audio;
+
+  /// No description provided for @common_disable_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable Chat'**
+  String get common_disable_message;
+
+  /// No description provided for @common_disable_video.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable Video'**
+  String get common_disable_video;
+
   /// No description provided for @common_disconnect_tips.
   ///
   /// In en, this message translates to:
   /// **'Are you sure you want to disconnect from other streamers?'**
   String get common_disconnect_tips;
+
+  /// No description provided for @common_enable_audio.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Audio'**
+  String get common_enable_audio;
+
+  /// No description provided for @common_enable_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Chat'**
+  String get common_enable_message;
+
+  /// No description provided for @common_enable_video.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Video'**
+  String get common_enable_video;
 
   /// No description provided for @common_end_connect.
   ///
@@ -256,6 +298,18 @@ abstract class LiveKitLocalizations {
   /// **'You are currently in PK mode. Would you like to [End PK] or [End Live] ?'**
   String get common_end_pk_tips;
 
+  /// No description provided for @common_kick_out_of_room.
+  ///
+  /// In en, this message translates to:
+  /// **'Kick Out'**
+  String get common_kick_out_of_room;
+
+  /// No description provided for @common_kicked_out_of_room_by_owner.
+  ///
+  /// In en, this message translates to:
+  /// **'You have been kicked out of the room'**
+  String get common_kicked_out_of_room_by_owner;
+
   /// No description provided for @common_more.
   ///
   /// In en, this message translates to:
@@ -267,6 +321,18 @@ abstract class LiveKitLocalizations {
   /// In en, this message translates to:
   /// **'More Features'**
   String get common_more_features;
+
+  /// No description provided for @common_mute_audio_by_master.
+  ///
+  /// In en, this message translates to:
+  /// **'The anchor has muted you'**
+  String get common_mute_audio_by_master;
+
+  /// No description provided for @common_mute_video_by_owner.
+  ///
+  /// In en, this message translates to:
+  /// **'The anchor disabled your video'**
+  String get common_mute_video_by_owner;
 
   /// No description provided for @common_recommended_list.
   ///
@@ -298,6 +364,36 @@ abstract class LiveKitLocalizations {
   /// **'Start Live'**
   String get common_start_live;
 
+  /// No description provided for @common_start_video.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Video'**
+  String get common_start_video;
+
+  /// No description provided for @common_stop_video.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop Video'**
+  String get common_stop_video;
+
+  /// No description provided for @common_terminate_room_connection_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to disconnect?'**
+  String get common_terminate_room_connection_message;
+
+  /// No description provided for @common_un_mute_audio_by_master.
+  ///
+  /// In en, this message translates to:
+  /// **'The anchor has unmuted you'**
+  String get common_un_mute_audio_by_master;
+
+  /// No description provided for @common_un_mute_video_by_master.
+  ///
+  /// In en, this message translates to:
+  /// **'The anchor enabled your video'**
+  String get common_un_mute_video_by_master;
+
   /// No description provided for @common_link_guest.
   ///
   /// In en, this message translates to:
@@ -309,6 +405,24 @@ abstract class LiveKitLocalizations {
   /// In en, this message translates to:
   /// **'Host'**
   String get common_link_host;
+
+  /// No description provided for @live_barrage_error_content_is_long.
+  ///
+  /// In en, this message translates to:
+  /// **'The content is too long, please reduce the content and try again'**
+  String get live_barrage_error_content_is_long;
+
+  /// No description provided for @live_barrage_error_network.
+  ///
+  /// In en, this message translates to:
+  /// **'The network is abnormal, please try again later'**
+  String get live_barrage_error_network;
+
+  /// No description provided for @live_barrage_error_sensitive_word.
+  ///
+  /// In en, this message translates to:
+  /// **'Sensitive words are detected, please modify it and try again'**
+  String get live_barrage_error_sensitive_word;
 
   /// No description provided for @live_error_connection_notexit.
   ///
@@ -339,6 +453,12 @@ abstract class LiveKitLocalizations {
   /// In en, this message translates to:
   /// **'xxx people viewed'**
   String get livelist_viewed_audience_count;
+
+  /// No description provided for @livelist_exit_float_window_tip.
+  ///
+  /// In en, this message translates to:
+  /// **'Live streaming in progress. Please try again later.'**
+  String get livelist_exit_float_window_tip;
 
   /// No description provided for @livestreamcore_battle_error_conflict.
   ///
@@ -1554,6 +1674,24 @@ abstract class LiveKitLocalizations {
   /// **'Mirror'**
   String get common_video_settings_item_mirror;
 
+  /// No description provided for @common_video_settings_item_pip.
+  ///
+  /// In en, this message translates to:
+  /// **'Pip'**
+  String get common_video_settings_item_pip;
+
+  /// No description provided for @common_pip_toggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pip Toggle'**
+  String get common_pip_toggle;
+
+  /// No description provided for @common_pip_toggle_description.
+  ///
+  /// In en, this message translates to:
+  /// **'After enabling, the app will automatically enter picture-in-picture mode when moved to the background'**
+  String get common_pip_toggle_description;
+
   /// No description provided for @common_voiceroom_empty_view.
   ///
   /// In en, this message translates to:
@@ -1937,6 +2075,138 @@ abstract class LiveKitLocalizations {
   /// In en, this message translates to:
   /// **'resolution changed to'**
   String get live_video_resolution_changed;
+
+  /// No description provided for @common_template_601_ui_exception_toast.
+  ///
+  /// In en, this message translates to:
+  /// **'This layout template may display abnormally on certain models. It is recommended to change to another layout template.'**
+  String get common_template_601_ui_exception_toast;
+
+  /// No description provided for @seat_locked.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked'**
+  String get seat_locked;
+
+  /// No description provided for @seat_unlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'UnLock Seat'**
+  String get seat_unlocked;
+
+  /// No description provided for @seat_no_guest.
+  ///
+  /// In en, this message translates to:
+  /// **'No guests'**
+  String get seat_no_guest;
+
+  /// No description provided for @seat_in_battle.
+  ///
+  /// In en, this message translates to:
+  /// **'In Battle'**
+  String get seat_in_battle;
+
+  /// No description provided for @seat_cancel_invite.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel invite'**
+  String get seat_cancel_invite;
+
+  /// No description provided for @seat_request_battle.
+  ///
+  /// In en, this message translates to:
+  /// **'Request Battle'**
+  String get seat_request_battle;
+
+  /// No description provided for @seat_request_host.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite Host'**
+  String get seat_request_host;
+
+  /// No description provided for @seat_invite_battle.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite Battle'**
+  String get seat_invite_battle;
+
+  /// No description provided for @seat_repeat_invite_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Inviting others you can withdraw the invitation and send a new one'**
+  String get seat_repeat_invite_tips;
+
+  /// No description provided for @seat_end_Battle.
+  ///
+  /// In en, this message translates to:
+  /// **'End Battle'**
+  String get seat_end_Battle;
+
+  /// No description provided for @seat_too_many_guest.
+  ///
+  /// In en, this message translates to:
+  /// **'Please limit seats to 6 or fewer'**
+  String get seat_too_many_guest;
+
+  /// No description provided for @seat_only_show_first_six_seat.
+  ///
+  /// In en, this message translates to:
+  /// **'Please note that 6V6 PK only shows the first 6 seats and please limit the number of seats to 6 or fewer'**
+  String get seat_only_show_first_six_seat;
+
+  /// No description provided for @seat_in_pk.
+  ///
+  /// In en, this message translates to:
+  /// **'In PK'**
+  String get seat_in_pk;
+
+  /// No description provided for @live_end_live_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to End Live?'**
+  String get live_end_live_tips;
+
+  /// No description provided for @live_exit_live_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to Exit Live?'**
+  String get live_exit_live_tips;
+
+  /// No description provided for @live_cancel_request.
+  ///
+  /// In en, this message translates to:
+  /// **'xxx canceled request'**
+  String get live_cancel_request;
+
+  /// No description provided for @mirror_type_auto.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto'**
+  String get mirror_type_auto;
+
+  /// No description provided for @mirror_type_enable.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable'**
+  String get mirror_type_enable;
+
+  /// No description provided for @mirror_type_disable.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable'**
+  String get mirror_type_disable;
+
+  /// No description provided for @mirror_type_change_to.
+  ///
+  /// In en, this message translates to:
+  /// **'Change to xxx'**
+  String get mirror_type_change_to;
+
+  /// No description provided for @common_remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get common_remove;
 }
 
 class _LiveKitLocalizationsDelegate

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:rtc_room_engine/rtc_room_engine.dart';
+import 'package:tencent_live_uikit/component/float_window/global_float_window_manager.dart';
 import 'package:tencent_live_uikit/live_stream/features/index.dart';
 import 'package:tencent_live_uikit/live_stream/features/live_room_audience_widget.dart';
 import 'package:tencent_live_uikit/voice_room/index.dart';
 
 import '../../common/index.dart';
+import 'component/float_window/global_float_window_state.dart';
+import 'live_stream/features/live_room_audience_overlay.dart';
 
 class TUILiveKitNavigatorObserver extends RouteObserver {
   static final TUILiveKitNavigatorObserver instance = TUILiveKitNavigatorObserver._internal();
@@ -36,10 +39,11 @@ class TUILiveKitNavigatorObserver extends RouteObserver {
         MaterialPageRoute(
           settings: const RouteSettings(name: routeLiveRoomAudience),
           builder: (context) {
-            return TUILiveRoomAnchorWidget(
-              roomId: liveInfo.roomId,
-              needPrepare: false,
-            );
+            if (GlobalFloatWindowManager.instance.isEnableFloatWindowFeature()) {
+              return TUILiveRoomAnchorOverlay(roomId: liveInfo.roomId, needPrepare: false);
+            } else {
+              return TUILiveRoomAnchorWidget(roomId: liveInfo.roomId, needPrepare: false);
+            }
           },
         ));
     isRepeatClick = false;
@@ -49,14 +53,29 @@ class TUILiveKitNavigatorObserver extends RouteObserver {
     if (isRepeatClick) {
       return;
     }
+    GlobalFloatWindowManager floatWindowManager = GlobalFloatWindowManager.instance;
+    GlobalFloatWindowState state = GlobalFloatWindowManager.instance.state;
+    if (floatWindowManager.isFloating()) {
+      if (floatWindowManager.state.roomId.value == liveInfo.roomId) {
+        floatWindowManager.switchToFullScreenMode();
+        return;
+      } else if (state.ownerId.value == TUIRoomEngine.getSelfInfo().userId) {
+        makeToast(msg: LiveKitLocalizations.of(Global.appContext())!.livelist_exit_float_window_tip);
+        return;
+      } else {
+        GlobalFloatWindowManager.instance.overlayManager.closeOverlay();
+      }
+    }
     Navigator.push(
         getContext(),
         MaterialPageRoute(
           settings: const RouteSettings(name: routeLiveRoomAudience),
           builder: (context) {
-            return TUILiveRoomAudienceWidget(
-              roomId: liveInfo.roomId,
-            );
+            if (GlobalFloatWindowManager.instance.isEnableFloatWindowFeature()) {
+              return TUILiveRoomAudienceOverlay(roomId: liveInfo.roomId);
+            } else {
+              return TUILiveRoomAudienceWidget(roomId: liveInfo.roomId);
+            }
           },
         ));
     isRepeatClick = false;
@@ -75,7 +94,16 @@ class TUILiveKitNavigatorObserver extends RouteObserver {
     if (isRepeatClick) {
       return;
     }
-
+    GlobalFloatWindowManager floatWindowManager = GlobalFloatWindowManager.instance;
+    GlobalFloatWindowState state = GlobalFloatWindowManager.instance.state;
+    if (floatWindowManager.isFloating()) {
+      if (state.ownerId.value == TUIRoomEngine.getSelfInfo().userId) {
+        makeToast(msg: LiveKitLocalizations.of(Global.appContext())!.livelist_exit_float_window_tip);
+        return;
+      } else {
+        GlobalFloatWindowManager.instance.overlayManager.closeOverlay();
+      }
+    }
     Navigator.push(
         getContext(),
         MaterialPageRoute(

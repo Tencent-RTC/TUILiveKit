@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:live_stream_core/live_core_widget/live_core_controller.dart';
 import 'package:rtc_room_engine/api/room/tui_room_define.dart';
@@ -9,11 +10,13 @@ import 'package:tencent_live_uikit/common/screen/index.dart';
 class CoGuestForegroundWidget extends StatefulWidget {
   final SeatFullInfo userInfo;
   final LiveCoreController liveCoreController;
+  final ValueListenable<bool> isFloatWindowMode;
 
   const CoGuestForegroundWidget({
     super.key,
     required this.userInfo,
     required this.liveCoreController,
+    required this.isFloatWindowMode,
   });
 
   @override
@@ -23,12 +26,19 @@ class CoGuestForegroundWidget extends StatefulWidget {
 class _CoGuestWidgetState extends State<CoGuestForegroundWidget> {
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        _buildMicAndNameWidget(),
-      ],
-    );
+    return ValueListenableBuilder(
+        valueListenable: widget.isFloatWindowMode,
+        builder: (context, isFloatWindowMode, child) {
+          return Visibility(
+            visible: !isFloatWindowMode,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                _buildMicAndNameWidget(),
+              ],
+            ),
+          );
+        });
   }
 
   _buildMicAndNameWidget() {

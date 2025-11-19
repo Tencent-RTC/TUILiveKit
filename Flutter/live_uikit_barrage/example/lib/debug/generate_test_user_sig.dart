@@ -62,11 +62,7 @@ class GenerateTestUserSig {
       "TLS.time": currTime,
     });
 
-    sig = _hmacsha256(
-      identifier: userId,
-      currTime: currTime,
-      expire: expireTime,
-    );
+    sig = _hmacsha256(identifier: userId, currTime: currTime, expire: expireTime);
     sigDoc['TLS.sig'] = sig;
     String jsonStr = json.encode(sigDoc);
     List<int> compress = zlib.encode(utf8.encode(jsonStr));
@@ -77,11 +73,7 @@ class GenerateTestUserSig {
     return (DateTime.now().millisecondsSinceEpoch / 1000).floor();
   }
 
-  static String _hmacsha256({
-    required String identifier,
-    required int currTime,
-    required int expire,
-  }) {
+  static String _hmacsha256({required String identifier, required int currTime, required int expire}) {
     int sdkappid = sdkAppId;
     String contentToBeSigned =
         "TLS.identifier:$identifier\nTLS.sdkappid:$sdkappid\nTLS.time:$currTime\nTLS.expire:$expire\n";
@@ -90,9 +82,7 @@ class GenerateTestUserSig {
     return base64.encode(hmacSha256Digest.bytes);
   }
 
-  static String _escape({
-    required String content,
-  }) {
+  static String _escape({required String content}) {
     return content.replaceAll('\+', '*').replaceAll('\/', '-').replaceAll('=', '_');
   }
 }

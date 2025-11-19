@@ -14,9 +14,12 @@ import '../../common/language/index.dart';
 import '../../common/logger/index.dart';
 import '../../common/platform/index.dart';
 import '../../common/reporter/live_data_reporter.dart';
+import '../../common/widget/float_window/float_window_controller.dart';
+import '../../common/widget/float_window/float_window_mode.dart';
 import '../../common/widget/toast.dart';
 import '../../component/audio_effect/index.dart';
 import '../../component/beauty/index.dart';
+import '../../component/float_window/global_float_window_manager.dart';
 import '../../live_navigator_observer.dart';
 import '../live_define.dart';
 import '../manager/live_stream_manager.dart';
@@ -27,10 +30,16 @@ class TUILiveRoomAnchorWidget extends StatefulWidget {
   final String roomId;
   final bool needPrepare;
   final TUILiveInfo? liveInfo;
-  final void Function()? onStartLive;
+  final VoidCallback? onStartLive;
+  final FloatWindowController? floatWindowController;
 
   const TUILiveRoomAnchorWidget(
-      {super.key, required this.roomId, this.needPrepare = true, this.liveInfo, this.onStartLive});
+      {super.key,
+      required this.roomId,
+      this.needPrepare = true,
+      this.liveInfo,
+      this.onStartLive,
+      this.floatWindowController});
 
   @override
   State<TUILiveRoomAnchorWidget> createState() => _TUILiveRoomAnchorWidgetState();
@@ -40,6 +49,8 @@ class _TUILiveRoomAnchorWidgetState extends State<TUILiveRoomAnchorWidget> {
   late final LiveCoreController _liveCoreController;
   late final LiveStreamManager _liveStreamManager;
   final ValueNotifier<bool> _isShowingPreviewWidget = ValueNotifier(false);
+  late final VoidCallback _onFloatWindowModeChangedListener = _onFloatWindowModeChanged;
+  late final VoidCallback _onFullScreenChangedListener = _onFullScreenChanged;
 
   @override
   void initState() {
@@ -79,8 +90,11 @@ class _TUILiveRoomAnchorWidgetState extends State<TUILiveRoomAnchorWidget> {
         builder: (context, showPreview, _) {
           return Visibility(
             visible: !showPreview,
-            child:
-                AnchorBroadcastWidget(liveStreamManager: _liveStreamManager, liveCoreController: _liveCoreController),
+            child: AnchorBroadcastWidget(
+              liveStreamManager: _liveStreamManager,
+              liveCoreController: _liveCoreController,
+              onTapEnterFloatWindowInApp: () {widget.floatWindowController?.onTapSwitchFloatWindowInApp(true);},
+            ),
           );
         });
   }
@@ -233,11 +247,15 @@ extension on _TUILiveRoomAnchorWidgetState {
   void _addObserver() {
     _liveCoreController.registerConnectionObserver(_liveStreamManager.liveStreamObserver);
     _liveCoreController.registerBattleObserver(_liveStreamManager.battleManagerObserver);
+    _liveStreamManager.floatWindowState.floatWindowMode.addListener(_onFloatWindowModeChangedListener);
+    widget.floatWindowController?.isFullScreen.addListener(_onFullScreenChangedListener);
   }
 
   void _removeObserver() {
     _liveCoreController.unregisterConnectionObserver(_liveStreamManager.liveStreamObserver);
     _liveCoreController.unregisterBattleObserver(_liveStreamManager.battleManagerObserver);
+    _liveStreamManager.floatWindowState.floatWindowMode.removeListener(_onFloatWindowModeChangedListener);
+    widget.floatWindowController?.isFullScreen.removeListener(_onFullScreenChangedListener);
   }
 
   void _startWakeLock() async {
@@ -246,5 +264,30 @@ extension on _TUILiveRoomAnchorWidgetState {
 
   void _stopWakeLock() async {
     TUILiveKitPlatform.instance.enableWakeLock(false);
+  }
+
+  void _onFloatWindowModeChanged() {
+    FloatWindowMode floatWindowMode = _liveStreamManager.floatWindowState.floatWindowMode.value;
+    if (floatWindowMode == FloatWindowMode.outOfApp) {
+      widget.floatWindowController?.onSwitchFloatWindowOutOfApp.call(true);
+    } else if (floatWindowMode == FloatWindowMode.none) {
+      widget.floatWindowController?.onSwitchFloatWindowOutOfApp.call(false);
+    }
+    GlobalFloatWindowManager.instance.setFloatWindowMode(floatWindowMode);
+  }
+
+  void _onFullScreenChanged() {
+    if (widget.floatWindowController == null) {
+      return;
+    }
+    bool isFullScreen = widget.floatWindowController!.isFullScreen.value;
+    FloatWindowMode floatWindowMode = _liveStreamManager.floatWindowState.floatWindowMode.value;
+    if (isFullScreen) {
+      if (floatWindowMode != FloatWindowMode.outOfApp) {
+        _liveStreamManager.setFloatWindowMode(FloatWindowMode.none);
+      }
+    } else {
+      _liveStreamManager.setFloatWindowMode(FloatWindowMode.inApp);
+    }
   }
 }

@@ -7,6 +7,9 @@ class LiveKitLocalizationsZh extends LiveKitLocalizations {
   LiveKitLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
+  String get common_disconnect_guest_tips => '确定要断开xxx的连麦吗？';
+
+  @override
   String get common_anchor_battle => '主播PK';
 
   @override
@@ -25,13 +28,13 @@ class LiveKitLocalizationsZh extends LiveKitLocalizations {
   String get common_battle_invitation_timeout => 'PK邀请已超时';
 
   @override
-  String get common_battle_invitee_reject => '拒绝了 PK';
+  String get common_battle_invitee_reject => 'xxx拒绝了 PK';
 
   @override
-  String get common_battle_inviter_cancel => '取消了 PK，请尝试再次发起';
+  String get common_battle_inviter_cancel => 'xxx取消了PK，请尝试再次发起';
 
   @override
-  String get common_battle_inviting => '向你发来PK邀请';
+  String get common_battle_inviting => 'xxx向你发来PK邀请';
 
   @override
   String get common_battle_pk_end => 'PK结束';
@@ -52,7 +55,7 @@ class LiveKitLocalizationsZh extends LiveKitLocalizations {
   String get common_connect_inviting => '邀请中';
 
   @override
-  String get common_connect_inviting_append => '向你发来连线邀请';
+  String get common_connect_inviting_append => 'xxx向你发来连线邀请';
 
   @override
   String get common_connect_request_rejected => '连线申请被拒绝';
@@ -73,7 +76,25 @@ class LiveKitLocalizationsZh extends LiveKitLocalizations {
   String get common_cover => '封面';
 
   @override
+  String get common_disable_audio => '禁用音频';
+
+  @override
+  String get common_disable_message => '禁止发言';
+
+  @override
+  String get common_disable_video => '禁用视频';
+
+  @override
   String get common_disconnect_tips => '确定要断开与其他主播的连线吗?';
+
+  @override
+  String get common_enable_audio => '启用音频';
+
+  @override
+  String get common_enable_message => '解除禁言';
+
+  @override
+  String get common_enable_video => '启用视频';
 
   @override
   String get common_end_connect => '断开连线';
@@ -85,10 +106,22 @@ class LiveKitLocalizationsZh extends LiveKitLocalizations {
   String get common_end_pk_tips => '当前处于PK状态，是否需要「结束PK」或「关闭直播间」';
 
   @override
+  String get common_kick_out_of_room => '踢出房间';
+
+  @override
+  String get common_kicked_out_of_room_by_owner => '您已被踢出房间';
+
+  @override
   String get common_more => '更多';
 
   @override
   String get common_more_features => '更多功能';
+
+  @override
+  String get common_mute_audio_by_master => '您已被主播静音';
+
+  @override
+  String get common_mute_video_by_owner => '您已被主播关闭摄像头';
 
   @override
   String get common_recommended_list => '推荐列表';
@@ -106,10 +139,34 @@ class LiveKitLocalizationsZh extends LiveKitLocalizations {
   String get common_start_live => '开始直播';
 
   @override
+  String get common_start_video => '开启视频';
+
+  @override
+  String get common_stop_video => '关闭视频';
+
+  @override
+  String get common_terminate_room_connection_message => '确定要断开连麦吗？';
+
+  @override
+  String get common_un_mute_audio_by_master => '主播解除了您的静音';
+
+  @override
+  String get common_un_mute_video_by_master => '主播解禁了你的摄像头';
+
+  @override
   String get common_link_guest => '连观众';
 
   @override
   String get common_link_host => '连主播';
+
+  @override
+  String get live_barrage_error_content_is_long => '内容太长，请缩减内容后再试';
+
+  @override
+  String get live_barrage_error_network => '网络异常，请稍后再试';
+
+  @override
+  String get live_barrage_error_sensitive_word => '检测到敏感词，请修改后重试';
 
   @override
   String get live_error_connection_notexit => '邀请连线的房间不存在';
@@ -125,6 +182,9 @@ class LiveKitLocalizationsZh extends LiveKitLocalizations {
 
   @override
   String get livelist_viewed_audience_count => 'xxx人看过';
+
+  @override
+  String get livelist_exit_float_window_tip => '正在直播中，请稍后再试。';
 
   @override
   String get livestreamcore_battle_error_conflict => '主播正在PK中，无法发起PK';
@@ -427,7 +487,7 @@ class LiveKitLocalizationsZh extends LiveKitLocalizations {
   String get common_end_link => '断开连麦';
 
   @override
-  String get common_end_live => '关闭直播间';
+  String get common_end_live => '结束直播';
 
   @override
   String get common_end_user => '挂断';
@@ -786,6 +846,15 @@ class LiveKitLocalizationsZh extends LiveKitLocalizations {
   String get common_video_settings_item_mirror => '镜像';
 
   @override
+  String get common_video_settings_item_pip => '画中画';
+
+  @override
+  String get common_pip_toggle => '画中画开关';
+
+  @override
+  String get common_pip_toggle_description => '开启后，应用退后台时自动进入画中画模式';
+
+  @override
   String get common_voiceroom_empty_view => '麦位没有用户，去邀请';
 
   @override
@@ -976,11 +1045,82 @@ class LiveKitLocalizationsZh extends LiveKitLocalizations {
 
   @override
   String get live_video_resolution_changed => '清晰度已切换至';
+
+  @override
+  String get common_template_601_ui_exception_toast =>
+      '该布局模板在特定机型上会显示异常，建议更换其他布局模板';
+
+  @override
+  String get seat_locked => '已锁定';
+
+  @override
+  String get seat_unlocked => '解锁麦位';
+
+  @override
+  String get seat_no_guest => '暂无嘉宾';
+
+  @override
+  String get seat_in_battle => '正在PK';
+
+  @override
+  String get seat_cancel_invite => '取消邀请';
+
+  @override
+  String get seat_request_battle => '发起PK';
+
+  @override
+  String get seat_request_host => '邀请连线';
+
+  @override
+  String get seat_invite_battle => '邀请PK';
+
+  @override
+  String get seat_repeat_invite_tips => '正在邀请他人，可撤回申请后再发起邀请';
+
+  @override
+  String get seat_end_Battle => '结束PK';
+
+  @override
+  String get seat_too_many_guest => '请控制麦上人数在6人及以下';
+
+  @override
+  String get seat_only_show_first_six_seat =>
+      '请注意，6V6 PK只展示前6个麦位，并请控制连麦人数在6人以下';
+
+  @override
+  String get seat_in_pk => 'PK中';
+
+  @override
+  String get live_end_live_tips => '确定要结束直播吗？';
+
+  @override
+  String get live_exit_live_tips => '确定要退出直播间吗？';
+
+  @override
+  String get live_cancel_request => 'xxx 取消了申请';
+
+  @override
+  String get mirror_type_auto => '自动';
+
+  @override
+  String get mirror_type_enable => '开启';
+
+  @override
+  String get mirror_type_disable => '关闭';
+
+  @override
+  String get mirror_type_change_to => '切换为xxx';
+
+  @override
+  String get common_remove => '移除';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
 class LiveKitLocalizationsZhHant extends LiveKitLocalizationsZh {
   LiveKitLocalizationsZhHant() : super('zh_Hant');
+
+  @override
+  String get common_disconnect_guest_tips => '確定要斷開xxx的連麥嗎？';
 
   @override
   String get common_anchor_battle => '主播PK';
@@ -1001,13 +1141,13 @@ class LiveKitLocalizationsZhHant extends LiveKitLocalizationsZh {
   String get common_battle_invitation_timeout => 'PK邀請已超時';
 
   @override
-  String get common_battle_invitee_reject => '拒絕了 PK';
+  String get common_battle_invitee_reject => 'xxx拒絕了 PK';
 
   @override
-  String get common_battle_inviter_cancel => '取消了 PK，請嘗試再次發起';
+  String get common_battle_inviter_cancel => 'xxx 取消了 PK，請嘗試再次發起';
 
   @override
-  String get common_battle_inviting => '向你發來PK邀請';
+  String get common_battle_inviting => 'xxx向你發來PK邀請';
 
   @override
   String get common_battle_pk_end => 'PK結束';
@@ -1028,7 +1168,7 @@ class LiveKitLocalizationsZhHant extends LiveKitLocalizationsZh {
   String get common_connect_inviting => '邀請中';
 
   @override
-  String get common_connect_inviting_append => '向你發來連線邀請';
+  String get common_connect_inviting_append => 'xxx向你發來連線邀請';
 
   @override
   String get common_connect_request_rejected => '連線申請被拒絕';
@@ -1049,7 +1189,25 @@ class LiveKitLocalizationsZhHant extends LiveKitLocalizationsZh {
   String get common_cover => '封面';
 
   @override
+  String get common_disable_audio => '禁用音頻';
+
+  @override
+  String get common_disable_message => '禁止發言';
+
+  @override
+  String get common_disable_video => '禁用視頻';
+
+  @override
   String get common_disconnect_tips => '確定要斷開與其他主播的連線嗎?';
+
+  @override
+  String get common_enable_audio => '啟用音頻';
+
+  @override
+  String get common_enable_message => '解除禁言';
+
+  @override
+  String get common_enable_video => '啟用視頻';
 
   @override
   String get common_end_connect => '斷開連線';
@@ -1061,10 +1219,22 @@ class LiveKitLocalizationsZhHant extends LiveKitLocalizationsZh {
   String get common_end_pk_tips => '當前處於PK狀態，是否需要「結束PK」或「關閉直播間」';
 
   @override
+  String get common_kick_out_of_room => '踢出房間';
+
+  @override
+  String get common_kicked_out_of_room_by_owner => '您已被踢出房間';
+
+  @override
   String get common_more => '更多';
 
   @override
   String get common_more_features => '更多功能';
+
+  @override
+  String get common_mute_audio_by_master => '您已被主播靜音';
+
+  @override
+  String get common_mute_video_by_owner => '您已被主播關閉攝像頭';
 
   @override
   String get common_recommended_list => '推薦列表';
@@ -1082,10 +1252,34 @@ class LiveKitLocalizationsZhHant extends LiveKitLocalizationsZh {
   String get common_start_live => '開始直播';
 
   @override
+  String get common_start_video => '開啟視頻';
+
+  @override
+  String get common_stop_video => '關閉視頻';
+
+  @override
+  String get common_terminate_room_connection_message => '確定要斷開連麥嗎？';
+
+  @override
+  String get common_un_mute_audio_by_master => '主播解除了您的靜音';
+
+  @override
+  String get common_un_mute_video_by_master => '主播解禁了你的攝像頭';
+
+  @override
   String get common_link_guest => '連觀眾';
 
   @override
   String get common_link_host => '連主播';
+
+  @override
+  String get live_barrage_error_content_is_long => '內容太長，請縮減內容後再試';
+
+  @override
+  String get live_barrage_error_network => '網絡異常，請稍後再試';
+
+  @override
+  String get live_barrage_error_sensitive_word => '檢測到敏感詞，請修改後重試';
 
   @override
   String get live_error_connection_notexit => '邀請連線的房間不存在';
@@ -1101,6 +1295,9 @@ class LiveKitLocalizationsZhHant extends LiveKitLocalizationsZh {
 
   @override
   String get livelist_viewed_audience_count => 'xxx人看過';
+
+  @override
+  String get livelist_exit_float_window_tip => '正在直播中，請稍後再試。';
 
   @override
   String get livestreamcore_battle_error_conflict => '主播正在PK中，無法發起PK';
@@ -1403,7 +1600,7 @@ class LiveKitLocalizationsZhHant extends LiveKitLocalizationsZh {
   String get common_end_link => '斷開連麥';
 
   @override
-  String get common_end_live => '關閉直播間';
+  String get common_end_live => '結束直播';
 
   @override
   String get common_end_user => '掛斷';
@@ -1762,6 +1959,15 @@ class LiveKitLocalizationsZhHant extends LiveKitLocalizationsZh {
   String get common_video_settings_item_mirror => '鏡像';
 
   @override
+  String get common_video_settings_item_pip => '畫中畫';
+
+  @override
+  String get common_pip_toggle => '畫中畫開關';
+
+  @override
+  String get common_pip_toggle_description => '啟用後，應用退到後台時會自動進入畫中畫模式';
+
+  @override
   String get common_voiceroom_empty_view => '麥位沒有用戶，去邀請';
 
   @override
@@ -1952,4 +2158,72 @@ class LiveKitLocalizationsZhHant extends LiveKitLocalizationsZh {
 
   @override
   String get live_video_resolution_changed => '清晰度已切換至';
+
+  @override
+  String get common_template_601_ui_exception_toast =>
+      '此佈局模板在特定機型上會顯示異常，建議更換其他佈局模板';
+
+  @override
+  String get seat_locked => '已鎖定';
+
+  @override
+  String get seat_unlocked => '解鎖麦位';
+
+  @override
+  String get seat_no_guest => '暫無嘉賓';
+
+  @override
+  String get seat_in_battle => '正在PK';
+
+  @override
+  String get seat_cancel_invite => '取消邀請';
+
+  @override
+  String get seat_request_battle => '發起PK';
+
+  @override
+  String get seat_request_host => '邀請連線';
+
+  @override
+  String get seat_invite_battle => '邀請PK';
+
+  @override
+  String get seat_repeat_invite_tips => '正在邀請他人，可撤回申請後再發起邀請';
+
+  @override
+  String get seat_end_Battle => '結束PK';
+
+  @override
+  String get seat_too_many_guest => '請控制麦上人数在6人及以下';
+
+  @override
+  String get seat_only_show_first_six_seat =>
+      '請注意，6V6 PK只展示前6個麦位，並請控制連麦人數在6人以下';
+
+  @override
+  String get seat_in_pk => 'PK中';
+
+  @override
+  String get live_end_live_tips => '确定要結束直播嗎？';
+
+  @override
+  String get live_exit_live_tips => '确定要退出直播間嗎？';
+
+  @override
+  String get live_cancel_request => '取消了申請';
+
+  @override
+  String get mirror_type_auto => '自動';
+
+  @override
+  String get mirror_type_enable => '開啟';
+
+  @override
+  String get mirror_type_disable => '關閉';
+
+  @override
+  String get mirror_type_change_to => '切換為xxx';
+
+  @override
+  String get common_remove => '移除';
 }

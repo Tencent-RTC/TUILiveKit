@@ -6,11 +6,11 @@ import '../../common/index.dart';
 import '../../state/index.dart';
 
 class BarrageSendController {
+  ValueNotifier<bool> isFloatWindowMode = ValueNotifier(false);
   ValueNotifier<bool> showEmojiPanel = ValueNotifier(false);
   FocusNode focusNode = FocusNode();
   final textEditingController = TextEditingController();
-  final GlobalKey<ExtendedTextFieldState> textFieldKey =
-      GlobalKey<ExtendedTextFieldState>();
+  final GlobalKey<ExtendedTextFieldState> textFieldKey = GlobalKey<ExtendedTextFieldState>();
   double _inputKeyboardHeight = 0;
 
   BarrageSendController(
@@ -20,6 +20,10 @@ class BarrageSendController {
       String? selfName}) {
     BarrageStore().manager.init(roomId, ownerId, selfUserId, selfName);
     focusNode.addListener(_handleFocusChange);
+  }
+
+  void setFloatWindowMode(bool isFloatWindow) {
+    isFloatWindowMode.value = isFloatWindow;
   }
 
   Future<bool> sendBarrage(Barrage barrage) async {

@@ -1,5 +1,9 @@
 # LiveUIKitBarrage
 
+## 1.1.0
+
+- Supported float window mode for LiveKit
+
 ## 1.0.2
 
 - Optimized the usage of MediaQuery to avoid unnecessary page rebuilds.

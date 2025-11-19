@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:tencent_live_uikit/common/resources/index.dart';
@@ -12,8 +14,8 @@ Future<bool?> makeToast({
     toastLength: Toast.LENGTH_SHORT,
     gravity: ToastGravity.CENTER,
     timeInSecForIosWeb: 1,
-    backgroundColor: backgroundColor,
-    textColor: textColor,
+    backgroundColor: Platform.isAndroid ? null : backgroundColor,
+    textColor: Platform.isAndroid ? null : textColor,
     fontSize: 16,
   );
 }

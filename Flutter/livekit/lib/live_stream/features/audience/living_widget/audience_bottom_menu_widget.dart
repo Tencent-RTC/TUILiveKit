@@ -1,9 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:live_stream_core/live_core_widget/live_core_controller.dart';
 import 'package:live_stream_core/live_core_widget/state/co_guest_state.dart';
 import 'package:live_uikit_barrage/live_uikit_barrage.dart';
 import 'package:live_uikit_gift/live_uikit_gift.dart';
-import 'package:flutter/material.dart';
 import 'package:tencent_live_uikit/common/index.dart';
+import 'package:tencent_live_uikit/common/widget/float_window/float_window_mode.dart';
+import 'package:tencent_live_uikit/live_stream/features/audience/panel/audience_settings_panel_widget.dart';
 import 'package:tencent_live_uikit/live_stream/features/audience/panel/co_guest_type_select_panel_widget.dart';
 import 'package:tencent_live_uikit/live_stream/manager/live_stream_manager.dart';
 
@@ -25,11 +27,25 @@ class _AudienceBottomMenuWidgetState extends State<AudienceBottomMenuWidget> {
   BarrageSendController? _barrageSendController;
   GiftListController? _giftListController;
   LikeSendController? _likeSendController;
+  late final VoidCallback _onFloatWindowModeChangedListener = _onFloatWindowModeChanged;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.liveStreamManager.floatWindowState.floatWindowMode.addListener(_onFloatWindowModeChangedListener);
+  }
 
   @override
   void dispose() {
+    widget.liveStreamManager.floatWindowState.floatWindowMode.removeListener(_onFloatWindowModeChangedListener);
     _likeSendController?.dispose();
     super.dispose();
+  }
+
+  void _onFloatWindowModeChanged() {
+    bool isFloatWindow = widget.liveStreamManager.floatWindowState.floatWindowMode.value != FloatWindowMode.none;
+    _giftListController?.setFloatWindowMode(isFloatWindow);
+    _barrageSendController?.setFloatWindowMode(isFloatWindow);
   }
 
   @override
@@ -40,7 +56,7 @@ class _AudienceBottomMenuWidgetState extends State<AudienceBottomMenuWidget> {
         top: 2.height,
         right: 20.width,
         height: 32.height,
-        width: 112.width,
+        width: 152.width,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           mainAxisSize: MainAxisSize.min,
@@ -61,6 +77,8 @@ class _AudienceBottomMenuWidgetState extends State<AudienceBottomMenuWidget> {
               },
             ),
             _buildLikeSendWidget(),
+            SizedBox(width: 8.width),
+            _buildSettingsWidget()
           ],
         ),
       ),
@@ -74,7 +92,7 @@ class _AudienceBottomMenuWidgetState extends State<AudienceBottomMenuWidget> {
       top: 0,
       width: 130.width,
       height: 36.height,
-      child: BarrageSendWidget(controller: _barrageSendController!),
+      child: BarrageSendWidget(controller: _barrageSendController!, parentContext: Global.appContext()),
     );
   }
 
@@ -106,7 +124,7 @@ class _AudienceBottomMenuWidgetState extends State<AudienceBottomMenuWidget> {
     return SizedBox(
       width: 32.radius,
       height: 32.radius,
-      child: GiftSendWidget(controller: _giftListController!),
+      child: GiftSendWidget(controller: _giftListController!, parentContext: Global.appContext()),
     );
   }
 
@@ -117,6 +135,24 @@ class _AudienceBottomMenuWidgetState extends State<AudienceBottomMenuWidget> {
       height: 32.radius,
       child: LikeSendWidget(controller: _likeSendController!),
     );
+  }
+
+  Widget _buildSettingsWidget() {
+    return GestureDetector(
+      onTap: () => _showSettingsPanel(),
+      child: SizedBox(
+        width: 32.radius,
+        height: 32.radius,
+        child: Image.asset(LiveImages.more, package: Constants.pluginName),
+      ),
+    );
+  }
+
+  void _showSettingsPanel() {
+    popupWidget(AudienceSettingsPanelWidget(
+      liveStreamManager: widget.liveStreamManager,
+      liveCoreController: widget.liveCoreController,
+    ));
   }
 
   void _handleCoGuestTap(CoGuestStatus status, bool isCoGuestDisable) {

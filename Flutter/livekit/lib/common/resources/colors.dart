@@ -84,6 +84,7 @@ class LiveColors {
   static const Color designBgColorInput = Color(0xFF2B2C30);
   static const Color designTextColorSuccess = Color(0xFF38A673);
   static const Color designTextColorWarning = Color(0xFF0FA968);
+  static const Color designStrokeColorPrimary = Color(0xFF3A3C42);
 
   /// Colors in non-interactive specifications-->
   static const Color notStandardGray60Transparency = Color(0x9922262E);

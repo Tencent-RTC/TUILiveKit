@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:rtc_room_engine/rtc_room_engine.dart';
 import 'package:tencent_rtc_sdk/trtc_cloud.dart';
 
+import '../../common/logger/index.dart';
+
 class LiveStreamService {
   late final TUIRoomEngine roomEngine;
   late final TUILiveListManager liveListManager;
@@ -13,8 +15,7 @@ class LiveStreamService {
   LiveStreamService() {
     roomEngine = TUIRoomEngine.sharedInstance();
     liveListManager = roomEngine.getExtension(TUIExtensionType.liveListManager);
-    liveLayoutManager =
-        roomEngine.getExtension(TUIExtensionType.liveLayoutManager);
+    liveLayoutManager = roomEngine.getExtension(TUIExtensionType.liveLayoutManager);
     _initTRTCCloud();
   }
 
@@ -69,16 +70,14 @@ extension LiveStreamServiceWithUser on LiveStreamService {
         break;
       }
     }
-    return TUIValueCallBack(
-        code: TUIError.success, message: '', data: allUsers);
+    return TUIValueCallBack(code: TUIError.success, message: '', data: allUsers);
   }
 
   Future<TUIValueCallBack<TUIUserInfo>> getUserInfo(String userId) {
     return roomEngine.getUserInfo(userId);
   }
 
-  Future<TUIActionCallback> disableSendingMessageByAdmin(
-      String userId, bool isDisable) {
+  Future<TUIActionCallback> disableSendingMessageByAdmin(String userId, bool isDisable) {
     return roomEngine.disableSendingMessageByAdmin(userId, isDisable);
   }
 
@@ -101,17 +100,117 @@ extension LiveStreamServiceWithMedia on LiveStreamService {
   }
 
   void setVideoResolutionMode(TUIResolutionMode resolutionMode) {
-    roomEngine.setVideoResolutionMode(
-        TUIVideoStreamType.cameraStream, resolutionMode);
+    roomEngine.setVideoResolutionMode(TUIVideoStreamType.cameraStream, resolutionMode);
   }
 
   void updateVideoQuality(TUIVideoQuality videoQuality) {
     roomEngine.updateVideoQuality(videoQuality);
   }
 
-  void updateVideoQualityEx(
-      TUIVideoStreamType streamType, TUIRoomVideoEncoderParams params) {
+  void updateVideoQualityEx(TUIVideoStreamType streamType, TUIRoomVideoEncoderParams params) {
     roomEngine.updateVideoQualityEx(streamType, params);
+  }
+
+  void enableMultiPlaybackQuality(bool enable) {
+    try {
+      Map<String, dynamic> params = {'enable': enable};
+
+      Map<String, dynamic> jsonObject = {
+        'api': 'enableMultiPlaybackQuality',
+        'params': params,
+      };
+
+      String jsonString = jsonEncode(jsonObject);
+      TUIRoomEngine.sharedInstance().invokeExperimentalAPI(jsonString);
+    } catch (e) {
+      LiveKitLogger.error('Error enableMultiPlaybackQuality');
+    }
+  }
+
+  void enableSwitchPlaybackQuality(bool enable) async {
+    Map<String, dynamic> config = {
+      'key': 'Liteav.engine.set.live.qos.audience.strategy.version"',
+      'value': enable ? 1 : 0
+    };
+
+    Map<String, dynamic> params = {
+      'configs': [config]
+    };
+    Map<String, dynamic> jsonObject = {'api': 'setPrivateConfig', 'params': params};
+
+    try {
+      final jsonString = json.encode(jsonObject);
+      final trtc = await TRTCCloud.sharedInstance();
+      trtc.callExperimentalAPI(jsonString);
+    } catch (e) {
+      LiveKitLogger.error('Error enableSwitchPlaybackQuality');
+    }
+  }
+
+  Future<TUIValueCallBack<List<TUIVideoQuality>>> queryPlaybackQualityList(String roomId) async {
+    try {
+      Map<String, dynamic> params = {'roomId': roomId};
+
+      Map<String, dynamic> jsonObject = {
+        'api': 'queryPlaybackQualityList',
+        'params': params,
+      };
+
+      String jsonString = jsonEncode(jsonObject);
+      final result = await TUIRoomEngine.sharedInstance().invokeExperimentalAPI(jsonString);
+      if (result.code != TUIError.success || result.data == null) {
+        return TUIValueCallBack(code: result.code, message: result.message);
+      }
+      return TUIValueCallBack(
+          code: result.code, message: result.message, data: _decodeJsonString2TUIVideoQuality(result.data!));
+    } catch (e) {
+      LiveKitLogger.error('Error queryPlaybackQualityList');
+      return TUIValueCallBack(code: TUIError.errFailed, message: 'queryPlaybackQualityList failed');
+    }
+  }
+
+  void switchPlaybackQuality(TUIVideoQuality videoQuality) async {
+    try {
+      Map<String, dynamic> params = {'quality': videoQuality.value()};
+
+      Map<String, dynamic> jsonObject = {
+        'api': 'switchPlaybackQuality',
+        'params': params,
+      };
+
+      String jsonString = jsonEncode(jsonObject);
+      TUIRoomEngine.sharedInstance().invokeExperimentalAPI(jsonString);
+    } catch (e) {
+      LiveKitLogger.error('Error switchPlaybackQuality');
+    }
+  }
+
+  void setAudioPlayoutVolume(int volume) {
+    TUIRoomEngine.sharedInstance().setAudioPlayoutVolume(volume);
+  }
+
+  void pauseByAudience() async {
+    Map<String, dynamic> params = {};
+    Map<String, dynamic> jsonObject = {'api': 'pause', 'params': params};
+
+    try {
+      final jsonString = json.encode(jsonObject);
+      final result = await TUIRoomEngine.sharedInstance().invokeExperimentalAPI(jsonString);
+    } catch (e) {
+      LiveKitLogger.error('Error pauseByAudience');
+    }
+  }
+
+  void resumeByAudience() async {
+    Map<String, dynamic> params = {};
+    Map<String, dynamic> jsonObject = {'api': 'resume', 'params': params};
+
+    try {
+      final jsonString = json.encode(jsonObject);
+      final result = await TUIRoomEngine.sharedInstance().invokeExperimentalAPI(jsonString);
+    } catch (e) {
+      LiveKitLogger.error('Error resumeByAudience');
+    }
   }
 }
 
@@ -124,15 +223,13 @@ extension LiveStreamServiceWithSeat on LiveStreamService {
     return roomEngine.getSeatApplicationList();
   }
 
-  Future<TUIActionCallback> lockSeatByAdmin(
-      int seatIndex, TUISeatLockParams lockParams) {
+  Future<TUIActionCallback> lockSeatByAdmin(int seatIndex, TUISeatLockParams lockParams) {
     return roomEngine.lockSeatByAdmin(seatIndex, lockParams);
   }
 }
 
 extension LiveStreamServiceWithCoHost on LiveStreamService {
-  Future<TUIValueCallBack<TUILiveListResult>> fetchRecommendedList(
-      String cursor, int count) {
+  Future<TUIValueCallBack<TUILiveListResult>> fetchRecommendedList(String cursor, int count) {
     return liveListManager.fetchLiveList(cursor, count);
   }
 
@@ -140,15 +237,12 @@ extension LiveStreamServiceWithCoHost on LiveStreamService {
     try {
       Map<String, dynamic> params = {'templateId': templateId};
 
-      Map<String, dynamic> jsonObject = {
-        'api': 'setCoHostLayoutTemplateId',
-        'params': params
-      };
+      Map<String, dynamic> jsonObject = {'api': 'setCoHostLayoutTemplateId', 'params': params};
 
       final jsonString = jsonEncode(jsonObject);
       TUIRoomEngine.sharedInstance().invokeExperimentalAPI(jsonString);
     } catch (e) {
-      debugPrint('Error setCoHostLayoutTemplateId. templateId:$templateId');
+      LiveKitLogger.error('Error setCoHostLayoutTemplateId. templateId:$templateId');
     }
   }
 }
@@ -158,7 +252,17 @@ extension on LiveStreamService {
     trtcCloud = await TRTCCloud.sharedInstance();
   }
 
-  bool _containsFlag({required int bitmask, required int flag}) {
-    return (bitmask & flag) == flag;
+  List<TUIVideoQuality> _decodeJsonString2TUIVideoQuality(String jsonString) {
+    try {
+      final Map<String, dynamic> dataMap = jsonDecode(jsonString);
+      final videoQualityNumbers = dataMap['data'];
+      final List<TUIVideoQuality> videoQualities = [];
+      for (int videoQualityNumber in videoQualityNumbers) {
+        videoQualities.add(TUIVideoQualityExt.fromValue(videoQualityNumber));
+      }
+      return videoQualities;
+    } catch (e) {
+      return List.empty();
+    }
   }
 }

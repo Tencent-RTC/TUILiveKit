@@ -20,9 +20,9 @@ class AlertInfo {
 }
 
 class Alert {
-  static void showAlert(AlertInfo info) {
+  static void showAlert(AlertInfo info, {BuildContext? context}) {
     showDialog(
-      context: Global.appContext(),
+      context: context ?? Global.appContext(),
       barrierDismissible: false,
       builder: (context) {
         return Dialog(

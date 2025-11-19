@@ -133,6 +133,6 @@ extension on _VoiceRoomPrepareWidgetState {
   }
 
   void _closeWidget() {
-    Navigator.pop(Global.appContext());
+    Navigator.pop(context);
   }
 }

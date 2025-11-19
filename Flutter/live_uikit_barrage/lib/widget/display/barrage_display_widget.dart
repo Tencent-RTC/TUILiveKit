@@ -6,8 +6,9 @@ import 'barrage_item_widget.dart';
 
 class BarrageDisplayWidget extends StatelessWidget {
   final BarrageDisplayController controller;
+  final void Function(Barrage)? onClickBarrageItem;
 
-  const BarrageDisplayWidget({super.key, required this.controller});
+  const BarrageDisplayWidget({super.key, required this.controller, this.onClickBarrageItem});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +31,9 @@ class BarrageDisplayWidget extends StatelessWidget {
                     .shouldCustomizeBarrageItem(barrage)) {
                   return controller.customBarrageBuilder?.buildWidget(context, barrage);
                 }
-                return BarrageItemWidget(model: barrage);
+                return GestureDetector(onTap: () {
+                  onClickBarrageItem?.call(barrage);
+                }, child: BarrageItemWidget(model: barrage));
               },
             ),
           );

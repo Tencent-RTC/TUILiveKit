@@ -36,18 +36,14 @@ class LikeStartGroupWidget extends StatelessWidget {
         if (likeData == null) {
           return Container();
         }
-
+        likeDataMap.remove(roomId);
         _startWidgetList.add(LikeStarAnimationWidget(
             key: UniqueKey(), image: imageStarList[Random().nextInt(8)]));
 
         if (_startWidgetList.length >= 20) {
           _startWidgetList.removeAt(0);
         }
-        return _startWidgetList.isNotEmpty
-            ? Stack(
-          children: _startWidgetList,
-        )
-            : Container();
+        return _startWidgetList.isNotEmpty ? Stack(children: _startWidgetList) : Container();
       },
     );
   }

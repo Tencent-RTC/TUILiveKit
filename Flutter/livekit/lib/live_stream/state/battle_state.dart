@@ -8,8 +8,7 @@ class LSBattleState {
 
   final ValueNotifier<String> battleId = ValueNotifier('');
   final ValueNotifier<List<BattleUser>> battleUsers = ValueNotifier([]);
-  final ValueNotifier<ReceivedBattleRequest?> receivedBattleRequest =
-      ValueNotifier(null);
+  final ValueNotifier<ReceivedBattleRequest?> receivedBattleRequest = ValueNotifier(null);
   final ValueNotifier<int> durationCountDown = ValueNotifier(0);
   BattleConfig battleConfig = BattleConfig();
   bool needResponse = true;

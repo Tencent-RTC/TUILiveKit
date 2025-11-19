@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:live_stream_core/live_core_widget/live_core_controller.dart';
 import 'package:rtc_room_engine/api/room/tui_room_define.dart';
@@ -9,11 +10,13 @@ import 'package:tencent_live_uikit/common/screen/index.dart';
 class CoHostBackgroundWidget extends StatefulWidget {
   final SeatFullInfo userInfo;
   final LiveCoreController liveCoreController;
+  final ValueListenable<bool> isFloatWindowMode;
 
   const CoHostBackgroundWidget({
     super.key,
     required this.userInfo,
     required this.liveCoreController,
+    required this.isFloatWindowMode,
   });
 
   @override
@@ -23,15 +26,23 @@ class CoHostBackgroundWidget extends StatefulWidget {
 class _CoHostBackgroundWidgetState extends State<CoHostBackgroundWidget> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-        decoration:
-            BoxDecoration(color: LiveColors.grayDark2, border: Border.all(color: LiveColors.black6, width: 0.5)),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            _buildAvatarWidget(),
-          ],
-        ));
+    return ValueListenableBuilder(
+        valueListenable: widget.isFloatWindowMode,
+        builder: (context, isFloatWindowMode, child) {
+          return Visibility(
+            visible: !isFloatWindowMode,
+            child: Container(
+              decoration:
+                  BoxDecoration(color: LiveColors.grayDark2, border: Border.all(color: LiveColors.black6, width: 0.5)),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  _buildAvatarWidget(),
+                ],
+              ),
+            ),
+          );
+        });
   }
 
   Widget _buildAvatarWidget() {

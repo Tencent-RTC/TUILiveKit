@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'dart:async';
 
 import 'package:rtc_room_engine/api/extension/tui_live_battle_manager.dart';
@@ -66,9 +65,8 @@ class BattleManager {
 
 extension BattlleManagerCallback on BattleManager {
   void onBattleStarted(TUIBattleInfo battleInfo) {
-    battleInfo.config.duration = battleInfo.config.duration +
-        battleInfo.startTime -
-        (DateTime.now().millisecondsSinceEpoch ~/ 1000);
+    battleInfo.config.duration =
+        battleInfo.config.duration + battleInfo.startTime - (DateTime.now().millisecondsSinceEpoch ~/ 1000);
 
     battleState.battleId.value = battleInfo.battleId;
     battleState.isBattleRunning.value = true;
@@ -85,17 +83,13 @@ extension BattlleManagerCallback on BattleManager {
       battleState.isShowingStartWidget = false;
     });
 
-    final battleUsers = battleInfo.inviteeList
-        .map((battleUser) => BattleUser.fromTUIBattleUser(battleUser))
-        .toList();
+    final battleUsers = battleInfo.inviteeList.map((battleUser) => BattleUser.fromTUIBattleUser(battleUser)).toList();
     battleUsers.add(BattleUser.fromTUIBattleUser(battleInfo.inviter));
     _sortedBattleUsersByScore(battleUsers);
   }
 
   void onBattleEnded(TUIBattleInfo battleInfo) {
-    final battleUsers = battleInfo.inviteeList
-        .map((battleUser) => BattleUser.fromTUIBattleUser(battleUser))
-        .toList();
+    final battleUsers = battleInfo.inviteeList.map((battleUser) => BattleUser.fromTUIBattleUser(battleUser)).toList();
     battleUsers.add(BattleUser.fromTUIBattleUser(battleInfo.inviter));
 
     _sortedBattleUsersByScore(battleState.battleUsers.value);
@@ -126,8 +120,7 @@ extension BattlleManagerCallback on BattleManager {
       return;
     }
 
-    if (battleState.battleUsers.value
-        .any((user) => user.userId == battleUser.userId)) {
+    if (battleState.battleUsers.value.any((user) => user.userId == battleUser.userId)) {
       final newBattleUsers = battleState.battleUsers.value.toList();
       newBattleUsers.removeWhere((user) => user.userId == battleUser.userId);
       battleState.battleUsers.value = newBattleUsers;
@@ -136,58 +129,46 @@ extension BattlleManagerCallback on BattleManager {
     _sortedBattleUsersByScore(battleState.battleUsers.value);
   }
 
-  void onBattleScoreChanged(
-      String battleId, List<TUIBattleUser> battleUserList) {
-    _sortedBattleUsersByScore(battleUserList
-        .map((battleUser) => BattleUser.fromTUIBattleUser(battleUser))
-        .toList());
+  void onBattleScoreChanged(String battleId, List<TUIBattleUser> battleUserList) {
+    _sortedBattleUsersByScore(battleUserList.map((battleUser) => BattleUser.fromTUIBattleUser(battleUser)).toList());
   }
 
-  void onBattleRequestReceived(
-      String battleId, TUIBattleUser inviter, TUIBattleUser invitee) {
+  void onBattleRequestReceived(String battleId, TUIBattleUser inviter, TUIBattleUser invitee) {
     battleState.battleId.value = battleId;
-    battleState.receivedBattleRequest.value =
-        (battleId, BattleUser.fromTUIBattleUser(inviter));
+    battleState.receivedBattleRequest.value = (battleId, BattleUser.fromTUIBattleUser(inviter));
   }
 
-  void onBattleRequestCancelled(
-      String battleId, TUIBattleUser inviter, TUIBattleUser invitee) {
+  void onBattleRequestCancelled(String battleId, TUIBattleUser inviter, TUIBattleUser invitee) {
     battleState.receivedBattleRequest.value = null;
 
-    final toast = inviter.userName +
-        LiveKitLocalizations.of(Global.appContext())!
-            .common_battle_inviter_cancel;
+    final toast =
+        LiveKitLocalizations.of(Global.appContext())!.common_battle_inviter_cancel.replaceAll("xxx", inviter.userName);
     context.toastSubject.target?.add(toast);
   }
 
-  void onBattleRequestTimeout(
-      String battleId, TUIBattleUser inviter, TUIBattleUser invitee) {
+  void onBattleRequestTimeout(String battleId, TUIBattleUser inviter, TUIBattleUser invitee) {
     if (battleState.receivedBattleRequest.value?.$1 == battleId) {
       battleState.receivedBattleRequest.value = null;
     }
     battleState.isInWaiting.value = false;
 
-    final toast = LiveKitLocalizations.of(Global.appContext())!
-        .common_battle_invitation_timeout;
+    final toast = LiveKitLocalizations.of(Global.appContext())!.common_battle_invitation_timeout;
     context.toastSubject.target?.add(toast);
   }
 
-  void onBattleRequestAccept(
-      String battleId, TUIBattleUser inviter, TUIBattleUser invitee) {
+  void onBattleRequestAccept(String battleId, TUIBattleUser inviter, TUIBattleUser invitee) {
     if (context.coreBattleState.inviteeList.value.isEmpty) {
       battleState.isInWaiting.value = false;
     }
   }
 
-  void onBattleRequestReject(
-      String battleId, TUIBattleUser inviter, TUIBattleUser invitee) {
+  void onBattleRequestReject(String battleId, TUIBattleUser inviter, TUIBattleUser invitee) {
     if (context.coreBattleState.inviteeList.value.isEmpty) {
       battleState.isInWaiting.value = false;
     }
 
-    final toast = invitee.userName +
-        LiveKitLocalizations.of(Global.appContext())!
-            .common_battle_invitee_reject;
+    final toast =
+        LiveKitLocalizations.of(Global.appContext())!.common_battle_invitee_reject.replaceAll("xxx", invitee.userName);
     context.toastSubject.target?.add(toast);
   }
 }

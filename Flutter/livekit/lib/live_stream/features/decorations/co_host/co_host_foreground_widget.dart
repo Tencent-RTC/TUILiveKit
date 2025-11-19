@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:live_stream_core/live_core_widget/live_core_controller.dart';
 import 'package:rtc_room_engine/api/room/tui_room_define.dart';
@@ -12,11 +13,13 @@ import '../../../../common/widget/index.dart';
 class CoHostForegroundWidget extends StatefulWidget {
   final SeatFullInfo userInfo;
   final LiveCoreController liveCoreController;
+  final ValueListenable<bool> isFloatWindowMode;
 
   const CoHostForegroundWidget({
     super.key,
     required this.userInfo,
     required this.liveCoreController,
+    required this.isFloatWindowMode,
   });
 
   @override
@@ -26,13 +29,20 @@ class CoHostForegroundWidget extends StatefulWidget {
 class _CoHostForegroundWidgetState extends State<CoHostForegroundWidget> {
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        _buildConnectionStatusWidget(),
-        _buildMicAndNameWidget(),
-      ],
-    );
+    return ValueListenableBuilder(
+        valueListenable: widget.isFloatWindowMode,
+        builder: (context, isFloatWindowMode, child) {
+          return Visibility(
+            visible: !isFloatWindowMode,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                _buildConnectionStatusWidget(),
+                _buildMicAndNameWidget(),
+              ],
+            ),
+          );
+        });
   }
 
   Widget _buildMicAndNameWidget() {
@@ -88,7 +98,8 @@ class _CoHostForegroundWidgetState extends State<CoHostForegroundWidget> {
                 child: Padding(
                   padding: EdgeInsets.only(left: 8.width, right: 8.width, top: 3.height, bottom: 3.height),
                   child: Container(
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(37.radius), color: LiveColors.userNameBlackColor),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(37.radius), color: LiveColors.userNameBlackColor),
                     child: Padding(
                       padding: EdgeInsets.only(left: 4.width, right: 4.width, top: 5.height, bottom: 5.height),
                       child: Text(

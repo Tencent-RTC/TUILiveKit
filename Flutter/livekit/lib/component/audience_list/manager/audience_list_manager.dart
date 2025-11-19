@@ -11,8 +11,7 @@ class AudienceListManager {
 
   void initRoomInfo(String roomId) async {
     state.roomId = roomId;
-    final result = await TUIRoomEngine.sharedInstance()
-        .fetchRoomInfo(roomId: roomId, roomType: TUIRoomType.livingRoom);
+    final result = await TUIRoomEngine.sharedInstance().fetchRoomInfo(roomId: roomId, roomType: TUIRoomType.livingRoom);
     if (result.code == TUIError.success && result.data != null) {
       final TUIRoomInfo roomInfo = result.data!;
       state.ownerId = roomInfo.ownerId;
@@ -22,11 +21,9 @@ class AudienceListManager {
 
   void getUserList() async {
     final result = await TUIRoomEngine.sharedInstance().getUserList(0);
-    if (result.code == TUIError.success &&
-        result.data != null &&
-        result.data!.userInfoList.isNotEmpty) {
-      final List<TUIUserInfo> userInfoList = result.data!.userInfoList
-          .sublist(0, min(maxShowUserCount, result.data!.userInfoList.length));
+    if (result.code == TUIError.success && result.data != null && result.data!.userInfoList.isNotEmpty) {
+      final List<TUIUserInfo> userInfoList =
+          result.data!.userInfoList.sublist(0, min(maxShowUserCount, result.data!.userInfoList.length));
 
       userInfoList.removeWhere((userInfo) => userInfo.userId == state.ownerId);
 
@@ -52,9 +49,11 @@ extension AudienceListManagerCallback on AudienceListManager {
 
   void onRemoteUserEnterRoom(String roomId, TUIUserInfo userInfo) {
     if (state.ownerId == userInfo.userId) return;
-    if (state.audienceList.value
-        .any((audience) => audience.userId == userInfo.userId)) {
+    if (state.audienceList.value.any((audience) => audience.userId == userInfo.userId)) {
       return;
+    }
+    if (TUIRoomEngine.getSelfInfo().userId == userInfo.userId && state.audienceList.value.isEmpty) {
+      getUserList();
     }
     if (state.audienceList.value.length < maxShowUserCount) {
       final List<TUIUserInfo> userList = List.from(state.audienceList.value);

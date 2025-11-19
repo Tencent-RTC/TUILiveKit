@@ -13,18 +13,18 @@ class BeautyManager {
   }
 
   void setBeautyLevel(int beautyLevel) {
-    _service.setBeautyLevel(beautyLevel);
     state.smoothLevel.value = beautyLevel;
+    _service.setBeautyStyle(state.smoothLevel.value, state.whitenessLevel.value, state.ruddyLevel.value);
   }
 
   void setWhitenessLevel(int whitenessLevel) {
-    _service.setWhitenessLevel(whitenessLevel);
     state.whitenessLevel.value = whitenessLevel;
+    _service.setBeautyStyle(state.smoothLevel.value, state.whitenessLevel.value, state.ruddyLevel.value);
   }
 
   void setRuddyLevel(int ruddyLevel) {
-    _service.setRuddyLevel(ruddyLevel);
     state.ruddyLevel.value = ruddyLevel;
+    _service.setBeautyStyle(state.smoothLevel.value, state.whitenessLevel.value, state.ruddyLevel.value);
   }
 
   void closeBeautyEffect() {
@@ -35,17 +35,13 @@ class BeautyManager {
 
   void resetToDefaultBeautyEffect() {
     state.reset();
-
-    _service.setBeautyLevel(state.smoothLevel.value);
-    _service.setWhitenessLevel(state.whitenessLevel.value);
-    _service.setRuddyLevel(state.ruddyLevel.value);
+    _service.setBeautyStyle(state.smoothLevel.value, state.whitenessLevel.value, state.ruddyLevel.value);
   }
 }
 
 extension on BeautyManager {
   void _subscribeStateRemoval() {
-    BeautyStateFactory.addRemovalListener(
-        BeautyManager.beautyStateKey, _handleStateRemoved);
+    BeautyStateFactory.addRemovalListener(BeautyManager.beautyStateKey, _handleStateRemoved);
   }
 
   void _handleStateRemoved() {

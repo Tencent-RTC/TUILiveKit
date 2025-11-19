@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 
+import 'package:rtc_room_engine/rtc_room_engine.dart';
+
 import '../../../../../common/index.dart';
 import '../manager/audience_list_manager.dart';
 
 class AudienceListPanelWidget extends StatefulWidget {
   final AudienceListManager manager;
+  final void Function(TUIUserInfo userInfo)? onClickUserItem;
 
-  const AudienceListPanelWidget({super.key, required this.manager});
+  const AudienceListPanelWidget({super.key, required this.manager, this.onClickUserItem});
 
   @override
-  State<AudienceListPanelWidget> createState() =>
-      _AudienceListPanelWidgetState();
+  State<AudienceListPanelWidget> createState() => _AudienceListPanelWidgetState();
 }
 
 class _AudienceListPanelWidgetState extends State<AudienceListPanelWidget> {
@@ -73,10 +75,8 @@ extension on _AudienceListPanelWidgetState {
           ),
           Center(
             child: Text(
-              LiveKitLocalizations.of(Global.appContext())!
-                  .common_anchor_audience_list_panel_title,
-              style: const TextStyle(
-                  color: LiveColors.designStandardFlowkitWhite, fontSize: 16),
+              LiveKitLocalizations.of(Global.appContext())!.common_anchor_audience_list_panel_title,
+              style: const TextStyle(color: LiveColors.designStandardFlowkitWhite, fontSize: 16),
             ),
           ),
         ],
@@ -110,16 +110,14 @@ extension on _AudienceListPanelWidgetState {
                               child: Row(
                                 children: [
                                   ClipRRect(
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(20.radius)),
+                                    borderRadius: BorderRadius.all(Radius.circular(20.radius)),
                                     child: SizedBox(
                                       width: 40.radius,
                                       height: 40.radius,
                                       child: Image.network(
                                         user.avatarUrl,
                                         fit: BoxFit.cover,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
+                                        errorBuilder: (context, error, stackTrace) {
                                           return Image.asset(
                                             LiveImages.defaultAvatar,
                                             package: Constants.pluginName,
@@ -133,13 +131,8 @@ extension on _AudienceListPanelWidgetState {
                                     height: 44.height,
                                   ),
                                   Text(
-                                    user.userName.isNotEmpty
-                                        ? user.userName
-                                        : user.userId,
-                                    style: const TextStyle(
-                                        color: LiveColors
-                                            .designStandardFlowkitWhite,
-                                        fontSize: 16),
+                                    user.userName.isNotEmpty ? user.userName : user.userId,
+                                    style: const TextStyle(color: LiveColors.designStandardFlowkitWhite, fontSize: 16),
                                   )
                                 ],
                               ),
@@ -152,12 +145,33 @@ extension on _AudienceListPanelWidgetState {
                                 height: 1.height,
                                 color: LiveColors.notStandardBlue30Transparency,
                               ),
-                            )
+                            ),
+                            Positioned(
+                                right: 24.width,
+                                bottom: 17.height,
+                                child: Visibility(
+                                  visible: isSelfRoomOwner() && widget.onClickUserItem != null,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      widget.onClickUserItem?.call(user);
+                                    },
+                                    child: SizedBox(
+                                        width: 24.radius,
+                                        height: 24.radius,
+                                        child: Image.asset(LiveImages.more, package: Constants.pluginName)),
+                                  ),
+                                ))
                           ],
                         )),
                   );
                 }));
       },
     );
+  }
+}
+
+extension on _AudienceListPanelWidgetState {
+  bool isSelfRoomOwner() {
+    return TUIRoomEngine.getSelfInfo().userId == manager.state.ownerId;
   }
 }

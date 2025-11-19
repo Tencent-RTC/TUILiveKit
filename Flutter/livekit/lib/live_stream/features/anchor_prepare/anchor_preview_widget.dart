@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:live_stream_core/live_core_widget/live_core_widget.dart';
 import 'package:rtc_room_engine/api/common/tui_common_define.dart';
+import 'package:rtc_room_engine/api/common/tui_video_view.dart';
 import 'package:tencent_live_uikit/common/error/error_handler.dart';
 import 'package:tencent_live_uikit/common/screen/index.dart';
+import 'package:tencent_live_uikit/component/float_window/global_float_window_manager.dart';
 import 'package:tencent_live_uikit/live_stream/features/anchor_prepare/anchor_preview_widget_define.dart';
 import 'package:tencent_live_uikit/live_stream/live_define.dart';
-import 'package:rtc_room_engine/api/common/tui_video_view.dart';
 
 import '../../../common/constants/constants.dart';
 import '../../../common/language/index.dart';
 import '../../../common/resources/index.dart';
 import '../../../common/widget/index.dart';
 import '../../manager/live_stream_manager.dart';
-import 'widgets/anchor_preview_info_edit_widget.dart';
 import 'widgets/anchor_preview_function_widget.dart';
+import 'widgets/anchor_preview_info_edit_widget.dart';
 
 class AnchorPreviewWidget extends StatefulWidget {
   final LiveStreamManager liveStreamManager;
@@ -73,8 +74,7 @@ class _AnchorPreviewWidgetState extends State<AnchorPreviewWidget> {
             onViewCreated: (id) {
               widget.liveCoreController.setLocalVideoView(id);
             },
-          )
-      ),
+          )),
     );
   }
 
@@ -88,8 +88,7 @@ class _AnchorPreviewWidgetState extends State<AnchorPreviewWidget> {
             onTap: () {
               _closeWidget();
             },
-            child: Image.asset(LiveImages.returnArrow,
-                package: Constants.pluginName)));
+            child: Image.asset(LiveImages.returnArrow, package: Constants.pluginName)));
   }
 
   Widget _buildLiveInfoEditWidget(LiveStreamManager manager) {
@@ -99,9 +98,7 @@ class _AnchorPreviewWidgetState extends State<AnchorPreviewWidget> {
         right: 16.width,
         height: 112.height,
         child: AnchorPreviewInfoEditWidget(
-            editInfo: _editInfo,
-            liveStreamManager: liveStreamManager,
-            liveCoreController: liveCoreController));
+            editInfo: _editInfo, liveStreamManager: liveStreamManager, liveCoreController: liveCoreController));
   }
 
   Widget _buildFunctionWidget() {
@@ -111,9 +108,7 @@ class _AnchorPreviewWidgetState extends State<AnchorPreviewWidget> {
         width: 375.width,
         height: 62.height,
         child: AnchorPreviewFunctionWidget(
-            editInfo: _editInfo,
-            liveStreamManager: liveStreamManager,
-            liveCoreController: liveCoreController));
+            editInfo: _editInfo, liveStreamManager: liveStreamManager, liveCoreController: liveCoreController));
   }
 
   Widget _buildStartLiveWidget() {
@@ -135,9 +130,7 @@ class _AnchorPreviewWidgetState extends State<AnchorPreviewWidget> {
           child: Text(
             LiveKitLocalizations.of(Global.appContext())!.common_start_live,
             style: const TextStyle(
-                color: LiveColors.designStandardFlowkitWhite,
-                fontSize: 16,
-                fontWeight: FontWeight.w700),
+                color: LiveColors.designStandardFlowkitWhite, fontSize: 16, fontWeight: FontWeight.w700),
           ),
         ),
       ),
@@ -147,9 +140,7 @@ class _AnchorPreviewWidgetState extends State<AnchorPreviewWidget> {
 
 extension on _AnchorPreviewWidgetState {
   void _initEditInfo() {
-    _editInfo = EditInfo(
-        roomName: _getDefaultRoomName(),
-        privacyMode: LiveStreamPrivacyStatus.public);
+    _editInfo = EditInfo(roomName: _getDefaultRoomName(), privacyMode: LiveStreamPrivacyStatus.public);
   }
 
   String _getDefaultRoomName() {
@@ -160,16 +151,13 @@ extension on _AnchorPreviewWidgetState {
   void _startCameraAndMicrophone() async {
     final startCameraResult = await liveCoreController.startCamera(true);
     if (startCameraResult.code != TUIError.success) {
-      liveStreamManager.toastSubject.add(ErrorHandler.convertToErrorMessage(
-              startCameraResult.code.rawValue, startCameraResult.message) ??
-          '');
+      liveStreamManager.toastSubject
+          .add(ErrorHandler.convertToErrorMessage(startCameraResult.code.rawValue, startCameraResult.message) ?? '');
     }
     final startMicrophoneResult = await liveCoreController.startMicrophone();
     if (startMicrophoneResult.code != TUIError.success) {
-      liveStreamManager.toastSubject.add(ErrorHandler.convertToErrorMessage(
-              startMicrophoneResult.code.rawValue,
-              startMicrophoneResult.message) ??
-          '');
+      liveStreamManager.toastSubject.add(
+          ErrorHandler.convertToErrorMessage(startMicrophoneResult.code.rawValue, startMicrophoneResult.message) ?? '');
     }
   }
 
@@ -184,6 +172,10 @@ extension on _AnchorPreviewWidgetState {
 
   void _closeWidget() {
     _stopCameraAndMicrophone();
-    Navigator.pop(Global.appContext());
+    if (GlobalFloatWindowManager.instance.isEnableFloatWindowFeature()) {
+      GlobalFloatWindowManager.instance.overlayManager.closeOverlay();
+    } else {
+      Navigator.pop(context);
+    }
   }
 }

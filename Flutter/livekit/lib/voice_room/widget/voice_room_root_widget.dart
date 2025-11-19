@@ -4,6 +4,7 @@ import 'package:live_stream_core/live_stream_core.dart';
 import 'package:live_uikit_barrage/live_uikit_barrage.dart';
 import 'package:live_uikit_gift/live_uikit_gift.dart';
 import 'package:rtc_room_engine/rtc_room_engine.dart';
+import 'package:tencent_live_uikit/common/gesture/gesture_mock.dart';
 import 'package:tencent_live_uikit/common/screen/index.dart';
 import 'package:tencent_live_uikit/live_navigator_observer.dart';
 import 'package:tencent_live_uikit/voice_room/widget/panel/seat_invitation_panel_widget.dart';
@@ -432,7 +433,7 @@ extension _TopWidgetTapEventHandler on _VoiceRoomRootWidgetState {
     ActionSheet.show(menuData, (model) {
       if (model.bingData != 1) return;
       _roomOwnerLeave();
-    }, backgroundColor: LiveColors.designStandardFlowkitWhite);
+    }, backgroundColor: LiveColors.designStandardFlowkitWhite, parentContext: context);
   }
 
   void _roomOwnerLeave() async {
@@ -500,7 +501,8 @@ extension _TopWidgetTapEventHandler on _VoiceRoomRootWidgetState {
       }
     },
         title: LiveKitLocalizations.of(Global.appContext())!.common_audience_end_link_tips,
-        backgroundColor: LiveColors.designStandardFlowkitWhite);
+        backgroundColor: LiveColors.designStandardFlowkitWhite,
+        parentContext: context);
   }
 
   Future<void> _leaveSeat() async {
@@ -575,18 +577,23 @@ extension _SeatGridWidgetTapEventHandler on _VoiceRoomRootWidgetState {
         bingData: 3);
     menuData.add(cancel);
 
-    ActionSheet.show(menuData, (model) {
-      switch (model.bingData) {
-        case 1:
-          Navigator.of(context).pop();
-          _showSeatInvitationPanel(seatInfo);
-          break;
-        case 2:
-          _lockSeat(seatInfo);
-        default:
-          break;
-      }
-    }, backgroundColor: LiveColors.designStandardFlowkitWhite);
+    ActionSheet.show(
+      menuData,
+      (model) {
+        switch (model.bingData) {
+          case 1:
+            Navigator.of(context).pop();
+            _showSeatInvitationPanel(seatInfo);
+            break;
+          case 2:
+            _lockSeat(seatInfo);
+          default:
+            break;
+        }
+      },
+      backgroundColor: LiveColors.designStandardFlowkitWhite,
+      parentContext: context,
+    );
   }
 
   void _showSeatInvitationPanel(TUISeatInfo seatInfo) {
@@ -643,7 +650,7 @@ extension _SeatGridWidgetTapEventHandler on _VoiceRoomRootWidgetState {
       final isOnSeat =
           manager.seatState.seatList.value.any((seatInfo) => seatInfo.userId == manager.userState.selfInfo.userId);
       isOnSeat ? _moveToSeat(seatInfo) : _takeSeat(seatInfo);
-    }, backgroundColor: LiveColors.designStandardFlowkitWhite);
+    }, backgroundColor: LiveColors.designStandardFlowkitWhite, parentContext: context);
   }
 
   void _moveToSeat(TUISeatInfo seatInfo) async {
@@ -707,8 +714,12 @@ extension _ObserverOperation on _VoiceRoomRootWidgetState {
 extension _SeatGridObserver on _VoiceRoomRootWidgetState {
   void _initSeatGridObserver() {
     seatGridObserver = SeatGridWidgetObserver(onRoomDismissed: (roomId) {
-      if (isOwner) return;
+      if (isOwner) {
+        GestureMock.mockDoubleTapEvent();
+        return;
+      }
       manager.toastSubject.add(LiveKitLocalizations.of(Global.appContext())!.live_room_has_been_dismissed);
+      TUILiveKitNavigatorObserver.instance.backToVoiceRoomAudiencePage();
       manager.onLiveEnd(null);
     }, onSeatRequestReceived: (requestType, userInfo) {
       _handleReceivedRequest(requestType, userInfo);
@@ -745,7 +756,7 @@ extension _SeatGridObserver on _VoiceRoomRootWidgetState {
           isShowingAlert = false;
         });
 
-    Alert.showAlert(alertInfo);
+    Alert.showAlert(alertInfo, context: context);
     isShowingAlert = true;
   }
 
