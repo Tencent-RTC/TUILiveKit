@@ -1,4 +1,8 @@
+import 'dart:convert';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:tencent_rtc_sdk/trtc_cloud.dart';
 
 import '../../../common/index.dart';
 import '../../../tencent_live_uikit.dart';
@@ -37,10 +41,12 @@ class LiveListWidgetState extends State<LiveListWidget> with RouteAware {
     super.initState();
     _initData();
     _addListener();
+    _enableSwitchPlaybackQuality(true);
   }
 
   @override
   void dispose() {
+    _enableSwitchPlaybackQuality(false);
     _scrollController.removeListener(_scrollListener);
     _scrollController.dispose();
     _removeListener();
@@ -139,6 +145,8 @@ extension LiveListWidgetStateLogicExtension on LiveListWidgetState {
 
   Widget _buildItemWidget(int index) {
     final item = _roomListState.liveInfoList.value[index];
+    final url =
+        _isValidUrl(item.coverUrl.split(';').first) ? item.coverUrl.split(';').first : Constants.defaultCoverUrl;
     return GestureDetector(
       onTap: () {
         _clickItem(index);
@@ -151,24 +159,19 @@ extension LiveListWidgetStateLogicExtension on LiveListWidgetState {
             children: [
               Positioned(
                 child: Container(
-                  width: cellWidth,
-                  padding: const EdgeInsets.all(0),
-                  child: Image.network(
-                    item.coverUrl.split(';').first,
-                    fit: BoxFit.fill,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) {
-                        return child;
-                      }
-                      return Image.asset(LiveImages.streamDefaultCover,
-                          fit: BoxFit.fill, package: Constants.pluginName);
-                    },
-                    errorBuilder: (context, error, stackTrace) {
-                      return Image.asset(LiveImages.streamDefaultCover,
-                          fit: BoxFit.fill, package: Constants.pluginName);
-                    },
-                  ),
-                ),
+                    width: cellWidth,
+                    padding: const EdgeInsets.all(0),
+                    child: CachedNetworkImage(
+                        imageUrl: url,
+                        fit: BoxFit.fill,
+                        placeholder: (context, url) {
+                          return Image.asset(LiveImages.streamDefaultCover,
+                              fit: BoxFit.fill, package: Constants.pluginName);
+                        },
+                        errorWidget: (context, url, error) {
+                          return Image.asset(LiveImages.streamDefaultCover,
+                              fit: BoxFit.fill, package: Constants.pluginName);
+                        })),
               ),
               Positioned(
                 left: 8.width,
@@ -297,6 +300,37 @@ extension LiveListWidgetStateLogicExtension on LiveListWidgetState {
       isOwner
           ? TUILiveKitNavigatorObserver.instance.enterLiveRoomAnchorPage(liveInfo)
           : TUILiveKitNavigatorObserver.instance.enterLiveRoomAudiencePage(liveInfo);
+    }
+  }
+}
+
+extension on LiveListWidgetState {
+  void _enableSwitchPlaybackQuality(bool enable) async {
+    Map<String, dynamic> config = {
+      'key': 'Liteav.engine.set.live.qos.audience.strategy.version"',
+      'value': enable ? 1 : 0
+    };
+
+    Map<String, dynamic> params = {
+      'configs': [config]
+    };
+    Map<String, dynamic> jsonObject = {'api': 'setPrivateConfig', 'params': params};
+
+    try {
+      final jsonString = json.encode(jsonObject);
+      final trtc = await TRTCCloud.sharedInstance();
+      trtc.callExperimentalAPI(jsonString);
+    } catch (e) {
+      LiveKitLogger.error('Error enableSwitchPlaybackQuality');
+    }
+  }
+
+  bool _isValidUrl(String urlString) {
+    try {
+      Uri parsedUri = Uri.parse(urlString);
+      return parsedUri.scheme.isNotEmpty && parsedUri.host.isNotEmpty;
+    } on FormatException catch (e) {
+      return false;
     }
   }
 }

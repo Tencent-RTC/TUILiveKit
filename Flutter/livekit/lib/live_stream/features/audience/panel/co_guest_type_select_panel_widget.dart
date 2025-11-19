@@ -8,19 +8,13 @@ class CoGuestTypeSelectPanelWidget extends StatefulWidget {
   final LiveCoreController liveCoreController;
   final int seatIndex;
 
-  const CoGuestTypeSelectPanelWidget({
-    super.key,
-    required this.liveCoreController,
-    this.seatIndex = -1
-  });
+  const CoGuestTypeSelectPanelWidget({super.key, required this.liveCoreController, this.seatIndex = -1});
 
   @override
-  State<CoGuestTypeSelectPanelWidget> createState() =>
-      _CoGuestTypeSelectPanelWidgetState();
+  State<CoGuestTypeSelectPanelWidget> createState() => _CoGuestTypeSelectPanelWidgetState();
 }
 
-class _CoGuestTypeSelectPanelWidgetState
-    extends State<CoGuestTypeSelectPanelWidget> {
+class _CoGuestTypeSelectPanelWidgetState extends State<CoGuestTypeSelectPanelWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -64,11 +58,8 @@ class _CoGuestTypeSelectPanelWidgetState
               width: screenWidth,
               child: Center(
                 child: Text(
-                  LiveKitLocalizations.of(Global.appContext())!
-                      .common_title_link_mic_selector,
-                  style: const TextStyle(
-                      color: LiveColors.designStandardFlowkitWhite,
-                      fontSize: 16),
+                  LiveKitLocalizations.of(Global.appContext())!.common_title_link_mic_selector,
+                  style: const TextStyle(color: LiveColors.designStandardFlowkitWhite, fontSize: 16),
                 ),
               ),
             ),
@@ -79,10 +70,8 @@ class _CoGuestTypeSelectPanelWidgetState
               width: screenWidth,
               child: Center(
                 child: Text(
-                  LiveKitLocalizations.of(Global.appContext())!
-                      .common_text_link_mic_selector,
-                  style: const TextStyle(
-                      color: LiveColors.notStandardGrey, fontSize: 12),
+                  LiveKitLocalizations.of(Global.appContext())!.common_text_link_mic_selector,
+                  style: const TextStyle(color: LiveColors.notStandardGrey, fontSize: 12),
                 ),
               ),
             ),
@@ -157,6 +146,7 @@ class _CoGuestTypeSelectPanelWidgetState
   }
 
   void _showSettingsPanel() {
+    Navigator.of(Global.appContext()).pop();
     popupWidget(CoGuestVideoSettingsPanelWidget(
       liveCoreController: widget.liveCoreController,
       seatIndex: widget.seatIndex,
@@ -177,15 +167,9 @@ extension on _CoGuestTypeSelectPanelWidgetState {
       openCamera: isVideo,
     );
     if (result.code == TUIError.success) {
-      makeToast(
-        msg: LiveKitLocalizations.of(Global.appContext())!
-            .common_toast_apply_link_mic,
-      );
+      makeToast(msg: LiveKitLocalizations.of(Global.appContext())!.common_toast_apply_link_mic);
     } else {
-      makeToast(
-          msg: ErrorHandler.convertToErrorMessage(
-                  result.code.rawValue, result.message) ??
-              '');
+      makeToast(msg: ErrorHandler.convertToErrorMessage(result.code.rawValue, result.message) ?? '');
     }
     Navigator.of(Global.appContext()).pop();
   }

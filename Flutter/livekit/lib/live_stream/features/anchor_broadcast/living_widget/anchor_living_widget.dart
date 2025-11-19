@@ -1,31 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:live_stream_core/common/logger/logger.dart';
 import 'package:live_stream_core/live_core_widget/index.dart' hide LiveStatus;
 import 'package:live_stream_core/live_core_widget/live_core_controller.dart';
 import 'package:live_uikit_barrage/live_uikit_barrage.dart';
 import 'package:live_uikit_gift/live_uikit_gift.dart';
 import 'package:rtc_room_engine/rtc_room_engine.dart';
+import 'package:tencent_live_uikit/component/float_window/global_float_window_manager.dart';
 import 'package:tencent_live_uikit/component/network_info/index.dart';
 import 'package:tencent_live_uikit/component/network_info/manager/network_info_manager.dart';
 import 'package:tencent_live_uikit/live_stream/features/anchor_broadcast/co_guest/anchor_co_guest_float_widget.dart';
+import 'package:tencent_live_uikit/live_stream/features/anchor_broadcast/living_widget/anchor_user_management_panel_widget.dart';
 
+import '../../../../common/constants/constants.dart';
 import '../../../../common/error/index.dart';
 import '../../../../common/language/index.dart';
-import '../../../../common/screen/index.dart';
-import '../../../../common/constants/constants.dart';
 import '../../../../common/resources/index.dart';
+import '../../../../common/screen/index.dart';
 import '../../../../common/widget/index.dart';
 import '../../../../component/audience_list/index.dart';
 import '../../../../component/gift_access/gift_barrage_item_builder.dart';
 import '../../../../component/live_info/index.dart';
-import '../../../manager/live_stream_manager.dart';
 import '../../../live_define.dart';
+import '../../../manager/live_stream_manager.dart';
 import 'anchor_bottom_menu_widget.dart';
 
 class AnchorLivingWidget extends StatefulWidget {
   final LiveStreamManager liveStreamManager;
   final LiveCoreController liveCoreController;
+  final VoidCallback? onTapEnterFloatWindowInApp;
 
-  const AnchorLivingWidget({super.key, required this.liveStreamManager, required this.liveCoreController});
+  const AnchorLivingWidget(
+      {super.key, required this.liveStreamManager, required this.liveCoreController, this.onTapEnterFloatWindowInApp});
 
   @override
   State<AnchorLivingWidget> createState() => _AnchorLivingWidgetState();
@@ -51,22 +56,56 @@ class _AnchorLivingWidgetState extends State<AnchorLivingWidget> {
   void dispose() {
     _networkInfoManager.dispose();
     _removeObserver();
+    enablePictureInPicture(false);
     super.dispose();
+  }
+
+  void enablePictureInPicture(bool enable) {
+    if (GlobalFloatWindowManager.instance.isEnableFloatWindowFeature()) {
+      final roomId = widget.liveCoreController.roomState.roomId;
+      final jsonString = widget.liveStreamManager.buildEnablePipJsonParams(enable, roomId);
+      widget.liveCoreController.enablePictureInPicture(jsonString).then((result) {
+        LiveStreamCoreLogger.info("enablePictureInPicture,enable=$enable,result=$result");
+        liveStreamManager.enablePipMode(enable && result);
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      _buildCloseWidget(),
-      _buildAudienceListWidget(),
-      _buildLiveInfoWidget(),
-      _buildNetworkInfoButtonWidget(),
-      _buildBarrageDisplayWidget(),
-      _buildGiftDisplayWidget(),
-      _buildAnchorBottomMenuWidget(),
-      _buildApplyLinkAudienceWidget(),
-      _buildNetworkToastWidget()
-    ]);
+    return ValueListenableBuilder(
+        valueListenable: widget.liveStreamManager.floatWindowState.isFloatWindowMode,
+        builder: (context, isFloatWindowMode, child) {
+          return Visibility(
+            visible: !isFloatWindowMode,
+            child: Stack(children: [
+              _buildPureBroadcastTapWidget(),
+              _buildCloseWidget(),
+              _buildFloatWindowWidget(),
+              _buildAudienceListWidget(),
+              _buildLiveInfoWidget(),
+              _buildNetworkInfoButtonWidget(),
+              _buildBarrageDisplayWidget(),
+              _buildGiftDisplayWidget(),
+              _buildAnchorBottomMenuWidget(),
+              _buildApplyLinkAudienceWidget(),
+              _buildNetworkToastWidget()
+            ]),
+          );
+        });
+  }
+
+  Widget _buildPureBroadcastTapWidget() {
+    return ListenableBuilder(
+        listenable: Listenable.merge(
+            [widget.liveCoreController.coGuestState.seatList, widget.liveCoreController.coHostState.connectedUserList]),
+        builder: (context, _) {
+          return _isPureAnchorBroadcast()
+              ? GestureDetector(
+                  onTap: () => onTapPureBroadcastTapWidget(),
+                  child: Container(color: Colors.transparent))
+              : Container();
+        });
   }
 
   Widget _buildCloseWidget() {
@@ -87,9 +126,30 @@ class _AnchorLivingWidgetState extends State<AnchorLivingWidget> {
     );
   }
 
+  Widget _buildFloatWindowWidget() {
+    return Visibility(
+      visible: GlobalFloatWindowManager.instance.isEnableFloatWindowFeature(),
+      child: Positioned(
+        right: 38.width,
+        top: 68.height,
+        width: 24.width,
+        height: 24.width,
+        child: GestureDetector(
+          onTap: () {
+            widget.onTapEnterFloatWindowInApp?.call();
+          },
+          child: Image.asset(
+            LiveImages.floatWindow,
+            package: Constants.pluginName,
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildAudienceListWidget() {
     return Positioned(
-        right: 38.width,
+        right: GlobalFloatWindowManager.instance.isEnableFloatWindowFeature() ? 66.width : 38.width,
         top: 68.height,
         child: Container(
           constraints: BoxConstraints(maxWidth: 107.width),
@@ -100,6 +160,14 @@ class _AnchorLivingWidgetState extends State<AnchorLivingWidget> {
                   visible: liveStatus == LiveStatus.pushing,
                   child: AudienceListWidget(
                     roomId: liveStreamManager.roomState.roomId,
+                    onClickUserItem: (user) {
+                      popupWidget(AnchorUserManagementPanelWidget(
+                        panelType: AnchorUserManagementPanelType.messageAndKickOut,
+                        user: user,
+                        liveStreamManager: liveStreamManager,
+                        liveCoreController: liveCoreController,
+                      ));
+                    },
                   ),
                 );
               }),
@@ -119,6 +187,7 @@ class _AnchorLivingWidgetState extends State<AnchorLivingWidget> {
                   visible: liveStatus == LiveStatus.pushing,
                   child: LiveInfoWidget(
                     roomId: liveStreamManager.roomState.roomId,
+                    isFloatWindowMode: widget.liveStreamManager.floatWindowState.isFloatWindowMode,
                   ),
                 );
               }),
@@ -179,7 +248,26 @@ class _AnchorLivingWidgetState extends State<AnchorLivingWidget> {
               _barrageDisplayController?.setCustomBarrageBuilder(
                   GiftBarrageItemBuilder(selfUserId: liveStreamManager.coreUserState.selfInfo.userId));
             }
-            return BarrageDisplayWidget(controller: _barrageDisplayController!);
+            return BarrageDisplayWidget(
+              controller: _barrageDisplayController!,
+              onClickBarrageItem: (barrage) {
+                final isOwner = widget.liveStreamManager.coreRoomState.ownerInfo.userId == barrage.user.userId;
+                if (isOwner) {
+                  return;
+                }
+                final user = TUIUserInfo(
+                    userId: barrage.user.userId,
+                    userName: barrage.user.userName,
+                    avatarUrl: barrage.user.avatarUrl,
+                    userRole: TUIRole.generalUser);
+                popupWidget(AnchorUserManagementPanelWidget(
+                  panelType: AnchorUserManagementPanelType.messageAndKickOut,
+                  user: user,
+                  liveStreamManager: liveStreamManager,
+                  liveCoreController: liveCoreController,
+                ));
+              },
+            );
           },
         ));
   }
@@ -378,5 +466,22 @@ extension on _AnchorLivingWidgetState {
 
     barrage.extInfo[Constants.keyGiftReceiverUsername] = receiver.userName;
     _barrageDisplayController?.insertMessage(barrage);
+  }
+
+  void onTapPureBroadcastTapWidget() {
+    popupWidget(AnchorUserManagementPanelWidget(
+      panelType: AnchorUserManagementPanelType.pureMedia,
+      user: liveCoreController.userState.selfInfo,
+      liveStreamManager: liveStreamManager,
+      liveCoreController: liveCoreController,
+    ));
+  }
+
+  bool _isPureAnchorBroadcast() {
+    final selfUserId = widget.liveCoreController.userState.selfInfo.userId;
+    return widget.liveCoreController.coGuestState.seatList.value
+            .where((seat) => seat.userId.isNotEmpty && seat.userId != selfUserId)
+            .isEmpty &&
+        widget.liveCoreController.coHostState.connectedUserList.value.isEmpty;
   }
 }

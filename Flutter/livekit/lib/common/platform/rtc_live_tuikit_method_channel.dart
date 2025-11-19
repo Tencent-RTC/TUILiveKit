@@ -83,6 +83,24 @@ class MethodChannelTUILiveKit extends TUILiveKitPlatform {
   }
 
   @override
+  Future<void> openPipSettings() async {
+    if (Platform.isAndroid) {
+      await methodChannel.invokeMethod("openPipSettings");
+    }
+  }
+
+  @override
+  Future<bool> hasPipPermission() async {
+    if (Platform.isAndroid) {
+      final result = await methodChannel.invokeMethod("hasPipPermission");
+      return result ?? false;
+    } else if (Platform.isIOS) {
+      return true;
+    }
+    return false;
+  }
+
+  @override
   Future<bool> isNetworkConnected() async {
     final result = await methodChannel.invokeMethod<String>('getCurrentNetworkStatus');
     if (result == null) return false;

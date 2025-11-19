@@ -10,6 +10,7 @@ import 'package:tencent_live_uikit/live_stream/features/anchor_broadcast/living_
 import '../../../../common/constants/constants.dart';
 import '../../../../common/language/index.dart';
 import '../../../../common/resources/index.dart';
+import '../../../../common/widget/float_window/float_window_mode.dart';
 import '../../../../common/widget/index.dart';
 import '../../../live_define.dart';
 import '../../../manager/live_stream_manager.dart';
@@ -31,12 +32,26 @@ class _AnchorBottomMenuWidgetState extends State<AnchorBottomMenuWidget> {
   BarrageSendController? _barrageSendController;
   bool isShowingAlert = false;
   bool isShowCoHostPanel = false;
+  late final VoidCallback _onFloatWindowModeChangedListener = _onFloatWindowModeChanged;
 
   @override
   void initState() {
     super.initState();
     liveStreamManager = widget.liveStreamManager;
     liveCoreController = widget.liveCoreController;
+    widget.liveStreamManager.floatWindowState.floatWindowMode.addListener(_onFloatWindowModeChangedListener);
+  }
+
+  @override
+  void dispose() {
+    _barrageSendController = null;
+    widget.liveStreamManager.floatWindowState.floatWindowMode.removeListener(_onFloatWindowModeChangedListener);
+    super.dispose();
+  }
+
+  void _onFloatWindowModeChanged() {
+    bool isFloatWindow = widget.liveStreamManager.floatWindowState.floatWindowMode.value != FloatWindowMode.none;
+    _barrageSendController?.setFloatWindowMode(isFloatWindow);
   }
 
   @override
@@ -65,7 +80,7 @@ class _AnchorBottomMenuWidgetState extends State<AnchorBottomMenuWidget> {
                   selfUserId: liveStreamManager.coreUserState.selfInfo.userId,
                   selfName: liveStreamManager.coreUserState.selfInfo.userName);
 
-              return BarrageSendWidget(controller: _barrageSendController!);
+              return BarrageSendWidget(controller: _barrageSendController!, parentContext: Global.appContext());
             },
           ),
         ));
@@ -191,6 +206,7 @@ extension on _AnchorBottomMenuWidgetState {
   void _showCoHostPanel() {
     isShowCoHostPanel = true;
     popupWidget(
+      context: Global.appContext(),
         CoHostManagementPanelWidget(liveStreamManager: liveStreamManager, liveCoreController: liveCoreController),
         onDismiss: () {
       isShowCoHostPanel = false;
@@ -216,14 +232,17 @@ extension on _AnchorBottomMenuWidgetState {
   }
 
   void _handleBattleClick() async {
+    final isOnDisplayResult = liveStreamManager.battleState.isOnDisplayResult.value;
+    if (isOnDisplayResult) {
+      return;
+    }
     final selfUserId = liveStreamManager.coreUserState.selfInfo.userId;
     final isSelfInBattle = liveStreamManager.battleState.battleUsers.value.any((user) => user.userId == selfUserId);
     if (isSelfInBattle) {
       return _confirmToExitBattle();
     }
-    final isOnDisplayResult = liveStreamManager.battleState.isOnDisplayResult.value;
     final isSelfInCoHost = liveStreamManager.coHostState.connectedUsers.value.any((user) => user.userId == selfUserId);
-    if (isOnDisplayResult || !isSelfInCoHost) {
+    if (!isSelfInCoHost) {
       return;
     }
 
@@ -270,7 +289,7 @@ extension on _AnchorBottomMenuWidgetState {
 
     ActionSheet.show(menuData, (model) async {
       if (model.bingData != terminateBattleNumber) return;
-      Navigator.of(context).pop();
+      Navigator.of(Global.appContext()).pop();
       _showExitBattleAlert();
     }, backgroundColor: LiveColors.designStandardFlowkitWhite);
   }
@@ -287,7 +306,7 @@ extension on _AnchorBottomMenuWidgetState {
           titleColor: LiveColors.designStandardG3
         ),
         cancelCallback: () {
-          Navigator.of(context).pop();
+          Navigator.of(Global.appContext()).pop();
           isShowingAlert = false;
         },
         defaultActionInfo: (
@@ -296,7 +315,7 @@ extension on _AnchorBottomMenuWidgetState {
         ),
         defaultCallback: () {
           liveCoreController.terminateBattle(liveStreamManager.battleState.battleId.value);
-          Navigator.of(context).pop();
+          Navigator.of(Global.appContext()).pop();
           isShowingAlert = false;
         });
 

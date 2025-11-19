@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rtc_room_engine/rtc_room_engine.dart';
 import 'package:tencent_cloud_chat_sdk/tencent_im_sdk_plugin.dart';
@@ -10,8 +11,8 @@ import 'panel/live_info_detail_widget.dart';
 
 class LiveInfoWidget extends StatefulWidget {
   final String roomId;
-
-  const LiveInfoWidget({super.key, required this.roomId});
+  final ValueListenable<bool>? isFloatWindowMode;
+  const LiveInfoWidget({super.key, required this.roomId, this.isFloatWindowMode});
 
   @override
   State<LiveInfoWidget> createState() => _LiveInfoWidgetState();
@@ -19,10 +20,10 @@ class LiveInfoWidget extends StatefulWidget {
 
 class _LiveInfoWidgetState extends State<LiveInfoWidget> {
   final LiveInfoManager manager = LiveInfoManager();
-  late final LiveInfoIMObserver imObserver =
-      LiveInfoIMObserver(manager: WeakReference(manager));
-  late final LiveInfoEngineObserver engineObserver =
-      LiveInfoEngineObserver(manager: WeakReference(manager));
+  late final LiveInfoIMObserver imObserver = LiveInfoIMObserver(manager: WeakReference(manager));
+  late final LiveInfoEngineObserver engineObserver = LiveInfoEngineObserver(manager: WeakReference(manager));
+  bool _isShowingLiveInfoDetailWidget = false;
+  late final VoidCallback _floatWindowModeChangedListener = _onFloatWindowModeChanged;
 
   @override
   void initState() {
@@ -32,12 +33,15 @@ class _LiveInfoWidgetState extends State<LiveInfoWidget> {
     TencentImSDKPlugin.v2TIMManager
         .getFriendshipManager()
         .addFriendListener(listener: imObserver);
+    widget.isFloatWindowMode?.addListener(_floatWindowModeChangedListener);
   }
 
   @override
   void dispose() {
+    _closeLiveInfoDetailWidget();
     super.dispose();
     TUIRoomEngine.sharedInstance().removeObserver(engineObserver);
+    widget.isFloatWindowMode?.removeListener(_floatWindowModeChangedListener);
     manager.dispose();
   }
 
@@ -187,7 +191,8 @@ extension on _LiveInfoWidgetState {
   }
 
   void _popupWidget(Widget widget, {Color? barrierColor}) {
-    showModalBottomSheet(
+    _isShowingLiveInfoDetailWidget = true;
+    showModalBottomSheet<void>(
       barrierColor: barrierColor,
       isScrollControlled: true,
       context: Global.appContext(),
@@ -202,6 +207,23 @@ extension on _LiveInfoWidgetState {
         ),
         child: widget,
       ),
-    );
+    ).then((value){
+      _isShowingLiveInfoDetailWidget = false;
+    });
+  }
+
+  void _closeLiveInfoDetailWidget() {
+    if (_isShowingLiveInfoDetailWidget) {
+      Navigator.of(Global.appContext()).pop();
+      _isShowingLiveInfoDetailWidget = false;
+    }
+  }
+
+  void _onFloatWindowModeChanged() {
+    if (widget.isFloatWindowMode != null) {
+      if (widget.isFloatWindowMode!.value) {
+        _closeLiveInfoDetailWidget();
+      }
+    }
   }
 }

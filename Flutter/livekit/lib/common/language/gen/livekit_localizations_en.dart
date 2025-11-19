@@ -7,6 +7,10 @@ class LiveKitLocalizationsEn extends LiveKitLocalizations {
   LiveKitLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get common_disconnect_guest_tips =>
+      'Are you sure you want to disconnect xxx?';
+
+  @override
   String get common_anchor_battle => 'Battle';
 
   @override
@@ -28,14 +32,14 @@ class LiveKitLocalizationsEn extends LiveKitLocalizations {
       'Battle request has been timeout';
 
   @override
-  String get common_battle_invitee_reject => 'rejected battle';
+  String get common_battle_invitee_reject => 'xxx rejected battle';
 
   @override
   String get common_battle_inviter_cancel =>
-      'canceled battle, please try to initiate it again';
+      'xxx canceled battle, please try to initiate it again';
 
   @override
-  String get common_battle_inviting => 'invite you to battle together';
+  String get common_battle_inviting => 'xxx invite you to battle together';
 
   @override
   String get common_battle_pk_end => 'PK End';
@@ -57,7 +61,8 @@ class LiveKitLocalizationsEn extends LiveKitLocalizations {
   String get common_connect_inviting => 'Waiting';
 
   @override
-  String get common_connect_inviting_append => 'invite you to host together';
+  String get common_connect_inviting_append =>
+      'xxx invite you to host together';
 
   @override
   String get common_connect_request_rejected =>
@@ -80,8 +85,26 @@ class LiveKitLocalizationsEn extends LiveKitLocalizations {
   String get common_cover => 'Cover';
 
   @override
+  String get common_disable_audio => 'Disable Audio';
+
+  @override
+  String get common_disable_message => 'Disable Chat';
+
+  @override
+  String get common_disable_video => 'Disable Video';
+
+  @override
   String get common_disconnect_tips =>
       'Are you sure you want to disconnect from other streamers?';
+
+  @override
+  String get common_enable_audio => 'Enable Audio';
+
+  @override
+  String get common_enable_message => 'Enable Chat';
+
+  @override
+  String get common_enable_video => 'Enable Video';
 
   @override
   String get common_end_connect => 'Disconnect';
@@ -95,10 +118,23 @@ class LiveKitLocalizationsEn extends LiveKitLocalizations {
       'You are currently in PK mode. Would you like to [End PK] or [End Live] ?';
 
   @override
+  String get common_kick_out_of_room => 'Kick Out';
+
+  @override
+  String get common_kicked_out_of_room_by_owner =>
+      'You have been kicked out of the room';
+
+  @override
   String get common_more => 'More';
 
   @override
   String get common_more_features => 'More Features';
+
+  @override
+  String get common_mute_audio_by_master => 'The anchor has muted you';
+
+  @override
+  String get common_mute_video_by_owner => 'The anchor disabled your video';
 
   @override
   String get common_recommended_list => 'Suggested Hosts';
@@ -118,10 +154,38 @@ class LiveKitLocalizationsEn extends LiveKitLocalizations {
   String get common_start_live => 'Start Live';
 
   @override
+  String get common_start_video => 'Start Video';
+
+  @override
+  String get common_stop_video => 'Stop Video';
+
+  @override
+  String get common_terminate_room_connection_message =>
+      'Are you sure you want to disconnect?';
+
+  @override
+  String get common_un_mute_audio_by_master => 'The anchor has unmuted you';
+
+  @override
+  String get common_un_mute_video_by_master => 'The anchor enabled your video';
+
+  @override
   String get common_link_guest => 'Guest';
 
   @override
   String get common_link_host => 'Host';
+
+  @override
+  String get live_barrage_error_content_is_long =>
+      'The content is too long, please reduce the content and try again';
+
+  @override
+  String get live_barrage_error_network =>
+      'The network is abnormal, please try again later';
+
+  @override
+  String get live_barrage_error_sensitive_word =>
+      'Sensitive words are detected, please modify it and try again';
 
   @override
   String get live_error_connection_notexit =>
@@ -139,6 +203,10 @@ class LiveKitLocalizationsEn extends LiveKitLocalizations {
 
   @override
   String get livelist_viewed_audience_count => 'xxx people viewed';
+
+  @override
+  String get livelist_exit_float_window_tip =>
+      'Live streaming in progress. Please try again later.';
 
   @override
   String get livestreamcore_battle_error_conflict =>
@@ -844,6 +912,16 @@ class LiveKitLocalizationsEn extends LiveKitLocalizations {
   String get common_video_settings_item_mirror => 'Mirror';
 
   @override
+  String get common_video_settings_item_pip => 'Pip';
+
+  @override
+  String get common_pip_toggle => 'Pip Toggle';
+
+  @override
+  String get common_pip_toggle_description =>
+      'After enabling, the app will automatically enter picture-in-picture mode when moved to the background';
+
+  @override
   String get common_voiceroom_empty_view =>
       'No users in the seat, go to invite';
 
@@ -1041,4 +1119,73 @@ class LiveKitLocalizationsEn extends LiveKitLocalizations {
 
   @override
   String get live_video_resolution_changed => 'resolution changed to';
+
+  @override
+  String get common_template_601_ui_exception_toast =>
+      'This layout template may display abnormally on certain models. It is recommended to change to another layout template.';
+
+  @override
+  String get seat_locked => 'Locked';
+
+  @override
+  String get seat_unlocked => 'UnLock Seat';
+
+  @override
+  String get seat_no_guest => 'No guests';
+
+  @override
+  String get seat_in_battle => 'In Battle';
+
+  @override
+  String get seat_cancel_invite => 'Cancel invite';
+
+  @override
+  String get seat_request_battle => 'Request Battle';
+
+  @override
+  String get seat_request_host => 'Invite Host';
+
+  @override
+  String get seat_invite_battle => 'Invite Battle';
+
+  @override
+  String get seat_repeat_invite_tips =>
+      'Inviting others you can withdraw the invitation and send a new one';
+
+  @override
+  String get seat_end_Battle => 'End Battle';
+
+  @override
+  String get seat_too_many_guest => 'Please limit seats to 6 or fewer';
+
+  @override
+  String get seat_only_show_first_six_seat =>
+      'Please note that 6V6 PK only shows the first 6 seats and please limit the number of seats to 6 or fewer';
+
+  @override
+  String get seat_in_pk => 'In PK';
+
+  @override
+  String get live_end_live_tips => 'Are you sure you want to End Live?';
+
+  @override
+  String get live_exit_live_tips => 'Are you sure you want to Exit Live?';
+
+  @override
+  String get live_cancel_request => 'xxx canceled request';
+
+  @override
+  String get mirror_type_auto => 'Auto';
+
+  @override
+  String get mirror_type_enable => 'Enable';
+
+  @override
+  String get mirror_type_disable => 'Disable';
+
+  @override
+  String get mirror_type_change_to => 'Change to xxx';
+
+  @override
+  String get common_remove => 'Remove';
 }

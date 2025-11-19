@@ -39,5 +39,9 @@ class RoomEngineObserver extends TUIRoomObserver {
       context.userManager.target
           ?.onSendMessageForUserDisableChanged(roomId, userId, isDisable);
     };
+    super.onUserVideoSizeChanged = (roomId, userId,
+        streamType, width, height) {
+      context.mediaManager.target?.onUserVideoSizeChanged(roomId, userId, streamType, width, height);
+    };
   }
 }

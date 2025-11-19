@@ -10,8 +10,14 @@ class BattleInfoWidget extends StatefulWidget {
   final LiveStreamManager liveStreamManager;
   final bool isOwner;
   final List<SeatFullInfo> seatList;
+  final ValueListenable<bool> isFloatWindowMode;
 
-  const BattleInfoWidget({super.key, required this.seatList, required this.liveStreamManager, required this.isOwner});
+  const BattleInfoWidget(
+      {super.key,
+      required this.seatList,
+      required this.liveStreamManager,
+      required this.isOwner,
+      required this.isFloatWindowMode});
 
   @override
   State<BattleInfoWidget> createState() => _BattleInfoWidgetState();
@@ -30,6 +36,15 @@ class _BattleInfoWidgetState extends State<BattleInfoWidget> {
 
   @override
   Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: widget.isFloatWindowMode,
+      builder: (context, isFloatWindowMode, child) {
+        return Visibility(visible: !isFloatWindowMode, child: buildContent(context));
+      },
+    );
+  }
+
+  Widget buildContent(BuildContext context) {
     return ListenableBuilder(
       listenable: Listenable.merge([
         liveStreamManager.battleState.isBattleRunning,
@@ -73,9 +88,9 @@ class _BattleInfoWidgetState extends State<BattleInfoWidget> {
     if (liveStreamManager.coHostState.connectedUsers.value.length != 2 || connectedBattleUsers.length != 2) {
       return const SizedBox.shrink();
     }
-    if (seatMap.length != 2
-        || !seatMap.keys.contains(connectedBattleUsers[0].userId)
-        || !seatMap.keys.contains(connectedBattleUsers[1].userId)) {
+    if (seatMap.length != 2 ||
+        !seatMap.keys.contains(connectedBattleUsers[0].userId) ||
+        !seatMap.keys.contains(connectedBattleUsers[1].userId)) {
       return const SizedBox.shrink();
     }
 
@@ -93,29 +108,29 @@ class _BattleInfoWidgetState extends State<BattleInfoWidget> {
       builder: (context, durationCount, _) {
         final isMultipleBattleMode = liveStreamManager.coreCoHostState.connectedUserList.value.length >= 3;
         return Container(
-              alignment: Alignment.topCenter,
-              height: 40.height,
-              padding: EdgeInsets.only(top: isMultipleBattleMode ? 0 : 18.height),
-              child: Stack(
-                alignment: Alignment.topCenter,
+          alignment: Alignment.topCenter,
+          height: 40.height,
+          padding: EdgeInsets.only(top: isMultipleBattleMode ? 0 : 18.height),
+          child: Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              Image.asset(LiveImages.battleTimeBackground,
+                  package: Constants.pluginName, width: 72.width, height: 22.height),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(LiveImages.battleTimeBackground,
-                      package: Constants.pluginName, width: 72.width, height: 22.height),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(LiveImages.battleClock,
-                          package: Constants.pluginName, width: 12.width, height: 12.height),
-                      SizedBox(width: 3.width),
-                      Text(
-                          durationCount == 0
-                              ? LiveKitLocalizations.of(Global.appContext())!.common_battle_pk_end
-                              : _getFormatTime(durationCount),
-                          style: const TextStyle(fontSize: 14, color: LiveColors.designStandardFlowkitWhite))
-                    ],
-                  ),
+                  Image.asset(LiveImages.battleClock,
+                      package: Constants.pluginName, width: 12.width, height: 12.height),
+                  SizedBox(width: 3.width),
+                  Text(
+                      durationCount == 0
+                          ? LiveKitLocalizations.of(Global.appContext())!.common_battle_pk_end
+                          : _getFormatTime(durationCount),
+                      style: const TextStyle(fontSize: 14, color: LiveColors.designStandardFlowkitWhite))
                 ],
               ),
+            ],
+          ),
         );
       },
     );

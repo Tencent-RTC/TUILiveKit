@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tencent_live_uikit/component/float_window/global_float_window_manager.dart';
 import 'package:tencent_live_uikit/tencent_live_uikit.dart';
 import 'package:tencent_live_uikit_example/generated/l10n.dart';
 import 'package:tencent_live_uikit_example/src/store/app_store.dart';
@@ -72,10 +73,7 @@ class _VideoLiveWidgetState extends State<VideoLiveWidget> {
           Text(
             S.current.app_video,
             style: const TextStyle(
-                fontSize: 18,
-                fontStyle: FontStyle.normal,
-                fontWeight: FontWeight.w500,
-                color: Color(0xFF000000)),
+                fontSize: 18, fontStyle: FontStyle.normal, fontWeight: FontWeight.w500, color: Color(0xFF000000)),
           ),
           GestureDetector(
             onTap: () {
@@ -126,9 +124,7 @@ class _VideoLiveWidgetState extends State<VideoLiveWidget> {
                 width: 154,
                 height: 48,
                 alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    color: const Color(0xFF1C66E5),
-                    borderRadius: BorderRadius.circular(24)),
+                decoration: BoxDecoration(color: const Color(0xFF1C66E5), borderRadius: BorderRadius.circular(24)),
                 child: Text(
                   S.current.app_broadcast('+'),
                   style: const TextStyle(fontSize: 20, color: Colors.white),
@@ -144,9 +140,13 @@ extension _VideoLiveWidgetStateLogicExtension on _VideoLiveWidgetState {
   void _startAnchorWidget() async {
     Navigator.push(context, MaterialPageRoute(
       builder: (context) {
-        return TUILiveRoomAnchorWidget(
-            roomId: LiveIdentityGenerator.instance
-                .generateId(AppStore.userId, RoomType.live));
+        if (GlobalFloatWindowManager.instance.isEnableFloatWindowFeature()) {
+          return TUILiveRoomAnchorOverlay(
+              roomId: LiveIdentityGenerator.instance.generateId(AppStore.userId, RoomType.live));
+        } else {
+          return TUILiveRoomAnchorWidget(
+              roomId: LiveIdentityGenerator.instance.generateId(AppStore.userId, RoomType.live));
+        }
       },
     ));
   }

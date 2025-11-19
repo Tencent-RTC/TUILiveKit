@@ -18,8 +18,7 @@ class TUIGiftStore {
   }
 
   OnGiftError? onError;
-  final ValueNotifier<Map<String, List<TUIGiftInfo>>> giftListMap =
-      ValueNotifier({});
+  final ValueNotifier<Map<String, List<TUIGiftInfo>>> giftListMap = ValueNotifier({});
   final ValueNotifier<Map<String, TUIGiftData>> giftDataMap = ValueNotifier({});
   final ValueNotifier<Map<String, TUILikeData>> likeDataMap = ValueNotifier({});
   final ValueNotifier<int> showLikeStart = ValueNotifier(0);

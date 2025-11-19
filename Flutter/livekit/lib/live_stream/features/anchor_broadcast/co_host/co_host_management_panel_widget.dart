@@ -16,18 +16,13 @@ class CoHostManagementPanelWidget extends StatefulWidget {
   final LiveStreamManager liveStreamManager;
   final LiveCoreController liveCoreController;
 
-  const CoHostManagementPanelWidget(
-      {super.key,
-      required this.liveStreamManager,
-      required this.liveCoreController});
+  const CoHostManagementPanelWidget({super.key, required this.liveStreamManager, required this.liveCoreController});
 
   @override
-  State<CoHostManagementPanelWidget> createState() =>
-      _CoHostManagementPanelWidgetState();
+  State<CoHostManagementPanelWidget> createState() => _CoHostManagementPanelWidgetState();
 }
 
-class _CoHostManagementPanelWidgetState
-    extends State<CoHostManagementPanelWidget> {
+class _CoHostManagementPanelWidgetState extends State<CoHostManagementPanelWidget> {
   late final LiveStreamManager liveStreamManager;
   late final LiveCoreController liveCoreController;
   static const coHostTimeout = 10;
@@ -61,25 +56,21 @@ class _CoHostManagementPanelWidgetState
       padding: EdgeInsets.only(bottom: 20.height),
       decoration: BoxDecoration(
         color: LiveColors.designStandardG2,
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20.radius),
-            topRight: Radius.circular(20.radius)),
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(20.radius), topRight: Radius.circular(20.radius)),
       ),
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 20.height),
-              _buildTitleWidget(),
-              SizedBox(height: 20.height),
-              _buildConnectedUserListTitleWidget(),
-              _buildConnectedUserListWidget(),
-              _buildSeparationWidget(),
-              _buildRecommendListTitleWidget(),
-              _buildRecommendListWidget()
-            ]),
+        child:
+            Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
+          SizedBox(height: 20.height),
+          _buildTitleWidget(),
+          SizedBox(height: 20.height),
+          _buildConnectedUserListTitleWidget(),
+          _buildConnectedUserListWidget(),
+          _buildSeparationWidget(),
+          _buildRecommendListTitleWidget(),
+          _buildRecommendListWidget()
+        ]),
       ),
     );
   }
@@ -92,8 +83,7 @@ class _CoHostManagementPanelWidgetState
           Center(
             child: Text(
               LiveKitLocalizations.of(Global.appContext())!.common_connection,
-              style: const TextStyle(
-                  color: LiveColors.designStandardG7, fontSize: 16),
+              style: const TextStyle(color: LiveColors.designStandardG7, fontSize: 16),
             ),
           ),
           Positioned(
@@ -103,18 +93,13 @@ class _CoHostManagementPanelWidgetState
                 _disconnectCoHost();
               },
               child: Container(
-                constraints: BoxConstraints(
-                    maxHeight: 20.height,
-                    minWidth: 50.width,
-                    maxWidth: 80.width),
+                constraints: BoxConstraints(maxHeight: 20.height, minWidth: 50.width, maxWidth: 80.width),
                 child: ValueListenableBuilder(
-                    valueListenable:
-                        liveStreamManager.coHostState.connectedUsers,
+                    valueListenable: liveStreamManager.coHostState.connectedUsers,
                     builder: (context, connectedUsers, _) {
                       return Visibility(
-                        visible: connectedUsers.any((user) =>
-                            user.userId ==
-                            liveStreamManager.coreUserState.selfInfo.userId),
+                        visible: connectedUsers
+                            .any((user) => user.userId == liveStreamManager.coreUserState.selfInfo.userId),
                         child: Row(
                           children: [
                             Image.asset(
@@ -123,11 +108,8 @@ class _CoHostManagementPanelWidgetState
                             ),
                             SizedBox(width: 4.width),
                             Text(
-                              LiveKitLocalizations.of(Global.appContext())!
-                                  .common_end_connect,
-                              style: const TextStyle(
-                                  color: LiveColors.notStandardRed,
-                                  fontSize: 14),
+                              LiveKitLocalizations.of(Global.appContext())!.common_end_connect,
+                              style: const TextStyle(color: LiveColors.notStandardRed, fontSize: 14),
                               overflow: TextOverflow.ellipsis,
                             ),
                           ],
@@ -146,8 +128,8 @@ class _CoHostManagementPanelWidgetState
     return ValueListenableBuilder(
         valueListenable: liveStreamManager.coHostState.connectedUsers,
         builder: (context, connectedUsers, _) {
-          final filterConnectedUsers = connectedUsers.where((user) =>
-              user.userId != liveStreamManager.coreUserState.selfInfo.userId);
+          final filterConnectedUsers =
+              connectedUsers.where((user) => user.userId != liveStreamManager.coreUserState.selfInfo.userId);
           return Visibility(
             visible: connectedUsers.isNotEmpty,
             child: Container(
@@ -156,8 +138,7 @@ class _CoHostManagementPanelWidgetState
                 LiveKitLocalizations.of(Global.appContext())!
                     .common_connection_list_title
                     .replaceAll('xxx', '${filterConnectedUsers.length}'),
-                style: const TextStyle(
-                    color: LiveColors.designStandardG7, fontSize: 14),
+                style: const TextStyle(color: LiveColors.designStandardG7, fontSize: 14),
               ),
             ),
           );
@@ -168,10 +149,8 @@ class _CoHostManagementPanelWidgetState
     return ValueListenableBuilder(
       valueListenable: liveStreamManager.coHostState.connectedUsers,
       builder: (context, connectedUsers, _) {
-        final filterConnectedUsers = connectedUsers
-            .where((user) =>
-                user.userId != liveStreamManager.coreUserState.selfInfo.userId)
-            .toList();
+        final filterConnectedUsers =
+            connectedUsers.where((user) => user.userId != liveStreamManager.coreUserState.selfInfo.userId).toList();
         return Visibility(
           visible: connectedUsers.isNotEmpty,
           child: SizedBox(
@@ -225,8 +204,7 @@ class _CoHostManagementPanelWidgetState
                 alignment: Alignment.centerLeft,
                 child: Text(
                   user.userName.isNotEmpty ? user.userName : user.userId,
-                  style: const TextStyle(
-                      color: LiveColors.designStandardG7, fontSize: 16),
+                  style: const TextStyle(color: LiveColors.designStandardG7, fontSize: 16),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -239,14 +217,11 @@ class _CoHostManagementPanelWidgetState
 
   Widget _buildSeparationWidget() {
     return ListenableBuilder(
-      listenable: Listenable.merge([
-        liveStreamManager.coHostState.connectedUsers,
-        liveStreamManager.coHostState.recommendedUsers
-      ]),
+      listenable: Listenable.merge(
+          [liveStreamManager.coHostState.connectedUsers, liveStreamManager.coHostState.recommendedUsers]),
       builder: (context, _) {
         return Visibility(
-          visible: liveStreamManager
-                  .coHostState.connectedUsers.value.isNotEmpty &&
+          visible: liveStreamManager.coHostState.connectedUsers.value.isNotEmpty &&
               liveStreamManager.coHostState.recommendedUsers.value.isNotEmpty,
           child: SizedBox(
             height: 3.height,
@@ -261,8 +236,7 @@ class _CoHostManagementPanelWidgetState
       margin: EdgeInsets.only(left: 24.width),
       child: Text(
         LiveKitLocalizations.of(Global.appContext())!.common_recommended_list,
-        style:
-            const TextStyle(color: LiveColors.designStandardG7, fontSize: 14),
+        style: const TextStyle(color: LiveColors.designStandardG7, fontSize: 14),
       ),
     );
   }
@@ -339,8 +313,7 @@ class _CoHostManagementPanelWidgetState
                 alignment: Alignment.centerLeft,
                 child: Text(
                   user.userName.isNotEmpty ? user.userName : user.userId,
-                  style: const TextStyle(
-                      color: LiveColors.designStandardG7, fontSize: 16),
+                  style: const TextStyle(color: LiveColors.designStandardG7, fontSize: 16),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -351,28 +324,22 @@ class _CoHostManagementPanelWidgetState
               _inviteToCoHost(user);
             },
             child: ValueListenableBuilder(
-                valueListenable:
-                    liveStreamManager.coreCoHostState.sentConnectionRequestList,
+                valueListenable: liveStreamManager.coreCoHostState.sentConnectionRequestList,
                 builder: (context, inviteeList, _) {
-                  final isInInviting = inviteeList
-                      .any((invitee) => invitee.roomId == user.roomId);
+                  final isInInviting = inviteeList.any((invitee) => invitee.roomId == user.roomId);
                   return Container(
                     width: 64.width,
                     height: 24.height,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12.height),
-                        color: isInInviting
-                            ? LiveColors.designStandardB1.withAlpha(0x80)
-                            : LiveColors.designStandardB1),
+                        color:
+                            isInInviting ? LiveColors.designStandardB1.withAlpha(0x80) : LiveColors.designStandardB1),
                     alignment: Alignment.center,
                     child: Text(
                       isInInviting
-                          ? LiveKitLocalizations.of(Global.appContext())!
-                              .common_connect_inviting
-                          : LiveKitLocalizations.of(Global.appContext())!
-                              .common_voiceroom_invite,
-                      style: const TextStyle(
-                          color: LiveColors.designStandardG8, fontSize: 12),
+                          ? LiveKitLocalizations.of(Global.appContext())!.common_connect_inviting
+                          : LiveKitLocalizations.of(Global.appContext())!.common_voiceroom_invite,
+                      style: const TextStyle(color: LiveColors.designStandardG8, fontSize: 12),
                     ),
                   );
                 }),
@@ -393,8 +360,7 @@ class _CoHostManagementPanelWidgetState
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                        LiveColors.designStandardG5),
+                    valueColor: AlwaysStoppedAnimation<Color>(LiveColors.designStandardG5),
                     strokeWidth: 1,
                   ),
                   Text(
@@ -416,15 +382,13 @@ class _CoHostManagementPanelWidgetState
       valueListenable: liveStreamManager.coHostState.recommendListCursor,
       builder: (context, cursor, _) {
         return Visibility(
-          visible: cursor.isEmpty &&
-              liveStreamManager.coHostState.recommendedUsers.value.isNotEmpty,
+          visible: cursor.isEmpty && liveStreamManager.coHostState.recommendedUsers.value.isNotEmpty,
           child: Container(
             color: LiveColors.designStandardTransparent,
             padding: EdgeInsets.symmetric(vertical: 16.height),
             alignment: Alignment.center,
             child: Text(
-              LiveKitLocalizations.of(Global.appContext())!
-                  .livelist_no_more_data,
+              LiveKitLocalizations.of(Global.appContext())!.livelist_no_more_data,
               style: const TextStyle(
                 color: LiveColors.designStandardG5,
                 fontSize: 14,
@@ -465,8 +429,7 @@ extension on _CoHostManagementPanelWidgetState {
     }
 
     const threshold = 30;
-    if (position.maxScrollExtent >= position.pixels &&
-        position.maxScrollExtent - position.pixels <= threshold) {
+    if (position.maxScrollExtent >= position.pixels && position.maxScrollExtent - position.pixels <= threshold) {
       return true;
     }
     return false;
@@ -498,9 +461,8 @@ extension on _CoHostManagementPanelWidgetState {
   double _calculateConnectedUserListHeight() {
     double totalHeight = 0;
     if (liveStreamManager.coHostState.connectedUsers.value.isNotEmpty) {
-      final filterConnectedUsers =
-          liveStreamManager.coHostState.connectedUsers.value.where((user) =>
-              user.userId != liveStreamManager.coreUserState.selfInfo.userId);
+      final filterConnectedUsers = liveStreamManager.coHostState.connectedUsers.value
+          .where((user) => user.userId != liveStreamManager.coreUserState.selfInfo.userId);
       totalHeight = filterConnectedUsers.length * 60.height;
     }
     return totalHeight > 575.height ? 575.height : totalHeight;
@@ -509,9 +471,7 @@ extension on _CoHostManagementPanelWidgetState {
   double _calculateRecommendListHeight() {
     double totalHeight = 0;
     if (liveStreamManager.coHostState.recommendedUsers.value.isNotEmpty) {
-      totalHeight =
-          liveStreamManager.coHostState.recommendedUsers.value.length *
-              60.height;
+      totalHeight = liveStreamManager.coHostState.recommendedUsers.value.length * 60.height;
     }
     return totalHeight > 550.height ? 550.height : totalHeight;
   }
@@ -522,22 +482,20 @@ extension on _CoHostManagementPanelWidgetState {
     }
 
     final confirmInfo = AlertInfo(
-        description: LiveKitLocalizations.of(Global.appContext())!
-            .common_disconnect_tips,
+        description: LiveKitLocalizations.of(Global.appContext())!.common_disconnect_tips,
         defaultActionInfo: (
-          title:
-              LiveKitLocalizations.of(Global.appContext())!.common_end_connect,
+          title: LiveKitLocalizations.of(Global.appContext())!.common_end_connect,
           titleColor: LiveColors.designStandardB1
         ),
         defaultCallback: () {
-          liveCoreController.terminateCrossRoomConnection().then((result){
+          liveCoreController.terminateCrossRoomConnection().then((result) {
             if (result.code == TUIError.success) {
               liveStreamManager.onCrossRoomConnectionTerminated();
             }
           });
 
           if (mounted) {
-            Navigator.of(context).pop();
+            Navigator.of(Global.appContext()).pop();
           }
           _isShowingAlert = false;
         },
@@ -547,7 +505,7 @@ extension on _CoHostManagementPanelWidgetState {
         ),
         cancelCallback: () {
           if (mounted) {
-            Navigator.of(context).pop();
+            Navigator.of(Global.appContext()).pop();
           }
           _isShowingAlert = false;
         });
@@ -562,16 +520,14 @@ extension on _CoHostManagementPanelWidgetState {
         user.roomId, _CoHostManagementPanelWidgetState.coHostTimeout);
     if (result.code != TUIError.success) {
       liveStreamManager.onRequestCrossRoomConnectionFailed(user.roomId);
-      liveStreamManager.toastSubject.add(ErrorHandler.convertToErrorMessage(
-              result.code.rawValue, result.message) ??
-          '');
+      liveStreamManager.toastSubject
+          .add(ErrorHandler.convertToErrorMessage(result.code.rawValue, result.message) ?? '');
       return;
     }
     if (result.data == null || result.data == TUIConnectionCode.success) {
       return;
     }
     liveStreamManager.onRequestCrossRoomConnectionFailed(user.roomId);
-    liveStreamManager.toastSubject
-        .add(ErrorHandler.convertToConnectionErrorMessage(result.data!) ?? '');
+    liveStreamManager.toastSubject.add(ErrorHandler.convertToConnectionErrorMessage(result.data!) ?? '');
   }
 }

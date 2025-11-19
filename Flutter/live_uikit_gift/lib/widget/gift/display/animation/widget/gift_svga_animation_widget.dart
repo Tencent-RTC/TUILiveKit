@@ -36,6 +36,7 @@ class GiftSvgaAnimationWidgetState extends State<GiftSvgaAnimationWidget>
 
   @override
   void dispose() {
+    TUIGiftStore().giftDataMap.value.remove(widget.roomId);
     TUIGiftStore().giftDataMap.removeListener(_onReceiveGiftData);
     animationController.removeStatusListener(animationStatusListener);
     animationController.dispose();

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tencent_live_uikit/common/index.dart';
 
+import '../../../component/float_window/global_float_window_manager.dart';
+
 class AudienceEndStatisticsWidget extends StatefulWidget {
   final String roomId;
   final String avatarUrl;
@@ -114,5 +116,11 @@ class _AudienceEndStatisticsWidgetState
     );
   }
 
-  void _closeWidget() => Navigator.of(context).pop();
+  void _closeWidget() {
+    if (GlobalFloatWindowManager.instance.isEnableFloatWindowFeature()) {
+      GlobalFloatWindowManager.instance.overlayManager.closeOverlay();
+    } else {
+      Navigator.of(context).pop();
+    }
+  }
 }

@@ -8,8 +8,9 @@ import 'panel/audience_list_panel_widget.dart';
 
 class AudienceListWidget extends StatefulWidget {
   final String roomId;
+  final void Function(TUIUserInfo userInfo)? onClickUserItem;
 
-  const AudienceListWidget({super.key, required this.roomId});
+  const AudienceListWidget({super.key, required this.roomId, this.onClickUserItem});
 
   @override
   State<AudienceListWidget> createState() => _AudienceListWidgetState();
@@ -17,8 +18,7 @@ class AudienceListWidget extends StatefulWidget {
 
 class _AudienceListWidgetState extends State<AudienceListWidget> {
   final AudienceListManager manager = AudienceListManager();
-  late final AudienceListObserver observer =
-      AudienceListObserver(manager: WeakReference(manager));
+  late final AudienceListObserver observer = AudienceListObserver(manager: WeakReference(manager));
 
   @override
   void initState() {
@@ -44,8 +44,7 @@ class _AudienceListWidgetState extends State<AudienceListWidget> {
         valueListenable: manager.state.audienceList,
         builder: (context, audienceList, child) {
           return Container(
-            constraints:
-                BoxConstraints(minWidth: 24.width, maxWidth: 126.width),
+            constraints: BoxConstraints(minWidth: 24.width, maxWidth: 126.width),
             height: 24.height,
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -108,12 +107,10 @@ class _AudienceListWidgetState extends State<AudienceListWidget> {
 
   Widget _initAudienceCountWidget() {
     return ListenableBuilder(
-      listenable: Listenable.merge(
-          [manager.state.audienceList, manager.state.audienceCount]),
+      listenable: Listenable.merge([manager.state.audienceList, manager.state.audienceCount]),
       builder: (context, child) {
         var count = manager.state.audienceCount.value;
-        if (manager.state.audienceList.value.length <=
-            Constants.roomMaxShowUserCount) {
+        if (manager.state.audienceList.value.length <= Constants.roomMaxShowUserCount) {
           count = manager.state.audienceList.value.length;
         }
         return ClipRRect(
@@ -153,7 +150,7 @@ extension on _AudienceListWidgetState {
   void _audienceListViewClick(BuildContext context) {
     if (MediaQuery.orientationOf(context) != Orientation.portrait) return;
     manager.getUserList();
-    _popupWidget(AudienceListPanelWidget(manager: manager));
+    _popupWidget(AudienceListPanelWidget(manager: manager, onClickUserItem: widget.onClickUserItem));
   }
 
   void _popupWidget(Widget widget, {Color? barrierColor}) {

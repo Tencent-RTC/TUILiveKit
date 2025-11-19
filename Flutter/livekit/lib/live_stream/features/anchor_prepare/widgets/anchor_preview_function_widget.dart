@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:live_stream_core/live_core_widget/index.dart';
 import 'package:tencent_live_uikit/common/screen/index.dart';
+import 'package:tencent_live_uikit/live_stream/features/anchor_prepare/widgets/anchor_preview_video_setting_panel_widget.dart';
 import 'package:tencent_live_uikit/live_stream/features/anchor_prepare/widgets/seat_layout_template_widget.dart';
 
 import '../../../../common/constants/constants.dart';
@@ -42,6 +43,7 @@ class _AnchorPreviewFunctionWidgetState extends State<AnchorPreviewFunctionWidge
       _buildAudioEffectWidget(),
       _buildCameraFlipWidget(),
       _buildTemplateWidget(),
+      _buildVideoSettingWidget()
     ]);
   }
 
@@ -163,6 +165,36 @@ class _AnchorPreviewFunctionWidgetState extends State<AnchorPreviewFunctionWidge
       ),
     );
   }
+
+  Widget _buildVideoSettingWidget() {
+    return GestureDetector(
+      onTap: () {
+        _clickVideoSettings();
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 36.radius,
+            height: 36.radius,
+            child: Image.asset(
+              LiveImages.previewFunctionItemSetting,
+              package: Constants.pluginName,
+            ),
+          ),
+          Text(
+            LiveKitLocalizations.of(context)!.common_video_settings,
+            style: const TextStyle(
+              fontSize: 12,
+              color: LiveColors.designStandardG7,
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 extension on _AnchorPreviewFunctionWidgetState {
@@ -180,5 +212,12 @@ extension on _AnchorPreviewFunctionWidgetState {
 
   void _clickTemplate() {
     popupWidget(SeatLayoutTemplateWidget(editInfo: widget.editInfo), backgroundColor: Color(0xFF131417));
+  }
+
+  void _clickVideoSettings() {
+    popupWidget(AnchorPreviewVideoSettingPanelWidget(
+      liveCoreController: liveCoreController,
+      liveStreamManager: liveStreamManager,
+    ));
   }
 }

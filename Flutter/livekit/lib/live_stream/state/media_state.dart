@@ -3,9 +3,13 @@ import 'package:rtc_room_engine/api/room/tui_room_define.dart';
 
 class LSMediaState {
   TUIAudioQuality audioQuality = TUIAudioQuality.audioProfileDefault;
-  TUIVideoQuality videoQuality = TUIVideoQuality.videoQuality_1080P;
+  ValueNotifier<TUIVideoQuality> videoQuality = ValueNotifier(TUIVideoQuality.videoQuality_1080P);
   final ValueNotifier<bool> isAudioLocked = ValueNotifier(false);
   final ValueNotifier<bool> isVideoLocked = ValueNotifier(false);
+  final ValueNotifier<TUIVideoQuality?> playbackQuality = ValueNotifier(null);
+  final ValueNotifier<List<TUIVideoQuality>> playbackQualityList = ValueNotifier([]);
+  final ValueNotifier<bool> isRemoteVideoStreamPaused = ValueNotifier(false);
+  final ValueNotifier<int> currentPlayoutVolume = ValueNotifier(100);
 
   VideoEncParams videoEncParams = VideoEncParams.instance;
   VideoAdvancedSetting videoAdvancedSetting = VideoAdvancedSetting();

@@ -31,9 +31,7 @@ class _BeautyPanelWidgetState extends State<BeautyPanelWidget> {
       height: 310.height,
       decoration: BoxDecoration(
         color: LiveColors.designStandardG2,
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20.radius),
-            topRight: Radius.circular(20.radius)),
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(20.radius), topRight: Radius.circular(20.radius)),
       ),
       child: Column(children: [
         SizedBox(height: 20.height),
@@ -70,10 +68,8 @@ class _BeautyPanelWidgetState extends State<BeautyPanelWidget> {
           ),
           Center(
             child: Text(
-              LiveKitLocalizations.of(Global.appContext())!
-                  .common_beauty_panel_title,
-              style: const TextStyle(
-                  color: LiveColors.designStandardG7, fontSize: 16),
+              LiveKitLocalizations.of(Global.appContext())!.common_beauty_panel_title,
+              style: const TextStyle(color: LiveColors.designStandardG7, fontSize: 16),
             ),
           ),
         ],
@@ -98,8 +94,7 @@ class _BeautyPanelWidgetState extends State<BeautyPanelWidget> {
                   children: [
                     Text(
                       _getLeftTitle(),
-                      style: const TextStyle(
-                          color: LiveColors.designStandardG6, fontSize: 12),
+                      style: const TextStyle(color: LiveColors.designStandardG6, fontSize: 12),
                     ),
                     SizedBox(width: 9.width),
                     SizedBox(
@@ -119,8 +114,7 @@ class _BeautyPanelWidgetState extends State<BeautyPanelWidget> {
                     SizedBox(width: 14.width),
                     Text(
                       sliderValue.toString(),
-                      style: const TextStyle(
-                          color: LiveColors.designStandardG6, fontSize: 12),
+                      style: const TextStyle(color: LiveColors.designStandardG6, fontSize: 12),
                     ),
                   ],
                 ),
@@ -178,8 +172,7 @@ class _BeautyPanelWidgetState extends State<BeautyPanelWidget> {
                         SizedBox(height: 2.height),
                         Text(
                           list[index].title,
-                          style: const TextStyle(
-                              color: LiveColors.designStandardG6, fontSize: 12),
+                          style: const TextStyle(color: LiveColors.designStandardG6, fontSize: 12),
                         ),
                       ],
                     ),
@@ -234,36 +227,29 @@ extension on _BeautyPanelWidgetState {
 
   bool _isClose() {
     final state = manager.state;
-    final value = state.smoothLevel.value +
-        state.whitenessLevel.value +
-        state.ruddyLevel.value;
+    final value = state.smoothLevel.value + state.whitenessLevel.value + state.ruddyLevel.value;
     return value == 0;
   }
 
   void _initData() {
-    BeautyState state =
-        BeautyStateFactory.getState(BeautyManager.beautyStateKey);
+    BeautyState state = BeautyStateFactory.getState(BeautyManager.beautyStateKey);
     manager = BeautyManager(state: state);
 
     list = [
       BeautyItem(
-          title: LiveKitLocalizations.of(Global.appContext())!
-              .common_beauty_item_close,
+          title: LiveKitLocalizations.of(Global.appContext())!.common_beauty_item_close,
           icon: LiveImages.selectNone,
           type: BeautyItemType.none),
       BeautyItem(
-          title: LiveKitLocalizations.of(Global.appContext())!
-              .common_beauty_item_smooth,
+          title: LiveKitLocalizations.of(Global.appContext())!.common_beauty_item_smooth,
           icon: LiveImages.selectSmooth,
           type: BeautyItemType.smooth),
       BeautyItem(
-          title: LiveKitLocalizations.of(Global.appContext())!
-              .common_beauty_item_whiteness,
+          title: LiveKitLocalizations.of(Global.appContext())!.common_beauty_item_whiteness,
           icon: LiveImages.selectWhiteness,
           type: BeautyItemType.whiteness),
       BeautyItem(
-          title: LiveKitLocalizations.of(Global.appContext())!
-              .common_beauty_item_ruddy,
+          title: LiveKitLocalizations.of(Global.appContext())!.common_beauty_item_ruddy,
           icon: LiveImages.selectRuddy,
           type: BeautyItemType.ruddy),
     ];

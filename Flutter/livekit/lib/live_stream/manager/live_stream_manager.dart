@@ -1,10 +1,14 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:live_stream_core/live_core_widget/index.dart' hide CoGuestStatus;
 import 'package:rtc_room_engine/rtc_room_engine.dart';
 import 'package:tencent_live_uikit/live_stream/live_define.dart';
+import 'package:tencent_live_uikit/live_stream/manager/module/float_window_manager.dart';
+import 'package:tencent_live_uikit/live_stream/state/float_window_state.dart';
 import 'package:tencent_live_uikit/live_stream/state/index.dart';
 
+import '../../common/widget/float_window/float_window_mode.dart';
 import '../api/live_stream_service.dart';
 import 'module/index.dart';
 import 'observer/index.dart';
@@ -30,6 +34,7 @@ class LiveStreamManager {
   late final CoGuestManager _coGuestManager;
   late final CoHostManager _coHostManager;
   late final BattleManager _battleManager;
+  late final FloatWindowManager _floatWindowManager;
 
   late final RoomEngineObserver _roomEngineObserver;
   late final LiveListObserver _liveListObserver;
@@ -65,6 +70,7 @@ extension LiveStreamManagerWithCommon on LiveStreamManager {
 
 extension LiveStreamManagerWithAnchor on LiveStreamManager {
   void prepareLiveInfoBeforeEnterRoom(TUILiveInfo liveInfo) {
+    _mediaManager.prepareLiveInfoBeforeEnterRoom(liveInfo);
     return _roomManager.prepareLiveInfoBeforeEnterRoom(liveInfo);
   }
 
@@ -93,6 +99,7 @@ extension LiveStreamManagerWithAnchor on LiveStreamManager {
   }
 
   void onStopLive() {
+    _mediaManager.onStopLive();
     return _roomManager.onStopLive();
   }
 
@@ -164,10 +171,35 @@ extension LiveStreamManagerWithAnchor on LiveStreamManager {
         .where((user) => user.userId.isNotEmpty && user.userId != coreUserState.selfInfo.userId)
         .isNotEmpty;
   }
+
+  void updateVideoQuality(TUIVideoQuality videoQuality) {
+    return _mediaManager.updateVideoQuality(videoQuality);
+  }
+
+  Future<TUIValueCallBack<List<TUIVideoQuality>>> getMultiPlaybackQuality(String roomId) {
+    return _mediaManager.getMultiPlaybackQuality(roomId);
+  }
+
+  void switchPlaybackQuality(TUIVideoQuality videoQuality) {
+    return _mediaManager.switchPlaybackQuality(videoQuality);
+  }
+
+  void setAudioPlayoutVolume(int volume) {
+    return _mediaManager.setAudioPlayoutVolume(volume);
+  }
+
+  void pauseByAudience() {
+    return _mediaManager.pauseByAudience();
+  }
+
+  void resumeByAudience() {
+    return _mediaManager.resumeByAudience();
+  }
 }
 
 extension LiveStreamManagerWithAudience on LiveStreamManager {
   void onJoinLive(TUILiveInfo liveInfo) {
+    _mediaManager.onJoinLive(liveInfo);
     return _roomManager.onJoinLive(liveInfo);
   }
 
@@ -198,6 +230,26 @@ extension LiveStreamManagerWithAudience on LiveStreamManager {
   }
 }
 
+extension LiveStreamManagerWithFloatWindow on LiveStreamManager {
+
+  void enablePipMode(bool enable) {
+    _floatWindowManager.enablePipMode(enable);
+  }
+
+  String buildEnablePipJsonParams(bool enable, String roomId) {
+    return _floatWindowManager.buildEnablePipJsonParams(enable, roomId);
+  }
+
+  void setFloatWindowMode(FloatWindowMode mode) {
+    LSFloatWindowState floatWindowState = _floatWindowManager.floatWindowState;
+    if (floatWindowState.floatWindowMode is ValueNotifier<FloatWindowMode>) {
+      ValueNotifier<FloatWindowMode> floatWindowMode =
+          floatWindowState.floatWindowMode as ValueNotifier<FloatWindowMode>;
+      floatWindowMode.value = mode;
+    }
+  }
+}
+
 extension LiveStreamManagerWithTools on LiveStreamManager {
   // State
   LSRoomState get roomState => _roomManager.roomState;
@@ -211,6 +263,8 @@ extension LiveStreamManagerWithTools on LiveStreamManager {
   LSCoHostState get coHostState => _coHostManager.coHostState;
 
   LSBattleState get battleState => _battleManager.battleState;
+
+  LSFloatWindowState get floatWindowState => _floatWindowManager.floatWindowState;
 
   // Manager
   CoHostManager get coHostManager => _coHostManager;
@@ -252,6 +306,7 @@ extension on LiveStreamManager {
     _coGuestManager = CoGuestManager();
     _coHostManager = CoHostManager();
     _battleManager = BattleManager();
+    _floatWindowManager = FloatWindowManager();
     _roomEngineObserver = RoomEngineObserver();
     _liveListObserver = LiveListObserver();
     liveStreamObserver = LiveStreamObserver();
@@ -282,6 +337,7 @@ extension on LiveStreamManager {
     _coGuestManager.init(_context);
     _coHostManager.init(_context);
     _battleManager.init(_context);
+    _floatWindowManager.init(_context);
 
     _roomEngineObserver.init(_context);
     _liveListObserver.init(_context);
@@ -301,6 +357,7 @@ extension on LiveStreamManager {
     _coGuestManager.dispose();
     _coHostManager.dispose();
     _battleManager.dispose();
+    _floatWindowManager.dispose();
 
     service.removeEngineObserver(_roomEngineObserver);
     service.removeLiveListManagerObserver(_liveListObserver);
@@ -366,4 +423,6 @@ class Context {
   CoHostState get coreCoHostState => provider.target?.getCoreState().coHostState ?? CoHostState();
 
   BattleState get coreBattleState => provider.target?.getCoreState().battleState ?? BattleState();
+
+  LayoutState get coreLayoutState => provider.target?.getCoreState().layoutState ?? LayoutState();
 }

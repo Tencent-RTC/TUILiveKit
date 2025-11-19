@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
-
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:tencent_live_uikit/common/index.dart';
 import 'package:tencent_live_uikit/live_stream/features/anchor_broadcast/battle/battle_count_down_backgroud_widget.dart';
 
@@ -9,12 +9,14 @@ class BattleCountDownWidget extends StatefulWidget {
   final int countdownTime;
   final VoidCallback? onTimeEnd;
   final VoidCallback? onCancel;
+  final ValueListenable<bool>? isFloatWindowMode;
 
   const BattleCountDownWidget({
     super.key,
     required this.countdownTime,
     this.onTimeEnd,
     this.onCancel,
+    this.isFloatWindowMode,
   });
 
   @override
@@ -81,13 +83,22 @@ class _BattleCountDownWidgetState extends State<BattleCountDownWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.isFloatWindowMode == null) {
+      return buildContent(context);
+    }
+    return ValueListenableBuilder(
+        valueListenable: widget.isFloatWindowMode!,
+        builder: (context, isFloatWindowMode, child) {
+          return Visibility(visible: !isFloatWindowMode, child: buildContent(context));
+        });
+  }
+
+  Widget buildContent(BuildContext context) {
     return Center(
       child: Stack(
         alignment: Alignment.center,
         children: [
-          Positioned(
-              child: BattleCountDownBackgroundWidget(
-                  initialRadius: 80.radius, finalRadius: 121.radius)),
+          Positioned(child: BattleCountDownBackgroundWidget(initialRadius: 80.radius, finalRadius: 121.radius)),
           Positioned(
             top: 68.height,
             child: Text(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:tencent_live_uikit/common/widget/global.dart';
 import 'package:tencent_live_uikit/tencent_live_uikit.dart';
 import 'package:tencent_live_uikit_example/generated/l10n.dart';
 import 'package:tencent_live_uikit_example/src/view/index.dart';
@@ -54,7 +55,13 @@ class _MyAppState extends State<MyApp> {
                 child: child,
               ),
             ),
-        home: const LoginWidget());
+        home: Navigator(
+          key: Global.secondaryNavigatorKey,
+          onGenerateRoute: (settings) => MaterialPageRoute(builder: (BuildContext context) {
+            return const LoginWidget();
+          }),
+        )
+    );
   }
 
   void hideKeyboard(BuildContext context) {

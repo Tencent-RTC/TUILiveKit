@@ -1,15 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:live_stream_core/common/index.dart';
 import 'package:live_stream_core/live_stream_core.dart';
+import 'package:live_uikit_barrage/live_uikit_barrage.dart';
+import 'package:live_uikit_gift/live_uikit_gift.dart';
 import 'package:rtc_room_engine/rtc_room_engine.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:tencent_live_uikit/common/index.dart';
 
-import '../common/language/index.dart';
-import '../common/platform/index.dart';
-import '../common/widget/index.dart';
 import '../component/audio_effect/index.dart';
 import '../live_navigator_observer.dart';
 import './index.dart';
@@ -69,6 +67,8 @@ class _TUIVoiceRoomWidgetState extends State<TUIVoiceRoomWidget> {
     seatGridController.dispose();
     manager.dispose();
     AudioEffectStateFactory.removeState(manager.roomState.roomId);
+    BarrageDisplayController.resetState();
+    GiftPlayController.resetState();
     _stopForegroundService();
     super.dispose();
   }

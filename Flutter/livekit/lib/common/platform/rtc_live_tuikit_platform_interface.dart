@@ -58,6 +58,14 @@ abstract class TUILiveKitPlatform extends PlatformInterface {
     await instance.openAppSettings();
   }
 
+  Future<void> openPipSettings() async {
+    await instance.openPipSettings();
+  }
+
+  Future<bool> hasPipPermission() {
+    return instance.hasPipPermission();
+  }
+
   Future<bool> isNetworkConnected() {
     return _instance.isNetworkConnected();
   }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:tencent_live_uikit/common/index.dart';
 
@@ -6,8 +7,10 @@ import '../../../manager/live_stream_manager.dart';
 class BattleMemberInfoWidget extends StatefulWidget {
   final LiveStreamManager liveStreamManager;
   final String battleUserId;
+  final ValueListenable<bool> isFloatWindowMode;
 
-  const BattleMemberInfoWidget({super.key, required this.liveStreamManager, required this.battleUserId});
+  const BattleMemberInfoWidget(
+      {super.key, required this.liveStreamManager, required this.battleUserId, required this.isFloatWindowMode});
 
   @override
   State<BattleMemberInfoWidget> createState() => _BattleMemberInfoWidgetState();
@@ -21,6 +24,15 @@ class _BattleMemberInfoWidgetState extends State<BattleMemberInfoWidget> {
 
   @override
   Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: widget.isFloatWindowMode,
+      builder: (context, isFloatWindowMode, child) {
+        return Visibility(visible: !isFloatWindowMode, child: buildContent(context));
+      },
+    );
+  }
+
+  Widget buildContent(BuildContext context) {
     return Stack(
       children: [
         Positioned(

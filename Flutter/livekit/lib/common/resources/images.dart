@@ -7,16 +7,12 @@ class LiveImages {
   static const streamPrivacyMode = 'assets/images/live_stream_privacy_mode.png';
   static const streamEditArrow = 'assets/images/live_stream_edit_arrow.png';
 
-  static const previewFunctionItemBeauty =
-      'assets/images/live_preview_function_item_beauty.png';
-  static const previewFunctionItemFlip =
-      'assets/images/live_preview_function_item_flip.png';
-  static const previewFunctionItemMirror =
-      'assets/images/live_preview_function_item_mirror.png';
-  static const previewFunctionItemMusic =
-      'assets/images/live_preview_function_item_music.png';
-  static const previewFunctionItemTemplate =
-      'assets/images/live_preview_function_item_template.png';
+  static const previewFunctionItemBeauty = 'assets/images/live_preview_function_item_beauty.png';
+  static const previewFunctionItemFlip = 'assets/images/live_preview_function_item_flip.png';
+  static const previewFunctionItemMirror = 'assets/images/live_preview_function_item_mirror.png';
+  static const previewFunctionItemMusic = 'assets/images/live_preview_function_item_music.png';
+  static const previewFunctionItemTemplate = 'assets/images/live_preview_function_item_template.png';
+  static const previewFunctionItemSetting = 'assets/images/live_preview_function_item_setting.png';
 
   static const audienceClose = 'assets/images/live_audience_close.png';
   static const audienceLike = 'assets/images/live_audience_like.png';
@@ -56,6 +52,7 @@ class LiveImages {
   static const settingsItemMusic = 'assets/images/live_settings_item_music.png';
   static const settingsItemFlip = 'assets/images/live_settings_item_flip.png';
   static const settingsItemMirror = 'assets/images/live_settings_item_mirror.png';
+  static const settingsItemPip = 'assets/images/live_settings_item_pip.png';
   static const settingsItemVideoParams = 'assets/images/live_settings_item_video_params.png';
   static const downArrow = 'assets/images/live_down_arrow.png';
   static const ellipsis = 'assets/images/live_ellipsis.png';
@@ -70,6 +67,7 @@ class LiveImages {
   static const videoSettingsBeauty = 'assets/images/live_video_settings_beauty.png';
   static const videoSettingsFlip = 'assets/images/live_video_settings_flip.png';
   static const videoSettingsMirror = 'assets/images/live_video_settings_mirror.png';
+  static const floatWindow = "assets/images/live_float_window.png";
 
   static const voiceBackground = 'assets/images/live_voice_background.png';
   static const prepareAudio = 'assets/images/live_prepare_audio.png';
@@ -135,4 +133,14 @@ class LiveImages {
   static const add = 'assets/images/live_add.png';
 
   static const videoResolution = 'assets/images/live_video_resolution.png';
+  static const enableChat = 'assets/images/live_enable_chat.png';
+  static const disableChat = 'assets/images/live_disable_chat.png';
+  static const anchorKickOut = 'assets/images/live_anchor_kick_out.png';
+  static const anchorUnmute = 'assets/images/live_anchor_unmute.png';
+  static const anchorMute = 'assets/images/live_anchor_mute.png';
+  static const disableAudio = 'assets/images/live_disable_audio.png';
+  static const openCamera = 'assets/images/live_open_camera.png';
+  static const closeCamera = 'assets/images/live_close_camera.png';
+  static const disableCamera = 'assets/images/live_disable_camera.png';
+  static const leaveSeat = 'assets/images/live_leave_seat.png';
 }

@@ -201,6 +201,15 @@ public class TuilivekitPlugin implements FlutterPlugin, MethodCallHandler, Activ
         result.success(null);
     }
 
+    public void openPipSettings(MethodCall call, MethodChannel.Result result) {
+        mSettingsManager.checkAndOpenPipSettings(mActivity);
+        result.success(null);
+    }
+
+    public void hasPipPermission(MethodCall call, MethodChannel.Result result) {
+        result.success(mSettingsManager.hasPipPermission(mActivity));
+    }
+
     public void getCurrentNetworkStatus(MethodCall call, MethodChannel.Result result) {
         result.success(mNetworkManager.getCurrentNetworkState());
     }

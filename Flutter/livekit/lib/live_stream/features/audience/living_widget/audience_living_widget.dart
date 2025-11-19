@@ -1,29 +1,30 @@
-import 'package:flutter/services.dart';
-import 'package:live_stream_core/live_core_widget/index.dart' hide LiveStatus;
-import 'package:live_uikit_barrage/live_uikit_barrage.dart';
-import 'package:live_uikit_gift/live_uikit_gift.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:live_stream_core/common/logger/logger.dart';
+import 'package:live_stream_core/live_core_widget/index.dart' hide LiveStatus;
 import 'package:tencent_live_uikit/common/index.dart';
+import 'package:tencent_live_uikit/component/float_window/global_float_window_manager.dart';
 import 'package:tencent_live_uikit/component/index.dart';
 import 'package:tencent_live_uikit/component/network_info/manager/network_info_manager.dart';
 import 'package:tencent_live_uikit/live_stream/features/audience/living_widget/audience_bottom_menu_widget.dart';
 import 'package:tencent_live_uikit/live_stream/features/decorations/co_guest/co_guest_waiting_agree_widget.dart';
 import 'package:tencent_live_uikit/live_stream/manager/live_stream_manager.dart';
-import 'package:tencent_live_uikit/tencent_live_uikit.dart';
 import 'package:tencent_live_uikit/live_stream/state/co_guest_state.dart' as ls_co_guest;
+import 'package:tencent_live_uikit/tencent_live_uikit.dart';
 
+import '../../../../common/gesture/gesture_mock.dart';
 import '../../../../component/network_info/index.dart';
 import '../../../live_define.dart';
+import '../panel/audience_user_info_panel_widget.dart';
+import './player_menu_widget.dart';
 
 class AudienceLivingWidget extends StatefulWidget {
   final LiveCoreController liveCoreController;
   final LiveStreamManager liveStreamManager;
+  final VoidCallback? onTapEnterFloatWindowInApp;
 
-  const AudienceLivingWidget({
-    super.key,
-    required this.liveCoreController,
-    required this.liveStreamManager,
-  });
+  const AudienceLivingWidget(
+      {super.key, required this.liveCoreController, required this.liveStreamManager, this.onTapEnterFloatWindowInApp});
 
   @override
   State<StatefulWidget> createState() => _AudienceLivingWidgetState();
@@ -34,36 +35,59 @@ class _AudienceLivingWidgetState extends State<AudienceLivingWidget> {
   GiftPlayController? _giftPlayController;
   final NetworkInfoManager _networkInfoManager = NetworkInfoManager();
   late final VoidCallback _userEnterRoomListener = _onRemoteUserEnterRoom;
+  late final VoidCallback _playbackVideoQualityChangedListener = _onPlaybackVideoQualityChanged;
+  TUIVideoQuality? playbackQuality;
 
   @override
   void initState() {
     super.initState();
     widget.liveStreamManager.userState.enterUser.addListener(_userEnterRoomListener);
+    widget.liveStreamManager.mediaState.playbackQuality.addListener(_playbackVideoQualityChangedListener);
   }
 
   @override
   void dispose() {
     _networkInfoManager.dispose();
+    widget.liveStreamManager.mediaState.playbackQuality.removeListener(_playbackVideoQualityChangedListener);
     widget.liveStreamManager.userState.enterUser.removeListener(_userEnterRoomListener);
+    enablePictureInPicture(false);
     super.dispose();
+  }
+
+  void enablePictureInPicture(bool enable) {
+    final roomId = widget.liveCoreController.roomState.roomId;
+    final jsonString = widget.liveStreamManager.buildEnablePipJsonParams(enable, roomId);
+    widget.liveCoreController.enablePictureInPicture(jsonString).then((result) {
+      LiveStreamCoreLogger.info("enablePictureInPicture,enable=$enable,result=$result");
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = 1.screenWidth;
     final screenHeight = 1.screenHeight;
-    return Stack(
-      children: [
-        _buildTopMeanWidget(context),
-        _buildNetworkInfoButtonWidget(),
-        _buildCoGuestWaitingAgreeWidget(),
-        _buildBarrageDisplayWidget(screenWidth, context),
-        _buildGiftDisplayWidget(screenWidth, screenHeight),
-        _buildBottomMenuWidget(screenWidth, context),
-        _buildRotateScreenButton(context),
-        _buildNetworkToastWidget()
-      ],
-    );
+    return ValueListenableBuilder(
+        valueListenable: widget.liveStreamManager.floatWindowState.isFloatWindowMode,
+        builder: (context, isFloatWindowMode, child) {
+          return Visibility(
+            visible: !isFloatWindowMode,
+            child: GestureDetector(
+              onTap: () => onTapAudienceLivingWidget(),
+              child: Stack(
+                children: [
+                  _buildTopMeanWidget(context),
+                  _buildNetworkInfoButtonWidget(),
+                  _buildCoGuestWaitingAgreeWidget(),
+                  _buildBarrageDisplayWidget(screenWidth, context),
+                  _buildGiftDisplayWidget(screenWidth, screenHeight),
+                  _buildBottomMenuWidget(screenWidth, context),
+                  _buildRotateScreenButton(context),
+                  _buildNetworkToastWidget()
+                ],
+              ),
+            ),
+          );
+        });
   }
 
   Widget _buildTopMeanWidget(BuildContext context) {
@@ -78,13 +102,60 @@ class _AudienceLivingWidgetState extends State<AudienceLivingWidget> {
           children: [
             LiveInfoWidget(
               roomId: widget.liveCoreController.roomState.roomId,
+              isFloatWindowMode: widget.liveStreamManager.floatWindowState.isFloatWindowMode,
             ),
             Row(
               children: [
                 AudienceListWidget(
                   roomId: widget.liveCoreController.roomState.roomId,
+                  onClickUserItem: (user) {
+                    final isSelf = widget.liveStreamManager.coreUserState.selfInfo.userId == user.userId;
+                    if (!isSelf) {
+                      popupWidget(AudienceUserInfoPanelWidget(user: user, liveStreamManager: widget.liveStreamManager),
+                          backgroundColor: LiveColors.designStandardTransparent);
+                    }
+                  },
                 ),
-                SizedBox(width: 8.width), // Add spacing between widgets
+                Visibility(
+                    visible: GlobalFloatWindowManager.instance.isEnableFloatWindowFeature(),
+                    child: SizedBox(width: 8.width)), // Add spacing between widgets
+                ValueListenableBuilder(
+                    valueListenable: widget.liveStreamManager.mediaState.isRemoteVideoStreamPaused,
+                    builder: (context, isRemoteVideoStreamPaused, _) {
+                      return Visibility(
+                        visible: GlobalFloatWindowManager.instance.isEnableFloatWindowFeature() &&
+                            !isRemoteVideoStreamPaused,
+                        child: SizedBox(
+                          width: 24.width,
+                          height: 24.height,
+                          child: GestureDetector(
+                            onTap: () {
+                              if (MediaQuery.of(context).orientation == Orientation.portrait) {
+                                widget.onTapEnterFloatWindowInApp?.call();
+                              } else {
+                                SystemChrome.setPreferredOrientations([
+                                  DeviceOrientation.portraitUp,
+                                ]).then((value) {
+                                  Future.delayed(const Duration(milliseconds: 300), () {
+                                    widget.onTapEnterFloatWindowInApp?.call();
+                                  });
+                                });
+                              }
+                            },
+                            child: Image.asset(
+                              LiveImages.floatWindow,
+                              package: Constants.pluginName,
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+                ValueListenableBuilder(
+                    valueListenable: widget.liveStreamManager.mediaState.isRemoteVideoStreamPaused,
+                    builder: (context, isRemoteVideoStreamPaused, _) {
+                      return Visibility(visible: !isRemoteVideoStreamPaused, child: SizedBox(width: 8.width));
+                    }),
                 SizedBox(
                   width: 24.width,
                   height: 24.height,
@@ -164,7 +235,22 @@ class _AudienceLivingWidgetState extends State<AudienceLivingWidget> {
           }
 
           _initBarrageDisPlayController();
-          return BarrageDisplayWidget(controller: _barrageDisplayController!);
+          return BarrageDisplayWidget(
+            controller: _barrageDisplayController!,
+            onClickBarrageItem: (barrage) {
+              final isSelf = widget.liveStreamManager.coreUserState.selfInfo.userId == barrage.user.userId;
+              final isOwner = widget.liveStreamManager.coreRoomState.ownerInfo.userId == barrage.user.userId;
+              final user = TUIUserInfo(
+                  userId: barrage.user.userId,
+                  userName: barrage.user.userName,
+                  avatarUrl: barrage.user.avatarUrl,
+                  userRole: isOwner ? TUIRole.roomOwner : TUIRole.generalUser);
+              if (!isSelf) {
+                popupWidget(AudienceUserInfoPanelWidget(user: user, liveStreamManager: widget.liveStreamManager),
+                    backgroundColor: LiveColors.designStandardTransparent);
+              }
+            },
+          );
         },
       ),
     );
@@ -190,6 +276,20 @@ class _AudienceLivingWidgetState extends State<AudienceLivingWidget> {
     );
   }
 
+  void onTapAudienceLivingWidget() {
+    if (!isPureViewingMode()) {
+      return;
+    }
+    final orientation = MediaQuery.orientationOf(context);
+    if (widget.liveStreamManager.roomState.roomVideoStreamIsLandscape.value && orientation == Orientation.landscape) {
+      popupWidget(
+        PlayerMenuWidget(liveStreamManager: widget.liveStreamManager),
+        barrierColor: LiveColors.designStandardTransparent,
+        backgroundColor: LiveColors.designStandardTransparent,
+      );
+    }
+  }
+
   Widget _buildBottomMenuWidget(double screenWidth, BuildContext context) {
     return Positioned(
       left: 0,
@@ -213,11 +313,17 @@ class _AudienceLivingWidgetState extends State<AudienceLivingWidget> {
       top: orientation == Orientation.portrait ? 475.height : 185.width,
       height: 32.radius,
       width: 32.radius,
-      child: ValueListenableBuilder(
-        valueListenable: widget.liveStreamManager.roomState.roomVideoStreamIsLandscape,
-        builder: (BuildContext context, value, Widget? child) {
+      child: ListenableBuilder(
+        listenable: Listenable.merge([
+          widget.liveStreamManager.roomState.roomVideoStreamIsLandscape,
+          widget.liveStreamManager.mediaState.isRemoteVideoStreamPaused
+        ]),
+        builder: (context, _) {
+          final roomVideoStreamIsLandscape = widget.liveStreamManager.roomState.roomVideoStreamIsLandscape.value;
+          final isRemoteVideoStreamPaused = widget.liveStreamManager.mediaState.isRemoteVideoStreamPaused.value;
+          final visible = !isRemoteVideoStreamPaused && roomVideoStreamIsLandscape;
           return Visibility(
-            visible: value,
+            visible: visible,
             child: IconButton(
               icon: Image.asset(
                 LiveImages.rotateScreen,
@@ -300,10 +406,24 @@ extension on _AudienceLivingWidgetState {
     _barrageDisplayController?.insertMessage(barrage);
   }
 
+  void _onPlaybackVideoQualityChanged() {
+    final playbackVideoQuality = widget.liveStreamManager.mediaState.playbackQuality.value;
+    if (playbackVideoQuality != null && playbackQuality != null) {
+      final toast = LiveKitLocalizations.of(context)!.live_video_resolution_changed +
+          _getVideoQualityString(playbackVideoQuality);
+      widget.liveStreamManager.toastSubject.add(toast);
+    }
+    playbackQuality = playbackVideoQuality;
+  }
+
   void _onCloseIconTap() {
     if (widget.liveCoreController.coGuestState.coGuestStatus.value != CoGuestStatus.linking) {
       widget.liveCoreController.leaveLiveStream();
-      Navigator.pop(context);
+      if (GlobalFloatWindowManager.instance.state.enableFloatWindowFeature) {
+        GlobalFloatWindowManager.instance.overlayManager.closeOverlay();
+      } else {
+        Navigator.of(context).pop();
+      }
       SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
       ]);
@@ -358,8 +478,15 @@ extension on _AudienceLivingWidgetState {
           widget.liveCoreController.terminateIntraRoomConnection();
           break;
         case 3:
+          GestureMock.mockTapEvent();
           widget.liveCoreController.leaveLiveStream();
-          Navigator.pop(context);
+          if (GlobalFloatWindowManager.instance.state.enableFloatWindowFeature) {
+            GlobalFloatWindowManager.instance.overlayManager.closeOverlay();
+          } else {
+            if (mounted) {
+              Navigator.of(context).pop();
+            }
+          }
           break;
         default:
           break;
@@ -378,5 +505,25 @@ extension on _AudienceLivingWidgetState {
         DeviceOrientation.portraitUp,
       ]);
     }
+  }
+
+  String _getVideoQualityString(TUIVideoQuality videoQuality) {
+    switch (videoQuality) {
+      case TUIVideoQuality.videoQuality_1080P:
+        return '1080P';
+      case TUIVideoQuality.videoQuality_720P:
+        return '720P';
+      case TUIVideoQuality.videoQuality_540P:
+        return '540P';
+      case TUIVideoQuality.videoQuality_360P:
+        return '360P';
+      default:
+        return 'Original';
+    }
+  }
+
+  bool isPureViewingMode() {
+    final selfUserId = widget.liveCoreController.userState.selfInfo.userId;
+    return !widget.liveCoreController.coGuestState.seatList.value.any((seat) => seat.userId == selfUserId);
   }
 }

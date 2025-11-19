@@ -1,5 +1,9 @@
 # LiveUIKitGift
 
+### 2.2.0
+
+- Upgraded dependencies on rtc_room_engine SDK to 3.5.0.
+
 ## 2.1.0
 - Android & iOS:
   Renamed GiftDisplayController to GiftPlayController 

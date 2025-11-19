@@ -8,7 +8,6 @@ import 'package:tencent_live_uikit/common/resources/colors.dart';
 import 'package:tencent_live_uikit/common/resources/images.dart';
 import 'package:tencent_live_uikit/common/screen/index.dart';
 import 'package:tencent_live_uikit/common/widget/index.dart';
-import 'package:tencent_live_uikit/live_navigator_observer.dart';
 
 import '../../../../component/beauty/index.dart';
 
@@ -16,19 +15,13 @@ class CoGuestVideoSettingsPanelWidget extends StatefulWidget {
   final LiveCoreController liveCoreController;
   final int seatIndex;
 
-  const CoGuestVideoSettingsPanelWidget({
-    super.key,
-    required this.liveCoreController,
-    this.seatIndex = -1
-  });
+  const CoGuestVideoSettingsPanelWidget({super.key, required this.liveCoreController, this.seatIndex = -1});
 
   @override
-  State<CoGuestVideoSettingsPanelWidget> createState() =>
-      _CoGuestVideoSettingsPanelWidgetState();
+  State<CoGuestVideoSettingsPanelWidget> createState() => _CoGuestVideoSettingsPanelWidgetState();
 }
 
-class _CoGuestVideoSettingsPanelWidgetState
-    extends State<CoGuestVideoSettingsPanelWidget> {
+class _CoGuestVideoSettingsPanelWidgetState extends State<CoGuestVideoSettingsPanelWidget> {
   @override
   void dispose() {
     widget.liveCoreController.stopCamera();
@@ -70,8 +63,7 @@ class _CoGuestVideoSettingsPanelWidgetState
         height: 44.height,
         child: Center(
           child: Text(
-            LiveKitLocalizations.of(Global.appContext())!
-                .common_title_link_video_settings,
+            LiveKitLocalizations.of(Global.appContext())!.common_title_link_video_settings,
             style: const TextStyle(
               color: LiveColors.designStandardG7,
               fontSize: 16,
@@ -101,24 +93,20 @@ class _CoGuestVideoSettingsPanelWidgetState
         children: [
           _buildVideoSettingWidget(
             LiveImages.videoSettingsBeauty,
-            LiveKitLocalizations.of(Global.appContext())!
-                .common_video_settings_item_beauty,
+            LiveKitLocalizations.of(Global.appContext())!.common_video_settings_item_beauty,
             _showBeautyPanel,
           ),
           SizedBox(width: 12.width),
           _buildVideoSettingWidget(
             LiveImages.videoSettingsFlip,
-            LiveKitLocalizations.of(Global.appContext())!
-                .common_video_settings_item_flip,
+            LiveKitLocalizations.of(Global.appContext())!.common_video_settings_item_flip,
             _switchCamera,
           ),
           SizedBox(width: 12.width),
         ],
       );
 
-  Widget _buildVideoSettingWidget(
-          String image, String title, VoidCallback onTap) =>
-      GestureDetector(
+  Widget _buildVideoSettingWidget(String image, String title, VoidCallback onTap) => GestureDetector(
         onTap: onTap,
         child: ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(10.radius)),
@@ -162,8 +150,7 @@ class _CoGuestVideoSettingsPanelWidgetState
             height: 52.height,
             child: Center(
               child: Text(
-                LiveKitLocalizations.of(Global.appContext())!
-                    .common_apply_link_mic,
+                LiveKitLocalizations.of(Global.appContext())!.common_apply_link_mic,
                 style: const TextStyle(
                   fontSize: 16,
                   color: LiveColors.designStandardFlowkitWhite,
@@ -177,8 +164,7 @@ class _CoGuestVideoSettingsPanelWidgetState
 
   Widget _buildApplyLinkMicTipsWidget() => Center(
         child: Text(
-          LiveKitLocalizations.of(Global.appContext())!
-              .common_tips_apply_link_mic,
+          LiveKitLocalizations.of(Global.appContext())!.common_tips_apply_link_mic,
           style: const TextStyle(
             fontSize: 12,
             color: LiveColors.designStandardG4,
@@ -194,8 +180,7 @@ class _CoGuestVideoSettingsPanelWidgetState
 
 extension on _CoGuestVideoSettingsPanelWidgetState {
   void _switchCamera() {
-    widget.liveCoreController
-        .switchCamera(!widget.liveCoreController.mediaState.isFrontCamera);
+    widget.liveCoreController.switchCamera(!widget.liveCoreController.mediaState.isFrontCamera);
   }
 
   Future<void> _requestIntraRoomVideoConnection() async {
@@ -206,16 +191,10 @@ extension on _CoGuestVideoSettingsPanelWidgetState {
       openCamera: true,
     );
     if (result.code == TUIError.success) {
-      makeToast(
-        msg: LiveKitLocalizations.of(Global.appContext())!
-            .common_toast_apply_link_mic,
-      );
+      makeToast(msg: LiveKitLocalizations.of(Global.appContext())!.common_toast_apply_link_mic);
     } else {
-      makeToast(
-          msg: ErrorHandler.convertToErrorMessage(
-                  result.code.rawValue, result.message) ??
-              '');
+      makeToast(msg: ErrorHandler.convertToErrorMessage(result.code.rawValue, result.message) ?? '');
     }
-    TUILiveKitNavigatorObserver.instance.backToLiveRoomAudiencePage();
+    Navigator.of(Global.appContext()).pop();
   }
 }

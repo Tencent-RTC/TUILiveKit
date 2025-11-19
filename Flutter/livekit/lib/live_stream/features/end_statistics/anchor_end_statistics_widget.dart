@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tencent_live_uikit/common/index.dart';
+import 'package:tencent_live_uikit/component/float_window/global_float_window_manager.dart';
 
 import '../../../component/audio_effect/state/audio_effect_state_factory.dart';
 import '../../../component/beauty/index.dart';
@@ -247,7 +248,11 @@ class _AnchorEndStatisticsWidgetState extends State<AnchorEndStatisticsWidget> {
 
 extension on _AnchorEndStatisticsWidgetState {
   void _closeWidget() {
-    Navigator.of(context).pop();
+    if (GlobalFloatWindowManager.instance.isEnableFloatWindowFeature()) {
+      GlobalFloatWindowManager.instance.overlayManager.closeOverlay();
+    } else {
+      Navigator.of(context).pop();
+    }
   }
 
   String getFormatDuration(int duration) {

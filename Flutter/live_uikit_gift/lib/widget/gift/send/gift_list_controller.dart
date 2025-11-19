@@ -9,6 +9,7 @@ class GiftListController {
   late PageController pageController = PageController();
   late GiftManager giftManager;
   OnSendGiftCallback? onSendGiftCallback;
+  final ValueNotifier<bool> isFloatWindowMode = ValueNotifier(false);
 
   GiftListController({required this.roomId, this.language = 'en', OnGiftError? onError}) {
     giftManager = GiftManagerFactory.getGiftManager(roomId);
@@ -24,6 +25,10 @@ class GiftListController {
     }
     onSendGiftCallback?.call(giftInfo, count);
     return result;
+  }
+
+  void setFloatWindowMode(bool isFloatWindow) {
+    isFloatWindowMode.value = isFloatWindow;
   }
 }
 

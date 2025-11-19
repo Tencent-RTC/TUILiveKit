@@ -4,15 +4,16 @@ import 'package:tencent_live_uikit/common/index.dart';
 class ActionSheet {
   static void show(
       List<ActionSheetModel> list, Function(ActionSheetModel) clickBlock,
-      {String? title, Color backgroundColor = LiveColors.designStandardG2}) {
+      {String? title, Color backgroundColor = LiveColors.designStandardG2, BuildContext? parentContext}) {
+    final context = parentContext == null ? Global.appContext()! : parentContext!;
     final bool hasTitle = title != null && title.isNotEmpty;
     double titleHeight = hasTitle ? 50.height : 0;
-    double bottomHeight = MediaQuery.paddingOf(Global.appContext()).bottom;
+    double bottomHeight = MediaQuery.paddingOf(context).bottom;
     double actionSheetHeight =
         list.fold(0.0, (sum, item) => sum + item.cellHeight);
     debugPrint("showActionSheet:$actionSheetHeight");
     showModalBottomSheet(
-      context: Global.appContext(),
+      context: context,
       builder: (context) => Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.only(
@@ -45,7 +46,7 @@ class ActionSheet {
               child: ListView.builder(
                 itemCount: list.length,
                 itemBuilder: (context, index) {
-                  return _buildCell(list[index], clickBlock);
+                  return _buildCell(list[index], clickBlock, context);
                 },
               ),
             ),
@@ -56,12 +57,12 @@ class ActionSheet {
   }
 
   static GestureDetector _buildCell(
-      ActionSheetModel model, Function(ActionSheetModel) clickBlock) {
+      ActionSheetModel model, Function(ActionSheetModel) clickBlock, BuildContext context) {
     return GestureDetector(
       onTap: () {
         clickBlock(model);
         if (model.autoPopSheet) {
-          Navigator.of(Global.appContext()).pop();
+          Navigator.of(context).pop();
         }
       },
       child: Column(
