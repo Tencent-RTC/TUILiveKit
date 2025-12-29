@@ -29,6 +29,7 @@
             class="select"
             :teleported="false"
             :popper-append-to-body="false"
+            :disabled="isCreatedLive"
           >
             <TUIOption
               v-for="(item, index) in videoQualityList"
@@ -52,11 +53,14 @@
 import { ref, computed } from 'vue';
 import { TUIVideoQuality } from '@tencentcloud/tuiroom-engine-js';
 import { useUIKit, TUIDialog, TUISelect, TUIOption, IconSetting } from '@tencentcloud/uikit-base-component-vue3';
-import { AudioSettingPanel, useVideoMixerState } from 'tuikit-atomicx-vue3';
+import { AudioSettingPanel, useVideoMixerState, useLiveListState } from 'tuikit-atomicx-vue3';
 
 const { t } = useUIKit();
 
 const { publishVideoQuality } = useVideoMixerState();
+const { currentLive } = useLiveListState();
+
+const isCreatedLive = computed(() => !!currentLive.value?.liveId);
 
 const videoQualityList = computed(() => [
   { label: t('High Definition'), value: TUIVideoQuality.kVideoQuality_720p },
