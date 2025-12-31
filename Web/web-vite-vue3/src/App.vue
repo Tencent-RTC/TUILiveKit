@@ -1,5 +1,5 @@
 <template>
-  <UIKitProvider theme="dark" language="zh-CN">
+  <UIKitProvider theme="dark">
     <div id="app">
       <router-view />
     </div>
