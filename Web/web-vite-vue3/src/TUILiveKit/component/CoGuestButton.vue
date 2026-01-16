@@ -7,8 +7,7 @@
     <span
       v-if="applicants.length > 0"
       class="unread-count"
-      >{{ applicants.length }}</span
-    >
+    >{{ applicants.length }}</span>
     <IconCoGuest class="custom-icon" />
     <span class="custom-text co-guest-text">{{ t('CoGuest') }}</span>
   </div>
@@ -67,7 +66,8 @@ watch(disabled, () => {
   align-items: center;
   justify-content: center;
   gap: 4px;
-  width: 56px;
+  min-width: 56px;
+  width: auto;
   height: 56px;
   cursor: pointer;
   color: $text-color1;

@@ -1,5 +1,5 @@
 <template>
-  <div class="live-player-container">
+  <div class="live-player-container" :style="{ padding : isMobile ? '0px' : '16px'}">
     <LiveHeader v-show="!isMobile" class="live-player-header" :login-button-visible="false"></LiveHeader>
     <LivePlayerView v-if="loginUserInfo" :live-id="liveId as string" @leave-live="leaveLive" />
   </div>
@@ -38,7 +38,7 @@ function leaveLive() {
   box-sizing: border-box;
 
   .live-player-header {
-    padding: 16px;
+    padding-bottom: 16px;
   }
 }
 </style>

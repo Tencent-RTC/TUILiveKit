@@ -8,9 +8,11 @@
     <span class="custom-text setting-text">{{ t('Layout Settings') }}</span>
   </div>
   <TUIDialog
-    :customClasses="['layout-dialog']"
+    :custom-classes="['layout-dialog']"
     :title="t('Layout Settings')"
     :visible="layoutSwitchVisible"
+    :confirm-text="t('Confirm')"
+    :cancel-text="t('Cancel')"
     @close="handleCancel"
     @confirm="handleConfirm"
     @cancel="handleCancel"
@@ -46,30 +48,20 @@
 
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue';
-import { TUIErrorCode,  } from '@tencentcloud/tuiroom-engine-js';
+import { TUIErrorCode  } from '@tencentcloud/tuiroom-engine-js';
 import { useUIKit, TUIDialog, TUIToast, TOAST_TYPE, IconLayoutTemplate } from '@tencentcloud/uikit-base-component-vue3';
-import { useLiveListState, useCoHostState } from 'tuikit-atomicx-vue3';
+import { useLiveListState, useCoHostState, CoHostStatus } from 'tuikit-atomicx-vue3';
 import { TUISeatLayoutTemplate } from '../types/LivePusher';
 import Dynamic1v6 from '../icons/dynamic-1v6.vue';
 import DynamicGrid9 from '../icons/dynamic-grid9.vue';
 import Fixed1v6 from '../icons/fixed-1v6.vue';
 import FixedGrid9 from '../icons/fixed-grid9.vue';
 import HorizontalFloat from '../icons/horizontal-float.vue';
-import { CoHostStatus } from 'tuikit-atomicx-vue3';
 
 const { t } = useUIKit();
 const { currentLive, updateLiveInfo } = useLiveListState();
 const { coHostStatus } = useCoHostState();
 const disabled = computed(() => coHostStatus.value === CoHostStatus.Connected);
-watch(
-  () => currentLive.value?.liveId,
-  (liveId) => {
-    if (!liveId) {
-      updateLiveInfo({ layoutTemplate: TUISeatLayoutTemplate.PortraitDynamic_Grid9 });
-    }
-  },
-  { immediate: true },
-);
 
 const layoutSwitchVisible = ref(false);
 
@@ -168,7 +160,8 @@ function handleCancel() {
   align-items: center;
   justify-content: center;
   gap: 4px;
-  width: 56px;
+  min-width: 56px;
+  width: auto;
   height: 56px;
   cursor: pointer;
   color: $text-color1;
@@ -209,10 +202,10 @@ function handleCancel() {
 :deep(.layout-dialog) {
   padding: 24px;
   width: 480px;
-  .dialog-body {
+  .tui-dialog-body {
     flex-wrap: wrap;
   }
-  .dialog-footer {
+  .tui-dialog-footer {
     padding-top: 32px;
   }
 }

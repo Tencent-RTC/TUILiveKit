@@ -7,7 +7,7 @@
     <span class="custom-text setting-text">{{ t('Setting') }}</span>
   </div>
   <TUIDialog
-    :customClasses="['setting-dialog']"
+    :custom-classes="['setting-dialog']"
     :title="t('Setting')"
     :visible="coGuestPanelVisible"
     width="400px"
@@ -86,7 +86,8 @@ const handleCoGuest = () => {
   align-items: center;
   justify-content: center;
   gap: 4px;
-  width: 56px;
+  min-width: 56px;
+  width: auto;
   height: 56px;
   cursor: pointer;
   color: $text-color1;
@@ -139,7 +140,8 @@ const handleCoGuest = () => {
   flex-direction: column;
   max-height: 600px;
   width: 100%;
-  overflow: auto;
+  padding: 0 8px;
+  overflow: hidden;
   @include scrollbar;
   .section {
     margin-bottom: 32px;

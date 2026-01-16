@@ -31,10 +31,10 @@ TUIRoomEngine.once('ready', () => {
 
 watch(() => currentLive.value?.liveId, (newVal, oldVal) => {
   if (newVal) {
-    localStorage.setItem('livekit-live-id', currentLive.value?.liveId || '');
+    sessionStorage.setItem('livekit-live-id', currentLive.value?.liveId || '');
   }
   if (oldVal && !newVal) {
-    localStorage.removeItem('livekit-live-id');
+    sessionStorage.removeItem('livekit-live-id');
   }
 });
 
@@ -43,7 +43,7 @@ const onLeaveLive = () => {
 };
 
 const restoreLive = async () => {
-  const liveId = localStorage.getItem('livekit-live-id');
+  const liveId = sessionStorage.getItem('livekit-live-id');
   if (liveId) {
     await TUIMessageBox.confirm({
       title: t('It is detected that you have an unfinished live broadcast session last time. Do you want to resume it?'),
@@ -56,11 +56,11 @@ const restoreLive = async () => {
             openLocalMicrophone();
           } catch (error) {
             alert(t('Failed to join live broadcast session'));
-            localStorage.removeItem('livekit-live-id');
+            sessionStorage.removeItem('livekit-live-id');
             console.error(error);
           }
         } else {
-          localStorage.removeItem('livekit-live-id');
+          sessionStorage.removeItem('livekit-live-id');
         }
       },
     });
@@ -85,46 +85,5 @@ watch(loginUserInfo, (newVal) => {
   overflow: auto;
   padding: 16px;
   box-sizing: border-box;
-
-  .header {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-
-      .header-left-logo {
-        width: 26px;
-        height: 24px;
-      }
-
-      .header-left-title {
-        font-size: 18px;
-        font-weight: 600;
-        color: var(--text-color-primary);
-      }
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-
-      .header-right-avatar {
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
-      }
-
-      .header-right-name {
-        font-size: 14px;
-        font-weight: 400;
-      }
-    }
-  }
 }
 </style>

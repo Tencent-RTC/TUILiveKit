@@ -58,24 +58,29 @@
           @blur="handleBarrageInputBlur"
         />
       </div>
+      <div class="bottom-operate-button">
+        <LiveGift class="bottom-operate-button-icon" />
+      </div>
     </div>
-    <div v-if="liveEndVisible" class="live-end">
-      <div class="close-icon">
-        <IconClose
-          :size="20"
-          @click="handleLeaveLive"
+    <Teleport to="#app">
+      <div v-if="liveEndVisible" class="live-end">
+        <div class="close-icon">
+          <IconClose
+            :size="20"
+            @click="handleLeaveLive"
+          />
+        </div>
+        <div class="title">
+          <span>{{ t('Live is ended') }}</span>
+        </div>
+        <Avatar
+          :src="liveOwnerAvatar"
+          :size="85"
+          :style="{ border: '1px solid var(--uikit-color-white-7)' }"
         />
+        <span>{{ liveOwnerName }}</span>
       </div>
-      <div class="title">
-        <span>{{ t('Live is ended') }}</span>
-      </div>
-      <Avatar
-        :src="liveOwnerAvatar"
-        :size="85"
-        :style="{ border: '1px solid var(--uikit-color-white-7)' }"
-      />
-      <span>{{ liveOwnerName }}</span>
-    </div>
+    </Teleport>
   </div>
   <TUIDialog
     :visible="leaveLiveDialogVisible"
@@ -97,7 +102,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, defineProps, onUnmounted, defineEmits, watch, nextTick } from 'vue';
+import { ref, onMounted, computed, onUnmounted, watch, Teleport } from 'vue';
 import TUIRoomEngine, { TUIRoomEvents } from '@tencentcloud/tuiroom-engine-js';
 import { TUIButton, IconClose, TUIDialog, useUIKit, TUIMessageBox } from '@tencentcloud/uikit-base-component-vue3';
 import {
@@ -105,6 +110,7 @@ import {
   LiveCoreView,
   BarrageInput,
   BarrageList,
+  LiveGift,
   useLiveAudienceState,
   useLiveListState,
   Avatar,
@@ -302,13 +308,19 @@ function handleBarrageInputBlur() {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: rgb(31, 32, 36);
+  left: 0;
+  top: 0;
   width: 100%;
   height: 100%;
   gap: 10px;
+  color: var(--text-color-primary);
   z-index: 1000;
+  background-color: var(--bg-color-operate);
 
   .close-icon {
+    position: absolute;
+    right: 16px;
+    top: 16px;
     height: 40px;
   }
 
@@ -326,6 +338,19 @@ function handleBarrageInputBlur() {
   }
 }
 
+.bottom-operate-button {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex: 1 0 auto;
+  padding: 0 8px;
+
+  .bottom-operate-button-icon {
+    width: 32px;
+    height: 32px;
+  }
+}
+
 @media screen and (orientation: landscape) {
   .stream-view {
     width: 100%;
@@ -336,6 +361,7 @@ function handleBarrageInputBlur() {
     position: absolute;
     width: 400px;
     height: 100px;
+    overflow: hidden;
     left: 0px;
     bottom: 60px;
     z-index: 99;
@@ -381,6 +407,10 @@ function handleBarrageInputBlur() {
     justify-content: space-between;
     box-sizing: border-box;
     padding: 0 20px;
+
+    .bottom-operate-button {
+      padding: 0;
+    }
   }
 }
 

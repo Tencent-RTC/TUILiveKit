@@ -2,8 +2,8 @@
   <div class="device-setting">
     <AudioIcon
       :size="16"
-      :audioVolume="currentMicVolume"
-      :isMuted="microphoneStatus === DeviceStatus.Off"
+      :audio-volume="currentMicVolume"
+      :is-muted="microphoneStatus === DeviceStatus.Off"
       @click="switchMicrophoneStatus"
     />
     <TUISlider
@@ -14,7 +14,6 @@
       @change="handleMicrophoneVolumeChange"
       @mouseup="saveMicrophoneVolumeBeforeMute"
     />
-
   </div>
 </template>
 
@@ -30,8 +29,8 @@ const {
   captureVolume,
   setCaptureVolume,
   microphoneStatus,
-  openLocalMicrophone,
-  closeLocalMicrophone,
+  muteLocalAudio,
+  unmuteLocalAudio,
   microphoneLastError,
   currentMicVolume,
 } = useDeviceState();
@@ -50,11 +49,11 @@ const handleMicrophoneVolumeChange = async (value: number) => {
   }
 
   if (value === 0 && microphoneStatus.value === DeviceStatus.On) {
-    await closeLocalMicrophone();
+    await muteLocalAudio();
   }
 
   if (value > 0 && microphoneStatus.value === DeviceStatus.Off) {
-    await openLocalMicrophone();
+    await unmuteLocalAudio();
   }
 };
 
@@ -89,11 +88,11 @@ const switchMicrophoneStatus = () => {
   if (microphoneStatus.value === DeviceStatus.On) {
     microphoneVolumeBeforeMute.value = microphoneVolume.value || DEFAULT_VOLUME;
     setCaptureVolume(0);
-    closeLocalMicrophone();
+    muteLocalAudio();
   } else {
     const volumeToRestore = microphoneVolumeBeforeMute.value || DEFAULT_VOLUME;
     setCaptureVolume(volumeToRestore);
-    openLocalMicrophone();
+    unmuteLocalAudio();
   }
 };
 

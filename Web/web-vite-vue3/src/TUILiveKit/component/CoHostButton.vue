@@ -1,7 +1,7 @@
 <template>
   <div
     class="custom-icon-container"
-    :class="{ 'disabled': disabled }"
+    :class="{ 'disabled': isCoHostDisabled }"
     @click="handleCoHost"
   >
     <IconCoHost class="custom-icon" />
@@ -13,23 +13,20 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import { TOAST_TYPE, TUIToast, useUIKit, IconCoHost } from '@tencentcloud/uikit-base-component-vue3';
-import { CoHostPanel, useLiveListState, useCoHostState, useLiveSeatState } from 'tuikit-atomicx-vue3';
+import { CoHostPanel, useLiveListState, useLiveSeatState, useCoGuestState } from 'tuikit-atomicx-vue3';
 const { currentLive } = useLiveListState();
-const {
-  applicants,
-} = useCoHostState();
 const { seatList } = useLiveSeatState();
-const isInCoGuest = computed(() =>
-  seatList.value.filter((item) => item.userInfo?.userId && item.userInfo?.liveId === currentLive.value?.liveId).length >= 2
-);
-const disabled = computed(() => !currentLive.value?.liveId || isInCoGuest.value);
+const { applicants: coGuestApplicants } = useCoGuestState();
+const isInCoGuest = computed(() => seatList.value.filter(item => item.userInfo?.userId && item.userInfo?.liveId === currentLive.value?.liveId).length >= 2);
+const hasCoGuestApplicants = computed(() => coGuestApplicants.value.length > 0);
+const isCoHostDisabled = computed(() => !currentLive.value?.liveId || isInCoGuest.value || hasCoGuestApplicants.value);
 
 const { t } = useUIKit();
 
 const coHostPanelVisible = ref(false);
 
 const handleCoHost = () => {
-  if (disabled.value) {
+  if (isCoHostDisabled.value) {
     const message = !currentLive.value?.liveId ? t('Cannot use co-host before live starts') : t('Cannot co-host with other hosts while audience co-hosting is active');
     TUIToast({ type: TOAST_TYPE.ERROR, message });
     return;
@@ -48,7 +45,8 @@ const handleCoHost = () => {
   align-items: center;
   justify-content: center;
   gap: 4px;
-  width: 56px;
+  min-width: 56px;
+  width: auto;
   height: 56px;
   cursor: pointer;
   color: $text-color1;

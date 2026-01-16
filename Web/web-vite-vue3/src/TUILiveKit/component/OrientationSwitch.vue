@@ -33,18 +33,56 @@ import { useLiveListState, LiveOrientation } from 'tuikit-atomicx-vue3';
 const { t } = useUIKit();
 
 const { currentLive, updateLiveInfo } = useLiveListState();
-const currentOrientation = ref(LiveOrientation.Portrait);
+const currentOrientation = ref(LiveOrientation.Landscape);
+// Store layout template before live starts to restore after live ends
+let layoutBeforeLive = TUISeatLayoutTemplate.LandscapeDynamic_1v3;
+
+// Determine if layout template is valid
+const isValidLayout = (layout: number | undefined) => layout && layout !== 0;
+
+// Determine if layout is landscape
+const isLandscapeLayout = (layout: number) => layout < TUISeatLayoutTemplate.PortraitDynamic_Grid9 && layout >= TUISeatLayoutTemplate.LandscapeDynamic_1v3;
+
+// Determine if layout is portrait
+const isPortraitLayout = (layout: number) => layout >= TUISeatLayoutTemplate.PortraitDynamic_Grid9;
 
 watch(
   () => currentLive.value?.layoutTemplate,
-  newVal => {
-    if (newVal === TUISeatLayoutTemplate.LandscapeDynamic_1v3) {
-      currentOrientation.value = LiveOrientation.Landscape;
-    } else {
-      currentOrientation.value = LiveOrientation.Portrait;
+  (newVal) => {
+    const hasLiveId = !!currentLive.value?.liveId;
+
+    // Handle invalid layout after ending live: restore previous layout
+    if (!isValidLayout(newVal) && !hasLiveId) {
+      updateLiveInfo({ layoutTemplate: layoutBeforeLive });
+      return;
+    }
+
+    // Save current layout when not in live session
+    if (!hasLiveId && isValidLayout(newVal)) {
+      layoutBeforeLive = newVal!;
+    }
+
+    // Update orientation based on layout
+    if (newVal) {
+      if (isLandscapeLayout(newVal)) {
+        currentOrientation.value = LiveOrientation.Landscape;
+      } else if (isPortraitLayout(newVal)) {
+        currentOrientation.value = LiveOrientation.Portrait;
+      }
     }
   },
-  { immediate: true }
+  { immediate: true },
+);
+
+// Ensure default landscape mode on initial load
+watch(
+  () => currentLive.value?.liveId,
+  (liveId) => {
+    if (!liveId && !isValidLayout(currentLive.value?.layoutTemplate)) {
+      updateLiveInfo({ layoutTemplate: layoutBeforeLive });
+    }
+  },
+  { immediate: true },
 );
 
 const handleOrientationSwitch = () => {
@@ -72,7 +110,8 @@ const handleOrientationSwitch = () => {
   align-items: center;
   justify-content: center;
   gap: 4px;
-  width: 56px;
+  min-width: 56px;
+  width: auto;
   height: 56px;
   cursor: pointer;
   color: $text-color1;
