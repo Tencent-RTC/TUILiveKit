@@ -64,9 +64,9 @@
             <div class="main-center-bottom-tools">
               <CoGuestButton />
               <CoHostButton />
-              <SettingButton />
               <OrientationSwitch />
               <LayoutSwitch />
+              <SettingButton />
             </div>
           </div>
           <div class="main-center-bottom-right">
@@ -387,8 +387,6 @@ const showEndLiveDialog = async () => {
   display: flex;
   flex-direction: row;
   gap: 6px;
-  overflow: auto;
-  margin-top: 16px;
   border-radius: 8px;
   @include scrollbar;
 
@@ -475,6 +473,8 @@ const showEndLiveDialog = async () => {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      position: relative;
+
       .main-center-top-left {
         @include text-size-16;
         display: flex;
@@ -489,15 +489,25 @@ const showEndLiveDialog = async () => {
           }
         }
       }
+
       .main-center-top-right {
         @include text-size-12;
+      }
+
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 16px;
+        right: 16px;
+        height: 1px;
+        background-color: var(--stroke-color-primary);
       }
     }
     .main-center-center {
       flex: 1;
       min-width: 0;
       min-height: 0;
-      border: 1px solid var(--bg-color-operate);
       color: #131417;
     }
     .main-center-bottom {
@@ -508,6 +518,17 @@ const showEndLiveDialog = async () => {
       padding: 0 16px;
       box-sizing: border-box;
       flex-direction: column;
+      position: relative;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 16px;
+        right: 16px;
+        height: 1px;
+        background-color: var(--stroke-color-primary);
+      }
 
       .main-center-bottom-header {
         @include text-size-14;
@@ -525,6 +546,8 @@ const showEndLiveDialog = async () => {
           gap: 16px;
           .main-center-bottom-tools {
             display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
           }
         }
         .main-center-bottom-right {
@@ -584,8 +607,8 @@ const showEndLiveDialog = async () => {
       }
 
       .message-list-container {
-        flex: 1;
-        max-height: calc(100% - 58px - 47.5px);
+        flex: 1 1 auto;
+        user-select: text;
       }
     }
   }

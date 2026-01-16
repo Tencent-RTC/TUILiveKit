@@ -1,14 +1,32 @@
 <template>
-  <div id="liveContainer" class="live-player-pc" ref="liveContainerRef">
+  <div id="liveContainer" ref="liveContainerRef" class="live-player-pc">
     <div class="main-left">
       <div class="main-left-top">
         <IconArrowStrokeBack class="icon-back" size="20" @click="handleLeaveLive" />
-        <Avatar :src="currentLive?.liveOwner.avatarUrl" :size="32"
-          :style="{ border: '1px solid var(--uikit-color-white-7)' }" />
+        <Avatar
+          :src="currentLive?.liveOwner.avatarUrl" :size="32"
+          :style="{ border: '1px solid var(--uikit-color-white-7)' }"
+        />
         <span> {{ currentLive?.liveOwner.userName || currentLive?.liveOwner.userId }}</span>
       </div>
       <div class="main-left-center">
-        <LiveCoreView />
+        <LiveView />
+        <div v-if="liveEndedOverlayVisible" class="live-ended-overlay">
+          <div class="live-ended-content">
+            <div class="live-ended-icon">
+              <img :src="LiveEndedIcon" alt="live ended" />
+            </div>
+            <div class="live-ended-text">
+              {{ t('The host is not currently live') }}
+            </div>
+            <TUIButton type="default" @click="handleLeaveLive">
+              {{ t('Back to live list') }}
+            </TUIButton>
+          </div>
+        </div>
+      </div>
+      <div class="main-left-bottom" :class="{ disabled: liveEndedOverlayVisible }">
+        <LiveGift />
       </div>
     </div>
     <div class="main-right">
@@ -38,24 +56,14 @@
       </div>
     </div>
   </div>
-  <TUIDialog :visible="leaveLiveDialogVisible" :center="true" :content="leaveLiveText" @close="handleLeaveLive">
-    <template #footer>
-      <div>
-        <TUIButton @click="handleLeaveLive">
-          {{ t('Confirm') }}
-        </TUIButton>
-      </div>
-    </template>
-  </TUIDialog>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, defineProps, onUnmounted, defineEmits, watch } from 'vue';
+import { ref, onMounted, computed, onUnmounted } from 'vue';
 import TUIRoomEngine, { TUIRoomEvents } from '@tencentcloud/tuiroom-engine-js';
 import {
   IconArrowStrokeBack,
   TUIButton,
-  TUIDialog,
   TUIMessageBox,
   useUIKit,
 } from '@tencentcloud/uikit-base-component-vue3';
@@ -64,12 +72,15 @@ import {
   BarrageList,
   BarrageInput,
   useLiveAudienceState,
-  LiveCoreView,
+  LiveView,
   useLiveListState,
   Avatar,
   useRoomEngine,
   LiveListEvent,
+  LiveGift,
 } from 'tuikit-atomicx-vue3';
+import RequestConnectionButton from '../RequestConnectionButton.vue';
+import LiveEndedIcon from '../../icons/live-ended.svg';
 
 const { t } = useUIKit();
 const { audienceList } = useLiveAudienceState();
@@ -84,26 +95,34 @@ const props = defineProps<{
 }>();
 
 const liveContainerRef = ref<HTMLElement | null>(null);
-const leaveLiveDialogVisible = ref(false);
-const leaveLiveText = ref('');
+const liveEndedOverlayVisible = ref(false);
 const barrageInputHeight = ref('48px');
 
 const emit = defineEmits(['leaveLive']);
 
 const handleLiveEnded = () => {
-  showLeaveLiveDialog(t('Live has ended'));
+  liveEndedOverlayVisible.value = true;
 };
 
 const handleKickedOutOfLive = () => {
-  showLeaveLiveDialog(t('You have been kicked out from live room'));
+  TUIMessageBox.alert({
+    title: t('Unable to watch live'),
+    content: t('You have been removed from the live room and cannot watch the live stream'),
+    confirmText: t('Back to home'),
+    showClose: false,
+    modal: false,
+    callback: () => {
+      emit('leaveLive');
+    },
+  });
 };
 
 onMounted(async () => {
   subscribeEvent(LiveListEvent.onLiveEnded, handleLiveEnded);
   subscribeEvent(LiveListEvent.onKickedOutOfLive, handleKickedOutOfLive);
   await handleJoinLive();
-  if(liveContainerRef.value) {
-    if(liveContainerRef.value.clientWidth < 1000) {
+  if (liveContainerRef.value) {
+    if (liveContainerRef.value.clientWidth < 1000) {
       barrageInputHeight.value = '40px';
     }
   }
@@ -119,8 +138,20 @@ onUnmounted(async () => {
 });
 
 function handleLeaveLive() {
-  leaveLiveDialogVisible.value = false;
   emit('leaveLive');
+}
+
+function showErrorAndLeave(content: string) {
+  TUIMessageBox.alert({
+    title: t('Unable to watch live'),
+    content,
+    confirmText: t('Back to home'),
+    showClose: false,
+    modal: false,
+    callback: () => {
+      emit('leaveLive');
+    },
+  });
 }
 
 async function handleJoinLive() {
@@ -129,27 +160,19 @@ async function handleJoinLive() {
       await joinLive({ liveId: props.liveId });
     } catch (error) {
       console.error('Failed to join live room, error:', error);
-      showLeaveLiveDialog(t('Failed to join live room'));
+      showErrorAndLeave(t('Failed to join live room'));
     }
   } else {
     console.error('liveId is empty');
-    showLeaveLiveDialog(t('LiveId is empty'));
+    showErrorAndLeave(t('LiveId is empty'));
   }
-}
-
-function showLeaveLiveDialog(text: string) {
-  if (leaveLiveDialogVisible.value || text.trim().length === 0) {
-    return;
-  }
-
-  leaveLiveText.value = text;
-  leaveLiveDialogVisible.value = true;
 }
 
 function handleAutoPlayFailed() {
   TUIMessageBox.alert({
     content: t('Content is ready. Click the button to start playback'),
     confirmText: t('Play'),
+    showClose: false,
   });
 }
 </script>
@@ -172,7 +195,6 @@ function handleAutoPlayFailed() {
   flex: 1;
   display: flex;
   overflow: hidden;
-  margin-left: 16px;
   flex-direction: column;
   background-color: var(--bg-color-operate);
 
@@ -182,15 +204,27 @@ function handleAutoPlayFailed() {
     gap: 10px;
     padding-left: 16px;
     align-items: center;
+    position: relative;
+
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 16px;
+      right: 16px;
+      height: 1px;
+      background-color: var(--stroke-color-primary);
+    }
 
     span {
       color: $text-color1;
       overflow: hidden;
-      max-width: 180px;
       text-overflow: ellipsis;
+      @include text-size-16;
     }
 
     .icon-back {
+      max-width: 180px;
       &:hover {
         cursor: pointer;
       }
@@ -205,6 +239,56 @@ function handleAutoPlayFailed() {
     background-color: black;
     overflow: hidden;
     border: 1px solid var(--bg-color-operate);
+
+    .live-ended-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(4px);
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .live-ended-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .live-ended-icon {
+        width: 80px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .live-ended-text {
+        opacity: 0.8;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 14px;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .main-left-bottom {
+    padding: 6px 0;
+    border-top: 1px solid var(--stroke-color-primary);
+    background-color: var(--bg-color-operate);
+    display: flex;
+
+    &.disabled {
+      pointer-events: none;
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
   }
 }
 
@@ -215,7 +299,6 @@ function handleAutoPlayFailed() {
   max-width: 360px;
   color: $text-color1;
   display: flex;
-  margin-right: 16px;
   flex-direction: column;
   gap: 6px;
 
@@ -258,8 +341,8 @@ function handleAutoPlayFailed() {
     }
 
     .message-list-container {
-      flex: 1;
-      max-height: calc(100% - 75px);
+      flex: 1 1 auto;
+      user-select: text;
     }
   }
 }

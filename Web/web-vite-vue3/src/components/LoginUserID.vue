@@ -84,7 +84,7 @@ const userInfo = ref<UserInfo>({
 
 const isLogin = ref<boolean>(false);
 
-const currentUserInfo = localStorage.getItem(`Login-userInfo-${SDKAppID}`);
+const currentUserInfo = sessionStorage.getItem(`Login-userInfo-${SDKAppID}`);
 if (currentUserInfo) {
   try {
     JSON.parse(currentUserInfo);
@@ -94,7 +94,7 @@ if (currentUserInfo) {
       isLogin.value = true;
     }
   } catch (e) {
-    localStorage.removeItem(`Login-userInfo-${SDKAppID}`);
+    sessionStorage.removeItem(`Login-userInfo-${SDKAppID}`);
   }
 }
 
@@ -107,7 +107,7 @@ const login = (loginInfo: any) => {
     userID: loginInfo.userID,
     userSig: loginInfo.userSig,
   });
-  localStorage.setItem(`Login-userInfo-${SDKAppID}`, JSON.stringify({
+  sessionStorage.setItem(`Login-userInfo-${SDKAppID}`, JSON.stringify({
     SDKAppID: loginInfo.SDKAppID,
     userID: loginInfo.userID,
   }));
@@ -116,7 +116,7 @@ const login = (loginInfo: any) => {
 };
 
 const logout = () => {
-  localStorage.removeItem(`Login-userInfo-${SDKAppID}`);
+  sessionStorage.removeItem(`Login-userInfo-${SDKAppID}`);
   setUserInfo({
     userID: '',
     userSig: '',

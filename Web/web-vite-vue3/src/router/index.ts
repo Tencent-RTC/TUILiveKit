@@ -33,7 +33,7 @@ router.beforeEach((to, from, next) => {
     next();
     return;
   }
-  const userInfo = localStorage.getItem('tuiLive-userInfo');
+  const userInfo = sessionStorage.getItem('tuiLive-userInfo');
   if (!userInfo) {
     if (routes.some(route => route.path === from.path) && from.path !== '/login') {
       next({ path: '/login', query: { from: to.path } });

@@ -20,10 +20,10 @@
 
 
 <script lang="ts" setup>
-import { onMounted, ref, defineProps, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { TUIButton, useUIKit } from '@tencentcloud/uikit-base-component-vue3';
-import { useLoginState, Avatar } from 'tuikit-atomicx-vue3';
+import { TUIButton, TUIMessageBox, TUIToast, TOAST_TYPE, useUIKit } from '@tencentcloud/uikit-base-component-vue3';
+import { useLoginState, useLiveListState, Avatar } from 'tuikit-atomicx-vue3';
 import { isH5 } from '../TUILiveKit/utils/environment';
 
 const props = defineProps({
@@ -36,6 +36,7 @@ const router = useRouter();
 const route = useRoute();
 const { t } = useUIKit();
 const { login, loginUserInfo, logout } = useLoginState();
+const { currentLive, endLive } = useLiveListState();
 const loginLoading = ref(false);
 const isLiveListPage = ref(route.path === '/live-list');
 
@@ -46,7 +47,7 @@ function gotoPusher() {
 async function handleLogin() {
   try {
     loginLoading.value = true;
-    const storedData = localStorage.getItem('tuiLive-userInfo') || '{}';
+    const storedData = sessionStorage.getItem('tuiLive-userInfo') || '{}';
     const liveUserInfo = JSON.parse(storedData);
     await login({
       userId: liveUserInfo.userID,
@@ -62,10 +63,36 @@ async function handleLogin() {
   }
 };
 
-function handleLogout() {
+function proceedLogout() {
   logout();
-  localStorage.removeItem('tuiLive-userInfo');
+  sessionStorage.removeItem('tuiLive-userInfo');
   router.push({ path: '/login', query: { from: router.currentRoute.value.path, ...route.query } });
+};
+
+function handleLogout() {
+  if (currentLive.value?.liveId) {
+    TUIMessageBox.confirm({
+      title: t('You are currently live streaming. Logging out will automatically end the live stream. Are you sure you want to log out?'),
+      showClose: false,
+      callback: async (action) => {
+        if (action === 'confirm') {
+          try {
+            await endLive();
+          } catch (error) {
+            console.warn('End live failed when log out:', error);
+            TUIToast({
+              message: t('End live failed when log out'),
+              type: TOAST_TYPE.ERROR,
+            });
+            return;
+          }
+          proceedLogout();
+        }
+      },
+    });
+  } else {
+    proceedLogout();
+  }
 };
 
 function handleHomeClick() {
@@ -100,6 +127,7 @@ watch(
   display: flex;
   justify-content: space-between;
   align-items: center;
+  user-select: none;
 
   .header-left {
     display: flex;

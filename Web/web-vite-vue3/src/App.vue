@@ -1,8 +1,6 @@
 <template>
   <UIKitProvider theme="dark">
-    <div id="app">
-      <router-view />
-    </div>
+    <router-view />
   </UIKitProvider>
 </template>
 
