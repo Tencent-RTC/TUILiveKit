@@ -1,6 +1,6 @@
 {
   "name": "@tencentcloud/live-uikit-vue",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "scripts": {
     "dev": "vite --force",
     "dev:deep": "vite",
@@ -20,7 +20,7 @@
     "pinia": "^2.0.13",
     "qs": "^6.10.3",
     "rtc-detect": "^1.0.3",
-    "tuikit-atomicx-vue3": "5.0.0",
+    "tuikit-atomicx-vue3": "5.0.1",
     "vue": "^3.2.25",
     "vue-i18n": "^9.10.2",
     "vue-router": "^4.0.14"
