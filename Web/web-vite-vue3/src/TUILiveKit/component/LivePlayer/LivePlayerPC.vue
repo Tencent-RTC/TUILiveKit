@@ -10,7 +10,7 @@
         <span> {{ currentLive?.liveOwner.userName || currentLive?.liveOwner.userId }}</span>
       </div>
       <div class="main-left-center">
-        <LiveView />
+        <LiveView @empty-seat-click="handleApplyForSeat" />
         <div v-if="liveEndedOverlayVisible" class="live-ended-overlay">
           <div class="live-ended-content">
             <div class="live-ended-icon">
@@ -27,6 +27,7 @@
       </div>
       <div class="main-left-bottom" :class="{ disabled: liveEndedOverlayVisible }">
         <LiveGift />
+        <SeatApplicationButton />
       </div>
     </div>
     <div class="main-right">
@@ -55,6 +56,36 @@
         </div>
       </div>
     </div>
+    <TUIDialog
+      v-model:visible="exitLiveDialogVisible"
+      :title="t('Exit Live')"
+    >
+      {{ exitDialogContent }}
+      <template #footer>
+        <div class="action-buttons">
+          <TUIButton
+            color="gray"
+            @click="handleCancelExit"
+          >
+            {{ t('Cancel') }}
+          </TUIButton>
+          <TUIButton
+            v-if="isUserOnSeat"
+            color="red"
+            @click="handleEndCoGuest"
+          >
+            {{ t('End Co-guest') }}
+          </TUIButton>
+          <TUIButton
+            type="primary"
+            color="red"
+            @click="handleExitLive"
+          >
+            {{ t('Exit Live') }}
+          </TUIButton>
+        </div>
+      </template>
+    </TUIDialog>
   </div>
 </template>
 
@@ -65,7 +96,9 @@ import {
   IconArrowStrokeBack,
   TUIButton,
   TUIMessageBox,
+  TUIToast,
   useUIKit,
+  TUIDialog,
 } from '@tencentcloud/uikit-base-component-vue3';
 import {
   LiveAudienceList,
@@ -79,14 +112,16 @@ import {
   LiveListEvent,
   LiveGift,
 } from 'tuikit-atomicx-vue3';
-import RequestConnectionButton from '../RequestConnectionButton.vue';
 import LiveEndedIcon from '../../icons/live-ended.svg';
+import SeatApplicationButton from '../SeatApplication/SeatApplicationButton.vue';
+import { useSeatApplication } from '../SeatApplication/useSeatApplication';
 
 const { t } = useUIKit();
 const { audienceList } = useLiveAudienceState();
 const { currentLive, joinLive, leaveLive, subscribeEvent, unsubscribeEvent } = useLiveListState();
 const isInLive = computed(() => !!currentLive.value?.liveId);
 const roomEngine = useRoomEngine();
+
 TUIRoomEngine.once('ready', () => {
   roomEngine.instance?.on(TUIRoomEvents.onAutoPlayFailed, handleAutoPlayFailed);
 });
@@ -94,9 +129,16 @@ const props = defineProps<{
   liveId: string;
 }>();
 
+const { handleApplyForSeat, isUserOnSeat, handleLeaveSeat } = useSeatApplication();
+
+const exitDialogContent = computed(() => (isUserOnSeat.value
+  ? t('LiveExitConfirmCoGuestTip')
+  : t('Currently connected, do you need to "exit connection" or "end live broadcast"')));
+
 const liveContainerRef = ref<HTMLElement | null>(null);
 const liveEndedOverlayVisible = ref(false);
 const barrageInputHeight = ref('48px');
+const exitLiveDialogVisible = ref(false);
 
 const emit = defineEmits(['leaveLive']);
 
@@ -138,7 +180,32 @@ onUnmounted(async () => {
 });
 
 function handleLeaveLive() {
+  if (isUserOnSeat.value) {
+    exitLiveDialogVisible.value = true;
+  } else {
+    emit('leaveLive');
+  }
+}
+
+function handleExitLive() {
+  exitLiveDialogVisible.value = false;
   emit('leaveLive');
+}
+
+async function handleEndCoGuest() {
+  exitLiveDialogVisible.value = false;
+  try {
+    await handleLeaveSeat();
+  } catch (error) {
+    console.error('Failed to leave seat:', error);
+    TUIToast.error({
+      message: t('Failed to leave seat'),
+    });
+  }
+}
+
+function handleCancelExit() {
+  exitLiveDialogVisible.value = false;
 }
 
 function showErrorAndLeave(content: string) {
@@ -350,6 +417,11 @@ function handleAutoPlayFailed() {
 .card-title {
   @include text-size-16;
   @include dividing-line;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
 }
 
 @media screen and (max-width: 1000px) {

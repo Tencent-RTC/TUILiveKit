@@ -50,7 +50,7 @@
 import { ref, computed, watch } from 'vue';
 import { TUIErrorCode  } from '@tencentcloud/tuiroom-engine-js';
 import { useUIKit, TUIDialog, TUIToast, TOAST_TYPE, IconLayoutTemplate } from '@tencentcloud/uikit-base-component-vue3';
-import { useLiveListState, useCoHostState, CoHostStatus } from 'tuikit-atomicx-vue3';
+import { useLiveListState, useCoHostState, CoHostStatus, useLiveSeatState } from 'tuikit-atomicx-vue3';
 import { TUISeatLayoutTemplate } from '../types/LivePusher';
 import Dynamic1v6 from '../icons/dynamic-1v6.vue';
 import DynamicGrid9 from '../icons/dynamic-grid9.vue';
@@ -61,6 +61,7 @@ import HorizontalFloat from '../icons/horizontal-float.vue';
 const { t } = useUIKit();
 const { currentLive, updateLiveInfo } = useLiveListState();
 const { coHostStatus } = useCoHostState();
+const { seatList } = useLiveSeatState();
 const disabled = computed(() => coHostStatus.value === CoHostStatus.Connected);
 
 const layoutSwitchVisible = ref(false);
@@ -118,7 +119,79 @@ const layoutOptions = computed(() => {
 
 const selectedTemplate = ref<TUISeatLayoutTemplate | null>(currentLive.value?.layoutTemplate ?? null);
 
+/**
+ * Check if switching from Grid9 layout to target layout is allowed
+ * Main validation: If current layout is Grid9 and last two seats (8th, 9th) have users,
+ * cannot switch to non-Grid9 layouts because Grid9 capacity > 1V6 capacity
+ * @param template - Target layout template to switch to
+ * @returns Object with enable flag and error message
+ */
+function checkTemplateInGrid9SwitchEnable(template: TUISeatLayoutTemplate) : {enable: boolean, message: string} {
+  const lastSeatIndexArray = [7, 8]; // The index of 8th and 9th seats (0-based indexing)
+  const isUserSeatedOnLastTwoSeats = seatList.value.some(seat => seat.userInfo?.userId && lastSeatIndexArray.includes(seat.index));
+  if (isUserSeatedOnLastTwoSeats && (template !== TUISeatLayoutTemplate.PortraitFixed_Grid9 && template !== TUISeatLayoutTemplate.PortraitDynamic_Grid9)) {
+    return { enable: false, message: t('The new layout cannot display all users on the seat') };
+  }
+  return { enable: true, message: '' };
+}
+
+function checkTemplateIn1V6SwitchEnable(template: TUISeatLayoutTemplate): { enable: boolean, message: string } {
+  /**
+   * Check if switching from a 1v6 layout to target layout is allowed
+   * Current implementation: Always allows switching (placeholder)
+   *
+   * Business considerations for future implementation:
+   * 1. Switching from 1v6 to 9-grid layout should always be allowed (capacity upgrade)
+   * 2. Switching between different variants of 1v6 layout should be allowed
+   * 3. Switching from 1v6 to other layouts may need compatibility checks based on
+   *    user seating positions and layout-specific constraints
+   *
+   * Note: This function is currently a placeholder and needs to be implemented
+   * based on specific business requirements for 1v6 layout switching.
+   */
+  return { enable: true, message: '' };
+}
+
+function checkSwitchTemplateEnable(template: TUISeatLayoutTemplate) : {enable: boolean, message: string} {
+  /**
+   * Main dispatcher function for layout switching validation
+   *
+   * This function routes the validation request to the appropriate
+   * layout-specific checking function based on the current layout type.
+   *
+   * Supported layout types:
+   * - PortraitFixed_Grid9, PortraitDynamic_Grid9 → checkTemplateInGrid9SwitchEnable
+   * - PortraitFixed_1v6, PortraitDynamic_1v6 → checkTemplateIn1V6SwitchEnable
+   * - Other layouts → Directly allowed (no specific constraints)
+   *
+   * Returns: {enable: boolean, message: string} where:
+   * - enable: true if switching is allowed, false otherwise
+   * - message: Error message if switching is not allowed, empty string otherwise
+   */
+  switch (selectedTemplate.value) {
+    case TUISeatLayoutTemplate.PortraitFixed_Grid9:
+    case TUISeatLayoutTemplate.PortraitDynamic_Grid9:
+      return checkTemplateInGrid9SwitchEnable(template);
+    case TUISeatLayoutTemplate.PortraitFixed_1v6:
+    case TUISeatLayoutTemplate.PortraitDynamic_1v6:
+      return checkTemplateIn1V6SwitchEnable(template);
+    default:
+      return {
+        enable: true,
+        message: '',
+      };
+  }
+}
+
 function selectTemplate(template: TUISeatLayoutTemplate) {
+  const { enable, message } = checkSwitchTemplateEnable(template);
+  if (!enable) {
+    TUIToast({
+      type: TOAST_TYPE.ERROR,
+      message,
+    });
+    return;
+  }
   selectedTemplate.value = template;
 }
 
