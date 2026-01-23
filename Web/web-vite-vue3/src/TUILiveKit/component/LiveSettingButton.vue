@@ -107,6 +107,7 @@ const handleConfirm = () => {
 
     .setting-panel-content-item-label {
       width: 80px;
+      white-space: nowrap;
     }
   }
 }

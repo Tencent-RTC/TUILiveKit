@@ -133,11 +133,7 @@
       v-model:visible="exitLiveDialogVisible"
       :title="t('End live')"
     >
-      {{
-        currentBattleInfo?.battleId
-          ? t('Currently in PK state, do you need to "end PK" or "end live broadcast"')
-          : t('Currently connected, do you need to "exit connection" or "end live broadcast"')
-      }}
+      {{ endLiveDialogMessage }}
       <template #footer>
         <div class="action-buttons">
           <TUIButton
@@ -161,7 +157,7 @@
             {{ t('End battle') }}
           </TUIButton>
           <TUIButton
-            v-else
+            v-else-if="coHostStatus === CoHostStatus.Connected"
             type="primary"
             color="red"
             @click="handleExitConnection"
@@ -186,7 +182,6 @@ import {
   IconLiveStart,
   IconEndLive,
   IconLiveLoading,
-  TUIMessageBox,
   IconArrowStrokeSelectDown,
   IconCopy,
 } from '@tencentcloud/uikit-base-component-vue3';
@@ -203,6 +198,7 @@ import {
   useCoHostState,
   useBattleState,
   CoHostStatus,
+  useCoGuestState,
 } from 'tuikit-atomicx-vue3';
 import CoGuestButton from './component/CoGuestButton.vue';
 import CoHostButton from './component/CoHostButton.vue';
@@ -233,6 +229,7 @@ const { audienceCount } = useLiveAudienceState();
 const { openLocalMicrophone } = useDeviceState();
 const { coHostStatus, exitHostConnection } = useCoHostState();
 const { currentBattleInfo, exitBattle } = useBattleState();
+const { connected: coGuestConnected } = useCoGuestState();
 const isInLive = computed(() => !!currentLive.value?.liveId);
 const loading = ref(false);
 const liveParamsEditForm = ref({
@@ -248,6 +245,19 @@ const liveParams = computed(() => ({
     || '',
   seatMode: props.seatMode || TUISeatMode.kApplyToTake,
 }));
+
+const endLiveDialogMessage = computed(() => {
+  if (currentBattleInfo.value?.battleId) {
+    return t('Currently in PK state, do you need to "end PK" or "end live broadcast"');
+  }
+  if (coHostStatus.value === CoHostStatus.Connected) {
+    return t('Currently connected, do you need to "exit connection" or "end live broadcast"');
+  }
+  if (coGuestConnected.value.length > 0) {
+    return t('You are currently co-guesting with other streamers. Would you like to [End Live] ?');
+  }
+  return t('You are currently live streaming. Do you want to end it?');
+});
 
 const handleLeaveLive = async () => {
   if (isInLive.value) {
@@ -363,18 +373,7 @@ const showEndLiveDialog = async () => {
   if (loading.value) {
     return;
   }
-  if (coHostStatus.value === CoHostStatus.Connected) {
-    exitLiveDialogVisible.value = true;
-    return;
-  }
-  await TUIMessageBox.confirm({
-    title: t('You are currently live streaming. Do you want to end it?'),
-    callback: async (action) => {
-      if (action === 'confirm') {
-        await handleEndLive();
-      }
-    },
-  });
+  exitLiveDialogVisible.value = true;
 };
 </script>
 
