@@ -119,6 +119,7 @@ import {
   LiveListEvent,
 } from 'tuikit-atomicx-vue3';
 import Drawer from '../../base-component/Drawer.vue';
+import { initRoomEngineLanguage } from '../../../utils/utils';
 
 const { t } = useUIKit();
 
@@ -136,6 +137,7 @@ const liveEndVisible = ref(false);
 const leaveLiveText = ref('');
 const liveOwnerName = ref('');
 const liveOwnerAvatar = ref('');
+const autoPlayFailedHandled = ref(false);
 
 const audienceListTitle = computed(() => `${t('Online viewers')} (${audienceList.value.length})`);
 
@@ -152,6 +154,7 @@ const handleKickedOutOfLive = () => {
 
 onMounted(async () => {
   subscribeEvent(LiveListEvent.onKickedOutOfLive, handleKickedOutOfLive);
+  await initRoomEngineLanguage();
   await handleJoinLive();
 });
 
@@ -207,9 +210,10 @@ async function showAudienceList() {
 }
 
 function handleAutoPlayFailed() {
-  if (!currentLive.value?.liveId) {
+  if (!currentLive.value?.liveId || autoPlayFailedHandled.value) {
     return;
   }
+  autoPlayFailedHandled.value = true;
   TUIMessageBox.alert({
     content: t('Content is ready. Click the button to start playback'),
     confirmText: t('Play'),

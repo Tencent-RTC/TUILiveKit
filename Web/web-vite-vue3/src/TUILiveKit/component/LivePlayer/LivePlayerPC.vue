@@ -115,6 +115,7 @@ import {
 import LiveEndedIcon from '../../icons/live-ended.svg';
 import SeatApplicationButton from '../SeatApplication/SeatApplicationButton.vue';
 import { useSeatApplication } from '../SeatApplication/useSeatApplication';
+import { initRoomEngineLanguage } from '../../../utils/utils';
 
 const { t } = useUIKit();
 const { audienceList } = useLiveAudienceState();
@@ -129,7 +130,7 @@ const props = defineProps<{
   liveId: string;
 }>();
 
-const { handleApplyForSeat, isUserOnSeat, handleLeaveSeat } = useSeatApplication();
+const { handleApplyForSeat, isUserOnSeat, confirmLeaveSeat } = useSeatApplication();
 
 const exitDialogContent = computed(() => (isUserOnSeat.value
   ? t('LiveExitConfirmCoGuestTip')
@@ -139,6 +140,7 @@ const liveContainerRef = ref<HTMLElement | null>(null);
 const liveEndedOverlayVisible = ref(false);
 const barrageInputHeight = ref('48px');
 const exitLiveDialogVisible = ref(false);
+const autoPlayFailedHandled = ref(false);
 
 const emit = defineEmits(['leaveLive']);
 
@@ -162,6 +164,7 @@ const handleKickedOutOfLive = () => {
 onMounted(async () => {
   subscribeEvent(LiveListEvent.onLiveEnded, handleLiveEnded);
   subscribeEvent(LiveListEvent.onKickedOutOfLive, handleKickedOutOfLive);
+  await initRoomEngineLanguage();
   await handleJoinLive();
   if (liveContainerRef.value) {
     if (liveContainerRef.value.clientWidth < 1000) {
@@ -195,7 +198,7 @@ function handleExitLive() {
 async function handleEndCoGuest() {
   exitLiveDialogVisible.value = false;
   try {
-    await handleLeaveSeat();
+    await confirmLeaveSeat();
   } catch (error) {
     console.error('Failed to leave seat:', error);
     TUIToast.error({
@@ -236,6 +239,10 @@ async function handleJoinLive() {
 }
 
 function handleAutoPlayFailed() {
+  if (autoPlayFailedHandled.value) {
+    return;
+  }
+  autoPlayFailedHandled.value = true;
   TUIMessageBox.alert({
     content: t('Content is ready. Click the button to start playback'),
     confirmText: t('Play'),

@@ -202,6 +202,10 @@ watch(() => currentLive.value?.layoutTemplate, (newVal) => {
 });
 
 async function handleConfirm() {
+  if (selectedTemplate.value  === currentLive.value?.layoutTemplate) {
+    layoutSwitchVisible.value = false;
+    return;
+  }
   if (selectedTemplate.value) {
     try {
       await updateLiveInfo({ layoutTemplate: selectedTemplate.value });

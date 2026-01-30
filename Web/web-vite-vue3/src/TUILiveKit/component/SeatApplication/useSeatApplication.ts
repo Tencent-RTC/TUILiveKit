@@ -43,6 +43,8 @@ const TASK_SEAT_REQUEST_TIMEOUT = 60;
 // UI-defines
 const connectionTypeDialogVisible = ref(false);
 const deviceSelectionDialogVisible = ref(false);
+const cancelApplicationDialogVisible = ref(false);
+const leaveSeatDialogVisible = ref(false);
 const selectedMicrophoneId = ref<string>('');
 const selectedCameraId = ref<string>('');
 const requestConnectionType = ref<'video' | 'audio'>('audio');
@@ -79,6 +81,16 @@ watch(isUserOnSeat, () => {
   if (!isUserOnSeat.value && isLeavingSeat.value) {
     isLeavingSeat.value = false;
   }
+
+  if (!isUserOnSeat.value && leaveSeatDialogVisible.value) {
+    leaveSeatDialogVisible.value = false;
+  }
+});
+
+watch(isApplyingSeat, () => {
+  if (isApplyingSeat.value === false && cancelApplicationDialogVisible.value) {
+    cancelApplicationDialogVisible.value = false;
+  }
 });
 
 async function handleApplyForSeat(index: number = -1) {
@@ -103,7 +115,7 @@ async function handleApplyForSeat(index: number = -1) {
   }
 }
 
-async function handleLeaveSeat() {
+async function openLeaveSeatDialog() {
   if (isLeavingSeat.value) {
     return;
   }
@@ -112,6 +124,14 @@ async function handleLeaveSeat() {
     TUIToast.warning({
       message: t('You are not yet on the seat'),
     });
+    return;
+  }
+
+  leaveSeatDialogVisible.value = true;
+}
+
+async function confirmLeaveSeat() {
+  if (isLeavingSeat.value) {
     return;
   }
 
@@ -125,7 +145,13 @@ async function handleLeaveSeat() {
     TUIToast.error({
       message: t('Failed to leave seat'),
     });
+  } finally {
+    leaveSeatDialogVisible.value = false;
   }
+}
+
+function closeLeaveSeatDialog() {
+  leaveSeatDialogVisible.value = false;
 }
 
 async function handleCancelApplicationOnSeat() {
@@ -141,6 +167,10 @@ async function handleCancelApplicationOnSeat() {
     });
     return;
   }
+  cancelApplicationDialogVisible.value = true;
+}
+
+async function handleCancelApplicationConfirm() {
   try {
     await cancelApplication();
   } catch (error) {
@@ -148,7 +178,13 @@ async function handleCancelApplicationOnSeat() {
       message: t('Failed to cancel application for seat'),
     });
     console.error('Failed to cancel application for seat:', error);
+  } finally {
+    cancelApplicationDialogVisible.value = false;
   }
+}
+
+function handleCancelApplicationCancel() {
+  cancelApplicationDialogVisible.value = false;
 }
 
 function handleConnectionTypeCancel() {
@@ -262,16 +298,11 @@ async function handleKickedOffSeat(eventInfo: CoGuestEventInfoMap[GuestEvent.onK
  * @returns Promise<void>
  */
 async function handleGuestApplicationError(eventInfo: CoGuestEventInfoMap[GuestEvent.onGuestApplicationError]) {
-  const { code, message } = eventInfo;
-
-  let errorMessage = t('Failed to apply for seat');
-  if (code === 100006 && message.includes('The host\'s seat position exceeds the layout restriction in the mic mode')) {
-    errorMessage = t('The host\'s seat position exceeds the layout restriction in the mic mode');
-  }
+  const { message } = eventInfo;
 
   // Show error toast notification
   TUIToast.error({
-    message: errorMessage,
+    message: t(message),
   });
 }
 
@@ -303,6 +334,8 @@ export function useSeatApplication() {
   return {
     connectionTypeDialogVisible,
     deviceSelectionDialogVisible,
+    cancelApplicationDialogVisible,
+    leaveSeatDialogVisible,
     isApplyingSeat,
     isUserOnSeat,
     applySeatBtnText,
@@ -312,12 +345,16 @@ export function useSeatApplication() {
     microphoneList,
     cameraList,
     handleApplyForSeat,
-    handleLeaveSeat,
+    openLeaveSeatDialog,
+    confirmLeaveSeat,
+    closeLeaveSeatDialog,
     handleCancelApplicationOnSeat,
     handleConnectionTypeConfirm,
     handleConnectionTypeCancel,
     handleDeviceConfirm,
     handleDeviceCancel,
+    handleCancelApplicationConfirm,
+    handleCancelApplicationCancel,
     initAutoSelectDevice,
     subscribeEvents,
     unsubscribeEvents,

@@ -77,3 +77,19 @@ export function isSupportFullScreen(element: HTMLElement) {
 export async function copyToClipboard(text: string): Promise<void> {
   await navigator.clipboard.writeText(text);
 }
+
+export function isSafariBrowser(): boolean {
+  // Safari has several unique features
+  const isSafari = 
+      // Check the vendor feature
+      navigator.vendor && navigator.vendor.includes('Apple') &&
+      // Check specific apis or behaviors unique to Safari
+      !navigator.userAgent.includes('CriOS') && // Exclude Chrome iOS
+      !navigator.userAgent.includes('FxiOS') && // Exclude Firefox iOS
+      // Additional feature checks
+      (typeof safari !== 'undefined' || 
+       !('netscape' in window) || // Firefox has netscape objects
+       document.documentMode === undefined); // Exclude IE
+
+  return !!isSafari;
+}
