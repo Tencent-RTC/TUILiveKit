@@ -1,10 +1,12 @@
+import TUIRoomEngine from "@tencentcloud/tuiroom-engine-js";
+import { useUIKit } from "@tencentcloud/uikit-base-component-vue3";
 
 /**
  * deepClone
  * @param data Raw data of any type
  * @returns Data after deepClone
  */
-export function deepClone(data: any) {
+function deepClone(data: any) {
   let res: any = null;
   const reference = [Date, RegExp, Set, WeakSet, Map, WeakMap, Error];
   if (reference.includes(data?.constructor)) {
@@ -34,7 +36,7 @@ export function deepClone(data: any) {
  * @example
  * const value = getUrlParam(key);
  */
-export function getUrlParam(key: string) {
+function getUrlParam(key: string) {
   const url = window?.location.href.replace(/^[^?]*\?/, '');
   const regexp = new RegExp(`(^|&)${key}=([^&#]*)(&|$|)`, 'i');
   const paramMatch = url?.match(regexp);
@@ -42,7 +44,7 @@ export function getUrlParam(key: string) {
   return paramMatch ? paramMatch[2] : null;
 }
 
-export function getUrlParams(): Record<string, string> {
+function getUrlParams(): Record<string, string> {
   const query: Record<string, string> = {};
   const hashQueryIndex = location.href.indexOf('?');
   if (hashQueryIndex !== -1) {
@@ -55,3 +57,27 @@ export function getUrlParams(): Record<string, string> {
   }
   return query;
 };
+
+async function initRoomEngineLanguage() {
+  const { language } = useUIKit();
+  
+  let lang: string = 'en';
+  if (language.value.includes('en')) {
+    lang = 'en';
+  } else if (language.value.includes('zh')) {
+    lang = 'zh-Hans';
+  }
+  await TUIRoomEngine.callExperimentalAPI(JSON.stringify({
+    api: 'setCurrentLanguage',
+    params: {
+      language: lang,
+    },
+  }));
+};
+
+export {
+  deepClone,
+  getUrlParam,
+  getUrlParams,
+  initRoomEngineLanguage,
+}

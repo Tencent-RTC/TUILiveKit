@@ -12,16 +12,38 @@
     v-model:camera-id="selectedCameraId" :type="requestConnectionType" :microphone-list="microphoneList"
     :camera-list="cameraList" @confirm="handleDeviceConfirm" @cancel="handleDeviceCancel"
   />
+  <TUIDialog
+    :title="t('Cancel application for link mic')"
+    :visible="cancelApplicationDialogVisible"
+    :confirm-text="t('Confirm')"
+    :cancel-text="t('Cancel')"
+    :close="handleCancelApplicationCancel"
+    :confirm="handleCancelApplicationConfirm"
+    :cancel="handleCancelApplicationCancel"
+  />
+  <TUIDialog
+    :title="t('End Link')"
+    :visible="leaveSeatDialogVisible"
+    :confirm-text="t('Confirm')"
+    :cancel-text="t('Cancel')"
+    :close="closeLeaveSeatDialog"
+    :confirm="confirmLeaveSeat"
+    :cancel="closeLeaveSeatDialog"
+  />
 </template>
 <script setup lang="ts">
 import { onMounted, onUnmounted, watch } from 'vue';
 
 import {
   IconCoGuest,
+  TUIDialog,
+  useUIKit,
 } from '@tencentcloud/uikit-base-component-vue3';
 import LiveConnectionTypeDialog from '../LiveDialog/LiveConnectionTypeDialog.vue';
 import LiveDeviceSelectionDialog from '../LiveDialog/LiveDeviceSelectionDialog.vue';
 import { useSeatApplication } from './useSeatApplication';
+
+const { t } = useUIKit();
 
 const {
   isUserOnSeat,
@@ -29,18 +51,24 @@ const {
   applySeatBtnText,
   connectionTypeDialogVisible,
   deviceSelectionDialogVisible,
+  cancelApplicationDialogVisible,
+  leaveSeatDialogVisible,
   requestConnectionType,
   selectedMicrophoneId,
   selectedCameraId,
   microphoneList,
   cameraList,
   handleApplyForSeat,
-  handleLeaveSeat,
+  openLeaveSeatDialog,
+  confirmLeaveSeat,
+  closeLeaveSeatDialog,
   handleCancelApplicationOnSeat,
   handleConnectionTypeConfirm,
   handleConnectionTypeCancel,
   handleDeviceConfirm,
   handleDeviceCancel,
+  handleCancelApplicationConfirm,
+  handleCancelApplicationCancel,
   initAutoSelectDevice,
   subscribeEvents,
   unsubscribeEvents,
@@ -48,7 +76,7 @@ const {
 
 function handleButtonClick() {
   if (isUserOnSeat.value) {
-    handleLeaveSeat();
+    openLeaveSeatDialog();
   } else if (isApplyingSeat.value) {
     handleCancelApplicationOnSeat();
   } else {

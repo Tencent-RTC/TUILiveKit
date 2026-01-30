@@ -87,15 +87,28 @@ const handleCoHostUserLeft = ({ userInfo }: { userInfo: SeatUserInfo }) => {
     TUIToast({ type: TOAST_TYPE.INFO, message: t('Co-host user left event', { userName: userInfo.userName || userInfo.userId }) });
   }
 };
+
 const handleCoHostRequestCancelled = ({ inviter }: { inviter: SeatUserInfo }) => {
   hideNotification();
   TUIToast({ type: TOAST_TYPE.INFO, message: t('Co-host request cancelled by user', { userName: inviter.userName || inviter.userId }) });
-}
+};
+
+const handleCoHostRequestRejected = ({ invitee }: { invitee: SeatUserInfo }) => {
+  TUIToast({ type: TOAST_TYPE.INFO, message: t('Invitation rejected by user', { userName: invitee.userName || invitee.userId }) });
+};
+
+const handleCoHostRequestTimeout = ({ inviter, invitee }: { inviter: SeatUserInfo; invitee: SeatUserInfo }) => {
+  if (inviter.userId === loginUserInfo.value?.userId) {
+    TUIToast({ type: TOAST_TYPE.INFO, message: t('Invitation timeout for user', { userName: invitee.userName || invitee.userId }) });
+  }
+};
+
 const handleUserExitBattle = (eventInfo: { battleId: string, battleUser: SeatUserInfo }) => {
   if (eventInfo.battleUser.userId === loginUserInfo.value?.userId) {
     return;
   }
 };
+
 const onBattleRequestReceived = (eventInfo: { battleId: string, inviter: SeatUserInfo, invitee: SeatUserInfo }) => {
   hideNotification();
   showNotification({
@@ -118,10 +131,18 @@ const onBattleRequestReceived = (eventInfo: { battleId: string, inviter: SeatUse
     },
   });
 };
+
 const onBattleRequestCancelled = (eventInfo: { battleId: string, inviter: SeatUserInfo, invitee: SeatUserInfo }) => {
   TUIToast({ type: TOAST_TYPE.INFO, message: t('Battle request cancelled by user', { userName: eventInfo.invitee.userName || eventInfo.invitee.userId}) });
   hideNotification();
 };
+
+const onBattleRequestRejected = (eventInfo: { battleId: string, inviter: SeatUserInfo, invitee: SeatUserInfo }) => {
+  if (eventInfo.inviter.userId === loginUserInfo.value?.userId) {
+    TUIToast({ type: TOAST_TYPE.INFO, message: t('Battle request rejected by user', { userName: eventInfo.invitee.userName || eventInfo.invitee.userId }) });
+  }
+};
+
 let timeoutUsers: string[] = [];
 let timeoutTimer: NodeJS.Timeout | null = null;
 
@@ -153,20 +174,26 @@ const onBattleRequestTimeout = (eventInfo: { battleId: string, inviter: SeatUser
 onMounted(() => {
   subscribeCoHostEvent(CoHostEvent.onCoHostRequestReceived, handleCoHostRequestReceived);
   subscribeCoHostEvent(CoHostEvent.onCoHostRequestCancelled, handleCoHostRequestCancelled);
+  subscribeCoHostEvent(CoHostEvent.onCoHostRequestRejected, handleCoHostRequestRejected);
+  subscribeCoHostEvent(CoHostEvent.onCoHostRequestTimeout, handleCoHostRequestTimeout);
   subscribeCoHostEvent(CoHostEvent.onCoHostUserLeft, handleCoHostUserLeft);
   subscribeBattleEvent(BattleEvent.onUserExitBattle, handleUserExitBattle);
   subscribeBattleEvent(BattleEvent.onBattleRequestReceived, onBattleRequestReceived);
   subscribeBattleEvent(BattleEvent.onBattleRequestCancelled, onBattleRequestCancelled);
+  subscribeBattleEvent(BattleEvent.onBattleRequestReject, onBattleRequestRejected);
   subscribeBattleEvent(BattleEvent.onBattleRequestTimeout, onBattleRequestTimeout);
 });
 
 onUnmounted(() => {
   unsubscribeCoHostEvent(CoHostEvent.onCoHostRequestReceived, handleCoHostRequestReceived);
   unsubscribeCoHostEvent(CoHostEvent.onCoHostRequestCancelled, handleCoHostRequestCancelled);
+  unsubscribeCoHostEvent(CoHostEvent.onCoHostRequestRejected, handleCoHostRequestRejected);
+  unsubscribeCoHostEvent(CoHostEvent.onCoHostRequestTimeout, handleCoHostRequestTimeout);
   unsubscribeCoHostEvent(CoHostEvent.onCoHostUserLeft, handleCoHostUserLeft);
   unsubscribeBattleEvent(BattleEvent.onUserExitBattle, handleUserExitBattle);
   unsubscribeBattleEvent(BattleEvent.onBattleRequestReceived, onBattleRequestReceived);
   unsubscribeBattleEvent(BattleEvent.onBattleRequestCancelled, onBattleRequestCancelled);
+  unsubscribeBattleEvent(BattleEvent.onBattleRequestReject, onBattleRequestRejected);
   unsubscribeBattleEvent(BattleEvent.onBattleRequestTimeout, onBattleRequestTimeout);
 });
 </script>

@@ -211,6 +211,7 @@ import SpeakerVolumeSetting from './component/SpeakerVolumeSetting.vue';
 import LivePusherNotification from './component/LivePusherNotification.vue';
 import { parseLiveErrorMessage } from './constants';
 import { copyToClipboard } from './utils/utils';
+import { initRoomEngineLanguage } from '../utils/utils';
 
 const { t } = useUIKit();
 const props = defineProps<{
@@ -253,7 +254,7 @@ const endLiveDialogMessage = computed(() => {
   if (coHostStatus.value === CoHostStatus.Connected) {
     return t('Currently connected, do you need to "exit connection" or "end live broadcast"');
   }
-  if (coGuestConnected.value.length > 0) {
+  if (coGuestConnected.value.length > 1) {
     return t('You are currently co-guesting with other streamers. Would you like to [End Live] ?');
   }
   return t('You are currently live streaming. Do you want to end it?');
@@ -309,6 +310,7 @@ const handleCreateLive = async () => {
         enable: true,
       },
     }));
+    await initRoomEngineLanguage();
     await createLive({
       liveId: liveParams.value.liveId,
       liveName: liveParams.value.liveName,
