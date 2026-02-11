@@ -91,7 +91,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed, onUnmounted } from 'vue';
-import TUIRoomEngine, { TUIRoomEvents } from '@tencentcloud/tuiroom-engine-js';
+import TUIRoomEngine, { TUIAutoPlayCallbackInfo, TUIRoomEvents } from '@tencentcloud/tuiroom-engine-js';
 import {
   IconArrowStrokeBack,
   TUIButton,
@@ -111,7 +111,9 @@ import {
   useRoomEngine,
   LiveListEvent,
   LiveGift,
+  UIKitModal,
 } from 'tuikit-atomicx-vue3';
+import { errorHandler } from '../../utils/errorHandler';
 import LiveEndedIcon from '../../icons/live-ended.svg';
 import SeatApplicationButton from '../SeatApplication/SeatApplicationButton.vue';
 import { useSeatApplication } from '../SeatApplication/useSeatApplication';
@@ -228,9 +230,16 @@ async function handleJoinLive() {
   if (props.liveId && props.liveId.trim()) {
     try {
       await joinLive({ liveId: props.liveId });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to join live room, error:', error);
-      showErrorAndLeave(t('Failed to join live room'));
+      const errorInfo = errorHandler.parseError(error);
+      UIKitModal.openModal({
+        id: errorInfo.code,
+        title: t('Failed to join live room'),
+        content: t(errorInfo.message),
+        type: 'error',
+      });
+      emit('leaveLive');
     }
   } else {
     console.error('liveId is empty');
@@ -238,7 +247,7 @@ async function handleJoinLive() {
   }
 }
 
-function handleAutoPlayFailed() {
+function handleAutoPlayFailed(event: TUIAutoPlayCallbackInfo) {
   if (autoPlayFailedHandled.value) {
     return;
   }
@@ -247,6 +256,10 @@ function handleAutoPlayFailed() {
     content: t('Content is ready. Click the button to start playback'),
     confirmText: t('Play'),
     showClose: false,
+    callback: () => {
+      autoPlayFailedHandled.value = false;
+      event.resume();
+    }
   });
 }
 </script>

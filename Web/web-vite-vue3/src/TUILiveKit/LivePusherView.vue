@@ -199,6 +199,7 @@ import {
   useBattleState,
   CoHostStatus,
   useCoGuestState,
+  UIKitModal,
 } from 'tuikit-atomicx-vue3';
 import CoGuestButton from './component/CoGuestButton.vue';
 import CoHostButton from './component/CoHostButton.vue';
@@ -209,8 +210,8 @@ import OrientationSwitch from './component/OrientationSwitch.vue';
 import SettingButton from './component/SettingButton.vue';
 import SpeakerVolumeSetting from './component/SpeakerVolumeSetting.vue';
 import LivePusherNotification from './component/LivePusherNotification.vue';
-import { parseLiveErrorMessage } from './constants';
 import { copyToClipboard } from './utils/utils';
+import { errorHandler } from './utils/errorHandler';
 import { initRoomEngineLanguage } from '../utils/utils';
 
 const { t } = useUIKit();
@@ -322,10 +323,21 @@ const handleCreateLive = async () => {
     openLocalMicrophone();
   } catch (error: any) {
     loading.value = false;
-    const message = parseLiveErrorMessage(String(error));
-    if (message) {
-      TUIToast.error({ message: t(message) });
+    if (typeof error.message === 'string'
+      && error.message.indexOf('this room already exists, and you are the owner') !== -1) {
+      await joinLive({
+        liveId: liveParams.value.liveId,
+      });
+      await openLocalMicrophone();
+      return;
     }
+    const errorInfo = errorHandler.parseError(error);
+    UIKitModal.openModal({
+      id: errorInfo.code,
+      title: t('Failed to create live'),
+      content: t(errorInfo.message),
+      type: 'error',
+    });
     throw error;
   }
 };
@@ -336,10 +348,13 @@ const handleEndLive = async () => {
     await endLive();
     loading.value = false;
   } catch (error: any) {
-    const message = parseLiveErrorMessage(String(error));
-    if (message) {
-      TUIToast.error({ message: t(message) });
-    }
+    const errorInfo = errorHandler.parseError(error);
+    UIKitModal.openModal({
+      id: errorInfo.code,
+      title: t('Failed to end live'),
+      content: t(errorInfo.message),
+      type: 'error',
+    });
     loading.value = false;
     exitLiveDialogVisible.value = false;
     throw error;
