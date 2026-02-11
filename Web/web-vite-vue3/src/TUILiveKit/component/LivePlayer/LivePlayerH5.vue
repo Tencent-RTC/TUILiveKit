@@ -103,7 +103,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed, onUnmounted, watch, Teleport } from 'vue';
-import TUIRoomEngine, { TUIRoomEvents } from '@tencentcloud/tuiroom-engine-js';
+import TUIRoomEngine, { TUIAutoPlayCallbackInfo, TUIRoomEvents } from '@tencentcloud/tuiroom-engine-js';
 import { TUIButton, IconClose, TUIDialog, useUIKit, TUIMessageBox } from '@tencentcloud/uikit-base-component-vue3';
 import {
   LiveAudienceList,
@@ -209,7 +209,7 @@ async function showAudienceList() {
   audienceListPanelVisible.value = true;
 }
 
-function handleAutoPlayFailed() {
+function handleAutoPlayFailed(event: TUIAutoPlayCallbackInfo) {
   if (!currentLive.value?.liveId || autoPlayFailedHandled.value) {
     return;
   }
@@ -217,6 +217,10 @@ function handleAutoPlayFailed() {
   TUIMessageBox.alert({
     content: t('Content is ready. Click the button to start playback'),
     confirmText: t('Play'),
+    callback: () => {
+      autoPlayFailedHandled.value = false;
+      event.resume();
+    }
   });
 }
 

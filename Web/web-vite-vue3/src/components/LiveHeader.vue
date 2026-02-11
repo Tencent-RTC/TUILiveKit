@@ -23,8 +23,9 @@
 import { onMounted, ref, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { TUIButton, TUIMessageBox, TUIToast, TOAST_TYPE, useUIKit } from '@tencentcloud/uikit-base-component-vue3';
-import { useLoginState, useLiveListState, Avatar } from 'tuikit-atomicx-vue3';
+import { useLoginState, useLiveListState, Avatar, UIKitModal } from 'tuikit-atomicx-vue3';
 import { isH5 } from '../TUILiveKit/utils/environment';
+import { errorHandler } from '../TUILiveKit/utils/errorHandler';
 
 const props = defineProps({
   loginButtonVisible: {
@@ -57,6 +58,13 @@ async function handleLogin() {
     });
   } catch (error) {
     console.error(error);
+    const errorInfo = errorHandler.parseError(error);
+    UIKitModal.openModal({
+      id: errorInfo.code,
+      title: t('Login failed'),
+      content: t(errorInfo.message),
+      type: 'error',
+    });
     router.push({ path: '/login', query: { from: router.currentRoute.value.path, ...route.query } });
   } finally {
     loginLoading.value = false;
