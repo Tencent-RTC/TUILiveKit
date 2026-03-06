@@ -60,7 +60,12 @@
       </div>
       <div class="bottom-operate-button">
         <LiveGift class="bottom-operate-button-icon" />
+        <div v-if="giftInfoList.length > 0" class="like-button" @click="handleSendLikes">
+          <IconLike :size="20" />
+        </div>
       </div>
+      <!-- Like animation component -->
+      <LikeAnimation ref="likeAnimationRef" />
     </div>
     <Teleport to="#app">
       <div v-if="liveEndVisible" class="live-end">
@@ -104,7 +109,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, onUnmounted, watch, Teleport } from 'vue';
 import TUIRoomEngine, { TUIAutoPlayCallbackInfo, TUIRoomEvents } from '@tencentcloud/tuiroom-engine-js';
-import { TUIButton, IconClose, TUIDialog, useUIKit, TUIMessageBox } from '@tencentcloud/uikit-base-component-vue3';
+import { TUIButton, IconClose, IconLike, TUIDialog, useUIKit, TUIMessageBox } from '@tencentcloud/uikit-base-component-vue3';
 import {
   LiveAudienceList,
   LiveCoreView,
@@ -113,20 +118,27 @@ import {
   LiveGift,
   useLiveAudienceState,
   useLiveListState,
+  useLoginState,
   Avatar,
   useLiveSeatState,
   useRoomEngine,
   LiveListEvent,
+  useLiveGiftState,
+  LiveGiftEvents,
+  type LikesMessage,
 } from 'tuikit-atomicx-vue3';
 import Drawer from '../../base-component/Drawer.vue';
+import LikeAnimation from '../LikeAnimation/LikeAnimation.vue';
 import { initRoomEngineLanguage } from '../../../utils/utils';
 
 const { t } = useUIKit();
 
 const { audienceList, fetchAudienceList } = useLiveAudienceState();
 const { currentLive, joinLive, leaveLive, subscribeEvent, unsubscribeEvent } = useLiveListState();
+const { loginUserInfo } = useLoginState();
 const isInLive = computed(() => !!currentLive.value?.liveId);
 const { canvas } = useLiveSeatState();
+const { giftInfoList, sendLikes, subscribeEvent: subscribeGiftEvent, unsubscribeEvent: unsubscribeGiftEvent } = useLiveGiftState();
 const roomEngine = useRoomEngine();
 TUIRoomEngine.once('ready', () => {
   roomEngine.instance?.on(TUIRoomEvents.onAutoPlayFailed, handleAutoPlayFailed);
@@ -138,6 +150,12 @@ const leaveLiveText = ref('');
 const liveOwnerName = ref('');
 const liveOwnerAvatar = ref('');
 const autoPlayFailedHandled = ref(false);
+
+// Like animation component ref
+const likeAnimationRef = ref<InstanceType<typeof LikeAnimation> | null>(null);
+
+// Counter for failed likes, will be added to next send attempt
+const pendingLikesCount = ref(0);
 
 const audienceListTitle = computed(() => `${t('Online viewers')} (${audienceList.value.length})`);
 
@@ -154,6 +172,7 @@ const handleKickedOutOfLive = () => {
 
 onMounted(async () => {
   subscribeEvent(LiveListEvent.onKickedOutOfLive, handleKickedOutOfLive);
+  subscribeGiftEvent(LiveGiftEvents.ON_RECEIVE_LIKES_MESSAGE, handleReceiveLikesMessage);
   await initRoomEngineLanguage();
   await handleJoinLive();
 });
@@ -169,6 +188,7 @@ onUnmounted(async () => {
     await leaveLive();
   }
   unsubscribeEvent(LiveListEvent.onKickedOutOfLive, handleKickedOutOfLive);
+  unsubscribeGiftEvent(LiveGiftEvents.ON_RECEIVE_LIKES_MESSAGE, handleReceiveLikesMessage);
   roomEngine.instance?.off(TUIRoomEvents.onAutoPlayFailed, handleAutoPlayFailed);
 });
 
@@ -193,6 +213,33 @@ async function handleJoinLive() {
     console.error('liveId is empty');
     showLeaveLiveDialog(t('LiveId is empty'));
   }
+}
+
+async function handleSendLikes() {
+  // Include pending count from previous failed attempts
+  const countToSend = 1 + pendingLikesCount.value;
+  try {
+    await sendLikes({ count: countToSend });
+    // Reset pending count and play animation on success
+    pendingLikesCount.value = 0;
+    likeAnimationRef.value?.playLikeAnimation(3);
+  } catch {
+    // On failure, accumulate the count for next attempt
+    pendingLikesCount.value += 1;
+  }
+}
+
+/**
+ * Handle receiving likes message event
+ * Ignore if the sender is the current user (local animation already played)
+ * Play 3 staggered animations for other users' likes
+ */
+function handleReceiveLikesMessage(eventInfo: LikesMessage) {
+  // Ignore likes from self (already played animation locally)
+  if (eventInfo.sender.userId === loginUserInfo.value?.userId) {
+    return;
+  }
+  likeAnimationRef.value?.playLikeAnimation(3);
 }
 
 function showLeaveLiveDialog(text: string) {
@@ -352,10 +399,38 @@ function handleBarrageInputBlur() {
   align-items: center;
   flex: 1 0 auto;
   padding: 0 8px;
+  gap: 8px;
+  -webkit-tap-highlight-color: transparent;
 
   .bottom-operate-button-icon {
     width: 32px;
     height: 32px;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .like-button {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #FF3B66;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: white;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+    user-select: none;
+
+    &:active {
+      transform: scale(0.95);
+      opacity: 0.9;
+    }
+
+    &:focus {
+      outline: none;
+    }
   }
 }
 
