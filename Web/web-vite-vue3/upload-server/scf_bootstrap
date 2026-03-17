@@ -1,0 +1,3 @@
+#!/bin/bash
+export Port=9000
+/var/lang/node18/bin/node ./src/index.js

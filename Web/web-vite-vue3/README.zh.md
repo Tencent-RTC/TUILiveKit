@@ -38,6 +38,60 @@
    npm run dev
    ```
 
+`npm run dev` 默认**不包含** `upload-server`。
+如果希望一条命令同时启动 upload-server，可执行 `npm run dev:with-upload-server`。
+
+### 第二步补充（可选）：对接 upload-server 实现封面上传
+
+1. 准备环境文件
+
+```bash
+cp upload-server/.env.example upload-server/.env
+```
+
+2. 配置 `upload-server/.env`（二选一）
+- `STORAGE_PROVIDER=cos`：配置 `COS_SECRET_ID`、`COS_SECRET_KEY`、`COS_BUCKET`、`COS_REGION`
+- `STORAGE_PROVIDER=custom`：配置 `CUSTOM_UPLOAD_URL` 及相关字段
+
+3. 安装并启动 upload-server
+
+```bash
+npm run upload-server:bootstrap
+npm run upload-server:standalone
+```
+
+`upload-server` 是独立 Node 子项目。在全新环境（或 `upload-server/node_modules` 不存在）时，
+必须至少先执行一次 `npm run upload-server:bootstrap`。
+
+4. 验证服务可用性
+- `http://127.0.0.1:3071/api/test`
+- `http://127.0.0.1:3071/api/upload/config`
+
+若 upload-server 不可用或 provider 未配置，界面会自动回退到手动输入封面 URL。
+
+5. 配置渲染进程上传服务地址（`VUE_APP_UPLOAD_SERVER_BASE_URL`）
+
+Web demo 默认请求 `http://127.0.0.1:3071`。
+如果图片上传服务部署在远端，请设置 `VUE_APP_UPLOAD_SERVER_BASE_URL`：
+`VUE_APP_UPLOAD_SERVER_BASE_URL` 建议配置为“协议 + 域名”（不带尾部斜杠、不带路径），
+例如：`https://upload.example.com`。
+
+- 本次启动临时生效：
+
+```bash
+VUE_APP_UPLOAD_SERVER_BASE_URL=https://your-upload-domain npm run dev
+```
+
+- 本次构建临时生效：
+
+```bash
+VUE_APP_UPLOAD_SERVER_BASE_URL=https://your-upload-domain npm run build
+```
+
+- 推荐方式（按模式持久化）：
+  - 在本地 `.env` 或对应 mode 的 env 文件中增加 `VUE_APP_UPLOAD_SERVER_BASE_URL=...`
+  - 启动或构建时使用对应 mode
+
 ## 打包部署
 
 1. 执行如下命令打包 dist 文件。

@@ -1,6 +1,9 @@
 <template>
-  <div class="live-player-container" :style="{ padding : isMobile ? '0px' : '16px'}">
-    <LiveHeader v-show="!isMobile" class="live-player-header" :login-button-visible="false"></LiveHeader>
+  <div
+    class="live-player-container"
+    :style="{ padding: isMobile ? '0px' : '16px' }"
+  >
+    <LiveHeader v-show="!isMobile" class="live-player-header" :login-button-visible="false" />
     <LivePlayerView v-if="loginUserInfo" :live-id="liveId as string" @leave-live="leaveLive" />
   </div>
 </template>
@@ -10,7 +13,6 @@ import { useRouter, useRoute } from 'vue-router';
 import { useLoginState } from 'tuikit-atomicx-vue3';
 import { LivePlayerView, isMobile } from '../TUILiveKit';
 import LiveHeader from '../components/LiveHeader.vue';
-import { deepClone } from '../utils/utils';
 
 const { loginUserInfo } = useLoginState();
 
@@ -19,11 +21,8 @@ const route = useRoute();
 const { liveId } = route.query;
 
 function leaveLive() {
-  const currentQuery = deepClone(route.query);
-  delete currentQuery.liveId;
-  router.push({ path: '/live-list', query: currentQuery });
+  router.push({ path: '/live-list' });
 }
-
 </script>
 
 <style lang="scss" scoped>
@@ -38,7 +37,8 @@ function leaveLive() {
   box-sizing: border-box;
 
   .live-player-header {
-    padding-bottom: 16px;
+    flex-shrink: 0;
+    padding-bottom: 0;
   }
 }
 </style>

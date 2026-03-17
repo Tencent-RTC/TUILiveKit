@@ -20,6 +20,17 @@
           v-model="form.liveName"
           :placeholder="t('Please enter the live name')"
           :maxLength="20"
+          :spellcheck="false"
+        />
+      </div>
+      <div class="setting-panel-content-item setting-panel-content-item-cover">
+        <span class="setting-panel-content-item-label">{{ t('Cover upload') }}</span>
+        <LiveCoverUpload
+          v-model="form.coverUrl"
+          v-model:cover-type="coverType"
+          :upload-enabled="uploadEnabled"
+          :max-size-mb="maxFileSizeMB"
+          :allowed-mime-types="allowedMimeTypes"
         />
       </div>
     </div>
@@ -27,33 +38,72 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, defineEmits } from 'vue';
+import { computed, ref } from 'vue';
 import { useUIKit, TUIDialog, TUIInput, IconEditor } from '@tencentcloud/uikit-base-component-vue3';
+import {
+  fetchUploadConfig,
+  UPLOAD_ALLOWED_MIME_TYPES,
+  UPLOAD_MAX_FILE_SIZE_MB,
+  UploadConfig,
+} from '../../api/upload';
+import LiveCoverUpload from './LiveCoverUpload.vue';
+
+type CoverType = 'landscape' | 'portrait';
+
+type LiveSettingForm = {
+  liveName: string;
+  coverUrl: string;
+};
 
 const props = defineProps<{
   liveName?: string;
+  coverUrl?: string;
 }>();
 const emit = defineEmits(['confirm']);
 const { t } = useUIKit();
 
 const settingPanelVisible = ref(false);
-const form = ref({
-  liveName: props.liveName,
+const coverType = ref<CoverType>('landscape');
+const uploadConfig = ref<UploadConfig>({
+  enabled: false,
+  provider: 'none',
 });
+const form = ref<LiveSettingForm>({
+  liveName: props.liveName || '',
+  coverUrl: props.coverUrl || '',
+});
+const maxFileSizeMB = UPLOAD_MAX_FILE_SIZE_MB;
+const allowedMimeTypes = UPLOAD_ALLOWED_MIME_TYPES;
+const uploadEnabled = computed(() => Boolean(uploadConfig.value.enabled));
 
-const handleIconClick = () => {
+function syncFormWithProps() {
+  coverType.value = 'landscape';
+  form.value = {
+    liveName: props.liveName || '',
+    coverUrl: props.coverUrl || '',
+  };
+}
+
+async function ensureUploadConfig() {
+  uploadConfig.value = await fetchUploadConfig();
+}
+
+const handleIconClick = async () => {
+  syncFormWithProps();
   settingPanelVisible.value = true;
+  await ensureUploadConfig();
 };
 
 const handleClose = () => {
   settingPanelVisible.value = false;
-  form.value = {
-    liveName: props.liveName,
-  };
+  syncFormWithProps();
 };
 
 const handleConfirm = () => {
-  emit('confirm', form.value);
+  emit('confirm', {
+    liveName: form.value.liveName.trim(),
+    coverUrl: form.value.coverUrl.trim(),
+  });
   settingPanelVisible.value = false;
 };
 </script>
@@ -91,13 +141,13 @@ const handleConfirm = () => {
 }
 
 :deep(.live-setting-dialog) {
-  width: 380px;
+  width: min(560px, calc(100vw - 32px));
 }
 
 .setting-panel-content {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   width: 100%;
 
   .setting-panel-content-item {
@@ -105,9 +155,26 @@ const handleConfirm = () => {
     gap: 8px;
     align-items: center;
 
+    &.setting-panel-content-item-cover {
+      align-items: flex-start;
+    }
+
     .setting-panel-content-item-label {
       width: 80px;
       white-space: nowrap;
+    }
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .setting-panel-content {
+    .setting-panel-content-item {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .setting-panel-content-item-label {
+      width: auto;
     }
   }
 }

@@ -1,0 +1,233 @@
+// ============================================================
+// Business Style Preset — Layout & Component Styles
+//
+// Color variables are defined in the base library:
+//   themes/business-light.scss & themes/business-dark.scss
+// This file only contains font/spacing tokens and component
+// layout/style rules.
+// ============================================================
+
+.style-preset-business {
+  width: 100%;
+  height: 100%;
+
+  // === Font Family ===
+  font-family: 'Inter', 'PingFang SC', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  // === Type Scale (unified across all business components) ===
+  --preset-font-size-brand: 20px;
+  --preset-font-size-title: 16px;
+  --preset-font-size-subtitle: 15px;
+  --preset-font-size-body: 15px;
+  --preset-font-size-caption: 14px;
+  --preset-font-size-small: 13px;
+  --preset-font-size-micro: 11px;
+
+  --preset-font-weight-bold: 600;
+  --preset-font-weight-medium: 500;
+  --preset-font-weight-regular: 400;
+
+  --preset-line-height-tight: 1.2;
+  --preset-line-height-normal: 1.5;
+  --preset-line-height-relaxed: 1.6;
+
+  // === Border Radius ===
+  --preset-radius-sm: 4px;
+  --preset-radius-md: 8px;
+  --preset-radius-lg: 12px;
+  --preset-radius-xl: 16px;
+
+  // === Spacing ===
+  --preset-space-xs: 4px;
+  --preset-space-sm: 8px;
+  --preset-space-md: 16px;
+  --preset-space-lg: 24px;
+  --preset-space-xl: 32px;
+
+  // ============================================================
+  // Global transition for all interactive components
+  // ============================================================
+  button,
+  input,
+  textarea,
+  a,
+  .tab-btn,
+  .console-btn,
+  .input-addon-btn {
+    transition: all 200ms ease-in-out;
+  }
+
+  // ============================================================
+  // Top LiveHeader — uses theme tokens
+  // ============================================================
+  .live-header {
+    height: 48px;
+    box-sizing: border-box;
+    padding: 0 16px;
+    background: var(--preset-bg-panel);
+    border-bottom: 1px solid var(--preset-border);
+
+    .header-left {
+      .header-left-logo {
+        opacity: 0.9;
+        width: 22px;
+        height: 20px;
+      }
+
+      .header-left-title {
+        color: var(--preset-text-heading);
+        font-weight: var(--preset-font-weight-bold);
+        font-size: var(--preset-font-size-subtitle);
+        letter-spacing: 0.3px;
+      }
+    }
+
+    .header-right {
+      .header-right-name {
+        color: var(--preset-text-tertiary);
+        font-weight: var(--preset-font-weight-regular);
+        font-size: var(--preset-font-size-caption);
+      }
+    }
+  }
+
+  // ============================================================
+  // BusinessHeader component (legacy, used for H5 info bar)
+  // ============================================================
+  .business-header {
+    padding: 6px 24px;
+    background: var(--preset-bg-panel);
+    border-top: 1px solid var(--preset-border);
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.04);
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--preset-space-sm);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--preset-space-sm);
+      min-width: 0;
+      flex: 1;
+
+      .live-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 6px;
+        border-radius: 9999px;
+        background: rgba(16, 185, 129, 0.1);
+        flex-shrink: 0;
+
+        .live-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: var(--preset-live-green);
+          animation: livePulse 1.5s ease-in-out infinite;
+        }
+
+        .live-text {
+          font-size: var(--preset-font-size-micro);
+          font-weight: var(--preset-font-weight-bold);
+          color: #059669;
+          letter-spacing: 0.5px;
+        }
+      }
+
+      .header-info {
+        min-width: 0;
+        display: flex;
+        align-items: baseline;
+        gap: var(--preset-space-sm);
+        flex: 1;
+
+        .header-title {
+          font-size: var(--preset-font-size-body);
+          font-weight: var(--preset-font-weight-bold);
+          color: var(--preset-text-heading);
+          margin: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          line-height: var(--preset-line-height-normal);
+          flex-shrink: 1;
+          min-width: 0;
+        }
+
+        .header-subtitle {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          margin: 0;
+          font-size: var(--preset-font-size-caption);
+          color: var(--preset-text-tertiary);
+          flex-shrink: 0;
+          white-space: nowrap;
+
+          .speaker-label {
+            font-weight: var(--preset-font-weight-medium);
+            color: var(--preset-text-secondary);
+          }
+
+          .speaker-divider {
+            opacity: 0.3;
+          }
+
+          .duration {
+            font-variant-numeric: tabular-nums;
+          }
+
+          .audience-icon {
+            width: 12px;
+            height: 12px;
+            opacity: 0.5;
+          }
+
+          .audience-count {
+            font-variant-numeric: tabular-nums;
+          }
+        }
+      }
+    }
+
+    .header-actions {
+      flex-shrink: 0;
+
+      .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border: 1px solid var(--preset-border-strong);
+        border-radius: var(--preset-radius-md);
+        background: var(--preset-bg-panel);
+        color: var(--preset-text-tertiary);
+        cursor: pointer;
+        transition: all 200ms ease-in-out;
+
+        .action-icon {
+          width: 16px;
+          height: 16px;
+        }
+
+        &:hover {
+          border-color: var(--preset-primary);
+          color: var(--preset-primary);
+          background: rgba(28, 102, 229, 0.05);
+        }
+      }
+    }
+  }
+
+  @keyframes livePulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+}

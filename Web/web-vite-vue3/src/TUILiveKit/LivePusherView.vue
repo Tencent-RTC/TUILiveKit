@@ -40,8 +40,9 @@
         <div class="main-center-top-left">
           {{ currentLive?.liveName || liveParams.liveName }}
           <LiveSettingButton
-            v-if="!isInLive && loginUserInfo?.userId"
-            :live-name="liveParams.liveName"
+            v-if="loginUserInfo?.userId"
+            :live-name="currentLive?.liveName || liveParams.liveName"
+            :cover-url="currentLive?.coverUrl || liveParams.coverUrl"
             @confirm="handleLiveSettingConfirm"
           />
           <IconCopy
@@ -199,6 +200,7 @@ import {
   useBattleState,
   CoHostStatus,
   useCoGuestState,
+  useRoomEngine,
   UIKitModal,
 } from 'tuikit-atomicx-vue3';
 import CoGuestButton from './component/CoGuestButton.vue';
@@ -227,6 +229,7 @@ const isToolsExpanded = ref(true);
 const exitLiveDialogVisible = ref(false);
 const { loginUserInfo } = useLoginState();
 const { currentLive, createLive, endLive, joinLive } = useLiveListState();
+const roomEngine = useRoomEngine();
 const { audienceCount } = useLiveAudienceState();
 const { openLocalMicrophone } = useDeviceState();
 const { coHostStatus, exitHostConnection } = useCoHostState();
@@ -236,6 +239,7 @@ const isInLive = computed(() => !!currentLive.value?.liveId);
 const loading = ref(false);
 const liveParamsEditForm = ref({
   liveName: '',
+  coverUrl: '',
 });
 const liveParams = computed(() => ({
   liveId: props.liveId || `live_${loginUserInfo.value?.userId}`,
@@ -245,6 +249,7 @@ const liveParams = computed(() => ({
     || loginUserInfo.value?.userName
     || loginUserInfo.value?.userId
     || '',
+  coverUrl: liveParamsEditForm.value.coverUrl || '',
   seatMode: props.seatMode || TUISeatMode.kApplyToTake,
 }));
 
@@ -269,8 +274,47 @@ const handleLeaveLive = async () => {
   }
 };
 
-const handleLiveSettingConfirm = (form: { liveName: string }) => {
-  liveParamsEditForm.value = form;
+const handleLiveSettingConfirm = async (form: { liveName: string; coverUrl?: string }) => {
+  const updatedForm = {
+    liveName: form.liveName.trim(),
+    coverUrl: (form.coverUrl || '').trim(),
+  };
+
+  if (!isInLive.value || !currentLive.value?.liveId) {
+    liveParamsEditForm.value = updatedForm;
+    return;
+  }
+
+  try {
+    loading.value = true;
+    const liveListManager = roomEngine.instance?.getLiveListManager() as {
+      setLiveInfo: (params: { roomId: string; name?: string; coverUrl?: string }) => Promise<void>;
+    } | undefined;
+    if (!liveListManager) {
+      throw new Error('live list manager is unavailable');
+    }
+    await liveListManager.setLiveInfo({
+      roomId: currentLive.value.liveId,
+      name: updatedForm.liveName,
+      coverUrl: updatedForm.coverUrl,
+    });
+    if (currentLive.value) {
+      currentLive.value.liveName = updatedForm.liveName;
+      currentLive.value.coverUrl = updatedForm.coverUrl;
+    }
+    liveParamsEditForm.value = updatedForm;
+  } catch (error: any) {
+    const errorInfo = errorHandler.parseError(error);
+    UIKitModal.openModal({
+      id: errorInfo.code,
+      title: t('Failed to update live settings'),
+      content: t(errorInfo.message),
+      type: 'error',
+    });
+    throw error;
+  } finally {
+    loading.value = false;
+  }
 };
 
 const handleCopyLiveID = async () => {
@@ -315,6 +359,7 @@ const handleCreateLive = async () => {
     await createLive({
       liveId: liveParams.value.liveId,
       liveName: liveParams.value.liveName,
+      coverUrl: liveParams.value.coverUrl,
     });
     joinLive({
       liveId: liveParams.value.liveId,

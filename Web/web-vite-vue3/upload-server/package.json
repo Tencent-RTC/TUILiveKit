@@ -1,0 +1,21 @@
+{
+  "name": "tui-livekit-upload-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Shared upload server for TUI LiveKit demos",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node ./src/index.js",
+    "dev": "node ./src/index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "ali-oss": "6.23.0",
+    "cos-nodejs-sdk-v5": "^2.15.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "multer": "^2.1.0"
+  }
+}

@@ -8,14 +8,16 @@
 <script lang="ts" setup>
 import { useRouter, useRoute } from 'vue-router';
 import { LiveInfo, useLoginState } from 'tuikit-atomicx-vue3';
-import { useUIKit, TUIMessageBox } from '@tencentcloud/uikit-base-component-vue3';
+import { useUIKit, TUIMessageBox, useStylePreset } from '@tencentcloud/uikit-base-component-vue3';
 import { LiveListView } from '../TUILiveKit';
 import LiveHeader from '../components/LiveHeader.vue';
+import { isBusinessPresetFromUrl } from '../business/composables/useBusinessPreset';
 
 const router = useRouter();
 const route = useRoute();
 const { loginUserInfo } = useLoginState();
 const { t } =  useUIKit();
+const { presetName } = useStylePreset();
 
 function handleLiveRoomClick(liveInfo: LiveInfo) {
   if (loginUserInfo.value?.userId === liveInfo.liveOwner?.userId) {
@@ -27,7 +29,11 @@ function handleLiveRoomClick(liveInfo: LiveInfo) {
   }
 
   if (liveInfo?.liveId) {
-    router.push({ path: '/live-player', query: { ...route.query, liveId: liveInfo.liveId } });
+    const query: Record<string, string> = { ...route.query as Record<string, string>, liveId: liveInfo.liveId };
+    if (presetName.value === 'business' || isBusinessPresetFromUrl()) {
+      query.stylePreset = 'business';
+    }
+    router.push({ path: '/live-player', query });
   }
 }
 
