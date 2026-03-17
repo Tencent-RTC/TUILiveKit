@@ -12,6 +12,8 @@ declare module '*.vue' {
 interface ImportMetaEnv {
   readonly VITE_APP_TITLE: string;
   readonly VITE_RUNTIME_ENV: string;
+  readonly VUE_APP_UPLOAD_SERVER_BASE_URL?: string;
+  readonly VITE_UPLOAD_SERVER_BASE_URL?: string;
 }
 
 interface ImportMeta {

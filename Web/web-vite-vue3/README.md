@@ -39,6 +39,60 @@ Run Demo by typing the command in the terminal.
    npm run dev
    ```
 
+`npm run dev` does **not** start `upload-server` by default.
+If you want one-command startup with upload-server, run `npm run dev:with-upload-server`.
+
+### Optional: integrate upload-server for cover upload
+
+1. Prepare environment file
+
+```bash
+cp upload-server/.env.example upload-server/.env
+```
+
+2. Configure one provider in `upload-server/.env`
+- `STORAGE_PROVIDER=cos`: set `COS_SECRET_ID`, `COS_SECRET_KEY`, `COS_BUCKET`, `COS_REGION`
+- `STORAGE_PROVIDER=custom`: set `CUSTOM_UPLOAD_URL` and related fields
+
+3. Install and run upload-server
+
+```bash
+npm run upload-server:bootstrap
+npm run upload-server:standalone
+```
+
+`upload-server` is an independent Node project. On a fresh environment, you must run
+`npm run upload-server:bootstrap` at least once before starting it.
+
+4. Verify service
+- `http://127.0.0.1:3071/api/test`
+- `http://127.0.0.1:3071/api/upload/config`
+
+If the upload-server is unavailable or provider is not configured, the UI falls back to manual cover URL input.
+
+5. Configure renderer upload API base URL (`VUE_APP_UPLOAD_SERVER_BASE_URL`)
+
+By default, the Web demo requests `http://127.0.0.1:3071`.
+If your upload service is deployed remotely, set `VUE_APP_UPLOAD_SERVER_BASE_URL`:
+`VUE_APP_UPLOAD_SERVER_BASE_URL` should be protocol + domain only (without trailing slash or path),
+for example: `https://upload.example.com`.
+
+- One-time for local start:
+
+```bash
+VUE_APP_UPLOAD_SERVER_BASE_URL=https://your-upload-domain npm run dev
+```
+
+- One-time for build:
+
+```bash
+VUE_APP_UPLOAD_SERVER_BASE_URL=https://your-upload-domain npm run build
+```
+
+- Persistent mode-based config (recommended):
+  - Add `VUE_APP_UPLOAD_SERVER_BASE_URL=...` in your local `.env` / mode env file
+  - Use the corresponding mode when running `dev` or `build`
+
 ## Pack Demo
 
 1. Execute the following command to pack the dist file.
