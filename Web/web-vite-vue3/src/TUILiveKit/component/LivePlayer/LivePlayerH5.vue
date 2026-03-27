@@ -51,7 +51,7 @@
       <div class="message-input">
         <BarrageInput
           width="158px"
-          :autoFocus="false"
+          :auto-focus="false"
           :disabled="!isInLive"
           :placeholder="isInLive ? '' : t('Live not started')"
           @focus="handleBarrageInputFocus"
@@ -109,7 +109,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, onUnmounted, watch, Teleport } from 'vue';
 import TUIRoomEngine, { TUIAutoPlayCallbackInfo, TUIRoomEvents } from '@tencentcloud/tuiroom-engine-js';
-import { TUIButton, IconClose, IconLike, TUIDialog, useUIKit, TUIMessageBox } from '@tencentcloud/uikit-base-component-vue3';
+import { TUIButton, IconClose, IconLike, TUIDialog, TUIToast, useUIKit, TUIMessageBox } from '@tencentcloud/uikit-base-component-vue3';
 import {
   LiveAudienceList,
   LiveCoreView,
@@ -137,6 +137,18 @@ const { audienceList, fetchAudienceList } = useLiveAudienceState();
 const { currentLive, joinLive, leaveLive, subscribeEvent, unsubscribeEvent } = useLiveListState();
 const { loginUserInfo } = useLoginState();
 const isInLive = computed(() => !!currentLive.value?.liveId);
+
+// Mute detection: show toast when the current user is muted by the host
+const localAudience = computed(() => audienceList.value.find(item => item.userId === loginUserInfo.value?.userId));
+const isMessageMuted = computed(() => !!localAudience.value?.isMessageDisabled);
+watch(isMessageMuted, (newVal, oldVal) => {
+  if (newVal && !oldVal) {
+    TUIToast.info({ message: t('You have been muted in this room') });
+  }
+  if (!newVal && oldVal) {
+    TUIToast.info({ message: t('You have been unmuted in this room') });
+  }
+});
 const { canvas } = useLiveSeatState();
 const { giftInfoList, sendLikes, subscribeEvent: subscribeGiftEvent, unsubscribeEvent: unsubscribeGiftEvent } = useLiveGiftState();
 const roomEngine = useRoomEngine();
@@ -267,7 +279,7 @@ function handleAutoPlayFailed(event: TUIAutoPlayCallbackInfo) {
     callback: () => {
       autoPlayFailedHandled.value = false;
       event.resume();
-    }
+    },
   });
 }
 

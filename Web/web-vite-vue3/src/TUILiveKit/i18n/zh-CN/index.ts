@@ -152,6 +152,9 @@ export const resource = {
   'Seat does not support link mic': '该房间不支持连麦',
   'Empty seat list': '连麦列表为空',
   'End Link': '结束连麦',
+  'BarrageList.ComeIn': '进入了直播间',
+  'BarrageList.Leave': '离开了直播间',
+  'BarrageList.SendGift': '送出了',
   // Business theme additions (reuse existing keys when possible: 'Online viewers', 'Exit')
   'Search audience...': '搜索观众...',
   'No results found': '无匹配结果',
@@ -169,6 +172,7 @@ export const resource = {
   'Turn on sound': '取消静音',
   'Mute sound': '静音',
   'Exit picture in picture': '退出画中画',
+  'Not allow to enter cinema mode in fullscreen': '全屏状态下不允许进入影院模式',
   'Enter cinema mode': '进入影院模式',
   'Exit cinema mode': '退出影院模式',
   'Enter full screen': '进入全屏',
@@ -192,4 +196,6 @@ export const resource = {
   More: '更多',
   'joined the live': '加入了直播',
   'No audience yet': '暂无观众',
+  'You have been muted in this room': '当前房间内，您已被禁言',
+  'You have been unmuted in this room': '当前房间内，您已被解除禁言',
 };

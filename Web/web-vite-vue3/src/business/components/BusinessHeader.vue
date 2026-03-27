@@ -29,7 +29,10 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue';
-import { IconUsers, IconShare } from '@tencentcloud/uikit-base-component-vue3';
+import {
+  IconBusinessUsers as IconUsers,
+  IconBusinessShare as IconShare,
+} from '@tencentcloud/uikit-base-component-vue3';
 
 const props = defineProps<{
   title?: string;
@@ -38,9 +41,7 @@ const props = defineProps<{
   startTime?: number;
 }>();
 
-defineEmits<{
-  (e: 'action-click'): void;
-}>();
+defineEmits(['action-click']);
 
 // Duration counter
 const elapsed = ref(0);

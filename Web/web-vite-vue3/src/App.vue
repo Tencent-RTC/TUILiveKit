@@ -1,5 +1,5 @@
 <template>
-  <UIKitProvider theme="dark">
+  <UIKitProvider theme="dark" style-preset="business">
     <router-view />
   </UIKitProvider>
 </template>
@@ -15,7 +15,7 @@ const { language } = useUIKit();
 TUIRoomEngine.once('ready', () => {
   watch(language, () => {
     initRoomEngineLanguage();
-  }, { immediate: true })
+  }, { immediate: true });
 });
 </script>
 

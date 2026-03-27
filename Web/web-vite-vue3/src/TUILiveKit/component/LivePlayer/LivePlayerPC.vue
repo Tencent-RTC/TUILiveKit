@@ -3,11 +3,19 @@
     <div class="main-left">
       <div class="main-left-top">
         <IconArrowStrokeBack class="icon-back" size="20" @click="handleLeaveLive" />
-        <Avatar
-          :src="currentLive?.liveOwner.avatarUrl" :size="32"
-          :style="{ border: '1px solid var(--uikit-color-white-7)' }"
-        />
-        <span> {{ currentLive?.liveOwner.userName || currentLive?.liveOwner.userId }}</span>
+        <template v-if="liveEndedOverlayVisible">
+          <div class="top-ended-avatar">
+            <IconUser size="24" />
+          </div>
+          <span>{{ t('The host is not currently live') }}</span>
+        </template>
+        <template v-else>
+          <Avatar
+            :src="currentLive?.liveOwner.avatarUrl" :size="32"
+            :style="{ border: '1px solid var(--uikit-color-white-7)' }"
+          />
+          <span> {{ currentLive?.liveOwner.userName || currentLive?.liveOwner.userId }}</span>
+        </template>
       </div>
       <div class="main-left-center">
         <LiveView @empty-seat-click="handleApplyForSeat" />
@@ -90,10 +98,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, onUnmounted } from 'vue';
+import { ref, onMounted, computed, onUnmounted, watch } from 'vue';
 import TUIRoomEngine, { TUIAutoPlayCallbackInfo, TUIRoomEvents } from '@tencentcloud/tuiroom-engine-js';
 import {
   IconArrowStrokeBack,
+  IconUser,
   TUIButton,
   TUIMessageBox,
   TUIToast,
@@ -107,6 +116,7 @@ import {
   useLiveAudienceState,
   LiveView,
   useLiveListState,
+  useLoginState,
   Avatar,
   useRoomEngine,
   LiveListEvent,
@@ -122,8 +132,21 @@ import { initRoomEngineLanguage } from '../../../utils/utils';
 const { t } = useUIKit();
 const { audienceList } = useLiveAudienceState();
 const { currentLive, joinLive, leaveLive, subscribeEvent, unsubscribeEvent } = useLiveListState();
+const { loginUserInfo } = useLoginState();
 const isInLive = computed(() => !!currentLive.value?.liveId);
 const roomEngine = useRoomEngine();
+
+// Mute detection: show toast when the current user is muted by the host
+const localAudience = computed(() => audienceList.value.find(item => item.userId === loginUserInfo.value?.userId));
+const isMessageMuted = computed(() => !!localAudience.value?.isMessageDisabled);
+watch(isMessageMuted, (newVal, oldVal) => {
+  if (newVal && !oldVal) {
+    TUIToast.info({ message: t('You have been muted in this room') });
+  }
+  if (!newVal && oldVal) {
+    TUIToast.info({ message: t('You have been unmuted in this room') });
+  }
+});
 
 TUIRoomEngine.once('ready', () => {
   roomEngine.instance?.on(TUIRoomEvents.onAutoPlayFailed, handleAutoPlayFailed);
@@ -259,7 +282,7 @@ function handleAutoPlayFailed(event: TUIAutoPlayCallbackInfo) {
     callback: () => {
       autoPlayFailedHandled.value = false;
       event.resume();
-    }
+    },
   });
 }
 </script>
@@ -316,6 +339,18 @@ function handleAutoPlayFailed(event: TUIAutoPlayCallbackInfo) {
         cursor: pointer;
       }
     }
+
+    .top-ended-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: rgba(255, 255, 255, 0.55);
+    }
   }
 
   .main-left-center {
@@ -325,7 +360,6 @@ function handleAutoPlayFailed(event: TUIAutoPlayCallbackInfo) {
     min-height: 0;
     background-color: black;
     overflow: hidden;
-    border: 1px solid var(--bg-color-operate);
 
     .live-ended-overlay {
       position: absolute;

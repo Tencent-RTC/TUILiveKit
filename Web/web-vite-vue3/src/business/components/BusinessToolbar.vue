@@ -16,12 +16,12 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import {
-  IconHandRaised,
-  IconChatBubble,
-  IconChartBar,
-  IconShare,
-  IconVolumeUp,
-  IconArrowsExpand,
+  IconBusinessHandRaised as IconHandRaised,
+  IconBusinessChatBubble as IconChatBubble,
+  IconBusinessChartBar as IconChartBar,
+  IconBusinessShare as IconShare,
+  IconBusinessVolumeUp as IconVolumeUp,
+  IconBusinessArrowsExpand as IconArrowsExpand,
 } from '@tencentcloud/uikit-base-component-vue3';
 
 defineEmits<{

@@ -78,6 +78,21 @@ export async function copyToClipboard(text: string): Promise<void> {
   await navigator.clipboard.writeText(text);
 }
 
+export function isSvgCoverUrl(coverUrl: string): boolean {
+  if (!coverUrl) {
+    return false;
+  }
+  const normalizedUrl = coverUrl.trim().toLowerCase();
+  if (!normalizedUrl) {
+    return false;
+  }
+  if (normalizedUrl.startsWith('data:image/svg+xml')) {
+    return true;
+  }
+  const urlWithoutQuery = normalizedUrl.split('#')[0].split('?')[0];
+  return urlWithoutQuery.endsWith('.svg') || urlWithoutQuery.endsWith('.svgz');
+}
+
 export function isSafariBrowser(): boolean {
   // Safari has several unique features
   const isSafari = 
