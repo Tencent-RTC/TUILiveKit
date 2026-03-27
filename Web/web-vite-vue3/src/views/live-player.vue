@@ -38,7 +38,7 @@ function leaveLive() {
 
   .live-player-header {
     flex-shrink: 0;
-    padding-bottom: 0;
+    padding-bottom: 16px;
   }
 }
 </style>

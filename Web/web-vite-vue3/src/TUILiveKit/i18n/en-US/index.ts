@@ -152,6 +152,9 @@ export const resource = {
   'Seat does not support link mic': 'Seat does not support link mic',
   'Empty seat list': 'Empty seat list',
   'End Link': 'End Link',
+  'BarrageList.ComeIn': 'came in',
+  'BarrageList.Leave': 'left',
+  'BarrageList.SendGift': 'sent',
   // Business theme additions (reuse existing keys when possible: 'Online viewers', 'Exit')
   'Search audience...': 'Search audience...',
   'No results found': 'No results found',
@@ -169,6 +172,7 @@ export const resource = {
   'Turn on sound': 'Turn on sound',
   'Mute sound': 'Mute sound',
   'Exit picture in picture': 'Exit picture in picture',
+  'Not allow to enter cinema mode in fullscreen': 'Not allow to enter cinema mode in fullscreen',
   'Enter cinema mode': 'Enter cinema mode',
   'Exit cinema mode': 'Exit cinema mode',
   'Enter full screen': 'Enter full screen',
@@ -192,4 +196,6 @@ export const resource = {
   More: 'More',
   'joined the live': 'joined the live',
   'No audience yet': 'No audience yet',
+  'You have been muted in this room': 'You have been muted in this room',
+  'You have been unmuted in this room': 'You have been unmuted in this room',
 };

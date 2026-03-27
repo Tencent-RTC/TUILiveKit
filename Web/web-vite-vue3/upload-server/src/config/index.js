@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 const DEFAULT_HOST = '0.0.0.0';
-const DEFAULT_PORT = 9000;
+const DEFAULT_PORT = 3071;
 
 function parsePort(value, fallback) {
   const parsed = Number(value);

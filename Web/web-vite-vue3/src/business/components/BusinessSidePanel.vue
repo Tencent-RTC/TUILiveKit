@@ -15,11 +15,18 @@
             @click="switchTab(tab.id, index)"
           >
             <span class="tab-icon" aria-hidden="true">
-              <svg v-if="tab.id === 'chat'" viewBox="0 0 24 24">
-                <path d="M5 6.5h14a1.5 1.5 0 0 1 1.5 1.5v8a1.5 1.5 0 0 1-1.5 1.5H10l-4.6 3a.7.7 0 0 1-1.08-.59V17.5H5A1.5 1.5 0 0 1 3.5 16V8A1.5 1.5 0 0 1 5 6.5Z" />
+              <svg v-if="tab.id === 'chat'" viewBox="0 0 16 16">
+                <mask id="biz-chat-tab-mask" fill="white">
+                  <path d="M7.99902 1.33337C11.6808 1.33355 14.665 4.31858 14.665 8.00037C14.665 9.39818 14.2333 10.6943 13.498 11.766C13.5009 11.7745 13.5058 11.7824 13.5078 11.7914L13.9082 13.5599C13.9513 13.751 13.7809 13.9214 13.5898 13.8783L11.8213 13.4779C11.8154 13.4766 11.8103 13.4727 11.8047 13.4711C10.7253 14.2234 9.41443 14.6663 7.99902 14.6664C4.31723 14.6664 1.33221 11.6821 1.33203 8.00037C1.33203 4.31847 4.31713 1.33337 7.99902 1.33337Z" />
+                </mask>
+                <path d="M7.99902 1.33337L7.99907 0.333374H7.99902V1.33337ZM14.665 8.00037L15.665 8.00041V8.00037H14.665ZM13.498 11.766L12.6735 11.2002L12.3924 11.6098L12.549 12.0812L13.498 11.766ZM13.5078 11.7914L14.4831 11.5706L14.483 11.57L13.5078 11.7914ZM13.9082 13.5599L14.8837 13.3399L14.8835 13.3391L13.9082 13.5599ZM13.5898 13.8783L13.369 14.8536L13.3699 14.8538L13.5898 13.8783ZM11.8213 13.4779L11.6 14.4531L11.6005 14.4532L11.8213 13.4779ZM11.8047 13.4711L12.0875 12.5119L11.6269 12.3761L11.2329 12.6507L11.8047 13.4711ZM7.99902 14.6664V15.6664H7.99907L7.99902 14.6664ZM1.33203 8.00037H0.332031V8.00041L1.33203 8.00037ZM7.99902 1.33337L7.99898 2.33337C11.1283 2.33352 13.665 4.87072 13.665 8.00037H14.665H15.665C15.665 3.76643 12.2332 0.333576 7.99907 0.333374L7.99902 1.33337ZM14.665 8.00037L13.665 8.00032C13.665 9.18896 13.2986 10.2891 12.6735 11.2002L13.498 11.766L14.3226 12.3317C15.168 11.0996 15.665 9.6074 15.665 8.00041L14.665 8.00037ZM13.498 11.766L12.549 12.0812C12.562 12.1203 12.5747 12.1507 12.5811 12.1657C12.5844 12.1735 12.5872 12.1797 12.5882 12.1819C12.5901 12.1862 12.5886 12.1828 12.5881 12.1817C12.5863 12.1776 12.5776 12.158 12.5679 12.1316C12.5578 12.1042 12.5441 12.0635 12.5326 12.0128L13.5078 11.7914L14.483 11.57C14.4705 11.5148 14.4555 11.4697 14.4437 11.438C14.4324 11.4073 14.4219 11.3835 14.4183 11.3753C14.4169 11.3721 14.4145 11.3666 14.4155 11.3688C14.4155 11.369 14.4174 11.3732 14.4198 11.3788C14.4245 11.3897 14.4355 11.4159 14.4471 11.4508L13.498 11.766ZM13.5078 11.7914L12.5325 12.0122L12.9329 13.7807L13.9082 13.5599L14.8835 13.3391L14.4831 11.5706L13.5078 11.7914ZM13.9082 13.5599L12.9327 13.78C12.8141 13.2543 13.2844 12.7843 13.8098 12.9028L13.5898 13.8783L13.3699 14.8538C14.2775 15.0585 15.0885 14.2478 14.8837 13.3399L13.9082 13.5599ZM13.5898 13.8783L13.8106 12.903L12.0421 12.5026L11.8213 13.4779L11.6005 14.4532L13.369 14.8536L13.5898 13.8783ZM11.8213 13.4779L12.0426 12.5027C12.111 12.5182 12.1646 12.5381 12.1982 12.552C12.2153 12.559 12.229 12.5653 12.2381 12.5695C12.2468 12.5736 12.2535 12.5769 12.2547 12.5775C12.2548 12.5776 12.2562 12.5783 12.2546 12.5774C12.2537 12.577 12.2515 12.5759 12.2488 12.5746C12.2436 12.5721 12.2332 12.5671 12.2202 12.5612C12.1948 12.5497 12.1482 12.5298 12.0875 12.5119L11.8047 13.4711L11.5219 14.4303C11.464 14.4132 11.4201 14.3943 11.3975 14.3841C11.3858 14.3789 11.3768 14.3745 11.3729 14.3726C11.3713 14.3718 11.3653 14.3688 11.3711 14.3717C11.3737 14.373 11.3817 14.3769 11.3918 14.3817C11.4022 14.3865 11.4174 14.3934 11.4358 14.401C11.4722 14.416 11.5287 14.4369 11.6 14.4531L11.8213 13.4779ZM11.8047 13.4711L11.2329 12.6507C10.3149 13.2905 9.20229 13.6663 7.99898 13.6664L7.99902 14.6664L7.99907 15.6664C9.62657 15.6663 11.1357 15.1562 12.3765 14.2915L11.8047 13.4711ZM7.99902 14.6664V13.6664C4.86938 13.6664 2.33218 11.1297 2.33203 8.00032L1.33203 8.00037L0.332031 8.00041C0.332234 12.2346 3.76509 15.6664 7.99902 15.6664V14.6664ZM1.33203 8.00037H2.33203C2.33203 4.87075 4.86941 2.33337 7.99902 2.33337V1.33337V0.333374C3.76484 0.333374 0.332031 3.76618 0.332031 8.00037H1.33203Z" fill="currentColor" mask="url(#biz-chat-tab-mask)" />
+                <path d="M4.90039 7.34961C5.39727 7.34982 5.7998 7.75307 5.7998 8.25C5.79979 8.74691 5.39726 9.15018 4.90039 9.15039C4.40334 9.15039 4.00001 8.74705 4 8.25C4 7.75294 4.40333 7.34961 4.90039 7.34961ZM8 7.34961C8.49688 7.34982 8.89941 7.75307 8.89941 8.25C8.8994 8.74691 8.49687 9.15018 8 9.15039C7.50295 9.15039 7.09962 8.74705 7.09961 8.25C7.09961 7.75294 7.50294 7.34961 8 7.34961ZM11.0996 7.34961C11.5965 7.34982 11.999 7.75307 11.999 8.25C11.999 8.74691 11.5965 9.15018 11.0996 9.15039C10.6026 9.15039 10.1992 8.74705 10.1992 8.25C10.1992 7.75294 10.6026 7.34961 11.0996 7.34961Z" fill="currentColor" />
               </svg>
-              <svg v-else viewBox="0 0 24 24">
-                <path d="M16 10a3.5 3.5 0 1 0-2.99-5.32A4.5 4.5 0 1 0 8 12h8Zm-8 2a6 6 0 0 0-6 6v.5a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5V18a6 6 0 0 0-6-6Zm9.5.5A4.5 4.5 0 0 1 22 17v1.5a.5.5 0 0 1-.5.5h-4.28A7.45 7.45 0 0 0 18 16v-1a7.45 7.45 0 0 0-.5-2.5Z" />
+              <svg v-else viewBox="0 0 16 16">
+                <path d="M6.00003 1C6.52575 1 7.02232 1.12482 7.46171 1.34645L6.83144 2.1586C6.57424 2.05626 6.2937 2 6.00003 2C4.75739 2 3.75003 3.00736 3.75003 4.25C3.75003 5.47717 4.73246 6.47488 5.95373 6.49953V7.49968C4.18015 7.47491 2.75003 6.02947 2.75003 4.25C2.75003 2.45507 4.2051 1 6.00003 1Z" />
+                <path d="M0.540929 9.43593C2.18917 8.66419 4.01922 8.22779 5.95373 8.22094V9.22095C4.18421 9.22774 2.51071 9.62379 1 10.3252V12H2.85709V13H0.5C0.223857 13 0 12.7761 0 12.5V10.3086C0 9.9372 0.204537 9.59344 0.540929 9.43593Z" />
+                <path d="M9.99992 8.31354C8.20499 8.31354 6.74992 6.85846 6.74992 5.06354C6.74992 3.26861 8.20499 1.81354 9.99992 1.81354C11.7948 1.81354 13.2499 3.26861 13.2499 5.06354C13.2499 6.85846 11.7948 8.31354 9.99992 8.31354ZM9.99992 7.31354C11.2426 7.31354 12.2499 6.30618 12.2499 5.06354C12.2499 3.8209 11.2426 2.81354 9.99992 2.81354C8.75728 2.81354 7.74992 3.8209 7.74992 5.06354C7.74992 6.30618 8.75728 7.31354 9.99992 7.31354Z" />
+                <path d="M16 11.5178C16 11.1464 15.7954 10.8026 15.459 10.6451C13.7977 9.86723 11.9516 9.43005 9.99997 9.43005C8.04837 9.43005 6.20227 9.86723 4.54089 10.6451C4.2045 10.8026 3.99996 11.1464 3.99996 11.5178V14C3.99996 14.2761 4.22382 14.5 4.49996 14.5H15.5C15.7761 14.5 16 14.2761 16 14V11.5178ZM15 11.5344V13.5H4.99996V11.5344C6.52384 10.8269 8.21334 10.43 9.99997 10.43C11.7866 10.43 13.4761 10.8269 15 11.5344Z" />
               </svg>
             </span>
             <span class="tab-label">{{ t(tab.label) }}</span>
@@ -40,16 +47,54 @@
                   <span class="divider-text">{{ item.label }}</span>
                   <span class="divider-line" />
                 </div>
-                <div v-else-if="item.type === 'system'" :key="item.key" class="system-msg">
-                  <svg class="system-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" /><polyline points="10 17 15 12 10 7" /><line x1="15" y1="12" x2="3" y2="12" />
+                <div
+                  v-else-if="item.type === 'system'"
+                  :key="item.key"
+                  class="system-msg"
+                  :class="`system-msg-${item.action}`"
+                >
+                  <svg
+                    v-if="item.action === 'enter'"
+                    class="system-icon"
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                    <polyline points="10 17 15 12 10 7" />
+                    <line x1="15" y1="12" x2="3" y2="12" />
+                  </svg>
+                  <svg
+                    v-else
+                    class="system-icon"
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M9 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h4" />
+                    <polyline points="14 7 9 12 14 17" />
+                    <line x1="21" y1="12" x2="9" y2="12" />
                   </svg>
                   <span>{{ item.label }}</span>
                 </div>
                 <div v-else :key="item.key" class="chat-msg">
-                  <div class="msg-avatar" :style="getMsgAvatarStyle(item.msg.sender)">
-                    {{ getInitial(item.msg.sender.userName || item.msg.sender.userId) }}
-                  </div>
+                  <Avatar
+                    class="msg-avatar"
+                    :src="getMessageAvatar(item.msg.sender)"
+                    :size="32"
+                    :alt="item.msg.sender.userName || item.msg.sender.userId"
+                    :style="getMsgAvatarStyle(item.msg.sender)"
+                  />
                   <div class="msg-main">
                     <div class="msg-meta-line">
                       <span class="msg-name" :class="getRoleClass(item.msg.sender)">
@@ -58,7 +103,41 @@
                       <span v-if="isHost(item.msg.sender)" class="role-badge host-badge">{{ t('Host') }}</span>
                     </div>
                     <div class="msg-bubble" :class="getRoleClass(item.msg.sender)">
-                      {{ item.msg.textContent }}
+                      <template v-if="isGiftMessage(item.msg)">
+                        <template v-if="getGiftPayloadByMessage(item.msg)">
+                          <span class="gift-content">
+                            <span class="gift-prefix">{{ `${t('BarrageList.SendGift')} ` }}</span>
+                            <span
+                              v-if="getGiftPayloadByMessage(item.msg)?.giftName"
+                              class="gift-name"
+                              :style="getGiftNameStyle(getGiftPayloadByMessage(item.msg)?.giftName || '')"
+                            >{{ `${getGiftPayloadByMessage(item.msg)?.giftName} ` }}</span>
+                            <img
+                              v-if="getGiftPayloadByMessage(item.msg)?.iconUrl"
+                              class="gift-icon"
+                              :src="getGiftPayloadByMessage(item.msg)?.iconUrl"
+                              :alt="getGiftPayloadByMessage(item.msg)?.giftName || ''"
+                            >
+                          </span>
+                        </template>
+                        <template v-else>
+                          {{ t('BarrageList.SendGift') }}
+                        </template>
+                      </template>
+                      <template v-else>
+                        <template
+                          v-for="(segment, segmentIndex) in getMessageContent(item.msg.textContent || '')"
+                          :key="`${item.key}-${segmentIndex}`"
+                        >
+                          <span v-if="segment.type === 'text'">{{ segment.value }}</span>
+                          <img
+                            v-else
+                            class="msg-emoji"
+                            :src="segment.value"
+                            :alt="segment.emojiKey || ''"
+                          >
+                        </template>
+                      </template>
                     </div>
                   </div>
                 </div>
@@ -66,54 +145,22 @@
             </div>
 
             <!-- Chat Input -->
-            <div class="chat-input-shell" :class="{ 'chat-disabled': liveEnded }">
-              <div v-if="liveEnded" class="chat-disabled-hint">
-                {{ t('Live has ended') }}
-              </div>
-
-              <Transition name="emoji-pop">
-                <div v-if="emojiPickerVisible && !liveEnded" class="emoji-picker-panel">
-                  <div class="emoji-picker-grid">
-                    <button
-                      v-for="emoji in EMOJI_LIST"
-                      :key="emoji"
-                      class="emoji-item"
-                      @click="insertEmoji(emoji)"
-                    >
-                      {{ emoji }}
-                    </button>
-                  </div>
-                </div>
-              </Transition>
-
-              <div class="input-wrapper" :class="{ focused: inputFocused, disabled: liveEnded }">
-                <button class="emoji-btn" :class="{ active: emojiPickerVisible }" :disabled="liveEnded" @click.stop="toggleEmoji">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10" /><path d="M8 14s1.5 2 4 2 4-2 4-2" /><line x1="9" y1="9" x2="9.01" y2="9" /><line x1="15" y1="9" x2="15.01" y2="9" />
-                  </svg>
-                </button>
-                <textarea
-                  ref="chatInputRef"
-                  v-model="inputText"
-                  rows="1"
-                  :placeholder="liveEnded ? t('Live has ended') : t('Type a message...')"
-                  class="chat-text-input"
-                  :disabled="liveEnded"
-                  @focus="inputFocused = true"
-                  @blur="inputFocused = false"
-                  @keydown="handleInputKeydown"
-                  @input="resizeInput"
+            <div class="chat-input-shell" :class="{ 'chat-disabled': isInputDisabled }">
+              <div
+                ref="barrageInputShellRef"
+                class="input-wrapper"
+                :class="{ focused: inputFocused, disabled: isInputDisabled }"
+              >
+                <BarrageInput
+                  class="biz-barrage-input"
+                  :auto-focus="false"
+                  :disabled="isInputDisabled"
+                  :placeholder="isInputDisabled ? (liveEnded ? t('Live has ended') : mutedText) : t('Type a message...')"
+                  :on-will-send-barrage="handleWillSendBarrage"
+                  :on-did-send-barrage="handleDidSendBarrage"
+                  @focus="handleInputFocus"
+                  @blur="handleInputBlur"
                 />
-                <button
-                  class="send-btn"
-                  :class="{ active: canSend }"
-                  :disabled="!canSend || isSending"
-                  @click="handleSend"
-                >
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M3.9 11.15 18.8 4.7c1-.43 2 .56 1.63 1.58l-4.45 12.9c-.34 1-1.72 1.2-2.35.34l-2.55-3.44a.8.8 0 0 1 .1-1.03l4.34-4.24-5.36 3.2a.8.8 0 0 1-.59.08l-5.67-1.52c-1.04-.27-1.1-1.73-.01-2.42Z" />
-                  </svg>
-                </button>
               </div>
             </div>
           </div>
@@ -130,18 +177,13 @@
                     class="audience-row"
                   >
                     <div class="audience-avatar-wrap">
-                      <div class="audience-avatar" :style="getAvatarStyle(viewer)">
-                        <img
-                          v-if="shouldUseViewerAvatar(viewer)"
-                          class="audience-avatar-img"
-                          :src="getViewerAvatar(viewer)"
-                          :alt="viewer.userName || viewer.userId"
-                          @error="handleViewerAvatarError(viewer)"
-                        >
-                        <template v-else>
-                          {{ getAudienceFallbackInitial(viewer.userName || viewer.userId) }}
-                        </template>
-                      </div>
+                      <Avatar
+                        class="audience-avatar"
+                        :src="getViewerAvatar(viewer)"
+                        :size="32"
+                        :alt="viewer.userName || viewer.userId"
+                        :style="getAvatarStyle(viewer)"
+                      />
                     </div>
                     <div class="audience-info">
                       <span class="audience-name" :class="getRoleClass(viewer)">
@@ -163,18 +205,13 @@
                     class="audience-row"
                   >
                     <div class="audience-avatar-wrap">
-                      <div class="audience-avatar" :style="getAvatarStyle(viewer)">
-                        <img
-                          v-if="shouldUseViewerAvatar(viewer)"
-                          class="audience-avatar-img"
-                          :src="getViewerAvatar(viewer)"
-                          :alt="viewer.userName || viewer.userId"
-                          @error="handleViewerAvatarError(viewer)"
-                        >
-                        <template v-else>
-                          {{ getAudienceFallbackInitial(viewer.userName || viewer.userId) }}
-                        </template>
-                      </div>
+                      <Avatar
+                        class="audience-avatar"
+                        :src="getViewerAvatar(viewer)"
+                        :size="32"
+                        :alt="viewer.userName || viewer.userId"
+                        :style="getAvatarStyle(viewer)"
+                      />
                     </div>
                     <div class="audience-info">
                       <span class="audience-name">
@@ -215,12 +252,20 @@
 import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue';
 import {
   useBarrageState,
+  Avatar,
+  BarrageInput,
   useLiveAudienceState,
+  useLiveGiftState,
   useLiveListState,
   useLoginState,
+  useRoomEngine,
+  LiveGiftEvents,
+  BarrageType,
 } from 'tuikit-atomicx-vue3';
 import { useUIKit } from '@tencentcloud/uikit-base-component-vue3';
+import { TUIRoomEvents } from '@tencentcloud/tuiroom-engine-js';
 import type { Barrage, AudienceInfo } from 'tuikit-atomicx-vue3';
+import { useMessageInputState } from '../../../../../../ui-component/packages/uikit-component-vue3/src/components/BarrageInput/MessageInputState';
 
 const { t } = useUIKit();
 
@@ -230,10 +275,83 @@ const props = withDefaults(defineProps<{
   liveEnded: false,
 });
 
-const { messageList, sendTextMessage } = useBarrageState();
+const { messageList, appendLocalTip } = useBarrageState();
+const { inputRawValue } = useMessageInputState();
 const { audienceList, audienceCount } = useLiveAudienceState();
+const { subscribeEvent: subscribeGiftEvent, unsubscribeEvent: unsubscribeGiftEvent } = useLiveGiftState();
 const { currentLive } = useLiveListState();
 const { loginUserInfo } = useLoginState();
+const roomEngine = useRoomEngine();
+const localAudience = computed(() => audienceList.value.find(item => item.userId === loginUserInfo.value?.userId));
+const isMessageMuted = computed(() => !!localAudience.value?.isMessageDisabled);
+const isInputDisabled = computed(() => props.liveEnded || isMessageMuted.value);
+const mutedText = computed(() => t('You have been muted in this room'));
+
+const BASIC_EMOJI_BASE_URL = 'https://web.sdk.qcloud.com/im/assets/emoji-plugin/';
+const BASIC_EMOJI_URL_MAPPING: Record<string, string> = {
+  '[TUIEmoji_Expect]': 'emoji_0@2x.png',
+  '[TUIEmoji_Blink]': 'emoji_1@2x.png',
+  '[TUIEmoji_Guffaw]': 'emoji_2@2x.png',
+  '[TUIEmoji_KindSmile]': 'emoji_3@2x.png',
+  '[TUIEmoji_Haha]': 'emoji_4@2x.png',
+  '[TUIEmoji_Cheerful]': 'emoji_5@2x.png',
+  '[TUIEmoji_Smile]': 'emoji_6@2x.png',
+  '[TUIEmoji_Sorrow]': 'emoji_7@2x.png',
+  '[TUIEmoji_Speechless]': 'emoji_8@2x.png',
+  '[TUIEmoji_Amazed]': 'emoji_9@2x.png',
+  '[TUIEmoji_Complacent]': 'emoji_10@2x.png',
+  '[TUIEmoji_Lustful]': 'emoji_11@2x.png',
+  '[TUIEmoji_Stareyes]': 'emoji_12@2x.png',
+  '[TUIEmoji_Giggle]': 'emoji_13@2x.png',
+  '[TUIEmoji_Daemon]': 'emoji_14@2x.png',
+  '[TUIEmoji_Rage]': 'emoji_15@2x.png',
+  '[TUIEmoji_Yawn]': 'emoji_16@2x.png',
+  '[TUIEmoji_TearsLaugh]': 'emoji_17@2x.png',
+  '[TUIEmoji_Silly]': 'emoji_18@2x.png',
+  '[TUIEmoji_Wail]': 'emoji_19@2x.png',
+  '[TUIEmoji_Kiss]': 'emoji_20@2x.png',
+  '[TUIEmoji_Trapped]': 'emoji_21@2x.png',
+  '[TUIEmoji_Fear]': 'emoji_22@2x.png',
+  '[TUIEmoji_BareTeeth]': 'emoji_23@2x.png',
+  '[TUIEmoji_FlareUp]': 'emoji_24@2x.png',
+  '[TUIEmoji_Tact]': 'emoji_25@2x.png',
+  '[TUIEmoji_Shit]': 'emoji_26@2x.png',
+  '[TUIEmoji_ShutUp]': 'emoji_27@2x.png',
+  '[TUIEmoji_Sigh]': 'emoji_28@2x.png',
+  '[TUIEmoji_Hehe]': 'emoji_29@2x.png',
+  '[TUIEmoji_Silent]': 'emoji_30@2x.png',
+  '[TUIEmoji_Skull]': 'emoji_31@2x.png',
+  '[TUIEmoji_Mask]': 'emoji_32@2x.png',
+  '[TUIEmoji_Beer]': 'emoji_33@2x.png',
+  '[TUIEmoji_Cake]': 'emoji_34@2x.png',
+  '[TUIEmoji_RedPacket]': 'emoji_35@2x.png',
+  '[TUIEmoji_Bombs]': 'emoji_36@2x.png',
+  '[TUIEmoji_Ai]': 'emoji_37@2x.png',
+  '[TUIEmoji_Celebrate]': 'emoji_38@2x.png',
+  '[TUIEmoji_Bless]': 'emoji_39@2x.png',
+  '[TUIEmoji_Flower]': 'emoji_40@2x.png',
+  '[TUIEmoji_Watermelon]': 'emoji_41@2x.png',
+  '[TUIEmoji_Cow]': 'emoji_42@2x.png',
+  '[TUIEmoji_Fool]': 'emoji_43@2x.png',
+  '[TUIEmoji_Surprised]': 'emoji_44@2x.png',
+  '[TUIEmoji_Askance]': 'emoji_45@2x.png',
+  '[TUIEmoji_Monster]': 'emoji_46@2x.png',
+  '[TUIEmoji_Pig]': 'emoji_47@2x.png',
+  '[TUIEmoji_Coffee]': 'emoji_48@2x.png',
+  '[TUIEmoji_Ok]': 'emoji_49@2x.png',
+  '[TUIEmoji_Heart]': 'emoji_50@2x.png',
+  '[TUIEmoji_Sun]': 'emoji_51@2x.png',
+  '[TUIEmoji_Moon]': 'emoji_52@2x.png',
+  '[TUIEmoji_Star]': 'emoji_53@2x.png',
+  '[TUIEmoji_Rich]': 'emoji_54@2x.png',
+  '[TUIEmoji_Fortune]': 'emoji_55@2x.png',
+  '[TUIEmoji_857]': 'emoji_56@2x.png',
+  '[TUIEmoji_666]': 'emoji_57@2x.png',
+  '[TUIEmoji_Prohibit]': 'emoji_58@2x.png',
+  '[TUIEmoji_Convinced]': 'emoji_59@2x.png',
+  '[TUIEmoji_Knife]': 'emoji_60@2x.png',
+  '[TUIEmoji_Like]': 'emoji_61@2x.png',
+};
 
 // === Tab state ===
 type TabId = 'chat' | 'audience';
@@ -243,8 +361,8 @@ const VIEWER_PAGE_SIZE = 20;
 const showAllViewers = ref(false);
 
 const tabs = computed(() => [
-  { id: 'chat' as TabId, label: 'Chat', badge: '' },
-  { id: 'audience' as TabId, label: 'Audience', badge: formatCompact(displayAudienceCount.value) },
+  { id: 'chat' as TabId, label: 'Barrage list', badge: '' },
+  { id: 'audience' as TabId, label: 'Online viewers', badge: formatCompact(displayAudienceCount.value) },
 ]);
 
 // Tab button refs for measuring slider position
@@ -254,6 +372,12 @@ const tabBtnRefs = ref<HTMLElement[]>([]);
 const sliderLeft = ref(0);
 const sliderWidth = ref(0);
 const sliderReady = ref(false);
+let tabResizeObserver: ResizeObserver | null = null;
+let tabResizeRaf = 0;
+
+function remeasureActiveSlider() {
+  measureSlider(activeTabIndex.value);
+}
 
 function measureSlider(index: number) {
   nextTick(() => {
@@ -294,12 +418,20 @@ function switchTab(tabId: TabId, index: number) {
   measureSlider(index);
 }
 
+function handleWindowResize() {
+  if (tabResizeRaf) {
+    cancelAnimationFrame(tabResizeRaf);
+  }
+  tabResizeRaf = requestAnimationFrame(() => {
+    remeasureActiveSlider();
+  });
+}
+
 // === Chat state ===
-const inputText = ref('');
 const inputFocused = ref(false);
 const chatListRef = ref<HTMLElement | null>(null);
-const chatInputRef = ref<HTMLTextAreaElement | null>(null);
-const isSending = ref(false);
+const barrageInputShellRef = ref<HTMLElement | null>(null);
+const inputHasContent = ref(false);
 const shouldStickToBottom = ref(true);
 
 const LIGHT_PALETTE = [
@@ -333,13 +465,6 @@ function getAvatarColor(name: string) {
   return LIGHT_PALETTE[idx];
 }
 
-function getInitial(name: string): string {
-  if (!name) return '?';
-  const trimmed = name.trim();
-  if (/[\u4e00-\u9fff]/.test(trimmed)) return trimmed.slice(-1);
-  return trimmed.charAt(0).toUpperCase();
-}
-
 function isHost(sender: { userId?: string }): boolean {
   return sender.userId === currentLive.value?.liveOwner?.userId;
 }
@@ -367,12 +492,33 @@ const displayedViewers = computed(() => {
   if (showAllViewers.value) return regularViewers.value;
   return regularViewers.value.slice(0, VIEWER_PAGE_SIZE);
 });
-const brokenViewerAvatarKeys = ref<Set<string>>(new Set());
+const audienceAvatarByUserId = computed(() => {
+  const map = new Map<string, string>();
+  audienceList.value.forEach((viewer: AudienceInfo) => {
+    const { userId } = viewer;
+    const avatar = getRawAvatar(viewer as AvatarLikeUser);
+    if (!userId || !avatar || map.has(userId)) return;
+    map.set(userId, avatar);
+  });
+  return map;
+});
+
+type AvatarLikeUser = {
+  userId?: string;
+  userName?: string;
+  avatarUrl?: string;
+  avatar?: string;
+  avatarURL?: string;
+};
+
+function getRawAvatar(user?: AvatarLikeUser | null): string {
+  if (!user) return '';
+  const candidate = user.avatarUrl || user.avatar || user.avatarURL || '';
+  return typeof candidate === 'string' ? candidate.trim() : '';
+}
 
 function getAvatarStyle(viewer: AudienceInfo) {
-  if (shouldUseViewerAvatar(viewer)) {
-    return {};
-  }
+  if (getViewerAvatar(viewer)) return {};
   if (isHost(viewer)) return { background: 'var(--preset-primary)', color: 'var(--preset-send-btn-active-text)' };
   if (isSelf(viewer)) return { background: 'var(--preset-primary-hover)', color: 'var(--preset-send-btn-active-text)' };
   const c = getAvatarColor(viewer.userName || viewer.userId || '');
@@ -380,39 +526,28 @@ function getAvatarStyle(viewer: AudienceInfo) {
 }
 
 function getViewerAvatar(viewer: AudienceInfo): string {
-  const candidate = (viewer as any)?.avatarUrl
-    || (viewer as any)?.avatar
-    || (viewer as any)?.avatarURL
-    || '';
-  return typeof candidate === 'string' ? candidate.trim() : '';
+  return getRawAvatar(viewer as AvatarLikeUser);
 }
 
-function getViewerAvatarCacheKey(viewer: AudienceInfo): string {
-  const identity = viewer.userId || viewer.userName || 'unknown';
-  return `${identity}::${getViewerAvatar(viewer)}`;
-}
-
-function shouldUseViewerAvatar(viewer: AudienceInfo): boolean {
-  const avatar = getViewerAvatar(viewer);
-  if (!avatar) return false;
-  return !brokenViewerAvatarKeys.value.has(getViewerAvatarCacheKey(viewer));
-}
-
-function handleViewerAvatarError(viewer: AudienceInfo) {
-  const avatar = getViewerAvatar(viewer);
-  if (!avatar) return;
-  const next = new Set(brokenViewerAvatarKeys.value);
-  next.add(getViewerAvatarCacheKey(viewer));
-  brokenViewerAvatarKeys.value = next;
-}
-
-function getAudienceFallbackInitial(name?: string): string {
-  const value = (name || '').trim();
-  if (!value) return '?';
-  return value.slice(-1).toUpperCase();
+function getMessageAvatar(sender: AvatarLikeUser): string {
+  const directAvatar = getRawAvatar(sender);
+  if (directAvatar) return directAvatar;
+  if (sender.userId && audienceAvatarByUserId.value.has(sender.userId)) {
+    return audienceAvatarByUserId.value.get(sender.userId) || '';
+  }
+  if (sender.userId && sender.userId === currentLive.value?.liveOwner?.userId) {
+    const hostAvatar = getRawAvatar(currentLive.value.liveOwner as AvatarLikeUser);
+    if (hostAvatar) return hostAvatar;
+  }
+  if (sender.userId && sender.userId === loginUserInfo.value?.userId) {
+    const selfAvatar = getRawAvatar(loginUserInfo.value as AvatarLikeUser);
+    if (selfAvatar) return selfAvatar;
+  }
+  return '';
 }
 
 function getMsgAvatarStyle(sender: { userId?: string; userName?: string }) {
+  if (getMessageAvatar(sender as AvatarLikeUser)) return {};
   if (isHost(sender)) return { background: 'var(--preset-primary)', color: 'var(--preset-send-btn-active-text)' };
   if (isSelf(sender)) return { background: 'var(--preset-primary-hover)', color: 'var(--preset-send-btn-active-text)' };
   const c = getAvatarColor(sender.userName || sender.userId || '');
@@ -427,49 +562,273 @@ function formatCompact(n: number): string {
 
 // === Chat timeline with grouping and system messages ===
 const displayMessages = computed(() => messageList.value
-  .filter((m: Barrage) => m.textContent)
+  .filter((m: Barrage) => (m.textContent && m.textContent.length > 0) || isGiftMessage(m))
   .map((m: Barrage) => ({ ...m })));
 
-const canSend = computed(() => inputText.value.trim().length > 0 && !props.liveEnded);
+type MessageSegment = {
+  type: 'text' | 'emoji';
+  value: string;
+  emojiKey?: string;
+};
+
+type GiftPayload = {
+  giftName: string;
+  iconUrl: string;
+};
+
+function isGiftMessage(message: Barrage): boolean {
+  if (message.businessId === 'gift') return true;
+  if (!message.data) return false;
+  try {
+    const parsed = JSON.parse(message.data) as { type?: string };
+    return parsed.type === 'gift';
+  } catch (_error) {
+    return false;
+  }
+}
+
+function getMessageCacheKey(message: Barrage): string {
+  const seq = typeof message.sequence === 'number' ? String(message.sequence) : '';
+  if (seq) return seq;
+  const ts = typeof message.timestampInSecond === 'number' ? String(message.timestampInSecond) : '';
+  if (ts) return `${message.sender.userId || 'unknown'}-${ts}`;
+  return `${message.sender.userId || 'unknown'}-${message.businessId || 'message'}-${message.textContent || ''}`;
+}
+
+function getGiftPayload(message: Barrage): GiftPayload | null {
+  if (!message.data) return null;
+  try {
+    const parsed = JSON.parse(message.data) as {
+      type?: string;
+      giftInfo?: { name?: string; iconUrl?: string };
+      giftName?: string;
+      giftIcon?: string;
+      iconUrl?: string;
+      name?: string;
+    };
+    if (parsed.type && parsed.type !== 'gift' && message.businessId !== 'gift') {
+      return null;
+    }
+    const giftName = parsed.giftInfo?.name || parsed.giftName || parsed.name || '';
+    const iconUrl = parsed.giftInfo?.iconUrl || parsed.iconUrl || parsed.giftIcon || '';
+    if (!giftName && !iconUrl) return null;
+    return { giftName, iconUrl };
+  } catch (error) {
+    console.error('[BusinessSidePanel] Failed to parse gift data:', error);
+    return null;
+  }
+}
+
+const giftPayloadMap = computed<Record<string, GiftPayload>>(() => {
+  const map: Record<string, GiftPayload> = {};
+  displayMessages.value.forEach((message) => {
+    if (!isGiftMessage(message)) return;
+    const payload = getGiftPayload(message);
+    if (!payload) return;
+    map[getMessageCacheKey(message)] = payload;
+  });
+  return map;
+});
+
+function getGiftPayloadByMessage(message: Barrage): GiftPayload | null {
+  return giftPayloadMap.value[getMessageCacheKey(message)] || null;
+}
+
+function getGiftNameStyle(giftName: string) {
+  const normalized = giftName.trim();
+  if (!normalized) return {};
+  let hash = 0;
+  for (let i = 0; i < normalized.length; i += 1) {
+    hash = (hash * 31 + normalized.charCodeAt(i)) >>> 0;
+  }
+  const hue = hash % 360;
+  const saturation = 72 + (hash % 12);
+  const lightness = 58 + ((hash >> 3) % 8);
+  const color = `hsl(${hue} ${saturation}% ${lightness}%)`;
+  return {
+    color,
+    textShadow: `0 0 12px hsl(${hue} ${saturation}% ${lightness}% / 0.18)`,
+  };
+}
+
+function getMessageContent(text: string): MessageSegment[] {
+  const segments: MessageSegment[] = [];
+  let temp = text;
+
+  while (temp) {
+    const left = temp.indexOf('[');
+    const right = temp.indexOf(']');
+    if (left === 0) {
+      if (right === -1) {
+        segments.push({ type: 'text', value: temp });
+        break;
+      }
+      const emojiKey = temp.slice(0, right + 1);
+      const emojiAsset = BASIC_EMOJI_URL_MAPPING[emojiKey];
+      if (emojiAsset) {
+        segments.push({
+          type: 'emoji',
+          value: `${BASIC_EMOJI_BASE_URL}${emojiAsset}`,
+          emojiKey,
+        });
+        temp = temp.substring(right + 1);
+      } else {
+        segments.push({ type: 'text', value: '[' });
+        temp = temp.slice(1);
+      }
+      continue;
+    }
+
+    if (left === -1) {
+      segments.push({ type: 'text', value: temp });
+      break;
+    }
+
+    segments.push({ type: 'text', value: temp.slice(0, left) });
+    temp = temp.substring(left);
+  }
+
+  return segments;
+}
+
+type SystemTip = {
+  key: string;
+  label: string;
+  timestampInSecond: number;
+  action: 'enter' | 'leave';
+};
+
+const systemTips = ref<SystemTip[]>([]);
+const MAX_SYSTEM_TIPS = 200;
+
+function getUserDisplayName(userInfo: { userId?: string; userName?: string; nameCard?: string }) {
+  return userInfo.nameCard || userInfo.userName || userInfo.userId || '';
+}
+
+function appendSystemTip(action: 'enter' | 'leave', userInfo: { userId?: string; userName?: string; nameCard?: string }) {
+  if (!userInfo?.userId) return;
+  const name = getUserDisplayName(userInfo);
+  if (!name) return;
+  const rawSuffix = action === 'enter' ? t('BarrageList.ComeIn') : t('BarrageList.Leave');
+  const suffix = rawSuffix === 'BarrageList.ComeIn'
+    ? 'came in'
+    : (rawSuffix === 'BarrageList.Leave' ? 'left' : rawSuffix);
+  const now = Math.floor(Date.now() / 1000);
+  const tip: SystemTip = {
+    key: `sys-${action}-${userInfo.userId}-${Date.now()}`,
+    label: `${name} ${suffix}`,
+    timestampInSecond: now,
+    action,
+  };
+  const next = [...systemTips.value, tip];
+  systemTips.value = next.slice(-MAX_SYSTEM_TIPS);
+}
+
+function handleRemoteUserEnterRoom(eventInfo: { userInfo: { userId?: string; userName?: string; nameCard?: string } }) {
+  appendSystemTip('enter', eventInfo.userInfo);
+}
+
+function handleRemoteUserLeaveRoom(eventInfo: { userInfo: { userId?: string; userName?: string; nameCard?: string } }) {
+  appendSystemTip('leave', eventInfo.userInfo);
+}
 
 const chatTimeline = computed(() => {
   const timeline: Array<
   | { type: 'divider'; key: string; label: string }
-  | { type: 'system'; key: string; label: string }
+  | { type: 'system'; key: string; label: string; action: 'enter' | 'leave' }
   | { type: 'message'; key: string; msg: Barrage }
   > = [];
 
+  const mergedTimelineItems = [
+    ...displayMessages.value.map(msg => ({
+      type: 'message' as const,
+      ts: msg.timestampInSecond || 0,
+      key: `msg-${msg.sequence}`,
+      msg,
+    })),
+    ...systemTips.value.map(item => ({
+      type: 'system' as const,
+      ts: item.timestampInSecond || 0,
+      key: item.key,
+      label: item.label,
+      action: item.action,
+    })),
+  ].sort((a, b) => a.ts - b.ts);
+
   let lastDividerTs: number | null = null;
 
-  displayMessages.value.forEach((msg) => {
-    const ts = msg.timestampInSecond || 0;
+  mergedTimelineItems.forEach((item) => {
+    const { ts } = item;
     const shouldShowDivider = lastDividerTs === null || ts - lastDividerTs >= 300;
     if (shouldShowDivider) {
       timeline.push({
-        type: 'divider',
-        key: `divider-${msg.sequence}`,
+        type: 'divider' as const,
+        key: `divider-${item.key}`,
         label: formatChatDivider(ts),
       });
       lastDividerTs = ts;
     }
 
+    if (item.type === 'message') {
+      timeline.push({
+        type: 'message' as const,
+        key: item.key,
+        msg: item.msg,
+      });
+      return;
+    }
     timeline.push({
-      type: 'message',
-      key: `msg-${msg.sequence}`,
-      msg,
+      type: 'system' as const,
+      key: item.key,
+      label: item.label,
+      action: item.action,
     });
   });
   return timeline;
 });
 
-watch(displayMessages, () => {
-  if (!shouldStickToBottom.value) return;
+function scrollChatToBottom(force = false) {
+  if (!force && !shouldStickToBottom.value) return;
   nextTick(() => {
     if (chatListRef.value) {
       chatListRef.value.scrollTop = chatListRef.value.scrollHeight;
+      shouldStickToBottom.value = true;
     }
   });
-}, { deep: true });
+}
+
+watch(() => chatTimeline.value.length, (currentLength, previousLength) => {
+  if (currentLength <= (previousLength ?? 0)) return;
+  scrollChatToBottom(true);
+});
+
+watch(activeTab, (tab) => {
+  if (tab !== 'chat') return;
+  const scrollAfterTransition = () => {
+    nextTick(() => {
+      if (chatListRef.value) {
+        handleChatScroll();
+        scrollChatToBottom(true);
+      } else {
+        setTimeout(() => {
+          nextTick(() => {
+            handleChatScroll();
+            scrollChatToBottom(true);
+          });
+        }, 50);
+      }
+    });
+  };
+  setTimeout(scrollAfterTransition, 200);
+});
+
+watch(() => tabs.value.map(tab => tab.badge).join('|'), () => {
+  remeasureActiveSlider();
+});
+
+watch(inputRawValue, (value) => {
+  inputHasContent.value = hasInputValue(value);
+}, { deep: true, immediate: true });
 
 function handleChatScroll() {
   if (!chatListRef.value) return;
@@ -477,34 +836,58 @@ function handleChatScroll() {
   shouldStickToBottom.value = (el.scrollHeight - el.clientHeight - el.scrollTop) < 24;
 }
 
-async function handleSend() {
-  const text = inputText.value.trim();
-  if (!text || isSending.value || props.liveEnded) return;
-  isSending.value = true;
-  try {
-    await sendTextMessage({ text });
-    inputText.value = '';
-    nextTick(() => resizeInput());
-  } catch (e) {
-    console.error('Failed to send message:', e);
-  } finally {
-    isSending.value = false;
+function getBarrageEditorElement(): HTMLElement | null {
+  return barrageInputShellRef.value?.querySelector('.tiptap.ProseMirror') as HTMLElement | null;
+}
+
+function hasInputValue(value: string | Array<{ type?: string; content?: unknown }>) {
+  if (typeof value === 'string') {
+    return value.trim().length > 0;
   }
+  if (!Array.isArray(value)) return false;
+  return value.some((item) => {
+    if (!item) return false;
+    if (typeof item.content === 'string') {
+      return item.content.trim().length > 0;
+    }
+    return !!item.content;
+  });
 }
 
-function handleInputKeydown(event: KeyboardEvent) {
-  if (event.key !== 'Enter') return;
-  if (event.shiftKey) return;
-  event.preventDefault();
-  handleSend();
+function refreshInputHasContent() {
+  if (hasInputValue(inputRawValue.value)) {
+    inputHasContent.value = true;
+    return;
+  }
+  const editorEl = getBarrageEditorElement();
+  if (!editorEl) {
+    inputHasContent.value = false;
+    return;
+  }
+  const plainText = (editorEl.textContent || '').replace(/\u200b/g, '').trim();
+  const hasEmoji = !!editorEl.querySelector('img.message-emoji');
+  inputHasContent.value = !!plainText || hasEmoji;
 }
 
-function resizeInput() {
-  const input = chatInputRef.value;
-  if (!input) return;
-  input.style.height = 'auto';
-  const nextHeight = Math.min(Math.max(input.scrollHeight, 24), 72);
-  input.style.height = `${nextHeight}px`;
+function handleInputFocus() {
+  inputFocused.value = true;
+  refreshInputHasContent();
+}
+
+function handleInputBlur() {
+  inputFocused.value = false;
+  refreshInputHasContent();
+}
+
+function handleWillSendBarrage() {
+  if (isInputDisabled.value) return false;
+  return true;
+}
+
+function handleDidSendBarrage() {
+  nextTick(() => {
+    refreshInputHasContent();
+  });
 }
 
 function formatChatDivider(ts: number): string {
@@ -518,46 +901,130 @@ function formatChatDivider(ts: number): string {
   return `${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')} ${hhmm}`;
 }
 
-// === Emoji ===
-const emojiPickerVisible = ref(false);
+let editorMutationObserver: MutationObserver | null = null;
+let observedEditorEl: HTMLElement | null = null;
+let shellInputListenerBound = false;
 
-const EMOJI_LIST = [
-  '😀', '😂', '🤣', '😊', '😍', '🥰', '😘', '😜',
-  '🤔', '😎', '🥳', '😢', '😱', '🤗', '🙌', '💪',
-  '👍', '👏', '❤️', '🔥', '⭐', '🎉', '🎊', '💯',
-  '😇', '🤩', '😋', '🤭', '😏', '🥺', '😤', '🫡',
-  '👋', '✌️', '🤝', '💐', '🌹', '🏆', '🎵', '💡',
-];
-
-function toggleEmoji() {
-  emojiPickerVisible.value = !emojiPickerVisible.value;
-}
-
-function insertEmoji(emoji: string) {
-  inputText.value += emoji;
-  nextTick(() => {
-    resizeInput();
-    chatInputRef.value?.focus();
-  });
-}
-
-function onDocumentClick(e: MouseEvent) {
-  const target = e.target as HTMLElement;
-  if (emojiPickerVisible.value && !target.closest('.emoji-picker-panel') && !target.closest('.emoji-btn')) {
-    emojiPickerVisible.value = false;
+function detachEditorObserver() {
+  editorMutationObserver?.disconnect();
+  editorMutationObserver = null;
+  if (observedEditorEl) {
+    observedEditorEl.removeEventListener('input', refreshInputHasContent);
+    observedEditorEl.removeEventListener('keyup', refreshInputHasContent);
+    observedEditorEl = null;
   }
 }
 
-onMounted(() => {
-  document.addEventListener('click', onDocumentClick);
+function bindShellInputListeners() {
+  if (shellInputListenerBound) return;
+  const shell = barrageInputShellRef.value;
+  if (!shell) return;
+  shell.addEventListener('input', refreshInputHasContent, true);
+  shell.addEventListener('keyup', refreshInputHasContent, true);
+  shell.addEventListener('compositionend', refreshInputHasContent, true);
+  shellInputListenerBound = true;
+}
+
+function unbindShellInputListeners() {
+  if (!shellInputListenerBound) return;
+  const shell = barrageInputShellRef.value;
+  if (!shell) return;
+  shell.removeEventListener('input', refreshInputHasContent, true);
+  shell.removeEventListener('keyup', refreshInputHasContent, true);
+  shell.removeEventListener('compositionend', refreshInputHasContent, true);
+  shellInputListenerBound = false;
+}
+
+function attachEditorObserver() {
   nextTick(() => {
-    resizeInput();
+    const editorEl = getBarrageEditorElement();
+    if (!editorEl || observedEditorEl === editorEl) {
+      refreshInputHasContent();
+      return;
+    }
+    detachEditorObserver();
+    observedEditorEl = editorEl;
+    editorMutationObserver = new MutationObserver(() => {
+      refreshInputHasContent();
+    });
+    editorMutationObserver.observe(editorEl, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
+    editorEl.addEventListener('input', refreshInputHasContent);
+    editorEl.addEventListener('keyup', refreshInputHasContent);
+    refreshInputHasContent();
+  });
+}
+
+function handleGiftMessage(gift: {
+  liveId: string;
+  giftCount: number;
+  sender: Barrage['sender'];
+  giftInfo: { name?: string; iconUrl?: string };
+}) {
+  const lastBarrage = messageList.value.at(-1);
+  const sequence = lastBarrage ? lastBarrage.sequence + 1 : 1;
+  const barrage: Barrage = {
+    liveId: gift.liveId,
+    sender: gift.sender,
+    sequence,
+    timestampInSecond: Math.floor(Date.now() / 1000),
+    messageType: BarrageType.custom,
+    textContent: '',
+    extensionInfo: null,
+    businessId: 'gift',
+    data: JSON.stringify({
+      type: 'gift',
+      giftInfo: gift.giftInfo,
+      count: gift.giftCount,
+    }),
+  };
+  appendLocalTip(barrage);
+}
+
+onMounted(() => {
+  window.addEventListener('resize', handleWindowResize);
+  subscribeGiftEvent(LiveGiftEvents.ON_RECEIVE_GIFT_MESSAGE, handleGiftMessage);
+  roomEngine.instance?.on(TUIRoomEvents.onRemoteUserEnterRoom, handleRemoteUserEnterRoom);
+  roomEngine.instance?.on(TUIRoomEvents.onRemoteUserLeaveRoom, handleRemoteUserLeaveRoom);
+  nextTick(() => {
+    bindShellInputListeners();
+    attachEditorObserver();
     // Initial measurement of the slider position
-    measureSlider(activeTabIndex.value);
+    remeasureActiveSlider();
+    const firstTab = tabBtnRefs.value?.[0];
+    const tabContainer = firstTab?.parentElement;
+    if (tabContainer && typeof ResizeObserver !== 'undefined') {
+      tabResizeObserver = new ResizeObserver(() => {
+        remeasureActiveSlider();
+      });
+      tabResizeObserver.observe(tabContainer);
+    }
   });
 });
 onUnmounted(() => {
-  document.removeEventListener('click', onDocumentClick);
+  detachEditorObserver();
+  unbindShellInputListeners();
+  window.removeEventListener('resize', handleWindowResize);
+  if (tabResizeRaf) {
+    cancelAnimationFrame(tabResizeRaf);
+    tabResizeRaf = 0;
+  }
+  tabResizeObserver?.disconnect();
+  tabResizeObserver = null;
+  unsubscribeGiftEvent(LiveGiftEvents.ON_RECEIVE_GIFT_MESSAGE, handleGiftMessage);
+  roomEngine.instance?.off(TUIRoomEvents.onRemoteUserEnterRoom, handleRemoteUserEnterRoom);
+  roomEngine.instance?.off(TUIRoomEvents.onRemoteUserLeaveRoom, handleRemoteUserLeaveRoom);
+});
+
+watch(activeTab, (tab) => {
+  if (tab !== 'chat') {
+    inputFocused.value = false;
+    return;
+  }
+  attachEditorObserver();
 });
 </script>
 
@@ -602,9 +1069,13 @@ onUnmounted(() => {
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  padding: 8px 10px;
+  padding: 10px 12px 8px;
   border-bottom: 1px solid var(--preset-chat-surface-divider, rgba(255, 255, 255, 0.1));
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0));
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--preset-tab-bar-bg, #1a2535) 58%, transparent) 0%,
+    color-mix(in srgb, var(--preset-tab-bar-bg, #1a2535) 36%, transparent) 100%
+  );
 }
 
 .tab-bar-inner {
@@ -613,9 +1084,10 @@ onUnmounted(() => {
   display: flex;
   border-radius: 12px;
   padding: 3px;
-  background: var(--preset-tab-track-bg, rgba(255, 255, 255, 0.085));
-  border: 1px solid var(--preset-tab-track-border, rgba(255, 255, 255, 0.14));
+  background: color-mix(in srgb, var(--preset-tab-track-bg, rgba(24, 35, 62, 0.78)) 84%, var(--preset-chat-surface-bg, #111a27));
+  border: 1px solid color-mix(in srgb, var(--preset-tab-track-border, rgba(255, 255, 255, 0.22)) 80%, transparent);
   gap: 2px;
+  overflow: hidden;
 }
 
 /* Sliding pill background behind the active tab */
@@ -624,14 +1096,20 @@ onUnmounted(() => {
   top: 3px;
   bottom: 3px;
   border-radius: 10px;
-  background: var(--preset-tab-slider-bg, rgba(255, 255, 255, 0.2));
+  background: var(
+    --preset-tab-slider-bg,
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--preset-primary, #4c8bf5) 54%, #ffffff 46%) 0%,
+      color-mix(in srgb, var(--preset-primary, #4c8bf5) 72%, #13254c 28%) 100%
+    )
+  );
   box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.18),
-    0 0 0 1px rgba(255, 255, 255, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    0 2px 10px color-mix(in srgb, var(--preset-primary, #4c8bf5) 24%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--uikit-color-white-1, #fff) 28%, transparent);
   transition:
-    left 380ms cubic-bezier(0.34, 1.56, 0.64, 1),
-    width 380ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    left 260ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    width 260ms cubic-bezier(0.2, 0.8, 0.2, 1),
     opacity 200ms ease;
   pointer-events: none;
   z-index: 0;
@@ -652,7 +1130,7 @@ onUnmounted(() => {
   cursor: pointer;
   font-size: 13px;
   font-weight: 500;
-  color: var(--preset-tab-btn-text, rgba(255, 255, 255, 0.38));
+  color: var(--preset-tab-btn-text, rgba(255, 255, 255, 0.82));
   letter-spacing: 0.01em;
   transition:
     color 280ms ease,
@@ -660,7 +1138,7 @@ onUnmounted(() => {
   user-select: none;
 
   &:hover:not(.active) {
-    color: var(--preset-tab-btn-hover-text, rgba(255, 255, 255, 0.58));
+    color: var(--preset-tab-btn-hover-text, rgba(255, 255, 255, 0.94));
   }
 
   &:active {
@@ -668,8 +1146,8 @@ onUnmounted(() => {
   }
 
   &.active {
-    color: var(--preset-tab-btn-active-text, rgba(255, 255, 255, 0.95));
-    font-weight: 600;
+    color: var(--preset-tab-btn-active-text, #ffffff);
+    font-weight: 650;
   }
 
   .tab-icon {
@@ -707,16 +1185,16 @@ onUnmounted(() => {
   border-radius: 999px;
   font-size: 11px;
   font-weight: 600;
-  background: var(--preset-tab-badge-bg, rgba(255, 255, 255, 0.06));
-  color: var(--preset-tab-badge-text, rgba(255, 255, 255, 0.3));
+  background: var(--preset-tab-badge-bg, rgba(255, 255, 255, 0.16));
+  color: var(--preset-tab-badge-text, rgba(255, 255, 255, 0.78));
   line-height: 1.4;
   transition:
     background 280ms ease,
     color 280ms ease;
 
   &.active {
-    background: var(--preset-tab-badge-active-bg, rgba(255, 255, 255, 0.1));
-    color: var(--preset-tab-badge-active-text, rgba(255, 255, 255, 0.82));
+    background: var(--preset-tab-badge-active-bg, color-mix(in srgb, var(--preset-primary, #4c8bf5) 55%, rgba(255, 255, 255, 0.28)));
+    color: var(--preset-tab-badge-active-text, #ffffff);
   }
 }
 
@@ -766,8 +1244,6 @@ onUnmounted(() => {
   gap: 4px;
   padding: 12px 12px 16px;
   background: var(--preset-chat-surface-bg);
-  scrollbar-width: thin;
-  scrollbar-color: var(--preset-chat-scrollbar) transparent;
   user-select: text;
   -webkit-user-select: text;
 }
@@ -797,7 +1273,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 6px;
   padding: 4px 12px;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--preset-system-msg-text);
 
   .system-icon {
@@ -827,6 +1303,14 @@ onUnmounted(() => {
   justify-content: center;
   font-size: 12px;
   font-weight: 700;
+  overflow: hidden;
+}
+
+.msg-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .msg-main {
@@ -872,6 +1356,8 @@ onUnmounted(() => {
 .msg-bubble {
   display: inline-block;
   max-width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
   word-break: break-word;
   padding: 7px 11px;
   border-radius: 10px;
@@ -894,19 +1380,41 @@ onUnmounted(() => {
   }
 }
 
+.msg-emoji {
+  width: 18px;
+  height: 18px;
+  vertical-align: text-bottom;
+  margin: 0 1px;
+}
+
+.gift-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.gift-prefix {
+  color: var(--preset-msg-content-text);
+}
+
+.gift-name {
+  font-weight: 600;
+}
+
+.gift-icon {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+}
+
 /* ── Chat Input ── */
 
 .chat-input-shell {
   flex-shrink: 0;
   position: relative;
-  padding: 10px 12px;
+  padding: 10px 12px 12px;
   border-top: 1px solid var(--preset-chat-surface-divider, rgba(255, 255, 255, 0.08));
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--preset-tab-bar-bg, #1a2535) 72%, #000 28%) 0%,
-      color-mix(in srgb, var(--preset-tab-bar-bg, #1a2535) 78%, #000 22%) 100%
-    );
+  background: var(--preset-input-bar-bg, transparent);
 
   &.chat-disabled {
     .input-wrapper {
@@ -926,14 +1434,14 @@ onUnmounted(() => {
 .input-wrapper {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   flex-wrap: nowrap;
   gap: 8px;
-  border-radius: 12px;
+  border-radius: 14px;
   min-height: 40px;
-  padding: 4px 8px;
-  background: var(--preset-input-wrapper-bg, rgba(255, 255, 255, 0.04));
-  border: 1px solid var(--preset-input-wrapper-border, rgba(255, 255, 255, 0.1));
+  padding: 4px 8px 4px 10px;
+  background: color-mix(in srgb, var(--preset-input-wrapper-bg, rgba(255, 255, 255, 0.04)) 88%, var(--preset-chat-surface-bg, #111a27));
+  border: 1px solid color-mix(in srgb, var(--preset-input-wrapper-border, rgba(255, 255, 255, 0.1)) 92%, transparent);
   transition: all 180ms ease;
 
   &.focused {
@@ -946,145 +1454,65 @@ onUnmounted(() => {
   }
 }
 
-.emoji-btn {
-  width: 30px;
-  height: 30px;
-  min-width: 30px;
-  border-radius: 999px;
-  border: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  align-self: center;
-  color: var(--preset-emoji-btn-color);
-  background: transparent;
-  cursor: pointer;
-
-  &:hover,
-  &.active {
-    color: var(--preset-emoji-btn-active);
-    background: var(--preset-emoji-btn-hover-bg);
-  }
-
-  svg {
-    width: 20px;
-    height: 20px;
-  }
+:deep(.biz-barrage-input) {
+  flex: 1;
+  min-width: 0;
 }
 
-.chat-text-input {
-  flex: 1;
+:deep(.biz-barrage-input .live-message-input) {
   width: 100%;
-  min-height: 22px;
-  max-height: 96px;
+}
+
+:deep(.biz-barrage-input .message-input-container) {
+  height: 32px;
+  min-height: 32px;
+  max-height: 32px;
+  padding: 0;
   border: none;
-  outline: none;
+  border-radius: 0;
   background: transparent;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+:deep(.biz-barrage-input .input-wrapper) {
+  align-items: center;
+}
+
+:deep(.biz-barrage-input .input-prefix) {
+  display: flex;
+  align-items: center;
+  align-self: center;
+}
+
+:deep(.biz-barrage-input .input-actions) {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  margin-right: 8px;
+  gap: 0;
+}
+
+:deep(.biz-barrage-input .emoji-picker__icon) {
+  width: 16px;
+  height: 16px;
+  color: var(--preset-emoji-btn-color);
+}
+
+:deep(.biz-barrage-input .tiptap.ProseMirror) {
+  flex: 1;
+  min-height: 22px;
+  max-height: 72px;
   color: var(--preset-chat-input-text);
   font-size: 14px;
   line-height: 22px;
-  resize: none;
-  overflow-y: hidden;
-  padding: 0;
-  margin: 0;
-  display: block;
-  align-self: center;
   font-family: inherit;
 
-  &::placeholder {
+  p.is-editor-empty:first-child::before {
     color: var(--preset-chat-input-placeholder);
     font-size: 14px;
   }
-}
-
-.send-btn {
-  width: 30px;
-  height: 30px;
-  border: none;
-  border-radius: 8px;
-  min-width: 30px;
-  padding: 0;
-  flex-shrink: 0;
-  align-self: center;
-  color: var(--preset-send-btn-active-text, rgba(255, 255, 255, 0.88));
-  background: var(--preset-send-btn-inactive, rgba(255, 255, 255, 0.08));
-  cursor: pointer;
-  transition: all 180ms ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  svg {
-    width: 17px;
-    height: 17px;
-    fill: currentColor;
-  }
-
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.52;
-  }
-
-  &.active {
-    background: var(--preset-send-btn-active-bg, var(--preset-primary, #1c66e5));
-    box-shadow: 0 0 0 2px var(--preset-send-btn-active-ring, rgba(28, 102, 229, 0.25));
-
-    &:active {
-      transform: scale(0.94);
-    }
-  }
-}
-
-/* ── Emoji Picker ── */
-
-.emoji-picker-panel {
-  position: absolute;
-  bottom: calc(100% + 6px);
-  left: 12px;
-  right: 12px;
-  padding: 8px;
-  border-radius: 12px;
-  background: var(--preset-emoji-panel-bg);
-  border: 1px solid var(--preset-emoji-panel-border);
-  box-shadow: var(--preset-emoji-panel-shadow);
-  z-index: 20;
-}
-
-.emoji-picker-grid {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 2px;
-}
-
-.emoji-item {
-  width: 100%;
-  aspect-ratio: 1;
-  border-radius: 8px;
-  border: none;
-  background: transparent;
-  font-size: 22px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &:hover {
-    background: var(--preset-emoji-hover-bg);
-  }
-}
-
-.emoji-pop-enter-active {
-  transition: opacity 0.18s ease, transform 0.18s ease;
-}
-
-.emoji-pop-leave-active {
-  transition: opacity 0.12s ease, transform 0.12s ease;
-}
-
-.emoji-pop-enter-from,
-.emoji-pop-leave-to {
-  opacity: 0;
-  transform: translateY(6px) scale(0.97);
 }
 
 /* ── Audience Panel ── */
@@ -1101,8 +1529,6 @@ onUnmounted(() => {
   min-height: 0;
   overflow-y: auto;
   padding: 10px 10px 16px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--preset-list-scrollbar) transparent;
 }
 
 .audience-group {
@@ -1259,5 +1685,121 @@ onUnmounted(() => {
 .audience-item-leave-to {
   opacity: 0;
   transform: translateX(12px);
+}
+</style>
+
+<style lang="scss">
+/*
+ * Scrollbar styling strategy:
+ *
+ * Use ::-webkit-scrollbar pseudo-elements as the primary approach for
+ * Chrome, Safari (all versions including 18.2+), and Edge.
+ *
+ * IMPORTANT: In Safari 18.2+ and Chrome 121+, setting the standard
+ * `scrollbar-width` property on an element causes the browser to
+ * completely disable ::-webkit-scrollbar styling. Therefore we must
+ * NOT set scrollbar-width/scrollbar-color anywhere that WebKit-based
+ * browsers can see it.
+ *
+ * For Firefox (which doesn't support ::-webkit-scrollbar), we use
+ * `scrollbar-width: thin` scoped behind `@supports (-moz-appearance: none)`
+ * so only Firefox applies it.
+ */
+
+/* --- Firefox-only standard scrollbar fallback --- */
+@supports (-moz-appearance: none) {
+  .biz-side-panel .chat-list {
+    scrollbar-width: thin;
+    scrollbar-color: #e0e4ea transparent;
+  }
+
+  .biz-side-panel .audience-list-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #e2e6ec transparent;
+  }
+
+  .biz-side-panel .biz-barrage-input .tiptap.ProseMirror {
+    scrollbar-width: thin;
+    scrollbar-color: #e0e4ea transparent;
+  }
+
+  html[tui-theme-mode="dark"] .biz-side-panel .chat-list,
+  html[tui-theme-mode="dark"] .biz-side-panel .audience-list-scroll,
+  html[tui-theme-mode="dark"] .biz-side-panel .biz-barrage-input .tiptap.ProseMirror {
+    scrollbar-color: #253550 transparent;
+  }
+}
+
+/* --- Chat list scrollbar (WebKit / Blink) --- */
+
+.biz-side-panel .chat-list::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 6px;
+  height: 6px;
+}
+
+.biz-side-panel .chat-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.style-preset-business .biz-side-panel .chat-list::-webkit-scrollbar-thumb,
+.style-preset-business.tui-theme-light .biz-side-panel .chat-list::-webkit-scrollbar-thumb {
+  background-color: #e0e4ea;
+  border-radius: 999px;
+}
+
+html[tui-theme-mode="dark"] .style-preset-business .biz-side-panel .chat-list::-webkit-scrollbar-thumb,
+.style-preset-business.tui-theme-dark .biz-side-panel .chat-list::-webkit-scrollbar-thumb {
+  background-color: #253550;
+  border-radius: 999px;
+}
+
+/* --- Audience list scrollbar (WebKit / Blink) --- */
+
+.biz-side-panel .audience-list-scroll::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 6px;
+  height: 6px;
+}
+
+.biz-side-panel .audience-list-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.style-preset-business .biz-side-panel .audience-list-scroll::-webkit-scrollbar-thumb,
+.style-preset-business.tui-theme-light .biz-side-panel .audience-list-scroll::-webkit-scrollbar-thumb {
+  background-color: #e2e6ec;
+  border-radius: 999px;
+}
+
+html[tui-theme-mode="dark"] .style-preset-business .biz-side-panel .audience-list-scroll::-webkit-scrollbar-thumb,
+.style-preset-business.tui-theme-dark .biz-side-panel .audience-list-scroll::-webkit-scrollbar-thumb {
+  background-color: #253550;
+  border-radius: 999px;
+}
+
+/* --- Barrage input scrollbar (WebKit / Blink) --- */
+
+.biz-side-panel .biz-barrage-input .tiptap.ProseMirror::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 6px;
+  height: 6px;
+}
+
+.biz-side-panel .biz-barrage-input .tiptap.ProseMirror::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.style-preset-business .biz-side-panel .biz-barrage-input .tiptap.ProseMirror::-webkit-scrollbar-thumb,
+.style-preset-business.tui-theme-light .biz-side-panel .biz-barrage-input .tiptap.ProseMirror::-webkit-scrollbar-thumb {
+  background-color: #e0e4ea;
+  border-radius: 999px;
+}
+
+// Dark theme
+html[tui-theme-mode="dark"] .style-preset-business .biz-side-panel .biz-barrage-input .tiptap.ProseMirror::-webkit-scrollbar-thumb,
+.style-preset-business.tui-theme-dark .biz-side-panel .biz-barrage-input .tiptap.ProseMirror::-webkit-scrollbar-thumb {
+  background-color: #253550;
+  border-radius: 999px;
 }
 </style>
