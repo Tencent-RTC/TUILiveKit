@@ -7,12 +7,74 @@
   >
     <!-- Left: Immersive video stage -->
     <div class="biz-left-column">
+      <div class="biz-stage-topbar">
+        <div class="biz-video-top-gradient" />
+        <div class="biz-video-top-overlay">
+          <div class="stream-top-unified">
+            <div class="stream-meta-glass">
+              <template v-if="liveEndedOverlayVisible">
+                <div class="stream-host-avatar">
+                  <div class="stream-ended-avatar">
+                    <IconUser size="24" />
+                  </div>
+                </div>
+                <div class="stream-meta-text">
+                  <div class="stream-title-row">
+                    <div class="stream-title">
+                      {{ t('The host is not currently live') }}
+                    </div>
+                  </div>
+                </div>
+              </template>
+              <template v-else>
+                <div class="stream-host-avatar">
+                  <Avatar
+                    :src="currentLive?.liveOwner.avatarUrl"
+                    :size="32"
+                    class="stream-host-avatar-img"
+                  />
+                </div>
+                <div class="stream-meta-text">
+                  <div class="stream-title-row">
+                    <div class="stream-title">
+                      {{ displayRoomTitle }}
+                    </div>
+                  </div>
+                  <span class="stream-live-badge">
+                    <span class="stream-live-badge-dot" />
+                    LIVE
+                  </span>
+                </div>
+              </template>
+            </div>
+            <div class="stream-actions-glass">
+              <button class="biz-segment-btn biz-segment-btn-copy" :title="t('Copy Link')" @click="handleCopyLink">
+                <span class="biz-segment-label">{{ t('Copy Link') }}</span>
+              </button>
+              <button
+                v-if="isUserOnSeat"
+                class="biz-segment-btn biz-segment-btn-disconnect"
+                :title="t('End Co-guest')"
+                @click="handleDisconnectCoGuest"
+              >
+                <span class="biz-segment-label">{{ t('End Co-guest') }}</span>
+              </button>
+              <button class="biz-segment-btn biz-segment-btn-leave" :title="t('Exit')" @click="handleLeaveLive">
+                <span class="biz-segment-label">{{ t('Exit') }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
       <div
         ref="bizVideoCardRef"
         class="biz-video-card"
-        :class="{ 'controls-visible': showBizControls || (!isPlaying && isInLive && !liveEndedOverlayVisible) }"
-        @mouseenter="showBizControls = true; cancelBizControlsHideTimer()"
-        @mouseleave="startBizControlsHideTimer()"
+        :class="{
+          'controls-visible-bottom': showBizControls && !liveEndedOverlayVisible && !isUserOnSeat,
+        }"
+        @mouseenter="handleBizVideoMouseEnter"
+        @mousemove="handleBizVideoMouseMove"
+        @mouseleave="handleBizVideoMouseLeave"
       >
         <LiveView @empty-seat-click="handleApplyForSeat">
           <template #center-overlay>
@@ -32,83 +94,44 @@
             </Transition>
           </template>
         </LiveView>
-        <div class="biz-video-top-gradient" />
-        <div class="biz-video-top-overlay">
-          <div class="stream-top-unified">
-            <div class="stream-meta-glass">
-              <div class="stream-host-avatar">
-                <Avatar
-                  :src="currentLive?.liveOwner.avatarUrl"
-                  :size="44"
-                  class="stream-host-avatar-img"
-                />
-              </div>
-              <div class="stream-meta-text">
-                <div class="stream-title-row">
-                  <div class="stream-title">
-                    {{ displayRoomTitle }}
-                  </div>
-                  <span class="stream-live-badge">
-                    <span class="stream-live-badge-dot" />
-                    LIVE
-                  </span>
-                </div>
-                <div class="stream-subtitle">
-                  <span class="stream-subtitle-host">{{ displayHostName }}</span>
-                  <span class="stream-subtitle-sep">·</span>
-                  <span class="stream-subtitle-room">Room {{ currentLive?.liveId || '--' }}</span>
-                </div>
-              </div>
-            </div>
-            <div class="stream-actions-glass top-action-segmented">
-              <button class="top-seg-btn top-seg-btn-primary" :title="t('Copy Link')" @click="handleCopyLink">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-                </svg>
-                <span>{{ t('Copy Link') }}</span>
-              </button>
-              <button class="top-seg-btn" :title="t('Exit')" @click="handleLeaveLive">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                  <polyline points="16 17 21 12 16 7" />
-                  <line x1="21" y1="12" x2="9" y2="12" />
-                </svg>
-                <span>{{ t('Exit') }}</span>
-              </button>
-            </div>
-          </div>
-        </div>
         <!-- Unified control overlay: shows/hides together with PlayerControl via .controls-visible -->
         <div class="biz-control-overlay">
           <!-- Progress bar at top of control area -->
-          <div class="biz-progress-bar">
+          <div
+            class="biz-progress-bar"
+            @mouseenter="handleControlOverlayEnter"
+            @mousemove="handleControlOverlayMove"
+            @mouseleave="handleControlOverlayLeave"
+          >
             <div class="biz-progress-track">
               <div class="biz-progress-fill" />
               <div class="biz-progress-thumb" />
             </div>
           </div>
           <!-- Custom control bar with pill groups -->
-          <div class="biz-custom-controls">
+          <div
+            class="biz-custom-controls"
+            @mouseenter="handleControlOverlayEnter"
+            @mousemove="handleControlOverlayMove"
+            @mouseleave="handleControlOverlayLeave"
+          >
             <!-- Left pill: play + audio + volume slider -->
             <div
               class="biz-pill biz-pill-left"
               :class="{ 'volume-expanded': volumeSliderVisible }"
             >
               <div class="biz-tooltip-wrap">
-                <button class="biz-pill-btn biz-play-btn" :title="playTooltipText" @click="handleBizPlayPause">
+                <button class="biz-pill-btn biz-play-btn" :class="{ disabled: playToggleDisabled }" @click="handleBizPlayPause">
                   <svg v-if="isPlaying" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" /></svg>
                   <svg v-else viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7L8 5z" /></svg>
                 </button>
                 <div class="biz-btn-tooltip">{{ playTooltipText }}</div>
               </div>
               <div class="biz-tooltip-wrap">
-                <button class="biz-pill-btn biz-refresh-btn" :title="t('Refresh')" :disabled="isManualRefreshing" @click="handleBizRefresh">
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M20 12a8 8 0 0 0-13.66-5.66" />
-                    <polyline points="6.2 3.6 6.45 7.7 10.55 7.45" />
-                    <path d="M4 12a8 8 0 0 0 13.66 5.66" />
-                    <polyline points="17.8 20.4 17.55 16.3 13.45 16.55" />
+                <button class="biz-pill-btn biz-refresh-btn" :class="{ disabled: refreshDisabled }" @click="handleBizRefresh">
+                  <svg viewBox="0 0 16 16" aria-hidden="true">
+                    <path d="M8.00016 2.71134C10.8965 2.71134 13.2534 5.0736 13.2534 7.99868H14.2148C14.2148 4.54763 11.4324 1.75 8.00016 1.75C5.76382 1.75 3.80336 2.93771 2.7087 4.72001L2.7087 2.64252H1.75V5.74894C1.75 6.02508 1.97386 6.24894 2.25 6.24894L5.33676 6.24894V5.28498L3.49045 5.28498C4.40906 3.74211 6.08692 2.71134 8.00016 2.71134Z" />
+                    <path d="M1.78554 7.99863H2.74687C2.74687 10.9237 5.10379 13.286 8.00015 13.286C9.91339 13.286 11.5912 12.2553 12.5099 10.7124H10.6632V9.74843H13.75C14.0261 9.74843 14.25 9.97228 14.25 10.2484V13.3548H13.2913V11.2779C12.1966 13.0599 10.2363 14.2474 8.00015 14.2474C4.56792 14.2474 1.78554 11.4497 1.78554 7.99863Z" />
                   </svg>
                 </button>
                 <div class="biz-btn-tooltip">{{ t('Refresh') }}</div>
@@ -121,7 +144,6 @@
                 <div class="biz-tooltip-wrap">
                   <button
                     class="biz-pill-btn biz-audio-btn"
-                    :title="muteTooltipText"
                     @mousedown="lockVolumeInteraction"
                     @click="handleBizMuteToggle"
                   >
@@ -153,7 +175,7 @@
             <div class="biz-pill biz-pill-right">
               <div v-if="availableResolutions.length > 0" class="biz-resolution-wrapper">
                 <div class="biz-tooltip-wrap" :class="{ 'tooltip-hidden': resolutionPopupVisible }">
-                  <button class="biz-pill-btn biz-resolution-btn" :title="resolutionTooltipText" @click="toggleResolutionPopup">
+                  <button class="biz-pill-btn biz-resolution-btn" @click="toggleResolutionPopup">
                     <span class="biz-resolution-text">{{ currentResolutionLabel }}</span>
                   </button>
                   <div class="biz-btn-tooltip">{{ resolutionTooltipText }}</div>
@@ -174,24 +196,23 @@
                 </Transition>
               </div>
               <div class="biz-tooltip-wrap">
-                <button class="biz-pill-btn biz-pip-btn" :title="pipTooltipText" @click="handleBizPiP">
+                <button class="biz-pill-btn biz-pip-btn" :class="{ disabled: pipDisabled }" @click="handleBizPiP">
                   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 7h-8v6h8V7zm2-4H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14z" /></svg>
                 </button>
                 <div class="biz-btn-tooltip">{{ pipTooltipText }}</div>
               </div>
               <div class="biz-tooltip-wrap">
-                <button class="biz-pill-btn biz-cinema-btn" :class="{ active: sidePanelCollapsed }" :title="cinemaTooltipText" @click="handleCinemaMode">
-                  <svg class="biz-cinema-icon" viewBox="0 0 24 24" aria-hidden="true">
-                    <rect x="3.5" y="5.5" width="17" height="13" rx="2.2" />
-                    <path d="M7.5 10.2h9" />
-                    <path d="M7.5 13.8h9" />
-                    <path d="M17 8.5h1.5v8H17" />
+                <button class="biz-pill-btn biz-cinema-btn" :class="{ active: sidePanelCollapsed, disabled: cinemaDisabled }" @click="handleCinemaMode">
+                  <svg class="biz-cinema-icon" viewBox="0 0 16 16" aria-hidden="true">
+                    <rect x="1.5" y="3" width="13" height="9" rx="1.1" />
+                    <path d="M3.5 10.5h3" />
+                    <path d="M1 13.5h14" />
                   </svg>
                 </button>
                 <div class="biz-btn-tooltip">{{ cinemaTooltipText }}</div>
               </div>
               <div class="biz-tooltip-wrap">
-                <button class="biz-pill-btn biz-fullscreen-btn" :title="fullscreenTooltipText" @click="handleBizFullscreen">
+                <button class="biz-pill-btn biz-fullscreen-btn" :class="{ disabled: fullscreenDisabled }" @click="handleBizFullscreen">
                   <svg v-if="!bizIsFullscreen" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" /></svg>
                   <svg v-else viewBox="0 0 24 24" fill="currentColor"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z" /></svg>
                 </button>
@@ -219,11 +240,11 @@
         <div v-if="liveEndedOverlayVisible" class="live-ended-overlay">
           <div class="live-ended-content">
             <div class="live-ended-icon-wrapper">
-              <svg class="live-ended-svg" width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="32" cy="32" r="28" stroke="currentColor" stroke-width="2" opacity="0.15" />
-                <circle cx="32" cy="32" r="20" stroke="currentColor" stroke-width="2" opacity="0.25" />
-                <path d="M26 24v16l14-8-14-8z" fill="currentColor" opacity="0.4" />
-              </svg>
+              <img
+                class="live-ended-icon-img"
+                :src="LiveEndedIcon"
+                :alt="t('The host is not currently live')"
+              >
             </div>
             <div class="live-ended-title">
               {{ t('The host is not currently live') }}
@@ -242,37 +263,6 @@
         <BusinessSidePanel :live-ended="liveEndedOverlayVisible" />
       </div>
     </div>
-
-    <TUIDialog
-      v-model:visible="exitLiveDialogVisible"
-      :title="t('Exit Live')"
-    >
-      {{ exitDialogContent }}
-      <template #footer>
-        <div class="action-buttons">
-          <TUIButton
-            color="gray"
-            @click="handleCancelExit"
-          >
-            {{ t('Cancel') }}
-          </TUIButton>
-          <TUIButton
-            v-if="isUserOnSeat"
-            color="red"
-            @click="handleEndCoGuest"
-          >
-            {{ t('End Co-guest') }}
-          </TUIButton>
-          <TUIButton
-            type="primary"
-            color="red"
-            @click="handleExitLive"
-          >
-            {{ t('Exit Live') }}
-          </TUIButton>
-        </div>
-      </template>
-    </TUIDialog>
 
     <!-- Seat application dialogs (connection type, device selection, cancel, leave) -->
     <LiveConnectionTypeDialog
@@ -309,6 +299,36 @@
       :confirm="confirmLeaveSeat"
       :cancel="closeLeaveSeatDialog"
     />
+    <TUIDialog
+      v-model:visible="exitLiveDialogVisible"
+      :title="t('Exit Live')"
+    >
+      {{ t('LiveExitConfirmCoGuestTip') }}
+      <template #footer>
+        <div class="exit-live-action-buttons">
+          <TUIButton
+            color="blue"
+            @click="handleCancelExit"
+          >
+            {{ t('Cancel') }}
+          </TUIButton>
+          <TUIButton
+            color="red"
+            type="primary"
+            @click="handleEndCoGuestAndStay"
+          >
+            {{ t('End Co-guest') }}
+          </TUIButton>
+          <TUIButton
+            type="primary"
+            color="red"
+            @click="handleExitLive"
+          >
+            {{ t('Exit Live') }}
+          </TUIButton>
+        </div>
+      </template>
+    </TUIDialog>
   </div>
 </template>
 
@@ -318,12 +338,16 @@ import TUIRoomEngine, { TUIAutoPlayCallbackInfo, TUIRoomEvents } from '@tencentc
 import {
   TUIMessageBox,
   TUIToast,
-  useUIKit,
+  TUIButton,
   TUIDialog,
+  IconUser,
+  useUIKit,
 } from '@tencentcloud/uikit-base-component-vue3';
 import {
   LiveView,
   useLiveListState,
+  useLiveAudienceState,
+  useLoginState,
   Avatar,
   useRoomEngine,
   LiveListEvent,
@@ -336,8 +360,24 @@ import LiveConnectionTypeDialog from '../../TUILiveKit/component/LiveDialog/Live
 import LiveDeviceSelectionDialog from '../../TUILiveKit/component/LiveDialog/LiveDeviceSelectionDialog.vue';
 import { usePlayerControlState } from '../composables/usePlayerControlState';
 import { initRoomEngineLanguage } from '../../utils/utils';
+import LiveEndedIcon from '../../TUILiveKit/icons/live-ended.svg';
 
 const { t } = useUIKit();
+
+const { audienceList } = useLiveAudienceState();
+const { loginUserInfo } = useLoginState();
+
+// Mute detection: show toast when the current user is muted by the host
+const localAudience = computed(() => audienceList.value.find(item => item.userId === loginUserInfo.value?.userId));
+const isMessageMuted = computed(() => !!localAudience.value?.isMessageDisabled);
+watch(isMessageMuted, (newVal, oldVal) => {
+  if (newVal && !oldVal) {
+    TUIToast.info({ message: t('You have been muted in this room') });
+  }
+  if (!newVal && oldVal) {
+    TUIToast.info({ message: t('You have been unmuted in this room') });
+  }
+});
 
 const {
   isPlaying,
@@ -432,7 +472,12 @@ const onVolumeTrackMouseDown = (e: MouseEvent) => {
  * Toggle play/pause via SDK API.
  */
 const handleBizPlayPause = () => {
+  if (playToggleDisabled.value) {
+    TUIToast.warning({ message: t('LiveView.NotAllowPauseInPIP') });
+    return;
+  }
   if (isPlaying.value) {
+    clearAutoPlayPromptState();
     sdkPause();
   } else {
     sdkResume();
@@ -482,6 +527,16 @@ const unlockVolumeInteraction = () => {
  * Toggle picture-in-picture via SDK API.
  */
 const handleBizPiP = () => {
+  if (pipDisabled.value) {
+    if (!isPlaying.value) {
+      TUIToast.warning({ message: t('LiveView.NotAllowPIPInNonPlaying') });
+      return;
+    }
+    if (bizIsFullscreen.value) {
+      TUIToast.warning({ message: t('LiveView.NotAllowPIPInFullscreen') });
+      return;
+    }
+  }
   if (isPictureInPicture.value) {
     sdkExitPiP();
   } else {
@@ -490,30 +545,51 @@ const handleBizPiP = () => {
 };
 
 const handleBizRefresh = async () => {
-  if (isManualRefreshing.value) return;
-  isManualRefreshing.value = true;
+  if (isPictureInPicture.value) {
+    TUIToast.warning({ message: t('Not allowed to refresh in picture-in-picture mode') });
+    return;
+  }
+  if (isManualRefreshRequesting.value) return;
+  isManualRefreshRequesting.value = true;
+  manualRefreshCycle.value += 1;
+  const currentCycle = manualRefreshCycle.value;
+  markManualRefreshPending();
+  clearAutoPlayPromptState();
   clearManualRefreshTimer();
+  clearRefreshRecoveryTimer();
+  isManualRefreshing.value = true;
   manualRefreshTimeoutTimer = setTimeout(() => {
-    finishManualRefreshing();
+    if (manualRefreshCycle.value === currentCycle) {
+      finishManualRefreshing();
+    }
   }, 12000);
   try {
     await sdkRefresh();
     startVideoReadyProbe();
-    setTimeout(() => {
-      finishManualRefreshing();
-    }, 1800);
+    startRefreshRecoveryTimer();
   } catch (error) {
     console.error('Failed to refresh playback:', error);
     finishManualRefreshing();
+  } finally {
+    isManualRefreshRequesting.value = false;
   }
 };
 
 const handleCinemaMode = () => {
+  if (cinemaDisabled.value) {
+    TUIToast.warning({ message: t('Not allow to enter cinema mode in fullscreen') });
+    return;
+  }
   sidePanelCollapsed.value = !sidePanelCollapsed.value;
 };
 
 // Native fullscreen state for biz-video-card (overrides SDK fullscreen)
 const bizIsFullscreen = ref(false);
+const playToggleDisabled = computed(() => isPictureInPicture.value);
+const pipDisabled = computed(() => !isPlaying.value || bizIsFullscreen.value);
+const fullscreenDisabled = computed(() => isPictureInPicture.value);
+const refreshDisabled = computed(() => isManualRefreshRequesting.value || isPictureInPicture.value);
+const cinemaDisabled = computed(() => bizIsFullscreen.value);
 const playTooltipText = computed(() => (isPlaying.value ? t('Pause playback') : t('Resume playback')));
 const muteTooltipText = computed(() => (isMuted.value ? t('Turn on sound') : t('Mute sound')));
 const pipTooltipText = computed(() => (isPictureInPicture.value ? t('Exit picture in picture') : t('Picture in picture')));
@@ -526,6 +602,10 @@ const resolutionTooltipText = computed(() => t('Switch resolution'));
  * This ensures the custom control overlay stays visible in fullscreen mode.
  */
 const handleBizFullscreen = async () => {
+  if (fullscreenDisabled.value) {
+    TUIToast.warning({ message: t('LiveView.NotAllowFullscreenInPIP') });
+    return;
+  }
   const el = bizVideoCardRef.value;
   if (!el) return;
   if (bizIsFullscreen.value) {
@@ -555,8 +635,13 @@ const toggleResolutionPopup = () => {
 
 /**
  * Select a resolution option via SDK API and close popup.
+ * If currently in picture-in-picture mode, exit PiP first because
+ * switching resolution while in PiP is not supported.
  */
-const selectResolution = (opt: { label: string; value: number }) => {
+const selectResolution = async (opt: { label: string; value: number }) => {
+  if (isPictureInPicture.value) {
+    await sdkExitPiP();
+  }
   sdkSwitchResolution(opt);
   resolutionPopupVisible.value = false;
 };
@@ -572,17 +657,10 @@ const handleResolutionOutsideClick = (e: MouseEvent) => {
 };
 
 const { currentLive, joinLive, leaveLive, subscribeEvent, unsubscribeEvent } = useLiveListState();
-const isInLive = computed(() => !!currentLive.value?.liveId);
 const roomEngine = useRoomEngine();
-let autoPlayListenerBound = false;
-
-function bindAutoPlayFailedListener() {
-  if (!roomEngine.instance || autoPlayListenerBound) {
-    return;
-  }
-  roomEngine.instance.on(TUIRoomEvents.onAutoPlayFailed, handleAutoPlayFailed);
-  autoPlayListenerBound = true;
-}
+TUIRoomEngine.once('ready', () => {
+  roomEngine.instance?.on(TUIRoomEvents.onAutoPlayFailed, handleAutoPlayFailed);
+});
 
 const props = defineProps<{
   liveId: string;
@@ -592,6 +670,7 @@ const {
   handleApplyForSeat,
   isUserOnSeat,
   confirmLeaveSeat,
+  openLeaveSeatDialog,
   connectionTypeDialogVisible,
   deviceSelectionDialogVisible,
   cancelApplicationDialogVisible,
@@ -613,22 +692,24 @@ const {
   unsubscribeEvents,
 } = useSeatApplication();
 
-const exitDialogContent = computed(() => (isUserOnSeat.value
-  ? t('LiveExitConfirmCoGuestTip')
-  : t('Currently connected, do you need to "exit connection" or "end live broadcast"')));
-
 const liveContainerRef = ref<HTMLElement | null>(null);
 const bizVideoCardRef = ref<HTMLElement | null>(null);
 const liveEndedOverlayVisible = ref(false);
-const exitLiveDialogVisible = ref(false);
 const autoPlayFailedHandled = ref(false);
 const autoPlayPromptVisible = ref(false);
 const isManualRefreshing = ref(false);
+const isManualRefreshRequesting = ref(false);
+const manualRefreshCycle = ref(0);
 const readyEmitted = ref(false);
 let videoReadyProbeTimer: ReturnType<typeof setInterval> | null = null;
 let observedVideoEl: HTMLVideoElement | null = null;
 let autoPlayResumeAction: (() => void) | null = null;
 let manualRefreshTimeoutTimer: ReturnType<typeof setTimeout> | null = null;
+let refreshRecoveryTimer: ReturnType<typeof setTimeout> | null = null;
+let manualRefreshPendingFrame = false;
+let manualRefreshStartMediaTime = -1;
+let manualRefreshPlaybackSignal = false;
+let manualRefreshFrameCallbackId: number | null = null;
 
 /**
  * Safety timeout (ms) after joinLive succeeds.  If the video never becomes
@@ -652,13 +733,12 @@ function startReadySafetyTimer() {
     if (!readyEmitted.value) {
       emitReadyOnce();
       finishManualRefreshing();
-      showAutoPlayPrompt(() => sdkResume());
     }
   }, READY_SAFETY_TIMEOUT_MS);
 }
 
 function showAutoPlayPrompt(resumeAction: () => void) {
-  if (autoPlayFailedHandled.value) return;
+  if (autoPlayFailedHandled.value || liveEndedOverlayVisible.value) return;
   autoPlayFailedHandled.value = true;
   autoPlayResumeAction = resumeAction;
   autoPlayPromptVisible.value = true;
@@ -670,6 +750,7 @@ function handleAutoPlayPromptConfirm() {
   autoPlayPromptVisible.value = false;
   autoPlayFailedHandled.value = false;
   finishManualRefreshing();
+  startVideoReadyProbe();
   resume?.();
 }
 
@@ -680,20 +761,114 @@ function clearManualRefreshTimer() {
   }
 }
 
+function clearManualRefreshFrameCallback() {
+  if (!observedVideoEl || manualRefreshFrameCallbackId === null || typeof observedVideoEl.cancelVideoFrameCallback !== 'function') {
+    manualRefreshFrameCallbackId = null;
+    return;
+  }
+  observedVideoEl.cancelVideoFrameCallback(manualRefreshFrameCallbackId);
+  manualRefreshFrameCallbackId = null;
+}
+
+function queueManualRefreshFrameCallback(videoEl: HTMLVideoElement) {
+  if (!manualRefreshPendingFrame || typeof videoEl.requestVideoFrameCallback !== 'function' || manualRefreshFrameCallbackId !== null) {
+    return;
+  }
+  const currentVideo = videoEl;
+  manualRefreshFrameCallbackId = videoEl.requestVideoFrameCallback(() => {
+    manualRefreshFrameCallbackId = null;
+    if (!manualRefreshPendingFrame || observedVideoEl !== currentVideo) {
+      return;
+    }
+    manualRefreshPlaybackSignal = true;
+    if (isManualRefreshing.value && hasManualRefreshRendered(currentVideo)) {
+      finishManualRefreshing();
+    }
+  });
+}
+
+function markManualRefreshPending() {
+  manualRefreshPendingFrame = true;
+  manualRefreshStartMediaTime = observedVideoEl?.currentTime ?? -1;
+  manualRefreshPlaybackSignal = false;
+  clearManualRefreshFrameCallback();
+  if (observedVideoEl) {
+    queueManualRefreshFrameCallback(observedVideoEl);
+  }
+}
+
+function hasManualRefreshRendered(videoEl: HTMLVideoElement): boolean {
+  if (!manualRefreshPendingFrame) {
+    return true;
+  }
+  if (!isVideoReady(videoEl) || videoEl.paused || videoEl.ended) {
+    return false;
+  }
+  if (manualRefreshPlaybackSignal) {
+    return true;
+  }
+  if (manualRefreshStartMediaTime < 0) {
+    return videoEl.currentTime > 0;
+  }
+  return videoEl.currentTime > manualRefreshStartMediaTime + 0.01;
+}
+
+const REFRESH_RECOVERY_POLL_MS = 180;
+
+function clearRefreshRecoveryTimer() {
+  if (refreshRecoveryTimer) {
+    clearTimeout(refreshRecoveryTimer);
+    refreshRecoveryTimer = null;
+  }
+}
+
+function startRefreshRecoveryTimer() {
+  clearRefreshRecoveryTimer();
+  refreshRecoveryTimer = setTimeout(() => {
+    if (liveEndedOverlayVisible.value) {
+      finishManualRefreshing();
+      return;
+    }
+    const videoReady = observedVideoEl ? isVideoReady(observedVideoEl) : false;
+    const freshFrameRendered = observedVideoEl ? hasManualRefreshRendered(observedVideoEl) : false;
+
+    // Keep loading visible until this refresh really renders a new frame.
+    // The 12s manualRefreshTimeoutTimer remains the final fallback to avoid
+    // an infinite loading state if the stream never recovers.
+    if (!videoReady || !freshFrameRendered) {
+      startRefreshRecoveryTimer();
+      return;
+    }
+
+    finishManualRefreshing();
+  }, REFRESH_RECOVERY_POLL_MS);
+}
+
 function finishManualRefreshing() {
   isManualRefreshing.value = false;
+  manualRefreshPendingFrame = false;
+  manualRefreshStartMediaTime = -1;
+  manualRefreshPlaybackSignal = false;
+  clearManualRefreshFrameCallback();
   clearManualRefreshTimer();
+  clearRefreshRecoveryTimer();
 }
 
 // Hover show/hide for control overlay
 const showBizControls = ref(false);
+const isControlOverlayHovered = ref(false);
 let bizControlsHideTimer: ReturnType<typeof setTimeout> | null = null;
+const CONTROLS_HIDE_DELAY_MS = 3000;
 
-const startBizControlsHideTimer = () => {
+const startBizControlsHideTimer = (delay = CONTROLS_HIDE_DELAY_MS) => {
   cancelBizControlsHideTimer();
   bizControlsHideTimer = setTimeout(() => {
+    if (isControlOverlayHovered.value || isVolumeAreaHovered.value || isVolumeInteracting.value) {
+      startBizControlsHideTimer(CONTROLS_HIDE_DELAY_MS);
+      return;
+    }
     showBizControls.value = false;
-  }, 2000);
+  }, delay);
 };
 
 const cancelBizControlsHideTimer = () => {
@@ -701,6 +876,37 @@ const cancelBizControlsHideTimer = () => {
     clearTimeout(bizControlsHideTimer);
     bizControlsHideTimer = null;
   }
+};
+
+const handleBizVideoMouseEnter = () => {
+  showBizControls.value = true;
+  startBizControlsHideTimer(CONTROLS_HIDE_DELAY_MS);
+};
+
+const handleBizVideoMouseMove = () => {
+  showBizControls.value = true;
+  startBizControlsHideTimer(CONTROLS_HIDE_DELAY_MS);
+};
+
+const handleBizVideoMouseLeave = () => {
+  startBizControlsHideTimer(CONTROLS_HIDE_DELAY_MS);
+};
+
+const handleControlOverlayEnter = () => {
+  isControlOverlayHovered.value = true;
+  showBizControls.value = true;
+  cancelBizControlsHideTimer();
+};
+
+const handleControlOverlayMove = () => {
+  isControlOverlayHovered.value = true;
+  showBizControls.value = true;
+  cancelBizControlsHideTimer();
+};
+
+const handleControlOverlayLeave = () => {
+  isControlOverlayHovered.value = false;
+  startBizControlsHideTimer(CONTROLS_HIDE_DELAY_MS);
 };
 
 const displayHostName = computed(() => currentLive.value?.liveOwner.userName || currentLive.value?.liveOwner.userId || 'Speaker');
@@ -723,9 +929,23 @@ function isVideoReady(videoEl: HTMLVideoElement): boolean {
   return videoEl.readyState >= 3 && videoEl.videoWidth > 0 && videoEl.videoHeight > 0;
 }
 
-function tryEmitReadyFromVideo() {
+function clearAutoPlayPromptState() {
+  autoPlayPromptVisible.value = false;
+  autoPlayResumeAction = null;
+  autoPlayFailedHandled.value = false;
+}
+
+function tryEmitReadyFromVideo(event?: Event) {
+  const eventType = event?.type;
   if (observedVideoEl && isVideoReady(observedVideoEl)) {
-    finishManualRefreshing();
+    if (eventType === 'play' || eventType === 'playing' || eventType === 'timeupdate') {
+      manualRefreshPlaybackSignal = true;
+    } else {
+      queueManualRefreshFrameCallback(observedVideoEl);
+    }
+    if (isManualRefreshing.value && hasManualRefreshRendered(observedVideoEl)) {
+      finishManualRefreshing();
+    }
     emitReadyOnce();
   }
 }
@@ -737,14 +957,19 @@ function bindVideoReadyListeners(videoEl: HTMLVideoElement) {
   videoEl.addEventListener('loadeddata', tryEmitReadyFromVideo);
   videoEl.addEventListener('canplay', tryEmitReadyFromVideo);
   videoEl.addEventListener('playing', tryEmitReadyFromVideo);
+  videoEl.addEventListener('play', tryEmitReadyFromVideo);
+  videoEl.addEventListener('timeupdate', tryEmitReadyFromVideo);
   tryEmitReadyFromVideo();
 }
 
 function unbindVideoReadyListeners() {
   if (!observedVideoEl) return;
+  clearManualRefreshFrameCallback();
   observedVideoEl.removeEventListener('loadeddata', tryEmitReadyFromVideo);
   observedVideoEl.removeEventListener('canplay', tryEmitReadyFromVideo);
   observedVideoEl.removeEventListener('playing', tryEmitReadyFromVideo);
+  observedVideoEl.removeEventListener('play', tryEmitReadyFromVideo);
+  observedVideoEl.removeEventListener('timeupdate', tryEmitReadyFromVideo);
   observedVideoEl = null;
 }
 
@@ -791,12 +1016,14 @@ watch(deviceSelectionDialogVisible, (val) => {
   }
 });
 
+watch(isUserOnSeat, (onSeat) => {
+  if (!onSeat) return;
+  if (!sidePanelCollapsed.value) return;
+  sidePanelCollapsed.value = false;
+});
+
 onMounted(async () => {
   startVideoReadyProbe();
-  bindAutoPlayFailedListener();
-  if (!autoPlayListenerBound) {
-    TUIRoomEngine.once('ready', bindAutoPlayFailedListener);
-  }
   subscribeEvent(LiveListEvent.onLiveEnded, handleLiveEnded);
   subscribeEvent(LiveListEvent.onKickedOutOfLive, handleKickedOutOfLive);
   subscribeEvents();
@@ -824,14 +1051,12 @@ onUnmounted(async () => {
   if (currentLive.value?.liveId) {
     await leaveLive();
   }
-  if (autoPlayListenerBound) {
-    roomEngine.instance?.off(TUIRoomEvents.onAutoPlayFailed, handleAutoPlayFailed);
-    autoPlayListenerBound = false;
-  }
+  roomEngine.instance?.off(TUIRoomEvents.onAutoPlayFailed, handleAutoPlayFailed);
   cancelBizControlsHideTimer();
   cancelVolumeHideTimer();
   clearReadySafetyTimer();
   clearManualRefreshTimer();
+  clearRefreshRecoveryTimer();
   if (videoReadyProbeTimer) {
     clearInterval(videoReadyProbeTimer);
     videoReadyProbeTimer = null;
@@ -852,6 +1077,8 @@ function handleCopyLink() {
     });
 }
 
+const exitLiveDialogVisible = ref(false);
+
 function handleLeaveLive() {
   if (isUserOnSeat.value) {
     exitLiveDialogVisible.value = true;
@@ -865,7 +1092,7 @@ function handleExitLive() {
   emit('leaveLive');
 }
 
-async function handleEndCoGuest() {
+async function handleEndCoGuestAndStay() {
   exitLiveDialogVisible.value = false;
   try {
     await confirmLeaveSeat();
@@ -879,6 +1106,10 @@ async function handleEndCoGuest() {
 
 function handleCancelExit() {
   exitLiveDialogVisible.value = false;
+}
+
+function handleDisconnectCoGuest() {
+  openLeaveSeatDialog();
 }
 
 function showErrorAndLeave(content: string) {
@@ -919,8 +1150,9 @@ async function handleJoinLive(): Promise<boolean> {
 }
 
 function handleAutoPlayFailed(event: TUIAutoPlayCallbackInfo) {
-  // Autoplay failed means media is already ready, only blocked by browser policy.
-  // Emit ready to avoid page-level loading getting stuck.
+  if (autoPlayFailedHandled.value) {
+    return;
+  }
   emitReadyOnce();
   finishManualRefreshing();
   showAutoPlayPrompt(() => event.resume());
@@ -928,17 +1160,33 @@ function handleAutoPlayFailed(event: TUIAutoPlayCallbackInfo) {
 
 watch(isPlaying, (playing) => {
   if (playing) {
-    finishManualRefreshing();
+    startVideoReadyProbe();
     emitReadyOnce();
-    autoPlayPromptVisible.value = false;
-    autoPlayResumeAction = null;
-    autoPlayFailedHandled.value = false;
+    if (isManualRefreshing.value && observedVideoEl && hasManualRefreshRendered(observedVideoEl)) {
+      finishManualRefreshing();
+    }
   }
 }, { immediate: true });
+
+watch(bizIsFullscreen, () => {
+  showBizControls.value = true;
+  cancelBizControlsHideTimer();
+  startBizControlsHideTimer(CONTROLS_HIDE_DELAY_MS);
+});
+
+watch(isUserOnSeat, (onSeat) => {
+  if (!onSeat) {
+    showBizControls.value = true;
+    startBizControlsHideTimer(CONTROLS_HIDE_DELAY_MS);
+  }
+});
 </script>
 
 <style lang="scss" scoped>
 .live-player-business-pc {
+  --biz-stage-edge-spacing: var(--preset-stage-edge-spacing, 16px);
+  --biz-stage-edge-spacing-mobile: var(--preset-stage-edge-spacing-mobile, 12px);
+
   display: flex;
   width: 100%;
   height: 100%;
@@ -953,17 +1201,229 @@ watch(isPlaying, (playing) => {
   flex: 1;
   min-height: 0;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px var(--biz-stage-edge-spacing) 10px;
+  box-sizing: border-box;
+  background: var(--preset-bg-base);
+}
+
+.biz-stage-topbar {
+  position: relative;
+  height: 54px;
+  flex-shrink: 0;
+  overflow: visible;
+  opacity: 1;
+}
+
+.biz-video-top-gradient {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    var(--preset-top-overlay-gradient-start) 0%,
+    var(--preset-top-overlay-gradient-mid) 58%,
+    var(--preset-top-overlay-gradient-end) 100%
+  );
+}
+
+.biz-video-top-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.biz-stage-topbar {
+  .stream-top-unified {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 6px 0;
+    pointer-events: auto;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+
+  .stream-meta-glass,
+  .stream-actions-glass {
+    pointer-events: auto;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+
+  .stream-meta-glass {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0;
+    min-width: 0;
+    flex: 1;
+    max-width: min(620px, 80%);
+  }
+
+  .stream-host-avatar-img {
+    border-radius: 999px;
+    overflow: hidden;
+    box-shadow: var(--preset-top-overlay-avatar-shadow);
+  }
+
+  .stream-ended-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  .stream-meta-text {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .stream-title-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  .stream-live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--preset-live-indicator-text);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .stream-live-badge-dot {
+    position: relative;
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: var(--preset-live-indicator-dot);
+    box-shadow: 0 0 10px var(--preset-live-indicator-dot-glow);
+    animation: biz-live-pulse 1.5s ease-in-out infinite;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 999px;
+      border: 1px solid var(--preset-live-indicator-ring);
+      animation: biz-live-ring-pulse 2.4s ease-in-out infinite;
+    }
+  }
+
+  .stream-title {
+    color: var(--preset-top-overlay-text-color);
+    text-shadow: var(--preset-top-overlay-text-shadow);
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    letter-spacing: 0.01em;
+  }
+
+  .stream-actions-glass {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0;
+    flex-shrink: 0;
+    border-radius: 14px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid color-mix(in srgb, var(--preset-top-action-icon-color) 10%, transparent);
+  }
+
+  .biz-segment-btn {
+    min-width: 112px;
+    height: 40px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 0;
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--preset-top-action-icon-color);
+    background: transparent;
+    cursor: pointer;
+    transition: background-color 180ms ease, color 180ms ease;
+
+    &:hover {
+      background: color-mix(in srgb, var(--preset-top-action-icon-hover-bg) 72%, transparent);
+      color: var(--preset-top-action-icon-hover-color);
+    }
+
+    &:active {
+      background: color-mix(in srgb, var(--preset-top-action-icon-hover-bg) 88%, transparent);
+    }
+  }
+
+  .biz-segment-btn-copy {
+    background: rgba(255, 255, 255, 0.1);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .biz-segment-btn-disconnect {
+    background: rgba(255, 255, 255, 0.08);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .biz-segment-btn-leave {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--preset-top-action-leave-icon-color);
+
+    &:hover,
+    &:active {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--preset-top-action-leave-icon-color);
+    }
+  }
+
+  .biz-segment-label {
+    font-size: 14px;
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
 }
 
 .biz-video-card {
   width: 100%;
-  height: 100%;
+  flex: 1;
   min-height: 0;
   position: relative;
-  border-radius: 0;
+  border-radius: 14px;
   overflow: hidden;
   background: var(--preset-video-bg);
-  border-right: 1px solid var(--preset-stage-divider, rgba(255, 255, 255, 0.08));
+  border: 1px solid var(--preset-stage-divider, rgba(255, 255, 255, 0.08));
 
   :deep(> *:first-child) {
     position: absolute !important;
@@ -1000,40 +1460,6 @@ watch(isPlaying, (playing) => {
     z-index: -1 !important;
   }
 
-  .biz-video-top-gradient {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 140px;
-    z-index: 42;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.28s ease;
-    background: linear-gradient(
-      180deg,
-      var(--preset-video-top-gradient-start, rgba(2, 6, 23, 0.85)) 0%,
-      var(--preset-video-top-gradient-mid, rgba(2, 6, 23, 0.15)) 58%,
-      var(--preset-video-top-gradient-end, rgba(2, 6, 23, 0)) 100%
-    );
-  }
-
-  .biz-video-top-overlay {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    right: 20px;
-    z-index: 44;
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 16px;
-    pointer-events: none;
-    opacity: 0;
-    transform: translateY(-6px);
-    transition: opacity 0.28s ease, transform 0.28s ease;
-  }
-
   .stream-top-unified {
     width: 100%;
     margin-left: 0;
@@ -1041,13 +1467,13 @@ watch(isPlaying, (playing) => {
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 7px;
-    border-radius: 18px;
+    padding: 4px 0;
+    border-radius: 0;
     pointer-events: auto;
-    background: var(--preset-stream-glass-bg, rgba(9, 17, 35, 0.62));
-    border: 1px solid var(--preset-glass-border);
-    backdrop-filter: blur(10px);
-    box-shadow: var(--preset-glass-shadow);
+    background: transparent;
+    border: 0;
+    backdrop-filter: none;
+    box-shadow: none;
   }
 
   .stream-meta-glass,
@@ -1062,47 +1488,63 @@ watch(isPlaying, (playing) => {
   .stream-meta-glass {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 2px 6px 2px 4px;
-    border-radius: 14px;
+    gap: 12px;
+    padding: 0;
+    border-radius: 0;
     min-width: 0;
     flex: 1;
-    max-width: min(620px, 72%);
+    max-width: min(620px, 80%);
   }
 
   .stream-host-avatar {
     position: relative;
     flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .stream-host-avatar-img {
     border-radius: 999px;
     overflow: hidden;
+    box-shadow: var(--preset-top-overlay-avatar-shadow);
+  }
+
+  .stream-ended-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: rgba(255, 255, 255, 0.55);
   }
 
   .stream-meta-text {
     min-width: 0;
     display: flex;
-    flex-direction: column;
-    gap: 4px;
+    align-items: center;
+    justify-content: flex-start;
   }
 
   .stream-title-row {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     min-width: 0;
   }
 
   .stream-live-badge {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    padding: 2px 9px;
-    border-radius: 999px;
-    background: var(--preset-live-badge-bg, rgba(22, 163, 74, 0.28));
-    border: 1px solid var(--preset-live-badge-border, rgba(74, 222, 128, 0.52));
-    color: var(--preset-live-badge-text, #dcfce7);
+    gap: 6px;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    border: 0;
+    color: var(--preset-live-indicator-text);
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.1em;
@@ -1110,16 +1552,28 @@ watch(isPlaying, (playing) => {
   }
 
   .stream-live-badge-dot {
-    width: 6px;
-    height: 6px;
+    position: relative;
+    width: 7px;
+    height: 7px;
     border-radius: 999px;
-    background: var(--preset-live-badge-dot, #86efac);
-    box-shadow: 0 0 8px var(--preset-live-badge-dot-shadow, rgba(134, 239, 172, 0.65));
+    background: var(--preset-live-indicator-dot);
+    box-shadow: 0 0 10px var(--preset-live-indicator-dot-glow);
+    animation: biz-live-pulse 1.5s ease-in-out infinite;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 999px;
+      border: 1px solid var(--preset-live-indicator-ring);
+      animation: biz-live-ring-pulse 2.4s ease-in-out infinite;
+    }
   }
 
   .stream-title {
-    color: var(--preset-stream-title, #ffffff);
-    font-size: 15px;
+    color: var(--preset-top-overlay-text-color);
+    text-shadow: var(--preset-top-overlay-text-shadow);
+    font-size: 14px;
     font-weight: 700;
     white-space: nowrap;
     overflow: hidden;
@@ -1128,98 +1582,51 @@ watch(isPlaying, (playing) => {
     letter-spacing: 0.01em;
   }
 
-  .stream-subtitle {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: var(--preset-stream-subtitle, rgba(226, 232, 240, 0.86));
-    font-size: 12px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-  }
-
-  .stream-subtitle-host {
-    color: var(--preset-stream-subtitle-host, #cbd5e1);
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .stream-subtitle-sep {
-    color: var(--preset-stream-subtitle-sep, rgba(148, 163, 184, 0.7));
-    flex-shrink: 0;
-  }
-
-  .stream-subtitle-room {
-    color: var(--preset-stream-subtitle-room, rgba(148, 163, 184, 0.88));
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
   .stream-actions-glass {
     display: flex;
     align-items: center;
-    gap: 0;
-    border-radius: 14px;
+    justify-content: center;
+    gap: 12px;
+    border-radius: 0;
     padding: 0;
-    border-left: 1px solid var(--preset-stage-divider, rgba(255, 255, 255, 0.08));
+    border-left: 0;
     flex-shrink: 0;
   }
 
-  .top-action-segmented {
-    height: 38px;
-    border-radius: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(20, 24, 33, 0.88);
-    box-shadow: 0 10px 24px rgba(2, 6, 23, 0.3);
-    overflow: hidden;
-    margin-left: 8px;
-  }
-
-  .top-seg-btn {
+  .top-action-btn {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
     justify-content: center;
-    height: 100%;
-    min-width: 124px;
+    width: 42px;
+    height: 42px;
     border: 0;
-    border-right: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 0 16px;
-    font-size: 14px;
-    font-weight: 700;
-    color: #ffffff;
-    background: transparent;
+    border-radius: 999px;
+    padding: 0;
+    color: var(--preset-top-action-icon-color);
+    background: var(--preset-top-action-icon-bg);
     cursor: pointer;
-    transition: background 180ms ease, color 180ms ease;
-
-    &:last-child {
-      border-right: 0;
-    }
+    transition: transform 180ms ease, background-color 180ms ease, color 180ms ease;
 
     &:hover {
-      color: #ffffff;
-      background: rgba(255, 255, 255, 0.05);
+      color: var(--preset-top-action-icon-hover-color);
+      background: var(--preset-top-action-icon-hover-bg);
+      transform: scale(1.04);
+    }
+
+    &:active {
+      transform: scale(0.96);
     }
 
     svg {
-      opacity: 0.95;
-    }
-
-    span {
-      line-height: 1;
+      opacity: 1;
+      width: 20px;
+      height: 20px;
     }
   }
 
-  .top-seg-btn-primary {
-    color: #ffffff;
-    background: rgba(255, 255, 255, 0.12);
-
-    &:hover {
-      color: #ffffff;
-      background: rgba(255, 255, 255, 0.18);
-    }
+  .top-action-btn-leave {
+    color: var(--preset-top-action-leave-icon-color);
+    background: var(--preset-top-action-leave-icon-bg);
   }
 
   .biz-control-overlay {
@@ -1234,7 +1641,7 @@ watch(isPlaying, (playing) => {
     transition: opacity 0.3s ease, transform 0.3s ease;
   }
 
-  &.controls-visible .biz-control-overlay {
+  &.controls-visible-bottom .biz-control-overlay {
     opacity: 1;
     transform: translateY(0);
     z-index: 40;
@@ -1244,22 +1651,41 @@ watch(isPlaying, (playing) => {
     }
   }
 
-  &.controls-visible {
-    .biz-video-top-gradient {
+  @keyframes biz-live-pulse {
+    0% {
+      transform: scale(0.9);
+      opacity: 0.78;
+    }
+    50% {
+      transform: scale(1);
       opacity: 1;
     }
+    100% {
+      transform: scale(0.9);
+      opacity: 0.78;
+    }
+  }
 
-    .biz-video-top-overlay {
-      opacity: 1;
-      transform: translateY(0);
+  @keyframes biz-live-ring-pulse {
+    0% {
+      opacity: 0.85;
+      transform: scale(0.92);
+    }
+    50% {
+      opacity: 0.45;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0.85;
+      transform: scale(0.92);
     }
   }
 
   .biz-progress-bar {
     position: absolute;
     bottom: 76px;
-    left: 16px;
-    right: 16px;
+    left: var(--biz-stage-edge-spacing);
+    right: var(--biz-stage-edge-spacing);
     z-index: 14;
     padding: 6px 0;
     cursor: pointer;
@@ -1310,7 +1736,7 @@ watch(isPlaying, (playing) => {
     align-items: center;
     justify-content: space-between;
     height: 62px;
-    padding: 0 16px 20px;
+    padding: 0 var(--biz-stage-edge-spacing) 20px;
     box-sizing: border-box;
   }
 
@@ -1361,20 +1787,25 @@ watch(isPlaying, (playing) => {
     &:active {
       transform: scale(0.92);
     }
+
+    &.disabled {
+      opacity: 0.46;
+      cursor: not-allowed;
+
+      &:hover {
+        background: transparent;
+      }
+
+      &:active {
+        transform: none;
+      }
+    }
   }
 
   .biz-refresh-btn {
-    &:disabled {
+    &.disabled {
       opacity: 0.45;
       cursor: not-allowed;
-    }
-
-    svg {
-      fill: none !important;
-      stroke: currentColor;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
     }
   }
 
@@ -1416,6 +1847,22 @@ watch(isPlaying, (playing) => {
     }
   }
 
+  .biz-top-action-wrap {
+    .biz-btn-tooltip {
+      top: calc(100% + 8px);
+      bottom: auto;
+      transform: translateX(-50%) translateY(-4px);
+    }
+
+    &:hover .biz-btn-tooltip {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    &.tooltip-hidden .biz-btn-tooltip {
+      transform: translateX(-50%) translateY(-4px) !important;
+    }
+  }
+
   .biz-resolution-btn {
     width: auto;
     min-width: 46px;
@@ -1433,15 +1880,20 @@ watch(isPlaying, (playing) => {
 
   .biz-cinema-btn {
     &.active {
-      background: var(--preset-control-btn-hover-bg, rgba(255, 255, 255, 0.14));
+      background: var(--preset-control-btn-hover-bg, rgba(255, 255, 255, 0.1));
+      box-shadow: none;
+    }
+
+    &.active:hover {
+      background: var(--preset-control-btn-hover-bg, rgba(255, 255, 255, 0.1));
     }
 
     .biz-cinema-icon {
-      width: 27px;
-      height: 27px;
+      width: 24px;
+      height: 24px;
       fill: none !important;
       stroke: var(--preset-control-btn-color, #ffffff);
-      stroke-width: 1.9;
+      stroke-width: 1.5;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
@@ -1637,16 +2089,19 @@ watch(isPlaying, (playing) => {
     }
 
     .live-ended-icon-wrapper {
-      width: 80px;
-      height: 80px;
+      width: auto;
+      height: auto;
       display: flex;
       align-items: center;
       justify-content: center;
       margin-bottom: 4px;
     }
 
-    .live-ended-svg {
-      color: var(--preset-live-ended-icon, rgba(255, 255, 255, 0.45));
+    .live-ended-icon-img {
+      width: 58px;
+      height: 60px;
+      opacity: 0.96;
+      filter: drop-shadow(0 6px 14px rgba(15, 23, 42, 0.55));
     }
 
     .live-ended-title {
@@ -1900,24 +2355,26 @@ watch(isPlaying, (playing) => {
 
   @media (max-width: 1080px) {
   .live-player-business-pc {
+    --biz-stage-edge-spacing: var(--biz-stage-edge-spacing-mobile);
     flex-direction: column;
   }
 
   .biz-video-card {
     border-right: 0;
-    border-bottom: 1px solid var(--preset-stage-divider, rgba(255, 255, 255, 0.08));
+    border-radius: 12px;
+  }
 
-    .biz-video-top-overlay {
-      left: 12px;
-      right: 12px;
-      top: 12px;
-    }
+  .biz-left-column {
+    padding: 8px var(--biz-stage-edge-spacing) 8px;
+  }
+
+  .biz-stage-topbar {
+    height: 50px;
 
     .stream-top-unified {
       width: 100%;
-      padding: 6px;
+      padding: 2px 0;
       gap: 8px;
-      border-radius: 14px;
     }
 
     .stream-meta-glass {
@@ -1926,11 +2383,7 @@ watch(isPlaying, (playing) => {
 
     .stream-actions-glass {
       gap: 6px;
-      padding-left: 8px;
-    }
-
-    .top-seg-btn span {
-      display: none;
+      padding-left: 4px;
     }
   }
 
@@ -1938,5 +2391,10 @@ watch(isPlaying, (playing) => {
     width: 100%;
   }
 
+}
+
+.exit-live-action-buttons {
+  display: flex;
+  gap: 10px;
 }
 </style>

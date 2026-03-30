@@ -31,4 +31,5 @@ export const resource = {
   'The number of members in this room has reached the limit': '当前房间人数已达到套餐上限，请前往<a target="_blank" href="https://buy.cloud.tencent.com/trtc">腾讯云控制台</a>购买或者升级套餐包。',
   'The number of rooms has reached the limit of the payment': '当前房间数量已达到套餐上限，请前往<a target="_blank" href="https://buy.cloud.tencent.com/trtc">腾讯云控制台</a>购买或者升级套餐包。',
   'Room is not existed.': '房间不存在，请检查房间ID。',
+  'Not allowed to refresh in picture-in-picture mode': '画中画模式下不允许刷新操作',
 };

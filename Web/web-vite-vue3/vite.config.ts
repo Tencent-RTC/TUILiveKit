@@ -9,6 +9,9 @@ const path = require('path');
 export default defineConfig({
   // Static Resource Base Path base: './' || '',
   base: process.env.NODE_ENV === 'production' ? './' : '/',
+  define: {
+    __STYLE_PRESET__: JSON.stringify(process.env.STYLE_PRESET || ''),
+  },
   // Allow Vue CLI-style env names so Web and Electron can share upload config naming.
   envPrefix: ['VITE_', 'VUE_APP_'],
   resolve: {

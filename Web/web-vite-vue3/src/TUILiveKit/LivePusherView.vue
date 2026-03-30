@@ -212,7 +212,7 @@ import OrientationSwitch from './component/OrientationSwitch.vue';
 import SettingButton from './component/SettingButton.vue';
 import SpeakerVolumeSetting from './component/SpeakerVolumeSetting.vue';
 import LivePusherNotification from './component/LivePusherNotification.vue';
-import { copyToClipboard } from './utils/utils';
+import { copyToClipboard, isSvgCoverUrl } from './utils/utils';
 import { errorHandler } from './utils/errorHandler';
 import { initRoomEngineLanguage } from '../utils/utils';
 
@@ -279,6 +279,12 @@ const handleLiveSettingConfirm = async (form: { liveName: string; coverUrl?: str
     liveName: form.liveName.trim(),
     coverUrl: (form.coverUrl || '').trim(),
   };
+  if (isSvgCoverUrl(updatedForm.coverUrl)) {
+    TUIToast.error({
+      message: t('Unsupported image format'),
+    });
+    return;
+  }
 
   if (!isInLive.value || !currentLive.value?.liveId) {
     liveParamsEditForm.value = updatedForm;

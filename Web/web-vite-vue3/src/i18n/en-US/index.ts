@@ -31,4 +31,5 @@ export const resource = {
   'The number of members in this room has reached the limit': 'The number of members in this room has reached the limit of the payment, please go to the <a target="_blank" href="https://console.trtc.io/subscription/buy/live">Tencent Cloud Console</a> to purchase or upgrade your plan.',
   'The number of rooms has reached the limit of the payment': 'The number of rooms has reached the limit of the payment, please go to the <a target="_blank" href="https://console.trtc.io/subscription/buy/live">Tencent Cloud Console</a> to purchase or upgrade your plan.',
   'Room is not existed.': 'Room is not existed, please check the room ID.',
+  'Not allowed to refresh in picture-in-picture mode': 'Not allowed to refresh in picture-in-picture mode',
 };

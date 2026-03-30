@@ -10,7 +10,6 @@ export const UPLOAD_ALLOWED_MIME_TYPES = [
   'image/png',
   'image/gif',
   'image/webp',
-  'image/svg+xml',
 ];
 
 const uploadHttp = axios.create({
@@ -51,8 +50,10 @@ export async function uploadImageFile(params: {
   type?: 'cover' | 'gift-icon' | 'gift-animation';
 }): Promise<UploadResponseData> {
   const formData = new FormData();
-  formData.append('file', params.file);
+  // Keep `type` before `file` so the server can resolve per-type MIME rules
+  // as early as possible during multipart parsing.
   formData.append('type', params.type || 'cover');
+  formData.append('file', params.file);
 
   const response = await uploadHttp.post('/api/upload/image', formData, {
     headers: {
