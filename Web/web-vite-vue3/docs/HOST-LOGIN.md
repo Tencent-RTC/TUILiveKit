@@ -11,7 +11,7 @@ This demo uses **client-side test UserSig** for convenience. Use **different use
 
 ## 2. Configure the demo
 
-Edit [`src/config/basic-info-config.js`](../src/config/basic-info-config.js):
+Edit `[src/config/basic-info-config.js](../src/config/basic-info-config.js)`:
 
 - Set `SDKAPPID` to your numeric SDKAppId.
 - Set `SDKSECRETKEY` to your secret key string.
@@ -31,12 +31,12 @@ The dev server opens the app in the browser (Vite `open: true`).
 
 ## 4. Log in as the host
 
-1. The app uses **hash routing**. If you are not on the login screen, open:  
-   `http://localhost:<port>/#/login`
+1. The app uses **hash routing**. If you are not on the login screen, open:
+  `http://localhost:<port>/#/login`
 2. Enter a **user ID** (host), for example `host_demo`. Use letters, numbers, and underscores; keep it reasonably short (follow Tencent IM userId rules for your app).
 3. Click **Login**.
 
-The demo stores credentials in **`sessionStorage`** under `tuiLive-userInfo` and navigates to `/#/live-list` (or the `from` route if you were redirected).
+The demo stores credentials in `**sessionStorage`** under `tuiLive-userInfo` and navigates to `/#/live-list` (or the `from` route if you were redirected).
 
 ## 5. Start a live (host)
 
@@ -56,11 +56,13 @@ If you use the business-style player (`STYLE_PRESET=business` / URL `stylePreset
 
 ## Troubleshooting
 
-| Issue | What to check |
-|--------|----------------|
-| Login button / toast asks to configure SDK | `SDKAPPID` is still `0` or `SDKSECRETKEY` is empty in `basic-info-config.js`. |
-| Login fails or TRTC errors | SDKAppId and secret key match the same app; TUILiveKit service activated; userId format. |
-| Stuck on login redirect | Clear site data for the origin or open a fresh incognito window; confirm `sessionStorage` is not blocked. |
-| Cannot start live | Browser permissions; another tab using the camera; network / TRTC region. |
+
+| Issue                                      | What to check                                                                                             |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| Login button / toast asks to configure SDK | `SDKAPPID` is still `0` or `SDKSECRETKEY` is empty in `basic-info-config.js`.                             |
+| Login fails or TRTC errors                 | SDKAppId and secret key match the same app; TUILiveKit service activated; userId format.                  |
+| Stuck on login redirect                    | Clear site data for the origin or open a fresh incognito window; confirm `sessionStorage` is not blocked. |
+| Cannot start live                          | Browser permissions; another tab using the camera; network / TRTC region.                                 |
+
 
 For official setup pictures and product links, see the main [README.md](../README.md).
