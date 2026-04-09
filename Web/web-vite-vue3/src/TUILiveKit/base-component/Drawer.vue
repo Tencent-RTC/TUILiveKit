@@ -66,7 +66,7 @@ const panelStyle = computed(() => {
       borderTopLeftRadius: '12px',
       borderTopRightRadius: '12px',
       position: 'fixed' as const,
-      background: '#22262E',
+      background: 'var(--s618-surface-1)',
       zIndex: props.zIndex + 1,
       transition: 'transform 0.3s cubic-bezier(.4,0,.2,1)',
       transform: props.visible ? 'translateY(0)' : 'translateY(100%)',
@@ -84,6 +84,7 @@ const panelStyle = computed(() => {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(6px);
   z-index: v-bind('props.zIndex');
   display: flex;
   align-items: flex-end;
@@ -96,7 +97,7 @@ const panelStyle = computed(() => {
   display: flex;
   flex-direction: column;
   padding: 0;
-  background-color: #22262e;
+  background-color: var(--s618-surface-1);
 }
 .drawer-header {
   display: flex;

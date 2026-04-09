@@ -173,9 +173,9 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   background:
-    radial-gradient(circle at 22% 18%, rgba(37, 99, 235, 0.22), transparent 46%),
-    radial-gradient(circle at 80% 84%, rgba(14, 165, 233, 0.18), transparent 42%),
-    rgba(6, 11, 22, 1);
+    radial-gradient(circle at 22% 18%, rgba(229, 28, 28, 0.22), transparent 46%),
+    radial-gradient(circle at 80% 84%, rgba(255, 255, 255, 0.10), transparent 44%),
+    rgba(10, 10, 10, 1);
   backdrop-filter: blur(8px);
 }
 

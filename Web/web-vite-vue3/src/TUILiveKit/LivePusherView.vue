@@ -575,7 +575,7 @@ const showEndLiveDialog = async () => {
       flex: 1;
       min-width: 0;
       min-height: 0;
-      color: #131417;
+      color: var(--s618-text-1);
     }
     .main-center-bottom {
       width: 100%;

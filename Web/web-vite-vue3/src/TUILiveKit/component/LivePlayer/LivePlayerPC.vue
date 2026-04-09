@@ -34,7 +34,6 @@
         </div>
       </div>
       <div class="main-left-bottom" :class="{ disabled: liveEndedOverlayVisible }">
-        <LiveGift />
         <SeatApplicationButton />
       </div>
     </div>
@@ -120,7 +119,6 @@ import {
   Avatar,
   useRoomEngine,
   LiveListEvent,
-  LiveGift,
   UIKitModal,
 } from 'tuikit-atomicx-vue3';
 import { errorHandler } from '../../utils/errorHandler';

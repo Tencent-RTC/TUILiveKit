@@ -176,7 +176,7 @@ const handleCoGuest = () => {
         padding-top: calc(100% * 9 / 16);
         overflow: hidden;
         border-radius: 8px;
-        background: #222;
+        background: var(--s618-surface-2);
       }
     }
   }

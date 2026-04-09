@@ -36,7 +36,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   size: 36,
-  color: '#FF3B30',
+  color: '#E51C1C',
   showShadow: true,
 });
 

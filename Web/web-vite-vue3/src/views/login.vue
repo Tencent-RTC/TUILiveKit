@@ -38,9 +38,10 @@ const handleLogin = (userInfo: {
   align-items: center;
   width: 100%;
   height: 100%;
-  background: url('../assets/login-back.png') no-repeat center center;
-  background-color: black;
-  background-size: cover;
+  background:
+    radial-gradient(circle at 22% 18%, rgba(229, 28, 28, 0.22), transparent 46%),
+    radial-gradient(circle at 78% 86%, rgba(255, 255, 255, 0.10), transparent 44%),
+    var(--s618-bg, #0a0a0a);
 
   @media screen and (orientation: portrait), (orientation: landscape) {
     :deep(.phone-prefix) {

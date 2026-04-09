@@ -99,7 +99,12 @@ VUE_APP_UPLOAD_SERVER_BASE_URL=https://your-upload-domain npm run build
    ```bash
    npm run build
    ```
+   If the build appears to pause after `modules transformed`, see [docs/VITE-BUILD.md](docs/VITE-BUILD.md). For a faster **modern-browsers-only** bundle (skips IE 11 legacy pass): `npm run build:modern`.
 2. Deploy the dist file to your server.
+
+## Host login (go live)
+
+Step-by-step host login and **Start live**: [docs/HOST-LOGIN.md](docs/HOST-LOGIN.md).
 
 ## About more
 - [Client APIs](https://trtc.io/document/64181?platform=ios&product=live)

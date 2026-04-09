@@ -25,8 +25,6 @@ class StorageProvider {
       : crypto.randomBytes(16).toString('hex');
     const dirMap = {
       cover: 'covers',
-      'gift-icon': 'gifts/icons',
-      'gift-animation': 'gifts/animations',
     };
     const subDir = dirMap[type] || 'uploads';
     const normalizedPrefix = pathPrefix ? `${pathPrefix.replace(/\/+$/, '')}/` : '';

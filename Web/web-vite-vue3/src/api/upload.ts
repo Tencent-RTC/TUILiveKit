@@ -47,7 +47,7 @@ export async function fetchUploadConfig(): Promise<UploadConfig> {
 
 export async function uploadImageFile(params: {
   file: File;
-  type?: 'cover' | 'gift-icon' | 'gift-animation';
+  type?: 'cover';
 }): Promise<UploadResponseData> {
   const formData = new FormData();
   // Keep `type` before `file` so the server can resolve per-type MIME rules

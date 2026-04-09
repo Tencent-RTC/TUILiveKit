@@ -9,6 +9,33 @@ body,
   user-select: none;
 }
 
+:root {
+  --s618-bg: #0a0a0a;
+  --s618-surface-1: #141414;
+  --s618-surface-2: #1a1a1a;
+  --s618-stroke: #2a2a2a;
+  --s618-stroke-2: #333333;
+  --s618-red: #e51c1c;
+  --s618-red-hover: #cc1818;
+  --s618-text-1: rgba(255, 255, 255, 0.92);
+  --s618-text-2: rgba(255, 255, 255, 0.68);
+  --s618-text-3: rgba(255, 255, 255, 0.45);
+
+  /* UIKit/Base token overrides (best-effort) */
+  --text-color-primary: var(--s618-text-1);
+  --text-color-secondary: var(--s618-text-2);
+  --text-color-tertiary: var(--s618-text-3);
+  --text-color-link: var(--s618-red);
+  --stroke-color-primary: var(--s618-stroke);
+  --bg-color-operate: var(--s618-surface-1);
+  --bg-color-topbar: var(--s618-surface-1);
+
+  /* uikit palette hooks used throughout the demo */
+  --uikit-color-black-6: rgba(0, 0, 0, 0.55);
+  --uikit-color-white-7: rgba(255, 255, 255, 0.35);
+  --uikit-color-gray-3: rgba(255, 255, 255, 0.22);
+}
+
 .app-root {
   width: 100%;
   height: 100%;

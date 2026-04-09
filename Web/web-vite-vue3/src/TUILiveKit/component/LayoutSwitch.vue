@@ -308,7 +308,7 @@ function handleCancel() {
       box-sizing: border-box;
       padding: 12px 13px;
       width: 208px;
-      background: #3a3a3a;
+      background: var(--s618-surface-2);
       border: 2px solid transparent;
       border-radius: 12px;
       cursor: pointer;
@@ -316,13 +316,13 @@ function handleCancel() {
       text-align: center;
 
       &:hover {
-        background: #4a4a4a;
-        border-color: #5a5a5a;
+        background: rgba(255, 255, 255, 0.08);
+        border-color: var(--s618-stroke-2);
       }
 
       &.active {
-        border: 2px solid var(--text-color-link-hover, #2B6AD6);
-        background: var(--list-color-focused, #243047);
+        border: 2px solid var(--s618-red);
+        background: rgba(229, 28, 28, 0.12);
 
         .option-info h4 {
           color: #ffffff;

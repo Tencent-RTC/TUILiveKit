@@ -5,6 +5,9 @@ import legacy from '@vitejs/plugin-legacy';
 
 const path = require('path');
 
+/** Set SKIP_LEGACY=1 to skip @vitejs/plugin-legacy (IE11 bundle). Legacy runs a second Rollup pass + minify and can take a long time on large deps (e.g. players with eval). */
+const enableLegacy = process.env.SKIP_LEGACY !== '1' && process.env.SKIP_LEGACY !== 'true';
+
 // https://vitejs.dev/config/
 export default defineConfig({
   // Static Resource Base Path base: './' || '',
@@ -40,10 +43,14 @@ export default defineConfig({
     visualizer({
       // open: true,
     }),
-    legacy({
-      targets: ['ie >= 11'], // Specify the browser targets here
-      additionalLegacyPolyfills: ['regenerator-runtime/runtime'], // Optional polyfills
-    }),
+    ...(enableLegacy
+      ? [
+          legacy({
+            targets: ['ie >= 11'], // Specify the browser targets here
+            additionalLegacyPolyfills: ['regenerator-runtime/runtime'], // Optional polyfills
+          }),
+        ]
+      : []),
   ],
   server: {
     open: true,

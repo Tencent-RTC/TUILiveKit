@@ -171,9 +171,10 @@ const submitForm = (): void => {
   max-width: 480px;
   margin: 2rem auto;
   padding: 30px 15px;
-  background-color: #1c1c1c;
+  background-color: var(--s618-surface-1);
+  border: 1px solid var(--s618-stroke);
   border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
 }
 
 .login-form {
@@ -205,22 +206,22 @@ label {
 .input-field {
   width: 100%;
   padding: 12px 15px;
-  border: 1px solid #333;
+  border: 1px solid var(--s618-stroke-2);
   border-radius: 8px;
   font-size: 16px;
   box-sizing: border-box;
   height: 46px;
   transition: all 0.3s ease;
   color: #fff;
-  background-color: #2c2c2c;
+  background-color: var(--s618-surface-2);
   line-height: 22px;
 }
 
 .input-field:focus {
   outline: none;
-  border-color: #1890ff;
-  background-color: #2c2c2c;
-  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+  border-color: var(--s618-red);
+  background-color: var(--s618-surface-2);
+  box-shadow: 0 0 0 2px rgba(229, 28, 28, 0.18);
 }
 
 .input-field::placeholder {
@@ -229,16 +230,16 @@ label {
 }
 
 .input-error {
-  border-color: #ff4d4f;
+  border-color: var(--s618-red);
 }
 
 .input-error:focus {
-  box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.1);
+  box-shadow: 0 0 0 2px rgba(229, 28, 28, 0.18);
 }
 
 .error-text {
   display: block;
-  color: #ff4d4f;
+  color: var(--s618-red);
   font-size: 12px;
   margin-top: 6px;
 }
@@ -254,7 +255,7 @@ label {
 }
 
 .checkbox-error {
-  color: #ff4d4f;
+  color: var(--s618-red);
 }
 
 .checkbox-label {

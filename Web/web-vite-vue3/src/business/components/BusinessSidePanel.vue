@@ -103,40 +103,17 @@
                       <span v-if="isHost(item.msg.sender)" class="role-badge host-badge">{{ t('Host') }}</span>
                     </div>
                     <div class="msg-bubble" :class="getRoleClass(item.msg.sender)">
-                      <template v-if="isGiftMessage(item.msg)">
-                        <template v-if="getGiftPayloadByMessage(item.msg)">
-                          <span class="gift-content">
-                            <span class="gift-prefix">{{ `${t('BarrageList.SendGift')} ` }}</span>
-                            <span
-                              v-if="getGiftPayloadByMessage(item.msg)?.giftName"
-                              class="gift-name"
-                              :style="getGiftNameStyle(getGiftPayloadByMessage(item.msg)?.giftName || '')"
-                            >{{ `${getGiftPayloadByMessage(item.msg)?.giftName} ` }}</span>
-                            <img
-                              v-if="getGiftPayloadByMessage(item.msg)?.iconUrl"
-                              class="gift-icon"
-                              :src="getGiftPayloadByMessage(item.msg)?.iconUrl"
-                              :alt="getGiftPayloadByMessage(item.msg)?.giftName || ''"
-                            >
-                          </span>
-                        </template>
-                        <template v-else>
-                          {{ t('BarrageList.SendGift') }}
-                        </template>
-                      </template>
-                      <template v-else>
-                        <template
-                          v-for="(segment, segmentIndex) in getMessageContent(item.msg.textContent || '')"
-                          :key="`${item.key}-${segmentIndex}`"
+                      <template
+                        v-for="(segment, segmentIndex) in getMessageContent(item.msg.textContent || '')"
+                        :key="`${item.key}-${segmentIndex}`"
+                      >
+                        <span v-if="segment.type === 'text'">{{ segment.value }}</span>
+                        <img
+                          v-else
+                          class="msg-emoji"
+                          :src="segment.value"
+                          :alt="segment.emojiKey || ''"
                         >
-                          <span v-if="segment.type === 'text'">{{ segment.value }}</span>
-                          <img
-                            v-else
-                            class="msg-emoji"
-                            :src="segment.value"
-                            :alt="segment.emojiKey || ''"
-                          >
-                        </template>
                       </template>
                     </div>
                   </div>
@@ -255,11 +232,9 @@ import {
   Avatar,
   BarrageInput,
   useLiveAudienceState,
-  useLiveGiftState,
   useLiveListState,
   useLoginState,
   useRoomEngine,
-  LiveGiftEvents,
   useMessageInputState,
   BarrageType,
 } from 'tuikit-atomicx-vue3';
@@ -278,7 +253,6 @@ const props = withDefaults(defineProps<{
 const { messageList, appendLocalTip } = useBarrageState();
 const { inputRawValue } = useMessageInputState();
 const { audienceList, audienceCount } = useLiveAudienceState();
-const { subscribeEvent: subscribeGiftEvent, unsubscribeEvent: unsubscribeGiftEvent } = useLiveGiftState();
 const { currentLive } = useLiveListState();
 const { loginUserInfo } = useLoginState();
 const roomEngine = useRoomEngine();
@@ -562,7 +536,7 @@ function formatCompact(n: number): string {
 
 // === Chat timeline with grouping and system messages ===
 const displayMessages = computed(() => messageList.value
-  .filter((m: Barrage) => (m.textContent && m.textContent.length > 0) || isGiftMessage(m))
+  .filter((m: Barrage) => (m.textContent && m.textContent.length > 0))
   .map((m: Barrage) => ({ ...m })));
 
 type MessageSegment = {
@@ -570,86 +544,6 @@ type MessageSegment = {
   value: string;
   emojiKey?: string;
 };
-
-type GiftPayload = {
-  giftName: string;
-  iconUrl: string;
-};
-
-function isGiftMessage(message: Barrage): boolean {
-  if (message.businessId === 'gift') return true;
-  if (!message.data) return false;
-  try {
-    const parsed = JSON.parse(message.data) as { type?: string };
-    return parsed.type === 'gift';
-  } catch (_error) {
-    return false;
-  }
-}
-
-function getMessageCacheKey(message: Barrage): string {
-  const seq = typeof message.sequence === 'number' ? String(message.sequence) : '';
-  if (seq) return seq;
-  const ts = typeof message.timestampInSecond === 'number' ? String(message.timestampInSecond) : '';
-  if (ts) return `${message.sender.userId || 'unknown'}-${ts}`;
-  return `${message.sender.userId || 'unknown'}-${message.businessId || 'message'}-${message.textContent || ''}`;
-}
-
-function getGiftPayload(message: Barrage): GiftPayload | null {
-  if (!message.data) return null;
-  try {
-    const parsed = JSON.parse(message.data) as {
-      type?: string;
-      giftInfo?: { name?: string; iconUrl?: string };
-      giftName?: string;
-      giftIcon?: string;
-      iconUrl?: string;
-      name?: string;
-    };
-    if (parsed.type && parsed.type !== 'gift' && message.businessId !== 'gift') {
-      return null;
-    }
-    const giftName = parsed.giftInfo?.name || parsed.giftName || parsed.name || '';
-    const iconUrl = parsed.giftInfo?.iconUrl || parsed.iconUrl || parsed.giftIcon || '';
-    if (!giftName && !iconUrl) return null;
-    return { giftName, iconUrl };
-  } catch (error) {
-    console.error('[BusinessSidePanel] Failed to parse gift data:', error);
-    return null;
-  }
-}
-
-const giftPayloadMap = computed<Record<string, GiftPayload>>(() => {
-  const map: Record<string, GiftPayload> = {};
-  displayMessages.value.forEach((message) => {
-    if (!isGiftMessage(message)) return;
-    const payload = getGiftPayload(message);
-    if (!payload) return;
-    map[getMessageCacheKey(message)] = payload;
-  });
-  return map;
-});
-
-function getGiftPayloadByMessage(message: Barrage): GiftPayload | null {
-  return giftPayloadMap.value[getMessageCacheKey(message)] || null;
-}
-
-function getGiftNameStyle(giftName: string) {
-  const normalized = giftName.trim();
-  if (!normalized) return {};
-  let hash = 0;
-  for (let i = 0; i < normalized.length; i += 1) {
-    hash = (hash * 31 + normalized.charCodeAt(i)) >>> 0;
-  }
-  const hue = hash % 360;
-  const saturation = 72 + (hash % 12);
-  const lightness = 58 + ((hash >> 3) % 8);
-  const color = `hsl(${hue} ${saturation}% ${lightness}%)`;
-  return {
-    color,
-    textShadow: `0 0 12px hsl(${hue} ${saturation}% ${lightness}% / 0.18)`,
-  };
-}
 
 function getMessageContent(text: string): MessageSegment[] {
   const segments: MessageSegment[] = [];
@@ -958,35 +852,8 @@ function attachEditorObserver() {
   });
 }
 
-function handleGiftMessage(gift: {
-  liveId: string;
-  giftCount: number;
-  sender: Barrage['sender'];
-  giftInfo: { name?: string; iconUrl?: string };
-}) {
-  const lastBarrage = messageList.value.at(-1);
-  const sequence = lastBarrage ? lastBarrage.sequence + 1 : 1;
-  const barrage: Barrage = {
-    liveId: gift.liveId,
-    sender: gift.sender,
-    sequence,
-    timestampInSecond: Math.floor(Date.now() / 1000),
-    messageType: BarrageType.custom,
-    textContent: '',
-    extensionInfo: null,
-    businessId: 'gift',
-    data: JSON.stringify({
-      type: 'gift',
-      giftInfo: gift.giftInfo,
-      count: gift.giftCount,
-    }),
-  };
-  appendLocalTip(barrage);
-}
-
 onMounted(() => {
   window.addEventListener('resize', handleWindowResize);
-  subscribeGiftEvent(LiveGiftEvents.ON_RECEIVE_GIFT_MESSAGE, handleGiftMessage);
   roomEngine.instance?.on(TUIRoomEvents.onRemoteUserEnterRoom, handleRemoteUserEnterRoom);
   roomEngine.instance?.on(TUIRoomEvents.onRemoteUserLeaveRoom, handleRemoteUserLeaveRoom);
   nextTick(() => {
@@ -1014,7 +881,6 @@ onUnmounted(() => {
   }
   tabResizeObserver?.disconnect();
   tabResizeObserver = null;
-  unsubscribeGiftEvent(LiveGiftEvents.ON_RECEIVE_GIFT_MESSAGE, handleGiftMessage);
   roomEngine.instance?.off(TUIRoomEvents.onRemoteUserEnterRoom, handleRemoteUserEnterRoom);
   roomEngine.instance?.off(TUIRoomEvents.onRemoteUserLeaveRoom, handleRemoteUserLeaveRoom);
 });
@@ -1385,26 +1251,6 @@ watch(activeTab, (tab) => {
   height: 18px;
   vertical-align: text-bottom;
   margin: 0 1px;
-}
-
-.gift-content {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.gift-prefix {
-  color: var(--preset-msg-content-text);
-}
-
-.gift-name {
-  font-weight: 600;
-}
-
-.gift-icon {
-  width: 16px;
-  height: 16px;
-  vertical-align: middle;
 }
 
 /* ── Chat Input ── */
