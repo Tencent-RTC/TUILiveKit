@@ -372,8 +372,8 @@ watch(
 
 .cover-card.active {
   border-style: solid;
-  border-color: var(--button-color-primary, #3778ff);
-  box-shadow: 0 0 0 1px rgba(55, 120, 255, 0.25);
+  border-color: var(--s618-red);
+  box-shadow: 0 0 0 1px rgba(229, 28, 28, 0.18);
 }
 
 .cover-card.filled {

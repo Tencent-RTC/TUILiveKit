@@ -22,13 +22,9 @@ const ALLOWED_MIME_TYPES = [
 ];
 const ALLOWED_UPLOAD_TYPES = [
   'cover',
-  'gift-icon',
-  'gift-animation',
 ];
 const ALLOWED_MIME_TYPES_BY_UPLOAD_TYPE = {
   cover: COVER_ALLOWED_MIME_TYPES,
-  'gift-icon': ALLOWED_MIME_TYPES,
-  'gift-animation': ALLOWED_MIME_TYPES,
 };
 
 function resolveUploadType(type) {
@@ -54,7 +50,7 @@ const upload = multer({
   limits: { fileSize: MAX_FILE_SIZE_MB * 1024 * 1024 },
   fileFilter: (req, file, callback) => {
     const uploadType = resolveUploadType(req.body?.type);
-    const allowedMimeTypes = uploadType ? getAllowedMimeTypesByType(uploadType) : ALLOWED_MIME_TYPES;
+    const allowedMimeTypes = uploadType ? getAllowedMimeTypesByType(uploadType) : COVER_ALLOWED_MIME_TYPES;
     if (allowedMimeTypes.includes(file.mimetype)) {
       callback(null, true);
       return;

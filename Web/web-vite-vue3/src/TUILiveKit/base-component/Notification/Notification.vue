@@ -120,10 +120,10 @@ onBeforeUnmount(() => {
   z-index: 9999;
   pointer-events: auto;
   border-radius: 16px;
-  border: 1px solid var(--stroke-color-module, #48494F);
-  background: var(--bg-color-operate, #1F2024);
+  border: 1px solid var(--stroke-color-module, var(--s618-stroke));
+  background: var(--bg-color-operate, var(--s618-surface-1));
   padding: 24px;
-  box-shadow: 0 8px 18px 0 var(---Black-8, rgba(0, 0, 0, 0.06)), 0 2px 6px 0 var(---Black-8, rgba(0, 0, 0, 0.06));
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45), 0 6px 18px rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(20px);
   max-width: 360px;
   min-width: 320px;

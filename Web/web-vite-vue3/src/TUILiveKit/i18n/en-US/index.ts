@@ -154,7 +154,6 @@ export const resource = {
   'End Link': 'End Link',
   'BarrageList.ComeIn': 'came in',
   'BarrageList.Leave': 'left',
-  'BarrageList.SendGift': 'sent',
   // Business theme additions (reuse existing keys when possible: 'Online viewers', 'Exit')
   'Search audience...': 'Search audience...',
   'No results found': 'No results found',

@@ -59,8 +59,7 @@
         />
       </div>
       <div class="bottom-operate-button">
-        <LiveGift class="bottom-operate-button-icon" />
-        <div v-if="giftInfoList.length > 0" class="like-button" @click="handleSendLikes">
+        <div class="like-button" :class="{ disabled: !isInLive }" @click="handleSendLikes">
           <IconLike :size="20" />
         </div>
       </div>
@@ -115,7 +114,6 @@ import {
   LiveCoreView,
   BarrageInput,
   BarrageList,
-  LiveGift,
   useLiveAudienceState,
   useLiveListState,
   useLoginState,
@@ -150,7 +148,7 @@ watch(isMessageMuted, (newVal, oldVal) => {
   }
 });
 const { canvas } = useLiveSeatState();
-const { giftInfoList, sendLikes, subscribeEvent: subscribeGiftEvent, unsubscribeEvent: unsubscribeGiftEvent } = useLiveGiftState();
+const { sendLikes, subscribeEvent: subscribeGiftEvent, unsubscribeEvent: unsubscribeGiftEvent } = useLiveGiftState();
 const roomEngine = useRoomEngine();
 TUIRoomEngine.once('ready', () => {
   roomEngine.instance?.on(TUIRoomEvents.onAutoPlayFailed, handleAutoPlayFailed);
@@ -228,6 +226,9 @@ async function handleJoinLive() {
 }
 
 async function handleSendLikes() {
+  if (!isInLive.value) {
+    return;
+  }
   // Include pending count from previous failed attempts
   const countToSend = 1 + pendingLikesCount.value;
   try {
@@ -424,7 +425,7 @@ function handleBarrageInputBlur() {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background-color: #FF3B66;
+    background-color: var(--s618-red);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -443,6 +444,11 @@ function handleBarrageInputBlur() {
     &:focus {
       outline: none;
     }
+  }
+
+  .like-button.disabled {
+    opacity: 0.5;
+    pointer-events: none;
   }
 }
 

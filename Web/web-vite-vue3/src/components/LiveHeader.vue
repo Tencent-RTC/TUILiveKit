@@ -2,10 +2,10 @@
   <header class="live-header">
     <div class="header-left" @click="handleHomeClick">
       <img class="header-left-logo" src="../assets/imgs/logo.svg" alt="logo" />
-      <div class="header-left-title">LiveKit</div>
+      <div class="header-left-title">sixtyoneeighty live</div>
     </div>
     <div class="header-right">
-      <TUIButton v-if="isLiveListPage && !isH5" class="btn-start-live" type="primary" @click="gotoPusher">{{ t('Start live') }}</TUIButton>
+      <TUIButton v-if="isLiveListPage && !isH5" class="btn-start-live" type="primary" color="red" @click="gotoPusher">{{ t('Start live') }}</TUIButton>
       <Avatar :src="loginUserInfo?.avatarUrl" :size="24" />
       <div class="header-right-name">
         {{ loginUserInfo?.userName || loginUserInfo?.userId }}

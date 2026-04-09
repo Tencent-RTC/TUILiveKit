@@ -56,17 +56,15 @@ const LIKE_ANIMATION_INTERVAL = 100; // 100ms between animations (matching iOS g
 // Heart size (matching iOS 44x44)
 const HEART_SIZE = 36;
 
-// Heart colors (matching iOS UIColor values)
+// Heart colors (sixtyoneeighty live palette)
 const LIKE_COLORS: string[] = [
-  '#FF3B30', // .red
-  '#AF52DE', // .purple
-  '#FF9500', // .orange
-  '#FFCC00', // .yellow
-  '#34C759', // .green
-  '#007AFF', // .blue
-  '#8E8E93', // .gray
-  '#32ADE6', // .cyan
-  '#A2845E', // .brown
+  '#E51C1C', // primary red
+  '#FF3B3B', // bright red
+  '#B31212', // deep red
+  '#FFFFFF', // white
+  '#D1D1D1', // light gray
+  '#A0A0A0', // gray
+  '#666666', // dark gray
 ];
 
 // Animation state

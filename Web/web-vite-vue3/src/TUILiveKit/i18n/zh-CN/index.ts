@@ -154,7 +154,6 @@ export const resource = {
   'End Link': '结束连麦',
   'BarrageList.ComeIn': '进入了直播间',
   'BarrageList.Leave': '离开了直播间',
-  'BarrageList.SendGift': '送出了',
   // Business theme additions (reuse existing keys when possible: 'Online viewers', 'Exit')
   'Search audience...': '搜索观众...',
   'No results found': '无匹配结果',
