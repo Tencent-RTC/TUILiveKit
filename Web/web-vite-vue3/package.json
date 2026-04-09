@@ -11,6 +11,7 @@
     "upload-server:bootstrap": "npm --prefix ./upload-server install",
     "dev:with-upload-server": "concurrently \"npm run dev\" \"npm run upload-server\"",
     "build": "vite build",
+    "build:modern": "cross-env SKIP_LEGACY=1 vite build",
     "build:business": "cross-env STYLE_PRESET=business vite build",
     "build:local": "vite build",
     "preview": "vite preview",
