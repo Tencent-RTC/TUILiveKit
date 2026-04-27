@@ -1,7 +1,6 @@
 <template>
   <div
     id="liveContainer"
-    ref="liveContainerRef"
     class="live-player-business-pc"
     :class="{ 'panel-collapsed': sidePanelCollapsed }"
   >
@@ -77,9 +76,9 @@
         @mouseleave="handleBizVideoMouseLeave"
       >
         <LiveView @empty-seat-click="handleApplyForSeat">
-          <template #center-overlay>
+          <template #center-overlay="{ isLoading }">
             <Transition name="biz-manual-refresh-fade">
-              <div v-if="isManualRefreshing" class="biz-manual-refresh-overlay" aria-hidden="true">
+              <div v-if="isLoading" class="biz-manual-refresh-overlay" aria-hidden="true">
                 <div class="biz-manual-refresh-spinner">
                   <svg class="biz-manual-refresh-orbit" viewBox="0 0 128 128">
                     <circle class="orbit-track" cx="64" cy="64" r="50" />
@@ -88,7 +87,7 @@
                       <circle class="orbit-segment orbit-segment-alt" cx="64" cy="64" r="50" />
                     </g>
                   </svg>
-                  <img class="biz-manual-refresh-logo" src="../../assets/imgs/logo.svg" alt="logo" />
+                  <img class="biz-manual-refresh-logo" src="../../../assets/imgs/logo.svg" alt="logo" />
                 </div>
               </div>
             </Transition>
@@ -221,22 +220,6 @@
             </div>
           </div>
         </div>
-        <Transition name="biz-autoplay-overlay-fade">
-          <div
-            v-if="autoPlayPromptVisible && !liveEndedOverlayVisible"
-            class="biz-autoplay-overlay"
-          >
-            <div class="biz-autoplay-content">
-              <p>{{ t('Content is ready. Click the button to start playback') }}</p>
-              <button class="biz-autoplay-action" @click="handleAutoPlayPromptConfirm">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M8 5v14l11-7L8 5z" />
-                </svg>
-                <span>{{ t('Play') }}</span>
-              </button>
-            </div>
-          </div>
-        </Transition>
         <div v-if="liveEndedOverlayVisible" class="live-ended-overlay">
           <div class="live-ended-content">
             <div class="live-ended-icon-wrapper">
@@ -251,6 +234,26 @@
             </div>
             <button class="live-ended-back-btn" @click="handleLeaveLive">
               {{ t('Back to live list') }}
+            </button>
+          </div>
+        </div>
+        <div v-if="kickedOutOverlayVisible" class="live-ended-overlay kicked-out-overlay">
+          <div class="live-ended-content">
+            <div class="live-ended-icon-wrapper warning">
+              <svg class="kicked-out-icon" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 7v6" />
+                <circle cx="12" cy="16.5" r="0.8" fill="currentColor" stroke="none" />
+              </svg>
+            </div>
+            <div class="live-ended-title">
+              {{ t('Unable to watch live') }}
+            </div>
+            <div class="live-ended-subtitle">
+              {{ t('You have been removed from the live room and cannot watch the live stream') }}
+            </div>
+            <button class="live-ended-back-btn" @click="handleLeaveLive">
+              {{ t('Back to home') }}
             </button>
           </div>
         </div>
@@ -334,7 +337,6 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed, onUnmounted, watch } from 'vue';
-import TUIRoomEngine, { TUIAutoPlayCallbackInfo, TUIRoomEvents } from '@tencentcloud/tuiroom-engine-js';
 import {
   TUIMessageBox,
   TUIToast,
@@ -349,20 +351,20 @@ import {
   useLiveAudienceState,
   useLoginState,
   Avatar,
-  useRoomEngine,
   LiveListEvent,
   UIKitModal,
 } from 'tuikit-atomicx-vue3';
 import BusinessSidePanel from './BusinessSidePanel.vue';
-import { errorHandler } from '../../TUILiveKit/utils/errorHandler';
-import { useSeatApplication } from '../../TUILiveKit/component/SeatApplication/useSeatApplication';
-import LiveConnectionTypeDialog from '../../TUILiveKit/component/LiveDialog/LiveConnectionTypeDialog.vue';
-import LiveDeviceSelectionDialog from '../../TUILiveKit/component/LiveDialog/LiveDeviceSelectionDialog.vue';
+import { errorHandler } from '../../../TUILiveKit/utils/errorHandler';
+import { useSeatApplication } from '../../../TUILiveKit/component/SeatApplication/useSeatApplication';
+import LiveConnectionTypeDialog from '../../../TUILiveKit/component/LiveDialog/LiveConnectionTypeDialog.vue';
+import LiveDeviceSelectionDialog from '../../../TUILiveKit/component/LiveDialog/LiveDeviceSelectionDialog.vue';
 import { usePlayerControlState } from '../composables/usePlayerControlState';
-import { initRoomEngineLanguage } from '../../utils/utils';
-import LiveEndedIcon from '../../TUILiveKit/icons/live-ended.svg';
+import { initRoomEngineLanguage } from '../../../utils/utils';
+import LiveEndedIcon from '../../../TUILiveKit/icons/live-ended.svg';
 
 const { t } = useUIKit();
+
 
 const { audienceList } = useLiveAudienceState();
 const { loginUserInfo } = useLoginState();
@@ -399,6 +401,7 @@ const {
 
 // Side panel collapse state
 const sidePanelCollapsed = ref(false);
+const manualPictureInPictureActive = ref(false);
 
 // Mute / volume state — driven by SDK
 const isMuted = sdkIsMuted;
@@ -477,7 +480,6 @@ const handleBizPlayPause = () => {
     return;
   }
   if (isPlaying.value) {
-    clearAutoPlayPromptState();
     sdkPause();
   } else {
     sdkResume();
@@ -523,10 +525,81 @@ const unlockVolumeInteraction = () => {
   }, 120);
 };
 
+function getBizVideoElement(): HTMLVideoElement | null {
+  const root = bizVideoCardRef.value;
+  if (!root) return null;
+  const video = root.querySelector('video');
+  return video instanceof HTMLVideoElement ? video : null;
+}
+
+function syncManualPictureInPictureState() {
+  const video = getBizVideoElement();
+  const docWithPiP = document as Document & { pictureInPictureElement?: Element | null };
+  const isDocPiPActive = !!docWithPiP.pictureInPictureElement;
+  const isWebkitPiPActive = !!video && ((video as HTMLVideoElement & { webkitPresentationMode?: string }).webkitPresentationMode === 'picture-in-picture');
+  manualPictureInPictureActive.value = isDocPiPActive || isWebkitPiPActive;
+}
+
+const handlePictureInPictureStateChange = () => {
+  syncManualPictureInPictureState();
+};
+
+async function enterNativePictureInPicture() {
+  const video = getBizVideoElement();
+  if (!video) return false;
+  try {
+    const videoWithPiP = video as HTMLVideoElement & {
+      requestPictureInPicture?: () => Promise<unknown>;
+      webkitSupportsPresentationMode?: (mode: string) => boolean;
+      webkitSetPresentationMode?: (mode: string) => void;
+    };
+    if (typeof videoWithPiP.requestPictureInPicture === 'function') {
+      await videoWithPiP.requestPictureInPicture();
+      syncManualPictureInPictureState();
+      return true;
+    }
+    if (typeof videoWithPiP.webkitSupportsPresentationMode === 'function'
+      && videoWithPiP.webkitSupportsPresentationMode('picture-in-picture')
+      && typeof videoWithPiP.webkitSetPresentationMode === 'function') {
+      videoWithPiP.webkitSetPresentationMode('picture-in-picture');
+      syncManualPictureInPictureState();
+      return true;
+    }
+  } catch (error) {
+    console.error('Failed to enter native picture-in-picture:', error);
+  }
+  return false;
+}
+
+async function exitNativePictureInPicture() {
+  const video = getBizVideoElement();
+  try {
+    const docWithPiP = document as Document & {
+      exitPictureInPicture?: () => Promise<void>;
+      pictureInPictureElement?: Element | null;
+    };
+    if (docWithPiP.pictureInPictureElement && typeof docWithPiP.exitPictureInPicture === 'function') {
+      await docWithPiP.exitPictureInPicture();
+    }
+    const videoWithPiP = video as HTMLVideoElement & {
+      webkitPresentationMode?: string;
+      webkitSetPresentationMode?: (mode: string) => void;
+    } | null;
+    if (videoWithPiP?.webkitPresentationMode === 'picture-in-picture'
+      && typeof videoWithPiP.webkitSetPresentationMode === 'function') {
+      videoWithPiP.webkitSetPresentationMode('inline');
+    }
+  } catch (error) {
+    console.error('Failed to exit native picture-in-picture:', error);
+  } finally {
+    syncManualPictureInPictureState();
+  }
+}
+
 /**
  * Toggle picture-in-picture via SDK API.
  */
-const handleBizPiP = () => {
+const handleBizPiP = async () => {
   if (pipDisabled.value) {
     if (!isPlaying.value) {
       TUIToast.warning({ message: t('LiveView.NotAllowPIPInNonPlaying') });
@@ -537,41 +610,33 @@ const handleBizPiP = () => {
       return;
     }
   }
-  if (isPictureInPicture.value) {
-    sdkExitPiP();
+  if (isPiPActive.value) {
+    await Promise.resolve(sdkExitPiP());
+    await exitNativePictureInPicture();
   } else {
-    sdkRequestPiP();
+    await Promise.resolve(sdkRequestPiP());
+    window.setTimeout(async () => {
+      syncManualPictureInPictureState();
+      if (!isPiPActive.value) {
+        const entered = await enterNativePictureInPicture();
+        if (!entered) {
+          TUIToast.warning({ message: t('Picture in picture') });
+        }
+      }
+    }, 160);
   }
 };
 
 const handleBizRefresh = async () => {
-  if (isPictureInPicture.value) {
+  if (isPiPActive.value) {
     TUIToast.warning({ message: t('Not allowed to refresh in picture-in-picture mode') });
     return;
   }
-  if (isManualRefreshRequesting.value) return;
-  isManualRefreshRequesting.value = true;
-  manualRefreshCycle.value += 1;
-  const currentCycle = manualRefreshCycle.value;
-  markManualRefreshPending();
-  clearAutoPlayPromptState();
-  clearManualRefreshTimer();
-  clearRefreshRecoveryTimer();
-  isManualRefreshing.value = true;
-  manualRefreshTimeoutTimer = setTimeout(() => {
-    if (manualRefreshCycle.value === currentCycle) {
-      finishManualRefreshing();
-    }
-  }, 12000);
   try {
     await sdkRefresh();
     startVideoReadyProbe();
-    startRefreshRecoveryTimer();
   } catch (error) {
     console.error('Failed to refresh playback:', error);
-    finishManualRefreshing();
-  } finally {
-    isManualRefreshRequesting.value = false;
   }
 };
 
@@ -585,14 +650,15 @@ const handleCinemaMode = () => {
 
 // Native fullscreen state for biz-video-card (overrides SDK fullscreen)
 const bizIsFullscreen = ref(false);
-const playToggleDisabled = computed(() => isPictureInPicture.value);
+const isPiPActive = computed(() => isPictureInPicture.value || manualPictureInPictureActive.value);
+const playToggleDisabled = computed(() => isPiPActive.value);
 const pipDisabled = computed(() => !isPlaying.value || bizIsFullscreen.value);
-const fullscreenDisabled = computed(() => isPictureInPicture.value);
-const refreshDisabled = computed(() => isManualRefreshRequesting.value || isPictureInPicture.value);
+const fullscreenDisabled = computed(() => isPiPActive.value);
+const refreshDisabled = computed(() => isPiPActive.value);
 const cinemaDisabled = computed(() => bizIsFullscreen.value);
 const playTooltipText = computed(() => (isPlaying.value ? t('Pause playback') : t('Resume playback')));
 const muteTooltipText = computed(() => (isMuted.value ? t('Turn on sound') : t('Mute sound')));
-const pipTooltipText = computed(() => (isPictureInPicture.value ? t('Exit picture in picture') : t('Picture in picture')));
+const pipTooltipText = computed(() => (isPiPActive.value ? t('Exit picture in picture') : t('Picture in picture')));
 const cinemaTooltipText = computed(() => (sidePanelCollapsed.value ? t('Exit cinema mode') : t('Enter cinema mode')));
 const fullscreenTooltipText = computed(() => (bizIsFullscreen.value ? t('Exit full screen') : t('Enter full screen')));
 const resolutionTooltipText = computed(() => t('Switch resolution'));
@@ -657,10 +723,6 @@ const handleResolutionOutsideClick = (e: MouseEvent) => {
 };
 
 const { currentLive, joinLive, leaveLive, subscribeEvent, unsubscribeEvent } = useLiveListState();
-const roomEngine = useRoomEngine();
-TUIRoomEngine.once('ready', () => {
-  roomEngine.instance?.on(TUIRoomEvents.onAutoPlayFailed, handleAutoPlayFailed);
-});
 
 const props = defineProps<{
   liveId: string;
@@ -692,24 +754,12 @@ const {
   unsubscribeEvents,
 } = useSeatApplication();
 
-const liveContainerRef = ref<HTMLElement | null>(null);
 const bizVideoCardRef = ref<HTMLElement | null>(null);
 const liveEndedOverlayVisible = ref(false);
-const autoPlayFailedHandled = ref(false);
-const autoPlayPromptVisible = ref(false);
-const isManualRefreshing = ref(false);
-const isManualRefreshRequesting = ref(false);
-const manualRefreshCycle = ref(0);
+const kickedOutOverlayVisible = ref(false);
 const readyEmitted = ref(false);
 let videoReadyProbeTimer: ReturnType<typeof setInterval> | null = null;
 let observedVideoEl: HTMLVideoElement | null = null;
-let autoPlayResumeAction: (() => void) | null = null;
-let manualRefreshTimeoutTimer: ReturnType<typeof setTimeout> | null = null;
-let refreshRecoveryTimer: ReturnType<typeof setTimeout> | null = null;
-let manualRefreshPendingFrame = false;
-let manualRefreshStartMediaTime = -1;
-let manualRefreshPlaybackSignal = false;
-let manualRefreshFrameCallbackId: number | null = null;
 
 /**
  * Safety timeout (ms) after joinLive succeeds.  If the video never becomes
@@ -732,127 +782,10 @@ function startReadySafetyTimer() {
   readySafetyTimer = setTimeout(() => {
     if (!readyEmitted.value) {
       emitReadyOnce();
-      finishManualRefreshing();
     }
   }, READY_SAFETY_TIMEOUT_MS);
 }
 
-function showAutoPlayPrompt(resumeAction: () => void) {
-  if (autoPlayFailedHandled.value || liveEndedOverlayVisible.value) return;
-  autoPlayFailedHandled.value = true;
-  autoPlayResumeAction = resumeAction;
-  autoPlayPromptVisible.value = true;
-}
-
-function handleAutoPlayPromptConfirm() {
-  const resume = autoPlayResumeAction;
-  autoPlayResumeAction = null;
-  autoPlayPromptVisible.value = false;
-  autoPlayFailedHandled.value = false;
-  finishManualRefreshing();
-  startVideoReadyProbe();
-  resume?.();
-}
-
-function clearManualRefreshTimer() {
-  if (manualRefreshTimeoutTimer) {
-    clearTimeout(manualRefreshTimeoutTimer);
-    manualRefreshTimeoutTimer = null;
-  }
-}
-
-function clearManualRefreshFrameCallback() {
-  if (!observedVideoEl || manualRefreshFrameCallbackId === null || typeof observedVideoEl.cancelVideoFrameCallback !== 'function') {
-    manualRefreshFrameCallbackId = null;
-    return;
-  }
-  observedVideoEl.cancelVideoFrameCallback(manualRefreshFrameCallbackId);
-  manualRefreshFrameCallbackId = null;
-}
-
-function queueManualRefreshFrameCallback(videoEl: HTMLVideoElement) {
-  if (!manualRefreshPendingFrame || typeof videoEl.requestVideoFrameCallback !== 'function' || manualRefreshFrameCallbackId !== null) {
-    return;
-  }
-  const currentVideo = videoEl;
-  manualRefreshFrameCallbackId = videoEl.requestVideoFrameCallback(() => {
-    manualRefreshFrameCallbackId = null;
-    if (!manualRefreshPendingFrame || observedVideoEl !== currentVideo) {
-      return;
-    }
-    manualRefreshPlaybackSignal = true;
-    if (isManualRefreshing.value && hasManualRefreshRendered(currentVideo)) {
-      finishManualRefreshing();
-    }
-  });
-}
-
-function markManualRefreshPending() {
-  manualRefreshPendingFrame = true;
-  manualRefreshStartMediaTime = observedVideoEl?.currentTime ?? -1;
-  manualRefreshPlaybackSignal = false;
-  clearManualRefreshFrameCallback();
-  if (observedVideoEl) {
-    queueManualRefreshFrameCallback(observedVideoEl);
-  }
-}
-
-function hasManualRefreshRendered(videoEl: HTMLVideoElement): boolean {
-  if (!manualRefreshPendingFrame) {
-    return true;
-  }
-  if (!isVideoReady(videoEl) || videoEl.paused || videoEl.ended) {
-    return false;
-  }
-  if (manualRefreshPlaybackSignal) {
-    return true;
-  }
-  if (manualRefreshStartMediaTime < 0) {
-    return videoEl.currentTime > 0;
-  }
-  return videoEl.currentTime > manualRefreshStartMediaTime + 0.01;
-}
-
-const REFRESH_RECOVERY_POLL_MS = 180;
-
-function clearRefreshRecoveryTimer() {
-  if (refreshRecoveryTimer) {
-    clearTimeout(refreshRecoveryTimer);
-    refreshRecoveryTimer = null;
-  }
-}
-
-function startRefreshRecoveryTimer() {
-  clearRefreshRecoveryTimer();
-  refreshRecoveryTimer = setTimeout(() => {
-    if (liveEndedOverlayVisible.value) {
-      finishManualRefreshing();
-      return;
-    }
-    const videoReady = observedVideoEl ? isVideoReady(observedVideoEl) : false;
-    const freshFrameRendered = observedVideoEl ? hasManualRefreshRendered(observedVideoEl) : false;
-
-    // Keep loading visible until this refresh really renders a new frame.
-    // The 12s manualRefreshTimeoutTimer remains the final fallback to avoid
-    // an infinite loading state if the stream never recovers.
-    if (!videoReady || !freshFrameRendered) {
-      startRefreshRecoveryTimer();
-      return;
-    }
-
-    finishManualRefreshing();
-  }, REFRESH_RECOVERY_POLL_MS);
-}
-
-function finishManualRefreshing() {
-  isManualRefreshing.value = false;
-  manualRefreshPendingFrame = false;
-  manualRefreshStartMediaTime = -1;
-  manualRefreshPlaybackSignal = false;
-  clearManualRefreshFrameCallback();
-  clearManualRefreshTimer();
-  clearRefreshRecoveryTimer();
-}
 
 // Hover show/hide for control overlay
 const showBizControls = ref(false);
@@ -929,23 +862,9 @@ function isVideoReady(videoEl: HTMLVideoElement): boolean {
   return videoEl.readyState >= 3 && videoEl.videoWidth > 0 && videoEl.videoHeight > 0;
 }
 
-function clearAutoPlayPromptState() {
-  autoPlayPromptVisible.value = false;
-  autoPlayResumeAction = null;
-  autoPlayFailedHandled.value = false;
-}
 
-function tryEmitReadyFromVideo(event?: Event) {
-  const eventType = event?.type;
+function tryEmitReadyFromVideo() {
   if (observedVideoEl && isVideoReady(observedVideoEl)) {
-    if (eventType === 'play' || eventType === 'playing' || eventType === 'timeupdate') {
-      manualRefreshPlaybackSignal = true;
-    } else {
-      queueManualRefreshFrameCallback(observedVideoEl);
-    }
-    if (isManualRefreshing.value && hasManualRefreshRendered(observedVideoEl)) {
-      finishManualRefreshing();
-    }
     emitReadyOnce();
   }
 }
@@ -964,7 +883,6 @@ function bindVideoReadyListeners(videoEl: HTMLVideoElement) {
 
 function unbindVideoReadyListeners() {
   if (!observedVideoEl) return;
-  clearManualRefreshFrameCallback();
   observedVideoEl.removeEventListener('loadeddata', tryEmitReadyFromVideo);
   observedVideoEl.removeEventListener('canplay', tryEmitReadyFromVideo);
   observedVideoEl.removeEventListener('playing', tryEmitReadyFromVideo);
@@ -993,20 +911,14 @@ function startVideoReadyProbe() {
 
 const handleLiveEnded = () => {
   liveEndedOverlayVisible.value = true;
+  kickedOutOverlayVisible.value = false;
   emitReadyOnce();
 };
 
 const handleKickedOutOfLive = () => {
-  TUIMessageBox.alert({
-    title: t('Unable to watch live'),
-    content: t('You have been removed from the live room and cannot watch the live stream'),
-    confirmText: t('Back to home'),
-    showClose: false,
-    modal: false,
-    callback: () => {
-      emit('leaveLive');
-    },
-  });
+  kickedOutOverlayVisible.value = true;
+  liveEndedOverlayVisible.value = false;
+  emitReadyOnce();
 };
 
 // Auto-select devices when device selection dialog opens
@@ -1039,6 +951,9 @@ onMounted(async () => {
   }
   // Close resolution popup on outside click
   document.addEventListener('click', handleResolutionOutsideClick);
+  document.addEventListener('enterpictureinpicture', handlePictureInPictureStateChange);
+  document.addEventListener('leavepictureinpicture', handlePictureInPictureStateChange);
+  document.addEventListener('pictureinpicturechange', handlePictureInPictureStateChange);
 
   // Listen for native fullscreen changes
   document.addEventListener('fullscreenchange', onFullscreenChange);
@@ -1051,18 +966,18 @@ onUnmounted(async () => {
   if (currentLive.value?.liveId) {
     await leaveLive();
   }
-  roomEngine.instance?.off(TUIRoomEvents.onAutoPlayFailed, handleAutoPlayFailed);
   cancelBizControlsHideTimer();
   cancelVolumeHideTimer();
   clearReadySafetyTimer();
-  clearManualRefreshTimer();
-  clearRefreshRecoveryTimer();
   if (videoReadyProbeTimer) {
     clearInterval(videoReadyProbeTimer);
     videoReadyProbeTimer = null;
   }
   unbindVideoReadyListeners();
   document.removeEventListener('click', handleResolutionOutsideClick);
+  document.removeEventListener('enterpictureinpicture', handlePictureInPictureStateChange);
+  document.removeEventListener('leavepictureinpicture', handlePictureInPictureStateChange);
+  document.removeEventListener('pictureinpicturechange', handlePictureInPictureStateChange);
   document.removeEventListener('fullscreenchange', onFullscreenChange);
 });
 
@@ -1149,22 +1064,10 @@ async function handleJoinLive(): Promise<boolean> {
   }
 }
 
-function handleAutoPlayFailed(event: TUIAutoPlayCallbackInfo) {
-  if (autoPlayFailedHandled.value) {
-    return;
-  }
-  emitReadyOnce();
-  finishManualRefreshing();
-  showAutoPlayPrompt(() => event.resume());
-}
-
 watch(isPlaying, (playing) => {
   if (playing) {
     startVideoReadyProbe();
     emitReadyOnce();
-    if (isManualRefreshing.value && observedVideoEl && hasManualRefreshRendered(observedVideoEl)) {
-      finishManualRefreshing();
-    }
   }
 }, { immediate: true });
 
@@ -2095,6 +1998,14 @@ watch(isUserOnSeat, (onSeat) => {
       align-items: center;
       justify-content: center;
       margin-bottom: 4px;
+
+      &.warning {
+        width: 58px;
+        height: 58px;
+        border-radius: 50%;
+        background: color-mix(in srgb, var(--preset-primary, #1c66e5) 14%, transparent);
+        color: var(--preset-primary, #1c66e5);
+      }
     }
 
     .live-ended-icon-img {
@@ -2113,8 +2024,18 @@ watch(isUserOnSeat, (onSeat) => {
 
     .live-ended-subtitle {
       font-size: 14px;
-      color: var(--preset-live-ended-subtitle, rgba(255, 255, 255, 0.55));
       line-height: 1.5;
+      color: var(--preset-live-ended-subtitle, rgba(255, 255, 255, 0.72));
+      max-width: 320px;
+    }
+
+    .kicked-out-icon {
+      width: 28px;
+      height: 28px;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
     .live-ended-back-btn {
@@ -2205,83 +2126,6 @@ watch(isUserOnSeat, (onSeat) => {
     height: 34px;
     object-fit: contain;
   }
-
-  .biz-autoplay-overlay {
-    position: absolute;
-    inset: 0;
-    z-index: 52;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: auto;
-    background:
-      radial-gradient(circle at 16% 18%, rgba(255, 226, 160, 0.26), transparent 38%),
-      radial-gradient(circle at 14% 24%, rgba(255, 255, 255, 0.14), transparent 42%),
-      linear-gradient(180deg, rgba(2, 5, 14, 0.48), rgba(1, 3, 10, 0.74));
-    backdrop-filter: blur(3px);
-  }
-
-  .biz-autoplay-content {
-    width: min(640px, calc(100% - 72px));
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    text-align: center;
-
-    p {
-      margin: 0;
-      color: rgba(248, 250, 252, 0.95);
-      font-size: 19px;
-      font-weight: 650;
-      line-height: 1.42;
-      letter-spacing: 0.01em;
-      text-shadow: 0 2px 10px rgba(2, 6, 23, 0.45);
-    }
-  }
-
-  .biz-autoplay-action {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    height: 38px;
-    padding: 0 15px;
-    border-radius: 9px;
-    border: 1px solid rgba(203, 213, 225, 0.34);
-    background: rgba(148, 163, 184, 0.18);
-    color: rgba(248, 250, 252, 0.94);
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 180ms ease, border-color 180ms ease, color 180ms ease, transform 180ms ease;
-
-    svg {
-      width: 16px;
-      height: 16px;
-      fill: currentColor;
-    }
-
-    &:hover {
-      background: rgba(148, 163, 184, 0.26);
-      border-color: rgba(226, 232, 240, 0.5);
-      transform: translateY(-1px);
-    }
-
-    &:active {
-      transform: scale(0.97);
-    }
-  }
-}
-
-.biz-autoplay-overlay-fade-enter-active,
-.biz-autoplay-overlay-fade-leave-active {
-  transition: opacity 220ms ease;
-}
-
-.biz-autoplay-overlay-fade-enter-from,
-.biz-autoplay-overlay-fade-leave-to {
-  opacity: 0;
 }
 
 .biz-manual-refresh-fade-enter-active,

@@ -11,13 +11,28 @@ import { LiveInfo, useLoginState } from 'tuikit-atomicx-vue3';
 import { useUIKit, TUIMessageBox, useStylePreset } from '@tencentcloud/uikit-base-component-vue3';
 import { LiveListView } from '../TUILiveKit';
 import LiveHeader from '../components/LiveHeader.vue';
-import { isBusinessPresetFromUrl } from '../business/composables/useBusinessPreset';
+import { isH5 } from '../TUILiveKit/utils/environment';
 
 const router = useRouter();
 const route = useRoute();
 const { loginUserInfo } = useLoginState();
 const { t } =  useUIKit();
 const { presetName } = useStylePreset();
+type StylePreset = '' | 'business' | 'education';
+
+function getStylePresetFromContext(): StylePreset {
+  if (isH5) {
+    return '';
+  }
+  const presetFromQuery = route.query.stylePreset;
+  if (presetFromQuery === 'business' || presetFromQuery === 'education') {
+    return presetFromQuery;
+  }
+  if (presetName.value === 'business' || presetName.value === 'education') {
+    return presetName.value;
+  }
+  return '';
+}
 
 function handleLiveRoomClick(liveInfo: LiveInfo) {
   if (loginUserInfo.value?.userId === liveInfo.liveOwner?.userId) {
@@ -30,8 +45,9 @@ function handleLiveRoomClick(liveInfo: LiveInfo) {
 
   if (liveInfo?.liveId) {
     const query: Record<string, string> = { ...route.query as Record<string, string>, liveId: liveInfo.liveId };
-    if (presetName.value === 'business' || isBusinessPresetFromUrl()) {
-      query.stylePreset = 'business';
+    const stylePreset = getStylePresetFromContext();
+    if (stylePreset) {
+      query.stylePreset = stylePreset;
     }
     router.push({ path: '/live-player', query });
   }

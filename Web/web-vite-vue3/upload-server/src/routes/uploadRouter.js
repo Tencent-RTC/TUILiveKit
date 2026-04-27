@@ -10,6 +10,7 @@ const { asyncHandler } = require('../middleware/asyncHandler');
 const logger = require('../utils/logger');
 
 const MAX_FILE_SIZE_MB = 2;
+const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 const COVER_ALLOWED_MIME_TYPES = [
   'image/jpeg',
   'image/png',
@@ -51,7 +52,9 @@ function getUnsupportedMimeMessage(type) {
 
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: MAX_FILE_SIZE_MB * 1024 * 1024 },
+  // Use a slightly larger parser limit, then enforce precise business rule below.
+  // This avoids edge-case rejection when file size is exactly MAX_FILE_SIZE_BYTES.
+  limits: { fileSize: MAX_FILE_SIZE_BYTES + 1 },
   fileFilter: (req, file, callback) => {
     const uploadType = resolveUploadType(req.body?.type);
     const allowedMimeTypes = uploadType ? getAllowedMimeTypesByType(uploadType) : ALLOWED_MIME_TYPES;
@@ -130,6 +133,17 @@ uploadRouter.post(
       if (!req.file) {
         const message = 'Please select a file';
         logger.warn('UPLOAD_IMAGE', message, { body: req.body });
+        res.status(400).json({ code: -1, message });
+        return;
+      }
+      if (req.file.size > MAX_FILE_SIZE_BYTES) {
+        const message = `File size cannot exceed ${MAX_FILE_SIZE_MB}MB`;
+        logger.warn('UPLOAD_FILE_SIZE_OVER_LIMIT', message, {
+          type: req.body?.type,
+          originalname: req.file.originalname,
+          size: req.file.size,
+          limit: MAX_FILE_SIZE_BYTES,
+        });
         res.status(400).json({ code: -1, message });
         return;
       }

@@ -3,11 +3,13 @@
     <div class="main-left">
       <div class="main-left-top">
         <IconArrowStrokeBack class="icon-back" size="20" @click="handleLeaveLive" />
-        <template v-if="liveEndedOverlayVisible">
+        <template v-if="liveEndedOverlayVisible || kickedOutOverlayVisible">
           <div class="top-ended-avatar">
             <IconUser size="24" />
           </div>
-          <span>{{ t('The host is not currently live') }}</span>
+          <span>
+            {{ kickedOutOverlayVisible ? t('Unable to watch live') : t('The host is not currently live') }}
+          </span>
         </template>
         <template v-else>
           <Avatar
@@ -32,8 +34,24 @@
             </TUIButton>
           </div>
         </div>
+        <div v-if="kickedOutOverlayVisible" class="live-ended-overlay kicked-out-overlay">
+          <div class="live-ended-content">
+            <div class="live-ended-icon success">
+              <svg class="kicked-out-icon" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M8.5 12.5l2.2 2.2 4.8-5.2" />
+              </svg>
+            </div>
+            <div class="live-ended-text">
+              {{ t('You have been removed from the live room and cannot watch the live stream') }}
+            </div>
+            <TUIButton type="default" @click="handleLeaveLive">
+              {{ t('Back to home') }}
+            </TUIButton>
+          </div>
+        </div>
       </div>
-      <div class="main-left-bottom" :class="{ disabled: liveEndedOverlayVisible }">
+      <div class="main-left-bottom" :class="{ disabled: liveEndedOverlayVisible || kickedOutOverlayVisible }">
         <LiveGift />
         <SeatApplicationButton />
       </div>
@@ -99,7 +117,6 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed, onUnmounted, watch } from 'vue';
-import TUIRoomEngine, { TUIAutoPlayCallbackInfo, TUIRoomEvents } from '@tencentcloud/tuiroom-engine-js';
 import {
   IconArrowStrokeBack,
   IconUser,
@@ -118,7 +135,6 @@ import {
   useLiveListState,
   useLoginState,
   Avatar,
-  useRoomEngine,
   LiveListEvent,
   LiveGift,
   UIKitModal,
@@ -134,7 +150,6 @@ const { audienceList } = useLiveAudienceState();
 const { currentLive, joinLive, leaveLive, subscribeEvent, unsubscribeEvent } = useLiveListState();
 const { loginUserInfo } = useLoginState();
 const isInLive = computed(() => !!currentLive.value?.liveId);
-const roomEngine = useRoomEngine();
 
 // Mute detection: show toast when the current user is muted by the host
 const localAudience = computed(() => audienceList.value.find(item => item.userId === loginUserInfo.value?.userId));
@@ -148,9 +163,6 @@ watch(isMessageMuted, (newVal, oldVal) => {
   }
 });
 
-TUIRoomEngine.once('ready', () => {
-  roomEngine.instance?.on(TUIRoomEvents.onAutoPlayFailed, handleAutoPlayFailed);
-});
 const props = defineProps<{
   liveId: string;
 }>();
@@ -163,27 +175,20 @@ const exitDialogContent = computed(() => (isUserOnSeat.value
 
 const liveContainerRef = ref<HTMLElement | null>(null);
 const liveEndedOverlayVisible = ref(false);
+const kickedOutOverlayVisible = ref(false);
 const barrageInputHeight = ref('48px');
 const exitLiveDialogVisible = ref(false);
-const autoPlayFailedHandled = ref(false);
 
 const emit = defineEmits(['leaveLive']);
 
 const handleLiveEnded = () => {
   liveEndedOverlayVisible.value = true;
+  kickedOutOverlayVisible.value = false;
 };
 
 const handleKickedOutOfLive = () => {
-  TUIMessageBox.alert({
-    title: t('Unable to watch live'),
-    content: t('You have been removed from the live room and cannot watch the live stream'),
-    confirmText: t('Back to home'),
-    showClose: false,
-    modal: false,
-    callback: () => {
-      emit('leaveLive');
-    },
-  });
+  kickedOutOverlayVisible.value = true;
+  liveEndedOverlayVisible.value = false;
 };
 
 onMounted(async () => {
@@ -204,7 +209,6 @@ onUnmounted(async () => {
   if (currentLive.value?.liveId) {
     await leaveLive();
   }
-  roomEngine.instance?.off(TUIRoomEvents.onAutoPlayFailed, handleAutoPlayFailed);
 });
 
 function handleLeaveLive() {
@@ -268,22 +272,6 @@ async function handleJoinLive() {
     console.error('liveId is empty');
     showErrorAndLeave(t('LiveId is empty'));
   }
-}
-
-function handleAutoPlayFailed(event: TUIAutoPlayCallbackInfo) {
-  if (autoPlayFailedHandled.value) {
-    return;
-  }
-  autoPlayFailedHandled.value = true;
-  TUIMessageBox.alert({
-    content: t('Content is ready. Click the button to start playback'),
-    confirmText: t('Play'),
-    showClose: false,
-    callback: () => {
-      autoPlayFailedHandled.value = false;
-      event.resume();
-    },
-  });
 }
 </script>
 
@@ -353,7 +341,7 @@ function handleAutoPlayFailed(event: TUIAutoPlayCallbackInfo) {
     }
   }
 
-  .main-left-center {
+.main-left-center {
     position: relative;
     flex: 1;
     min-width: 0;
@@ -387,6 +375,14 @@ function handleAutoPlayFailed(event: TUIAutoPlayCallbackInfo) {
         display: flex;
         align-items: center;
         justify-content: center;
+
+        &.success {
+          width: 64px;
+          height: 64px;
+          border-radius: 50%;
+          background: rgba(34, 197, 94, 0.16);
+          color: rgba(74, 222, 128, 1);
+        }
       }
 
       .live-ended-text {
@@ -395,6 +391,16 @@ function handleAutoPlayFailed(event: TUIAutoPlayCallbackInfo) {
         color: rgba(255, 255, 255, 0.9);
         font-size: 14px;
         font-weight: 500;
+        line-height: 1.5;
+      }
+
+      .kicked-out-icon {
+        width: 28px;
+        height: 28px;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
       }
     }
   }
