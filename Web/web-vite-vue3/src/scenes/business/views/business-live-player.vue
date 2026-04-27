@@ -19,7 +19,7 @@
                 <circle class="orbit-segment orbit-segment-alt" cx="64" cy="64" r="50" />
               </g>
             </svg>
-            <img class="biz-loading-logo" src="../../assets/imgs/logo.svg" alt="logo" />
+            <img class="biz-loading-logo" src="../../../assets/imgs/logo.svg" alt="logo" />
           </div>
           <p>{{ t('Loading ...') }}</p>
         </div>
@@ -29,14 +29,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, nextTick } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useLoginState } from 'tuikit-atomicx-vue3';
 import { useUIKit } from '@tencentcloud/uikit-base-component-vue3';
 import LivePlayerBusinessPC from '../components/LivePlayerBusinessPC.vue';
 import { useBusinessPreset } from '../composables/useBusinessPreset';
 import '../styles/business.scss';
-import '../../TUILiveKit';
+import '../../../TUILiveKit';
 
 const { loginUserInfo, login } = useLoginState();
 const { isBusinessPreset } = useBusinessPreset();
@@ -50,12 +50,14 @@ let loadingMinTimer: ReturnType<typeof setTimeout> | null = null;
 let loadingTimeoutTimer: ReturnType<typeof setTimeout> | null = null;
 let loadingStartTime = 0;
 
-/**
- * Maximum time (ms) the loading overlay stays visible before auto-dismissing.
- * This prevents the loading from getting permanently stuck when the page is
- * refreshed and the autoplay-failed event fires before the listener is bound.
- */
 const LOADING_TIMEOUT_MS = 8000;
+
+function clearLoadingTimeout() {
+  if (loadingTimeoutTimer) {
+    clearTimeout(loadingTimeoutTimer);
+    loadingTimeoutTimer = null;
+  }
+}
 
 function dismissLoading() {
   const elapsed = Date.now() - loadingStartTime;
@@ -72,13 +74,6 @@ function dismissLoading() {
 
 function handlePlayerReady() {
   dismissLoading();
-}
-
-function clearLoadingTimeout() {
-  if (loadingTimeoutTimer) {
-    clearTimeout(loadingTimeoutTimer);
-    loadingTimeoutTimer = null;
-  }
 }
 
 function leaveLive() {
@@ -125,8 +120,13 @@ onMounted(async () => {
   // Restore login state on page refresh (same logic as LiveHeader)
   await restoreLoginState();
 
-  // Safety timeout: if the player never emits 'ready' (e.g. after a page
-  // refresh where autoplay is blocked), auto-dismiss the loading overlay.
+  // Page-level loading only covers route/session initialization.
+  // Playback loading continues to be handled by the player view itself.
+  await nextTick();
+  dismissLoading();
+
+  // Page-level loading is for route/page initialization only.
+  // Video-area loading continues to be handled by LiveView center-overlay.
   loadingTimeoutTimer = setTimeout(() => {
     if (showPageLoading.value) {
       dismissLoading();

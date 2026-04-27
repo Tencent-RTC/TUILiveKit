@@ -1,0 +1,151 @@
+// ============================================================
+// Education Style Preset — Token Mapping
+//
+// Color variables are defined in the base library:
+//   themes/presets/education-light.scss & education-dark.scss
+// This file maps --preset-* tokens to --edu-* tokens and
+// contains layout/font/spacing rules.
+// ============================================================
+
+.style-preset-education {
+  width: 100%;
+  height: 100%;
+  font-family: 'Noto Sans SC', 'PingFang SC', 'Segoe UI', sans-serif;
+
+  // === Background tokens ===
+  --edu-bg-page: var(--preset-bg-base);
+  --edu-bg-surface: var(--preset-bg-panel);
+  --edu-bg-muted: var(--preset-bg-inset);
+  --edu-bg-subtle: var(--preset-bg-input);
+  --edu-bg-hover: var(--preset-bg-hover);
+
+  // === Border tokens ===
+  --edu-border: var(--preset-border);
+  --edu-border-strong: var(--preset-border-strong);
+
+  // === Primary / semantic tokens ===
+  --edu-primary: var(--preset-primary);
+  --edu-primary-hover: var(--preset-primary-hover);
+  --edu-primary-soft: color-mix(in srgb, var(--preset-primary) 10%, var(--preset-bg-panel));
+  --edu-success: var(--preset-live-badge-dot);
+  --edu-danger: #ef4444;
+  --edu-warning: #f59e0b;
+
+  // === Text tokens ===
+  --edu-text-primary: var(--preset-text-primary);
+  --edu-text-secondary: var(--preset-text-secondary);
+  --edu-text-tertiary: var(--preset-text-tertiary);
+  --edu-text-on-primary: var(--preset-text-on-primary);
+
+  // === Shadow / overlay tokens ===
+  --edu-shadow-soft: color-mix(in srgb, var(--preset-text-primary) 10%, transparent);
+  --edu-shadow-card: 0 4px 16px color-mix(in srgb, var(--preset-text-primary) 8%, transparent);
+  --edu-overlay-bg: color-mix(in srgb, var(--uikit-color-black-2) 48%, transparent);
+  --edu-ended-overlay-bg: color-mix(in srgb, var(--preset-bg-base) 74%, rgba(255, 255, 255, 0.94));
+  --edu-ended-card-bg: color-mix(in srgb, var(--preset-bg-panel) 92%, white);
+  --edu-ended-card-border: color-mix(in srgb, var(--preset-border-strong) 72%, transparent);
+  --edu-ended-icon-bg: color-mix(in srgb, var(--preset-primary) 10%, var(--preset-bg-panel));
+  --edu-ended-icon-color: var(--preset-primary);
+  --edu-settings-popup-bg: color-mix(in srgb, var(--preset-bg-panel) 94%, white);
+  --edu-settings-popup-panel-bg: color-mix(in srgb, var(--preset-bg-muted, var(--preset-bg-inset)) 66%, transparent);
+  --edu-settings-popup-border: color-mix(in srgb, var(--preset-border-strong) 72%, transparent);
+  --edu-settings-popup-text: var(--preset-text-primary);
+  --edu-settings-popup-subtle-text: var(--preset-text-secondary);
+  --edu-settings-popup-hover: color-mix(in srgb, var(--preset-primary) 10%, var(--preset-bg-hover));
+
+  // === Live indicator tokens ===
+  --edu-live-dot: var(--preset-live-indicator-dot);
+  --edu-live-dot-glow: var(--preset-live-indicator-dot-glow);
+  --edu-live-text: var(--preset-live-indicator-text);
+
+  // === Q&A panel tokens ===
+  --edu-qa-upvote-bg: color-mix(in srgb, var(--preset-primary) 8%, var(--preset-bg-panel));
+  --edu-qa-upvote-active: var(--preset-primary);
+  --edu-qa-answered-text: var(--preset-primary);
+  --edu-qa-answered-bg: color-mix(in srgb, var(--preset-primary) 8%, var(--preset-bg-panel));
+  --edu-qa-pending-text: #f59e0b;
+  --edu-qa-pending-bg: color-mix(in srgb, #f59e0b 8%, var(--preset-bg-panel));
+
+  // === Toolbar tokens (flat, persistent bottom bar) ===
+  --edu-toolbar-bg: var(--preset-bg-panel);
+  --edu-toolbar-border: var(--preset-border);
+  --edu-toolbar-icon-color: var(--preset-text-tertiary);
+  --edu-toolbar-icon-hover: var(--preset-text-primary);
+  --edu-toolbar-text-color: var(--preset-text-secondary);
+  --edu-toolbar-slider-track: color-mix(in srgb, var(--preset-text-tertiary) 20%, transparent);
+  --edu-toolbar-slider-fill: var(--preset-primary);
+  --edu-toolbar-slider-thumb: var(--preset-primary);
+  --edu-tooltip-text: var(--preset-text-primary);
+  --edu-tooltip-bg: color-mix(in srgb, var(--preset-bg-panel) 94%, white);
+  --edu-tooltip-border: color-mix(in srgb, var(--preset-border-strong) 82%, transparent);
+  --edu-tooltip-shadow: 0 8px 20px color-mix(in srgb, var(--preset-text-primary) 12%, transparent);
+
+  // === PiP tokens ===
+  --edu-pip-bg: var(--preset-video-bg, #0f1219);
+  --edu-pip-label-bg: color-mix(in srgb, var(--uikit-color-black-2) 62%, transparent);
+
+  // === Raise hand FAB tokens ===
+  --edu-fab-bg: color-mix(in srgb, var(--preset-bg-panel) 96%, white);
+  --edu-fab-bg-hover: color-mix(in srgb, var(--preset-bg-panel) 92%, white);
+  --edu-fab-border: color-mix(in srgb, var(--preset-border-strong) 72%, transparent);
+  --edu-fab-text: var(--preset-text-primary);
+  --edu-fab-icon: var(--preset-text-secondary);
+  --edu-fab-shadow: 0 4px 20px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.08);
+  --edu-fab-shadow-hover: 0 6px 24px rgba(0, 0, 0, 0.16), 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  // === Type scale ===
+  --edu-font-size-title: 16px;
+  --edu-font-size-body: 14px;
+  --edu-font-size-caption: 13px;
+  --edu-font-size-small: 12px;
+  --edu-font-size-micro: 11px;
+
+  // === Spacing ===
+  --edu-radius-sm: 6px;
+  --edu-radius-md: 10px;
+  --edu-radius-lg: 14px;
+  --edu-radius-xl: 18px;
+
+  // === Transitions ===
+  button, input, textarea {
+    transition: all 180ms ease;
+  }
+}
+
+html[tui-theme-mode="dark"] .style-preset-education,
+.style-preset-education.tui-theme-dark {
+  --edu-primary-soft: color-mix(in srgb, var(--preset-primary) 16%, var(--preset-bg-panel));
+  --edu-shadow-soft: color-mix(in srgb, var(--preset-text-primary) 22%, transparent);
+  --edu-shadow-card: 0 4px 16px color-mix(in srgb, var(--uikit-color-black-2) 22%, transparent);
+  --edu-overlay-bg: color-mix(in srgb, var(--uikit-color-black-2) 62%, transparent);
+  --edu-ended-overlay-bg: rgba(2, 6, 23, 0.78);
+  --edu-ended-card-bg: rgba(15, 23, 42, 0.94);
+  --edu-ended-card-border: rgba(255, 255, 255, 0.1);
+  --edu-ended-icon-bg: rgba(37, 99, 235, 0.14);
+  --edu-ended-icon-color: #93c5fd;
+  --edu-settings-popup-bg: rgba(15, 23, 42, 0.94);
+  --edu-settings-popup-panel-bg: rgba(255, 255, 255, 0.04);
+  --edu-settings-popup-border: rgba(255, 255, 255, 0.12);
+  --edu-settings-popup-text: #ffffff;
+  --edu-settings-popup-subtle-text: rgba(255, 255, 255, 0.72);
+  --edu-settings-popup-hover: rgba(255, 255, 255, 0.08);
+  --edu-danger: #f87171;
+  --edu-warning: #fbbf24;
+  --edu-qa-pending-text: #fbbf24;
+  --edu-qa-pending-bg: color-mix(in srgb, #fbbf24 10%, var(--preset-bg-panel));
+  --edu-pip-label-bg: color-mix(in srgb, var(--uikit-color-black-2) 72%, transparent);
+  --edu-fab-bg: color-mix(in srgb, var(--preset-bg-panel) 96%, #111827);
+  --edu-fab-bg-hover: color-mix(in srgb, var(--preset-bg-panel) 90%, #111827);
+  --edu-fab-border: color-mix(in srgb, var(--preset-border-strong) 92%, transparent);
+  --edu-fab-text: #e2e8f0;
+  --edu-fab-icon: #94a3b8;
+  --edu-fab-shadow: 0 4px 20px rgba(0, 0, 0, 0.32), 0 1px 4px rgba(0, 0, 0, 0.18);
+  --edu-fab-shadow-hover: 0 8px 28px rgba(0, 0, 0, 0.4), 0 2px 10px rgba(0, 0, 0, 0.22);
+  --edu-tooltip-text: #ffffff;
+  --edu-tooltip-bg: rgba(15, 23, 42, 0.92);
+  --edu-tooltip-border: rgba(255, 255, 255, 0.12);
+  --edu-tooltip-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+
+  // === Toolbar overrides (dark) ===
+  --edu-toolbar-slider-track: color-mix(in srgb, var(--preset-text-tertiary) 28%, transparent);
+}

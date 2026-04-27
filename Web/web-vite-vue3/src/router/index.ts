@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import Login from '@/views/login.vue';
-import { isBusinessPresetFromUrl } from '@/business/composables/useBusinessPreset';
+import { isH5 } from '@/TUILiveKit/utils/environment';
 
 const routes = [
   {
@@ -26,7 +26,12 @@ const routes = [
   // Business style routes — isolated under /business prefix
   {
     path: '/business/live-player',
-    component: () => import('@/business/views/business-live-player.vue'),
+    component: () => import('@/scenes/business/views/business-live-player.vue'),
+  },
+  // Education style routes — isolated under /education prefix
+  {
+    path: '/education/live-player',
+    component: () => import('@/scenes/education/views/education-live-player.vue'),
   },
 ];
 
@@ -35,8 +40,25 @@ const router = createRouter({
   routes,
 });
 
-function isBusinessPresetActive(routeQuery: Record<string, any>): boolean {
-  return routeQuery.stylePreset === 'business' || isBusinessPresetFromUrl();
+type StylePreset = '' | 'business' | 'education';
+
+function normalizeStylePreset(value: unknown): StylePreset {
+  if (value === 'business' || value === 'education') {
+    return value;
+  }
+  return '';
+}
+
+function getActiveStylePreset(routeQuery: Record<string, any>): StylePreset {
+  if (isH5) {
+    return '';
+  }
+  const queryPreset = normalizeStylePreset(routeQuery.stylePreset);
+  if (queryPreset) {
+    return queryPreset;
+  }
+  const stored = localStorage.getItem('tuikit-style-preset');
+  return normalizeStylePreset(stored);
 }
 
 router.beforeEach((to, _from, next) => {
@@ -50,20 +72,36 @@ router.beforeEach((to, _from, next) => {
     return;
   }
 
-  // Redirect to business route when the business preset is active
+  if (isH5) {
+    if (to.path === '/business/live-player' || to.path === '/education/live-player') {
+      const query = { ...to.query };
+      delete query.stylePreset;
+      next({ path: '/live-player', query });
+      return;
+    }
+    if (to.query.stylePreset) {
+      const query = { ...to.query };
+      delete query.stylePreset;
+      next({ path: to.path, query });
+      return;
+    }
+  }
+
+  // Redirect to style route when style preset is active
   // (from URL param or UIKitProvider stylePreset prop)
-  if (to.path === '/live-player' && isBusinessPresetActive(to.query)) {
+  const activeStylePreset = getActiveStylePreset(to.query);
+  if (to.path === '/live-player' && activeStylePreset) {
     const query = { ...to.query };
     delete query.stylePreset;
-    next({ path: '/business/live-player', query });
+    next({ path: `/${activeStylePreset}/live-player`, query });
     return;
   }
 
-  // Strip stylePreset param if already on the business route to avoid re-render
-  if (to.path === '/business/live-player' && to.query.stylePreset) {
+  // Strip stylePreset param if already on style route to avoid re-render
+  if ((to.path === '/business/live-player' || to.path === '/education/live-player') && to.query.stylePreset) {
     const query = { ...to.query };
     delete query.stylePreset;
-    next({ path: '/business/live-player', query });
+    next({ path: to.path, query });
     return;
   }
 

@@ -1,6 +1,6 @@
 import { computed } from 'vue';
 import { useStylePreset } from '@tencentcloud/uikit-base-component-vue3';
-import { getUrlParam } from '../../utils/utils';
+import { getUrlParam } from '../../../utils/utils';
 
 export function isBusinessPresetFromUrl(): boolean {
   return getUrlParam('stylePreset') === 'business';

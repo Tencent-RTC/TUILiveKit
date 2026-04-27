@@ -75,7 +75,7 @@
               v-if="!isInLive"
               type="primary"
               :disabled="loading"
-              @click="handleCreateLive"
+              @click="handleStartLive"
             >
               <IconLiveLoading
                 v-if="loading"
@@ -172,7 +172,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineProps, ref } from 'vue';
+import { computed, defineProps, ref, onMounted, onUnmounted } from 'vue';
 import TUIRoomEngine, { TUISeatMode } from '@tencentcloud/tuiroom-engine-js';
 import {
   IconArrowStrokeBack,
@@ -202,6 +202,9 @@ import {
   useCoGuestState,
   useRoomEngine,
   UIKitModal,
+  LiveListEvent,
+  LiveEndedReason,
+  LiveListEventInfo,
 } from 'tuikit-atomicx-vue3';
 import CoGuestButton from './component/CoGuestButton.vue';
 import CoHostButton from './component/CoHostButton.vue';
@@ -228,7 +231,7 @@ const emit = defineEmits(['leaveLive']);
 const isToolsExpanded = ref(true);
 const exitLiveDialogVisible = ref(false);
 const { loginUserInfo } = useLoginState();
-const { currentLive, createLive, endLive, joinLive } = useLiveListState();
+const { currentLive, startLive, endLive, joinLive, subscribeEvent, unsubscribeEvent, updateLiveInfo } = useLiveListState();
 const roomEngine = useRoomEngine();
 const { audienceCount } = useLiveAudienceState();
 const { openLocalMicrophone } = useDeviceState();
@@ -343,7 +346,7 @@ const handleCopyLiveID = async () => {
   }
 };
 
-const handleCreateLive = async () => {
+const handleStartLive = async () => {
   try {
     if (loading.value) {
       return;
@@ -355,14 +358,8 @@ const handleCreateLive = async () => {
       return;
     }
     loading.value = true;
-    await TUIRoomEngine.callExperimentalAPI(JSON.stringify({
-      api: 'enableUnlimitedRoom',
-      params: {
-        enable: true,
-      },
-    }));
     await initRoomEngineLanguage();
-    await createLive({
+    await startLive({
       liveId: liveParams.value.liveId,
       liveName: liveParams.value.liveName,
       coverUrl: liveParams.value.coverUrl,
@@ -443,6 +440,33 @@ const showEndLiveDialog = async () => {
   }
   exitLiveDialogVisible.value = true;
 };
+
+const handleLiveEnded = (eventInfo: LiveListEventInfo) => {
+  if (eventInfo.reason === LiveEndedReason.endedByHost) {
+    return;
+  }
+  if (eventInfo.reason === LiveEndedReason.endedByServer) {
+    TUIToast.warning({
+      message: t('Stream closed due to content violation'),
+      duration: 5000,
+    });
+    return;
+  }
+  // Fallback for unknown ending reasons
+  TUIToast.warning({
+    message: t('The live room has been closed'),
+    duration: 5000,
+  });
+};
+
+onMounted(() => {
+  subscribeEvent(LiveListEvent.onLiveEnded, handleLiveEnded);
+});
+
+onUnmounted(() => {
+  unsubscribeEvent(LiveListEvent.onLiveEnded, handleLiveEnded);
+  updateLiveInfo({ layoutTemplate: 0 });
+});
 </script>
 
 <style lang="scss" scoped>

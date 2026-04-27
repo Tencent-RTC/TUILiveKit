@@ -108,8 +108,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed, onUnmounted, watch, Teleport } from 'vue';
-import TUIRoomEngine, { TUIAutoPlayCallbackInfo, TUIRoomEvents } from '@tencentcloud/tuiroom-engine-js';
-import { TUIButton, IconClose, IconLike, TUIDialog, TUIToast, useUIKit, TUIMessageBox } from '@tencentcloud/uikit-base-component-vue3';
+import { TUIButton, IconClose, IconLike, TUIDialog, TUIToast, useUIKit } from '@tencentcloud/uikit-base-component-vue3';
 import {
   LiveAudienceList,
   LiveCoreView,
@@ -121,7 +120,6 @@ import {
   useLoginState,
   Avatar,
   useLiveSeatState,
-  useRoomEngine,
   LiveListEvent,
   useLiveGiftState,
   LiveGiftEvents,
@@ -151,17 +149,12 @@ watch(isMessageMuted, (newVal, oldVal) => {
 });
 const { canvas } = useLiveSeatState();
 const { giftInfoList, sendLikes, subscribeEvent: subscribeGiftEvent, unsubscribeEvent: unsubscribeGiftEvent } = useLiveGiftState();
-const roomEngine = useRoomEngine();
-TUIRoomEngine.once('ready', () => {
-  roomEngine.instance?.on(TUIRoomEvents.onAutoPlayFailed, handleAutoPlayFailed);
-});
 const audienceListPanelVisible = ref(false);
 const leaveLiveDialogVisible = ref(false);
 const liveEndVisible = ref(false);
 const leaveLiveText = ref('');
 const liveOwnerName = ref('');
 const liveOwnerAvatar = ref('');
-const autoPlayFailedHandled = ref(false);
 
 // Like animation component ref
 const likeAnimationRef = ref<InstanceType<typeof LikeAnimation> | null>(null);
@@ -201,7 +194,6 @@ onUnmounted(async () => {
   }
   unsubscribeEvent(LiveListEvent.onKickedOutOfLive, handleKickedOutOfLive);
   unsubscribeGiftEvent(LiveGiftEvents.ON_RECEIVE_LIKES_MESSAGE, handleReceiveLikesMessage);
-  roomEngine.instance?.off(TUIRoomEvents.onAutoPlayFailed, handleAutoPlayFailed);
 });
 
 function handleLeaveLive() {
@@ -268,21 +260,6 @@ async function showAudienceList() {
   audienceListPanelVisible.value = true;
 }
 
-function handleAutoPlayFailed(event: TUIAutoPlayCallbackInfo) {
-  if (!currentLive.value?.liveId || autoPlayFailedHandled.value) {
-    return;
-  }
-  autoPlayFailedHandled.value = true;
-  TUIMessageBox.alert({
-    content: t('Content is ready. Click the button to start playback'),
-    confirmText: t('Play'),
-    callback: () => {
-      autoPlayFailedHandled.value = false;
-      event.resume();
-    },
-  });
-}
-
 function preventScroll(event: any) {
   event.preventDefault();
 }
@@ -295,7 +272,6 @@ function handleBarrageInputBlur() {
   window.removeEventListener('touchmove', preventScroll);
   window.scrollTo({ top: 0, behavior: 'instant' });
 }
-
 </script>
 
 <style lang="scss" scoped>

@@ -19,7 +19,7 @@
         <TUIInput
           v-model="form.liveName"
           :placeholder="t('Please enter the live name')"
-          :maxLength="20"
+          :maxLength="100"
           :spellcheck="false"
         />
       </div>
@@ -65,7 +65,7 @@ const { t } = useUIKit();
 const settingPanelVisible = ref(false);
 const coverType = ref<CoverType>('landscape');
 const uploadConfig = ref<UploadConfig>({
-  enabled: false,
+  enabled: true,
   provider: 'none',
 });
 const form = ref<LiveSettingForm>({

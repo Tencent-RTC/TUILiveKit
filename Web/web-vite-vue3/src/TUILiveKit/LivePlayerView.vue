@@ -1,6 +1,6 @@
 <template>
   <div class="live-player-view">
-    <LivePlayer :liveId="props.liveId" @leaveLive="emit('leaveLive')" />
+    <LivePlayer :live-id="props.liveId" @leave-live="emit('leaveLive')" />
   </div>
 </template>
 
@@ -18,11 +18,18 @@ const emit = defineEmits(['leaveLive']);
 const { t } = useUIKit();
 
 onMounted(() => {
-  let timer: number;
-  timer = setTimeout(() => {
+  const timer = setTimeout(() => {
     clearTimeout(timer);
     const [navigation] = performance.getEntriesByType('navigation');
-    if (navigation?.type === 'reload' && isSafariBrowser() && document.querySelector('.tcplayer')) {
+    const isEducationPreset = !!document.querySelector('.style-preset-education');
+    const hasCustomAutoplayPrompt = !!document.querySelector('.autoplay-overlay');
+    if (
+      navigation?.type === 'reload'
+      && isSafariBrowser()
+      && document.querySelector('.tcplayer')
+      && !isEducationPreset
+      && !hasCustomAutoplayPrompt
+    ) {
       TUIMessageBox.alert({
         content: t('Content is ready. Click the button to start playback'),
         confirmText: t('Play'),
@@ -30,7 +37,7 @@ onMounted(() => {
       });
     }
   }, 3000) as unknown as number;
-})
+});
 </script>
 
 <style lang="scss" scoped>
