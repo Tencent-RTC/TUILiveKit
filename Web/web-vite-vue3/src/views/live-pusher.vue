@@ -1,7 +1,7 @@
 <template>
   <div class="live-pusher-container">
     <LiveHeader />
-    <LivePusherView @leave-live="onLeaveLive" />
+    <LivePusherView v-if="loginUserInfo?.userId" @leave-live="onLeaveLive" />
   </div>
 </template>
 

@@ -1,4 +1,5 @@
 import { createApp } from 'vue';
+import 'tuikit-atomicx-vue3/live';
 import App from '@/App.vue';
 import router from './router/index';
 

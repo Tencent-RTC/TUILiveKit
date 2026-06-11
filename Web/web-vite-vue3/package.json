@@ -1,6 +1,6 @@
 {
   "name": "@tencentcloud/live-uikit-vue",
-  "version": "5.9.0",
+  "version": "6.2.0",
   "scripts": {
     "dev": "vite --force",
     "dev:business": "cross-env STYLE_PRESET=business vite --force",
@@ -11,14 +11,15 @@
     "upload-server:bootstrap": "npm --prefix ./upload-server install",
     "dev:with-upload-server": "concurrently \"npm run dev\" \"npm run upload-server\"",
     "build": "vite build",
+    "build:debug": "cross-env DEBUG_MODE=true vite build",
     "build:business": "cross-env STYLE_PRESET=business vite build",
     "build:local": "vite build",
     "preview": "vite preview",
     "lint": "./node_modules/.bin/eslint ./src --no-error-on-unmatched-pattern"
   },
   "dependencies": {
-    "@tencentcloud/tuiroom-engine-js": "~4.0.5",
-    "@tencentcloud/uikit-base-component-vue3": "1.4.3",
+    "@tencentcloud/tuiroom-engine-js": "~4.1.2-beta.2",
+    "@tencentcloud/uikit-base-component-vue3": "1.4.4",
     "@tencentcloud/universal-api": "^2.0.9",
     "axios": "^0.27.2",
     "js-cookie": "^3.0.1",
@@ -26,7 +27,7 @@
     "pinia": "^2.0.13",
     "qs": "^6.10.3",
     "rtc-detect": "^1.0.3",
-    "tuikit-atomicx-vue3": "5.9.0",
+    "tuikit-atomicx-vue3": "6.2.0",
     "vue": "^3.2.25",
     "vue-i18n": "^9.10.2",
     "vue-router": "^4.0.14"
@@ -38,7 +39,6 @@
     "@types/qs": "^6.9.7",
     "@typescript-eslint/eslint-plugin": "^5.19.0",
     "@typescript-eslint/parser": "^5.19.0",
-    "@vitejs/plugin-legacy": "^5.4.3",
     "@vitejs/plugin-vue": "^5.0.4",
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",

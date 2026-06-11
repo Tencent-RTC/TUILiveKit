@@ -5,6 +5,7 @@
  */
 export enum TUISeatLayoutTemplate {
   LandscapeDynamic_1v3 = 200,
+  LandscapeDynamic_1v1 = 400,
   PortraitDynamic_Grid9 = 600,
   PortraitDynamic_1v6 = 601,
   PortraitFixed_Grid9 = 800,

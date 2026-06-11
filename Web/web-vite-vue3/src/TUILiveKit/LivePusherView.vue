@@ -1,6 +1,16 @@
 <template>
   <div id="live-pusher-view" class="live-pusher-main">
-    <div class="main-left">
+    <!--
+      Defer mounting the entire pusher subtree until the WebRTC
+      capability probe has passed. Without this gate, an unsupported
+      browser would still trigger LiveScenePanel / StreamMixer /
+      LiveAudienceList side-effects (camera preview init, etc.) before
+      the parent reacted to leaveLive. The TUIDialog below is left
+      out of the gate on purpose: it is dormant by default
+      (exitLiveDialogVisible === false) and has no RTC side-effect.
+    -->
+    <template v-if="rtcSupportChecked">
+      <div class="main-left">
       <div class="main-left-top">
         <div class="main-left-top-title card-title">
           <div class="title-text">
@@ -130,6 +140,7 @@
       </div>
     </div>
     <LivePusherNotification />
+    </template>
     <TUIDialog
       v-model:visible="exitLiveDialogVisible"
       :title="t('End live')"
@@ -218,6 +229,7 @@ import LivePusherNotification from './component/LivePusherNotification.vue';
 import { copyToClipboard, isSvgCoverUrl } from './utils/utils';
 import { errorHandler } from './utils/errorHandler';
 import { initRoomEngineLanguage } from '../utils/utils';
+import { useWebRTCSupportGuard } from './utils/webrtcSupport';
 
 const { t } = useUIKit();
 const props = defineProps<{
@@ -227,6 +239,20 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits(['leaveLive']);
+
+// WebRTC capability guard — pusher role.
+// The pusher page has nothing useful to do when the browser cannot
+// push video. The guard shows a toast recommending Chrome and the
+// page is unwound via the existing leaveLive channel.
+const { guardLiveEntry } = useWebRTCSupportGuard();
+
+// Toggled to true only after the probe resolves AND the pusher is
+// allowed to proceed. The template's outer `v-if` reads this flag
+// so the entire pusher subtree (LiveScenePanel / StreamMixer /
+// LiveAudienceList / etc.) is never mounted on unsupported browsers,
+// avoiding wasted camera preview initialization and SDK error logs
+// during the probe-then-leave window.
+const rtcSupportChecked = ref(false);
 
 const isToolsExpanded = ref(true);
 const exitLiveDialogVisible = ref(false);
@@ -413,12 +439,11 @@ const handleEndBattle = async () => {
     exitLiveDialogVisible.value = false;
     return;
   }
+  exitLiveDialogVisible.value = false;
   try {
     await exitBattle({ battleId: currentBattleInfo.value?.battleId });
-    exitLiveDialogVisible.value = false;
   } catch (error) {
-    exitLiveDialogVisible.value = false;
-    throw error;
+    console.error('[LivePusherView] exitBattle from end-live dialog failed', error);
   }
 };
 const handleExitConnection = async () => {
@@ -426,12 +451,11 @@ const handleExitConnection = async () => {
     exitLiveDialogVisible.value = false;
     return;
   }
+  exitLiveDialogVisible.value = false;
   try {
-    exitLiveDialogVisible.value = false;
     await exitHostConnection();
   } catch (error) {
-    exitLiveDialogVisible.value = false;
-    throw error;
+    console.error('[LivePusherView] exitHostConnection from end-live dialog failed', error);
   }
 };
 const showEndLiveDialog = async () => {
@@ -459,8 +483,22 @@ const handleLiveEnded = (eventInfo: LiveListEventInfo) => {
   });
 };
 
-onMounted(() => {
+onMounted(async () => {
   subscribeEvent(LiveListEvent.onLiveEnded, handleLiveEnded);
+  // Guard the pusher entry against browsers that cannot push video.
+  // We intentionally subscribe to the live-end event first so an
+  // allowed user never misses an event during the (cached) probe.
+  // When unsupported, the guard already showed a toast; we leave
+  // via the existing channel and the global toast portal keeps the
+  // message visible across the navigation. Only flip
+  // `rtcSupportChecked` on the success path so the pusher subtree
+  // is never mounted on unsupported browsers.
+  const allowed = await guardLiveEntry('pusher');
+  if (!allowed) {
+    emit('leaveLive');
+    return;
+  }
+  rtcSupportChecked.value = true;
 });
 
 onUnmounted(() => {

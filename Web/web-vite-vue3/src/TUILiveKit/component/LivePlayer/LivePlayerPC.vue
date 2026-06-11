@@ -78,7 +78,11 @@
           <BarrageList />
         </div>
         <div class="message-input-container">
-          <BarrageInput :height="barrageInputHeight" :disabled="!isInLive" :placeholder="isInLive ? '' : t('Live not started')" />
+          <BarrageInput
+            :height="barrageInputHeight"
+            :disabled="isInputDisabled"
+            :placeholder="isInputDisabled ? t('Live is ended') : ''"
+          />
         </div>
       </div>
     </div>
@@ -121,7 +125,6 @@ import {
   IconArrowStrokeBack,
   IconUser,
   TUIButton,
-  TUIMessageBox,
   TUIToast,
   useUIKit,
   TUIDialog,
@@ -137,9 +140,7 @@ import {
   Avatar,
   LiveListEvent,
   LiveGift,
-  UIKitModal,
 } from 'tuikit-atomicx-vue3';
-import { errorHandler } from '../../utils/errorHandler';
 import LiveEndedIcon from '../../icons/live-ended.svg';
 import SeatApplicationButton from '../SeatApplication/SeatApplicationButton.vue';
 import { useSeatApplication } from '../SeatApplication/useSeatApplication';
@@ -150,6 +151,7 @@ const { audienceList } = useLiveAudienceState();
 const { currentLive, joinLive, leaveLive, subscribeEvent, unsubscribeEvent } = useLiveListState();
 const { loginUserInfo } = useLoginState();
 const isInLive = computed(() => !!currentLive.value?.liveId);
+const isInputDisabled = computed(() => liveEndedOverlayVisible.value || kickedOutOverlayVisible.value || !isInLive.value);
 
 // Mute detection: show toast when the current user is muted by the host
 const localAudience = computed(() => audienceList.value.find(item => item.userId === loginUserInfo.value?.userId));
@@ -240,37 +242,20 @@ function handleCancelExit() {
   exitLiveDialogVisible.value = false;
 }
 
-function showErrorAndLeave(content: string) {
-  TUIMessageBox.alert({
-    title: t('Unable to watch live'),
-    content,
-    confirmText: t('Back to home'),
-    showClose: false,
-    modal: false,
-    callback: () => {
-      emit('leaveLive');
-    },
-  });
-}
-
 async function handleJoinLive() {
   if (props.liveId && props.liveId.trim()) {
     try {
       await joinLive({ liveId: props.liveId });
     } catch (error: any) {
+      // Room doesn't exist or join failed — show the ended overlay so the
+      // user sees the same UI as when the host dismisses the room mid-stream.
+      // Aligned with React demo behavior.
       console.error('Failed to join live room, error:', error);
-      const errorInfo = errorHandler.parseError(error);
-      UIKitModal.openModal({
-        id: errorInfo.code,
-        title: t('Failed to join live room'),
-        content: t(errorInfo.message),
-        type: 'error',
-      });
-      emit('leaveLive');
+      liveEndedOverlayVisible.value = true;
     }
   } else {
     console.error('liveId is empty');
-    showErrorAndLeave(t('LiveId is empty'));
+    liveEndedOverlayVisible.value = true;
   }
 }
 </script>

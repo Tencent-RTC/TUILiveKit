@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
+import { useLoginState } from 'tuikit-atomicx-vue3';
 import Login from '@/views/login.vue';
 import { isH5 } from '@/TUILiveKit/utils/environment';
 
@@ -61,13 +62,56 @@ function getActiveStylePreset(routeQuery: Record<string, any>): StylePreset {
   return normalizeStylePreset(stored);
 }
 
-router.beforeEach((to, _from, next) => {
+let restoreLoginPromise: Promise<void> | null = null;
+
+async function restoreLoginIfNeeded(): Promise<void> {
+  const { loginUserInfo, login } = useLoginState();
+  if (loginUserInfo.value?.userId) {
+    return;
+  }
+  if (restoreLoginPromise) {
+    return restoreLoginPromise;
+  }
+  const stored = sessionStorage.getItem('tuiLive-userInfo');
+  if (!stored) {
+    return;
+  }
+  restoreLoginPromise = (async () => {
+    try {
+      const liveUserInfo = JSON.parse(stored);
+      if (!liveUserInfo?.userID || !liveUserInfo?.userSig || !liveUserInfo?.SDKAppID) {
+        sessionStorage.removeItem('tuiLive-userInfo');
+        return;
+      }
+      await login({
+        userId: liveUserInfo.userID,
+        userSig: liveUserInfo.userSig,
+        sdkAppId: liveUserInfo.SDKAppID,
+        testEnv: localStorage.getItem('tuikit-live-env') === 'TestEnv',
+      });
+    } catch (error) {
+      console.error('[router] Failed to restore login state:', error);
+      sessionStorage.removeItem('tuiLive-userInfo');
+    } finally {
+      restoreLoginPromise = null;
+    }
+  })();
+  return restoreLoginPromise;
+}
+
+router.beforeEach(async (to, _from, next) => {
   if (to.path === '/login') {
     next();
     return;
   }
   const userInfo = sessionStorage.getItem('tuiLive-userInfo');
   if (!userInfo) {
+    next({ path: '/login', query: { ...to.query, from: to.path } });
+    return;
+  }
+
+  await restoreLoginIfNeeded();
+  if (!useLoginState().loginUserInfo.value?.userId) {
     next({ path: '/login', query: { ...to.query, from: to.path } });
     return;
   }
