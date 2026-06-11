@@ -1,21 +1,23 @@
 <template>
-  <div v-if="visible" class="drawer-mask" @click="onMaskClick">
-    <transition name="drawer-slide-up">
-      <div class="drawer-panel" :style="panelStyle" @click.stop v-show="visible">
-        <div class="drawer-header">
-          <TUIIcon color="#fff" size="48px" :icon="IconArrowStrokeBack" class="drawer-back" @click="onBackClick" />
-          <div class="drawer-title">{{ title }}</div>
+  <transition name="drawer-mask-fade">
+    <div v-show="visible" class="drawer-mask" @click="onMaskClick">
+      <transition name="drawer-slide-up">
+        <div v-show="visible" class="drawer-panel" :style="panelStyle" @click.stop>
+          <div v-if="showBack || title" class="drawer-header">
+            <TUIIcon v-if="showBack" color="var(--text-color-button)" size="48px" :icon="IconArrowStrokeBack" class="drawer-back" @click="onBackClick" />
+            <div class="drawer-title">{{ title }}</div>
+          </div>
+          <div class="drawer-content">
+            <slot></slot>
+          </div>
         </div>
-        <div class="drawer-content">
-          <slot></slot>
-        </div>
-      </div>
-    </transition>
-  </div>
+      </transition>
+    </div>
+  </transition>
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps, defineEmits } from 'vue';
+import { computed } from 'vue';
 import { TUIIcon, IconArrowStrokeBack } from '@tencentcloud/uikit-base-component-vue3';
 
 const props = defineProps({
@@ -43,6 +45,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  showBack: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 const emits = defineEmits(['update:visible']);
@@ -66,10 +72,8 @@ const panelStyle = computed(() => {
       borderTopLeftRadius: '12px',
       borderTopRightRadius: '12px',
       position: 'fixed' as const,
-      background: '#22262E',
+      background: 'var(--bg-color-dialog)',
       zIndex: props.zIndex + 1,
-      transition: 'transform 0.3s cubic-bezier(.4,0,.2,1)',
-      transform: props.visible ? 'translateY(0)' : 'translateY(100%)',
       boxShadow: '0 -2px 8px rgba(0,0,0,0.08)',
       display: 'flex' as const,
       flexDirection: 'column' as const,
@@ -82,8 +86,11 @@ const panelStyle = computed(() => {
 <style scoped lang="scss">
 .drawer-mask {
   position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: var(--bg-color-mask);
   z-index: v-bind('props.zIndex');
   display: flex;
   align-items: flex-end;
@@ -96,13 +103,13 @@ const panelStyle = computed(() => {
   display: flex;
   flex-direction: column;
   padding: 0;
-  background-color: #22262e;
+  background-color: var(--bg-color-dialog);
 }
 .drawer-header {
   display: flex;
   align-items: center;
   height: 48px;
-  color: #fff;
+  color: var(--text-color-button);
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
   font-size: 17px;
@@ -121,7 +128,7 @@ const panelStyle = computed(() => {
   text-align: center;
   font-size: 17px;
   font-weight: 500;
-  color: #fff;
+  color: var(--text-color-button);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -129,8 +136,16 @@ const panelStyle = computed(() => {
 .drawer-content {
   flex: 1;
   overflow-y: auto;
-  color: #fff;
+  color: var(--text-color-button);
   padding: 16px;
+}
+.drawer-mask-fade-enter-active,
+.drawer-mask-fade-leave-active {
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.drawer-mask-fade-enter-from,
+.drawer-mask-fade-leave-to {
+  opacity: 0;
 }
 .drawer-slide-up-enter-active,
 .drawer-slide-up-leave-active {

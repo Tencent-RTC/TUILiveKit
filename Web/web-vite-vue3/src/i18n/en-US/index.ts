@@ -2,6 +2,8 @@ export const resource = {
   Login: 'Login',
   Logout: 'Logout',
   LoginLoading: 'Login...',
+  'Login.PhoneLogin': 'Phone Login',
+  'Login.UserIDLogin': 'UserID Login',
   'It is detected that you have an unfinished live broadcast session last time. Do you want to resume it?': 'It is detected that you have an unfinished live broadcast session last time. Do you want to resume it?',
   Warning: 'Warning',
   'Unable to view own live': 'Unable to view own live',
@@ -32,4 +34,11 @@ export const resource = {
   'The number of rooms has reached the limit of the payment': 'The number of rooms has reached the limit of the payment, please go to the <a target="_blank" href="https://console.trtc.io/subscription/buy/live">Tencent Cloud Console</a> to purchase or upgrade your plan.',
   'Room is not existed.': 'Room is not existed, please check the room ID.',
   'Not allowed to refresh in picture-in-picture mode': 'Not allowed to refresh in picture-in-picture mode',
+  'Account logged in elsewhere': 'Account logged in elsewhere',
+  'Your account has been logged in on another device. You have been disconnected.': 'Your account has been logged in on another device. You have been disconnected.',
+  'Back to login': 'Back to login',
+  // Browser WebRTC capability guidance — surfaced when the current browser
+  // cannot pull or push live streams. A single message is reused across
+  // every guard surface (entry / apply-for-seat / video-co-broadcast).
+  'Browser audio/video capability is incomplete, the latest Chrome is recommended.': 'Browser audio/video capability is incomplete, the latest Chrome is recommended.',
 };

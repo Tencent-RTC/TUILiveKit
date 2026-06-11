@@ -47,6 +47,7 @@ export const resource = {
   'Online Live': '在线直播',
   'Layout Settings': '布局设置',
   'Landscape Template': '横屏模版',
+  'Landscape 1v1 Layout': '横屏 1v1 布局',
   'Video Source': '画面源',
   'Dynamic Grid9 Layout': '动态宫格布局',
   'Fixed Grid9 Layout': '静态宫格布局',
@@ -111,6 +112,11 @@ export const resource = {
   'Choose co-broadcasting method, connect after the host agrees': '选择连麦方式，主播同意后接通',
   'Apply for video co-broadcasting': '申请视频连麦',
   'Apply for audio co-broadcasting': '申请语音连麦',
+  'Pending approval': '待通过',
+  'Adjust video co-broadcasting': '调整视频连麦画面',
+  'Flip': '翻转',
+  'Apply for co-broadcasting': '申请连麦',
+  'Effects will apply after connection': '接通后画面效果将自动生效',
   'Select audio and video devices': '设备选择',
   Microphone: '麦克风',
   Camera: '摄像头',
@@ -121,6 +127,37 @@ export const resource = {
   'Failed to leave seat': '断开连麦失败',
   'Failed to open camera': '打开摄像头失败',
   'Failed to open microphone': '打开麦克风失败',
+  'Failed to open device. You have been removed from the seat.':
+    '设备开启失败，已为您下麦',
+  'Microphone access was denied. Please allow it and try again.':
+    '麦克风权限被拒绝，请允许后重试',
+  'Camera access was denied. Please allow it and try again.':
+    '摄像头权限被拒绝，请允许后重试',
+  'Microphone is blocked. Please enable it in your browser site settings and try again.':
+    '麦克风权限已被禁用，请前往浏览器网站设置中开启后重试',
+  'Camera is blocked. Please enable it in your browser site settings and try again.':
+    '摄像头权限已被禁用，请前往浏览器网站设置中开启后重试',
+  'No camera or microphone detected on this device.':
+    '未检测到摄像头或麦克风设备',
+  'No microphone detected on this device.':
+    '未检测到麦克风设备',
+  'Your camera or microphone is being used by another app. Please close it and try again.':
+    '摄像头或麦克风被其它应用占用，请关闭后重试',
+  'Failed to access camera or microphone. Please try again.':
+    '摄像头或麦克风启动失败，请重试',
+  // Permission primer drawer (H5)
+  'Allow microphone access': '开启麦克风权限',
+  'Allow camera and microphone access': '开启摄像头和麦克风权限',
+  'Microphone access is blocked': '麦克风权限已被禁用',
+  'Camera and microphone access is blocked': '摄像头和麦克风权限已被禁用',
+  'To co-broadcast, we need access to your microphone. Please tap "Allow" in the browser prompt that follows.':
+    '为了与大家连麦互动，我们需要使用您的麦克风。请在接下来的浏览器提示中点击「允许」。',
+  'To co-broadcast, we need access to your camera and microphone. Please tap "Allow" in the browser prompt that follows.':
+    '为了与大家连麦互动，我们需要使用您的摄像头和麦克风。请在接下来的浏览器提示中点击「允许」。',
+  'Permission is blocked at the site level. Please enable it in your browser settings, then tap "I have enabled it" to retry.':
+    '当前站点的权限已被禁用。请前往浏览器设置中开启权限后，点击「我已开启，重试」。',
+  'Continue': '继续',
+  'I have enabled it, retry': '我已开启，重试',
   'Off Camera': '摄像头已关闭',
   'Unable to watch live': '当前无法观看直播',
   'You have been removed from the live room and cannot watch the live stream': '您已被移出直播间，暂无法观看直播',
@@ -135,6 +172,7 @@ export const resource = {
   'The host\'s seat position exceeds the layout restriction in the mic mode': '主播麦位位置超出连麦模式布局限制',
   'You are currently co-guesting with other streamers. Would you like to [End Live] ?': '当前处于连麦状态，是否需要「关闭直播间」',
   LiveExitConfirmCoGuestTip: '当前处于连麦状态，是否需要「断开连麦」或「退出直播间」',
+  'You are applying for co-guesting. Leave the live room? Your pending application will be cancelled.': '您正在申请连麦，确认离开直播间？离开后申请将自动取消。',
   'End Co-guest': '断开连麦',
   'Exit Live': '退出直播间',
   'The new layout cannot display all users on the seat': '新布局无法展示所有麦上用户',
@@ -223,6 +261,10 @@ export const resource = {
   'Untitled Session': '未命名课程',
   'You have been muted in this room': '当前房间内，您已被禁言',
   'You have been unmuted in this room': '当前房间内，您已被解除禁言',
+  'Your microphone permission has been disabled by the host': '主播已关闭您的麦克风权限',
+  'Your camera permission has been disabled by the host': '主播已关闭您的摄像头权限',
+  'The host has restored your microphone permission. Please turn on the microphone manually.': '主播已恢复您的麦克风权限，请手动开启麦克风',
+  'The host has restored your camera permission. Please turn on the camera manually.': '主播已恢复您的摄像头权限，请手动开启摄像头',
   'The live room has been closed': '直播间已关闭',
   'Stream closed due to content violation': '直播内容违规已被强制关播',
 };

@@ -175,8 +175,11 @@ watch(
     if (visible && connectionType === 'video' && cameraId) {
       try {
         isCameraTestLoading.value = true;
-        await previewTRTCCloud.setCurrentCameraDevice(cameraId);
-        await previewTRTCCloud.startCameraDeviceTest(previewId.value);
+        await previewTRTCCloud.setCurrentCameraDevice(cameraId as string);
+        const previewElement = document.getElementById(previewId.value);
+        if (previewElement) {
+          await previewTRTCCloud.startCameraDeviceTest(previewElement);
+        }
         isCameraTesting.value = true;
         isCameraTestLoading.value = false;
       } catch (error) {
