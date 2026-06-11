@@ -41,7 +41,7 @@
         </div>
       </div>
       <div class="divider" />
-      <AudioSettingPanel />
+      <AudioSettingPanel :output-volume-visible="false" />
     </div>
     <template #footer>
       <div />

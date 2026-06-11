@@ -2,6 +2,8 @@ export const resource = {
   Login: '登录',
   Logout: '退出',
   LoginLoading: '登录中...',
+  'Login.PhoneLogin': '手机号登录',
+  'Login.UserIDLogin': '用户 ID 登录',
   'It is detected that you have an unfinished live broadcast session last time. Do you want to resume it?': '检测到您上次直播未结束，是否恢复直播？',
   Warning: '警告',
   'Unable to view own live': '无法观看自己的直播',
@@ -32,4 +34,11 @@ export const resource = {
   'The number of rooms has reached the limit of the payment': '当前房间数量已达到套餐上限，请前往<a target="_blank" href="https://buy.cloud.tencent.com/trtc">腾讯云控制台</a>购买或者升级套餐包。',
   'Room is not existed.': '房间不存在，请检查房间ID。',
   'Not allowed to refresh in picture-in-picture mode': '画中画模式下不允许刷新操作',
+  'Account logged in elsewhere': '账号在其他设备登录',
+  'Your account has been logged in on another device. You have been disconnected.': '您的账号已在其他设备登录，当前连接已断开。',
+  'Back to login': '返回登录',
+  // Browser WebRTC capability guidance — surfaced when the current browser
+  // cannot pull or push live streams. A single message is reused across
+  // every guard surface (entry / apply-for-seat / video-co-broadcast).
+  'Browser audio/video capability is incomplete, the latest Chrome is recommended.': '当前浏览器音视频能力支持不完整，推荐使用最新版 Chrome',
 };

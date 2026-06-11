@@ -47,6 +47,7 @@ export const resource = {
   'Online Live': 'Online Live',
   'Layout Settings': 'Layout Settings',
   'Landscape Template': 'Landscape Template',
+  'Landscape 1v1 Layout': 'Landscape 1v1 Layout',
   'Video Source': 'Video Source',
   'Dynamic Grid9 Layout': 'Dynamic Grid9 Layout',
   'Fixed Grid9 Layout': 'Fixed Grid9 Layout',
@@ -111,6 +112,11 @@ export const resource = {
   'Choose co-broadcasting method, connect after the host agrees': 'Choose co-broadcasting method, connect after the host agrees',
   'Apply for video co-broadcasting': 'Apply for video co-broadcasting',
   'Apply for audio co-broadcasting': 'Apply for audio co-broadcasting',
+  'Pending approval': 'Pending',
+  'Adjust video co-broadcasting': 'Adjust video',
+  'Flip': 'Flip',
+  'Apply for co-broadcasting': 'Apply',
+  'Effects will apply after connection': 'Effects will apply after connection',
   'Select audio and video devices': 'Select devices',
   Microphone: 'Microphone',
   Camera: 'Camera',
@@ -121,6 +127,37 @@ export const resource = {
   'Failed to leave seat': 'Failed to leave seat',
   'Failed to open camera': 'Failed to open camera',
   'Failed to open microphone': 'Failed to open microphone',
+  'Failed to open device. You have been removed from the seat.':
+    'Failed to open device. You have been removed from the seat.',
+  'Microphone access was denied. Please allow it and try again.':
+    'Microphone access was denied. Please allow it and try again.',
+  'Camera access was denied. Please allow it and try again.':
+    'Camera access was denied. Please allow it and try again.',
+  'Microphone is blocked. Please enable it in your browser site settings and try again.':
+    'Microphone is blocked. Please enable it in your browser site settings and try again.',
+  'Camera is blocked. Please enable it in your browser site settings and try again.':
+    'Camera is blocked. Please enable it in your browser site settings and try again.',
+  'No camera or microphone detected on this device.':
+    'No camera or microphone detected on this device.',
+  'No microphone detected on this device.':
+    'No microphone detected on this device.',
+  'Your camera or microphone is being used by another app. Please close it and try again.':
+    'Your camera or microphone is being used by another app. Please close it and try again.',
+  'Failed to access camera or microphone. Please try again.':
+    'Failed to access camera or microphone. Please try again.',
+  // Permission primer drawer (H5)
+  'Allow microphone access': 'Allow microphone access',
+  'Allow camera and microphone access': 'Allow camera and microphone access',
+  'Microphone access is blocked': 'Microphone access is blocked',
+  'Camera and microphone access is blocked': 'Camera and microphone access is blocked',
+  'To co-broadcast, we need access to your microphone. Please tap "Allow" in the browser prompt that follows.':
+    'To co-broadcast, we need access to your microphone. Please tap "Allow" in the browser prompt that follows.',
+  'To co-broadcast, we need access to your camera and microphone. Please tap "Allow" in the browser prompt that follows.':
+    'To co-broadcast, we need access to your camera and microphone. Please tap "Allow" in the browser prompt that follows.',
+  'Permission is blocked at the site level. Please enable it in your browser settings, then tap "I have enabled it" to retry.':
+    'Permission is blocked at the site level. Please enable it in your browser settings, then tap "I have enabled it" to retry.',
+  'Continue': 'Continue',
+  'I have enabled it, retry': 'I have enabled it, retry',
   'Off Camera': 'Off Camera',
   'Unable to watch live': 'Unable to watch live',
   'You have been removed from the live room and cannot watch the live stream': 'You have been removed from the live room and cannot watch the live stream',
@@ -135,6 +172,7 @@ export const resource = {
   'The host\'s seat position exceeds the layout restriction in the mic mode': 'The host\'s seat position exceeds the layout restriction in the mic mode',
   'You are currently co-guesting with other streamers. Would you like to [End Live] ?': 'You are currently co-guesting with other streamers. Would you like to [End Live] ?',
   LiveExitConfirmCoGuestTip: 'You are currently co-guesting with other streamers. Would you like to [End Co-guest] or [Exit Live] ?',
+  'You are applying for co-guesting. Leave the live room? Your pending application will be cancelled.': 'You are applying for co-guesting. Leave the live room? Your pending application will be cancelled.',
   'End Co-guest': 'End Co-guest',
   'Exit Live': 'Exit Live',
   'The new layout cannot display all users on the seat': 'The new layout cannot display all users on the seat',
@@ -223,6 +261,10 @@ export const resource = {
   'Untitled Session': 'Untitled Session',
   'You have been muted in this room': 'You have been muted in this room',
   'You have been unmuted in this room': 'You have been unmuted in this room',
+  'Your microphone permission has been disabled by the host': 'Your microphone permission has been disabled by the host',
+  'Your camera permission has been disabled by the host': 'Your camera permission has been disabled by the host',
+  'The host has restored your microphone permission. Please turn on the microphone manually.': 'The host has restored your microphone permission. Please turn on the microphone manually.',
+  'The host has restored your camera permission. Please turn on the camera manually.': 'The host has restored your camera permission. Please turn on the camera manually.',
   'The live room has been closed': 'The live room has been closed',
   'Stream closed due to content violation': 'Stream closed due to content violation',
 };

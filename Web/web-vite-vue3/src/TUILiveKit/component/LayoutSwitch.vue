@@ -57,6 +57,7 @@ import DynamicGrid9 from '../icons/dynamic-grid9.vue';
 import Fixed1v6 from '../icons/fixed-1v6.vue';
 import FixedGrid9 from '../icons/fixed-grid9.vue';
 import HorizontalFloat from '../icons/horizontal-float.vue';
+import Horizontal1v1 from '../icons/horizontal-1v1.vue';
 
 const { t } = useUIKit();
 const { currentLive, updateLiveInfo } = useLiveListState();
@@ -107,6 +108,12 @@ const horizontalLayoutOptions = computed(() => [
     icon: HorizontalFloat,
     templateId: TUISeatLayoutTemplate.LandscapeDynamic_1v3,
     label: t('Landscape Template'),
+  },
+  {
+    id: 'LandscapeDynamic_1v1',
+    icon: Horizontal1v1,
+    templateId: TUISeatLayoutTemplate.LandscapeDynamic_1v1,
+    label: t('Landscape 1v1 Layout'),
   },
 ]);
 
