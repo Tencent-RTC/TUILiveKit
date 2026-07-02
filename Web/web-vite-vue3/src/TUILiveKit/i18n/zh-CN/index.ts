@@ -87,6 +87,7 @@ export const resource = {
   Play: '开始播放',
   'Failed to end live': '结束直播失败',
   'You are currently live streaming. Do you want to end it?': '您当前正在直播，确定要结束吗？',
+  'You are currently live streaming and in a PK battle. Are you sure you want to exit?': '您正在直播，且处于 PK 状态，确定要结束直播吗？',
   'You are currently live streaming. Logging out will automatically end the live stream. Are you sure you want to log out?': '您当前正在直播中，退出登录将自动结束直播，确认退出吗？',
   'End live failed when log out': '退出登录时结束直播失败',
   'Received battle invitation from userName': '收到{{userName}}的PK邀请',
@@ -267,4 +268,5 @@ export const resource = {
   'The host has restored your camera permission. Please turn on the camera manually.': '主播已恢复您的摄像头权限，请手动开启摄像头',
   'The live room has been closed': '直播间已关闭',
   'Stream closed due to content violation': '直播内容违规已被强制关播',
+  'The current display or content may pose a violation risk. Please be aware of the platform regulations': '当前画面或内容存在违规风险，请注意平台规范',
 };
