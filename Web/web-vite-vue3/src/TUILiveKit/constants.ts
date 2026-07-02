@@ -14,3 +14,18 @@ export function parseLiveErrorMessage(error: string) {
   }
   return '';
 }
+
+/**
+ * Battle (PK) invitation timeout in seconds, used by `LivePusherNotification`
+ * on the invitee side to start the accept/reject countdown. Kept in sync with
+ * `BATTLE_REQUEST_TIMEOUT_SECONDS` declared in:
+ *   - ui-component/packages/uikit-component-vue3/.../CoHostPanel/constants.ts
+ *   - ui-component/packages/uikit-component-vue3-electron/.../CoHostPanel/constants.ts
+ *   - live/demos/electron-webpack-vue3/.../CoHostPanel/constants.ts
+ * The SDK does not propagate the inviter-side timeout via `BattleRequestReceivedEventInfo`,
+ * so the invitee falls back to this client-local constant. If the constant
+ * diverges across files the invitee countdown will desync from the inviter
+ * timeout, but no other behavior changes.
+ */
+export const BATTLE_REQUEST_TIMEOUT_SECONDS = 30;
+

@@ -87,6 +87,7 @@ export const resource = {
   Play: 'Play',
   'Failed to end live': 'Failed to end live',
   'You are currently live streaming. Do you want to end it?': 'You are currently live streaming. Do you want to end it?',
+  'You are currently live streaming and in a PK battle. Are you sure you want to exit?': 'You are currently live streaming and in a PK battle. Are you sure you want to end the live stream?',
   'You are currently live streaming. Logging out will automatically end the live stream. Are you sure you want to log out?': 'You are currently live streaming. Logging out will automatically end the live stream. Are you sure you want to log out?',
   'End live failed when log out': 'End live failed when log out',
   'Received battle invitation from userName': 'Received battle invitation from {{userName}}',
@@ -267,4 +268,5 @@ export const resource = {
   'The host has restored your camera permission. Please turn on the camera manually.': 'The host has restored your camera permission. Please turn on the camera manually.',
   'The live room has been closed': 'The live room has been closed',
   'Stream closed due to content violation': 'Stream closed due to content violation',
+  'The current display or content may pose a violation risk. Please be aware of the platform regulations': 'The current display or content may pose a violation risk. Please be aware of the platform regulations',
 };

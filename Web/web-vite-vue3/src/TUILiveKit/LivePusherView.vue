@@ -37,7 +37,7 @@
           </div>
         </div>
         <div
-          v-if="isToolsExpanded"
+          v-show="isToolsExpanded"
           class="main-left-bottom-tools"
         >
           <CoGuestButton />
@@ -161,15 +161,7 @@
             {{ t('End live') }}
           </TUIButton>
           <TUIButton
-            v-if="currentBattleInfo?.battleId"
-            type="primary"
-            color="red"
-            @click="handleEndBattle"
-          >
-            {{ t('End battle') }}
-          </TUIButton>
-          <TUIButton
-            v-else-if="coHostStatus === CoHostStatus.Connected"
+            v-if="coHostStatus === CoHostStatus.Connected && !currentBattleInfo?.battleId"
             type="primary"
             color="red"
             @click="handleExitConnection"
@@ -183,8 +175,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineProps, ref, onMounted, onUnmounted } from 'vue';
-import TUIRoomEngine, { TUISeatMode } from '@tencentcloud/tuiroom-engine-js';
+import { computed, ref, onMounted, onUnmounted } from 'vue';
+import { TUISeatMode } from '@tencentcloud/tuiroom-engine-js';
 import {
   IconArrowStrokeBack,
   TUIDialog,
@@ -202,6 +194,7 @@ import {
   LiveAudienceList,
   BarrageList,
   BarrageInput,
+  useBarrageState,
   useLiveListState,
   useLiveAudienceState,
   useLoginState,
@@ -216,6 +209,8 @@ import {
   LiveListEvent,
   LiveEndedReason,
   LiveListEventInfo,
+  BarrageEvent,
+  Barrage,
 } from 'tuikit-atomicx-vue3';
 import CoGuestButton from './component/CoGuestButton.vue';
 import CoHostButton from './component/CoHostButton.vue';
@@ -257,13 +252,15 @@ const rtcSupportChecked = ref(false);
 const isToolsExpanded = ref(true);
 const exitLiveDialogVisible = ref(false);
 const { loginUserInfo } = useLoginState();
-const { currentLive, startLive, endLive, joinLive, subscribeEvent, unsubscribeEvent, updateLiveInfo } = useLiveListState();
+const { currentLive, startLive, endLive, joinLive, subscribeEvent: subscribeLiveListEvent, unsubscribeEvent: unsubscribeLiveListEvent, updateLiveInfo } = useLiveListState();
 const roomEngine = useRoomEngine();
 const { audienceCount } = useLiveAudienceState();
 const { openLocalMicrophone } = useDeviceState();
 const { coHostStatus, exitHostConnection } = useCoHostState();
-const { currentBattleInfo, exitBattle } = useBattleState();
+const { currentBattleInfo } = useBattleState();
 const { connected: coGuestConnected } = useCoGuestState();
+const { subscribeEvent: subscribeBarrageEvent, unsubscribeEvent: unsubscribeBarrageEvent} = useBarrageState();
+
 const isInLive = computed(() => !!currentLive.value?.liveId);
 const loading = ref(false);
 const liveParamsEditForm = ref({
@@ -284,7 +281,7 @@ const liveParams = computed(() => ({
 
 const endLiveDialogMessage = computed(() => {
   if (currentBattleInfo.value?.battleId) {
-    return t('Currently in PK state, do you need to "end PK" or "end live broadcast"');
+    return t('You are currently live streaming and in a PK battle. Are you sure you want to exit?');
   }
   if (coHostStatus.value === CoHostStatus.Connected) {
     return t('Currently connected, do you need to "exit connection" or "end live broadcast"');
@@ -434,18 +431,6 @@ const handleEndLive = async () => {
     throw error;
   }
 };
-const handleEndBattle = async () => {
-  if (!currentBattleInfo.value?.battleId) {
-    exitLiveDialogVisible.value = false;
-    return;
-  }
-  exitLiveDialogVisible.value = false;
-  try {
-    await exitBattle({ battleId: currentBattleInfo.value?.battleId });
-  } catch (error) {
-    console.error('[LivePusherView] exitBattle from end-live dialog failed', error);
-  }
-};
 const handleExitConnection = async () => {
   if (coHostStatus.value === CoHostStatus.Disconnected) {
     exitLiveDialogVisible.value = false;
@@ -483,8 +468,18 @@ const handleLiveEnded = (eventInfo: LiveListEventInfo) => {
   });
 };
 
+const handleCustomMessageReceived = (barrage: Barrage) => {
+  if (barrage.businessId === 'violation_alert') {
+    TUIToast.warning({
+      message: t('The current display or content may pose a violation risk. Please be aware of the platform regulations'),
+      duration: 3000,
+    });
+  }  
+};
+
 onMounted(async () => {
-  subscribeEvent(LiveListEvent.onLiveEnded, handleLiveEnded);
+  subscribeLiveListEvent(LiveListEvent.onLiveEnded, handleLiveEnded);
+  subscribeBarrageEvent(BarrageEvent.onCustomMessageReceived, handleCustomMessageReceived)
   // Guard the pusher entry against browsers that cannot push video.
   // We intentionally subscribe to the live-end event first so an
   // allowed user never misses an event during the (cached) probe.
@@ -502,7 +497,8 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
-  unsubscribeEvent(LiveListEvent.onLiveEnded, handleLiveEnded);
+  unsubscribeLiveListEvent(LiveListEvent.onLiveEnded, handleLiveEnded);
+  unsubscribeBarrageEvent(BarrageEvent.onCustomMessageReceived, handleCustomMessageReceived);
   updateLiveInfo({ layoutTemplate: 0 });
 });
 </script>
