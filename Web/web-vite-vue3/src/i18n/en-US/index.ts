@@ -16,6 +16,10 @@ export const resource = {
   'Please enter a valid userID': 'Please enter a valid userID',
   'Please provide a function to generate userSig': 'Please provide a function to generate userSig',
   'Start live': 'Start live',
+  // Style preset switcher options
+  Default: 'Default',
+  Business: 'Business',
+  Education: 'Education',
   'Copy successful': 'Copy successful',
   'Copy failed': 'Copy failed',
   'Login failed': 'Login failed',
@@ -41,4 +45,25 @@ export const resource = {
   // cannot pull or push live streams. A single message is reused across
   // every guard surface (entry / apply-for-seat / video-co-broadcast).
   'Browser audio/video capability is incomplete, the latest Chrome is recommended.': 'Browser audio/video capability is incomplete, the latest Chrome is recommended.',
+  // Gift shelf · demo-specific extras (the shared LiveGift.* keys — Coins,
+  // Unit, Combo, Send, Me, More — live in TUILiveKit/i18n so the audience
+  // panel component and the shelf pull one canonical translation).
+  // Legacy top host-info bar keys — the pill now renders a data-driven
+  // badge stack (see HostInfoBar/hostBadges.ts) and the Follow pill was
+  // repurposed to "share room link" (no relationship-graph backend in the
+  // demo). These keys are kept so any outside consumer still referencing
+  // the old wording can degrade gracefully; the live UI does not read them.
+  Follow: 'Follow',
+  // Player controls (Douyin-style bottom-right bar)
+  Resolution: 'Quality',
+  ExitPiP: 'Exit PiP',
+  EnterPiP: 'Picture in Picture',
+  Unmute: 'Unmute',
+  Mute: 'Mute',
+  ExitFullscreen: 'Exit Fullscreen',
+  Fullscreen: 'Fullscreen',
+  Play: 'Play',
+  Pause: 'Pause',
+  Refresh: 'Refresh',
+  MoreActions: 'More actions',
 };

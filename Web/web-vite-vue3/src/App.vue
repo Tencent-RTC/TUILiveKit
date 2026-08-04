@@ -14,7 +14,7 @@ const { language } = useUIKit();
 
 TUIRoomEngine.once('ready', () => {
   watch(language, () => {
-    initRoomEngineLanguage();
+    initRoomEngineLanguage(language.value);
   }, { immediate: true });
 });
 </script>

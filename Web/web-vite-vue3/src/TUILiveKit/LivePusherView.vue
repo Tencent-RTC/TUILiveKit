@@ -48,7 +48,7 @@
     <div class="main-center">
       <div class="main-center-top">
         <div class="main-center-top-left">
-          {{ currentLive?.liveName || liveParams.liveName }}
+          <span class="live-name">{{ currentLive?.liveName || liveParams.liveName }}</span>
           <LiveSettingButton
             v-if="loginUserInfo?.userId"
             :live-name="currentLive?.liveName || liveParams.liveName"
@@ -226,7 +226,7 @@ import { errorHandler } from './utils/errorHandler';
 import { initRoomEngineLanguage } from '../utils/utils';
 import { useWebRTCSupportGuard } from './utils/webrtcSupport';
 
-const { t } = useUIKit();
+const { t, language } = useUIKit();
 const props = defineProps<{
   liveId?: string;
   liveName?: string;
@@ -381,7 +381,7 @@ const handleStartLive = async () => {
       return;
     }
     loading.value = true;
-    await initRoomEngineLanguage();
+    await initRoomEngineLanguage(language.value);
     await startLive({
       liveId: liveParams.value.liveId,
       liveName: liveParams.value.liveName,
@@ -605,6 +605,13 @@ onUnmounted(() => {
         display: flex;
         align-items: center;
         gap: 8px;
+
+        .live-name {
+          max-width: 280px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
 
         .copy-icon {
           cursor: pointer;

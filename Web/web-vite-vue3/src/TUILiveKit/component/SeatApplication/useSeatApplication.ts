@@ -12,7 +12,15 @@ import {
 import { TUISeatLayoutTemplate } from '../../types/LivePusher';
 import { checkWebRTCSupport, showWebRTCUnsupportedToast } from '../../utils/webrtcSupport';
 
-const { t } = useUIKit();
+// Defer useUIKit() call to setup() context via lazy initialization.
+// useUIKit() internally calls inject() which only works inside setup().
+let _t: ReturnType<typeof useUIKit>['t'] | null = null;
+function t(...args: Parameters<ReturnType<typeof useUIKit>['t']>) {
+  if (!_t) {
+    throw new Error('[useSeatApplication] t() called before useSeatApplication() was invoked inside setup().');
+  }
+  return _t(...args);
+}
 
 const {
   connected,
@@ -875,6 +883,12 @@ export type SeatApplicationPlatform = 'pc' | 'h5';
 const currentPlatform = ref<SeatApplicationPlatform>('pc');
 
 export function useSeatApplication(platform: SeatApplicationPlatform = 'pc') {
+  // Initialize the translation function on first call inside setup() context.
+  if (!_t) {
+    const { t: uiKitT } = useUIKit();
+    _t = uiKitT;
+  }
+
   if (currentPlatform.value !== platform) {
     // First call (`'pc'` -> incoming): initial setup, silent.
     // Otherwise: a second consumer is requesting a different platform on

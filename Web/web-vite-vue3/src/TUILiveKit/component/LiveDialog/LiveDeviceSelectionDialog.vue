@@ -3,6 +3,7 @@
     :title="t('Select audio and video devices')"
     :visible="modelValue"
     :custom-classes="['device-selection-dialog', `device-selection-dialog--${type}`]"
+    append-to="body"
     @update:visible="handleVisibleChange"
   >
     <div class="device-selection">

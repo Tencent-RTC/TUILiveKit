@@ -29,6 +29,30 @@ class ErrorHandler {
   parseError(error: unknown): ErrorParseResult {
     const raw = normalizeRawError(error);
 
+    // Some IM errors embed the code inside the message string
+    // (e.g. "error_code:100026, error_message:group info secure check fail!").
+    // Extract it so parseByKnownCode can match against ERROR_CODE_MAP.
+    // Use matchAll to collect every occurrence — a message may contain
+    // multiple error_code segments, and we want the first one that
+    // resolves to a known mapping rather than blindly taking the first.
+    if (raw.code === null || raw.code === undefined) {
+      const matches = typeof raw.message === 'string'
+        ? [...raw.message.matchAll(/error_code:(\d+)/g)]
+        : [];
+      for (const match of matches) {
+        const code = Number(match[1]);
+        if (code in ERROR_CODE_MAP) {
+          raw.code = code;
+          break;
+        }
+      }
+      // Fall back to the first match if none mapped to a known code,
+      // so parseByKnownCode still gets a chance to report it.
+      if ((raw.code === null || raw.code === undefined) && matches.length > 0) {
+        raw.code = Number(matches[0][1]);
+      }
+    }
+
     if (raw.code !== null && raw.code !== undefined) {
       switch (raw.code) {
         case OriginalErrorCode.PARAM_ILLEGAL:

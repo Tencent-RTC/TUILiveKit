@@ -181,7 +181,7 @@ import SeatApplicationButtonH5 from '../SeatApplication/SeatApplicationButtonH5.
 import { useSeatApplication } from '../SeatApplication/useSeatApplication';
 import { initRoomEngineLanguage } from '../../../utils/utils';
 
-const { t } = useUIKit();
+const { t, language } = useUIKit();
 
 const { audienceList, fetchAudienceList } = useLiveAudienceState();
 const { currentLive, joinLive, leaveLive, subscribeEvent, unsubscribeEvent } = useLiveListState();
@@ -287,7 +287,7 @@ onMounted(async () => {
 
   subscribeEvent(LiveListEvent.onKickedOutOfLive, handleKickedOutOfLive);
   subscribeGiftEvent(LiveGiftEvents.ON_RECEIVE_LIKES_MESSAGE, handleReceiveLikesMessage);
-  await initRoomEngineLanguage();
+  await initRoomEngineLanguage(language.value);
   await handleJoinLive();
 });
 

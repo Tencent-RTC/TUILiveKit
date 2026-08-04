@@ -316,7 +316,7 @@ import { errorHandler } from '../../../TUILiveKit/utils/errorHandler';
 import { initRoomEngineLanguage } from '../../../utils/utils';
 import { usePlayerControlState } from '../composables/usePlayerControlState';
 
-const { t } = useUIKit();
+const { t, language } = useUIKit();
 const props = defineProps<{ liveId: string }>();
 const emit = defineEmits(['leaveLive', 'ready']);
 
@@ -749,7 +749,7 @@ onMounted(async () => {
   document.addEventListener('fullscreenchange', onFullscreenChange);
   document.addEventListener('click', handleSettingsOutsideClick);
 
-  await initRoomEngineLanguage();
+  await initRoomEngineLanguage(language.value);
   const joined = await handleJoinLive();
   if (!joined) {
     emitReadyOnce();
