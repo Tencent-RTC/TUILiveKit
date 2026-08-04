@@ -19,7 +19,7 @@
         <TUIInput
           v-model="form.liveName"
           :placeholder="t('Please enter the live name')"
-          :maxLength="100"
+          :maxLength="30"
           :spellcheck="false"
         />
       </div>

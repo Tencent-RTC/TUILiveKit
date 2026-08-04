@@ -42,6 +42,9 @@ export enum LiveErrorCode {
   // 101011 sub-errors (payment limits)
   ROOM_MEMBER_COUNT_LIMIT = 40030,
   ROOM_COUNT_LIMIT = 40031,
+
+  // Content security
+  NAME_SECURITY_CHECK_FAILED = 40040,
 }
 
 /**
@@ -64,6 +67,9 @@ export enum OriginalErrorCode {
 
   // Payment limits
   PAYMENT_LIMIT = 101011,
+
+  // Content security
+  GROUP_INFO_SECURE_CHECK_FAIL = 100026,
 }
 
 /**
@@ -152,4 +158,16 @@ export const ERROR_CODE_MAP: Record<number, ErrorParseResult> = {
     code: LiveErrorCode.ROOM_ID_NOT_EXIST,
     message: 'Room is not existed.',
   },
+  [OriginalErrorCode.GROUP_INFO_SECURE_CHECK_FAIL]: {
+    code: LiveErrorCode.NAME_SECURITY_CHECK_FAILED,
+    message: 'The live name failed the security check. Please modify it and try again.',
+  },
 };
+
+/**
+ * Keys in this file's `message` fields double as i18n keys — the caller
+ * wraps them with `t(message)` before display. The i18n resource files
+ * (i18n/zh-CN, i18n/en-US) must contain matching entries. When a key
+ * is not found, `t()` falls back to the key itself (the English string),
+ * which is why every message is written in English here.
+ */

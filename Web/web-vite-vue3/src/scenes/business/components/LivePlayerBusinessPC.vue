@@ -363,7 +363,7 @@ import { usePlayerControlState } from '../composables/usePlayerControlState';
 import { initRoomEngineLanguage } from '../../../utils/utils';
 import LiveEndedIcon from '../../../TUILiveKit/icons/live-ended.svg';
 
-const { t } = useUIKit();
+const { t, language } = useUIKit();
 
 
 const { audienceList } = useLiveAudienceState();
@@ -939,7 +939,7 @@ onMounted(async () => {
   subscribeEvent(LiveListEvent.onLiveEnded, handleLiveEnded);
   subscribeEvent(LiveListEvent.onKickedOutOfLive, handleKickedOutOfLive);
   subscribeEvents();
-  await initRoomEngineLanguage();
+  await initRoomEngineLanguage(language.value);
   const joined = await handleJoinLive();
   if (!joined) {
     emitReadyOnce();

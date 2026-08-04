@@ -3,6 +3,7 @@
     :title="t('Choose co-broadcasting method')"
     :visible="modelValue"
     :custom-classes="['request-connection-dialog']"
+    append-to="body"
     @update:visible="handleVisibleChange"
   >
     <div class="connection-options">

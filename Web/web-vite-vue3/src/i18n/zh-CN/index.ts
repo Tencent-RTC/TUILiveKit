@@ -16,6 +16,10 @@ export const resource = {
   'Please enter a valid userID': '请输入正确的userID',
   'Please provide a function to generate userSig': '请传入生成 userSig 的函数',
   'Start live': '开始直播',
+  // Style preset switcher options
+  Default: '默认风',
+  Business: '商务风',
+  Education: '教育风',
   'Copy successful': '复制成功',
   'Copy failed': '复制失败',
   'Login failed': '登录失败',
@@ -41,4 +45,25 @@ export const resource = {
   // cannot pull or push live streams. A single message is reused across
   // every guard surface (entry / apply-for-seat / video-co-broadcast).
   'Browser audio/video capability is incomplete, the latest Chrome is recommended.': '当前浏览器音视频能力支持不完整，推荐使用最新版 Chrome',
+  // Gift shelf · demo-specific extras (the shared LiveGift.* keys — Coins,
+  // Unit, Combo, Send, Me, More — live in TUILiveKit/i18n so the audience
+  // panel component and the shelf pull one canonical translation).
+  // Legacy top host-info bar keys — the pill now renders a data-driven
+  // badge stack (see HostInfoBar/hostBadges.ts) and the Follow pill was
+  // repurposed to "share room link" (no relationship-graph backend in the
+  // demo). These keys are kept so any outside consumer still referencing
+  // the old wording can degrade gracefully; the live UI does not read them.
+  Follow: '关注',
+  // Player controls (Douyin-style bottom-right bar)
+  Resolution: '画质',
+  ExitPiP: '退出画中画',
+  EnterPiP: '画中画',
+  Unmute: '取消静音',
+  Mute: '静音',
+  ExitFullscreen: '退出全屏',
+  Fullscreen: '全屏',
+  Play: '播放',
+  Pause: '暂停',
+  Refresh: '刷新',
+  MoreActions: '更多操作',
 };
