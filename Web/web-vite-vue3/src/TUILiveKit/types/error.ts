@@ -42,6 +42,11 @@ export enum LiveErrorCode {
   // 101011 sub-errors (payment limits)
   ROOM_MEMBER_COUNT_LIMIT = 40030,
   ROOM_COUNT_LIMIT = 40031,
+  SEAT_COUNT_LIMIT = 40032,
+  SEAT_ABILITY_NOT_ENABLED = 40033,
+
+  // Content security
+  NAME_SECURITY_CHECK_FAILED = 40040,
 }
 
 /**
@@ -64,6 +69,9 @@ export enum OriginalErrorCode {
 
   // Payment limits
   PAYMENT_LIMIT = 101011,
+
+  // Content security
+  GROUP_INFO_SECURE_CHECK_FAIL = 100026,
 }
 
 /**
@@ -80,6 +88,13 @@ export const ERROR_UNKNOWN: ErrorParseResult = {
  */
 export const PARAM_ILLEGAL_MESSAGE_MAP: Record<string, ErrorParseResult> = {
   'not support seat, please update your pay package on the console': {
+    code: LiveErrorCode.PACKAGE_NOT_SUPPORT_LIVE,
+    message: 'Your current package does not support live streaming.',
+  },
+  // The wording of the message above has drifted on the server side
+  // ("upgrade your package" vs "update your pay package"), so keep a tolerant
+  // fallback. It must stay after the exact key to preserve specificity.
+  'not support seat': {
     code: LiveErrorCode.PACKAGE_NOT_SUPPORT_LIVE,
     message: 'Your current package does not support live streaming.',
   },
@@ -118,6 +133,14 @@ export const PAYMENT_LIMIT_MESSAGE_MAP: Record<string, ErrorParseResult> = {
     code: LiveErrorCode.ROOM_COUNT_LIMIT,
     message: 'The number of rooms has reached the limit of the payment',
   },
+  'the max seat count exceeds the limit of payment': {
+    code: LiveErrorCode.SEAT_COUNT_LIMIT,
+    message: 'Maximum seat count exceeds package limit',
+  },
+  "the seat ability isn't supported": {
+    code: LiveErrorCode.SEAT_ABILITY_NOT_ENABLED,
+    message: 'The seat ability is not enabled',
+  },
 };
 
 /**
@@ -152,4 +175,16 @@ export const ERROR_CODE_MAP: Record<number, ErrorParseResult> = {
     code: LiveErrorCode.ROOM_ID_NOT_EXIST,
     message: 'Room is not existed.',
   },
+  [OriginalErrorCode.GROUP_INFO_SECURE_CHECK_FAIL]: {
+    code: LiveErrorCode.NAME_SECURITY_CHECK_FAILED,
+    message: 'The live name failed the security check. Please modify it and try again.',
+  },
 };
+
+/**
+ * Keys in this file's `message` fields double as i18n keys — the caller
+ * wraps them with `t(message)` before display. The i18n resource files
+ * (i18n/zh-CN, i18n/en-US) must contain matching entries. When a key
+ * is not found, `t()` falls back to the key itself (the English string),
+ * which is why every message is written in English here.
+ */

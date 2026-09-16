@@ -5,10 +5,22 @@
       <div class="video-preview-area">
         <div class="video-preview-wrapper" :class="{ 'is-loading': isCameraLoading }">
           <div :id="previewViewId" class="video-preview" />
+          <div v-if="previewGuidance" class="video-preview-guidance">
+            <strong>{{ t(previewGuidance.titleKey) }}</strong>
+            <span>{{ t(previewGuidance.descKey) }}</span>
+            <TUIButton
+              type="primary"
+              size="small"
+              :disabled="isCameraLoading"
+              @click="handleRetryPreview"
+            >
+              {{ t(previewGuidance.retryKey) }}
+            </TUIButton>
+          </div>
         </div>
       </div>
       <div class="video-controls">
-        <div class="control-item" @click="handleFlipCamera">
+        <div class="control-item" :class="{ 'is-disabled': isCameraLoading }" @click="handleFlipCamera">
           <div class="control-icon-bg">
             <IconCameraSwitch :size="24" />
             <span class="control-label">{{ t('Flip') }}</span>
@@ -26,10 +38,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, nextTick, onBeforeUnmount } from 'vue';
+import { computed, ref, watch, nextTick, onBeforeUnmount } from 'vue';
 import { IconCameraSwitch, TUIButton, useUIKit } from '@tencentcloud/uikit-base-component-vue3';
 import { useDeviceState } from 'tuikit-atomicx-vue3';
 import Drawer from '../../base-component/Drawer.vue';
+import {
+  createCancellableDelay,
+  createOperationVersionGuard,
+  getVideoAdjustPreviewGuidanceKeys,
+  shouldClearVideoAdjustGuidanceAfterSwitch,
+  type VideoAdjustPreviewFailure,
+} from '../../utils/deviceGuidance/videoAdjustPreviewGuidance';
 
 const { t } = useUIKit();
 const { startCameraTest, stopCameraTest, switchCamera } = useDeviceState();
@@ -50,22 +69,71 @@ let previewIdCounter = 0;
 const previewViewId = ref(`video-adjust-preview-${++previewIdCounter}`);
 const isFrontCamera = ref(true);
 const isCameraLoading = ref(false);
+const previewFailure = ref<VideoAdjustPreviewFailure>('none');
+const previewGuidance = computed(() => getVideoAdjustPreviewGuidanceKeys(previewFailure.value));
+const previewOperationGuard = createOperationVersionGuard();
+const drawerAnimationDelay = createCancellableDelay();
 // Match drawer animation duration (0.3s)
 const DRAWER_ANIMATION_MS = 300;
-let cameraTestTimer: ReturnType<typeof setTimeout> | null = null;
 
 const handleVisibleChange = (value: boolean) => {
   emit('update:visible', value);
 };
 
+const startPreview = async () => {
+  const operationVersion = previewOperationGuard.begin();
+  isCameraLoading.value = true;
+  try {
+    const el = document.getElementById(previewViewId.value);
+    if (el) {
+      await startCameraTest({ view: previewViewId.value });
+      if (previewOperationGuard.isActive(operationVersion, props.visible)) {
+        previewFailure.value = 'none';
+      }
+    } else {
+      console.warn('Camera preview element not found:', previewViewId.value);
+    }
+  } catch (error) {
+    if (previewOperationGuard.isActive(operationVersion, props.visible)) {
+      previewFailure.value = 'preview';
+    }
+    console.warn('Failed to start camera preview:', error);
+  } finally {
+    if (previewOperationGuard.isCurrent(operationVersion)) {
+      isCameraLoading.value = false;
+    }
+  }
+};
+
 const handleFlipCamera = async () => {
+  if (isCameraLoading.value) {
+    return;
+  }
+  const operationVersion = previewOperationGuard.begin();
   const newIsFrontCamera = !isFrontCamera.value;
+  isCameraLoading.value = true;
   try {
     await switchCamera({ isFrontCamera: newIsFrontCamera });
-    isFrontCamera.value = newIsFrontCamera;
+    if (previewOperationGuard.isActive(operationVersion, props.visible)) {
+      isFrontCamera.value = newIsFrontCamera;
+      if (shouldClearVideoAdjustGuidanceAfterSwitch(previewFailure.value)) {
+        previewFailure.value = 'none';
+      }
+    }
   } catch (error) {
+    if (previewOperationGuard.isActive(operationVersion, props.visible)) {
+      previewFailure.value = 'switch';
+    }
     console.warn('Failed to switch camera:', error);
+  } finally {
+    if (previewOperationGuard.isCurrent(operationVersion)) {
+      isCameraLoading.value = false;
+    }
   }
+};
+
+const handleRetryPreview = () => {
+  void startPreview();
 };
 
 const handleApply = () => {
@@ -77,29 +145,23 @@ watch(
   () => props.visible,
   async (visible) => {
     if (visible) {
+      const operationVersion = previewOperationGuard.begin();
       isCameraLoading.value = true;
       // Wait for DOM to be fully rendered after drawer animation
       await nextTick();
-      await new Promise((resolve) => {
-        cameraTestTimer = setTimeout(resolve, DRAWER_ANIMATION_MS);
-      });
-      cameraTestTimer = null;
-      try {
-        const el = document.getElementById(previewViewId.value);
-        if (el) {
-          await startCameraTest({ view: previewViewId.value });
-        } else {
-          console.warn('Camera preview element not found:', previewViewId.value);
-        }
-      } catch (error) {
-        console.warn('Failed to start camera preview:', error);
+      if (!previewOperationGuard.isActive(operationVersion, props.visible)) {
+        return;
       }
-      isCameraLoading.value = false;
+      await drawerAnimationDelay.wait(DRAWER_ANIMATION_MS);
+      if (!previewOperationGuard.isActive(operationVersion, props.visible)) {
+        return;
+      }
+      await startPreview();
     } else {
-      if (cameraTestTimer) {
-        clearTimeout(cameraTestTimer);
-        cameraTestTimer = null;
-      }
+      drawerAnimationDelay.cancel();
+      previewOperationGuard.invalidate();
+      isCameraLoading.value = false;
+      previewFailure.value = 'none';
       try {
         await stopCameraTest();
       } catch (error) {
@@ -110,10 +172,8 @@ watch(
 );
 
 onBeforeUnmount(async () => {
-  if (cameraTestTimer) {
-    clearTimeout(cameraTestTimer);
-    cameraTestTimer = null;
-  }
+  drawerAnimationDelay.cancel();
+  previewOperationGuard.invalidate();
   if (props.visible) {
     try {
       await stopCameraTest();
@@ -207,6 +267,33 @@ onBeforeUnmount(async () => {
     &.is-loading {
       background: #000;
     }
+
+    .video-preview-guidance {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 24px;
+      box-sizing: border-box;
+      background: rgba(0, 0, 0, 0.72);
+      color: var(--text-color-primary);
+      text-align: center;
+
+      strong {
+        font-size: 16px;
+        line-height: 24px;
+      }
+
+      span {
+        font-size: 12px;
+        line-height: 18px;
+        color: var(--text-color-secondary);
+      }
+    }
   }
 }
 
@@ -227,6 +314,12 @@ onBeforeUnmount(async () => {
 
     &:active {
       opacity: 0.7;
+    }
+
+    &.is-disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+      pointer-events: none;
     }
 
     .control-icon-bg {

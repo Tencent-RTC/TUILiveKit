@@ -48,7 +48,7 @@
     <div class="main-center">
       <div class="main-center-top">
         <div class="main-center-top-left">
-          {{ currentLive?.liveName || liveParams.liveName }}
+          <span class="live-name">{{ currentLive?.liveName || liveParams.liveName }}</span>
           <LiveSettingButton
             v-if="loginUserInfo?.userId"
             :live-name="currentLive?.liveName || liveParams.liveName"
@@ -140,17 +140,32 @@
       </div>
     </div>
     <LivePusherNotification />
+    <DeviceRecoveryNotification
+      :visible="hostMicGuidanceVisible"
+      :title="t(hostMicGuidanceCopy.titleKey)"
+      :description="t(hostMicGuidanceCopy.descKey)"
+      :action-text="t(hostMicGuidanceCopy.actionKey)"
+      :loading="hostMicGuidancePhase === 'retrying'"
+      @retry="retryHostMicrophone"
+      @dismiss="dismissHostMicrophone"
+    />
     </template>
+    <WebRTCUnsupportedDialog
+      :visible="unsupportedDialogVisible"
+      role="pusher"
+      @return-to-list="emit('leaveLive')"
+    />
     <TUIDialog
-      v-model:visible="exitLiveDialogVisible"
+      :visible="exitLiveDialogVisible"
       :title="t('End live')"
+      @update:visible="handleExitLiveDialogVisibleChange"
     >
       {{ endLiveDialogMessage }}
       <template #footer>
         <div class="action-buttons">
           <TUIButton
             color="gray"
-            @click="exitLiveDialogVisible = false"
+            @click="handleExitLiveDialogVisibleChange(false)"
           >
             {{ t('Cancel') }}
           </TUIButton>
@@ -176,6 +191,7 @@
 
 <script lang="ts" setup>
 import { computed, ref, onMounted, onUnmounted } from 'vue';
+import { onBeforeRouteLeave, useRouter } from 'vue-router';
 import { TUISeatMode } from '@tencentcloud/tuiroom-engine-js';
 import {
   IconArrowStrokeBack,
@@ -221,12 +237,42 @@ import OrientationSwitch from './component/OrientationSwitch.vue';
 import SettingButton from './component/SettingButton.vue';
 import SpeakerVolumeSetting from './component/SpeakerVolumeSetting.vue';
 import LivePusherNotification from './component/LivePusherNotification.vue';
+import DeviceRecoveryNotification from './base-component/Notification/DeviceRecoveryNotification.vue';
+import WebRTCUnsupportedDialog from './component/WebRTCUnsupportedDialog.vue';
+import { useHostMicrophoneGuidance } from './utils/deviceGuidance/useHostMicrophoneGuidance';
 import { copyToClipboard, isSvgCoverUrl } from './utils/utils';
 import { errorHandler } from './utils/errorHandler';
 import { initRoomEngineLanguage } from '../utils/utils';
+import { useLoginPrompts } from '../components/login/loginPrompts';
+import { usePackageErrorPage } from '../components/packageError';
 import { useWebRTCSupportGuard } from './utils/webrtcSupport';
 
-const { t } = useUIKit();
+const { t, language } = useUIKit();
+const router = useRouter();
+const { promptLoginRequired } = useLoginPrompts();
+const { openPackageErrorByCode } = usePackageErrorPage();
+
+/**
+ * Report a failed action. Package and quota limits need the guidance they
+ * cannot fit in a modal, so those take over the whole page; everything else
+ * keeps the regular modal.
+ */
+const reportLiveError = (title: string, error: unknown): void => {
+  const errorInfo = errorHandler.parseError(error);
+  if (openPackageErrorByCode(errorInfo.code)) {
+    return;
+  }
+  UIKitModal.openModal({
+    id: errorInfo.code,
+    title,
+    content: t(errorInfo.message),
+    type: 'error',
+  });
+};
+
+const goToLoginPage = () => {
+  router?.push({ path: '/login', query: { from: '/live-pusher' } });
+};
 const props = defineProps<{
   liveId?: string;
   liveName?: string;
@@ -235,10 +281,19 @@ const props = defineProps<{
 
 const emit = defineEmits(['leaveLive']);
 
+const {
+  visible: hostMicGuidanceVisible,
+  copy: hostMicGuidanceCopy,
+  phase: hostMicGuidancePhase,
+  retry: retryHostMicrophone,
+  dismiss: dismissHostMicrophone,
+  reportAutoOpenAttempt,
+} = useHostMicrophoneGuidance();
+
 // WebRTC capability guard — pusher role.
-// The pusher page has nothing useful to do when the browser cannot
-// push video. The guard shows a toast recommending Chrome and the
-// page is unwound via the existing leaveLive channel.
+// When the browser cannot push video, keep this page and show a
+// persistent Dialog. The user returns to the live list through the
+// existing leaveLive channel.
 const { guardLiveEntry } = useWebRTCSupportGuard();
 
 // Toggled to true only after the probe resolves AND the pusher is
@@ -248,14 +303,16 @@ const { guardLiveEntry } = useWebRTCSupportGuard();
 // avoiding wasted camera preview initialization and SDK error logs
 // during the probe-then-leave window.
 const rtcSupportChecked = ref(false);
+const unsupportedDialogVisible = ref(false);
 
 const isToolsExpanded = ref(true);
 const exitLiveDialogVisible = ref(false);
+const pendingRouteLeaveResolver = ref<((allow: boolean) => void) | null>(null);
 const { loginUserInfo } = useLoginState();
 const { currentLive, startLive, endLive, joinLive, subscribeEvent: subscribeLiveListEvent, unsubscribeEvent: unsubscribeLiveListEvent, updateLiveInfo } = useLiveListState();
 const roomEngine = useRoomEngine();
 const { audienceCount } = useLiveAudienceState();
-const { openLocalMicrophone } = useDeviceState();
+const { openLocalMicrophone, microphoneLastError } = useDeviceState();
 const { coHostStatus, exitHostConnection } = useCoHostState();
 const { currentBattleInfo } = useBattleState();
 const { connected: coGuestConnected } = useCoGuestState();
@@ -291,6 +348,19 @@ const endLiveDialogMessage = computed(() => {
   }
   return t('You are currently live streaming. Do you want to end it?');
 });
+
+const resolvePendingRouteLeave = (allow: boolean) => {
+  const resolve = pendingRouteLeaveResolver.value;
+  pendingRouteLeaveResolver.value = null;
+  resolve?.(allow);
+};
+
+const handleExitLiveDialogVisibleChange = (visible: boolean) => {
+  exitLiveDialogVisible.value = visible;
+  if (!visible) {
+    resolvePendingRouteLeave(false);
+  }
+};
 
 const handleLeaveLive = async () => {
   if (isInLive.value) {
@@ -336,13 +406,7 @@ const handleLiveSettingConfirm = async (form: { liveName: string; coverUrl?: str
     }
     liveParamsEditForm.value = updatedForm;
   } catch (error: any) {
-    const errorInfo = errorHandler.parseError(error);
-    UIKitModal.openModal({
-      id: errorInfo.code,
-      title: t('Failed to update live settings'),
-      content: t(errorInfo.message),
-      type: 'error',
-    });
+    reportLiveError(t('Failed to update live settings'), error);
     throw error;
   } finally {
     loading.value = false;
@@ -375,13 +439,11 @@ const handleStartLive = async () => {
       return;
     }
     if (!loginUserInfo.value?.userId) {
-      TUIToast.info({
-        message: t('Please login first'),
-      });
+      promptLoginRequired({ onConfirm: goToLoginPage });
       return;
     }
     loading.value = true;
-    await initRoomEngineLanguage();
+    await initRoomEngineLanguage(language.value);
     await startLive({
       liveId: liveParams.value.liveId,
       liveName: liveParams.value.liveName,
@@ -391,7 +453,7 @@ const handleStartLive = async () => {
       liveId: liveParams.value.liveId,
     });
     loading.value = false;
-    openLocalMicrophone();
+    await reportAutoOpenAttempt(openLocalMicrophone, () => microphoneLastError.value);
   } catch (error: any) {
     loading.value = false;
     if (typeof error.message === 'string'
@@ -399,33 +461,25 @@ const handleStartLive = async () => {
       await joinLive({
         liveId: liveParams.value.liveId,
       });
-      await openLocalMicrophone();
+      await reportAutoOpenAttempt(openLocalMicrophone, () => microphoneLastError.value);
       return;
     }
-    const errorInfo = errorHandler.parseError(error);
-    UIKitModal.openModal({
-      id: errorInfo.code,
-      title: t('Failed to create live'),
-      content: t(errorInfo.message),
-      type: 'error',
-    });
+    reportLiveError(t('Failed to create live'), error);
     throw error;
   }
 };
+
 const handleEndLive = async () => {
   try {
     loading.value = true;
     exitLiveDialogVisible.value = false;
     await endLive();
+    dismissHostMicrophone();
+    resolvePendingRouteLeave(true);
     loading.value = false;
   } catch (error: any) {
-    const errorInfo = errorHandler.parseError(error);
-    UIKitModal.openModal({
-      id: errorInfo.code,
-      title: t('Failed to end live'),
-      content: t(errorInfo.message),
-      type: 'error',
-    });
+    resolvePendingRouteLeave(false);
+    reportLiveError(t('Failed to end live'), error);
     loading.value = false;
     exitLiveDialogVisible.value = false;
     throw error;
@@ -433,10 +487,10 @@ const handleEndLive = async () => {
 };
 const handleExitConnection = async () => {
   if (coHostStatus.value === CoHostStatus.Disconnected) {
-    exitLiveDialogVisible.value = false;
+    handleExitLiveDialogVisibleChange(false);
     return;
   }
-  exitLiveDialogVisible.value = false;
+  handleExitLiveDialogVisibleChange(false);
   try {
     await exitHostConnection();
   } catch (error) {
@@ -449,6 +503,23 @@ const showEndLiveDialog = async () => {
   }
   exitLiveDialogVisible.value = true;
 };
+
+onBeforeRouteLeave((to) => {
+  if (to.path === '/login' && !sessionStorage.getItem('tuiLive-userInfo')) {
+    return true;
+  }
+  if (!isInLive.value) {
+    return true;
+  }
+  if (loading.value || pendingRouteLeaveResolver.value) {
+    return false;
+  }
+
+  return new Promise<boolean>((resolve) => {
+    pendingRouteLeaveResolver.value = resolve;
+    exitLiveDialogVisible.value = true;
+  });
+});
 
 const handleLiveEnded = (eventInfo: LiveListEventInfo) => {
   if (eventInfo.reason === LiveEndedReason.endedByHost) {
@@ -474,23 +545,21 @@ const handleCustomMessageReceived = (barrage: Barrage) => {
       message: t('The current display or content may pose a violation risk. Please be aware of the platform regulations'),
       duration: 3000,
     });
-  }  
+  }
 };
 
 onMounted(async () => {
   subscribeLiveListEvent(LiveListEvent.onLiveEnded, handleLiveEnded);
-  subscribeBarrageEvent(BarrageEvent.onCustomMessageReceived, handleCustomMessageReceived)
+  subscribeBarrageEvent(BarrageEvent.onCustomMessageReceived, handleCustomMessageReceived);
   // Guard the pusher entry against browsers that cannot push video.
   // We intentionally subscribe to the live-end event first so an
   // allowed user never misses an event during the (cached) probe.
-  // When unsupported, the guard already showed a toast; we leave
-  // via the existing channel and the global toast portal keeps the
-  // message visible across the navigation. Only flip
-  // `rtcSupportChecked` on the success path so the pusher subtree
-  // is never mounted on unsupported browsers.
+  // When unsupported, keep the page and show the persistent Dialog.
+  // Only flip `rtcSupportChecked` on the success path so the pusher
+  // subtree is never mounted on unsupported browsers.
   const allowed = await guardLiveEntry('pusher');
   if (!allowed) {
-    emit('leaveLive');
+    unsupportedDialogVisible.value = true;
     return;
   }
   rtcSupportChecked.value = true;
@@ -500,6 +569,7 @@ onUnmounted(() => {
   unsubscribeLiveListEvent(LiveListEvent.onLiveEnded, handleLiveEnded);
   unsubscribeBarrageEvent(BarrageEvent.onCustomMessageReceived, handleCustomMessageReceived);
   updateLiveInfo({ layoutTemplate: 0 });
+  dismissHostMicrophone();
 });
 </script>
 
@@ -605,6 +675,13 @@ onUnmounted(() => {
         display: flex;
         align-items: center;
         gap: 8px;
+
+        .live-name {
+          max-width: 280px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
 
         .copy-icon {
           cursor: pointer;

@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, defineEmits } from 'vue';
+import { ref } from 'vue';
 import { useUIKit } from '@tencentcloud/uikit-base-component-vue3';
 import { LiveList } from 'tuikit-atomicx-vue3';
 import { isMobile } from './utils/environment';

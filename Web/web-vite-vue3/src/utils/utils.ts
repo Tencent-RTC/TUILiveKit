@@ -1,5 +1,4 @@
-import TUIRoomEngine from "@tencentcloud/tuiroom-engine-js";
-import { useUIKit } from "@tencentcloud/uikit-base-component-vue3";
+import TUIRoomEngine from '@tencentcloud/tuiroom-engine-js';
 
 /**
  * deepClone
@@ -58,13 +57,11 @@ function getUrlParams(): Record<string, string> {
   return query;
 };
 
-async function initRoomEngineLanguage() {
-  const { language } = useUIKit();
-  
+async function initRoomEngineLanguage(languageValue: string) {
   let lang: string = 'en';
-  if (language.value.includes('en')) {
+  if (languageValue.includes('en')) {
     lang = 'en';
-  } else if (language.value.includes('zh')) {
+  } else if (languageValue.includes('zh')) {
     lang = 'zh-Hans';
   }
   await TUIRoomEngine.callExperimentalAPI(JSON.stringify({
@@ -75,9 +72,18 @@ async function initRoomEngineLanguage() {
   }));
 };
 
+function isLocalEnvironment(): boolean {
+  const host = window.location.hostname;
+  if (host === 'localhost' || host === '127.0.0.1' || host.startsWith('192.168.')) {
+    return true;
+  }
+  return false;
+}
+
 export {
   deepClone,
   getUrlParam,
   getUrlParams,
   initRoomEngineLanguage,
-}
+  isLocalEnvironment,
+};

@@ -43,6 +43,7 @@ import {
   useUIKit,
 } from '@tencentcloud/uikit-base-component-vue3';
 import Drawer from '../../base-component/Drawer.vue';
+import { DeviceSelectionType } from '../../utils/deviceGuidance/deviceSelectionEmptyGuidance';
 
 const { t } = useUIKit();
 
@@ -58,7 +59,7 @@ interface Props {
 
 interface Emits {
   (e: 'update:visible', value: boolean): void;
-  (e: 'update:type', value: 'video' | 'audio'): void;
+  (e: 'update:type', value: DeviceSelectionType): void;
   (e: 'confirm'): void;
   (e: 'open-settings'): void;
 }
@@ -73,12 +74,12 @@ const handleVisibleChange = (value: boolean) => {
 };
 
 const handleSelectVideo = () => {
-  emit('update:type', 'video');
+  emit('update:type', DeviceSelectionType.Video);
   emit('confirm');
 };
 
 const handleSelectAudio = () => {
-  emit('update:type', 'audio');
+  emit('update:type', DeviceSelectionType.Audio);
   emit('confirm');
 };
 </script>

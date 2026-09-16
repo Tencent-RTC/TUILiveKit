@@ -42,12 +42,10 @@ import { useRouter, useRoute } from 'vue-router';
 import { useLoginState } from 'tuikit-atomicx-vue3';
 import { useUIKit } from '@tencentcloud/uikit-base-component-vue3';
 import LivePlayerEducationPC from '../components/LivePlayerEducationPC.vue';
-import { useEducationPreset } from '../composables/useEducationPreset';
 import '../styles/education.scss';
 import '../../../TUILiveKit';
 
 const { loginUserInfo, login } = useLoginState();
-const { isEducationPreset } = useEducationPreset();
 const { t } = useUIKit();
 
 const router = useRouter();
@@ -85,11 +83,9 @@ function clearLoadingTimeout() {
 }
 
 function leaveLive() {
-  const query: Record<string, string> = {};
-  if (!isEducationPreset.value) {
-    query.stylePreset = 'education';
-  }
-  router.push({ path: '/live-list', query });
+  // Never carry a `stylePreset` param back to the list: it would stick in the
+  // hash URL and force that preset on every later reload.
+  router.push({ path: '/live-list' });
 }
 
 async function restoreLoginState() {

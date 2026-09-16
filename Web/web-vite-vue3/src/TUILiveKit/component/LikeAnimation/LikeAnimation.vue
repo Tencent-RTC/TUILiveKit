@@ -1,19 +1,24 @@
 <template>
   <div class="like-animation-container">
-    <!-- Animated heart items -->
+    <!-- Animated heart items.
+         The DOM transform/opacity are driven imperatively inside the rAF loop
+         (see applyStyle), so per-frame updates NEVER touch Vue's reactivity
+         system. This is what keeps it smooth even with dozens of hearts
+         animating at once — a purely reactive :style binding would re-render
+         every heart every frame. -->
     <div
-      v-for="item in animations"
-      :key="item.id"
+      v-for="id in heartIds"
+      :key="id"
       class="heart-item"
-      :style="getHeartStyle(item)"
+      :ref="(el) => setRef(id, el)"
     >
-      <HeartIcon :size="HEART_SIZE" :color="item.color" :show-shadow="true" />
+      <HeartIcon :size="HEART_SIZE" :color="heartColor(id)" :show-shadow="true" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onUnmounted } from 'vue';
+import { ref, onUnmounted, type ComponentPublicInstance } from 'vue';
 import HeartIcon from './HeartIcon.vue';
 
 /**
@@ -69,8 +74,15 @@ const LIKE_COLORS: string[] = [
   '#A2845E', // .brown
 ];
 
-// Animation state
-const animations = ref<LikeAnimationItem[]>([]);
+// Animation state.
+// `heartIds` is the ONLY reactive piece — it drives mount/unmount of DOM nodes
+// (i.e. only when a heart is born or dies). All per-frame transform/opacity
+// data lives in non-reactive Maps and is written straight to the DOM inside
+// the rAF loop, so a storm of hearts never floods Vue's reactivity / re-render
+// path — which is exactly what made it stutter when many likes piled up.
+const heartIds = ref<number[]>([]);
+const heartData = new Map<number, LikeAnimationItem>();
+const heartEls = new Map<number, HTMLElement>();
 let animationId = 0;
 let animationFrameId: number | null = null;
 
@@ -131,42 +143,85 @@ function generatePath(startX: number, startY: number): Omit<LikeAnimationItem, '
 }
 
 /**
- * Get heart style object for rendering
+ * Push the computed transform/opacity straight to the DOM node. Bypassing
+ * Vue's reactive :style binding is the key to staying smooth when many hearts
+ * animate at once — there is no per-frame component re-render.
  */
-function getHeartStyle(item: LikeAnimationItem): Record<string, string> {
-  return {
-    transform: `translate(${item.x - HEART_SIZE / 2}px, ${item.y - HEART_SIZE / 2}px) scale(${item.scale})`,
-    opacity: String(item.opacity),
-  };
+function applyStyle(item: LikeAnimationItem): void {
+  const el = heartEls.get(item.id);
+  if (!el) return;
+  el.style.transform =
+    `translate3d(${item.x - HEART_SIZE / 2}px, ${item.y - HEART_SIZE / 2}px, 0) scale(${item.scale})`;
+  el.style.opacity = String(item.opacity);
 }
 
 /**
- * Update animation frame
+ * Template ref callback: capture the DOM node, and paint the initial style so
+ * there is no first-frame flash at the container origin.
+ */
+function setRef(id: number, el: Element | ComponentPublicInstance | null): void {
+  if (el && el instanceof HTMLElement) {
+    heartEls.set(id, el);
+    const data = heartData.get(id);
+    if (data) applyStyle(data);
+  } else {
+    heartEls.delete(id);
+  }
+}
+
+/**
+ * Resolve the heart color for the template (read once at mount).
+ */
+function heartColor(id: number): string {
+  return heartData.get(id)?.color ?? '#FF3B30';
+}
+
+/**
+ * Update animation frame. Iterates the non-reactive data map and writes
+ * transforms directly to each DOM node — no reactive property writes, so Vue
+ * never re-renders mid-animation no matter how many hearts exist.
  */
 function updateAnimations(): void {
   const now = performance.now();
-  
-  // Process each animation
-  for (let i = animations.value.length - 1; i >= 0; i--) {
-    const anim = animations.value[i];
+
+  for (let i = heartIds.value.length - 1; i >= 0; i--) {
+    const id = heartIds.value[i];
+    const anim = heartData.get(id);
+    if (!anim) continue;
+
     const elapsed = now - anim.startTime;
-    
+    // Normalized life progress (0 → 1).
+    const lifeP = elapsed / TOTAL_DURATION;
+
     // Remove completed animations
     if (elapsed >= TOTAL_DURATION) {
-      animations.value.splice(i, 1);
+      heartData.delete(id);
+      heartEls.delete(id);
+      heartIds.value = heartIds.value.filter((x) => x !== id);
       continue;
     }
-    
-    // Calculate scale (0 to 1 in first 0.5s, then stays at 1)
-    if (elapsed < SCALE_DURATION) {
-      anim.scale = elapsed / SCALE_DURATION;
-    } else {
+
+    // Scale: quick pop-in during the first 0.5s, hold at 1, then a gentle
+    // shrink during the last 30% of life so the heart dissolves instead of
+    // freezing at full size (which read as janky right before it disappeared).
+    const scaleInP = SCALE_DURATION / TOTAL_DURATION;
+    const shrinkStart = 0.7;
+    if (lifeP < scaleInP) {
+      anim.scale = lifeP / scaleInP;
+    } else if (lifeP < shrinkStart) {
       anim.scale = 1;
+    } else {
+      anim.scale = 1 - 0.4 * (lifeP - shrinkStart) / (1 - shrinkStart); // 1 → 0.6
     }
-    
-    // Calculate opacity (1 to 0 over 3s)
-    anim.opacity = 1 - (elapsed / TOTAL_DURATION);
-    
+
+    // Opacity: stay fully opaque through the rise, then ease out over the last
+    // 40% of life. This keeps the heart solid while it is moving and avoids a
+    // faint, slowly drifting shape — the part that looked stuttery as it faded.
+    const fadeStart = 0.6;
+    anim.opacity = lifeP < fadeStart
+      ? 1
+      : 1 - (lifeP - fadeStart) / (1 - fadeStart);
+
     // Calculate position along bezier path
     if (elapsed < PATH_START_TIME) {
       // Before path animation starts, stay at start position
@@ -176,7 +231,7 @@ function updateAnimations(): void {
       // Calculate progress along path (0 to 1)
       const pathElapsed = elapsed - PATH_START_TIME;
       const pathProgress = Math.min(pathElapsed / PATH_DURATION, 1);
-      
+
       // Two-segment bezier curve (matching iOS)
       if (pathProgress <= 0.5) {
         // First curve: point0 -> point2 with control point1
@@ -190,10 +245,12 @@ function updateAnimations(): void {
         anim.y = quadraticBezier(t, anim.y2, anim.y3, anim.y4);
       }
     }
+
+    applyStyle(anim);
   }
-  
+
   // Continue animation loop if there are active animations
-  if (animations.value.length > 0) {
+  if (heartIds.value.length > 0) {
     animationFrameId = requestAnimationFrame(updateAnimations);
   } else {
     animationFrameId = null;
@@ -211,27 +268,28 @@ function startAnimationLoop(): void {
 
 /**
  * Play a single like animation
+ * @param startX Start X in container coordinates (viewport coords when the
+ *               container spans the full viewport). Defaults to the H5
+ *               bottom-right placement.
+ * @param startY Start Y in container coordinates.
  */
-function playAnimation(): void {
-  // Calculate start position (right side, near bottom)
-  // Container is 200px wide, position heart near right edge
-  const startX = 160;
-  const startY = 330; // Near bottom of 350px container
-  
+function playAnimation(startX: number = 160, startY: number = 330): void {
+  const id = animationId++;
   const path = generatePath(startX, startY);
-  const color = getRandomColor();
-  
-  animations.value.push({
-    id: animationId++,
-    color,
+  const item: LikeAnimationItem = {
+    id,
+    color: getRandomColor(),
     startTime: performance.now(),
     ...path,
     x: path.x0,
     y: path.y0,
     scale: 0,
     opacity: 1,
-  });
-  
+  };
+  heartData.set(id, item);
+  // Trigger DOM mount; the per-frame movement is handled imperatively.
+  heartIds.value = [...heartIds.value, id];
+
   startAnimationLoop();
 }
 
@@ -239,16 +297,20 @@ function playAnimation(): void {
  * Play like animation with optional count
  * When count > 1, animations are staggered (matching iOS behavior)
  * @param count Number of like animations to play (default: 1)
+ * @param startX Start X in container coordinates (viewport coords when the
+ *               container spans the full viewport). Omit to use the default
+ *               H5 bottom-right placement.
+ * @param startY Start Y in container coordinates.
  */
-function playLikeAnimation(count: number = 1): void {
+function playLikeAnimation(count: number = 1, startX?: number, startY?: number): void {
   const animationCount = Math.min(count, 10);
   
   for (let i = 0; i < animationCount; i++) {
     const delay = i * LIKE_ANIMATION_INTERVAL;
     if (delay === 0) {
-      playAnimation();
+      playAnimation(startX, startY);
     } else {
-      setTimeout(() => playAnimation(), delay);
+      setTimeout(() => playAnimation(startX, startY), delay);
     }
   }
 }
@@ -257,7 +319,9 @@ function playLikeAnimation(count: number = 1): void {
  * Clear all animations
  */
 function clearAnimations(): void {
-  animations.value = [];
+  heartIds.value = [];
+  heartData.clear();
+  heartEls.clear();
   if (animationFrameId !== null) {
     cancelAnimationFrame(animationFrameId);
     animationFrameId = null;

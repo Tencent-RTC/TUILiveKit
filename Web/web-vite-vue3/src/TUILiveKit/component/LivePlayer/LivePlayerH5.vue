@@ -178,10 +178,13 @@ import {
 import Drawer from '../../base-component/Drawer.vue';
 import LikeAnimation from '../LikeAnimation/LikeAnimation.vue';
 import SeatApplicationButtonH5 from '../SeatApplication/SeatApplicationButtonH5.vue';
-import { useSeatApplication } from '../SeatApplication/useSeatApplication';
+import { SeatApplicationPlatform, useSeatApplication } from '../SeatApplication/useSeatApplication';
 import { initRoomEngineLanguage } from '../../../utils/utils';
+import { errorHandler } from '../../utils/errorHandler';
+import { usePackageErrorPage } from '../../../components/packageError';
 
-const { t } = useUIKit();
+const { t, language } = useUIKit();
+const { openPackageErrorByCode } = usePackageErrorPage();
 
 const { audienceList, fetchAudienceList } = useLiveAudienceState();
 const { currentLive, joinLive, leaveLive, subscribeEvent, unsubscribeEvent } = useLiveListState();
@@ -213,7 +216,7 @@ const {
   confirmLeaveSeat,
   handleCancelApplication,
   handleCancelApplicationOnSeat,
-} = useSeatApplication('h5');
+} = useSeatApplication(SeatApplicationPlatform.H5);
 const audienceListPanelVisible = ref(false);
 const leaveLiveDialogVisible = ref(false);
 const exitLiveDialogVisible = ref(false);
@@ -287,7 +290,7 @@ onMounted(async () => {
 
   subscribeEvent(LiveListEvent.onKickedOutOfLive, handleKickedOutOfLive);
   subscribeGiftEvent(LiveGiftEvents.ON_RECEIVE_LIKES_MESSAGE, handleReceiveLikesMessage);
-  await initRoomEngineLanguage();
+  await initRoomEngineLanguage(language.value);
   await handleJoinLive();
 });
 
@@ -398,6 +401,12 @@ async function handleJoinLive() {
       }
     } catch (error) {
       console.error('Failed to join live room, error:', error);
+      // A package quota limit needs the full-page guidance rather than a
+      // one-line dialog.
+      const errorInfo = errorHandler.parseError(error);
+      if (openPackageErrorByCode(errorInfo.code, { onClose: () => emit('leaveLive') })) {
+        return;
+      }
       showLeaveLiveDialog(t('Failed to join live room'));
     }
   } else {

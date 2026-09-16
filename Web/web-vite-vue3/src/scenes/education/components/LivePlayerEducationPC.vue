@@ -282,6 +282,12 @@
       @confirm="handleDeviceConfirm"
       @cancel="handleDeviceCancel"
     />
+    <CoGuestDeviceOpenFailureGuidance
+      :visible="deviceOpenFailureGuidanceVisible"
+      platform="pc"
+      :copy="deviceOpenFailureGuidanceCopy"
+      @dismiss="closeDeviceOpenFailureGuidance"
+    />
     <TUIDialog
       :title="t('Cancel application for link mic')"
       :visible="cancelApplicationDialogVisible"
@@ -310,13 +316,16 @@ import { TUIDialog, TUIMessageBox, TUIToast, useUIKit } from '@tencentcloud/uiki
 import { LiveListEvent, LiveView, UIKitModal, useLiveListState, useRoomEngine } from 'tuikit-atomicx-vue3';
 import EducationSidePanel from './EducationSidePanel.vue';
 import { useSeatApplication } from '../../../TUILiveKit/component/SeatApplication/useSeatApplication';
+import CoGuestDeviceOpenFailureGuidance from '../../../TUILiveKit/component/SeatApplication/CoGuestDeviceOpenFailureGuidance.vue';
 import LiveConnectionTypeDialog from '../../../TUILiveKit/component/LiveDialog/LiveConnectionTypeDialog.vue';
 import LiveDeviceSelectionDialog from '../../../TUILiveKit/component/LiveDialog/LiveDeviceSelectionDialog.vue';
 import { errorHandler } from '../../../TUILiveKit/utils/errorHandler';
+import { usePackageErrorPage } from '../../../components/packageError';
 import { initRoomEngineLanguage } from '../../../utils/utils';
 import { usePlayerControlState } from '../composables/usePlayerControlState';
 
-const { t } = useUIKit();
+const { t, language } = useUIKit();
+const { openPackageErrorByCode } = usePackageErrorPage();
 const props = defineProps<{ liveId: string }>();
 const emit = defineEmits(['leaveLive', 'ready']);
 
@@ -349,9 +358,12 @@ const {
   requestConnectionType,
   selectedMicrophoneId,
   selectedCameraId,
+  deviceOpenFailureGuidanceVisible,
+  deviceOpenFailureGuidanceCopy,
   microphoneList,
   cameraList,
   handleConnectionTypeConfirm,
+  closeDeviceOpenFailureGuidance,
   handleConnectionTypeCancel,
   handleDeviceConfirm,
   handleDeviceCancel,
@@ -423,12 +435,15 @@ async function handleJoinLive(): Promise<boolean> {
     return true;
   } catch (error: any) {
     const errorInfo = errorHandler.parseError(error);
-    UIKitModal.openModal({
-      id: errorInfo.code,
-      title: t('Failed to join live room'),
-      content: t(errorInfo.message),
-      type: 'error',
-    });
+    // Quota limits get the full-page guidance; other failures stay in a modal.
+    if (!openPackageErrorByCode(errorInfo.code)) {
+      UIKitModal.openModal({
+        id: errorInfo.code,
+        title: t('Failed to join live room'),
+        content: t(errorInfo.message),
+        type: 'error',
+      });
+    }
     emit('leaveLive');
     return false;
   }
@@ -749,7 +764,7 @@ onMounted(async () => {
   document.addEventListener('fullscreenchange', onFullscreenChange);
   document.addEventListener('click', handleSettingsOutsideClick);
 
-  await initRoomEngineLanguage();
+  await initRoomEngineLanguage(language.value);
   const joined = await handleJoinLive();
   if (!joined) {
     emitReadyOnce();

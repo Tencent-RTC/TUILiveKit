@@ -17,12 +17,18 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
-import { TUISlider, TUIToast, useUIKit } from '@tencentcloud/uikit-base-component-vue3';
-import { DeviceError, DeviceStatus, useDeviceState } from 'tuikit-atomicx-vue3';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { TUISlider } from '@tencentcloud/uikit-base-component-vue3';
+import { DeviceStatus, useDeviceState } from 'tuikit-atomicx-vue3';
 import AudioIcon from '../base-component/AudioIcon.vue';
+import {
+  isBrowserMicrophoneDenied,
+  resolveHostMicOpenResult,
+  type HostMicFailureReason,
+} from '../utils/deviceGuidance/hostMicrophoneGuidance';
+import { useHostMicrophoneGuidance } from '../utils/deviceGuidance/useHostMicrophoneGuidance';
 
-const { t } = useUIKit();
+const hostMicGuidance = useHostMicrophoneGuidance();
 
 const {
   setCaptureVolume,
@@ -65,12 +71,7 @@ const handleMicrophoneVolumeChange = async (value: number) => {
     // and ensure the mic is on at that volume.
     intendedVolume.value = value;
     if (microphoneStatus.value === DeviceStatus.Off) {
-      try {
-        await openLocalMicrophone();
-        await unmuteLocalAudio();
-      } catch (err) {
-        console.warn('[MicVolumeSetting] openLocalMicrophone failed:', err);
-      }
+      await openMicrophoneWithGuidance();
     }
     await setCaptureVolume(value);
   } else {
@@ -83,42 +84,81 @@ const handleMicrophoneVolumeChange = async (value: number) => {
   }
 };
 
-const switchMicrophoneStatus = async () => {
-  if (microphoneLastError.value !== DeviceError.NoError) {
-    switch (microphoneLastError.value) {
-      case DeviceError.NoDeviceDetected:
-        TUIToast.error({
-          message: t('No device detected'),
-        });
-        break;
-      case DeviceError.NoSystemPermission:
-        TUIToast.error({
-          message: t('No system permission'),
-        });
-        break;
-      case DeviceError.NotSupportCapture:
-        TUIToast.error({
-          message: t('Not support capture'),
-        });
-        break;
-      default:
-        break;
+const applyHostMicFailure = (
+  alreadyVisible: boolean,
+  reason: HostMicFailureReason,
+) => {
+  if (hostMicGuidance.visible.value) {
+    hostMicGuidance.show(reason);
+    if (alreadyVisible) {
+      hostMicGuidance.markFailed();
     }
+    return;
   }
+  if (alreadyVisible) {
+    return;
+  }
+  hostMicGuidance.show(reason);
+};
+
+const applyHostMicOpenOutcome = async (alreadyVisible: boolean, threw: boolean) => {
+  const outcome = resolveHostMicOpenResult({
+    lastError: microphoneLastError.value,
+    threw,
+    browserPermissionDenied: await isBrowserMicrophoneDenied(),
+  });
+  if (outcome.kind === 'success') {
+    hostMicGuidance.succeed();
+    return;
+  }
+  if (outcome.kind === 'unhandled') {
+    if (alreadyVisible) {
+      hostMicGuidance.markFailed();
+    }
+    return;
+  }
+  applyHostMicFailure(alreadyVisible, outcome.reason);
+};
+
+const openMicrophoneWithGuidance = async () => {
+  const alreadyVisible = hostMicGuidance.visible.value;
+  if (alreadyVisible) {
+    hostMicGuidance.beginRetry();
+  }
+  let threw = false;
+  try {
+    await openLocalMicrophone();
+    await unmuteLocalAudio();
+  } catch (err) {
+    threw = true;
+    console.warn('[MicVolumeSetting] openLocalMicrophone failed:', err);
+  }
+  await applyHostMicOpenOutcome(alreadyVisible, threw);
+};
+
+onMounted(() => {
+  hostMicGuidance.setRetryHandler(async () => {
+    await openMicrophoneWithGuidance();
+    await setCaptureVolume(intendedVolume.value || DEFAULT_VOLUME);
+  });
+});
+
+onBeforeUnmount(() => {
+  hostMicGuidance.setRetryHandler(null);
+});
+
+const switchMicrophoneStatus = async () => {
   if (microphoneStatus.value === DeviceStatus.On) {
     // Mute without touching `intendedVolume`.
     await muteLocalAudio();
     await setCaptureVolume(0);
-  } else {
-    // Unmute and restore the user's intended volume.
-    try {
-      await openLocalMicrophone();
-      await unmuteLocalAudio();
-    } catch (err) {
-      console.warn('[MicVolumeSetting] openLocalMicrophone failed:', err);
+    if (await isBrowserMicrophoneDenied()) {
+      hostMicGuidance.show('noSystemPermission');
     }
-    await setCaptureVolume(intendedVolume.value || DEFAULT_VOLUME);
+    return;
   }
+  await openMicrophoneWithGuidance();
+  await setCaptureVolume(intendedVolume.value || DEFAULT_VOLUME);
 };
 
 // When the mic transitions from Off -> On (e.g. triggered by LivePusherView's
