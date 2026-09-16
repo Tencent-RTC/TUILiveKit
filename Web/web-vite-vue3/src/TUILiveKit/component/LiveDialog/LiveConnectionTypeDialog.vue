@@ -3,6 +3,7 @@
     :title="t('Choose co-broadcasting method')"
     :visible="modelValue"
     :custom-classes="['request-connection-dialog']"
+    append-to="body"
     @update:visible="handleVisibleChange"
   >
     <div class="connection-options">
@@ -10,8 +11,8 @@
         <div class="options-grid">
           <div
             class="option-card"
-            :class="{ active: type === 'video' }"
-            @click="handleSelectConnectionType('video')"
+            :class="{ active: type === DeviceSelectionType.Video }"
+            @click="handleSelectConnectionType(DeviceSelectionType.Video)"
           >
             <div class="option-info">
               <div class="option-icon">
@@ -22,8 +23,8 @@
           </div>
           <div
             class="option-card"
-            :class="{ active: type === 'audio' }"
-            @click="handleSelectConnectionType('audio')"
+            :class="{ active: type === DeviceSelectionType.Audio }"
+            @click="handleSelectConnectionType(DeviceSelectionType.Audio)"
           >
             <div class="option-info">
               <div class="option-icon">
@@ -57,17 +58,18 @@ import {
   TUIButton,
   useUIKit,
 } from '@tencentcloud/uikit-base-component-vue3';
+import { DeviceSelectionType } from '../../utils/deviceGuidance/deviceSelectionEmptyGuidance';
 
 const { t } = useUIKit();
 
 interface Props {
   modelValue: boolean;
-  type: 'video' | 'audio';
+  type: DeviceSelectionType;
 }
 
 interface Emits {
   (e: 'update:modelValue', value: boolean): void;
-  (e: 'update:type', value: 'video' | 'audio'): void;
+  (e: 'update:type', value: DeviceSelectionType): void;
   (e: 'confirm'): void;
   (e: 'cancel'): void;
 }
@@ -79,7 +81,7 @@ const handleVisibleChange = (visible: boolean) => {
   emit('update:modelValue', visible);
 };
 
-const handleSelectConnectionType = (value: 'video' | 'audio') => {
+const handleSelectConnectionType = (value: DeviceSelectionType) => {
   emit('update:type', value);
 };
 

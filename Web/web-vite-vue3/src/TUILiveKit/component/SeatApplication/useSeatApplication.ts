@@ -11,8 +11,22 @@ import {
 } from 'tuikit-atomicx-vue3';
 import { TUISeatLayoutTemplate } from '../../types/LivePusher';
 import { checkWebRTCSupport, showWebRTCUnsupportedToast } from '../../utils/webrtcSupport';
+import {
+  CoGuestDeviceOpenFailureReason,
+  classifyCoGuestDeviceOpenFailure,
+  getCoGuestDeviceOpenFailureGuidanceKeys,
+} from '../../utils/deviceGuidance/coGuestDeviceOpenFailureGuidance';
+import { DeviceSelectionType } from '../../utils/deviceGuidance/deviceSelectionEmptyGuidance';
 
-const { t } = useUIKit();
+// Defer useUIKit() call to setup() context via lazy initialization.
+// useUIKit() internally calls inject() which only works inside setup().
+let _t: ReturnType<typeof useUIKit>['t'] | null = null;
+function t(...args: Parameters<ReturnType<typeof useUIKit>['t']>) {
+  if (!_t) {
+    throw new Error('[useSeatApplication] t() called before useSeatApplication() was invoked inside setup().');
+  }
+  return _t(...args);
+}
 
 const {
   connected,
@@ -55,7 +69,7 @@ const TASK_SEAT_REQUEST_TIMEOUT = 60;
 // permission without prompting the user again when openLocalMicrophone /
 // openLocalCamera is called after the host accepts.
 
-type ConnectionType = 'video' | 'audio';
+type ConnectionType = DeviceSelectionType;
 
 type PermissionFailureReason =
   | 'microphone-denied'        // User clicked "Block" in this session.
@@ -80,7 +94,7 @@ function classifyMediaError(error: unknown, type: ConnectionType): PermissionFai
     case 'PermissionDeniedError':
       // The browser does not tell us which track was denied when both are
       // requested; attribute it to the most user-visible one for UX.
-      return type === 'video' ? 'camera-denied' : 'microphone-denied';
+      return type === DeviceSelectionType.Video ? 'camera-denied' : 'microphone-denied';
     case 'NotFoundError':
     case 'OverconstrainedError':
       return 'device-not-found';
@@ -147,7 +161,7 @@ function probePermissionsDirect(type: ConnectionType): Promise<PermissionProbeRe
 async function awaitGetUserMedia(type: ConnectionType): Promise<PermissionProbeResult> {
   const constraints: MediaStreamConstraints = {
     audio: true,
-    video: type === 'video' ? { facingMode: 'user' } : false,
+    video: type === DeviceSelectionType.Video ? { facingMode: 'user' } : false,
   };
 
   let stream: MediaStream | null = null;
@@ -182,7 +196,7 @@ function showPermissionDeniedToast(reason: PermissionFailureReason, type: Connec
       message = t('Camera is blocked. Please enable it in your browser site settings and try again.');
       break;
     case 'device-not-found':
-      message = type === 'video'
+      message = type === DeviceSelectionType.Video
         ? t('No camera or microphone detected on this device.')
         : t('No microphone detected on this device.');
       break;
@@ -229,7 +243,7 @@ async function decidePermissionFlow(type: ConnectionType): Promise<PermissionFlo
   if (micState === 'denied') {
     return 'show-blocked';
   }
-  if (type === 'video') {
+  if (type === DeviceSelectionType.Video) {
     const camState = await queryPermissionState('camera');
     if (camState === 'denied') {
       return 'show-blocked';
@@ -260,7 +274,12 @@ const permissionPrimerVisible = ref(false);
 const permissionPrimerMode = ref<'primer' | 'blocked'>('primer');
 const selectedMicrophoneId = ref<string>('');
 const selectedCameraId = ref<string>('');
-const requestConnectionType = ref<'video' | 'audio'>('audio');
+const requestConnectionType = ref<DeviceSelectionType>(DeviceSelectionType.Audio);
+const deviceOpenFailureGuidanceVisible = ref(false);
+const deviceOpenFailureReason = ref<CoGuestDeviceOpenFailureReason>(CoGuestDeviceOpenFailureReason.Unknown);
+const deviceOpenFailureGuidanceCopy = computed(() => (
+  getCoGuestDeviceOpenFailureGuidanceKeys(deviceOpenFailureReason.value)
+));
 
 const takeSeatIndex = ref(-1);
 const isApplyingSeat = computed(() => applicants.value.filter(applicant => applicant.userId === (loginUserInfo.value && loginUserInfo.value.userId)).length === 1);
@@ -273,7 +292,7 @@ const currentLiveOrientation = computed(() => {
   return LiveOrientation.Portrait;
 });
 const canConfirmDeviceSelection = computed(() => {
-  if (requestConnectionType.value === 'video') {
+  if (requestConnectionType.value === DeviceSelectionType.Video) {
     return selectedMicrophoneId.value && selectedCameraId.value;
   }
   return selectedMicrophoneId.value;
@@ -353,18 +372,27 @@ async function handleApplyForSeat(index: number = -1) {
   const isLandscapeAudioOnly = currentLiveOrientation.value === LiveOrientation.Landscape
     && !isLandscape1v1Template;
   if (isLandscapeAudioOnly) {
-    if (currentPlatform.value === 'h5') {
-      openConnectionTypeDrawer({ audioOnly: true, defaultType: 'audio' });
+    if (currentPlatform.value === SeatApplicationPlatform.H5) {
+      openConnectionTypeDrawer({ audioOnly: true, defaultType: DeviceSelectionType.Audio });
     } else {
       // PC fast path: pre-select audio so consumers reading
       // requestConnectionType (downstream apply call) see the right
       // intent even though the drawer is bypassed.
-      requestConnectionType.value = 'audio';
+      requestConnectionType.value = DeviceSelectionType.Audio;
       handleConnectionTypeConfirm();
     }
   } else {
-    openConnectionTypeDrawer({ audioOnly: false, defaultType: 'video' });
+    openConnectionTypeDrawer({ audioOnly: false, defaultType: DeviceSelectionType.Video });
   }
+}
+
+function closeDeviceOpenFailureGuidance() {
+  deviceOpenFailureGuidanceVisible.value = false;
+}
+
+function resetDeviceOpenFailureGuidance() {
+  deviceOpenFailureGuidanceVisible.value = false;
+  deviceOpenFailureReason.value = CoGuestDeviceOpenFailureReason.Unknown;
 }
 
 // Single entry point for opening the connection-type drawer. Centralizes
@@ -376,7 +404,7 @@ async function handleApplyForSeat(index: number = -1) {
 // default of 'audio').
 function openConnectionTypeDrawer(options: {
   audioOnly: boolean;
-  defaultType: 'video' | 'audio';
+  defaultType: DeviceSelectionType;
 }) {
   connectionTypeDrawerAudioOnly.value = options.audioOnly;
   requestConnectionType.value = options.defaultType;
@@ -491,7 +519,7 @@ function closeConnectionTypeDrawer() {
 
 function handleConnectionTypeCancel() {
   closeConnectionTypeDrawer();
-  requestConnectionType.value = 'audio';
+  requestConnectionType.value = DeviceSelectionType.Audio;
 }
 
 async function handleConnectionTypeConfirm() {
@@ -508,14 +536,14 @@ async function handleConnectionTypeConfirm() {
   // below so PC's device-selection dialog flow gets the same
   // protection: showing the device picker on a browser that cannot
   // encode video would just waste the user's time.
-  if (requestConnectionType.value === 'video') {
+  if (requestConnectionType.value === DeviceSelectionType.Video) {
     const capability = await checkWebRTCSupport();
     if (!capability.canPushVideo) {
       showWebRTCUnsupportedToast(t);
       closeConnectionTypeDrawer();
       // Reset to default so the next entry to the connection type
       // drawer is not biased by this rejected video request.
-      requestConnectionType.value = 'audio';
+      requestConnectionType.value = DeviceSelectionType.Audio;
       return;
     }
   }
@@ -526,7 +554,7 @@ async function handleConnectionTypeConfirm() {
   // Mobile only exposes default microphone + front/back cameras, so a device
   // picker is unnecessary and avoids triggering two getUserMedia permission
   // prompts (preview + apply) inside WeChat web-view.
-  if (currentPlatform.value === 'h5') {
+  if (currentPlatform.value === SeatApplicationPlatform.H5) {
     // Pre-authorization gate (industry best practice).
     //
     // Before invoking getUserMedia we decide whether to show our own
@@ -691,7 +719,7 @@ function handlePermissionPrimerCancel() {
   permissionPrimerVisible.value = false;
   // Reset to default so the next entry to the connection type drawer is
   // not biased by a previously-canceled video request.
-  requestConnectionType.value = 'audio';
+  requestConnectionType.value = DeviceSelectionType.Audio;
 }
 
 function handleDeviceCancel() {
@@ -709,7 +737,7 @@ async function handleDeviceConfirm() {
     if (selectedMicrophoneId.value) {
       await setCurrentMicrophone({ deviceId: selectedMicrophoneId.value });
     }
-    if (requestConnectionType.value === 'video' && selectedCameraId.value) {
+    if (requestConnectionType.value === DeviceSelectionType.Video && selectedCameraId.value) {
       await setCurrentCamera({ deviceId: selectedCameraId.value });
     }
 
@@ -737,7 +765,7 @@ async function handleGuestApplicationResponded(eventInfo: CoGuestEventInfoMap[Gu
     // host never sees a "muted occupied seat".
     try {
       await openLocalMicrophone();
-      if (requestConnectionType.value === 'video') {
+      if (requestConnectionType.value === DeviceSelectionType.Video) {
         await openLocalCamera();
       }
       TUIToast.success({
@@ -745,9 +773,8 @@ async function handleGuestApplicationResponded(eventInfo: CoGuestEventInfoMap[Gu
       });
     } catch (error) {
       console.error('Failed to open local device after host accept:', error);
-      TUIToast.error({
-        message: t('Failed to open device. You have been removed from the seat.'),
-      });
+      deviceOpenFailureReason.value = classifyCoGuestDeviceOpenFailure(error);
+      deviceOpenFailureGuidanceVisible.value = true;
       try {
         await disConnect();
       } catch (disconnectError) {
@@ -767,7 +794,7 @@ async function handleGuestApplicationResponded(eventInfo: CoGuestEventInfoMap[Gu
     } finally {
       // Reset connection type regardless of success / failure so the next
       // application starts from a clean state.
-      requestConnectionType.value = 'audio';
+      requestConnectionType.value = DeviceSelectionType.Audio;
     }
   } else {
     TUIToast.warning({
@@ -835,7 +862,7 @@ async function initAutoSelectDevice() {
   await getMicrophoneList();
   selectedMicrophoneId.value = currentMicrophone.value?.deviceId || microphoneList.value[0]?.deviceId || '';
 
-  if (requestConnectionType.value === 'video') {
+  if (requestConnectionType.value === DeviceSelectionType.Video) {
     await getCameraList();
     selectedCameraId.value = currentCamera.value?.deviceId || cameraList.value[0]?.deviceId || '';
   }
@@ -853,9 +880,13 @@ function unsubscribeEvents() {
   unsubscribeEvent(GuestEvent.onGuestApplicationNoResponse, handleGuestApplicationNoResponse);
   unsubscribeEvent(GuestEvent.onKickedOffSeat, handleKickedOffSeat);
   unsubscribeEvent(GuestEvent.onGuestApplicationError, handleGuestApplicationError);
+  resetDeviceOpenFailureGuidance();
 }
 
-export type SeatApplicationPlatform = 'pc' | 'h5';
+export enum SeatApplicationPlatform {
+  PC = 'pc',
+  H5 = 'h5',
+}
 
 // Module-level platform flag shared across all consumers of this hook.
 //
@@ -872,15 +903,22 @@ export type SeatApplicationPlatform = 'pc' | 'h5';
 //   guarantee this). If a future refactor accidentally mixes both, we want
 //   to surface it immediately rather than silently letting the last caller
 //   win. The warn below is the runtime guard.
-const currentPlatform = ref<SeatApplicationPlatform>('pc');
+const currentPlatform = ref<SeatApplicationPlatform>(SeatApplicationPlatform.PC);
 
-export function useSeatApplication(platform: SeatApplicationPlatform = 'pc') {
+export function useSeatApplication(platform: SeatApplicationPlatform = SeatApplicationPlatform.PC) {
+  // Initialize the translation function on first call inside setup() context.
+  if (!_t) {
+    const { t: uiKitT } = useUIKit();
+    _t = uiKitT;
+  }
+
   if (currentPlatform.value !== platform) {
-    // First call (`'pc'` -> incoming): initial setup, silent.
+    // First call (PC -> incoming): initial setup, silent.
     // Otherwise: a second consumer is requesting a different platform on
     // the same page, which violates the coexistence contract above and
     // will produce subtle bugs in handleConnectionTypeConfirm's H5 branch.
-    const isInitialSetup = currentPlatform.value === 'pc' && platform === 'h5';
+    const isInitialSetup = currentPlatform.value === SeatApplicationPlatform.PC
+      && platform === SeatApplicationPlatform.H5;
     if (!isInitialSetup) {
       console.warn(
         `[useSeatApplication] platform conflict: previously initialized as '${currentPlatform.value}', `
@@ -902,10 +940,13 @@ export function useSeatApplication(platform: SeatApplicationPlatform = 'pc') {
     applySeatBtnText,
     selectedMicrophoneId,
     selectedCameraId,
+    deviceOpenFailureGuidanceVisible,
+    deviceOpenFailureGuidanceCopy,
     requestConnectionType,
     microphoneList,
     cameraList,
     handleApplyForSeat,
+    closeDeviceOpenFailureGuidance,
     openLeaveSeatDialog,
     confirmLeaveSeat,
     closeLeaveSeatDialog,

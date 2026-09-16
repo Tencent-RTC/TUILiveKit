@@ -41,9 +41,10 @@ import {
   useUIKit,
 } from '@tencentcloud/uikit-base-component-vue3';
 import Drawer from '../../base-component/Drawer.vue';
+import { DeviceSelectionType } from '../../utils/deviceGuidance/deviceSelectionEmptyGuidance';
 
 export type PermissionPrimerMode = 'primer' | 'blocked';
-export type PermissionPrimerType = 'video' | 'audio';
+export type PermissionPrimerType = DeviceSelectionType;
 
 const { t } = useUIKit();
 
@@ -74,7 +75,7 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 const needsMicrophone = computed(() => true);
-const needsCamera = computed(() => props.type === 'video');
+const needsCamera = computed(() => props.type === DeviceSelectionType.Video);
 
 // Shrink icons when both are shown so they fit inside the 72px circle
 // without overflowing. Single-icon layouts keep the original 32px size.
@@ -82,11 +83,11 @@ const iconSize = computed(() => (needsMicrophone.value && needsCamera.value ? '2
 
 const titleText = computed(() => {
   if (props.mode === 'blocked') {
-    return props.type === 'video'
+    return props.type === DeviceSelectionType.Video
       ? t('Camera and microphone access is blocked')
       : t('Microphone access is blocked');
   }
-  return props.type === 'video'
+  return props.type === DeviceSelectionType.Video
     ? t('Allow camera and microphone access')
     : t('Allow microphone access');
 });
@@ -98,7 +99,7 @@ const descText = computed(() => {
       'Permission is blocked at the site level. Please enable it in your browser settings, then tap "I have enabled it" to retry.'
     );
   }
-  return props.type === 'video'
+  return props.type === DeviceSelectionType.Video
     ? t(
       'To co-broadcast, we need access to your camera and microphone. Please tap "Allow" in the browser prompt that follows.'
     )

@@ -12,12 +12,14 @@ import TUIRoomEngine from '@tencentcloud/tuiroom-engine-js';
 import { TUIMessageBox, useUIKit } from '@tencentcloud/uikit-base-component-vue3';
 import { useLiveListState, useLoginState, useDeviceState } from 'tuikit-atomicx-vue3';
 import { LivePusherView } from '../TUILiveKit';
+import { useHostMicrophoneGuidance } from '../TUILiveKit/utils/deviceGuidance/useHostMicrophoneGuidance';
 import LiveHeader from '@/components/LiveHeader.vue';
 
 const router = useRouter();
 const { currentLive, joinLive } = useLiveListState();
 const { loginUserInfo } = useLoginState();
-const { openLocalMicrophone } = useDeviceState();
+const { openLocalMicrophone, microphoneLastError } = useDeviceState();
+const { reportAutoOpenAttempt } = useHostMicrophoneGuidance();
 const { t } = useUIKit();
 
 TUIRoomEngine.once('ready', () => {
@@ -53,7 +55,7 @@ const restoreLive = async () => {
             await joinLive({
               liveId,
             });
-            openLocalMicrophone();
+            await reportAutoOpenAttempt(openLocalMicrophone, () => microphoneLastError.value);
           } catch (error) {
             alert(t('Failed to join live broadcast session'));
             sessionStorage.removeItem('livekit-live-id');

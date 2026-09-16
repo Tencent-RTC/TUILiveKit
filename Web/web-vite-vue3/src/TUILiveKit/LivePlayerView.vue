@@ -11,6 +11,11 @@
       :live-id="props.liveId"
       @leave-live="emit('leaveLive')"
     />
+    <WebRTCUnsupportedDialog
+      :visible="unsupportedDialogVisible"
+      role="audience"
+      @return-to-list="emit('leaveLive')"
+    />
   </div>
 </template>
 
@@ -19,6 +24,7 @@ import { onMounted, onUnmounted, ref } from 'vue';
 import { TUIToast, useUIKit } from '@tencentcloud/uikit-base-component-vue3';
 import { useLiveSeatState, LiveSeatEvent } from 'tuikit-atomicx-vue3';
 import LivePlayer from './component/LivePlayer';
+import WebRTCUnsupportedDialog from './component/WebRTCUnsupportedDialog.vue';
 import { useWebRTCSupportGuard } from './utils/webrtcSupport';
 
 const props = defineProps<{
@@ -30,12 +36,12 @@ const emit = defineEmits(['leaveLive']);
 const { t } = useUIKit();
 
 // WebRTC capability guard — viewer role.
-// When the current browser cannot pull video, the guard shows a toast
-// recommending Chrome and we leave the live page via the existing
-// `leaveLive` channel. The pull-but-cannot-push case is intentionally
-// NOT blocked here; that is handled later by useSeatApplication's
-// pre-apply guard so audience-only viewers can still watch on browsers
-// that lack mediaDevices (e.g. plain HTTP).
+// When the current browser cannot pull video, keep this page and show
+// a persistent Dialog. The user returns to the live list through the
+// existing `leaveLive` channel. The pull-but-cannot-push case is
+// intentionally NOT blocked here; that is handled later by
+// useSeatApplication's pre-apply guard so audience-only viewers can
+// still watch on browsers that lack mediaDevices (e.g. plain HTTP).
 const { guardLiveEntry } = useWebRTCSupportGuard();
 
 // Toggled to true only after the probe resolves AND the viewer is
@@ -44,6 +50,7 @@ const { guardLiveEntry } = useWebRTCSupportGuard();
 // avoiding wasted joinLive calls + spurious SDK error logs during
 // the probe-then-leave window.
 const rtcSupportChecked = ref(false);
+const unsupportedDialogVisible = ref(false);
 
 // Mic/camera host-control detection (shared by PC + H5):
 // Surface a toast whenever the host disables or restores the current
@@ -79,15 +86,14 @@ onMounted(async () => {
   // Probe WebRTC capability AFTER the seat-event wiring so an early
   // unmount during await never leaves listeners hanging. The probe
   // itself is cached and resolves synchronously on warm cache, so
-  // this adds no perceptible delay. When unsupported, the guard
-  // already showed a toast and we leave via the existing channel;
-  // the global toast portal keeps the message visible across the
-  // navigation. Only flip `rtcSupportChecked` on the success path
-  // so the LivePlayer subtree is never mounted on unsupported
-  // browsers (would otherwise burn a joinLive + SDK error log).
+  // this adds no perceptible delay. When unsupported, keep the page
+  // and show the persistent Dialog. Only flip `rtcSupportChecked`
+  // on the success path so the LivePlayer subtree is never mounted
+  // on unsupported browsers (would otherwise burn a joinLive + SDK
+  // error log).
   const allowed = await guardLiveEntry('audience');
   if (!allowed) {
-    emit('leaveLive');
+    unsupportedDialogVisible.value = true;
     return;
   }
   rtcSupportChecked.value = true;

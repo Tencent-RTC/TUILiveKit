@@ -41,7 +41,12 @@
         </div>
       </div>
       <div class="divider" />
-      <AudioSettingPanel :output-volume-visible="false" />
+      <AudioSettingPanel
+        :output-volume-visible="false"
+        :test-failure-guidance-visible="true"
+        :manage-microphone-device="true"
+        :microphone-device-sync-active="coGuestPanelVisible"
+      />
     </div>
     <template #footer>
       <div />

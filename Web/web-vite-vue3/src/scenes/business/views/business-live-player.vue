@@ -34,12 +34,10 @@ import { useRouter, useRoute } from 'vue-router';
 import { useLoginState } from 'tuikit-atomicx-vue3';
 import { useUIKit } from '@tencentcloud/uikit-base-component-vue3';
 import LivePlayerBusinessPC from '../components/LivePlayerBusinessPC.vue';
-import { useBusinessPreset } from '../composables/useBusinessPreset';
 import '../styles/business.scss';
 import '../../../TUILiveKit';
 
 const { loginUserInfo, login } = useLoginState();
-const { isBusinessPreset } = useBusinessPreset();
 const { t } = useUIKit();
 
 const router = useRouter();
@@ -77,11 +75,9 @@ function handlePlayerReady() {
 }
 
 function leaveLive() {
-  const query: Record<string, string> = {};
-  if (!isBusinessPreset.value) {
-    query.stylePreset = 'business';
-  }
-  router.push({ path: '/live-list', query });
+  // Never carry a `stylePreset` param back to the list: it would stick in the
+  // hash URL and force that preset on every later reload.
+  router.push({ path: '/live-list' });
 }
 
 /**

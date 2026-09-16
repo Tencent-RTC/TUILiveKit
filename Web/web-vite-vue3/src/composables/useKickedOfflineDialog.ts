@@ -1,11 +1,11 @@
 import { useRouter } from 'vue-router';
-import { TUIMessageBox, useUIKit } from '@tencentcloud/uikit-base-component-vue3';
 import { useLoginState, LoginEvent } from 'tuikit-atomicx-vue3';
+import { useLoginPrompts } from '../components/login/loginPrompts';
 
 /**
  * Custom dialog adapter interface.
  *
- * Implement this to replace the default TUIMessageBox with a
+ * Implement this to replace the default UIKitModal with a
  * scene-specific dialog UI (e.g. Business or Education style).
  *
  * @example
@@ -28,7 +28,7 @@ let registered = false;
  * Must be called in a Vue setup() context. Uses a module-level flag so
  * it only registers once regardless of how many times it is called.
  *
- * @param adapter - Optional custom dialog. Defaults to TUIMessageBox.alert.
+ * @param adapter - Optional custom dialog. Defaults to the shared UIKitModal prompt.
  *
  * @note Phase 1: call with no adapter from App.vue (covers all pages).
  *       Phase 2: when scenes need custom UI, remove the App.vue call and
@@ -39,8 +39,8 @@ export function useKickedOfflineDialog(adapter?: KickedOfflineDialogAdapter): vo
   registered = true;
 
   const router = useRouter();
-  const { t } = useUIKit();
   const { subscribeEvent } = useLoginState();
+  const { promptKickedOffline } = useLoginPrompts();
 
   const onConfirm = () => {
     sessionStorage.removeItem('tuiLive-userInfo');
@@ -54,13 +54,8 @@ export function useKickedOfflineDialog(adapter?: KickedOfflineDialogAdapter): vo
     if (adapter) {
       adapter.show(onConfirm);
     } else {
-      TUIMessageBox.alert({
-        title: t('Account logged in elsewhere'),
-        content: t('Your account has been logged in on another device. You have been disconnected.'),
-        confirmText: t('Back to login'),
-        showClose: false,
-        callback: onConfirm,
-      });
+      // The session is already dead, so both actions lead back to login.
+      promptKickedOffline({ onConfirm, onCancel: onConfirm });
     }
   });
 }

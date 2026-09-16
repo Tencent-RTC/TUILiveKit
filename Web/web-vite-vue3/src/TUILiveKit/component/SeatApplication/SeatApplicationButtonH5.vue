@@ -25,6 +25,12 @@
     v-model:visible="videoAdjustVisible"
     @apply="handleVideoAdjustApply"
   />
+  <CoGuestDeviceOpenFailureGuidance
+    :visible="deviceOpenFailureGuidanceVisible"
+    :platform="SeatApplicationPlatform.H5"
+    :copy="deviceOpenFailureGuidanceCopy"
+    @dismiss="closeDeviceOpenFailureGuidance"
+  />
   <transition name="action-sheet-slide">
     <div v-if="cancelApplicationDialogVisible" class="action-sheet-mask" @click="handleCancelApplicationCancel">
       <div class="action-sheet" @click.stop>
@@ -61,7 +67,9 @@ import {
 import LiveConnectionTypeDrawerH5 from '../LiveDialog/LiveConnectionTypeDrawerH5.vue';
 import LivePermissionPrimerDrawerH5 from '../LiveDialog/LivePermissionPrimerDrawerH5.vue';
 import LiveVideoAdjustDrawerH5 from '../LiveDialog/LiveVideoAdjustDrawerH5.vue';
-import { useSeatApplication } from './useSeatApplication';
+import CoGuestDeviceOpenFailureGuidance from './CoGuestDeviceOpenFailureGuidance.vue';
+import { SeatApplicationPlatform, useSeatApplication } from './useSeatApplication';
+import { DeviceSelectionType } from '../../utils/deviceGuidance/deviceSelectionEmptyGuidance';
 
 const { t } = useUIKit();
 
@@ -77,8 +85,11 @@ const {
   leaveSeatDialogVisible,
   permissionPrimerVisible,
   permissionPrimerMode,
+  deviceOpenFailureGuidanceVisible,
+  deviceOpenFailureGuidanceCopy,
   requestConnectionType,
   handleApplyForSeat,
+  closeDeviceOpenFailureGuidance,
   openLeaveSeatDialog,
   confirmLeaveSeat,
   closeLeaveSeatDialog,
@@ -90,7 +101,7 @@ const {
   handlePermissionPrimerCancel,
   subscribeEvents,
   unsubscribeEvents,
-} = useSeatApplication('h5');
+} = useSeatApplication(SeatApplicationPlatform.H5);
 
 function handleButtonClick() {
   if (isUserOnSeat.value) {
@@ -109,7 +120,7 @@ function handleOpenVideoAdjust() {
 
 function handleVideoAdjustApply() {
   videoAdjustVisible.value = false;
-  requestConnectionType.value = 'video';
+  requestConnectionType.value = DeviceSelectionType.Video;
   handleConnectionTypeConfirm();
 }
 
