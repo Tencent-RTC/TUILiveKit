@@ -1,3 +1,4 @@
 .DS_Store
 Flutter/.idea
 iOS/VideoAdvanceExtension/*
+Web/*/node_modules
