@@ -4,8 +4,6 @@ const enUS: Record<keyof typeof zhCN, string> = {
   'Demo.PhoneLogin': 'Phone login',
   'Demo.UserIDLogin': 'User ID login',
   'Demo.LoginFailed': 'Login failed',
-  'Demo.StartLive': 'Start live',
-  'Demo.Logout': 'Log out',
   'Demo.Login': 'Log in',
   'Demo.LoginForm.SDKAppIDHint': 'The application ID that Tencent Cloud uses to tell TRTC applications apart. It is generated automatically when you create an application in the TRTC console. Data is not shared between different SDKAppIDs.',
   'Demo.LoginForm.SDKSecretKeyHint': 'The application secret key, used for the key information in the basic configuration file.',

@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 import { createHashRouter, Navigate, useLocation } from 'react-router-dom';
 import { useLoginState } from 'tuikit-atomicx-react';
-import { LivePusherView } from '@tencentcloud/livekit-web-react';
-import { LiveListView, LivePlayerView, LoginView } from '../pages';
+import { LiveList, LivePusher } from '@tencentcloud/livekit-web-react';
+import { LivePlayerView, LoginView } from '../pages';
 import { RoutePath } from './routePath';
 import { logout } from '../utils/login';
 
@@ -27,12 +27,25 @@ export const router = createHashRouter([{
   element: <LoginView />,
 }, {
   path: RoutePath.LiveList,
-  element: <RequireLogin><LiveListView /></RequireLogin>,
+  element: (
+    <RequireLogin>
+      <LiveList
+        logoUrl={logoUrl}
+        brandName="LiveKit"
+        onStartLive={() => router.navigate(RoutePath.LivePusher)}
+        onLiveRoomClick={liveInfo => router.navigate({ pathname: RoutePath.LivePlayer, search: `?liveId=${liveInfo.liveId}` })}
+        onLogout={async () => {
+          await logout();
+          await router.navigate(RoutePath.Login);
+        }}
+      />
+    </RequireLogin>
+  ),
 }, {
   path: RoutePath.LivePusher,
   element: (
     <RequireLogin>
-      <LivePusherView
+      <LivePusher
         logoUrl={logoUrl}
         brandName="LiveKit"
         onLeave={() => router.navigate(RoutePath.LiveList)}
