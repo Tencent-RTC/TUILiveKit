@@ -5,7 +5,7 @@
         <div class="form-row">
           <div class="label-row">
             <label for="sdkappid">SDKAppID</label>
-            <FieldHint :content="t('SDKAppID hint')" />
+            <FieldHint :content="t('Demo.LoginForm.SDKAppIDHint')" />
           </div>
           <div class="input-container">
             <input
@@ -15,7 +15,7 @@
               inputmode="numeric"
               class="input-field"
               :class="{ 'input-error': invalid.sdkAppId }"
-              :placeholder="t('Please enter SDKAppID')"
+              :placeholder="t('Demo.LoginForm.EnterSDKAppID')"
               autocomplete="off"
             />
           </div>
@@ -24,7 +24,7 @@
         <div class="form-row">
           <div class="label-row">
             <label for="secretkey">SDKSecretKey</label>
-            <FieldHint :content="t('SDKSecretKey hint')" />
+            <FieldHint :content="t('Demo.LoginForm.SDKSecretKeyHint')" />
           </div>
           <div class="input-container">
             <input
@@ -33,7 +33,7 @@
               :type="isSecretVisible ? 'text' : 'password'"
               class="input-field secret-field"
               :class="{ 'input-error': invalid.secretKey }"
-              :placeholder="t('Please enter SDKSecretKey')"
+              :placeholder="t('Demo.LoginForm.EnterSDKSecretKey')"
               autocomplete="off"
               spellcheck="false"
             />
@@ -42,7 +42,7 @@
               class="toggle-secret"
               @click="isSecretVisible = !isSecretVisible"
             >
-              {{ isSecretVisible ? t('Hide') : t('Show') }}
+              {{ isSecretVisible ? t('Demo.LoginForm.Hide') : t('Demo.LoginForm.Show') }}
             </button>
           </div>
         </div>
@@ -51,7 +51,7 @@
       <div class="form-row">
         <div class="label-row">
           <label for="userid">userID</label>
-          <FieldHint :content="t('userID hint')" />
+          <FieldHint :content="t('Demo.LoginForm.UserIDHint')" />
         </div>
         <div class="input-container">
           <input
@@ -61,18 +61,18 @@
             type="text"
             class="input-field"
             :class="{ 'input-error': invalid.userID }"
-            :placeholder="t('Please enter userID')"
+            :placeholder="t('Demo.LoginForm.EnterUserID')"
             autocomplete="off"
           />
         </div>
       </div>
 
       <p v-if="!credentialsPreset" class="form-hint">
-        {{ t('The secret key is only kept in this browser tab and is used locally to generate userSig') }}
+        {{ t('Demo.LoginForm.SecretKeyLocalOnly') }}
       </p>
 
       <TUIButton type="primary" class="submit-button" :loading="loading">
-        {{ t('Login') }}
+        {{ t('Demo.Login') }}
       </TUIButton>
     </form>
   </div>
@@ -83,6 +83,7 @@ import { nextTick, reactive, ref, watch } from 'vue';
 import { TUIButton, useUIKit } from '@tencentcloud/uikit-base-component-vue3';
 import FieldHint from './FieldHint.vue';
 import { USER_ID_PATTERN, useLoginPrompts } from './loginPrompts';
+import type { LoginFormPayload } from './types';
 import { openDocLink } from '../../utils/docLinks';
 
 const { t, language } = useUIKit();
@@ -102,7 +103,9 @@ const props = withDefaults(defineProps<{
   loading: false,
 });
 
-const emit = defineEmits(['submit']);
+const emit = defineEmits<{
+  submit: [payload: LoginFormPayload];
+}>();
 
 const form = reactive({
   sdkAppId: props.sdkAppId ? String(props.sdkAppId) : '',
@@ -110,8 +113,6 @@ const form = reactive({
   userID: props.userId,
 });
 
-// Field-level copy now lives in the prompt dialogs, so the flags only drive
-// the red outline that points at the offending input.
 const invalid = reactive({ sdkAppId: false, secretKey: false, userID: false });
 
 const isSecretVisible = ref(false);
@@ -129,18 +130,14 @@ watch(() => form.userID, () => {
   invalid.userID = false;
 });
 
-const focusUserIdInput = () => {
+function focusUserIdInput() {
   nextTick(() => {
     userIdInputRef.value?.focus();
     userIdInputRef.value?.select();
   });
-};
+}
 
-const openConsole = () => {
-  openDocLink('console', language.value);
-};
-
-const submitForm = () => {
+function submitForm() {
   const sdkAppId = Number(String(form.sdkAppId).trim());
   const secretKey = form.secretKey.trim();
   const userID = form.userID.trim();
@@ -149,25 +146,23 @@ const submitForm = () => {
   invalid.secretKey = false;
   invalid.userID = false;
 
-  // In preset mode both values come from basic-info-config.js, so only the
-  // userID is worth validating here.
   if (!props.credentialsPreset) {
     invalid.sdkAppId = !sdkAppId || !Number.isInteger(sdkAppId) || sdkAppId <= 0;
     invalid.secretKey = !secretKey;
     if (invalid.sdkAppId || invalid.secretKey) {
-      promptSDKAppIDMissing({ onConfirm: () => openConsole() });
+      promptSDKAppIDMissing({ onConfirm: () => openDocLink('console', language.value) });
       return;
     }
   }
 
   if (!USER_ID_PATTERN.test(userID)) {
     invalid.userID = true;
-    promptUserIdInvalid({ onConfirm: () => focusUserIdInput() });
+    promptUserIdInvalid({ onConfirm: focusUserIdInput });
     return;
   }
 
   emit('submit', { sdkAppId, secretKey, userID });
-};
+}
 </script>
 
 <style scoped>
@@ -241,8 +236,6 @@ label {
   color: #9aa4b2;
 }
 
-/* Reserve room for the absolutely positioned show/hide button so a long
-   secret key never runs underneath it. */
 .secret-field {
   padding-right: 62px;
 }

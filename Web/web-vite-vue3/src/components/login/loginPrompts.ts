@@ -1,42 +1,25 @@
 import { useUIKit } from '@tencentcloud/uikit-base-component-vue3';
 import { UIKitModal } from 'tuikit-atomicx-vue3';
-import { copyToClipboard } from '../../TUILiveKit/utils/utils';
-import { errorHandler } from '../../TUILiveKit/utils/errorHandler';
-import { LiveErrorCode } from '../../TUILiveKit/types/error';
 import { resolveDocLink } from '../../utils/docLinks';
-import { isLocalEnvironment } from '../../utils/utils';
 
-/**
- * Prompt IDs for the login flow. They continue the numbering used in the
- * error-code table, skipping 40040 which is already taken by
- * NAME_SECURITY_CHECK_FAILED.
- */
 export const LoginPromptId = {
   SIGNATURE_EXPIRED: 40006,
   SIGNATURE_INVALID: 40008,
   USER_ID_MISMATCH: 40009,
   SDK_APP_ID_MISSING: 40034,
   USER_ID_INVALID: 40035,
-  USER_SIG_GENERATOR_MISSING: 40036,
   LOGIN_FAILED: 40037,
-  LOGIN_REQUIRED: 40038,
-  KICKED_OFFLINE: 40039,
-  LOGOUT_WHILE_LIVING: 40041,
-  END_LIVE_FAILED: 40042,
+} as const;
+
+const RawErrorCode = {
+  SIGNATURE_EXPIRED: 70001,
+  SIGNATURE_INVALID: 70003,
+  USER_ID_MISMATCH: 70013,
 } as const;
 
 const USER_ID_EXAMPLE = 'live_user_01';
 
-// Only letters, digits and underscores, 1-20 characters.
 export const USER_ID_PATTERN = /^[A-Za-z0-9_]{1,20}$/;
-
-const USER_SIG_SNIPPET = [
-  'login({',
-  '  sdkAppId,',
-  '  userId,',
-  '  userSig: generatorUserSig(userId),',
-  '});',
-].join('\n');
 
 interface ContentLink {
   text: string;
@@ -48,35 +31,23 @@ interface ContentParts {
   panelLabel?: string;
   panelValue?: string;
   panelMono?: boolean;
-  code?: string;
   links?: ContentLink[];
   footNote?: string;
 }
 
-/**
- * UIKitModal renders `content` through `v-html`, so every runtime value must be
- * escaped before it is embedded.
- */
+export interface LoginPromptActions {
+  onConfirm?: () => void;
+  onCancel?: () => void;
+}
+
 function escapeHtml(text: string): string {
   const holder = document.createElement('div');
   holder.textContent = text;
   return holder.innerHTML;
 }
 
-/**
- * Matches the `message` field of an error payload embedded in a log line, e.g.
- * `login failed. error: {"message": SDKAppID not found, "code": 70020}`.
- * The payload is not always valid JSON (values may be unquoted), so it is read
- * with a pattern instead of JSON.parse.
- */
 const MESSAGE_FIELD = /["']?\bmessage["']?\s*:\s*(.+?)\s*(?:,\s*["']?(?:code|error_?code)["']?\s*:|\}\s*$)/i;
 
-/**
- * Turn a raw SDK error into the single sentence worth showing to the user:
- * drop any anchor markup and keep only the `message` field, so log noise such
- * as the `login failed. error:` prefix and the trailing code never reaches the
- * dialog.
- */
 export function toReadableReason(text: string): string {
   const plain = text.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
   const matched = plain.match(MESSAGE_FIELD);
@@ -84,6 +55,43 @@ export function toReadableReason(text: string): string {
     return plain;
   }
   return matched[1].replace(/^["']|["']$/g, '').trim() || plain;
+}
+
+function readErrorMessage(error: unknown): string {
+  if (error && typeof error === 'object' && 'message' in error) {
+    return String((error as { message: unknown }).message ?? '');
+  }
+  return typeof error === 'string' ? error : '';
+}
+
+function readErrorCode(error: unknown): number | undefined {
+  if (error && typeof error === 'object' && 'code' in error) {
+    const code = Number((error as { code: unknown }).code);
+    if (!Number.isNaN(code)) {
+      return code;
+    }
+  }
+  const matched = readErrorMessage(error).match(/error_code:(\d+)/);
+  return matched ? Number(matched[1]) : undefined;
+}
+
+async function copyText(text: string): Promise<void> {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.setAttribute('readonly', '');
+  textarea.style.position = 'fixed';
+  textarea.style.opacity = '0';
+  document.body.appendChild(textarea);
+  textarea.select();
+  try {
+    document.execCommand('copy');
+  } finally {
+    document.body.removeChild(textarea);
+  }
 }
 
 const PANEL_STYLE = [
@@ -112,20 +120,10 @@ const COPY_BUTTON_STYLE = [
   'border-radius:6px',
 ].join(';');
 
-/**
- * The button carries no value: the text to copy is read from the sibling
- * `[data-login-prompt-value]` node, which keeps runtime values out of HTML
- * attributes entirely.
- */
 function copyButton(): string {
   return `<button type="button" ${COPY_BUTTON_ATTR} style="${COPY_BUTTON_STYLE}"></button>`;
 }
 
-/**
- * UIKitModal renders `content` with `v-html`, so no Vue event binding is
- * possible inside it. The copy buttons are wired up afterwards on the real DOM
- * nodes, once per modal instance.
- */
 function bindCopyButtons(copyLabel: string, copiedLabel: string): void {
   requestAnimationFrame(() => {
     const buttons = document.querySelectorAll<HTMLButtonElement>(`[${COPY_BUTTON_ATTR}]`);
@@ -143,7 +141,7 @@ function bindCopyButtons(copyLabel: string, copiedLabel: string): void {
           return;
         }
         try {
-          await copyToClipboard(value);
+          await copyText(value);
         } catch (error) {
           console.warn('[login] copy failed:', error);
           return;
@@ -161,17 +159,9 @@ function bindCopyButtons(copyLabel: string, copiedLabel: string): void {
   });
 }
 
-/**
- * Compose the modal body. UIKitModal only keeps rich markup when the string
- * contains an anchor tag (otherwise it escapes everything), so a description
- * that relies on <b> must ship with at least one link. When no link is given
- * the emphasis tags are stripped to avoid rendering them literally.
- */
 function buildContent(parts: ContentParts): string {
   const links = parts.links || [];
   const blocks: string[] = [];
-
-  // Keeps the first block flush with the title no matter which parts are used.
   const topGap = () => (blocks.length ? 'margin-top:12px;' : '');
 
   if (parts.desc) {
@@ -191,12 +181,6 @@ function buildContent(parts: ContentParts): string {
     blocks.push(`<div ${COPY_GROUP_ATTR} style="${topGap()}${layout}${PANEL_STYLE}">${body}${copyButton()}</div>`);
   }
 
-  if (parts.code) {
-    const pre = `<pre ${COPY_VALUE_ATTR} style="margin:0;padding:12px;overflow-x:auto;font-family:${MONO_FONT};font-size:12px;line-height:1.72;color:#d6deec;background:#0e1420;border-radius:10px">${escapeHtml(parts.code)}</pre>`;
-    const button = `<div style="position:absolute;top:8px;right:8px">${copyButton()}</div>`;
-    blocks.push(`<div ${COPY_GROUP_ATTR} style="${topGap()}position:relative">${pre}${button}</div>`);
-  }
-
   links.forEach((link) => {
     blocks.push(`<div style="${topGap()}"><a href="${escapeHtml(link.href)}">${escapeHtml(link.text)}</a></div>`);
   });
@@ -208,29 +192,14 @@ function buildContent(parts: ContentParts): string {
   return blocks.join('');
 }
 
-export interface LoginPromptActions {
-  onConfirm?: () => void;
-  onCancel?: () => void;
-}
-
-/**
- * Every login-related prompt of the demo, wired to UIKitModal.
- *
- * UIKitModal always renders a fixed "Cancel" + "Confirm" pair, so the primary
- * action of each design case is mapped to Confirm and the copy that used to sit
- * on the button is moved into the foot note.
- */
 export function useLoginPrompts() {
   const { t, language } = useUIKit();
 
-  // Resolved lazily so a language switch is picked up without re-running the
-  // composable.
   const links = () => ({
     console: resolveDocLink('console', language.value),
     userSig: resolveDocLink('userSig', language.value),
     userSigTool: resolveDocLink('userSigTool', language.value),
     troubleshoot: resolveDocLink('troubleshoot', language.value),
-    support: resolveDocLink('support', language.value),
   });
 
   const open = (
@@ -248,219 +217,126 @@ export function useLoginPrompts() {
       onConfirm: actions?.onConfirm,
       onCancel: actions?.onCancel,
     });
-    if (parts.panelValue || parts.code) {
-      bindCopyButtons(t('Copy'), t('Copied'));
+    if (parts.panelValue) {
+      bindCopyButtons(t('Demo.LoginPrompt.Copy'), t('Demo.LoginPrompt.Copied'));
     }
     return promise;
   };
 
   const prompts = {
-    /** SDKAppID is still missing from basic-info-config.js. */
     promptSDKAppIDMissing: (actions?: LoginPromptActions) => open(
       LoginPromptId.SDK_APP_ID_MISSING,
       'error',
-      t('SDKAppID is not configured yet'),
+      t('Demo.LoginPrompt.SDKAppIDMissingTitle'),
       {
-        desc: t('Fill in the SDKAppID and secret key first, then log in with your userID.'),
-        links: [{ text: t('Get them from the console'), href: links().console }],
-        footNote: t('Confirm to open the console'),
+        desc: t('Demo.LoginPrompt.SDKAppIDMissingDesc'),
+        links: [{ text: t('Demo.LoginPrompt.GetFromConsole'), href: links().console }],
+        footNote: t('Demo.LoginPrompt.ConfirmOpenConsole'),
       },
       actions,
     ),
 
-    /** Case 01: the userID does not match the allowed charset. */
     promptUserIdInvalid: (actions?: LoginPromptActions) => open(
       LoginPromptId.USER_ID_INVALID,
       'error',
-      t('This userID cannot be used'),
+      t('Demo.LoginPrompt.UserIDInvalidTitle'),
       {
-        desc: t('Use only letters, digits and underscores, 1 to 20 characters.'),
-        panelLabel: t('You can use this one'),
+        desc: t('Demo.LoginPrompt.UserIDInvalidDesc'),
+        panelLabel: t('Demo.LoginPrompt.UseThisOne'),
         panelValue: USER_ID_EXAMPLE,
-        links: [{ text: t('View integration docs'), href: links().userSig }],
-        footNote: t('Confirm to re-enter'),
+        links: [{ text: t('Demo.LoginPrompt.ViewIntegrationDocs'), href: links().userSig }],
+        footNote: t('Demo.LoginPrompt.ConfirmReEnter'),
       },
       actions,
     ),
 
-    /** Case 02: no userSig generator was provided. */
-    promptUserSigGeneratorMissing: (actions?: LoginPromptActions) => open(
-      LoginPromptId.USER_SIG_GENERATOR_MISSING,
-      'error',
-      t('One more step before logging in'),
-      {
-        desc: t('Copy the snippet below into your initialization code, then run the project again.'),
-        code: USER_SIG_SNIPPET,
-        links: [{ text: t('View integration docs'), href: links().userSig }],
-      },
-      actions,
-    ),
-
-    /** Case 03: login failed for a reason we cannot classify. */
     promptLoginFailed: (reason: string, actions?: LoginPromptActions) => open(
       LoginPromptId.LOGIN_FAILED,
       'error',
-      t('Login did not go through'),
+      t('Demo.LoginPrompt.LoginFailedTitle'),
       {
-        panelLabel: t('Failure reason'),
+        panelLabel: t('Demo.LoginPrompt.FailureReason'),
         panelValue: reason,
         panelMono: false,
         links: [
-          { text: t('View troubleshooting steps'), href: links().troubleshoot },
-          { text: t('Check the configuration in the console'), href: links().console },
+          { text: t('Demo.LoginPrompt.ViewTroubleshooting'), href: links().troubleshoot },
+          { text: t('Demo.LoginPrompt.CheckConsoleConfig'), href: links().console },
         ],
-        footNote: t('Confirm to retry the login'),
+        footNote: t('Demo.LoginPrompt.ConfirmRetry'),
       },
       actions,
     ),
 
-    /** Case 04: an action needs a logged-in user. */
-    promptLoginRequired: (actions?: LoginPromptActions) => open(
-      LoginPromptId.LOGIN_REQUIRED,
-      'info',
-      t('Log in before going live'),
-      {
-        desc: t('Logging in only takes a few seconds.'),
-        links: [{ text: t('View integration docs'), href: links().userSig }],
-        footNote: t('Confirm to go to the login page'),
-      },
-      actions,
-    ),
-
-    /** Case 05: the account was kicked offline by another device. */
-    promptKickedOffline: (actions?: LoginPromptActions) => open(
-      LoginPromptId.KICKED_OFFLINE,
-      'warning',
-      t('Your account was logged in on another device'),
-      {
-        desc: t('One account can only be used on a single device by default, so this one went offline. Log in again to continue.'),
-        links: [{ text: t('Allow several devices online at once'), href: links().console }],
-        footNote: t('Confirm to log in again'),
-      },
-      actions,
-    ),
-
-    /** Case 06: logging out while a live stream is running. */
-    promptLogoutWhileLiving: (actions?: LoginPromptActions) => {
-      if (isLocalEnvironment()) {
-        open(
-          LoginPromptId.LOGOUT_WHILE_LIVING,
-          'warning',
-          t('Logging out will end this live stream'),
-          {
-            desc: t('Viewers will be disconnected right away and the live stream cannot be resumed.'),
-            links: [
-              { text: t('Live streaming issues? View the FAQ'), href: links().troubleshoot },
-              { text: t('Contact technical support'), href: links().support },
-            ],
-            footNote: t('Cancel to keep streaming'),
-          },
-          actions,
-        );
-      } else {
-        if (actions?.onConfirm) {
-          actions.onConfirm();
-        }
-      }
-    },
-
-    /** Case 07: ending the live stream failed. */
-    promptEndLiveFailed: (actions?: LoginPromptActions) => open(
-      LoginPromptId.END_LIVE_FAILED,
-      'error',
-      t('The live stream did not end properly'),
-      {
-        desc: t('Trying once more usually works. If it keeps failing, contacting technical support is faster.'),
-        links: [{ text: t('Contact technical support'), href: links().support }],
-        footNote: t('Confirm to try again'),
-      },
-      actions,
-    ),
-
-    /** Case 08 (40006): the userSig has expired. */
     promptSignatureExpired: (actions?: LoginPromptActions) => open(
       LoginPromptId.SIGNATURE_EXPIRED,
       'error',
-      t('Your login session has expired'),
+      t('Demo.LoginPrompt.SignatureExpiredTitle'),
       {
-        desc: t('This is the normal security mechanism. One click gets a new signature and logs you in again.'),
-        links: [{ text: t('View the validity period settings'), href: links().userSig }],
-        footNote: t('Confirm to log in again'),
+        desc: t('Demo.LoginPrompt.SignatureExpiredDesc'),
+        links: [{ text: t('Demo.LoginPrompt.ViewValidityPeriod'), href: links().userSig }],
+        footNote: t('Demo.LoginPrompt.ConfirmLoginAgain'),
       },
       actions,
     ),
 
-    /** Case 09 (40008): the userSig is invalid. */
     promptSignatureInvalid: (actions?: LoginPromptActions) => open(
       LoginPromptId.SIGNATURE_INVALID,
       'error',
-      t('This login signature is invalid'),
+      t('Demo.LoginPrompt.SignatureInvalidTitle'),
       {
-        desc: t('The signature can only be generated from the console. Fill it back into the project configuration once generated.'),
-        links: [{ text: t('Generate it in the console'), href: links().console }],
-        footNote: t('Confirm to open the console'),
+        desc: t('Demo.LoginPrompt.SignatureInvalidDesc'),
+        links: [{ text: t('Demo.LoginPrompt.GenerateInConsole'), href: links().console }],
+        footNote: t('Demo.LoginPrompt.ConfirmOpenConsole'),
       },
       actions,
     ),
 
-    /** Case 10 (40009): the userID and the userSig do not match. */
     promptUserIdMismatch: (userID: string, actions?: LoginPromptActions) => open(
       LoginPromptId.USER_ID_MISMATCH,
       'error',
-      t('The userID and the signature do not match'),
+      t('Demo.LoginPrompt.UserIDMismatchTitle'),
       {
-        desc: t('The userID used to log in must be exactly the same as the one used to generate the signature, including letter case.'),
-        panelLabel: t('Current userID'),
+        desc: t('Demo.LoginPrompt.UserIDMismatchDesc'),
+        panelLabel: t('Demo.LoginPrompt.CurrentUserID'),
         panelValue: userID,
-        links: [{ text: t('Verify it in the console'), href: links().userSigTool }],
-        footNote: t('Confirm to log in again'),
+        links: [{ text: t('Demo.LoginPrompt.VerifyInConsole'), href: links().userSigTool }],
+        footNote: t('Demo.LoginPrompt.ConfirmLoginAgain'),
       },
       actions,
     ),
   };
 
-  /**
-   * Dispatch a login failure to the prompt that matches its error code.
-   *
-   * Every caller of `login()` needs the same mapping, so it lives here instead
-   * of being repeated at each call site.
-   *
-   * @returns the parsed error code, for callers that need to branch further.
-   */
   function reportLoginError(
     error: unknown,
     options: {
-      /** userID displayed by the "does not match" prompt. */
       userID?: string;
-      /** Confirm action for the failures that are worth another attempt. */
       onRecover?: () => void;
-      /**
-       * Confirm action for an invalid signature. Retrying with the same
-       * signature cannot succeed, so this is kept separate from `onRecover`.
-       */
       onInvalidSignature?: () => void;
     } = {},
-  ): number {
-    const errorInfo = errorHandler.parseError(error);
+  ): number | undefined {
+    const code = readErrorCode(error);
     const recover = options.onRecover ? { onConfirm: options.onRecover } : undefined;
 
-    switch (errorInfo.code) {
-      case LiveErrorCode.SIGNATURE_EXPIRED:
+    switch (code) {
+      case RawErrorCode.SIGNATURE_EXPIRED:
         prompts.promptSignatureExpired(recover);
         break;
-      case LiveErrorCode.SIGNATURE_INVALID:
+      case RawErrorCode.SIGNATURE_INVALID:
         prompts.promptSignatureInvalid(
           options.onInvalidSignature ? { onConfirm: options.onInvalidSignature } : undefined,
         );
         break;
-      case LiveErrorCode.USER_ID_MISMATCH:
+      case RawErrorCode.USER_ID_MISMATCH:
         prompts.promptUserIdMismatch(options.userID || '', recover);
         break;
       default:
-        prompts.promptLoginFailed(toReadableReason(t(errorInfo.message)), recover);
+        prompts.promptLoginFailed(
+          toReadableReason(readErrorMessage(error)) || t('Demo.LoginFailed'),
+          recover,
+        );
     }
 
-    return errorInfo.code;
+    return code;
   }
 
   return { ...prompts, reportLoginError };

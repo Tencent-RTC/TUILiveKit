@@ -88,7 +88,6 @@ defineProps<{ content: string }>();
   transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
 }
 
-/* Two stacked triangles so the arrow keeps the 1px border outline. */
 .field-hint-bubble::before,
 .field-hint-bubble::after {
   position: absolute;
