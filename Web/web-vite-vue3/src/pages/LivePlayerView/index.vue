@@ -1,5 +1,5 @@
 <template>
-  <LivePlayerView
+  <LivePlayer
     :live-id="liveId"
     @leave="handleLeave"
     @logout="handleLogout"
@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
-import { LivePlayerView } from '@tencentcloud/livekit-web-vue3';
+import { LivePlayer } from '@tencentcloud/livekit-web-vue3';
 import { RoutePath } from '../../router';
 import { logout } from '../../utils/login';
 

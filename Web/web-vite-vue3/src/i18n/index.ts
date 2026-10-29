@@ -1,4 +1,10 @@
-import { resource as enResource } from './en-US/index';
-import { resource as zhResource } from './zh-CN/index';
+import { addI18n } from 'tuikit-atomicx-vue3';
+import { enUS } from './en-US';
+import { zhCN } from './zh-CN';
 
-export { enResource, zhResource };
+function addDemoI18n(): void {
+  addI18n('zh-CN', { translation: zhCN });
+  addI18n('en-US', { translation: enUS });
+}
+
+export { addDemoI18n };
