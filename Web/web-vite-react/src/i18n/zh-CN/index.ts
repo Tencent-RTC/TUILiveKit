@@ -2,8 +2,6 @@ const zhCN = {
   'Demo.PhoneLogin': '手机号登录',
   'Demo.UserIDLogin': '用户 ID 登录',
   'Demo.LoginFailed': '登录失败',
-  'Demo.StartLive': '开始直播',
-  'Demo.Logout': '退出',
   'Demo.Login': '登录',
   'Demo.LoginForm.SDKAppIDHint': '应用标识/应用 ID，是腾讯云后台用来区分不同 TRTC 应用的唯一标识，在 TRTC 控制台创建应用时自动生成。不同 SDKAppID 之间的数据不互通。',
   'Demo.LoginForm.SDKSecretKeyHint': '应用密钥，用于初始化配置文件的密钥信息。',

@@ -11,7 +11,10 @@ export default defineConfig({
   resolve: {
     dedupe: ['react', 'react-dom'],
     alias: existsSync(localLiveKitEntry)
-      ? { '@tencentcloud/livekit-web-react': localLiveKitEntry }
+      ? {
+        '@tencentcloud/livekit-web-react': localLiveKitEntry,
+        '@': resolve(__dirname, '../../packages/TUILiveKit-web-atomicx-react/src'),
+      }
       : {},
   },
 });

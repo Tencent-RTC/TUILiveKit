@@ -1,5 +1,5 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { LivePlayerView as KitLivePlayerView } from '@tencentcloud/livekit-web-react';
+import { LivePlayer as KitLivePlayer } from '@tencentcloud/livekit-web-react';
 import { RoutePath } from '../../router';
 import { logout } from '../../utils/login';
 
@@ -9,7 +9,7 @@ export function LivePlayerView() {
   const liveId = searchParams.get('liveId') ?? '';
 
   return (
-    <KitLivePlayerView
+    <KitLivePlayer
       liveId={liveId}
       onLeave={() => navigate(RoutePath.LiveList)}
       onLogout={async () => {
