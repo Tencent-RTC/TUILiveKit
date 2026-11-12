@@ -1,17 +1,17 @@
 {
   "name": "@tencentcloud/live-uikit-react",
   "private": true,
-  "version": "6.6.2",
+  "version": "6.6.5",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
-    "@tencentcloud/livekit-web-react": "6.6.4",
+    "@tencentcloud/livekit-web-react": "6.6.5",
     "@tencentcloud/uikit-base-component-react": "1.4.4",
     "@tencentcloud/universal-api": "^2.4.1",
-    "tuikit-atomicx-react": "6.4.3",
+    "tuikit-atomicx-react": "6.4.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^6.8.0"
