@@ -4,6 +4,16 @@
 
 ---
 
+## [6.6.5] - 2026-11-12
+
+### Feat
+
+- Leaving the page through a route change while the host is live, or while an audience member is on a co-guest seat, now asks for confirmation via the kit's `requestLeaveLive()`, and stays on the page when canceled.
+
+### Changed
+
+- Upgraded to LiveKit 6.6.5 and tuikit-atomicx-react 6.4.4; see the kit changelog for H5/PC live experience changes.
+
 ## [6.6.2] - 2026-10-29
 
 ### Feat
