@@ -4,6 +4,17 @@
 
 ---
 
+## [6.6.5] - 2026-11-12
+
+### Feat
+
+- Leaving the page through a route change while the host is live, or while an audience member is on a co-guest seat, now asks for confirmation via the kit's `requestLeaveLive()`, and stays on the page when canceled (Vue3 and React demos).
+
+### Changed
+
+- In the Vue3 demo, the live list and host pages are now demo page components (`LiveListView`, `LivePusherView`) that listen to events such as `@start-live` and `@leave` and navigate with `useRouter`. The router config now holds only the route table and guards, and no longer passes event callbacks through `props`.
+- Upgraded to LiveKit 6.6.5; see the kit changelog for H5/PC live experience changes.
+
 ## [6.6.2] - 2026-10-29
 
 ### Feat

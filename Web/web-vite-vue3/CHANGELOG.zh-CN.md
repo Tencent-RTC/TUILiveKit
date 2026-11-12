@@ -4,6 +4,17 @@
 
 ---
 
+## [6.6.5] - 2026-11-12
+
+### Feat
+
+- 主播直播中或观众连麦中通过路由离开页面时，先调用 Kit 的 `requestLeaveLive()` 确认，取消后留在当前页面（Vue3 与 React demo 同步）。
+
+### 变更
+
+- Vue3 demo 的直播列表页与主播开播页改为 demo 内的页面组件（`LiveListView`、`LivePusherView`），通过 `@start-live`、`@leave` 等事件监听并用 `useRouter` 跳转；路由配置只保留路由表与守卫，不再在 `props` 中传事件回调。
+- 升级至 LiveKit 6.6.5，H5/PC 直播体验变化见 Kit 更新日志。
+
 ## [6.6.2] - 2026-10-29
 
 ### Feat
