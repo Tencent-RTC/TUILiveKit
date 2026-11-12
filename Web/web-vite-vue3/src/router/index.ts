@@ -1,12 +1,9 @@
 import { watch } from 'vue';
 import { createRouter, createWebHashHistory } from 'vue-router';
 import { useLoginState } from 'tuikit-atomicx-vue3';
-import { LiveList, LivePusher } from '@tencentcloud/livekit-web-vue3';
-import { LivePlayerView, LoginView } from '../pages';
+import { requestLeaveLive } from '@tencentcloud/livekit-web-vue3';
+import { LiveListView, LivePlayerView, LivePusherView, LoginView } from '../pages';
 import { RoutePath } from './routePath';
-import { logout } from '../utils/login';
-
-const logoUrl = new URL('../assets/logo.svg', import.meta.url).href;
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -18,29 +15,10 @@ const router = createRouter({
     component: LoginView,
   }, {
     path: RoutePath.LiveList,
-    component: LiveList,
-    props: {
-      logoUrl,
-      brandName: 'LiveKit',
-      onStartLive: () => router.push(RoutePath.LivePusher),
-      onLiveRoomClick: (liveInfo: { liveId: string }) => router.push({ path: RoutePath.LivePlayer, query: { liveId: liveInfo.liveId } }),
-      onLogout: async () => {
-        await logout();
-        await router.push(RoutePath.Login);
-      },
-    },
+    component: LiveListView,
   }, {
     path: RoutePath.LivePusher,
-    component: LivePusher,
-    props: {
-      logoUrl,
-      brandName: 'LiveKit',
-      onLeave: () => router.push(RoutePath.LiveList),
-      onLogout: async () => {
-        await logout();
-        await router.push(RoutePath.Login);
-      },
-    },
+    component: LivePusherView,
   }, {
     path: RoutePath.LivePlayer,
     component: LivePlayerView,
@@ -55,6 +33,15 @@ router.beforeEach((to) => {
     return true;
   }
   return { path: RoutePath.Login, query: { from: to.fullPath } };
+});
+
+const LIVE_ROUTES: string[] = [RoutePath.LivePusher, RoutePath.LivePlayer];
+
+router.beforeEach((to, from) => {
+  if (!LIVE_ROUTES.includes(from.path) || to.path === from.path || !loginUserInfo.value?.userId) {
+    return true;
+  }
+  return requestLeaveLive();
 });
 
 watch(() => loginUserInfo.value?.userId, (userId) => {

@@ -1,14 +1,14 @@
 {
   "name": "@tencentcloud/live-uikit-vue",
   "private": true,
-  "version": "6.6.2",
+  "version": "6.6.5",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "typecheck": "vue-tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
-    "@tencentcloud/livekit-web-vue3": "6.6.4",
+    "@tencentcloud/livekit-web-vue3": "6.6.5",
     "@tencentcloud/uikit-base-component-vue3": "1.5.0",
     "tuikit-atomicx-vue3": "6.7.1",
     "vue": "^3.4.21",
