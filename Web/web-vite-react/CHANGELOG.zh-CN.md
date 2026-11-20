@@ -4,6 +4,18 @@
 
 ---
 
+## [6.6.6] - 2026-11-19
+
+### Feat
+
+- 主播开播后，页面地址自动带上当前直播间的 `liveId`。
+- 开播页为 `LivePusher` 传入 `getWatchLink`，顶部按钮可直接复制观众观看链接。
+
+### 变更
+
+- 升级至 LiveKit 6.6.6 与 tuikit-atomicx-react 6.4.7，直播体验变化见 Kit 更新日志。
+- 页面禁用滚动边界回弹（`overscroll-behavior: none`）。
+
 ## [6.6.5] - 2026-11-12
 
 ### Feat
