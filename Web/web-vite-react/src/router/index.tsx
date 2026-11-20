@@ -4,6 +4,7 @@ import { useLoginState } from 'tuikit-atomicx-react';
 import { LiveList, LivePusher } from '@tencentcloud/livekit-web-react';
 import { LivePlayerView, LoginView } from '../pages';
 import { LeaveLiveGuard } from './LeaveLiveGuard';
+import { LiveIdQuerySync } from './LiveIdQuerySync';
 import { RoutePath } from './routePath';
 import { logout } from '../utils/login';
 
@@ -47,15 +48,18 @@ export const router = createHashRouter([{
   element: (
     <RequireLogin>
       <LeaveLiveGuard>
-        <LivePusher
-          logoUrl={logoUrl}
-          brandName="LiveKit"
-          onLeave={() => router.navigate(RoutePath.LiveList)}
-          onLogout={async () => {
-            await logout();
-            await router.navigate(RoutePath.Login);
-          }}
-        />
+        <LiveIdQuerySync>
+          <LivePusher
+            logoUrl={logoUrl}
+            brandName="LiveKit"
+            getWatchLink={liveId => new URL(router.createHref({ pathname: RoutePath.LivePlayer, search: `?liveId=${encodeURIComponent(liveId)}` }), window.location.href).href}
+            onLeave={() => router.navigate(RoutePath.LiveList)}
+            onLogout={async () => {
+              await logout();
+              await router.navigate(RoutePath.Login);
+            }}
+          />
+        </LiveIdQuerySync>
       </LeaveLiveGuard>
     </RequireLogin>
   ),
