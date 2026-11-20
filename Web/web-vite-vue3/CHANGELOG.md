@@ -4,6 +4,18 @@
 
 ---
 
+## [6.6.6] - 2026-11-19
+
+### Feat
+
+- After the host goes live, the page URL automatically includes the current `liveId`.
+- The host page passes `getWatchLink` to `LivePusher`, so the header button copies the audience watch link directly.
+
+### Changed
+
+- Upgraded to LiveKit 6.6.6 and tuikit-atomicx-vue3 6.7.5; see the kit changelog for live experience changes.
+- The page disables scroll-boundary bounce (`overscroll-behavior: none`).
+
 ## [6.6.5] - 2026-11-12
 
 ### Feat
