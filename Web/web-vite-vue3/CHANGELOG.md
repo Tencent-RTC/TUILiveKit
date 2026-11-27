@@ -4,6 +4,23 @@
 
 ---
 
+## [6.6.8] - 2026-11-27
+
+### Changed
+
+- Upgraded to LiveKit 6.6.8; the H5 host Share action now copies the watch link.
+- The GitHub login page does not offer staying signed in for 30 days.
+
+## [6.6.7] - 2026-11-26
+
+### Feat
+
+- The login page is redesigned.
+
+### Changed
+
+- Upgraded to LiveKit 6.6.7 and tuikit-atomicx-vue3 6.7.6; see the kit changelog for live experience changes.
+
 ## [6.6.6] - 2026-11-19
 
 ### Feat

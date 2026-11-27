@@ -8,9 +8,21 @@ export interface LoginUserInfo {
   userSig: string;
 }
 
+interface LoginHooks {
+  onLogin?: () => void;
+  onLogout?: () => void;
+}
+
+let loginHooks: LoginHooks = {};
+
+export function setLoginHooks(hooks: LoginHooks): void {
+  loginHooks = hooks;
+}
+
 export async function loginWithUserInfo({ SDKAppID, userID, userSig }: LoginUserInfo): Promise<void> {
   await useLoginState().login({ sdkAppId: SDKAppID, userId: userID, userSig });
   sessionStorage.setItem(LOGIN_STORAGE_KEY, JSON.stringify({ SDKAppID, userID, userSig }));
+  loginHooks.onLogin?.();
 }
 
 export function readStoredUserInfo(): Partial<LoginUserInfo> | null {
@@ -24,6 +36,7 @@ export function readStoredUserInfo(): Partial<LoginUserInfo> | null {
 
 export async function logout(): Promise<void> {
   sessionStorage.removeItem(LOGIN_STORAGE_KEY);
+  loginHooks.onLogout?.();
   await useLoginState().logout();
 }
 
