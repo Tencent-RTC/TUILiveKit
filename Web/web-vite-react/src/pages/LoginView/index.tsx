@@ -14,6 +14,8 @@ import {
   hasStaticCredentials,
   setCredentials,
 } from '../../config/basic-info-config';
+import { LiveLanguage, toLiveLanguage } from '@tencentcloud/livekit-web-react';
+import { LanguageToggle } from '../../components/LanguageToggle';
 import './LoginViewGithub.scss';
 
 const logoZh = new URL('../../assets/tcloud_logo_zh.png', import.meta.url).href;
@@ -42,7 +44,7 @@ export function LoginView() {
   const [submitting, setSubmitting] = useState(false);
   const submittingRef = useRef(false);
 
-  const logoSrc = language === 'zh-CN' ? logoZh : logoEn;
+  const logoSrc = toLiveLanguage(language) === LiveLanguage.SimplifiedChinese ? logoZh : logoEn;
   const consoleLink = resolveDocLink('console', language);
 
   useEffect(() => {
@@ -103,6 +105,7 @@ export function LoginView() {
           <img className="brand-logo" src={logoSrc} alt="Tencent Cloud" />
         </div>
       </div>
+      <LanguageToggle />
 
       <div className="auth-hero">
         <div className="ht reveal">
