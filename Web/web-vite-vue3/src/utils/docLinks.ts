@@ -1,3 +1,5 @@
+import { LiveLanguage, toLiveLanguage } from '@tencentcloud/livekit-web-vue3';
+
 export type DocLinkKey = 'console' | 'userSig' | 'userSigTool' | 'troubleshoot';
 
 const MAINLAND_LINKS: Record<DocLinkKey, string> = {
@@ -15,7 +17,7 @@ const INTERNATIONAL_LINKS: Record<DocLinkKey, string> = {
 };
 
 export function resolveDocLink(key: DocLinkKey, language: string): string {
-  return (language === 'zh-CN' ? MAINLAND_LINKS : INTERNATIONAL_LINKS)[key];
+  return (toLiveLanguage(language) === LiveLanguage.SimplifiedChinese ? MAINLAND_LINKS : INTERNATIONAL_LINKS)[key];
 }
 
 export function openDocLink(key: DocLinkKey, language: string): void {

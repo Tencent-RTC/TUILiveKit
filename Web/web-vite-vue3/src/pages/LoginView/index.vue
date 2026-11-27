@@ -5,6 +5,7 @@
         <img class="brand-logo" :src="logoSrc" alt="Tencent Cloud" />
       </div>
     </div>
+    <LanguageToggle />
 
     <div class="auth-hero">
       <div class="ht reveal">
@@ -96,6 +97,8 @@ import {
   hasStaticCredentials,
   setCredentials,
 } from '../../config/basic-info-config';
+import { LiveLanguage, toLiveLanguage } from '@tencentcloud/livekit-web-vue3';
+import LanguageToggle from '../../components/LanguageToggle/index.vue';
 
 const logoZh = new URL('../../assets/tcloud_logo_zh.png', import.meta.url).href;
 const logoEn = new URL('../../assets/tcloud_logo_en.png', import.meta.url).href;
@@ -105,7 +108,7 @@ const router = useRouter();
 const { t, language, setTheme } = useUIKit();
 const { promptSDKAppIDMissing, reportLoginError } = useLoginPrompts();
 
-const logoSrc = computed(() => (language.value === 'zh-CN' ? logoZh : logoEn));
+const logoSrc = computed(() => (toLiveLanguage(language.value) === LiveLanguage.SimplifiedChinese ? logoZh : logoEn));
 const consoleLink = computed(() => resolveDocLink('console', language.value));
 
 const credentialsPreset = hasStaticCredentials();
