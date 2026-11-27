@@ -12,6 +12,7 @@ export function LivePlayerView() {
     <KitLivePlayer
       liveId={liveId}
       onLeave={() => navigate(RoutePath.LiveList)}
+      onLiveRoomClick={liveInfo => navigate({ pathname: RoutePath.LivePlayer, search: `?liveId=${encodeURIComponent(liveInfo.liveId)}` }, { replace: true })}
       onLogout={async () => {
         await logout();
         await navigate(RoutePath.Login);
