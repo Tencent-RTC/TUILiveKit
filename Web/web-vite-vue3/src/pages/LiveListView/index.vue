@@ -5,6 +5,8 @@
     @start-live="handleStartLive"
     @live-room-click="handleLiveRoomClick"
     @logout="handleLogout"
+    language-switchable
+    @language-change="saveLanguage"
   />
 </template>
 
@@ -12,6 +14,7 @@
 import { useRouter } from 'vue-router';
 import { LiveList } from '@tencentcloud/livekit-web-vue3';
 import { RoutePath } from '../../router/routePath';
+import { saveLanguage } from '../../utils/language';
 import { logout } from '../../utils/login';
 import type { LiveInfo } from 'tuikit-atomicx-vue3';
 

@@ -4,6 +4,16 @@
 
 ---
 
+## [6.6.9] - 2026-11-27
+
+### Feat
+
+- The login page adds a Chinese/English language switch, and the live list, host, and audience pages enable the kit language switch. The selected language is remembered after a refresh.
+
+### Changed
+
+- Upgraded to LiveKit 6.6.9; see the kit changelog for language switch details.
+
 ## [6.6.8] - 2026-11-27
 
 ### Changed

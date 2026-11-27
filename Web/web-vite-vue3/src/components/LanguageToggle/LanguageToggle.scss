@@ -1,0 +1,56 @@
+.lang-toggle {
+  position: absolute;
+  top: 14px;
+  right: 24px;
+  z-index: 3;
+  box-sizing: border-box;
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  height: 32px;
+  padding: 0 12px;
+  font: inherit;
+  font-size: 13px;
+  color: #4a5462;
+  white-space: nowrap;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid #dde3ec;
+  border-radius: 16px;
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+
+  &:hover {
+    color: #1c66e5;
+    background: #fff;
+    border-color: #b9cdf3;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #1c66e5;
+    outline-offset: 2px;
+  }
+
+  svg {
+    flex: none;
+  }
+}
+
+@media (max-width: 820px) {
+  .lang-toggle {
+    top: 13px;
+    right: 16px;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.32);
+
+    &:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.48);
+    }
+
+    &:focus-visible {
+      outline-color: #fff;
+    }
+  }
+}
