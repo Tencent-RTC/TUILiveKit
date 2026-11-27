@@ -36,6 +36,7 @@ export const router = createHashRouter([{
         brandName="LiveKit"
         onStartLive={() => router.navigate(RoutePath.LivePusher)}
         onLiveRoomClick={liveInfo => router.navigate({ pathname: RoutePath.LivePlayer, search: `?liveId=${liveInfo.liveId}` })}
+        languageSwitchable
         onLogout={async () => {
           await logout();
           await router.navigate(RoutePath.Login);
@@ -54,6 +55,7 @@ export const router = createHashRouter([{
             brandName="LiveKit"
             getWatchLink={liveId => new URL(router.createHref({ pathname: RoutePath.LivePlayer, search: `?liveId=${encodeURIComponent(liveId)}` }), window.location.href).href}
             onLeave={() => router.navigate(RoutePath.LiveList)}
+            languageSwitchable
             onLogout={async () => {
               await logout();
               await router.navigate(RoutePath.Login);

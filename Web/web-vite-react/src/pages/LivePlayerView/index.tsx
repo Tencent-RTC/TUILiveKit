@@ -11,6 +11,7 @@ export function LivePlayerView() {
   return (
     <KitLivePlayer
       liveId={liveId}
+      languageSwitchable
       onLeave={() => navigate(RoutePath.LiveList)}
       onLiveRoomClick={liveInfo => navigate({ pathname: RoutePath.LivePlayer, search: `?liveId=${encodeURIComponent(liveInfo.liveId)}` }, { replace: true })}
       onLogout={async () => {
